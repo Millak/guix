@@ -65,7 +65,7 @@
    (version "7.79.1")
    (source (origin
              (method url-fetch)
-             (uri (string-append "https://curl.haxx.se/download/curl-"
+             (uri (string-append "https://curl.se/download/curl-"
                                  version ".tar.xz"))
              (sha256
               (base32
