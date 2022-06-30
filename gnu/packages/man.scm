@@ -307,7 +307,7 @@ Linux kernel and C library interfaces employed by user-space programs.")
   ;; input "locales" contain the original (English) text.
   (package
     (name "help2man")
-    (version "1.48.5")
+    (version "1.49.2")
     (source
      (origin
       (method url-fetch)
@@ -315,7 +315,7 @@ Linux kernel and C library interfaces employed by user-space programs.")
                           version ".tar.xz"))
       (sha256
        (base32
-        "1gl24n9am3ivhql1gs9lffb415irg758fhxyk4ryssiflk5f8fb7"))))
+        "0dnxx96lbcb8ab8yrdkqll14cl5n0bch8qpd9qj3c2ky78hhwbly"))))
     (build-system gnu-build-system)
     (arguments `(;; There's no `check' target.
                  #:tests? #f
