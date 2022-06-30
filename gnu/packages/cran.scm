@@ -23941,6 +23941,35 @@ spectroscopy and analyses of environmental data: robust baseline fitting,
 finding peaks in spectra, converting humidity measures.")
     (license license:gpl3+)))
 
+(define-public r-qqconf
+  (package
+    (name "r-qqconf")
+    (version "1.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "qqconf" version))
+              (sha256
+               (base32
+                "0qnfzq2zb776kmvbwmyj9di4nlzx7dg0nz4097hfcllfx9160nwv"))))
+    (properties `((upstream-name . "qqconf")))
+    (build-system r-build-system)
+    (inputs (list fftw))
+    (propagated-inputs
+     (list r-dplyr
+           r-magrittr
+           r-mass
+           r-rcpp
+           r-rlang
+           r-robustbase))
+    (native-inputs (list pkg-config r-knitr))
+    (home-page "https://github.com/eweine/qqconf")
+    (synopsis "Create simultaneous testing bands for QQ-plots")
+    (description
+     "This package provides functionality for creating Quantile-Quantile (QQ) and
+Probability-Probability (PP) plots with simultaneous testing bands to asses
+significance of sample deviation from a reference distribution.")
+    (license license:gpl3)))
+
 (define-public r-qqman
   (package
     (name "r-qqman")
