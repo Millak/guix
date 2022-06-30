@@ -21540,3 +21540,31 @@ instead of #'FOO.
 
 (define-public ecl-nkeymaps
   (sbcl-package->ecl-package sbcl-nkeymaps))
+
+(define-public sbcl-utils-kt
+  (let ((commit "4adfe2889036ab5ffdd3cc2182ca2cc692bf11ff"))
+    (package
+      (name "sbcl-utils-kt")
+      (version (git-version "2007-12-02" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kennytilton/utils-kt")
+               (commit commit)))
+         (file-name (git-file-name "cl-utils-kt" version))
+         (sha256
+          (base32 "016x3w034brz02z9mrsrkhk2djizg3yqsvhl9k62xqcnpy3b87dn"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/kennytilton/utils-kt")
+      (synopsis "Kenny's utilities for Common Lisp")
+      (description
+       "This library contains generic hacks meant to be used in any project.
+It was originally developped for the Cells library.")
+      (license license:expat))))
+
+(define-public cl-utils-kt
+  (sbcl-package->cl-source-package sbcl-utils-kt))
+
+(define-public ecl-utils-kt
+  (sbcl-package->ecl-package sbcl-utils-kt))
