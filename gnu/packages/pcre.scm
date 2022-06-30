@@ -39,55 +39,56 @@
 
 (define-public pcre
   (package
-   (name "pcre")
-   (version "8.45")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://sourceforge/pcre/pcre/"
-                                version "/pcre-" version ".tar.bz2"))
-            (sha256
-             (base32
-              "1f7zichy6iimmkfrqdl575sdlm795cyc75szgg1vc2xvsbf6zbjd"))))
-   (build-system gnu-build-system)
-   (outputs '("out"           ;library & headers
-              "bin"           ;depends on Readline (adds 20MiB to the closure)
-              "doc"           ;1.8 MiB of HTML
-              "static"))      ;1.8 MiB static libraries
-   (inputs (list bzip2 readline zlib))
-   (arguments
-    `(#:disallowed-references ("doc")
-      #:configure-flags '("--enable-utf"
-                          "--enable-pcregrep-libz"
-                          "--enable-pcregrep-libbz2"
-                          "--enable-pcretest-libreadline"
-                          "--enable-unicode-properties"
-                          "--enable-pcre16"
-                          "--enable-pcre32"
-                          ;; pcretest fails on powerpc32.
-                          ;; riscv64-linux is an unsupported architecture.
-                          ,@(if (or (target-ppc32?)
-                                    (target-riscv64?))
-                              '()
-                              `("--enable-jit")))
-      #:phases (modify-phases %standard-phases
-                 (add-after 'install 'move-static-libs
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     (let ((source (string-append (assoc-ref outputs "out") "/lib"))
-                           (static (string-append (assoc-ref outputs "static") "/lib")))
-                       (mkdir-p static)
-                       (for-each (lambda (lib)
-                                   (link lib (string-append static "/"
-                                                            (basename lib)))
-                                   (delete-file lib))
-                                 (find-files source "\\.a$"))))))))
-   (synopsis "Perl Compatible Regular Expressions")
-   (description
-    "The PCRE library is a set of functions that implement regular expression
+    (name "pcre")
+    (version "8.45")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/pcre/pcre/"
+                                  version "/pcre-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1f7zichy6iimmkfrqdl575sdlm795cyc75szgg1vc2xvsbf6zbjd"))))
+    (build-system gnu-build-system)
+    (outputs '("out"          ;library & headers
+               "bin"          ;depends on Readline (adds 20MiB to the closure)
+               "doc"          ;1.8 MiB of HTML
+               "static"))     ;1.8 MiB static libraries
+    (inputs (list bzip2 readline zlib))
+    (arguments
+     (list
+      #:disallowed-references '("doc")
+      #:configure-flags #~'("--enable-utf"
+                            "--enable-pcregrep-libz"
+                            "--enable-pcregrep-libbz2"
+                            "--enable-pcretest-libreadline"
+                            "--enable-unicode-properties"
+                            "--enable-pcre16"
+                            "--enable-pcre32"
+                            ;; pcretest fails on powerpc32.
+                            ;; riscv64-linux is an unsupported architecture.
+                            #$@(if (or (target-ppc32?) (target-riscv64?))
+                                   #~()
+                                   #~("--enable-jit")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-static-libs
+            (lambda _
+              (let ((source (string-append #$output "/lib"))
+                    (static (string-append #$output:static "/lib")))
+                (mkdir-p static)
+                (for-each (lambda (lib)
+                            (link lib (string-append static "/"
+                                                     (basename lib)))
+                            (delete-file lib))
+                          (find-files source "\\.a$"))))))))
+    (synopsis "Perl Compatible Regular Expressions")
+    (description
+     "The PCRE library is a set of functions that implement regular expression
 pattern matching using the same syntax and semantics as Perl 5.  PCRE has its
 own native API, as well as a set of wrapper functions that correspond to the
 POSIX regular expression API.")
-   (license license:bsd-3)
-   (home-page "https://www.pcre.org/")))
+    (license license:bsd-3)
+    (home-page "https://www.pcre.org/")))
 
 (define-public pcre2
   (package
