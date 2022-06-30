@@ -413,16 +413,16 @@ written by Paul Haahr and Byron Rakitzis.")
     (inputs
      (list ncurses))
     (arguments
-     `(#:phases
-        (modify-phases %standard-phases
-          ,@(if (%current-target-system)
-                '((add-before 'configure 'set-cross-cc
-                     (lambda _
-                       (substitute* "configure"
-                         (("CC_FOR_GETHOST=\"cc\"")
-                          "CC_FOR_GETHOST=\"gcc\""))
-                       #t)))
-                '())
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (%current-target-system)
+                 #~((add-before 'configure 'set-cross-cc
+                      (lambda _
+                        (substitute* "configure"
+                          (("CC_FOR_GETHOST=\"cc\"")
+                           "CC_FOR_GETHOST=\"gcc\"")))))
+                 #~())
           (add-before 'check 'patch-test-scripts
             (lambda _
               ;; Take care of pwd
@@ -449,15 +449,11 @@ written by Paul Haahr and Byron Rakitzis.")
               ;; This file is ISO-8859-1 encoded.
               (with-fluids ((%default-port-encoding #f))
                 (substitute* "tests/testsuite"
-                  (("/bin/sh") (which "sh"))))
-              #t))
+                  (("/bin/sh") (which "sh"))))))
           (add-after 'install 'post-install
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((out (assoc-ref %outputs "out"))
-                     (bin (string-append out "/bin")))
-                (with-directory-excursion bin
-                  (symlink "tcsh" "csh"))
-                #t))))))
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                (symlink "tcsh" "csh")))))))
     (home-page "https://www.tcsh.org/")
     (synopsis "Unix shell based on csh")
     (description
