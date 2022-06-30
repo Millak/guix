@@ -13,7 +13,7 @@
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2019, 2020 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016, 2018-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
@@ -103,42 +103,40 @@
     (version "1.2.12")
     (source
      (origin
-      (method url-fetch)
-      (uri (list (string-append "http://zlib.net/zlib-"
+       (method url-fetch)
+       (uri (list (string-append "http://zlib.net/zlib-"
                                  version ".tar.gz")
-                 (string-append "mirror://sourceforge/libpng/zlib/"
-                                version "/zlib-" version ".tar.gz")))
-      (patches (search-patches "zlib-cc.patch"
-                               "zlib-correct-crc32-inputs.patch"))
-      (sha256
-       (base32
-        "1n9na4fq4wagw1nzsfjr6wyly960jfa94460ncbf6p1fac44i14i"))))
+                  (string-append "mirror://sourceforge/libpng/zlib/"
+                                 version "/zlib-" version ".tar.gz")))
+       (patches (search-patches "zlib-cc.patch"
+                                "zlib-correct-crc32-inputs.patch"))
+       (sha256
+        (base32
+         "1n9na4fq4wagw1nzsfjr6wyly960jfa94460ncbf6p1fac44i14i"))))
     (build-system gnu-build-system)
     (outputs '("out" "static"))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Zlib's home-made `configure' fails when passed
-             ;; extra flags like `--enable-fast-install', so we need to
-             ;; invoke it with just what it understand.
-             (let ((out (assoc-ref outputs "out")))
-               (setenv "CC" ,(cc-for-target))
-               ;; 'configure' doesn't understand '--host'.
-               ,@(if (%current-target-system)
-                     `((setenv "CHOST" ,(%current-target-system)))
-                     '())
-               (invoke "./configure"
-                       (string-append "--prefix=" out)))))
-         (add-after 'install 'move-static-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (static (assoc-ref outputs "static")))
-               (with-directory-excursion (string-append out "/lib")
-                 (install-file "libz.a" (string-append static "/lib"))
-                 (delete-file "libz.a")
-                 #t)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              ;; Zlib's home-made `configure' fails when passed
+              ;; extra flags like `--enable-fast-install', so we need to
+              ;; invoke it with just what it understand.
+              (setenv "CC" #$(cc-for-target))
+              ;; 'configure' doesn't understand '--host'.
+              #$@(if (%current-target-system)
+                     #~((setenv "CHOST" #$(%current-target-system)))
+                     #~())
+              (invoke "./configure"
+                      (string-append "--prefix=" #$output))))
+          (add-after 'install 'move-static-library
+            (lambda _
+              (with-directory-excursion (string-append #$output "/lib")
+                (install-file "libz.a" (string-append #$output:static
+                                                      "/lib"))
+                (delete-file "libz.a")))))))
     (home-page "https://zlib.net/")
     (synopsis "Compression library")
     (description
