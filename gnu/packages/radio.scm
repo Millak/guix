@@ -828,6 +828,7 @@ primitives for SDR (Software Defined Radio).")
              gnuradio
              libosmo-dsp
              log4cpp
+             spdlog
              volk))
       (synopsis "GNU Radio block to correct IQ imbalance")
       (description
