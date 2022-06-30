@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -33,6 +33,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu))
 
@@ -100,33 +101,33 @@ POSIX regular expression API.")
               (sha256
                (base32
                 "0s4x2l6g0sb9piwkr3sxqwdswz2g6bk1hhwngv0kv4w38wybir0l"))))
-   (build-system gnu-build-system)
-   (inputs (list bzip2 readline zlib))
-   (arguments
-    `(#:configure-flags '("--enable-unicode"
-                          "--enable-pcre2grep-libz"
-                          "--enable-pcre2grep-libbz2"
-                          "--enable-pcre2test-libreadline"
-                          "--enable-pcre2-16"
-                          "--enable-pcre2-32"
-                          ;; pcre2_jit_test fails on powerpc32.
-                          ;; riscv64-linux is an unsupported architecture.
-                          ,@(if (or (target-ppc32?)
-                                    (target-riscv64?))
-                              '()
-                              `("--enable-jit"))
-                          "--disable-static")
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'patch-paths
-          (lambda _
-            (substitute* "RunGrepTest"
-              (("/bin/echo") (which "echo"))))))))
-   (synopsis "Perl Compatible Regular Expressions")
-   (description
-    "The PCRE library is a set of functions that implement regular expression
+    (build-system gnu-build-system)
+    (inputs (list bzip2 readline zlib))
+    (arguments
+     (list #:configure-flags
+           #~'("--enable-unicode"
+               "--enable-pcre2grep-libz"
+               "--enable-pcre2grep-libbz2"
+               "--enable-pcre2test-libreadline"
+               "--enable-pcre2-16"
+               "--enable-pcre2-32"
+               ;; pcre2_jit_test fails on powerpc32.
+               ;; riscv64-linux is an unsupported architecture.
+               #$@(if (or (target-ppc32?) (target-riscv64?))
+                      #~()
+                      #~("--enable-jit"))
+               "--disable-static")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda _
+                   (substitute* "RunGrepTest"
+                     (("/bin/echo") (which "echo"))))))))
+    (synopsis "Perl Compatible Regular Expressions")
+    (description
+     "The PCRE library is a set of functions that implement regular expression
 pattern matching using the same syntax and semantics as Perl 5.  PCRE has its
 own native API, as well as a set of wrapper functions that correspond to the
 POSIX regular expression API.")
-   (license license:bsd-3)
-   (home-page "https://www.pcre.org/")))
+    (license license:bsd-3)
+    (home-page "https://www.pcre.org/")))
