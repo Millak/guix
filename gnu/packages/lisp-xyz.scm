@@ -22122,3 +22122,43 @@ features.  Any resemblance to esrap-liquid is merely coincidental.")
 
 (define-public ecl-parseq
   (sbcl-package->ecl-package sbcl-parseq))
+
+(define-public sbcl-physical-quantities
+  (package
+    (name "sbcl-physical-quantities")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mrossini-ethz/physical-quantities")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-physical-quantities" version))
+       (sha256
+        (base32 "0mb2s94s6fhw5vfa89naalw7ld11sdsszlqpz0c65dvpfyfmmdmh"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-parseq))
+    (home-page "https://github.com/mrossini-ethz/physical-quantities")
+    (synopsis "Numeric type with optional unit and/or uncertainty for physics")
+    (description
+     "This lisp library handles physical quantities which consist of
+
+@itemize
+@item value / magnitude
+@item uncertainty / error
+@item unit
+@end itemize
+
+where the type of the value can be any subtype of real.  For the uncertainty,
+both absolute and relative values are possible.  Combinations of lisp symbols
+or strings are used to describe units.  User defined units including
+abbreviations and prefixes are supported.  Error propagation and unit checking
+is performed for all defined operations.")
+    (license license:gpl2)))
+
+(define-public cl-physical-quantities
+  (sbcl-package->cl-source-package sbcl-physical-quantities))
+
+(define-public ecl-physical-quantities
+  (sbcl-package->ecl-package sbcl-physical-quantities))
