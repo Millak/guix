@@ -21793,3 +21793,35 @@ introduces and explains filtered functions in detail.")
 
 (define-public ecl-filtered-functions
   (sbcl-package->ecl-package sbcl-filtered-functions))
+
+(define-public sbcl-defstar
+  (let ((commit "132829dac9f84fa7202a0c5793aa6accb8d2662a"))
+    (package
+      (name "sbcl-defstar")
+      (version (git-version "1.0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "http://bitbucket.org/eeeickythump/defstar/")
+               (commit commit)))
+         (file-name (git-file-name "cl-defstar" version))
+         (sha256
+          (base32 "0n6m3aqvdfnsrhlhqjcy72d1i55lbkjg13ij5c7vw003p1n78wxi"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "http://bitbucket.org/eeeickythump/defstar/")
+      (synopsis "Easy inline (return) type declarations for functions")
+      (description
+       "Defstar is a collection of Common Lisp macros that can be used in
+place of @code{defun}, @code{defmethod}, @code{defgeneric}, @code{defvar},
+@code{defparameter}, @code{flet}, @code{labels}, @code{let*} and
+@code{lambda}.  Each macro has the same name as the form it replaces, with a
+star added at the end, e.g. @code{defun}. (the exception is the @code{let*}
+replacement, which is called @code{*let}).")
+      (license license:gpl3))))
+
+(define-public cl-defstar
+  (sbcl-package->cl-source-package sbcl-defstar))
+
+(define-public ecl-defstar
+  (sbcl-package->ecl-package sbcl-defstar))
