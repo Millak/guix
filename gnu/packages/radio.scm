@@ -2542,6 +2542,7 @@ Radios.")
            openssl
            protobuf
            pugixml
+           spdlog
            volk))
     (arguments
      `(#:configure-flags
