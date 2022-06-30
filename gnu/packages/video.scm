@@ -1241,7 +1241,7 @@ on the Invidious instances only as a fallback method.")
                 (string-append "if(TRUE)\n"
                                "    set(X265_LATEST_TAG \"" ,version "\")\n")))))
          (add-before 'configure 'build-12-bit
-           (lambda* (#:key (configure-flags '()) #:allow-other-keys)
+           (lambda* (#:key (configure-flags '()) #:allow-other-keys #:rest args)
              (mkdir "../build-12bit")
              (with-directory-excursion "../build-12bit"
                (apply invoke
@@ -1256,9 +1256,9 @@ on the Invidious instances only as a fallback method.")
                                     (find-files "CMakeFiles/x265-shared.dir")
                                     (find-files "CMakeFiles/x265-static.dir")))
                  (("libx265") "libx265_main12"))
-               (invoke "make"))))
+               ((assoc-ref %standard-phases 'build)))))
          (add-before 'configure 'build-10-bit
-           (lambda* (#:key (configure-flags '()) #:allow-other-keys)
+           (lambda* (#:key (configure-flags '()) #:allow-other-keys #:rest args)
              (mkdir "../build-10bit")
              (with-directory-excursion "../build-10bit"
                (apply invoke
@@ -1272,13 +1272,13 @@ on the Invidious instances only as a fallback method.")
                                     (find-files "CMakeFiles/x265-shared.dir")
                                     (find-files "CMakeFiles/x265-static.dir")))
                  (("libx265") "libx265_main10"))
-               (invoke "make"))))
+               ((assoc-ref %standard-phases 'build)))))
          (add-after 'install 'install-more-libs
-           (lambda _
+           (lambda args
              (with-directory-excursion "../build-12bit"
-               (invoke "make" "install"))
+               ((assoc-ref %standard-phases 'install)))
              (with-directory-excursion "../build-10bit"
-               (invoke "make" "install"))))
+               ((assoc-ref %standard-phases 'install)))))
          (add-before 'strip 'move-static-libs
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
