@@ -12763,3 +12763,26 @@ Faraday-based API wrappers.")
     (description "Bandwidth IRIS is a Ruby SDK for Bandwidth Phone Number
 Dashboard.  It is a Ruby Client library for IRIS / BBS API.")
     (license license:expat)))
+
+(define-public ruby-sentry-core
+  (package
+    (name "ruby-sentry-core")
+    (version "5.3.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "sentry-ruby-core" version))
+        (sha256
+          (base32 "141mrw8wghhsjvln9m6ld3hap3xc5v901jjiz007xywy25725hyd"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile in gem.
+     `(#:tests? #f))
+    (propagated-inputs
+      (list ruby-concurrent
+             ruby-faraday))
+    (home-page "https://sentry.io/for/ruby/")
+    (synopsis "Client interface for the Sentry error logger")
+    (description "Sentry-Core provides a gem that provides a client
+interface for the Sentry error logger.")
+    (license license:expat)))
