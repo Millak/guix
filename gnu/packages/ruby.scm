@@ -12810,3 +12810,20 @@ interface for the Sentry error logger.")
     (description "Sentry provides a gem that provides a client
 interface for the Sentry error logger.")
     (license license:expat)))
+
+(define-public ruby-webrick
+  (package
+    (name "ruby-webrick")
+    (version "1.7.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "webrick" version))
+        (sha256
+          (base32 "1d4cvgmxhfczxiq5fr534lmizkhigd15bsx5719r5ds7k7ivisc7"))))
+    (build-system ruby-build-system)
+    (home-page "https://github.com/ruby/webrick")
+    (synopsis "HTTP server toolkit")
+    (description "WEBrick is an HTTP server toolkit that can be configured as an
+HTTPS server, a proxy server, and a virtual-host server.")
+    (license license:bsd-2)))
