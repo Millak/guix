@@ -30,7 +30,7 @@ Copyright @copyright{} 2015, 2016 Mathieu Lirzin@*
 Copyright @copyright{} 2014 Pierre-Antoine Rault@*
 Copyright @copyright{} 2015 Taylan Ulrich Bayırlı/Kammer@*
 Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021 Leo Famulari@*
-Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus@*
+Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus@*
 Copyright @copyright{} 2016 Ben Woodcroft@*
 Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner@*
@@ -18705,6 +18705,75 @@ String or gexp denoting the corresponding mcron job schedule
 (@pxref{Scheduled Job Execution}).
 @end table
 @end deftp
+
+@cindex logging, anonymization
+@subheading Anonip Service
+
+Anonip is a privacy filter that removes IP address from web server logs.
+This service creates a FIFO and filters any written lines with anonip
+before writing the filtered log to a target file.
+
+The following example sets up the FIFO
+@file{/var/run/anonip/https.access.log} and writes the filtered log file
+@file{/var/log/anonip/https.access.log}.
+
+@lisp
+(service anonip-service-type
+         (anonip-configuration
+           (input  "/var/run/anonip/https.access.log")
+           (output "/var/log/anonip/https.access.log")))
+@end lisp
+
+Configure your web server to write its logs to the FIFO at
+@file{/var/run/anonip/https.access.log} and collect the anonymized log
+file at @file{/var/web-logs/https.access.log}.
+
+@deftp {Data Type} anonip-configuration
+This data type represents the configuration of anonip.
+It has the following parameters:
+
+@table @asis
+@item @code{anonip} (default: @code{anonip})
+The anonip package to use.
+
+@item @code{input}
+The file name of the input log file to process.  The service creates a
+FIFO of this name.  The web server should write its logs to this FIFO.
+
+@item @code{output}
+The file name of the processed log file.
+@end table
+
+The following optional settings may be provided:
+
+@table @asis
+@item @code{skip-private?}
+When @code{#true} do not mask addresses in private ranges.
+
+@item @code{column}
+A 1-based indexed column number.  Assume IP address is in the specified
+column (default is 1).
+
+@item @code{replacement}
+Replacement string in case address parsing fails, e.g. @code{"0.0.0.0"}.
+
+@item @code{ipv4mask}
+Number of bits to mask in IPv4 addresses.
+
+@item @code{ipv6mask}
+Number of bits to mask in IPv6 addresses.
+
+@item @code{increment}
+Increment the IP address by the given number.  By default this is zero.
+
+@item @code{delimiter}
+Log delimiter string.
+
+@item @code{regex}
+Regular expression for detecting IP addresses.  Use this instead of @code{column}.
+@end table
+@end deftp
+
 
 @node Networking Setup
 @subsection Networking Setup
