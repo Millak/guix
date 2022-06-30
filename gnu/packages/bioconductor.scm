@@ -8368,17 +8368,22 @@ are standardized and usable by the accompanying mutossGUI package.")
 (define-public r-metap
   (package
     (name "r-metap")
-    (version "1.3")
+    (version "1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "metap" version))
        (sha256
         (base32
-         "1jmmmmjiklaxfl604hwqil193ydaghvd5jv8xsr4bx3pzn5i9kvz"))))
+         "0asmypxfxly4xmcjf3yzid5zqlzg88z0brij2splfk4avsl035gf"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-lattice r-mutoss r-rdpack r-tfisher))
+     (list r-lattice
+           r-mathjaxr
+           r-mutoss
+           r-qqconf
+           r-rdpack
+           r-tfisher))
     (home-page "http://www.dewey.myzen.co.uk/meta/meta.html")
     (synopsis "Meta-analysis of significance values")
     (description
