@@ -22162,3 +22162,36 @@ is performed for all defined operations.")
 
 (define-public ecl-physical-quantities
   (sbcl-package->ecl-package sbcl-physical-quantities))
+
+(define-public sbcl-sb-cga
+  (let ((commit "9a554ea1c01cac998ff7eaa5f767bc5bcdc4c094"))
+    (package
+      (name "sbcl-sb-cga")
+      (version (git-version "1.0.1" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nikodemus/sb-cga/")
+               (commit commit)))
+         (file-name (git-file-name "cl-sb-cga" version))
+         (sha256
+          (base32 "1y54qlwfrhch9aghk7nsbdx7x2qsvgsws1g2k631l9dsgdakw4w8"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria))
+      (home-page "https://github.com/nikodemus/sb-cga/")
+      (synopsis "Computer graphic algebra for Common Lisp")
+      (description
+       "SB-CGA is a computer graphics algebra library for Common Lisp.
+
+Despite the prefix it is actually portable - but optimizations that make it
+fast (using SIMD instructions) are currently implemented for SBCL/x86-64
+only.")
+      (license license:expat))))
+
+(define-public cl-sb-cga
+  (sbcl-package->cl-source-package sbcl-sb-cga))
+
+(define-public ecl-sb-cga
+  (sbcl-package->ecl-package sbcl-sb-cga))
