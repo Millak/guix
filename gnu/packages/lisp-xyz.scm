@@ -21856,3 +21856,34 @@ objects to be mixed and updated without manually defining many permutations.")
 
 (define-public ecl-dynamic-mixins
   (sbcl-package->ecl-package sbcl-dynamic-mixins))
+
+(define-public sbcl-sealable-metaobjects
+  (let ((commit "e09ec97252e0844528f61abdc0c7ee256875f8ee"))
+    (package
+      (name "sbcl-sealable-metaobjects")
+      (version (git-version "0.0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/marcoheisig/sealable-metaobjects/")
+               (commit commit)))
+         (file-name (git-file-name "cl-sealable-metaobjects" version))
+         (sha256
+          (base32 "0hz1ivlpfhnk1w2cw4q2i000j2dc7maay06ndzziyywg7li6zf2p"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-closer-mop))
+      (home-page "https://github.com/marcoheisig/sealable-metaobjects/")
+      (synopsis "CLOSsy way to trade genericity for performance")
+      (description
+       "This library is an extension of the Common Lisp Object System (CLOS)
+that allows a compiler to inline a generic function under certain
+conditions.")
+      (license license:expat))))
+
+(define-public cl-sealable-metaobjects
+  (sbcl-package->cl-source-package sbcl-sealable-metaobjects))
+
+(define-public ecl-sealable-metaobjects
+  (sbcl-package->ecl-package sbcl-sealable-metaobjects))
