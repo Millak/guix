@@ -22082,3 +22082,43 @@ definition.")
 
 (define-public ecl-slot-extra-options
   (sbcl-package->ecl-package sbcl-slot-extra-options))
+
+(define-public sbcl-parseq
+  (package
+    (name "sbcl-parseq")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mrossini-ethz/parseq")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-parseq" version))
+       (sha256
+        (base32 "0b4lnhwqdlaqccanyssdj2v0am2ygw6qr4543b49kz2rwirykw0w"))))
+    (build-system asdf-build-system/sbcl)
+    (home-page "https://github.com/mrossini-ethz/parseq")
+    (synopsis "Parsing expression grammars for sequences")
+    (description
+     "Parseq (pronounced parsec) is a parsing library for common lisp.  It can
+be used for parsing lisp's sequences types: strings, vectors (e.g. binary
+data) and lists.  Furthermore, parseq is able to parse nested structures such
+as trees (e.g. lists of lists, lists of vectors, vectors of strings).
+
+Parseq uses parsing expression grammars (PEG) that can be defined through a
+simple interface.  Extensions to the standard parsing expressions are
+available.  Parsing expressions can be parameterised and made context
+aware.  Additionally, the definition of each parsing expression allows the
+arbitrary transformation of the parsing tree.
+
+The library is inspired by Esrap and uses a very similar interface.  No code
+is shared between the two projects, however.  The features of Esrap are are
+mostly included in parseq and complemented with additional, orthogonal
+features.  Any resemblance to esrap-liquid is merely coincidental.")
+    (license license:gpl2)))
+
+(define-public cl-parseq
+  (sbcl-package->cl-source-package sbcl-parseq))
+
+(define-public ecl-parseq
+  (sbcl-package->ecl-package sbcl-parseq))
