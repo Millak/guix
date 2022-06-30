@@ -21675,3 +21675,50 @@ can coexist and interoperate with other extensions to as CLIM and Iterate.")
 
 (define-public ecl-screamer
   (sbcl-package->ecl-package sbcl-screamer))
+
+(define-public sbcl-clache
+  (let ((commit "112976729565e1035532389ca25090ae99badd07"))
+    (package
+      (name "sbcl-clache")
+      (version (git-version "0.2.1" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/html/clache/")
+               (commit commit)))
+         (file-name (git-file-name "cl-clache" version))
+         (sha256
+          (base32 "0wxg004bsay58vr6xr6mlk7wj415qmvisqxvpnjsg6glfwca86ys"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cl-annot
+             sbcl-cl-fad
+             sbcl-cl-store
+             sbcl-cl-syntax
+             sbcl-ironclad
+             sbcl-trivial-garbage))
+      (native-inputs
+       (list sbcl-prove))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-tests
+             (lambda _
+               (substitute* "clache-test.asd"
+                 (("cl-test-more") "prove"))
+               #t)))))
+      (home-page "https://github.com/html/clache/")
+      (synopsis "General caching facility for Common Lisp")
+      (description
+       "CLACHE provides a general caching facility for Common Lisp.  The API is
+similar to the standard hash-table interface.")
+      (license license:llgpl))))
+
+(define-public cl-clache
+  (sbcl-package->cl-source-package sbcl-clache))
+
+(define-public ecl-clache
+  (sbcl-package->ecl-package sbcl-clache))
