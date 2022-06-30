@@ -927,6 +927,7 @@ satellites.")
            pulseaudio
            qtbase-5
            qtsvg
+           spdlog
            volk))
     (arguments
      `(#:tests? #f))                    ; no tests
