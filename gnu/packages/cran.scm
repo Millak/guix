@@ -11134,14 +11134,14 @@ used to teach mathematics, statistics, computation and modeling.")
 (define-public r-raster
   (package
     (name "r-raster")
-    (version "3.5-15")
+    (version "3.5-21")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "raster" version))
        (sha256
         (base32
-         "11fnznymwavpph733dayklhcx4phpjgrijfxlaszi122sg2x7ir9"))))
+         "1alny43aw5ydlwc7157bf524r0dxp74bf5d0nkvm8qnni57z9bci"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-sp r-terra))
