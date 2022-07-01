@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2016, 2018-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -300,6 +300,15 @@
            (string=? (foo-bar r) "baz!")
            (equal? s r)))))
 
+(test-equal "define-record-type* & sanitize without default value"
+  42
+  (begin
+    (define-record-type* <foo> foo make-foo
+      foo?
+      (bar foo-bar (sanitize 1+)))
+
+    (foo-bar (foo (bar 41)))))
+
 (test-assert "define-record-type* & sanitize & thunked"
   (let ((sanitized 0))
     (define-record-type* <foo> foo make-foo
@@ -321,6 +330,7 @@
                   (let ((r (foo (inherit q))))
                     (and (string=? (foo-bar r) "baz!")
                          (= sanitized 2)))))))))  ;no re-sanitization
+
 (test-assert "define-record-type* & wrong field specifier"
   (let ((exp '(begin
                 (define-record-type* <foo> foo make-foo
