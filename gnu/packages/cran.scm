@@ -15896,14 +15896,14 @@ subsetting.")
 (define-public r-globals
   (package
     (name "r-globals")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "globals" version))
        (sha256
         (base32
-         "15llx4233ihj4w815k7inc17530w9ja0mi29n1i0s2sr42j8jdpq"))))
+         "0svsssf8swzsihng6c8wpmn33lxaj4f5xq975ywlr950svmjfz7f"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-codetools))
