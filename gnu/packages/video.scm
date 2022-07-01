@@ -3468,7 +3468,7 @@ Wayland compositors.")
 (define-public libvdpau
   (package
     (name "libvdpau")
-    (version "1.4")
+    (version "1.5")
     (source
       (origin
         (method git-fetch)
@@ -3478,7 +3478,7 @@ Wayland compositors.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1hc4mcrbr1yhfiy4zfd8wc2iiqbp90z6jswap0jia20vmyk5lqld"))))
+          "1zfbh5q9adzlydpgwq7hl5w1j2b29j7zns6dxf9fp9pvkj23fz5l"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
