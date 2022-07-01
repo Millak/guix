@@ -536,6 +536,15 @@ of user-name/file-like tuples."
     #~(and (defined? 'make-inetd-constructor)
            (not (string=? (@ (shepherd config) Version) "0.9.0"))))
 
+  (define ipv6-support?
+    ;; Expression that returns true if IPv6 support is available.
+    #~(catch 'system-error
+        (lambda ()
+          (let ((sock (socket AF_INET6 SOCK_STREAM 0)))
+            (close-port sock)
+            #t))
+        (const #f)))
+
   (list (shepherd-service
          (documentation "OpenSSH server.")
          (requirement '(syslogd loopback))
@@ -544,12 +553,15 @@ of user-name/file-like tuples."
          (start #~(if #$inetd-style?
                       (make-inetd-constructor
                        (append #$openssh-command '("-i"))
-                       (list (endpoint
+                       (cons (endpoint
                               (make-socket-address AF_INET INADDR_ANY
                                                    #$port-number))
-                             (endpoint
-                              (make-socket-address AF_INET6 IN6ADDR_ANY
-                                                   #$port-number)))
+                             (if #$ipv6-support?
+                                 (list
+                                  (endpoint
+                                   (make-socket-address AF_INET6 IN6ADDR_ANY
+                                                        #$port-number)))
+                                 '()))
                        #:max-connections #$max-connections)
                       (make-forkexec-constructor #$openssh-command
                                                  #:pid-file #$pid-file)))
