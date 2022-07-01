@@ -23663,17 +23663,18 @@ also supports low-level tensor operations and GPU acceleration.")
 (define-public r-additivitytests
   (package
     (name "r-additivitytests")
-    (version "1.1-4")
+    (version "1.1-4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "additivityTests" version))
        (sha256
         (base32
-         "048ds90wqjdjy1nyhna3m06asdklbh8sx1n556kss2j1r1pma1sw"))))
+         "00kzfv86z6kk0gvbz9mg3p6xi5fb8cn74rhslr17rdpd02md0884"))))
     (properties
      `((upstream-name . "additivityTests")))
     (build-system r-build-system)
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/simecek/additivityTests")
     (synopsis "Additivity tests in the two way Anova with single sub-class numbers")
     (description
