@@ -12084,14 +12084,27 @@ observation.")
 (define-public r-sandwich
   (package
     (name "r-sandwich")
-    (version "3.0-1")
+    (version "3.0-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sandwich" version))
        (sha256
         (base32
-         "12aa5083k3sfrfq1jy3l94wffss9h0rga8j71jy3n8pkhiq4nn7n"))))
+         "1d72vwxidsyac9mbyxrm06qds63rzcr82nn4c05466gbajsvcc3f"))
+       (modules '((guix build utils)))
+       (snippet
+        '(with-directory-excursion "inst/doc"
+           ;; These files are generated from Rnw files.
+           (for-each delete-file
+                     (list "sandwich-OOP.pdf"
+                           "sandwich-OOP.R"
+                           "sandwich.pdf"
+                           "sandwich-CL.R"
+                           "sim-CL.rda"
+                           "sim-CL.R"
+                           "sandwich.R"
+                           "sandwich-CL.pdf"))))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-zoo))
