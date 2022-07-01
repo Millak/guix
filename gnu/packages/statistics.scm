@@ -6457,14 +6457,14 @@ mediation and estimating power.")
 (define-public r-clubsandwich
   (package
     (name "r-clubsandwich")
-    (version "0.5.6")
+    (version "0.5.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clubSandwich" version))
        (sha256
         (base32
-         "0mll8q61vnb980dck8ihxcy89z8m7f8i16mqdvr4l2ljywkhpzvd"))))
+         "1chq0bjz0yskm3cs8k6019j9v1m3fiz4p2ysk3xmqxlcihmnvv0b"))))
     (properties `((upstream-name . "clubSandwich")))
     (build-system r-build-system)
     (propagated-inputs
