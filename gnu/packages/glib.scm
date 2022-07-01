@@ -99,15 +99,15 @@
 (define dbus
   (package
     (name "dbus")
-    (version "1.12.20")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://dbus.freedesktop.org/releases/dbus/dbus-"
-                    version ".tar.gz"))
+                    version ".tar.xz"))
               (sha256
                (base32
-                "1zp5gpx61v1cpqf2zwb1cidhp9xylvw49d3zydkxqk6b1qa20xpp"))
+                "1m7bibavml4gx9d67j403l0kzd1a4z8lhrpxb2as3q4nfpiwrmyc"))
               (patches (search-patches "dbus-helper-search-path.patch"))))
     (build-system gnu-build-system)
     (arguments
