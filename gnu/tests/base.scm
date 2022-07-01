@@ -637,7 +637,6 @@ in a loop.  See <http://bugs.gnu.org/26931>.")
                    (size 'guess)
                    (offset (* 512 2048))          ;leave room for GRUB
                    (flags '(boot))
-                   (initializer #~initialize-root-partition)
                    (label "root-under-test")))))) ;max 16 characters!
 
   (define observer-os

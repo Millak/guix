@@ -70,7 +70,7 @@
   (label                partition-label (default #f))
   (uuid                 partition-uuid (default #f))
   (flags                partition-flags (default '()))
-  (initializer          partition-initializer (default #f)))
+  (initializer          partition-initializer (default #f))) ;gexp | #f
 
 
 ;;;

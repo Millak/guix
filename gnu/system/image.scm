@@ -374,7 +374,8 @@ used in the image."
              (type (partition-file-system partition))
              (image-builder
               (with-imported-modules*
-               (let ((initializer #$(partition-initializer partition))
+               (let ((initializer (or #$(partition-initializer partition)
+                                      initialize-root-partition))
                      (inputs '#+(list e2fsprogs fakeroot dosfstools mtools))
                      (image-root "tmp-root"))
                  (sql-schema #$schema)
