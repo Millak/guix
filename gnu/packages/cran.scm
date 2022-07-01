@@ -6456,14 +6456,14 @@ traveling salesman problem).")
 (define-public r-qap
   (package
     (name "r-qap")
-    (version "0.1-1")
+    (version "0.1-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qap" version))
        (sha256
         (base32
-         "0d2d1ni1camixyi45lfy00f4pn3p063k7bsi8gj5scp6n15mdgb0"))))
+         "19adb1bw46pcnmmhqz2jklr0vmma3llxajqp0j9mqfksmsisv927"))))
     (build-system r-build-system)
     (native-inputs (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/qap/")
