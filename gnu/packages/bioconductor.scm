@@ -16041,14 +16041,14 @@ scoring subnetwork.")
 (define-public r-bionetstat
   (package
     (name "r-bionetstat")
-    (version "1.16.0")
+    (version "1.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioNetStat" version))
        (sha256
         (base32
-         "0f387j35lj32ryiw48jz8gc08al2lmmv9zvbbgyjq9wmqlca3dfb"))))
+         "0zs6pymvxb95sji0rnnzaz3whj7hsvj2kl4n4gzj7w1q0prbfpb2"))))
     (properties `((upstream-name . "BioNetStat")))
     (build-system r-build-system)
     (propagated-inputs
