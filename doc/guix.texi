@@ -35106,6 +35106,11 @@ allocation plan in the database.
 An association list of hooks.  These provide a way to execute arbitrary
 code upon certain events, like a build result being processed.
 
+@item @code{parallel-hooks} (default: @var{'()})
+Hooks can be configured to run in parallel.  This parameter is an
+association list of hooks to do in parallel, where the key is the symbol
+for the hook and the value is the number of threads to run.
+
 @item @code{guile} (default: @code{guile-3.0-latest})
 The Guile package with which to run the Guix Build Coordinator.
 
