@@ -842,7 +842,10 @@ image, depending on IMAGE format."
           ;; This happens if some limits are exceeded, see:
           ;; https://lists.gnu.org/archive/html/grub-devel/2020-06/msg00048.html
           #:grub-mkrescue-environment
-          '(("MKRESCUE_SED_MODE" . "mbr_only"))))))))
+          '(("MKRESCUE_SED_MODE" . "mbr_only"))))
+       (else
+        (raise (formatted-message
+                (G_ "~a: unsupported image format") image-format)))))))
 
 
 ;;
