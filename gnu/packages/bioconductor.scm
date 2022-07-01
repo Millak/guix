@@ -10945,17 +10945,23 @@ coefficients).")
 (define-public r-biosigner
   (package
     (name "r-biosigner")
-    (version "1.24.0")
+    (version "1.24.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biosigner" version))
        (sha256
         (base32
-         "11w28nlz0f06idbna5k9xs891w516401l1zab5gg7s0z3xxaki4f"))))
+         "0vdv2by3qv7y8vzr8qgg7apwwgsa0fhlfrhzns7g3nas7883c89m"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biobase r-e1071 r-multidataset r-randomforest r-ropls))
+     (list r-biobase
+           r-e1071
+           r-multiassayexperiment
+           r-multidataset
+           r-randomforest
+           r-ropls
+           r-summarizedexperiment))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/biosigner/")
