@@ -445,8 +445,8 @@ used in the image."
     (define (genimage-type-options image-type image)
       (cond
        ((equal? image-type "hdimage")
-        (format #f "~%~/~/gpt = ~a~%~/"
-                (if (gpt-image? image) "true" "false")))
+        (format #f "~%~/~/partition-table-type = \"~a\"~%~/"
+                (image-partition-table-type image)))
        (else "")))
 
     (let* ((format (image-format image))
