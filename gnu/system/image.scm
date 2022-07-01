@@ -275,7 +275,9 @@ set to the given OS."
 
 (define (find-root-partition image)
   "Return the root partition of the given IMAGE."
-  (srfi-1:find root-partition? (image-partitions image)))
+  (or (srfi-1:find root-partition? (image-partitions image))
+      (raise (formatted-message
+              (G_ "image lacks a partition with the 'boot' flag")))))
 
 (define (root-partition-index image)
   "Return the index of the root partition of the given IMAGE."
