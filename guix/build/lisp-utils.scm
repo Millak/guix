@@ -108,38 +108,33 @@ with PROGRAM."
              "--eval" "(quit)"))
     (_ (error "The LISP provided is not supported at this time."))))
 
-(define (compile-systems systems asd-files)
+(define (compile-systems systems directory)
   "Use a lisp implementation to compile the SYSTEMS using asdf.
 Load ASD-FILES first."
   (lisp-eval-program
    `((require :asdf)
-     ,@(map (lambda (asd-file)
-              `(asdf:load-asd (truename ,asd-file)))
-            asd-files)
+     (asdf:initialize-source-registry
+      (list :source-registry (list :tree (uiop:ensure-pathname ,directory
+                                                               :truenamize t
+                                                               :ensure-directory t))
+            :inherit-configuration))
      ,@(map (lambda (system)
               `(asdf:load-system ,system))
             systems))))
 
-(define (test-system system asd-files test-asd-file)
+(define (test-system test-systems directory)
   "Use a lisp implementation to test SYSTEM using asdf.  Load ASD-FILES first.
 Also load TEST-ASD-FILE if necessary."
   (lisp-eval-program
    `((require :asdf)
-     ,@(map (lambda (asd-file)
-              `(asdf:load-asd (truename ,asd-file)))
-            asd-files)
-     ,@(if test-asd-file
-           `((asdf:load-asd (truename ,test-asd-file)))
-           ;; Try some likely files.
-           (map (lambda (file)
-                  `(when (uiop:file-exists-p ,file)
-                     (asdf:load-asd (truename ,file))))
-                (list
-                 (string-append system "-tests.asd")
-                 (string-append system "-test.asd")
-                 "tests.asd"
-                 "test.asd")))
-     (asdf:test-system ,system))))
+     (asdf:initialize-source-registry
+      (list :source-registry (list :tree (uiop:ensure-pathname ,directory
+                                                               :truenamize t
+                                                               :ensure-directory t))
+            :inherit-configuration))
+     ,@(map (lambda (system)
+              `(asdf:test-system ,system))
+            test-systems))))
 
 (define (string->lisp-keyword . strings)
   "Return a lisp keyword for the concatenation of STRINGS."
