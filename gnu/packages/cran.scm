@@ -3772,13 +3772,13 @@ print, summary, plot, update, etc.
 (define-public r-ps
   (package
     (name "r-ps")
-    (version "1.7.0")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ps" version))
        (sha256
-        (base32 "1qaj9gyz7q09aadlnj5al53k2pa4axmzjsbndf5r0b51qqrcy842"))))
+        (base32 "1waylmbrl23j62010r12c8xwzlvs1dys3cnh7hnrgk27glvqlicw"))))
     (build-system r-build-system)
     (home-page "https://ps.r-lib.org")
     (synopsis "List, query, and manipulate system processes")
