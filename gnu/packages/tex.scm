@@ -10787,7 +10787,8 @@ The package offers some multilingual support; configurations for use in English
 (both British and American usage), French (including Belgian and Swiss
 variants), German, Italian, Portuguese and Spanish documents are provided.  This
 package was originally provided as part of the author's datetime package, but is
-now distributed separately.")))
+now distributed separately.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-inriafonts
   (package
