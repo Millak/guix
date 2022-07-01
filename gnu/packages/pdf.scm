@@ -226,14 +226,14 @@ please install the @code{flyer-composer-gui} package.")))
 (define-public poppler
   (package
    (name "poppler")
-   (version "22.01.0")
+   (version "22.07.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://poppler.freedesktop.org/poppler-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0giin9klpj7264n4rl8qwvc6rh650ap2qg39bhz431jvdc2r6d3x"))))
+              "0a1lmyg3sxxq41z0xmxa889qdx1jwqiybcsr28ay50ipqk2k00j2"))))
    (build-system cmake-build-system)
    ;; FIXME:
    ;;  use libcurl:        no
@@ -258,7 +258,8 @@ please install the @code{flyer-composer-gui} package.")))
    (native-inputs
       (list pkg-config
             `(,glib "bin") ; glib-mkenums, etc.
-            gobject-introspection))
+            gobject-introspection
+            python))
    (arguments
     (list
      ;; The Poppler test suite needs to be downloaded separately and contains
