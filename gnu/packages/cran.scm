@@ -28002,14 +28002,14 @@ censored data.")
 (define-public r-flexsurv
   (package
     (name "r-flexsurv")
-    (version "2.1")
+    (version "2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexsurv" version))
        (sha256
         (base32
-         "0kwij9nkdvnsn1kn12fj3hjkd2qpgw7bdda4qad7basq5p6divlp"))))
+         "0244amsyf2izih6008n2535r3ddksgdnys8pyslrcb1c09spmjrw"))))
     (properties `((upstream-name . "flexsurv")))
     (build-system r-build-system)
     (propagated-inputs
@@ -28017,6 +28017,7 @@ censored data.")
            r-desolve
            r-dplyr
            r-generics
+           r-ggplot2
            r-magrittr
            r-matrix
            r-mstate
@@ -28028,6 +28029,7 @@ censored data.")
            r-rcpp
            r-rlang
            r-rstpm2
+           r-statmod
            r-survival
            r-tibble
            r-tidyr
