@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -116,7 +117,7 @@ Load ASD-FILES first."
               `(asdf:load-asd (truename ,asd-file)))
             asd-files)
      ,@(map (lambda (system)
-              `(asdf:compile-system ,system))
+              `(asdf:load-system ,system))
             systems))))
 
 (define (test-system system asd-files test-asd-file)
