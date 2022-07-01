@@ -13520,6 +13520,53 @@ transcription factors, gene regulatory networks and cell types from
 single-cell RNA-seq data.")
     (license license:gpl3+)))
 
+(define-public python-ikarus
+  (package
+    (name "python-ikarus")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ikarus" version))
+       (sha256
+        (base32
+         "086czpvj4yafz4vrq5rx2gy0bj2l8nzwnkk0gw8qvy4w133xjysy"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false
+       #:phases
+       (modify-phases %standard-phases
+         ;; See https://github.com/BIMSBbioinfo/ikarus/issues/12
+         (add-after 'unpack 'fix-issue-12
+           (lambda _
+             (substitute* "ikarus/classifier.py"
+               (("pyscenic.genesig") "ctxcore.genesig"))))
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs
+     (list python-numpy
+           python-pandas
+           python-scipy
+           python-scanpy
+           python-anndata
+           python-ctxcore ;because of issue 12
+           pyscenic))
+    (home-page "https://github.com/BIMSBbioinfo/ikarus")
+    (synopsis "Machine learning classifier of tumor cells")
+    (description
+     "ikarus is a stepwise machine learning pipeline that tries to cope with a task
+of distinguishing tumor cells from normal cells.  Leveraging multiple
+annotated single cell datasets it can be used to define a gene set specific to
+tumor cells.  First, the latter gene set is used to rank cells and then to
+train a logistic classifier for the robust classification of tumor and normal
+cells.  Finally, sensitivity is increased by propagating the cell labels based
+on a custom cell-cell network.  ikarus is tested on multiple single cell
+datasets to ascertain that it achieves high sensitivity and specificity in
+multiple experimental contexts.")
+    (license license:expat)))
+
 (define-public vbz-compression
   (package
     (name "vbz-compression")
