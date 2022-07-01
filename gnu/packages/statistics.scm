@@ -4588,14 +4588,14 @@ Zurich, including many that are related to graphics.")
 (define-public r-gtools
   (package
     (name "r-gtools")
-    (version "3.9.2.1")
+    (version "3.9.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gtools" version))
        (sha256
         (base32
-         "0pxg0ang9q26hlwgf53pp1hq6rlarq5rnrrr9dl14f5kgfnynpzc"))))
+         "0hyqh1r9vxy7hfnir22439k4jlk4adcxdf78ryz5bk06blvqc81m"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/gtools")
     (synopsis "Various R programming tools")
