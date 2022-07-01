@@ -33563,16 +33563,17 @@ for rendering equations in the HTML help files.")
 (define-public r-spacetime
   (package
     (name "r-spacetime")
-    (version "1.2-7")
+    (version "1.2-8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "spacetime" version))
               (sha256
                (base32
-                "0zpaib69dbdvgj36x807ci3m5jkyc0hp2j5722xkwvl1faynjlhf"))))
+                "0nacy8a9mbxh22q248zxhnlcfrmgj9yslrgc3kj35zscmcks15s2"))))
     (properties `((upstream-name . "spacetime")))
     (build-system r-build-system)
     (propagated-inputs (list r-lattice r-sp r-zoo r-xts r-intervals))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/edzer/spacetime/")
     (synopsis "Classes and methods for spatio-temporal data")
     (description
