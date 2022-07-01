@@ -4719,13 +4719,13 @@ tools for inference in parametric models are provided.")
 (define-public r-idr
   (package
     (name "r-idr")
-    (version "1.2")
+    (version "1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "idr" version))
               (sha256
                (base32
-                "05nvgw1xdg670bsjjrxkgd1mrdkciccpw4krn0zcgdf2r21dzgwb"))))
+                "1r6icxf0c0y9wvihwmkk5xqscr1qhacqk3w2076kjm2993f10fbb"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/idr/")
     (synopsis "Irreproducible discovery rate")
