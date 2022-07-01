@@ -330,16 +330,15 @@ Chinese pinyin input methods.")
        (modify-phases %standard-phases
          (add-after 'install 'wrap-programs
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (for-each (lambda (prog)
-                         (wrap-program (search-input-file
-                                        outputs (string-append "libexec/" prog))
-                           `("GUIX_PYTHONPATH" ":" prefix
-                             (,(getenv "GUIX_PYTHONPATH")))
-                           `("GI_TYPELIB_PATH" ":" prefix
-                             (,(getenv "GI_TYPELIB_PATH")
-                              ,(search-input-directory
-                                inputs "lib/girepository-1.0")))))
-                       '("ibus-engine-anthy" "ibus-setup-anthy")))))))
+             (let ((out (assoc-ref outputs "out")))
+               (for-each (lambda (prog)
+                           (wrap-program (string-append out "/libexec/" prog)
+                             `("GUIX_PYTHONPATH" ":" prefix
+                               (,(getenv "GUIX_PYTHONPATH")))
+                             `("GI_TYPELIB_PATH" ":" prefix
+                               (,(getenv "GI_TYPELIB_PATH")
+                                ,(string-append out "/lib/girepository-1.0")))))
+                         '("ibus-engine-anthy" "ibus-setup-anthy"))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
