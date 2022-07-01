@@ -30438,14 +30438,14 @@ AGG to use as alternative to the raster devices provided through the
 (define-public r-downlit
   (package
     (name "r-downlit")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "downlit" version))
        (sha256
         (base32
-         "10zvrqdpwavdy97h3q26bqh3k63z61fmc04w9vwsnvmnv8hnh3vl"))))
+         "1h9jjrrfm1k4lz7hlg9qvqny5s1qq3p4l9pzsy6vqg4zmh2nb85v"))))
     (properties `((upstream-name . "downlit")))
     (build-system r-build-system)
     (propagated-inputs
@@ -30457,6 +30457,7 @@ AGG to use as alternative to the raster devices provided through the
            r-memoise
            r-rlang
            r-vctrs
+           r-withr
            r-yaml))
     (home-page "https://downlit.r-lib.org/")
     (synopsis "Syntax highlighting and automatic linking")
