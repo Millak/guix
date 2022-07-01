@@ -28436,18 +28436,21 @@ workflow.  The advantages are:
 (define-public r-lobstr
   (package
     (name "r-lobstr")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lobstr" version))
        (sha256
         (base32
-         "0vkif17825x33cz8r89j0qph4wj5l8fzfgl8nh2g7m2v140cxjdq"))))
+         "060p7b7i2qx09d7nf0kdl85r9j886fivrkrsl2bn10cggvnk7icv"))))
     (properties `((upstream-name . "lobstr")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-crayon r-rcpp r-rlang))
+     (list r-cpp11
+           r-crayon
+           r-prettyunits
+           r-rlang))
     (home-page "https://github.com/r-lib/lobstr")
     (synopsis "Visualize R data structures with trees")
     (description
