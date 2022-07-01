@@ -1840,16 +1840,16 @@ such as copy/paste from an R session.")
 (define-public r-reordercluster
   (package
    (name "r-reordercluster")
-   (version "1.0")
+   (version "2.0")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "ReorderCluster" version))
             (sha256
              (base32
-              "0ss750frzvj0bm1w7zblmcsjpszhnbffwlkaw31sm003lbx9hy58"))))
+              "0zq143xvv2br7016f9b1501ymcpkjqm3al1dn5qfm21axyi2p1iq"))))
    (build-system r-build-system)
    (propagated-inputs
-    (list r-gplots r-rcpp))
+    (list r-gplots r-gtools r-rcpp))
    (home-page "https://cran.r-project.org/web/packages/ReorderCluster")
    (synopsis "Reordering the dendrogram according to the class labels")
    (description "This package provides tools for performing the leaf reordering
