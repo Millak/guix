@@ -328,7 +328,18 @@ interface and is based on GNU Guile.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0l2arn6gsyw88xk9phxnyplvv1mn8sqp3ipgyyb0nszdzvxlgd36"))))
+                "0l2arn6gsyw88xk9phxnyplvv1mn8sqp3ipgyyb0nszdzvxlgd36"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Avoid continuation barriers so (@ (fibers) sleep) can be
+               ;; called from a service's 'stop' method
+               '(substitute* "modules/shepherd/service.scm"
+                  (("call-with-blocked-asyncs")   ;in 'stop' method
+                   "(lambda (thunk) (thunk))")
+                  (("\\(for-each-service\n")      ;in 'shutdown-services'
+                   "((lambda (proc)
+                       (for-each proc
+                                 (fold-services cons '())))\n")))))
     (arguments
      (list #:configure-flags #~'("--localstatedir=/var")
            #:make-flags #~'("GUILE_AUTO_COMPILE=0")

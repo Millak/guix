@@ -300,27 +300,36 @@ system objects.")))
              ;; Return #f if successfully stopped.
              (sync)
 
-             (call-with-blocked-asyncs
-              (lambda ()
-                (let ((null (%make-void-port "w")))
-                  ;; Close 'shepherd.log'.
-                  (display "closing log\n")
-                  ((@ (shepherd comm) stop-logging))
+             (let ((null (%make-void-port "w")))
+               ;; Close 'shepherd.log'.
+               (display "closing log\n")
+               ((@ (shepherd comm) stop-logging))
 
-                  ;; Redirect the default output ports..
-                  (set-current-output-port null)
-                  (set-current-error-port null)
+               ;; Redirect the default output ports..
+               (set-current-output-port null)
+               (set-current-error-port null)
 
-                  ;; Close /dev/console.
-                  (for-each close-fdes '(0 1 2))
+               ;; Close /dev/console.
+               (for-each close-fdes '(0 1 2))
 
-                  ;; At this point, there are no open files left, so the
-                  ;; root file system can be re-mounted read-only.
-                  (mount #f "/" #f
-                         (logior MS_REMOUNT MS_RDONLY)
-                         #:update-mtab? #f)
+               ;; At this point, there should be no open files left so the
+               ;; root file system can be re-mounted read-only.
+               (let loop ((n 10))
+                 (unless (catch 'system-error
+                           (lambda ()
+                             (mount #f "/" #f
+                                    (logior MS_REMOUNT MS_RDONLY)
+                                    #:update-mtab? #f)
+                             #t)
+                           (const #f))
+                   (unless (zero? n)
+                     ;; Yield to the other fibers.  That gives logging fibers
+                     ;; an opportunity to close log files so the 'mount' call
+                     ;; doesn't fail with EBUSY.
+                     ((@ (fibers) sleep) 1)
+                     (loop (- n 1)))))
 
-                  #f)))))
+               #f)))
    (respawn? #f)))
 
 (define root-file-system-service-type
