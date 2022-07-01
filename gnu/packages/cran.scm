@@ -12447,14 +12447,14 @@ ROPE percentage and pd).")
 (define-public r-performance
   (package
     (name "r-performance")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "performance" version))
        (sha256
         (base32
-         "1znr4i1pjv6z3lj6qrma2i3l94rz1z29w92mrxxfy3ch0s71crww"))))
+         "0xiqy9z070v5xzf2iq4x01licabhkygji5x6qfy7l08n43z4agny"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bayestestr r-datawizard r-insight))
