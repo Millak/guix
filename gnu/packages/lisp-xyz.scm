@@ -10,7 +10,7 @@
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2018, 2020, 2021 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2018, 2020, 2021, 2022 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
@@ -18072,35 +18072,7 @@ tested (as shown in the examples).")
                (substitute* "evdev-cffi.lisp"
                  (("libevdev.so" all)
                   (string-append (assoc-ref inputs "libevdev")
-                                 "/lib/" all)))))
-           ;; Here we use a custom build phase to work around a compilation bug.
-           ;; Using 'asdf:compile-system' fails, but using 'asdf:load-system'
-           ;; succeeds (and also compiles the system).
-           ;; See https://github.com/Shirakumo/cl-gamepad/issues/8
-           (replace 'build
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (source-path (string-append out
-                                                  "/share/common-lisp/"
-                                                  (%lisp-type)))
-                      (translations `((,source-path
-                                       :**/ :*.*.*)
-                                      (,(string-append out
-                                                       "/lib/common-lisp/"
-                                                       (%lisp-type))
-                                       :**/ :*.*.*))))
-                 (setenv "ASDF_OUTPUT_TRANSLATIONS"
-                         (format #f "~S" `(:output-translations
-                                           ,translations
-                                           :inherit-configuration)))
-                 (setenv "HOME" (assoc-ref outputs "out"))
-                 (with-directory-excursion (string-append source-path
-                                                          "/cl-gamepad")
-                   (invoke (%lisp-type)
-                           "--eval" "(require :asdf)"
-                           "--eval" "(asdf:load-asd (truename \"cl-gamepad.asd\"))"
-                           "--eval" "(asdf:load-system :cl-gamepad)"
-                           "--eval" "(quit)"))))))))
+                                 "/lib/" all))))))))
       (inputs
        `(("cffi" ,sbcl-cffi)
          ("documentation-utils" ,sbcl-documentation-utils)
