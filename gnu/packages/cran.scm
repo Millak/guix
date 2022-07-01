@@ -18017,13 +18017,13 @@ SELECT or UPDATE queries to an end-point.")
 (define-public r-bookdown
   (package
     (name "r-bookdown")
-    (version "0.26")
+    (version "0.27")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bookdown" version))
               (sha256
                (base32
-                "11din9h2sgzvg44627xc5is4psbq2b34km5sbiaprskjrf474866"))))
+                "08wzi7hh3x1dfpmzpxhphrv5zb6a3p7rziaazisfpp1zwsxllwif"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-htmltools
