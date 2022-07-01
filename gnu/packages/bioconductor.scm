@@ -5483,14 +5483,14 @@ ungapped alignment formats.")
 (define-public r-simplifyenrichment
   (package
     (name "r-simplifyenrichment")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "simplifyEnrichment" version))
        (sha256
         (base32
-         "1g3kfa17p60jkk4l34vc5hdq83w082qsxbjvpqw7r9rdd8d79z2q"))))
+         "0qblgdxmr7zc981529cca3ykakql618q1im6gaxw8pwws5jgpyk6"))))
     (properties
      `((upstream-name . "simplifyEnrichment")))
     (build-system r-build-system)
