@@ -5055,6 +5055,40 @@ kit.  It provides a patch bay in flow matrix style for audio, MIDI, CV, and
 OSC connections.")
     (license license:artistic2.0)))
 
+(define-public luppp
+  (let ((revision "1")
+        ;; The last release was in 2019.  Since then some build fixes have
+        ;; been added.
+        (commit "23da1497f80dbace48b7807afd3570c57a4d5994"))
+    (package
+      (name "luppp")
+      (version (git-version "1.2.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/openAVproductions/openAV-Luppp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rjl7fwnqq1gxa3haw1z0p1mld23i194sc43m03h9isagkwxrx9d"))))
+      (build-system meson-build-system)
+      (inputs
+       (list cairo
+             ntk
+             liblo
+             jack-2
+             libsndfile
+             libsamplerate))
+      (native-inputs (list pkg-config cmake-minimal))
+      (home-page "http://openavproductions.com/luppp/")
+      (synopsis "Live performance tool")
+      (description
+       "Luppp is a music creation tool, intended for live use.  The focus is on real
+time processing and a fast and intuitive workflow.  With extensive MIDI
+mapping support, you can get looping just how you like!")
+      (license license:gpl3+))))
+
 (define-public fabla
   (let ((revision "1")
         ;; The last release was in 2016.  Since then a number of commits have
