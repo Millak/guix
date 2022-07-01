@@ -11021,14 +11021,14 @@ annotations.")
 (define-public r-rsubread
   (package
     (name "r-rsubread")
-    (version "2.10.2")
+    (version "2.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rsubread" version))
        (sha256
         (base32
-         "1pvyx8nxv10s816hgxrnw60hp9rlqjdgjq3ajpzqxgxmmlhnk0v0"))))
+         "155h25gbagqns7wpriil17li0jkdd1z1pcz0dlnikdqj4saf97rl"))))
     (properties `((upstream-name . "Rsubread")))
     (build-system r-build-system)
     (inputs (list zlib))
