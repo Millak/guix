@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2017 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2017, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016, 2019 Arun Isaac <arunisaac@systemreboot.net>
@@ -223,21 +223,6 @@ times.  If you have a second page, Flyer Composer can arrange it the same way
 This package contains only the command line tool.  If you like to use the gui,
 please install the @code{flyer-composer-gui} package.")))
 
-(define poppler-tests
-  (let ((poppler-version "22.01.0") ; bump when bumping poppler version
-        (revision "0")
-        (commit "0762e0144143e680e24ec8d4c34c46c3716b8713"))
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://gitlab.freedesktop.org/poppler/test.git")
-            (commit commit)))
-      (file-name (git-file-name "poppler-tests"
-                                (git-version poppler-version revision commit)))
-      (sha256
-       (base32
-        "1nwgwcddj5fiq200p4f07fl0i5f885c1nfzmvpc6q9p55qxp6brv")))))
-
 (define-public poppler
   (package
    (name "poppler")
@@ -276,13 +261,16 @@ please install the @code{flyer-composer-gui} package.")))
             gobject-introspection))
    (arguments
     (list
+     ;; The Poppler test suite needs to be downloaded separately and contains
+     ;; non-free (and non-auditable) files, so we skip them.  See
+     ;; <https://lists.gnu.org/archive/html/guix-devel/2022-06/msg00394.html>.
+     #:tests? #f
      #:configure-flags
      #~(list "-DENABLE_UNSTABLE_API_ABI_HEADERS=ON" ;to install header files
              "-DENABLE_ZLIB=ON"
              "-DENABLE_BOOST=OFF"      ;disable Boost to save size
              (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib")
-             (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib")
-             (string-append "-DTESTDATADIR=" #+poppler-tests))
+             (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib"))
      #:phases
      (if (%current-target-system) #~%standard-phases
          #~(modify-phases %standard-phases
