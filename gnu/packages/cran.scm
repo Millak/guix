@@ -19669,29 +19669,29 @@ provides tools to compute this metric.")
 (define-public r-lintr
   (package
     (name "r-lintr")
-    (version "2.0.1")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lintr" version))
        (sha256
         (base32
-         "14yfh641afg6griaadbdciyr3k94fl55s055qwzghgk5gdsj61zy"))))
+         "1d3pn6aarmpqyyzb2vawwcamrgrdvyqfdijk0ixp44c3fhld9cgf"))))
     (properties `((upstream-name . "lintr")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-codetools
+     (list r-backports
+           r-codetools
            r-crayon
            r-cyclocomp
            r-digest
-           r-httr
+           r-glue
            r-jsonlite
            r-knitr
            r-rex
-           r-rstudioapi
-           r-testthat
            r-xml2
            r-xmlparsedata))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/jimhester/lintr")
     (synopsis "Linter for R code")
     (description "This package checks adherence to a given style, syntax
