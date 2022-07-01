@@ -3818,22 +3818,23 @@ is configured appropriately so R can use them.")
 (define-public r-pkgload
   (package
     (name "r-pkgload")
-    (version "1.2.4")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgload" version))
        (sha256
         (base32
-         "03yr9mswx9nij27bp21q6c533zx310xwzhwm52dwr7554k42p4fn"))))
+         "0a22kxgm9a8ax1dw2q9v3338qhjmhfbcqw8r4b6608k6074m7xjs"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
            r-crayon
            r-desc
+           r-fs
+           r-glue
            r-rlang
            r-rprojroot
-           r-rstudioapi
            r-withr))
     (home-page "https://github.com/r-lib/pkgload")
     (synopsis "Simulate package installation and attach")
