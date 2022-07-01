@@ -266,12 +266,6 @@ implementation with no external dependencies.")
       (native-inputs
        `(("fare-utils" ,sbcl-fare-utils)
          ("hu.dwim.stefil" ,sbcl-hu.dwim.stefil)))
-      (arguments
-       `(#:asd-files '("asdf-finalizers.asd"
-                       "list-of.asd"
-                       "asdf-finalizers-test.asd")
-         #:asd-systems '("asdf-finalizers"
-                         "list-of")))
       (home-page "https://gitlab.common-lisp.net/asdf/asdf-finalizers")
       (synopsis "Enforced calling of finalizers for Lisp code")
       (description "This library allows you to implement and enforce proper
@@ -374,10 +368,8 @@ or cl-launch for portable processing of command-line arguments.")
          ("split-sequence" ,sbcl-split-sequence)
          ("usocket" ,sbcl-usocket)))
       (arguments
-       `(#:asd-systems '("cl-irc") ;; Some inexisting "c" system is
-                                   ;; found by guix otherwise.
-         #:asd-files '("cl-irc.asd")
-         #:test-asd-file "test/cl-irc-test.asd"))
+        ;; Some inexisting "c" system is found by guix otherwise.
+       `(#:asd-systems '("cl-irc")))
       (synopsis "IRC client library for Common Lisp")
       (description "@code{cl-irc} is a Common Lisp IRC client library that
 features (partial) DCC, CTCP and all relevant commands from the IRC
@@ -868,8 +860,7 @@ ANSI-compliant Common Lisp implementations.")
     (inputs
      (list sbcl-cl-ppcre sbcl-cl-unicode))
     (arguments
-     `(#:tests? #f ; tests fail with "Component :CL-PPCRE-TEST not found"
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-ppcre
            ;; cl-ppcre and cl-ppcre-unicode are put in different packages
@@ -997,8 +988,7 @@ anti-aliased vectorial paths.")
            "11rhc6h501dwcik2igkszz7b9n515cr99m5pjh4r2qfwgiri6ysa"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       '(#:tests? #f           ; spatial-trees.test requires spatial-trees.nns
-         #:test-asd-file "spatial-trees.test.asd"))
+       '(#:tests? #f)) ; spatial-trees.test requires spatial-trees.nns
       (native-inputs
        (list sbcl-fiveam))
       (home-page "https://github.com/rpav/spatial-trees")
@@ -1450,8 +1440,7 @@ utilities that make it even easier to manipulate text in Common Lisp.  It has
         (base32 "0jsqah1znzqilxnw5vannb083ayk0d7phkackqzwwqkyg5hpn6pq"))))
     (build-system asdf-build-system/sbcl)
     (arguments
-     '(#:asd-files '("trivial-features.asd")
-       ;; FIXME: Tests disabled because of a circular dependency between
+     '(;; FIXME: Tests disabled because of a circular dependency between
        ;; trivial-features and cffi.
        #:tests? #f))
     ;; (native-inputs
@@ -2383,9 +2372,7 @@ processes that doesn't run under Emacs.  Lisp processes created by
              sbcl-pythonic-string-reader
              sbcl-slime-swank))
       (arguments
-       `(#:asd-files '("mgl-pax.asdf.asd"
-                       "mgl-pax.asd")
-         #:asd-systems '("mgl-pax"
+       `(#:asd-systems '("mgl-pax"
                          "mgl-pax/navigate"
                          "mgl-pax/document"
                          "mgl-pax/transcribe")
@@ -3032,11 +3019,6 @@ is statically typed so there are differences.")
                            (string-append
                             (assoc-ref outputs "out")
                             "/include/grovel")))))
-       #:asd-files '("cffi.asd"
-                     "cffi-toolchain.asd"
-                     "cffi-grovel.asd"
-                     "cffi-libffi.asd"
-                     "cffi-uffi-compat.asd")
        #:asd-systems '("cffi"
                        "cffi-libffi"
                        "cffi-uffi-compat")))
@@ -3397,16 +3379,7 @@ Lisp implementations.")
          ("trivial-features" ,sbcl-trivial-features)
          ("trivial-garbage" ,sbcl-trivial-garbage)))
       (arguments
-       `(#:asd-files '("gtk/cl-cffi-gtk.asd"
-                       "glib/cl-cffi-gtk-glib.asd"
-                       "gobject/cl-cffi-gtk-gobject.asd"
-                       "gio/cl-cffi-gtk-gio.asd"
-                       "cairo/cl-cffi-gtk-cairo.asd"
-                       "pango/cl-cffi-gtk-pango.asd"
-                       "gdk-pixbuf/cl-cffi-gtk-gdk-pixbuf.asd"
-                       "gdk/cl-cffi-gtk-gdk.asd")
-         #:test-asd-file "test/cl-cffi-gtk-test.asd"
-         ;; TODO: Tests fail with memory fault.
+       `(;; TODO: Tests fail with memory fault.
          ;; See https://github.com/Ferada/cl-cffi-gtk/issues/24.
          #:tests? #f
          #:phases
@@ -4777,8 +4750,7 @@ Only minimal changes required to make your CLOS objects serializable.")
       ;; Error while trying to load definition for system fast-io-test from
       ;; pathname [...]/fast-io-test.asd: The function CHECKL:DEFINE-TEST-OP
       ;; is undefined.
-      '(#:tests? #f
-        #:asd-files '("fast-io.asd")))
+      '(#:tests? #f))
      (native-inputs
       (list sbcl-fiveam sbcl-checkl))
      (inputs
@@ -4947,7 +4919,6 @@ reset to 0 and you're able to read it again.")
                          "lack-util"
                          "lack-middleware-backtrace"
                          "lack-middleware-static")
-         #:test-asd-file "t-lack.asd"
          ;; XXX: Component :CLACK not found
          #:tests? #f))
       (home-page "https://github.com/fukamachi/lack")
@@ -5675,8 +5646,6 @@ whole lot more into a single form.")
           (base32
            "01wsr1aap3jdzhn4hrqjbhsjx6qci9dbd3gh4gayv1p49rbg8aqr"))))
       (build-system asdf-build-system/sbcl)
-      (arguments
-       `(#:test-asd-file "test/fare-utils-test.asd"))
       (native-inputs
        (list sbcl-hu.dwim.stefil))
       (synopsis "Collection of utilities and data structures")
@@ -5887,12 +5856,7 @@ formats.")
        ("split-sequence" ,sbcl-split-sequence)
        ("swap-bytes" ,sbcl-swap-bytes)))
     (arguments
-     '(#:asd-files '("iolib.asdf.asd"
-                     "iolib.conf.asd"
-                     "iolib.common-lisp.asd"
-                     "iolib.base.asd"
-                     "iolib.asd")
-       #:asd-systems '("iolib"
+     '(#:asd-systems '("iolib"
                        "iolib/os")
        #:phases
        (modify-phases %standard-phases
@@ -6224,8 +6188,7 @@ neat APIs and connection-pooling.  It is meant to supersede Drakma.")
       (native-inputs
        (list sbcl-fiveam))
       (arguments
-       `(#:test-asd-file "lisp-namespace.test.asd"
-        ;; XXX: Component LISP-NAMESPACE-ASD::LISP-NAMESPACE.TEST not found
+       `(;; XXX: Component LISP-NAMESPACE-ASD::LISP-NAMESPACE.TEST not found
          #:tests? #f))
       (synopsis "LISP-N, or extensible namespaces in Common Lisp")
       (description "Common Lisp already has major 2 namespaces, function
@@ -6378,8 +6341,6 @@ to support this, especially for reasoning on types, are also included.")
          ("trivia.trivial" ,sbcl-trivia.trivial)))
       (native-inputs
        (list sbcl-fiveam))
-      (arguments
-       `(#:test-asd-file "type-i.test.asd"))
       (synopsis "Type inference utility on unary predicates for Common Lisp")
       (description "This library tries to provide a way to detect what kind of
 type the given predicate is trying to check.  This is different from inferring
@@ -6421,8 +6382,7 @@ the return type of a function.")
        (list sbcl-eos))
       (arguments
        ;; XXX: Circular dependencies: tests depend on optima.ppcre which depends on optima.
-       `(#:tests? #f
-         #:test-asd-file "optima.test.asd"))
+       `(#:tests? #f))
       (synopsis "Optimized pattern matching library for Common Lisp")
       (description "Optima is a fast pattern matching library which uses
 optimizing techniques widely used in the functional programming world.")
@@ -6560,7 +6520,6 @@ be faster and more extensible than Optima.")
                        "trivia.quasiquote"
                        "trivia.cffi"
                        "trivia.fset")
-       #:test-asd-file "trivia.test.asd"
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-build
@@ -6635,8 +6594,7 @@ various string metrics in Common Lisp:
     (native-inputs
      (list sbcl-prove))
     (arguments
-     `(#:asd-systems '("str")
-       #:test-asd-file "str.test.asd"))
+     `(#:asd-systems '("str")))
     (synopsis "Modern, consistent and terse Common Lisp string manipulation library")
     (description "A modern and consistent Common Lisp string manipulation
 library that focuses on modernity, simplicity and discoverability:
@@ -7032,8 +6990,7 @@ which implements a set of utilities.")
       (inputs
        `(("metatilities-base" ,sbcl-metatilities-base)))
       (arguments
-       '(#:asd-files '("cl-containers.asd")
-         #:phases
+       '(#:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'relax-version-checks
              (lambda _
@@ -7085,9 +7042,6 @@ decisions becomes significantly easier.")
          ("cl-containers" ,sbcl-cl-containers)
          ("local-time" ,sbcl-local-time)
          ("periods" ,sbcl-periods)))
-      (arguments
-       '(#:asd-files '("fprog.asd"
-                       "cambl.asd")))
       (synopsis "Commoditized amounts and balances for Common Lisp")
       (description
        "CAMBL is a Common Lisp library providing a convenient facility for
@@ -7429,9 +7383,6 @@ of C+GObject libraries without the need of writing dedicated bindings.")
          (sha256
           (base32 "1asdq6xllmsvfw5fky9wblqcx9isac9jrrlkfl7vyxcq1wxrnflx"))))
       (build-system asdf-build-system/sbcl)
-      (arguments
-       `(#:asd-files '("cl-slug-test.asd" "cl-slug.asd")
-         #:asd-systems '("cl-slug-test" "cl-slug")))
       (native-inputs
        (list sbcl-prove))
       (inputs
@@ -7789,8 +7740,6 @@ forms in parallel.")
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-xlunit))
-    (arguments
-     `(#:test-asd-file "cl-heap-tests.asd"))
     (synopsis "Heap and priority queue data structures for Common Lisp")
     (description
      "CL-HEAP provides various implementations of heap data structures (a
@@ -8761,8 +8710,6 @@ continuations of the @code{cl-cont} library.")
          (sha256
           (base32 "11fcnd03ybzz37rkg3z0wsb727yqgcd9gn70sccfb34l89ia279k"))))
       (build-system asdf-build-system/sbcl)
-      (arguments
-       `(#:test-asd-file "test.vas-string-metrics.asd"))
       (home-page "https://github.com/vsedach/vas-string-metrics")
       (synopsis "String distance algorithms for Common Lisp")
       (description
@@ -9595,8 +9542,7 @@ them as PNG files.")
       (native-inputs
        (list sbcl-fiveam))
       (arguments
-       `(#:test-asd-file "hdf5-cffi.test.asd"
-         ;; Tests depend on hdf5-cffi.examples.asd in addition to hdf5-cffi.asd,
+       `(;; Tests depend on hdf5-cffi.examples.asd in addition to hdf5-cffi.asd,
          ;; I don't know if there is a way to tell asdf-build-system to load
          ;; an additional system first, so tests are disabled.
          #:tests? #f
@@ -9782,9 +9728,7 @@ the elements in compound type specifier, e.g. @code{dimensions} in
        `(("trivia" ,sbcl-trivia)
          ("alexandria" ,sbcl-alexandria)))
       (native-inputs
-       (list sbcl-fiveam))
-      (arguments
-       `(#:test-asd-file "type-r.test.asd")))))
+       (list sbcl-fiveam)))))
 
 (define-public cl-type-r
   (sbcl-package->cl-source-package sbcl-type-r))
@@ -9824,8 +9768,7 @@ correctly.")
       (native-inputs
        (list sbcl-fiveam))
       (arguments
-       `(#:asd-systems '("trivialib.type-unify")
-         #:test-asd-file "trivialib.type-unify.test.asd")))))
+       `(#:asd-systems '("trivialib.type-unify"))))))
 
 (define-public cl-trivialib-type-unify
   (sbcl-package->cl-source-package sbcl-trivialib-type-unify))
@@ -9907,10 +9850,7 @@ code.  The main target of this macro is speed.")
          ("trivial-cltl2" ,sbcl-trivial-cltl2)
          ("type-r" ,sbcl-type-r)))
       (native-inputs
-       (list sbcl-fiveam))
-      (arguments
-       `(#:asd-files '("specialized-function.asd")
-         #:test-asd-file "specialized-function.test.asd")))))
+       (list sbcl-fiveam)))))
 
 (define-public cl-specialized-function
   (sbcl-package->cl-source-package sbcl-specialized-function))
@@ -9947,10 +9887,7 @@ additional form that is considered as a candidate for a constant.")
          ("iterate" ,sbcl-iterate)
          ("lisp-namespace" ,sbcl-lisp-namespace)))
       (native-inputs
-       (list sbcl-fiveam))
-      (arguments
-       `(#:asd-files '("constantfold.asd")
-         #:test-asd-file "constantfold.test.asd")))))
+       (list sbcl-fiveam)))))
 
 (define-public cl-constantfold
   (sbcl-package->cl-source-package sbcl-constantfold))
@@ -9988,10 +9925,7 @@ type correctness in Common Lisp.  It is based on CLtL2 extensions.")
          ("iterate" ,sbcl-iterate)
          ("type-r" ,sbcl-type-r)))
       (native-inputs
-       (list sbcl-fiveam))
-      (arguments
-       `(#:asd-files '("gtype.asd")
-         #:test-asd-file "gtype.test.asd")))))
+       (list sbcl-fiveam)))))
 
 (define-public cl-gtype
   (sbcl-package->cl-source-package sbcl-gtype))
@@ -10022,9 +9956,7 @@ type correctness in Common Lisp.  It is based on CLtL2 extensions.")
           (base32 "15m4spbgayawnw5jjz04zfp0jnk9g6hgq5fmr648hzjzj50j1d78"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:test-asd-file "numcl.test.asd"
-         #:asd-files '("numcl.asd")
-         ;; Tests often fail because they require a dynamic-space-size much
+       `(;; Tests often fail because they require a dynamic-space-size much
          ;; bigger than the default one. Disable them for now.
          #:tests? #f))
       (native-inputs
@@ -10412,7 +10344,6 @@ interface for MySQL, PostgreSQL and SQLite.")
     (build-system asdf-build-system/sbcl)
     (arguments
      `(#:tests? #f ; TODO: Fix use of deprecated ASDF functions
-       #:asd-files '("uffi.asd")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-permissions
@@ -10487,13 +10418,8 @@ interface for MySQL, PostgreSQL and SQLite.")
        ("uffi" ,sbcl-uffi)
        ("zlib" ,zlib)))
     (arguments
-     `(#:asd-files '("clsql.asd"
-                     "clsql-uffi.asd"
-                     "clsql-sqlite3.asd"
-                     "clsql-postgresql.asd"
-                     "clsql-postgresql-socket3.asd"
-                     "clsql-mysql.asd")
-       #:asd-systems '("clsql"
+     `(#:asd-systems '("clsql"
+                       "clsql-uffi"
                        "clsql-sqlite3"
                        "clsql-postgresql"
                        "clsql-postgresql-socket3"
@@ -10596,8 +10522,8 @@ interfaces as well as a functional and an object oriented interface.")
        (alist-delete "uffi" (package-inputs pkg)))
       (arguments
        (substitute-keyword-arguments (package-arguments pkg)
-         ((#:asd-files asd-files '())
-          `(cons "clsql-cffi.asd" ,asd-files)))))))
+         ((#:asd-systems asd-systems '())
+          `(cons "clsql-cffi" ,asd-systems)))))))
 
 (define-public sbcl-sycamore
   (let ((commit "fd2820fec165ad514493426dea209728f64e6d18"))
@@ -10788,10 +10714,6 @@ camelCase, PascalCase, snake_case, param-case, CONSTANT_CASE and more.")
          (sha256
           (base32 "1zys29rfkb649rkgl3snxhajk8d5yf7ryxkrwy020kwdh7zdsg7d"))))
       (build-system asdf-build-system/sbcl)
-      (arguments
-       `(#:test-asd-file "modularize-test-module.asd"
-         #:asd-files '("modularize.asd" "modularize-test-module.asd")
-         #:asd-systems '("modularize" "modularize-test-module")))
       (inputs
        `(("documentation-utils" ,sbcl-documentation-utils)
          ("trivial-package-local-nicknames" ,sbcl-trivial-package-local-nicknames)))
@@ -11012,7 +10934,9 @@ accompaniment to the standard ANSI facilities.")
          "0rlswkf0siaabsvvch3dgxmg45fw5w8pd9b7ri2w7a298aya52z9"))))
     (build-system asdf-build-system/sbcl)
     (arguments
-     '(#:asd-files '("quantile-estimator.asd")))
+     '(#:asd-test-systems '("quantile-estimator.test")
+       ;; TODO: Tests need https://github.com/sharplispers/mw-equiv.
+       #:tests? #f))
     (inputs
      `(("alexandria" ,sbcl-alexandria)))
     (home-page "https://github.com/deadtrickster/quantile-estimator.cl")
@@ -11059,13 +10983,7 @@ Streams in ICDE’05.")
        ("split-sequence" ,sbcl-split-sequence)
        ("trivial-utf-8" ,sbcl-trivial-utf-8)))
     (arguments
-     '(#:asd-files '("prometheus.asd"
-                     "prometheus.collectors.sbcl.asd"
-                     "prometheus.collectors.process.asd"
-                     "prometheus.formats.text.asd"
-                     "prometheus.exposers.hunchentoot.asd"
-                     "prometheus.pushgateway.asd")
-       #:asd-systems '("prometheus"
+     '(#:asd-systems '("prometheus"
                        "prometheus.collectors.sbcl"
                        "prometheus.collectors.process"
                        "prometheus.formats.text"
@@ -11460,8 +11378,7 @@ format.")
        `(("cl-libsvm-format" ,sbcl-cl-libsvm-format)
          ("cl-store" ,sbcl-cl-store)))
       (arguments
-       `(#:test-asd-file "cl-online-learning-test.asd"
-         #:asd-systems '("cl-online-learning-test"
+       `(#:asd-systems '("cl-online-learning-test"
                          "cl-online-learning")))
       (home-page "https://github.com/masatoi/cl-online-learning")
       (synopsis "Online Machine Learning for Common Lisp")
@@ -11499,8 +11416,7 @@ online linear classification written in Common Lisp.")
              #t))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:asd-files '("cl-mpg123.asd" "cl-mpg123-example.asd")
-         #:asd-systems '("cl-mpg123" "cl-mpg123-example")
+       `(#:asd-systems '("cl-mpg123" "cl-mpg123-example")
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-paths
@@ -12099,8 +12015,6 @@ both from files on disk, or streams in memory.")
              sbcl-retrospectiff
              sbcl-skippy
              sbcl-zpng))
-      (arguments
-       '(#:asd-files '("opticl.asd")))
       (home-page "https://github.com/slyrus/opticl")
       (synopsis "Image processing library for Common Lisp")
       (description
@@ -12477,8 +12391,7 @@ hu.dwim systems.")
              ;; ("hu.dwim.stefil" ,cl-hu.dwim.stefil)
              sbcl-hu.dwim.asdf))
       (arguments
-       `(#:test-asd-file "hu.dwim.defclass-star.test.asd"
-         ;; Tests require a circular dependency: hu.dwim.stefil -> hu.dwim.def
+       `(;; Tests require a circular dependency: hu.dwim.stefil -> hu.dwim.def
          ;; -> hu.dwim.util -> hu.dwim.defclass-star.
          #:tests? #f))
       (home-page "https://github.com/hu-dwim/hu.dwim.defclass-star")
@@ -12820,8 +12733,7 @@ that and not limited to a certain server or text format.")
          ("prove" ,sbcl-prove)))
       (arguments
        ;; Tests depend on caveman, which in turns depends on cl-project.
-       '(#:tests? #f
-         #:asd-files '("cl-project.asd")))
+       '(#:tests? #f))
       (synopsis "Generate a skeleton for modern Common Lisp projects")
       (description "This library provides a modern project skeleton generator.
 In contract with other generators, CL-Project generates one package per file
@@ -12868,12 +12780,7 @@ can begin writing unit tests as soon as the project is generated.")
          ("trivial-types" ,sbcl-trivial-types)
          ("prove" ,sbcl-prove)))
       (arguments
-       `(#:asd-files '("caveman2.asd"
-                       "caveman2-db.asd"
-                       "caveman2-test.asd"
-                       "caveman-middleware-dbimanager.asd")
-         #:test-asd-file "caveman2-test.asd"
-         #:asd-systems '("caveman2"
+       `(#:asd-systems '("caveman2"
                          "caveman2-db"
                          "caveman2-test"
                          "caveman-middleware-dbimanager")
@@ -13127,8 +13034,7 @@ mostly not found in other utility packages.")
           (base32 "1k4mvrpbqqds2fwjxp1bxmrfmr8ch4dkwhnkbw559knbqshvrlj5"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       '(#:asd-files '("cl-custom-hash-table.asd")
-         #:asd-systems '("cl-custom-hash-table")))
+       '(#:asd-systems '("cl-custom-hash-table")))
       (home-page "https://github.com/metawilm/cl-custom-hash-table")
       (synopsis "Custom hash tables for Common Lisp")
       (description "This library allows creation of hash tables with arbitrary
@@ -13391,10 +13297,6 @@ predictable cross-platform behavior and some utilities useful for versioning.")
          (sha256
           (base32 "07pfkibaridihg8lbq2czwa4iqifqk24n6rx7bfnv7i49p1ppja1"))))
       (build-system asdf-build-system/sbcl)
-      (arguments
-       `(#:test-asd-file "deploy-test.asd"
-         #:asd-files '("deploy.asd"
-                       "deploy-test.asd")))
       (native-inputs
        `(("cl-mpg123" ,sbcl-cl-mpg123)
          ("cl-out123" ,sbcl-cl-out123)))
@@ -15098,8 +15000,7 @@ attributes not supported by the Common Lisp standard functions.")
       ;; Due to the age of this library tests use some deprecated
       ;; functionality and keep failing.
       (arguments
-       '(#:tests? #f
-         #:asd-files '("cl-difflib.asd")))
+       '(#:tests? #f))
       (home-page "https://github.com/wiseman/cl-difflib")
       (synopsis "Compute differences between pairs of sequences")
       (description
@@ -15715,8 +15616,6 @@ immediately.")
     (inputs
      `(("cl-fad" ,sbcl-cl-fad)
        ("html-template" ,sbcl-html-template)))
-    (arguments
-     '(#:asd-files '("quickproject.asd")))
     (home-page "https://xach.com/lisp/quickproject/")
     (synopsis "Create Common Lisp project skeletons")
     (description
@@ -15821,7 +15720,7 @@ compiled foreign library collection.")
      ;; failing test where it's in use.
      (arguments
       '(#:tests? #f
-        #:asd-files '("cl-conspack.asd")))
+        #:asd-test-systems '("cl-conspack-test")))
      (native-inputs
       (list sbcl-checkl))
      (inputs
@@ -16971,8 +16870,7 @@ Common Lisp without any C library bindings.")
       (arguments
        ;; FIXME: (Sharlatan-20210523T184237+0100): Tests require `femlisp', which
        ;; is quite chunky not packaged system yet, enable them when it's packed.
-       `(#:tests? #f
-         #:test-asd-file "parser-combinators-tests.asd"))
+       `(#:tests? #f))
       ;; (native-inputs
       ;;  `(("hu.dwim.stefil" ,sbcl-hu.dwim.stefil)
       ;;    ("infix" ,sbcl-femlisp)))
@@ -17277,11 +17175,9 @@ needed.  The low-level command API is fully mapped however.")
          (sha256
           (base32 "0ysw1kwiqlf8kzllhnz8v3q40dmvwf83fzq8bfkbmwy5hfjh3pxp"))))
       (build-system asdf-build-system/sbcl)
-      (arguments
-       ;; FIXME: (Sharlatan-20210527T203118+0100): FLOW-VISUALIZER requires
-       ;; COMMONQT which is not packed yet and required tweaks with QT. Remove
-       ;; this when it's ready.
-       `(#:asd-files '("flow.asd")))
+      ;; FIXME: (Sharlatan-20210527T203118+0100): FLOW-VISUALIZER requires
+      ;; COMMONQT which is not packed yet and required tweaks with QT. Remove
+      ;; this when it's ready.
       (inputs
        `(("closer-mop" ,sbcl-closer-mop)
          ("documentation-utils" ,sbcl-documentation-utils)))
@@ -17410,8 +17306,6 @@ coverage.")
        (sha256
         (base32 "0izbw2advqm3wailj3dpq6zqfrfirwn14pw5qmqh8i71r51xwmm2"))))
      (build-system asdf-build-system/sbcl)
-     (arguments
-      `(#:asd-files '("cepl.asd" "cepl.build.asd")))
      (inputs
       `(("alexandria" ,sbcl-alexandria)
         ("bordeaux-threads" ,sbcl-bordeaux-threads)
@@ -17809,8 +17703,7 @@ Lisp.")
           (base32 "04519rg8vc782z097dzlb8nx0skab2fy2zd0m60r6mz2nw8xdvh6"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:test-asd-file "cl-posix-mqueue-tests.asd"
-         #:phases
+       `(#:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'patch-librt-path
              (lambda* (#:key inputs #:allow-other-keys)
@@ -20130,10 +20023,6 @@ reference.")
       (inputs
        `(("cl-base64" ,sbcl-cl-base64)
          ("cl-base58" ,sbcl-cl-base58)))
-      ;; Load order matters for tests, both for file reading and evaluation.
-      (arguments
-       `(#:asd-systems '("bit-smasher-test" "bit-smasher")
-         #:asd-files '("bit-smasher.asd" "bit-smasher-test.asd")))
       (home-page "https://github.com/thephoeron/bit-smasher/")
       (synopsis "Handle bit vectors, bit vector arithmetic, and type conversions")
       (description
@@ -20187,8 +20076,7 @@ decimals, and hexadecimal notation.")
       (native-inputs
        (list sbcl-fiveam))
       (arguments
-       `(#:asd-files '("overlord.asd")
-         #:phases
+       `(#:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'include-overlord/net
              (lambda _
@@ -20946,9 +20834,6 @@ rendering of the XML Infoset.")
            (base32 "0yiybl7b9x1f85v0drj0yw9821y3yfhya4n6gycnv5vvx6jp9by4"))
           (file-name (git-file-name "cl-asd-generator" commit))))
       (build-system asdf-build-system/sbcl)
-      (arguments
-       `(#:asd-systems '("asd-generator")
-         #:asd-files '("asd-generator.asd")))
       (inputs
        (list sbcl-cl-fad
              sbcl-iterate
@@ -21428,8 +21313,7 @@ implementation for Common Lisp.")
           (base32 "1048f6prz2lp859nxwcgghn6n38pc2pb580azzxpdhfcdi0034mj"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       '(#:asd-files '("src/com.inuoe.jzon.asd" "test/com.inuoe.jzon-tests.asd")
-         #:asd-systems '("com.inuoe.jzon" "com.inuoe.jzon-tests")))
+       '(#:asd-systems '("com.inuoe.jzon" "com.inuoe.jzon-tests")))
       (native-inputs
         (list sbcl-alexandria
               sbcl-fiveam
