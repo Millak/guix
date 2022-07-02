@@ -12952,3 +12952,35 @@ integrate Braintree's global payments platform.")
    (description "Niceogiri provides wrappers and helpers for XML manipulation
 using Nokogiri.")
    (license license:expat)))
+
+(define-public ruby-blather
+  (package
+    (name "ruby-blather")
+    (version "2.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "blather" version))
+        (sha256
+          (base32 "05ry2x835fj4pzk61282pcz86n018cr39zbgwbi213md74i90s7c"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; XXX: Tests require too old version of rspec.
+     `(#:tests? #f))
+    (native-inputs
+     (list ruby-countdownlatch
+            ruby-mocha
+            ruby-rb-fsevent
+            ruby-rspec
+            ruby-yard))
+    (propagated-inputs
+     (list ruby-activesupport
+            ruby-eventmachine
+            ruby-niceogiri
+            ruby-nokogiri
+            ruby-sucker-punch))
+    (home-page "https://github.com/adhearsion/blather")
+    (synopsis "XMPP Domain Specific Language for Ruby")
+    (description "Blather is a XMPP DSL for Ruby written on top of EventMachine
+and Nokogiri.")
+    (license license:expat)))
