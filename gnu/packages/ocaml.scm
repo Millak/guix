@@ -1868,18 +1868,18 @@ module of this library is parameterised by the type of S-expressions.")
 (define-public ocaml-migrate-parsetree
   (package
     (name "ocaml-migrate-parsetree")
-    (version "2.3.0")
+    (version "2.4.0")
     (home-page "https://github.com/ocaml-ppx/ocaml-migrate-parsetree")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url home-page)
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1nqmhsc72xmgm865nn8q0hngklhvqav281hgnx1gf5ns49a0n3ig"))))
+         "0a1qy0ik36j8hpqxvh3fxf4aibjqax989mihj73jncchv8qv4ynq"))))
     (build-system dune-build-system)
     (arguments `(#:tests? #f))
     (propagated-inputs
