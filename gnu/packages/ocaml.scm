@@ -4675,7 +4675,7 @@ cross-platform SDL C library.")
 (define-public dedukti
   (package
     (name "dedukti")
-    (version "2.6.0")
+    (version "2.7")
     (home-page "https://deducteam.github.io/")
     (source
      (origin
@@ -4686,31 +4686,12 @@ cross-platform SDL C library.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0frl3diff033i4fmq304b8wbsdnc9mvlhmwd7a3zd699ng2lzbxb"))))
-    (inputs
-     `(("menhir" ,ocaml-menhir)))
-    (native-inputs
-     (list ocamlbuild))
-    (build-system ocaml-build-system)
+         "1dsr3s88kgmcg3najhc29cwfvsxa2plvjws1127fz75kmn15np28"))))
+    (build-system dune-build-system)
     (arguments
-     `(#:phases
-       ,#~(modify-phases %standard-phases
-            (delete 'configure)
-            (replace 'build
-              (lambda _
-                (invoke "make")))
-            (replace 'check
-              (lambda _
-                (invoke "make" "tests")))
-            (add-before 'install 'set-binpath
-              ;; Change binary path in the makefile
-              (lambda _
-                (substitute* "GNUmakefile"
-                  (("BINDIR = (.*)$")
-                   (string-append "BINDIR = " #$output "/bin")))))
-            (replace 'install
-              (lambda _
-                (invoke "make" "install"))))))
+     `(#:test-target "tests"))
+    (inputs (list gmp ocaml-cmdliner ocaml-z3 z3))
+    (native-inputs (list ocaml-menhir))
     (synopsis "Proof-checker for the λΠ-calculus modulo theory, an extension of
 the λ-calculus")
     (description "Dedukti is a proof-checker for the λΠ-calculus modulo
