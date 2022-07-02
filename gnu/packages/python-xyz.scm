@@ -94,7 +94,7 @@
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021, 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -911,6 +911,77 @@ with Python's logging module that outputs records using terminal colors.")
 progress bar and a percentage indicator object that let you track the progress
 of a loop structure or other iterative computation.")
     (license license:bsd-3)))
+
+(define-public python-glymur
+  (package
+    (name "python-glymur")
+    (version "0.10.1")
+    (source
+     (origin
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/quintusdias/glymur")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cq9r8vzwvds1kasy5gc2rxw034jh9l43rraps1n739072pfz6qg"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-library-locations
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; XXX: It's a workaround for Python inability to find the
+              ;; .so libraries with ctypes.util.find_library()
+              (substitute* '("glymur/config.py")
+                (("path = find_library\\(libname\\)")
+                 (string-append
+                  "if libname == \"openjp2\":\n"
+                  "        path = \""
+                  (search-input-file inputs "/lib/libopenjp2.so") "\"\n"
+                  "    elif libname == \"tiff\":\n"
+                  "        path = \""
+                  (search-input-file inputs "/lib/libtiff.so") "\"\n"
+                  "    elif libname == \"c\":\n"
+                  "        path = \""
+                  (search-input-file inputs "/lib/libc.so.6") "\"\n")))))
+          ;; TODO: implement as a feature of python-build-system (PEP-621,
+          ;; PEP-631, PEP-660)
+          (replace 'build
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Failing test due to inability of
+                ;; ctypes.util.find_library() to determine library path,
+                ;; which is patched above.
+                (delete-file "tests/test_config.py")
+                (invoke "python" "-m" "pytest" "-vv" "tests")))))))
+    (native-inputs
+     (list python-pypa-build python-pytest))
+    (inputs
+     (list openjpeg  ; glymur/lib/openjp2.py
+           libtiff)) ; glymur/lib/tiff.py
+    (propagated-inputs
+     (list python-lxml
+           python-numpy
+           python-packaging))
+    (home-page "https://github.com/quintusdias/glymur")
+    (synopsis "Python interface to OpenJPEG and LibTIFF")
+    (description
+     "This package provides Python interface to the OpenJPEG library which
+allows one to read and write JPEG 2000 files")
+    (license license:expat)))
 
 (define-public python-gphoto2
   (package
