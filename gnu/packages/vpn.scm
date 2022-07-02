@@ -88,7 +88,7 @@
 (define-public bitmask
   (package
     (name "bitmask")
-    (version "0.21.6")
+    (version "0.21.11")
     (source
      (origin
        (method git-fetch)
@@ -98,7 +98,7 @@
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xmn0pkpn0mcwi1jlgm5skydcnfxk5fawg5hl2inn50m0ikgxk1c"))
+        (base32 "1zphigfrks1j3snbc748b3mk0qb1r7n2v7p7l6w1xiiil4dql6cs"))
        (modules
         '((guix build utils)))
        (snippet
@@ -256,7 +256,8 @@
        ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtquickcontrols" ,qtquickcontrols)
-       ("qtquickcontrols2" ,qtquickcontrols2)))
+       ("qtquickcontrols2" ,qtquickcontrols2)
+       ("qtsvg" ,qtsvg)))
     (propagated-inputs
      (list go-0xacab-org-leap-shapeshifter
            go-github-com-apparentlymart-go-openvpn-mgmt
