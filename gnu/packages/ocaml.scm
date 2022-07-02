@@ -902,7 +902,7 @@ Git-friendly development workflow.")
 (define-public ocaml-camlp-streams
   (package
     (name "ocaml-camlp-streams")
-    (version "5.0")
+    (version "5.0.1")
     (source
       (origin
         (method git-fetch)
@@ -911,7 +911,7 @@ Git-friendly development workflow.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1wd5k0irzwi841b27pbx0n5fdybbgx97184zm8cjajizd2j8w0g5"))))
+          (base32 "0r3wvffkzyyk4als78akirxanzbib5hvc3kvwxpk36mlmc38aywh"))))
     (build-system dune-build-system)
     (arguments
      ;; No tests
