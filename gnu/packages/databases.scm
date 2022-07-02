@@ -1578,7 +1578,7 @@ organized in a hash table or B+ tree.")
      ;; XXX Without labels, the default 'configure phase picks the wrong "bash".
      `(("bc" ,bc)
        ("bash:include" ,bash "include")
-       ("check" ,check-0.14)
+       ("check" ,check)
        ("pkg-config" ,pkg-config)))
     (inputs
      ;; TODO: Add more optional inputs.
