@@ -12921,3 +12921,34 @@ any unhandled exceptions.")
     (description "Braintree provides resources and tools for developers to
 integrate Braintree's global payments platform.")
     (license license:expat)))
+
+(define-public ruby-niceogiri
+  (package
+   (name "ruby-niceogiri")
+   (version "1.1.2")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (rubygems-uri "niceogiri" version))
+     (sha256
+      (base32 "1ha93211bc9cvh23s9w89zz7rq8irpf64ccd9arvg8v1sxg2798a"))))
+   (build-system ruby-build-system)
+   (arguments
+    `(#:test-target "spec"
+      #:phases
+      (modify-phases %standard-phases
+        (add-after 'extract-gemspec 'less-strict-dependencies
+          (lambda _
+            (substitute* "niceogiri.gemspec"
+              (("2\\.7") "3.8")      ;rspec
+              ((".*dependency.*bundler.*") "\n")
+              ((".*dependency.*guard-rspec.*") "\n")))))))
+   (native-inputs
+    (list ruby-rspec
+           ruby-yard))
+   (propagated-inputs (list ruby-nokogiri))
+   (home-page "https://github.com/benlangfeld/Niceogiri")
+   (synopsis "Supplement for Nokogiri")
+   (description "Niceogiri provides wrappers and helpers for XML manipulation
+using Nokogiri.")
+   (license license:expat)))
