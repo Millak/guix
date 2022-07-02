@@ -499,24 +499,6 @@ performance across unpredictable networks, such as the Internet.")
     (home-page "https://www.srtalliance.org/")
     (license license:mpl2.0)))
 
-;; FFmpeg, GStreamer, and VLC don't support SRT 1.4.2 yet.
-(define-public srt-1.4.1
-  (package
-    (inherit srt)
-    (name "srt")
-    (version "1.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/Haivision/srt")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "01xaq44j95kbgqfl41pnybvqy0yq6wd4wdw88ckylzf0nzp977xz"))))))
-
 (define-public lksctp-tools
   (package
     (name "lksctp-tools")
