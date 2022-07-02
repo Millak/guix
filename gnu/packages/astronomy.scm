@@ -918,6 +918,51 @@ astronomy and astrophysics.")
 to access online Astronomical data.  Each web service has its own sub-package.")
     (license license:bsd-3)))
 
+(define-public python-cdflib
+  (package
+    (name "python-cdflib")
+    (version "0.4.4")
+    (source
+     (origin
+       (method git-fetch)   ; no tests in pypi archive
+       (uri (git-reference
+             (url "https://github.com/MAVENSDC/cdflib")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h7750xvr6qbhnl2w3bhccs3pwp3hci3624pvvxym0yjinmskjlz"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" (getcwd))
+                     (invoke "pytest" "-vv" "tests")))))))
+    (propagated-inputs
+     (list python-attrs python-numpy))
+    (native-inputs
+     (list python-astropy
+           python-hypothesis
+           python-pytest
+           python-pytest-cov
+           python-pytest-remotedata
+           python-xarray))
+    (home-page "https://github.com/MAVENSDC/cdflib")
+    (synopsis "Python library to deal with NASA's CDF astronmical data format")
+    (description "This package provides a Python CDF reader toolkit
+It provides the following functionality:
+@itemize
+@item Ability to read variables and attributes from CDF files
+@item Writes CDF version 3 files
+@item Can convert between CDF time types (EPOCH/EPOCH16/TT2000) to other common
+time formats
+@item Can convert CDF files into XArray Dataset objects and vice versa,
+attempting to maintain ISTP compliance
+@end itemize\n")
+    (license license:expat)))
+
 (define-public python-photutils
   (package
     (name "python-photutils")
