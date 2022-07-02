@@ -8372,7 +8372,7 @@ logo='~a'~%" icon))))))
        ("xmllint" ,libxml2)))
     (inputs
      (list accountsservice
-           check-0.14 ;for testing
+           check ;for testing
            elogind
            eudev
            gnome-session
