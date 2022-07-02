@@ -1380,58 +1380,58 @@ Encryption to Gajim.")
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
-     `(#:tests? #f
-       #:parallel-build? #f             ; not supported
-       #:modules ((guix build cmake-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  (guix build utils))
-       #:imported-modules (,@%gnu-build-system-modules
-                           (guix build cmake-build-system)
-                           (guix build glib-or-gtk-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         ;; For A/V support.
-         (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (dino (string-append out "/bin/dino"))
-                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program dino
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
-         (add-after 'install 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+     (list #:tests? #f
+           #:parallel-build? #f         ; not supported
+           #:modules '((guix build cmake-build-system)
+                       ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                       (guix build utils))
+           #:imported-modules `(,@%gnu-build-system-modules
+                                (guix build cmake-build-system)
+                                (guix build glib-or-gtk-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; For A/V support.
+               (add-after 'install 'wrap
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (dino (string-append out "/bin/dino"))
+                          (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                     (wrap-program dino
+                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
+               (add-after 'install 'glib-or-gtk-wrap
+                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           pkg-config
+           vala))
     (inputs
-     `(("atk" ,atk)
-       ("cairo" ,cairo)
-       ("librsvg" ,librsvg)
-       ("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("gpgme" ,gpgme)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gspell" ,gspell)               ;for spell-check support
-       ("gstreamer" ,gstreamer)         ;for A/V support
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gst-plugins-good" ,gst-plugins-good)
-       ("gtk+" ,gtk+)
-       ("icu4c" ,icu4c)                 ;for emoji support
-       ("libcanberra" ,libcanberra)    ;for sound-notification support
-       ("libgcrypt" ,libgcrypt)
-       ("libgee" ,libgee)
-       ("libnice" ,libnice)
-       ("libsignal-protocol-c" ,libsignal-protocol-c)
-       ("libsoup" ,libsoup-minimal-2)
-       ("libsrtp" ,libsrtp)             ;for calls support
-       ("pango" ,pango)
-       ("qrencode" ,qrencode)
-       ("sqlite" ,sqlite)
-       ("webrtc-audio-processing" ,webrtc-audio-processing))) ;for A/V support
+     (list atk
+           cairo
+           librsvg
+           glib
+           glib-networking
+           gpgme
+           gsettings-desktop-schemas
+           gspell                       ;for spell-check support
+           gstreamer                    ;for A/V support
+           gst-plugins-base
+           gst-plugins-good
+           gtk+
+           icu4c                        ;for emoji support
+           libcanberra                  ;for sound-notification support
+           libgcrypt
+           libgee
+           libnice
+           libsignal-protocol-c
+           libsoup-minimal-2
+           libsrtp                      ;for calls support
+           pango
+           qrencode
+           sqlite
+           webrtc-audio-processing))    ;for A/V support
     (synopsis "Graphical Jabber/XMPP Client using GTK+/Vala")
     (description "Dino is a chat client for the desktop.  It focuses on providing
 a minimal yet reliable Jabber/XMPP experience and having encryption enabled by
