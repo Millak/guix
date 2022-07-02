@@ -1199,7 +1199,7 @@ additional snapshots).")
            uthash
            zlib))
     (native-inputs
-     (list autoconf automake check-0.14 pkg-config))
+     (list autoconf automake check pkg-config))
     (home-page "https://burp.grke.org")
     (synopsis "Differential backup and restore")
     (description "Burp is a network backup and restore program.  It attempts
