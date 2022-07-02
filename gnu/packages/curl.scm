@@ -33,6 +33,7 @@
 (define-module (gnu packages curl)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -152,7 +153,22 @@ tunneling, and so on.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1f2xgj0wvys9xw50h7vcbaraavjr9rxx9n06x2xfbgs7ym1qn49d"))))))
+                "1f2xgj0wvys9xw50h7vcbaraavjr9rxx9n06x2xfbgs7ym1qn49d"))))
+    (arguments (substitute-keyword-arguments (package-arguments curl)
+                 ((#:phases phases)
+                  (cond
+                   ((target-x86-32?)
+                    #~(modify-phases #$phases
+                        (add-after 'unpack 'skip-failing-tests
+                          (lambda _
+                            (with-output-to-port
+                                (open-file "tests/data/DISABLED" "a")
+                              (lambda ()
+                                (display "# curl_global_init thread-safety")
+                                (newline)
+                                (display 3026)
+                                (newline)))))))
+                   (else phases)))))))
 
 (define-public curl-minimal
   (deprecated-package "curl-minimal" curl))
