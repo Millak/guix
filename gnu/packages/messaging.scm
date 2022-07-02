@@ -25,7 +25,7 @@
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mason Hock <chaosmonk@riseup.net>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
+;;; Copyright © 2020, 2022 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2020, 2021 Robert Karszniewicz <avoidr@posteo.de>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -89,6 +89,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages less)
   #:use-module (gnu packages libcanberra)
@@ -1437,6 +1438,58 @@ a minimal yet reliable Jabber/XMPP experience and having encryption enabled by
 default.")
     (home-page "https://dino.im")
     (license license:gpl3+)))
+
+(define-public kaidan
+  (package
+    (name "kaidan")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/unstable/kaidan/" version
+                                  "/kaidan-" version ".tar.xz"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "3rdparty")))
+       (sha256
+        (base32 "195iddv35gc3k83r226y17avsab2b9bszgd7z7ynbddsgbf75rx7"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_TESTS=true")))
+    (native-inputs (list extra-cmake-modules
+                         perl
+                         pkg-config
+                         python-wrapper))
+    (inputs (list kirigami
+                  knotifications
+                  qtbase-5
+                  qtdeclarative
+                  qtgraphicaleffects
+                  qtlocation
+                  qtquickcontrols2
+                  qtsvg
+                  qtmultimedia
+                  qtxmlpatterns
+                  qqc2-desktop-style
+                  qxmpp
+                  zxing-cpp))
+    (home-page "https://www.kaidan.im/")
+    (synopsis "Qt-based XMPP/Jabber Client")
+    (description "Kaidan is a chat client.  It uses the open communication
+protocol XMPP (Jabber).  The user interface makes use of Kirigami and QtQuick,
+while the back-end of Kaidan is entirely written in C++ using Qt and the
+Qt-based XMPP library QXmpp.")
+    (license (list
+              ;; Graphics
+              license:cc-by-sa4.0
+              ;; Files:
+              ;; src/{StatusBar.cpp|StatusBar.h|singleapp/*|hsluv-c/*}
+              ;; utils/generate-license.py
+              license:expat
+              ;; QrCodeVideoFrame
+              license:asl2.0
+              ;; Others
+              license:gpl3+))))
 
 (define-public prosody
   (package
