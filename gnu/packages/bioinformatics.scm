@@ -14506,7 +14506,7 @@ The output is in SAM format.")
     (propagated-inputs
      (list libxml2))
     (native-inputs
-     (list check-0.14 swig))
+     (list check swig))
     (home-page "http://sbml.org/Software/libSBML")
     (synopsis "Process SBML files and data streams")
     (description "LibSBML is a library to help you read, write, manipulate,
