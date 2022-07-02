@@ -490,9 +490,7 @@ from any network device in any of three ASCII graph formats.")
         "-DENABLE_STATIC=OFF"
         "-DENABLE_UNITTESTS=ON")))
     (native-inputs
-     `(("gtest" ,googletest)
-       ("pkg-config" ,pkg-config)
-       ("tclsh" ,tcl)))
+     (list googletest pkg-config tcl))
     (propagated-inputs
      (list openssl))
     (synopsis "Secure Reliable Transport")
