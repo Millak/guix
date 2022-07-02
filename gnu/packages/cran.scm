@@ -7238,6 +7238,25 @@ provides some missing S-PLUS functionality in R.")
         (base32
          "16a7rbvlym3bnfm93ikr5kl0l86ppk0s41fva6idvcx765g3fqkk"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      `(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             ;; These definitions are no longer part of R since 4.2.0.  See
+             ;; https://cran.r-project.org/doc/manuals/r-devel/NEWS.html for
+             ;; details.
+             (substitute* "inst/include/ut_RS.h"
+               (("#include \"R.h\"" m)
+                (string-append "\
+#define R_PROBLEM_BUFSIZE 4096
+#define PROBLEM	{char R_problem_buf[R_PROBLEM_BUFSIZE];(sprintf)(R_problem_buf,
+#define MESSAGE {char R_problem_buf[R_PROBLEM_BUFSIZE];(sprintf)(R_problem_buf,
+#define ERROR	),error(R_problem_buf);}
+#define WARNING(x)		),warning(R_problem_buf);}
+#define WARN			WARNING(NULL)
+" m))))))))
     (propagated-inputs
      (list r-mass r-splus2r))
     (home-page "https://cran.r-project.org/web/packages/ifultools/")
