@@ -683,6 +683,7 @@ highlighting and other features typical of a source code editor.")
      (list ;; Required by gdk-pixbuf-2.0.pc
            glib
            ;; Required by gdk-pixbuf-xlib-2.0.pc
+           ;; TODO: Remove on core-updates.
            libx11
            ;; Used for testing and required at runtime.
            shared-mime-info))
