@@ -1380,7 +1380,7 @@ Encryption to Gajim.")
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
-     (list #:tests? #f
+     (list #:configure-flags #~(list "-DBUILD_TESTS=true")
            #:parallel-build? #f         ; not supported
            #:modules '((guix build cmake-build-system)
                        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
@@ -1399,7 +1399,13 @@ Encryption to Gajim.")
                      (wrap-program dino
                        `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
                (add-after 'install 'glib-or-gtk-wrap
-                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "./libdino-test")
+                     (invoke "./signal-protocol-vala-test")
+                     (invoke "./xmpp-vala-test")))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
