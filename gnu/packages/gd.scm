@@ -93,7 +93,10 @@ most anything else, on the fly.  While not restricted to use on the web, the
 most common applications of GD involve website development.")
     (license (non-copyleft "file://COPYING"
                            "See COPYING file in the distribution."))
-    (properties '((cpe-name . "libgd")))))
+    (properties '((cpe-name . "libgd")
+                  (upstream-name . "libgd")
+                  (release-monitoring-url
+                   . "https://github.com/libgd/libgd/releases")))))
 
 (define-public perl-gd
   (package
