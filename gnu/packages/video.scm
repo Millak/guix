@@ -1907,6 +1907,7 @@ videoformats depend on the configuration flags of ffmpeg.")
     (inputs
      (list alsa-lib
            avahi
+           bash-minimal
            dav1d
            dbus
            eudev
