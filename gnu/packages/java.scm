@@ -13766,6 +13766,10 @@ Lisp language featuring both an interpreter and a compiler, running in the
 JVM.  It supports JSR-223 (Java scripting API): it can be a scripting engine
 in any Java application.  Additionally, it can be used to implement (parts of)
 the application using Java to Lisp integration APIs.")
+    (native-search-paths
+     (list (search-path-specification
+            (variable "XDG_DATA_DIRS")
+            (files '("share")))))
     (license (list license:gpl2+
                    ;; named-readtables is released under 3 clause BSD
                    license:bsd-3
