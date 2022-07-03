@@ -2,6 +2,7 @@
 ;;; Copyright © 2013, 2014 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,14 +29,14 @@
 (define-public libunwind
   (package
     (name "libunwind")
-    (version "1.5.0")
+    (version "1.6.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://savannah/libunwind/libunwind-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "05qhzcg1xag3l5m3c805np6k342gc0f3g087b7g16jidv59pccwh"))))
+               "0xj9g6a9q7v7zz6lymf3f6011synibgawi4wi384bywid5kfqsja"))))
     (build-system gnu-build-system)
     (arguments
      ;; FIXME: As of glibc 2.25, we get 1 out of 34 test failures (2 are
