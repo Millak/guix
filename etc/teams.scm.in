@@ -1,0 +1,257 @@
+#!@GUILE@ \
+--no-auto-compile -s
+!#
+
+;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;;
+;;; This file is part of GNU Guix.
+;;;
+;;; GNU Guix is free software; you can redistribute it and/or modify it
+;;; under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 3 of the License, or (at
+;;; your option) any later version.
+;;;
+;;; GNU Guix is distributed in the hope that it will be useful, but
+;;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This code defines development teams and team members.
+
+;;; Code:
+
+(use-modules (srfi srfi-1)
+             (srfi srfi-9)
+             (ice-9 format)
+             (ice-9 match)
+             (guix ui))
+
+(define-record-type <team>
+  (make-team id name description members)
+  team?
+  (id          team-id)
+  (name        team-name)
+  (description team-description)
+  (members     team-members set-team-members!))
+
+(define-record-type <person>
+  (make-person name email)
+  person?
+  (name    person-name)
+  (email   person-email))
+
+(define* (person name #:optional email)
+  (make-person name email))
+
+(define* (team id #:key name description (members '()))
+  (make-team id
+             (or name (symbol->string id))
+             description
+             members))
+
+(define %teams
+  (make-hash-table))
+
+(define-syntax define-team
+  (lambda (x)
+    (syntax-case x ()
+      ((_ id value)
+       #`(begin
+           (define-public id value)
+           (hash-set! %teams 'id id))))))
+
+(define-syntax-rule (define-member person teams ...)
+  (let ((p person))
+    (for-each (lambda (team-id)
+                (let ((team
+                       (hash-ref %teams team-id
+                                 (lambda ()
+                                   (error (format #false
+                                                  "Unknown team ~a for ~a~%"
+                                                  team-id p))))))
+                  (set-team-members!
+                   team (cons p (team-members team)))))
+              (quote (teams ...)))))
+
+
+(define-team python
+  (team 'python
+        #:name "Python team"
+        #:description
+        "Python, Python packages, the \"pypi\" importer, and the python-build-system."))
+
+(define-team haskell
+  (team 'haskell
+        #:name "Haskell team"
+        #:description
+        "GHC, Hugs, Haskell packages, the \"hackage\" and \"stackage\" importers, and
+the haskell-build-system."))
+
+(define-team r
+  (team 'r
+        #:name "R team"
+        #:description
+        "The R language, CRAN and Bioconductor repositories, the \"cran\" importer,
+and the r-build-system."))
+
+(define-team julia
+  (team 'julia
+        #:name "Julia team"
+        #:description
+        "The Julia language, Julia packages, and the julia-build-system."))
+
+(define-team ocaml
+  (team 'ocaml
+        #:name "OCaml and Dune team"
+        #:description
+        "The OCaml language, the Dune build system, OCaml packages, the \"opam\"
+importer, and the ocaml-build-system."))
+
+(define-team java
+  (team 'java
+        #:name "Java and Maven team"
+        #:description
+        "The JDK and JRE, the Maven build system, Java packages, the ant-build-system,
+and the maven-build-system."))
+
+(define-team maths
+  (team 'maths
+        #:name "Algebra and Maths team"))
+
+(define-team emacs
+  (team 'emacs
+        #:name "Emacs team"))
+
+(define-team lisp
+  (team 'lisp
+        #:name "Lisp team"))
+
+(define-team ruby
+  (team 'ruby
+        #:name "Ruby team"))
+
+(define-team go
+  (team 'go
+        #:name "Go team"))
+
+(define-team embedded-bootstrap
+  (team 'embedded-bootstrap
+        #:name "Embedded / Bootstrap"))
+
+(define-team rust
+  (team 'rust
+        #:name "Rust"))
+
+(define-team kernel
+  (team 'kernel
+        #:name "Linux-libre kernel team"))
+
+(define-team core
+  (team 'core
+        #:name "Core / Tools / Internals"))
+
+(define-team games
+  (team 'games
+        #:name "Games and Videos"))
+
+(define-team translations
+  (team 'translations
+        #:name "Translations"))
+
+(define-team installer
+  (team 'installer
+        #:name "Installer script and system installer"))
+
+(define-team home
+  (team 'home
+        #:name "Team for \"guix home\""))
+
+(define-team mentors
+  (team 'mentors
+        #:name "Mentors"
+        #:description
+        "A group of mentors who chaperone contributions by newcomers."))
+
+
+(define-member (person "Ricardo Wurmus"
+                       "rekado@elephly.net")
+  r core mentors)
+
+(define-member (person "Ludovic Courtès"
+                       "ludo@gnu.org")
+  core home embedded-bootstrap mentors)
+
+
+
+(define (find-team name)
+  (or (hash-ref %teams (string->symbol name))
+      (error (format #false
+                           "no such team: ~a~%" name))))
+
+(define (cc . teams)
+  "Return arguments for `git send-email' to notify the members of the given
+TEAMS when a patch is received by Debbugs."
+  (format #true
+          "~{--add-header=\"X-Debbugs-Cc: ~a\"~^ ~}"
+          (map person-email
+               (delete-duplicates (append-map team-members teams) equal?))))
+
+(define* (list-members team #:optional port (prefix ""))
+  "Print the members of the given TEAM."
+  (define port* (or port (current-output-port)))
+  (for-each
+   (lambda (member)
+     (format port*
+             "~a~a <~a>~%"
+             prefix
+             (person-name member)
+             (person-email member)))
+   (team-members team)))
+
+(define (list-teams)
+  "Print all teams and their members."
+  (define port* (current-output-port))
+  (define width* (%text-width))
+  (hash-for-each
+   (lambda (key team)
+     (format port*
+             "\
+id: ~a
+name: ~a
+description: ~a
+members:
+"
+             (team-id team)
+             (team-name team)
+             (or (and=> (team-description team)
+                        (lambda (text)
+                          (string->recutils
+                           (fill-paragraph text width*
+                                           (string-length "description: ")))))
+                 "<none>"))
+     (list-members team port* "+ ")
+     (newline))
+   %teams))
+
+(define (main . args)
+  (match args
+    (("cc" . team-names)
+     (apply cc (map find-team team-names)))
+    (("list-teams" . args)
+     (list-teams))
+    (("list-members" . team-names)
+     (for-each
+      (lambda (team-name)
+        (list-members (find-team team-name)))
+      team-names))
+    (anything
+     (format (current-error-port)
+             "Usage: etc/teams.scm <command> [<args>]~%"))))
+
+(apply main (cdr (command-line)))
