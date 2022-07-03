@@ -306,6 +306,11 @@ Its three main components are:
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config check))
+    (native-search-paths
+     (list
+      (search-path-specification
+       (variable "C_INCLUDE_PATH")
+       (files '("include")))))
     (synopsis "Thin wrapper over POSIX syscalls")
     (description
      "The purpose of libfixposix is to offer replacements for parts of POSIX
