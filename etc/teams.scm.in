@@ -191,6 +191,10 @@ and the maven-build-system."))
                        "leo@famulari.name")
   kernel)
 
+(define-member (person "Efraim Flashner"
+                       "efraim@flashner.co.il")
+  embedded-bootstrap julia rust science)
+
 (define-member (person "Liliana Marie Prikler"
                        "liliana.prikler@gmail.com")
   emacs games)
