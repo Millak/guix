@@ -659,7 +659,7 @@ with a layered architecture of JTAG interface and TAP support.")
                 (sha256
                  (base32
                   "0w0dff3s7wv2d9m78a4jhckiik58q38wx6wpbba5hzbs4yxz35ck"))
-                (patch-flags (list "-p1" "--directory=binutils"))))
+                (patches '())))
       (arguments
        `(;; FIXME: For some reason there are many test failures.  It's not
          ;; obvious how to fix the failures.
