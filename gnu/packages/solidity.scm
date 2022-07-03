@@ -1,4 +1,5 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
+;;; Copyright © 2022 Zhu Zihao  <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages ncurses)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module ((guix licenses) #:prefix license:))
@@ -44,37 +46,35 @@
           (base32 "1mswhjymiwnd3n7h3sjvjx5x8223yih0yvfcr0zpqr4aizpfx5z8"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'create-commit_hash.txt
-             (lambda _
-               (with-output-to-file "commit_hash.txt"
-                 (lambda _
-                   (display
-                    (substring ,commit 0 8))))))
-           (delete 'configure)
-           (delete 'install)
-           (replace 'build
-             (lambda* (#:key outputs #:allow-other-keys)
-               ;; Unbundle jsoncpp
-               (delete-file "./cmake/jsoncpp.cmake")
-               (substitute* "CMakeLists.txt"
-                 (("include\\(jsoncpp\\)") ""))
-               ;; Bug list is always sorted since we only build releases
-               (substitute* "./test/cmdlineTests.sh"
-                 (("\"\\$REPO_ROOT\"/scripts/update_bugs_by_version\\.py") ""))
-               (substitute* "./scripts/build.sh"
-                 (("sudo\\ make\\ install") "make install")
-                 (("cmake\\ ..")
-                  (string-append "cmake .. -DCMAKE_INSTALL_PREFIX="
-                                 (assoc-ref outputs "out"))))
-               (setenv "CIRCLECI" "1")
-               (invoke "./scripts/build.sh")
-               #t))
-           (replace 'check
-             (lambda _
-               (invoke "./scripts/tests.sh")
-               #t)))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'create-commit_hash.txt
+                   (lambda _
+                     (with-output-to-file "commit_hash.txt"
+                       (lambda _
+                         (display
+                          (substring #$commit 0 8))))))
+                 (delete 'configure)
+                 (delete 'install)
+                 (replace 'build
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     ;; Unbundle jsoncpp
+                     (delete-file "./cmake/jsoncpp.cmake")
+                     (substitute* "CMakeLists.txt"
+                       (("include\\(jsoncpp\\)") ""))
+                     ;; Bug list is always sorted since we only build releases
+                     (substitute* "./test/cmdlineTests.sh"
+                       (("\"\\$REPO_ROOT\"/scripts/update_bugs_by_version\\.py") ""))
+                     (substitute* "./scripts/build.sh"
+                       (("sudo\\ make\\ install") "make install")
+                       (("cmake\\ ..")
+                        (string-append "cmake .. -DCMAKE_INSTALL_PREFIX="
+                                       (assoc-ref outputs "out"))))
+                     (setenv "CIRCLECI" "1")
+                     (invoke "./scripts/build.sh")))
+                 (replace 'check
+                   (lambda _
+                     (invoke "./scripts/tests.sh"))))))
       (inputs
        (list boost-static jsoncpp z3))
       (native-inputs
