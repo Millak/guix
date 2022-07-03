@@ -37,6 +37,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
+;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5747,3 +5748,33 @@ source and extracts a 24-bit high resolution WAV file.  It handles both DST
 and DSD streams.")
    (home-page "https://tari.in/www/software/odio-sacd/")
    (license license:gpl3+)))
+
+(define-public qpwgraph
+  (package
+    (name "qpwgraph")
+    (version "0.3.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/rncbc/qpwgraph")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zja4klvzbfwi14ihiahl8zm869h0c1yrpfkzvixxjcps372hh07"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f))    ;; no tests
+    (inputs (list alsa-lib
+                  pipewire-0.3
+                  ;; qtsvg is still on version 5; use qtbase-5 to match
+                  qtbase-5
+                  qtsvg))
+    (native-inputs (list pkg-config))
+    (synopsis "PipeWire graph manager")
+    (description
+     "qpwgraph is a graph manager dedicated to PipeWire, using the Qt C++
+framework.  It provides a visual interface to audio and video connections
+managed by PipeWire.")
+    (home-page "https://gitlab.freedesktop.org/rncbc/qpwgraph")
+    (license license:gpl2)))
