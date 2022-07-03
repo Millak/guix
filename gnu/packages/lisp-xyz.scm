@@ -20987,7 +20987,7 @@ access lexicographic data from WordNet.")
 (define-public sbcl-nfiles
   (package
    (name "sbcl-nfiles")
-   (version "0.4.2")
+   (version "1.0.0")
    (source
     (origin
      (method git-fetch)
@@ -20997,7 +20997,7 @@ access lexicographic data from WordNet.")
      (file-name (git-file-name "cl-nfiles" version))
      (sha256
       (base32
-       "06cll4l5gbp98wrgdy04ar6z00sag0b46pr4dv4n6bs1ypfcgs01"))))
+       "1215h4xzc7vxidr7lhxyr5a7giyd08678ibz5qp4d4nvg14q94y2"))))
    (build-system asdf-build-system/sbcl)
    (inputs
     (list gnupg
@@ -21009,7 +21009,7 @@ access lexicographic data from WordNet.")
           sbcl-trivial-package-local-nicknames
           sbcl-trivial-types))
    (native-inputs
-    (list sbcl-prove))
+    (list sbcl-lisp-unit2))
    (arguments
     `(#:phases
       (modify-phases %standard-phases
