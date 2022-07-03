@@ -19,72 +19,52 @@
 (define-module (gnu packages solidity)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages python)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pretty-print)
   #:use-module (guix packages)
   #:use-module (guix gexp)
-  #:use-module (guix git-download)
+  #:use-module (guix download)
   #:use-module (guix build-system cmake)
   #:use-module ((guix licenses) #:prefix license:))
 
 (define-public solidity
-  (let ((commit "3f05b770bdbf60eca866382049ea191dd701409a"))
-    (package
-      (name "solidity")
-      (version "0.7.4")
-      (source
-       (origin
-         (method git-fetch)
-         (uri
-          (git-reference
-           (url "https://github.com/ethereum/solidity")
-           (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1mswhjymiwnd3n7h3sjvjx5x8223yih0yvfcr0zpqr4aizpfx5z8"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'create-commit_hash.txt
-                   (lambda _
-                     (with-output-to-file "commit_hash.txt"
-                       (lambda _
-                         (display
-                          (substring #$commit 0 8))))))
-                 (delete 'configure)
-                 (delete 'install)
-                 (replace 'build
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     ;; Unbundle jsoncpp
-                     (delete-file "./cmake/jsoncpp.cmake")
-                     (substitute* "CMakeLists.txt"
-                       (("include\\(jsoncpp\\)") ""))
-                     ;; Bug list is always sorted since we only build releases
-                     (substitute* "./test/cmdlineTests.sh"
-                       (("\"\\$REPO_ROOT\"/scripts/update_bugs_by_version\\.py") ""))
-                     (substitute* "./scripts/build.sh"
-                       (("sudo\\ make\\ install") "make install")
-                       (("cmake\\ ..")
-                        (string-append "cmake .. -DCMAKE_INSTALL_PREFIX="
-                                       (assoc-ref outputs "out"))))
-                     (setenv "CIRCLECI" "1")
-                     (invoke "./scripts/build.sh")))
-                 (replace 'check
-                   (lambda _
-                     (invoke "./scripts/tests.sh"))))))
-      (inputs
-       (list boost-static jsoncpp z3))
-      (native-inputs
-       (list python
-             ncurses                              ;for 'tput'
-             findutils))                          ;for 'xargs'
-      (home-page "https://solidity.readthedocs.io")
-      (synopsis "Contract-Oriented Programming Language")
-      (description
-       "Solidity is a statically-typed curly-braces programming language
+  (package
+    (name "solidity")
+    (version "0.8.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://github.com/ethereum/solidity/releases/download/v"
+                       version "/solidity_" version ".tar.gz"))
+       (sha256
+        (base32 "0j9a8y5fizarl9yhbnwvd0x1nm6qsbskqb7j1fwsyqx47w5sa82p"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-3rd-party-dependencies
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("include\\(fmtlib\\)")
+                 "find_package(fmt)")
+                (("include\\(range-v3\\)")
+                 "find_package(range-v3)")
+                (("include\\(jsoncpp\\)")
+                 "find_package(jsoncpp)")))))))
+    (inputs
+     (list boost-static fmt-for-solidity jsoncpp range-v3 z3))
+    (native-inputs
+     (list python ncurses findutils))
+    (home-page "https://solidity.readthedocs.io")
+    (synopsis "Contract-Oriented Programming Language")
+    (description
+     "Solidity is a statically-typed curly-braces programming language
 designed for developing smart contracts that run on the Ethereum Virtual
 Machine.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
