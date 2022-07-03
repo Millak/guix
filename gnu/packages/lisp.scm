@@ -567,7 +567,12 @@ an interpreter, a compiler, a debugger, and much more.")
                                     (assoc-ref outputs "out"))
                      "--dynamic-space-size=3072"
                      "--with-sb-core-compression"
-                     "--with-sb-xref-for-internals")))
+                     "--with-sb-xref-for-internals"
+                     ;; SB-SIMD will only be built on x86_64 CPUs supporting
+                     ;; AVX2 instructions. Some x86_64 CPUs don't, so for reproducibility
+                     ;; we disable it and we don't build its documentation (see the
+                     ;; 'build-doc' phase).
+                     "--without-sb-simd")))
          (add-after 'build 'build-shared-library
            (lambda* (#:key outputs #:allow-other-keys)
              (setenv "CC" "gcc")
@@ -577,15 +582,11 @@ an interpreter, a compiler, a debugger, and much more.")
              (invoke "sh" "install.sh")))
          (add-after 'build 'build-doc
            (lambda _
-             ;; Building the documentation for SB-SIMD only works when SB-SIMD
-             ;; is enabled, so far only on x86_64-linux.
-             ,@(match (%current-system)
-                 ("x86_64-linux"
-                  '())
-                 (_
-                  '((substitute* "doc/manual/generate-texinfo.lisp"
-                      (("exclude '\\(\"asdf\"\\)")
-                       "exclude '(\"asdf\" \"sb-simd\")")))))
+             ;; Don't build the documentation for SB-SIMD as it is disabled in
+             ;; the 'build' phase.
+             (substitute* "doc/manual/generate-texinfo.lisp"
+               (("exclude '\\(\"asdf\"\\)")
+                "exclude '(\"asdf\" \"sb-simd\")"))
              (with-directory-excursion "doc/manual"
                (and  (invoke "make" "info")
                      (invoke "make" "dist")))))
