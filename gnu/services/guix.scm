@@ -309,7 +309,10 @@
                                        #$agent-communication-uri-string)
             #:client-communication-uri (string->uri
                                         #$client-communication-uri-string)
-            #:parallel-hooks (list #$@parallel-hooks)))))
+            #:parallel-hooks (list #$@(map (match-lambda
+                                             ((name . val)
+                                              #~(cons '#$name #$val)))
+                                           parallel-hooks))))))
    #:guile guile))
 
 (define (guix-build-coordinator-shepherd-services config)
