@@ -969,29 +969,12 @@ development.")
                        "frmts/gtiff/libgeotiff"
                        "frmts/zlib"
                        "ogr/ogrsf_frmts/geojson/libjson"))))))
-    (build-system gnu-build-system)
+    (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
        #:configure-flags
-       (let-syntax ((with (syntax-rules ()
-                            ((_ option input)
-                             (string-append option "="
-                                            (assoc-ref %build-inputs input))))))
-         (list
-          ;; TODO: --with-pcidsk, --with-pcraster
-          (with "--with-expat" "expat")
-          (with "--with-freexl" "freexl")
-          (with "--with-geotiff" "libgeotiff")
-          (with "--with-gif" "giflib")
-          (with "--with-jpeg" "libjpeg-turbo")
-          (with "--with-libjson-c" "json-c")
-          (with "--with-libtiff" "libtiff")
-          (with "--with-libz" "zlib")
-          (with "--with-png" "libpng")
-          (with "--with-sqlite3" "sqlite")
-          (with "--with-webp" "libwebp")
-          "--without-jpeg12"
-          "--with-pcre"))))
+       (list "-DGDAL_USE_INTERNAL_LIBS=WHEN_NO_EXTERNAL"
+             "-DGDAL_USE_JPEG12_INTERNAL=OFF")))
     (inputs
      (list curl
            expat
@@ -1006,9 +989,10 @@ development.")
            libwebp
            netcdf
            openssl
-           pcre
+           pcre2
            postgresql ; libpq
            proj
+           qhull
            sqlite
            zlib))
     (native-inputs
