@@ -78,9 +78,9 @@
       (inputs
        (list boost-static jsoncpp z3))
       (native-inputs
-       `(("python" ,python)
-         ("tput" ,ncurses)
-         ("xargs" ,findutils)))
+       (list python
+             ncurses                              ;for 'tput'
+             findutils))                          ;for 'xargs'
       (home-page "https://solidity.readthedocs.io")
       (synopsis "Contract-Oriented Programming Language")
       (description
