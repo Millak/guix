@@ -187,6 +187,10 @@ and the maven-build-system."))
                        "andreas@enge.fr")
   science)
 
+(define-member (person "Liliana Marie Prikler"
+                       "liliana.prikler@gmail.com")
+  emacs games)
+
 (define-member (person "Ricardo Wurmus"
                        "rekado@elephly.net")
   r core mentors)
