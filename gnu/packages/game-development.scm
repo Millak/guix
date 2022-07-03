@@ -1431,6 +1431,8 @@ are only used to bootstrap it.")
                                   (string-append out "/share/renpy/common"))
                 (copy-recursively "gui"
                                   (string-append out "/share/renpy/gui"))
+                (copy-recursively "sdk-fonts"
+                                  (string-append out "/share/renpy/sdk-fonts"))
 
                 (mkdir-p (string-append out "/bin"))
                 (copy-file #$(local-file (search-auxiliary-file "renpy/renpy.in"))
