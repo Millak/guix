@@ -120,9 +120,9 @@ importer, and the ocaml-build-system."))
         "The JDK and JRE, the Maven build system, Java packages, the ant-build-system,
 and the maven-build-system."))
 
-(define-team maths
-  (team 'maths
-        #:name "Algebra and Maths team"))
+(define-team science
+  (team 'science
+        #:name "Science team"))
 
 (define-team emacs
   (team 'emacs
@@ -187,6 +187,9 @@ and the maven-build-system."))
                        "ludo@gnu.org")
   core home embedded-bootstrap mentors)
 
+(define-member (person "Andreas Enge"
+                       "andreas@enge.fr")
+  science)
 
 
 (define (find-team name)
