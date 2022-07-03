@@ -1258,21 +1258,16 @@ While it aims to be used as a drop-in replacement, it appears to be
 developed mainly for Ren'py.")
       (license (list license:lgpl2.1 license:zlib)))))
 
-;; Using nightly from 2022-06-16.
-;; Revert back to URLs once renpy 8 is released!
-(define %renpy-commit "3e854bc7cb1642ca18b061a0c6e349f168965c43")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version (git-version "7.99.99" "0" %renpy-commit))
+    (version "8.0.0")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/renpy/renpy")
-             (commit %renpy-commit)))
-       (file-name (git-file-name name version))
-       (sha256 (base32 "11g7hqhw4gbkx5ib2wsawrznmjbn8r9zkgf2sg39z56h96y8wfbn"))
+       (method url-fetch)
+       (uri (string-append "https://www.renpy.org/dl/" version
+                           "/renpy-" version "-source.tar.bz2"))
+       (sha256 (base32 "09z3r16j4cxddkb50ghmi4xp0s05s15q4pzdmfajy85ignwqhjdi"))
        (modules '((guix build utils)))
        (patches
         (search-patches
@@ -1281,7 +1276,10 @@ developed mainly for Ren'py.")
         '(with-directory-excursion "module"
            ;; drop fribidi sources
            (delete-file-recursively "fribidi-src")
-           #t))))
+           ;; drop _renpytfd, as there are missing sources
+           (substitute* "setup.py"
+             (("cython\\(\"_renpytfd\"" all)
+              (string-append "pass # " all)))))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ; Ren'py doesn't seem to package tests
