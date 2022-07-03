@@ -1209,24 +1209,25 @@ to create fully featured games and multimedia programs in the python language.")
                    license:lgpl2.1+))))
 
 (define-public python-pygame-sdl2
-  ;; Using latest git commit as of 2022-06-17, because there is no tagged
-  ;; release for renpy 8.
-  ;; Revert back to URLs once renpy 8 is released!
   (let ((real-version "2.1.0")
-        ;;(renpy-version "8.0.0")
-        (commit "1705c6e3004dcb1daf859560bcd52eb093e97d45"))
+        (renpy-version "8.0.0"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
-      (version (git-version real-version "0" commit))
+      (version (string-append real-version "-for-renpy-" renpy-version))
       (source
        (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/renpy/pygame_sdl2")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256 (base32 "1g0arhpd59zypspk36sgajf1kzavppfkv766vifvxar60968rrjn"))))
+         (method url-fetch)
+         (uri (string-append "https://www.renpy.org/dl/" renpy-version
+                             "/pygame_sdl2-" version ".tar.gz"))
+         (sha256 (base32 "0majf64pdfba5byjlv41pgsdmwvy09hw3m7143jz3kc1wjd2gaw8"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; drop generated sources
+             (delete-file-recursively "gen")
+             (delete-file-recursively "gen3")
+             (delete-file-recursively "gen-static")))))
       (build-system python-build-system)
       (arguments
        `(#:tests? #f                ; tests require pygame to be installed first
