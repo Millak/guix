@@ -15437,7 +15437,8 @@ return the CPU count of the current system.")
           (base32 "0ipy51q2fw03xk9rqcyzbq2b9c32npc1gl3c53rdjywpak7zwwg6"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:phases
+       `(#:asd-systems '("fof" "fof/mf")
+         #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-paths
              (lambda* (#:key inputs #:allow-other-keys)
@@ -15447,6 +15448,7 @@ return the CPU count of the current system.")
                           (assoc-ref inputs "ffmpeg")))))))))
       (inputs
        (list sbcl-alexandria
+             sbcl-cl-json
              sbcl-cl-str
              sbcl-hu.dwim.defclass-star
              sbcl-local-time
