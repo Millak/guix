@@ -21391,7 +21391,19 @@ implementation for Common Lisp.")
           (base32 "1048f6prz2lp859nxwcgghn6n38pc2pb580azzxpdhfcdi0034mj"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       '(#:asd-systems '("com.inuoe.jzon" "com.inuoe.jzon-tests")))
+       '(#:asd-systems '("com.inuoe.jzon")
+         #:asd-test-systems '("com.inuoe.jzon-tests")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-test-asd
+             (lambda _
+               (substitute* "test/com.inuoe.jzon-tests.asd"
+                 ((":depends-on")
+                  (string-append
+                   ":perform (test-op (op c) (symbol-call :fiveam :run!"
+                   " (find-symbol \"JZON\" :com.inuoe.jzon-tests)))"
+                   "\n"
+                   "  :depends-on"))))))))
       (native-inputs
         (list sbcl-alexandria
               sbcl-fiveam
