@@ -4329,6 +4329,26 @@ quantities.")
 curve to a data matrix in arbitrary dimensions.")
    (license license:gpl2)))
 
+(define-public r-prismatic
+  (package
+    (name "r-prismatic")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "prismatic" version))
+              (sha256
+               (base32
+                "1f6k11hcll33g2wbadjhm91pm5h4khg4zd8g9fzs3m9xlqpfaywh"))))
+    (properties `((upstream-name . "prismatic")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-farver))
+    (home-page "https://github.com/EmilHvitfeldt/prismatic")
+    (synopsis "Color manipulation tools")
+    (description
+     "Manipulate and visualize colors in a intuitive, low-dependency and functional
+way.")
+    (license license:expat)))
+
 (define-public r-reshape
   (package
     (name "r-reshape")
