@@ -7042,46 +7042,44 @@ management via the GIMPS project's Primenet server.")
     (build-system gnu-build-system)
     (outputs '("out" "lib"))
     (arguments
-     `(#:test-target "checks"
-       #:configure-flags '("--enable-generic") ;prevent -march-native
-       #:phases
-       (modify-phases %standard-phases
-         ;; Default make target does not build all available
-         ;; executables.  Create them now.
-         (add-after 'build 'build-extra-programs
-           (lambda _
-             (for-each (lambda (target) (invoke "make" target))
-                       '("blisstog" "bliss2dre" "checks6" "sumlines"))
-             #t))
-         ;; Upstream does not provide any install target.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib-output (assoc-ref outputs "lib"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/nauty/"))
-                    (include (string-append lib-output "/include/nauty"))
-                    (lib (string-append lib-output "/lib/nauty")))
-               (for-each (lambda (f) (install-file f bin))
-                         '("addedgeg"  "amtog" "assembleg" "biplabg" "blisstog"
-                           "bliss2dre" "catg" "checks6" "complg" "converseg"
-                           "copyg" "countg" "cubhamg" "deledgeg" "delptg"
-                           "directg"  "dreadnaut" "dretodot" "dretog" "genbg"
-                           "genbgL" "geng" "genquarticg" "genrang" "genspecialg"
-                           "gentourng" "gentreeg" "hamheuristic" "labelg"
-                           "linegraphg" "listg" "multig" "newedgeg" "pickg"
-                           "planarg" "ranlabg" "shortg" "showg" "subdivideg"
-                           "sumlines" "twohamg" "underlyingg" "vcolg"
-                           "watercluster2" "NRswitchg"))
-               (for-each (lambda (f) (install-file f include))
-                         (find-files "." "\\.h$"))
-               (for-each (lambda (f) (install-file f lib))
-                         (find-files "." "\\.a$"))
-               (for-each (lambda (f) (install-file f doc))
-                         (append '("formats.txt" "README" "schreier.txt")
-                                 (find-files "." "\\.pdf$")))))))))
+     (list
+      #:test-target "checks"
+      #:configure-flags #~(list "--enable-generic") ;prevent -march-native
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Default make target does not build all available
+          ;; executables.  Create them now.
+          (add-after 'build 'build-extra-programs
+            (lambda _
+              (for-each (lambda (target) (invoke "make" target))
+                        '("blisstog" "bliss2dre" "checks6" "sumlines"))))
+          ;; Upstream does not provide any install target.
+          (replace 'install
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (doc (string-append #$output "/share/doc/nauty/"))
+                     (include (string-append #$output:lib "/include/nauty"))
+                     (lib (string-append #$output:lib "/lib/nauty")))
+                (for-each (lambda (f) (install-file f bin))
+                          '("addedgeg"  "amtog" "assembleg" "biplabg" "blisstog"
+                            "bliss2dre" "catg" "checks6" "complg" "converseg"
+                            "copyg" "countg" "cubhamg" "deledgeg" "delptg"
+                            "directg"  "dreadnaut" "dretodot" "dretog" "genbg"
+                            "genbgL" "geng" "genquarticg" "genrang" "genspecialg"
+                            "gentourng" "gentreeg" "hamheuristic" "labelg"
+                            "linegraphg" "listg" "multig" "newedgeg" "pickg"
+                            "planarg" "ranlabg" "shortg" "showg" "subdivideg"
+                            "sumlines" "twohamg" "underlyingg" "vcolg"
+                            "watercluster2" "NRswitchg"))
+                (for-each (lambda (f) (install-file f include))
+                          (find-files "." "\\.h$"))
+                (for-each (lambda (f) (install-file f lib))
+                          (find-files "." "\\.a$"))
+                (for-each (lambda (f) (install-file f doc))
+                          (append '("formats.txt" "README" "schreier.txt")
+                              (find-files "." "\\.pdf$")))))))))
     (inputs
-     (list gmp))                   ;for sumlines
+     (list gmp))                        ;for sumlines
     (home-page "https://pallini.di.uniroma1.it/")
     (synopsis "Library for graph automorphisms")
     (description "@code{nauty} (No AUTomorphisms, Yes?) is a set of
