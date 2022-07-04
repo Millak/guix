@@ -3,6 +3,7 @@
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages libsigsegv)
+  #:use-module (gnu packages multiprecision)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu))
@@ -94,6 +96,14 @@ language for the easy manipulation of formatted text, such as tables of data.
 Gawk features many extensions beyond the traditional implementation,
 including network access, sorting, and large libraries.")
    (license license:gpl3+)))
+
+;; Separate from gawk to facilitate bootstrapping.
+(define-public gawk-mpfr
+  (package/inherit gawk
+    (name "gawk-mpfr")
+    (inputs
+     (modify-inputs (package-inputs gawk)
+       (prepend mpfr)))))
 
 (define-public mawk
   (package
