@@ -986,7 +986,11 @@ anti-aliased vectorial paths.")
            "11rhc6h501dwcik2igkszz7b9n515cr99m5pjh4r2qfwgiri6ysa"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       '(#:tests? #f)) ; spatial-trees.test requires spatial-trees.nns
+       ;; We cannot build "spatial-trees-viz" here because it depends on
+       ;; mcclim which depends on spatial-trees.  FIXME: Break the circle.
+       '(#:asd-systems '("spatial-trees" "spatial-trees.nns")))
+      (inputs
+       (list sbcl-alexandria sbcl-optima sbcl-iterate))
       (native-inputs
        (list sbcl-fiveam))
       (home-page "https://github.com/rpav/spatial-trees")
