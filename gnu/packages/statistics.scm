@@ -7100,3 +7100,28 @@ significant simulations to all simulations.  More conservative simulations as
 protection against a bias in the pilotdata are available aswell as methods for
 otting the results.")
     (license license:gpl3)))
+
+(define-public r-colorway
+  (let ((commit "8ba8f0026aba37752c6770de45bf53b1b0f48afc")
+        (revision "1"))
+    (package
+      (name "r-colorway")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hypercompetent/colorway")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0r6yhnzx3ll1z12pp6y8fqbrx7v18rcff2j2179bqy9ca2d2d94l"))))
+      (properties `((upstream-name . "colorway")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-dplyr r-ggplot2 r-rlang))
+      (home-page "https://github.com/hypercompetent/colorway")
+      (synopsis "Functions for colors in R")
+      (description
+       "This package provides a collection of (mostly simple) functions for
+generating and manipulating colors in R.")
+      (license license:gpl3))))
