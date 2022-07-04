@@ -21570,7 +21570,7 @@ in a native template application).")
 (define-public sbcl-nkeymaps
   (package
     (name "sbcl-nkeymaps")
-    (version "0.1.1")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -21579,15 +21579,14 @@ in a native template application).")
              (commit version)))
        (file-name (git-file-name "cl-nkeymaps" version))
        (sha256
-        (base32 "0shkklc3aiq44hyv1q6fahw4vjcr0iw4zsmxbhmxqh04r7185ddf"))))
+        (base32 "1f7s9g5s9riyyrbj8lyvzlvymdbh9x9sknxmjzfrkbz3iqlpanc3"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria
-           sbcl-cl-str
            sbcl-fset
            sbcl-trivial-package-local-nicknames))
     (native-inputs
-     (list sbcl-prove))
+     (list sbcl-lisp-unit2))
     (home-page "https://github.com/atlas-engineer/nkeymaps")
     (synopsis "Keymap facility for Common Lisp")
     (description
