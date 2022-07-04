@@ -7138,7 +7138,7 @@ every time the power supply source is changed.")
 (define-public tlpui
   (package
     (name "tlpui")
-    (version "1.5.0")
+    (version "1.5.0-1")
     (source
      (origin
        (method git-fetch)
@@ -7147,7 +7147,7 @@ every time the power supply source is changed.")
              (commit (string-append "tlpui-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ca18hazxksx516nkh28f6rd0l1039nkn7mszqfy68c461061q1h"))))
+        (base32 "16a6x733szsggn23ns7bj3gpvb80675plh96v4llrz0s8p3h47pg"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
