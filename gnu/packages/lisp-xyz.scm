@@ -6033,11 +6033,6 @@ XSD type library.")
        (list sbcl-alexandria))
       (native-inputs
        (list sbcl-prove))
-      (arguments
-       ;; FIXME: Test fails with the following, why?
-       ;; Component "cl-reexport-test" not found, required by
-       ;; #<SYSTEM "cl-reexport-test">
-       `(#:tests? #f))
       (synopsis "Reexport external symbols in other Common Lisp packages")
       (description
        "Cl-reexport makes a package reexport symbols which are external
