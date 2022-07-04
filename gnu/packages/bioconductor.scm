@@ -3854,6 +3854,50 @@ originally made available by Holmes, Harris, and Quince, 2012, PLoS ONE 7(2):
 1-15.")
     (license license:lgpl3)))
 
+(define-public r-dittoseq
+  (package
+    (name "r-dittoseq")
+    (version "1.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "dittoSeq" version))
+              (sha256
+               (base32
+                "0vi0hcyffaxp6yxsrq95bdlrhr85dvbqm9c7rg6a6blkfgwhlzb4"))))
+    (properties `((upstream-name . "dittoSeq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-colorspace
+           r-cowplot
+           r-ggplot2
+           r-ggrepel
+           r-ggridges
+           r-gridextra
+           r-pheatmap
+           r-reshape2
+           r-s4vectors
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/dittoSeq")
+    (synopsis "Single-cell and bulk RNA sequencing visualization")
+    (description
+     "This package provides a universal, user friendly, single-cell and bulk RNA
+sequencing visualization toolkit that allows highly customizable creation of
+color blindness friendly, publication-quality figures.  dittoSeq accepts both
+SingleCellExperiment (SCE) and Seurat objects, as well as the import and
+usage, via conversion to an SCE, of SummarizedExperiment or DGEList bulk data.
+Visualizations include dimensionality reduction plots, heatmaps, scatterplots,
+percent composition or expression across groups, and more.  Customizations
+range from size and title adjustments to automatic generation of annotations
+for heatmaps, overlay of trajectory analysis onto any dimensionality reduciton
+plot, hidden data overlay upon cursor hovering via ggplotly conversion, and
+many more.  All with simple, discrete inputs.  Color blindness friendliness is
+powered by legend adjustments (enlarged keys), and by allowing the use of
+shapes or letter-overlay in addition to the carefully selected
+code{dittoColors()}.")
+    (license license:expat)))
+
 (define-public r-edaseq
   (package
     (name "r-edaseq")
