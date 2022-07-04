@@ -524,7 +524,9 @@ export PATH="$_GUIX_PROFILE/bin${PATH:+:}$PATH"
 export INFOPATH="$_GUIX_PROFILE/share/info:$INFOPATH"
 
 # GUIX_PROFILE: User's default profile
-GUIX_PROFILE="$HOME/.guix-profile"
+# Prefer the one from 'guix home' if it exists.
+GUIX_PROFILE="$HOME/.guix-home/profile"
+[ -L $GUIX_PROFILE ] || GUIX_PROFILE="$HOME/.guix-profile"
 [ -L $GUIX_PROFILE ] || return
 GUIX_LOCPATH="$GUIX_PROFILE/lib/locale"
 export GUIX_LOCPATH
