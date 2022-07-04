@@ -4763,6 +4763,41 @@ streams (though primarily the former, while wrapping the latter).")
 (define-public ecl-fast-io
   (sbcl-package->ecl-package sbcl-fast-io))
 
+(define-public sbcl-legion
+  (let ((commit "599cca19f0e34246814621f7fe90322221c2e263")
+        (revision "1"))
+    (package
+     (name "sbcl-legion")
+     (version (git-version "0.1.1" revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fukamachi/legion/")
+             (commit commit)))
+       (file-name (git-file-name "cl-legion" version))
+       (sha256
+        (base32 "0583pw0mf8bd4dj42w2xrlzcwfkl8q28n1bh8dpxxfg93crx4si6"))))
+     (build-system asdf-build-system/sbcl)
+     (native-inputs
+      (list sbcl-prove sbcl-local-time))
+     (inputs
+      (list
+       sbcl-bordeaux-threads
+       sbcl-cl-speedy-queue
+       sbcl-vom))
+     (home-page "https://github.com/fukamachi/legion")
+     (synopsis "Simple multithreading worker mechanism for Common Lisp")
+     (description
+      "This library provides a simple multithreading worker mechanism.")
+     (license license:bsd-3))))
+
+(define-public cl-legion
+  (sbcl-package->cl-source-package sbcl-legion))
+
+(define-public ecl-legion
+  (sbcl-package->ecl-package sbcl-legion))
+
 (define-public sbcl-jonathan
   (let ((commit "1f448b4f7ac8265e56e1c02b32ce383e65316300")
         (revision "1"))
