@@ -10947,6 +10947,58 @@ accompaniment to the standard ANSI facilities.")
 (define-public ecl-clx-xembed
   (sbcl-package->ecl-package sbcl-clx-xembed))
 
+(define-public sbcl-mw-equiv
+  (let ((commit "3ae871458685b1ef7cd6a996ee22c8c5e738a03d")
+        (revision "1"))
+    (package
+      (name "sbcl-mw-equiv")
+      (version (git-version "0.1.2" revision commit))
+      (home-page "https://github.com/sharplispers/mw-equiv/")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sharplispers/mw-equiv/")
+               (commit commit)))
+         (file-name (git-file-name "cl-mw-equiv" version))
+         (sha256
+          (base32 "1fl90wp0jp7l90mps53fq0kzb28f10qfr739527h03xwqccyylad"))))
+      (build-system asdf-build-system/sbcl)
+      (synopsis "Extensible object equivalence protocol for Common Lisp")
+      (description "Common Lisp comes with quite some functions to compare
+objects for equality, yet none is applicable in every situation and in general
+this is hard, as equality of objects depends on the semantics of operations on
+them.  As consequence, users find themselves regularly in a situation where
+they have to roll their own specialized equality test.
+
+This module provides one of many possible equivalence relations between
+standard Common Lisp objects.  However, it can be extended for new objects
+through a simple CLOS protocol.  The rules when two objects are considered
+equivalent distinguish between @emph{mutating} and @emph{frozen objects}.  A
+frozen object is promised not to be mutated in the future in a way that
+operations on it can notice the difference.
+
+We have chosen to compare mutating objects only for identity (pointer
+equality), to avoid various problems.  Equivalence for frozen objects on the
+other hand is established by recursing on the objects' constituent parts and
+checking their equivalence.  Hence, two objects are equivalent under the
+@code{OBJECT=} relation, if they are either identical, or if they are frozen
+and structurally equivalent, i.e. their constituents are point-wise
+equivalent.
+
+Since many objects are potentially mutable, but are not necessarily mutated
+from a certain point in their life time on, it is possible to promise to the
+equivalence relation that they remain frozen for the rest of their life time,
+thus enabling coarser equivalence than the often too fine-grained pointer
+equality.")
+      (license license:bsd-2))))
+
+(define-public cl-mw-equiv
+  (sbcl-package->cl-source-package sbcl-mw-equiv))
+
+(define-public ecl-mw-equiv
+  (sbcl-package->ecl-package sbcl-mw-equiv))
+
 (define-public sbcl-quantile-estimator
   (package
     (name "sbcl-quantile-estimator")
