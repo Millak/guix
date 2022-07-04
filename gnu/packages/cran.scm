@@ -1005,6 +1005,38 @@ variables.")
 ")
     (license license:gpl2+)))
 
+(define-public r-ggprism
+  (package
+    (name "r-ggprism")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggprism" version))
+              (sha256
+               (base32
+                "09dh0r8r5s61i5dbk6rswajc2vm7k8wvlqyvzq8wr160676lycjp"))))
+    (properties `((upstream-name . "ggprism")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-digest
+           r-ggplot2
+           r-glue
+           r-gtable
+           r-rlang
+           r-scales
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://csdaw.github.io/ggprism/")
+    (synopsis "ggplot2 extension inspired by GraphPad Prism")
+    (description
+     "This package provides various themes, palettes, and other functions that are
+used to customise ggplots to look like they were made in GraphPad Prism.  The
+Prism-look is achieved with @code{theme_prism()} and
+@code{scale_fill|colour_prism()}, axes can be changed with custom guides like
+@code{guide_prism_minor()}, and significance indicators added with
+@code{add_pvalue()}.")
+    (license license:gpl3+)))
+
 (define-public r-ggrastr
   (package
     (name "r-ggrastr")
