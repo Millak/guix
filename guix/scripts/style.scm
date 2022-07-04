@@ -272,6 +272,16 @@ included in the output.
 Lists longer than LONG-LIST are written as one element per line.  Comments are
 passed through FORMAT-COMMENT before being emitted; a useful value for
 FORMAT-COMMENT is 'canonicalize-comment'."
+  (define (list-of-lists? head tail)
+    ;; Return true if HEAD and TAIL denote a list of lists--e.g., a list of
+    ;; 'let' bindings.
+    (match head
+      ((thing _ ...)                              ;proper list
+       (and (not (memq thing
+                       '(quote quasiquote unquote unquote-splicing)))
+            (pair? tail)))
+      (_ #f)))
+
   (let loop ((indent indent)
              (column indent)
              (delimited? #t)                  ;true if comes after a delimiter
@@ -436,7 +446,8 @@ FORMAT-COMMENT is 'canonicalize-comment'."
               (column    (if overflow?
                              (+ indent 1)
                              (+ column (if delimited? 1 2))))
-              (newline?  (newline-form? head context))
+              (newline?  (or (newline-form? head context)
+                             (list-of-lists? head tail))) ;'let' bindings
               (context   (cons head context)))
          (if overflow?
              (begin
