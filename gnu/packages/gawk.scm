@@ -28,6 +28,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu))
 
 (define-public gawk
@@ -104,6 +105,34 @@ including network access, sorting, and large libraries.")
     (inputs
      (modify-inputs (package-inputs gawk)
        (prepend mpfr)))))
+
+;; Suffixed with -next because, similarly to Emacs, development versions are
+;; numbered x.y.60+z, and also there are no tagged versions of egawk yet.
+;; (However, though egawk's --version lists 5.1.60, it is actually forked from
+;; a development version of gawk 5.1.1.)
+(define-public egawk-next
+  (let ((commit "f00e74ffc73f6ba6fe74fb7a26319770b8c3792c")
+        (revision "0"))
+    (package
+      (inherit gawk-mpfr)
+      (name "egawk-next")
+      (version (git-version "5.1.60" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://www.kylheku.com/git/egawk")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bmfbw6k1aiyiardnk7ha5zlpkvavj013mm4n7wwj2vdcgrs6p1f"))))
+      (home-page "https://www.kylheku.com/cgit/egawk/")
+      (synopsis "Enhanced GNU Awk")
+      (description
+       "@command{egawk} is Enhanced GNU Awk.  It is a fork of GNU Awk with
+some enhancements designed and implemented by Kaz Kylheku.  In particular,
+Enhanced GNU Awk provides the @code{@@let} statement for declaring
+block-scoped lexical variables."))))
 
 (define-public mawk
   (package
