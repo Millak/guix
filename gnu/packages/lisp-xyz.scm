@@ -9575,11 +9575,7 @@ them as PNG files.")
       (native-inputs
        (list sbcl-fiveam))
       (arguments
-       `(;; Tests depend on hdf5-cffi.examples.asd in addition to hdf5-cffi.asd,
-         ;; I don't know if there is a way to tell asdf-build-system to load
-         ;; an additional system first, so tests are disabled.
-         #:tests? #f
-         #:phases
+       `(#:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-paths
              (lambda* (#:key inputs #:allow-other-keys)
