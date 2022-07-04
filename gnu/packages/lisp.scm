@@ -959,16 +959,16 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "277")
+    (version "278")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "http://www.kylheku.com/git/txr/")
+             (url "https://www.kylheku.com/git/txr/")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w6q5inydz0cf4g3y8954msxfb2clf4nj4aqiiayp0z2y96b7bhk"))))
+        (base32 "08jmqv245vnvl4xx6x5a5hxlnhdcipfdbja54dvsi6wkiks2fif7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
