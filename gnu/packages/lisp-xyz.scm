@@ -6209,9 +6209,6 @@ neat APIs and connection-pooling.  It is meant to supersede Drakma.")
        `(("alexandria" ,sbcl-alexandria)))
       (native-inputs
        (list sbcl-fiveam))
-      (arguments
-       `(;; XXX: Component LISP-NAMESPACE-ASD::LISP-NAMESPACE.TEST not found
-         #:tests? #f))
       (synopsis "LISP-N, or extensible namespaces in Common Lisp")
       (description "Common Lisp already has major 2 namespaces, function
 namespace and value namespace (or variable namespace), but there are actually
