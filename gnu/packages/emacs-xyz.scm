@@ -12226,10 +12226,10 @@ inside the source file.")
       (license license:gpl3+))))
 
 (define-public emacs-sly-stepper
-  (let ((commit "ec3c0a7f3c8b82926882e5fcfdacf67b86d989f8"))
+  (let ((commit "da84e3bba8466c2290c2dc7c27d7f4c48c27b39e"))
     (package
       (name "emacs-sly-stepper")
-      (version (git-version "0.0.0" "1" commit))
+      (version (git-version "0.0.0" "2" commit))
       (home-page "https://github.com/joaotavora/sly-stepper")
       (source
        (origin
@@ -12240,7 +12240,7 @@ inside the source file.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1hxniaxifdw3m4y4yssgy22xcmmf558wx7rpz66wy5hwybjslf7b"))
+           "07p0k797fagn1qha191p6g2b55hsqqkcj59mh0ms9id0ildydil0"))
          (modules '((guix build utils)))
          (snippet
           '(begin
