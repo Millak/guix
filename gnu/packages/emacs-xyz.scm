@@ -2381,18 +2381,18 @@ incrementally confined in Isearch manner.")
         (base32 "000lqhsafyh1n293ksnlyavxv1pzl5pazds4sgxjcqd45lyn55ii"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("emms-print-metadata")
-       #:tests? #f                      ; No tests.
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (install-file "src/emms-print-metadata"
-                             (string-append out "/bin"))
-               (install-file "emms-print-metadata.1"
-                             (string-append out "/share/man/man1"))))))))
+     (list
+      #:make-flags #~(list "emms-print-metadata")
+      #:tests? #f                       ; No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "src/emms-print-metadata"
+                            (string-append #$output "/bin"))
+              (install-file "emms-print-metadata.1"
+                            (string-append #$output "/share/man/man1")))))))
     (inputs
      (list taglib))
     (home-page "https://www.gnu.org/software/emms/")
