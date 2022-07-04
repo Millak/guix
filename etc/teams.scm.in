@@ -187,6 +187,10 @@ and the maven-build-system."))
                        "andreas@enge.fr")
   science)
 
+(define-member (person "Leo Famulari"
+                       "leo@famulari.name")
+  kernel)
+
 (define-member (person "Liliana Marie Prikler"
                        "liliana.prikler@gmail.com")
   emacs games)
