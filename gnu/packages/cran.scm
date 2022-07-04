@@ -28942,6 +28942,46 @@ novels, ready for text analysis.  These novels are \"Sense and Sensibility\",
 and \"Persuasion\".")
     (license license:expat)))
 
+(define-public r-janitor
+  (package
+    (name "r-janitor")
+    (version "2.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "janitor" version))
+              (sha256
+               (base32
+                "09nqm957m2f54y2l30619b58x4i7gxwvr2lwg5kly5xy1ya1a1nn"))))
+    (properties `((upstream-name . "janitor")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dplyr
+           r-lifecycle
+           r-lubridate
+           r-magrittr
+           r-purrr
+           r-rlang
+           r-snakecase
+           r-stringi
+           r-stringr
+           r-tidyr
+           r-tidyselect))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/sfirke/janitor")
+    (synopsis "Simple tools for examining and cleaning dirty data")
+    (description
+     "The main janitor functions can: perfectly format @code{data.frame column}
+names; provide quick counts of variable combinations (i.e., frequency tables
+and crosstabs); and isolate duplicate records.  Other janitor functions nicely
+format the tabulation results.  These tabulate-and-report functions
+approximate popular features of SPSS and Excel.  This package follows the
+principles of the \"tidyverse\" and works well with the pipe function
+@code{%>%}.  janitor was built with beginning-to-intermediate R users in mind
+and is optimized for user-friendliness.  Advanced R users can already do
+everything covered here, but with janitor they can do it faster and save their
+thinking for the fun stuff.")
+    (license license:expat)))
+
 (define-public r-tokenizers
   (package
     (name "r-tokenizers")
