@@ -7178,8 +7178,9 @@ every time the power supply source is changed.")
          ;; configuration from /etc/tlp.conf or /etc/default/tlp".
          (delete 'sanity-check)
          (replace 'check
-           (lambda _
-             (invoke "python" "-m" "discover")))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "discover"))))
          (add-after 'install 'wrap-gi-python
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
