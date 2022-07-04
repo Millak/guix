@@ -7167,6 +7167,64 @@ sequence.")
 auROC analysis.")
       (license license:gpl3))))
 
+(define-public r-sccustomize
+  (let ((commit "8414d1f5fb32277855b0619191a568932b7baeb0")
+        (revision "1"))
+    (package
+      (name "r-sccustomize")
+      (version (git-version "0.7.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/samuel-marsh/scCustomize")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1wcgfq7lx83a2kf8pjbw524gdvxf351n08cwd5wzmmy57kf4knbj"))))
+      (properties `((upstream-name . "scCustomize")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-circlize
+             r-colorway
+             r-cowplot
+             r-data-table
+             r-dittoseq
+             r-dplyr
+             r-forcats
+             r-ggbeeswarm
+             r-ggplot2
+             r-ggprism
+             r-ggpubr
+             r-ggrastr
+             r-ggrepel
+             r-glue
+             r-janitor
+             r-magrittr
+             r-matrix
+             r-paletteer
+             r-patchwork
+             r-pbapply
+             r-purrr
+             r-remotes
+             r-scales
+             r-scattermore
+             r-seurat
+             r-seuratobject
+             r-stringi
+             r-stringr
+             r-tibble
+             r-tidyr
+             r-tidyselect
+             r-viridis))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/samuel-marsh/scCustomize")
+      (synopsis "Custom visualization and analyses of single-cell sequencing")
+      (description
+       "This is a collection of functions created and/or curated to aid in the
+visualization and analysis of single-cell data using R.")
+      (license license:gpl3+))))
+
 (define-public r-snapatac
   (package
     (name "r-snapatac")
