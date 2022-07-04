@@ -1006,3 +1006,28 @@ Corporation.  The engine is independent of any language, dictionary or corpus.")
     (description "This package contains dictionnary data derived from
 ipadic for use with MeCab.")
     (license (license:non-copyleft "mecab-ipadic/COPYING"))))
+
+(define-public mecab-unidic
+  (package
+    (name "mecab-unidic")
+    (version "3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://clrd.ninjal.ac.jp/unidic_archive/cwj/"
+                                  version "/unidic-cwj-" version ".zip"))
+              (sha256
+               (base32
+                "1z132p2q3bgchiw529j2d7dari21kn0fhkgrj3vcl0ncg2m521il"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." "lib/mecab/dic"
+          #:include-regexp ("\\.bin$" "\\.def$" "\\.dic$" "dicrc")))))
+    (native-inputs (list unzip))
+    (home-page "https://clrd.ninjal.ac.jp/unidic/en/")
+    (synopsis "Dictionary data for MeCab")
+    (description "UniDic for morphological analysis is a dictionary for
+analysis with the morphological analyser MeCab, where the short units exported
+from the database are used as entries (heading terms).")
+    ;; triple-licensed (at the user’s choice)
+    (license (list license:gpl2+ license:lgpl2.1 license:bsd-3))))
