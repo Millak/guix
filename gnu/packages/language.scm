@@ -979,3 +979,30 @@ fi")))))))
 collaboration between the Kyoto university and Nippon Telegraph and Telephone
 Corporation.  The engine is independent of any language, dictionary or corpus.")
     (license (list license:gpl2+ license:lgpl2.1+ license:bsd-3))))
+
+(define-public mecab-ipadic
+  (package
+    (name "mecab-ipadic")
+    (version "2.7.0")
+    (source (package-source mecab))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "--with-dicdir=" (assoc-ref %outputs "out")
+                            "/lib/mecab/dic")
+             "--with-charset=utf8")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "mecab-ipadic")))
+         (add-before 'configure 'set-mecab-dir
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "MECAB_DICDIR" (string-append (assoc-ref outputs "out")
+                                                   "/lib/mecab/dic")))))))
+    (native-inputs (list mecab)); for mecab-config
+    (home-page "https://taku910.github.io/mecab")
+    (synopsis "Dictionary data for MeCab")
+    (description "This package contains dictionnary data derived from
+ipadic for use with MeCab.")
+    (license (license:non-copyleft "mecab-ipadic/COPYING"))))
