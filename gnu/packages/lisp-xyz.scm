@@ -11015,11 +11015,11 @@ equality.")
          "0rlswkf0siaabsvvch3dgxmg45fw5w8pd9b7ri2w7a298aya52z9"))))
     (build-system asdf-build-system/sbcl)
     (arguments
-     '(#:asd-test-systems '("quantile-estimator.test")
-       ;; TODO: Tests need https://github.com/sharplispers/mw-equiv.
-       #:tests? #f))
+     '(#:asd-test-systems '("quantile-estimator.test")))
     (inputs
-     `(("alexandria" ,sbcl-alexandria)))
+     (list sbcl-alexandria))
+    (native-inputs
+     (list sbcl-mw-equiv sbcl-prove sbcl-log4cl))
     (home-page "https://github.com/deadtrickster/quantile-estimator.cl")
     (synopsis
      "Effective computation of biased quantiles over data streams")
