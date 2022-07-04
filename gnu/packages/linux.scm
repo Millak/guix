@@ -7150,43 +7150,43 @@ every time the power supply source is changed.")
         (base32 "16a6x733szsggn23ns7bj3gpvb80675plh96v4llrz0s8p3h47pg"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-setup.py
-           ;; Install data_files to $out/share instead of /usr/share.
-           (lambda _
-             (substitute* "setup.py"
-               (("/usr/") ""))))
-         (add-after 'unpack 'use-tlp-input
-           ;; Hard-code tlp-stat filename to avoid propagating "tlp".
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((tlp-stat (search-input-file inputs "/bin/tlp-stat")))
-               (with-directory-excursion "tlpui"
-                 (substitute* '("file.py" "settingshelper.py" "statui.py")
-                   (("which\\(\"tlp-stat\"\\)")
-                    (string-append "'" tlp-stat "'"))
-                   (("\"tlp-stat\"")
-                    (string-append "'" tlp-stat "'")))))))
-         (add-before 'check 'fix-home-directory
-           (lambda _
-             ;; Tests fail with "Permission denied:
-             ;; '/homeless-shelter'".
-             (setenv "HOME" "/tmp")))
-         ;; `sanity-check' phase errors out with the following
-         ;; messages: "Unable to init server: Could not connect:
-         ;; Connection refused" and "Error: cannot read user
-         ;; configuration from /etc/tlp.conf or /etc/default/tlp".
-         (delete 'sanity-check)
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "discover"))))
-         (add-after 'install 'wrap-gi-python
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-               (wrap-program (string-append out "/bin/tlpui")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setup.py
+            ;; Install data_files to $out/share instead of /usr/share.
+            (lambda _
+              (substitute* "setup.py"
+                (("/usr/") ""))))
+          (add-after 'unpack 'use-tlp-input
+            ;; Hard-code tlp-stat filename to avoid propagating "tlp".
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((tlp-stat (search-input-file inputs "/bin/tlp-stat")))
+                (with-directory-excursion "tlpui"
+                  (substitute* '("file.py" "settingshelper.py" "statui.py")
+                    (("which\\(\"tlp-stat\"\\)")
+                     (string-append "'" tlp-stat "'"))
+                    (("\"tlp-stat\"")
+                     (string-append "'" tlp-stat "'")))))))
+          (add-before 'check 'fix-home-directory
+            (lambda _
+              ;; Tests fail with "Permission denied:
+              ;; '/homeless-shelter'".
+              (setenv "HOME" "/tmp")))
+          ;; `sanity-check' phase errors out with the following
+          ;; messages: "Unable to init server: Could not connect:
+          ;; Connection refused" and "Error: cannot read user
+          ;; configuration from /etc/tlp.conf or /etc/default/tlp".
+          (delete 'sanity-check)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "discover"))))
+          (add-after 'install 'wrap-gi-python
+            (lambda _
+              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                (wrap-program (string-append #$output "/bin/tlpui")
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (native-inputs
      (list `(,glib "bin") gobject-introspection python-discover))
     (inputs
