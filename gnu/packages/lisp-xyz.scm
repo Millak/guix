@@ -7759,6 +7759,8 @@ forms in parallel.")
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-xlunit))
+    (arguments
+     '(#:asd-test-systems '("cl-heap-tests")))
     (synopsis "Heap and priority queue data structures for Common Lisp")
     (description
      "CL-HEAP provides various implementations of heap data structures (a
