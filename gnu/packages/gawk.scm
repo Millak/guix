@@ -20,7 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages gawk)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages libsigsegv)
@@ -93,7 +93,7 @@
 language for the easy manipulation of formatted text, such as tables of data.
 Gawk features many extensions beyond the traditional implementation,
 including network access, sorting, and large libraries.")
-   (license gpl3+)))
+   (license license:gpl3+)))
 
 (define-public mawk
   (package
@@ -120,4 +120,4 @@ including network access, sorting, and large libraries.")
      "@command{mawk} is an interpreter for the Awk programming language.
 This version aims to be smaller and faster than GNU Awk, at the expense
 of fewer features and extensions.")
-    (license gpl2))) ;version 2 only
+    (license license:gpl2))) ;version 2 only
