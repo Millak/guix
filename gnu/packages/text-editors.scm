@@ -723,57 +723,57 @@ environment with Markdown markup.")
         (base32 "0qhr9bkq4yl2qjainpsv7blzcji2q9ic9zcynawmhfqy3rmf8qlr"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/manuskript")))
-               ;; Install data.
-               (mkdir-p share)
-               (for-each
-                (lambda (d)
-                  (let ((destination  (string-append share "/" d)))
-                    (mkdir-p destination)
-                    (copy-recursively d destination)))
-                '("bin" "i18n" "icons" "libs" "manuskript" "resources"))
-               ;; Install documentation.
-               (let ((doc (string-append out
-                                         "/doc/manuskript-" ,version
-                                         "/sample-projects")))
-                 (mkdir-p doc)
-                 (copy-recursively "sample-projects" doc))
-               ;; Wrap executable in "$out/share/manuskript/bin" and
-               ;; link to it from "$out/bin".
-               (let ((bin (string-append out "/bin"))
-                     (executable (string-append share "/bin/manuskript")))
-                 (wrap-program executable
-                   (list "GUIX_PYTHONPATH" 'prefix
-                         (list (getenv "GUIX_PYTHONPATH"))))
-                 (mkdir-p bin)
-                 (with-directory-excursion bin
-                   (symlink (string-append share "/bin/manuskript")
-                            "manuskript")))
-               ;; Install icons and create .desktop file.
-               (let ((apps (string-append out "/share/applications"))
-                     (icons-dir (string-append out "/share/pixmaps")))
-                 (install-file "icons/Manuskript/manuskript.svg" icons-dir)
-                 (mkdir-p apps)
-                 (make-desktop-entry-file (string-append apps "/manuskript.desktop")
+     (list
+      #:tests? #f                       ;no test
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (let ((share (string-append #$output "/share/manuskript")))
+                ;; Install data.
+                (mkdir-p share)
+                (for-each
+                 (lambda (d)
+                   (let ((destination  (string-append share "/" d)))
+                     (mkdir-p destination)
+                     (copy-recursively d destination)))
+                 '("bin" "i18n" "icons" "libs" "manuskript" "resources"))
+                ;; Install documentation.
+                (let ((doc (string-append #$output
+                                          "/doc/manuskript-" #$version
+                                          "/sample-projects")))
+                  (mkdir-p doc)
+                  (copy-recursively "sample-projects" doc))
+                ;; Wrap executable in "$out/share/manuskript/bin" and
+                ;; link to it from "$out/bin".
+                (let ((bin (string-append #$output "/bin"))
+                      (executable (string-append share "/bin/manuskript")))
+                  (wrap-program executable
+                    (list "GUIX_PYTHONPATH" 'prefix
+                          (list (getenv "GUIX_PYTHONPATH"))))
+                  (mkdir-p bin)
+                  (with-directory-excursion bin
+                    (symlink (string-append share "/bin/manuskript")
+                             "manuskript")))
+                ;; Install icons and create .desktop file.
+                (let ((apps (string-append #$output "/share/applications"))
+                      (icons-dir (string-append #$output "/share/pixmaps")))
+                  (install-file "icons/Manuskript/manuskript.svg" icons-dir)
+                  (mkdir-p apps)
+                  (make-desktop-entry-file
+                   (string-append apps "/manuskript.desktop")
                    #:name "Manuskript"
                    #:mime-type "application/x-manuskript-book;"
-                   #:exec (string-append out "/bin/manuskript %f")
+                   #:exec (string-append #$output "/bin/manuskript %f")
                    #:comment '((#f "Tool for writers")
                                ("es" "Herramienta para escritores/as"))
                    #:keywords "manuskript;office;write;edit;novel;text;msk"
                    #:terminal #f
                    #:type "Application"
                    #:icon "manuskript"
-                   #:categories "Office;WordProcessor;"))
-               #t))))))
+                   #:categories "Office;WordProcessor;"))))))))
     (inputs
      (list pandoc python-lxml python-markdown python-pyqt qtsvg))
     (home-page "http://www.theologeek.ch/manuskript/")
