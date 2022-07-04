@@ -3644,6 +3644,28 @@ inspired by Python's Literal String Interpolation (PEP-0498) and
 Docstrings (PEP-0257) and Julia's Triple-Quoted String Literals.")
     (license license:expat)))
 
+(define-public r-paletteer
+  (package
+    (name "r-paletteer")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "paletteer" version))
+              (sha256
+               (base32
+                "1m0h1p0cbmmi0rk157qyrgcz57pw0syadskrnfa4vs7hm1rndp3m"))))
+    (properties `((upstream-name . "paletteer")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-prismatic r-rematch2 r-rlang r-rstudioapi))
+    (home-page "https://github.com/EmilHvitfeldt/paletteer")
+    (synopsis "Comprehensive collection of color palettes")
+    (description
+     "The choices of color palettes in R can be quite overwhelming with palettes
+spread over many packages with many different API's.  This package aims to
+collect all color palettes across the R ecosystem under the same package with
+a streamlined API.")
+    (license license:gpl3)))
+
 (define-public r-palmerpenguins
   (package
     (name "r-palmerpenguins")
