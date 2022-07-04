@@ -4814,12 +4814,8 @@ streams (though primarily the former, while wrapping the latter).")
        (sha256
         (base32 "14x4iwz3mbag5jzzzr4sb6ai0m9r4q4kyypbq32jmsk2dx1hi807"))))
      (build-system asdf-build-system/sbcl)
-     (arguments
-      ;; Tests fail with: Component JONATHAN-ASD::JONATHAN-TEST not found,
-      ;; required by #<SYSTEM "jonathan">. Why?
-      `(#:tests? #f))
      (native-inputs
-      (list sbcl-prove))
+      (list sbcl-prove sbcl-legion))
      (inputs
       (list sbcl-cl-syntax sbcl-fast-io sbcl-proc-parse sbcl-cl-ppcre))
      (home-page "https://rudolph-miller.github.io/jonathan/overview.html")
