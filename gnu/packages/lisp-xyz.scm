@@ -8731,6 +8731,18 @@ continuations of the @code{cl-cont} library.")
          (sha256
           (base32 "11fcnd03ybzz37rkg3z0wsb727yqgcd9gn70sccfb34l89ia279k"))))
       (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-test-systems '("test.vas-string-metrics")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-test-asd
+             (lambda _
+               (substitute* "test.vas-string-metrics.asd"
+                 ((":depends-on")
+                  (string-append
+                   ":perform (test-op (op c) (symbol-call :vas-string-metrics :run-tests))"
+                   "\n"
+                   "  :depends-on"))))))))
       (home-page "https://github.com/vsedach/vas-string-metrics")
       (synopsis "String distance algorithms for Common Lisp")
       (description
