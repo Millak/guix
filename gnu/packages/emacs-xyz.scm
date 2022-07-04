@@ -5060,15 +5060,16 @@ result.")
         (base32 "1nxzplpk5cf6hhr2v85bmg68i6am96shi2zq7m83fs96bilhwsp5"))))
     (build-system emacs-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-rg-path
-           ;; Remove the path to ripgrep so that it works on remote systems.
-           (lambda _
-             (let ((file "rg.el"))
-               (chmod file #o644)
-               (emacs-substitute-sexps file
-                 ("(defcustom rg-executable" "rg"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-rg-path
+            ;; Remove the path to ripgrep so that it works on remote systems.
+            (lambda _
+              (let ((file "rg.el"))
+                (make-file-writable file)
+                (emacs-substitute-sexps file
+                  ("(defcustom rg-executable" "rg"))))))))
     (propagated-inputs
      (list emacs-s emacs-transient emacs-wgrep ripgrep))
     (home-page "https://rgel.readthedocs.io/en/latest/")
