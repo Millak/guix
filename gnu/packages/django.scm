@@ -141,13 +141,13 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 (define-public python-django-3.2
   (package
     (inherit python-django-4.0)
-    (version "3.2.13")
+    (version "3.2.14")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "1dn4irl4m21skcqb2mbj55vgryqfqk6wqa8s1c7bmxlv19x4k4vd"))))
+                "1krg0bfd78mnqly1gzbprssz3bz6xryc2fig0x75la2vifx84wb7"))))
     (native-search-paths '())           ;no need for TZDIR
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-django-4.0)
