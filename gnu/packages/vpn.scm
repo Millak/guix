@@ -255,6 +255,7 @@
        ("python" ,python)
        ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
+       ("qtgraphicaleffects" ,qtgraphicaleffects)
        ("qtquickcontrols" ,qtquickcontrols)
        ("qtquickcontrols2" ,qtquickcontrols2)
        ("qtsvg" ,qtsvg)))
