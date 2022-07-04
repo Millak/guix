@@ -711,7 +711,7 @@ environment with Markdown markup.")
 (define-public manuskript
   (package
     (name "manuskript")
-    (version "0.13.1")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -720,7 +720,7 @@ environment with Markdown markup.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rj41wimmaq47lwaz0d1iq270klp96xv9dpfdsxi5a2xcdm80jac"))))
+        (base32 "0qhr9bkq4yl2qjainpsv7blzcji2q9ic9zcynawmhfqy3rmf8qlr"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ;no test
