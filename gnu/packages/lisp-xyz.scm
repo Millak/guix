@@ -11458,9 +11458,6 @@ format.")
       (inputs
        `(("cl-libsvm-format" ,sbcl-cl-libsvm-format)
          ("cl-store" ,sbcl-cl-store)))
-      (arguments
-       `(#:asd-systems '("cl-online-learning-test"
-                         "cl-online-learning")))
       (home-page "https://github.com/masatoi/cl-online-learning")
       (synopsis "Online Machine Learning for Common Lisp")
       (description
