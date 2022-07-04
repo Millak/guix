@@ -5046,40 +5046,38 @@ result.")
     (license license:gpl2+)))
 
 (define-public emacs-rg
-  (let ((commit "444a8ccfea0b38452a0bc4c390a8ee01cfe30017")
-        (revision "0"))
-    (package
-      (name "emacs-rg")
-      (version (git-version "2.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/dajva/rg.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1nxzplpk5cf6hhr2v85bmg68i6am96shi2zq7m83fs96bilhwsp5"))))
-      (build-system emacs-build-system)
-      (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'remove-rg-path
-             ;; Remove the path to ripgrep so that it works on remote systems.
-             (lambda _
-               (let ((file "rg.el"))
-                 (chmod file #o644)
-                 (emacs-substitute-sexps file
-                   ("(defcustom rg-executable" "rg"))))))))
-      (propagated-inputs
-       (list emacs-s emacs-transient emacs-wgrep ripgrep))
-      (home-page "https://rgel.readthedocs.io/en/latest/")
-      (synopsis "Search tool based on @code{ripgrep}")
-      (description
-       "@code{rg} is an Emacs search package based on the @code{ripgrep} command
+  (package
+    (name "emacs-rg")
+    (version "2.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dajva/rg.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nxzplpk5cf6hhr2v85bmg68i6am96shi2zq7m83fs96bilhwsp5"))))
+    (build-system emacs-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'remove-rg-path
+           ;; Remove the path to ripgrep so that it works on remote systems.
+           (lambda _
+             (let ((file "rg.el"))
+               (chmod file #o644)
+               (emacs-substitute-sexps file
+                 ("(defcustom rg-executable" "rg"))))))))
+    (propagated-inputs
+     (list emacs-s emacs-transient emacs-wgrep ripgrep))
+    (home-page "https://rgel.readthedocs.io/en/latest/")
+    (synopsis "Search tool based on @code{ripgrep}")
+    (description
+     "@code{rg} is an Emacs search package based on the @code{ripgrep} command
 line tool.  It allows one to interactively search based on the editing context
 then refine or modify the search results.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-inf-ruby
   (package
