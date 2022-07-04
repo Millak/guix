@@ -360,7 +360,6 @@ or cl-launch for portable processing of command-line arguments.")
           (base32 "1b3nqbb4pj377lxl47rfgrs82pidadnrc65l48bk553c2f59b52w"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
-       ;; Tests only.
        (list sbcl-rt))
       (inputs
        `(("cl+ssl" ,sbcl-cl+ssl)
@@ -368,8 +367,7 @@ or cl-launch for portable processing of command-line arguments.")
          ("split-sequence" ,sbcl-split-sequence)
          ("usocket" ,sbcl-usocket)))
       (arguments
-        ;; Some inexisting "c" system is found by guix otherwise.
-       `(#:asd-systems '("cl-irc")))
+       `(#:asd-test-systems '("cl-irc-test")))
       (synopsis "IRC client library for Common Lisp")
       (description "@code{cl-irc} is a Common Lisp IRC client library that
 features (partial) DCC, CTCP and all relevant commands from the IRC
