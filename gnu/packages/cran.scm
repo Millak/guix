@@ -1005,6 +1005,29 @@ variables.")
 ")
     (license license:gpl2+)))
 
+(define-public r-ggrastr
+  (package
+    (name "r-ggrastr")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggrastr" version))
+              (sha256
+               (base32
+                "07sx5wlawfyb0zy5am2q1ajhkdym5r9ih47p57l8bv4dlc7ykml2"))))
+    (properties `((upstream-name . "ggrastr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cairo r-ggbeeswarm r-ggplot2 r-png r-ragg))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/VPetukhov/ggrastr")
+    (synopsis "Rasterize layers for ggplot2")
+    (description
+     "Rasterize only specific layers of a ggplot2 plot while simultaneously keeping
+all labels and text in vector format.  This allows users to keep plots within
+the reasonable size limit without losing vector properties of the
+scale-sensitive information.")
+    (license license:expat)))
+
 (define-public r-lmds
   (package
     (name "r-lmds")
