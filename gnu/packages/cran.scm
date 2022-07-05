@@ -12215,12 +12215,14 @@ observation.")
            (for-each delete-file
                      (list "sandwich-OOP.pdf"
                            "sandwich-OOP.R"
-                           "sandwich.pdf"
+                           "sandwich-OOP.Rnw"
                            "sandwich-CL.R"
+                           "sandwich-CL.Rnw"
+                           "sandwich-CL.pdf"
                            "sim-CL.rda"
                            "sim-CL.R"
-                           "sandwich.R"
-                           "sandwich-CL.pdf"))))))
+                           "sandwich.pdf"
+                           "sandwich.R"))))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-zoo))
