@@ -417,8 +417,8 @@ signals and slots system.")
   (package
     (inherit boost)
     (name "boost-mpi")
-    (native-inputs
-     (modify-inputs (package-native-inputs boost)
+    (inputs
+     (modify-inputs (package-inputs boost)
        (append openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments boost)
