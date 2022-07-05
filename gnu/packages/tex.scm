@@ -10982,6 +10982,32 @@ mechanism.  Line numbering may be extended to footnote lines, using the
 fnlineno package.")
     (license license:lppl1.3a+)))
 
+(define-public texlive-babel-dutch
+  (let ((template (simple-texlive-package
+                   "texlive-babel-dutch"
+                   (list "/source/generic/babel-dutch/")
+                   (base32
+                    "1a40rz6rznawgarnhk0wh751sln2x9js4420i0758y2clf4rlhg9"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/babel-dutch")
+         ((#:build-targets _ '())
+          ''("dutch.ins")) ; TODO: use dtx and build documentation
+         ((#:phases phases) `(modify-phases ,phases
+                               (add-after 'unpack 'chdir
+                                 (lambda _
+                                   (chdir "source/generic/babel-dutch")))))))
+      (home-page "https://www.ctan.org/pkg/babel-dutch")
+      (synopsis "Babel support for Dutch")
+      (description
+       "This package provides the language definition file for support of Dutch
+in @code{babel}.  It provides all the necessary macros, definitions and
+settings to typeset Dutch documents.")
+      (license license:lppl1.3c+))))
+
 (define-public texlive-babel-finnish
   (let ((template (simple-texlive-package
                    "texlive-babel-finnish"
