@@ -143,7 +143,7 @@ bind processes, and much more.")
   ;; Note: 2.x isn't the default yet, see above.
   (package
     (inherit hwloc-1)
-    (version "2.7.1")
+    (version "2.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.open-mpi.org/release/hwloc/v"
@@ -151,7 +151,7 @@ bind processes, and much more.")
                                   "/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "13ajxwshxl1pa8b5gnkmm7hcg97m6xrlgz8vj1hmsb57qcv1skhd"))))
+                "1ha23yqfx9kfxm5fcj9m0fnyf0r2k6p4k88xxqishclcsky752il"))))
 
     ;; libnuma is no longer needed.
     (inputs (modify-inputs (package-inputs hwloc-1)
