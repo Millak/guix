@@ -278,8 +278,8 @@ prepared Guile object (@file{.go}) files.
 
 You can run @command{make} automatically as you work using
 @command{watchexec} from the @code{watchexec} package.  For example,
-to build again each time you update a package file, you can run
-@samp{watchexec -w gnu/packages make -j4}.
+to build again each time you update a package file, run
+@samp{watchexec -w gnu/packages -- make -j4}.
 
 @node The Perfect Setup
 @section The Perfect Setup
