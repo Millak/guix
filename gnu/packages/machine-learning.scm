@@ -2869,7 +2869,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
 (define-public python-pytorch
   (package
     (name "python-pytorch")
-    (version "1.10.2")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2879,7 +2879,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15fi3nr7fx2zc9j2xf0jq627zfmnvs8hijyifg9769arm8kfijs1"))
+                "1zbk7y74r0ycsfa7x59jnhwhs1gj5rs3n89p15y0212iszgbljq8"))
               (patches (search-patches "python-pytorch-system-libraries.patch"
                                        "python-pytorch-runpath.patch"))
               (modules '((guix build utils)))
@@ -2899,12 +2899,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
                               "gloo" "googletest" "ios-cmake" "NNPACK"
                               "onnx" "protobuf" "pthreadpool"
                               "pybind11" "python-enum" "python-peachpy"
-                              "python-six" "tbb" "XNNPACK" "zstd"))
-
-                  ;; Adjust references to the onnx-optimizer headers.
-                  (substitute* "caffe2/onnx/backend.cc"
-                    (("onnx/optimizer/")
-                     "onnxoptimizer/"))))))
+                              "python-six" "tbb" "XNNPACK" "zstd"))))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -2942,7 +2937,23 @@ TensorFlow.js, PyTorch, and MediaPipe.")
                       (let ((python-site (site-packages inputs outputs)))
                         (for-each delete-file
                                   (find-files python-site
-                                              "(^test_cpp_rpc|_test)$"))))))
+                                              "(^test_cpp_rpc|_test)$")))))
+                  (add-after 'install 'remove-caffe2-onnx-scripts
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin")))
+                        ;; Remove 'convert-caffe2-to-onnx' and
+                        ;; 'convert-onnx-to-caffe2': they seem to be
+                        ;; deprecated and they cause a failure of the
+                        ;; 'sanity-check' phase:
+                        ;;
+                        ;; ImportError: cannot import name 'metanet_pb2' from partially initialized module 'caffe2.proto' (most likely due to a circular import)
+                        (for-each delete-file
+                                  (find-files bin "^convert-.*caffe2"))
+
+                        (substitute* (find-files out "^entry_points\\.txt$")
+                          (("^convert-.*" all)
+                           (string-append "# " all "\n")))))))
 
        ;; XXX: Tests attempt to download data such as
        ;; <https://raw.githubusercontent.com/pytorch/test-infra/master/stats/slow-tests.json>.
@@ -2977,7 +2988,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
            python-future
            python-six
            python-requests
-           onnx ;propagated for its Python modules
+           onnx                             ;propagated for its Python modules
            onnx-optimizer
            cpuinfo))
     (home-page "https://pytorch.org/")
