@@ -126,9 +126,9 @@
       #~(modify-phases %standard-phases
           (delete 'bootstrap)
           (replace 'configure
-            (lambda _
-              (let ((icu #$(this-package-input "icu4c"))
-                    (python #$(this-package-input "python-minimal-wrapper")))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((icu (dirname (dirname (search-input-file
+                                            inputs "bin/uconv")))))
                 (substitute* '("libs/config/configure"
                                "libs/spirit/classic/phoenix/test/runtest.sh"
                                "tools/build/src/engine/execunix.cpp")
@@ -158,11 +158,14 @@
                         ;; Ditto for Python.
                         #$@(if (%current-target-system)
                                #~()
-                               #~((string-append "--with-python-root=" python)
-                                  (string-append "--with-python=" python
-                                                 "/bin/python")
-                                  (string-append "--with-python-version="
-                                                 (python-version python))))
+                               #~((let ((python (dirname (dirname (search-input-file
+                                                                   inputs
+                                                                   "bin/python")))))
+                                    (string-append "--with-python-root=" python)
+                                    (string-append "--with-python=" python
+                                                   "/bin/python")
+                                    (string-append "--with-python-version="
+                                                   (python-version python)))))
                         "--with-toolset=gcc"))))
           (replace 'build
             (lambda* (#:key make-flags #:allow-other-keys)
@@ -178,9 +181,9 @@
                       (lambda* (#:key make-flags inputs outputs #:allow-other-keys)
                         (let* ((static? (member "link=static" make-flags))
                                (libext (if static? ".a" ".so"))
-                               (python-version (python-version
-                                                #$(this-package-input
-                                                   "python-minimal-wrapper")))
+                               (python (dirname (dirname (search-input-file
+                                                          inputs "bin/python"))))
+                               (python-version (python-version python))
                                (libboost_pythonNN
                                 (string-append "libboost_python"
                                                (string-join (string-split
@@ -318,7 +321,8 @@ across a broad spectrum of applications.")
         #~(modify-phases #$phases
             (replace 'configure
               (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let ((icu #$(this-package-input "icu4c")))
+                (let ((icu (dirname (dirname (search-input-file
+                                              inputs "bin/uconv")))))
                   (substitute* (append
                                 (find-files "tools/build/src/engine/" "execunix\\.c.*")
                                 '("libs/config/configure"
