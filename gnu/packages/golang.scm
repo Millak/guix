@@ -628,7 +628,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.16)
     (name "go")
-    (version "1.17.9")
+    (version "1.17.11")
     (source
      (origin
        (method git-fetch)
@@ -638,7 +638,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "02l6gxn738kam1niy2nl2wpsbzl4x87h2wik6hd3py19kq4z2flw"))))
+         "11wy6092qm7v0n10cjkyp49sbchqazi3vnij8k2sq7k7jaj63z5p"))))
     (outputs '("out" "tests")) ; 'tests' contains distribution tests.
     (arguments
      `(#:modules ((ice-9 match)
