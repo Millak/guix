@@ -2955,6 +2955,38 @@ with python-requests.")
 adapter for use with the Requests library.")
     (license license:asl2.0)))
 
+(define-public python-msal
+  (package
+    (name "python-msal")
+    (version "1.18.0")
+    (home-page
+     "https://github.com/AzureAD/microsoft-authentication-library-for-python")
+    (source (origin
+              (method git-fetch)
+              ;; Pypi does not have tests.
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02d9vlvp08q1yffgn7a0y19451py1jly67q5ld6m2d9xidbrvac1"))))
+    (build-system python-build-system)
+    (arguments
+     ;; Tests (all?) rely on network access and only some can be disabled by
+     ;; setting the environment variable TRAVIS_TAG.
+     (list #:tests? #f))
+    (native-inputs (list python-mock))
+    (propagated-inputs (list python-cryptography python-pyjwt python-requests))
+    (synopsis "Microsoft Authentication Library (MSAL) for Python")
+    (description
+     "The Microsoft Authentication Library for Python enables applications to
+integrate with the Microsoft identity platform.  It allows you to sign in
+users or apps with Microsoft identities (Azure AD, Microsoft Accounts and
+Azure AD B2C accounts) and obtain tokens to call Microsoft APIs such as
+Microsoft Graph or your own APIs registered with the Microsoft identity
+platform.  It is built using industry standard OAuth2 and OpenID Connect
+protocols.")
+    (license license:expat)))
+
 (define-public python-oauthlib
   (package
     (name "python-oauthlib")
