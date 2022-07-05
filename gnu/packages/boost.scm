@@ -428,21 +428,18 @@ signals and slots system.")
     (inherit boost)
     (name "boost-mpi")
     (native-inputs
-     `(("perl" ,perl)
-       ,@(if (%current-target-system)
-             '()
-             `(("python" ,python-wrapper)))
-       ("openmpi" , openmpi)))
+     (modify-inputs (package-native-inputs boost)
+       (append openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments boost)
-      ((#:phases phases)
-       `(modify-phases ,phases
-          (add-after 'configure 'update-jam
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((output-port (open-file "project-config.jam" "a")))
-                (display "using mpi ;" output-port)
-                (newline output-port)
-                (close output-port))))))))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'configure 'update-jam
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let ((output-port (open-file "project-config.jam" "a")))
+                  (display "using mpi ;" output-port)
+                  (newline output-port)
+                  (close output-port))))))))
     (home-page "https://www.boost.org")
     (synopsis "Message Passing Interface (MPI) library for C++")))
 
