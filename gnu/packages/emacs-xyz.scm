@@ -18708,17 +18708,17 @@ interactive commands and functions, such as @code{completing-read}.")
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-s
+     (list emacs-dash
            emacs-f
-           emacs-ov
-           emacs-peg
-           emacs-org-super-agenda
-           emacs-ts
-           emacs-org
            emacs-helm
            emacs-helm-org
-           emacs-dash
-           emacs-transient))
+           emacs-org
+           emacs-org-super-agenda
+           emacs-ov
+           emacs-peg
+           emacs-transient
+           emacs-ts
+           emacs-s))
     (native-inputs
      (list emacs-buttercup emacs-with-simulated-input))
     (arguments
