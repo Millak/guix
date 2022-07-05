@@ -173,23 +173,26 @@
           #$@(if (%current-target-system)
                  #~()
                  #~((add-after 'install 'provide-libboost_python
-                      (lambda* (#:key inputs outputs #:allow-other-keys)
-                        (let* ((python-version (python-version
+                      (lambda* (#:key make-flags inputs outputs #:allow-other-keys)
+                        (let* ((static? (member "link=static" make-flags))
+                               (libext (if static? ".a" ".so"))
+                               (python-version (python-version
                                                 #+(this-package-native-input
                                                    "python-minimal-wrapper")))
-                               (libboost_pythonNN.so
+                               (libboost_pythonNN
                                 (string-append "libboost_python"
                                                (string-join (string-split
                                                              python-version #\.)
                                                             "")
-                                               ".so")))
+                                               libext)))
                           (with-directory-excursion (string-append #$output "/lib")
-                            (symlink libboost_pythonNN.so "libboost_python.so")
+                            (symlink libboost_pythonNN
+                                     (string-append "libboost_python" libext))
                             ;; Some packages only look for the major version.
-                            (symlink libboost_pythonNN.so
+                            (symlink libboost_pythonNN
                                      (string-append "libboost_python"
                                                     (string-take python-version 1)
-                                                    ".so")))))))))))
+                                                    libext)))))))))))
 
     (home-page "https://www.boost.org")
     (synopsis "Peer-reviewed portable C++ source libraries")
@@ -291,22 +294,7 @@ across a broad spectrum of applications.")
     (arguments
      (substitute-keyword-arguments (package-arguments boost)
        ((#:make-flags flags)
-        #~(cons "link=static" (delete "link=shared" #$flags)))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'provide-libboost_python
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let* ((python-version (python-version
-                                        #+(this-package-native-input
-                                           "python-minimal-wrapper")))
-                       (libboost_pythonNN.a
-                        (string-append "libboost_python"
-                                       (string-join (string-split
-                                                     python-version #\.)
-                                                    "")
-                                       ".a")))
-                  (with-directory-excursion (string-append #$output "/lib")
-                    (symlink libboost_pythonNN.a "libboost_python.a")))))))))))
+        #~(cons "link=static" (delete "link=shared" #$flags)))))))
 
 (define-public boost-for-mysql
   ;; Older version for MySQL 5.7.23.
