@@ -8524,14 +8524,8 @@ the number specified as the @option{--cores} option of
 This Boolean, @code{#t} by default, determines whether to ``validate''
 the @code{RUNPATH} of ELF binaries (@code{.so} shared libraries as well
 as executables) previously installed by the @code{install} phase.
-
-This validation step consists in making sure that all the shared
-libraries needed by an ELF binary, which are listed as
-@code{DT_NEEDED} entries in its @code{PT_DYNAMIC} segment, appear in the
-@code{DT_RUNPATH} entry of that binary.  In other words, it ensures that
-running or using those binaries will not result in a ``file not found''
-error at run time.  @xref{Options, @option{-rpath},, ld, The GNU
-Linker}, for more information on @code{RUNPATH}.
+@xref{phase-validate-runpath, the @code{validate-runpath} phase}, for
+details.
 
 @item #:substitutable?
 This Boolean, @code{#t} by default, tells whether the package outputs
@@ -9610,6 +9604,21 @@ Patch shebangs on the installed executable files.
 Strip debugging symbols from ELF files (unless @code{#:strip-binaries?}
 is false), copying them to the @code{debug} output when available
 (@pxref{Installing Debugging Files}).
+
+@cindex RUNPATH, validation
+@anchor{phase-validate-runpath}
+@item validate-runpath
+Validate the @code{RUNPATH} of ELF binaries, unless
+@code{#:validate-runpath?} is false (@pxref{Build Systems}).
+
+This validation step consists in making sure that all the shared
+libraries needed by an ELF binary, which are listed as @code{DT_NEEDED}
+entries in its @code{PT_DYNAMIC} segment, appear in the
+@code{DT_RUNPATH} entry of that binary.  In other words, it ensures that
+running or using those binaries will not result in a ``file not found''
+error at run time.  @xref{Options, @option{-rpath},, ld, The GNU
+Linker}, for more information on @code{RUNPATH}.
+
 @end table
 
 Other build systems have similar phases, with some variations.  For
