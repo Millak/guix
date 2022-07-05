@@ -99,6 +99,25 @@
       #:modules `(((guix build python-build-system) #:select (python-version))
                   ,@%gnu-build-system-modules)
       #:tests? #f
+      #:configure-flags
+      #~(let ((icu (dirname (dirname (search-input-file
+                                      %build-inputs "bin/uconv")))))
+          (list
+           ;; Auto-detection looks for ICU only in traditional
+           ;; install locations.
+           (string-append "--with-icu=" icu)
+           ;; Ditto for Python.
+           #$@(if (%current-target-system)
+                  #~()
+                  #~((let ((python (dirname (dirname (search-input-file
+                                                      %build-inputs
+                                                      "bin/python")))))
+                       (string-append "--with-python-root=" python)
+                       (string-append "--with-python=" python
+                                      "/bin/python")
+                       (string-append "--with-python-version="
+                                      (python-version python)))))
+           "--with-toolset=gcc"))
       #:make-flags
       #~(list "threading=multi" "link=shared"
 
@@ -124,49 +143,29 @@
                      #~()))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-shells
+            (lambda _
+              (substitute* '("libs/config/configure"
+                             "libs/spirit/classic/phoenix/test/runtest.sh"
+                             "tools/build/src/engine/execunix.cpp")
+                (("/bin/sh") (which "sh")))))
           (delete 'bootstrap)
           (replace 'configure
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((icu (dirname (dirname (search-input-file
-                                            inputs "bin/uconv")))))
-                (substitute* '("libs/config/configure"
-                               "libs/spirit/classic/phoenix/test/runtest.sh"
-                               "tools/build/src/engine/execunix.cpp")
-                  (("/bin/sh") (which "sh")))
+            (lambda* (#:key (configure-flags ''()) #:allow-other-keys)
+              (setenv "SHELL" (which "sh"))
+              (setenv "CONFIG_SHELL" (which "sh"))
 
-                (setenv "SHELL" (which "sh"))
-                (setenv "CONFIG_SHELL" (which "sh"))
+              #$@(if (%current-target-system)
+                     #~((call-with-output-file "user-config.jam"
+                          (lambda (port)
+                            (format port
+                                    "using gcc : cross : ~a-c++ ;"
+                                    #$(%current-target-system)))))
+                     #~())
 
-                #$@(if (%current-target-system)
-                       #~((call-with-output-file "user-config.jam"
-                            (lambda (port)
-                              (format port
-                                      "using gcc : cross : ~a-c++ ;"
-                                      #$(%current-target-system)))))
-                       #~())
-
-                ;; Change an #ifdef __MACH__ that really targets macOS.
-                (substitute* "boost/test/utils/timer.hpp"
-                  (("defined\\(__MACH__\\)")
-                   "(defined __MACH__ && !defined __GNU__)"))
-
-                (invoke "./bootstrap.sh"
-                        (string-append "--prefix=" #$output)
-                        ;; Auto-detection looks for ICU only in traditional
-                        ;; install locations.
-                        (string-append "--with-icu=" #$output)
-                        ;; Ditto for Python.
-                        #$@(if (%current-target-system)
-                               #~()
-                               #~((let ((python (dirname (dirname (search-input-file
-                                                                   inputs
-                                                                   "bin/python")))))
-                                    (string-append "--with-python-root=" python)
-                                    (string-append "--with-python=" python
-                                                   "/bin/python")
-                                    (string-append "--with-python-version="
-                                                   (python-version python)))))
-                        "--with-toolset=gcc"))))
+              (apply invoke "./bootstrap.sh"
+                     (string-append "--prefix=" #$output)
+                     configure-flags)))
           (replace 'build
             (lambda* (#:key make-flags #:allow-other-keys)
               (apply invoke "./b2"
@@ -317,37 +316,25 @@ across a broad spectrum of applications.")
                 "1jj1aai5rdmd72g90a3pd8sw9vi32zad46xv5av8fhnr48ir6ykj"))))
     (arguments
      (substitute-keyword-arguments (package-arguments boost)
+       ((#:configure-flags _ #~'())
+        #~(let ((icu (dirname (dirname (search-input-file
+                                        %build-inputs "bin/uconv")))))
+            (list
+             ;; Auto-detection looks for ICU only in traditional
+             ;; install locations.
+             (string-append "--with-icu=" icu)
+             "--with-toolset=gcc")))
        ((#:phases phases)
         #~(modify-phases #$phases
-            (replace 'configure
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let ((icu (dirname (dirname (search-input-file
-                                              inputs "bin/uconv")))))
-                  (substitute* (append
-                                (find-files "tools/build/src/engine/" "execunix\\.c.*")
-                                '("libs/config/configure"
-                                  "libs/spirit/classic/phoenix/test/runtest.sh"
-                                  "tools/build/doc/bjam.qbk"
-                                  "tools/build/src/engine/Jambase"))
-                    (("/bin/sh") (which "sh")))
-
-                  (setenv "SHELL" (which "sh"))
-                  (setenv "CONFIG_SHELL" (which "sh"))
-
-                  #$@(if (%current-target-system)
-                         #~((call-with-output-file "user-config.jam"
-                              (lambda (port)
-                                (format port
-                                        "using gcc : cross : ~a-c++ ;"
-                                        #$(%current-target-system)))))
-                         #~())
-
-                  (invoke "./bootstrap.sh"
-                          (string-append "--prefix=" #$output)
-                          ;; Auto-detection looks for ICU only in traditional
-                          ;; install locations.
-                          (string-append "--with-icu=" icu)
-                          "--with-toolset=gcc"))))
+            (replace 'patch-shells
+              (lambda _
+                (substitute* (append
+                              (find-files "tools/build/src/engine/" "execunix\\.c.*")
+                              '("libs/config/configure"
+                                "libs/spirit/classic/phoenix/test/runtest.sh"
+                                "tools/build/doc/bjam.qbk"
+                                "tools/build/src/engine/Jambase"))
+                  (("/bin/sh") (which "sh")))))
             (delete 'provide-libboost_python)))
        ((#:make-flags make-flags)
         #~(cons* "--without-python" #$make-flags))))
