@@ -10981,3 +10981,30 @@ possible through the LaTeX @code{\\ref} and @code{\\pageref} cross reference
 mechanism.  Line numbering may be extended to footnote lines, using the
 fnlineno package.")
     (license license:lppl1.3a+)))
+
+(define-public texlive-babel-finnish
+  (let ((template (simple-texlive-package
+                   "texlive-babel-finnish"
+                   (list "/source/generic/babel-finnish/")
+                   (base32
+                    "1930zxk4l6k5q4wcbvpvijv4s0gxp2mkxvblczn4gcbar10vfd4x"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/babel-finnish")
+         ((#:build-targets _ '())
+          ''("finnish.ins")) ; TODO: use dtx and build documentation
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'chdir
+               (lambda _
+                 (chdir "source/generic/babel-finnish")))))))
+      (home-page "https://www.ctan.org/pkg/babel-finnish")
+      (synopsis "Babel support for Finnish")
+      (description
+       "This package provides the language definition file for support of
+Finnish in @code{babel}.  It provides all the necessary macros, definitions and
+settings to typeset Finnish documents.")
+      (license license:lppl1.3c+))))
