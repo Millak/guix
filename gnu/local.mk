@@ -1769,7 +1769,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch \
   %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
   %D%/packages/patches/ruby-sanitize-system-libxml.patch	\
-  %D%/packages/patches/rustc-1.39.0-src.patch			\
+  %D%/packages/patches/rustc-1.54.0-src.patch			\
   %D%/packages/patches/rust-adblock-ignore-live-tests.patch		\
   %D%/packages/patches/i3status-rust-enable-unstable-features.patch	\
   %D%/packages/patches/rust-ndarray-remove-blas-src-dep.patch	\
