@@ -18696,7 +18696,7 @@ interactive commands and functions, such as @code{completing-read}.")
 (define-public emacs-org-ql
   (package
     (name "emacs-org-ql")
-    (version "0.6.1")
+    (version "0.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -18704,7 +18704,7 @@ interactive commands and functions, such as @code{completing-read}.")
                     (commit version)))
               (sha256
                (base32
-                "1mpq3v8lxqllnb4afqh7p9av0p9bha8ld7741zaw4hxb1252xgm2"))
+                "0iamqv5j43ngj1xdqr36rkgk9lqpk9bg8y531jsldnvwzrp3srpf"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
@@ -18723,16 +18723,7 @@ interactive commands and functions, such as @code{completing-read}.")
      (list emacs-buttercup emacs-with-simulated-input))
     (arguments
      `(#:tests? #t
-       #:test-command '("buttercup" "-L" ".")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "tests/test-org-ql.el"
-               ;; This test fails on Emacs 27.1 (see:
-               ;; https://github.com/alphapapa/org-super-agenda/issues/183).
-               (("it \"Can search buffer containing the link\"" all)
-                (string-append "x" all))))))))
+       #:test-command '("buttercup" "-L" ".")))
     (home-page "https://github.com/alphapapa/org-ql/")
     (synopsis "Query language for Org buffers")
     (description "This package provides a Lispy query language for Org
