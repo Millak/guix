@@ -99,6 +99,7 @@
     ("armhf-linux"    "armv7-unknown-linux-gnueabihf")
     ("aarch64-linux"  "aarch64-unknown-linux-gnu")
     ("mips64el-linux" "mips64el-unknown-linux-gnuabi64")
+    ("riscv64-linux"  "riscv64gc-unknown-linux-gnu")
     (_                (nix-system->gnu-triplet system))))
 
 (define* (rust-uri version #:key (dist "static"))
