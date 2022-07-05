@@ -84,12 +84,14 @@
                (base32
                 "0fggarccddj6q4ifj3kn7g565rbhn4ia1vd45fxb7y57a6fmhpa7"))))
     (build-system gnu-build-system)
-    (inputs (list icu4c zlib))
+    (inputs
+     (append
+      (list icu4c zlib)
+      (if (%current-target-system)
+          '()
+          (list python-minimal-wrapper))))
     (native-inputs
-     (append (list perl tcsh)
-             (if (%current-target-system)
-                 '()
-                 (list python-minimal-wrapper))))
+     (list perl tcsh))
     (arguments
      (list
       #:imported-modules `((guix build python-build-system)
@@ -126,7 +128,7 @@
           (replace 'configure
             (lambda _
               (let ((icu #$(this-package-input "icu4c"))
-                    (python #+(this-package-native-input "python-minimal-wrapper")))
+                    (python #$(this-package-input "python-minimal-wrapper")))
                 (substitute* '("libs/config/configure"
                                "libs/spirit/classic/phoenix/test/runtest.sh"
                                "tools/build/src/engine/execunix.cpp")
@@ -177,7 +179,7 @@
                         (let* ((static? (member "link=static" make-flags))
                                (libext (if static? ".a" ".so"))
                                (python-version (python-version
-                                                #+(this-package-native-input
+                                                #$(this-package-input
                                                    "python-minimal-wrapper")))
                                (libboost_pythonNN
                                 (string-append "libboost_python"
@@ -345,8 +347,8 @@ across a broad spectrum of applications.")
             (delete 'provide-libboost_python)))
        ((#:make-flags make-flags)
         #~(cons* "--without-python" #$make-flags))))
-    (native-inputs
-     (modify-inputs (package-native-inputs boost)
+    (inputs
+     (modify-inputs (package-inputs boost)
        (delete "python-minimal-wrapper")))
     (properties '((hidden? . #t)))))
 
