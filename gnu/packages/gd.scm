@@ -77,11 +77,11 @@
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("zlib" ,zlib)))
+     (list fontconfig
+           freetype
+           libjpeg-turbo
+           libpng
+           zlib))
     (home-page "https://www.libgd.org/")
     (synopsis "Library for the dynamic creation of images by programmers")
     (description
