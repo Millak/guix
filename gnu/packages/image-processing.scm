@@ -13,7 +13,7 @@
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Oleh Malyi <astroclubzp@gmail.com>
-;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -194,7 +194,8 @@ licences similar to the Modified BSD licence."))))
               (sha256
                (base32
                 "0qpcd3n26q52dpyibm11f5l6cgscdr54p2jish39gc3p1f5h3ws1"))
-              (patches (search-patches "mia-fix-boost-headers.patch"))))
+              (patches (search-patches "mia-fix-boost-headers.patch"
+                                       "mia-vtk9.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -221,10 +222,7 @@ licences similar to the Modified BSD licence."))))
            nlopt
            openexr-2
            python-lxml
-           ;; The build fails when using the regular VTK (currently at version
-           ;; 9), with error "addons/vtk/vtkvf.cc:23:10: fatal error:
-           ;; vtkStructuredPointsReader.h: No such file or directory".
-           vtk-7))
+           vtk))
     (native-inputs
      (list pkg-config
            python-wrapper))
