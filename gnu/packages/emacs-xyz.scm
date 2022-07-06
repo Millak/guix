@@ -12956,7 +12956,7 @@ later translated into the host format, e.g., LaTeX or HTML.")
 (define-public emacs-writegood-mode
   (package
     (name "emacs-writegood-mode")
-    (version "2.0.4")
+    (version "2.2.0")
     (home-page "https://github.com/bnbeckwith/writegood-mode")
     (source (origin
               (method git-fetch)
@@ -12965,7 +12965,7 @@ later translated into the host format, e.g., LaTeX or HTML.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1nwngnddlkcvix7qx39fadab7hqzg8snb0k63kwpr8v57lyrm48z"))
+                "1a3gmaaa344kigr209b6wnjiw9ikkmw1j5jda04h3g8f9817njyv"))
               (file-name (string-append name "-checkout"))))
     (build-system emacs-build-system)
     (synopsis "Polish up poor writing on the fly")
