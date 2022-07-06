@@ -4457,7 +4457,7 @@ addition, removal, and random selection.")
 (define-public sbcl-quri
   (package
     (name "sbcl-quri")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -4466,7 +4466,7 @@ addition, removal, and random selection.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zpwjhs2zz9832wsjs00kbkjjl4bcs96krlnq9y75gi4f34fxj1x"))))
+        (base32 "1wrrhbj3r4lph5y3hhfbv4g2pvg24hbgl06irq9lyiycy3bgai4w"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      ;; Test system must be loaded before, otherwise tests fail with:
