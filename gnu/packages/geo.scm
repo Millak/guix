@@ -2209,7 +2209,7 @@ orienteering sport.")
     (license license:gpl3+)))
 
 (define-public grass
-  (let* ((version "7.8.6")
+  (let* ((version "7.8.7")
          (majorminor (string-join (list-head (string-split version #\.) 2) ""))
          (grassxx (string-append "grass" majorminor)))
     (package
@@ -2221,7 +2221,7 @@ orienteering sport.")
          (uri (string-append "https://grass.osgeo.org/" grassxx
                              "/source/grass-" version ".tar.gz"))
          (sha256
-          (base32 "1glk74ly3j0x8ymn4jp73s6y8qv7p3g5nv4gvb6l9qqplyq1fpnq"))))
+          (base32 "0sbz0ba9p963phvd0gmvfqq1fg4ixpipzcjbf20ys86qavjppzsg"))))
       (build-system gnu-build-system)
       (inputs
        `(("bzip2" ,bzip2)
