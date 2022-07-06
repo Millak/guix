@@ -27524,7 +27524,7 @@ producing output appropriate for Haunt's @code{html-reader}.")
 (define-public emacs-ox-hugo
   (package
     (name "emacs-ox-hugo")
-    (version "0.12.1")
+    (version "0.12.2")
     (source
      (origin
        (method git-fetch)
@@ -27534,7 +27534,7 @@ producing output appropriate for Haunt's @code{html-reader}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0q4gyjzvxzw6a0phw2x2v9n43i28n3g9m7szwbhzch4j6ggxzcw4"))))
+         "054ln6x92qyicvc5l1m9yjqqzwpg3j66v0shxsypp97vfw2d3ww6"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-tomelr))
