@@ -4770,8 +4770,8 @@ CCL.")
   (sbcl-package->ecl-package sbcl-jonathan))
 
 (define-public sbcl-http-body
-  (let ((commit "dd01dc4f5842e3d29728552e5163acce8386eb73")
-        (revision "1"))
+  (let ((commit "3e4bedd6a9d9bc4e1dc0a45e5b55360ae30fd388")
+        (revision "2"))
     (package
      (name "sbcl-http-body")
      (version (git-version "0.1.0" revision commit))
@@ -4783,14 +4783,21 @@ CCL.")
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jd06snjvxcprhapgfq8sx0y5lrldkvhf206ix6d5a23dd6zcmr0"))))
+        (base32 "0kcg43l5674drzid9cj938q0ki5z25glx296rl239dm7yfmxlzz2"))))
      (build-system asdf-build-system/sbcl)
      (arguments
       '(#:asd-systems '("http-body-test" "http-body")))
      (native-inputs
-      (list sbcl-prove sbcl-trivial-utf-8))
+      (list sbcl-assoc-utils sbcl-prove sbcl-trivial-utf-8))
      (inputs
-      (list sbcl-fast-http sbcl-jonathan sbcl-quri))
+      (list sbcl-babel
+            sbcl-cl-ppcre
+            sbcl-fast-http
+            sbcl-flexi-streams
+            sbcl-jonathan
+            sbcl-trivial-gray-streams
+            sbcl-cl-utilities
+            sbcl-quri))
      (home-page "https://github.com/fukamachi/http-body")
      (synopsis "HTTP POST data parser")
      (description
