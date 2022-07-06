@@ -15839,6 +15839,35 @@ workflows from concise descriptions in ccwl.  It is implemented as an
 language.")
     (license license:gpl3+)))
 
+(define-public hh-suite
+  (package
+    (name "hh-suite")
+    (version "3.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/soedinglab/hh-suite")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1bcmzg0ii6nkda2xm5jdddbwkgsag7k38j20af0c9chr2mbxwx4d"))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "lib/simde"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #false)) ;no test target
+    (inputs
+     (list openmpi simde))
+    (native-inputs
+     (list perl pkg-config xxd))
+    (home-page "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-3019-7")
+    (synopsis "Remote protein homology detection suite")
+    (description "The HH-suite is a software package for sensitive protein sequence searching
+based on the pairwise alignment of hidden Markov models (HMMs).")
+    (license license:gpl3+)))
+
 (define-public wfmash
   (package
     (name "wfmash")
