@@ -199,6 +199,10 @@ and the maven-build-system."))
                        "julien@lepiller.eu")
   java ocaml translations)
 
+(define-member (person "Florian Pelz"
+                       "pelzflorian@pelzflorian.de")
+  translations)
+
 (define-member (person "Liliana Marie Prikler"
                        "liliana.prikler@gmail.com")
   emacs games)
