@@ -2331,7 +2331,7 @@ visualization.")
 (define-public saga
   (package
     (name "saga")
-    (version "7.9.0")
+    (version "8.2.1")
     (source
      (origin
        (method url-fetch)
@@ -2339,8 +2339,8 @@ visualization.")
                            (version-major version) "/SAGA%20-%20" version
                            "/saga-" version ".tar.gz"))
        (sha256
-        (base32 "1n051yxxkylly0k9rlkx2ih3j2lf9d4csg00sm7161r7nhjvggd1"))))
-    (build-system gnu-build-system)
+        (base32 "008izjs6gvj09abxf16ssl1xy0ay3ljq4jswbggp6wiiq459minv"))))
+    (build-system cmake-build-system)
     (native-inputs
      (list pkg-config swig))
     (inputs
@@ -2360,7 +2360,12 @@ visualization.")
            vigra
            wxwidgets))
     (arguments
-     '(#:configure-flags '("--enable-python")))
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'cd-to-source-dir
+           (lambda _
+             (chdir "saga-gis"))))))
     (synopsis "System for Automated Geoscientific Analyses")
     (description
      "SAGA (System for Automated Geoscientific Analyses) is a Geographic
