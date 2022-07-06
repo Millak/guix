@@ -2486,12 +2486,14 @@ growing set of geoscientific methods.")
                              "PyQgsLayoutHtml"
                              "PyQgsLayoutLegend"
                              "PyQgsLayoutMapGrid"
+                             "PyQgsMapClippingUtils"
                              "PyQgsMapLayer"
                              "PyQgsMetadataBase"
                              "PyQgsOGRProvider"
                              "PyQgsOGRProviderGpkg"
                              "PyQgsOapifProvider"
                              "PyQgsPalLabelingLayout"
+                             "PyQgsProcessingInPlace"
                              "PyQgsProject"
                              "PyQgsProviderConnectionGpkg"
                              "PyQgsProviderConnectionPostgres"
@@ -2528,6 +2530,7 @@ growing set of geoscientific methods.")
                              "qgis_layoutlabeltest"
                              "qgis_layoutmanualtabletest"
                              "qgis_layoutmapgridtest"
+                             "qgis_layoutmapoverviewtest"
                              "qgis_layoutmaptest"
                              "qgis_layoutmultiframetest"
                              "qgis_layoutpicturetest"
@@ -2535,6 +2538,7 @@ growing set of geoscientific methods.")
                              "qgis_layouttest"
                              "qgis_mapdevicepixelratiotest"
                              "qgis_maprendererjobtest"
+                             "qgis_meshcontourstest"
                              "qgis_ogrproviderguitest"
                              "qgis_painteffecttest"
                              "qgis_pallabelingtest"
@@ -2548,7 +2552,8 @@ growing set of geoscientific methods.")
                              "qgis_svgmarkertest"
                              "qgis_taskmanagertest"
                              "qgis_wcsprovidertest"
-                             "qgis_ziplayertest")
+                             "qgis_ziplayertest"
+                             "TestQgsRandomMarkerSymbolLayer")
                            "|")))))
          (add-after 'install 'wrap-python
            (assoc-ref python:%standard-phases 'wrap))
