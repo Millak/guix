@@ -195,6 +195,10 @@ and the maven-build-system."))
                        "efraim@flashner.co.il")
   embedded-bootstrap julia rust science)
 
+(define-member (person "Julien Lepiller"
+                       "julien@lepiller.eu")
+  java ocaml translations)
+
 (define-member (person "Liliana Marie Prikler"
                        "liliana.prikler@gmail.com")
   emacs games)
