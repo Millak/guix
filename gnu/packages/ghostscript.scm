@@ -50,30 +50,29 @@
 
 (define-public lcms
   (package
-   (name "lcms")
-   (version "2.13.1")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://sourceforge/lcms/lcms/"
-                                (version-major+minor version)
-                                "/lcms2-" version ".tar.gz"))
-
-            (sha256 (base32
-                     "121v414bg2zk0fcwx0kigr2l6nxl88nmblfn3gq5lz5jwybffwyl"))))
-   (build-system gnu-build-system)
-   (arguments
-    `(#:configure-flags '("--disable-static")))
-   (inputs `(("libjpeg" ,libjpeg-turbo)
-             ("libtiff" ,libtiff)
-             ("zlib" ,zlib)))
-   (synopsis "Little CMS, a small-footprint colour management engine")
-   (description
-    "Little CMS is a small-footprint colour management engine, with special
+    (name "lcms")
+    (version "2.13.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/lcms/lcms/"
+                                  (version-major+minor version)
+                                  "/lcms2-" version ".tar.gz"))
+              (sha256
+               (base32
+                "121v414bg2zk0fcwx0kigr2l6nxl88nmblfn3gq5lz5jwybffwyl"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--disable-static")))
+    (inputs
+     (list libjpeg-turbo libtiff zlib))
+    (synopsis "Little CMS, a small-footprint colour management engine")
+    (description
+     "Little CMS is a small-footprint colour management engine, with special
 focus on accuracy and performance.  It uses the International Color
 Consortium standard (ICC), approved as ISO 15076-1.")
-   (license license:x11)
-   (home-page "https://www.littlecms.com/")
-   (properties '((cpe-name . "little_cms_color_engine")))))
+    (license license:x11)
+    (home-page "https://www.littlecms.com/")
+    (properties '((cpe-name . "little_cms_color_engine")))))
 
 (define-public libpaper
   (package
