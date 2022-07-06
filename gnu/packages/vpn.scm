@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2016, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
-;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2020 Pierre Langlois <pierre.langlois@gmx.com>
@@ -1175,18 +1175,20 @@ public keys and can roam across IP addresses.")
                 "0is5ccrvijz0pfm45pfrlbb9y8231yz3c4zqs8mkgakl9rxajy6l"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "PREFIX=" %output)
-                          "CC=gcc")
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure) ;no configure script
-                  (add-before 'build 'setup-environment
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "l2tp.h"
-                        (("/usr/sbin/pppd")
-                         (search-input-file inputs "/sbin/pppd")))
-                      (setenv "KERNELSRC"
-                              (assoc-ref inputs "kernel-headers"))
-                      #t)))
+     (list
+       #:make-flags
+       #~(list (string-append "PREFIX=" #$output)
+               (string-append "CC=" #$(cc-for-target)))
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'configure) ;no configure script
+           (add-before 'build 'setup-environment
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "l2tp.h"
+                 (("/usr/sbin/pppd")
+                  (search-input-file inputs "/sbin/pppd")))
+               (setenv "KERNELSRC"
+                       (assoc-ref inputs "kernel-headers")))))
        #:tests? #f))                    ; no tests provided
     (inputs (list libpcap ppp))
     (home-page "https://www.xelerance.com/software/xl2tpd/")
