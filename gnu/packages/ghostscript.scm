@@ -42,6 +42,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -107,45 +108,42 @@ paper size.")
 
 (define-public psutils
   (package
-   (name "psutils")
-   (version "17")
-   (source (origin
-            (method url-fetch)
-            (uri "ftp://ftp.knackered.org/pub/psutils/psutils.tar.gz")
-            (sha256 (base32
-                     "1r4ab1fvgganm02kmm70b2r1azwzbav2am41gbigpa2bb1wynlrq"))))
-   (build-system gnu-build-system)
-   (inputs (list perl))
-   (arguments
-    `(#:tests? #f ; none provided
-      #:phases
-      (modify-phases %standard-phases
-        (replace 'configure
-          (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-           (let ((perl (assoc-ref inputs "perl"))
-                 (out (assoc-ref outputs "out")))
-            (copy-file "Makefile.unix" "Makefile")
-            (substitute* "Makefile"
-              (("/usr/local/bin/perl") (string-append perl "/bin/perl")))
-            (substitute* "Makefile"
-              (("/usr/local") out))
-            ;; for the install phase
-            (substitute* "Makefile"
-              (("-mkdir") "mkdir -p"))
-            ;; drop installation of non-free files
-            (substitute* "Makefile"
-              ((" install.include") "")))
-           #t)))))
-   (synopsis "Collection of utilities for manipulating PostScript documents")
-   (description
-    "PSUtils is a collection of utilities for manipulating PostScript
+    (name "psutils")
+    (version "2.09")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/rrthomas/psutils/releases"
+                                  "/download/v" version "/psutils-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1nmp0hb7c4a315vv1mqw2cbckvca8bzh1cv3gdvwwy24w9qba6p3"))))
+    (build-system gnu-build-system)
+    (inputs (list perl))
+    (native-inputs
+     (list libpaper))
+    (arguments
+     (list #:tests? #f           ;FIXME: requires files not present in tarball
+           #:configure-flags
+           ;; Help the build system locate Perl when cross-compiling.
+           (if (%current-target-system)
+               #~(list (string-append "ac_cv_path_PERL="
+                                      (search-input-file %build-inputs "bin/perl")))
+               #~'())))
+    (synopsis "Collection of utilities for manipulating PostScript documents")
+    (description
+     "PSUtils is a collection of utilities for manipulating PostScript
 documents.  Programs included are psnup, for placing out several logical pages
 on a single sheet of paper, psselect, for selecting pages from a document,
 pstops, for general imposition, psbook, for signature generation for booklet
 printing, and psresize, for adjusting page sizes.")
-   (license (license:non-copyleft "file://LICENSE"
-                                "See LICENSE in the distribution."))
-   (home-page "http://knackered.org/angus/psutils/")))
+    (home-page "https://github.com/rrthomas/psutils")
+    (license (list license:gpl3+
+                   ;; This file carries the "historical" psutils license (v1),
+                   ;; which is "effectively BSD 3-clause" (a quote from the file).
+                   (license:non-copyleft
+                    "file://extractres.in.in"
+                    "See extractres.in.in in the distribution.")))))
 
 (define-public ghostscript
   (package
