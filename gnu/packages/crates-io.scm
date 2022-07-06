@@ -65358,6 +65358,36 @@ serializing Rust structures.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-toml-edit-0.14
+  (package
+    (name "rust-toml-edit")
+    (version "0.14.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "toml_edit" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "01g772nkn5lmzaayssjd83rs3ri9ivny8r3wz2b3df1isrgkg65s"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-combine" ,rust-combine-4)
+         ("rust-indexmap" ,rust-indexmap-1)
+         ("rust-itertools" ,rust-itertools-0.10)
+         ("rust-kstring" ,rust-kstring-2)
+         ("rust-serde" ,rust-serde-1))
+        #:cargo-development-inputs
+        (("rust-criterion" ,rust-criterion-0.3)
+         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+         ("rust-snapbox" ,rust-snapbox-0.2))))
+    (home-page "https://github.com/ordian/toml_edit")
+    (synopsis "Yet another format-preserving TOML parser.")
+    (description "This package provides yet another format-preserving TOML
+parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-toml-edit-0.3
   (package
     (name "rust-toml-edit")
