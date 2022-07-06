@@ -2866,6 +2866,7 @@ high-level machine learning frameworks, such as TensorFlow Lite,
 TensorFlow.js, PyTorch, and MediaPipe.")
       (license license:bsd-3))))
 
+;; Please also update python-torchvision when updating this package.
 (define-public python-pytorch
   (package
     (name "python-pytorch")
@@ -3008,6 +3009,50 @@ Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
 (define-public python-pytorch-for-r-torch python-pytorch)
+
+;; Keep this in sync with python-pytorch
+(define-public python-torchvision
+  (package
+    (name "python-torchvision")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/vision")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0chjd6zs46136sg65z1c2g07a534dg72xpy20s3bx1prwmvyxp5v"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false ;the test suite is expensive and there is no easy way
+                       ;to subset it.
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
+    (inputs
+     (list libpng
+           libjpeg-turbo))
+    (propagated-inputs
+     (list python-numpy
+           python-typing-extensions
+           python-requests
+           python-pillow
+           python-pillow-simd
+           python-pytorch))
+    (native-inputs
+     (list which python-pytest))
+    (home-page "https://pytorch.org/vision/stable/index.html")
+    (synopsis " Datasets, transforms and models specific to computer vision")
+    (description
+     "The torchvision package consists of popular datasets, model architectures,
+and common image transformations for computer vision.")
+    (license license:bsd-3)))
 
 (define-public python-hmmlearn
   (package
