@@ -8,7 +8,7 @@
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2017, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
@@ -361,6 +361,14 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
 
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-psutils-test
+           (lambda _
+             ;; This test fails due to a rounding difference with libpaper 1.2:
+             ;;   https://github.com/rrthomas/libpaper/issues/23
+             ;; Adjust the expected outcome to account for the minute difference.
+             (substitute* "texk/psutils/tests/playres.ps"
+               (("844\\.647799")
+                "844.647797"))))
          (add-after 'unpack 'configure-ghostscript-executable
            ;; ps2eps.pl uses the "gswin32c" ghostscript executable on Windows,
            ;; and the "gs" ghostscript executable on Unix. It detects Unix by

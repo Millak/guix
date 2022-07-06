@@ -1,0 +1,38 @@
+Ensure backwards compatibility with libpaper 1.1 by returning a value that
+must be free()'d.
+
+Taken from upstream:
+
+  https://github.com/rrthomas/libpaper/commit/9a4f7cdd6b749fd9d08ec92b6e3b434f7d322b6d
+
+diff --git a/lib/libpaper.c.in.in b/lib/libpaper.c.in.in
+index aa86d06..19e3332 100644
+--- a/lib/libpaper.c.in.in
++++ b/lib/libpaper.c.in.in
+@@ -316,9 +316,9 @@ const char *defaultpapername(void) {
+     return paperstr;
+ }
+ 
+-/* Alias for defaultpapername. */
++/* Alias for defaultpapername; its return value must be freed! */
+ const char *systempapername(void) {
+-    return defaultpapername();
++    return strdup(defaultpapername());
+ }
+ 
+ /* Get the default paper size. */
+diff --git a/lib/paper.h b/lib/paper.h
+index c940bed..fe5d4be 100644
+--- a/lib/paper.h
++++ b/lib/paper.h
+@@ -123,8 +123,8 @@ const struct paper *defaultpaper(void);
+ const char *defaultpapername(void);
+ 
+ /*
+- * Deprecated, only for backwards compatibility; an alias for
+- * defaultpapername().
++ * Deprecated, only for backwards compatibility; does the same as
++ * defaultpapername(), but returns a value that must be freed.
+  */
+ const char *systempapername(void);
+ 

@@ -1,0 +1,97 @@
+Handle invalid paper specifications.
+
+Taken from upstream:
+
+  https://github.com/rrthomas/libpaper/commit/24bcaa54e2813683404e3e13a4fedd47f3e4d614
+
+diff --git a/lib/libpaper.c.in.in b/lib/libpaper.c.in.in
+index 19e3332..c68a936 100644
+--- a/lib/libpaper.c.in.in
++++ b/lib/libpaper.c.in.in
+@@ -164,10 +164,8 @@ const struct paper *papernext(const struct paper *paper)
+ }
+ 
+ /* Constructor. */
+-static int readspecs(struct paper **papers_list, const char *specsfile, struct paper **last) {
+-    paper_lineno = 0;
+-    free(paper_specsfile);
+-    paper_specsfile = strdup(specsfile);
++static int readspecs(struct paper **papers_list, const char *specsfile, struct paper **last, size_t *lineno) {
++    *lineno = 0;
+     char *old_locale = setlocale(LC_ALL, NULL);
+     if (old_locale != NULL)
+         old_locale = strdup(old_locale);
+@@ -178,7 +176,7 @@ static int readspecs(struct paper **papers_list, const char *specsfile, struct p
+         struct paper *prev = *papers_list, *p;
+         size_t n;
+         char *l;
+-        for (paper_lineno = 1, l = NULL; getline(&l, &n, ps) > 0; prev = p, paper_lineno++) {
++        for (*lineno = 1, l = NULL; getline(&l, &n, ps) > 0; prev = p, (*lineno)++) {
+             char *saveptr;
+             char *name = gettok(l, &saveptr);
+             char *wstr = gettok(NULL, &saveptr), *hstr = gettok(NULL, &saveptr);
+@@ -350,6 +348,8 @@ int paperinit(void)
+         return PAPER_OK;
+     initialized = true;
+ 
++    int ret = PAPER_OK;
++
+     /* Read system paperspecs. */
+     struct paper *system_papers = NULL;
+     sysconfdir = alloc_relocate("@sysconfdir@");
+@@ -357,12 +357,9 @@ int paperinit(void)
+         char *system_paperspecs = mfile_name_concat(sysconfdir, PAPERSPECS_FILENAME, NULL);
+         if (system_paperspecs == NULL)
+             return PAPER_NOMEM;
+-        int ret = readspecs(&system_papers, system_paperspecs, NULL);
+-        free(system_paperspecs);
+-        if (ret != PAPER_OK) {
+-            paperdone();
+-            return ret;
+-        }
++        ret = readspecs(&system_papers, system_paperspecs, NULL, &paper_lineno);
++        free(paper_specsfile);
++        paper_specsfile = system_paperspecs;
+     }
+ 
+     /* Set default paper to first system paper, if any. */
+@@ -381,11 +378,15 @@ int paperinit(void)
+     char *user_paperspecs = mfile_name_concat(xdg_config_home, PAPERSPECS_FILENAME, NULL);
+     struct paper *last_paper = NULL;
+     if (user_paperspecs != NULL) {
+-        int ret = readspecs(&papers, user_paperspecs, &last_paper);
+-        free(user_paperspecs);
+-        if (ret != PAPER_OK) {
+-            paperdone();
+-            return ret;
++        size_t user_lineno;
++        int user_ret = readspecs(&papers, user_paperspecs, &last_paper, &user_lineno);
++        if (ret == PAPER_OK) {
++            ret = user_ret;
++            free(user_paperspecs);
++        } else if (paper_lineno == 0) {
++            free(paper_specsfile);
++            paper_specsfile = user_paperspecs;
++            paper_lineno = user_lineno;
+         }
+     }
+ 
+@@ -395,13 +396,16 @@ int paperinit(void)
+             default_paper = papers;
+ 
+         /* Concatenate system papers to user papers. */
+-        last_paper->next = system_papers;
++        if (last_paper != NULL)
++            last_paper->next = system_papers;
++        else
++            last_paper = system_papers;
+     }
+ 
+     if (papers == NULL) /* System papers are all we have. */
+         papers = system_papers;
+ 
+-    return PAPER_OK;
++    return ret;
+ }
+ 
+ /* Shut down the library. */

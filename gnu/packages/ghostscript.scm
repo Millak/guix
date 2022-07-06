@@ -33,6 +33,7 @@
   #:use-module (gnu packages cups)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -74,45 +75,35 @@ Consortium standard (ICC), approved as ISO 15076-1.")
 
 (define-public libpaper
   (package
-   (name "libpaper")
-   (version "1.1.24")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                   ;; Debian moved their libpaper-1.1.24 to archive.debian.net
-                   ;; but in the move the hash of their tarball changed.
-                   "http://pkgs.fedoraproject.org/repo/pkgs/libpaper/libpaper_"
-                   version ".tar.gz/5bc87d494ba470aba54f6d2d51471834/libpaper_"
-                   version ".tar.gz"))
-            (sha256 (base32
-                     "0zhcx67afb6b5r936w5jmaydj3ks8zh83n9rm5sv3m3k8q8jib1q"))))
-   (build-system gnu-build-system)
-   (native-inputs
-    (list automake)) ; For up to date 'config.guess' and 'config.sub'.
-   (arguments
-    `(#:configure-flags '("--disable-static")
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'fix-configure
-          (lambda* (#:key inputs native-inputs #:allow-other-keys)
-            ;; Replace outdated config.sub and config.guess:
-            (for-each (lambda (file)
-                        (install-file
-                         (string-append (assoc-ref
-                                         (or native-inputs inputs) "automake")
-                                        "/share/automake-"
-                                        ,(version-major+minor
-                                          (package-version automake))
-                                        "/" file) "."))
-                      '("config.sub" "config.guess"))
-            #t)))))
-   (synopsis "Library for handling paper sizes")
-   (description
-    "The paper library and accompanying files are intended to provide a simple
+    (name "libpaper")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/rrthomas/libpaper/releases"
+                                  "/download/v" version "/libpaper-"
+                                  version ".tar.gz"))
+              (patches (search-patches "libpaper-free-xdg-config-home.patch"
+                                       "libpaper-free-systempapername.patch"
+                                       "libpaper-invalid-paperspecs.patch"))
+              (sha256
+               (base32
+                "18m1yas7lihlyaxr0vpgy65bq9ri429wrm4sfxyhd5gj88gn16lr"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list help2man))
+    (arguments
+     '(#:configure-flags '("--disable-static"
+                           ;; Tests require a relocatable build.
+                           "--enable-relocatable")))
+    (outputs '("out" "debug"))
+    (home-page "https://github.com/rrthomas/libpaper")
+    (synopsis "Library for handling paper sizes")
+    (description
+     "The paper library and accompanying files are intended to provide a simple
 way for applications to take actions based on a system- or user-specified
 paper size.")
-   (license license:gpl2)
-   (home-page "https://packages.qa.debian.org/libp/libpaper.html")))
+    ;; The library is LGPL3+, everything else GPL3+.
+    (license (list license:lgpl3+ license:gpl3+))))
 
 (define-public psutils
   (package
