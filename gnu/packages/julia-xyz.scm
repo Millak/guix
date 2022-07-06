@@ -5651,7 +5651,7 @@ useful in order to support @code{VersionNumber} comparisons applied to
 (define-public julia-weakrefstrings
   (package
     (name "julia-weakrefstrings")
-    (version "1.1.0")
+    (version "1.4.0")
     (source
       (origin
         (method git-fetch)
@@ -5660,10 +5660,11 @@ useful in order to support @code{VersionNumber} comparisons applied to
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "14h1vdnc3rx87w6v2rr59lgb4kai2hd1wzqpxhmzsi8karg2z219"))))
+         (base32 "1ca94bpsjqrap2y9wlixspnisfkcms7aax0kpv7yn0v2vs9481wk"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-dataapi
+           julia-inlinestrings
            julia-parsers))
     (home-page "https://github.com/JuliaData/WeakRefStrings.jl")
     (synopsis "Efficient string representation and transfer in Julia")
