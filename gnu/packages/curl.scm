@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@suse.cz>
-;;; Copyright © 2015, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2020, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
@@ -161,15 +161,13 @@ tunneling, and so on.")
                   (cond
                    ((not (target-64bit?))
                     #~(modify-phases #$phases
-                        (add-after 'unpack 'skip-failing-tests
+                        (add-after 'unpack 'tweak-lib3026-test
                           (lambda _
-                            (with-output-to-port
-                                (open-file "tests/data/DISABLED" "a")
-                              (lambda ()
-                                (display "# curl_global_init thread-safety")
-                                (newline)
-                                (display 3026)
-                                (newline)))))))
+                            ;; Have that test create a hundred threads, not a
+                            ;; thousand.
+                            (substitute* "tests/libtest/lib3026.c"
+                              (("NUM_THREADS .*$")
+                               "NUM_THREADS 100\n"))))))
                    (else phases)))))))
 
 (define-public curl-minimal
