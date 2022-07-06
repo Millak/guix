@@ -342,18 +342,14 @@ and driving.")
 (define-public libgeotiff
   (package
     (name "libgeotiff")
-    (version "1.5.1")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://download.osgeo.org/geotiff/libgeotiff/libgeotiff-"
                            version ".tar.gz"))
-       (patches (search-patches
-                 ;; See libgeotiff 1.5.1 issue
-                 ;; https://github.com/OSGeo/libgeotiff/issues/22
-                 "libgeotiff-adapt-test-script-for-proj-6.2.patch"))
        (sha256
-        (base32 "0b31mlzcv5b1y7jdvb7p0pa3xradrg3x5g32ym911lbhq4rrgsgr"))
+        (base32 "1mjmgv48x51ppax5dnb6lq7z600czxll53bx6jbzqwd4m93i7aq5"))
        (modules '((guix build utils)))
        (snippet
         '(begin
