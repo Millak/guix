@@ -4797,6 +4797,27 @@ user-friendly, scratch spaces should, in general, not be used for a storing
 files that the user must interact with through a file browser.")
     (license license:expat)))
 
+(define-public julia-sentinelarrays
+  (package
+    (name "julia-sentinelarrays")
+    (version "1.3.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaData/SentinelArrays.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h3vpz7xskbf2a60imdg0irwh9bybkahjpnb6b3wyk0j9a97nqkr"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaData/SentinelArrays.jl")
+    (synopsis "Array types using sentinel values")
+    (description "This package provides @code{SentinelArray{T}} that wraps an
+@code{AbstractArray} of type @code{T}, and accepts a sentinel and value
+argument.")
+    (license license:expat)))
+
 (define-public julia-showoff
   (package
     (name "julia-showoff")
