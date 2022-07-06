@@ -2847,6 +2847,32 @@ negative infinity in Julia.")
 interfaces with @file{.ini} files.")
     (license license:expat)))
 
+(define-public julia-inlinestrings
+  (package
+    (name "julia-inlinestrings")
+    (version "1.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaStrings/InlineStrings.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dcdpxlphjliqlnkcri7mhg9bqqzpsdj80h9gkw8xhzr3ls473zr"))))
+    (build-system julia-build-system)
+    (propagated-inputs
+     (list julia-parsers))
+    (home-page "https://github.com/JuliaStrings/InlineStrings.jl")
+    (synopsis "Fixed-width string types")
+    (description "This package provides a set of custom string types of
+various fixed sizes.  Each inline string is a custom primitive type and can
+benefit from being stack friendly by avoiding allocations/heap tracking in the
+GC.  When used in an array, the elements are able to be stored inline since
+each one has a fixed size.  Currently support inline strings from 1 byte up to
+255 bytes.")
+    (license license:expat)))
+
 (define-public julia-interpolations
   (package
     (name "julia-interpolations")
