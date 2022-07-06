@@ -1478,7 +1478,7 @@ handful of functions that are not resource-specific.")
 (define-public emacs-typit
   (package
     (name "emacs-typit")
-    (version "0.2.2")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1487,7 +1487,7 @@ handful of functions that are not resource-specific.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15m4nfsig8w9hykqy9mzd014pqx4fj9yykiw273bwm384lf3dq6y"))))
+        (base32 "0djxmni5mfc9wzm0zg7fsd7138ic5qznbmqd5jyrk4mpf0li8nhy"))))
     (build-system emacs-build-system)
     (arguments
      '(#:include (cons "^dict/" %default-include)))
