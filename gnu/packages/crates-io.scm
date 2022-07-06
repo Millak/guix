@@ -32249,6 +32249,31 @@ pseudo-random text.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-libtest-mimic-0.3
+  (package
+    (name "rust-libtest-mimic")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libtest-mimic" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1bp2jllwpciljr14g6s9bk4835g46kszgrjwi66vxxsk3ynbi9q8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.4)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-termcolor" ,rust-termcolor-1))))
+    (home-page "https://github.com/LukasKalbertodt/libtest-mimic")
+    (synopsis "Tools for writing a test harness")
+    (description
+     "Write your own test harness that looks and behaves like the built-in test
+harness used by @code{rustc --test}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lmdb-rkv-0.14
   (package
     (name "rust-lmdb-rkv")
