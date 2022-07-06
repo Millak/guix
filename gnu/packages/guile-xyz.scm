@@ -42,6 +42,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1614,7 +1615,7 @@ for MySQL.")
 (define-public guile-config
   (package
     (name "guile-config")
-    (version "0.4.2")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -1623,7 +1624,7 @@ for MySQL.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256 (base32
-                "09028ylbddjdp3d67zdjz3pnsjqz6zs2bfck5rr3dfaa0qjap40n"))))
+                "0s708k6qnk9155bjrcy1f1v7lqhlpaj4mjip46sr3iw85hca92wz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config texinfo))
