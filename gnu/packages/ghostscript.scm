@@ -150,116 +150,117 @@ printing, and psresize, for adjusting page sizes.")
     (name "ghostscript")
     (version "9.56.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/ArtifexSoftware/"
-                            "ghostpdl-downloads/releases/download/gs"
-                            (string-delete #\. version)
-                            "/ghostscript-" version ".tar.xz"))
-        (sha256
-         (base32
-          "1r5qash65m6ignki6z72q4rlai9ka99xrxnmqd19n02has00cd6l"))
-        (patches (search-patches "ghostscript-no-header-creationdate.patch"
-                                 "ghostscript-no-header-id.patch"
-                                 "ghostscript-no-header-uuid.patch"))
-        (modules '((guix build utils)))
-        (snippet
-          ;; Remove bundled libraries. The bundled OpenJPEG is a patched fork so
-          ;; we leave it, at least for now.
-          ;; TODO Try unbundling ijs, which is developed alongside Ghostscript.
-          ;; Likewise for the thread-safe lcms2 fork called "lcms2art".
-         '(begin
-            (for-each delete-file-recursively '("freetype" "jbig2dec" "jpeg"
-                                                "libpng" "tiff" "zlib"))))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/ArtifexSoftware/"
+                           "ghostpdl-downloads/releases/download/gs"
+                           (string-delete #\. version)
+                           "/ghostscript-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1r5qash65m6ignki6z72q4rlai9ka99xrxnmqd19n02has00cd6l"))
+       (patches (search-patches "ghostscript-no-header-creationdate.patch"
+                                "ghostscript-no-header-id.patch"
+                                "ghostscript-no-header-uuid.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled libraries. The bundled OpenJPEG is a patched fork so
+        ;; we leave it, at least for now.
+        ;; TODO Try unbundling ijs, which is developed alongside Ghostscript.
+        ;; Likewise for the thread-safe lcms2 fork called "lcms2art".
+        '(begin
+           (for-each delete-file-recursively '("freetype" "jbig2dec" "jpeg"
+                                               "libpng" "tiff" "zlib"))))))
     (build-system gnu-build-system)
-    (outputs '("out" "doc"))                  ;19 MiB of HTML/PS doc + examples
+    (outputs '("out" "doc"))            ;19 MiB of HTML/PS doc + examples
     (arguments
-     `(#:disallowed-references ("doc")
-       #:configure-flags
-       (list (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib")
-             "--with-system-libtiff"
-             "LIBS=-lz"
-             (string-append "ZLIBDIR="
-                            (assoc-ref %build-inputs "zlib") "/include")
-             "--enable-dynamic"
-             "--disable-compile-inits"
-             (string-append "--with-fontpath="
-                            (assoc-ref %build-inputs "font-ghostscript")
-                            "/share/fonts/type1/ghostscript")
-             ,@(if (%current-target-system)
-                   '(;; Specify the native compiler, which is used to build 'echogs'
-                     ;; and other intermediary tools when cross-compiling; see
-                     ;; <https://ghostscript.com/FAQ.html>.
-                     "CCAUX=gcc"
+     (list
+      #:disallowed-references '("doc")
+      #:configure-flags
+      #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+              "--with-system-libtiff"
+              "LIBS=-lz"
+              (string-append "ZLIBDIR="
+                             (dirname (search-input-file %build-inputs
+                                                         "include/zlib.h")))
+              "--enable-dynamic"
+              "--disable-compile-inits"
+              (string-append "--with-fontpath="
+                             (search-input-directory
+                              %build-inputs
+                              "share/fonts/type1/ghostscript"))
 
-                     ;; Save 'config.log' etc. of the native build under
-                     ;; auxtmp/, useful for debugging.
-                     "--enable-save_confaux")
-                   '()))
-       #:phases
-       (modify-phases %standard-phases
-        (add-before 'configure 'create-output-directory
-          (lambda* (#:key outputs #:allow-other-keys)
-            ;; The configure script refuses to function if the directory
-            ;; specified as -rpath does not already exist.
-            (mkdir-p (string-append (assoc-ref outputs "out") "/lib"))))
-        (add-after 'configure 'remove-doc-reference
-          (lambda _
-            ;; Don't retain a reference to the 'doc' output in 'gs'.
-            ;; The only use of this definition is in the output of
-            ;; 'gs --help', so this change is fine.
-            (substitute* "base/gscdef.c"
-              (("GS_DOCDIR")
-               "\"~/.guix-profile/share/doc/ghostscript\""))))
-         (add-after 'configure 'patch-config-files
-           (lambda _
-             (substitute* "base/unixhead.mak"
-               (("/bin/sh") (which "sh")))))
-         ,@(if (%current-target-system)
-               `((add-after 'configure 'add-native-lz
-                   (lambda _
-                     ;; Add missing '-lz' for native tools such as 'mkromfs'.
-                     (substitute* "Makefile"
-                       (("^AUXEXTRALIBS=(.*)$" _ value)
-                        (string-append "AUXEXTRALIBS = -lz " value "\n"))))))
-               '())
-         (replace 'build
-           (lambda _
-             ;; Build 'libgs.so', but don't build the statically-linked 'gs'
-             ;; binary (saves 22 MiB).
-             (invoke "make" "so" "-j"
-                     (number->string (parallel-job-count)))))
-         (replace 'install
-           (lambda _
-             (invoke "make" "soinstall")))
-         (add-after 'install 'create-gs-symlink
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Some programs depend on having a 'gs' binary available.
-               (symlink "gsc" (string-append out "/bin/gs"))))))))
+              #$@(if (%current-target-system)
+                     '(;; Specify the native compiler, which is used to build 'echogs'
+                       ;; and other intermediary tools when cross-compiling; see
+                       ;; <https://ghostscript.com/FAQ.html>.
+                       "CCAUX=gcc"
+
+                       ;; Save 'config.log' etc. of the native build under
+                       ;; auxtmp/, useful for debugging.
+                       "--enable-save_confaux")
+                     '()))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'create-output-directory
+            (lambda _
+              ;; The configure script refuses to function if the directory
+              ;; specified as -rpath does not already exist.
+              (mkdir-p (string-append #$output "/lib"))))
+          (add-after 'configure 'remove-doc-reference
+            (lambda _
+              ;; Don't retain a reference to the 'doc' output in 'gs'.
+              ;; The only use of this definition is in the output of
+              ;; 'gs --help', so this change is fine.
+              (substitute* "base/gscdef.c"
+                (("GS_DOCDIR")
+                 "\"~/.guix-profile/share/doc/ghostscript\""))))
+          (add-after 'configure 'patch-config-files
+            (lambda _
+              (substitute* "base/unixhead.mak"
+                (("/bin/sh") (which "sh")))))
+          #$@(if (%current-target-system)
+                 '((add-after 'configure 'add-native-lz
+                     (lambda _
+                       ;; Add missing '-lz' for native tools such as 'mkromfs'.
+                       (substitute* "Makefile"
+                         (("^AUXEXTRALIBS=(.*)$" _ value)
+                          (string-append "AUXEXTRALIBS = -lz " value "\n"))))))
+                 '())
+          (replace 'build
+            (lambda _
+              ;; Build 'libgs.so', but don't build the statically-linked 'gs'
+              ;; binary (saves 22 MiB).
+              (invoke "make" "so" "-j"
+                      (number->string (parallel-job-count)))))
+          (replace 'install
+            (lambda _
+              (invoke "make" "soinstall")))
+          (add-after 'install 'create-gs-symlink
+            (lambda _
+              ;; Some programs depend on having a 'gs' binary available.
+              (symlink "gsc" (string-append #$output "/bin/gs")))))))
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)       ;needed for freetype
-       ("python" ,python-minimal-wrapper)
-       ("tcl" ,tcl)
-
-       ;; When cross-compiling, some of the natively-built tools require all
-       ;; these libraries.
-       ,@(if (%current-target-system)
-             `(("zlib/native" ,zlib)
-               ("libjpeg/native" ,libjpeg-turbo))
-             '())))
+     (append
+      (list perl
+            pkg-config                  ;needed for freetype
+            python-minimal-wrapper
+            tcl)
+      ;; When cross-compiling, some of the natively-built tools require all
+      ;; these libraries.
+      (if (%current-target-system)
+          (list zlib libjpeg-turbo)
+          '())))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("font-ghostscript" ,font-ghostscript)
-       ("jbig2dec" ,jbig2dec)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpaper" ,libpaper)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("zlib" ,zlib)))
+     (list fontconfig
+           freetype
+           font-ghostscript
+           jbig2dec
+           libjpeg-turbo
+           libpaper
+           libpng
+           libtiff
+           zlib))
     (synopsis "PostScript and PDF interpreter")
     (description
      "Ghostscript is an interpreter for the PostScript language and the PDF
@@ -272,15 +273,14 @@ output file formats and printers.")
 (define-public ghostscript/x
   (package/inherit ghostscript
     (name (string-append (package-name ghostscript) "-with-x"))
-    (inputs `(("libxext" ,libxext)
-              ("libxt" ,libxt)
-              ,@(package-inputs ghostscript)))))
+    (inputs (modify-inputs (package-inputs ghostscript)
+              (prepend libxext libxt)))))
 
 (define-public ghostscript/cups
   (package/inherit ghostscript
     (name "ghostscript-with-cups")
-    (inputs `(("cups" ,cups-minimal)
-              ,@(package-inputs ghostscript)))))
+    (inputs (modify-inputs (package-inputs ghostscript)
+              (prepend cups-minimal)))))
 
 (define-public ijs
   (package
