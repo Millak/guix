@@ -1653,16 +1653,16 @@ above command-line parameters.")
 (define-public guile-hall
   (package
     (name "guile-hall")
-    (version "0.3.1")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.com/a-sassmannshausen/guile-hall")
              (commit version)))
-       (file-name "guile-hall-0.3.1-checkout")
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1s24nigdra6rvclvy15l2aw00c3aq9vv8qwxylzs60darbl36206"))))
+        (base32 "0yrrik1v1xbik5h5q7w2cxrx6gvkmcdm32dl36i7xqdq8pr8sh2d"))))
     (build-system gnu-build-system)
     (arguments
       `(#:modules
