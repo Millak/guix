@@ -299,7 +299,7 @@ for parsing HTML files.")
 (define-public fsearch
   (package
     (name "fsearch")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method git-fetch)
@@ -308,7 +308,7 @@ for parsing HTML files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ypm4bvvf4m6hk3d9cw4w3lcvg9ivy62q54qxk1jzl0ks3pm9xsy"))))
+        (base32 "1lc6fhz4zhjbs29xn53v97dqrxwmqaplhky8sm9776ws6fyifwd7"))))
     (build-system meson-build-system)
     (native-inputs
      (list autoconf
