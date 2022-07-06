@@ -57591,6 +57591,51 @@ output from
 It is also flexible enough to build your own test harness like @code{trycmd}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-snapbox-0.2
+  (package
+    (name "rust-snapbox")
+    (version "0.2.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "snapbox" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "14zxmsi4k9a9vgp9vs1q62ff1k57p26rwp5xs6f9bdijl9fisykn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-concolor" ,rust-concolor-0.0.8)
+        ("rust-content-inspector" ,rust-content-inspector-0.2)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-dunce" ,rust-dunce-1)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-ignore" ,rust-ignore-0.4)
+        ("rust-libtest-mimic" ,rust-libtest-mimic-0.3)
+        ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
+        ("rust-os-pipe" ,rust-os-pipe-1)
+        ("rust-similar" ,rust-similar-2)
+        ("rust-snapbox-macros" ,rust-snapbox-macros-0.2)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-wait-timeout" ,rust-wait-timeout-0.2)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-yansi" ,rust-yansi-0.5))))
+    (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
+    (synopsis "Snapshot testing toolbox")
+    (description
+     "snapbox is a snapshot-testing toolbox that is ready to use for verifying
+output from
+
+@itemize
+@item Function return values
+@item CLI stdout/stderr
+@item Filesystem changes
+@end itemize
+
+It is also flexible enough to build your own test harness like @code{trycmd}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-snappy-cpp-0.1
   (package
     (name "rust-snappy-cpp")
