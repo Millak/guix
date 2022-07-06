@@ -7,7 +7,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018, 2020, 2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -51,14 +51,15 @@
 (define-public lcms
   (package
    (name "lcms")
-   (version "2.12")
+   (version "2.13.1")
    (source (origin
             (method url-fetch)
-            (uri (string-append "mirror://sourceforge/lcms/lcms/" version
+            (uri (string-append "mirror://sourceforge/lcms/lcms/"
+                                (version-major+minor version)
                                 "/lcms2-" version ".tar.gz"))
 
             (sha256 (base32
-                     "1x8hzq8kw16lgjxmqpnqah1p3hrqqhjpcl1ymiah8434x22kjrhq"))))
+                     "121v414bg2zk0fcwx0kigr2l6nxl88nmblfn3gq5lz5jwybffwyl"))))
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags '("--disable-static")))
