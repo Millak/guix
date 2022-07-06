@@ -22491,6 +22491,8 @@ objects.")
              sbcl-sdl2kit
              sbcl-split-sequence
              sbcl-static-vectors))
+      (arguments
+       '(#:asd-systems '("sketch" "sketch-examples")))
       (home-page "https://github.com/vydd/sketch")
       (synopsis "Creative framework for electronic art, visual design and more")
       (description
