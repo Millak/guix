@@ -24240,10 +24240,12 @@ buffers, etc.  It also has plug-ins to help your Emacs life.")
       (license license:gpl3+)))
 
 (define-public emacs-ctable
-  (let ((commit "b8830d1ca95abb100a81bc32011bd17d5ecba000"))
+  ;; Latest release is not tagged.  Use commit matching version bump.
+  (let ((commit "04dbcddeba1da1f39e885bc0d36240ff37d829e9")
+        (version "0.1.3"))
     (package
       (name "emacs-ctable")
-      (version (git-version "0.1.2" "1" commit))
+      (version version)
       (home-page "https://github.com/kiwanami/emacs-ctable")
       (source (origin
                 (method git-fetch)
@@ -24252,9 +24254,13 @@ buffers, etc.  It also has plug-ins to help your Emacs life.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0pg303pnqscrsbx9579hc815angszsgf9vpd2z2f8p4f4ka6a00h"))
+                  "16yrx1z44xs24z2a0gwzf1xhhks1wrzafc5ihf6lbw843rq2jar0"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
+      (arguments
+       ;; XXX: The following file does not compile.  It is not useful, so
+       ;; remove it.
+       (list #:exclude #~(cons "^test-ctable\\.el" %default-exclude)))
       (synopsis "Table component for Emacs Lisp")
       (description "This program is a table component for Emacs Lisp.  Other
 programs can use this table component for the application UI.")
