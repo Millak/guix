@@ -3112,7 +3112,7 @@ extensions to the iterator interface.")
 (define-public julia-json
   (package
     (name "julia-json")
-    (version "0.21.1")
+    (version "0.21.3")
     (source
      (origin
        (method git-fetch)
@@ -3121,7 +3121,7 @@ extensions to the iterator interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f9k613kbknmp4fgjxvjaw4d5sfbx8a5hmcszmp1w9rqfqngjx9m"))))
+        (base32 "1l2p852sxq6h5fif3dqshvbw17gb06jmq2nkr88spvp7s0n0nslz"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-datastructures
