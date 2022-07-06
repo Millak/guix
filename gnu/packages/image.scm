@@ -1336,9 +1336,7 @@ channels.")
     (build-system gnu-build-system)
     (propagated-inputs
      ;; These are all in the 'Libs.private' field of libmng.pc.
-     `(("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("zlib" ,zlib)))
+     (list lcms libjpeg-turbo zlib))
     (home-page "https://www.libmng.com/")
     (synopsis "Library for handling MNG files")
     (description
