@@ -148,7 +148,7 @@ printing, and psresize, for adjusting page sizes.")
 (define-public ghostscript
   (package
     (name "ghostscript")
-    (version "9.54.0")
+    (version "9.56.1")
     (source
       (origin
         (method url-fetch)
@@ -158,7 +158,7 @@ printing, and psresize, for adjusting page sizes.")
                             "/ghostscript-" version ".tar.xz"))
         (sha256
          (base32
-          "0fvfvv6di5s6j4sy4gaw65klm23dby39bkdjxxq4w3v0vqyb9dy2"))
+          "1r5qash65m6ignki6z72q4rlai9ka99xrxnmqd19n02has00cd6l"))
         (patches (search-patches "ghostscript-no-header-creationdate.patch"
                                  "ghostscript-no-header-id.patch"
                                  "ghostscript-no-header-uuid.patch"))
@@ -170,19 +170,11 @@ printing, and psresize, for adjusting page sizes.")
           ;; Likewise for the thread-safe lcms2 fork called "lcms2art".
          '(begin
             (for-each delete-file-recursively '("freetype" "jbig2dec" "jpeg"
-                                                "libpng" "tiff" "zlib"))
-            #t))))
+                                                "libpng" "tiff" "zlib"))))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))                  ;19 MiB of HTML/PS doc + examples
     (arguments
      `(#:disallowed-references ("doc")
-       ;; XXX: Starting with version 9.27, building the tests in parallel
-       ;; occasionally fails like this:
-       ;;  In file included from ./base/memory_.h:23:0,
-       ;;                   from ./obj/gsmd5.h:1,
-       ;;                   from ./obj/gsmd5.c:56:
-       ;;  ./base/std.h:25:10: fatal error: arch.h: No such file or directory
-       #:parallel-tests? #f
        #:configure-flags
        (list (string-append "LDFLAGS=-Wl,-rpath="
                             (assoc-ref %outputs "out") "/lib")
@@ -195,7 +187,6 @@ printing, and psresize, for adjusting page sizes.")
              (string-append "--with-fontpath="
                             (assoc-ref %build-inputs "font-ghostscript")
                             "/share/fonts/type1/ghostscript")
-
              ,@(if (%current-target-system)
                    '(;; Specify the native compiler, which is used to build 'echogs'
                      ;; and other intermediary tools when cross-compiling; see
@@ -212,8 +203,7 @@ printing, and psresize, for adjusting page sizes.")
           (lambda* (#:key outputs #:allow-other-keys)
             ;; The configure script refuses to function if the directory
             ;; specified as -rpath does not already exist.
-            (mkdir-p (string-append (assoc-ref outputs "out") "/lib"))
-            #t))
+            (mkdir-p (string-append (assoc-ref outputs "out") "/lib"))))
         (add-after 'configure 'remove-doc-reference
           (lambda _
             ;; Don't retain a reference to the 'doc' output in 'gs'.
@@ -221,21 +211,18 @@ printing, and psresize, for adjusting page sizes.")
             ;; 'gs --help', so this change is fine.
             (substitute* "base/gscdef.c"
               (("GS_DOCDIR")
-               "\"~/.guix-profile/share/doc/ghostscript\""))
-            #t))
+               "\"~/.guix-profile/share/doc/ghostscript\""))))
          (add-after 'configure 'patch-config-files
            (lambda _
              (substitute* "base/unixhead.mak"
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          ,@(if (%current-target-system)
                `((add-after 'configure 'add-native-lz
                    (lambda _
                      ;; Add missing '-lz' for native tools such as 'mkromfs'.
                      (substitute* "Makefile"
                        (("^AUXEXTRALIBS=(.*)$" _ value)
-                        (string-append "AUXEXTRALIBS = -lz " value "\n")))
-                     #t)))
+                        (string-append "AUXEXTRALIBS = -lz " value "\n"))))))
                '())
          (replace 'build
            (lambda _
@@ -250,8 +237,7 @@ printing, and psresize, for adjusting page sizes.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                ;; Some programs depend on having a 'gs' binary available.
-               (symlink "gsc" (string-append out "/bin/gs"))
-               #t))))))
+               (symlink "gsc" (string-append out "/bin/gs"))))))))
     (native-inputs
      `(("perl" ,perl)
        ("pkg-config" ,pkg-config)       ;needed for freetype

@@ -6,11 +6,11 @@ not write out the "/ID" field (if that's permissible).
 Upstream does not want to do this.
 
 See: https://bugs.ghostscript.com/show_bug.cgi?id=698208
-diff --git a/orig/gnu-ghostscript-9.14.0/devices/vector/gdevpdf.c b/bb/gnu-ghostscript-9.14.0/devices/vector/gdevpdf.c
-index 0fb067e..b342e2c 100644
---- orig/gnu-ghostscript-9.14.0/devices/vector/gdevpdf.c
-+++ gnu-ghostscript-9.14.0/devices/vector/gdevpdf.c
-@@ -305,6 +305,9 @@ pdf_initialize_ids(gx_device_pdf * pdev)
+diff --git a/devices/vector/gdevpdf.c b/devices/vector/gdevpdf.c
+index cb268f62e..c5abefde2 100644
+--- a/devices/vector/gdevpdf.c
++++ b/devices/vector/gdevpdf.c
+@@ -425,6 +425,9 @@ pdf_initialize_ids(gx_device_pdf * pdev)
       * date and time, rather than (for example) %%CreationDate from the
       * PostScript file.  We think this is wrong, but we do the same.
       */
@@ -20,9 +20,11 @@ index 0fb067e..b342e2c 100644
      {
          struct tm tms;
          time_t t;
---- orig/gnu-ghostscript-9.14.0/devices/vector/gdevpdfe.c
-+++ gnu-ghostscript-9.14.0/devices/vector/gdevpdfe.c
-@@ -692,6 +692,9 @@
+diff --git a/devices/vector/gdevpdfe.c b/devices/vector/gdevpdfe.c
+index ec011d8ba..f083f1e93 100644
+--- a/devices/vector/gdevpdfe.c
++++ b/devices/vector/gdevpdfe.c
+@@ -696,6 +696,9 @@ pdf_write_document_metadata(gx_device_pdf *pdev, const byte digest[6])
              pdf_xml_attribute_name(s, "xmlns:xmp");
              pdf_xml_attribute_value(s, "http://ns.adobe.com/xap/1.0/");
              pdf_xml_tag_end(s);
@@ -32,7 +34,7 @@ index 0fb067e..b342e2c 100644
              {
                  pdf_xml_tag_open_beg(s, "xmp:ModifyDate");
                  pdf_xml_tag_end(s);
-@@ -700,6 +701,9 @@
+@@ -704,6 +707,9 @@ pdf_write_document_metadata(gx_device_pdf *pdev, const byte digest[6])
                  pdf_xml_tag_close(s, "xmp:ModifyDate");
                  pdf_xml_newline(s);
              }

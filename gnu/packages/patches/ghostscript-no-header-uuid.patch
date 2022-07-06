@@ -8,10 +8,11 @@ field value as "".
 Upstream does not want to do this.
 
 See: https://bugs.ghostscript.com/show_bug.cgi?id=698208
-diff -ur orig/gnu-ghostscript-9.14.0/devices/vector/gdevpdfe.c aa/gnu-ghostscript-9.14.0/devices/vector/gdevpdfe.c
---- orig/gnu-ghostscript-9.14.0/devices/vector/gdevpdfe.c	2017-07-09 23:30:28.960479189 +0200
-+++ gnu-ghostscript-9.14.0/devices/vector/gdevpdfe.c	2017-07-10 01:04:12.252478276 +0200
-@@ -620,7 +620,7 @@
+diff --git a/devices/vector/gdevpdfe.c b/devices/vector/gdevpdfe.c
+index f083f1e93..a19c64ac0 100644
+--- a/devices/vector/gdevpdfe.c
++++ b/devices/vector/gdevpdfe.c
+@@ -624,7 +624,7 @@ pdf_write_document_metadata(gx_device_pdf *pdev, const byte digest[6])
          return code;
  
      /* PDF/A XMP reference recommends setting UUID to empty. If not empty must be a URI */
@@ -20,7 +21,7 @@ diff -ur orig/gnu-ghostscript-9.14.0/devices/vector/gdevpdfe.c aa/gnu-ghostscrip
          instance_uuid[0] = 0x00;
  
      cre_date_time_len = pdf_get_docinfo_item(pdev, "/CreationDate", cre_date_time, sizeof(cre_date_time));
-@@ -720,14 +720,17 @@
+@@ -730,14 +730,17 @@ pdf_write_document_metadata(gx_device_pdf *pdev, const byte digest[6])
              pdf_xml_tag_close(s, "rdf:Description");
              pdf_xml_newline(s);
  
