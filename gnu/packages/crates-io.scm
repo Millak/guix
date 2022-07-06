@@ -44506,6 +44506,31 @@ particularly useful for printing structured recursive data like trees.")
        (("rust-termcolor" ,rust-termcolor-0.3)
         ("rust-typed-arena" ,rust-typed-arena-1))))))
 
+(define-public rust-pretty-assertions-1
+  (package
+    (name "rust-pretty-assertions")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pretty_assertions" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0qrmkdwqn56af498vi8zjyq44wzcyvj5ic1dv54d01s2r6d9i7y8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-ctor" ,rust-ctor-0.1)
+        ("rust-diff" ,rust-diff-0.1)
+        ("rust-output-vt100" ,rust-output-vt100-0.1))))
+    (home-page "https://github.com/colin-kiegel/rust-pretty-assertions")
+    (synopsis "Drop-in replacements for assert_eq! and assert_ne!")
+    (description
+     "Overwrite @code{assert_eq!} and @code{assert_ne!} with drop-in
+replacements, adding colorful diffs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pretty-assertions-0.7
   (package
     (name "rust-pretty-assertions")
