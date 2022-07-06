@@ -216,7 +216,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
 (define-public geos
   (package
     (name "geos")
-    (version "3.8.1")
+    (version "3.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.osgeo.org/geos/geos-"
@@ -224,8 +224,8 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "1xqpmr10xi0n9sj47fbwc89qb0yr9imh4ybk0jsxpffy111syn22"))))
-    (build-system gnu-build-system)
+                "05apyh6dvv15fax4xvxa0kr622h4y08w9p3274mlqsrqmjcwbfsh"))))
+    (build-system cmake-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
                    (add-after
@@ -233,11 +233,10 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                     (lambda _
                       (substitute* '("tests/xmltester/testrunner.sh"
                                      "tests/geostest/testrunner.sh")
-                        (("/bin/sh") (which "sh")))
-                      #t)))))
+                        (("/bin/sh") (which "sh"))))))))
     (inputs
      (list glib))
-    (home-page "https://geos.osgeo.org/")
+    (home-page "https://libgeos.org/")
     (synopsis "Geometry Engine for Geographic Information Systems")
     (description
      "GEOS provides a spatial object model and fundamental geometric
