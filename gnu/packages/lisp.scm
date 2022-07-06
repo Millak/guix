@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2019–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
@@ -1019,7 +1019,13 @@ the HTML documentation of TXR.")
              (let ((doc (string-append (assoc-ref outputs "out")
                                        "/share/doc/" ,name "-" ,version)))
                (for-each (lambda (f) (install-file f doc))
-                         '("txr-manpage.html" "txr-manpage.pdf"))))))))
+                         '("txr-manpage.html" "txr-manpage.pdf")))))
+         (add-after 'install 'install-vim-files
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out    (assoc-ref outputs "out"))
+                    (syntax (string-append out "/share/vim/vimfiles/syntax")))
+               (install-file "tl.vim" syntax)
+               (install-file "txr.vim" syntax)))))))
     (native-inputs
      ;; Required to build the documentation.
      (list ghostscript
