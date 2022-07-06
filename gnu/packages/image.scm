@@ -670,26 +670,12 @@ arithmetic ops.")
                (base32
                 "0dwa24kjqyg9hmm40fh048sdxfpnasz43l2rm8wlkw1qbdlpd517"))))
     (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--disable-static")
-                 #:phases (modify-phases %standard-phases
-                            (add-before 'bootstrap 'force-bootstrap
-                              (lambda _
-                                ;; XXX: jbig2dec 0.18 was released with
-                                ;; a broken configure script, so we
-                                ;; recreate the build system here.
-                                ;; Remove the autoconf inputs below
-                                ;; when deleting this code.
-                                (delete-file "configure")
-                                (delete-file "autogen.sh")
-                                #t)))))
+    (arguments '(#:configure-flags '("--disable-static")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("python" ,python-minimal-wrapper)))     ;for tests
+     (list python-minimal-wrapper))     ;for tests
     (synopsis "Decoder of the JBIG2 image compression format")
     (description
-      "JBIG2 is designed for lossy or lossless encoding of @code{bilevel} (1-bit
+     "JBIG2 is designed for lossy or lossless encoding of @code{bilevel} (1-bit
 monochrome) images at moderately high resolution, and in particular scanned
 paper documents.  In this domain it is very efficient, offering compression
 ratios on the order of 100:1.
