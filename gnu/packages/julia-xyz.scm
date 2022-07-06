@@ -3946,7 +3946,7 @@ performance critical code.")
 (define-public julia-parsers
   (package
     (name "julia-parsers")
-    (version "1.1.0")
+    (version "2.2.4")
     (source
      (origin
        (method git-fetch)
@@ -3955,7 +3955,7 @@ performance critical code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gz3drd5334xrbx2ms33hiifkd0q1in4ywc92xvrkq3xgzdjqjdk"))))
+        (base32 "09v2x9yd1wdp74hzsf6218dpamlf2hb5nkmixqb4bc53ll8hpw4i"))))
     (build-system julia-build-system)
     (home-page "https://github.com/JuliaData/Parsers.jl")
     (synopsis "Fast parsing machinery for basic types in Julia")
