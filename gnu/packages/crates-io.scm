@@ -56372,6 +56372,31 @@ CPUs, as well as raw interfaces to platform-specific instructions.
 extensions.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-similar-2
+  (package
+    (name "rust-similar")
+    (version "2.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "similar" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1lw33na01r35h09s47jqhjgz3m29wapl20f6ybsla5d1cfgrf91f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))
+       #:cargo-development-inputs
+       (("rust-insta" ,rust-insta-1)
+        ("rust-console" ,rust-console-0.14))))
+    (home-page "https://github.com/mitsuhiko/similar")
+    (synopsis "Diff library for Rust")
+    (description "This package provides a diff library for Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-similar-1
   (package
     (name "rust-similar")
@@ -57538,6 +57563,33 @@ algorithm.  Includes streaming compression and decompression.")
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-snappy-cpp" ,rust-snappy-cpp-0.1))))))
+
+(define-public rust-snapbox-macros-0.2
+  (package
+    (name "rust-snapbox-macros")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "snapbox-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c79lnjcs9yp62y665swv5y5y6088qc256bfr3s7xcnb0izfl7f0"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
+    (synopsis "Snapshot testing toolbox")
+    (description
+     "snapbox is a snapshot-testing toolbox that is ready to use for verifying
+output from
+
+@itemize
+@item Function return values
+@item CLI stdout/stderr
+@item Filesystem changes
+@end itemize
+
+It is also flexible enough to build your own test harness like @code{trycmd}.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-snappy-cpp-0.1
   (package
