@@ -605,6 +605,21 @@ an interpreter, a compiler, a debugger, and much more.")
                     (string-append "(sb-ext:set-sbcl-source-location \""
                                    source-dir "\")") )))
                #t)))
+         (add-after 'install 'remove-coreutils-references
+           ;; They are only useful on non-Linux, non-SBCL.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share-dir (string-append out "/share/sbcl/")))
+               (substitute* (string-append share-dir "src/code/run-program.lisp")
+                 (("\\(run-program \".*uname\"")
+                  "(run-program \"uname\""))
+               (substitute* (string-append share-dir "contrib/asdf/asdf.lisp")
+                 (("\\(\".*/usr/bin/env\"")
+                  "(\"/usr/bin/env\""))
+               (substitute* (string-append share-dir "contrib/asdf/uiop.lisp")
+                 (("\\(\".*/usr/bin/env\"")
+                  "(\"/usr/bin/env\""))
+               #t)))
          (add-after 'install 'install-shared-library
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
