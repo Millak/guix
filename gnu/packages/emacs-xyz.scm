@@ -12132,8 +12132,8 @@ sly-quickload command that prompts the user for a package to install.")
       (license license:gpl3+))))
 
 (define-public emacs-sly-asdf
-  (let ((commit "32ce14994e8faee9321605cec36d156b02996c46")
-        (revision "4"))
+  (let ((commit "3180921efdc19a2195960e1d601b2a6f31a6feea")
+        (revision "5"))
     (package
       (name "emacs-sly-asdf")
       (version (git-version "0.1.0" revision commit))
@@ -12147,7 +12147,7 @@ sly-quickload command that prompts the user for a package to install.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "09x8l37wwqw74xc2frwzbfdb1if8rb3szg5akdk3v2qhik4sm3dd"))))
+           "0gncp8xv33s4wx594bgd35vr1455bcggv1bg28qv75mhv41nzw97"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-sly emacs-popup))
