@@ -10901,7 +10901,12 @@ MOP easier to use.")
                (commit commit)))
          (file-name (git-file-name "cl-osicat" version))
          (sha256
-          (base32 "1ilag0b0xn97acc0m1q93vwp2y3md9a586858zfx04d8wpbvk8sz"))))
+          (base32 "1ilag0b0xn97acc0m1q93vwp2y3md9a586858zfx04d8wpbvk8sz"))
+         (snippet
+          '(begin
+             ;; The useless release.sh drags `bash' into the closure.
+             (delete-file "scripts/release.sh")
+             #t))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-cffi sbcl-trivial-features))
