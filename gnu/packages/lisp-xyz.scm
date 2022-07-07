@@ -10864,6 +10864,16 @@ compliance control.")
                (substitute* "lift-standard.config"
                  ((":relative-to lift-test")
                   ":relative-to moptilities-test"))
+               #t))
+           (add-after 'install 'remove-test-results
+             ;; Otherwise the drag the SBCL package into the closure of the CL
+             ;; package.
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (source-path (string-append out "/share/common-lisp/"
+                                                  (%lisp-type) "/moptilities/")))
+                 (delete-file-recursively
+                  (string-append source-path "/test-results")))
                #t)))))
       (synopsis "Compatibility layer for Common Lisp MOP implementation differences")
       (description
