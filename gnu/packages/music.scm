@@ -2181,7 +2181,7 @@ users to select LV2 plugins and run them with jalv.")
 (define-public mixxx
   (package
     (name "mixxx")
-    (version "2.3.2")
+    (version "2.3.3")
     (source
      (origin
        (method git-fetch)
@@ -2193,7 +2193,7 @@ users to select LV2 plugins and run them with jalv.")
         (search-patches "mixxx-link-qtscriptbytearray-qtscript.patch"
                         "mixxx-system-googletest-benchmark.patch"))
        (sha256
-        (base32 "1h26vpf60rk56fsw1nvmxihg7ammlj8q4zgim49q4s4ww7j8wwqj"))
+        (base32 "0zrmy97lk0xdfnlvygshr8vradypmnypki3s1mhc296xhq96n6rm"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete libraries that we already have or don't need.
