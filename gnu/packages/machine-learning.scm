@@ -3092,6 +3092,26 @@ Note: currently this package does not provide GPU support.")
 and common image transformations for computer vision.")
     (license license:bsd-3)))
 
+(define-public python-torchfile
+  (package
+    (name "python-torchfile")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "torchfile" version))
+              (sha256
+               (base32
+                "0vhklj6krl9r0kdynb4kcpwp8y1ihl2zw96byallay3k9c9zwgd5"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #false)) ;there are no tests
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/bshillingford/python-torchfile")
+    (synopsis "Torch7 binary serialized file parser")
+    (description "This package enables you to deserialize Lua torch-serialized objects from
+Python.")
+    (license license:bsd-3)))
+
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
