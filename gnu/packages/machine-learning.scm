@@ -3052,7 +3052,7 @@ Note: currently this package does not provide GPU support.")
 (define-public python-torchvision
   (package
     (name "python-torchvision")
-    (version "0.12.0")
+    (version "0.13.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3062,7 +3062,7 @@ Note: currently this package does not provide GPU support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0chjd6zs46136sg65z1c2g07a534dg72xpy20s3bx1prwmvyxp5v"))))
+                "19f6s3ffwkdvjjbvib18c8n7vhysg58smxzq3rvii1c0z4g3b0cw"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #false ;the test suite is expensive and there is no easy way
