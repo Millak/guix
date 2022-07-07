@@ -4056,7 +4056,13 @@ Development into CL+SSL was done by David Lichteblau.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "06gx04mah5nc8w78s0j8628divbf1s5w7af8w7pvzb2d5mgvrbd2"))))
+          (base32 "06gx04mah5nc8w78s0j8628divbf1s5w7af8w7pvzb2d5mgvrbd2"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; The useless bundled debian folder drags `make' into the closure.
+          `(begin
+             (delete-file-recursively "debian")
+             #t))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-rt))
