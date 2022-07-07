@@ -4340,8 +4340,14 @@ tools for styling them, including a built-in real-time video preview.")
         (sha256
          (base32 "08x2fs2bak1fbmkvjijgx1dsawispv91bpv5j5gkqbv5dfgf7wah"))))
      (build-system meson-build-system)
+     (native-inputs
+      (list gettext-minimal
+            `(,glib "bin")
+            itstool
+            pkg-config))
      (inputs
-      (list glib
+      (list bash-minimal
+            glib
             gst-editing-services
             gstreamer
             gst-plugins-base
@@ -4353,7 +4359,6 @@ tools for styling them, including a built-in real-time video preview.")
             gst-libav
             gsound
             gtk+
-            librsvg
             libpeas
             libnotify
             pango
@@ -4363,27 +4368,23 @@ tools for styling them, including a built-in real-time video preview.")
             python-matplotlib
             python-pycairo
             python-pygobject))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)))
+     ;; Propagate librsvg so that is is registered in GDK_PIXBUF_MODULE_FILE,
+     ;; otherwise pitivi fails to launch.
+     (propagated-inputs (list librsvg))
      (arguments
       `(#:glib-or-gtk? #t
         #:phases
         (modify-phases %standard-phases
           (add-after 'glib-or-gtk-wrap 'wrap-other-dependencies
             (lambda* (#:key outputs #:allow-other-keys)
-              (let ((prog (string-append (assoc-ref outputs "out")
-                                         "/bin/pitivi")))
-                (wrap-program prog
-                  `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
-                  ;; We've only added inputs for what Pitivi deems either
-                  ;; necessary or optional.  Let the user's packages take
-                  ;; precedence in case they have e.g. the full gst-plugins-bad.
-                  `("GST_PLUGIN_SYSTEM_PATH" suffix
-                    (,(getenv "GST_PLUGIN_SYSTEM_PATH"))))))))))
+              (wrap-program (search-input-file outputs "bin/pitivi")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
+                ;; We've only added inputs for what Pitivi deems either
+                ;; necessary or optional.  Let the user's packages take
+                ;; precedence in case they have e.g. the full gst-plugins-bad.
+                `("GST_PLUGIN_SYSTEM_PATH" suffix
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
      (home-page "http://www.pitivi.org")
      (synopsis "Video editor based on GStreamer Editing Services")
      (description "Pitivi is a video editor built upon the GStreamer Editing
