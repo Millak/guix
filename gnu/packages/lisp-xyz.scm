@@ -10402,8 +10402,25 @@ interface for MySQL, PostgreSQL and SQLite.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1v1k3s5bsy3lgd9gk459bzpb1r0kdjda25s29samxw4gsgf1fqvp"))
+       (modules '((guix build utils)))
        (snippet
         '(begin
+           ;; The useless bundled debian folder drags `make' into the closure.
+           (delete-file-recursively "debian")
+           ;; Other Makefiles that drag `make'.
+           (for-each delete-file
+                     '("Makefile"
+                       "db-db2/Makefile"
+                       "db-mysql/Makefile"
+                       "db-odbc/Makefile"
+                       "db-oracle/Makefile"
+                       "db-sqlite/Makefile"
+                       "doc/Makefile"
+                       "examples/sqlite3/init-func/Makefile"
+                       "sql/Makefile"
+                       "tests/Makefile"
+                       "uffi/Makefile"
+                       "uffi/Makefile.32+64bits"))
            ;; Remove precompiled libraries.
            (delete-file "db-mysql/clsql_mysql.dll")
            (delete-file "uffi/clsql_uffi.dll")
