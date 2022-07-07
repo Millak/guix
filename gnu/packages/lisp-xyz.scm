@@ -11328,6 +11328,21 @@ sequences of objects.")
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-acclimation sbcl-clump))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'install 'unpatch-shebangs
+             (lambda* (#:key outputs #:allow-other-keys)
+               ;; The documentation Makefile rely on shell scripts.
+               ;; TODO: Build it!
+               ;; In the mean time, remove the shabang as it adds bash to the
+               ;; closure.
+               (let* ((out (assoc-ref outputs "out"))
+                      (build-aux (string-append
+                                  out "/share/")))
+                 (substitute* (find-files build-aux)
+                   (("^#!.*/bin/sh") "#!/bin/sh")
+                   (("^#!.*/bin/bash") "#!/bin/bash"))))))))
       (home-page "https://github.com/robert-strandh/cluffer")
       (synopsis "Common Lisp library providing a protocol for text-editor buffers")
       (description "Cluffer is a library for representing the buffer of a text
