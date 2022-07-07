@@ -3210,3 +3210,26 @@ of Hidden Markov Models.")
     (description
      "Lantern provides a C API to the libtorch machine learning library.")
     (license license:expat)))
+
+(define-public python-pyro-api
+  (package
+    (name "python-pyro-api")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyro-api" version))
+              (sha256
+               (base32
+                "086r2h6x9i5d9ayl1x65lx6p84rlydzsn8xingxc588ab3ch1fd1"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #false)) ;requires pyro
+    (native-inputs
+     (list python-flake8
+           python-ipython
+           python-pytest
+           python-sphinx
+           python-sphinx-rtd-theme))
+    (home-page "https://github.com/pyro-ppl/pyro-api")
+    (synopsis "Generic API for dispatch to Pyro backends.")
+    (description "This package provides a generic API for dispatch to Pyro backends.")
+    (license license:asl2.0)))
