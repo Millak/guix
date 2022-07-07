@@ -1403,3 +1403,35 @@ data as HDF5.  It can save any Python data structure, offering the same ease
 of use as pickling or @code{numpy.save}, but with the language
 interoperability offered by HDF5.")
     (license license:bsd-3)))
+
+(define-public python-opt-einsum
+  (package
+    (name "python-opt-einsum")
+    (version "3.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "opt_einsum" version))
+              (sha256
+               (base32
+                "0jb5lia0q742d1713jk33vlj41y61sf52j6pgk7pvhxvfxglgxjr"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-pytest python-pytest-cov python-pytest-pep8))
+    (home-page "https://github.com/dgasmith/opt_einsum")
+    (synopsis "Optimizing numpys einsum function")
+    (description
+     "Optimized einsum can significantly reduce the overall execution time of
+einsum-like expressions by optimizing the expression's contraction order and
+dispatching many operations to canonical BLAS, cuBLAS, or other specialized
+routines.  Optimized einsum is agnostic to the backend and can handle NumPy,
+Dask, PyTorch, Tensorflow, CuPy, Sparse, Theano, JAX, and Autograd arrays as
+well as potentially any library which conforms to a standard API. See the
+documentation for more information.")
+    (license license:expat)))
