@@ -2870,7 +2870,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
 (define-public python-pytorch
   (package
     (name "python-pytorch")
-    (version "1.11.0")
+    (version "1.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2880,7 +2880,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zbk7y74r0ycsfa7x59jnhwhs1gj5rs3n89p15y0212iszgbljq8"))
+                "0pdqi91qzgyx947zv4pw2fdj9vpqvdhfzw1ydjd4mpqm8g5njgnz"))
               (patches (search-patches "python-pytorch-system-libraries.patch"
                                        "python-pytorch-runpath.patch"))
               (modules '((guix build utils)))
@@ -2910,6 +2910,10 @@ TensorFlow.js, PyTorch, and MediaPipe.")
                       ;; want to use "system libraries" instead of the bundled
                       ;; ones.
                       (setenv "USE_SYSTEM_LIBS" "1")
+
+                      (substitute* "cmake/Dependencies.cmake"
+                        (("if\\(USE_SYSTEM_BIND11\\)")
+                         "if(TRUE)"))
 
                       ;; XXX: Disable that for simplicity for now.
                       (setenv "USE_FBGEMM" "0")))
