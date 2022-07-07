@@ -179,6 +179,10 @@ and the maven-build-system."))
         "A group of mentors who chaperone contributions by newcomers."))
 
 
+(define-member (person "Lars-Dominik Braun"
+                       "lars@6xq.net")
+  python haskell)
+
 (define-member (person "Ludovic Courtès"
                        "ludo@gnu.org")
   core home embedded-bootstrap mentors)
