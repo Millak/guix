@@ -695,7 +695,13 @@ advantages of @command{prove} are:
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1l0lfl7cdnr2qf4zh38hi4llxg22c49zkm639bdkmvlkzwj3ndwf"))))
+          (base32 "1l0lfl7cdnr2qf4zh38hi4llxg22c49zkm639bdkmvlkzwj3ndwf"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; The useless bundled debian folder drags `make' into the closure.
+          `(begin
+             (delete-file-recursively "debian")
+             #t))))
       (build-system asdf-build-system/sbcl)
       (home-page "http://quickdocs.org/ptester/")
       (synopsis "Portable test harness package")
