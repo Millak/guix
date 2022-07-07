@@ -3853,7 +3853,9 @@ client and server.")
            "0apkgqrscylw3hhm5x2vs0z3hz6h7zd7dl5y3wr2zl8qjpvpc80k"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       (list xclip))
+       ;; Pick xsel instead of xclip because its closure size is slightly
+       ;; smaller.
+       (list xsel))
       (native-inputs
        (list sbcl-fiveam))
       (arguments
@@ -3862,8 +3864,8 @@ client and server.")
            (add-after 'unpack 'fix-paths
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "src/text.lisp"
-                 (("\"xclip\"")
-                  (string-append "\"" (assoc-ref inputs "xclip") "/bin/xclip\""))))))))
+                 (("\"xsel\"")
+                  (string-append "\"" (assoc-ref inputs "xsel") "/bin/xsel\""))))))))
       (home-page "https://github.com/snmsts/trivial-clipboard")
       (synopsis "Access system clipboard in Common Lisp")
       (description
