@@ -2821,8 +2821,8 @@ and Darknet.")
 (define-public xnnpack
   ;; There's currently no tag on this repo.
   (let ((version "0.0")
-        (commit "bbe88243aba847f6a3dd86defec0fea4a0e415a1")
-        (revision "1"))
+        (commit "ae108ef49aa5623b896fc93d4298c49d1750d9ba")
+        (revision "2"))
     (package
       (name "xnnpack")
       (version (git-version version revision commit))
@@ -2833,7 +2833,7 @@ and Darknet.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "19j605x1l2h95mjhcj90zwjh1153pdgmqggl35ya5w0wll628iiz"))
+                  "0q68q2jxiiiblx45q4337k13ppgh5vqjwrwznchcnpb8hawjj3zl"))
                 (patches (search-patches "xnnpack-system-libraries.patch"))))
       (build-system cmake-build-system)
       (arguments
