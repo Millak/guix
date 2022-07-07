@@ -10354,7 +10354,13 @@ interface for MySQL, PostgreSQL and SQLite.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hqszvz0a3wk4s9faa83sc3vjxcb5rxmjclyr17yzwg55z733kry"))))
+        (base32 "1hqszvz0a3wk4s9faa83sc3vjxcb5rxmjclyr17yzwg55z733kry"))
+       (modules '((guix build utils)))
+         (snippet
+          ;; The useless bundled debian folder drags `make' into the closure.
+          `(begin
+             (delete-file-recursively "debian")
+             #t))))
     (build-system asdf-build-system/sbcl)
     (arguments
      `(#:tests? #f ; TODO: Fix use of deprecated ASDF functions
