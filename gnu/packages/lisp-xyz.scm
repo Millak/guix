@@ -2706,7 +2706,13 @@ utilities that make it even easier to manipulate text in Common Lisp.  It has
                (commit commit)))
          (file-name (git-file-name "puri" version))
          (sha256
-          (base32 "0gq2rsr0aihs0z20v4zqvmdl4szq53b52rh97pvnmwrlbn4mapmd"))))
+          (base32 "0gq2rsr0aihs0z20v4zqvmdl4szq53b52rh97pvnmwrlbn4mapmd"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; The useless bundled debian folder drags `make' into the closure.
+          `(begin
+             (delete-file-recursively "debian")
+             #t))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-ptester))
