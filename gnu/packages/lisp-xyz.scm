@@ -20879,7 +20879,15 @@ rendering of the XML Infoset.")
                (commit commit)))
          (file-name (git-file-name "cl-gopher" version))
          (sha256
-          (base32 "1ky4s33m5d0wvdaqji12pxr93qqfl5x62zjp3m4ihbdj0ws3yw2f"))))
+          (base32 "1ky4s33m5d0wvdaqji12pxr93qqfl5x62zjp3m4ihbdj0ws3yw2f"))
+         (snippet
+          '(begin
+             ;; These files are mostly examples (that assume Quicklisp) which
+             ;; drag the SBCL package into the CL package.
+             (for-each delete-file
+                       '("cl-gopher-network.lsh"
+                         "cl-gopher-start.lsh"))
+             #t))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-bordeaux-threads
