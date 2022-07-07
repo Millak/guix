@@ -2292,7 +2292,14 @@ writing code that contains string literals that contain code themselves.")
              (url "https://github.com/slime/slime/")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1s5mbljlz22pb90gwbd380nighkz6gdxl77hc08gri7wwr5gy5n2"))))
+        (base32 "1s5mbljlz22pb90gwbd380nighkz6gdxl77hc08gri7wwr5gy5n2"))
+       (modules '((guix build utils)))
+         (snippet
+          ;; The doc folder drags `gawk' into the closure.  Doc is already
+          ;; provided by emacs-slime.
+          `(begin
+             (delete-file-recursively "doc")
+             #t))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:asd-systems '("swank")))
