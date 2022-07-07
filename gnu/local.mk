@@ -1591,7 +1591,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/password-store-tree-compat.patch		\
   %D%/packages/patches/pciutils-hurd-configure.patch		\
   %D%/packages/patches/pciutils-hurd-fix.patch			\
-  %D%/packages/patches/pitivi-fix-build-with-meson-0.60.patch	\
   %D%/packages/patches/pjproject-install-libpjsua2.patch	\
   %D%/packages/patches/plasma-framework-fix-KF5PlasmaMacros.cmake.patch \
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\

@@ -4323,74 +4323,73 @@ tools for styling them, including a built-in real-time video preview.")
    ; src/MatroskaParser.(c|h) is under bsd-3 with permission from the author
 
 (define-public pitivi
-  ;; Pitivi switched to a non-semantic versioning scheme close before 1.0
-  (let ((latest-semver "0.999.0")
-        (%version "2021.05.0"))
-   (package
-     (name "pitivi")
-     (version (string-append latest-semver "-" %version))
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://gitlab.gnome.org/GNOME/pitivi.git")
-              (commit %version)))
-        (file-name (git-file-name name version))
-        (patches (search-patches "pitivi-fix-build-with-meson-0.60.patch"))
-        (sha256
-         (base32 "08x2fs2bak1fbmkvjijgx1dsawispv91bpv5j5gkqbv5dfgf7wah"))))
-     (build-system meson-build-system)
-     (native-inputs
-      (list gettext-minimal
-            `(,glib "bin")
-            itstool
-            pkg-config))
-     (inputs
-      (list bash-minimal
-            glib
-            gst-editing-services
-            gstreamer
-            gst-plugins-base
-            gst-plugins-good
-            (gst-plugins/selection gst-plugins-bad #:plugins
-                                   '("debugutils" "transcode")
-                                   #:configure-flags
-                                   '("-Dintrospection=enabled"))
-            gst-libav
-            gsound
-            gtk+
-            libpeas
-            libnotify
-            pango
-            python
-            python-gst
-            python-numpy
-            python-matplotlib
-            python-pycairo
-            python-pygobject))
-     ;; Propagate librsvg so that is is registered in GDK_PIXBUF_MODULE_FILE,
-     ;; otherwise pitivi fails to launch.
-     (propagated-inputs (list librsvg))
-     (arguments
-      `(#:glib-or-gtk? #t
-        #:phases
-        (modify-phases %standard-phases
-          (add-after 'glib-or-gtk-wrap 'wrap-other-dependencies
-            (lambda* (#:key outputs #:allow-other-keys)
-              (wrap-program (search-input-file outputs "bin/pitivi")
-                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
-                ;; We've only added inputs for what Pitivi deems either
-                ;; necessary or optional.  Let the user's packages take
-                ;; precedence in case they have e.g. the full gst-plugins-bad.
-                `("GST_PLUGIN_SYSTEM_PATH" suffix
-                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
-     (home-page "http://www.pitivi.org")
-     (synopsis "Video editor based on GStreamer Editing Services")
-     (description "Pitivi is a video editor built upon the GStreamer Editing
+  (package
+    (name "pitivi")
+    (version "2022.06.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/GNOME/pitivi.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wgfi8srblqzd2y6528cyvn56rbdxpwlq0wmwqhabshdk28zyx8d"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           itstool
+           pkg-config))
+    (inputs
+     (list bash-minimal
+           glib
+           gst-editing-services
+           gstreamer
+           gst-plugins-base
+           gst-plugins-good
+           ;; TODO: Add the 'cvtracker' plugin after our gstreamer packages
+           ;; has been upgraded to version 1.20.
+           (gst-plugins/selection gst-plugins-bad #:plugins
+                                  '("debugutils" "transcode")
+                                  #:configure-flags
+                                  '("-Dintrospection=enabled"))
+           gst-libav
+           gsound
+           gtk+
+           libpeas
+           libnotify
+           pango
+           python
+           python-gst
+           python-librosa
+           python-numpy
+           python-matplotlib
+           python-pycairo
+           python-pygobject))
+    ;; Propagate librsvg so that is is registered in GDK_PIXBUF_MODULE_FILE,
+    ;; otherwise pitivi fails to launch.
+    (propagated-inputs (list librsvg))
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'glib-or-gtk-wrap 'wrap-other-dependencies
+           (lambda* (#:key outputs #:allow-other-keys)
+             (wrap-program (search-input-file outputs "bin/pitivi")
+               `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
+               ;; We've only added inputs for what Pitivi deems either
+               ;; necessary or optional.  Let the user's packages take
+               ;; precedence in case they have e.g. the full gst-plugins-bad.
+               `("GST_PLUGIN_SYSTEM_PATH" suffix
+                 (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+    (home-page "http://www.pitivi.org")
+    (synopsis "Video editor based on GStreamer Editing Services")
+    (description "Pitivi is a video editor built upon the GStreamer Editing
 Services.  It aims to be an intuitive and flexible application that can appeal
 to newbies and professionals alike.")
-     (license license:lgpl2.1+))))
+    (license license:lgpl2.1+)))
 
 (define-public gavl
   (package
