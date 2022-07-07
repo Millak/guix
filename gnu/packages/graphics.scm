@@ -2045,7 +2045,7 @@ Some feature highlights:
 (define-public openxr
   (package
     (name "openxr")
-    (version "1.0.23")
+    (version "1.0.24")
     (source
      (origin
        (method git-fetch)
@@ -2059,7 +2059,7 @@ Some feature highlights:
            ;; Delete bundled jsoncpp.
            (delete-file-recursively "src/external/jsoncpp")))
        (sha256
-        (base32 "11w5a2ny30r8jghd5jwdxi5b2c84m21fmkp0lhpicbrwr98xgpj3"))))
+        (base32 "1lkbw03hpwnqcbn0fmxs4cnp5m04hc0ys6y111n7vlrg11sjdpq5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
