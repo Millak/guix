@@ -3008,7 +3008,41 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
-(define-public python-pytorch-for-r-torch python-pytorch)
+(define-public python-pytorch-for-r-torch
+  (package
+    (inherit python-pytorch)
+    (name "python-pytorch")
+    (version "1.11.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/pytorch")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zbk7y74r0ycsfa7x59jnhwhs1gj5rs3n89p15y0212iszgbljq8"))
+              (patches (search-patches "python-pytorch-system-libraries.patch"
+                                       "python-pytorch-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; XXX: Let's be clear: this package is a bundling fest.  We
+                  ;; delete as much as we can, but there's still a lot left.
+                  (for-each (lambda (directory)
+                              (delete-file-recursively
+                               (string-append "third_party/" directory)))
+                            '("benchmark" "cpuinfo" "eigen"
+
+                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
+                              ;; needs these.
+                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
+
+                              "gloo" "googletest" "ios-cmake" "NNPACK"
+                              "onnx" "protobuf" "pthreadpool"
+                              "pybind11" "python-enum" "python-peachpy"
+                              "python-six" "tbb" "XNNPACK" "zstd"))))))))
 
 ;; Keep this in sync with python-pytorch
 (define-public python-torchvision
