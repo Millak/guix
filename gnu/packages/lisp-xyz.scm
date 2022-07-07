@@ -4092,7 +4092,13 @@ Rosenberg's Common Lisp packages.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "12jj54h0fs6n237cvnp8v6hn0imfksammq22ys6pi0gwz2w47rbj"))))
+          (base32 "12jj54h0fs6n237cvnp8v6hn0imfksammq22ys6pi0gwz2w47rbj"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; The useless bundled debian folder drags `make' into the closure.
+          `(begin
+             (delete-file-recursively "debian")
+             #t))))
       (build-system asdf-build-system/sbcl)
       (native-inputs                    ; For tests.
        (list sbcl-ptester sbcl-kmrcl))
