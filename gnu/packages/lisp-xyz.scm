@@ -18318,7 +18318,13 @@ language).")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0wv3j13fj73gigriw5r9vi920hz05ld7zllsvbxdxvmyfy9k1kly"))))
+          (base32 "0wv3j13fj73gigriw5r9vi920hz05ld7zllsvbxdxvmyfy9k1kly"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; The useless bundled debian folder drags `make' into the closure.
+          `(begin
+             (delete-file-recursively "debian")
+             #t))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-aserve sbcl-kmrcl sbcl-xmls))
