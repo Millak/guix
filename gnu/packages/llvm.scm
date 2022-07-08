@@ -485,7 +485,7 @@ code analysis tools.")
               "znver3")
             '())))))
 
-(define (make-clang-toolchain clang)
+(define* (make-clang-toolchain clang #:optional (libomp libomp-13))
   (package
     (name (string-append (package-name clang) "-toolchain"))
     (version (package-version clang))
@@ -660,8 +660,50 @@ of programming tools as well as libraries with equivalent functionality.")
                 (lambda _
                   (chdir "clang"))))))))))
 
+(define-public libomp-14
+  (package
+    (name "libomp")
+    (version "14.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "07zby3gwy5c8jssabrhjk3nsxlwipnm6sk4dsvck1l5d0br1ywsg"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (build-system cmake-build-system)
+    ;; XXX: Note this gets built with GCC because building with Clang itself
+    ;; fails (missing <atomic>, even when libcxx is added as an input.)
+    (arguments
+     (list
+       #:configure-flags #~(list "-DLIBOMP_USE_HWLOC=ON"
+                                 "-DOPENMP_TEST_C_COMPILER=clang"
+                                 "-DOPENMP_TEST_CXX_COMPILER=clang++")
+       #:test-target "check-libomp"
+       #:phases
+       #~(modify-phases %standard-phases
+         (add-after 'unpack 'chdir-to-source-and-install-license
+           (lambda _
+             (chdir #$(string-append "../openmp-" version ".src"))
+             (install-file "LICENSE.TXT"
+                           (string-append #$output "/share/doc")))))))
+    (native-inputs
+     (list clang-14 llvm-14 perl pkg-config python))
+    (inputs
+     (list `(,hwloc "lib")))
+    (home-page "https://openmp.llvm.org")
+    (synopsis "OpenMP run-time support library")
+    (description
+     "This package provides the run-time support library developed by the LLVM
+project for the OpenMP multi-theaded programming extension.  This package
+notably provides @file{libgomp.so}, which is has a binary interface compatible
+with that of libgomp, the GNU Offloading and Multi Processing Library.")
+    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)
+                  (upstream-name . "openmp")))
+    (license license:expat)))
+
 (define-public clang-toolchain-14
-  (make-clang-toolchain clang-14))
+  (make-clang-toolchain clang-14 libomp-14))
 
 (define-public llvm-13
   (package
@@ -698,6 +740,31 @@ of programming tools as well as libraries with equivalent functionality.")
                      (sha256
                       (base32
                        "1l4jjdqfl9hrh0fwzv27hc263zc6x61h09vs4ni3yla8i1cwhayc")))))
+
+(define-public libomp-13
+  (package
+    (inherit libomp-14)
+    (version "13.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "0kvbr4j6ldpssiv7chgqra5y77n7jwbyxlwcl7z32v31f49jcybb"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (arguments
+     '(#:configure-flags '("-DLIBOMP_USE_HWLOC=ON"
+                           "-DOPENMP_TEST_C_COMPILER=clang"
+                           "-DOPENMP_TEST_CXX_COMPILER=clang++"
+
+                           ;; Work around faulty target detection, fixed in 14:
+                           ;; https://github.com/llvm/llvm-project/issues/52910
+                           "-DLIBOMPTARGET_BUILD_AMDGCN_BCLIB=OFF")
+       #:test-target "check-libomp"))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-14)
+       (replace "clang" clang-13)
+       (replace "llvm" llvm-13)))))
 
 (define-public clang-toolchain-13
   (make-clang-toolchain clang-13))
@@ -1515,43 +1582,7 @@ requirements according to version 1.1 of the OpenCL specification.")
     ;; Apache license 2.0 with LLVM exception
     (license license:asl2.0)))
 
-(define-public libomp
-  (package
-    (name "libomp")
-    (version "13.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (llvm-uri "openmp" version))
-              (sha256
-               (base32
-                "0kvbr4j6ldpssiv7chgqra5y77n7jwbyxlwcl7z32v31f49jcybb"))
-              (file-name (string-append "libomp-" version ".tar.xz"))))
-    (build-system cmake-build-system)
-    ;; XXX: Note this gets built with GCC because building with Clang itself
-    ;; fails (missing <atomic>, even when libcxx is added as an input.)
-    (arguments
-     '(#:configure-flags '("-DLIBOMP_USE_HWLOC=ON"
-                           "-DOPENMP_TEST_C_COMPILER=clang"
-                           "-DOPENMP_TEST_CXX_COMPILER=clang++"
-
-                           ;; Work around faulty target detection, fixed in 14:
-                           ;; https://github.com/llvm/llvm-project/issues/52910
-                           "-DLIBOMPTARGET_BUILD_AMDGCN_BCLIB=OFF")
-       #:test-target "check-libomp"))
-    (native-inputs
-     (list clang llvm perl pkg-config python))
-    (inputs
-     (list `(,hwloc "lib")))
-    (home-page "https://openmp.llvm.org")
-    (synopsis "OpenMP run-time support library")
-    (description
-     "This package provides the run-time support library developed by the LLVM
-project for the OpenMP multi-theaded programming extension.  This package
-notably provides @file{libgomp.so}, which is has a binary interface compatible
-with that of libgomp, the GNU Offloading and Multi Processing Library.")
-    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)
-                  (upstream-name . "openmp")))
-    (license license:expat)))
+(define-public libomp libomp-13)
 
 (define-public python-llvmlite
   (package
