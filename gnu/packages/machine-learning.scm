@@ -3211,6 +3211,43 @@ of Hidden Markov Models.")
      "Lantern provides a C API to the libtorch machine learning library.")
     (license license:expat)))
 
+(define-public python-lap
+  (package
+    (name "python-lap")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "lap" version))
+              (sha256
+               (base32
+                "0fqfxpq4jg9h4wxjw540gjmvfg1ccc1nssk7i9njg7qfdybxknn4"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'build
+           (lambda* (#:key inputs #:allow-other-keys)
+             (invoke "python" "setup.py" "build"
+                     "--cpu-baseline=sse2")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; The tests must be run from elsewhere.
+               (mkdir-p "/tmp/test")
+               (copy-recursively "lap/tests" "/tmp/test")
+               (with-directory-excursion "/tmp/test"
+                 (invoke "pytest" "-vv"))))))))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-cython python-pytest))
+    (home-page "https://github.com/gatagat/lap")
+    (synopsis "Linear Assignment Problem solver (LAPJV/LAPMOD).")
+    (description "Lap is a linear assignment problem solver using Jonker-Volgenant
+algorithm for dense (LAPJV) or sparse (LAPMOD) matrices.")
+    (license license:bsd-2)))
+
 (define-public python-pyro-api
   (package
     (name "python-pyro-api")
