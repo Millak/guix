@@ -667,6 +667,7 @@ EXTRA_DIST +=						\
   etc/release-manifest.scm				\
   etc/source-manifest.scm				\
   etc/system-tests.scm					\
+  etc/time-travel-manifest.scm				\
   etc/historical-authorizations				\
   build-aux/build-self.scm				\
   build-aux/compile-all.scm				\
