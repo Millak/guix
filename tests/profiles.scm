@@ -286,6 +286,34 @@
                  (string=? (dirname (readlink bindir))
                            (derivation->output-path guile))))))
 
+(test-assertm "profile-derivation format version 3"
+  ;; Make sure we can create and read a version 3 manifest.
+  (mlet* %store-monad
+      ((entry ->    (package->manifest-entry %bootstrap-guile
+                                             #:properties '((answer . 42))))
+       (manifest -> (manifest (list entry)))
+       (drv1        (profile-derivation manifest
+                                        #:format-version 3 ;old version
+                                        #:hooks '()
+                                        #:locales? #f))
+       (drv2        (profile-derivation manifest
+                                        #:hooks '()
+                                        #:locales? #f))
+       (profile1 -> (derivation->output-path drv1))
+       (profile2 -> (derivation->output-path drv2))
+       (_          (built-derivations (list drv1 drv2))))
+    (return (let ((manifest1 (profile-manifest profile1))
+                  (manifest2 (profile-manifest profile2)))
+              (match (manifest-entries manifest1)
+                ((entry1)
+                 (match (manifest-entries manifest2)
+                   ((entry2)
+                    (and (manifest-entry=? entry1 entry2)
+                         (equal? (manifest-entry-properties entry1)
+                                 '((answer . 42)))
+                         (equal? (manifest-entry-properties entry2)
+                                 '((answer . 42))))))))))))
+
 (test-assertm "profile-derivation, ordering & collisions"
   ;; ENTRY1 and ENTRY2 both provide 'bin/guile'--a collision.  Make sure
   ;; ENTRY1 "wins" over ENTRY2.  See <https://bugs.gnu.org/49102>.

@@ -452,12 +452,23 @@ denoting a specific output of a package."
          packages)
     manifest-entry=?)))
 
-(define (manifest->gexp manifest)
-  "Return a representation of MANIFEST as a gexp."
+(define %manifest-format-version
+  ;; The current manifest format version.
+  4)
+
+(define* (manifest->gexp manifest #:optional
+                         (format-version %manifest-format-version))
+  "Return a representation in FORMAT-VERSION of MANIFEST as a gexp."
   (define (optional name value)
-    (if (null? value)
-        #~()
-        #~((#$name #$value))))
+    (match format-version
+      (4
+       (if (null? value)
+           #~()
+           #~((#$name #$value))))
+      (3
+       (match name
+         ('properties #~((#$name #$@value)))
+         (_           #~((#$name #$value)))))))
 
   (define (entry->gexp entry)
     ;; Maintain in state monad a vhash of visited entries, indexed by their
@@ -467,10 +478,11 @@ denoting a specific output of a package."
     ;; the presence of propagated inputs, where we could otherwise end up
     ;; repeating large trees.
     (mlet %state-monad ((visited (current-state)))
-      (if (match (vhash-assq (manifest-entry-item entry) visited)
-            ((_ . previous-entry)
-             (manifest-entry=? previous-entry entry))
-            (#f #f))
+      (if (and (= format-version 4)
+               (match (vhash-assq (manifest-entry-item entry) visited)
+                 ((_ . previous-entry)
+                  (manifest-entry=? previous-entry entry))
+                 (#f #f)))
           (return #~(repeated #$(manifest-entry-name entry)
                               #$(manifest-entry-version entry)
                               (ungexp (manifest-entry-item entry)
@@ -500,9 +512,14 @@ denoting a specific output of a package."
                                               search-paths))
                             #$@(optional 'properties properties))))))))))
 
+  (unless (memq format-version '(3 4))
+    (raise (formatted-message
+            (G_ "cannot emit manifests formatted as version ~a")
+            format-version)))
+
   (match manifest
     (($ <manifest> (entries ...))
-     #~(manifest (version 4)
+     #~(manifest (version #$format-version)
                  (packages #$(run-with-state
                                  (mapm %state-monad entry->gexp entries)
                                vlist-null))))))
@@ -1883,6 +1900,7 @@ MANIFEST."
                              (allow-unsupported-packages? #f)
                              (allow-collisions? #f)
                              (relative-symlinks? #f)
+                             (format-version %manifest-format-version)
                              system target)
   "Return a derivation that builds a profile (aka. 'user environment') with
 the given MANIFEST.  The profile includes additional derivations returned by
@@ -1968,7 +1986,7 @@ are cross-built for TARGET."
 
             #+(if locales? set-utf8-locale #t)
 
-            (build-profile #$output '#$(manifest->gexp manifest)
+            (build-profile #$output '#$(manifest->gexp manifest format-version)
                            #:extra-inputs '#$extra-inputs
                            #:symlink #$(if relative-symlinks?
                                            #~symlink-relative
@@ -2007,19 +2025,23 @@ are cross-built for TARGET."
   (allow-collisions?  profile-allow-collisions?   ;Boolean
                       (default #f))
   (relative-symlinks? profile-relative-symlinks?  ;Boolean
-                      (default #f)))
+                      (default #f))
+  (format-version     profile-format-version      ;integer
+                      (default %manifest-format-version)))
 
 (define-gexp-compiler (profile-compiler (profile <profile>) system target)
   "Compile PROFILE to a derivation."
   (match profile
     (($ <profile> name manifest hooks
-                  locales? allow-collisions? relative-symlinks?)
+                  locales? allow-collisions? relative-symlinks?
+                  format-version)
      (profile-derivation manifest
                          #:name name
                          #:hooks hooks
                          #:locales? locales?
                          #:allow-collisions? allow-collisions?
                          #:relative-symlinks? relative-symlinks?
+                         #:format-version format-version
                          #:system system #:target target))))
 
 (define* (profile-search-paths profile

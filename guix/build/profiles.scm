@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -162,7 +162,7 @@ search path specifications."
        (begin body ...))))
 
   (match manifest                            ;this must match 'manifest->gexp'
-    (('manifest ('version 4)
+    (('manifest ('version (or 3 4))
                 ('packages (entries ...)))
      (let loop ((entries entries)
                 (inputs '())
@@ -170,7 +170,7 @@ search path specifications."
        (match entries
          (((name version output item fields ...) . rest)
           (let ((paths search-paths))
-            (let-fields fields (propagated-inputs search-paths properties)
+            (let-fields fields (propagated-inputs search-paths)
               (loop (append rest propagated-inputs) ;breadth-first traversal
                     (cons item inputs)
                     (append search-paths paths)))))
