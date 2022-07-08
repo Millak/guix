@@ -22646,3 +22646,32 @@ the Processing language and shares some of the API.")
 
 (define-public ecl-sketch
   (sbcl-package->ecl-package sbcl-sketch))
+
+(define-public sbcl-binary-types
+  (let ((commit "9ec42042a50403961c08179a892ae3de725b1d7a"))
+    (package
+      (name "sbcl-binary-types")
+      (version (git-version "1.2" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/frodef/binary-types/")
+               (commit commit)))
+         (file-name (git-file-name "binary-types" version))
+         (sha256
+          (base32 "0kp4xwblfxh7gmgqc38k9xzrqlcr0q1jm5167ma1pajdxd3182j8"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/frodef/binary-types/")
+      (synopsis "Read and write binary records for Common Lisp")
+      (description
+       "Binary-types is a Common Lisp package for reading and writing binary
+files.  Binary-types provides macros that are used to declare the mapping
+between Lisp objects and some binary (i.e. octet-based) representation.")
+      (license license:bsd-3))))
+
+(define-public cl-binary-types
+  (sbcl-package->cl-source-package sbcl-binary-types))
+
+(define-public ecl-binary-types
+  (sbcl-package->ecl-package sbcl-binary-types))
