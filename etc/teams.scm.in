@@ -191,6 +191,10 @@ and the maven-build-system."))
                        "andreas@enge.fr")
   science)
 
+(define-member (person "Björn Höfling"
+                       "bjoern.hoefling@bjoernhoefling.de")
+  java)
+
 (define-member (person "Leo Famulari"
                        "leo@famulari.name")
   kernel)
