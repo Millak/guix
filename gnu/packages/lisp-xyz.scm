@@ -2302,7 +2302,31 @@ writing code that contains string literals that contain code themselves.")
              #t))))
     (build-system asdf-build-system/sbcl)
     (arguments
-     '(#:asd-systems '("swank")))
+     '(#:asd-systems '("swank")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-fasl-directory
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib-dir (string-append out "/lib/common-lisp/"
+                                            (%lisp-type)
+                                            "/slime-swank/")))
+               ;; Use the ASDF registry instead of Swank's default that places
+               ;; the .fasl files in ~/.slime.
+               (substitute* "swank.asd"
+                 (("\\(load \\(asdf::component-pathname f\\)\\)" all)
+                  (string-append
+                   all "\n"
+                   "(setf (symbol-value"
+                   "(read-from-string \"swank-loader::*fasl-directory*\"))"
+                   "\"" lib-dir "\")")))
+               (substitute* "swank-loader.lisp"
+                 (("\\(probe-file fasl\\)" all)
+                  ;; Do not try to delete Guix store files.
+                  (string-append
+                   all "\n"
+                   " (not (equal (subseq (pathname-directory fasl) 1 3)"
+                   " '(\"gnu\" \"store\"))) ; XXX: GUIX PATCH")))))))))
     (home-page "https://github.com/slime/slime")
     (synopsis "Common Lisp Swank server")
     (description
@@ -2312,7 +2336,21 @@ processes that doesn't run under Emacs.  Lisp processes created by
     (license (list license:gpl2+ license:public-domain))))
 
 (define-public cl-slime-swank
-  (sbcl-package->cl-source-package sbcl-slime-swank))
+  (let ((pkg (sbcl-package->cl-source-package sbcl-slime-swank)))
+    (package
+      (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'install 'revert-asd-patch
+               ;; We do not want to include the Guix patch in the cl- package
+               ;; since it would include the sbcl- package in the closure.
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let* ((out (assoc-ref outputs "out"))
+                        (source-path (string-append out "/share/common-lisp/source/")))
+                   (substitute* (string-append source-path "/cl-slime-swank/swank.asd")
+                     ((".*fasl-directory.*") ""))))))))))))
 
 (define-public ecl-slime-swank
   (sbcl-package->ecl-package sbcl-slime-swank))
