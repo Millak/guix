@@ -912,24 +912,25 @@ of programming tools as well as libraries with equivalent functionality.")
 (define-public llvm-8
   (package
     (inherit llvm-9)
-    (version "8.0.0")
+    (version "8.0.1")
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "llvm" version))
               (sha256
                (base32
-                "0k124sxkfhfi1rca6kzkdraf4axhx99x3cw2rk55056628dvwwl8"))))
+                "1rvm5gqp5v8hfn17kqws3zhk94w4kxndal12bqa0y57p09nply24"))
+              (patches (search-patches "llvm-8-fix-build-with-gcc-10.patch"))))
     (license license:ncsa)))
 
 (define-public clang-runtime-8
   (clang-runtime-from-llvm
    llvm-8
-   "1c919wsm17xnv7lr8bhpq2wkq8113lzlw6hzhfr737j59x3wfddl"
+   "0dqqf8f930l8gag4d9qjgn1n0pj0nbv2anviqqhdi1rkhas8z0hi"
    '("clang-runtime-9-libsanitizer-mode-field.patch")))
 
 (define-public clang-8
   (clang-from-llvm llvm-8 clang-runtime-8
-                   "0svk1f70hvpwrjp6x5i9kqwrqwxnmcrw5s7f4cxyd100mdd12k08"
+                   "0ihnbdl058gvl2wdy45p5am55bq8ifx8m9mhcsgj9ax8yxlzvvvh"
                    #:patches '("clang-8.0-libc-search-path.patch")))
 
 (define-public clang-toolchain-8
