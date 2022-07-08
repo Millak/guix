@@ -4781,6 +4781,25 @@ provided base directory and can return files (and/or directories if desired)
 matching a regular expression.")
     (home-page "https://metacpan.org/release/File-List")))
 
+(define-public perl-file-next
+  (package
+    (name "perl-file-next")
+    (version "1.18")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/petdance/file-next")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zdrxk409qxkbbv4fl4wi285kfzyrpaja9wfl00vrxc078rs4afm"))))
+    (build-system perl-build-system)
+    (synopsis "Lightweight, taint-safe file-finding Perl module")
+    (description "File::Next is a Perl CPAN module for finding files.")
+    (home-page "https://metacpan.org/pod/File::Next")
+    (license license:artistic2.0)))
+
 (define-public perl-file-readbackwards
   (package
     (name "perl-file-readbackwards")
