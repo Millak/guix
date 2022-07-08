@@ -122,7 +122,7 @@ language, install it with @code{guix install guile} and start a
 @dfn{REPL}---short for @uref{https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop,
 @dfn{read-eval-print loop}}---by running @code{guile} from the command line.
 
-Alternatively you can also run @code{guix environment --ad-hoc guile -- guile}
+Alternatively you can also run @code{guix shell guile -- guile}
 if you'd rather not have Guile installed in your user profile.
 
 In the following examples, lines show what you would type at the REPL;
@@ -1600,7 +1600,7 @@ letting you know what you're missing.  If the file is blank then you're
 missing everything.  The next step is to run:
 
 @example shell
-guix environment linux-libre -- make localmodconfig
+guix shell -D linux-libre -- make localmodconfig
 @end example
 
 and note the output.  Do note that the @file{.config} file is still empty.
@@ -2787,7 +2787,7 @@ Maybe a dependency from our manifest has been updated; or we may have run
 garbage-collected.
 
 @item
-Eventually, we set to work on that project again, so we run @code{guix environment
+Eventually, we set to work on that project again, so we run @code{guix shell
    -m manifest.scm}.  But now we have to wait for Guix to build and install
 stuff!
 @end enumerate
