@@ -223,6 +223,10 @@ and the maven-build-system."))
                        "rekado@elephly.net")
   r core mentors)
 
+(define-member (person "Christopher Baines"
+                       "mail@cbaines.net")
+  core mentors ruby)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
