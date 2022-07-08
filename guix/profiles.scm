@@ -507,34 +507,8 @@ denoting a specific output of a package."
                                  (mapm %state-monad entry->gexp entries)
                                vlist-null))))))
 
-(define (find-package name version)
-  "Return a package from the distro matching NAME and possibly VERSION.  This
-procedure is here for backward-compatibility and will eventually vanish."
-  (define find-best-packages-by-name              ;break abstractions
-    (module-ref (resolve-interface '(gnu packages))
-                'find-best-packages-by-name))
-
-   ;; Use 'find-best-packages-by-name' and not 'find-packages-by-name'; the
-   ;; former traverses the module tree only once and then allows for efficient
-   ;; access via a vhash.
-   (match (find-best-packages-by-name name version)
-     ((p _ ...) p)
-     (_
-      (match (find-best-packages-by-name name #f)
-        ((p _ ...) p)
-        (_ #f)))))
-
 (define (sexp->manifest sexp)
   "Parse SEXP as a manifest."
-  (define (infer-search-paths name version)
-    ;; Infer the search path specifications for NAME-VERSION by looking up a
-    ;; same-named package in the distro.  Useful for the old manifest formats
-    ;; that did not store search path info.
-    (let ((package (find-package name version)))
-      (if package
-          (package-native-search-paths package)
-          '())))
-
   (define (infer-dependency item parent)
     ;; Return a <manifest-entry> for ITEM.
     (let-values (((name version)
@@ -620,44 +594,7 @@ procedure is here for backward-compatibility and will eventually vanish."
              (return entry)))))))
 
   (match sexp
-    (('manifest ('version 0)
-                ('packages ((name version output path) ...)))
-     (manifest
-      (map (lambda (name version output path)
-             (manifest-entry
-               (name name)
-               (version version)
-               (output output)
-               (item path)
-               (search-paths (infer-search-paths name version))))
-           name version output path)))
-
-    ;; Version 1 adds a list of propagated inputs to the
-    ;; name/version/output/path tuples.
-    (('manifest ('version 1)
-                ('packages ((name version output path deps) ...)))
-     (manifest
-      (map (lambda (name version output path deps)
-             ;; Up to Guix 0.7 included, dependencies were listed as ("gmp"
-             ;; "/gnu/store/...-gmp") for instance.  Discard the 'label' in
-             ;; such lists.
-             (let ((deps (match deps
-                           (((labels directories) ...)
-                            directories)
-                           ((directories ...)
-                            directories))))
-               (letrec* ((deps* (map (cute infer-dependency <> (delay entry))
-                                     deps))
-                         (entry (manifest-entry
-                                  (name name)
-                                  (version version)
-                                  (output output)
-                                  (item path)
-                                  (dependencies deps*)
-                                  (search-paths
-                                   (infer-search-paths name version)))))
-                 entry)))
-           name version output path deps)))
+    ;; Versions 0 and 1 are no longer produced since 2015.
 
     ;; Version 2 adds search paths and is slightly more verbose.
     (('manifest ('version 2 minor-version ...)
