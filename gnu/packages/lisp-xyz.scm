@@ -6127,15 +6127,15 @@ cookie headers, cookie creation, cookie jar creation and more.")
              sbcl-trivial-gray-streams
              sbcl-trivial-mimes
              sbcl-usocket))
-      (native-inputs
-       (list sbcl-alexandria
-             sbcl-babel
-             sbcl-cl-ppcre
-             sbcl-clack
-             sbcl-lack
-             sbcl-local-time
-             sbcl-prove
-             sbcl-trivial-features))
+      ;; These native-inputs are for tests only, which are disabled.
+      ;; Leave them commented since they add a lot to the closure size.
+      ;; (native-inputs
+      ;;  (list sbcl-cl-ppcre
+      ;;        sbcl-clack
+      ;;        sbcl-lack
+      ;;        sbcl-local-time
+      ;;        sbcl-prove
+      ;;        sbcl-trivial-features))
       (arguments
        ;; TODO: Circular dependency: tests depend on clack-test which depends on dexador.
        `(#:tests? #f
