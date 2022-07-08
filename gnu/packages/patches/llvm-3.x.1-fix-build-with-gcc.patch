@@ -1,0 +1,15 @@
+Patch from https://github.com/digego/extempore/issues/318
+
+diff --git a/include/llvm/IR/ValueMap.h.orig b/include/llvm/IR/ValueMap.h
+index ad518ac..d928f6a 100644
+--- a/include/llvm/IR/ValueMap.h
++++ b/include/llvm/IR/ValueMap.h
+@@ -99,7 +99,7 @@
+   explicit ValueMap(const ExtraData &Data, unsigned NumInitBuckets = 64)
+       : Map(NumInitBuckets), Data(Data) {}
+ 
+-  bool hasMD() const { return MDMap; }
++  bool hasMD() const { return static_cast<bool>(MDMap); }
+   MDMapT &MD() {
+     if (!MDMap)
+       MDMap.reset(new MDMapT);

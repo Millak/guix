@@ -1036,7 +1036,8 @@ of programming tools as well as libraries with equivalent functionality.")
       (uri (llvm-uri "llvm" version))
       (sha256
        (base32
-        "1ybmnid4pw2hxn12ax5qa5kl1ldfns0njg8533y3mzslvd5cx0kf"))))))
+        "1ybmnid4pw2hxn12ax5qa5kl1ldfns0njg8533y3mzslvd5cx0kf"))
+      (patches (search-patches "llvm-3.x.1-fix-build-with-gcc.patch"))))))
 
 (define-public clang-runtime-3.8
   (clang-runtime-from-llvm
@@ -1060,7 +1061,8 @@ of programming tools as well as libraries with equivalent functionality.")
        (uri (llvm-uri "llvm" version))
        (sha256
         (base32
-         "1masakdp9g2dan1yrazg7md5am2vacbkb3nahb3dchpc1knr8xxy"))))))
+         "1masakdp9g2dan1yrazg7md5am2vacbkb3nahb3dchpc1knr8xxy"))
+      (patches (search-patches "llvm-3.x.1-fix-build-with-gcc.patch"))))))
 
 (define-public clang-runtime-3.7
   (clang-runtime-from-llvm
@@ -1068,7 +1070,8 @@ of programming tools as well as libraries with equivalent functionality.")
    "10c1mz2q4bdq9bqfgr3dirc6hz1h3sq8573srd5q5lr7m7j6jiwx"
    '("clang-runtime-asan-build-fixes.patch"
      "clang-runtime-3.8-libsanitizer-mode-field.patch"
-     "clang-3.5-libsanitizer-ustat-fix.patch")))
+     "clang-3.5-libsanitizer-ustat-fix.patch"
+     "clang-runtime-3.7-fix-build-with-python3.patch")))
 
 (define-public clang-3.7
   (clang-from-llvm llvm-3.7 clang-runtime-3.7
