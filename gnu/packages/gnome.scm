@@ -6127,15 +6127,15 @@ discovery protocols.")
 (define-public totem
   (package
     (name "totem")
-    (version "3.38.1")
+    (version "42.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnome/sources/totem/"
-                           (version-major+minor version) "/"
+                           (version-major version) "/"
                            "totem-" version ".tar.xz"))
        (sha256
-        (base32 "02510lvzvxvmpcs64k6sqix8ysl7sihhhwvp0vmfv7521ryczylg"))))
+        (base32 "1az6ay7zhz2naqrzcfldx1yv2ylw1yjx76g3mqrqppwmvcflkw2a"))))
     (build-system meson-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -6154,9 +6154,6 @@ discovery protocols.")
            atk
            cairo
            dbus-glib
-           clutter
-           clutter-gtk
-           clutter-gst
            xorgproto
            libxxf86vm
            libxtst
@@ -6165,7 +6162,7 @@ discovery protocols.")
            libsoup
            libpeas
            librsvg
-           lirc
+           libhandy
            gnome-desktop
            gstreamer
            gst-plugins-base
