@@ -7846,7 +7846,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "1.8.3")
+    (version "1.8.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7854,7 +7854,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "1qbzlrzhyj7gvhgbm057zs1g5ajw1w6499qz61154v7ax8fwrdpp"))))
+                "0bwxr08n6zzhc70a71jhgr9zr1246d1lxf2pknndxwn2pz1xxv5b"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"
@@ -7871,7 +7871,7 @@ solution for any project's interface needs:
                          pkg-config
                          procps))
     (inputs (list libevent libressl))
-    (home-page "https://git.omarpolo.com/gmid/about/")
+    (home-page "https://gmid.omarpolo.com/")
     (synopsis "Simple and secure Gemini server")
     (description "@command{gmid} is a fast Gemini server written with security
 in mind.  It has features such as:
