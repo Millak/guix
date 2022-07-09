@@ -806,6 +806,44 @@ input/output delimiter.  When the new functionality is not used, bioawk is
 intended to behave exactly the same as the original BWK awk.")
     (license license:x11)))
 
+(define-public python-cellbender
+  (package
+    (name "python-cellbender")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/broadinstitute/CellBender")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1zav2q8nnss80i25y06fccagkvrqsy7lpylsl4dxv4qkj8p4fnv3"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #false)) ;there are none
+    (propagated-inputs
+     (list python-anndata
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-pyro-ppl
+           python-scikit-learn
+           python-scipy
+           python-sphinx
+           python-sphinx-argparse
+           python-sphinx-autodoc-typehints
+           python-sphinx-rtd-theme
+           python-sphinxcontrib-programoutput
+           python-tables))
+    (home-page "https://cellbender.rtfd.io/")
+    (synopsis "Eliminate technical artifacts from single-cell RNA-seq data")
+    (description
+     "CellBender is a software package for eliminating technical artifacts
+from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
+    (license license:bsd-3)))
+
 (define-public python-htsget
   (package
    (name "python-htsget")
