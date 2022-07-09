@@ -30182,3 +30182,24 @@ GeoPackage Binary")
 GeoJSON to WKT/WKB (Well-Known Text/Binary) or GeoPackage Binary, and vice
 versa.  Extended WKB/WKT are also supported.")
     (license license:asl2.0)))
+
+(define-public python-bsdiff4
+  (package
+    (name "python-bsdiff4")
+    (version "1.2.2")
+    (home-page "https://github.com/ilanschnell/bsdiff4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fa0vkmbr0a9xifq7i5gfcf7ifn739i1fdij8awynm299fsqvvhx"))))
+    (build-system python-build-system)
+    (synopsis "Binary diff and patch using the BSDIFF4 format")
+    (description "This package provides a Python library for the @code{bsdiff}
+binary diff utility.  It also provides two command-line tools, @code{bsdiff4}
+and @code{bspatch4}.")
+    (license license:bsd-2)))
