@@ -378,6 +378,12 @@ OpenSSL for TARGET."
   ;; without causing rebuilds for other targets.
   (cond ((string-prefix? "i586" target)
          "hurd-x86")
+        ((string-suffix? "mingw32" target)
+         (string-append
+          "mingw"
+          (if (string-prefix? "x86_64" target)
+              "64"
+              "")))
         ((string-prefix? "i686" target)
          "linux-x86")
         ((string-prefix? "x86_64" target)
