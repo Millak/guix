@@ -179,6 +179,10 @@ and the maven-build-system."))
         "A group of mentors who chaperone contributions by newcomers."))
 
 
+(define-member (person "Thiago Jung Bauermann"
+                       "bauermann@kolabnow.com")
+  embedded-bootstrap translations)
+
 (define-member (person "Lars-Dominik Braun"
                        "lars@6xq.net")
   python haskell)
