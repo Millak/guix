@@ -5764,6 +5764,30 @@ features such as syntax highlighting, comments, finding keywords, completing
 keywords and smart indentation.")
     (license license:gpl3+)))
 
+(define-public emacs-robot-log
+  (package
+    (name "emacs-robot-log")
+    (version "0.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~apteryx/emacs-robot-log")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0pv0kljx2n2n7ql6rfw1x63mbd1k2qwbq3zkw452lb8jmnp7dr3y"))))
+    (build-system emacs-build-system)
+    (native-inputs (list python-robotframework))
+    (arguments (list #:tests? #t))
+    (home-page "https://sr.ht/~apteryx/emacs-robot-log/")
+    (synopsis "Emacs major mode for viewing RobotFramework debug log files")
+    (description "@code{robot-log} is an Emacs major mode that allows more
+easily viewing and navigating RobotFramework debug log files.  It provides
+syntax highlighting and convenient shortcuts to move from one keyword to the
+next, or locate errors.")
+    (license license:gpl3+)))
+
 (define-public emacs-robots-txt-mode
   (package
     (name "emacs-robots-txt-mode")
