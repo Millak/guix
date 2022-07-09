@@ -17839,6 +17839,74 @@ to setup.")
 (define-public cl-posix-mqueue
   (sbcl-package->cl-source-package sbcl-cl-posix-mqueue))
 
+(define-public sbcl-glop
+  (let ((commit "45e722ab4a0cd2944d550bf790206b3326041e38")
+        (revision "1"))
+    (package
+      (name "sbcl-glop")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lispgames/glop")
+               (commit commit)))
+         (file-name (git-file-name "glop" version))
+         (sha256
+          (base32 "1nm35kvigflfjlmsa8zwdajc61f02fh4sq08jv0wnqylhx8yg2bv"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:test-asd-file "glop-test.asd"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-lib-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/x11/xcomposite.lisp"
+                       (("libXcomposite.so")
+                        (search-input-file inputs "/lib/libXcomposite.so")))
+                     (substitute* "src/x11/xlib.lisp"
+                       (("libX11")
+                        (string-drop-right
+                         (search-input-file inputs "/lib/libX11.so") 3)))
+                     (substitute* "src/utils.lisp"
+                       (("libX11")
+                        (string-drop-right
+                         (search-input-file inputs "/lib/libX11.so") 3)))
+                     (substitute* "src/utils.lisp"
+                       (("libGL.so")
+                        (search-input-file inputs "/lib/libGL.so.1")))
+                     (substitute* "src/x11/glx.lisp"
+                       (("libGL.so")
+                        (search-input-file inputs "/lib/libGL.so")))
+                     (substitute* "src/x11/display-ctrl.lisp"
+                       (("libXrandr")
+                        (string-drop-right
+                         (search-input-file inputs "/lib/libXrandr.so") 3))))))))
+      (native-inputs
+       (list sbcl-cl-opengl))
+      (inputs
+       (list libx11
+             libxcomposite
+             libxrandr
+             mesa
+             sbcl-cffi
+             sbcl-split-sequence
+             sbcl-trivial-garbage))
+      (home-page "https://github.com/lispgames/glop")
+      (synopsis "Direct FFI bindings for OpenGL window and context management")
+      (description
+       "This package provides Common Lisp bindings to create OpenGL window and
+context manipulation code as well as system input handling.  Direct FFI
+bindings to system functions are used so no third party C lib is required
+except system libraries.")
+      (license license:expat))))
+
+(define-public ecl-glop
+  (sbcl-package->ecl-package sbcl-glop))
+
+(define-public cl-glop
+  (sbcl-package->cl-source-package sbcl-glop))
+
 (define-public sbcl-sdl2
   (let ((commit "bb2aa2a41cf799e3bb1ddf50de41fe389c6db668")
         (revision "1"))
