@@ -3248,6 +3248,35 @@ of Hidden Markov Models.")
 algorithm for dense (LAPJV) or sparse (LAPMOD) matrices.")
     (license license:bsd-2)))
 
+(define-public python-visdom
+  (package
+    (name "python-visdom")
+    (version "0.1.8.9")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "visdom" version))
+              (sha256
+               (base32
+                "09kiczx2i5asqsv214fz7sx8wlyldgbqvxwrd0alhjn24cvx4fn7"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-jsonpatch
+           python-numpy
+           python-pillow
+           python-pyzmq
+           python-requests
+           python-scipy
+           python-six
+           python-torchfile
+           python-tornado
+           python-websocket-client))
+    (home-page "https://github.com/fossasia/visdom")
+    (synopsis "Visualizations of live, rich data for Torch and Numpy")
+    (description
+     "This package provides a tool for visualizing live, rich data for Torch
+and Numpy.")
+    (license license:asl2.0)))
+
 (define-public python-pyro-api
   (package
     (name "python-pyro-api")
