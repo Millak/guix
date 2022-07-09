@@ -4404,18 +4404,17 @@ targeting the GNOME stack simple.")
                 "0j8pvn225ybzx9p33ill838bzp8kkdn28383h0vs65m2kiwd9rqk"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       '("-Dvapi=true"
-         "-D_systemd=false")))
+     (list #:configure-flags #~(list "-Dvapi=true"
+                                     "-D_systemd=false")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gettext" ,gettext-minimal)
-       ("vala" ,vala)
-       ("gobject-introspection" ,gobject-introspection)
-       ("glib" ,glib "bin")             ; for glib-genmarshal, etc.
-       ("gperf" ,gperf)
-       ("python" ,python)
-       ("xmllint" ,libxml2)))
+     (list pkg-config
+           gettext-minimal
+           vala
+           gobject-introspection
+           `(,glib "bin")               ; for glib-genmarshal, etc.
+           gperf
+           python
+           libxml2))
     (propagated-inputs
      (list gtk+ ; required by vte-2.91.pc
            gnutls ; ditto
