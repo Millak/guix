@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2017 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2017, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +40,7 @@
             mbegin
             mwhen
             munless
+            mparameterize
             lift0 lift1 lift2 lift3 lift4 lift5 lift6 lift7 lift
             listm
             foldm
@@ -397,6 +398,21 @@ expression."
          (return *unspecified*)
          (mbegin %current-monad
            mexp0 mexp* ...)))))
+
+(define-syntax mparameterize
+  (syntax-rules ()
+    "This form implements dynamic scoping, similar to 'parameterize', but in a
+monadic context."
+    ((_ monad ((parameter value) rest ...) body ...)
+     (let ((old-value (parameter)))
+       (mbegin monad
+         ;; XXX: Non-local exits are not correctly handled.
+         (return (parameter value))
+         (mlet monad ((result (mparameterize monad (rest ...) body ...)))
+           (parameter old-value)
+           (return result)))))
+    ((_ monad () body ...)
+     (mbegin monad body ...))))
 
 (define-syntax define-lift
   (syntax-rules ()
