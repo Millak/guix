@@ -362,9 +362,15 @@ safety and thread safety guarantees.")
        (uri (rust-uri version))
        (sha256 (base32 "07l28f7grdmi65naq71pbmvdd61hwcpi40ry7kp7dy7m233rldxj"))
        (modules '((guix build utils)))
-       (snippet '(for-each delete-file-recursively
-                           '("src/llvm-project"
-                             "vendor/tikv-jemalloc-sys/jemalloc")))))
+       (snippet
+        '(begin
+           (for-each delete-file-recursively
+                     '("src/llvm-project"
+                       "vendor/tikv-jemalloc-sys/jemalloc"))
+           ;; Add support for riscv64-linux.
+           (substitute* "vendor/tikv-jemallocator/src/lib.rs"
+             (("    target_arch = \"s390x\"," all)
+              (string-append all "\n    target_arch = \"riscv64\",")))))))
     (outputs '("out" "cargo"))
     (properties '((timeout . 72000)           ;20 hours
                   (max-silent-time . 18000))) ;5 hours (for armel)
