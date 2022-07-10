@@ -238,14 +238,14 @@ It currently supports:
 (define-public flac
   (package
    (name "flac")
-   (version "1.3.3")
+   (version "1.3.4")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://downloads.xiph.org/releases/flac/flac-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0j0p9sf56a2fm2hkjnf7x3py5ir49jyavg4q5zdyd7bcf6yq4gi1"))))
+              "0dz7am8kbc97a6afml1h4yp085274prg8j7csryds8m3fmz61w4g"))))
    (build-system gnu-build-system)
    (arguments
     `(#:parallel-tests? #f))
