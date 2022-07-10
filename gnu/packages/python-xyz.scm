@@ -98,7 +98,7 @@
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2021, 2022 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -939,7 +939,7 @@ of a loop structure or other iterative computation.")
                  (string-append
                   "if libname == \"openjp2\":\n"
                   "        path = \""
-                  (search-input-file inputs "/lib/libopenjp2.so") "\"\n"
+                  (search-input-file inputs "/lib/libopenjp2.so") "\"\n"t
                   "    elif libname == \"tiff\":\n"
                   "        path = \""
                   (search-input-file inputs "/lib/libtiff.so") "\"\n"
@@ -30125,3 +30125,33 @@ GeoPackage Binary")
 GeoJSON to WKT/WKB (Well-Known Text/Binary) or GeoPackage Binary, and vice
 versa.  Extended WKB/WKT are also supported.")
     (license license:asl2.0)))
+
+(define-public python-proton-client
+  (package
+    (name "python-proton-client")
+    (version "0.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    ;; PyPi doesn't have the latest version.
+                    (url "https://github.com/ProtonMail/proton-python-client")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "164b6451nakyfcjqq11xn32iv3xccsi9bjjq2gzfs2nbxzsfl4ws"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-libssl-path
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "proton/srp/_ctsrp.py"
+                        (("libssl\\.so")
+                         (search-input-file inputs "/lib/libssl.so"))))))))
+    (inputs (list openssl))
+    (propagated-inputs (list python-bcrypt python-gnupg python-pyopenssl
+                             python-requests))
+    (home-page "https://github.com/ProtonMail/proton-python-client")
+    (synopsis "Proton client module")
+    (description "Proton client is a python module that provides Proton API.")
+    (license license:gpl3+)))
