@@ -25,11 +25,13 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>;;
+;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1253,6 +1255,60 @@ OpenDocument presentations (*.odp).")
     (description "This package provides converters for various bibliography
 formats (e.g. Bibtex, RIS, ...) using a common XML intermediate.")
     (license license:gpl2)))
+
+(define-public goawk
+  (package
+    (name "goawk")
+    (version "1.27.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/benhoyt/goawk")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "003idgqj1g41y4sja9gzbds95fl3ba0l20wfgh7hp4kiivgls7r8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/benhoyt/goawk"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Disable tests trying to setup up locale and requiring gawk
+                ;; executable.
+                (substitute* (find-files "." "\\_test.go$")
+                  (("TestShellCommand") "OffTestShellCommand")
+                  (("TestInterp") "OffTestInterp")
+                  (("TestCommandLine") "OffTestCommandLine")))))
+          (add-before 'check 'patch-paths
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (list "interp/interp.go" "goawk_test.go")
+                  (("/bin/sh") (which "sh")))
+                (substitute* "goawk_test.go"
+                  ;; During tests goawk tries to write to existing files,
+                  ;; point to an empty directory instead.
+                  (("/testdata/output") "/testdata/output-tmp")))))
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (mkdir "testdata/output-tmp")
+                  (invoke "go" "test" "./...")
+                  ;; Make sure we have not left any generated articfacts
+                  ;; during tests and moved them to the store.
+                  (delete-file-recursively "testdata/output-tmp"))))))))
+    (home-page "https://github.com/benhoyt/goawk")
+    (synopsis "AWK interpreter with CSV support")
+    (description
+     "GoAWK is a POSIX-compatible version of AWK that also has a CSV mode for
+reading and writing CSV and TSV files.")
+    (license license:expat)))
 
 (define-public opencc
   (package
