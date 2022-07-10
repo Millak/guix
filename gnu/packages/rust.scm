@@ -137,7 +137,8 @@
       (file-name (git-file-name name (git-version version revision commit)))
       (sha256
        (base32
-        "0f7kh4n2663sn0z3xib8gzw0s97qpvwag40g2vs3bfjlrbpgi9z0")))))
+        "0f7kh4n2663sn0z3xib8gzw0s97qpvwag40g2vs3bfjlrbpgi9z0"))
+      (patches (search-patches "mrustc-riscv64-support.patch")))))
 
 ;;; Rust 1.54 is special in that it is built with mrustc, which shortens the
 ;;; bootstrap path.
@@ -172,6 +173,10 @@
        ;; https://github.com/thepowersgang/mrustc/issues/266
        ;; https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105860
        ("gcc" ,gcc-9)
+       ;; TODO: STARTFILE_PREFIX_SPEC is fixed on gcc<10 on core-updates.
+       ,@(if (target-riscv64?)
+           `(("gcc:lib" ,gcc-9 "lib"))
+           '())
        ("flex" ,flex)
        ("pkg-config" ,pkg-config)
        ;; Required for the libstd sources.
@@ -338,9 +343,11 @@
 safety and thread safety guarantees.")
     (home-page "https://github.com/thepowersgang/mrustc")
 
-    ;; So far mrustc is (x86_64|aarch64)-only.  It may support i686 soon:
+    ;; The intermediate generated code is known to be inefficient and
+    ;; therefore the build process needs 8GB of RAM while building.
+    ;; It may support i686 soon:
     ;; <https://github.com/thepowersgang/mrustc/issues/78>.
-    (supported-systems '("x86_64-linux" "aarch64-linux"))
+    (supported-systems '("x86_64-linux" "aarch64-linux" "riscv64-linux"))
 
     ;; Dual licensed.
     (license (list license:asl2.0 license:expat))))

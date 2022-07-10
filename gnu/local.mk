@@ -1509,6 +1509,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mono-mdoc-timestamping.patch		\
   %D%/packages/patches/mosaicatcher-unbundle-htslib.patch	\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
+  %D%/packages/patches/mrustc-riscv64-support.patch		\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\
   %D%/packages/patches/mumps-build-parallelism.patch		\
   %D%/packages/patches/mumps-shared-libseq.patch		\
