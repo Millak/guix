@@ -69,7 +69,13 @@
       (uri (string-append "mirror://gnu/parallel/parallel-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "186mbzz5dn2ka8fqk9r8v8fpmh17clh2c6xln0czs81vynl1bgd4"))))
+       (base32 "186mbzz5dn2ka8fqk9r8v8fpmh17clh2c6xln0czs81vynl1bgd4"))
+      (snippet
+       '(begin
+          (use-modules (guix build utils))
+          ;; Delete pre-generated manpages and documents.
+          ;; TODO: Add pod2pdf for pdfs, generate rst files.
+          (for-each delete-file (find-files "src" "\\.(1|7|html)$"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -103,6 +109,8 @@
                       (assoc-ref outputs "out") "/bin/parallel")
                      "echo"
                      ":::" "1" "2" "3"))))))
+    (native-inputs
+     (list perl))
     (inputs
      (list perl procps))
     (home-page "https://www.gnu.org/software/parallel/")
