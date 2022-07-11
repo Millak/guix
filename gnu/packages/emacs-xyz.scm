@@ -11154,20 +11154,16 @@ maximizes flexibility (at the expense of conciseness).")
 (define-public emacs-find-file-in-project
   (package
     (name "emacs-find-file-in-project")
-    (version "6.1.2")
+    (version "6.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/technomancy/find-file-in-project")
-             ;; The "6.1.2" tag was modified in place, initially pointing to
-             ;; 756f616f77f3829de07821480e229c587c1afec0 and then change to
-             ;; the subsequent commit,
-             ;; 52274e6001545bdf45c6477ba21bfaa8eca04755.
-             (commit "756f616f77f3829de07821480e229c587c1afec0")))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00i62qspgmpg45gfzyq722wnni3yfmrkvlva8kmxdv5id919x1sc"))))
+        (base32 "0sq8fyq19jw1hm0m6hiqnvzzvx0c3xigfx7x6i40ib5hnfjlqs0a"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
