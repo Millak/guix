@@ -1535,23 +1535,23 @@ treat it as part of their software base when porting.")
     (name "luit")
     (version "1.1.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/luit-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "0dn694mk56x6hdk6y9ylx4f128h5jcin278gnw2gb807rf3ygc1h"))
-        ;; See https://bugs.freedesktop.org/show_bug.cgi?id=47792;
-        ;; should become obsolete with the next release.
-        (patches (search-patches "luit-posix.patch"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://xorg/individual/app/luit-"
+             version
+             ".tar.bz2"))
+       (sha256
+        (base32
+         "0dn694mk56x6hdk6y9ylx4f128h5jcin278gnw2gb807rf3ygc1h"))
+       ;; See https://bugs.freedesktop.org/show_bug.cgi?id=47792;
+       ;; should become obsolete with the next release.
+       (patches (search-patches "luit-posix.patch"))))
     (build-system gnu-build-system)
     (inputs
-      (list libfontenc))
+     (list libfontenc))
     (native-inputs
-       (list pkg-config))
+     (list pkg-config))
     (home-page "https://www.x.org/wiki/")
     (synopsis "Convert terminal I/O from legacy encodings to UTF-8")
     (description
