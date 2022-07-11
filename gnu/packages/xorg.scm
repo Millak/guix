@@ -4242,17 +4242,17 @@ refers to the included common xorg.css stylesheet.")
 (define-public xpr
   (package
     (name "xpr")
-    (version "1.0.5")
+    (version "1.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xpr-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "07qy9lwjvxighcmg6qvjkgagad3wwvidrfx0jz85lgynz3qy0dmr"))))
+            "1iaphm96kha6bzz34cj82r2lp5hrdpqwdca04iij4rinflab3fx0"))))
     (build-system gnu-build-system)
     (inputs
       (list xorgproto libxmu libx11))
