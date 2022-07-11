@@ -607,8 +607,7 @@ everything from small to very large projects with speed and efficiency.")
            (replace 'patch-makefiles
              (lambda _
                (substitute* "Makefile"
-                 (("/usr/bin/perl") (which "perl")))
-               #t))
+                 (("/usr/bin/perl") (which "perl")))))
            (delete 'build-subtree)
            (delete 'split)
            (delete 'install-man-pages)
@@ -635,8 +634,7 @@ everything from small to very large projects with speed and efficiency.")
 
                  ;; Gitweb depends on Perl as well.
                  (delete-file-recursively
-                  (string-append out "/share/gitweb"))
-                 #t)))))
+                  (string-append out "/share/gitweb")))))))
        ((#:make-flags flags)
         `(delete "USE_LIBPCRE2=yes" ,flags))
        ((#:configure-flags flags)
