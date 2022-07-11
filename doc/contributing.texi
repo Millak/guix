@@ -1119,11 +1119,11 @@ Development is done using the Git distributed version control system.
 Thus, access to the repository is not strictly necessary.  We welcome
 contributions in the form of patches as produced by @code{git
 format-patch} sent to the @email{guix-patches@@gnu.org} mailing list
-(@pxref{submitting patches,, Submitting patches to a project, git, Git
-User Manual}).  Contributors are encouraged to take a moment to set some
-Git repository options (@pxref{Configuring Git}) first, which can
-improve the readability of patches.  Seasoned Guix developers may also
-want to look at the section on commit access (@pxref{Commit Access}).
+(@pxref{Submitting patches to a project,,, git, Git User Manual}).
+Contributors are encouraged to take a moment to set some Git repository
+options (@pxref{Configuring Git}) first, which can improve the
+readability of patches.  Seasoned Guix developers may also want to look
+at the section on commit access (@pxref{Commit Access}).
 
 This mailing list is backed by a Debbugs instance, which allows us to
 keep track of submissions (@pxref{Tracking Bugs and Patches}).  Each
