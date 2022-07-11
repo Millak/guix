@@ -8880,23 +8880,23 @@ answers.")
         (base32 "0qp71j77zg8gippcn277s0j5a9n6dbwv3kdp2nya6li4b412vgba"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include (cons "^build\\/.*\\.el$"
-                       %default-include)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'mv-themes
-           (lambda* (#:key outputs #:allow-other-keys)
-             (use-modules (ice-9 regex))
-             (let* ((out (assoc-ref outputs "out"))
-                    (theme-dir (string-append (elpa-directory out) "/build")))
-               (for-each (lambda (theme)
-                           (rename-file
-                            theme
-                            (regexp-substitute #f
-                                               (string-match "build\\/" theme)
-                                               'pre 'post)))
-                         (find-files theme-dir "\\.el$"))
-               (delete-file-recursively theme-dir)))))))
+     (list #:include #~(cons "^build\\/.*\\.el$" %default-include)
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'mv-themes
+                 (lambda _
+                   (use-modules (ice-9 regex))
+                   (let ((theme-dir (string-append (elpa-directory #$output)
+                                                   "/build")))
+                     (for-each (lambda (theme)
+                                 (rename-file
+                                  theme
+                                  (regexp-substitute #f
+                                                     (string-match "build\\/"
+                                                                   theme)
+                                                     'pre 'post)))
+                               (find-files theme-dir "\\.el$"))
+                     (delete-file-recursively theme-dir)))))))
     (home-page "https://github.com/belak/base16-emacs")
     (synopsis "Base16 color themes for Emacs")
     (description
