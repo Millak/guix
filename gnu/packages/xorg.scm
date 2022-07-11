@@ -2752,17 +2752,17 @@ X server.")
 (define-public xf86-video-cirrus
   (package
     (name "xf86-video-cirrus")
-    (version "1.5.3")
+    (version "1.6.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-video-cirrus-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1asifc6ld2g9kap15vfhvsvyl69lj7pw3d9ra9mi4najllh7pj7d"))))
+            "00b468w01hqjczfqz42v2vqhb14db4wazcqi1w29lgfyhc0gmwqf"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
