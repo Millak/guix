@@ -4518,7 +4518,7 @@ representation.")
 (define-public emacs-git-gutter
   (package
     (name "emacs-git-gutter")
-    (version "0.91")
+    (version "0.92")
     (source
      (origin
        (method git-fetch)
@@ -4527,7 +4527,7 @@ representation.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zc9f73app1d7j4yb10sy4xidh5252ncyxlvr5kh0kiqk88ck6j9"))))
+        (base32 "1fkp6iyisb3g5afyjkxz4yj4ws5f8n7whklck4jdf3014vs01b3c"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/syohex/emacs-git-gutter")
     (synopsis "See and manage hunks of text in a version control system")
