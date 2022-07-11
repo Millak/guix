@@ -44,6 +44,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-37)
   #:export (pretty-print-with-comments
             read-with-comments
@@ -683,7 +684,16 @@ doing it."
   "Replace the file name in LOC by an absolute location."
   (location (if (string-prefix? "/" (location-file loc))
                 (location-file loc)
-                (search-path %load-path (location-file loc)))
+
+                ;; 'search-path' might return #f in obscure cases, such as
+                ;; when %LOAD-PATH includes "." or ".." and LOC comes from a
+                ;; file in a subdirectory thereof.
+                (match (search-path %load-path (location-file loc))
+                  (#f
+                   (raise (formatted-message
+                           (G_ "file '~a' not found on load path")
+                           (location-file loc))))
+                  (str str)))
             (location-line loc)
             (location-column loc)))
 
