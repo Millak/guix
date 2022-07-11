@@ -16171,6 +16171,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
        (list emacs-plz
              emacs-svg-lib
              emacs-taxy
+             emacs-taxy-magit-section
              emacs-ts))
       (home-page "https://github.com/alphapapa/ement.el")
       (synopsis "Matrix client for Emacs")
