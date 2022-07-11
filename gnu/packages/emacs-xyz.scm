@@ -26249,7 +26249,7 @@ files.")
 (define-public emacs-add-node-modules-path
   (package
     (name "emacs-add-node-modules-path")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -26259,8 +26259,9 @@ files.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "039rfgwzmavgfa9gc7mh7hiw46gmgrhndsjib5kixynvcpl1y42l"))))
+         "09vf921dh6lawh14rk02gjsvz88x9vd1c68ilf2fzkap5dh61dy5"))))
     (build-system emacs-build-system)
+    (propagated-inputs (list emacs-s))
     (home-page "https://github.com/codesuki/add-node-modules-path")
     (synopsis "Add @file{node_modules} to the buffer-local @file{exec-path}")
     (description "This package searches the parent directories of the
