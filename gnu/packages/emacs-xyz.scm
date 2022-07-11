@@ -674,7 +674,7 @@ buffers, directory trees, or the web.")
 (define-public emacs-package-build
   (package
     (name "emacs-package-build")
-    (version "2.4")
+    (version "3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -683,7 +683,7 @@ buffers, directory trees, or the web.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lm5mgvjhpxqfw5gcv99h4mwbq728b6f2hj5vjh1j67kdwy7ws8k"))))
+                "1gkqav0ipfk5gsklxrbggqrbphr12qg1qr6dpdi4f0hs0i11fr23"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/melpa/package-build")
     (synopsis "Tools for assembling en Emacs package archive")
