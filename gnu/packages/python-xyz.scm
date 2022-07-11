@@ -16127,7 +16127,27 @@ graphviz.")
               (snippet
                '(begin
                   ;; unbunding libev and c-ares
-                  (delete-file-recursively "deps")))))
+                  (delete-file-recursively "deps")
+                  ;; Remove cythonized files.
+                  (with-directory-excursion "src/gevent"
+                    (for-each delete-file
+                              (append (list "resolver/cares.c"
+                                            "queue.c"
+                                            "local.c"
+                                            "libev/corecext.h"
+                                            "libev/corecext.c"
+                                            "greenlet.c"
+                                            "event.c"
+                                            "_waiter.c"
+                                            "_tracer.c"
+                                            "_semaphore.c"
+                                            "_imap.c"
+                                            "_ident.c"
+                                            "_hub_primitives.c"
+                                            "_hub_local.c"
+                                            "_greenlet_primitives.c"
+                                            "_abstract_linkable.c")
+                                      (find-files "." "\\.html$"))))))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((ice-9 ftw)
@@ -16215,8 +16235,9 @@ graphviz.")
     (propagated-inputs
      (list python-greenlet python-zope-event python-zope-interface))
     (native-inputs
-     ;; For tests.
-     (list python-dnspython python-psutil python-objgraph))
+     (list python-cython
+           ;; For tests.
+           python-dnspython python-psutil python-objgraph))
     (inputs
      (list c-ares libev))
     (home-page "https://www.gevent.org/")
