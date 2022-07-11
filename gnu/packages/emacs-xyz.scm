@@ -28564,7 +28564,7 @@ contributed packages to Telega.")))
 (define-public emacs-doom-modeline
   (package
     (name "emacs-doom-modeline")
-    (version "3.2.1")
+    (version "3.3.1")
     (source
      (origin
        (method git-fetch)
@@ -28572,14 +28572,14 @@ contributed packages to Telega.")))
              (url "https://github.com/seagle0128/doom-modeline")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1ji15n2rdp7bjg5iq9im6c4m12k24kqp85i3n1m9npihrb4arh54"))
+        (base32 "0p728hbphfch6kmkjxm1qwxrwz6l94s3sj7wl1wc4mp82zrdsi15"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
      `(#:test-command '("ert-runner")))
     (native-inputs (list emacs-ert-runner))
     (propagated-inputs
-     (list emacs-all-the-icons emacs-dash emacs-shrink-path))
+     (list emacs-all-the-icons emacs-compat emacs-dash emacs-shrink-path))
     (synopsis "Fancy and fast mode-line inspired by minimalism design")
     (description "Doom modeline is a complete modeline for GNU Emacs inspired
 by the Doom theme collection.  This modeline features support for mode-specific
