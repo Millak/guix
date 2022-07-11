@@ -686,7 +686,7 @@ buffers, directory trees, or the web.")
                 "1gkqav0ipfk5gsklxrbggqrbphr12qg1qr6dpdi4f0hs0i11fr23"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/melpa/package-build")
-    (synopsis "Tools for assembling en Emacs package archive")
+    (synopsis "Tools for assembling an Emacs package archive")
     (description "This package provides tools for assembling an @acronym{ELPA,
 Emacs package archive}.")
     (license license:gpl3+)))
