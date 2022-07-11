@@ -26630,17 +26630,18 @@ all of your projects, then override or add variables on a per-project basis.")
         (base32 "1l30s3wv21mpybbxni5fziq2awai9k60i87s6fid56hg262r7jp0"))))
     (build-system emacs-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((calibre (assoc-ref inputs "calibre")))
-               (make-file-writable "calibredb-core.el")
-               (emacs-substitute-variables "calibredb-core.el"
-                 ("calibredb-program"
-                  (string-append calibre "/bin/calibredb"))
-                 ("calibredb-fetch-metadata-program"
-                  (string-append calibre "/bin/fetch-ebook-metadata")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (make-file-writable "calibredb-core.el")
+              (let ((calibredb (search-input-file inputs "/bin/calibredb"))
+                    (fetch-ebook-metadata
+                     (search-input-file inputs "/bin/fetch-ebook-metadata")))
+                (emacs-substitute-variables "calibredb-core.el"
+                  ("calibredb-fetch-metadata-program" fetch-ebook-metadata)
+                  ("calibredb-program" calibredb))))))))
     (inputs
      (list calibre))
     (propagated-inputs
