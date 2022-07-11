@@ -16597,7 +16597,7 @@ an elisp expression.")
 (define-public emacs-taxy
   (package
     (name "emacs-taxy")
-    (version "0.8")
+    (version "0.9")
     (source
      (origin
        (method url-fetch)
@@ -16605,7 +16605,7 @@ an elisp expression.")
              "https://elpa.gnu.org/packages/taxy-" version ".tar"))
        (sha256
         (base32
-         "00pc6lh35gj8vzcsn17fyazb9jsc4m6nr7cvb32w02isadv8qd3m"))))
+         "1nzafs3yvcnmg07zi345n2yvjsw9wixlybzibnhf5k6jnd0vvpjh"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-magit))
