@@ -4114,15 +4114,15 @@ protocol.")
 (define-public xfontsel
   (package
     (name "xfontsel")
-    (version "1.0.6")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://xorg/individual/app/xfontsel-"
-                    version ".tar.bz2"))
+                    version ".tar.xz"))
               (sha256
                (base32
-                "0700lf6hx7dg88wq1yll7zjvf9gbwh06xff20yffkxb289y0pai5"))))
+                "1d6ifx6sw97mmr00bhfakyx2f94w14yswxc68sw49zmvawrjq18p"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
