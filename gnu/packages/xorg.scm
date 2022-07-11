@@ -1548,8 +1548,14 @@ treat it as part of their software base when porting.")
        ;; should become obsolete with the next release.
        (patches (search-patches "luit-posix.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-localealiasfile="
+                             (search-input-file
+                              %build-inputs "share/X11/locale/locale.alias")))))
     (inputs
-     (list libfontenc))
+     (list libfontenc libx11))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.x.org/wiki/")
