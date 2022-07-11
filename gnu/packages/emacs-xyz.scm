@@ -26618,7 +26618,7 @@ all of your projects, then override or add variables on a per-project basis.")
 (define-public emacs-calibredb
   (package
     (name "emacs-calibredb")
-    (version "2.10.0")
+    (version "2.12.0")
     (source
      (origin
        (method git-fetch)
@@ -26627,7 +26627,7 @@ all of your projects, then override or add variables on a per-project basis.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s26a2fy1xldd0q57avds7zn0h7lkis2hjh9zmm1qhwn8409hys9"))))
+        (base32 "1l30s3wv21mpybbxni5fziq2awai9k60i87s6fid56hg262r7jp0"))))
     (build-system emacs-build-system)
     (arguments
      '(#:phases
@@ -26644,7 +26644,7 @@ all of your projects, then override or add variables on a per-project basis.")
     (inputs
      (list calibre))
     (propagated-inputs
-     (list emacs-dash emacs-s emacs-transient))
+     (list emacs-dash emacs-esxml emacs-s emacs-transient))
     (home-page "https://github.com/chenyanming/calibredb.el")
     (synopsis "Yet another calibre client for Emacs")
     (description "This package integrates calibre into Emacs.
