@@ -2161,17 +2161,17 @@ to query the server for available resource IDs.")
 (define-public xcmsdb
   (package
     (name "xcmsdb")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xcmsdb-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1ik7gzlp2igz183x70883000ygp99r20x3aah6xhaslbpdhm6n75"))))
+            "0magrza0i5qwpf0zlpqjychp3bzxgdw3p5v616xl4nbxag2fwxrw"))))
     (build-system gnu-build-system)
     (inputs
       (list libx11))
