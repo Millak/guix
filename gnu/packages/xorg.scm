@@ -4537,17 +4537,17 @@ Various information is displayed depending on which options are selected.")
 (define-public xwud
   (package
     (name "xwud")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xwud-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1a8hdgy40smvblnh3s9f0vkqckl68nmivx7d48zk34m8z18p16cr"))))
+            "1zhsih1l3x1038fi1wi9npvfnn8j7580ca73saixjg5sbv8qq134"))))
     (build-system gnu-build-system)
     (inputs
       (list xorgproto libx11))
