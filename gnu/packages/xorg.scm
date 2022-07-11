@@ -107,8 +107,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xdisorg))
 
-
-
 ;; When cross-compiling certain packages, "--disable-malloc0returnsnull"
 ;; needs to be passed.  Otherwise, the configure script will try to run a
 ;; binary for the host on the build machine.
@@ -448,7 +446,6 @@ specification editres will append the resource string to the user's X
 Resources file.")
     (license license:x11)))
 
-
 (define-public encodings
   (package
     (name "encodings")
@@ -514,7 +511,6 @@ Resources file.")
     (description "Xorg adobe-100dpi fonts.")
     (license license:x11)))
 
-
 (define-public font-adobe75dpi
   (package
     (name "font-adobe75dpi")
@@ -535,12 +531,10 @@ Resources file.")
     (description "Xorg adobe-75dpi fonts.")
     (license license:x11)))
 
-
 ;; non-free license
 ;; (define-public font-adobe-utopia100dpi
 ;; (define-public font-adobe-utopia75dpi
 ;; (define-public font-adobe-utopia-type1
-
 
 (define-public font-alias
   (package
@@ -575,7 +569,6 @@ Resources file.")
 For example: @code{6x10}, @code{9x15bold}, etc.")
     (license license:x11)))
 
-
 (define-public font-arabic-misc
   (package
     (name "font-arabic-misc")
@@ -593,7 +586,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (description "Xorg arabic-misc font.")
     (license license:x11)))
 
-
 ;; non-free license
 ;; (define-public font-bh100dpi
 ;; (define-public font-bh75dpi
@@ -603,7 +595,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 ;; (define-public font-bh-type1
 ;; (define-public font-bitstream100dpi
 ;; (define-public font-bitstream75dpi
-
 
 (define-public font-cronyx-cyrillic
   (package
@@ -622,13 +613,11 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (description "Xorg cronyx-cyrillic font.")
     (license license:x11)))
 
-
 ;; no license
 ;; (define-public font-cursor-misc
 
 ;; non-free license
 ;; (define-public font-daewoo-misc
-
 
 (define-public font-dec-misc
   (package
@@ -646,7 +635,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (synopsis "Xorg dec-misc font")
     (description "Xorg dec-misc font.")
     (license license:x11)))
-
 
 ;; non-free license
 ;; (define-public font-ibm-type1
@@ -668,10 +656,8 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (description "Xorg isas-misc font.")
     (license license:x11)))
 
-
 ;; non-free license
 ;; (define-public font-jis-misc
-
 
 (define-public font-micro-misc
   (package
@@ -690,7 +676,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (description "Xorg micro-misc font.")
     (license license:public-domain)))
 
-
 (define-public font-misc-cyrillic
   (package
     (name "font-misc-cyrillic")
@@ -707,7 +692,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (synopsis "Xorg misc-cyrillic fonts")
     (description "Xorg misc-cyrillic fonts.")
     (license license:x11)))
-
 
 (define-public font-misc-ethiopic
   (package
@@ -726,10 +710,8 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (description "Xorg misc-ethiopic fonts.")
     (license license:x11)))
 
-
 ;; non-free license
 ;; (define-public font-misc-meltho
-
 
 (define-public font-misc-misc
   (package
@@ -751,7 +733,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (description "Xorg misc-misc fixed fonts.")
     (license license:public-domain)))
 
-
 (define-public font-mutt-misc
   (package
     (name "font-mutt-misc")
@@ -768,7 +749,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (synopsis "Xorg mutt-misc fonts")
     (description "Xorg mutt-misc fonts.")
     (license license:x11)))
-
 
 (define-public font-schumacher-misc
   (package
@@ -790,7 +770,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (description "Xorg schumacher-misc fonts.")
     (license license:x11)))
 
-
 (define-public font-screen-cyrillic
   (package
     (name "font-screen-cyrillic")
@@ -807,7 +786,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (synopsis "Xorg screen-cyrillic fonts")
     (description "Xorg screen-cyrillic fonts.")
     (license license:x11)))
-
 
 (define-public font-sony-misc
   (package
@@ -826,7 +804,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (description "Xorg sony-misc fonts.")
     (license license:x11)))
 
-
 (define-public font-sun-misc
   (package
     (name "font-sun-misc")
@@ -843,7 +820,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (synopsis "Xorg sun-misc fonts")
     (description "Xorg sun-misc fonts.")
     (license license:x11)))
-
 
 (define-public font-util
   (package
@@ -866,7 +842,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
      "Xorg font package creation/installation utilities.")
     (license license:x11)))
 
-
 (define-public font-winitzki-cyrillic
   (package
     (name "font-winitzki-cyrillic")
@@ -884,7 +859,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (description "Xorg winitzki-cyrillic font.")
     (license license:public-domain)))
 
-
 (define-public font-xfree86-type1
   (package
     (name "font-xfree86-type1")
@@ -901,7 +875,6 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
     (synopsis "Xorg xfree86-type1 font")
     (description "Xorg xfree86-type1 font.")
     (license license:x11)))
-
 
 (define-public fontsproto
   (package
@@ -978,7 +951,6 @@ operates very much like the xauth program for X11 connection
 authentication records.")
     (license license:x11)))
 
-
 (define-public inputproto
   (package
     (name "inputproto")
@@ -1030,7 +1002,6 @@ of new capabilities and controls for text keyboards.")
 ;; requires applewmproto, which compiles only on macos
 ;; (define-public libapplewm
 
-
 (define-public libdmx
   (package
     (name "libdmx")
@@ -1058,7 +1029,6 @@ of new capabilities and controls for text keyboards.")
      "DMX (Distributed Multihead X) extension library.")
     (license license:x11)))
 
-
 (define-public libxshmfence
   (package
     (name "libxshmfence")
@@ -1084,7 +1054,6 @@ synchronization between the X server and direct-rendering clients.")
 
     ;; Same license as libevdev.
     (license (license:x11-style "file://COPYING"))))
-
 
 (define-public libfontenc
   (package
@@ -1112,7 +1081,6 @@ synchronization between the X server and direct-rendering clients.")
     (description "Xorg font encoding library.")
     (license license:x11)))
 
-
 (define-public libfs
   (package
     (name "libfs")
@@ -1138,7 +1106,6 @@ synchronization between the X server and direct-rendering clients.")
 Servers (xfs), such as xfsinfo, fslsfonts, and the X servers
 themselves.")
     (license license:x11)))
-
 
 (define-public libpciaccess
   (package
@@ -1184,7 +1151,6 @@ themselves.")
     (description "Xorg Generic PCI access library.")
     (license license:x11)))
 
-
 (define-public libpthread-stubs
   (package
     (name "libpthread-stubs")
@@ -1210,7 +1176,6 @@ libxcb rely on pthread stubs to use pthreads optionally, becoming
 thread-safe when linked to libpthread, while avoiding any performance
 hit when running single-threaded.")
     (license license:x11)))
-
 
 (define-public libsm
   (package
@@ -1241,7 +1206,6 @@ hit when running single-threaded.")
     (description "Xorg Session Management library.")
     (license license:x11)))
 
-
 (define-public libwindowswm
   (package
     (name "libwindowswm")
@@ -1269,7 +1233,6 @@ WindowsWM is a simple library designed to interface with the Windows-WM
 extension.  This extension allows X window managers to better interact
 with the Cygwin XWin server when running X11 in a rootless mode.")
     (license license:x11)))
-
 
 (define-public libxcomposite
   (package
@@ -1299,7 +1262,6 @@ with the Cygwin XWin server when running X11 in a rootless mode.")
      "Client library for the Composite extension to the X11 protocol.")
     (license license:x11)))
 
-
 (define-public libxdmcp
   (package
     (name "libxdmcp")
@@ -1325,7 +1287,6 @@ with the Cygwin XWin server when running X11 in a rootless mode.")
     (synopsis "Xorg Display Manager Control Protocol library")
     (description "Xorg Display Manager Control Protocol library.")
     (license license:x11)))
-
 
 (define-public libxft
   (package
@@ -1361,7 +1322,6 @@ rasterization library.  Xft uses fontconfig to locate fonts so it has no
 configuration files.")
     (license license:x11)))
 
-
 (define-public libxkbfile
   (package
     (name "libxkbfile")
@@ -1388,7 +1348,6 @@ configuration files.")
     (synopsis "Xorg XKB file handling library")
     (description "Xorg XKB file handling library.")
     (license license:x11)))
-
 
 (define-public libxmu
   (package
@@ -1421,7 +1380,6 @@ applications developers who depend on this library should be prepared to
 treat it as part of their software base when porting.")
     (license license:x11)))
 
-
 (define-public libxpm
   (package
     (name "libxpm")
@@ -1449,7 +1407,6 @@ treat it as part of their software base when porting.")
     (description "XPM (X Pixmap) image file format library.")
     (license license:x11)))
 
-
 (define-public libxres
   (package
     (name "libxres")
@@ -1475,7 +1432,6 @@ treat it as part of their software base when porting.")
     (synopsis "Xorg Resource extension library")
     (description "X Resource extension library.")
     (license license:x11)))
-
 
 (define-public libxscrnsaver
   (package
@@ -1503,7 +1459,6 @@ treat it as part of their software base when porting.")
     (description "X11 Screen Saver extension client library.")
     (license license:x11)))
 
-
 (define-public libxxf86dga
   (package
     (name "libxxf86dga")
@@ -1528,7 +1483,6 @@ treat it as part of their software base when porting.")
     (synopsis "Xorg XFree86-DGA library")
     (description "Client library for the XFree86-DGA extension.")
     (license license:x11)))
-
 
 (define-public luit
   (package
@@ -1567,7 +1521,6 @@ output from the locale's encoding into UTF-8, and convert terminal
 input from UTF-8 into the locale's encoding.")
     (license license:x11)))
 
-
 (define-public makedepend
   (package
     (name "makedepend")
@@ -1591,7 +1544,6 @@ input from UTF-8 into the locale's encoding.")
     (description
      "Makedepend is an utility for creating dependencies in makefiles.")
     (license license:x11)))
-
 
 (define-public mkfontscale
   (package
@@ -1617,7 +1569,6 @@ input from UTF-8 into the locale's encoding.")
      "MkFontScale creates the @code{fonts.scale} and @code{fonts.dir} index
 files used by the legacy X11 font system.")
     (license license:x11)))
-
 
 (define-public presentproto
   (package
@@ -1668,7 +1619,6 @@ mechanism than copying the contents of the source pixmap.")
 network-transparent printing system.")
     (license license:x11)))
 
-
 (define-public randrproto
   (package
     (name "randrproto")
@@ -1693,7 +1643,6 @@ dynamically change X screens, so as to resize, rotate and reflect the root
 window of a screen.")
     (license license:x11)
     (properties `((superseded . ,xorgproto)))))
-
 
 (define-public recordproto
   (package
@@ -1815,7 +1764,6 @@ sessions.  It was originally written for use with xdm, but may also be
 used with other display managers such as gdm or kdm.")
     (license license:x11)))
 
-
 (define-public setxkbmap
   (package
     (name "setxkbmap")
@@ -1848,7 +1796,6 @@ for a specified keyboard to use the layout determined by the options
 listed on the command line.")
     (license license:x11)))
 
-
 (define-public smproxy
   (package
     (name "smproxy")
@@ -1874,7 +1821,6 @@ listed on the command line.")
      "SMProxy allows X applications that do not support X11R6 session
 management to participate in an X11R6 session.")
     (license license:x11)))
-
 
 (define-public util-macros
   (package
@@ -1916,7 +1862,6 @@ management to participate in an X11R6 session.")
 configure.ac scripts in other Xorg modular packages, and is needed to
 generate new versions of their configure scripts with autoconf.")
     (license license:x11)))
-
 
 (define-public videoproto
   (package
@@ -1993,7 +1938,6 @@ server.")
      "X11Perf is a simple performance benchmarker for the Xorg X server.")
     (license license:x11)))
 
-
 (define-public xauth
   (package
     (name "xauth")
@@ -2016,7 +1960,6 @@ server.")
      "XAuth program is used to edit and display the authorization
 information used in connecting to the X server.")
     (license license:x11)))
-
 
 (define-public xbacklight
   (package
@@ -2045,7 +1988,6 @@ supported.  It uses the RandR extension to find all outputs on the X
 server supporting backlight brightness control and changes them all in
 the same way.")
     (license license:x11)))
-
 
 (define-public xbitmaps
   (package
@@ -2101,7 +2043,6 @@ legacy X clients.")
 emulate a TI-30 or an HP-10C.")
     (license license:x11)))
 
-
 (define-public xcb-proto
   (package
     (name "xcb-proto")
@@ -2138,7 +2079,6 @@ XCB-Proto also contains language-independent Python libraries that are
 used to parse an XML description and create objects used by Python code
 generators in individual language bindings.")
     (license license:x11)))
-
 
 (define-public xcmiscproto
   (package
@@ -2191,7 +2131,6 @@ Characterization data stored in properties on the root window of the
 screen as specified in section 7, Device Color Characterization, of the
 X11 Inter-Client Communication Conventions Manual (ICCCM).")
     (license license:x11)))
-
 
 (define-public xcursor-themes
   (package
@@ -2300,7 +2239,6 @@ left-handed version of the cursors is also included.")
      "XCursorGen prepares X11 cursor sets for use with libXcursor.")
     (license license:x11)))
 
-
 (define-public xdpyinfo
   (package
     (name "xdpyinfo")
@@ -2339,7 +2277,6 @@ types of screens, visuals, and X11 protocol extensions that are
 available.")
     (license license:x11)))
 
-
 (define-public xdriinfo
   (package
     (name "xdriinfo")
@@ -2365,7 +2302,6 @@ available.")
      "XDRIInfo is used to query configuration information of X11
 DRI (Direct Rendering Infrastructure) drivers.")
     (license license:x11)))
-
 
 (define-public xev
   (package
@@ -2398,7 +2334,6 @@ and to display the information that they contain; it is essentially a
 debugging and development tool, and should not be needed in normal
 usage.")
     (license license:x11)))
-
 
 (define-public xextproto
   (package
@@ -2452,7 +2387,6 @@ interface to the callers, thus avoiding erroneous ioctls, etc.
 The eventual goal is that libevdev wraps all ioctls available to evdev
 devices, thus making direct access unnecessary.")
     (license (license:x11-style "file://COPYING"))))
-
 
 (define-public xf86-input-evdev
   (package
@@ -2548,7 +2482,6 @@ provide all features that libinput supports it does little beyond.")
 It is used to control the pointer with a joystick device.")
     (license license:x11)))
 
-
 (define-public xf86-input-keyboard
   (package
     (name "xf86-input-keyboard")
@@ -2571,7 +2504,6 @@ It is used to control the pointer with a joystick device.")
     (description
      "xf86-input-keyboard is a keyboard input driver for the Xorg X server.")
     (license license:x11)))
-
 
 (define-public xf86-input-mouse
   (package
@@ -2604,7 +2536,6 @@ and additional mouse types supported by specific operating systems, such
 as USB mice.")
     (license license:x11)))
 
-
 (define-public xf86-input-synaptics
   (package
     (name "xf86-input-synaptics")
@@ -2635,7 +2566,6 @@ as USB mice.")
     (description
      "xf86-input-synaptics is a touchpad driver for the Xorg X server.")
     (license license:x11)))
-
 
 (define-public xf86-input-void
   (package
@@ -2754,7 +2684,6 @@ X server.")
 X server.")
       (license license:x11))))
 
-
 (define-public xf86-video-cirrus
   (package
     (name "xf86-video-cirrus")
@@ -2824,7 +2753,6 @@ X server.")
 framebuffer device.")
     (license license:x11)))
 
-
 (define-public xf86-video-freedreno
   (let ((commit "ccba8f89995de7d5e1b216e580b789c4cda05035"))
     (package
@@ -2871,7 +2799,6 @@ framebuffer device.")
 It supports a variety of Adreno graphics chipsets.")
       (license license:x11))))
 
-
 (define-public xf86-video-geode
   (package
     (name "xf86-video-geode")
@@ -2899,7 +2826,6 @@ for graphics acceleration.  The LX component supports EXA, including
 compositing.  Both support Xv overlay and dynamic rotation with XRandR.")
     (license license:x11)))
 
-
 ;; Driver for obsolete graphics cards, depends on libglide:
 ;; http://sourceforge.net/projects/glide/ ,
 ;; last updated in 2003, and which does not compile out of the box any more.
@@ -2926,7 +2852,6 @@ compositing.  Both support Xv overlay and dynamic rotation with XRandR.")
 ;;      "xf86-video-glide is a Glide video driver for the Xorg X server.")
 ;;     (license license:x11)))
 
-
 (define-public xf86-video-glint
   (package
     (name "xf86-video-glint")
@@ -2951,7 +2876,6 @@ compositing.  Both support Xv overlay and dynamic rotation with XRandR.")
 X server.")
     (license license:x11)))
 
-
 (define-public xf86-video-i128
   (package
     (name "xf86-video-i128")
@@ -2975,7 +2899,6 @@ X server.")
      "xf86-video-i128 is an I128 (Imagine 128) video driver for the Xorg
 X server.")
     (license license:x11)))
-
 
 (define-public xf86-video-intel
   (let ((commit "31486f40f8e8f8923ca0799aea84b58799754564")
@@ -3016,7 +2939,6 @@ X server.")
 It supports a variety of Intel graphics chipsets.")
       (license license:x11))))
 
-
 (define-public xf86-video-mach64
   (package
     (name "xf86-video-mach64")
@@ -3044,7 +2966,6 @@ series or older chipsets, providing maximum video function within
 hardware limitations.  The driver is also intended to optionally provide
 the same level of support for generic VGA or 8514/A adapters.")
     (license license:x11)))
-
 
 (define-public xf86-video-mga
   (package
@@ -3092,7 +3013,6 @@ the same level of support for generic VGA or 8514/A adapters.")
      "xf86-video-neomagic is a NeoMagic video driver for the Xorg X server.")
     (license license:x11)))
 
-
 ;; This driver depends on XAA which has been removed from xorg-server.
 
 ;; (define-public xf86-video-newport
@@ -3118,7 +3038,6 @@ the same level of support for generic VGA or 8514/A adapters.")
 ;;      "xf86-video-newport is an Xorg X server video driver for the SGI
 ;; newport cards.")
 ;;     (license license:x11)))
-
 
 (define-public xf86-video-nv
   (package
@@ -3200,7 +3119,6 @@ This driver is intended for VIA chipsets featuring the VIA UniChrome,
 UniChrome Pro and Chrome9 integrated graphics processors.")
     (license license:x11)))
 
-
 (define-public xf86-video-qxl
   (package
     (name "xf86-video-qxl")
@@ -3272,7 +3190,6 @@ This driver is intended for ATI Rage 128 based cards.")
      "xf86-video-savage is an S3 Savage video driver for the Xorg X server.")
     (license license:x11)))
 
-
 (define-public xf86-video-siliconmotion
   (package
     (name "xf86-video-siliconmotion")
@@ -3297,7 +3214,6 @@ This driver is intended for ATI Rage 128 based cards.")
      "xf86-video-siliconmotion is a Silicon Motion video driver for the
 Xorg X server.")
     (license license:x11)))
-
 
 (define-public xf86-video-sis
   (package
@@ -3324,7 +3240,6 @@ Xorg X server.")
 This driver supports SiS chipsets of 300/315/330/340 series.")
     (license license:bsd-3)))
 
-
 (define-public xf86-video-suncg6
   (package
     (name "xf86-video-suncg6")
@@ -3347,7 +3262,6 @@ This driver supports SiS chipsets of 300/315/330/340 series.")
     (description
      "xf86-video-suncg6 is a GX/TurboGX video driver for the Xorg X server.")
     (license license:x11)))
-
 
 (define-public xf86-video-sunffb
   (package
@@ -3372,7 +3286,6 @@ This driver supports SiS chipsets of 300/315/330/340 series.")
      "xf86-video-sunffb is a SUNFFB video driver for the Xorg X server.")
     (license license:x11)))
 
-
 (define-public xf86-video-tdfx
   (package
     (name "xf86-video-tdfx")
@@ -3395,7 +3308,6 @@ This driver supports SiS chipsets of 300/315/330/340 series.")
     (description
      "xf86-video-tdfx is a 3Dfx video driver for the Xorg X server.")
     (license license:x11)))
-
 
 (define-public xf86-video-tga
   (package
@@ -3422,7 +3334,6 @@ This driver supports SiS chipsets of 300/315/330/340 series.")
 X server.")
     (license license:x11)))
 
-
 (define-public xf86-video-trident
   (package
     (name "xf86-video-trident")
@@ -3446,10 +3357,8 @@ X server.")
      "xf86-video-trident is a Trident video driver for the Xorg X server.")
     (license license:x11)))
 
-
 ;; no license
 ;; (define-public xf86-video-v4l
-
 
 (define-public xf86-video-vesa
   (package
@@ -3603,7 +3512,6 @@ server driver works.")
      "xf86-video-vmware is a VMware SVGA video driver for the Xorg X server.")
     (license license:x11)))
 
-
 (define-public xf86-video-voodoo
   (package
     (name "xf86-video-voodoo")
@@ -3629,10 +3537,8 @@ server driver works.")
      "xf86-video-voodoo is a Voodoo video driver for the Xorg X server.")
     (license license:x11)))
 
-
 ;; Only relevant for the frame buffer on BSD systems.
 ;; (define-public xf86-video-wsfb
-
 
 (define-public xf86bigfontproto
   (package
@@ -3780,7 +3686,6 @@ monitor via the X video mode extension.")
 allowed to make connections to the X server.")
     (license license:x11)))
 
-
 (define-public xineramaproto
   (package
     (name "xineramaproto")
@@ -3842,7 +3747,6 @@ alternative implementations like XRandR or TwinView.")
      "XInput is used to configure and test XInput devices.")
     (license license:x11)))
 
-
 (define-public xkbcomp-intermediate        ;used as input for xkeyboard-config
   (package
     (name "xkbcomp-intermediate")
@@ -3892,7 +3796,6 @@ make keyboards more accessible to people with physical impairments.")
        (list (string-append "--with-xkb-config-root="
                             (assoc-ref %build-inputs "xkeyboard-config")
                             "/share/X11/xkb"))))))
-
 
 (define-public xkbevd
   (package
@@ -3977,7 +3880,6 @@ extension to the X11 protocol.  It includes:
 - xkbwatch: reports changes in the XKB keyboard state.")
     (license license:x11)))
 
-
 (define-public xkeyboard-config
   (package
     (name "xkeyboard-config")
@@ -4009,7 +3911,6 @@ symbols, geometry, keycodes, compat, and types; these five components
 can be combined together using the @code{rules} component of this database.")
     (license license:x11)))
 
-
 (define-public xkill
   (package
     (name "xkill")
@@ -4037,7 +3938,6 @@ clients.  This program is very dangerous, but is useful for aborting
 programs that have displayed undesired windows on a user's screen.")
     (license license:x11)))
 
-
 (define-public xlsatoms
   (package
     (name "xlsatoms")
@@ -4062,7 +3962,6 @@ programs that have displayed undesired windows on a user's screen.")
     (description
      "XLsAtoms is used to list the interned atoms defined on X server.")
     (license license:x11)))
-
 
 (define-public xlsclients
   (package
@@ -4089,7 +3988,6 @@ programs that have displayed undesired windows on a user's screen.")
      "XLsClients is used to list information about the client programs
 running on X server.")
     (license license:x11)))
-
 
 (define-public xlsfonts
   (package
@@ -4212,10 +4110,8 @@ session startup script to configure the keyboard according to personal
 tastes.")
     (license license:x11)))
 
-
 ;; no license
 ;; (define-public xorg-docs
-
 
 (define-public xorg-sgml-doctools
   (package
@@ -4244,7 +4140,6 @@ those who have installed the HTML version of the documentation, which
 refers to the included common xorg.css stylesheet.")
     (license license:x11)))
 
-
 (define-public xpr
   (package
     (name "xpr")
@@ -4271,7 +4166,6 @@ refers to the included common xorg.css stylesheet.")
 it for output on various types of printers.")
     (license license:x11)))
 
-
 (define-public xprop
   (package
     (name "xprop")
@@ -4295,7 +4189,6 @@ it for output on various types of printers.")
      "xprop is used to display and/or set window and font properties of
 an X server.")
     (license license:x11)))
-
 
 (define-public xrandr
   (package
@@ -4322,7 +4215,6 @@ an X server.")
 and Reflect (RandR) extension.")
     (license license:x11)))
 
-
 (define-public xrdb
   (package
     (name "xrdb")
@@ -4348,7 +4240,6 @@ property on the root window of any or all screens, or everything
 combined.  You would normally run this program from your X startup
 file.")
     (license license:x11)))
-
 
 (define-public xrefresh
   (package
@@ -4377,7 +4268,6 @@ screen to be repainted.  This is useful when system messages have messed
 up your screen.")
     (license license:x11)))
 
-
 (define-public xset
   (package
     (name "xset")
@@ -4402,7 +4292,6 @@ up your screen.")
     (description
      "XSet is used to set various user preference options of the display.")
     (license license:x11)))
-
 
 (define-public xsetroot
   (package
@@ -4430,7 +4319,6 @@ up your screen.")
 a display running X server.")
     (license license:x11)))
 
-
 (define-public xtrans
   (package
     (name "xtrans")
@@ -4455,7 +4343,6 @@ handle network protocol transport in a modular fashion, allowing a single
 place to add new transport types.  It is used by the X server, libX11,
 libICE, the X font server, and related components.")
     (license license:x11)))
-
 
 (define-public xvinfo
   (package
@@ -4484,7 +4371,6 @@ associated with the display that are accessible through the X-Video
 extension.")
     (license license:x11)))
 
-
 (define-public xwd
   (package
     (name "xwd")
@@ -4512,7 +4398,6 @@ desired window.  The keyboard bell is rung once at the beginning of the
 dump and twice when the dump is completed.")
     (license license:x11)))
 
-
 (define-public xwininfo
   (package
     (name "xwininfo")
@@ -4538,7 +4423,6 @@ dump and twice when the dump is completed.")
      "XWinInfo is used to print out information about windows on an X server.
 Various information is displayed depending on which options are selected.")
     (license license:x11)))
-
 
 (define-public xwud
   (package
@@ -4646,7 +4530,6 @@ cannot be adequately worked around on the client side of the wire.")
     (description "Xorg library for the XDamage extension.")
     (license license:x11)))
 
-
 (define-public libxext
   (package
     (name "libxext")
@@ -4682,7 +4565,6 @@ cannot be adequately worked around on the client side of the wire.")
      "Library for common extensions to the X11 protocol.")
     (license license:x11)))
 
-
 (define-public libxinerama
   (package
     (name "libxinerama")
@@ -4711,7 +4593,6 @@ cannot be adequately worked around on the client side of the wire.")
     (description "API for Xinerama extension to X11 protocol.")
     (license license:x11)))
 
-
 (define-public libxp
   (package
     (name "libxp")
@@ -4737,7 +4618,6 @@ cannot be adequately worked around on the client side of the wire.")
     (synopsis "Xorg Print Client library")
     (description "Xorg Print Client library.")
     (license license:x11)))
-
 
 (define-public libxrender
   (package
@@ -4961,7 +4841,6 @@ common definitions and porting layer.")
     (description "Xorg Inter-Client Exchange library.")
     (license license:x11)))
 
-
 (define-public libxau
   (package
     (name "libxau")
@@ -5180,7 +5059,6 @@ new API's in libXft, or the legacy API's in libX11.")
      "Library for the XFree86 Video Mode Extension Extension to the X11
 protocol.")
     (license license:x11)))
-
 
 ;; packages of height 3 in the propagated-inputs tree
 
@@ -5544,7 +5422,6 @@ Wayland.")
     (home-page "https://www.x.org/wiki/")
     (license license:x11)))
 
-
 ;; packages of height 4 in the propagated-inputs tree
 
 (define-public libx11
@@ -5650,7 +5527,6 @@ Wayland.")
     (description "Xorg XToolkit Intrinsics library.")
     (license license:x11)))
 
-
 (define-public libxaw
   (package
     (name "libxaw")
@@ -5742,7 +5618,6 @@ The XCB util module provides the following libraries:
 
 - event: Some utilities that have little to do with events any more.")
     (license license:x11)))
-
 
 (define-public xcb-util-cursor
   (package
@@ -5860,7 +5735,6 @@ The XCB util-image module provides the following library:
 - image: Port of Xlib's XImage and XShmImage functions.")
     (license license:x11)))
 
-
 (define-public xcb-util-keysyms
   (package
     (name "xcb-util-keysyms")
@@ -5894,7 +5768,6 @@ The XCB util-keysyms module provides the following library:
 - keysyms: Standard X key constants and conversion to/from keycodes.")
     (license license:x11)))
 
-
 (define-public xcb-util-renderutil
   (package
     (name "xcb-util-renderutil")
@@ -5927,7 +5800,6 @@ The XCB util-renderutil module provides the following library:
 
 - renderutil: Convenience functions for the Render extension.")
     (license license:x11)))
-
 
 (define-public xcb-util-wm
   (package
