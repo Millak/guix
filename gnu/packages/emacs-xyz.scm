@@ -8868,7 +8868,7 @@ answers.")
 (define-public emacs-base16-theme
   (package
     (name "emacs-base16-theme")
-    (version "2.2")
+    (version "3.0")
     (source
      (origin
        (method git-fetch)
@@ -8877,7 +8877,7 @@ answers.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01w89g413s1da6rf94y1xnhw79cjy2bqb01yfjs58cy492cm0vr6"))))
+        (base32 "0qp71j77zg8gippcn277s0j5a9n6dbwv3kdp2nya6li4b412vgba"))))
     (build-system emacs-build-system)
     (arguments
      `(#:include (cons "^build\\/.*\\.el$"
