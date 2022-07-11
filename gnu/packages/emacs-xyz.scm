@@ -28027,24 +28027,23 @@ contrast and few colors.")
     (native-inputs
      (list emacs-ert-runner))
     (arguments
-     `(#:tests? #t
-       #:test-command '("ert-runner")
-       #:modules ((guix build emacs-build-system)
-                  (guix build utils)
-                  (guix build emacs-utils)
-                  (srfi srfi-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'move-themes
-           (lambda _
-             ;; Move the source files to the top level, which is in the
-             ;; EMACSLOADPATH.
-             (for-each (lambda (f)
-                         (rename-file f (basename f)))
-                       (append
-                           (find-files "./themes" ".*\\.el$")
-                           (find-files "./extensions" ".*\\.el$")))
-             #t)))))
+     (list #:tests? #t
+           #:test-command #~(list "ert-runner")
+           #:modules '((guix build emacs-build-system)
+                       (guix build utils)
+                       (guix build emacs-utils)
+                       (srfi srfi-1))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'move-themes
+                 (lambda _
+                   ;; Move the source files to the top level, which is in the
+                   ;; EMACSLOADPATH.
+                   (for-each (lambda (f)
+                               (rename-file f (basename f)))
+                             (append
+                                 (find-files "./themes" ".*\\.el$")
+                                 (find-files "./extensions" ".*\\.el$"))))))))
     (synopsis "Wide collection of color themes for Emacs")
     (description "Emacs-doom-themes contains numerous popular color themes for
 Emacs that integrate with major modes like Org-mode.")
