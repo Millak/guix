@@ -18645,34 +18645,34 @@ according to a parsing expression grammar.")
         (base32 "1dgbwaar8l8nl79mlzf5g1n49f1j9yj4772yfmim9vv8ppxnzbqk"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:tests? #t
-       #:test-command '("./bin/eldev" "-p" "-dtTC" "test")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-for-tests
-           (lambda _
-             (setenv "ELDEV_LOCAL" (getcwd))
-             (make-file-writable "test/project-i/project-i-autoloads.el")))
-         (add-after 'unpack 'skip-failing-tests
-           ;; FIXME: 2 tests are failing.  Skip them for now.
-           (lambda _
-             (delete-file "test/upgrade-self.el")))
-         (add-after 'install 'install-eldev-executable
-           ;; This constructs the eldev executable from templates and
-           ;; installs it in the specified directory.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (site-lisp (elpa-directory out)))
-               (mkdir-p bin)
-               (setenv "HOME" (getcwd))
-               (invoke "./install.sh" bin)
-               (substitute* (string-append bin "/eldev")
-                 ;; Point ELDEV_LOCAL to the installation directory so that
-                 ;; eldev doesn't try to bootstrap itself from MELPA when
-                 ;; invoked.
-                 (("export ELDEV_EMACS.*" all)
-                  (string-append "export ELDEV_LOCAL=" site-lisp "\n" all)))))))))
+     (list
+      #:tests? #t
+      #:test-command #~(list "./bin/eldev" "-p" "-dtTC" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-for-tests
+            (lambda _
+              (setenv "ELDEV_LOCAL" (getcwd))
+              (make-file-writable "test/project-i/project-i-autoloads.el")))
+          (add-after 'unpack 'skip-failing-tests
+            ;; FIXME: 2 tests are failing.  Skip them for now.
+            (lambda _
+              (delete-file "test/upgrade-self.el")))
+          (add-after 'install 'install-eldev-executable
+            ;; This constructs the eldev executable from templates and
+            ;; installs it in the specified directory.
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (site-lisp (elpa-directory #$output)))
+                (mkdir-p bin)
+                (setenv "HOME" (getcwd))
+                (invoke "./install.sh" bin)
+                (substitute* (string-append bin "/eldev")
+                  ;; Point ELDEV_LOCAL to the installation directory so that
+                  ;; eldev doesn't try to bootstrap itself from MELPA when
+                  ;; invoked.
+                  (("export ELDEV_EMACS.*" all)
+                   (string-append "export ELDEV_LOCAL=" site-lisp "\n" all)))))))))
     (native-inputs
      (list texinfo))                    ;for tests
     (home-page "https://github.com/doublep/eldev/")
