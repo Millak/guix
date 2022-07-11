@@ -22245,7 +22245,7 @@ See @code{helm-exwm-switch-browser} for an example.")
 (define-public emacs-helm-ls-git
   (package
     (name "emacs-helm-ls-git")
-    (version "1.9.3")
+    (version "1.9.4")
     (source
      (origin
        (method git-fetch)
@@ -22254,7 +22254,7 @@ See @code{helm-exwm-switch-browser} for an example.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bqk0z6zd3aza7ibb8h0ghya5kid4m6z01gs7jf4sr6p49rzp7hd"))))
+        (base32 "097zpwpn18dgazp19czrcn6iz965qgr45gq9lvjrkkp0w03pbdb6"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-helm))
     (home-page "https://github.com/emacs-helm/helm-ls-git")
