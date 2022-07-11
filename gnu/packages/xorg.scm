@@ -3014,19 +3014,17 @@ It supports a variety of Intel graphics chipsets.")
 (define-public xf86-video-mach64
   (package
     (name "xf86-video-mach64")
-    (version "6.9.6")
+    (version "6.9.7")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-video-mach64-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-           "171wg8r6py1l138s58rlapin3rlpwsg9spmvhc7l68mm3g3hf1vs"))
-        (patches (search-patches "xf86-video-mach64-glibc-2.20.patch"
-                                 "xf86-video-mach64-bool-to-boolean.patch"))))
+           "1fl1jjx0zdr9alkxw23zx6aj1bj4l8inz5w7y7k2g0kwzazqmmsh"))))
     (build-system gnu-build-system)
     (inputs (list mesa xorgproto xorg-server))
     (native-inputs
