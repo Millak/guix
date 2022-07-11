@@ -251,9 +251,12 @@ Python 3.3 and later, rather than on Python 2.")
             "0vsfjs6xg228yhqcpaiwkpncaqcghnm0pwdxmgibz0rj6d8ydrmi"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
+      ("docbook2x" ,docbook2x)
       ("docbook-xsl" ,docbook-xsl)
-      ("xmlto" ,xmlto)
-      ("pkg-config" ,pkg-config)))
+      ("libxslt" ,libxslt)
+      ("pkg-config" ,pkg-config)
+      ("texinfo" ,texinfo)
+      ("xmlto" ,xmlto)))
    (inputs
     `(("curl" ,curl)
       ("expat" ,expat)
@@ -430,6 +433,16 @@ Python 3.3 and later, rather than on Python 2.")
                           "t/t9167-git-svn-cmd-branch-subproject.sh"
                           "t/t9141-git-svn-multiple-branches.sh"))
               #t)))
+        (add-after 'install 'install-info-manual
+          (lambda* (#:key parallel-build? #:allow-other-keys)
+            (define job-count (if parallel-build?
+                                  (number->string (parallel-job-count))
+                                  "1"))
+            (invoke "make" "-C" "Documentation" "install-info"
+                    "-j" job-count
+                    ;; The Makefile refer to 'docbook2x-texi', but our binary
+                    ;; is named 'docbook2texi'.
+                    "DOCBOOK2X_TEXI=docbook2texi" "PERL_PATH=perl")))
         (add-after 'install 'install-shell-completion
           (lambda* (#:key outputs #:allow-other-keys)
             (let* ((out         (assoc-ref outputs "out"))
