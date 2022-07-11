@@ -2602,17 +2602,17 @@ as USB mice.")
 (define-public xf86-input-synaptics
   (package
     (name "xf86-input-synaptics")
-    (version "1.9.1")
+    (version "1.9.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-input-synaptics-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0xhm03qywwfgkpfl904d08lx00y28m1b6lqmks5nxizixwk3by3s"))))
+            "0f1cjs9haxhjybfh2lh579s15i2q0q19whynpda3giizj6mlmymq"))))
     (build-system gnu-build-system)
     (inputs (list libx11 libxi libevdev mtdev xorg-server))
     (native-inputs (list pkg-config))
