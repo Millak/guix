@@ -18633,7 +18633,7 @@ according to a parsing expression grammar.")
 (define-public emacs-eldev
   (package
     (name "emacs-eldev")
-    (version "1.0")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -18642,7 +18642,7 @@ according to a parsing expression grammar.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y7ngdj2icn8zw5qpjxqj3j9dry4lb7ixgxa148ss5bgsl8pgqnd"))))
+        (base32 "1dgbwaar8l8nl79mlzf5g1n49f1j9yj4772yfmim9vv8ppxnzbqk"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
