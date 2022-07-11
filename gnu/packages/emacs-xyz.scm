@@ -16613,6 +16613,29 @@ a hierarchical taxonomy.  Allows you to automatically put things in nested
 groups.")
     (license license:gpl3+)))
 
+(define-public emacs-taxy-magit-section
+  (package
+    (name "emacs-taxy-magit-section")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://elpa.gnu.org/packages/taxy-magit-section-" version
+                    ".tar"))
+              (sha256
+               (base32
+                "0ybkz5nqjdrg2z9bfd07xg4k49hrl26vsrwz2vqpfbsqqg5vr4pr"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-magit emacs-taxy))
+    (home-page "https://github.com/alphapapa/taxy.el")
+    (synopsis "View Taxy structs in a Magit Section buffer")
+    (description
+     "This library provides a way to view @code{taxy} structs in a column-based,
+@code{magit-section} buffer.  Columns are defined using simple top-level
+forms, and new columns may be easily defined by users in their
+configurations.")
+    (license license:gpl3+)))
+
 (define-public emacs-emojify
   (package
     (name "emacs-emojify")
