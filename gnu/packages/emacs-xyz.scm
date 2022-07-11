@@ -19328,7 +19328,7 @@ given function is invoked.")
 (define-public emacs-datetime
   (package
     (name "emacs-datetime")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -19337,7 +19337,7 @@ given function is invoked.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "108zfj5hz9irgksgg48xdvvaa635m6nzclx7xaymylfcvlycskpl"))))
+        (base32 "10nf3y4abwkwvi4g11mdwi0dydy4kzfyv21y06dsxm1hc1gmq7zx"))))
     (build-system emacs-build-system)
     (arguments
      `(#:include (cons "^[^/]*\\.extmap$" %default-include)))
