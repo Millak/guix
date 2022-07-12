@@ -2890,6 +2890,47 @@ extensions into easy to use C++ classes.  It is the successor of
 lv2-c++-tools.")
       (license license:isc))))
 
+(define-public lvtk-1
+  ;; Use the latest commit, as the latest release was made in 2014 and depends
+  ;; on Python 2.
+  (let ((commit "23dd99531d88d7821b69f6f0d60516ef322a6729")
+        (revision "0"))
+    (package
+      (name "lvtk")
+      (version (git-version "1.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/lvtk/lvtk")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0iw7skvsn3whw69dhcxbbdns7mssaf6z6iyzxjav53607ibyfr8d"))))
+      (build-system waf-build-system)
+      (arguments
+       (list
+        #:tests? #false                 ;no check target
+        #:configure-flags
+        #~(list (string-append "--boost-includes="
+                               #$(this-package-input "boost")
+                               "/include"))
+        #:phases
+        `(modify-phases %standard-phases
+           (add-before 'configure 'setup-waf
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((waf (assoc-ref inputs "python-waf")))
+                 (copy-file (string-append waf "/bin/waf") "waf")))))))
+      (inputs (list boost gtkmm lv2))
+      (native-inputs (list pkg-config python-waf))
+      (home-page "https://github.com/lvtk/lvtk")
+      (synopsis "C++ libraries for LV2 plugins")
+      (description
+       "The LV2 Toolkit (LVTK) contains libraries that wrap the LV2 C API and
+extensions into easy to use C++ classes.  It is the successor of
+lv2-c++-tools.")
+      (license license:isc))))
+
 (define-public openal
   (package
     (name "openal")
