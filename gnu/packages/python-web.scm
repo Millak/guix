@@ -2075,6 +2075,7 @@ connection to each user.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
+               (setenv "ASYNC_TEST_TIMEOUT" "25")   ; Like in tox.ini.
                (invoke "python" "-m" "tornado.test.runtests")))))))
     (native-inputs
      (list python-certifi))
