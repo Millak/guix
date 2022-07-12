@@ -40495,6 +40495,17 @@ install anything.
 Describe the current home generation: its file name, as well as
 provenance information when available.
 
+To show installed packages in the current home generation's profile, the
+@code{--list-installed} flag is provided, with the same syntax that is
+used in @command{guix package --list-installed} (@pxref{Invoking guix
+package}).  For instance, the following command shows a table of all the
+packages with ``emacs'' in their name that are installed in the current
+home generation's profile:
+
+@example
+guix home describe --list-installed=emacs
+@end example
+
 @item list-generations
 List a summary of each generation of the home environment available on
 disk, in a human-readable way.  This is similar to the
@@ -40507,8 +40518,13 @@ generations displayed.  For instance, the following command displays
 generations that are up to 10 days old:
 
 @example
-$ guix home list-generations 10d
+guix home list-generations 10d
 @end example
+
+The @code{--list-installed} flag may also be specified, with the same
+syntax that is used in @command{guix home describe}.  This may be
+helpful if trying to determine when a package was added to the home
+profile.
 
 @item import
 Generate a @dfn{home environment} from the packages in the default

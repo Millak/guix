@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -143,6 +144,11 @@ Some ACTIONS support additional ARGS.\n"))
                          use BACKEND for 'extension-graph' and 'shepherd-graph'"))
   (newline)
   (display (G_ "
+  -I, --list-installed[=REGEXP]
+                         for 'describe' or 'list-generations', list installed
+                         packages matching REGEXP"))
+  (newline)
+  (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
   -V, --version          display version information and exit"))
@@ -183,6 +189,9 @@ Some ACTIONS support additional ARGS.\n"))
          (option '("graph-backend") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'graph-backend arg result)))
+         (option '(#\I "list-installed") #f #t
+                 (lambda (opt name arg result)
+                   (alist-cons 'list-installed (or arg "") result)))
 
          ;; Container options.
          (option '(#\N "network") #f #f
@@ -569,17 +578,20 @@ Run @command{guix home reconfigure ~a/home-configuration.scm} to effectively
 deploy the home environment described by these files.\n")
                              destination))))
     ((describe)
-     (match (generation-number %guix-home)
-       (0
-        (leave (G_ "no home environment generation, nothing to describe~%")))
-       (generation
-        (display-home-environment-generation generation))))
+     (let ((list-installed-regex (assoc-ref opts 'list-installed)))
+       (match (generation-number %guix-home)
+         (0
+          (leave (G_ "no home environment generation, nothing to describe~%")))
+         (generation
+          (display-home-environment-generation
+           generation #:list-installed-regex list-installed-regex)))))
     ((list-generations)
-     (let ((pattern (match args
+     (let ((list-installed-regex (assoc-ref opts 'list-installed))
+           (pattern (match args
                       (() #f)
                       ((pattern) pattern)
                       (x (leave (G_ "wrong number of arguments~%"))))))
-       (list-generations pattern)))
+       (list-generations pattern #:list-installed-regex list-installed-regex)))
     ((switch-generation)
      (let ((pattern (match args
                       ((pattern) pattern)
@@ -748,9 +760,11 @@ description matches REGEXPS sorted by relevance, and their score."
 
 (define* (display-home-environment-generation
           number
-          #:optional (profile %guix-home))
-  "Display a summary of home-environment generation NUMBER in a
-human-readable format."
+          #:optional (profile %guix-home)
+          #:key (list-installed-regex #f))
+  "Display a summary of home-environment generation NUMBER in a human-readable
+format.  List packages in that home environment that match
+LIST-INSTALLED-REGEX."
   (define (display-channel channel)
     (format #t     "    ~a:~%" (channel-name channel))
     (format #t (G_ "      repository URL: ~a~%") (channel-url channel))
@@ -782,24 +796,36 @@ human-readable format."
         (format #t (G_ "  configuration file: ~a~%")
                 (if (supports-hyperlinks?)
                     (file-hyperlink config-file)
-                    config-file))))))
+                    config-file)))
+      (when list-installed-regex
+        (format #t (G_ "  packages:\n"))
+        (pretty-print-table (list-installed
+                             list-installed-regex
+                             (list (string-append generation "/profile")))
+                            #:left-pad 4)))))
 
-(define* (list-generations pattern #:optional (profile %guix-home))
-  "Display in a human-readable format all the home environment
-generations matching PATTERN, a string.  When PATTERN is #f, display
-all the home environment generations."
+(define* (list-generations pattern #:optional (profile %guix-home)
+                           #:key (list-installed-regex #f))
+  "Display in a human-readable format all the home environment generations
+matching PATTERN, a string.  When PATTERN is #f, display all the home
+environment generations.  List installed packages that match
+LIST-INSTALLED-REGEX."
   (cond ((not (file-exists? profile))             ; XXX: race condition
          (raise (condition (&profile-not-found-error
                             (profile profile)))))
         ((not pattern)
-         (for-each display-home-environment-generation (profile-generations profile)))
+         (for-each (cut display-home-environment-generation <>
+                        #:list-installed-regex list-installed-regex)
+                   (profile-generations profile)))
         ((matching-generations pattern profile)
          =>
          (lambda (numbers)
            (if (null-list? numbers)
                (exit 1)
-               (leave-on-EPIPE
-                (for-each display-home-environment-generation numbers)))))))
+               (leave-on-EPIPE (for-each
+                                (cut display-home-environment-generation <>
+                                     #:list-installed-regex list-installed-regex)
+                                numbers)))))))
 
 
 ;;;
