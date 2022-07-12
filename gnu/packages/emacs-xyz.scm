@@ -14857,11 +14857,11 @@ function to be used by other frontend programs.")
     (license license:gpl2+)))
 
 (define-public emacs-pyim-basedict
-  ;; XXX: The commit below points to the un-tagged 0.5.0 release.
-  (let ((commit "7495c974ada99f9fed96d8e85d8b97dabce9532c"))
+  ;; XXX: The commit below points to the lastest (un-tagged) release.
+  (let ((commit "d61af27686f7a39e6c138b7261a686e7ea7a0ef7"))
     (package
       (name "emacs-pyim-basedict")
-      (version "0.5.0")
+      (version "0.5.4")
       (source
        (origin
          (method git-fetch)
@@ -14870,8 +14870,10 @@ function to be used by other frontend programs.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "02asrh0adgjc5nn1ps7dq5zr38hkscnzc04sdpyjzvnmfcqsw7qb"))))
+          (base32 "0fzyh8qmicq2vy9j1ca708ir67dpxp1cwjaw0sw469p24cvj12yy"))))
       (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-pyim))
       (home-page "https://github.com/tumashu/pyim-basedict")
       (synopsis "Input method dictionary of pyim")
       (description "Pyim-basedict is the default pinyin input method dictionary,
