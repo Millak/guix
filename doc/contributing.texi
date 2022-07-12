@@ -665,7 +665,7 @@ hyperlinks (@pxref{Overview,,, texinfo, GNU Texinfo}).  However you
 should be careful when using some characters for example @samp{@@} and
 curly braces which are the basic special characters in Texinfo
 (@pxref{Special Characters,,, texinfo, GNU Texinfo}).  User interfaces
-such as @command{guix package --show} take care of rendering it
+such as @command{guix show} take care of rendering it
 appropriately.
 
 Synopses and descriptions are translated by volunteers
