@@ -3537,7 +3537,10 @@ compressed, transparent to other programs, without decompressing them.")
                 "1xngddsph43bxljywahi9d44fxr022slsap4hh91w8xnq54d2sw2"))))
     (build-system gnu-build-system)
     (arguments
-     '(;; There's a 'test' target, but it requires NUMA support in the kernel
+     `(,@(if (target-riscv64?)
+           `(#:make-flags (list "LDFLAGS=-latomic"))
+           '())
+       ;; There's a 'test' target, but it requires NUMA support in the kernel
        ;; to run, which we can't assume to have.
        #:tests? #f))
 
