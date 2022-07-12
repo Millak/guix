@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Boris A. Dekshteyn <boris.dekshteyn@gmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
@@ -50,7 +50,8 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (srfi srfi-1))
 
 ;;; A variant of Inkscape intended to be bumped only on core-updates, to avoid
 ;;; rebuilding 2k+ packages through dblatex.
@@ -237,3 +238,34 @@ endif()~%~%"
 apart is its use of Scalable Vector Graphics (SVG), an XML-based W3C standard,
 as the native format.")
      (license license:gpl3+))))           ;see the file COPYING
+
+(define-public inkscape
+  (package
+    (inherit inkscape/stable)
+    (name "inkscape")
+    (version "1.2")
+    (source
+     (origin
+       (inherit (package-source inkscape/stable))
+       (method url-fetch)
+       (uri (string-append "https://media.inkscape.org/dl/"
+                           "resources/file/"
+                           "inkscape-" version ".tar.xz"))
+       (sha256
+        (base32 "1bg6rlflzhq726kpcwazfscm02liammjvzpyxmj5d52l4la336wd"))))
+    (build-system cmake-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments inkscape/stable)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'disable-problematic-tests
+             ;; The UnionOutside and UnionOutsideSwap tests fail, comparing
+             ;; e.g. the result "M 0 1.5 V 0 H 2 V 2 H 0.5 V 2.5 H 0 V 2 V 1.5 H
+             ;; 0.5 V 2 z" to the expected string "M 0 0 V 1.5 V 2 V 2.5 H 0.5 V
+             ;; 2 H 2 V 0 z" (see:
+             ;; https://gitlab.com/inkscape/inkscape/-/issues/3689).
+             (lambda _
+               (substitute* "testfiles/src/path-boolop-test.cpp"
+                 (("PathBoolopTest, UnionOutside(Swap)?.*" all)
+                  (string-append all "    GTEST_SKIP();\n")))))))))
+    (properties (alist-delete 'hidden? (package-properties inkscape/stable)))))
