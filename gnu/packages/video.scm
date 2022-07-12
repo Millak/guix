@@ -4924,7 +4924,7 @@ video from a Wayland session.")
 (define-public gaupol
   (package
     (name "gaupol")
-    (version "1.9")
+    (version "1.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4933,7 +4933,7 @@ video from a Wayland session.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mmjg8nwhif2hmmp8i11643izwzdf839brqdai3ksfg0qkh8rnxk"))))
+                "01qbhhycmy26b2mw2jlri321k478jhp7y0jzlcv87iaq05qr4pc8"))))
     (build-system python-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
