@@ -246,16 +246,16 @@ networks.")
 (define-public onionshare-cli
   (package
     (name "onionshare-cli")
-    (version "2.4")
+    (version "2.5")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/micahflee/onionshare")
-              (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "157ryxm4p1q7b3nj32v9fziw1li6s6s203b7ll80js14cbp6dj9d"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/micahflee/onionshare")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16m5ll0v0qjbirwwzbzxg53kq4ry1n3ay5x0h8zkij73v3x0q864"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
@@ -277,29 +277,30 @@ networks.")
            python-urllib3
            tor))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'bake-tor
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (list "cli/onionshare_cli/common.py"
-                                "desktop/src/onionshare/gui_common.py")
-               (("shutil\\.which\\(\\\"tor\\\"\\)")
-                (string-append "\"" (which "tor") "\"")))
-             (substitute* "cli/tests/test_cli_common.py"
-               (("/usr/share/tor")
-                (string-append (assoc-ref inputs "tor") "/share/tor")))))
-         (add-before 'build 'change-directory
-           (lambda _ (chdir "cli")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp")
-               ;; Greendns is not needed for testing, and if eventlet tries to
-               ;; load it, an OSError is thrown when getprotobyname is called.
-               ;; Thankfully there is an environment variable to disable the
-               ;; greendns import, so use it:
-               (setenv "EVENTLET_NO_GREENDNS" "yes")
-               (invoke "pytest" "-v" "./tests")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'bake-tor
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (list "cli/onionshare_cli/common.py"
+                                 "desktop/onionshare/gui_common.py")
+                (("shutil\\.which\\(\\\"tor\\\"\\)")
+                 (format #f "~s" (search-input-file inputs "bin/tor"))))
+              (substitute* "cli/tests/test_cli_common.py"
+                (("/usr/share/tor")
+                 (search-input-directory inputs "share/tor")))))
+          (add-before 'build 'change-directory
+            (lambda _ (chdir "cli")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                ;; Greendns is not needed for testing, and if eventlet tries to
+                ;; load it, an OSError is thrown when getprotobyname is called.
+                ;; Thankfully there is an environment variable to disable the
+                ;; greendns import, so use it:
+                (setenv "EVENTLET_NO_GREENDNS" "yes")
+                (invoke "pytest" "-v" "./tests")))))))
     (home-page "https://onionshare.org/")
     (synopsis "Securely and anonymously share files")
     (description "OnionShare lets you securely and anonymously share files,
