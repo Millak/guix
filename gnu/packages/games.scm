@@ -72,6 +72,7 @@
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -12248,53 +12249,48 @@ game.")  ;thanks to Debian for description
            (delete-file-recursively "src/third_party/websocketpp")
            (substitute* "pokerth_lib.pro"
              (("src/third_party/websocketpp")
-              ""))
-           #t))))
+              ""))))
+       (patches (search-patches "pokerth-boost.patch"))))
     (build-system qt-build-system)
     (inputs
-     `(("boost" ,boost)
-       ("curl" ,curl)
-       ("gsasl" ,gsasl)
-       ("libgcrypt" ,libgcrypt)
-       ("libircclient" ,libircclient)
-       ("protobuf" ,protobuf-2)         ; remove package when no longer needed
-       ("qtbase" ,qtbase-5)
-       ("sdl" ,(sdl-union (list sdl sdl-mixer)))
-       ("sqlite" ,sqlite)
-       ("tinyxml" ,tinyxml)
-       ("websocketpp" ,websocketpp)
-       ("zlib" ,zlib)))
+     (list boost
+           curl
+           gsasl
+           libgcrypt
+           libircclient
+           protobuf-2                   ;remove package when no longer needed
+           qtbase-5
+           (sdl-union (list sdl sdl-mixer))
+           sqlite
+           tinyxml
+           websocketpp
+           zlib))
     (arguments
-     `(#:tests? #f ; No test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "." "\\.pro$")
-               (("/opt/gsasl")
-                (assoc-ref inputs "gsasl"))
-               (("\\$\\$\\{PREFIX\\}/include/libircclient")
-                (search-input-directory inputs "/include/libircclient"))
-               (("LIB_DIRS =")
-                (string-append "LIB_DIRS = "
-                               (assoc-ref inputs "boost") "/lib")))
-             #t))
-         (add-after 'unpack 'fix-build
-           (lambda _
-             ;; Fixes for Boost versions >= 1.66.
-             (substitute* '("src/net/common/clientthread.cpp"
-                            "src/net/serveraccepthelper.h")
-               (("boost::asio::socket_base::non_blocking_io command\\(true\\);")
-                "")
-               (("newSock->io_control\\(command\\);")
-                "newSock->non_blocking(true);")
-               (("acceptedSocket->io_control\\(command\\);")
-                "acceptedSocket->non_blocking(true);"))
-             #t))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "qmake" "pokerth.pro" "CONFIG+=client"
-                     (string-append "PREFIX=" (assoc-ref outputs "out"))))))))
+     (list
+      #:tests? #f                       ; No test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "." "\\.pro$")
+                (("LIB_DIRS =")
+                 (string-append "LIB_DIRS = "
+                                #$(this-package-input "boost") "/lib")))))
+          (add-after 'unpack 'fix-build
+            (lambda _
+              ;; Fixes for Boost versions >= 1.66.
+              (substitute* '("src/net/common/clientthread.cpp"
+                             "src/net/serveraccepthelper.h")
+                (("boost::asio::socket_base::non_blocking_io command\\(true\\);")
+                 "")
+                (("newSock->io_control\\(command\\);")
+                 "newSock->non_blocking(true);")
+                (("acceptedSocket->io_control\\(command\\);")
+                 "acceptedSocket->non_blocking(true);"))))
+          (replace 'configure
+            (lambda _
+              (invoke "qmake" "pokerth.pro" "CONFIG+=client"
+                      (string-append "PREFIX=" #$output)))))))
     (home-page "https://www.pokerth.net")
     (synopsis "Texas holdem poker game")
     (description
