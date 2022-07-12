@@ -2861,14 +2861,14 @@ generate C headers from Turtle files.")
     (synopsis "LV2 port of the mda EPiano plugin")
     (description "An LV2 port of the mda EPiano VSTi.")))
 
-(define-public lvtk
+(define-public lvtk-2
   ;; Use the latest commit, as the latest release was made in 2014 and depends
   ;; on Python 2.
   (let ((commit "a73feabe772f9650aa071e6a4df660e549ab7c48")
         (revision "0"))
     (package
       (name "lvtk")
-      (version (git-version "1.2.0" revision commit))
+      (version (git-version "2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -2930,6 +2930,8 @@ lv2-c++-tools.")
 extensions into easy to use C++ classes.  It is the successor of
 lv2-c++-tools.")
       (license license:isc))))
+
+(define-public lvtk lvtk-1)
 
 (define-public openal
   (package
