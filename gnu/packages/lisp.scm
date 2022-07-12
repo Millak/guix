@@ -441,13 +441,13 @@ an interpreter, a compiler, a debugger, and much more.")
      ;; ECL too.  As of 2020-07-01, ECL was last updated in 2020 while CLISP
      ;; was last updated in 2010, and both take about the same time to build SBCL.
      ;;
-     ;; For now we stick to CLISP for all systems.  We keep the `match' here
-     ;; to make it easier to change the host compiler for various
+     ;; For now we stick to CLISP as the default for all systems.  In any event, keep
+     ;; the `match' here to make it easier to change the host compiler for various
      ;; architectures.  Consider switching to ECL if it gets faster than CLISP
      ;; (maybe post 2020 release).
      (list (match (%current-system)
-             ((or "x86_64-linux" "i686-linux")
-              clisp)
+             ("powerpc-linux"       ; CLISP fails to build, needs investigating.
+              ecl)
              (_
               clisp))
            cl-asdf
@@ -566,13 +566,16 @@ an interpreter, a compiler, a debugger, and much more.")
            (lambda* (#:key outputs #:allow-other-keys)
              (setenv "CC" "gcc")
              (invoke "sh" "make.sh" ,@(match (%current-system)
-                                        ((or "x86_64-linux" "i686-linux")
-                                         `("clisp"))
+                                        ("powerpc-linux"
+                                         `("ecl"))
                                         (_
                                          `("clisp")))
                      (string-append "--prefix="
                                     (assoc-ref outputs "out"))
-                     "--dynamic-space-size=3072"
+                     ,@(if (target-ppc32?)
+                         ;; 3072 is too much for this architecture.
+                         `("--dynamic-space-size=2048")
+                         `("--dynamic-space-size=3072"))
                      "--with-sb-core-compression"
                      "--with-sb-xref-for-internals"
                      ;; SB-SIMD will only be built on x86_64 CPUs supporting
