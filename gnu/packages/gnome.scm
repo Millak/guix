@@ -1608,27 +1608,27 @@ sharing to the masses.")
                  `("GI_TYPELIB_PATH" suffix
                    (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin")
+           gettext-minimal
+           gobject-introspection
+           pkg-config))
     (inputs
-     `(("clutter" ,clutter)
-       ("clutter-gst" ,clutter-gst)
-       ("clutter-gtk" ,clutter-gtk)
-       ("evince" ,evince)                         ; For file previewing.
-       ("freetype" ,freetype)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gjs" ,gjs)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gstreamer" ,gstreamer)
-       ("gtksourceview" ,gtksourceview)
-       ("harfbuzz" ,harfbuzz)
-       ("libepoxy" ,libepoxy)
-       ("libmusicbrainz" ,libmusicbrainz)
-       ("libxml2" ,libxml2)
-       ("neon" ,neon)
-       ("webkitgtk" ,webkitgtk)))
+     (list clutter
+           clutter-gst
+           clutter-gtk
+           evince                       ; For file previewing.
+           freetype
+           gdk-pixbuf
+           gjs
+           gst-plugins-base
+           gstreamer
+           gtksourceview
+           harfbuzz
+           libepoxy
+           libmusicbrainz
+           libxml2
+           neon
+           webkitgtk))
     (synopsis "File previewer for the GNOME desktop")
     (description "Sushi is a DBus-activated service that allows applications
 to preview files on the GNOME desktop.")
