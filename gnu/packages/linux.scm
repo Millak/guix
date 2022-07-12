@@ -3543,10 +3543,6 @@ compressed, transparent to other programs, without decompressing them.")
        ;; There's a 'test' target, but it requires NUMA support in the kernel
        ;; to run, which we can't assume to have.
        #:tests? #f))
-
-    ;; NUMA is apparently not supported on armhf, see
-    ;; http://www.spinics.net/lists/linux-numa/msg01157.html
-    (supported-systems (delete "armhf-linux" %supported-systems))
     (home-page "https://github.com/numactl/numactl")
     (synopsis "Tools for non-uniform memory access (NUMA) machines")
     (description
