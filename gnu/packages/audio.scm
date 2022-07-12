@@ -2838,7 +2838,7 @@ generate C headers from Turtle files.")
     (inputs
      (list lv2 lvtk))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config ttl2c))
     (native-search-paths
      (list (search-path-specification
             (variable "LV2_PATH")
