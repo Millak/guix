@@ -428,7 +428,9 @@ from a mounted file system.")
                      "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
                      (string-append "CC=" #$(cc-for-target))
                      (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
-                     "PYTEST=pytest")
+                     (string-append "PYTEST_CMD="
+                                    #$(this-package-native-input "python-pytest")
+                                    "/bin/pytest"))
              #:phases
              #~(modify-phases %standard-phases
                  (delete 'configure)    ; no configure script
@@ -444,8 +446,7 @@ from a mounted file system.")
                            ,(list (string-append #$output            "/sbin")
                                   (string-append #$coreutils-minimal "/bin")
                                   (string-append #$gawk              "/bin")
-                                  (string-append #$util-linux        "/bin"))))))))
-             #:tests? #f))                  ; XXX 6 valgrind tests fail
+                                  (string-append #$util-linux        "/bin"))))))))))
       (native-inputs
        (append
          (list pkg-config
