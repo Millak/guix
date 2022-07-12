@@ -12603,7 +12603,9 @@ Document Analysis and Recognition program.")
        ("xvfb" ,xorg-server-for-tests)
        ("gettext" ,gettext-minimal)))
     (inputs
-     (list gtk gobject-introspection libportal))
+     (list gobject-introspection libportal))
+    (propagated-inputs
+     (list gtk))                        ;libadwaita-1.pc 'Requires' it
     (home-page "https://gnome.pages.gitlab.gnome.org/libadwaita/")
     (synopsis "Building blocks for GNOME applications")
     (description
