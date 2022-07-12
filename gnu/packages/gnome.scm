@@ -8895,7 +8895,7 @@ endpoint and it understands SPARQL.")
 (define-public tracker-miners
   (package
     (name "tracker-miners")
-    (version "3.1.2")
+    (version "3.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/tracker-miners/"
@@ -8903,7 +8903,7 @@ endpoint and it understands SPARQL.")
                                   "/tracker-miners-" version ".tar.xz"))
               (sha256
                (base32
-                "0fpd69lgm8cckbamcf9c2q57glxf0s3jcfwkq8p3s4lfsvdclmd0"))))
+                "151w6ljq1gk9idqfq9qs3w16vms91jnxy59c9kx6jaf0fb9cdp9y"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -8950,7 +8950,11 @@ endpoint and it understands SPARQL.")
                (setenv "HOME" "/tmp")
                (setenv "LANG" "en_US.UTF-8")
                (invoke "dbus-run-session" "--" "meson" "test"
-                       "--print-errorlogs")))))))
+                       "--print-errorlogs"
+                       ;; Do not run the slow test, which fail (see:
+                       ;; https://gitlab.gnome.org/GNOME/tracker-miners
+                       ;; /-/issues/226).
+                       "--no-suite" "slow")))))))
     (native-inputs
      `(("dbus" ,dbus)
        ("intltool" ,intltool)
@@ -8981,7 +8985,7 @@ endpoint and it understands SPARQL.")
        ("libosinfo" ,libosinfo)
        ("libpng" ,libpng)
        ("libseccomp" ,libseccomp)
-       ("libsoup" ,libsoup-minimal-2) ; because tracker requires this version.
+       ("libsoup" ,libsoup)
        ("libtiff" ,libtiff)
        ("libvorbis" ,libvorbis)
        ("libxml2" ,libxml2)
