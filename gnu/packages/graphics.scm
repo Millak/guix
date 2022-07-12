@@ -302,7 +302,7 @@ objects!")
     (license license:lgpl2.1+)))
 
 (define-public autotrace
-  (let ((commit "travis-20190624.59")
+  (let ((commit "travis-20200219.65")
         (version-base "0.40.0"))
     (package
       (name "autotrace")
@@ -319,35 +319,22 @@ objects!")
                 (patches (search-patches "autotrace-glib-compat.patch"))
                 (sha256
                  (base32
-                  "0mk4yavy42dj0pszr1ggnggpvmzs4ds46caa9wr55cqsypn7bq6s"))))
+                  "1p9gy2vg0jzwjwz34lj95vvknnyswpc4qq63j83bh0m1gz09qh2w"))))
       (build-system gnu-build-system)
-      (arguments
-       `(#:phases (modify-phases %standard-phases
-                    ;; See: https://github.com/autotrace/autotrace/issues/27.
-                    (add-after 'unpack 'include-spline.h-header
-                      (lambda _
-                        (substitute* "Makefile.am"
-                          ((".*src/types.h.*" all)
-                           (string-append all "\t\tsrc/spline.h \\\n")))
-                        #t))
-                    ;; See: https://github.com/autotrace/autotrace/issues/26.
-                    (replace 'check
-                      (lambda _
-                        (invoke "sh" "tests/runtests.sh"))))))
       (native-inputs
-       `(("which" ,which)
-         ("pkg-config" ,pkg-config)
-         ("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("intltool" ,intltool)
-         ("libtool" ,libtool)
-         ("gettext" ,gettext-minimal)))
+       (list which
+             pkg-config
+             autoconf
+             automake
+             intltool
+             libtool
+             gettext-minimal))
       (inputs
-       `(("glib" ,glib)
-         ("libjpeg" ,libjpeg-turbo)
-         ("libpng" ,libpng)
-         ("imagemagick" ,imagemagick)
-         ("pstoedit" ,pstoedit)))
+       (list glib
+             libjpeg-turbo
+             libpng
+             imagemagick
+             pstoedit))
       (home-page "https://github.com/autotrace/autotrace")
       (synopsis "Bitmap to vector graphics converter")
       (description "AutoTrace is a utility for converting bitmap into vector
