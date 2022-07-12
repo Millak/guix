@@ -25225,7 +25225,7 @@ it cannot tell stdout and stderr apart.")
 (define-public emacs-pfuture
   (package
     (name "emacs-pfuture")
-    (version "1.10.2")
+    (version "1.10.3")
     (source
      (origin
        (method git-fetch)
@@ -25234,7 +25234,7 @@ it cannot tell stdout and stderr apart.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cks18fwir8h9b35ryz2yr5rligv1da2iqkqz0fcb5dx2a4fxwjj"))))
+        (base32 "0ifasmkfj06fb9whk7gg47fiim0bbwyh3279sd72psqbbxfixddf"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/Alexander-Miller/pfuture")
     (synopsis "Simple wrapper around asynchronous processes for Emacs")
