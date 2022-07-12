@@ -25245,7 +25245,7 @@ processes for Emacs.")
 (define-public emacs-treemacs
   (package
     (name "emacs-treemacs")
-    (version "2.9.5")
+    (version "2.10")
     (source
      (origin
        (method git-fetch)
@@ -25254,7 +25254,7 @@ processes for Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01qrprxfwmdzak77k2qa9fc2kb4hxddbvj30avqglj9sjaid9wmq"))))
+        (base32 "0wf26wkba89rr7j9vsvkp0jfr49560nbvykaxm9hk7zvhkwlm1np"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-ace-window
