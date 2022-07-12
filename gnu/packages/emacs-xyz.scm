@@ -17005,14 +17005,14 @@ Slack client.")
 (define-public emacs-easy-kill
   (package
     (name "emacs-easy-kill")
-    (version "0.9.4")
+    (version "0.9.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/easy-kill-"
                                   version ".tar"))
               (sha256
                (base32
-                "1pqqv4dhfm00wqch4wy3n2illsvxlz9r6r64925cvq3i7wq4la1x"))))
+                "0h8rzd23sgkj3vxnyhis9iyq8n3xqp9x1mvxlm61s6wwj9j398j6"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/leoliu/easy-kill")
     (synopsis "Kill and mark things easily in Emacs")
