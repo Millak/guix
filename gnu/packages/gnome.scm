@@ -6455,7 +6455,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
 (define-public gvfs
   (package
     (name "gvfs")
-    (version "1.48.1")
+    (version "1.50.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gvfs/"
@@ -6463,51 +6463,51 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
                                   "gvfs-" version ".tar.xz"))
               (sha256
                (base32
-                "1hlxl6368h6nyqp1888szxs9hnpcw98k3h23dgqi29xd38klzsmj"))))
+                "0pmc0vda1ksm9l7v64h4bm8qnv16amb7nifgy0882hzg2n62pmq3"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags
-       (list "-Dsystemduserunitdir=no"
-             "-Dtmpfilesdir=no"
-             ;; Otherwise, the RUNPATH will lack the final path component.
-             (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib/gvfs"))))
+     (list #:glib-or-gtk? #t
+           #:configure-flags
+           #~(list "-Dsystemduserunitdir=no"
+                   "-Dtmpfilesdir=no"
+                   ;; Otherwise, the RUNPATH will lack the final path component.
+                   (string-append "-Dc_link_args=-Wl,-rpath="
+                                  #$output "/lib/gvfs"))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")         ;for glib-genmarshal, etc.
-       ("gettext" ,gettext-minimal)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)))
+     (list `(,glib "bin")               ;for glib-genmarshal, etc.
+           gettext-minimal
+           gtk-doc/stable
+           pkg-config
+           libxslt))
     (inputs
-     `(("avahi" ,avahi)
-       ("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("dbus" ,dbus)
-       ("elogind" ,elogind)
-       ("fuse" ,fuse-3)
-       ("gcr" ,gcr)
-       ("glib" ,glib)
-       ("gnome-online-accounts" ,gnome-online-accounts)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("libarchive" ,libarchive)
-       ("libbluray" ,libbluray)
-       ("libcap" ,libcap)
-       ("libcdio-paranoia" ,libcdio-paranoia)
-       ("libgcrypt" ,libgcrypt)
-       ("libgdata" ,libgdata)
-       ("libgphoto2" ,libgphoto2)
-       ("libgudev" ,libgudev)
-       ("libimobiledevice" ,libimobiledevice)
-       ("libmtp" ,libmtp)
-       ("libnfs" ,libnfs)
-       ("libsecret" ,libsecret)
-       ("libsmbclient" ,samba)
-       ("libsoup" ,libsoup)
-       ("libxml2" ,libxml2)
-       ("openssh" ,openssh)
-       ("polkit" ,polkit)
-       ("udisks" ,udisks)))
+     (list avahi
+           docbook-xml-4.2
+           docbook-xsl
+           dbus
+           elogind
+           fuse-3
+           gcr
+           glib
+           gnome-online-accounts
+           gsettings-desktop-schemas
+           libarchive
+           libbluray
+           libcap
+           libcdio-paranoia
+           libgcrypt
+           libgdata
+           libgphoto2
+           libgudev
+           libimobiledevice
+           libmtp
+           libnfs
+           libsecret
+           samba
+           libsoup
+           libxml2
+           openssh
+           polkit
+           udisks))
     (home-page "https://wiki.gnome.org/gvfs/")
     (synopsis "Userspace virtual file system for GIO")
     (description
