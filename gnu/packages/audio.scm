@@ -2783,6 +2783,38 @@ add functionality to support the needs of increasingly powerful audio
 software.")
     (license license:isc)))
 
+(define-public ttl2c
+  (package
+    (name "ttl2c")
+    (version "1.0.0")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/lvtk/ttl2c")
+                   (commit version)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "0aybx8i5i0sridi9130a3937xgmfmjkk8m48f9whvhlhbzwy3xbl"))))
+    (build-system waf-build-system)
+    (arguments
+     (list
+      #:tests? #false  ;no check target
+      #:phases
+      `(modify-phases %standard-phases
+         (add-before 'configure 'setup-waf
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((waf (assoc-ref inputs "python-waf")))
+               (copy-file (string-append waf "/bin/waf") "waf")))))))
+    (inputs (list boost))
+    (native-inputs (list python-waf))
+    (home-page "https://github.com/lvtk/ttl2c")
+    (synopsis "Turtle to C header conversion utility for LV2 plugins")
+    (description
+     "This package provides a conversion utility for LV2 Plugin developers to
+generate C headers from Turtle files.")
+    (license license:gpl3+)))
+
 (define-public lv2-mda-piano
   (package
     (name "lv2-mda-piano")
