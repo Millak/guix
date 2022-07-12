@@ -27691,17 +27691,16 @@ time.")
                 "13swcbvwhjl8ksrgzvmfafkgd3iz8znk49bs1n48w3g9qvh097w7"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Move the source files to the top level, which is included in
-         ;; the EMACSLOADPATH.
-         (add-after 'unpack 'move-source-files
-           (lambda _
-             (let ((el-files (find-files "./lisp" ".*\\.el$")))
-               (for-each (lambda (f)
-                           (rename-file f (basename f)))
-                         el-files))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Move the source files to the top level, which is included in
+               ;; the EMACSLOADPATH.
+               (add-after 'unpack 'move-source-files
+                 (lambda _
+                   (let ((el-files (find-files "./lisp" ".*\\.el$")))
+                     (for-each (lambda (f)
+                                 (rename-file f (basename f)))
+                               el-files)))))))
     (propagated-inputs
      (list emacs-request))
     (home-page "https://codeberg.org/martianh/mastodon.el")
