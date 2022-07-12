@@ -2144,7 +2144,7 @@ command.")
     (native-inputs
      ;; For icons.
      (modify-inputs (package-native-inputs wpa-supplicant)
-       (prepend imagemagick inkscape)))
+       (prepend imagemagick inkscape/stable)))
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'chdir

@@ -6455,7 +6455,7 @@ toolkits.")
                          (string-append info "/matplotlib-figures"))))))))
     (native-inputs
      (list graphviz
-           inkscape
+           inkscape/stable
            python-colorspacious
            python-mpl-sphinx-theme
            python-scipy
@@ -13148,7 +13148,7 @@ time.")
                            "and not test_execute_widgets_from_nbconvert "
                            "and not test_execute_multiple_notebooks ")))))))))
     (inputs
-     (list inkscape pandoc))
+     (list inkscape/stable pandoc))
     (native-inputs
      (list python-ipykernel
            ;; Adding ipywidgets would create a cycle.
