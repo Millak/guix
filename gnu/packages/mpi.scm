@@ -4,7 +4,7 @@
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
-;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -217,17 +217,21 @@ bind processes, and much more.")
                (if-supported psm)
                (if-supported psm2)
                (if-supported ucx)
+               (if-supported valgrind)
                (list rdma-core
-                     valgrind
                      slurm))))         ;for PMI support (launching via "srun")
     (native-inputs
      (list pkg-config perl))
     (outputs '("out" "debug"))
     (arguments
      `(#:configure-flags `("--enable-mpi-ext=affinity" ;cr doesn't work
-                           "--enable-memchecker"
                            "--with-sge"
-                           "--with-valgrind"
+
+                           ,@(if ,(package? (this-package-input "valgrind"))
+                               `("--enable-memchecker"
+                                 "--with-valgrind")
+                               `("--without-valgrind"))
+
                            "--with-hwloc=external"
                            "--with-libevent"
 
