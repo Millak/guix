@@ -26081,30 +26081,27 @@ based on diff output.")
       (license license:gpl3+))))
 
 (define-public emacs-all-the-icons-dired
-  (let ((commit "fc2dfa1e9eb8bf1c402a675e7089638d702a27a5")
-        (version "1.0")
-        (revision "2"))
-    (package
-      (name "emacs-all-the-icons-dired")
-      (version (git-version version revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/jtbm37/all-the-icons-dired/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0zhyhz4lhx0d8wwh1xxxf7ck4s621fk9757ql2ypxbr4iqh7sjlp"))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-all-the-icons))
-      (home-page "https://github.com/jtbm37/all-the-icons-dired/")
-      (synopsis "Show icons for each file in @code{dired-mode}")
-      (description "This package allows icons from @file{all-the-icons.el} to
+  (package
+    (name "emacs-all-the-icons-dired")
+    (version "2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wyuenho/all-the-icons-dired")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1shla7nyhml9m3g81p6yy8k4pdq289gb42900xzfp7zl4qvnm2vy"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-all-the-icons))
+    (home-page "https://github.com/wyuenho/all-the-icons-dired")
+    (synopsis "Show icons for each file in @code{dired-mode}")
+    (description "This package allows icons from @file{all-the-icons.el} to
 be used in @code{dired-mode}.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-all-the-icons-ibuffer
   (package
