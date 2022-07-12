@@ -8799,7 +8799,7 @@ easy, safe, and automatic.")
 (define-public tracker
   (package
     (name "tracker")
-    (version "3.1.2")
+    (version "3.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/tracker/"
@@ -8807,7 +8807,7 @@ easy, safe, and automatic.")
                                   "tracker-" version ".tar.xz"))
               (sha256
                (base32
-                "13zcc07wd51sz7kglk3xbjrsq7d835cxfr7iwjr7nn2xcri8jdns"))))
+                "1lkf353xvwc0hfyi03aq2qjikx3zmva7r56nxiavy7kqjyygbmjs"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -8859,7 +8859,7 @@ easy, safe, and automatic.")
        ("libxml2" ,libxml2)
        ("icu4c" ,icu4c)                 ; libunistring gets miner-miner-fs test to fail.
        ("json-glib" ,json-glib)
-       ("libsoup" ,libsoup-minimal-2))) ; tracker-miners requires the same version.
+       ("libsoup" ,libsoup))) ; tracker-miners requires the same version.
     (synopsis "Metadata database, indexer and search tool")
     (home-page "https://wiki.gnome.org/Projects/Tracker")
     (description
