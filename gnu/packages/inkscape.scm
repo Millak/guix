@@ -267,5 +267,18 @@ as the native format.")
              (lambda _
                (substitute* "testfiles/src/path-boolop-test.cpp"
                  (("PathBoolopTest, UnionOutside(Swap)?.*" all)
-                  (string-append all "    GTEST_SKIP();\n")))))))))
+                  (string-append all "    GTEST_SKIP();\n")))))
+           (replace 'wrap-program
+             ;; Ensure Python is available at runtime.
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-program (string-append out "/bin/inkscape")
+                   `("GUIX_PYTHONPATH" prefix
+                     (,(getenv "GUIX_PYTHONPATH")))
+                   ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Inkscape to load
+                   ;; its own icons in pure environments.
+                   `("GDK_PIXBUF_MODULE_FILE" =
+                     (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))))
+    (inputs (modify-inputs (package-inputs inkscape/stable)
+              (append librsvg)))        ;for the pixbuf loader
     (properties (alist-delete 'hidden? (package-properties inkscape/stable)))))
