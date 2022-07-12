@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,58 +113,64 @@
       (license license:expat))))
 
 (define-public tcc
-  (package
-    (name "tcc")                                  ;aka. "tinycc"
-    (version "0.9.27")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/tinycc/tcc-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "177bdhwzrnqgyrdv1dwvpd04fcxj68s5pm1dzwny6359ziway8yy"))))
-    (build-system gnu-build-system)
-    (native-inputs (list perl texinfo))
-    (arguments
-     `(#:configure-flags (list (string-append "--elfinterp="
-                                              (assoc-ref %build-inputs "libc")
-                                              ,(glibc-dynamic-linker))
-                               (string-append "--crtprefix="
-                                              (assoc-ref %build-inputs "libc")
-                                              "/lib")
-                               (string-append "--sysincludepaths="
-                                              (assoc-ref %build-inputs "libc")
-                                              "/include:"
-                                              (assoc-ref %build-inputs
-                                                         "kernel-headers")
-                                              "/include:{B}/include")
-                               (string-append "--libpaths="
-                                              (assoc-ref %build-inputs "libc")
-                                              "/lib")
-                               ,@(if (string-prefix? "armhf-linux"
-                                                     (or (%current-target-system)
-                                                         (%current-system)))
-                                     `("--triplet=arm-linux-gnueabihf")
-                                     '()))
-       #:test-target "test"))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "CPATH")
-            (files '("include")))
-           (search-path-specification
-            (variable "LIBRARY_PATH")
-            (files '("lib" "lib64")))))
-    ;; Fails to build on MIPS: "Unsupported CPU"
-    (supported-systems (delete "mips64el-linux" %supported-systems))
-    (synopsis "Tiny and fast C compiler")
-    (description
-     "TCC, also referred to as \"TinyCC\", is a small and fast C compiler
+  ;; There's currently no release fixing <https://issues.guix.gnu.org/52140>.
+  (let ((revision "1")
+        (commit "a83b28568596afd8792fd58d1a5bd157fc6b6634"))
+    (package
+      (name "tcc")                                ;aka. "tinycc"
+      (version (git-version "0.9.27" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://repo.or.cz/tinycc.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "01znw86fg73x3k0clafica4b6glbhz69p588kvp766i0zgvs68dh"))))
+      (build-system gnu-build-system)
+      (native-inputs (list perl texinfo))
+      (arguments
+       `(#:configure-flags (list (string-append "--elfinterp="
+                                                (assoc-ref %build-inputs
+                                                           "libc")
+                                                ,(glibc-dynamic-linker))
+                                 (string-append "--crtprefix="
+                                                (assoc-ref %build-inputs
+                                                           "libc") "/lib")
+                                 (string-append "--sysincludepaths="
+                                                (assoc-ref %build-inputs
+                                                           "libc") "/include:"
+                                                (assoc-ref %build-inputs
+                                                           "kernel-headers")
+                                                "/include:{B}/include")
+                                 (string-append "--libpaths="
+                                                (assoc-ref %build-inputs
+                                                           "libc") "/lib")
+                                 ,@(if (string-prefix? "armhf-linux"
+                                                       (or (%current-target-system)
+                                                           (%current-system)))
+                                       `("--triplet=arm-linux-gnueabihf")
+                                       '()))
+         #:test-target "test"))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "CPATH")
+              (files '("include")))
+             (search-path-specification
+              (variable "LIBRARY_PATH")
+              (files '("lib" "lib64")))))
+      ;; Fails to build on MIPS: "Unsupported CPU"
+      (supported-systems (delete "mips64el-linux" %supported-systems))
+      (synopsis "Tiny and fast C compiler")
+      (description
+       "TCC, also referred to as \"TinyCC\", is a small and fast C compiler
 written in C.  It supports ANSI C with GNU and extensions and most of the C99
 standard.")
-    (home-page "http://www.tinycc.org/")
-    ;; An attempt to re-licence tcc under the Expat licence is underway but not
-    ;; (if ever) complete.  See the RELICENSING file for more information.
-    (license license:lgpl2.1+)))
+      (home-page "http://www.tinycc.org/")
+      ;; An attempt to re-licence tcc under the Expat licence is underway but not
+      ;; (if ever) complete.  See the RELICENSING file for more information.
+      (license license:lgpl2.1+))))
 
 (define-public pcc
   (package
