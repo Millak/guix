@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
@@ -180,7 +180,11 @@ internal RPC protocols and file formats.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "040rcs9fpv4bslhiy43v7dcrzakz4vwwpyqg4jp8bn24sl95ci7f"))))))
+                "040rcs9fpv4bslhiy43v7dcrzakz4vwwpyqg4jp8bn24sl95ci7f"))))
+    (arguments (substitute-keyword-arguments (package-arguments protobuf)
+                 ((#:phases phases)
+                  `(modify-phases ,phases
+                     (delete 'disable-broken-tests)))))))
 
 (define-public protobuf-c
   (package
