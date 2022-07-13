@@ -111,30 +111,7 @@ service type can be extended with a list of file-like objects.")))
 
 (define (serialize-boolean field-name val) "")
 (define (serialize-posix-env-vars field-name val)
-  #~(let ((shell-quote
-           (lambda (value)
-             ;; Double-quote VALUE, leaving dollar sign as is.
-             (let ((quoted (list->string
-                            (string-fold-right
-                             (lambda (chr lst)
-                               (case chr
-                                 ((#\" #\\)
-                                  (append (list chr #\\) lst))
-                                 (else (cons chr lst))))
-                             '()
-                             value))))
-               (string-append "\"" quoted "\"")))))
-      (string-append
-       #$@(map
-           (match-lambda
-             ((key . #f)
-              "")
-             ((key . #t)
-              #~(string-append "export " #$key "\n"))
-             ((key . value)
-              #~(string-append "export " #$key "="
-                               (shell-quote #$value) "\n")))
-           val))))
+  (environment-variable-shell-definitions val))
 
 
 ;;;

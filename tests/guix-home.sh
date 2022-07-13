@@ -79,6 +79,10 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
              (guix-defaults? #t)
              (bashrc (list (local-file "dot-bashrc")))))
 
+   (simple-service 'add-environment-variable
+                   home-environment-variables-service-type
+                   '(("TODAY" . "26 messidor")))
+
    (simple-service 'home-bash-service-extension-test
                    home-bash-service-type
                    (home-bash-extension
@@ -141,6 +145,7 @@ EOF
 # the content of bashrc-test-config.sh"
     grep -q "the content of ~/.config/test.conf" "${HOME}/.config/test.conf"
     grep '^export PS1="\$GUIX_ENVIRONMENT λ "$' "${HOME}/.bash_profile"
+    ( . "${HOME}/.guix-home/setup-environment"; test "$TODAY" = "26 messidor" )
 
     # This one should still be here.
     grep "stay around" "$HOME/.config/random-file"
