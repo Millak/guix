@@ -21608,28 +21608,23 @@ Dumb Jump performs best with The Silver Searcher @command{ag} or ripgrep
     (license license:gpl3+)))
 
 (define-public emacs-dts-mode
-  (let ((commit "9ee0854446dcc6c53d2b8d2941051768dba50344")
-        (revision "1"))
-    (package
-      (name "emacs-dts-mode")
-      (version (string-append "0.1.0-" revision "." (string-take commit 7)))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/bgamari/dts-mode")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1k8lljdbc90nd29xrhdrsscxavzdq532wq2mg7ljc94krj7538b1"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/bgamari/dts-mode")
-      (synopsis "Emacs minor mode for editing device tree files")
-      (description
-       "This package provides an Emacs minor mode for highlighting
+  (package
+    (name "emacs-dts-mode")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/dts-mode-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "0ihwqkv1ddysjgxh01vpayv3ia0vx55ny8ym0mi5b4iz95idj60s"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/dts-mode.html")
+    (synopsis "Major mode for Device Tree source files")
+    (description
+     "This package provides an Emacs minor mode for highlighting
 device tree files.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-daemons
   (package
