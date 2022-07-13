@@ -594,36 +594,36 @@ uploading PlatformIO projects.")
 (define-public emacs-hyperbole
   (package
     (name "emacs-hyperbole")
-    (version "7.1.3")
+    (version "8.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "hyperbole-" version ".tar"))
        (sha256
-        (base32 "0bizibn4qgxqp89fyik6p47s9hss1g932mg8k7pznn3kkhj5c8rh"))
-       (patches
-        (search-patches "emacs-hyperbole-toggle-messaging.patch"))))
+        (base32 "171x7jad62xd0n3xgs32dksyhn5abxj1kna0qgm65mm0v73hrv8d"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include '("DEMO"
-                   "DEMO-ROLO.otl"
-                   "HY-ABOUT"
-                   "man/hkey-help.txt"
-                   "\\.el$"
-                   "\\.info$"
-                   "\\.kotl$")
+     `(#:include (cons* "DEMO"
+                        "DEMO-ROLO.otl"
+                        "HY-ABOUT"
+                        "man/hkey-help.txt"
+                        "\\.kotl$"
+                        %default-include)
        #:phases
        (modify-phases %standard-phases
          ;; Fix build issues about missing "domainname" and "hpmap:dir-user"
-         ;; parent dir.
+         ;; parent dir, and missing require in "hgnus.el" (void-function:
+         ;; var-append).
          (add-after 'unpack 'fix-build
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "hypb.el"
                (("/bin/domainname")
                 (search-input-file inputs "bin/dnsdomainname")))
              (substitute* "hyperbole.el"
-               (("\\(hyperb:check-dir-user\\)") ""))))
+               (("\\(hyperb:check-dir-user\\)") ""))
+             (substitute* "hgnus.el"
+               (("hmail ") "hmail hvar "))))
          (add-after 'install 'install-images
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
