@@ -604,34 +604,32 @@ uploading PlatformIO projects.")
         (base32 "171x7jad62xd0n3xgs32dksyhn5abxj1kna0qgm65mm0v73hrv8d"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include (cons* "DEMO"
-                        "DEMO-ROLO.otl"
-                        "HY-ABOUT"
-                        "man/hkey-help.txt"
-                        "\\.kotl$"
-                        %default-include)
-       #:phases
-       (modify-phases %standard-phases
-         ;; Fix build issues about missing "domainname" and "hpmap:dir-user"
-         ;; parent dir, and missing require in "hgnus.el" (void-function:
-         ;; var-append).
-         (add-after 'unpack 'fix-build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "hypb.el"
-               (("/bin/domainname")
-                (search-input-file inputs "bin/dnsdomainname")))
-             (substitute* "hyperbole.el"
-               (("\\(hyperb:check-dir-user\\)") ""))
-             (substitute* "hgnus.el"
-               (("hmail ") "hmail hvar "))))
-         (add-after 'install 'install-images
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (file)
-                           (install-file
-                            file
-                            (string-append out "/share/info/im")))
-                         (find-files "man/im" "\\.png$"))))))))
+     (list #:include #~(cons* "DEMO"
+                              "DEMO-ROLO.otl"
+                              "HY-ABOUT"
+                              "man/hkey-help.txt"
+                              "\\.kotl$"
+                              %default-include)
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Fix build issues about missing "domainname" and
+               ;; "hpmap:dir-user" parent dir, and missing require in
+               ;; "hgnus.el" (void-function: var-append).
+               (add-after 'unpack 'fix-build
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "hypb.el"
+                     (("/bin/domainname")
+                      (search-input-file inputs "bin/dnsdomainname")))
+                   (substitute* "hyperbole.el"
+                     (("\\(hyperb:check-dir-user\\)") ""))
+                   (substitute* "hgnus.el"
+                     (("hmail ") "hmail hvar "))))
+               (add-after 'install 'install-images
+                 (lambda _
+                   (let ((dir (string-append #$output "/share/info/im")))
+                     (for-each (lambda (file)
+                                 (install-file file dir))
+                               (find-files "man/im" "\\.png$"))))))))
     (inputs
      (list inetutils))
     (home-page "https://www.gnu.org/software/hyperbole/")
