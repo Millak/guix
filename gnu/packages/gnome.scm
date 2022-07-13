@@ -1613,7 +1613,8 @@ sharing to the masses.")
            gobject-introspection
            pkg-config))
     (inputs
-     (list clutter
+     (list bash-minimal
+           clutter
            clutter-gst
            clutter-gtk
            evince                       ; For file previewing.
