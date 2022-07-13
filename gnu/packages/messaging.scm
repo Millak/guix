@@ -1176,7 +1176,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.4.5")
+    (version "1.4.6")
     (source
      (origin
        (method url-fetch)
@@ -1185,7 +1185,7 @@ of xmpppy.")
                        (version-major+minor version)
                        "/gajim-" version ".tar.gz"))
        (sha256
-        (base32 "08a7kkc8vzjr5jxjkb96vs1bqnrgmmmcc5spy308z0zfxbpamsin"))
+        (base32 "0ks25hh7ksx0nfydixpixcli556w7qcylxp2z2xsx8mgzqv7c9la"))
        (patches (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
     (arguments
