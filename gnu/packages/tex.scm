@@ -10787,7 +10787,8 @@ The package offers some multilingual support; configurations for use in English
 (both British and American usage), French (including Belgian and Swiss
 variants), German, Italian, Portuguese and Spanish documents are provided.  This
 package was originally provided as part of the author's datetime package, but is
-now distributed separately.")))
+now distributed separately.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-inriafonts
   (package
@@ -10866,3 +10867,170 @@ tables and figures to be set left/right or alternating on even/odd pages.")
 sorting and merging of BibTeX databases, generation of uniform reference keys,
 and selecting references used in a publication.")
     (license license:gpl2+)))
+
+(define-public texlive-apa6
+  (package
+    (inherit (simple-texlive-package
+              "texlive-apa6"
+              (list "doc/latex/apa6/"
+                    "source/latex/apa6/"
+                    "tex/latex/apa6/")
+              (base32
+               "08jn8piyaad4zln33c0gikyhdkcsk2s3ms9l992riq2hbpbm9lcf")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/apa6")
+    (synopsis "Format documents in APA style (6th edition)")
+    (description "The class formats documents in APA style (6th
+Edition).  It provides a full set of facilities in three different
+output modes (journal-like appearance, double-spaced manuscript,
+LaTeX-like document), in contrast to the earlier apa6e, which only formats
+double-spaced manuscripts in APA style.  The class can mask author identity
+for copies for use in masked peer review.
+
+The class is a development of the apa class (which is no longer
+maintained).")
+    (license license:lppl1.3c+)))
+
+(define-public texlive-endfloat
+  (package
+    (inherit (simple-texlive-package
+              "texlive-endfloat"
+              (list "doc/latex/endfloat/"
+                    "source/latex/endfloat/"
+                    "tex/latex/endfloat/")
+              (base32
+               "1zslmc5g28z6adfyd8bdlbw03jawxmgafq0mgwy811hrbcppb2kg")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/endfloat")
+    (synopsis "Move floats to the end, leaving markers where they belong")
+    (description "Place all floats on pages by themselves at the end of
+the document, optionally leaving markers like “[Figure 3 about here]”
+in the text near to where the figure (or table) would normally have
+occurred.  Float types figure and table are recognised by the package,
+unmodified.  Since several packages define other types of float, it is
+possible to register these float types with endfloat.")
+    (license license:gpl2+)))
+
+(define-public texlive-was
+  (package
+    (inherit (simple-texlive-package
+              "texlive-was"
+              (list "doc/latex/was/"
+                    "source/latex/was/"
+                    "tex/latex/was/")
+              (base32
+               "1fp0l9sn9yrhf8hz175dzc2x28byk1ygfirn23am5ak72csmi0cp")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/was")
+    (synopsis "Collection of small packages by Walter Schmidt")
+    (description "A bundle of packages that arise in the author’s area of interest:
+
+@itemize
+@item compliance of maths typesetting with ISO standards;
+@item symbols that work in both maths and text modes
+@item commas for both decimal separator and maths; and
+@item upright Greek letters in maths
+@end itemize")
+    (license license:lppl1.2+)))
+
+(define-public texlive-xpatch
+  (package
+    (inherit (simple-texlive-package
+              "texlive-xpatch"
+              (list "doc/latex/xpatch/"
+                    "source/latex/xpatch/"
+                    "tex/latex/xpatch/")
+              (base32
+               "0r08hadnwx9vyppzmbn1bj69b12i5fw1mhk49piw2rqbk01722zk")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/xpatch")
+    (synopsis "Extending etoolbox patching commands")
+    (description "The package generalises the macro patching commands
+provided by Philipp Lehmann’s etoolbox.")
+    (license license:lppl1.3c+)))
+
+(define-public texlive-threeparttablex
+  (package
+    (inherit (simple-texlive-package
+              "texlive-threeparttablex"
+              (list "doc/latex/threeparttablex/"
+                    "tex/latex/threeparttablex/")
+              (base32
+               "19pvw2ifswxcf8dxw0mzjmqhl592477w5hcfh97f4wpya0dv2m9p")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/threeparttablex")
+    (synopsis "Notes in longtables")
+    (description "The package provides the functionality of the
+threeparttable package to tables created using the longtable package.")
+    (license license:lppl1.3+)))
+
+(define-public texlive-lineno
+  (package
+    (inherit (simple-texlive-package
+              "texlive-lineno"
+              (list "doc/latex/lineno/"
+                    "source/latex/lineno/"
+                    "tex/latex/lineno/")
+              (base32
+               "1xf8ljgcj411yqmng89wc49rqfz19j95yqqpnb35dj3qc1chvm2a")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/lineno")
+    (synopsis "Line numbers on paragraphs")
+    (description "Adds line numbers to selected paragraphs with reference
+possible through the LaTeX @code{\\ref} and @code{\\pageref} cross reference
+mechanism.  Line numbering may be extended to footnote lines, using the
+fnlineno package.")
+    (license license:lppl1.3a+)))
+
+(define-public texlive-babel-dutch
+  (let ((template (simple-texlive-package
+                   "texlive-babel-dutch"
+                   (list "/source/generic/babel-dutch/")
+                   (base32
+                    "1a40rz6rznawgarnhk0wh751sln2x9js4420i0758y2clf4rlhg9"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/babel-dutch")
+         ((#:build-targets _ '())
+          ''("dutch.ins")) ; TODO: use dtx and build documentation
+         ((#:phases phases) `(modify-phases ,phases
+                               (add-after 'unpack 'chdir
+                                 (lambda _
+                                   (chdir "source/generic/babel-dutch")))))))
+      (home-page "https://www.ctan.org/pkg/babel-dutch")
+      (synopsis "Babel support for Dutch")
+      (description
+       "This package provides the language definition file for support of Dutch
+in @code{babel}.  It provides all the necessary macros, definitions and
+settings to typeset Dutch documents.")
+      (license license:lppl1.3c+))))
+
+(define-public texlive-babel-finnish
+  (let ((template (simple-texlive-package
+                   "texlive-babel-finnish"
+                   (list "/source/generic/babel-finnish/")
+                   (base32
+                    "1930zxk4l6k5q4wcbvpvijv4s0gxp2mkxvblczn4gcbar10vfd4x"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/babel-finnish")
+         ((#:build-targets _ '())
+          ''("finnish.ins")) ; TODO: use dtx and build documentation
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'chdir
+               (lambda _
+                 (chdir "source/generic/babel-finnish")))))))
+      (home-page "https://www.ctan.org/pkg/babel-finnish")
+      (synopsis "Babel support for Finnish")
+      (description
+       "This package provides the language definition file for support of
+Finnish in @code{babel}.  It provides all the necessary macros, definitions and
+settings to typeset Finnish documents.")
+      (license license:lppl1.3c+))))

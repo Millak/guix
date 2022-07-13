@@ -3,6 +3,7 @@
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,12 +21,18 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages gawk)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages libsigsegv)
+  #:use-module (gnu packages multiprecision)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix utils)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu))
 
 (define-public gawk
@@ -93,7 +100,43 @@
 language for the easy manipulation of formatted text, such as tables of data.
 Gawk features many extensions beyond the traditional implementation,
 including network access, sorting, and large libraries.")
-   (license gpl3+)))
+   (license license:gpl3+)))
+
+;; Separate from gawk to facilitate bootstrapping.
+(define-public gawk-mpfr
+  (package/inherit gawk
+    (name "gawk-mpfr")
+    (inputs
+     (modify-inputs (package-inputs gawk)
+       (prepend mpfr)))))
+
+;; Suffixed with -next because, similarly to Emacs, development versions are
+;; numbered x.y.60+z, and also there are no tagged versions of egawk yet.
+;; (However, though egawk's --version lists 5.1.60, it is actually forked from
+;; a development version of gawk 5.1.1.)
+(define-public egawk-next
+  (let ((commit "f00e74ffc73f6ba6fe74fb7a26319770b8c3792c")
+        (revision "0"))
+    (package
+      (inherit gawk-mpfr)
+      (name "egawk-next")
+      (version (git-version "5.1.60" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://www.kylheku.com/git/egawk")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bmfbw6k1aiyiardnk7ha5zlpkvavj013mm4n7wwj2vdcgrs6p1f"))))
+      (home-page "https://www.kylheku.com/cgit/egawk/")
+      (synopsis "Enhanced GNU Awk")
+      (description
+       "@command{egawk} is Enhanced GNU Awk.  It is a fork of GNU Awk with
+some enhancements designed and implemented by Kaz Kylheku.  In particular,
+Enhanced GNU Awk provides the @code{@@let} statement for declaring
+block-scoped lexical variables."))))
 
 (define-public mawk
   (package
@@ -120,4 +163,85 @@ including network access, sorting, and large libraries.")
      "@command{mawk} is an interpreter for the Awk programming language.
 This version aims to be smaller and faster than GNU Awk, at the expense
 of fewer features and extensions.")
-    (license gpl2))) ;version 2 only
+    (license license:gpl2))) ;version 2 only
+
+(define-public cppawk
+  (package
+    (name "cppawk")
+    (version "20220703")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://www.kylheku.com/git/cppawk")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b09757q81sz4gn62k3mv5bgllyb2v5m64346s8fc99mqqif70cx"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan '(("bin/cppawk" "bin/cppawk")
+                        ("share/cppawk/include" "share/cppawk/include")
+                        ("./" "share/man/man1" #:include-regexp (".*\\.1$")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda _
+             (substitute* "bin/cppawk"
+               (("/bin/bash") (which "bash"))
+               (("dirname") (which "dirname"))
+               (("mktemp") (which "mktemp"))
+               ;; Extra space to prevent matching Awk's printf.
+               (("printf ") (string-append (which "printf") " "))
+               (("rm -f") (string-append (which "rm") " -f"))
+               (("prepro=cpp") (string-append "prepro=" (which "cpp")))
+               (("sed -e") (string-append (which "sed") " -e")))))
+         (add-after 'fix-paths 'fix-awk-paths
+           (lambda _
+             (substitute* "bin/cppawk"
+               (("awk=gawk") (string-append "awk=" (which "gawk")))
+               (("awk '") (string-append (which "gawk") " '")))))
+         (add-after 'build 'check
+           (lambda _
+             (invoke "./runtests"))))))
+    (native-inputs
+     ;; For tests
+     (list mawk))
+    (inputs
+     (list coreutils                    ; For dirname, mktemp, printf, rm
+           gawk-mpfr                    ; Default variant, but supports others
+           gcc                          ; For cpp
+           sed))
+    (home-page "https://www.kylheku.com/cgit/cppawk/")
+    (synopsis "Wrapper script that adds C preprocessing to Awk")
+    (description
+     "@command{cppawk} is a shell script that invokes the C preprocessor
+(@command{cpp}) on Awk code and calls Awk (by default GNU Awk) on the result.
+
+@command{cppawk} understands the basic Awk options like @option{-F} and
+@option{-v}, and also understands common @command{cpp} options like
+@option{-I} and @option{-Dmacro=value}.
+
+@command{cppawk} has no dependencies beyond Awk, @command{cpp}, @command{sed}
+and some GNU core utilities (including @command{printf}).  Preprocessed
+programs can be captured and transferred to systems that have Awk but not
+@command{cpp} or @command{cppawk}.")
+    (license license:bsd-2)))
+
+(define-public cppawk-egawk
+  (package/inherit cppawk
+    (name "cppawk-egawk")
+    (arguments
+     (substitute-keyword-arguments (package-arguments cppawk)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (replace 'fix-awk-paths
+             (lambda _
+               (substitute* "bin/cppawk"
+                 (("awk=gawk") (string-append "awk=" (which "egawk")))
+                 (("awk '") (string-append (which "egawk") " '")))))))))
+    (inputs
+     (modify-inputs (package-inputs cppawk)
+       (delete "gawk-mpfr")
+       (prepend egawk-next)))
+    (synopsis "cppawk that calls Enhanced GNU Awk by default")))

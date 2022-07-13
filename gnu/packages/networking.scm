@@ -469,7 +469,7 @@ from any network device in any of three ASCII graph formats.")
 (define-public srt
   (package
     (name "srt")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
      (origin
        (method git-fetch)
@@ -479,7 +479,7 @@ from any network device in any of three ASCII graph formats.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f60vlfxhh9bhafws82c3301whjlz5gy92jz9a9ymwfg5h53bv1j"))))
+        (base32 "1zr1l9zkai7rpw9cn5j9h4zrv08hgpfmwscwyscf2j4cgwf0rxrr"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -490,9 +490,7 @@ from any network device in any of three ASCII graph formats.")
         "-DENABLE_STATIC=OFF"
         "-DENABLE_UNITTESTS=ON")))
     (native-inputs
-     `(("gtest" ,googletest)
-       ("pkg-config" ,pkg-config)
-       ("tclsh" ,tcl)))
+     (list googletest pkg-config tcl))
     (propagated-inputs
      (list openssl))
     (synopsis "Secure Reliable Transport")
@@ -500,24 +498,6 @@ from any network device in any of three ASCII graph formats.")
 performance across unpredictable networks, such as the Internet.")
     (home-page "https://www.srtalliance.org/")
     (license license:mpl2.0)))
-
-;; FFmpeg, GStreamer, and VLC don't support SRT 1.4.2 yet.
-(define-public srt-1.4.1
-  (package
-    (inherit srt)
-    (name "srt")
-    (version "1.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/Haivision/srt")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "01xaq44j95kbgqfl41pnybvqy0yq6wd4wdw88ckylzf0nzp977xz"))))))
 
 (define-public lksctp-tools
   (package
@@ -1548,7 +1528,7 @@ test_parse_format_ipv(4(|_listen_all|_mapped_ipv6)|6)\\);")
                           (string-append "prefix=" (assoc-ref %outputs "out")))
        #:test-target "test"))
     (inputs (list net-tools zlib))
-    (native-inputs (list check-0.14 pkg-config))
+    (native-inputs (list check pkg-config))
     (home-page "https://code.kryo.se/iodine/")
     (synopsis "Tunnel IPv4 data through a DNS server")
     (description "Iodine tunnels IPv4 data through a DNS server.  This
@@ -1778,8 +1758,8 @@ handling network namespaces in Go.")
 (define-public go-sctp
   ;; docker-libnetwork-cmd-proxy requires this exact commit.
   ;; This commit is mentioned in docker-libnetwork-cmd-proxy's vendor.conf.
-  (let ((commit "6e2cb1366111dcf547c13531e3a263a067715847")
-        (revision "2"))
+  (let ((commit "f2269e66cdee387bd321445d5d300893449805be")
+        (revision "3"))
     (package
       (name "go-sctp")
       (version (git-version "0.0.0" revision commit))
@@ -1791,7 +1771,7 @@ handling network namespaces in Go.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ba90fmpdwxa1ba4hrsjhi3gfy3pwmz7x8amw1p5dc9p5a7nnqrb"))))
+                  "04463rnn9y9psp11ac5di6wrwxlhymw5h9hfhhhnxqwla90ikp0g"))))
       (build-system go-build-system)
       (arguments
        `(#:tests? #f    ; Test suite is flakey.

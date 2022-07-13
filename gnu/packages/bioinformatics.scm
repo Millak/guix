@@ -806,6 +806,44 @@ input/output delimiter.  When the new functionality is not used, bioawk is
 intended to behave exactly the same as the original BWK awk.")
     (license license:x11)))
 
+(define-public python-cellbender
+  (package
+    (name "python-cellbender")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/broadinstitute/CellBender")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1zav2q8nnss80i25y06fccagkvrqsy7lpylsl4dxv4qkj8p4fnv3"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #false)) ;there are none
+    (propagated-inputs
+     (list python-anndata
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-pyro-ppl
+           python-scikit-learn
+           python-scipy
+           python-sphinx
+           python-sphinx-argparse
+           python-sphinx-autodoc-typehints
+           python-sphinx-rtd-theme
+           python-sphinxcontrib-programoutput
+           python-tables))
+    (home-page "https://cellbender.rtfd.io/")
+    (synopsis "Eliminate technical artifacts from single-cell RNA-seq data")
+    (description
+     "CellBender is a software package for eliminating technical artifacts
+from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
+    (license license:bsd-3)))
+
 (define-public python-htsget
   (package
    (name "python-htsget")
@@ -7167,6 +7205,64 @@ sequence.")
 auROC analysis.")
       (license license:gpl3))))
 
+(define-public r-sccustomize
+  (let ((commit "8414d1f5fb32277855b0619191a568932b7baeb0")
+        (revision "1"))
+    (package
+      (name "r-sccustomize")
+      (version (git-version "0.7.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/samuel-marsh/scCustomize")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1wcgfq7lx83a2kf8pjbw524gdvxf351n08cwd5wzmmy57kf4knbj"))))
+      (properties `((upstream-name . "scCustomize")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-circlize
+             r-colorway
+             r-cowplot
+             r-data-table
+             r-dittoseq
+             r-dplyr
+             r-forcats
+             r-ggbeeswarm
+             r-ggplot2
+             r-ggprism
+             r-ggpubr
+             r-ggrastr
+             r-ggrepel
+             r-glue
+             r-janitor
+             r-magrittr
+             r-matrix
+             r-paletteer
+             r-patchwork
+             r-pbapply
+             r-purrr
+             r-remotes
+             r-scales
+             r-scattermore
+             r-seurat
+             r-seuratobject
+             r-stringi
+             r-stringr
+             r-tibble
+             r-tidyr
+             r-tidyselect
+             r-viridis))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/samuel-marsh/scCustomize")
+      (synopsis "Custom visualization and analyses of single-cell sequencing")
+      (description
+       "This is a collection of functions created and/or curated to aid in the
+visualization and analysis of single-cell data using R.")
+      (license license:gpl3+))))
+
 (define-public r-snapatac
   (package
     (name "r-snapatac")
@@ -13520,6 +13616,53 @@ transcription factors, gene regulatory networks and cell types from
 single-cell RNA-seq data.")
     (license license:gpl3+)))
 
+(define-public python-ikarus
+  (package
+    (name "python-ikarus")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ikarus" version))
+       (sha256
+        (base32
+         "086czpvj4yafz4vrq5rx2gy0bj2l8nzwnkk0gw8qvy4w133xjysy"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false
+       #:phases
+       (modify-phases %standard-phases
+         ;; See https://github.com/BIMSBbioinfo/ikarus/issues/12
+         (add-after 'unpack 'fix-issue-12
+           (lambda _
+             (substitute* "ikarus/classifier.py"
+               (("pyscenic.genesig") "ctxcore.genesig"))))
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs
+     (list python-numpy
+           python-pandas
+           python-scipy
+           python-scanpy
+           python-anndata
+           python-ctxcore ;because of issue 12
+           pyscenic))
+    (home-page "https://github.com/BIMSBbioinfo/ikarus")
+    (synopsis "Machine learning classifier of tumor cells")
+    (description
+     "ikarus is a stepwise machine learning pipeline that tries to cope with a task
+of distinguishing tumor cells from normal cells.  Leveraging multiple
+annotated single cell datasets it can be used to define a gene set specific to
+tumor cells.  First, the latter gene set is used to rank cells and then to
+train a logistic classifier for the robust classification of tumor and normal
+cells.  Finally, sensitivity is increased by propagating the cell labels based
+on a custom cell-cell network.  ikarus is tested on multiple single cell
+datasets to ascertain that it achieves high sensitivity and specificity in
+multiple experimental contexts.")
+    (license license:expat)))
+
 (define-public vbz-compression
   (package
     (name "vbz-compression")
@@ -14459,7 +14602,7 @@ The output is in SAM format.")
     (propagated-inputs
      (list libxml2))
     (native-inputs
-     (list check-0.14 swig))
+     (list check swig))
     (home-page "http://sbml.org/Software/libSBML")
     (synopsis "Process SBML files and data streams")
     (description "LibSBML is a library to help you read, write, manipulate,
@@ -15732,6 +15875,35 @@ concise syntax to express CWL workflows.  ccwl is a compiler to generate CWL
 workflows from concise descriptions in ccwl.  It is implemented as an
 @acronym{EDSL, Embedded Domain Specific Language} in the Scheme programming
 language.")
+    (license license:gpl3+)))
+
+(define-public hh-suite
+  (package
+    (name "hh-suite")
+    (version "3.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/soedinglab/hh-suite")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1bcmzg0ii6nkda2xm5jdddbwkgsag7k38j20af0c9chr2mbxwx4d"))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "lib/simde"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #false)) ;no test target
+    (inputs
+     (list openmpi simde))
+    (native-inputs
+     (list perl pkg-config xxd))
+    (home-page "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-3019-7")
+    (synopsis "Remote protein homology detection suite")
+    (description "The HH-suite is a software package for sensitive protein sequence searching
+based on the pairwise alignment of hidden Markov models (HMMs).")
     (license license:gpl3+)))
 
 (define-public wfmash

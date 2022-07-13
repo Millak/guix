@@ -48,10 +48,10 @@
     (_ #f)))
 
 (define* (configure #:key inputs #:allow-other-keys)
-  "Prepare one new directory with all the required dependencies.
-   It's necessary to do this (instead of just using /gnu/store as the
-   directory) because we want to hide the libraries in subdirectories
-   lib/dub/... instead of polluting the user's profile root."
+  "Prepare one new directory with all the required dependencies. It's necessary
+to do this (instead of just using /gnu/store as the directory) because we want
+to hide the libraries in subdirectories lib/dub/... instead of polluting the
+user's profile root."
   (let* ((dir (mkdtemp! "/tmp/dub.XXXXXX"))
          (vendor-dir (string-append dir "/vendor")))
     (setenv "HOME" dir)
@@ -67,8 +67,7 @@
                 (symlink (string-append path "/lib/dub/" d-basename)
                          (string-append vendor-dir "/" d-basename))))))))
       inputs)
-    (invoke "dub" "add-path" vendor-dir)
-    #t))
+    (invoke "dub" "add-path" vendor-dir)))
 
 (define (grep string file-name)
   "Find the first occurrence of STRING in the file named FILE-NAME.
@@ -92,19 +91,11 @@
   (unless (or (grep* "sourceLibrary" "package.json")
               (grep* "sourceLibrary" "dub.sdl") ; note: format is different!
               (grep* "sourceLibrary" "dub.json"))
-    (apply invoke `("dub" "build" ,@dub-build-flags))
-    (substitute* ".dub/dub.json"
-      (("\"lastUpgrade\": \"[^\"]*\"")
-       "\"lastUpgrade\": \"1970-01-01T00:00:00.0000000\"")))
-  #t)
+    (apply invoke `("dub" "build" ,@dub-build-flags))))
 
 (define* (check #:key tests? #:allow-other-keys)
   (when tests?
-    (invoke "dub" "test")
-    (substitute* ".dub/dub.json"
-      (("\"lastUpgrade\": \"[^\"]*\"")
-       "\"lastUpgrade\": \"1970-01-01T00:00:00.0000000\"")))
-  #t)
+    (invoke "dub" "test")))
 
 (define* (install #:key inputs outputs #:allow-other-keys)
   "Install a given DUB package."
@@ -115,8 +106,7 @@
     ;; TODO remove "-test-application"
     (copy-recursively "bin" outbin)
     (mkdir-p outlib)
-    (copy-recursively "." (string-append outlib))
-    #t))
+    (copy-recursively "." (string-append outlib))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases

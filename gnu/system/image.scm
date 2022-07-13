@@ -2,6 +2,7 @@
 ;;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,6 +67,7 @@
             root-label
 
             esp-partition
+            esp32-partition
             root-partition
 
             efi-disk-image
@@ -75,6 +77,7 @@
 
             image-with-os
             efi-raw-image-type
+            efi32-raw-image-type
             qcow2-image-type
             iso-image-type
             uncompressed-iso-image-type
@@ -110,6 +113,11 @@
    (flags '(esp))
    (initializer (gexp initialize-efi-partition))))
 
+(define esp32-partition
+  (partition
+   (inherit esp-partition)
+   (initializer (gexp initialize-efi32-partition))))
+
 (define root-partition
   (partition
    (size 'guess)
@@ -122,6 +130,11 @@
   (image
    (format 'disk-image)
    (partitions (list esp-partition root-partition))))
+
+(define efi32-disk-image
+  (image
+   (format 'disk-image)
+   (partitions (list esp32-partition root-partition))))
 
 (define iso9660-image
   (image
@@ -163,6 +176,11 @@ set to the given OS."
   (image-type
    (name 'efi-raw)
    (constructor (cut image-with-os efi-disk-image <>))))
+
+(define efi32-raw-image-type
+  (image-type
+   (name 'efi32-raw)
+   (constructor (cut image-with-os efi32-disk-image <>))))
 
 (define qcow2-image-type
   (image-type
@@ -257,7 +275,9 @@ set to the given OS."
 
 (define (find-root-partition image)
   "Return the root partition of the given IMAGE."
-  (srfi-1:find root-partition? (image-partitions image)))
+  (or (srfi-1:find root-partition? (image-partitions image))
+      (raise (formatted-message
+              (G_ "image lacks a partition with the 'boot' flag")))))
 
 (define (root-partition-index image)
   "Return the index of the root partition of the given IMAGE."
@@ -356,7 +376,8 @@ used in the image."
              (type (partition-file-system partition))
              (image-builder
               (with-imported-modules*
-               (let ((initializer #$(partition-initializer partition))
+               (let ((initializer (or #$(partition-initializer partition)
+                                      initialize-root-partition))
                      (inputs '#+(list e2fsprogs fakeroot dosfstools mtools))
                      (image-root "tmp-root"))
                  (sql-schema #$schema)
@@ -376,6 +397,7 @@ used in the image."
                                                 #$(image-shared-store? image))
                               #:system-directory #$os
                               #:grub-efi #+grub-efi
+                              #:grub-efi32 #+grub-efi32
                               #:bootloader-package
                               #+(bootloader-package bootloader)
                               #:bootloader-installer
@@ -425,8 +447,8 @@ used in the image."
     (define (genimage-type-options image-type image)
       (cond
        ((equal? image-type "hdimage")
-        (format #f "~%~/~/gpt = ~a~%~/"
-                (if (gpt-image? image) "true" "false")))
+        (format #f "~%~/~/partition-table-type = \"~a\"~%~/"
+                (image-partition-table-type image)))
        (else "")))
 
     (let* ((format (image-format image))
@@ -823,7 +845,10 @@ image, depending on IMAGE format."
           ;; This happens if some limits are exceeded, see:
           ;; https://lists.gnu.org/archive/html/grub-devel/2020-06/msg00048.html
           #:grub-mkrescue-environment
-          '(("MKRESCUE_SED_MODE" . "mbr_only"))))))))
+          '(("MKRESCUE_SED_MODE" . "mbr_only"))))
+       (else
+        (raise (formatted-message
+                (G_ "~a: unsupported image format") image-format)))))))
 
 
 ;;

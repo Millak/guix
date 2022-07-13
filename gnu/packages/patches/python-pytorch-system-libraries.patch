@@ -2,10 +2,10 @@ Use our own googletest rather than the bundled one.
 Get NNPACK to use our own PeachPy rather than the bundled one.
 
 diff --git a/caffe2/CMakeLists.txt b/caffe2/CMakeLists.txt
-index 26210cb5..18b6df27 100644
+index d57d7ebb..5b5622f0 100644
 --- a/caffe2/CMakeLists.txt
 +++ b/caffe2/CMakeLists.txt
-@@ -1723,7 +1723,7 @@ if(BUILD_TEST)
+@@ -1736,7 +1736,7 @@ if(BUILD_TEST)
          if(NOT MSVC)
            add_executable(${test_name}_${CPU_CAPABILITY} "${test_src}" ../aten/src/ATen/native/quantized/affine_quantizer_base.cpp)
            # TODO: Get rid of c10 dependency (which is only needed for the implementation of AT_ERROR)
@@ -14,7 +14,7 @@ index 26210cb5..18b6df27 100644
            if(USE_FBGEMM)
              target_link_libraries(${test_name}_${CPU_CAPABILITY} fbgemm)
            endif()
-@@ -1746,7 +1746,7 @@ if(BUILD_TEST)
+@@ -1759,7 +1759,7 @@ if(BUILD_TEST)
    foreach(test_src ${Caffe2_CPU_TEST_SRCS})
      get_filename_component(test_name ${test_src} NAME_WE)
      add_executable(${test_name} "${test_src}")
@@ -23,16 +23,16 @@ index 26210cb5..18b6df27 100644
      if(USE_OPENMP)
        # -fopenmp is a compile time flag and as result not guaranteed
        # to link executable against OpenMP runtime library
-@@ -1769,7 +1769,7 @@ if(BUILD_TEST)
+@@ -1785,7 +1785,7 @@ if(BUILD_TEST)
      foreach(test_src ${Caffe2_GPU_TEST_SRCS})
        get_filename_component(test_name ${test_src} NAME_WE)
-       cuda_add_executable(${test_name} "${test_src}")
+       add_executable(${test_name} "${test_src}")
 -      target_link_libraries(${test_name} torch_library gtest_main)
 +      target_link_libraries(${test_name} torch_library gtest_main gtest)
        target_include_directories(${test_name} PRIVATE $<INSTALL_INTERFACE:include>)
        target_include_directories(${test_name} PRIVATE ${Caffe2_CPU_INCLUDE})
        add_test(NAME ${test_name} COMMAND $<TARGET_FILE:${test_name}>)
-@@ -1787,7 +1787,7 @@ if(BUILD_TEST)
+@@ -1803,7 +1803,7 @@ if(BUILD_TEST)
      foreach(test_src ${Caffe2_VULKAN_TEST_SRCS})
        get_filename_component(test_name ${test_src} NAME_WE)
        add_executable(${test_name} "${test_src}")
@@ -41,7 +41,7 @@ index 26210cb5..18b6df27 100644
        target_include_directories(${test_name} PRIVATE $<INSTALL_INTERFACE:include>)
        target_include_directories(${test_name} PRIVATE ${Caffe2_CPU_INCLUDE})
        add_test(NAME ${test_name} COMMAND $<TARGET_FILE:${test_name}>)
-@@ -1805,7 +1805,7 @@ if(BUILD_TEST)
+@@ -1821,7 +1821,7 @@ if(BUILD_TEST)
      foreach(test_src ${Caffe2_HIP_TEST_SRCS})
        get_filename_component(test_name ${test_src} NAME_WE)
        add_executable(${test_name} "${test_src}")
@@ -51,10 +51,10 @@ index 26210cb5..18b6df27 100644
        target_include_directories(${test_name} PRIVATE ${Caffe2_CPU_INCLUDE} ${Caffe2_HIP_INCLUDE})
        target_compile_options(${test_name} PRIVATE ${HIP_CXX_FLAGS})
 diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
-index ca560288..c0696e53 100644
+index 557ab649..ee9cf410 100644
 --- a/cmake/Dependencies.cmake
 +++ b/cmake/Dependencies.cmake
-@@ -684,11 +684,6 @@ if(BUILD_TEST OR BUILD_MOBILE_BENCHMARK OR BUILD_MOBILE_TEST)
+@@ -732,11 +732,6 @@ if(BUILD_TEST OR BUILD_MOBILE_BENCHMARK OR BUILD_MOBILE_TEST)
    # this shouldn't be necessary anymore.
    get_property(INC_DIR_temp DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
    set_property(DIRECTORY PROPERTY INCLUDE_DIRECTORIES "")
@@ -66,7 +66,7 @@ index ca560288..c0696e53 100644
  
    # We will not need to test benchmark lib itself.
    set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Disable benchmark testing as we don't need it.")
-@@ -1537,7 +1532,7 @@ if(CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO AND NOT INTERN_DISABLE_ONNX)
+@@ -1543,7 +1538,7 @@ if(CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO AND NOT INTERN_DISABLE_ONNX)
      endif()
      set_property(TARGET onnx_proto PROPERTY IMPORTED_LOCATION ${ONNX_PROTO_LIBRARY})
      message("-- Found onnx: ${ONNX_LIBRARY} ${ONNX_PROTO_LIBRARY}")
@@ -98,10 +98,10 @@ index a41343cb..6075bdd0 100644
 +set(NNPACK_FOUND TRUE)
 +set(USE_NNPACK ON)
 diff --git a/test/cpp/c10d/CMakeLists.txt b/test/cpp/c10d/CMakeLists.txt
-index 2e48773a..a70506ce 100644
+index bf91460c..ef56948f 100644
 --- a/test/cpp/c10d/CMakeLists.txt
 +++ b/test/cpp/c10d/CMakeLists.txt
-@@ -17,14 +17,14 @@ function(c10d_add_test test_src)
+@@ -16,14 +16,14 @@ function(c10d_add_test test_src)
    add_test(NAME ${test_name} COMMAND $<TARGET_FILE:${test_name}>)
  endfunction()
  
@@ -119,7 +119,7 @@ index 2e48773a..a70506ce 100644
    if(INSTALL_TEST)
      install(TARGETS HashStoreTest DESTINATION bin)
    endif()
-@@ -32,11 +32,11 @@ endif()
+@@ -31,11 +31,11 @@ endif()
  
  if(USE_CUDA)
    if(USE_GLOO AND USE_C10D_GLOO)
@@ -133,7 +133,7 @@ index 2e48773a..a70506ce 100644
    endif()
    if(USE_NCCL AND USE_C10D_NCCL)
      # NCCL is a private dependency of libtorch, but the tests include some
-@@ -57,7 +57,7 @@ if(USE_CUDA)
+@@ -56,7 +56,7 @@ if(USE_CUDA)
    endif()
  else()
    if(USE_GLOO AND USE_C10D_GLOO)
@@ -143,10 +143,10 @@ index 2e48773a..a70506ce 100644
  endif()
  
 diff --git a/test/cpp/tensorexpr/CMakeLists.txt b/test/cpp/tensorexpr/CMakeLists.txt
-index 213e99bd..ecaae840 100644
+index 8fc5a0a1..643202f6 100644
 --- a/test/cpp/tensorexpr/CMakeLists.txt
 +++ b/test/cpp/tensorexpr/CMakeLists.txt
-@@ -46,7 +46,7 @@ target_include_directories(tutorial_tensorexpr PRIVATE ${ATen_CPU_INCLUDE})
+@@ -53,7 +53,7 @@ target_include_directories(tutorial_tensorexpr PRIVATE ${ATen_CPU_INCLUDE})
  # pthreadpool header. For some build environment we need add the dependency
  # explicitly.
  if(USE_PTHREADPOOL)

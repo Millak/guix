@@ -1915,14 +1915,14 @@ timestamps in the file header with a fixed time (1 January 2008).
 (define-public libzip
   (package
     (name "libzip")
-    (version "1.8.0")
+    (version "1.9.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://libzip.org/download/libzip-" version ".tar.xz"))
               (sha256
                (base32
-                "0zn9vaiwy2izj8cnm8i7c2mbdn38n328grqb8f07x55s4kd3nxph"))))
+                "0dsrpb1faywhm0j8akx21gp7cn99wpz3h543jw8r7p5jnx99hgn9"))))
     (native-inputs
      (list perl pkg-config))
     (inputs

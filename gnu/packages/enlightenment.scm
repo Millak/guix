@@ -465,7 +465,7 @@ Libraries stack (eo, evas, ecore, edje, emotion, ethumb and elementary).")
            (lambda _ (setenv "HOME" "/tmp") #t)))
        #:tests? #f)) ; tests require running dbus service
     (native-inputs
-     `(("check" ,check-0.14)
+     `(("check" ,check)
        ("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))
     (inputs

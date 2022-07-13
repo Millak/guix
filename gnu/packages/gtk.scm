@@ -279,10 +279,10 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
                        "See 'COPYING' in the distribution."))
    (home-page "https://www.freedesktop.org/wiki/Software/HarfBuzz/")))
 
-(define-public harfbuzz-3.0
+(define-public harfbuzz-3
   (package
     (inherit harfbuzz)
-    (version "3.0.0")
+    (version "3.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/harfbuzz/harfbuzz"
@@ -290,7 +290,20 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
                                   "/harfbuzz-" version ".tar.xz"))
               (sha256
                (base32
-                "1ngk8vn06rryx3s4v5pbl91bw1j1pd4431n77rw3j5a533hhwsq3"))))))
+                "0lprrl8iih8ji1n17xwm5llz05a1hv4g04b7a3y229dq9myahn3i"))))))
+
+(define-public harfbuzz-4
+  (package
+    (inherit harfbuzz)
+    (version "4.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/harfbuzz/harfbuzz"
+                                  "/releases/download/" version
+                                  "/harfbuzz-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0c5mzwgz43d37h75p4b6cgjg4v24jdd96i7gjpgxirn8qks2i5m4"))))))
 
 (define-public libdatrie
   (package
@@ -454,6 +467,29 @@ handling for GTK+-2.x.")
                      (substitute* "tests/Makefile"
                        (("test-layout\\$\\(EXEEXT\\)") ""))
                      #t)))))))
+
+(define-public pango-1.90
+  (package
+    (inherit pango)
+    (name "pango")
+    (version "1.90.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/pango/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (patches (search-patches "pango-skip-libthai-test.patch"))
+              (sha256
+               (base32
+                "1zqif72jxa819bwi4jv2vgac574qas3w37f7qvn8l31rm1jgjf7i"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (substitute* "pango/pangocairo-font.c"
+                     (("cairo_user_font_face_set_render_color_glyph_func")
+                      "cairo_user_font_face_set_render_glyph_func"))))))
+    (inputs (modify-inputs (package-inputs pango)
+               (prepend harfbuzz-4)))))
 
 (define-public pangox-compat
   (package
@@ -683,6 +719,7 @@ highlighting and other features typical of a source code editor.")
      (list ;; Required by gdk-pixbuf-2.0.pc
            glib
            ;; Required by gdk-pixbuf-xlib-2.0.pc
+           ;; TODO: Remove on core-updates.
            libx11
            ;; Used for testing and required at runtime.
            shared-mime-info))
@@ -715,6 +752,34 @@ highlighting and other features typical of a source code editor.")
 formats and stores it as linear buffers in memory.  The buffers can then be
 scaled, composited, modified, saved, or rendered.")
     (home-page "https://wiki.gnome.org/Projects/GdkPixbuf")
+    (license license:lgpl2.1+)))
+
+(define-public gdk-pixbuf-xlib
+  (package
+    (name "gdk-pixbuf-xlib")
+    (version "2.40.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://gitlab.gnome.org/Archive/gdk-pixbuf-xlib.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vwnvqxap3r9zw932jwasazy9sxw49j78x2g650xkn70iili90bg"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:configure-flags '("-Dgtk_doc=true")))
+    (native-inputs (list pkg-config gtk-doc/stable))
+    (inputs (list gdk-pixbuf libx11))
+    (synopsis "Deprecated Xlib integration for GdkPixbuf")
+    (description
+     "GdkPixbuf-Xlib contains the deprecated API for integrating GdkPixbuf with
+Xlib data types.  This library was originally shipped by gdk-pixbuf, and has
+since been moved out of the original repository.  No newly written code should
+ever use this library.")
+    (home-page "https://gitlab.gnome.org/Archive/gdk-pixbuf-xlib")
     (license license:lgpl2.1+)))
 
 ;;; A minimal variant used to prevent a cycle with Inkscape.
@@ -1078,7 +1143,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.6.1")
+    (version "4.6.6")
     (source
      (origin
        (method url-fetch)
@@ -1086,7 +1151,7 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0pzcs24j67f90kjcp6apgn6rffynxksjm1m7d3an7kdv3k90hmfq"))
+        (base32 "0w5fb4grgmb6nhf2glq2y5xqnc9y4v3lm0s9xnbw5xv96p8y9gvv"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
     (build-system meson-build-system)
@@ -1097,10 +1162,10 @@ application suites.")
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
        #:configure-flags
        (list
-        "-Dbroadway-backend=true"      ;for broadway display-backend
-        "-Dcloudproviders=enabled"     ;for cloud-providers support
-        "-Dtracker=enabled"            ;for filechooser search support
-        "-Dcolord=enabled"             ;for color printing support
+        "-Dbroadway-backend=true"       ;for broadway display-backend
+        "-Dcloudproviders=enabled"      ;for cloud-providers support
+        "-Dtracker=enabled"             ;for filechooser search support
+        "-Dcolord=enabled"              ;for color printing support
         ,@(if (%current-target-system)
               ;; If true, gtkdoc-scangobj will try to execute a
               ;; cross-compiled binary.
@@ -1138,9 +1203,13 @@ application suites.")
              (substitute* (find-files "testsuite" "meson.build")
                (("[ \t]*'empty-text.node',") "")
                (("[ \t]*'testswitch.node',") "")
-               (("[ \t]*'widgetfactory.node',") ""))
+               (("[ \t]*'widgetfactory.node',") "")
+               ;; The unaligned-offscreen test fails for unknown reasons, also
+               ;; on different distributions (see:
+               ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/4889).
+               (("  'unaligned-offscreen',") ""))
              (substitute* "testsuite/reftests/meson.build"
-               (("[ \t]*'label-wrap-justify.ui',") "")) ))
+               (("[ \t]*'label-wrap-justify.ui',") ""))))
          (add-before 'build 'set-cache
            (lambda _
              (setenv "XDG_CACHE_HOME" (getcwd))))
@@ -1187,72 +1256,72 @@ application suites.")
                 (string-append out "/share/doc")
                 (string-append doc "/share/doc"))))))))
     (native-inputs
-     `(("docbook-xml-4.3" ,docbook-xml-4.3)
-       ("docbook-xsl" ,docbook-xsl)
-       ("gettext-minimal" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection) ;for building introspection data
-       ("graphene" ,graphene)
-       ("gtk-doc" ,gtk-doc)             ;for building documentation
-       ("intltool" ,intltool)
-       ("libxslt" ,libxslt)             ;for building man-pages
-       ("pkg-config" ,pkg-config)
-       ("python-pygobject" ,python-pygobject)
-       ;; These python modules are required for building documentation.
-       ("python-docutils" ,python-docutils)
-       ("python-jinja2" ,python-jinja2)
-       ("python-markdown" ,python-markdown)
-       ("python-markupsafe" ,python-markupsafe)
-       ("python-pygments" ,python-pygments)
-       ("python-toml" ,python-toml)
-       ("python-typogrify" ,python-typogrify)
-       ("sassc" ,sassc)                 ;for building themes
-       ("tzdata" ,tzdata-for-tests)
-       ("vala" ,vala)
-       ("xorg-server-for-tests" ,xorg-server-for-tests)))
+     (list docbook-xml-4.3
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection        ;for building introspection data
+           graphene
+           gtk-doc                      ;for building documentation
+           intltool
+           libxslt                      ;for building man-pages
+           pkg-config
+           python-pygobject
+           ;; These python modules are required for building documentation.
+           python-docutils
+           python-jinja2
+           python-markdown
+           python-markupsafe
+           python-pygments
+           python-toml
+           python-typogrify
+           sassc                        ;for building themes
+           tzdata-for-tests
+           vala
+           xorg-server-for-tests))
     (inputs
-     (list colord ;for color printing support
-           cups ;for CUPS print-backend
-           ffmpeg ;for ffmpeg media-backend
+     (list colord                       ;for color printing support
+           cups                         ;for CUPS print-backend
+           ffmpeg                       ;for ffmpeg media-backend
            fribidi
-           gstreamer ;for gstreamer media-backend
-           gst-plugins-bad ;provides gstreamer-player
-           gst-plugins-base ;provides gstreamer-gl
+           gstreamer                    ;for gstreamer media-backend
+           gst-plugins-bad              ;provides gstreamer-player
+           gst-plugins-base             ;provides gstreamer-gl
            harfbuzz
            iso-codes
            json-glib
-           libcloudproviders ;for cloud-providers support
+           libcloudproviders            ;for cloud-providers support
            libjpeg-turbo
            libpng
            librsvg
            libtiff
            python
            rest
-           tracker))          ;for filechooser search support
+           tracker))                    ;for filechooser search support
     (propagated-inputs
      ;; Following dependencies are referenced in .pc files.
-     `(("cairo" ,cairo)
-       ("fontconfig" ,fontconfig)
-       ("librsvg" ,librsvg)
-       ("glib" ,glib)
-       ("graphene" ,graphene)
-       ("libepoxy" ,libepoxy)
-       ("libx11" ,libx11)               ;for x11 display-backend
-       ("libxcomposite" ,libxcomposite)
-       ("libxcursor" ,libxcursor)
-       ("libxdamage" ,libxdamage)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)     ;for xinerama support
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("pango" ,pango-next)
-       ("vulkan-headers" ,vulkan-headers)
-       ("vulkan-loader" ,vulkan-loader) ;for vulkan graphics API support
-       ("wayland" ,wayland)             ;for wayland display-backend
-       ("wayland-protocols" ,wayland-protocols)))
+     (list cairo
+           fontconfig
+           librsvg
+           glib
+           graphene
+           libepoxy
+           libx11                       ;for x11 display-backend
+           libxcomposite
+           libxcursor
+           libxdamage
+           libxext
+           libxfixes
+           libxi
+           libxinerama                  ;for xinerama support
+           libxkbcommon
+           libxrandr
+           libxrender
+           pango-next
+           vulkan-headers
+           vulkan-loader                ;for vulkan graphics API support
+           wayland                      ;for wayland display-backend
+           wayland-protocols))
     (native-search-paths
      (list
       (search-path-specification

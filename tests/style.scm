@@ -504,6 +504,25 @@ mnopqrstuvwxyz.\")"
          #:make-flags #~'(\"ANSWER=42\")
          #:tests? #f)))")
 
+(test-pretty-print "\
+(let ((x 1)
+      (y 2)
+      (z (let* ((a 3)
+                (b 4))
+           (+ a b))))
+  (list x y z))")
+
+(test-pretty-print "\
+(substitute-keyword-arguments (package-arguments x)
+  ((#:phases phases)
+   `(modify-phases ,phases
+      (add-before 'build 'do-things
+        (lambda _
+          #t))))
+  ((#:configure-flags flags)
+   `(cons \"--without-any-problem\"
+          ,flags)))")
+
 (test-equal "pretty-print-with-comments, canonicalize-comment"
   "\
 (list abc

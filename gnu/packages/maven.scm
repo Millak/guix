@@ -3938,3 +3938,30 @@ method and a end of tag by @code{xxxx_()} method.")
     (description "@samp{Doxia} is a content generation framework that provides
 powerful techniques for generating static and dynamic content, supporting a
 variety of markup languages.")))
+
+(define-public maven-doxia-core
+  (package
+    (inherit maven-doxia-sink-api)
+    (name "maven-doxia-core")
+    (arguments
+     `(#:jar-name "doxia-core.jar"
+       #:source-dir "doxia-core/src/main/java"
+       #:test-dir "doxia-core/src/test/java"
+       #:tests? #f ; tests require JUnit5
+       #:phases (modify-phases %standard-phases
+                  (replace 'install
+                    (install-from-pom "doxia-core/pom.xml")))))
+    (propagated-inputs (list maven-doxia-parent-pom
+                             maven-doxia-sink-api
+                             java-slf4j-api
+                             java-javax-inject
+                             java-plexus-utils
+                             java-eclipse-sisu-plexus
+                             java-commons-text))
+    (synopsis "Doxia core classes and interfaces")
+    (description
+     "Doxia is a content generation framework that provides powerful
+techniques for generating static and dynamic content, supporting a variety of
+markup languages.
+
+This package contains Doxia core classes and interfaces.")))

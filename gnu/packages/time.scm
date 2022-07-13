@@ -43,6 +43,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)

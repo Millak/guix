@@ -57,6 +57,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -131,6 +132,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
@@ -146,6 +148,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages syncthing)           ;for go-github-com-lib-pq
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
@@ -650,13 +653,13 @@ replacement for the code@{python-memcached} library.")
 (define-public litecli
  (package
   (name "litecli")
-  (version "1.8.0")
+  (version "1.9.0")
   (source
    (origin
      (method url-fetch)
      (uri (pypi-uri "litecli" version))
      (sha256
-      (base32 "0ghh8hq5bw3y2ybiy4ibbdfz55jxvilg1s6zmhxmqikhg5s95xh2"))))
+      (base32 "1897divrdqlhl1p5jvvm29rg3d99f48s58na7hgdzm1x13x2rbr1"))))
   (build-system python-build-system)
   (propagated-inputs
    (list python-cli-helpers
@@ -1398,7 +1401,7 @@ PostgreSQL extension, providing automatic partitioning across time and space
 (define-public pgloader
   (package
     (name "pgloader")
-    (version "3.6.3")
+    (version "3.6.4")
     (source
      (origin
        (method git-fetch)
@@ -1406,7 +1409,7 @@ PostgreSQL extension, providing automatic partitioning across time and space
              (url "https://github.com/dimitri/pgloader")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "147dcf0rmi94p95dvifx8qy7602fvs041dv9wlg3q31ly13agwb5"))
+        (base32 "05lpa0r5l7pvx97ljfb0cryxz11krczbb86gi1i1ixp0h9bvqw2a"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -1549,7 +1552,7 @@ organized in a hash table or B+ tree.")
      ;; XXX Without labels, the default 'configure phase picks the wrong "bash".
      `(("bc" ,bc)
        ("bash:include" ,bash "include")
-       ("check" ,check-0.14)
+       ("check" ,check)
        ("pkg-config" ,pkg-config)))
     (inputs
      ;; TODO: Add more optional inputs.
@@ -1569,14 +1572,14 @@ types are supported, as is encryption.")
 (define-public emacs-rec-mode
   (package
     (name "emacs-rec-mode")
-    (version "1.8.3")
+    (version "1.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/"
                                   "rec-mode-" version ".tar"))
               (sha256
                (base32
-                "0lkmvvdj4xx3qhxqggizrcdawav0accyrza2wmhfdq88g2zh5575"))
+                "1w1q6kh567fd8xismq9i6wr1y893lypd30l452yvydi1qjiq1n6x"))
               (snippet '(begin (delete-file "rec-mode.info")))))
     (build-system emacs-build-system)
     (arguments
@@ -4760,3 +4763,35 @@ create design, and edit database file compatible with SQLite.")
      ;; dual license
      (list license:gpl3+
            license:mpl2.0))))
+
+(define-public sqls
+  (package
+    (name "sqls")
+    (version "0.2.18")
+    (home-page "https://github.com/lighttiger2505/sqls")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13837v27avdp2nls3vyy7ml12nj7rxragchwf92adn10ffp4aj6c"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/lighttiger2505/sqls"))
+    (inputs (list go-github-com-go-sql-driver-mysql
+                  go-github-com-lib-pq
+                  go-github-com-mattn-go-sqlite3
+                  go-github-com-olekukonko-tablewriter
+                  go-github-com-pkg-errors
+                  go-github-com-sourcegraph-jsonrpc2
+                  go-golang-org-x-crypto
+                  go-github.com-mattn-go-runewidth
+                  go-golang-org-x-xerrors
+                  go-gopkg-in-yaml-v2))
+    (synopsis "SQL language server written in Go")
+    (description
+     "This package implements the @acronym{LSP, Language Server Protocol} for SQL.")
+    (license license:expat)))

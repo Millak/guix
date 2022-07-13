@@ -83,6 +83,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/desktop.scm			\
   %D%/home/services/symlink-manager.scm		\
   %D%/home/services/fontutils.scm		\
+  %D%/home/services/guix.scm			\
   %D%/home/services/shells.scm			\
   %D%/home/services/shepherd.scm		\
   %D%/home/services/ssh.scm			\
@@ -955,6 +956,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/clang-runtime-esan-build-fixes.patch	\
   %D%/packages/patches/clang-runtime-9-libsanitizer-mode-field.patch	\
   %D%/packages/patches/clang-runtime-3.5-libsanitizer-mode-field.patch	\
+  %D%/packages/patches/clang-runtime-3.7-fix-build-with-python3.patch	\
   %D%/packages/patches/clang-runtime-3.9-libsanitizer-mode-field.patch	\
   %D%/packages/patches/clang-runtime-3.8-libsanitizer-mode-field.patch	\
   %D%/packages/patches/classpath-aarch64-support.patch		\
@@ -977,6 +979,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/crda-optional-gcrypt.patch		\
   %D%/packages/patches/clucene-contribs-lib.patch               \
   %D%/packages/patches/cube-nocheck.patch			\
+  %D%/packages/patches/curl-easy-lock.patch			\
   %D%/packages/patches/curl-use-ssl-cert-env.patch		\
   %D%/packages/patches/cursynth-wave-rand.patch			\
   %D%/packages/patches/cvs-CVE-2017-12836.patch		\
@@ -1004,7 +1007,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/docbook-xsl-support-old-url.patch	\
   %D%/packages/patches/doc++-include-directives.patch		\
   %D%/packages/patches/doc++-segfault-fix.patch			\
-  %D%/packages/patches/docker-fix-tests.patch			\
   %D%/packages/patches/dovecot-trees-support-dovecot-2.3.patch	\
   %D%/packages/patches/dstat-fix-crash-when-specifying-delay.patch	\
   %D%/packages/patches/dstat-skip-devices-without-io.patch	\
@@ -1031,7 +1033,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-json-reformat-fix-tests.patch	\
   %D%/packages/patches/emacs-helpful-fix-docstring-test.patch	\
   %D%/packages/patches/emacs-highlight-stages-add-gexp.patch	\
-  %D%/packages/patches/emacs-hyperbole-toggle-messaging.patch	\
   %D%/packages/patches/emacs-libgit-use-system-libgit2.patch    \
   %D%/packages/patches/emacs-lispy-fix-thread-last-test.patch   \
   %D%/packages/patches/emacs-source-date-epoch.patch		\
@@ -1451,6 +1452,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/llhttp-bootstrap-CVE-2020-8287.patch	\
   %D%/packages/patches/llvm-3.5-fix-clang-build-with-gcc5.patch	\
   %D%/packages/patches/llvm-3.6-fix-build-with-gcc-10.patch	\
+  %D%/packages/patches/llvm-3.x.1-fix-build-with-gcc.patch	\
+  %D%/packages/patches/llvm-8-fix-build-with-gcc-10.patch	\
   %D%/packages/patches/llvm-9-fix-bitcast-miscompilation.patch	\
   %D%/packages/patches/llvm-9-fix-lpad-miscompilation.patch	\
   %D%/packages/patches/llvm-9-fix-scev-miscompilation.patch	\
@@ -1481,6 +1484,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/maxima-defsystem-mkdir.patch		\
   %D%/packages/patches/maven-generate-component-xml.patch		\
   %D%/packages/patches/maven-generate-javax-inject-named.patch		\
+  %D%/packages/patches/mcrl2-fix-1687.patch			\
+  %D%/packages/patches/mcrl2-fix-counterexample.patch		\
   %D%/packages/patches/mcrypt-CVE-2012-4409.patch			\
   %D%/packages/patches/mcrypt-CVE-2012-4426.patch			\
   %D%/packages/patches/mcrypt-CVE-2012-4527.patch			\
@@ -1493,6 +1498,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/meson-allow-dirs-outside-of-prefix.patch	\
   %D%/packages/patches/mhash-keygen-test-segfault.patch		\
   %D%/packages/patches/mia-fix-boost-headers.patch		\
+  %D%/packages/patches/mia-vtk9.patch				\
   %D%/packages/patches/mingw-w64-6.0.0-gcc.patch		\
   %D%/packages/patches/mingw-w64-dlltool-temp-prefix.patch	\
   %D%/packages/patches/mingw-w64-reproducible-gendef.patch	\
@@ -1589,9 +1595,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/password-store-tree-compat.patch		\
   %D%/packages/patches/pciutils-hurd-configure.patch		\
   %D%/packages/patches/pciutils-hurd-fix.patch			\
-  %D%/packages/patches/pitivi-fix-build-with-meson-0.60.patch	\
   %D%/packages/patches/pjproject-install-libpjsua2.patch	\
   %D%/packages/patches/plasma-framework-fix-KF5PlasmaMacros.cmake.patch \
+  %D%/packages/patches/pokerth-boost.patch			\
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
   %D%/packages/patches/pthreadpool-system-libraries.patch	\
   %D%/packages/patches/python-chai-drop-python2.patch		\
@@ -1837,6 +1843,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tar-remove-wholesparse-check.patch	\
   %D%/packages/patches/tar-skip-unreliable-tests.patch		\
   %D%/packages/patches/tbb-fix-test-on-aarch64.patch		\
+  %D%/packages/patches/tbb-other-arches.patch			\
   %D%/packages/patches/tclxml-3.2-install.patch			\
   %D%/packages/patches/tcsh-fix-autotest.patch			\
   %D%/packages/patches/teensy-loader-cli-help.patch		\
@@ -1948,8 +1955,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/x265-arm-flags.patch			\
   %D%/packages/patches/xdg-desktop-portal-wlr-harcoded-length.patch\
   %D%/packages/patches/xf86-video-ark-remove-mibstore.patch	\
-  %D%/packages/patches/xf86-video-mach64-bool-to-boolean.patch	\
-  %D%/packages/patches/xf86-video-mach64-glibc-2.20.patch	\
   %D%/packages/patches/xf86-video-nouveau-fixup-ABI.patch	\
   %D%/packages/patches/xf86-video-qxl-fix-build.patch	\
   %D%/packages/patches/xf86-video-savage-xorg-compat.patch 	\

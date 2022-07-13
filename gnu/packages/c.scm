@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
+;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +49,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages guile)
@@ -62,6 +64,52 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
+
+(define-public cproc
+  (let ((commit "70fe9ef1810cc6c05bde9eb0970363c35fa7e802")
+        (revision "1"))
+    (package
+      (name "cproc")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~mcf/cproc")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1qmgzll7z7mn587azkj4cizyyd8ii6iznfxpc66ja08140sbn9yx"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((gcc-lib (assoc-ref inputs "gcc:lib"))
+                      (host-system #$(nix-system->gnu-triplet
+                                      (%current-system)))
+                      (target-system #$(nix-system->gnu-triplet
+                                        (or (%current-target-system)
+                                            (%current-system)))))
+                  (invoke "./configure"
+                          (string-append "--prefix=" #$output)
+                          (string-append "--host=" host-system)
+                          (string-append "--target=" target-system)
+                          (string-append "--with-ld=" #$(ld-for-target))
+                          (string-append "--with-gcc-libdir=" gcc-lib))))))))
+      (inputs `(("qbe" ,qbe)
+                ("gcc:lib" ,gcc "lib")))
+      (supported-systems (list "x86_64-linux" "aarch64-linux"))
+      (synopsis "Simple C11 compiler backed by QBE")
+      (description "@code{cproc} is a C compiler using QBE as a backend,
+ supporting most of C11 along with some GCC and C2x extensions.")
+      (home-page "https://sr.ht/~mcf/cproc")
+      (license license:expat))))
 
 (define-public tcc
   (package
@@ -147,44 +195,38 @@ compiler while still keeping it small, simple, fast and understandable.")
     (license (list license:bsd-2 license:bsd-3))))
 
 (define-public qbe
-  (let ((commit "2caa26e388b1c904d2f12fb09f84df7e761d8331")
-        (revision "1"))
-    (package
-      (name "qbe")
-      (version (git-version "0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "git://c9x.me/qbe")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1gv03ym0gqrl4wkbhysa82025xwrkr1fg44z814b6vnggwlqgljc"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list #:make-flags
-             #~(list (string-append "CC=" #$(cc-for-target))
-                     (string-append "PREFIX=" #$output))
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'allow-cross-compilation
-                   (lambda _
-                     (substitute* "Makefile"
-                       (("`uname -m`") #$(or (%current-target-system)
-                                             (%current-system))))))
-                 (add-after 'allow-cross-compilation 'use-$CC-for-tests
-                   (lambda _
-                     (substitute* "tools/test.sh"
-                       (("cc=\"cc -no-pie\"") "cc=\"${CC} -no-pie\""))))
-                 (delete 'configure))))
-      (supported-systems (list "x86_64-linux" "aarch64-linux" "riscv64-linux"))
-      (synopsis "Simple compiler backend")
-      (description
-       "QBE is a small compiler backend using an SSA-based intermediate
+  (package
+    (name "qbe")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "git://c9x.me/qbe")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qx4a3fjjrp2m4dsn19rpbjf89k9w7w7l09s96jx8vv15vzsdgis"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'allow-cross-compilation
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("`uname -m`") #$(or (%current-target-system)
+                                           (%current-system))))))
+               (delete 'configure))))
+    (supported-systems (list "x86_64-linux" "aarch64-linux" "riscv64-linux"))
+    (synopsis "Simple compiler backend")
+    (description
+     "QBE is a small compiler backend using an SSA-based intermediate
 language as input.")
-      (home-page "https://c9x.me/compile/")
-      (license license:expat))))
+    (home-page "https://c9x.me/compile/")
+    (license license:expat)))
 
 (define-public python-pcpp
   (package
@@ -311,6 +353,11 @@ Its three main components are:
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config check))
+    (native-search-paths
+     (list
+      (search-path-specification
+       (variable "C_INCLUDE_PATH")
+       (files '("include")))))
     (synopsis "Thin wrapper over POSIX syscalls")
     (description
      "The purpose of libfixposix is to offer replacements for parts of POSIX
@@ -1133,4 +1180,42 @@ performance concurrent systems developed in C99+.")
       (description "A simple one header solution to supporting UTF-8 strings in
 C and C++.  The functions it provides are like those from the C header
 string.h, but with a utf8* prefix instead of the str* prefix.")
+      (license license:unlicense))))
+
+(define-public utest-h
+  ;; The latest commit is used as there is no release.
+  (let ((commit   "54458e248f875f1a51f0af8bec8ca6ae7761b9d1")
+        (revision "0"))
+    (package
+      (name "utest-h")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sheredom/utest.h")
+                      (commit commit)))
+                (file-name (git-file-name "utest.h" version))
+                (sha256
+                 (base32
+                  "1ikl5jwmjdw1mblqyl2kvnqwkjgaz78c1h7mjcfmzjc0d3h8kh44"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (delete 'build)
+                    (delete 'configure)
+                    (replace 'check
+                      (lambda* (#:key tests? #:allow-other-keys)
+                        (when tests?
+                          (with-directory-excursion "test"
+                                                    (invoke "cmake" ".")
+                                                    (invoke "make")))))
+                    (replace 'install
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (let ((out (assoc-ref outputs "out")))
+                          (install-file "utest.h"
+                                        (string-append out "/include"))))))))
+      (home-page "https://www.duskborn.com/utest_h/")
+      (synopsis "Single-header unit testing framework for C and C++")
+      (description
+       "This package provides a header-only unit testing library for C/C++.")
       (license license:unlicense))))

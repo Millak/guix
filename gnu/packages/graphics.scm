@@ -30,6 +30,7 @@
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2054,3 +2055,68 @@ and build scripts for the OpenXR loader.")
 such as VR and AR on mobile, PC/desktop, and any other device.  Monado aims to be
 a complete and conforming implementation of the OpenXR API made by Khronos.")
     (license license:boost1.0)))
+
+(define-public azpainter
+  (package
+    (name "azpainter")
+    (version "3.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/azelpg/azpainter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1iplp3p8pw9q44kb43hrk89sv2aff6bdy9fk58j2v6k5lqbk6kvf"))))
+    (build-system gnu-build-system) ;actually a home grown build system
+    (arguments
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (invoke "./configure"
+                           (string-append "--prefix="
+                                          #$output))))
+               (replace 'build
+                 (lambda* (#:key parallel-build? #:allow-other-keys)
+                   (let ((job-count (if parallel-build?
+                                        (number->string (parallel-job-count))
+                                        "1")))
+                     (invoke "ninja" "-j" job-count "-C" "build"))))
+               (add-before 'install 'disable-cache-generation
+                 (lambda _
+                   (setenv "DESTDIR" "/") #t))
+               (replace 'install
+                 (lambda _
+                   (invoke "ninja" "-C" "build" "install"))))))
+    (inputs (list fontconfig
+                  freetype
+                  libjpeg-turbo
+                  libpng
+                  libtiff
+                  libwebp
+                  libx11
+                  libxcursor
+                  libxext
+                  libxi
+                  zlib))
+    (native-inputs (list ninja pkg-config))
+    (home-page "http://azsky2.html.xdomain.jp/soft/azpainter.html")
+    (synopsis "Paint software for editing illustrations and images")
+    (description
+     "AzPainter is a lightweight full color painting application for editing
+illustrations and images.
+
+Features include:
+@itemize
+@item Layers
+@item Many artistic filters
+@item Good range of selection tools
+@item Pen pressure support with automatic brush size adjustment
+@item Support for 16-bit color images with transparency (RGBA)
+@item Support for image formats like PSD, PNG, JPEG, TIFF, WebP
+@end itemize
+")
+    (license license:gpl3+)))

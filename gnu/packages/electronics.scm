@@ -112,7 +112,7 @@ to take care of the OS-specific details when writing software that uses serial p
                                               "/share/doc/libsigrokdecode"))
              #t)))))
     (native-inputs
-     (list check-0.14 doxygen graphviz pkg-config automake autoconf))
+     (list check doxygen graphviz pkg-config automake autoconf))
     ;; libsigrokdecode.pc lists "python" in Requires.private, and "glib" in Requires.
     (propagated-inputs
      (list glib python))

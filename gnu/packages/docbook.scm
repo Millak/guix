@@ -476,37 +476,37 @@ the in DocBook SGML DTDs.")
     ;; TODO: Add xfig/transfig for fig2dev utility
     (inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                        texlive-latex-anysize
-                                        texlive-latex-appendix
-                                        texlive-latex-bookmark
-                                        texlive-latex-changebar
-                                        texlive-latex-colortbl
-                                        texlive-latex-fancybox
-                                        texlive-latex-fancyhdr
-                                        texlive-latex-fancyvrb
-                                        texlive-latex-float
-                                        texlive-latex-footmisc
-                                        texlive-hyperref
-                                        texlive-latex-jknapltx
+                                             texlive-latex-anysize
+                                             texlive-latex-appendix
+                                             texlive-latex-bookmark
+                                             texlive-latex-changebar
+                                             texlive-latex-colortbl
+                                             texlive-latex-fancybox
+                                             texlive-latex-fancyhdr
+                                             texlive-latex-fancyvrb
+                                             texlive-latex-float
+                                             texlive-latex-footmisc
+                                             texlive-hyperref
+                                             texlive-latex-jknapltx
 
-                                        ;; TODO: Use non-deprecated name on
-                                        ;; next rebuild cycle.
-                                        texlive-latex-listings
+                                             ;; TODO: Use non-deprecated name on
+                                             ;; next rebuild cycle.
+                                             texlive-latex-listings
 
-                                        texlive-latex-multirow
-                                        texlive-latex-overpic
-                                        texlive-latex-pdfpages
-                                        texlive-latex-refcount
-                                        texlive-latex-subfigure
-                                        texlive-latex-titlesec
-                                        texlive-wasysym
+                                             texlive-latex-multirow
+                                             texlive-latex-overpic
+                                             texlive-latex-pdfpages
+                                             texlive-latex-refcount
+                                             texlive-latex-subfigure
+                                             texlive-latex-titlesec
+                                             texlive-wasysym
 
-                                        texlive-fonts-rsfs
-                                        texlive-stmaryrd
+                                             texlive-fonts-rsfs
+                                             texlive-stmaryrd
 
-                                        texlive-generic-iftex)))
+                                             texlive-generic-iftex)))
        ("imagemagick" ,imagemagick)     ;for convert
-       ("inkscape" ,inkscape)           ;for svg conversion
+       ("inkscape" ,inkscape/stable)    ;for svg conversion
        ("docbook" ,docbook-xml)
        ("libxslt" ,libxslt)))           ;for xsltproc
     (arguments

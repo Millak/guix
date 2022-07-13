@@ -94,7 +94,7 @@
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021, 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -911,6 +911,77 @@ with Python's logging module that outputs records using terminal colors.")
 progress bar and a percentage indicator object that let you track the progress
 of a loop structure or other iterative computation.")
     (license license:bsd-3)))
+
+(define-public python-glymur
+  (package
+    (name "python-glymur")
+    (version "0.10.1")
+    (source
+     (origin
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/quintusdias/glymur")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cq9r8vzwvds1kasy5gc2rxw034jh9l43rraps1n739072pfz6qg"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-library-locations
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; XXX: It's a workaround for Python inability to find the
+              ;; .so libraries with ctypes.util.find_library()
+              (substitute* '("glymur/config.py")
+                (("path = find_library\\(libname\\)")
+                 (string-append
+                  "if libname == \"openjp2\":\n"
+                  "        path = \""
+                  (search-input-file inputs "/lib/libopenjp2.so") "\"\n"
+                  "    elif libname == \"tiff\":\n"
+                  "        path = \""
+                  (search-input-file inputs "/lib/libtiff.so") "\"\n"
+                  "    elif libname == \"c\":\n"
+                  "        path = \""
+                  (search-input-file inputs "/lib/libc.so.6") "\"\n")))))
+          ;; TODO: implement as a feature of python-build-system (PEP-621,
+          ;; PEP-631, PEP-660)
+          (replace 'build
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Failing test due to inability of
+                ;; ctypes.util.find_library() to determine library path,
+                ;; which is patched above.
+                (delete-file "tests/test_config.py")
+                (invoke "python" "-m" "pytest" "-vv" "tests")))))))
+    (native-inputs
+     (list python-pypa-build python-pytest))
+    (inputs
+     (list openjpeg  ; glymur/lib/openjp2.py
+           libtiff)) ; glymur/lib/tiff.py
+    (propagated-inputs
+     (list python-lxml
+           python-numpy
+           python-packaging))
+    (home-page "https://github.com/quintusdias/glymur")
+    (synopsis "Python interface to OpenJPEG and LibTIFF")
+    (description
+     "This package provides Python interface to the OpenJPEG library which
+allows one to read and write JPEG 2000 files")
+    (license license:expat)))
 
 (define-public python-gphoto2
   (package
@@ -2948,6 +3019,48 @@ software.")
   (package
     (inherit (package-with-python2 scons))
     (name "scons-python2")))
+
+(define-public python-exceptiongroup
+  (package
+    (name "python-exceptiongroup")
+    (version "1.0.0rc8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/agronholm/exceptiongroup")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xsbpv22n51p6yvyvz231mf8zhbi1i88b4zmacaxxx31zrq5ifv4"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build/install procedures copied from
+          ;; python-isort.
+          (replace 'build
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests")))))))
+    (native-inputs (list python-flit-scm python-pypa-build python-pytest))
+    (home-page "https://github.com/agronholm/exceptiongroup")
+    (synopsis "PEP 654 backport from Python 3.11")
+    (description "This is a backport of the @code{BaseExceptionGroup} and
+@code{ExceptionGroup} classes from Python 3.11.")
+    (license license:expat)))
 
 (define-public python-extension-helpers
 (package
@@ -5065,6 +5178,34 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
 errors when data is invalid.")
     (license license:expat)))
 
+(define-public python-pydantic-cli
+  (package
+    (name "python-pydantic-cli")
+    (version "4.3.0")
+    (source
+     (origin
+       (method git-fetch)               ;for tests
+       (uri (git-reference
+             (url "https://github.com/mpkocher/pydantic-cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1v4dx6n60rbsan5zpw2rgdih7lb3h0xclagn1p6zfwl0r9l9cvym"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-pydantic))
+    (native-inputs
+     (list python-black
+           python-mypy
+           python-pytest))
+    (home-page "https://github.com/mpkocher/pydantic-cli")
+    (synopsis "Turn Pydantic defined data models into CLI tools")
+    (description
+     "@code{python-pydantic} enables specifying @acronym{CLI, Command Line
+Interfaces} via data models provided in the JSON format.")
+    (license license:expat)))
+
 (define-public python-pydocstyle
   (package
     (name "python-pydocstyle")
@@ -6314,7 +6455,7 @@ toolkits.")
                          (string-append info "/matplotlib-figures"))))))))
     (native-inputs
      (list graphviz
-           inkscape
+           inkscape/stable
            python-colorspacious
            python-mpl-sphinx-theme
            python-scipy
@@ -7812,27 +7953,6 @@ controlling them; and responding to expected patterns in their output.
 Pexpect works like Don Libes’ Expect.  Pexpect allows your script to spawn a
 child application and control it as if a human were typing commands.")
     (license license:isc)))
-
-(define-public python-setuptools-scm
-  (package
-    (name "python-setuptools-scm")
-    (version "6.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "setuptools_scm" version))
-              (sha256
-               (base32 "1wm0i27siyy1yqr9rv7lqvb65agay9051yi8jzmi8dgb3q4ai6m4"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     `(("python-packaging",python-packaging-bootstrap)
-       ("python-tomli" ,python-tomli)))
-    (home-page "https://github.com/pypa/setuptools_scm/")
-    (synopsis "Manage Python package versions in SCM metadata")
-    (description
-     "Setuptools_scm handles managing your Python package versions in
-@dfn{software configuration management} (SCM) metadata instead of declaring
-them as the version argument or in a SCM managed file.")
-    (license license:expat)))
 
 (define-public python-sexpdata
   (package
@@ -11501,14 +11621,15 @@ distribution.  It is not intended as an end-user tool.")
 (define-public python-immutables
   (package
     (name "python-immutables")
-    (version "0.14")
+    (version "0.18")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "immutables" version))
        (sha256
-        (base32 "0y0aqw29g525frdnmv9paljzacpp4s21sadfbca5b137iciwr8d0"))))
+        (base32 "1x4cinh0xbl6p6p2yfm2s07mxxy3lf0zzai9gqpydk4482bwfdjk"))))
     (build-system python-build-system)
+    (native-inputs (list python-mypy python-pytest))
     (home-page "https://github.com/MagicStack/immutables")
     (synopsis "High-performance immutable mapping type for Python")
     (description
@@ -13027,7 +13148,7 @@ time.")
                            "and not test_execute_widgets_from_nbconvert "
                            "and not test_execute_multiple_notebooks ")))))))))
     (inputs
-     (list inkscape pandoc))
+     (list inkscape/stable pandoc))
     (native-inputs
      (list python-ipykernel
            ;; Adding ipywidgets would create a cycle.
@@ -16006,7 +16127,27 @@ graphviz.")
               (snippet
                '(begin
                   ;; unbunding libev and c-ares
-                  (delete-file-recursively "deps")))))
+                  (delete-file-recursively "deps")
+                  ;; Remove cythonized files.
+                  (with-directory-excursion "src/gevent"
+                    (for-each delete-file
+                              (append (list "resolver/cares.c"
+                                            "queue.c"
+                                            "local.c"
+                                            "libev/corecext.h"
+                                            "libev/corecext.c"
+                                            "greenlet.c"
+                                            "event.c"
+                                            "_waiter.c"
+                                            "_tracer.c"
+                                            "_semaphore.c"
+                                            "_imap.c"
+                                            "_ident.c"
+                                            "_hub_primitives.c"
+                                            "_hub_local.c"
+                                            "_greenlet_primitives.c"
+                                            "_abstract_linkable.c")
+                                      (find-files "." "\\.html$"))))))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((ice-9 ftw)
@@ -16094,8 +16235,9 @@ graphviz.")
     (propagated-inputs
      (list python-greenlet python-zope-event python-zope-interface))
     (native-inputs
-     ;; For tests.
-     (list python-dnspython python-psutil python-objgraph))
+     (list python-cython
+           ;; For tests.
+           python-dnspython python-psutil python-objgraph))
     (inputs
      (list c-ares libev))
     (home-page "https://www.gevent.org/")
@@ -16522,6 +16664,73 @@ exchange data among multiple languages like JSON.  But it's faster and
 smaller.  Small integers are encoded into a single byte, and typical short
 strings require only one extra byte in addition to the strings themselves.")
     (license license:asl2.0)))
+
+(define-public python-cattrs
+  (package
+    (name "python-cattrs")
+    (version "22.1.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/python-attrs/cattrs")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1n0h25gj6zd02kqyl040xpdvg4hpy1j92716sz0rg019xjqqijqb"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (add-after 'unpack 'adjust-for-older-attrs
+            ;; Our older attrs package is using the 'attr' rather than 'attrs'
+            ;; namespace.
+            ;; TODO: Remove after python-attrs is updated to >= 21.4.0.
+            (lambda _
+              (substitute* (find-files "." "\\.py$")
+                (("from attrs\\b")
+                 "from attr"))))
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Do not use the 'pytest' binary as it hard-codes an older
+                ;; python-hypothesis version near the beginning of its
+                ;; GUIX_PYTHONPATH.
+                (invoke "python" "-m" "pytest" "-vv" "-c" "/dev/null" "tests"
+                        "-n" (number->string (parallel-job-count))
+                        ;; This test requires orjson, which needs the maturin
+                        ;; build system and new Rust dependencies.
+                        "--ignore" "tests/test_preconf.py")))))))
+    (native-inputs
+     (list python-hypothesis-next
+           python-immutables
+           python-msgpack
+           python-poetry-core
+           python-pymongo               ;for the bson module
+           python-pypa-build
+           python-pytest
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-attrs
+           python-exceptiongroup
+           python-typing-extensions))
+    (home-page "https://github.com/python-attrs/cattrs")
+    (synopsis "Python library for structuring and unstructuring data")
+    (description "@code{cattrs} is an Python library for structuring and
+unstructuring data.  @code{cattrs} works best with @code{attrs} classes,
+@code{dataclasses} and the usual Python collections, but other kinds of
+classes can also be supported by manually registering converters.")
+    (license license:expat)))
 
 (define-public python-cachy
   (package
@@ -17033,17 +17242,31 @@ scans through a file and detects issues.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07drmi3ai49jw5n23ibkambcgijqcw073ihypjgxfnks5lv4yqy1"))))
+         "07drmi3ai49jw5n23ibkambcgijqcw073ihypjgxfnks5lv4yqy1"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Adjust comprehension syntax for Python > 3.8.
+        ;; From <https://github.com/davidhalter/jedi/issues/1824>.
+        '(substitute* "test/completion/lambdas.py"
+           (("if lambda: 3")
+            "if (lambda: 3)")))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-completion-test
+           (lambda _
+             ;; This resolves a failure in the 'test_completion' test (see:
+             ;; https://github.com/davidhalter/jedi/issues/1824).
+             ;; TODO: Remove after a new release is made (currently: 0.18.1).
+             (substitute* "test/completion/lambdas.py"
+               (("\\[a for a in \\[1,2\\] if lambda: 3\\]\\[0\\]")
+                "[a for a in [1,2] if (lambda: 3)][0]"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (setenv "HOME" "/tmp")
-               (invoke "python" "-m" "pytest" "-vv"))
-             #t)))))
+               (invoke "python" "-m" "pytest" "-vv")))))))
     (native-inputs
      (list python-colorama python-docopt python-pytest))
     (propagated-inputs
@@ -17488,6 +17711,50 @@ multitouch applications.")
 Design spec without sacrificing ease of use or application performance.")
     (license license:expat)))
 
+(define-public python-asynckivy
+  (package
+    (name "python-asynckivy")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (pypi-uri "asynckivy" version))
+       (sha256
+        (base32 "0ivjvch8yn3k1ybfp7c1nm8mhc0ymg7d04mq54lly7yjvg0jvcni"))))
+    (build-system python-build-system)
+    (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-before 'check 'set-home
+             (lambda _
+               ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
+               (setenv "HOME" (getcwd)))))))
+    (propagated-inputs (list python-kivy python-asyncgui))
+    (home-page "https://github.com/gottadiveintopython/asynckivy")
+    (synopsis "Async library for Kivy")
+    (description
+     "This package provides async versions of Kivy functions to avoid the
+callback-heavy mode of interaction typical in some Kivy applications.")
+    (license license:expat)))
+
+(define-public python-asyncgui
+  (package
+    (name "python-asyncgui")
+    (version "0.5.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "asyncgui" version))
+              (sha256
+               (base32
+                "0614130afg2qc1qq4p82piskvvx6lpjl4nlsakbjzdyd78xywnb7"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/gottadiveintopython/asyncgui")
+    (synopsis "Enables async/await without an event loop")
+    (description "This package provides support for async/await applications
+without requiring an event loop, useful for creative responsive GUIs.")
+    (license license:expat)))
+
 (define-public python-binaryornot
   (package
     (name "python-binaryornot")
@@ -17621,13 +17888,13 @@ JSON) codec.")
 (define-public python-pymongo
   (package
     (name "python-pymongo")
-    (version "3.7.2")
+    (version "4.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pymongo" version))
               (sha256
                (base32
-                "0zis4707r9hdg5qgkhp3wss9camr9h56ixyfc8n9dxwlnnly4x4c"))))
+                "1m9hc2a4kgg10xy3g5x00z4a7rrk9s0rbf5qfypwnhq0kdfg5f6p"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-certifi))
@@ -18733,6 +19000,15 @@ from the header, as well as section details and data available.")
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
+                  ,@(if (target-riscv64?)
+                      ;; TODO: Remove the conditional on staging.
+                      `((add-after 'unpack 'remove-test-hypothesis-deadlines
+                          (lambda _
+                            (substitute* "tests/test_make.py"
+                              (("assume, given") "assume, given, settings")
+                              (("( +)@given" all spaces)
+                               (string-append spaces "@settings(deadline=None)\n" all))))))
+                      '())
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
@@ -29859,3 +30135,23 @@ with it, and it also implements recommendations from the
 and names, built from Unicode CLDR and the IANA subtag registry, if you
 install @code{python-language-data}.")
     (license license:expat)))
+
+(define-public python-geomet
+  (package
+    (name "python-geomet")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "geomet" version))
+              (sha256
+               (base32
+                "06rfvadx5dr5xrgsc5bsmqil9c9kff6i13xl988gy0gfg0cl2lnb"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-click python-six))
+    (home-page "https://github.com/geomet/geomet")
+    (synopsis "Convert GeoJSON to WKT/WKB (Well-Known Text/Binary) or
+GeoPackage Binary")
+    (description "This package provides utilities and functions for converting
+GeoJSON to WKT/WKB (Well-Known Text/Binary) or GeoPackage Binary, and vice
+versa.  Extended WKB/WKT are also supported.")
+    (license license:asl2.0)))

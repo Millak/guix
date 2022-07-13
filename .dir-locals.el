@@ -118,9 +118,11 @@
    (eval . (put 'munless 'scheme-indent-function 1))
    (eval . (put 'mlet* 'scheme-indent-function 2))
    (eval . (put 'mlet 'scheme-indent-function 2))
+   (eval . (put 'mparameterize 'scheme-indent-function 2))
    (eval . (put 'run-with-store 'scheme-indent-function 1))
    (eval . (put 'run-with-state 'scheme-indent-function 1))
    (eval . (put 'wrap-program 'scheme-indent-function 1))
+   (eval . (put 'wrap-script 'scheme-indent-function 1))
    (eval . (put 'with-imported-modules 'scheme-indent-function 1))
    (eval . (put 'with-extensions 'scheme-indent-function 1))
    (eval . (put 'with-parameters 'scheme-indent-function 1))
@@ -155,7 +157,31 @@
    ;; preceding symbol is one of these.
    (eval . (modify-syntax-entry ?~ "'"))
    (eval . (modify-syntax-entry ?$ "'"))
-   (eval . (modify-syntax-entry ?+ "'"))))
+   (eval . (modify-syntax-entry ?+ "'"))
+
+   ;; Emacs 28 changed the behavior of 'lisp-fill-paragraph', which causes the
+   ;; first line of package descriptions to extrude past 'fill-column', and
+   ;; somehow that is deemed more correct upstream (see:
+   ;; https://issues.guix.gnu.org/56197).
+   (eval . (progn
+             (require 'lisp-mode)
+             (defun emacs27-lisp-fill-paragraph (&optional justify)
+               (interactive "P")
+               (or (fill-comment-paragraph justify)
+                   (let ((paragraph-start
+                          (concat paragraph-start
+                                  "\\|\\s-*\\([(;\"]\\|\\s-:\\|`(\\|#'(\\)"))
+                         (paragraph-separate
+                          (concat paragraph-separate "\\|\\s-*\".*[,\\.]$"))
+                         (fill-column (if (and (integerp emacs-lisp-docstring-fill-column)
+                                               (derived-mode-p 'emacs-lisp-mode))
+                                          emacs-lisp-docstring-fill-column
+                                        fill-column)))
+                     (fill-paragraph justify))
+                   ;; Never return nil.
+                   t))
+             (setq-local fill-paragraph-function #'emacs27-lisp-fill-paragraph)))))
+
  (emacs-lisp-mode . ((indent-tabs-mode . nil)))
  (texinfo-mode    . ((indent-tabs-mode . nil)
                      (fill-column . 72))))

@@ -617,7 +617,7 @@ data types.")
        ((#:configure-flags flags '())
         `(cons "--with-pydebug" ,flags))))
     (synopsis
-     "High-level, dynamically-typed programming language (for debugging)")
+     "Python with the debug hooks enabled")
     (description
      "This variant of Python provides an interpreter built with
 @code{--with-pydebug} to help develop and debug extensions.  See

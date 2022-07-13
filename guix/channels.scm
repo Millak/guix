@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -896,7 +896,12 @@ specified."
 (define (package-cache-file manifest)
   "Build a package cache file for the instance in MANIFEST.  This is meant to
 be used as a profile hook."
-  (let ((profile (profile (content manifest) (hooks '()))))
+  ;; Note: Emit a profile in format version 3, which was introduced in 2017
+  ;; and is readable by Guix since before version 1.0.  This ensures that the
+  ;; Guix in MANIFEST is able to read the manifest file created for its own
+  ;; profile below.  See <https://issues.guix.gnu.org/56441>.
+  (let ((profile (profile (content manifest) (hooks '())
+                          (format-version 3))))
     (define build
       #~(begin
           (use-modules (gnu packages))
@@ -937,8 +942,12 @@ be used as a profile hook."
   "Return the derivation of the profile containing INSTANCES, a list of
 channel instances."
   (mlet %store-monad ((manifest (channel-instances->manifest instances)))
+    ;; Emit a profile in format version so that, if INSTANCES denotes an old
+    ;; Guix, it can still read that profile, for instance for the purposes of
+    ;; 'guix describe'.
     (profile-derivation manifest
-                        #:hooks %channel-profile-hooks)))
+                        #:hooks %channel-profile-hooks
+                        #:format-version 3)))
 
 (define latest-channel-instances*
   (store-lift latest-channel-instances))

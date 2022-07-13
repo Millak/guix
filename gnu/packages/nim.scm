@@ -29,14 +29,14 @@
 (define-public nim
   (package
     (name "nim")
-    (version "1.6.2")
+    (version "1.6.6")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://nim-lang.org/download/"
                           name "-" version ".tar.xz"))
       (sha256
-       (base32 "0wz3jccdbhi7wd19fz9r6zad945iq50qjpbzva8xc5f3lr7p3i4s"))))
+       (base32 "0lm4450ig8k4l3rzxv6kcqji5l1lzicsw76ckwxm0q9qdz713cb7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; No tests.

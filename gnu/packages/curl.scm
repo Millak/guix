@@ -2,9 +2,9 @@
 ;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@suse.cz>
-;;; Copyright © 2015, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2020, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Roel Janssen <roel@gnu.org>
@@ -33,6 +33,7 @@
 (define-module (gnu packages curl)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -63,9 +64,10 @@
   (package
    (name "curl")
    (version "7.79.1")
+   (replacement curl-7.84.0)
    (source (origin
              (method url-fetch)
-             (uri (string-append "https://curl.haxx.se/download/curl-"
+             (uri (string-append "https://curl.se/download/curl-"
                                  version ".tar.xz"))
              (sha256
               (base32
@@ -138,6 +140,35 @@ tunneling, and so on.")
    (license (license:non-copyleft "file://COPYING"
                                   "See COPYING in the distribution."))
    (home-page "https://curl.haxx.se/")))
+
+;; Replacement package with fixes for multiple vulnerabilities.
+;; See <https://curl.se/docs/security.html>.
+(define curl-7.84.0
+  (package
+    (inherit curl)
+    (version "7.84.0")
+    (source (origin
+              (inherit (package-source curl))
+              (uri (string-append "https://curl.se/download/curl-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1f2xgj0wvys9xw50h7vcbaraavjr9rxx9n06x2xfbgs7ym1qn49d"))
+              (patches (append (origin-patches (package-source curl))
+                               (search-patches "curl-easy-lock.patch")))))
+    (arguments (substitute-keyword-arguments (package-arguments curl)
+                 ((#:phases phases)
+                  (cond
+                   ((not (target-64bit?))
+                    #~(modify-phases #$phases
+                        (add-after 'unpack 'tweak-lib3026-test
+                          (lambda _
+                            ;; Have that test create a hundred threads, not a
+                            ;; thousand.
+                            (substitute* "tests/libtest/lib3026.c"
+                              (("NUM_THREADS .*$")
+                               "NUM_THREADS 100\n"))))))
+                   (else phases)))))))
 
 (define-public curl-minimal
   (deprecated-package "curl-minimal" curl))

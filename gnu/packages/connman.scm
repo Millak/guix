@@ -24,6 +24,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -55,19 +56,30 @@
          (base32 "12g5ilcnymx6i45z3359yds3cgd2dfqjyncfm92hqlymzps41yvr"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-nmcompat"
-             "--enable-polkit" ; Polkit doesn't need to be present at build time.
-             "--enable-iwd"
-             "--enable-openconnect"
-             "--enable-openvpn"
-             "--enable-vpnc"
-             "--enable-l2tp"
-             "--localstatedir=/var"
-             (string-append
-              "--with-dbusconfdir=" (assoc-ref %outputs "out") "/etc")
-             (string-append
-              "--with-dbusdatadir=" (assoc-ref %outputs "out") "/share"))))
+     (list #:configure-flags
+           #~(list "--enable-nmcompat"
+                   ;; PolKit doesn't need to be present at build time.
+                   "--enable-polkit"
+                   "--enable-iwd"
+                   "--enable-l2tp"
+                   "--enable-openconnect"
+                   "--enable-openvpn"
+                   "--enable-vpnc"
+                   "--localstatedir=/var"
+                   (string-append "--with-l2tp="
+                                  #$(this-package-input "xl2tpd")
+                                  "/sbin/xl2tpd")
+                   (string-append "--with-openconnect="
+                                  #$(this-package-input "openconnect")
+                                  "/sbin/openconnect")
+                   (string-append "--with-openvpn="
+                                  #$(this-package-input "openvpn")
+                                  "/sbin/openvpn")
+                   (string-append "--with-vpnc="
+                                  #$(this-package-input "vpnc")
+                                  "/sbin/vpnc")
+                   (string-append "--with-dbusconfdir=" #$output "/etc")
+                   (string-append "--with-dbusdatadir=" #$output "/share"))))
     (native-inputs
      (list pkg-config
            python-wrapper))

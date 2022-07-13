@@ -1199,22 +1199,19 @@ on the Invidious instances only as a fallback method.")
 (define-public x265
   (package
     (name "x265")
-    (version "3.4")
+    (version "3.5")
     (outputs '("out" "static"))
     (source
       (origin
         (method url-fetch)
-        (uri (list (string-append "https://bitbucket.org/multicoreware/x265"
-                                  "/downloads/x265_" version ".tar.gz")
-                   (string-append "https://download.videolan.org/videolan/x265/"
-                                  "x265_" version ".tar.gz")))
+        (uri (string-append "https://bitbucket.org/multicoreware/x265_git"
+                            "/downloads/x265_" version ".tar.gz"))
         (sha256
-         (base32 "0wl62hfsdqpf3r3z3s6l9bz7pdb1rcik5ll00b3yaadplqipy162"))
+         (base32 "1s6afxj61jdwfjnn70dwiql34fbqsvn6zv10785vmjyar8sk62p7"))
         (patches (search-patches "x265-arm-flags.patch"))
         (modules '((guix build utils)))
         (snippet '(begin
-                    (delete-file-recursively "source/compat/getopt")
-                    #t))))
+                    (delete-file-recursively "source/compat/getopt")))))
     (build-system cmake-build-system)
     (native-inputs
      ;; XXX: ASM optimization fails on i686-linux, see <https://bugs.gnu.org/41768>.
@@ -1222,13 +1219,10 @@ on the Invidious instances only as a fallback method.")
          '()
          `(("nasm" ,nasm))))
     (arguments
-     `(#:tests? #f ; tests are skipped if cpu-optimized code isn't built
+     `(#:tests? #f ; tests are skipped if ENABLE_ASSEMBLY is TRUE.
        #:configure-flags
          ;; Ensure position independent code for everyone.
          (list "-DENABLE_PIC=TRUE"
-               ,@(if (target-arm?)
-                     '("-DENABLE_ASSEMBLY=OFF")
-                     '())
                (string-append "-DCMAKE_INSTALL_PREFIX="
                               (assoc-ref %outputs "out")))
        #:phases
@@ -1237,13 +1231,21 @@ on the Invidious instances only as a fallback method.")
            (lambda _
              (delete-file-recursively "build")
              (chdir "source")
-             #t))
+             ;; We're not building from a git or mercurial repository,
+             ;; so help cmake find the version number.
+             (substitute* "cmake/Version.cmake"
+               (("if\\(X265_TAG_DISTANCE STREQUAL \"0\"\\)")
+                (string-append "if(TRUE)\n"
+                               "    set(X265_LATEST_TAG \"" ,version "\")\n")))))
          (add-before 'configure 'build-12-bit
-           (lambda* (#:key (configure-flags '()) #:allow-other-keys)
+           (lambda* (#:key (configure-flags '()) #:allow-other-keys #:rest args)
              (mkdir "../build-12bit")
              (with-directory-excursion "../build-12bit"
                (apply invoke
                  "cmake" "../source"
+                 ,@(if (target-aarch64?)
+                     '("-DENABLE_ASSEMBLY=OFF")
+                     '())
                  "-DHIGH_BIT_DEPTH=ON"
                  "-DEXPORT_C_API=OFF"
                  "-DENABLE_CLI=OFF"
@@ -1251,32 +1253,35 @@ on the Invidious instances only as a fallback method.")
                  configure-flags)
                (substitute* (cons "cmake_install.cmake"
                                   (append
-                                    (find-files "CMakeFiles/x265-shared.dir" ".")
-                                    (find-files "CMakeFiles/x265-static.dir" ".")))
+                                    (find-files "CMakeFiles/x265-shared.dir")
+                                    (find-files "CMakeFiles/x265-static.dir")))
                  (("libx265") "libx265_main12"))
-               (invoke "make"))))
+               ((assoc-ref %standard-phases 'build)))))
          (add-before 'configure 'build-10-bit
-           (lambda* (#:key (configure-flags '()) #:allow-other-keys)
+           (lambda* (#:key (configure-flags '()) #:allow-other-keys #:rest args)
              (mkdir "../build-10bit")
              (with-directory-excursion "../build-10bit"
                (apply invoke
                  "cmake" "../source"
+                 ,@(if (target-aarch64?)
+                     '("-DENABLE_ASSEMBLY=OFF")
+                     '())
                  "-DHIGH_BIT_DEPTH=ON"
                  "-DEXPORT_C_API=OFF"
                  "-DENABLE_CLI=OFF"
                  configure-flags)
                (substitute* (cons "cmake_install.cmake"
                                   (append
-                                    (find-files "CMakeFiles/x265-shared.dir" ".")
-                                    (find-files "CMakeFiles/x265-static.dir" ".")))
+                                    (find-files "CMakeFiles/x265-shared.dir")
+                                    (find-files "CMakeFiles/x265-static.dir")))
                  (("libx265") "libx265_main10"))
-               (invoke "make"))))
+               ((assoc-ref %standard-phases 'build)))))
          (add-after 'install 'install-more-libs
-           (lambda _
+           (lambda args
              (with-directory-excursion "../build-12bit"
-               (invoke "make" "install"))
+               ((assoc-ref %standard-phases 'install)))
              (with-directory-excursion "../build-10bit"
-               (invoke "make" "install"))))
+               ((assoc-ref %standard-phases 'install)))))
          (add-before 'strip 'move-static-libs
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -1288,8 +1293,7 @@ on the Invidious instances only as a fallback method.")
                    (lambda (file)
                      (rename-file file
                                   (string-append static "/lib/" file)))
-                   (find-files "." "\\.a$"))))
-             #t)))))
+                   (find-files "." "\\.a$")))))))))
     (home-page "http://x265.org/")
     (synopsis "Library for encoding h.265/HEVC video streams")
     (description "x265 is a H.265 / HEVC video encoder application library,
@@ -1754,14 +1758,14 @@ audio/video codec library.")
 (define-public ffmpeg-3.4
   (package
     (inherit ffmpeg-4)
-    (version "3.4.9")
+    (version "3.4.11")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0d8nkd9c85rkjlgsq1hidmykkrksi883ygqzhhj6wh4nqflv8vs9"))))
+               "1rijdvcx8xjqwh084qchwz91vcj8wsvb4diax0g8miywpir00ccw"))))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-4)
        ((#:modules modules %gnu-build-system-modules)
@@ -1779,14 +1783,14 @@ audio/video codec library.")
 (define-public ffmpeg-2.8
   (package
     (inherit ffmpeg-3.4)
-    (version "2.8.18")
+    (version "2.8.20")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0k6dq7b8rpjvdl5ncf1135qwc36x0x9va8v83aggvbfhy5d97vwn"))))
+                "1ivnfqmfnp3zmn1q2dxy4p85427y3r6d3jbnl5kprr7lqckf6rl5"))))
     (arguments
      `(#:tests? #f               ; XXX: Enable them later, if required
        #:configure-flags
@@ -1895,87 +1899,84 @@ videoformats depend on the configuration flags of ffmpeg.")
                 "0cs1vnv91mg7p6253v6wms3zlz91xzphpwaw14dmrd2gibc64nlc"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("flex" ,flex)
-       ("bison" ,bison)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list flex bison gettext-minimal pkg-config))
     ;; FIXME: Add optional inputs once available.
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("avahi" ,avahi)
-       ("dav1d" ,dav1d)
-       ("dbus" ,dbus)
-       ("eudev" ,eudev)
-       ("flac" ,flac)
-       ("ffmpeg" ,ffmpeg)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("gnutls" ,gnutls)
-       ("liba52" ,liba52)
-       ("libarchive" ,libarchive)
-       ("libass" ,libass)
-       ("libavc1394" ,libavc1394)
-       ("libbluray" ,libbluray)
-       ("libcaca" ,libcaca)
-       ("libcddb" ,libcddb)
-       ("libdca" ,libdca)
-       ("libdvbpsi" ,libdvbpsi)
-       ("libdvdnav" ,libdvdnav)
-       ("libdvdread" ,libdvdread)
-       ("libebml" ,libebml)
-       ("libgcrypt" ,libgcrypt)
-       ("libidn" ,libidn)
-       ("libkate" ,libkate)
-       ("libmad" ,libmad)
-       ("libmatroska" ,libmatroska)
-       ("libmicrodns" ,libmicrodns)
-       ("libmodplug" ,libmodplug)
-       ("libmpeg2" ,libmpeg2)
-       ("libogg" ,libogg)
-       ("libpng" ,libpng)
-       ("libraw1394" ,libraw1394)
-       ("librsvg" ,(librsvg-for-system))
-       ("libsamplerate" ,libsamplerate)
-       ("libsecret" ,libsecret)
-       ("libssh2" ,libssh2)
-       ("libupnp" ,libupnp)
-       ("libva" ,libva)
-       ("libvdpau" ,libvdpau)
-       ("libvorbis" ,libvorbis)
-       ("libvpx" ,libvpx)
-       ("libtheora" ,libtheora)
-       ("libx264" ,libx264)
-       ("libxext" ,libxext)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)
-       ("libxml2" ,libxml2)
-       ("libxpm" ,libxpm)
-       ("livemedia-utils" ,livemedia-utils)
-       ("lua" ,lua-5.2)
-       ("mesa" ,mesa)
-       ("opus" ,opus)
-       ("perl" ,perl)
-       ("pulseaudio" ,pulseaudio)
-       ("protobuf" ,protobuf)
-       ("python" ,python-wrapper)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg" ,qtsvg)
-       ("qtx11extras" ,qtx11extras)
-       ("samba" ,samba)
-       ("sdl" ,sdl)
-       ("sdl-image" ,sdl-image)
-       ("speex" ,speex)
-       ("speexdsp" ,speexdsp)
-       ;; VLC is not yet compatible with SRT > 1.4.1.
-       ("srt" ,srt-1.4.1)
-       ("taglib" ,taglib)
-       ("twolame" ,twolame)
-       ("unzip" ,unzip)
-       ("wayland" ,wayland)
-       ("wayland-protocols" ,wayland-protocols)
-       ("x265" ,x265)
-       ("xcb-util-keysyms" ,xcb-util-keysyms)))
+     (list alsa-lib
+           avahi
+           bash-minimal
+           dav1d
+           dbus
+           eudev
+           ffmpeg
+           flac
+           fontconfig
+           freetype
+           fribidi
+           gnutls
+           liba52
+           libarchive
+           libass
+           libavc1394
+           libbluray
+           libcaca
+           libcddb
+           libdca
+           libdvbpsi
+           libdvdnav
+           libdvdread
+           libebml
+           libgcrypt
+           libidn
+           libkate
+           libmad
+           libmatroska
+           libmicrodns
+           libmodplug
+           libmpeg2
+           libogg
+           libpng
+           libraw1394
+           (librsvg-for-system)
+           libsamplerate
+           libsecret
+           libssh2
+           libtheora
+           libupnp
+           libva
+           libvdpau
+           libvorbis
+           libvpx
+           libx264
+           libxext
+           libxi
+           libxinerama
+           libxml2
+           libxpm
+           livemedia-utils
+           lua-5.2
+           mesa
+           opus
+           perl
+           protobuf
+           pulseaudio
+           python-wrapper
+           qtbase-5
+           qtsvg
+           qtx11extras
+           samba
+           sdl
+           sdl-image
+           speex
+           speexdsp
+           srt
+           taglib
+           twolame
+           unzip
+           wayland
+           wayland-protocols
+           x265
+           xcb-util-keysyms))
     (arguments
      `(#:configure-flags
        `("BUILDCC=gcc"
@@ -2464,7 +2465,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2022.05.18")
+    (version "2022.06.22.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/yt-dlp/yt-dlp/"
@@ -2472,7 +2473,7 @@ YouTube.com and many more sites.")
                                   version "/yt-dlp.tar.gz"))
               (sha256
                (base32
-                "0wiiwqj8m4z6lladmrsp9354ddwlhn2gf0b39j271001g6fyi82r"))
+                "1nr6g3dhvjc10jzhyvgjrrxqhsgi3hiw8bswp8bi6bscimd9vhps"))
               (snippet
                '(begin
                   ;; Delete the pre-generated files, except for the man page
@@ -4316,73 +4317,73 @@ tools for styling them, including a built-in real-time video preview.")
    ; src/MatroskaParser.(c|h) is under bsd-3 with permission from the author
 
 (define-public pitivi
-  ;; Pitivi switched to a non-semantic versioning scheme close before 1.0
-  (let ((latest-semver "0.999.0")
-        (%version "2021.05.0"))
-   (package
-     (name "pitivi")
-     (version (string-append latest-semver "-" %version))
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://gitlab.gnome.org/GNOME/pitivi.git")
-              (commit %version)))
-        (file-name (git-file-name name version))
-        (patches (search-patches "pitivi-fix-build-with-meson-0.60.patch"))
-        (sha256
-         (base32 "08x2fs2bak1fbmkvjijgx1dsawispv91bpv5j5gkqbv5dfgf7wah"))))
-     (build-system meson-build-system)
-     (inputs
-      (list glib
-            gst-editing-services
-            gstreamer
-            gst-plugins-base
-            gst-plugins-good
-            (gst-plugins/selection gst-plugins-bad #:plugins
-                                   '("debugutils" "transcode")
-                                   #:configure-flags
-                                   '("-Dintrospection=enabled"))
-            gst-libav
-            gsound
-            gtk+
-            librsvg
-            libpeas
-            libnotify
-            pango
-            python
-            python-gst
-            python-numpy
-            python-matplotlib
-            python-pycairo
-            python-pygobject))
+  (package
+    (name "pitivi")
+    (version "2022.06.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/GNOME/pitivi.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wgfi8srblqzd2y6528cyvn56rbdxpwlq0wmwqhabshdk28zyx8d"))))
+    (build-system meson-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)))
-     (arguments
-      `(#:glib-or-gtk? #t
-        #:phases
-        (modify-phases %standard-phases
-          (add-after 'glib-or-gtk-wrap 'wrap-other-dependencies
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((prog (string-append (assoc-ref outputs "out")
-                                         "/bin/pitivi")))
-                (wrap-program prog
-                  `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
-                  ;; We've only added inputs for what Pitivi deems either
-                  ;; necessary or optional.  Let the user's packages take
-                  ;; precedence in case they have e.g. the full gst-plugins-bad.
-                  `("GST_PLUGIN_SYSTEM_PATH" suffix
-                    (,(getenv "GST_PLUGIN_SYSTEM_PATH"))))))))))
-     (home-page "http://www.pitivi.org")
-     (synopsis "Video editor based on GStreamer Editing Services")
-     (description "Pitivi is a video editor built upon the GStreamer Editing
+     (list gettext-minimal
+           `(,glib "bin")
+           itstool
+           pkg-config))
+    (inputs
+     (list bash-minimal
+           glib
+           gst-editing-services
+           gstreamer
+           gst-plugins-base
+           gst-plugins-good
+           ;; TODO: Add the 'cvtracker' plugin after our gstreamer packages
+           ;; has been upgraded to version 1.20.
+           (gst-plugins/selection gst-plugins-bad #:plugins
+                                  '("debugutils" "transcode")
+                                  #:configure-flags
+                                  '("-Dintrospection=enabled"))
+           gst-libav
+           gsound
+           gtk+
+           libpeas
+           libnotify
+           pango
+           python
+           python-gst
+           python-librosa
+           python-numpy
+           python-matplotlib
+           python-pycairo
+           python-pygobject))
+    ;; Propagate librsvg so that is is registered in GDK_PIXBUF_MODULE_FILE,
+    ;; otherwise pitivi fails to launch.
+    (propagated-inputs (list librsvg))
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'glib-or-gtk-wrap 'wrap-other-dependencies
+           (lambda* (#:key outputs #:allow-other-keys)
+             (wrap-program (search-input-file outputs "bin/pitivi")
+               `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
+               ;; We've only added inputs for what Pitivi deems either
+               ;; necessary or optional.  Let the user's packages take
+               ;; precedence in case they have e.g. the full gst-plugins-bad.
+               `("GST_PLUGIN_SYSTEM_PATH" suffix
+                 (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+    (home-page "http://www.pitivi.org")
+    (synopsis "Video editor based on GStreamer Editing Services")
+    (description "Pitivi is a video editor built upon the GStreamer Editing
 Services.  It aims to be an intuitive and flexible application that can appeal
 to newbies and professionals alike.")
-     (license license:lgpl2.1+))))
+    (license license:lgpl2.1+)))
 
 (define-public gavl
   (package

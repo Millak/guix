@@ -30,7 +30,7 @@ Copyright @copyright{} 2015, 2016 Mathieu Lirzin@*
 Copyright @copyright{} 2014 Pierre-Antoine Rault@*
 Copyright @copyright{} 2015 Taylan Ulrich Bayırlı/Kammer@*
 Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021 Leo Famulari@*
-Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus@*
+Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus@*
 Copyright @copyright{} 2016 Ben Woodcroft@*
 Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner@*
@@ -105,6 +105,7 @@ Copyright @copyright{} 2022 Aleksandr Vityazev@*
 Copyright @copyright{} 2022 Philip M@sup{c}Grath@*
 Copyright @copyright{} 2022 Karl Hallsby@*
 Copyright @copyright{} 2022 Justin Veilleux@*
+Copyright @copyright{} 2022 Reily Siegel@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -680,6 +681,20 @@ cd /tmp
 wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
 chmod +x guix-install.sh
 ./guix-install.sh
+@end example
+
+If you're running Debian or a derivative such as Ubuntu, you can instead
+install the package (it might be a version older than @value{VERSION}
+but you can update it afterwards by running @samp{guix pull}):
+
+@example
+sudo apt install guix
+@end example
+
+Likewise on openSUSE:
+
+@example
+sudo zypper install guix
 @end example
 
 When you're done, @pxref{Application Setup} for extra configuration you
@@ -7379,8 +7394,25 @@ The build system that should be used to build the package (@pxref{Build
 Systems}).
 
 @item @code{arguments} (default: @code{'()})
-The arguments that should be passed to the build system.  This is a
-list, typically containing sequential keyword-value pairs.
+The arguments that should be passed to the build system (@pxref{Build
+Systems}).  This is a list, typically containing sequential
+keyword-value pairs, as in this example:
+
+@lisp
+(package
+  (name "example")
+  ;; several fields omitted
+  (arguments
+    (list #:tests? #f                     ;skip tests
+          #:make-flags #~'("VERBOSE=1")   ;pass flags to 'make'
+          #:configure-flags #~'("--enable-frobbing"))))
+@end lisp
+
+The exact set of supported keywords depends on the build system
+(@pxref{Build Systems}), but you will find that almost all of them honor
+@code{#:configure-flags}, @code{#:make-flags}, @code{#:tests?}, and
+@code{#:phases}.  The @code{#:phases} keyword in particular lets you
+modify the set of build phases for your package (@pxref{Build Phases}).
 
 @item @code{inputs} (default: @code{'()})
 @itemx @code{native-inputs} (default: @code{'()})
@@ -8493,14 +8525,8 @@ the number specified as the @option{--cores} option of
 This Boolean, @code{#t} by default, determines whether to ``validate''
 the @code{RUNPATH} of ELF binaries (@code{.so} shared libraries as well
 as executables) previously installed by the @code{install} phase.
-
-This validation step consists in making sure that all the shared
-libraries needed by an ELF binary, which are listed as
-@code{DT_NEEDED} entries in its @code{PT_DYNAMIC} segment, appear in the
-@code{DT_RUNPATH} entry of that binary.  In other words, it ensures that
-running or using those binaries will not result in a ``file not found''
-error at run time.  @xref{Options, @option{-rpath},, ld, The GNU
-Linker}, for more information on @code{RUNPATH}.
+@xref{phase-validate-runpath, the @code{validate-runpath} phase}, for
+details.
 
 @item #:substitutable?
 This Boolean, @code{#t} by default, tells whether the package outputs
@@ -9579,6 +9605,21 @@ Patch shebangs on the installed executable files.
 Strip debugging symbols from ELF files (unless @code{#:strip-binaries?}
 is false), copying them to the @code{debug} output when available
 (@pxref{Installing Debugging Files}).
+
+@cindex RUNPATH, validation
+@anchor{phase-validate-runpath}
+@item validate-runpath
+Validate the @code{RUNPATH} of ELF binaries, unless
+@code{#:validate-runpath?} is false (@pxref{Build Systems}).
+
+This validation step consists in making sure that all the shared
+libraries needed by an ELF binary, which are listed as @code{DT_NEEDED}
+entries in its @code{PT_DYNAMIC} segment, appear in the
+@code{DT_RUNPATH} entry of that binary.  In other words, it ensures that
+running or using those binaries will not result in a ``file not found''
+error at run time.  @xref{Options, @option{-rpath},, ld, The GNU
+Linker}, for more information on @code{RUNPATH}.
+
 @end table
 
 Other build systems have similar phases, with some variations.  For
@@ -9704,8 +9745,7 @@ phase before the @code{build} phase, called
                         (substitute* "Makefile"
                           (("PREFIX =.*")
                            (string-append "PREFIX = "
-                                          out "\n")))
-                        #true))))))))
+                                          out "\n")))))))))))
 @end lisp
 
 The new phase that is inserted is written as an anonymous procedure,
@@ -13963,6 +14003,10 @@ The @option{--input-simplification} option described below provides
 fine-grain control over when inputs should be simplified.
 @end table
 
+@item --list-stylings
+@itemx -l
+List and describe the available styling rules and exit.
+
 @item --load-path=@var{directory}
 @itemx -L @var{directory}
 Add @var{directory} to the front of the package module search path
@@ -14911,9 +14955,11 @@ any given store item.
 The command output looks like this:
 
 @smallexample
-$ guix challenge --substitute-urls="https://@value{SUBSTITUTE-SERVER-1} https://guix.example.org"
-updating list of substitutes from 'https://@value{SUBSTITUTE-SERVER-1}'... 100.0%
-updating list of substitutes from 'https://guix.example.org'... 100.0%
+$ guix challenge \
+  --substitute-urls="https://@value{SUBSTITUTE-SERVER-1} https://guix.example.org" \
+  openssl git pius coreutils grep
+updating substitutes from 'https://@value{SUBSTITUTE-SERVER-1}'... 100.0%
+updating substitutes from 'https://guix.example.org'... 100.0%
 /gnu/store/@dots{}-openssl-1.0.2d contents differ:
   local hash: 0725l22r5jnzazaacncwsvp9kgf42266ayyp814v7djxs7nk963q
   https://@value{SUBSTITUTE-SERVER-1}/nar/@dots{}-openssl-1.0.2d: 0725l22r5jnzazaacncwsvp9kgf42266ayyp814v7djxs7nk963q
@@ -14938,18 +14984,20 @@ updating list of substitutes from 'https://guix.example.org'... 100.0%
 
 @dots{}
 
-6,406 store items were analyzed:
-  - 4,749 (74.1%) were identical
-  - 525 (8.2%) differed
-  - 1,132 (17.7%) were inconclusive
+5 store items were analyzed:
+  - 2 (40.0%) were identical
+  - 3 (60.0%) differed
+  - 0 (0.0%) were inconclusive
 @end smallexample
 
 @noindent
-In this example, @command{guix challenge} first scans the store to
-determine the set of locally-built derivations---as opposed to store
-items that were downloaded from a substitute server---and then queries
-all the substitute servers.  It then reports those store items for which
-the servers obtained a result different from the local build.
+In this example, @command{guix challenge} queries all the substitute
+servers for each of the fives packages specified on the command line.
+It then reports those store items for which the servers obtained a
+result different from the local build (if it exists) and/or different
+from one another; here, the @samp{local hash} lines indicate that a
+local build result was available for each of these packages and shows
+its hash.
 
 @cindex non-determinism, in package builds
 As an example, @code{guix.example.org} always gets a different answer.
@@ -15005,18 +15053,20 @@ whether @code{@value{SUBSTITUTE-SERVER-1}} and other substitute servers obtain t
 same build result as you did with:
 
 @example
-$ guix challenge @var{package}
+guix challenge @var{package}
 @end example
-
-@noindent
-where @var{package} is a package specification such as
-@code{guile@@2.0} or @code{glibc:debug}.
 
 The general syntax is:
 
 @example
-guix challenge @var{options} [@var{packages}@dots{}]
+guix challenge @var{options} @var{argument}@dots{}
 @end example
+
+@noindent
+where @var{argument} is a package specification such as
+@code{guile@@2.0} or @code{glibc:debug} or, alternatively, a store file
+name as returned, for example, by @command{guix build} or @command{guix
+gc --list-live}.
 
 When a difference is found between the hash of a locally-built item and
 that of a server-provided substitute, or among substitutes provided by
@@ -15200,7 +15250,7 @@ Here's a sample run:
 $ guix weather --substitute-urls=https://guix.example.org
 computing 5,872 package derivations for x86_64-linux...
 looking for 6,128 store items on https://guix.example.org..
-updating list of substitutes from 'https://guix.example.org'... 100.0%
+updating substitutes from 'https://guix.example.org'... 100.0%
 https://guix.example.org
   43.4% substitutes available (2,658 out of 6,128)
   7,032.5 MiB of nars (compressed)
@@ -15820,6 +15870,11 @@ is stored in the @file{my-system-config.scm}
 file, the @command{guix system reconfigure my-system-config.scm} command
 instantiates that configuration, and makes it the default GRUB boot
 entry (@pxref{Invoking guix system}).
+
+@quotation Note
+We recommend that you keep this @file{my-system-config.scm} file safe
+and under version control to easily track changes to your configuration.
+@end quotation
 
 The normal way to change the system configuration is by updating this
 file and re-running @command{guix system reconfigure}.  One should never
@@ -18665,6 +18720,75 @@ String or gexp denoting the corresponding mcron job schedule
 @end table
 @end deftp
 
+@cindex logging, anonymization
+@subheading Anonip Service
+
+Anonip is a privacy filter that removes IP address from web server logs.
+This service creates a FIFO and filters any written lines with anonip
+before writing the filtered log to a target file.
+
+The following example sets up the FIFO
+@file{/var/run/anonip/https.access.log} and writes the filtered log file
+@file{/var/log/anonip/https.access.log}.
+
+@lisp
+(service anonip-service-type
+         (anonip-configuration
+           (input  "/var/run/anonip/https.access.log")
+           (output "/var/log/anonip/https.access.log")))
+@end lisp
+
+Configure your web server to write its logs to the FIFO at
+@file{/var/run/anonip/https.access.log} and collect the anonymized log
+file at @file{/var/web-logs/https.access.log}.
+
+@deftp {Data Type} anonip-configuration
+This data type represents the configuration of anonip.
+It has the following parameters:
+
+@table @asis
+@item @code{anonip} (default: @code{anonip})
+The anonip package to use.
+
+@item @code{input}
+The file name of the input log file to process.  The service creates a
+FIFO of this name.  The web server should write its logs to this FIFO.
+
+@item @code{output}
+The file name of the processed log file.
+@end table
+
+The following optional settings may be provided:
+
+@table @asis
+@item @code{skip-private?}
+When @code{#true} do not mask addresses in private ranges.
+
+@item @code{column}
+A 1-based indexed column number.  Assume IP address is in the specified
+column (default is 1).
+
+@item @code{replacement}
+Replacement string in case address parsing fails, e.g. @code{"0.0.0.0"}.
+
+@item @code{ipv4mask}
+Number of bits to mask in IPv4 addresses.
+
+@item @code{ipv6mask}
+Number of bits to mask in IPv6 addresses.
+
+@item @code{increment}
+Increment the IP address by the given number.  By default this is zero.
+
+@item @code{delimiter}
+Log delimiter string.
+
+@item @code{regex}
+Regular expression for detecting IP addresses.  Use this instead of @code{column}.
+@end table
+@end deftp
+
+
 @node Networking Setup
 @subsection Networking Setup
 
@@ -18690,7 +18814,7 @@ starting with static network configuration.
 This is the type for statically-configured network interfaces.  Its
 value must be a list of @code{static-networking} records.  Each of them
 declares a set of @dfn{addresses}, @dfn{routes}, and @dfn{links}, as
-show below.
+shown below.
 
 @cindex network interface controller (NIC)
 @cindex NIC, networking interface controller
@@ -21096,9 +21220,11 @@ You can do that directly, like this (you need to use the
              (list cups-filters epson-inkjet-printer-escpr hplip-minimal))))
 @end lisp
 
-Note: If you wish to use the Qt5 based GUI which comes with the hplip
+@quotation Note
+If you wish to use the Qt5 based GUI which comes with the hplip
 package then it is suggested that you install the @code{hplip} package,
 either in your OS configuration file or as your user.
+@end quotation
 
 The available configuration parameters follow.  Each parameter
 definition is preceded by its type; for example, @samp{string-list foo}
@@ -25579,13 +25705,15 @@ example if you want your users to have addresses like
 @samp{"john.smith@@example.com"} then you need to add a host
 @samp{"example.com"}.  All options in this list will apply only to this host.
 
-Note: the name @emph{virtual} host is used in configuration to avoid confusion with
+@quotation Note
+The name @emph{virtual} host is used in configuration to avoid confusion with
 the actual physical host that Prosody is installed on.  A single Prosody
 instance can serve many domains, each one defined as a VirtualHost entry in
 Prosody's configuration.  Conversely a server that hosts a single domain would
 have just one VirtualHost entry.
 
 See @url{https://prosody.im/doc/configure#virtual_host_settings}.
+@end quotation
 
 Available @code{virtualhost-configuration} fields are:
 
@@ -26186,8 +26314,10 @@ After setting this option, it is recommend that you inspect your Mumble
 server log to ensure that Mumble is using the cipher suites that you
 expected it to.
 
-Note: Changing this option may impact the backwards compatibility of your
+@quotation Note
+Changing this option may impact the backwards compatibility of your
 Mumble-Server server, and can remove the ability for older Mumble clients to be able to connect to it.
+@end quotation
 
 @item @code{public-registration} (default: @code{#f})
 Must be a @code{<mumble-server-public-registration-configuration>}
@@ -28489,6 +28619,9 @@ specified as a IP address (e.g.@: @samp{127.0.0.1}), domain name
 prefix @samp{unix:}.  For addresses using an IP address or domain name,
 the default port is 80, and a different port can be specified
 explicitly.
+
+@item @code{extra-content}
+A string or list of strings to add to the upstream block.
 
 @end table
 @end deftp
@@ -35065,6 +35198,11 @@ allocation plan in the database.
 An association list of hooks.  These provide a way to execute arbitrary
 code upon certain events, like a build result being processed.
 
+@item @code{parallel-hooks} (default: @var{'()})
+Hooks can be configured to run in parallel.  This parameter is an
+association list of hooks to do in parallel, where the key is the symbol
+for the hook and the value is the number of threads to run.
+
 @item @code{guile} (default: @code{guile-3.0-latest})
 The Guile package with which to run the Guix Build Coordinator.
 
@@ -37562,6 +37700,10 @@ $ guix system extension-graph @var{file} | xdot -
 
 shows the extension relations among services.
 
+@quotation Note
+The @command{dot} program is provided by the @code{graphviz} package.
+@end quotation
+
 @anchor{system-shepherd-graph}
 @item shepherd-graph
 Emit to standard output the @dfn{dependency
@@ -38886,12 +39028,6 @@ Return a G-expression that contains the values corresponding to the
 disk by using something like @code{mixed-text-file}.
 @end deffn
 
-@deffn {Scheme Procedure} validate-configuration @var{configuration}
-@var{fields}
-Type-check @var{fields}, a list of field names of @var{configuration}, a
-configuration record created by @code{define-configuration}.
-@end deffn
-
 @deffn {Scheme Procedure} empty-serializer @var{field-name} @var{value}
 A serializer that just returns an empty string.  The
 @code{serialize-package} procedure is an alias for this.
@@ -39298,6 +39434,7 @@ services)}.
 * Shepherd: Shepherd Home Service.       Managing User's Daemons.
 * SSH: Secure Shell.                     Setting up the secure shell client.
 * Desktop: Desktop Home Services.        Services for graphical environments.
+* Guix: Guix Home Services.              Services for Guix.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -39938,6 +40075,37 @@ format.
 
 @end deftp
 
+@node Guix Home Services
+@subsection Guix Home Services
+
+The @code{(gnu home services guix)} module provides services for
+user-specific Guix configuration.
+
+@defvr {Scheme Variable} home-channels-service-type
+This is the service type for managing
+@file{$XDG_CONFIG_HOME/guix/channels.scm}, the file that controls the
+channels received on @command{guix pull} (@pxref{Channels}).  Its
+associated value is a list of @code{channel} records, defined in the
+@code{(guix channels)} module.
+
+Generally, it is better to extend this service than to directly
+configure it, as its default value is the default guix channel(s)
+defined by @code{%default-channels}.  If you configure this service
+directly, be sure to include a guix channel.  @xref{Specifying
+Additional Channels} and @ref{Using a Custom Guix Channel} for more
+details.
+
+A typical extension for adding a channel might look like this:
+
+@lisp
+(simple-service 'variant-packages-service
+                home-channels-service-type
+                (list
+                 (channel
+                  (name 'variant-packages)
+                  (url "https://example.org/variant-packages.git")))
+@end lisp
+@end defvr
 
 @node Invoking guix home
 @section Invoking @code{guix home}

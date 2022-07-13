@@ -57,6 +57,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rust)
@@ -64,6 +65,7 @@
   #:use-module (gnu packages scheme)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages texinfo)
   #:use-module (guix build-system cargo)
@@ -545,32 +547,29 @@ ksh, and tcsh.")
 (define-public xonsh
   (package
     (name "xonsh")
-    (version "0.12.4")
+    (version "0.13.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xonsh" version))
         (sha256
-          (base32 "0xlac84nsgs0052n2pw8np1smlgghrbd7p6yrcp7d5qh8zdr9lx3"))
+          (base32 "12ayz1kw2ag3r407j0lng2kfp75im8xqap1nvpmpa0lmsx8wk7ll"))
         (modules '((guix build utils)))
         (snippet
-         `(begin
-            ;; Delete bundled PLY.
-            (delete-file-recursively "xonsh/ply")
-            (substitute* "setup.py"
-              (("\"xonsh\\.ply\\.ply\",") ""))
-            ;; Use our properly packaged PLY instead.
-            (substitute* (list "setup.py"
-                               "tests/test_lexer.py"
-                               "xonsh/__amalgam__.py"
-                               "xonsh/lexer.py"
-                               "xonsh/parsers/base.py"
-                               "xonsh/parsers/completion_context.py"
-                               "xonsh/xonfig.py")
-              (("from xonsh\\.ply\\.(.*) import" _ module)
-               (format #f "from ~a import" module))
-              (("from xonsh\\.ply import") "import"))
-            #t))))
+         #~(begin
+             (substitute* "setup.py"
+               (("\"xonsh\\.ply\\.ply\",") ""))
+             ;; Use our properly packaged PLY instead.
+             (substitute* (list "setup.py"
+                                "tests/test_lexer.py"
+                                "xonsh/lexer.py"
+                                "xonsh/parsers/base.py"
+                                "xonsh/parsers/completion_context.py"
+                                "xonsh/xonfig.py")
+               (("from xonsh\\.ply\\.(.*) import" _ module)
+                (format #f "from ~a import" module))
+               (("from xonsh\\.ply import") "import"))
+             #t))))
     (build-system python-build-system)
     (arguments
      (list ;; TODO Try running run the test suite.
@@ -586,8 +585,15 @@ ksh, and tcsh.")
                              "--invalidation-mode=unchecked-hash" out)
                      (invoke "python" "setup.py" "install" "--root=/"
                              (string-append "--prefix=" out))))))))
+    (native-inputs
+     (list python-setuptools                      ;needed at build time
+           python-wheel))
     (inputs
-     (list python-ply))
+     (list python-distro
+           python-ply
+           python-pygments
+           python-pyperclip
+           python-setproctitle))
     (home-page "https://xon.sh/")
     (synopsis "Python-ish shell")
     (description

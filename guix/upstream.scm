@@ -515,9 +515,10 @@ this method: ~s")
                       #:key-download key-download))))
          (values #f #f #f)))
     (#f
-     (raise (formatted-message
-             (G_ "updater failed to determine available releases for ~a~%")
-             (package-name package))))))
+     ;; Warn rather than abort so that other updates can still take place.
+     (warning (G_ "updater failed to determine available releases for ~a~%")
+              (package-name package))
+     (values #f #f #f))))
 
 (define* (update-package-source package source hash)
   "Modify the source file that defines PACKAGE to refer to SOURCE, an

@@ -4652,8 +4652,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "198b6ef719745a48918e703990d1e846ffcd65b0")
-        (revision "31"))
+  (let ((commit "39487cd7e6df7f50f21af15b26f9ec616709f21d")
+        (revision "32"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4665,7 +4665,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "00ma74v9nrza5xpgpgr757hfdlp1cd9rnrpks99mqpjkz73sj1m6"))))
+                  "0xynndlx711spak3s5lzzip8x9bccrzrs5vlrm6jj2ppgrrjsc8h"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -7846,7 +7846,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "1.8.3")
+    (version "1.8.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7854,7 +7854,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "1qbzlrzhyj7gvhgbm057zs1g5ajw1w6499qz61154v7ax8fwrdpp"))))
+                "0bwxr08n6zzhc70a71jhgr9zr1246d1lxf2pknndxwn2pz1xxv5b"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"
@@ -7871,7 +7871,7 @@ solution for any project's interface needs:
                          pkg-config
                          procps))
     (inputs (list libevent libressl))
-    (home-page "https://git.omarpolo.com/gmid/about/")
+    (home-page "https://gmid.omarpolo.com/")
     (synopsis "Simple and secure Gemini server")
     (description "@command{gmid} is a fast Gemini server written with security
 in mind.  It has features such as:

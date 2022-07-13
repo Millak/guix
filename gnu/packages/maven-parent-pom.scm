@@ -143,6 +143,11 @@
     "50" "0ki8px35dan51ashblpw6rdl27c2fq62slazhslhq3lr4fwlpvxs"
     apache-parent-pom-21))
 
+(define-public apache-commons-parent-pom-51
+  (make-apache-commons-parent-pom
+   "51" "05najrpys26jymla2p5jdz4mf4fjp525h6mnr0jfx55lp03xi939"
+   apache-parent-pom-23))
+
 (define-public apache-commons-parent-pom-52
   (make-apache-commons-parent-pom
     "52" "0fb6id9cs9944fjlirjc07bf234bwi96i642px09m9nrfj338n5d"

@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Sheng Yang <styang@fastmail.com>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -79,6 +80,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages protobuf)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -131,6 +133,42 @@
 @dfn{forward error correction} (FEC) algorithms and several low-level routines
 useful in modems implemented with @dfn{digital signal processing} (DSP).")
       (license license:lgpl2.1))))
+
+(define-public libcorrect
+  (let ((commit "f5a28c74fba7a99736fe49d3a5243eca29517ae9")
+        (revision "1"))
+    (package
+      (name "libcorrect")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/quiet/libcorrect")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0qc9k8x51k2xfvp6cx8vdiyb3g6fl1y657z4m201aw2m06hs1hzg"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'build 'build-libfec-compatibility-layer
+              (lambda _
+                (invoke "make" "shim")))
+            (add-after 'install 'delete-static-libraries
+              (lambda _
+                (delete-file (string-append #$output "/lib/libcorrect.a"))
+                (delete-file (string-append #$output "/lib/libfec.a")))))))
+      (home-page "https://github.com/quiet/libcorrect")
+      (synopsis "Forward error correction library")
+      (description
+       "This library provides convolutional and Reed-Solomon codes for forward
+error correction.  It also includes a compatibility layer so that it can be
+used as a drop-in substitute for @code{libfec}.")
+      (license license:bsd-3))))
 
 (define-public liquid-dsp
   (package
@@ -506,7 +544,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
 (define-public gnuradio
   (package
     (name "gnuradio")
-    (version "3.9.2.0")
+    (version "3.10.3.0")
     (source
      (origin
        (method git-fetch)
@@ -515,57 +553,60 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01wyqazrpphmb0fl69j93k0w4vm4d1l4177m1fyg7qx8hzia0aaq"))))
+        (base32 "0xdhb2blzajxpi0f2ch23hh6bzdwz5q7syi3bmiqzdjlj2yjfzd4"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("ghostscript" ,ghostscript)
-       ("js-mathjax" ,js-mathjax)
-       ("orc" ,orc)
-       ("pkg-config" ,pkg-config)
-       ("pybind11" ,pybind11)
-       ("python-cheetah" ,python-cheetah)
-       ("python-mako" ,python-mako)
-       ("python-pyzmq" ,python-pyzmq)
-       ("python-scipy" ,python-scipy)
-       ("python-sphinx" ,python-sphinx)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                             texlive-amsmath
-                                             ;; TODO: Add newunicodechar.
-                                             texlive-latex-graphics)))
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list doxygen
+           ghostscript
+           js-mathjax
+           orc
+           pkg-config
+           pybind11
+           python-cheetah
+           python-mako
+           python-pyzmq
+           python-scipy
+           python-sphinx
+           (texlive-updmap.cfg (list texlive-amsfonts
+                                     texlive-amsmath
+                                     ;; TODO: Add newunicodechar.
+                                     texlive-latex-graphics))
+           xorg-server-for-tests))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("boost" ,boost)
-       ("cairo" ,cairo)
-       ("codec2" ,codec2)
-       ("cppzmq" ,cppzmq)
-       ("fftwf" ,fftwf)
-       ("gmp" ,gmp)
-       ("gsl" ,gsl)
-       ("gsm" ,gsm)
-       ("gtk+" ,gtk+)
-       ("jack" ,jack-1)
-       ("libsndfile" ,libsndfile)
-       ("log4cpp" ,log4cpp)
-       ("pango" ,pango)
-       ("portaudio" ,portaudio)
-       ("python" ,python)
-       ("python-click" ,python-click)
-       ("python-click-plugins" ,python-click-plugins)
-       ("python-lxml" ,python-lxml)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-numpy" ,python-numpy)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pyqt" ,python-pyqt-without-qtwebkit)
-       ("python-pyqtgraph" ,python-pyqtgraph)
-       ("python-pyyaml" ,python-pyyaml)
-       ("qtbase" ,qtbase-5)
-       ("qwt" ,qwt)
-       ("sdl" ,sdl)
-       ("volk" ,volk)
-       ("zeromq" ,zeromq)))
+     (list alsa-lib
+           boost
+           cairo
+           codec2
+           cppzmq
+           fftwf
+           gmp
+           gsl
+           gsm
+           gtk+
+           jack-1
+           libsndfile
+           log4cpp
+           pango
+           portaudio
+           python
+           python-click
+           python-click-plugins
+           python-jsonschema
+           python-lxml
+           python-matplotlib
+           python-numpy
+           python-pycairo
+           python-pygobject
+           python-pyqt-without-qtwebkit
+           python-pyqtgraph
+           python-pyyaml
+           qtbase-5
+           qwt
+           sdl
+           soapysdr
+           spdlog
+           volk
+           zeromq))
     (arguments
      `(#:modules ((guix build cmake-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
@@ -576,7 +617,8 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
                            (guix build glib-or-gtk-build-system)
                            (guix build python-build-system))
        #:configure-flags
-       (list (string-append "-DMATHJAX2_ROOT="
+       (list "-DENABLE_GRC=ON"
+             (string-append "-DMATHJAX2_ROOT="
                             (assoc-ref %build-inputs "js-mathjax")
                             "/share/javascript/mathjax"))
        #:phases
@@ -602,14 +644,12 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
              (substitute* '("gr-vocoder/include/gnuradio/vocoder/codec2.h"
                             "gr-vocoder/include/gnuradio/vocoder/freedv_api.h")
                (("<codec2/")
-                "<"))
-             #t))
+                "<"))))
          (add-before 'check 'set-test-environment
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "HOME" "/tmp")
              (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t))
+             (setenv "DISPLAY" ":1")))
          (replace 'check
            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
              (invoke "ctest" "-j" (if parallel-tests?
@@ -643,8 +683,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
                                         #f))))
                                inputs)))
                (wrap-program (string-append out "/bin/gnuradio-companion")
-                 `("GI_TYPELIB_PATH" ":" prefix ,(filter identity paths))))
-             #t)))))
+                 `("GI_TYPELIB_PATH" ":" prefix ,(filter identity paths)))))))))
     (native-search-paths
      ;; Variables required to find third-party plugins at runtime.
      (list (search-path-specification
@@ -698,6 +737,7 @@ environment.")
              python-pyqt
              rtl-sdr
              soapysdr
+             spdlog
              volk))
       (arguments
        `(#:modules ((guix build cmake-build-system)
@@ -789,6 +829,7 @@ primitives for SDR (Software Defined Radio).")
              gnuradio
              libosmo-dsp
              log4cpp
+             spdlog
              volk))
       (synopsis "GNU Radio block to correct IQ imbalance")
       (description
@@ -806,7 +847,7 @@ to the fix block above.
 (define-public gr-satellites
   (package
     (name "gr-satellites")
-    (version "4.2.0")
+    (version "4.6.0")
     (source
      (origin
        (method git-fetch)
@@ -815,7 +856,7 @@ to the fix block above.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01p9cnwjxas3pkqr9m5fnrgm45cji0sfdqqa51hzy7izx9vgzaf8"))))
+        (base32 "0mcrxwb27n2v8v8vmcmmm1pbmy3c02a22mz2wnpdsfb2163qpchw"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config pybind11 python-six))
@@ -830,6 +871,7 @@ to the fix block above.
            python-pyaml
            python-pyzmq
            python-requests
+           spdlog
            volk))
     (arguments
      `(#:modules ((guix build cmake-build-system)
@@ -885,6 +927,7 @@ satellites.")
            pulseaudio
            qtbase-5
            qtsvg
+           spdlog
            volk))
     (arguments
      `(#:tests? #f))                    ; no tests
@@ -2465,7 +2508,7 @@ Radios.")
 (define-public gnss-sdr
   (package
     (name "gnss-sdr")
-    (version "0.0.15")
+    (version "0.0.17")
     (source
      (origin
        (method git-fetch)
@@ -2474,7 +2517,7 @@ Radios.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m41rnlfr1nrzbg382jfsk5x0by2ym48v3innd2rbc6phd85q223"))))
+        (base32 "0kxn98vmrsd2a157cf3hsmivi6p4k4a3907j5w8hmcs0nn92786i"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gfortran" ,gfortran)
@@ -2486,6 +2529,7 @@ Radios.")
     (inputs
      (list armadillo
            boost
+           fmt
            gflags
            glog
            gmp
@@ -2499,6 +2543,7 @@ Radios.")
            openssl
            protobuf
            pugixml
+           spdlog
            volk))
     (arguments
      `(#:configure-flags

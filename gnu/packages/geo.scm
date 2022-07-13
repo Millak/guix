@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021 Nikolay Korotkiy <sikmir@disroot.org>
+;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +46,7 @@
   #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system r)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
@@ -113,11 +115,41 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public cdo
+  (package
+    (name "cdo")
+    (version "2.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://code.mpimet.mpg.de/attachments/download/26823/cdo-"
+                     version ".tar.gz"))
+              (sha256
+               (base32
+                "1khdbd5cmnn7qm6hcqg4md5wbq14fs6brrns8b3g18diqgqvpvpd"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-netcdf="
+                                  #$(this-package-input "netcdf")))))
+    (inputs
+     (list netcdf))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://code.mpimet.mpg.de/projects/cdo")
+    (synopsis "Climate data operators")
+    (description "@acronym{CDO, Climate Data Operators} is a collection of command-line
+operators to manipulate and analyse climate and NWP model data.  Supported
+data formats are GRIB 1/2, netCDF 3/4, SERVICE, EXTRA and IEG.  There are more
+than 600 operators available.")
+    (license license:bsd-3)))
 
 (define-public memphis
   (package
@@ -807,7 +839,7 @@ street bearings/orientations, and speed/travel time.")
 (define-public mapnik
   (package
     (name "mapnik")
-    (version "3.0.18")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
@@ -815,7 +847,7 @@ street bearings/orientations, and speed/travel time.")
                            version "/mapnik-v" version ".tar.bz2"))
        (sha256
         (base32
-         "06frcikaj2mgz3abfk5h0z4j3hbksi0zikwjngbjv4p5f3pwxf8q"))))
+         "0qb2irykja5qhr9apz9r230pcxap9v3j85fi98mj2xd9sa163ms3"))))
     (build-system scons-build-system)
     (inputs
      (list boost
@@ -832,10 +864,9 @@ street bearings/orientations, and speed/travel time.")
            sqlite
            zlib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config postgresql))
     (arguments
-     `(#:scons ,scons-python2
-       #:scons-flags
+     `(#:scons-flags
        (list "CC=gcc"
              (string-append "PREFIX=" %output)
              (string-append "CUSTOM_LDFLAGS=-Wl,-rpath=" %output "/lib"))))
@@ -914,7 +945,7 @@ development.")
 (define-public gdal
   (package
     (name "gdal")
-    (version "3.3.3")
+    (version "3.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -922,7 +953,7 @@ development.")
                      version ".tar.gz"))
               (sha256
                (base32
-                "0nk09lws1hk873yn5f4wzqfvr82gm4hw3gq8w9g1h0kvf6j5x4i8"))
+                "0h7dgjx8nk3dd17wwqm2yjnaqciyrd2mz9gcjswpcnmap09wbzrs"))
               (modules '((guix build utils)))
               (snippet
                 `(begin
@@ -937,36 +968,15 @@ development.")
                        "frmts/gtiff/libgeotiff"
                        "frmts/zlib"
                        "ogr/ogrsf_frmts/geojson/libjson"))))))
-    (build-system gnu-build-system)
+    (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
        #:configure-flags
-       (let-syntax ((with (syntax-rules ()
-                            ((_ option input)
-                             (string-append option "="
-                                            (assoc-ref %build-inputs input))))))
-         (list
-           ;; TODO: --with-pcidsk, --with-pcraster
-           (with "--with-freexl" "freexl")
-           (with "--with-libjson-c" "json-c")
-           (with "--with-png" "libpng")
-           (with "--with-webp" "libwebp")
-           (with "--with-gif" "giflib")
-           (with "--with-jpeg" "libjpeg-turbo")
-           (with "--with-libtiff" "libtiff")
-           (with "--with-geotiff" "libgeotiff")
-           (with "--with-libz" "zlib")
-           (with "--with-expat" "expat")
-           (with "--with-sqlite3" "sqlite")
-           "--with-pcre"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-path
-           (lambda _
-             (substitute* "frmts/mrf/mrf_band.cpp"
-               (("\"../zlib/zlib.h\"") "<zlib.h>")))))))
+       (list "-DGDAL_USE_INTERNAL_LIBS=WHEN_NO_EXTERNAL"
+             "-DGDAL_USE_JPEG12_INTERNAL=OFF")))
     (inputs
-     (list expat
+     (list curl
+           expat
            freexl
            geos
            giflib
@@ -977,9 +987,11 @@ development.")
            libtiff
            libwebp
            netcdf
-           pcre
+           openssl
+           pcre2
            postgresql ; libpq
            proj
+           qhull
            sqlite
            zlib))
     (native-inputs
@@ -1147,6 +1159,7 @@ Shapely capabilities
            json-c
            libjpeg-turbo
            libxml2
+           openssl
            pcre
            postgresql
            protobuf-c
@@ -2485,6 +2498,7 @@ growing set of geoscientific methods.")
                              "PyQgsProviderConnectionSpatialite"
                              "PyQgsPythonProvider"
                              "PyQgsRasterLayer"
+                             "PyQgsRasterResampler"
                              "PyQgsRulebasedRenderer"
                              "PyQgsSelectiveMasking"
                              "PyQgsSettings"

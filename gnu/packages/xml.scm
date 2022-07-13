@@ -1936,9 +1936,12 @@ validator.")
     (version "1.1.4")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://www.extreme.indiana.edu/dist/"
-                                  "java-repository/xpp3/distributions/xpp3-"
-                                  version "_src.tgz"))
+              (uri (string-append
+                    "https://ci.guix.gnu.org/file/"
+                    "xpp3-1.1.4_src.tgz"
+                    "/sha256/"
+                    "1b99zrhyij5qwyhilyjdl1ykxvhk902vsvflh6gx4fir8hfvdl5p"))
+              (file-name (string-append name "-" version "_src.tgz"))
               (sha256
                (base32
                 "1b99zrhyij5qwyhilyjdl1ykxvhk902vsvflh6gx4fir8hfvdl5p"))

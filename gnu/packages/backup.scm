@@ -86,6 +86,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -1198,7 +1199,7 @@ additional snapshots).")
            uthash
            zlib))
     (native-inputs
-     (list autoconf automake check-0.14 pkg-config))
+     (list autoconf automake check pkg-config))
     (home-page "https://burp.grke.org")
     (synopsis "Differential backup and restore")
     (description "Burp is a network backup and restore program.  It attempts

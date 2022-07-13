@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -520,6 +520,44 @@ Jupyter Notebooks.  It includes the following commands:
 nbshow present a single notebook in a terminal-friendly way
 @end table")
     (license license:bsd-3)))
+
+(define-public python-nbstripout
+  (package
+    (name "python-nbstripout")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "nbstripout" version))
+              (sha256
+               (base32
+                "1n57nvxsc94gz9w8ymi83bjkfhfwkpmx4y14m6gjrmlqd49m1aw6"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests use git and hg, and they are sensitive to the
+             ;; exact printed output.
+             (for-each delete-file (list "tests/test-git.t"
+                                         "tests/test-hg.t"
+                                         "tests/test-status.t"
+                                         "tests/test-uninstall.t"))))
+         (add-before 'check 'set-CRAMSHELL
+           (lambda _
+             (setenv "CRAMSHELL" (which "bash")))))))
+    (propagated-inputs (list python-nbformat))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cram
+           python-pytest-flake8
+           python-pytest-runner))
+    (home-page "https://github.com/kynan/nbstripout")
+    (synopsis "Strips outputs from Jupyter and IPython notebooks")
+    (description
+     "This package opens a notebook, strips its output, and writes the outputless
+version to the original file.")
+    (license license:expat)))
 
 (define-public repo2docker
   (package

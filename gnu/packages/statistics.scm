@@ -204,7 +204,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define r-with-tests
   (package
     (name "r-with-tests")
-    (version "4.2.0")
+    (version "4.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cran/src/base/R-"
@@ -212,7 +212,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "123l17sv3smh5cz0vrjxjj8jf81bb860kah6iww9bl3skdqvgsiq"))))
+                "0gv4di1x835i4nsy21vqw66c0blmmmvyjkixc5a8x117dm4dnljd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
@@ -677,13 +677,13 @@ and operations on them using LAPACK and SuiteSparse.")
 (define-public r-nlme
   (package
     (name "r-nlme")
-    (version "3.1-157")
+    (version "3.1-158")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nlme" version))
        (sha256
-        (base32 "0v6rw6d7mk1szi5bgs5m91k76hgwcb7r704xaypvlv6bkmra5wnx"))))
+        (base32 "08xzaslqmbizj38v746hn09bi7k9h0vjhh0z7mv0c9xsq80v8nx5"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
@@ -1381,13 +1381,13 @@ evaluation (NSE) in R.")
 (define-public r-dbi
   (package
     (name "r-dbi")
-    (version "1.1.2")
+    (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "DBI" version))
               (sha256
                (base32
-                "0n2gf5flmcrkad7p0pzsnsgwjl5006yi7lyz9lisqxhw8xykgv2n"))))
+                "13a2656w5j9shpcwa7gj2szy7nk9sajjhlisi5wdpgd57msk7frq"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -1756,13 +1756,13 @@ defined in different packages.")
 (define-public r-rlang
   (package
     (name "r-rlang")
-    (version "1.0.2")
+    (version "1.0.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rlang" version))
               (sha256
                (base32
-                "1k6pzl2x80pycpllvd8n1k62h5cfdwc0hsdwvbicrcxhdwz7rs4d"))))
+                "0ghfbs0sw502hk5amxr8i5lwgv6vyqcq2a2liqf57k9dm6qlik04"))))
     (build-system r-build-system)
     (home-page "http://rlang.tidyverse.org")
     (synopsis "Functions for base types, core R and Tidyverse features")
@@ -1840,14 +1840,14 @@ database.")
 (define-public r-dbplyr
   (package
     (name "r-dbplyr")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbplyr" version))
        (sha256
         (base32
-         "1qfwk8g8z5l9vbh4pj53pippsqsiqmn8qbvm1h1v7y29jcn0jvja"))))
+         "1xqdrfpl5l94cw717d90xx1hs5aswl6s38wr7qximzk8q12gdwx6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
@@ -2716,13 +2716,13 @@ well as additional utilities such as panel and axis annotation functions.")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "0.11.1.1.0")
+    (version "0.11.2.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "15s8lx3s0g9npwmys509ahrqc786lg2cid21civ3wm219i4gq2zb"))))
+                "0f0rrv254jd66m80vm4bmk3yrnyw1kdfgdki6zbcih7mbvw7mqgr"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3923,13 +3923,13 @@ memory-mapped files.")
 (define-public r-r-methodss3
   (package
     (name "r-r-methodss3")
-    (version "1.8.1")
+    (version "1.8.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "R.methodsS3" version))
               (sha256
                (base32
-                "16v1br7lf7vxv40z65giv9jnqkpnyqagcmgqa0s1jy7spj0zp64a"))))
+                "0bkwj9c2cpgb0ibk9znh8qh4k1wzp3bkhaxyhf41xjflv9hmwbc2"))))
     (properties `((upstream-name . "R.methodsS3")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/R.methodsS3")
@@ -3970,13 +3970,13 @@ maintenance for package developers.")
 (define-public r-r-utils
   (package
     (name "r-r-utils")
-    (version "2.11.0")
+    (version "2.12.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "R.utils" version))
               (sha256
                (base32
-                "1n7y4dzls7dc8fdkm9zncq4cpiblb2a9vwirwjkf72zpjpwn0a32"))))
+                "00v5hpdid6h1yiwpf631xf1dk1z6dcx7dx83qn56a7pa4194bpkl"))))
     (properties `((upstream-name . "R.utils")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4019,13 +4019,13 @@ persistent (on the file system).")
 (define-public r-r-rsp
   (package
     (name "r-r-rsp")
-    (version "0.44.0")
+    (version "0.45.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "R.rsp" version))
               (sha256
                (base32
-                "0n9sxrffahgxcc8h9vgxg5i446g14cibixpf82nkpm5bvidhfsc9"))))
+                "192x8cvna1j0sx37xh3ha8bjjyx39pn5wnxzn5gs3z5j93a4d055"))))
     (properties `((upstream-name . "R.rsp")))
     (build-system r-build-system)
     (arguments
@@ -4588,14 +4588,14 @@ Zurich, including many that are related to graphics.")
 (define-public r-gtools
   (package
     (name "r-gtools")
-    (version "3.9.2.1")
+    (version "3.9.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gtools" version))
        (sha256
         (base32
-         "0pxg0ang9q26hlwgf53pp1hq6rlarq5rnrrr9dl14f5kgfnynpzc"))))
+         "0hyqh1r9vxy7hfnir22439k4jlk4adcxdf78ryz5bk06blvqc81m"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/gtools")
     (synopsis "Various R programming tools")
@@ -5644,13 +5644,13 @@ Companion to Applied Regression, Third Edition, Sage.")
 (define-public r-car
   (package
     (name "r-car")
-    (version "3.0-13")
+    (version "3.1-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "car" version))
        (sha256
-        (base32 "1ss7kvi5hf9s4b6i7y06zl4iip1w1h8ff4zzf529wk18h3dfhnnk"))))
+        (base32 "08ga187qqnl7cih7kzzzw9jx5sq63lq4ad6rrj7q5kj6xbmb8lmx"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind
@@ -5815,14 +5815,14 @@ diagnostic tools (@code{ctlcurves} and @code{DiscrFact}).")
 (define-public r-ranger
   (package
     (name "r-ranger")
-    (version "0.13.1")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ranger" version))
        (sha256
         (base32
-         "02idcc6zbdz4wsi1mcwh7qyhmlbwvnzxwkdvvppxw7n2rh54z4v0"))))
+         "06zf5mi6yfgb68m6m83k01r4ikj5nldrvrbh3jqwz8axalfl16ax"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-matrix r-rcppeigen))
@@ -6457,14 +6457,14 @@ mediation and estimating power.")
 (define-public r-clubsandwich
   (package
     (name "r-clubsandwich")
-    (version "0.5.6")
+    (version "0.5.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clubSandwich" version))
        (sha256
         (base32
-         "0mll8q61vnb980dck8ihxcy89z8m7f8i16mqdvr4l2ljywkhpzvd"))))
+         "1chq0bjz0yskm3cs8k6019j9v1m3fiz4p2ysk3xmqxlcihmnvv0b"))))
     (properties `((upstream-name . "clubSandwich")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6835,13 +6835,13 @@ extreme-value distribution.")
 (define-public r-gld
   (package
     (name "r-gld")
-    (version "2.6.4")
+    (version "2.6.5")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "gld" version))
         (sha256
-          (base32 "08rkv7g6ci969vh9fbyg3lrpfmjhbiwzdhcjs9j6s9bf3gpdmdhd"))))
+          (base32 "1scflrfhvf26psnh7ayi4x2j706k8sfyqlmib6ssjyhl6g0gg542"))))
     (properties `((upstream-name . "gld")))
     (build-system r-build-system)
     (propagated-inputs (list r-e1071 r-lmom))
@@ -7100,3 +7100,28 @@ significant simulations to all simulations.  More conservative simulations as
 protection against a bias in the pilotdata are available aswell as methods for
 otting the results.")
     (license license:gpl3)))
+
+(define-public r-colorway
+  (let ((commit "8ba8f0026aba37752c6770de45bf53b1b0f48afc")
+        (revision "1"))
+    (package
+      (name "r-colorway")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hypercompetent/colorway")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0r6yhnzx3ll1z12pp6y8fqbrx7v18rcff2j2179bqy9ca2d2d94l"))))
+      (properties `((upstream-name . "colorway")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-dplyr r-ggplot2 r-rlang))
+      (home-page "https://github.com/hypercompetent/colorway")
+      (synopsis "Functions for colors in R")
+      (description
+       "This package provides a collection of (mostly simple) functions for
+generating and manipulating colors in R.")
+      (license license:gpl3))))

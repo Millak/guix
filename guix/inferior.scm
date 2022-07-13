@@ -156,12 +156,18 @@ custom binary port)."
             (close-port parent)
             (close-fdes 0)
             (close-fdes 1)
+            (close-fdes 2)
             (dup2 (fileno child) 0)
             (dup2 (fileno child) 1)
             ;; Mimic 'open-pipe*'.
-            (unless (file-port? (current-error-port))
-              (close-fdes 2)
-              (dup2 (open-fdes "/dev/null" O_WRONLY) 2))
+            (if (file-port? (current-error-port))
+                (let ((error-port-fileno
+                       (fileno (current-error-port))))
+                  (unless (eq? error-port-fileno 2)
+                    (dup2 error-port-fileno
+                          2)))
+                (dup2 (open-fdes "/dev/null" O_WRONLY)
+                      2))
             (apply execlp command command args))
           (lambda ()
             (primitive-_exit 127))))

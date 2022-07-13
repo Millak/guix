@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -19,7 +19,9 @@
 
 (define-module (gnu tests base)
   #:use-module (gnu tests)
+  #:use-module (gnu image)
   #:use-module (gnu system)
+  #:autoload   (gnu system image) (system-image)
   #:use-module (gnu system shadow)
   #:use-module (gnu system nss)
   #:use-module (gnu system vm)
@@ -33,19 +35,22 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages package-management)
-  #:use-module (gnu packages linux)
   #:use-module (gnu packages tmux)
+  #:use-module (gnu packages virtualization)
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix monads)
+  #:use-module (guix modules)
   #:use-module (guix packages)
-  #:use-module (srfi srfi-1)
+  #:use-module ((srfi srfi-1) #:hide (partition))
   #:use-module (ice-9 match)
   #:export (run-basic-test
             %test-basic-os
             %test-halt
+            %test-root-unmount
             %test-cleanup
             %test-mcron
             %test-nss-mdns))
@@ -614,6 +619,139 @@ in a loop.  See <http://bugs.gnu.org/26931>.")
                #:imported-modules '((gnu services herd)
                                     (guix combinators)))))
       (run-halt-test (virtual-machine os))))))
+
+
+;;;
+;;; Root cleanly unmounted.
+;;;
+
+(define (run-root-unmount-test os)
+  (define test-image
+    (image (operating-system os)
+           (format 'compressed-qcow2)
+           (volatile-root? #f)
+           (shared-store? #f)
+           (partition-table-type 'mbr)
+           (partitions
+            (list (partition
+                   (size 'guess)
+                   (offset (* 512 2048))          ;leave room for GRUB
+                   (flags '(boot))
+                   (label "root-under-test")))))) ;max 16 characters!
+
+  (define observer-os
+    (marionette-operating-system
+     %simple-os
+     #:imported-modules
+     (source-module-closure '((guix build syscalls)
+                              (gnu build file-systems)))))
+
+  (define test
+    (with-imported-modules (source-module-closure
+                            '((gnu build marionette)
+                              (guix build utils)))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (guix build utils)
+                       (srfi srfi-64)
+                       (ice-9 ftw))
+
+          (define image
+            "/tmp/writable-image.qcow2")
+
+          (define (test-system-marionette)
+            ;; Return a marionette on a system where we'll run 'halt'.
+            (invoke #$(file-append qemu-minimal "/bin/qemu-img")
+                    "create" "-f" "qcow2" image "3G"
+                    "-b" #$(system-image test-image) "-F" "qcow2")
+            (make-marionette
+             `(,(string-append #$qemu-minimal "/bin/" (qemu-command))
+               ,@(if (file-exists? "/dev/kvm")
+                     '("-enable-kvm")
+                     '())
+               "-no-reboot"
+               "-m" "1024"                        ;memory size, in MiB
+               "-drive" ,(format #f "file=~a,if=virtio" image))))
+
+          (define witness-size
+            ;; Size of the /witness file.
+            (* 20 (expt 2 20)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "root-unmount")
+
+          (let ((marionette (test-system-marionette)))
+            (test-assert "file created"
+              (marionette-eval `(begin
+                                  (use-modules (guix build utils))
+                                  (call-with-output-file "/witness"
+                                    (lambda (port)
+                                      (call-with-input-file "/dev/random"
+                                        (lambda (input)
+                                          (dump-port input port
+                                                     ,witness-size))))))
+                               marionette))
+
+            ;; Halt the system.
+            (marionette-eval '(system* "/run/current-system/profile/sbin/halt")
+                             marionette))
+
+          ;; Remove the sockets used by the marionette above to avoid
+          ;; EADDRINUSE.
+          (for-each delete-file
+                    (find-files "/tmp" (lambda (file stat)
+                                         (eq? (stat:type stat) 'socket))))
+
+          ;; Now boot another system and check whether the root file system of
+          ;; the first one was cleanly unmounted.
+
+          (let ((observer
+                 (make-marionette (list #$(virtual-machine observer-os)
+                                        "-drive"
+                                        (format #f "file=~a,if=virtio" image)))))
+            (test-assert "partitions"
+              (marionette-eval '(begin
+                                  (use-modules (gnu build file-systems))
+                                  (disk-partitions))
+                               observer))
+
+            (test-assert "partition found"
+              (marionette-eval '(find-partition-by-label "root-under-test")
+                               observer))
+
+            (test-assert "root file system is clean"
+              (marionette-eval '(cleanly-unmounted-ext2?
+                                 (find-partition-by-label "root-under-test"))
+                               observer))
+
+            (test-equal "root file system contains /witness"
+              witness-size
+              (let ((files (marionette-eval
+                            '(begin
+                               (use-modules (guix build syscalls)
+                                            (ice-9 ftw))
+                               (mount (find-partition-by-label "root-under-test")
+                                      "/mnt" "ext4" MS_RDONLY)
+                               (scandir "/mnt"))
+                            observer)))
+                (if (member "witness" files)
+                    (marionette-eval '(stat:size (stat "/mnt/witness"))
+                                     observer)
+                    files))))
+
+          (test-end))))
+
+  (gexp->derivation "root-unmount" test))
+
+(define %test-root-unmount
+  (system-test
+   (name "root-unmount")
+   (description
+    "Make sure the root file system is cleanly unmounted when the system is
+halted.")
+   (value
+    (let ((os (marionette-operating-system %simple-os)))
+      (run-root-unmount-test os)))))
 
 
 ;;;

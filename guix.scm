@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2014, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2014, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,6 +17,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix)
+  #:use-module (guix packages)
   #:re-export-and-replace (define-public))        ;from (guix packages)
 
 ;; The composite module that re-exports everything from the public modules.

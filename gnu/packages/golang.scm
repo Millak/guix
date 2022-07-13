@@ -34,6 +34,7 @@
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2022 Pier-Hugues Pellerin <phpellerin@gmail.com>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -627,7 +628,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.16)
     (name "go")
-    (version "1.17.9")
+    (version "1.17.11")
     (source
      (origin
        (method git-fetch)
@@ -637,7 +638,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "02l6gxn738kam1niy2nl2wpsbzl4x87h2wik6hd3py19kq4z2flw"))))
+         "11wy6092qm7v0n10cjkyp49sbchqazi3vnij8k2sq7k7jaj63z5p"))))
     (outputs '("out" "tests")) ; 'tests' contains distribution tests.
     (arguments
      `(#:modules ((ice-9 match)
@@ -9843,3 +9844,50 @@ Jsonnet} data templating language in Go.  It is a feature-complete,
 production-ready implementation, compatible with the original Jsonnet C++
 implementation.")
     (license license:asl2.0)))
+
+(define-public go-github-com-gorilla-websocket
+  (package
+    (name "go-github-com-gorilla-websocket")
+    (version "1.5.0")
+    (home-page "https://github.com/gorilla/websocket")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1xrr6snvs9g1nzxxg05w4i4pq6k1xjljl5mvavd838qc468n118i"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/gorilla/websocket"))
+    (synopsis "Fast WebSocket implementation for Go")
+    (description "Gorilla WebSocket is a Go implementation of the WebSocket protocol.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-sourcegraph-jsonrpc2
+  (package
+    (name "go-github-com-sourcegraph-jsonrpc2")
+    (version "0.1.0")
+    (home-page "https://github.com/sourcegraph/jsonrpc2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1dk0w32k96vxrwnmm24wqx337dn8ylch65qwrbc3wh7whw2xx71q"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/sourcegraph/jsonrpc2"))
+    (propagated-inputs
+     (list
+      go-github-com-daviddengcn-go-colortext
+      go-github-com-motemen-go-colorine
+      go-github-com-gorilla-websocket))
+    (synopsis "Provides a client and server implementation of JSON-RPC 2.0")
+    (description
+     "Package jsonrpc2 provides a Go implementation of JSON-RPC 2.0.")
+    (license license:expat)))

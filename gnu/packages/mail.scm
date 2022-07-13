@@ -138,6 +138,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -1760,7 +1761,7 @@ addons which can add many functionalities to the base client.")
                     (bin (string-append out "/bin"))
                     (doc (string-append out "/share/doc/msmtp"))
                     (msmtpq "scripts/msmtpq")
-                    (vimfiles (string-append out "/share/vim/vimfiles/plugin")))
+                    (vimfiles (string-append out "/share/vim/vimfiles/syntax")))
                (install-file (string-append msmtpq "/msmtpq") bin)
                (install-file (string-append msmtpq "/msmtp-queue") bin)
                (install-file (string-append msmtpq "/README.msmtpq") doc)
@@ -1782,7 +1783,7 @@ delivery.")
 (define-public exim
   (package
     (name "exim")
-    (version "4.95")
+    (version "4.96")
     (source
      (origin
        (method url-fetch)
@@ -1796,86 +1797,84 @@ delivery.")
                     (string-append "https://ftp.exim.org/pub/exim/exim4/old/"
                                    file-name))))
        (sha256
-        (base32 "0rzi0kc3qiiaw8vnv5qrpwdvvh4sr5chns026xy99spjzx9vd76c"))))
+        (base32 "18ziihkpa23lybm7m2l9wp2farxw0bd5ng7xm9ylgcrfgf95d6i9"))))
     (build-system gnu-build-system)
-    (inputs
-     `(("bdb" ,bdb-5.3) ; ‘#error Version 6 and later BDB API is not supported’
-       ("gnutls" ,gnutls/dane)
-       ("gzip" ,gzip)
-       ("bzip2" ,bzip2)
-       ("xz" ,xz)
-       ("perl" ,perl)
-       ("libnsl" ,libnsl)
-       ("libxt" ,libxt)
-       ("libxaw" ,libxaw)))
-    (native-inputs
-     (list `(,pcre "bin") perl pkg-config))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           ;; We'd use #:make-flags but the top-level Makefile calls others
-           ;; recursively, so just set all variables this way.
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (substitute* '("Makefile" "OS/Makefile-Default")
-               (("(RM_COMMAND=).*" all var)
-                (string-append var "rm\n")))
-             (copy-file "src/EDITME" "Local/Makefile")
-             (copy-file "exim_monitor/EDITME" "Local/eximon.conf")
-             (let ((out (assoc-ref outputs "out"))
-                   (gzip (assoc-ref inputs "gzip"))
-                   (bzip2 (assoc-ref inputs "bzip2"))
-                   (xz (assoc-ref inputs "xz")))
-               (substitute* '("Local/Makefile")
-                 (("(BIN_DIRECTORY=).*" all var)
-                  (string-append var out "/bin\n"))
-                 (("(CONFIGURE_FILE=).*" all var)
-                  (string-append var out "/etc/exim.conf\n"))
-                 (("(EXIM_USER=).*" all var)
-                  (string-append var "nobody\n"))
-                 (("(FIXED_NEVER_USERS=).*" all var)
-                  (string-append var "\n")) ; XXX no root in build environment
-                 (("(COMPRESS_COMMAND=).*" all var)
-                  (string-append var gzip "/bin/gzip\n"))
-                 (("(ZCAT_COMMAND=).*" all var)
-                  (string-append var gzip "/bin/zcat\n"))
-                 (("# (USE_GNUTLS(|_PC)=.*)" all line)
-                  (string-append line "\n"))
-                 (("# (AUTH_CRAM_MD5=yes)" all line) line)
-                 (("# (AUTH_DOVECOT=yes)" all line) line)
-                 (("# (AUTH_EXTERNAL=yes)" all line) line)
-                 (("# (AUTH_PLAINTEXT=yes)" all line) line)
-                 (("# (AUTH_SPA=yes)" all line) line)
-                 (("# (AUTH_TLS=yes)" all line) line))
-               ;; This file has hard-coded relative file names for tools despite
-               ;; the zcat configuration above.
-               (substitute* '("src/exigrep.src")
-                 (("'zcat'") (string-append "'" gzip "/bin/zcat'"))
-                 (("'bzcat'") (string-append "'" bzip2 "/bin/bzcat'"))
-                 (("'xzcat'") (string-append "'" xz "/bin/xzcat'"))
-                 (("'lzma'") (string-append "'" xz "/bin/lzma'"))))))
-         (add-before 'build 'fix-sh-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("scripts/lookups-Makefile" "scripts/reversion")
-               (("SHELL=/bin/sh") "SHELL=sh"))
-             (substitute* '("scripts/Configure-config.h")
-               (("\\| /bin/sh") "| sh"))
-             (let ((bash (assoc-ref inputs "bash")))
-               (substitute* '("scripts/Configure-eximon")
-                 (("#!/bin/sh") (string-append "#!" bash "/bin/sh"))))))
-         (add-before 'build 'build-reproducibly
-           (lambda _
-             ;; The ‘compilation number’ is incremented for every build from the
-             ;; same source tree.  It appears to vary over different (parallel?)
-             ;; builds.  Make it a ‘constant number’ instead.
-             (substitute* "src/version.c"
-               (("#include \"cnumber.h\"") "1")))))
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             "INSTALL_ARG=-no_chown")
-       ;; No 'check' target.  There is a test suite in test/, which assumes that
-       ;; certain build options were (not) used and that it can freely ‘sudo’.
-       #:tests? #f))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 ;; We'd use #:make-flags but the top-level Makefile calls
+                 ;; others recursively, so just set all variables this way.
+                 (lambda* (#:key outputs inputs #:allow-other-keys)
+                   (substitute* (list "Makefile" "OS/Makefile-Default")
+                     (("(RM_COMMAND=).*" all var)
+                      (string-append var "rm\n")))
+                   (copy-file "src/EDITME" "Local/Makefile")
+                   (copy-file "exim_monitor/EDITME" "Local/eximon.conf")
+                   (let ((out (assoc-ref outputs "out")))
+                     (substitute* "Local/Makefile"
+                       (("(BIN_DIRECTORY=).*" all var)
+                        (string-append var out "/bin\n"))
+                       (("(CONFIGURE_FILE=).*" all var)
+                        (string-append var out "/etc/exim.conf\n"))
+                       (("(EXIM_USER=).*" all var)
+                        (string-append var "nobody\n"))
+                       (("(FIXED_NEVER_USERS=).*" all var)
+                        (string-append var "\n")) ; no root in build environment
+                       (("(COMPRESS_COMMAND=).*" all var)
+                        (string-append var (search-input-file inputs "bin/gzip")
+                                       "\n"))
+                       (("(ZCAT_COMMAND=).*" all var)
+                        (string-append var (search-input-file inputs "bin/zcat")
+                                       "\n"))
+                       (("# (USE_GNUTLS(|_PC)=.*)" all line)
+                        (string-append line "\n"))
+                       (("# (AUTH_CRAM_MD5=yes)" all line) line)
+                       (("# (AUTH_DOVECOT=yes)" all line) line)
+                       (("# (AUTH_EXTERNAL=yes)" all line) line)
+                       (("# (AUTH_PLAINTEXT=yes)" all line) line)
+                       (("# (AUTH_SPA=yes)" all line) line)
+                       (("# (AUTH_TLS=yes)" all line) line))
+                     ;; This file has hard-coded relative file names for tools
+                     ;; despite the zcat configuration above.
+                     (substitute* "src/exigrep.src"
+                       (("'(bzcat|xzcat|zcat|lzma)'" _ command)
+                        (format #f "'~a'"
+                                (search-input-file
+                                 inputs (string-append "bin/" command))))))))
+               (add-before 'build 'fix-sh-file-names
+                 (lambda _
+                   (substitute* (list "scripts/lookups-Makefile"
+                                      "scripts/reversion")
+                     (("SHELL=/bin/sh") "SHELL=sh"))
+                   (substitute* "scripts/Configure-config.h"
+                     (("\\| /bin/sh") "| sh"))
+                   (patch-shebang "scripts/Configure-eximon")))
+               (add-before 'build 'build-reproducibly
+                 (lambda _
+                   ;; The ‘compilation number’ increments on every build in the
+                   ;; same source tree and varies across different (parallel?)
+                   ;; builds.  Make it a ‘constant number’ instead.
+                   (substitute* "src/version.c"
+                     (("#include \"cnumber.h\"") "1")))))
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   "INSTALL_ARG=-no_chown")
+           ;; No ‘check’ target.  The ‘test/’ suite assumes that particular
+           ;; build options were (not) used and that it can freely ‘sudo’.
+           #:tests? #f))
+    (native-inputs
+     (list pcre2 perl pkg-config))
+    (inputs
+     (list bdb-5.3     ; ‘#error Version 6 and later BDB API is not supported’
+           bzip2
+           gnutls/dane
+           gzip
+           libnsl
+           libxaw
+           libxt
+           perl
+           xz))
     (home-page "https://www.exim.org/")
     (synopsis
      "Message Transfer Agent (MTA) developed at the University of Cambridge")
@@ -1885,6 +1884,7 @@ Cambridge for use on Unix systems connected to the Internet.  In style it is
 similar to Smail 3, but its facilities are more general.  There is a great
 deal of flexibility in the way mail can be routed, and there are extensive
 facilities for checking incoming mail.")
+    (properties '((lint-hidden-cve . ("CVE-2020-28017"))))
     (license license:gpl2+)))
 
 (define-public dovecot
@@ -3959,11 +3959,11 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "9b28ec7d152623692877bcb767e5c654e59e57ed")
-        (revision "8"))
+  (let ((commit "02485074c9ae3d3b0039ac4c44fa37f2e2e75eac")
+        (revision "1"))
     (package
       (name "mumi")
-      (version (git-version "0.0.1" revision commit))
+      (version (git-version "0.0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3972,7 +3972,7 @@ It is a replacement for the @command{urlview} program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1njnzqv4h2msfa86qfbvm54vfdwlikwzs4134fcffcf4l86bs9fl"))))
+                  "1ppqz4bclbw3rqgd2fq4mj8hsrd9cfdddjzaycm5b0ffdsm8nrs3"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)

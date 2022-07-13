@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
+;;; Copyright © 2015, 2017, 2022 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Erik Edrosa <erik.edrosa@gmail.com>
@@ -496,34 +496,31 @@ and then run @command{scm example.scm}.")
        ,@(package-arguments guile2.0-bash)))))
 
 (define-public guile-8sync
-  (package
-    (name "guile-8sync")
-    (version "0.4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/8sync/8sync-" version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "031wm13srak3wsnll7j2mbbi29g1pcm4swdb71ds9yn567pn20qw"))))
-    (build-system gnu-build-system)
-    (native-inputs (list autoconf automake guile-2.2 pkg-config texinfo))
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'configure 'setenv
-                    (lambda _
-                      ;; quiet warnings
-                      (setenv "GUILE_AUTO_COMPILE" "0")
-                      #t)))))
-    (home-page "https://gnu.org/s/8sync/")
-    (synopsis "Asynchronous actor model library for Guile")
-    (description
-     "GNU 8sync (pronounced \"eight-sync\") is an asynchronous programming
-library for GNU Guile based on the actor model.
-
-Note that 8sync is only available for Guile 2.2.")
-    (properties '((upstream-name . "8sync")))
-    (license license:lgpl3+)))
+  (let ((commit "183b4f02e68279d4984e79b79e06bfcf1861fcbf") (revision "0"))
+    (package
+      (name "guile-8sync")
+      (version (git-version "0.4.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (commit commit)
+                      (url "https://git.savannah.gnu.org/git/8sync.git")))
+                (sha256
+                 (base32
+                  "0r22kxasv1zqnf1ykzyx6c226qxn1wgjb1gc54526bid24x508ij"))
+                (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake guile-3.0 pkg-config texinfo))
+      (arguments
+       (list #:make-flags
+             #~(list "GUILE_AUTO_COMPILE=0")))
+      (home-page "https://gnu.org/s/8sync/")
+      (synopsis "Asynchronous actor model library for Guile")
+      (description
+       "GNU 8sync (pronounced \"eight-sync\") is an asynchronous programming
+library for GNU Guile based on the actor model.")
+      (properties '((upstream-name . "8sync")))
+      (license license:lgpl3+))))
 
 (define-public guile-daemon
   (package
@@ -5103,3 +5100,46 @@ Protocol (TAP).  It comes with an experimental harness (tap-harness).")
 termios API is used.  GNU Guile doesn't have an interface for that built in.
 This module implements this interface by use of Guile's dynamic FFI.")
     (license license:bsd-2)))
+
+(define-public guile-goblins
+  (package
+    (name "guile-goblins")
+    (version "0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/spritely/guile-goblins/")
+             (commit (string-append "v" version))))
+       (file-name (string-append name "-" version))
+       (sha256
+        (base32
+         "1mmyykh79jwhrfgnhhw94aw7a8m6qw249kj7k60ynj16mcfm5iyy"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list "GUILE_AUTO_COMPILE=0")))
+    (native-inputs
+     (list autoconf automake pkg-config texinfo))
+    (inputs (list guile-3.0))
+    (propagated-inputs
+     (list guile-fibers guile-gcrypt))
+    (home-page "https://spritely.institute/goblins")
+    (synopsis "Distributed programming environment for Guile")
+    ;; In guile-goblins 0.9, OCapN support will be added (it already
+    ;; exists in racket-goblins).  At that point we should add the
+    ;; following to this description:
+    ;;
+    ;;   Goblins allows for cooperation between networked programs
+    ;;   in a mutually suspicious network through OCapN, the Object
+    ;;   Capability Network.  This includes collaboration across
+    ;;   runtimes; for instance, programs written in the Guile and Racket
+    ;;   versions of Goblins are able to speak to each other.
+    (description
+     "@code{guile-goblins} is the Guile version of
+@url{https://spritely.institute/goblins, Spritely Goblins},
+a transactional, distributed programming environment following object
+capability security designs.  Goblins is a general toolkit, and also
+the core layer of Spritely's work to support healthy distributed
+networked communities.")
+    (license license:asl2.0)))

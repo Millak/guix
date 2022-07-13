@@ -196,14 +196,14 @@ living in the same process.")
 (define-public p11-kit-next
   (package
     (inherit p11-kit)
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/p11-glue/p11-kit/releases/"
                            "download/" version "/p11-kit-" version ".tar.xz"))
        (sha256
-        (base32 "11f6saclxsclc1f3lbavzw8kikws4cr3mfd1avly8dgnhh2i9rl1"))))
+        (base32 "1y5fm9gwhkh902r26p90qf1g2h1ziqrk4hgf9i9sxm2wzlz7ignq"))))
     (arguments
      ;; Use the default certificates so that users such as flatpak find them.
      ;; See <https://issues.guix.gnu.org/49957>.
@@ -507,7 +507,7 @@ OpenSSL for TARGET."
   (package
     (inherit openssl)
     (name "openssl")
-    (version "1.1.1n")
+    (version "1.1.1q")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -520,12 +520,12 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
               (sha256
                (base32
-                "0ymif8rlc5cf5qp5bh2pxlrgq6xryh7g4sqfvrdjg9gnli8ypp20"))))))
+                "1jhhzp4gh6ymidxm1ckjk948l583awp0w3y2nvqdz7022kk9r4yp"))))))
 
 (define-public openssl-3.0
   (package
     (inherit openssl)
-    (version "3.0.3")
+    (version "3.0.5")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -538,7 +538,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
               (sha256
                (base32
-                "02wcan5izwsxg6vl5fzkqq4icwi7cp4hrj327h05zppirsnph07f"))))
+                "0yja085lygkdxbf4k4rckkj9r24p8dgix8avqljnbbbixydqszda"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openssl)
        ((#:phases phases '%standard-phases)

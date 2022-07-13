@@ -72,6 +72,7 @@
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1009,7 +1010,7 @@ allows users to brew while offline.")
 (define-public corsix-th
   (package
     (name "corsix-th")
-    (version "0.65.1")
+    (version "0.66")
     (source
      (origin
        (method git-fetch)
@@ -1018,7 +1019,7 @@ allows users to brew while offline.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hw92ln9jm9v55drmbfqjng58yshgwfpv7fqynryrg3gvg8zhbvh"))))
+        (base32 "0sgsvhqgiq6v1v5am7ghja8blhlrj0y1arvq6xq1j5fwa7c59ihs"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -8033,14 +8034,17 @@ ncurses for text display.")
 (define-public naev
   (package
     (name "naev")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/naev/naev/releases/download/v"
-                           version "/naev-" version "-source.tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/naev/naev")
+             (commit (string-append "v" version))
+             (recursive? #t))) ; for game data
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1p6424n2rgrlb0h71gvww40vxs1h583d9im8bzgmv6dhgclbg0nl"))))
+        (base32 "0hvgxzvph9s5gdzlj5kjnz2d2j7bi8s11k7i6540837mnppah18j"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: Do not add debugging symbols, which cause the build to fail.
@@ -8079,8 +8083,7 @@ of lore accompanying everything from planets to equipment.")
                    license:public-domain
                    license:expat        ;edtaa3func.c
                    license:bsd-2        ;distance_field.c
-                   license:bsd-3        ;perlin.c
-                   ))))
+                   license:bsd-3))))    ;perlin.c
 
 (define-public frotz-dumb-terminal
   (package
@@ -12246,53 +12249,48 @@ game.")  ;thanks to Debian for description
            (delete-file-recursively "src/third_party/websocketpp")
            (substitute* "pokerth_lib.pro"
              (("src/third_party/websocketpp")
-              ""))
-           #t))))
+              ""))))
+       (patches (search-patches "pokerth-boost.patch"))))
     (build-system qt-build-system)
     (inputs
-     `(("boost" ,boost)
-       ("curl" ,curl)
-       ("gsasl" ,gsasl)
-       ("libgcrypt" ,libgcrypt)
-       ("libircclient" ,libircclient)
-       ("protobuf" ,protobuf-2)         ; remove package when no longer needed
-       ("qtbase" ,qtbase-5)
-       ("sdl" ,(sdl-union (list sdl sdl-mixer)))
-       ("sqlite" ,sqlite)
-       ("tinyxml" ,tinyxml)
-       ("websocketpp" ,websocketpp)
-       ("zlib" ,zlib)))
+     (list boost
+           curl
+           gsasl
+           libgcrypt
+           libircclient
+           protobuf-2                   ;remove package when no longer needed
+           qtbase-5
+           (sdl-union (list sdl sdl-mixer))
+           sqlite
+           tinyxml
+           websocketpp
+           zlib))
     (arguments
-     `(#:tests? #f ; No test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "." "\\.pro$")
-               (("/opt/gsasl")
-                (assoc-ref inputs "gsasl"))
-               (("\\$\\$\\{PREFIX\\}/include/libircclient")
-                (search-input-directory inputs "/include/libircclient"))
-               (("LIB_DIRS =")
-                (string-append "LIB_DIRS = "
-                               (assoc-ref inputs "boost") "/lib")))
-             #t))
-         (add-after 'unpack 'fix-build
-           (lambda _
-             ;; Fixes for Boost versions >= 1.66.
-             (substitute* '("src/net/common/clientthread.cpp"
-                            "src/net/serveraccepthelper.h")
-               (("boost::asio::socket_base::non_blocking_io command\\(true\\);")
-                "")
-               (("newSock->io_control\\(command\\);")
-                "newSock->non_blocking(true);")
-               (("acceptedSocket->io_control\\(command\\);")
-                "acceptedSocket->non_blocking(true);"))
-             #t))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "qmake" "pokerth.pro" "CONFIG+=client"
-                     (string-append "PREFIX=" (assoc-ref outputs "out"))))))))
+     (list
+      #:tests? #f                       ; No test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "." "\\.pro$")
+                (("LIB_DIRS =")
+                 (string-append "LIB_DIRS = "
+                                #$(this-package-input "boost") "/lib")))))
+          (add-after 'unpack 'fix-build
+            (lambda _
+              ;; Fixes for Boost versions >= 1.66.
+              (substitute* '("src/net/common/clientthread.cpp"
+                             "src/net/serveraccepthelper.h")
+                (("boost::asio::socket_base::non_blocking_io command\\(true\\);")
+                 "")
+                (("newSock->io_control\\(command\\);")
+                 "newSock->non_blocking(true);")
+                (("acceptedSocket->io_control\\(command\\);")
+                 "acceptedSocket->non_blocking(true);"))))
+          (replace 'configure
+            (lambda _
+              (invoke "qmake" "pokerth.pro" "CONFIG+=client"
+                      (string-append "PREFIX=" #$output)))))))
     (home-page "https://www.pokerth.net")
     (synopsis "Texas holdem poker game")
     (description

@@ -1088,7 +1088,7 @@ computing in Python.  It extends both the @code{concurrent.futures} and
 (define-public python-modin
   (package
     (name "python-modin")
-    (version "0.10.1")
+    (version "0.15.1")
     (source
      (origin
        ;; The archive on pypi does not include all required files.
@@ -1099,7 +1099,7 @@ computing in Python.  It extends both the @code{concurrent.futures} and
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "128ghfb9ncmnn8km409xjcdppvn9nr9jqw8rkvsfavh7wnwlk509"))))
+         "0nf2pdqna2vn7vq7q7b51f3cfbrxfn77pyif3clibjsxzvfm9k03"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1367,3 +1367,71 @@ for parameterized model creation and handling.  Its features include:
 Python, from the Sheffield machine learning group.  GPy implements a range of
 machine learning algorithms based on GPs.")
     (license license:bsd-3)))
+
+(define-public python-deepdish
+  (package
+    (name "python-deepdish")
+    (version "0.3.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "deepdish" version))
+              (sha256
+               (base32
+                "1wqzwh3y0mjdyba5kfbvlamn561d3afz50zi712c7klkysz3mzva"))))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'dont-vendor-six
+                          (lambda _
+                            (delete-file "deepdish/six.py")
+                            (substitute* "deepdish/io/hdf5io.py"
+                              (("from deepdish import six") "import six"))
+                            (substitute* "deepdish/io/ls.py"
+                              (("from deepdish import io, six, __version__")
+                               "from deepdish import io, __version__
+import six
+")))))))
+    (build-system python-build-system)
+    (native-inputs (list python-pandas))
+    (propagated-inputs (list python-numpy python-scipy python-six
+                             python-tables))
+    (home-page "https://github.com/uchicago-cs/deepdish")
+    (synopsis "Python library for HDF5 file saving and loading")
+    (description
+     "Deepdish is a Python library to load and save HDF5 files.
+The primary feature of deepdish is its ability to save and load all kinds of
+data as HDF5.  It can save any Python data structure, offering the same ease
+of use as pickling or @code{numpy.save}, but with the language
+interoperability offered by HDF5.")
+    (license license:bsd-3)))
+
+(define-public python-opt-einsum
+  (package
+    (name "python-opt-einsum")
+    (version "3.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "opt_einsum" version))
+              (sha256
+               (base32
+                "0jb5lia0q742d1713jk33vlj41y61sf52j6pgk7pvhxvfxglgxjr"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-pytest python-pytest-cov python-pytest-pep8))
+    (home-page "https://github.com/dgasmith/opt_einsum")
+    (synopsis "Optimizing numpys einsum function")
+    (description
+     "Optimized einsum can significantly reduce the overall execution time of
+einsum-like expressions by optimizing the expression's contraction order and
+dispatching many operations to canonical BLAS, cuBLAS, or other specialized
+routines.  Optimized einsum is agnostic to the backend and can handle NumPy,
+Dask, PyTorch, Tensorflow, CuPy, Sparse, Theano, JAX, and Autograd arrays as
+well as potentially any library which conforms to a standard API. See the
+documentation for more information.")
+    (license license:expat)))

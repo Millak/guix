@@ -328,7 +328,18 @@ interface and is based on GNU Guile.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0l2arn6gsyw88xk9phxnyplvv1mn8sqp3ipgyyb0nszdzvxlgd36"))))
+                "0l2arn6gsyw88xk9phxnyplvv1mn8sqp3ipgyyb0nszdzvxlgd36"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Avoid continuation barriers so (@ (fibers) sleep) can be
+               ;; called from a service's 'stop' method
+               '(substitute* "modules/shepherd/service.scm"
+                  (("call-with-blocked-asyncs")   ;in 'stop' method
+                   "(lambda (thunk) (thunk))")
+                  (("\\(for-each-service\n")      ;in 'shutdown-services'
+                   "((lambda (proc)
+                       (for-each proc
+                                 (fold-services cons '())))\n")))))
     (arguments
      (list #:configure-flags #~'("--localstatedir=/var")
            #:make-flags #~'("GUILE_AUTO_COMPILE=0")
@@ -1156,8 +1167,7 @@ IPv6, proxies, and Unix sockets.")
                  (lambda _
                    ;; These #defines aren't well-documented and, e.g., POWER was
                    ;; not actually tested on every possible TARGET-POWERPC?.
-                   (let* ((system #$(cond ((target-x86-32?) "X86")
-                                          ((target-x86-64?) "X86")
+                   (let* ((system #$(cond ((target-x86?) "X86")
                                           ((target-arm?) "ARM")
                                           ((target-powerpc?) "POWER")
                                           (else "CROSS_FINGERS"))))
@@ -2134,7 +2144,7 @@ command.")
     (native-inputs
      ;; For icons.
      (modify-inputs (package-native-inputs wpa-supplicant)
-       (prepend imagemagick inkscape)))
+       (prepend imagemagick inkscape/stable)))
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'chdir

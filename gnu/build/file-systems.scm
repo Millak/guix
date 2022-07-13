@@ -52,6 +52,8 @@
             read-partition-uuid
             read-luks-partition-uuid
 
+            cleanly-unmounted-ext2?
+
             bind-mount
 
             system*/tty
@@ -193,6 +195,23 @@ NUL terminator, return the size of the bytevector."
 if DEVICE does not contain an ext2 file system."
   (read-superblock device 1024 264 ext2-superblock?))
 
+(define (ext2-superblock-cleanly-unmounted? sblock)
+  "Return true if SBLOCK denotes a file system that was cleanly unmounted,
+false otherwise."
+  (define EXT2_VALID_FS 1)                        ;cleanly unmounted
+  (define EXT2_ERROR_FS 2)                        ;errors detected
+
+  (define EXT3_FEATURE_INCOMPAT_RECOVER #x0004)   ;journal needs recovery
+
+  (let ((state (bytevector-u16-ref sblock 58 %ext2-endianness)))
+    (cond ((= state EXT2_VALID_FS)
+           (let ((incompatible-features
+                  (bytevector-u32-ref sblock 96 %ext2-endianness)))
+             (zero? (logand incompatible-features
+                            EXT3_FEATURE_INCOMPAT_RECOVER))))
+          ((= state EXT2_ERROR_FS) #f)
+          (else (error "invalid ext2 superblock state" state)))))
+
 (define (ext2-superblock-uuid sblock)
   "Return the UUID of ext2 superblock SBLOCK as a 16-byte bytevector."
   (sub-bytevector sblock 104 16))
@@ -219,6 +238,11 @@ errors.  Otherwise, fix only those considered safe to repair automatically."
     (1 'errors-corrected)
     (2 'reboot-required)
     (_ 'fatal-error)))
+
+(define (cleanly-unmounted-ext2? device)          ;convenience procedure
+  "Return true if DEVICE is an ext2 file system and if it was cleanly
+unmounted."
+  (ext2-superblock-cleanly-unmounted? (read-ext2-superblock device)))
 
 
 ;;;

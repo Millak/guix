@@ -1,0 +1,16 @@
+Patch based on changes from
+https://github.com/llvm/llvm-project/commit/c1fde4fa943fd03a3d40bc5d32b9e0045fd29208
+
+diff --git a/lib/sanitizer_common/scripts/gen_dynamic_list.py b/lib/sanitizer_common/scripts/gen_dynamic_list.py
+index 5ea2ca1..d7bc287 100755
+--- a/lib/sanitizer_common/scripts/gen_dynamic_list.py
++++ b/lib/sanitizer_common/scripts/gen_dynamic_list.py
+@@ -100,7 +100,7 @@ def main(argv):
+     print('global:')
+   result.sort()
+   for f in result:
+-    print('  ' + f.encode('utf-8') + ';')
++    print(u'  %s;' % f)
+   if args.version_list:
+     print('local:')
+     print('  *;')

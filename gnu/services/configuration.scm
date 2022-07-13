@@ -27,7 +27,8 @@
   #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module ((guix utils) #:select (source-properties->location))
-  #:use-module ((guix diagnostics) #:select (formatted-message location-file))
+  #:use-module ((guix diagnostics)
+                #:select (formatted-message location-file &error-location))
   #:use-module ((guix modules) #:select (file-name->module-name))
   #:use-module (guix i18n)
   #:autoload   (texinfo) (texi-fragment->stexi)
@@ -56,7 +57,6 @@
             serialize-configuration
             define-maybe
             define-maybe/no-serialization
-            validate-configuration
             generate-documentation
             configuration->documentation
             empty-serializer
@@ -87,9 +87,17 @@
 (define (configuration-error message)
   (raise (condition (&message (message message))
                     (&configuration-error))))
-(define (configuration-field-error field val)
-  (configuration-error
-   (format #f "Invalid value for field ~a: ~s" field val)))
+(define (configuration-field-error loc field value)
+  (raise (apply
+          make-compound-condition
+          (formatted-message (G_ "invalid value ~s for field '~a'")
+                             value field)
+          (condition (&configuration-error))
+          (if loc
+              (list (condition
+                     (&error-location (location loc))))
+              '()))))
+
 (define (configuration-missing-field kind field)
   (configuration-error
    (format #f "~a configuration missing required field ~a" kind field)))
@@ -115,14 +123,6 @@ does not have a default value" field kind)))
                 (configuration-field-name field)
                 ((configuration-field-getter field) config)))
              fields)))
-
-(define (validate-configuration config fields)
-  (for-each (lambda (field)
-              (let ((val ((configuration-field-getter field) config)))
-                (unless ((configuration-field-predicate field) val)
-                  (configuration-field-error
-                   (configuration-field-name field) val))))
-            fields))
 
 (define-syntax-rule (id ctx parts ...)
   "Assemble PARTS into a raw (unhygienic) identifier."
@@ -210,9 +210,33 @@ does not have a default value" field kind)))
                                 (id #'stem #'serialize- type))))))
                   #'(field-type ...)
                   #'((custom-serializer ...) ...))))
+         (define (field-sanitizer name pred)
+           ;; Define a macro for use as a record field sanitizer, where NAME
+           ;; is the name of the field and PRED is the predicate that tells
+           ;; whether a value is valid for this field.
+           #`(define-syntax #,(id #'stem #'validate- #'stem #'- name)
+               (lambda (s)
+                 ;; Make sure the given VALUE, for field NAME, passes PRED.
+                 (syntax-case s ()
+                   ((_ value)
+                    (with-syntax ((name #'#,name)
+                                  (pred #'#,pred)
+                                  (loc (datum->syntax #'value
+                                                      (syntax-source #'value))))
+                      #'(if (pred value)
+                            value
+                            (configuration-field-error
+                             (and=> 'loc source-properties->location)
+                             'name value))))))))
+
          #`(begin
+             ;; Define field validation macros.
+             #,@(map field-sanitizer
+                     #'(field ...)
+                     #'(field-predicate ...))
+
              (define-record-type* #,(id #'stem #'< #'stem #'>)
-               #,(id #'stem #'% #'stem)
+               stem
                #,(id #'stem #'make- #'stem)
                #,(id #'stem #'stem #'?)
                (%location #,(id #'stem #'stem #'-location)
@@ -220,10 +244,13 @@ does not have a default value" field kind)))
                                           source-properties->location))
                           (innate))
                #,@(map (lambda (name getter def)
-                         #`(#,name #,getter (default #,def)))
+                         #`(#,name #,getter (default #,def)
+                                   (sanitize
+                                    #,(id #'stem #'validate- #'stem #'- name))))
                        #'(field ...)
                        #'(field-getter ...)
                        #'(field-default ...)))
+
              (define #,(id #'stem #'stem #'-fields)
                (list (configuration-field
                       (name 'field)
@@ -240,12 +267,7 @@ does not have a default value" field kind)))
                                '#,(id #'stem #'% #'stem) 'field)
                               field-default)))
                       (documentation doc))
-                     ...))
-             (define-syntax-rule (stem arg (... ...))
-               (let ((conf (#,(id #'stem #'% #'stem) arg (... ...))))
-                 (validate-configuration conf
-                                         #,(id #'stem #'stem #'-fields))
-                 conf))))))))
+                     ...))))))))
 
 (define no-serialization         ;syntactic keyword for 'define-configuration'
   '(no serialization))

@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2016, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
-;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2020 Pierre Langlois <pierre.langlois@gmx.com>
@@ -21,6 +21,7 @@
 ;;; Copyright © 2022 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2022 Lu hui <luhux76@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,7 +89,7 @@
 (define-public bitmask
   (package
     (name "bitmask")
-    (version "0.21.6")
+    (version "0.21.11")
     (source
      (origin
        (method git-fetch)
@@ -98,7 +99,7 @@
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xmn0pkpn0mcwi1jlgm5skydcnfxk5fawg5hl2inn50m0ikgxk1c"))
+        (base32 "1zphigfrks1j3snbc748b3mk0qb1r7n2v7p7l6w1xiiil4dql6cs"))
        (modules
         '((guix build utils)))
        (snippet
@@ -255,8 +256,10 @@
        ("python" ,python)
        ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
+       ("qtgraphicaleffects" ,qtgraphicaleffects)
        ("qtquickcontrols" ,qtquickcontrols)
-       ("qtquickcontrols2" ,qtquickcontrols2)))
+       ("qtquickcontrols2" ,qtquickcontrols2)
+       ("qtsvg" ,qtsvg)))
     (propagated-inputs
      (list go-0xacab-org-leap-shapeshifter
            go-github-com-apparentlymart-go-openvpn-mgmt
@@ -477,25 +480,68 @@ file for more details.")
             (sha256 (base32
                      "1128860lis89g1s21hqxvap2nq426c9j4bvgghncc1zj0ays7kj6"))))
    (build-system gnu-build-system)
-   (inputs (list libgcrypt perl vpnc-scripts))
+   (native-inputs (append (list perl pkg-config vpnc-scripts)
+                          (if (%current-target-system)
+                            (list this-package)
+                            '())))
+   (inputs (list libgcrypt vpnc-scripts))
    (arguments
-    `(#:tests? #f ; there is no check target
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'use-store-paths
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((out          (assoc-ref outputs "out"))
-                  (vpnc-scripts (assoc-ref inputs  "vpnc-scripts")))
-              (substitute* "config.c"
-                (("/etc/vpnc/vpnc-script")
-                 (string-append vpnc-scripts "/etc/vpnc/vpnc-script")))
-              (substitute* "Makefile"
-                (("ETCDIR=.*")
-                 (string-append "ETCDIR=" out "/etc/vpnc\n"))
-                (("PREFIX=.*")
-                 (string-append "PREFIX=" out "\n")))
-              #t)))
-        (delete 'configure))))          ; no configure script
+     (list #:tests? #f ;; There is no check target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "ETCDIR=" #$output "/etc/vpnc")
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure) ;; No configure script.
+               (add-after 'unpack 'use-store-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((vpnc-scripts (assoc-ref inputs  "vpnc-scripts")))
+                     (substitute* "config.c"
+                       (("/etc/vpnc/vpnc-script")
+                        (string-append vpnc-scripts
+                                       "/etc/vpnc/vpnc-script"))))))
+               (add-after 'unpack 'patch-Makefile
+                 (lambda* (#:key target #:allow-other-keys)
+                   (let* ((pkg-config #$(pkg-config-for-target))
+                          (includedir (string-append pkg-config
+                                                     " --variable=includedir"
+                                                     " libgcrypt"))
+                          (cflags (string-append pkg-config
+                                                 " --cflags"
+                                                 " libgcrypt"))
+                          (libdir (string-append pkg-config
+                                                 " --variable=libdir"
+                                                 " libgcrypt"))
+                          (libs (string-append pkg-config
+                                               " --libs"
+                                               " libgcrypt")))
+                     (substitute* "Makefile"
+                       (("\\$\\(shell libgcrypt-config --cflags\\)")
+                        (string-append "-I$(shell " includedir ") "
+                                       "$(shell " cflags ")"))
+                       (("\\$\\(shell libgcrypt-config --libs\\)")
+                        (string-append
+                          "-L$(shell " libdir ") "
+                          "$(shell " libs ")")))
+                     ;; When cross-compiling the manpage can't be generated as the
+                     ;; Makefile needs to execute the resulting `vpnc' binary.
+                     (when target
+                       (substitute* "Makefile"
+                         (("all : \\$\\(BINS\\) vpnc\\.8 vpnc-script")
+                          "all : $(BINS) vpnc-script")
+                         (("install -m644 vpnc\\.8.*") ""))))))
+               (add-after 'unpack 'install-manpage
+                 (lambda* (#:key native-inputs inputs target
+                           #:allow-other-keys)
+                   ;; As the manpage is not generated. Instead install it from
+                   ;; the input vpnc package.
+                   (when target
+                     (let* ((vpnc (assoc-ref native-inputs "vpnc"))
+                            (man (string-append vpnc
+                                                "/share/man/man8/vpnc.8.gz"))
+                            (output (string-append #$output "/share/man/man8")))
+                       (install-file man output))))))))
    (synopsis "Client for Cisco VPN concentrators")
    (description
     "vpnc is a VPN client compatible with Cisco's EasyVPN equipment.
@@ -503,7 +549,7 @@ It supports IPSec (ESP) with Mode Configuration and Xauth.  It supports only
 shared-secret IPSec authentication with Xauth, AES (256, 192, 128), 3DES,
 1DES, MD5, SHA1, DH1/2/5 and IP tunneling.  It runs entirely in userspace.
 Only \"Universal TUN/TAP device driver support\" is needed in the kernel.")
-   (license license:gpl2+) ; some file are bsd-2, see COPYING
+   (license (list license:gpl2+ license:bsd-2))
    (home-page "https://www.unix-ag.uni-kl.de/~massar/vpnc/")))
 
 (define-public vpnc-scripts
@@ -1129,18 +1175,20 @@ public keys and can roam across IP addresses.")
                 "0is5ccrvijz0pfm45pfrlbb9y8231yz3c4zqs8mkgakl9rxajy6l"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "PREFIX=" %output)
-                          "CC=gcc")
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure) ;no configure script
-                  (add-before 'build 'setup-environment
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "l2tp.h"
-                        (("/usr/sbin/pppd")
-                         (search-input-file inputs "/sbin/pppd")))
-                      (setenv "KERNELSRC"
-                              (assoc-ref inputs "kernel-headers"))
-                      #t)))
+     (list
+       #:make-flags
+       #~(list (string-append "PREFIX=" #$output)
+               (string-append "CC=" #$(cc-for-target)))
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'configure) ;no configure script
+           (add-before 'build 'setup-environment
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "l2tp.h"
+                 (("/usr/sbin/pppd")
+                  (search-input-file inputs "/sbin/pppd")))
+               (setenv "KERNELSRC"
+                       (assoc-ref inputs "kernel-headers")))))
        #:tests? #f))                    ; no tests provided
     (inputs (list libpcap ppp))
     (home-page "https://www.xelerance.com/software/xl2tpd/")

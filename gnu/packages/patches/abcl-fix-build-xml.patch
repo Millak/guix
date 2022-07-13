@@ -8,7 +8,7 @@ it non-deterministic.
 
 --- a/build.xml
 +++ b/build.xml
-@@ -327,7 +327,7 @@ from ${abcl.home.dir}
+@@ -338,7 +338,7 @@ from ${abcl.home.dir}
      <property name="abcl.build.path"
                value="${build.classes.dir}/org/armedbear/lisp/build"/>
      <target name="abcl.stamp" 
@@ -17,10 +17,10 @@ it non-deterministic.
        <mkdir dir="${abcl.build.path}/.."/>
        <loadfile property="abcl.version"
                  srcFile="${abcl.version.path}"/>
-@@ -455,11 +455,6 @@ from ${abcl.home.dir}
+@@ -479,11 +479,6 @@ Mercurial and Git.
                  value="${abcl.version}-${abcl.version.src}"/>
      </target>
- 
+
 -    <target name="abcl.stamp.hostname" if="unix">
 -      <exec executable="hostname" outputproperty="abcl.hostname"/>
 -      <echo>abcl.hostname: ${abcl.hostname}</echo>
@@ -29,16 +29,16 @@ it non-deterministic.
      <target name="abcl.system.uptodate">
        <condition property="abcl.system.needs-update.p">
          <and>
-@@ -500,8 +495,6 @@ from ${abcl.home.dir}
+@@ -524,8 +519,6 @@ Mercurial and Git.
                         value="ABCL"/>
              <attribute name="Implementation-Version"  
-                        value="${abcl.implementation.version}"/>
+                        value="${abcl.version}"/>
 -            <attribute name="Implementation-Build" 
 -                       value="${build}"/>
            </section>
          </manifest>
          <metainf dir="${src.dir}/META-INF"> 
-@@ -1019,8 +1012,7 @@ ${basedir}/../cl-bench
+@@ -1050,8 +1043,7 @@ ${basedir}/../cl-bench
        </unzip>
      </target>
          

@@ -79,7 +79,8 @@ inside %DOCKER-OS."
                        (gnu build marionette))
 
           (define marionette
-            (make-marionette (list #$vm)))
+            ;; Relax timeout to accommodate older systems.
+            (make-marionette (list #$vm) #:timeout 60))
 
           (test-runner-current (system-test-runner #$output))
           (test-begin "docker")
@@ -221,7 +222,8 @@ inside %DOCKER-OS."
                        (guix build utils))
 
           (define marionette
-            (make-marionette (list #$vm)))
+            ;; Relax timeout to accommodate older systems.
+            (make-marionette (list #$vm) #:timeout 60))
 
           (test-runner-current (system-test-runner #$output))
           (test-begin "docker")

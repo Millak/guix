@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2016, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -136,6 +136,19 @@
                     been-there?))))
          %monads
          %monad-run))
+
+(test-assert "mparameterize"
+  (let ((parameter (make-parameter 'outside)))
+    (every (lambda (monad run)
+             (equal?
+              (run (mlet monad ((outer (return (parameter)))
+                                (inner
+                                 (mparameterize monad ((parameter 'inside))
+                                   (return (parameter)))))
+                     (return (list outer inner (parameter)))))
+              '(outside inside outside)))
+           %monads
+           %monad-run)))
 
 (test-assert "mlet* + text-file + package-file"
   (run-with-store %store

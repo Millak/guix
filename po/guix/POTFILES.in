@@ -4,6 +4,7 @@ gnu.scm
 gnu/packages.scm
 gnu/services.scm
 gnu/system.scm
+gnu/services/configuration.scm
 gnu/services/shepherd.scm
 gnu/home/services.scm
 gnu/home/services/ssh.scm

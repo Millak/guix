@@ -62,14 +62,20 @@
 (define-public parallel
   (package
     (name "parallel")
-    (version "20220522")
+    (version "20220622")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/parallel/parallel-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "07wczb3ra65xn8xar4lsfmdvqscbqk9n99r6vcxqzrk4v7w9aqxv"))))
+       (base32 "186mbzz5dn2ka8fqk9r8v8fpmh17clh2c6xln0czs81vynl1bgd4"))
+      (snippet
+       '(begin
+          (use-modules (guix build utils))
+          ;; Delete pre-generated manpages and documents.
+          ;; TODO: Add pod2pdf for pdfs, generate rst files.
+          (for-each delete-file (find-files "src" "\\.(1|7|html)$"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -84,6 +90,10 @@
                   ;;  parent_shell($$) || $ENV{'SHELL'} || "/bin/sh";
                   (("/bin/sh\\\";\n$") (string-append (which "sh") "\";\n"))))
               (list "src/parallel" "src/sem"))))
+         (add-before 'install 'add-install-to-path
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "PATH" (string-append (getenv "PATH") ":"
+                                           (assoc-ref outputs "out") "/bin"))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -99,6 +109,8 @@
                       (assoc-ref outputs "out") "/bin/parallel")
                      "echo"
                      ":::" "1" "2" "3"))))))
+    (native-inputs
+     (list perl))
     (inputs
      (list perl procps))
     (home-page "https://www.gnu.org/software/parallel/")

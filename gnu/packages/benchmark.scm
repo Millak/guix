@@ -55,6 +55,7 @@
   #:use-module (gnu packages php)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -62,10 +63,11 @@
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
 
-;; Lazily resolve the gcc-toolchain to avoid a circular dependency.
+;; Lazily resolve the gcc-toolchain to avoid a circular dependency.  Always
+;; use the latest available toolchain to avoid conflicts in user profiles.
 (define gcc-toolchain*
   (delay (module-ref (resolve-interface '(gnu packages commencement))
-                     'gcc-toolchain)))
+                     'gcc-toolchain-12)))
 
 (define-public fio
   (package

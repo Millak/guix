@@ -285,7 +285,7 @@ the section name.")
     (serialize-fifo-listener-configuration field-name val))
    ((inet-listener-configuration? val)
     (serialize-inet-listener-configuration field-name val))
-   (else (configuration-field-error field-name val))))
+   (else (configuration-field-error #f field-name val))))
 (define (listener-configuration-list? val)
   (and (list? val) (and-map listener-configuration? val)))
 (define (serialize-listener-configuration-list field-name val)
@@ -1610,10 +1610,6 @@ POP3, IMAP, and LMTP.  @var{config} should be a configuration object created
 by @code{dovecot-configuration}.  @var{config} may also be created by
 @code{opaque-dovecot-configuration}, which allows specification of the
 @code{dovecot.conf} as a string."
-  (validate-configuration config
-                          (if (opaque-dovecot-configuration? config)
-                              opaque-dovecot-configuration-fields
-                              dovecot-configuration-fields))
   (service dovecot-service-type config))
 
 ;; A little helper to make it easier to document all those fields.

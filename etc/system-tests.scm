@@ -43,21 +43,6 @@ determined."
           (repository-close! repository))
         #f))))
 
-(define-syntax mparameterize
-  (syntax-rules ()
-    "This form implements dynamic scoping, similar to 'parameterize', but in a
-monadic context."
-    ((_ monad ((parameter value) rest ...) body ...)
-     (let ((old-value (parameter)))
-       (mbegin monad
-         ;; XXX: Non-local exits are not correctly handled.
-         (return (parameter value))
-         (mlet monad ((result (mparameterize monad (rest ...) body ...)))
-           (parameter old-value)
-           (return result)))))
-    ((_ monad () body ...)
-     (mbegin monad body ...))))
-
 (define (tests-for-current-guix source commit)
   "Return a list of tests for perform, using Guix built from SOURCE, a channel
 instance."

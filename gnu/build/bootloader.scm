@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022 Timothy Sample <samplet@ngyro.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,8 +56,12 @@
 ;;; EFI bootloader.
 ;;;
 
-(define (install-efi grub grub-config esp)
-  "Write a self-contained GRUB EFI loader to the mounted ESP using GRUB-CONFIG."
+(define* (install-efi grub grub-config esp #:key targets)
+  "Write a self-contained GRUB EFI loader to the mounted ESP using
+GRUB-CONFIG.
+
+If TARGETS is set, use its car as the GRUB image format and its cdr as
+the output filename.  Otherwise, use defaults for the host platform."
   (let* ((system %host-type)
          ;; Hard code the output location to a well-known path recognized by
          ;; compliant firmware. See "3.5.1.1 Removable Media Boot Behaviour":
@@ -63,14 +69,15 @@
          (grub-mkstandalone (string-append grub "/bin/grub-mkstandalone"))
          (efi-directory (string-append esp "/EFI/BOOT"))
          ;; Map grub target names to boot file names.
-         (efi-targets (cond ((string-prefix? "x86_64" system)
-                             '("x86_64-efi" . "BOOTX64.EFI"))
-                            ((string-prefix? "i686" system)
-                             '("i386-efi" . "BOOTIA32.EFI"))
-                            ((string-prefix? "armhf" system)
-                             '("arm-efi" . "BOOTARM.EFI"))
-                            ((string-prefix? "aarch64" system)
-                             '("arm64-efi" . "BOOTAA64.EFI")))))
+         (efi-targets (or targets
+                          (cond ((string-prefix? "x86_64" system)
+                                 '("x86_64-efi" . "BOOTX64.EFI"))
+                                ((string-prefix? "i686" system)
+                                 '("i386-efi" . "BOOTIA32.EFI"))
+                                ((string-prefix? "armhf" system)
+                                 '("arm-efi" . "BOOTARM.EFI"))
+                                ((string-prefix? "aarch64" system)
+                                 '("arm64-efi" . "BOOTAA64.EFI"))))))
     ;; grub-mkstandalone requires a TMPDIR to prepare the firmware image.
     (setenv "TMPDIR" esp)
 
@@ -81,9 +88,12 @@
             ;; Graft the configuration file onto the image.
             (string-append "boot/grub/grub.cfg=" grub-config))))
 
-(define (install-efi-loader grub-efi esp)
+(define* (install-efi-loader grub-efi esp #:key targets)
   "Install in ESP directory the given GRUB-EFI bootloader.  Configure it to
-load the Grub bootloader located in the 'Guix_image' root partition."
+load the Grub bootloader located in the 'Guix_image' root partition.
+
+If TARGETS is set, use its car as the GRUB image format and its cdr as
+the output filename.  Otherwise, use defaults for the host platform."
   (let ((grub-config "grub.cfg"))
     (call-with-output-file grub-config
       (lambda (port)
@@ -97,5 +107,6 @@ load the Grub bootloader located in the 'Guix_image' root partition."
                insmod part_gpt~@
                search --set=root --label Guix_image~@
                configfile /boot/grub/grub.cfg~%")))
-    (install-efi grub-efi grub-config esp)
+    (install-efi grub-efi grub-config esp #:targets targets)
     (delete-file grub-config)))
+

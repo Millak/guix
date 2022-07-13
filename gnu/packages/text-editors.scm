@@ -56,6 +56,7 @@
   #:use-module (gnu packages code)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -710,7 +711,7 @@ environment with Markdown markup.")
 (define-public manuskript
   (package
     (name "manuskript")
-    (version "0.13.1")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -719,60 +720,60 @@ environment with Markdown markup.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rj41wimmaq47lwaz0d1iq270klp96xv9dpfdsxi5a2xcdm80jac"))))
+        (base32 "0qhr9bkq4yl2qjainpsv7blzcji2q9ic9zcynawmhfqy3rmf8qlr"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/manuskript")))
-               ;; Install data.
-               (mkdir-p share)
-               (for-each
-                (lambda (d)
-                  (let ((destination  (string-append share "/" d)))
-                    (mkdir-p destination)
-                    (copy-recursively d destination)))
-                '("bin" "i18n" "icons" "libs" "manuskript" "resources"))
-               ;; Install documentation.
-               (let ((doc (string-append out
-                                         "/doc/manuskript-" ,version
-                                         "/sample-projects")))
-                 (mkdir-p doc)
-                 (copy-recursively "sample-projects" doc))
-               ;; Wrap executable in "$out/share/manuskript/bin" and
-               ;; link to it from "$out/bin".
-               (let ((bin (string-append out "/bin"))
-                     (executable (string-append share "/bin/manuskript")))
-                 (wrap-program executable
-                   (list "GUIX_PYTHONPATH" 'prefix
-                         (list (getenv "GUIX_PYTHONPATH"))))
-                 (mkdir-p bin)
-                 (with-directory-excursion bin
-                   (symlink (string-append share "/bin/manuskript")
-                            "manuskript")))
-               ;; Install icons and create .desktop file.
-               (let ((apps (string-append out "/share/applications"))
-                     (icons-dir (string-append out "/share/pixmaps")))
-                 (install-file "icons/Manuskript/manuskript.svg" icons-dir)
-                 (mkdir-p apps)
-                 (make-desktop-entry-file (string-append apps "/manuskript.desktop")
+     (list
+      #:tests? #f                       ;no test
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (let ((share (string-append #$output "/share/manuskript")))
+                ;; Install data.
+                (mkdir-p share)
+                (for-each
+                 (lambda (d)
+                   (let ((destination  (string-append share "/" d)))
+                     (mkdir-p destination)
+                     (copy-recursively d destination)))
+                 '("bin" "i18n" "icons" "libs" "manuskript" "resources"))
+                ;; Install documentation.
+                (let ((doc (string-append #$output
+                                          "/doc/manuskript-" #$version
+                                          "/sample-projects")))
+                  (mkdir-p doc)
+                  (copy-recursively "sample-projects" doc))
+                ;; Wrap executable in "$out/share/manuskript/bin" and
+                ;; link to it from "$out/bin".
+                (let ((bin (string-append #$output "/bin"))
+                      (executable (string-append share "/bin/manuskript")))
+                  (wrap-program executable
+                    (list "GUIX_PYTHONPATH" 'prefix
+                          (list (getenv "GUIX_PYTHONPATH"))))
+                  (mkdir-p bin)
+                  (with-directory-excursion bin
+                    (symlink (string-append share "/bin/manuskript")
+                             "manuskript")))
+                ;; Install icons and create .desktop file.
+                (let ((apps (string-append #$output "/share/applications"))
+                      (icons-dir (string-append #$output "/share/pixmaps")))
+                  (install-file "icons/Manuskript/manuskript.svg" icons-dir)
+                  (mkdir-p apps)
+                  (make-desktop-entry-file
+                   (string-append apps "/manuskript.desktop")
                    #:name "Manuskript"
                    #:mime-type "application/x-manuskript-book;"
-                   #:exec (string-append out "/bin/manuskript %f")
+                   #:exec (string-append #$output "/bin/manuskript %f")
                    #:comment '((#f "Tool for writers")
                                ("es" "Herramienta para escritores/as"))
                    #:keywords "manuskript;office;write;edit;novel;text;msk"
                    #:terminal #f
                    #:type "Application"
                    #:icon "manuskript"
-                   #:categories "Office;WordProcessor;"))
-               #t))))))
+                   #:categories "Office;WordProcessor;"))))))))
     (inputs
      (list pandoc python-lxml python-markdown python-pyqt qtsvg))
     (home-page "http://www.theologeek.ch/manuskript/")
@@ -1215,3 +1216,53 @@ can be embedded in any application
 This package includes the @code{libtree-sitter} runtime library.
 ")
     (license license:expat)))
+
+(define-public mle
+  (package
+    (name "mle")
+    (version "1.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/adsr/mle")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nhd00lsx9v12zdmps92magz76c2d8zzln3lxvzl4ng73gbvq3n0"))))
+    (build-system gnu-build-system)
+    (inputs (list lua pcre uthash))
+    (arguments
+     `(#:test-target "test"
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-lua
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "mle.h"
+                        (("<lua5.4/") "<"))
+                      (substitute* "Makefile"
+                        (("-llua5.4") "-llua")
+                        (("/bin/sh") (which "sh")))))
+                  (add-after 'unpack 'patch-test-shebangs
+                    (lambda _
+                      (substitute* (find-files "tests/func" "\\.sh$")
+                        (("/usr/bin/env bash") (which "bash")))))
+                  (delete 'configure) ;no configure script
+                  (add-after 'install 'install-man-pages
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (man (string-append out
+                                                 "/share/man/man1")))
+                        (install-file "mle.1"
+                                      (string-append man))))))
+       #:make-flags (list (string-append "CC="
+                                         ,(cc-for-target))
+                          (string-append "prefix=" %output))))
+    (home-page "https://github.com/adsr/mle")
+    (synopsis "Small, flexible, terminal-based text editor")
+    (description
+     "mle is a small, flexible, terminal-based text editor written in C.
+Notable features include: full Unicode support, syntax highlighting,
+scriptable rc file, macros, search and replace (PCRE), window
+splitting, multiple cursors, and integration with various shell
+commands.")
+    (license license:asl2.0)))

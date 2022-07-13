@@ -159,8 +159,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.3.0")
-        (commit "598f7289db9955584457ffc11c8504f3938a1618")
-        (revision 27))
+        (commit "9e4632081ff31bf0d1715edd66f514614c6dc4bb")
+        (revision 29))
     (package
       (name "guix")
 
@@ -176,7 +176,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0i4rdmh74dws57i8cjsrcdxrb3r8lph3mnvwafdqlfripxvn7yry"))
+                  "1x32l8szclv8zlwdjr8yfidxxm4n7dgm6j7xypmx5mg5pkakyan5"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1342,8 +1342,8 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public guix-build-coordinator
-  (let ((commit "3de63f1f66d5f0eb157ee60bc864404f386ee2b0")
-        (revision "53"))
+  (let ((commit "a7bbf9da27120839c22cc40abc6fad651df0a762")
+        (revision "58"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1354,7 +1354,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1ld761c48ad925p3kisnjvad50p6hyk77z0yjcr29681n73xzzz4"))
+                  "1ryw2hpasq24zzaiz8dwn2krkb0vj3391plzfarjpvsk4058jhd5"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1650,8 +1650,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "042f49e5fb52ea844ed5d29c17b26fbc8ad49f0e")
-        (revision "8"))
+  (let ((commit "5acfcc0a9d99d78a167c365534aa5bf592f5625e")
+        (revision "9"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1662,7 +1662,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1i9vwjdvkchwndjikqq3j73x0mvp3ny63s62ixql70yhpdgz5l69"))
+                  "1mxdkay3l1la7b6m0455s8cansd6qcdhv0k231aik0ayhbck8kby"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

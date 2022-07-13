@@ -3,10 +3,12 @@
 ;;; Copyright © 2015, 2018 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2017 Frederick Muriithi <fredmanglis@gmail.com>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Esther Flashner <esther@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,19 +30,23 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:hide (delete which))
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages ninja)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -48,224 +54,101 @@
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
 
-(define-public rdmd
+(define-public d-tools
   (package
-    (name "rdmd")
-    (version "2.077.1")
-    (source (origin
-      (method url-fetch)
-      (uri (string-append "https://github.com/dlang/tools/archive/v" version ".tar.gz"))
-      (file-name (string-append name "-" version ".tar.gz"))
-      (sha256
-       (base32
-        "0c8w373rv6iz3xfid94w40ncv2lr2ncxi662qsr4lda4aghczmq7"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check) ; There is no Makefile, so there's no 'make check'.
-         (replace
-          'build
-          (lambda _
-            (invoke "ldc2" "rdmd.d")))
-         (replace
-          'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-              (install-file "rdmd" bin)))))))
-    (native-inputs
-     (list ldc))
-    (home-page "https://github.com/D-Programming-Language/tools/")
-    (synopsis "Specialized equivalent to 'make' for the D language")
-    (description
-     "rdmd is a companion to the dmd compiler that simplifies the typical
-edit-compile-link-run or edit-make-run cycle to a rapid edit-run cycle.  Like
-make and other tools, rdmd uses the relative dates of the files involved to
-minimize the amount of work necessary.  Unlike make, rdmd tracks dependencies
-and freshness without requiring additional information from the user.")
-    (license license:boost1.0)))
-
-;;; The 0.17.6 version is the last release to support being bootstrapped
-;;; without a D compiler (requiring only a C++ compiler).
-;;; TODO: Bootstrap ldc from GDC (the D frontend for GCC).
-(define ldc-bootstrap-0.17
-  (package
-    (name "ldc")
-    (version "0.17.6")
+    (name "d-tools")
+    (version "2.100.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ldc-developers/ldc")
+             (url "https://github.com/dlang/tools")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q6hm4fkrcwys83x0p4kfg9xrc1b9g2qicqif2zy5z4nsfsb5vgs"))))
-    (build-system cmake-build-system)
-    (supported-systems '("x86_64-linux" "i686-linux"
-                         "armhf-linux" "aarch64-linux"))
-    (properties
-     ;; Some of the tests take a very long time on ARMv7.  See
-     ;; <https://lists.gnu.org/archive/html/guix-devel/2018-02/msg00312.html>.
-     `((max-silent-time . ,(* 3600 3))))
+        (base32 "1jbn0hyskv4ykcckw0iganpyrm0bq2lggswspw21r4hgnxkmjbyw"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f               ;requires obsolete python-lit test dependency
-       ,@(if (target-aarch64?)
-             '(#:system "armhf-linux")
-             '())
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-submodule-sources
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((unpack (lambda (input target)
-                             (let ((source (assoc-ref inputs input)))
-                               ;; Git checkouts are directories as long as
-                               ;; there are no patches; tarballs otherwise.
-                               (if (file-is-directory? source)
-                                   (copy-recursively source target)
-                                   (with-directory-excursion target
-                                     (invoke "tar" "xvf" source
-                                             "--strip-components=1")))))))
-               (unpack "phobos-src" "runtime/phobos")
-               (unpack "druntime-src" "runtime/druntime")
-               (unpack "dmd-testsuite-src" "tests/d2/dmd-testsuite"))))
-         (add-after 'unpack-submodule-sources 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "runtime/phobos/std/process.d"
-               (("/bin/sh") (which "sh"))
-               (("echo") (which "echo")))
-             (substitute* "runtime/phobos/std/datetime.d"
-               (("/usr/share/zoneinfo/")
-                (string-append (assoc-ref inputs "tzdata") "/share/zoneinfo"))
-               (("tzName == \"[+]VERSION\"")
-                "(tzName == \"+VERSION\" || \
-std.algorithm.endsWith(tzName, \"/leapseconds\"))")))))))
-    (inputs
-     `(("libconfig" ,libconfig)
-       ("libedit" ,libedit)
-       ("tzdata" ,tzdata)
-       ("zlib" ,zlib)))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'build
+                 (lambda _
+                   (mkdir-p "bin")
+                   (setenv "CC" #$(cc-for-target))
+                   (setenv "LD" #$(ld-for-target))
+                   (invoke "ldc2" "rdmd.d" "--of" "bin/rdmd")
+                   (apply invoke "ldc2" "--of=bin/dustmite"
+                          (find-files "DustMite" ".*\\.d"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "bin/rdmd" "rdmd_test.d" "bin/rdmd"
+                             "--rdmd-default-compiler" "ldmd2"))))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin"))
+                          (man (string-append out "/man")))
+                     (for-each delete-file (find-files "bin" "\\.o$"))
+                     (copy-recursively "bin" bin)
+                     (copy-recursively "man" man)))))))
     (native-inputs
-     `(("llvm" ,llvm-6)
-       ("python-wrapper" ,python-wrapper)
-       ("unzip" ,unzip)
-       ("phobos-src"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/ldc-developers/phobos")
-                 (commit (string-append "ldc-v" version))))
-           (file-name (git-file-name "phobos" version))
-           (sha256
-            (base32 "15jzs38wanks2jfp2izzl7zqrp4c8ai54ppsgm8ws86p3sbbkmj8"))))
-       ("druntime-src"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/ldc-developers/druntime")
-                 (commit (string-append "ldc-v" version))))
-           (file-name (git-file-name "druntime" version))
-           (sha256
-            (base32 "00wr2kiggwnd8h7by51fhj1xc65hv1ysip5gbgdbkfar58p2d0bb"))))
-       ("dmd-testsuite-src"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/ldc-developers/dmd-testsuite")
-                 (commit (string-append "ldc-v" version))))
-           (file-name (git-file-name "dmd-testsuite" version))
-           (sha256
-            (base32 "1d1c0979wbippldrkjf7szyj4n87hxz8dwqg1r5b3aai37g9kcky"))))))
-    (home-page "http://wiki.dlang.org/LDC")
-    (synopsis "LLVM-based compiler for the D programming language")
+     (list ldc
+           (module-ref (resolve-interface
+                        '(gnu packages commencement))
+                       'ld-gold-wrapper)))
+    (home-page "https://github.com/dlang/tools")
+    (synopsis "Useful D-related tools")
     (description
-     "LDC is an LLVM compiler for the D programming language.  It is based on
-the latest DMD compiler that was written in C and is used for
-bootstrapping more recent compilers written in D.")
-    ;; Most of the code is released under BSD-3, except for code originally
-    ;; written for GDC, which is released under GPLv2+, and the DMD frontend,
-    ;; which is released under the "Boost Software License version 1.0".
-    (license (list license:bsd-3
-                   license:gpl2+
-                   license:boost1.0))))
+     "@code{d-tools} provides two useful tools for the D language: @code{rdmd},
+which runs D source files as scripts, and @code{dustmite}, which reduces D code
+to a minimal test case.")
+    (license license:boost1.0)))
 
-;;; This is the last version that supports being built with 32 bit machines
-;;; from 0.17.
-(define ldc-bootstrap-1.12
-  (package
-    (inherit ldc-bootstrap-0.17)
-    (version "1.12.0")
-    (source
-     (origin
-       (method url-fetch)
-       ;; The official release include the matching source code releases of
-       ;; phobos, druntime and dmd-testsuite.
-       (uri (string-append "https://github.com/ldc-developers/ldc/releases"
-                           "/download/v" version "/ldc-" version "-src.tar.gz"))
-       (sha256
-        (base32 "1fdma1w8j37wkr0pqdar11slkk36qymamxnk6d9k8ybhjmxaaawm"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments ldc-bootstrap-0.17)
-       ((#:build-type _ #f) "Release")
-       ((#:configure-flags _ #f)
-        `(list "-GNinja"))
-       ((#:make-flags _ #f)             ;used as build targets
-        `(list "all"))
-       ((#:tests? _) #f)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'unpack-submodule-sources)
-           (replace 'patch-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* '("runtime/phobos/std/process.d")
-                 (("/bin/sh") (which "sh"))
-                 (("echo") (which "echo")))))
-           (replace 'build
-             ;; Building with Make would result in "make: *** [Makefile:166:
-             ;; all] Error 2".
-             (lambda* (#:key make-flags parallel-tests? #:allow-other-keys)
-               (let ((job-count (number->string (or (and parallel-tests?
-                                                         (parallel-job-count))
-                                                    1))))
-                 (apply invoke "cmake" "--build" "." "-j" job-count
-                        "--target" make-flags))))
-           (replace 'install
-             (lambda _
-               (invoke "cmake" "--install" ".")))))))
-    (native-inputs
-     ;; Importing (gnu packages commencement) would introduce a cycle.
-     `(("ld-gold-wrapper" ,(module-ref (resolve-interface
-                                        '(gnu packages commencement))
-                                       'ld-gold-wrapper))
-       ("llvm" ,llvm-6)
-       ("ldc" ,ldc-bootstrap-0.17)
-       ("ninja" ,ninja)
-       ("python-wrapper" ,python-wrapper)
-       ("unzip" ,unzip)))))
+(define-public gdmd
+  (let ((commit "ff2c97a47408fb71c18a2d453294d18808a97cc5")
+        (revision "1"))
+    (package
+      (name "gdmd")
+      (version (git-version "0.1.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/D-Programming-GDC/gdmd")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "0pd70clk70069xcjysaas7zszzmigrcw1zl2xxv8kzdg7y7xrzvm"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+         #:install-plan
+         #~'(("dmd-script" "bin/gdmd")
+             ("dmd-script.1" "share/man/man1/gdmd.1"))
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'adjust-gdc-location
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (substitute* "dmd-script"
+                   (("my \\$gdc_dir.*")
+                    (string-append "my $gdc_dir = \""
+                                   (dirname (search-input-file inputs "/bin/gdc"))
+                                   "\";\n"))))))))
+      (inputs
+       (list gdc-10 perl))
+      (home-page "https://github.com/D-Programming-GDC/gdmd")
+      (synopsis "DMD-like wrapper for GDC")
+      (description "This package provides a DMD-like wrapper for the
+@acronym{GNU D Compiler,GDC}.")
+      (license license:gpl3+))))
 
-;;; For 32 bits systems, 1.12 cannot build 1.27 directly, so we need another
-;;; hop.
-(define ldc-bootstrap-1.24
+;; We use GDC, the D frontend for GCC, to bootstrap ldc.  We then use
+;; ldc to bootstrap itself so that no reference remains to GDC.
+(define ldc-bootstrap
   (package
-    (inherit ldc-bootstrap-1.12)
-    (version "1.24.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/ldc-developers/ldc/releases"
-                           "/download/v" version "/ldc-" version "-src.tar.gz"))
-       (sha256
-        (base32 "0g5svf55i0kq55q49awmwqj9qi1n907cyrn1vjdjgs8nx6nn35gx"))))
-    (native-inputs
-     (fold alist-replace
-           (package-native-inputs ldc-bootstrap-1.12)
-           '("ldc" "llvm")
-           `((,ldc-bootstrap-1.12) (,llvm-11))))))
-
-(define ldc-bootstrap-1.27
-  (package
-    (inherit ldc-bootstrap-1.24)
+    (name "ldc")
     (version "1.27.1")
     (source
      (origin
@@ -274,24 +157,78 @@ bootstrapping more recent compilers written in D.")
                            "/download/v" version "/ldc-" version "-src.tar.gz"))
        (sha256
         (base32 "1775001ba6n8w46ln530kb5r66vs935ingnppgddq8wqnc0gbj4k"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f                  ;skip in the bootstrap
+       #:build-type "Release"
+       #:configure-flags
+        (list "-GNinja")
+       #:make-flags                 ;used as build targets
+        (list "all")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "runtime/phobos/std/process.d"
+               (("/bin/sh") (which "sh"))
+               (("echo") (which "echo")))))
+         (replace 'build
+           ;; Building with Make would result in "make: *** [Makefile:166:
+           ;; all] Error 2".
+           (lambda* (#:key make-flags parallel-tests? #:allow-other-keys)
+             (let ((job-count (number->string (or (and parallel-tests?
+                                                       (parallel-job-count))
+                                                  1))))
+               (apply invoke "cmake" "--build" "." "-j" job-count
+                      "--target" make-flags))))
+         (replace 'install
+           (lambda _
+             (invoke "cmake" "--install" "."))))))
+    (inputs
+     `(("libconfig" ,libconfig)
+       ("libedit" ,libedit)
+       ("tzdata" ,tzdata)
+       ("zlib" ,zlib)))
     (native-inputs
-     (fold alist-replace
-           (package-native-inputs ldc-bootstrap-1.24)
-           '("ldc" "llvm")
-           `((,ldc-bootstrap-1.24) (,llvm-11))))))
+     ;; Importing (gnu packages commencement) would introduce a cycle.
+     `(("ld-gold-wrapper" ,(module-ref (resolve-interface
+                                        '(gnu packages commencement))
+                                       'ld-gold-wrapper))
+       ("llvm" ,llvm-11)
+       ("ldc" ,gdmd)
+       ("ninja" ,ninja)
+       ("python-wrapper" ,python-wrapper)
+       ("unzip" ,unzip)))
+    (home-page "http://wiki.dlang.org/LDC")
+    (synopsis "LLVM-based compiler for the D programming language")
+    (description
+     "LDC is an LLVM compiler for the D programming language.  It is based on
+the latest DMD compiler that was written in C and is used for
+bootstrapping more recent compilers written in D.")
+    (properties
+     ;; Some of the tests take a very long time on ARMv7.  See
+     ;; <https://lists.gnu.org/archive/html/guix-devel/2018-02/msg00312.html>.
+     `((max-silent-time . ,(* 3600 3))))
+    ;; Most of the code is released under BSD-3, except for code originally
+    ;; written for GDC, which is released under GPLv2+, and the DMD frontend,
+    ;; which is released under the "Boost Software License version 1.0".
+    (license (list license:bsd-3
+                   license:gpl2+
+                   license:boost1.0))))
 
 (define-public ldc
   (package
-    (inherit ldc-bootstrap-1.27)
+    (inherit ldc-bootstrap)
     (arguments
-     (substitute-keyword-arguments (package-arguments ldc-bootstrap-1.27)
+     (substitute-keyword-arguments (package-arguments ldc-bootstrap)
        ((#:make-flags _ #f)
         '(list "all"
                ;; Also build the test runner binaries.
                "ldc2-unittest" "all-test-runners"))
        ((#:configure-flags flags)
         `(,@flags "-DBUILD_SHARED_LIBS=ON"
-                  "-DLDC_LINK_MANUALLY=OFF"))
+                  "-DLDC_LINK_MANUALLY=OFF"
+                  "-DLDC_DYNAMIC_COMPILE=OFF"))
        ((#:tests? _) #t)
        ((#:phases phases)
         `(modify-phases ,phases
@@ -312,7 +249,8 @@ bootstrapping more recent compilers written in D.")
                                            system)))))
                      (matches ("x86_64"      => "x86_64")
                               ("i686"        => "i386")
-                              ("armhf"       => "armhf"))))
+                              ("armhf"       => "armhf")
+                              ("aarch64"     => "aarch64"))))
                  ;; Coax LLVM into agreeing with Clang about system target
                  ;; naming.
                  (substitute* "driver/linker-gcc.cpp"
@@ -362,30 +300,28 @@ bootstrapping more recent compilers written in D.")
                (substitute* "runtime/druntime/test/exceptions/Makefile"
                  ((".*TESTS\\+=rt_trap_exceptions_drt_gdb.*")
                   ""))
-               ;; The following tests fail on the supported 32 bit systems,
-               ;; which are not tested upstream.
+               ;; The following tests fail on some systems, not all of
+               ;; which are tested upstream.
                (with-directory-excursion "tests"
-                 (let ((system ,(or (%current-target-system)
-                                    (%current-system))))
-                   (when (or (string-prefix? "armhf" system )
-                             (string-prefix? "i686" system ))
+                 (cond
+                   (,(or (target-x86-32?)
+                         (target-arm32?))
                      (for-each delete-file
                                '("PGO/profile_rt_calls.d"
                                  "codegen/mangling.d"
-                                 "debuginfo/print_gdb.d"
-                                 "dynamiccompile/bind.d"
-                                 "dynamiccompile/bind_bool.d"
-                                 "dynamiccompile/bind_func_opt.d"
-                                 "dynamiccompile/bind_nested_opt.d"
-                                 "dynamiccompile/bind_opt.d"
-                                 "dynamiccompile/compiler_context.d"
-                                 "dynamiccompile/compiler_context_parallel.d"
                                  "instrument/xray_check_pipeline.d"
                                  "instrument/xray_link.d"
                                  "instrument/xray_simple_execution.d"
                                  "sanitizers/msan_noerror.d"
                                  "sanitizers/msan_uninitialized.d"
-                                 "d2/dmd-testsuite/runnable_cxx/cppa.d")))))))
+                                 "d2/dmd-testsuite/runnable_cxx/cppa.d")))
+                   (,(target-aarch64?)
+                     (for-each delete-file
+                               '("d2/dmd-testsuite/runnable/ldc_cabi1.d"
+                                 "sanitizers/fuzz_basic.d"
+                                 "sanitizers/msan_noerror.d"
+                                 "sanitizers/msan_uninitialized.d")))
+                   (#t '())))))
            (add-before 'configure 'set-cc-and-cxx-to-use-clang
              ;; The tests require to be built with Clang; build everything
              ;; with it, for simplicity.
@@ -418,15 +354,15 @@ integration tests...\n")
                            "-E" "dmd-testsuite|lit-tests|ldc2-unittest")))))))))
     (native-inputs
      (append (delete "llvm"
-                     (alist-replace "ldc" (list ldc-bootstrap-1.27)
-                                    (package-native-inputs ldc-bootstrap-1.27)))
+                     (alist-replace "ldc" (list ldc-bootstrap)
+                                    (package-native-inputs ldc-bootstrap)))
          `(("clang" ,clang-11)          ;propagates llvm and clang-runtime
            ("python-lit" ,python-lit))))))
 
 (define-public dub
   (package
     (name "dub")
-    (version "1.7.2")
+    (version "1.23.0")
     (source
      (origin
        (method git-fetch)
@@ -435,26 +371,31 @@ integration tests...\n")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "073ibvgm1gphcqs1yjrav9ryp677nh3b194nxmvicwgvdc0sb6w9"))))
+        (base32 "06a4whsl1m600k096nwif83n7za3vr7pj1xwapncy5fcad1gmady"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; it would have tested itself by installing some packages (vibe etc)
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (replace 'build
-           (lambda _
-             (invoke "./build.sh")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "bin/dub" bin)
-               #t))))))
+     (list #:tests? #f                  ; tests try to install packages
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (replace 'build
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target))
+                   (setenv "LD" #$(ld-for-target))
+                   (invoke "./build.d")))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin")))
+                     (install-file "bin/dub" bin)))))))
     (inputs
      (list curl))
     (native-inputs
-     (list ldc))
+     (list d-tools
+           ldc
+           (module-ref (resolve-interface
+                        '(gnu packages commencement))
+                       'ld-gold-wrapper)))
     (home-page "https://code.dlang.org/getting_started")
     (synopsis "Package and build manager for D projects")
     (description

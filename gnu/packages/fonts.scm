@@ -49,6 +49,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,6 +91,26 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages xorg))
+
+(define-public font-artifika
+  (package
+    (name "font-artifika")
+    (version "1.102")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cyrealtype/Artifika")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nwjm44nys1qz3wyg0mm15gdjpz641xpmsz00n6m8065xrw86q7i"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/cyrealtype/Artifika")
+    (synopsis "Upright italic font")
+    (description "Artifika is an upright italic font for fashionable display
+titling.")
+    (license license:silofl1.1)))
 
 (define-public font-ibm-plex
   (package
@@ -212,43 +233,31 @@ Cyrillic, Canadian Syllabics and most Latin based languages are supported.")
     (version "0.303")
     (source
      (origin
-       (method url-fetch/zipbomb)
-       (uri (string-append "https://gitlab.gnome.org/GNOME/cantarell-fonts/-/"
-                           "jobs/1515399/artifacts/download"))
-       (file-name (string-append name "-" version "-static"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/GNOME/cantarell-fonts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1dz551xrrhx6l40j57ksk2alllrihghg4947z1r88dpcq3snpn1s"))))
-    (build-system font-build-system)
+        (base32
+         "1d1ay0fdqchk0wa5yqxis2c98imvzsbbd2kjv0x8sk4fm419847b"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-source
-           ;; The actual OTF fonts are prebuilt (building them requires at least
-           ;; the currently unpackaged psautohint and its numerous dependencies;
-           ;; TODO), but unpack the source so that COPYING is installed later.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "tar" "--strip-components=1" "-xvf"
-                     (string-append "build/meson-dist/cantarell-fonts-"
-                                    ,version ".tar.xz"))))
-         (add-after 'unpack 'unpack-variable-font
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((variable-font (assoc-ref inputs "variable-font")))
-               (copy-recursively (string-append variable-font "/prebuilt")
-                                 ".")))))))
+     (list #:configure-flags #~(list "-Dbuildstatics=true")))
     (native-inputs
-     `(("variable-font"
-        ,(origin
-           (method url-fetch/zipbomb)
-           (uri (string-append "https://gitlab.gnome.org/GNOME/cantarell-fonts/-/"
-                               "jobs/1515398/artifacts/download"))
-           (file-name (string-append name "-" version "-variable"))
-           (sha256
-            (base32 "0z93pbkxidsx3y98rsl2jm2qpvxv5pj0w870xhnsciglw6pc9a9i"))))
-       ("unzip" ,unzip)))
+     (list gettext-minimal
+           psautohint
+           python
+           python-cffsubr
+           python-fontmath
+           python-statmake
+           python-ufo2ft))
     (home-page "https://wiki.gnome.org/Projects/CantarellFonts")
     (synopsis "Cantarell sans-serif typeface")
     (description "The Cantarell font family is a contemporary Humanist
-sans-serif designed for on-screen reading.  It is used by GNOME@tie{}3.")
+sans-serif designed for on-screen reading.  It is used by GNOME@tie{}3.
+This package contains both the non-variable as well as the variable versions
+of the font.")
     (license license:silofl1.1)))
 
 (define-public font-lato
@@ -2194,14 +2203,14 @@ always uses Farsi digits, and does not include Latin glyphs from Roboto.
 (define-public font-victor-mono
   (package
    (name "font-victor-mono")
-   (version "1.4.2")
+   (version "1.5.3")
    (source (origin
             (method url-fetch/zipbomb)
             (uri (string-append
                        "https://github.com/rubjo/victor-mono/raw/v"
                        version
                        "/public/VictorMonoAll.zip"))
-            (sha256 "01260vja0d22mcvkzspf0xnl7b851r0265arqkm12q1vagzyxvkm")))
+            (sha256 "1axiwxz8l46cc60jfp2la8a9qpj866236lz3dc5l6m35r9as56l3")))
    (build-system font-build-system)
    (synopsis "Font with support for italics and ligatures")
    (description "Victor Mono is an open-source monospaced font with

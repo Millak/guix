@@ -6,6 +6,7 @@
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +28,7 @@
   #:use-module (guix build syscalls)
   #:use-module (guix build utils)
   #:use-module (guix store database)
+  #:use-module (guix utils)
   #:use-module (gnu build bootloader)
   #:use-module (gnu build install)
   #:use-module (gnu build linux-boot)
@@ -41,6 +43,7 @@
             convert-disk-image
             genimage
             initialize-efi-partition
+            initialize-efi32-partition
             initialize-root-partition
 
             make-iso9660-image))
@@ -168,6 +171,17 @@ produced by #:references-graphs.  Pass WAL-MODE? to call-with-database."
                                    #:allow-other-keys)
   "Install in ROOT directory, an EFI loader using GRUB-EFI."
   (install-efi-loader grub-efi root))
+
+(define* (initialize-efi32-partition root
+                                     #:key
+                                     grub-efi32
+                                     #:allow-other-keys)
+  "Install in ROOT directory, an EFI 32bit loader using GRUB-EFI32."
+  (install-efi-loader grub-efi32 root
+                      #:targets (cond ((target-x86?)
+                                       '("i386-efi" . "BOOTIA32.EFI"))
+                                      ((target-arm?)
+                                       '("arm-efi" . "BOOTARM.EFI")))))
 
 (define* (initialize-root-partition root
                                     #:key

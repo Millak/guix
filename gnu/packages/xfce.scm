@@ -862,11 +862,11 @@ on the screen.")
                                   "backgrounds/xfce-verticals.png"))
                       #t)))
 
-       #:disallowed-references (,inkscape ,imagemagick)))
+       #:disallowed-references (,inkscape/stable ,imagemagick)))
     (native-inputs
      (list pkg-config intltool
            ;; For our own ‘prepare-background-image’ phase.
-           inkscape imagemagick))
+           inkscape/stable imagemagick))
     (inputs
      (list exo
            garcon

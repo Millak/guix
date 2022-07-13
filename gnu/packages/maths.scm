@@ -22,7 +22,7 @@
 ;;; Copyright © 2017, 2019, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Dave Love <me@fx@gnu.org>
-;;; Copyright © 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Nadya Voronova <voronovank@gmail.com>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
@@ -50,6 +50,8 @@
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Pierre-Antoine Bouttier <pierre-antoine.bouttier@univ-grenoble-alpes.fr>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1090,6 +1092,31 @@ from the command line, using @command{gnuplot}.  It can read data from
 a pipe or file, make a variety of transformations, and render the result
 in the terminal or with an external viewer.")
     (license license:gpl1+))) ;any version
+
+(define-public giza
+  (package
+    (name "giza")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danieljprice/giza")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1clklh3nzgwrwg80h3k5x65gdymbvcc84c44nql7m4bv9b8rqfsq"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list perl pkg-config))
+    (inputs
+     (list cairo freetype gfortran))
+    (home-page "https://danieljprice.github.io/giza/")
+    (synopsis "Scientific plotting library for C/Fortran")
+    (description
+     "Giza is a lightweight scientific plotting library built on top of
+@code{cairo} that provides uniform output to multiple devices.")
+    (license license:gpl2+)))
 
 (define-public gnuplot
   (package
@@ -2657,7 +2684,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "6.2.0")
+    (version "7.1.0")
     (source
      (origin
       (method url-fetch)
@@ -2665,7 +2692,7 @@ can solve two kinds of problems:
                           version ".tar.xz"))
       (sha256
        (base32
-        "06id09zspya24gshcwgp039cp35c06150mdlxysawgnbrhj16wkv"))))
+        "0wv26nsfi6cq80np6p4av4wfrvbaflca6szajf6c60mbpdg63m1z"))))
     (build-system gnu-build-system)
     (inputs
      `(("alsa-lib" ,alsa-lib)
@@ -5524,7 +5551,9 @@ set.")
                                      texlive-capt-of
                                      texlive-caption
                                      texlive-cm
+                                     texlive-courier
                                      texlive-etoolbox
+                                     texlive-helvetic
                                      texlive-jknappen
                                      texlive-sectsty
                                      texlive-tex-gyre
@@ -5817,7 +5846,7 @@ as equations, scalars, vectors, and matrices.")
 (define-public z3
   (package
     (name "z3")
-    (version "4.8.9")
+    (version "4.8.17")
     (home-page "https://github.com/Z3Prover/z3")
     (source (origin
               (method git-fetch)
@@ -5826,54 +5855,51 @@ as equations, scalars, vectors, and matrices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hnbzq10d23drd7ksm3c1n2611c3kd0q0yxgz8y78zaafwczvwxx"))))
-    (build-system gnu-build-system)
+                "1vvb09q7w7zd29qc4qjysrrhyylszm1wf6azkff004ixwn026b05"))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
-                           ,@%gnu-build-system-modules)
-       #:modules (((guix build python-build-system) #:select (site-packages))
-                  (guix build gnu-build-system)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enable-bytecode-determinism
-           (lambda _
-             (setenv "PYTHONHASHSEED" "0")
-             #t))
-         (add-after 'unpack 'fix-compatability
-           ;; Versions after 4.8.3 have immintrin.h IFDEFed for Windows only.
-           (lambda _
-             (substitute* "src/util/mpz.cpp"
-               (("#include <immintrin.h>") ""))
-             #t))
-         (add-before 'configure 'bootstrap
-           (lambda _
-             (invoke "python" "scripts/mk_make.py")))
-         ;; work around gnu-build-system's setting --enable-fast-install
-         ;; (z3's `configure' is a wrapper around the above python file,
-         ;; which fails when passed --enable-fast-install)
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (invoke "./configure"
-                     "--python"
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     (string-append "--pypkgdir=" (site-packages inputs outputs)))))
-         (add-after 'configure 'change-directory
-           (lambda _
-             (chdir "build")
-             #t))
-         (add-before 'check 'make-test-z3
-           (lambda _
-             ;; Build the test suite executable.
-             (invoke "make" "test-z3" "-j"
-                     (number->string (parallel-job-count)))))
-         (replace 'check
-           (lambda _
-             ;; Run all the tests that don't require arguments.
-             (invoke "./test-z3" "/a"))))))
+     (list
+      #:imported-modules `((guix build python-build-system)
+                           ,@%cmake-build-system-modules)
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system) #:select (site-packages)))
+      #:configure-flags
+      #~(list "-DZ3_BUILD_PYTHON_BINDINGS=ON"
+              "-DZ3_LINK_TIME_OPTIMIZATION=ON"
+              (string-append
+               "-DCMAKE_INSTALL_PYTHON_PKG_DIR="
+               #$output "/lib/python"
+               #$(version-major+minor (package-version python-wrapper))
+               "/site-packages"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key parallel-build? tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "test-z3"
+                        (format #f "-j~a"
+                                (if parallel-build?
+                                    (parallel-job-count)
+                                    1)))
+                (invoke "./test-z3" "/a"))))
+          (add-after 'install 'compile-python-modules
+            (lambda _
+              (setenv "PYTHONHASHSEED" "0")
+
+              (invoke "python" "-m" "compileall"
+                      "--invalidation-mode=unchecked-hash"
+                      #$output)))
+          ;; This step is missing in the CMake build system, do it here.
+          (add-after 'compile-python-modules 'fix-z3-library-path
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((dest (string-append (site-packages inputs outputs)
+                                          "/z3/lib/libz3.so"))
+                     (z3-lib (string-append #$output "/lib/libz3.so")))
+                (mkdir-p (dirname dest))
+                (symlink z3-lib dest)))))))
     (native-inputs
-     `(("which" ,which)
-       ("python" ,python-wrapper)))
+     (list which python-wrapper))
     (synopsis "Theorem prover")
     (description "Z3 is a theorem prover and @dfn{satisfiability modulo
 theories} (SMT) solver.  It provides a C/C++ API, as well as Python bindings.")
@@ -5883,6 +5909,7 @@ theories} (SMT) solver.  It provides a C/C++ API, as well as Python bindings.")
   (package
     (inherit z3)
     (name "ocaml-z3")
+    (build-system gnu-build-system)
     (arguments
      `(#:imported-modules ((guix build python-build-system)
                            ,@%gnu-build-system-modules)
@@ -5944,7 +5971,8 @@ theories} (SMT) solver.  It provides a C/C++ API, as well as Python bindings.")
     (version "2018.11.001")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://elpa.mpcdf.mpg.de/html/Releases/"
+              (uri (string-append "https://elpa.mpcdf.mpg.de/software/"
+                                  "tarball-archive/Releases/"
                                   version "/elpa-" version ".tar.gz"))
               (sha256
                (base32
@@ -6087,15 +6115,17 @@ reduction.")
 (define-public mcrl2
   (package
     (name "mcrl2")
-    (version "202106.0")
+    (version "202206.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://www.mcrl2.org/download/release/mcrl2-"
                     version ".tar.gz"))
+              (patches (search-patches "mcrl2-fix-1687.patch"
+                                       "mcrl2-fix-counterexample.patch"))
               (sha256
                (base32
-                "1xgx3cd57vc7gbjic24j1q2za6j3ybz6nk4afvvpbwsf33xnlf4v"))))
+                "0alpck09pbvwk4axqmrvcjmsabsn20yayq5b3apq284n0hcbf01q"))))
     (inputs
      (list boost glu mesa qtbase-5))
     (build-system cmake-build-system)
@@ -7001,7 +7031,7 @@ management via the GIMPS project's Primenet server.")
 (define-public nauty
   (package
     (name "nauty")
-    (version "2.7r3")
+    (version "2.7r4")
     (source
      (origin
        (method url-fetch)
@@ -7009,50 +7039,48 @@ management via the GIMPS project's Primenet server.")
              "https://pallini.di.uniroma1.it/"
              "nauty" (string-join (string-split version #\.) "") ".tar.gz"))
        (sha256
-        (base32 "1hl81gpf3xjf809w04jczvilq1ixy9ch1qrax8a7lgx52svna1jg"))))
+        (base32 "19j8i10cgnqavphj0p7kq939azxckj9ayjpjr6sg76g2dxdch45q"))))
     (build-system gnu-build-system)
     (outputs '("out" "lib"))
     (arguments
-     `(#:test-target "checks"
-       #:configure-flags '("--enable-generic") ;prevent -march-native
-       #:phases
-       (modify-phases %standard-phases
-         ;; Default make target does not build all available
-         ;; executables.  Create them now.
-         (add-after 'build 'build-extra-programs
-           (lambda _
-             (for-each (lambda (target) (invoke "make" target))
-                       '("blisstog" "bliss2dre" "checks6" "sumlines"))
-             #t))
-         ;; Upstream does not provide any install target.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib-output (assoc-ref outputs "lib"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/nauty/"))
-                    (include (string-append lib-output "/include/nauty"))
-                    (lib (string-append lib-output "/lib/nauty")))
-               (for-each (lambda (f) (install-file f bin))
-                         '("addedgeg"  "amtog" "assembleg" "biplabg" "blisstog"
-                           "bliss2dre" "catg" "checks6" "complg" "converseg"
-                           "copyg" "countg" "cubhamg" "deledgeg" "delptg"
-                           "directg"  "dreadnaut" "dretodot" "dretog" "genbg"
-                           "genbgL" "geng" "genquarticg" "genrang" "genspecialg"
-                           "gentourng" "gentreeg" "hamheuristic" "labelg"
-                           "linegraphg" "listg" "multig" "newedgeg" "pickg"
-                           "planarg" "ranlabg" "shortg" "showg" "subdivideg"
-                           "sumlines" "twohamg" "underlyingg" "vcolg"
-                           "watercluster2" "NRswitchg"))
-               (for-each (lambda (f) (install-file f include))
-                         (find-files "." "\\.h$"))
-               (for-each (lambda (f) (install-file f lib))
-                         (find-files "." "\\.a$"))
-               (for-each (lambda (f) (install-file f doc))
-                         (append '("formats.txt" "README" "schreier.txt")
-                                 (find-files "." "\\.pdf$")))))))))
+     (list
+      #:test-target "checks"
+      #:configure-flags #~(list "--enable-generic") ;prevent -march-native
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Default make target does not build all available
+          ;; executables.  Create them now.
+          (add-after 'build 'build-extra-programs
+            (lambda _
+              (for-each (lambda (target) (invoke "make" target))
+                        '("blisstog" "bliss2dre" "checks6" "sumlines"))))
+          ;; Upstream does not provide any install target.
+          (replace 'install
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (doc (string-append #$output "/share/doc/nauty/"))
+                     (include (string-append #$output:lib "/include/nauty"))
+                     (lib (string-append #$output:lib "/lib/nauty")))
+                (for-each (lambda (f) (install-file f bin))
+                          '("addedgeg"  "amtog" "assembleg" "biplabg" "blisstog"
+                            "bliss2dre" "catg" "checks6" "complg" "converseg"
+                            "copyg" "countg" "cubhamg" "deledgeg" "delptg"
+                            "directg"  "dreadnaut" "dretodot" "dretog" "genbg"
+                            "genbgL" "geng" "genquarticg" "genrang" "genspecialg"
+                            "gentourng" "gentreeg" "hamheuristic" "labelg"
+                            "linegraphg" "listg" "multig" "newedgeg" "pickg"
+                            "planarg" "ranlabg" "shortg" "showg" "subdivideg"
+                            "sumlines" "twohamg" "underlyingg" "vcolg"
+                            "watercluster2" "NRswitchg"))
+                (for-each (lambda (f) (install-file f include))
+                          (find-files "." "\\.h$"))
+                (for-each (lambda (f) (install-file f lib))
+                          (find-files "." "\\.a$"))
+                (for-each (lambda (f) (install-file f doc))
+                          (append '("formats.txt" "README" "schreier.txt")
+                              (find-files "." "\\.pdf$")))))))))
     (inputs
-     (list gmp))                   ;for sumlines
+     (list gmp))                        ;for sumlines
     (home-page "https://pallini.di.uniroma1.it/")
     (synopsis "Library for graph automorphisms")
     (description "@code{nauty} (No AUTomorphisms, Yes?) is a set of
