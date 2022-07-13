@@ -181,7 +181,7 @@ If value is @code{#f} variable will be omitted.
 If value is @code{#t} variable will be just exported.
 For any other, value variable will be set to the @code{value} and
 exported."
-  (define (warn-about-duplicate-defenitions)
+  (define (warn-about-duplicate-definitions)
     (fold
      (lambda (x acc)
        (when (equal? (car x) (car acc))
@@ -192,7 +192,7 @@ exported."
      (sort vars (lambda (a b)
                   (string<? (car a) (car b))))))
 
-  (warn-about-duplicate-defenitions)
+  (warn-about-duplicate-definitions)
   (with-monad
    %store-monad
    (return
