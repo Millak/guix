@@ -8838,24 +8838,24 @@ easy, safe, and automatic.")
                (invoke "dbus-run-session" "--" "meson" "test"
                        "--print-errorlogs")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml-4.5" ,docbook-xml)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("asciidoc" ,asciidoc)
-       ("xsltproc" ,libxslt)
-       ("cmake-minimal" ,cmake-minimal)
-       ("python-pygobject" ,python-pygobject)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("intltool" ,intltool)
-       ("dbus" ,dbus)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("vala" ,vala)))
+     (list `(,glib "bin")
+           gobject-introspection
+           docbook-xsl
+           docbook-xml
+           gsettings-desktop-schemas
+           asciidoc
+           libxslt
+           cmake-minimal
+           python-pygobject
+           gtk-doc/stable
+           intltool
+           dbus
+           pkg-config
+           python
+           vala))
     (inputs
-     `(("dbus" ,dbus)
-       ("libsoup" ,libsoup)))
+     (list dbus
+           libsoup))
     (propagated-inputs
      ;; These are in Requires or Requires.private of tracker-sparql-3.0.pc.
      (list glib
