@@ -63,76 +63,14 @@
 
 (define-public openldap
   (package
-   (name "openldap")
-   (version "2.4.57")
-   (source (origin
-             (method url-fetch)
-             ;; See <http://www.openldap.org/software/download/> for a list of
-             ;; mirrors.
-             (uri (list (string-append
-                         "ftp://mirror.switch.ch/mirror/OpenLDAP/"
-                         "openldap-release/openldap-" version ".tgz")
-                        (string-append
-                         "https://www.openldap.org/software/download/OpenLDAP/"
-                         "openldap-release/openldap-" version ".tgz")
-                        (string-append
-                         "ftp://ftp.dti.ad.jp/pub/net/OpenLDAP/"
-                         "openldap-release/openldap-" version ".tgz")))
-             (sha256
-              (base32
-               "0nmlyqhc52v24b4awh914sczmvxbazgq2cnlycvb9dgcwvhlgfn7"))))
-   (build-system gnu-build-system)
-   (inputs (list bdb-5.3 cyrus-sasl gnutls libgcrypt zlib))
-   (native-inputs (list libtool groff bdb-5.3))
-   (arguments
-    `(#:tests? #f
-      #:configure-flags
-      '("--disable-static"
-        ,@(if (%current-target-system)
-              '("--with-yielding_select=yes"
-                "ac_cv_func_memcmp_working=yes")
-              '()))
-      ;; Disable install stripping as it breaks cross-compiling.
-      #:make-flags '("STRIP=")
-      #:phases
-      (modify-phases %standard-phases
-        ,@(if (%current-target-system)
-              '((add-before 'configure 'fix-cross-gcc
-                  (lambda* (#:key target #:allow-other-keys)
-                    (setenv "CC" (string-append target "-gcc"))
-                    #t)))
-              '())
-        (add-after 'install 'patch-sasl-path
-          ;; Give -L arguments for cyrus-sasl to avoid propagation.
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out"))
-                  (krb5 (assoc-ref inputs "mit-krb5"))) ;propagated from cyrus-sasl
-
-              ;; The ancient Libtool bundled with OpenLDAP copies the linker flags
-              ;; from Cyrus-SASL and embeds them into its own .la files.  Add an
-              ;; absolute reference to Kerberos so it does not have to be propagated.
-              (substitute* (map (lambda (f) (string-append out "/" f))
-                                '("lib/libldap.la" "lib/libldap_r.la"))
-                (("-lkrb5" lib)
-                 (string-append "-L" krb5 "/lib " lib)))
-              #t))))))
-   (synopsis "Implementation of the Lightweight Directory Access Protocol")
-   (description
-    "OpenLDAP is a free implementation of the Lightweight Directory Access Protocol.")
-   (license openldap2.8)
-   (home-page "https://www.openldap.org/")))
-
-;; TODO: Update the main package in the next rebuild cycle.
-(define-public openldap-2.6
-  (package
-    (inherit openldap)
-    (version "2.6.1")
+    (name "openldap")
+    (version "2.6.2")
     (source (origin
               (method url-fetch)
               ;; See <http://www.openldap.org/software/download/> for a list of
               ;; mirrors.
               (uri (list (string-append
-                          "http://mirror.eu.oneandone.net/software/openldap"
+                          "http://repository.linagora.org/OpenLDAP"
                           "/openldap-release/openldap-" version ".tgz")
                          (string-append
                           "https://www.openldap.org/software/download/OpenLDAP/"
@@ -142,27 +80,48 @@
                           "openldap-release/openldap-" version ".tgz")))
               (sha256
                (base32
-                "1wz6f3g3bbqgbbxs20zlappmmhapqbl791c0waibhz9djsk6wmwx"))))
+                "11ygl4iilhkz5rhndh68lss4a33cqp9arb7mxj329dif4d2r7l41"))))
+    (build-system gnu-build-system)
+    (inputs (list bdb-5.3 cyrus-sasl gnutls libgcrypt zlib))
+    (native-inputs (list libtool groff bdb-5.3))
     (arguments
-     (substitute-keyword-arguments (package-arguments openldap)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'patch-sasl-path
-              ;; Give -L arguments for cyrus-sasl to avoid propagation.
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((krb5 (search-input-file inputs "/lib/libkrb5.so")))
-                  (substitute* (string-append #$output "/lib/libldap.la")
-                    (("-lkrb5" lib)
-                     (string-append "-L" (dirname krb5) "/lib " lib))))))
-            (add-after 'install 'provide-ldap_r
-              (lambda _
-                ;; The re-entrant libldap_r no longer exists since 2.6
-                ;; as it has become the default: provide a linker alias
-                ;; for now.
-                (call-with-output-file (string-append #$output
-                                                      "/lib/libldap_r.so")
-                  (lambda (port)
-                    (format port "INPUT ( libldap.so )~%")))))))))))
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~'("--disable-static"
+          #$@(if (%current-target-system)
+                 '("--with-yielding_select=yes"
+                   "ac_cv_func_memcmp_working=yes")
+                  '()))
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (%current-target-system)
+                 '((add-before 'configure 'fix-cross-gcc
+                     (lambda* (#:key target #:allow-other-keys)
+                       (setenv "CC" (string-append target "-gcc"))
+                       (setenv "STRIP" (string-append target "-strip")))))
+                 '())
+          (add-after 'install 'patch-sasl-path
+            ;; Give -L arguments for cyrus-sasl to avoid propagation.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((krb5 (search-input-file inputs "/lib/libkrb5.so")))
+                (substitute* (string-append #$output "/lib/libldap.la")
+                  (("-lkrb5" lib)
+                   (string-append "-L" (dirname krb5) "/lib " lib))))))
+          (add-after 'install 'provide-libldap_r
+            (lambda _
+              ;; The re-entrant libldap_r no longer exists since 2.6
+              ;; as it has become the default: provide a linker alias
+              ;; for now.
+              (call-with-output-file (string-append #$output
+                                                    "/lib/libldap_r.so")
+                (lambda (port)
+                  (format port "INPUT ( libldap.so )~%"))))))))
+    (synopsis "Implementation of the Lightweight Directory Access Protocol")
+    (description
+     "OpenLDAP is a free implementation of the Lightweight Directory Access Protocol.")
+    (license openldap2.8)
+    (home-page "https://www.openldap.org/")))
 
 (define-public nss-pam-ldapd
   (package
@@ -231,7 +190,7 @@ an LDAP server.")
                (setenv "SLAPD" slapd)
                (setenv "SCHEMA" schema)))))))
     (inputs
-     (list openldap-2.6 cyrus-sasl mit-krb5))
+     (list openldap cyrus-sasl mit-krb5))
     (propagated-inputs
      (list python-pyasn1 python-pyasn1-modules))
     (home-page "https://www.python-ldap.org/")

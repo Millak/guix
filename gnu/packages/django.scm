@@ -1230,7 +1230,7 @@ FileFields during tests.")
                      (invoke "pip" "--no-cache-dir" "--no-input"
                              "install" "--no-deps" "--prefix" #$output whl)))))))
     (native-inputs
-     (list openldap-2.6 python-wheel python-setuptools-scm python-toml
+     (list openldap python-wheel python-setuptools-scm python-toml
 
            ;; These can be removed after <https://bugs.gnu.org/46848>.
            python-pypa-build python-pip))
