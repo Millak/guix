@@ -3010,21 +3010,21 @@ Bootstrap themes, which are packaged for use with Shiny applications.")
            (uri "https://d3js.org/d3.v5.js")
            (sha256
             (base32
-             "0kxvx5pfagxn6nhavdwsdnzyd26g0z5dsfi1pi5dvcmb0c8ipcdn"))))
+             "177ypw6mjrp2ch9lj6znibwacwrvm4ypjxflsxsnl2sigx5dcwic"))))
        ("d3.v6.js"
         ,(origin
            (method url-fetch)
            (uri "https://d3js.org/d3.v6.js")
            (sha256
             (base32
-             "1x6432ca7p1pfxhz3airzw943fincn9izzxkclc1wmphcvv2n2p9"))))
+             "13hick3glizzm442b9swlwz584rzwwvhpq9qvfbh3m5jay10wxw0"))))
        ("d3.v7.js"
         ,(origin
            (method url-fetch)
            (uri "https://d3js.org/d3.v7.js")
            (sha256
             (base32
-             "0sd6vavxs8mx5xyb8xahlqghdiczqd284a7d5wravhqnrj0bw097"))))))
+             "1hif1phswlkkpvcf1hbqmfsxdb5s5gr5g2frcwbh0rh8g6nbkyqi"))))))
     (home-page "https://github.com/timelyportfolio/d3r")
     (synopsis "d3.js utilities for R")
     (description
