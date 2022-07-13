@@ -94,8 +94,8 @@
      (list glib)) ; required by polkit-gobject-1.pc
     (native-inputs
      (list pkg-config
+           perl
            `(,glib "bin")                         ;for glib-mkenums
-           intltool
            gobject-introspection
            libxslt                                ;for man page generation
            docbook-xsl))                          ;for man page generation
