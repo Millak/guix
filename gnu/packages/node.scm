@@ -289,7 +289,7 @@
            http-parser
            icu4c
            libuv
-           `(,nghttp2 "lib")
+           `(,nghttp2-for-node "lib")
            openssl
            zlib
            ;; Regular build-time dependencies.
@@ -309,7 +309,7 @@
            http-parser
            icu4c
            libuv
-           `(,nghttp2 "lib")
+           `(,nghttp2-for-node "lib")
            openssl
            python-wrapper               ;for node-gyp (supports python3)
            zlib))
@@ -866,7 +866,7 @@ source files.")
            brotli
            icu4c-70
            libuv-for-node
-           `(,nghttp2 "lib")
+           `(,nghttp2-for-node "lib")
            openssl
            zlib
            ;; Regular build-time dependencies.
@@ -883,7 +883,7 @@ source files.")
            libuv-for-node
            llhttp-bootstrap
            brotli
-           `(,nghttp2 "lib")
+           `(,nghttp2-for-node "lib")
            openssl
            python-wrapper ;; for node-gyp (supports python3)
            zlib))))
