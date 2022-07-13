@@ -18942,7 +18942,7 @@ microarrays.")
        (uri (cran-uri "rda" version))
        (sha256
         (base32
-         "1y4fawslr3i6crjaxhsdb47kfsqkyszdx6avq3r5far5a4pvc639"))))
+         "17ll0idnms4bcpbl65xnl8zfnwsk9ww0rg5z8qqh4ahk5qdab8zf"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/rda/")
     (synopsis "Shrunken centroids regularized discriminant analysis")
