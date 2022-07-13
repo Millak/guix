@@ -1143,7 +1143,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.6.1")
+    (version "4.6.6")
     (source
      (origin
        (method url-fetch)
@@ -1151,7 +1151,7 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0pzcs24j67f90kjcp6apgn6rffynxksjm1m7d3an7kdv3k90hmfq"))
+        (base32 "0w5fb4grgmb6nhf2glq2y5xqnc9y4v3lm0s9xnbw5xv96p8y9gvv"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
     (build-system meson-build-system)
@@ -1203,9 +1203,13 @@ application suites.")
              (substitute* (find-files "testsuite" "meson.build")
                (("[ \t]*'empty-text.node',") "")
                (("[ \t]*'testswitch.node',") "")
-               (("[ \t]*'widgetfactory.node',") ""))
+               (("[ \t]*'widgetfactory.node',") "")
+               ;; The unaligned-offscreen test fails for unknown reasons, also
+               ;; on different distributions (see:
+               ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/4889).
+               (("  'unaligned-offscreen',") ""))
              (substitute* "testsuite/reftests/meson.build"
-               (("[ \t]*'label-wrap-justify.ui',") "")) ))
+               (("[ \t]*'label-wrap-justify.ui',") ""))))
          (add-before 'build 'set-cache
            (lambda _
              (setenv "XDG_CACHE_HOME" (getcwd))))
