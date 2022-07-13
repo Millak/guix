@@ -8855,11 +8855,14 @@ easy, safe, and automatic.")
        ("vala" ,vala)))
     (inputs
      `(("dbus" ,dbus)
-       ("sqlite" ,sqlite)
-       ("libxml2" ,libxml2)
-       ("icu4c" ,icu4c)                 ; libunistring gets miner-miner-fs test to fail.
-       ("json-glib" ,json-glib)
-       ("libsoup" ,libsoup))) ; tracker-miners requires the same version.
+       ("libsoup" ,libsoup)))
+    (propagated-inputs
+     ;; These are in Requires or Requires.private of tracker-sparql-3.0.pc.
+     (list glib
+           icu4c                ;libunistring gets miner-miner-fs test to fail
+           json-glib
+           libxml2
+           sqlite))
     (synopsis "Metadata database, indexer and search tool")
     (home-page "https://wiki.gnome.org/Projects/Tracker")
     (description
