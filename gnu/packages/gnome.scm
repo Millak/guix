@@ -4769,14 +4769,10 @@ from the GSettings schemas in gsettings-desktop-schemas.")
        #:configure-flags
        '("--with-ca-certificates=/etc/ssl/certs/ca-certificates.crt")))
     (native-inputs
-     `(("glib-mkenums" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin") gobject-introspection pkg-config))
     (propagated-inputs
      ;; rest-0.7.pc refers to all these.
-     `(("glib"    ,glib)
-       ("libsoup" ,libsoup-minimal-2)
-       ("libxml2" ,libxml2)))
+     (list glib libsoup-minimal-2 libxml2))
     (home-page "https://www.gtk.org/")
     (synopsis "RESTful web api query library")
     (description
