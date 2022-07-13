@@ -37781,6 +37781,13 @@ bootloader boot menu:
 Describe the running system generation: its file name, the kernel and
 bootloader used, etc., as well as provenance information when available.
 
+The @code{--list-installed} flag is available, with the same
+syntax that is used in @command{guix package --list-installed}
+(@pxref{Invoking guix package}).  When the flag is used,
+the description will include a list of packages that are currently
+installed in the system profile, with optional filtering based on a
+regular expression.
+
 @quotation Note
 The @emph{running} system generation---referred to by
 @file{/run/current-system}---is not necessarily the @emph{current}
@@ -37807,6 +37814,11 @@ generations that are up to 10 days old:
 @example
 $ guix system list-generations 10d
 @end example
+
+The @code{--list-installed} flag may also be specified, with the same
+syntax that is used in @command{guix package --list-installed}.  This
+may be helpful if trying to determine when a package was added to the
+system.
 
 @end table
 
