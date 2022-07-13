@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 Konstantinos Agiannis <agiannis.kon@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1864,12 +1865,20 @@ an embedded event driven algorithm.")
     (name "trilinos-serial-xyce")
     (version "12.12.1")
     (source
-     (origin (method url-fetch)
-             (uri (string-append "https://trilinos.org/oldsite/download/files/trilinos-"
-                                 version "-Source.tar.gz"))
-             (sha256
-              (base32
-               "1zgrcksrcbmyy79mbdv0j4j4sh0chpigxk8vcrrwgaxyxwxxhrvw"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/trilinos/Trilinos")
+             (commit (string-append "trilinos-release-"
+                                    (string-map (lambda (chr)
+                                                  (case chr
+                                                    ((#\.) #\-)
+                                                    (else chr)))
+                                                version)))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1smz3wlpfyjn0czmpl8bj4hw33p1zi9nnfygpsx7jl1523nypa1n"))))
     (build-system cmake-build-system)
     (arguments
      `(#:out-of-source? #t
@@ -1881,8 +1890,7 @@ an embedded event driven algorithm.")
            (lambda* (#:key outputs #:allow-other-keys)
              (delete-file-recursively
               (string-append (assoc-ref outputs "out")
-                             "/lib/cmake/tribits"))
-             #t)))
+                             "/lib/cmake/tribits")))))
        #:configure-flags
        (list "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
              "-DCMAKE_C_FLAGS=-O3 -fPIC"
@@ -1910,13 +1918,8 @@ an embedded event driven algorithm.")
              "-DTPL_ENABLE_UMFPACK=ON"
              "-DTPL_ENABLE_BLAS=ON"
              "-DTPL_ENABLE_LAPACK=ON")))
-    (native-inputs
-     `(("fortran" ,gfortran)
-       ("swig" ,swig)))
-    (inputs
-     `(("boost" ,boost)
-       ("lapack" ,lapack)
-       ("suitesparse" ,suitesparse)))
+    (native-inputs (list gfortran swig))
+    (inputs (list boost lapack suitesparse))
     (home-page "https://trilinos.org")
     (synopsis "Engineering and scientific problems algorithms")
     (description
