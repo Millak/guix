@@ -178,6 +178,12 @@ and the maven-build-system."))
         #:description
         "A group of mentors who chaperone contributions by newcomers."))
 
+(define-team mozilla
+  (team 'mozilla
+        #:name "Mozilla"
+        "Taking care about Icecat and Icedove, built from Mozilla Firefox
+and Thunderbird."))
+
 
 (define-member (person "Thiago Jung Bauermann"
                        "bauermann@kolabnow.com")
