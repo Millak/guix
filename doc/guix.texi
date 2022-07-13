@@ -39663,6 +39663,23 @@ contents of the extensions will be added to the end of the corresponding
 Bash configuration files (@pxref{Bash Startup Files,,, bash, The GNU
 Bash Reference Manual}.
 
+For example, here is how you would define a service that extends the
+Bash service such that @file{~/.bash_profile} defines an additional
+environment variable, @env{PS1}:
+
+@lisp
+(define bash-fancy-prompt-service
+  (simple-service 'bash-fancy-prompt
+                  home-bash-service-type
+                  (home-bash-extension
+                   (environment-variables
+                    '(("PS1" . "\\u \\wλ "))))))
+@end lisp
+
+You would then add @code{bash-fancy-prompt-service} to the list in the
+@code{services} field of your @code{home-environment}.  The reference of
+@code{home-bash-extension} follows.
+
 @deftp {Data Type} home-bash-extension
 Available @code{home-bash-extension} fields are:
 
