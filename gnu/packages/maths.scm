@@ -5971,7 +5971,8 @@ theories} (SMT) solver.  It provides a C/C++ API, as well as Python bindings.")
     (version "2018.11.001")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://elpa.mpcdf.mpg.de/html/Releases/"
+              (uri (string-append "https://elpa.mpcdf.mpg.de/software/"
+                                  "tarball-archive/Releases/"
                                   version "/elpa-" version ".tar.gz"))
               (sha256
                (base32
