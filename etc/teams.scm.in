@@ -193,6 +193,10 @@ and Thunderbird."))
                        "lars@6xq.net")
   python haskell)
 
+(define-member (person "Jonathan Brielmaier"
+                       "jonathan.brielmaier@web.de")
+  mozilla)
+
 (define-member (person "Ludovic Courtès"
                        "ludo@gnu.org")
   core home embedded-bootstrap mentors)
