@@ -839,7 +839,7 @@ street bearings/orientations, and speed/travel time.")
 (define-public mapnik
   (package
     (name "mapnik")
-    (version "3.0.18")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
@@ -847,7 +847,7 @@ street bearings/orientations, and speed/travel time.")
                            version "/mapnik-v" version ".tar.bz2"))
        (sha256
         (base32
-         "06frcikaj2mgz3abfk5h0z4j3hbksi0zikwjngbjv4p5f3pwxf8q"))))
+         "0qb2irykja5qhr9apz9r230pcxap9v3j85fi98mj2xd9sa163ms3"))))
     (build-system scons-build-system)
     (inputs
      (list boost
@@ -864,10 +864,9 @@ street bearings/orientations, and speed/travel time.")
            sqlite
            zlib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config postgresql))
     (arguments
-     `(#:scons ,scons-python2
-       #:scons-flags
+     `(#:scons-flags
        (list "CC=gcc"
              (string-append "PREFIX=" %output)
              (string-append "CUSTOM_LDFLAGS=-Wl,-rpath=" %output "/lib"))))
