@@ -6855,13 +6855,13 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
 (define-public python-pillow
   (package
     (name "python-pillow")
-    (version "9.0.0")
+    (version "9.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pillow" version))
               (sha256
                (base32
-                "0gjry0yqryd2678sm47jhdnbghzxn5wk8pgyaqwr4qi7x5ijjvpf"))
+                "011wgm1mssjchpva9wsi2a07im9czyjvik137xlp5f0g7vykdrkm"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (delete-file-recursively "src/thirdparty")))))
