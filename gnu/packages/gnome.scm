@@ -4822,7 +4822,6 @@ libxml to ease remote use of the RESTful API.")
     (native-inputs
      (list `(,glib "bin") ;for glib-mkenums
            gobject-introspection
-           intltool
            pkg-config
            python-wrapper
            vala
