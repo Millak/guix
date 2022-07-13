@@ -8908,7 +8908,7 @@ endpoint and it understands SPARQL.")
     (arguments
      `(#:glib-or-gtk? #t
        #:configure-flags
-       (list "-Dminer_rss=false" ; libgrss is required.
+       (list "-Dminer_rss=false"        ; libgrss is required.
              ;; Ensure the RUNPATH contains all installed library locations.
              (string-append "-Dc_link_args=-Wl,-rpath="
                             (assoc-ref %outputs "out")
@@ -8940,10 +8940,10 @@ endpoint and it understands SPARQL.")
                 "foreach example_name: []"))
              ;; Disable this test that is failing randomly:
              ;; https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/170.
-            (substitute* "tests/libtracker-miner/meson.build"
+             (substitute* "tests/libtracker-miner/meson.build"
                (("'miner-fs'.*")
                 ""))))
-        (replace 'check
+         (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                ;; Some tests expect to write to $HOME.
@@ -8956,46 +8956,46 @@ endpoint and it understands SPARQL.")
                        ;; /-/issues/226).
                        "--no-suite" "slow")))))))
     (native-inputs
-     `(("dbus" ,dbus)
-       ("intltool" ,intltool)
-       ("glib:bin" ,glib "bin")
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml-4.5" ,docbook-xml)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("asciidoc" ,asciidoc)
-       ("xsltproc" ,libxslt)
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("python-pygobject" ,python-pygobject)))
+     (list dbus
+           intltool
+           `(,glib "bin")
+           docbook-xsl
+           docbook-xml
+           gsettings-desktop-schemas
+           asciidoc
+           libxslt
+           gobject-introspection
+           pkg-config
+           python-pygobject))
     (inputs
-     `(("exempi" ,exempi)
-       ("ffmpeg" ,ffmpeg)
-       ("flac" ,flac)
-       ("giflib" ,giflib)
-       ("glib" ,glib)
-       ("gstreamer" ,gstreamer)
-       ("icu4c" ,icu4c)
-       ("json-glib" ,json-glib)
-       ("libcue" ,libcue)
-       ("libexif" ,libexif)
-       ("libgsf" ,libgsf)
-       ("libgxps" ,libgxps)
-       ("libiptcdata" ,libiptcdata)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libosinfo" ,libosinfo)
-       ("libpng" ,libpng)
-       ("libseccomp" ,libseccomp)
-       ("libsoup" ,libsoup)
-       ("libtiff" ,libtiff)
-       ("libvorbis" ,libvorbis)
-       ("libxml2" ,libxml2)
-       ("poppler" ,poppler)
-       ("shared-mime-info" ,shared-mime-info)
-       ("taglib" ,taglib)
-       ("totem-pl-parser" ,totem-pl-parser)
-       ("tracker" ,tracker)
-       ("upower" ,upower)
-       ("zlib" ,zlib)))
+     (list exempi
+           ffmpeg
+           flac
+           giflib
+           glib
+           gstreamer
+           icu4c
+           json-glib
+           libcue
+           libexif
+           libgsf
+           libgxps
+           libiptcdata
+           libjpeg-turbo
+           libosinfo
+           libpng
+           libseccomp
+           libsoup
+           libtiff
+           libvorbis
+           libxml2
+           poppler
+           shared-mime-info
+           taglib
+           totem-pl-parser
+           tracker
+           upower
+           zlib))
     (synopsis "Metadata database, indexer and search tool")
     (home-page "https://wiki.gnome.org/Projects/Tracker")
     (description
