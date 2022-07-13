@@ -185,14 +185,14 @@ external dependencies.")
 (define-public samba
   (package
     (name "samba")
-    (version "4.15.5")
+    (version "4.16.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/samba/stable/"
                            "samba-" version ".tar.gz"))
        (sha256
-        (base32 "0zyid2np45kl8hzp9fjqwvn5lxj766a4f0mya58vldqrhcrmw4b9"))))
+        (base32 "1745gx36gyd7353a94w4lrgksbmms0502kj9gg63il9zbdns1dx0"))))
     (build-system gnu-build-system)
     (arguments
      (list
