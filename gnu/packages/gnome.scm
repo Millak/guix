@@ -4736,8 +4736,7 @@ indicators etc).")
                                   (search-patch
                                    "glib-networking-32-bit-time.patch")))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gettext" ,gettext-minimal)))
+     (list pkg-config gettext-minimal))
     (inputs
      (list glib gnutls gsettings-desktop-schemas libproxy))
     (home-page "https://wiki.gnome.org/Projects/GLib")
