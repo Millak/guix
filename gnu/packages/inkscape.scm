@@ -31,6 +31,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages aspell)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -280,5 +281,6 @@ as the native format.")
                    `("GDK_PIXBUF_MODULE_FILE" =
                      (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))))
     (inputs (modify-inputs (package-inputs inkscape/stable)
-              (append librsvg)))        ;for the pixbuf loader
+              (append bash-minimal
+                      librsvg)))        ;for the pixbuf loader
     (properties (alist-delete 'hidden? (package-properties inkscape/stable)))))
