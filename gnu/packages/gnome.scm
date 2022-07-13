@@ -1766,14 +1766,14 @@ configuration files for the GNOME menu, as well as a simple menu editor.")
 (define-public deja-dup
   (package
     (name "deja-dup")
-    (version "42.8")
+    (version "43.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gitlab.gnome.org/World/deja-dup/-/archive/"
                                   version "/deja-dup-" version ".tar.bz2"))
               (sha256
                (base32
-                "0d1jnlxpk52x56aqxz1g2xb4y4sm24h08p2di8mc1k8n8b52rpi4"))))
+                "1mr2g009w0zm5rj8dg1k77c7zdwylih2yszm8vh8wkw6al6bzfh3"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -1787,7 +1787,7 @@ configuration files for the GNOME menu, as well as a simple menu editor.")
          (add-after 'unpack 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((python (assoc-ref inputs "python")))
-               (substitute* '("libdeja/tools/duplicity/DuplicityInstance.vala"
+               (substitute* '("libdeja/duplicity/DuplicityInstance.vala"
                               "libdeja/tests/scripts/instance-error.test")
                  (("/bin/rm")
                   (which "rm")))
@@ -1802,14 +1802,7 @@ configuration files for the GNOME menu, as well as a simple menu editor.")
              (let ((libgpg-error (assoc-ref inputs "libgpg-error")))
                (substitute* "meson.build"
                  (("(gpgerror_libs = ).*" _ var)
-                  (format #f "~a '-L~a/lib -lgpg-error'\n" var libgpg-error))))
-             #t))
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "data/post-install.sh"
-               (("gtk-update-icon-cache") "true"))
-             #t))
+                  (format #f "~a '-L~a/lib -lgpg-error'\n" var libgpg-error))))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Add duplicity to the search path
@@ -1821,12 +1814,13 @@ configuration files for the GNOME menu, as well as a simple menu editor.")
      `(("bash-minimal" ,bash-minimal)
        ("duplicity" ,duplicity)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
+       ("gtk" ,gtk)
        ("json-glib" ,json-glib)
+       ("libadwaita" ,libadwaita)
        ("libgpg-error" ,libgpg-error)
        ("libnotify" ,libnotify)
        ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup-minimal-2)
+       ("libsoup" ,libsoup)
        ("libhandy" ,libhandy)
        ("packagekit" ,packagekit)
        ("python" ,python)
@@ -1835,8 +1829,9 @@ configuration files for the GNOME menu, as well as a simple menu editor.")
      `(("appstream-glib" ,appstream-glib)
        ("desktop-file-utils" ,desktop-file-utils)
        ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")             ; for glib-compile-schemas.
+       ("glib" ,glib "bin")             ;for glib-compile-schemas
        ("gobject-introspection" ,gobject-introspection)
+       ("gtk" ,gtk "bin")               ;for gtk-update-icon-cache
        ("itstool" ,itstool)
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)))
