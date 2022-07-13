@@ -1811,30 +1811,30 @@ configuration files for the GNOME menu, as well as a simple menu editor.")
                `("PATH" ":" prefix
                  (,(string-append (assoc-ref inputs "duplicity") "/bin")))))))))
     (inputs
-     `(("bash-minimal" ,bash-minimal)
-       ("duplicity" ,duplicity)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk" ,gtk)
-       ("json-glib" ,json-glib)
-       ("libadwaita" ,libadwaita)
-       ("libgpg-error" ,libgpg-error)
-       ("libnotify" ,libnotify)
-       ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup)
-       ("libhandy" ,libhandy)
-       ("packagekit" ,packagekit)
-       ("python" ,python)
-       ("python-pygobject" ,python-pygobject)))
+     (list bash-minimal
+           duplicity
+           gsettings-desktop-schemas
+           gtk
+           json-glib
+           libadwaita
+           libgpg-error
+           libnotify
+           libsecret
+           libsoup
+           libhandy
+           packagekit
+           python
+           python-pygobject))
     (native-inputs
-     `(("appstream-glib" ,appstream-glib)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")             ;for glib-compile-schemas
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk" ,gtk "bin")               ;for gtk-update-icon-cache
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list appstream-glib
+           desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")               ;for glib-compile-schemas
+           gobject-introspection
+           `(,gtk "bin")                ;for gtk-update-icon-cache
+           itstool
+           pkg-config
+           vala))
     (home-page "https://wiki.gnome.org/Apps/DejaDup")
     (synopsis "Simple backup tool, for regular encrypted backups")
     (description
