@@ -1162,10 +1162,10 @@ application suites.")
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
        #:configure-flags
        (list
-        "-Dbroadway-backend=true"      ;for broadway display-backend
-        "-Dcloudproviders=enabled"     ;for cloud-providers support
-        "-Dtracker=enabled"            ;for filechooser search support
-        "-Dcolord=enabled"             ;for color printing support
+        "-Dbroadway-backend=true"       ;for broadway display-backend
+        "-Dcloudproviders=enabled"      ;for cloud-providers support
+        "-Dtracker=enabled"             ;for filechooser search support
+        "-Dcolord=enabled"              ;for color printing support
         ,@(if (%current-target-system)
               ;; If true, gtkdoc-scangobj will try to execute a
               ;; cross-compiled binary.
@@ -1256,72 +1256,72 @@ application suites.")
                 (string-append out "/share/doc")
                 (string-append doc "/share/doc"))))))))
     (native-inputs
-     `(("docbook-xml-4.3" ,docbook-xml-4.3)
-       ("docbook-xsl" ,docbook-xsl)
-       ("gettext-minimal" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection) ;for building introspection data
-       ("graphene" ,graphene)
-       ("gtk-doc" ,gtk-doc)             ;for building documentation
-       ("intltool" ,intltool)
-       ("libxslt" ,libxslt)             ;for building man-pages
-       ("pkg-config" ,pkg-config)
-       ("python-pygobject" ,python-pygobject)
-       ;; These python modules are required for building documentation.
-       ("python-docutils" ,python-docutils)
-       ("python-jinja2" ,python-jinja2)
-       ("python-markdown" ,python-markdown)
-       ("python-markupsafe" ,python-markupsafe)
-       ("python-pygments" ,python-pygments)
-       ("python-toml" ,python-toml)
-       ("python-typogrify" ,python-typogrify)
-       ("sassc" ,sassc)                 ;for building themes
-       ("tzdata" ,tzdata-for-tests)
-       ("vala" ,vala)
-       ("xorg-server-for-tests" ,xorg-server-for-tests)))
+     (list docbook-xml-4.3
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection        ;for building introspection data
+           graphene
+           gtk-doc                      ;for building documentation
+           intltool
+           libxslt                      ;for building man-pages
+           pkg-config
+           python-pygobject
+           ;; These python modules are required for building documentation.
+           python-docutils
+           python-jinja2
+           python-markdown
+           python-markupsafe
+           python-pygments
+           python-toml
+           python-typogrify
+           sassc                        ;for building themes
+           tzdata-for-tests
+           vala
+           xorg-server-for-tests))
     (inputs
-     (list colord ;for color printing support
-           cups ;for CUPS print-backend
-           ffmpeg ;for ffmpeg media-backend
+     (list colord                       ;for color printing support
+           cups                         ;for CUPS print-backend
+           ffmpeg                       ;for ffmpeg media-backend
            fribidi
-           gstreamer ;for gstreamer media-backend
-           gst-plugins-bad ;provides gstreamer-player
-           gst-plugins-base ;provides gstreamer-gl
+           gstreamer                    ;for gstreamer media-backend
+           gst-plugins-bad              ;provides gstreamer-player
+           gst-plugins-base             ;provides gstreamer-gl
            harfbuzz
            iso-codes
            json-glib
-           libcloudproviders ;for cloud-providers support
+           libcloudproviders            ;for cloud-providers support
            libjpeg-turbo
            libpng
            librsvg
            libtiff
            python
            rest
-           tracker))          ;for filechooser search support
+           tracker))                    ;for filechooser search support
     (propagated-inputs
      ;; Following dependencies are referenced in .pc files.
-     `(("cairo" ,cairo)
-       ("fontconfig" ,fontconfig)
-       ("librsvg" ,librsvg)
-       ("glib" ,glib)
-       ("graphene" ,graphene)
-       ("libepoxy" ,libepoxy)
-       ("libx11" ,libx11)               ;for x11 display-backend
-       ("libxcomposite" ,libxcomposite)
-       ("libxcursor" ,libxcursor)
-       ("libxdamage" ,libxdamage)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)     ;for xinerama support
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("pango" ,pango-next)
-       ("vulkan-headers" ,vulkan-headers)
-       ("vulkan-loader" ,vulkan-loader) ;for vulkan graphics API support
-       ("wayland" ,wayland)             ;for wayland display-backend
-       ("wayland-protocols" ,wayland-protocols)))
+     (list cairo
+           fontconfig
+           librsvg
+           glib
+           graphene
+           libepoxy
+           libx11                       ;for x11 display-backend
+           libxcomposite
+           libxcursor
+           libxdamage
+           libxext
+           libxfixes
+           libxi
+           libxinerama                  ;for xinerama support
+           libxkbcommon
+           libxrandr
+           libxrender
+           pango-next
+           vulkan-headers
+           vulkan-loader                ;for vulkan graphics API support
+           wayland                      ;for wayland display-backend
+           wayland-protocols))
     (native-search-paths
      (list
       (search-path-specification
