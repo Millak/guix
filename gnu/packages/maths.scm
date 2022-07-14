@@ -2984,9 +2984,9 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
            metis
            opencascade-occt))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("libxft" ,libxft)
-       ("python" ,python)))
+     (list fontconfig
+           libxft
+           python))
     (arguments
      `(#:configure-flags `("-DENABLE_SYSTEM_CONTRIB:BOOL=ON"
                            "-DENABLE_BUILD_SHARED:BOOL=ON"
