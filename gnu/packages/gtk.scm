@@ -1889,6 +1889,8 @@ printing and other features typical of a source code editor.")
     (synopsis "Python bindings for cairo")
     (description
      "Pycairo is a set of Python bindings for the Cairo graphics library.")
+    (properties
+     '((upstream-name . "pycairo")))
     (license license:lgpl3+)))
 
 ;; Pycairo no longer supports Python 2 since version 1.19.0, so we stick
