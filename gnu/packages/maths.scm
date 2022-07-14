@@ -2967,9 +2967,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
        (base32 "0asd9p64ng5l2zk5glc33x3ynnvdpndlflg3q9mr0jxr7y9x0lrm"))
       (modules '((guix build utils)))
       (snippet
-       '(begin
-          (delete-file-recursively "contrib/metis")
-          #t))))
+       '(delete-file-recursively "contrib/metis"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list fltk
@@ -3014,8 +3012,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                                            "/lib/libgmsh.so")))
                (substitute* "api/gmsh.py"
                  (("find_library\\(\"gmsh\"\\)")
-                  (simple-format #f "\"~a\"" libgmsh))))
-             #t)))))
+                  (simple-format #f "\"~a\"" libgmsh)))))))))
     (home-page "http://gmsh.info/")
     (synopsis "3D finite element grid generator")
     (description "Gmsh is a 3D finite element grid generator with a built-in
