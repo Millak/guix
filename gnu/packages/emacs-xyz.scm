@@ -7521,6 +7521,32 @@ to a key in your preferred mode.")
 SuperCollider is a platform for audio synthesis and algorithmic composition.")
       (license license:gpl2+))))
 
+(define-public emacs-soothe-theme
+  ;; There is no named branch.
+  (let ((commit "0786fe70c6c1b4ddcfb932fdc6862b9611cfc09b")
+	(revision "0"))
+    (package
+     (name "emacs-soothe-theme")
+     (version (git-version "20141027.2233" revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+	     (url "https://github.com/emacsfodder/emacs-soothe-theme")
+	     (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+	(base32 "10gh1hvxq9gm29r6qzlnva7vjidd7n4kih4z2ihyvbvy9za20xqw"))))
+     (build-system emacs-build-system)
+     (home-page "https://github.com/emacsfodder/emacs-soothe-theme")
+     (synopsis "Colorful, but muted theme for Emacs, dark background with light text")
+     (description
+      "Soothe theme is an amalgam of muted color tones and highlighted
+backgrounds.  It has builtin support for Rainbow delimiters, Org mode,
+Whitespace mode, ECB, Flyspell, Ido, Linum, highlight indentation, Show Paren
+mode.")
+     (license license:gpl3))))
+
 (define-public emacs-company-auctex
   (let ((commit "48c42c58ce2f0e693301b0cb2d085055410c1b25")
         (revision "1"))
