@@ -29,6 +29,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages docbook)
@@ -390,12 +391,14 @@ variety of formats.")
                `("PATH" ":" prefix
                  ,(map (lambda (input)
                          (string-append (assoc-ref inputs input) "/bin"))
-                       '("cdrdao" "dvd+rw-tools" "libburn" "sox"))))
+                       '("cdrdao" "cdrtools" "dvd+rw-tools" "libburn" "sox"))))
              #t)))))
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
     (inputs
-     (list cdrdao
+     (list bash-minimal
+           cdrdao
+           cdrtools
            dvd+rw-tools
            ffmpeg
            flac
