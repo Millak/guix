@@ -2953,21 +2953,21 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
 (define-public gmsh
   (package
     (name "gmsh")
-    (version "4.9.5")
+    (version "4.10.5")
     (source
      (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://gitlab.onelab.info/gmsh/gmsh.git")
-            (commit
-             (string-append "gmsh_"
-                            (string-replace-substring version "." "_")))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "0asd9p64ng5l2zk5glc33x3ynnvdpndlflg3q9mr0jxr7y9x0lrm"))
-      (modules '((guix build utils)))
-      (snippet
-       '(delete-file-recursively "contrib/metis"))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.onelab.info/gmsh/gmsh.git")
+             (commit
+              (string-append "gmsh_"
+                             (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08p39yjgf3lbnjg90skpmsq9n1a9pmwppdmy5s94dc6sq2nfr7xl"))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "contrib/metis"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list fltk
