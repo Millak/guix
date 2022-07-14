@@ -890,6 +890,8 @@ useful for C++.")
     (synopsis "Python bindings for GObject")
     (description
      "Python bindings for GLib, GObject, and GIO.")
+    (properties
+     '((upstream-name . "pygobject")))
     (license license:lgpl2.1+)))
 
 (define-public perl-glib
