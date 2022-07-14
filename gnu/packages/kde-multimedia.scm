@@ -373,6 +373,16 @@ variety of formats.")
                  (("\"(dvdcss)\"" _ library)
                   (string-append "\"" libdvdcss "/lib/" library "\""))))
              #t))
+         (add-before 'configure 'fix-cmake-taglib
+           (lambda _
+             ;; Use the CMake variables provided by FindTaglib from
+             ;; extra-cmake-modules, instead of bundled FindTaglib.cmake:
+             (substitute*
+                 '("plugins/decoder/mp3/CMakeLists.txt"
+                   "plugins/decoder/flac/CMakeLists.txt"
+                   "plugins/project/audiometainforenamer/CMakeLists.txt")
+               (("TAGLIB_INCLUDES") "Taglib_INCLUDE_DIRS")
+               (("TAGLIB_LIBRARIES") "Taglib_LIBRARIES"))))
          (add-after 'qt-wrap 'wrap-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Set paths to backend programs.
