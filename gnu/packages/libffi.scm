@@ -82,13 +82,13 @@ conversions for values passed between the two languages.")
 (define-public python-cffi
   (package
     (name "python-cffi")
-    (version "1.14.4")
+    (version "1.15.1")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "cffi" version))
       (sha256
-       (base32 "0v080s7vlrjz9z823x2yh36yc8drwpvvir6w8wfkkzd7k2z5qihs"))))
+       (base32 "1y9lr651svbzf1m03s4lqbnbv2byx8f6f0ml7hjm24vvlfwvy06l"))))
     (build-system python-build-system)
     (inputs
      (list libffi))
@@ -139,18 +139,6 @@ conversions for values passed between the two languages.")
     (synopsis "Foreign function interface for Python")
     (description "Foreign Function Interface for Python calling C code.")
     (license expat)))
-
-;; TODO(staging): Merge with the above.
-(define-public python-cffi-1.15
-  (package
-    (inherit python-cffi)
-    (version "1.15.0")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (pypi-uri "cffi" version))
-      (sha256
-       (base32 "0m3rz2pqfmyfagx0bhj2jlbr2h58j3wr3cyv1agxkhlnm1k0s3wj"))))))
 
 (define-public python-cffi-documentation
   (package
