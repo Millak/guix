@@ -118,9 +118,8 @@ conversions for values passed between the two languages.")
              ;; using find_library or the like with their name fail when the
              ;; resolved .so object is a linker script rather than an ELF
              ;; binary (this is a limitation of the ctype library of Python).
-             (let* ((glibc (assoc-ref inputs "libc"))
-                    (libm (string-append glibc "/lib/libm.so.6"))
-                    (libc (string-append glibc "/lib/libc.so.6")))
+             (let ((libm (search-input-file inputs "lib/libm.so.6"))
+                   (libc (search-input-file inputs "lib/libc.so.6")))
                (substitute* '("testing/cffi0/test_function.py"
                               "testing/cffi0/test_parsing.py"
                               "testing/cffi0/test_unicode_literals.py"
