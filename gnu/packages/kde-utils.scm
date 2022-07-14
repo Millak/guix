@@ -496,15 +496,14 @@ remind you to take a break now and then.")
 (define-public smb4k
   (package
     (name "smb4k")
-    (version "3.0.6")
+    (version "3.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://sourceforge.net/projects/smb4k/files/"
-                           version "/smb4k-" version ".tar.xz/download"))
-       (file-name (string-append name "-" version ".tar.xz"))
+                           version "/smb4k-" version ".tar.xz"))
        (sha256
-        (base32 "0hz6nfd845bykf78s4g2qs77szl96gy6g8rpg44pqd39a0k0xbh7"))))
+        (base32 "0prw0aq16nz9ns4d50mc6fbaw9pbcyh8p698izylhd4i0nr1dd9d"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -516,6 +515,7 @@ remind you to take a break now and then.")
            kcoreaddons
            kcrash
            kdbusaddons
+           kdnssd
            ki18n
            kiconthemes
            kio
