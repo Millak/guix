@@ -16220,7 +16220,11 @@ graphviz.")
                                "test__doctests.py"
                                "test__all__.py"
                                "test___config.py"
-                               "test__execmodules.py")))
+                               "test__execmodules.py"
+                               ;; This test contains 'test_unlink', which
+                               ;; fails on i686 (see:
+                               ;; https://github.com/gevent/gevent/issues/1558).
+                               "test__core_stat.py")))
                         (call-with-output-file "skipped_tests.txt"
                           (lambda (port)
                             (format port "~a~%"
