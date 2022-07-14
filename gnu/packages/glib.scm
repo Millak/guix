@@ -845,7 +845,7 @@ useful for C++.")
 (define-public python-pygobject
   (package
     (name "python-pygobject")
-    (version "3.40.1")
+    (version "3.42.1")
     (source
      (origin
        (method url-fetch)
@@ -854,7 +854,7 @@ useful for C++.")
                            "/pygobject-" version ".tar.xz"))
        (sha256
         (base32
-         "0d80g5kgf2i9cginyhalvb7ibfk9g30yilqzmcsw6h6byj8xbih0"))
+         "1j9w1ywsjzvzbwd16mad001vv19j6llb8zjsxd25xqsdcbvvad0z"))
        (modules '((guix build utils)))
        (snippet
         '(begin
