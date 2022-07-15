@@ -5562,7 +5562,10 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
               ;; instead of /bin/sh.
               (substitute* "numpy/distutils/exec_command.py"
                 (("'/bin/sh'")
-                 (format #f "~s" (search-input-file inputs "bin/bash"))))))
+                 (format #f "~s" (search-input-file inputs "bin/bash"))))
+              ;; Don't try to call '/bin/true' specifically.
+              (substitute* "numpy/core/tests/test_cpu_features.py"
+                (("/bin/true") (search-input-file inputs "bin/true")))))
           (replace 'check
             (lambda* (#:key tests? outputs inputs #:allow-other-keys)
               (when tests?
