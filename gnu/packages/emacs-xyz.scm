@@ -5603,7 +5603,7 @@ displays the priority part of a heading as your preferred string value.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/io12/org-fragtog.git")
+             (url "https://github.com/io12/org-fragtog")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
