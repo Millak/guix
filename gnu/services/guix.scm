@@ -652,8 +652,6 @@ ca-certificates.crt file in the system profile."
                 #:user #$user
                 #:group #$group
                 #:pid-file "/var/run/guix-data-service/pid"
-                ;; Allow time for migrations to run
-                #:pid-file-timeout 120
                 #:environment-variables
                 `(,(string-append
                     "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
