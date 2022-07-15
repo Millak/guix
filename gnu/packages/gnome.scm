@@ -4373,6 +4373,19 @@ the GObject type system and has additional code generation routines that make
 targeting the GNOME stack simple.")
     (license license:lgpl2.1+)))
 
+(define-public vala-next
+  (package
+    (inherit vala)
+    (version "0.56.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/vala/"
+                                  (version-major+minor version) "/"
+                                  "vala-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0k0jj3xwjq222x0hbqqy5bykhgk1f1wsb85bqcdgsnbqn6dn3jb6"))))))
+
 ;;; An older variant kept to build libsoup-minimal-2.
 (define-public vala-0.52
   (package/inherit vala
