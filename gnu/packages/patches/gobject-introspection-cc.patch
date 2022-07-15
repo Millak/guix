@@ -1,9 +1,5 @@
 Use gcc as the default C compiler if CC is not set.
 
----
- giscanner/__init__.py | 2 ++
- 1 file changed, 2 insertions(+)
-
 diff --git a/giscanner/__init__.py b/giscanner/__init__.py
 index 7c2f365a..607fe341 100644
 --- a/giscanner/__init__.py
@@ -17,6 +13,3 @@ index 7c2f365a..607fe341 100644
  try:
      from ._version import __version__
  except ImportError:
--- 
-2.33.0
-

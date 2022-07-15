@@ -6,15 +6,9 @@ for 'gobject-introspection' 1.40.0 in Nix.
 
 It has since been updated to work with newer versions of
 gobject-introspection.
----
- giscanner/scannermain.py     | 37 ++++++++++++++++++++++++++++++++++++
- giscanner/shlibs.py          | 30 ++++++++++++++++++++---------
- giscanner/utils.py           | 15 +++++----------
- tests/scanner/test_shlibs.py |  3 ++-
- 4 files changed, 65 insertions(+), 20 deletions(-)
 
 diff --git a/giscanner/scannermain.py b/giscanner/scannermain.py
-index 957ba0b7..78f9b11b 100644
+index 1d39ab84..e12ed24e 100644
 --- a/giscanner/scannermain.py
 +++ b/giscanner/scannermain.py
 @@ -95,6 +95,39 @@ def get_windows_option_group(parser):
@@ -57,10 +51,10 @@ index 957ba0b7..78f9b11b 100644
  def _get_option_parser():
      parser = optparse.OptionParser('%prog [options] sources',
                                     version='%prog ' + giscanner.__version__)
-@@ -214,6 +247,10 @@ match the namespace prefix.""")
-     parser.add_option("", "--filelist",
-                       action="store", dest="filelist", default=[],
-                       help="file containing headers and sources to be scanned")
+@@ -220,6 +253,10 @@ match the namespace prefix.""")
+     parser.add_option("", "--compiler",
+                       action="store", dest="compiler", default=None,
+                       help="the C compiler to use internally")
 +    parser.add_option("", "--fallback-library-path",
 +                      action="store", dest="fallback_libpath",
 +                      default=_get_default_fallback_libpath(),
@@ -138,10 +132,10 @@ index 9f8ab5df..8aa37c99 100644
                      del patterns[library]
                      shlibs.append(m.group())
 diff --git a/giscanner/utils.py b/giscanner/utils.py
-index 45807f17..8a319cd1 100644
+index 31c7ea48..630002a8 100644
 --- a/giscanner/utils.py
 +++ b/giscanner/utils.py
-@@ -113,16 +113,11 @@ def extract_libtool_shlib(la_file):
+@@ -114,16 +114,11 @@ def extract_libtool_shlib(la_file):
      if dlname is None:
          return None
  
@@ -177,6 +171,3 @@ index a8337c60..7f123103 100644
  
      def test_unresolved_library(self):
          output = ''
--- 
-2.33.0
-
