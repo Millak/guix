@@ -299,6 +299,7 @@ Programming Interface
 * The Store Monad::             Purely functional interface to the store.
 * G-Expressions::               Manipulating build expressions.
 * Invoking guix repl::          Programming Guix in Guile.
+* Using Guix Interactively::    Fine-grain interaction at the REPL.
 
 Defining Packages
 
@@ -7100,6 +7101,7 @@ package definitions.
 * The Store Monad::             Purely functional interface to the store.
 * G-Expressions::               Manipulating build expressions.
 * Invoking guix repl::          Programming Guix in Guile
+* Using Guix Interactively::    Fine-grain interaction at the REPL.
 @end menu
 
 @node Package Modules
@@ -10860,8 +10862,9 @@ So, to exit the monad and get the desired effect, one must use
 @end lisp
 
 Note that the @code{(guix monad-repl)} module extends the Guile REPL with
-new ``meta-commands'' to make it easier to deal with monadic procedures:
-@code{run-in-store}, and @code{enter-store-monad}.  The former is used
+new ``commands'' to make it easier to deal with monadic procedures:
+@code{run-in-store}, and @code{enter-store-monad} (@pxref{Using Guix
+Interactively}).  The former is used
 to ``run'' a single monadic value through the store:
 
 @example
@@ -10885,6 +10888,9 @@ scheme@@(guile-user)>
 @noindent
 Note that non-monadic values cannot be returned in the
 @code{store-monad} REPL.
+
+Other meta-commands are available at the REPL, such as @code{,build} to
+build a file-like object (@pxref{Using Guix Interactively}).
 
 The main syntactic forms to deal with monads in general are provided by
 the @code{(guix monads)} module and are described below.
@@ -11778,7 +11784,8 @@ lines at the top of the script:
 @code{!#}
 @end example
 
-Without a file name argument, a Guile REPL is started:
+Without a file name argument, a Guile REPL is started, allowing for
+interactive use (@pxref{Using Guix Interactively}):
 
 @example
 $ guix repl
@@ -11833,6 +11840,130 @@ the script or REPL.
 Inhibit loading of the @file{~/.guile} file.  By default, that
 configuration file is loaded when spawning a @code{guile} REPL.
 @end table
+
+@node Using Guix Interactively
+@section Using Guix Interactively
+
+The @command{guix repl} command gives you access to a warm and friendly
+@dfn{read-eval-print loop} (REPL) (@pxref{Invoking guix repl}).  If
+you're getting into Guix programming---defining your own packages,
+writing manifests, defining services for Guix System or Guix Home,
+etc.---you will surely find it convenient to toy with ideas at the REPL.
+
+If you use Emacs, the most convenient way to do that is with Geiser
+(@pxref{The Perfect Setup}), but you do not have to use Emacs to enjoy
+the REPL@.  When using @command{guix repl} or @command{guile} in the
+terminal, we recommend using Readline for completion and Colorized to
+get colorful output.  To do that, you can run:
+
+@example
+guix install guile guile-readline guile-colorized
+@end example
+
+@noindent
+... and then create a @file{.guile} in your home directory containing
+this:
+
+@lisp
+(use-modules (ice-9 readline) (ice-9 colorized))
+
+(activate-readline)
+(activate-colorized)
+@end lisp
+
+The REPL lets you evaluate Scheme code; you type a Scheme expression at
+the prompt, and the REPL prints what it evaluates to:
+
+@example
+$ guix repl
+scheme@@(guix-user)> (+ 2 3)
+$1 = 5
+scheme@@(guix-user)> (string-append "a" "b")
+$2 = "ab"
+@end example
+
+It becomes interesting when you start fiddling with Guix at the REPL.
+The first thing you'll want to do is to ``import'' the @code{(guix)}
+module, which gives access to the main part of the programming
+interface, and perhaps a bunch of useful Guix modules.  You could type
+@code{(use-modules (guix))}, which is valid Scheme code to import a
+module (@pxref{Using Guile Modules,,, guile, GNU Guile Reference
+Manual}), but the REPL provides the @code{use} @dfn{command} as a
+shorthand notation (@pxref{REPL Commands,,, guile, GNU Guile Reference
+Manual}):
+
+@example
+scheme@@(guix-user)> ,use (guix)
+scheme@@(guix-user)> ,use (gnu packages base)
+@end example
+
+Notice that REPL commands are introduced by a leading comma.  A REPL
+command like @code{use} is not valid Scheme code; it's interpreted
+specially by the REPL.
+
+Guix extends the Guile REPL with additional commands for convenience.
+Among those, the @code{build} command comes in handy: it ensures that
+the given file-like object is built, building it if needed, and returns
+its output file name(s).  In the example below, we build the
+@code{coreutils} and @code{grep} packages, as well as a ``computed
+file'' (@pxref{G-Expressions, @code{computed-file}}), and we use the
+@code{scandir} procedure to list the files in Grep's @code{/bin}
+directory:
+
+@example
+scheme@@(guix-user)> ,build coreutils
+$1 = "/gnu/store/@dots{}-coreutils-8.32-debug"
+$2 = "/gnu/store/@dots{}-coreutils-8.32"
+scheme@@(guix-user)> ,build grep
+$3 = "/gnu/store/@dots{}-grep-3.6"
+scheme@@(guix-user)> ,build (computed-file "x" #~(mkdir #$output))
+building /gnu/store/@dots{}-x.drv...
+$4 = "/gnu/store/@dots{}-x"
+scheme@@(guix-user)> ,use(ice-9 ftw)
+scheme@@(guix-user)> (scandir (string-append $3 "/bin"))
+$5 = ("." ".." "egrep" "fgrep" "grep")
+@end example
+
+At a lower-level, a useful command is @code{lower}: it takes a file-like
+object and ``lowers'' it into a derivation (@pxref{Derivations}) or a
+store file:
+
+@example
+scheme@@(guix-user)> ,lower grep
+$6 = #<derivation /gnu/store/@dots{}-grep-3.6.drv => /gnu/store/@dots{}-grep-3.6 7f0e639115f0>
+scheme@@(guix-user)> ,lower (plain-file "x" "Hello!")
+$7 = "/gnu/store/@dots{}-x"
+@end example
+
+The full list of REPL commands can be seen by typing @code{,help guix}
+and is given below for reference.
+
+@deffn {REPL command} build @var{object}
+Lower @var{object} and build it if it's not already built, returning its
+output file name(s).
+@end deffn
+
+@deffn {REPL command} lower @var{object}
+Lower @var{object} into a derivation or store file name and return it.
+@end deffn
+
+@deffn {REPL command} verbosity @var{level}
+Change build verbosity to @var{level}.
+
+This is similar to the @option{--verbosity} command-line option
+(@pxref{Common Build Options}): level 0 means total silence, level 1
+shows build events only, and higher levels print build logs.
+@end deffn
+
+@deffn {REPL command} run-in-store @var{exp}
+Run @var{exp}, a monadic expresssion, through the store monad.
+@xref{The Store Monad}, for more information.
+@end deffn
+
+@deffn {REPL command} enter-store-monad
+Enter a new REPL to evaluate monadic expressions (@pxref{The Store
+Monad}).  You can quit this ``inner'' REPL by typing @code{,q}.
+@end deffn
 
 @c *********************************************************************
 @node Utilities
