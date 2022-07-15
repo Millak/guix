@@ -30774,8 +30774,8 @@ and allows for an arbitrary number of leader keys.")
       (license license:gpl3+))))
 
 (define-public emacs-spaceleader
-  (let ((commit "35368b03c094399c487cce93ab5b7ac725bd04f5")
-        (revision "0"))
+  (let ((commit "5d88d120494623d6777d464ec40ff4bb7d6b1d57")
+        (revision "1"))
     (package
       (name "emacs-spaceleader")
       (version (git-version "0.0.3" revision commit))
@@ -30787,7 +30787,7 @@ and allows for an arbitrary number of leader keys.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1lg51y59z6igqjw3vgyjc5zw32j11xhzw8y0svlx3ry415b0lnls"))))
+          (base32 "1prnjf7zs49z5a8qwhn8d0qnp60b3l0xhjkqg6v237acvk2axixr"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-dash
