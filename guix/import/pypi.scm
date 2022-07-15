@@ -165,7 +165,7 @@ package."
    ((string-prefix? "python-" name) (snake-case name))
    ((or (string=? "trytond" name)
         (string-prefix? "trytond-" name)) (snake-case name))
-   (#t (string-append "python-" (snake-case name)))))
+   (else (string-append "python-" (snake-case name)))))
 
 (define (guix-package->pypi-name package)
   "Given a Python PACKAGE built from pypi.org, return the name of the
