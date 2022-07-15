@@ -211,7 +211,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
 (define glib
   (package
     (name "glib")
-    (version "2.70.2")
+    (version "2.72.3")
     (source
      (origin
        (method url-fetch)
@@ -220,7 +220,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                        name "/" (string-take version 4) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "0vw08p4jllavp9qmlqg1yl1zanmy53yid46wipas6gfdhnf4al85"))
+        (base32 "1w25sf2wxkkah2p2w189q58mza3zv8z1fh2q1m82sldq4kva4faa"))
        (patches
         (search-patches "glib-appinfo-watch.patch"
                         "glib-skip-failing-test.patch"))
