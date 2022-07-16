@@ -12,6 +12,7 @@
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +41,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (ice-9 match)
@@ -326,105 +328,102 @@ output is indexed in many ways to simplify browsing.")
     (name "automake")
     (version "1.16.5")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/automake/automake-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/automake/automake-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
                 "0sdl32qxdy7m06iggmkkvf7j520rmmgbsjzbm7fgnxwxdp6mh7gh"))
-             (patches
-              (search-patches "automake-skip-amhello-tests.patch"))))
+              (patches
+               (search-patches "automake-skip-amhello-tests.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("autoconf" ,autoconf-wrapper)
-       ("bash" ,bash-minimal)
-       ("perl" ,perl)))
+     (list autoconf-wrapper bash-minimal perl))
     (native-inputs
-     `(("autoconf" ,autoconf-wrapper)
-       ("perl" ,perl)))
+     (list autoconf-wrapper perl))
     (native-search-paths
      (list (search-path-specification
             (variable "ACLOCAL_PATH")
             (files '("share/aclocal")))))
     (arguments
-     `(#:modules ((guix build gnu-build-system)
+     (list
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (srfi srfi-1)
                   (srfi srfi-26)
                   (rnrs io ports))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'patch-source-shebangs 'patch-tests-shebangs
-           (lambda _
-             (let ((sh (which "sh")))
-               (substitute* (find-files "t" "\\.(sh|tap)$")
-                 (("#![[:blank:]]?/bin/sh")
-                  (string-append "#!" sh)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'patch-source-shebangs 'patch-tests-shebangs
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (let ((sh (search-input-file (or native-inputs inputs) "bin/sh")))
+                (substitute* (find-files "t" "\\.(sh|tap)$")
+                  (("#![[:blank:]]?/bin/sh")
+                   (string-append "#!" sh)))
 
-               ;; Set these variables for all the `configure' runs
-               ;; that occur during the test suite.
-               (setenv "SHELL" sh)
-               (setenv "CONFIG_SHELL" sh)
-               #t)))
+                ;; Set these variables for all the `configure' runs
+                ;; that occur during the test suite.
+                (setenv "SHELL" sh)
+                (setenv "CONFIG_SHELL" sh))))
+          (add-before 'check 'skip-test
+            (lambda _
+              ;; This test requires 'etags' and fails if it's missing.
+              ;; Skip it.
+              (substitute* "t/tags-lisp-space.sh"
+                (("^required.*" all)
+                 (string-append "exit 77\n" all "\n")))))
 
-           (add-before 'check 'skip-test
-             (lambda _
-               ;; This test requires 'etags' and fails if it's missing.
-               ;; Skip it.
-               (substitute* "t/tags-lisp-space.sh"
-                 (("^required.*" all)
-                  (string-append "exit 77\n" all "\n")))
-               #t))
-
-           ,@(if (%current-target-system)
-                 `((add-after 'install 'patch-non-shebang-references
-                     (lambda* (#:key build inputs outputs #:allow-other-keys)
-                     ;; `patch-shebangs' patches shebangs only, and the Perl
-                     ;; scripts use a re-exec feature that references the
-                     ;; build hosts' perl.  Also, AUTOCONF and BASH store
-                     ;; references hide in the scripts.
-                       (let ((autoconf (assoc-ref inputs "autoconf"))
-                             (bash (assoc-ref inputs "bash"))
-                             (perl (assoc-ref inputs "perl"))
-                             (out  (assoc-ref outputs "out"))
+          #$@(if (%current-target-system)
+                 '((add-after 'install 'patch-non-shebang-references
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       ;; `patch-shebangs' patches shebangs only, and the Perl
+                       ;; scripts use a re-exec feature that references the
+                       ;; build hosts' perl.  Also, AUTOCONF and BASH store
+                       ;; references hide in the scripts.
+                       (let ((autoconf
+                              (dirname (dirname
+                                        (search-input-file inputs "bin/autoconf"))))
+                             (bash
+                              (dirname (dirname
+                                        (search-input-file inputs "bin/bash"))))
+                             (perl
+                              (dirname (dirname
+                                        (search-input-file inputs "bin/perl"))))
                              (store-directory (%store-directory)))
-                         (substitute* (find-files (string-append out "/bin"))
+                         (substitute* (find-files (string-append #$output "/bin"))
                            (((string-append store-directory "/[^/]*-autoconf-[^/]*"))
                             autoconf)
                            (((string-append store-directory "/[^/]*-bash-[^/]*"))
                             bash)
                            (((string-append store-directory "/[^/]*-perl-[^/]*"))
-                            perl))
-                         #t))))
+                            perl))))))
                  '())
 
-         ;; Files like `install-sh', `mdate.sh', etc. must use
-         ;; #!/bin/sh, otherwise users could leak erroneous shebangs
-         ;; in the wild.  See <http://bugs.gnu.org/14201> for an
-         ;; example.
-         (add-after 'install 'unpatch-shebangs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (dir (string-append out "/share")))
-               (define (starts-with-shebang? file)
-                 (equal? (call-with-input-file file
-                           (lambda (p)
-                             (list (get-u8 p) (get-u8 p))))
-                         (map char->integer '(#\# #\!))))
+          ;; Files like `install-sh', `mdate.sh', etc. must use
+          ;; #!/bin/sh, otherwise users could leak erroneous shebangs
+          ;; in the wild.  See <http://bugs.gnu.org/14201> for an
+          ;; example.
+          (add-after 'install 'unpatch-shebangs
+            (lambda _
+              (let ((dir (string-append #$output "/share")))
+                (define (starts-with-shebang? file)
+                  (equal? (call-with-input-file file
+                            (lambda (p)
+                              (list (get-u8 p) (get-u8 p))))
+                          (map char->integer '(#\# #\!))))
 
-               (for-each (lambda (file)
-                           (when (and (starts-with-shebang? file)
-                                      (executable-file? file))
-                             (format #t "restoring shebang on `~a'~%"
-                                     file)
-                             (substitute* file
-                               (("^#!.*/bin/sh")
-                                "#!/bin/sh")
-                               (("^#!.*/bin/env(.*)$" _ args)
-                                (string-append "#!/usr/bin/env"
-                                               args)))))
-                         (find-files dir ".*"))
-               #t))))))
+                (for-each (lambda (file)
+                            (when (and (starts-with-shebang? file)
+                                       (executable-file? file))
+                              (format #t "restoring shebang on `~a'~%"
+                                      file)
+                              (substitute* file
+                                (("^#!.*/bin/sh")
+                                 "#!/bin/sh")
+                                (("^#!.*/bin/env(.*)$" _ args)
+                                 (string-append "#!/usr/bin/env"
+                                                args)))))
+                          (find-files dir ".*"))))))))
     (home-page "https://www.gnu.org/software/automake/")
     (synopsis "Making GNU standards-compliant Makefiles")
     (description
