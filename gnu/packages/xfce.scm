@@ -1155,7 +1155,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
 (define-public ristretto
   (package
     (name "ristretto")
-    (version "0.12.2")
+    (version "0.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/ristretto/"
@@ -1163,7 +1163,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
                                   "ristretto-" version ".tar.bz2"))
               (sha256
                (base32
-                "0sfrvb19xkiphcp2ddqxgvh9hbramlm6qi7sv99s407c4acqdvhf"))))
+                "0gizrn49ayamb1sqfxi3mdxas9dz4dw1sv3iyji718az48hp13w6"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool desktop-file-utils
