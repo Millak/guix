@@ -1647,7 +1647,7 @@ library.")
   (package
     (inherit pangomm)
     (name "pangomm")
-    (version "2.46.0")
+    (version "2.46.2")
     (source
      (origin
        (method url-fetch)
@@ -1656,7 +1656,7 @@ library.")
                        (version-major+minor version)  "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "06zczkaxf5p5kjgnzrfylzi40w9a8lxpndgs7rpn12qrsq27sy6k"))))
+        (base32 "1x56xb4k1d9g88a1d9rlcvy97mmj39rib6c3wfzpff04vjs2li2p"))))
     (propagated-inputs
      (list cairomm-1.14 glibmm-2.64 pango))))
 
