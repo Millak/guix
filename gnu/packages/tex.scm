@@ -11160,3 +11160,28 @@ environment of package @code{lscape}, by setting the PDF @code{/Rotate} page
 attribute.  Pages with this attribute will be displayed in landscape
 orientation by conforming PDF viewers.")
     (license license:lppl1.3+)))
+
+(define-public texlive-datetime2
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-datetime2"
+      (list "doc/latex/datetime2/"
+            "source/latex/datetime2/"
+            "tex/latex/datetime2/")
+      (base32 "0yjkpfic1ni4j2g61rrjj5hjyd43shc9c0sg1aivbbsmqh30dn33")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/datetime2")
+    (synopsis "Formats for dates, times and time zones")
+    (description
+     "The @code{datetime2} package provides commands for formatting dates, times
+and time zones and redefines @code{\\today} to use the same formatting style.
+In addition to @code{\\today}, you can also use
+@code{\\DTMcurrenttime} (current time) or @code{\\DTMnow} (current date and
+time).  Dates and times can be saved for later use.  The accompanying
+@code{datetime2-calc} package can be used to convert date-times to UTC+00:00.
+Language and regional support is provided by independently maintained and
+installed modules.  The @code{datetime2-calc} package uses the
+@code{pgfcalendar} package (part of the PGF/TikZ bundle).  This package
+replaces @code{datetime.sty} which is now obsolete.")
+    (license license:lppl1.3+)))
