@@ -458,7 +458,7 @@ concise, powerful tests.")
 (define-public clojure-tools-cli
   (package
     (name "clojure-tools-cli")
-    (version "0.4.2")
+    (version "1.0.206")
     (home-page "https://github.com/clojure/tools.cli")
     (source (origin
               (method git-fetch)
@@ -467,7 +467,7 @@ concise, powerful tests.")
                     (commit (string-append "tools.cli-" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1yqlm8lwbcjm0dp032z7vzc4bdlmc4jixznvf4adsqhvqw85hvj2"))))
+               (base32 "1hvk5zacl3fr8lfcbfgckaicqjx697j0kzw2x5hwj8j5xlr8ri2r"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure/")
