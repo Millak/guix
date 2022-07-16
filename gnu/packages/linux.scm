@@ -9342,3 +9342,57 @@ libraries are found or why they cannot be located.")
 gestures you make on your touchpad or touchscreen into visible actions in your
 desktop.")
     (license license:gpl3+)))
+
+(define-public evtest
+  (package
+    (name "evtest")
+    (version "1.35")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/libevdev/evtest")
+                    (commit (string-append "evtest-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "164prnw35kda6jfykl7h52lfzy99ma2lk029zscyqk766k19spf4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;No tests exist
+           #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target))
+                                (string-append "PREFIX="
+                                               #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'generate-doc
+                          (lambda _
+                            (invoke "asciidoc" "-d" "manpage"
+                                    "-b" "docbook"
+                                    "-o" "evtest.1.xml"
+                                    "evtest.txt")
+                            (invoke "xsltproc" "--nonet"
+                                    (string-append
+                                     #$(this-package-native-input "docbook-xsl")
+                                     "/xml/xsl/docbook-xsl-"
+                                     #$(package-version
+                                        (this-package-native-input "docbook-xsl"))
+                                     "/manpages/docbook.xsl")
+                                    "evtest.1.xml")))
+                        (replace 'bootstrap
+                          (lambda _
+                            (setenv "CONFIG_SHELL" (which "sh"))
+                            (invoke "autoreconf" "-fi"))))))
+    (native-inputs (list autoconf
+                         automake
+                         bash-minimal
+                         xmlto
+                         docbook-xsl
+                         libxslt
+                         asciidoc))
+    (home-page "https://gitlab.freedesktop.org/libevdev/evtest")
+    (synopsis "Kernel evdev device information and monitor")
+    (description
+     "@code{evtest} is a tool to print @code{evdev} kernel events.  It reads
+directly from the kernel device and prints a device description and the events
+with the value and the symbolic name.")
+    (license license:gpl2+)))
