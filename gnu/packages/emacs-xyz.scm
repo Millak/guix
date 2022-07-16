@@ -23350,7 +23350,7 @@ can be queued at any time.")
     (inputs
      (list youtube-dl))
     (propagated-inputs
-     (list emacs-async emacs-transient))
+     (list emacs-async emacs-dash))
     (home-page "https://gitlab.com/tuedachu/ytdl")
     (synopsis "Emacs interface for youtube-dl")
     (description
