@@ -25051,8 +25051,7 @@ constant expressions.")
            emacs-docker-tramp
            emacs-json-mode
            emacs-s
-           emacs-tablist
-           emacs-transient))
+           emacs-tablist))
     (arguments `(#:tests? #false))      ;no tests
     (build-system emacs-build-system)
     (home-page "https://github.com/Silex/docker.el")
