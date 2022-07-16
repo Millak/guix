@@ -233,7 +233,7 @@
            rust
            `(,rust "cargo")))
     (inputs
-     (list icu4c readline zlib))
+     (list icu4c-69 readline zlib))
     (propagated-inputs
      (list nspr))                ; in the Requires.private field of mozjs-*.pc
     (home-page
