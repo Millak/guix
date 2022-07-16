@@ -1033,8 +1033,7 @@ rebasing, and other common Git operations.")
                (base32
                 "1v1y4fir1plz4kj0cvkcd29wibli4dw7vp4fmbxq4df76d8iy8yd"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-dash emacs-with-editor emacs-magit
-                             emacs-transient))
+    (propagated-inputs (list emacs-dash emacs-with-editor emacs-magit))
     (home-page "https://github.com/magit/magit-svn")
     (synopsis "Git-SVN extension to Magit")
     (description
