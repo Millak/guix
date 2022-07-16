@@ -13495,14 +13495,14 @@ simulation, statistical modeling, machine learning and much more.")
 (define-public python-chardet
   (package
     (name "python-chardet")
-    (version "4.0.0")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "chardet" version))
        (sha256
         (base32
-         "1ykr04qyhgpc0h5b7dhqw4g92b1xv7ki2ky910mhy4mlbnhm6vqd"))))
+         "1amqmz8731ly6f9rkbk09w4jqgmmgyxykd1bawhgrdbqzlmxys03"))))
     (native-inputs
      (list python-pytest))
     (build-system python-build-system)
@@ -13511,7 +13511,10 @@ simulation, statistical modeling, machine learning and much more.")
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda _
-                   (invoke "pytest" "-vv")))
+                   (invoke "pytest" "-vv" "-k"
+                           ;; Disable test that fails sporadically:
+                           ;; https://github.com/chardet/chardet/issues/256
+                           "not test_detect_all_and_detect_one_should_agree")))
                ;; This package provides a 'chardetect' executable that only
                ;; depends on Python, so customize the wrap phase to avoid
                ;; adding pytest and friends in order to save size.
