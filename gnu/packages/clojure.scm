@@ -275,7 +275,15 @@ Clojure repl, use Clojure and Java libraries, and start Clojure programs.")
     (arguments
      '(#:source-dirs '("src/main/clojure/")
        #:test-dirs '("src/test/clojure/")
-       #:doc-dirs '()))
+       #:doc-dirs '()
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-import
+           (lambda _
+             (substitute*
+                 "src/main/clojure/clojure/algo/generic/math_functions.clj"
+               (("clojure.algo.generic.math-functions")
+                "clojure.algo.generic.math-functions\n(:refer-clojure :exclude [abs])")))))))
     (synopsis "Generic versions of common functions")
     (description
      "Generic versions of commonly used functions, implemented as multimethods
