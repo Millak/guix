@@ -28556,8 +28556,7 @@ for the Telegram messaging platform.")))
     (inputs '())
     (native-inputs '())
     (propagated-inputs
-     (list emacs-alert emacs-all-the-icons emacs-dashboard emacs-telega
-           emacs-transient))
+     (list emacs-alert emacs-all-the-icons emacs-dashboard emacs-telega))
     (synopsis "Contributed packages to Telega")
     (description "Telega-contrib is a collection of third-party
 contributed packages to Telega.")))
