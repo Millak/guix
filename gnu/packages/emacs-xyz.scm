@@ -30434,8 +30434,6 @@ you use some other configuration.")
          (sha256
           (base32 "0yv38bqdp6b614lbj4v408vv5mlic3vs1v7266xrfxm1cm903apj"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-transient))
       (home-page "https://github.com/TatriX/tshell")
       (synopsis "Experimental buffer-oriented Emacs shell")
       (description
