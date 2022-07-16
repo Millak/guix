@@ -25689,8 +25689,7 @@ comfort of Magit and the rest of Emacs.")
                 (sha256
                  (base32
                   "1lfnh1glg6al677m7ci0x8g5wjdhjxlfl3nv1f1ppsw4dpnwsj9b"))))
-      (propagated-inputs
-       (list emacs-hydra emacs-transient))
+      (propagated-inputs (list emacs-hydra))
       (build-system emacs-build-system)
       (home-page "https://github.com/jojojames/matcha/")
       (synopsis "Collection of hydras with a generic interface to launch them")
