@@ -11103,3 +11103,21 @@ providing breakable framed and coloured boxes.  The user may instruct the
 package to perform its operations using default LaTeX commands, PStricks or
 TikZ.")
     (license license:lppl)))
+
+(define-public texlive-setspace
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-setspace"
+      (list "doc/latex/setspace/" "tex/latex/setspace/")
+      (base32 "00ik8qgkw3ivh3z827zjf7gbwkbsmdcmv22c6ap543mpgaqqjcfm")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/setspace")
+    (synopsis "Set space between lines")
+    (description
+     "The @code{setspace} package provides support for setting the spacing between
+lines in a document.  Package options include @code{singlespacing},
+@code{onehalfspacing}, and @code{doublespacing}.  Alternatively the spacing
+can be changed as required with the @code{\\singlespacing},
+@code{\\onehalfspacing}, and @code{\\doublespacing} commands.  Other size
+spacings also available.")))
