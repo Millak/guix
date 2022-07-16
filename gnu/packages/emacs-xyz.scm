@@ -25668,7 +25668,6 @@ commands (a prefix and a suffix) we prefer to call it just a \"transient\".")
             emacs-let-alist
             emacs-magit
             emacs-markdown-mode
-            emacs-transient
             emacs-yaml))
      (home-page "https://github.com/magit/forge/")
      (synopsis "Access Git forges from Magit")
