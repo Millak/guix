@@ -411,8 +411,7 @@ lazy - should allow parsing and emitting of large XML documents")
     (license license:epl1.0)))
 
 (define-public clojure-instaparse
-  (let ((commit "dcfffad5b065e750f0f5835f017cdd8188b8ca2e")
-        (version "1.4.9")) ; upstream forget to tag this release
+  (let ((version "1.4.12"))
     (package
       (name "clojure-instaparse")
       (version version)
@@ -420,14 +419,27 @@ lazy - should allow parsing and emitting of large XML documents")
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/Engelberg/instaparse")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "002mrgin4z3dqy88r1lak7smd0m7x8d22vmliw0m6w6mh5pa17lk"))))
+                  "1xdiwsv1dc8mvrmvgs4xdqk3z6ddsammc6brhcb771yhimx8jjcr"))))
       (build-system clojure-build-system)
       (arguments
-       '(#:doc-dirs '("docs/")))
+       '(;; Disabled AOT, because of failing test: No implementation of
+         ;; method: :conj-flat of protocol:
+         ;; #'instaparse.auto-flatten-seq/ConjFlat found for class:
+         ;; instaparse.auto_flatten_seq.AutoFlattenSeq
+         #:aot-exclude '(#:all)
+         #:doc-dirs '("docs/")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-import
+             (lambda _
+               (substitute*
+                   "test/instaparse/defparser_test.cljc"
+                 (("AssertionError")
+                  "Exception")))))))
       (synopsis "No grammar left behind")
       (description
        "Instaparse aims to be the simplest way to build parsers in Clojure.
