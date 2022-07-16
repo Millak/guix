@@ -11207,3 +11207,20 @@ provide any translations!  Its purpose is simply to track which languages have
 been requested by the user.  Generic TeX code is in @code{tracklang.tex} for
 non-LaTeX users.")
     (license license:lppl1.3+)))
+
+(define-public texlive-ltablex
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-ltablex"
+      (list "doc/latex/ltablex/" "tex/latex/ltablex/")
+      (base32 "14lmgj820j6zwj1xnd6ad38kzb9w132kp7sp55cv5bk9vhx3621w")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/ltablex")
+    (synopsis "Table package extensions")
+    (description
+     "The @code{ltablex} package modifies the @code{tabularx} environment to
+combine the features of the @code{tabularx} package (auto-sized columns in a
+fixed-width table) with those of the @code{longtable} package (multi-page
+tables).")
+    (license license:lppl)))
