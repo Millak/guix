@@ -1008,7 +1008,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
     (inputs
      (list git perl))
     (propagated-inputs
-     (list emacs-dash emacs-transient emacs-with-editor))
+     (list emacs-dash emacs-with-editor))
     (home-page "https://magit.vc/")
     (synopsis "Emacs interface for the Git version control system")
     (description
