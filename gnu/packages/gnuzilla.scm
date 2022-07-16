@@ -126,10 +126,6 @@
          "--enable-hardening"
          "--enable-optimize"
          "--enable-release"
-         ;; FIXME: rust-simd is disabled otherwise the build fails with
-         ;; "error: `[u32; 64]` is forbidden as the type of a const generic
-         ;; parameter".
-         "--disable-rust-simd"
          "--enable-readline"
          "--enable-shared-js"
          "--with-system-icu"
