@@ -13244,7 +13244,7 @@ a DONE state.")
         (base32
          "00q7aym0kl03j9m66pivgy0snxcjjg402049b2wdy18kgyypfvx8"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-transient emacs-evil))
+    (propagated-inputs (list emacs-evil))
     (home-page "https://github.com/ChanderG/toodoo.el")
     (synopsis "Magit-like interface for a Todo workflow built on top of Org")
     (description "This package provides a minor mode for fast and easy management of Todos
