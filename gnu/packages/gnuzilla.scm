@@ -224,8 +224,7 @@
     (native-inputs
      (list autoconf-2.13
            automake
-           ;; TODO(staging): Use the default LLVM in the next rebuild cycle.
-           llvm-9                       ;for llvm-objdump
+           llvm                         ;for llvm-objdump
            perl
            pkg-config
            python-3
