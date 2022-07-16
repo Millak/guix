@@ -205,70 +205,65 @@ know anything about Autoconf or M4.")
 use our own Bash instead of /bin/sh in shebangs.  For that reason, it should
 only be used internally---users should not end up distributing `configure'
 files with a system-specific shebang."
-  (package (inherit autoconf)
+  (package
+    (inherit autoconf)
     (name (string-append (package-name autoconf) "-wrapper"))
     (build-system trivial-build-system)
-    (inputs `(("guile"
-               ;; XXX: Kludge to hide the circular dependency.
-               ,(module-ref (resolve-interface '(gnu packages guile))
-                            'guile-3.0/fixed))
-              ("autoconf" ,autoconf)
-              ("bash" ,bash-minimal)))
+    (inputs
+     (list
+      ;; XXX: Kludge to hide the circular dependency.
+      (module-ref (resolve-interface '(gnu packages guile))
+                  'guile-3.0/fixed)
+      autoconf
+      bash-minimal))
     (arguments
-     '(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((out      (assoc-ref %outputs "out"))
-                (bin      (string-append out "/bin"))
-                (autoconf (string-append
-                           (assoc-ref %build-inputs "autoconf")
-                           "/bin/autoconf"))
-                (guile    (string-append
-                           (assoc-ref %build-inputs "guile")
-                           "/bin/guile"))
-                (sh       (string-append
-                           (assoc-ref %build-inputs "bash")
-                           "/bin/sh"))
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let ((bin      (string-append #$output "/bin"))
+                (autoconf (search-input-file %build-inputs "/bin/autoconf"))
+                (guile    (search-input-file %build-inputs "/bin/guile"))
+                (sh       (search-input-file %build-inputs "/bin/sh"))
                 (modules  ((compose dirname dirname dirname)
                            (search-path %load-path
                                         "guix/build/utils.scm"))))
-           (mkdir-p bin)
+            (mkdir-p bin)
 
-           ;; Symlink all the binaries but `autoconf'.
-           (with-directory-excursion bin
-             (for-each (lambda (file)
-                         (unless (string=? (basename file) "autoconf")
-                           (symlink file (basename file))))
-                       (find-files (dirname autoconf) ".*")))
+            ;; Symlink all the binaries but `autoconf'.
+            (with-directory-excursion bin
+              (for-each (lambda (file)
+                          (unless (string=? (basename file) "autoconf")
+                            (symlink file (basename file))))
+                        (find-files (dirname autoconf) ".*")))
 
-           ;; Add an `autoconf' binary that wraps the real one.
-           (call-with-output-file (string-append bin "/autoconf")
-             (lambda (port)
-               ;; Shamefully, Guile can be used in shebangs only if a
-               ;; single argument is passed (-ds); otherwise it gets
-               ;; them all as a single argument and fails to parse them.
-               (format port "#!~a
+            ;; Add an `autoconf' binary that wraps the real one.
+            (call-with-output-file (string-append bin "/autoconf")
+              (lambda (port)
+                ;; Shamefully, Guile can be used in shebangs only if a
+                ;; single argument is passed (-ds); otherwise it gets
+                ;; them all as a single argument and fails to parse them.
+                (format port "#!~a
 export GUILE_LOAD_PATH=\"~a\"
 export GUILE_LOAD_COMPILED_PATH=\"~a\"
 exec ~a --no-auto-compile \"$0\" \"$@\"
 !#~%"
-                       sh modules modules guile)
-               (write
-                `(begin
-                   (use-modules (guix build utils))
-                   (let ((result (apply system* ,autoconf
-                                        (cdr (command-line)))))
-                     (when (and (file-exists? "configure")
-                                (not (file-exists? "/bin/sh")))
-                       ;; Patch regardless of RESULT, because `autoconf
-                       ;; -Werror' can both create a `configure' file and
-                       ;; return a non-zero exit code.
-                       (patch-shebang "configure"))
-                     (exit (status:exit-val result))))
-                port)))
-           (chmod (string-append bin "/autoconf") #o555)
-           #t))))
+                        sh modules modules guile)
+                (write
+                 `(begin
+                    (use-modules (guix build utils))
+                    (let ((result (apply system* ,autoconf
+                                         (cdr (command-line)))))
+                      (when (and (file-exists? "configure")
+                                 (not (file-exists? "/bin/sh")))
+                        ;; Patch regardless of RESULT, because `autoconf
+                        ;; -Werror' can both create a `configure' file and
+                        ;; return a non-zero exit code.
+                        (patch-shebang "configure"))
+                      (exit (status:exit-val result))))
+                 port)))
+            (chmod (string-append bin "/autoconf") #o555)))))
 
     ;; Do not show it in the UI since it's meant for internal use.
     (properties '((hidden? . #t)))))
