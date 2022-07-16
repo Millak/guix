@@ -5069,7 +5069,7 @@ result.")
                 (emacs-substitute-sexps file
                   ("(defcustom rg-executable" "rg"))))))))
     (propagated-inputs
-     (list emacs-s emacs-transient emacs-wgrep ripgrep))
+     (list emacs-s emacs-wgrep ripgrep))
     (home-page "https://rgel.readthedocs.io/en/latest/")
     (synopsis "Search tool based on @code{ripgrep}")
     (description
