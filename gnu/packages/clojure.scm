@@ -320,31 +320,29 @@ defining and using monads and useful monadic functions.")
     (license license:epl1.0)))
 
 (define-public clojure-core-match
-  (let ((commit "1837ffbd4a150e8f3953b2d9ed5cf4a4ad3720a7")
-        (revision "1")) ; this is the 1st commit buildable with clojure 1.9
-    (package
-      (name "clojure-core-match")
-      (version (git-version "0.3.0-alpha5" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/clojure/core.match")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "04bdlp5dgkrqzrz0lw3mfwmygj2218qnm1cz3dkb9wy4m0238s4d"))))
-      (build-system clojure-build-system)
-      (arguments
-       '(#:source-dirs '("src/main/clojure")
-         #:test-dirs '("src/test/clojure")
-         #:doc-dirs '()))
-      (synopsis "Optimized pattern matching for Clojure")
-      (description
-       "An optimized pattern matching library for Clojure.
+  (package
+    (name "clojure-core-match")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/clojure/core.match")
+                    (commit (string-append "core.match-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ajpxjv4yc282cm0jw8819fay2j6jqp9nfy69k7vll09q7vqsd22"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()))
+    (synopsis "Optimized pattern matching for Clojure")
+    (description
+     "An optimized pattern matching library for Clojure.
 It supports Clojure 1.5.1 and later as well as ClojureScript.")
-      (home-page "https://github.com/clojure/core.match")
-      (license license:epl1.0))))
+    (home-page "https://github.com/clojure/core.match")
+    (license license:epl1.0)))
 
 (define-public clojure-data-codec
   (package
