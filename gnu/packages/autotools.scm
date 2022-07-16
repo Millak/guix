@@ -324,14 +324,14 @@ output is indexed in many ways to simplify browsing.")
 (define-public automake
   (package
     (name "automake")
-    (version "1.16.4")
+    (version "1.16.5")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/automake/automake-"
                                  version ".tar.xz"))
              (sha256
               (base32
-                "0v8kbw4fan7apbjwziylyjl5z708w452r5q6kpafcmssi04wryl0"))
+                "0sdl32qxdy7m06iggmkkvf7j520rmmgbsjzbm7fgnxwxdp6mh7gh"))
              (patches
               (search-patches "automake-skip-amhello-tests.patch"))))
     (build-system gnu-build-system)
@@ -433,20 +433,6 @@ standards-compliant Makefiles.  Build requirements are entered in an
 intuitive format and then Automake works with Autoconf to produce a robust
 Makefile, simplifying the entire process for the developer.")
     (license gpl2+)))                      ; some files are under GPLv3+
-
-(define-public automake-1.16.5
-  (package
-    (inherit automake)
-    (version "1.16.5")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/automake/automake-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-                "0sdl32qxdy7m06iggmkkvf7j520rmmgbsjzbm7fgnxwxdp6mh7gh"))
-             (patches
-              (search-patches "automake-skip-amhello-tests.patch"))))))
 
 (define-public libtool
   (package
