@@ -11121,3 +11121,23 @@ lines in a document.  Package options include @code{singlespacing},
 can be changed as required with the @code{\\singlespacing},
 @code{\\onehalfspacing}, and @code{\\doublespacing} commands.  Other size
 spacings also available.")))
+
+(define-public texlive-pgfgantt
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-pgfgantt"
+      (list
+       "doc/latex/pgfgantt/"
+       "source/latex/pgfgantt/"
+       "tex/latex/pgfgantt/")
+      (base32 "0bm034iizk4sd7p5x7vkj7v57dc0bf2lswpsb32s4qlg4s7h6jqz")
+      #:trivial? #t))
+    (propagated-inputs (list texlive-pgf))
+    (home-page "https://ctan.org/graphics/pgf/contrib/pgfgantt")
+    (synopsis "Draw Gantt charts with TikZ")
+    (description
+     "The @code{pgfgantt} package provides an environment for drawing Gantt charts
+that contain various elements (titles, bars, milestones, groups and links).
+Several keys customize the appearance of the chart elements.")
+    (license license:lppl1.3+)))
