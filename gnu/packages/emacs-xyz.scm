@@ -26055,8 +26055,7 @@ output.")
           (base32
            "16cjmrzflf2i1w01973sl944xrfanakba8sb4dpwi79d92xp03xy"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-vdiff emacs-magit emacs-transient))
+      (propagated-inputs (list emacs-vdiff emacs-magit))
       (home-page "https://github.com/justbur/emacs-vdiff-magit/")
       (synopsis "Frontend for diffing based on vimdiff")
       (description "This package permits comparisons of two or three buffers
