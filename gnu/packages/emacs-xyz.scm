@@ -4648,8 +4648,6 @@ saving won't move point back to the beginning of the buffer.")
         (base32
          "1pz4l1xnq6s67w5yq9107vm8dg7rqf8n9dmbn90jys97c722g70n"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-transient))
     (home-page "https://gitlab.com/pidu/git-timemachine")
     (synopsis "Step through historic versions of Git-controlled files")
     (description "This package enables you to step through historic versions
