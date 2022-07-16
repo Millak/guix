@@ -31066,8 +31066,7 @@ rules about where space should be left to separate words and parentheses.")
        (sha256
         (base32 "0b9hf20iah3ym2d4kz67k0kb48dq0442zxw4zmc03zg3sxfdxh0x"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dash emacs-transient))
+    (propagated-inputs (list emacs-dash))
     (home-page "https://github.com/MaximeWack/seriesTracker")
     (synopsis "Keep track of the TV shows you watch from Emacs")
     (description
