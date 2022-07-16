@@ -19000,15 +19000,12 @@ from the header, as well as section details and data available.")
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
-                  ,@(if (target-riscv64?)
-                      ;; TODO: Remove the conditional on staging.
-                      `((add-after 'unpack 'remove-test-hypothesis-deadlines
-                          (lambda _
-                            (substitute* "tests/test_make.py"
-                              (("assume, given") "assume, given, settings")
-                              (("( +)@given" all spaces)
-                               (string-append spaces "@settings(deadline=None)\n" all))))))
-                      '())
+                  (add-after 'unpack 'remove-test-hypothesis-deadlines
+                    (lambda _
+                      (substitute* "tests/test_make.py"
+                        (("assume, given") "assume, given, settings")
+                        (("( +)@given" all spaces)
+                         (string-append spaces "@settings(deadline=None)\n" all)))))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
