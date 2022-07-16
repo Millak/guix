@@ -1610,10 +1610,8 @@ library.")
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:configure-flags
-       (list
-        "-Dbuild-documentation=true")
+     '(#:glib-or-gtk? #t
+       #:configure-flags '("-Dbuild-documentation=true")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'move-doc
@@ -1623,17 +1621,16 @@ library.")
                (mkdir-p (string-append doc "/share"))
                (rename-file
                 (string-append out "/share/doc")
-                (string-append doc "/share/doc"))
-               #t))))))
+                (string-append doc "/share/doc"))))))))
     (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("m4" ,m4)
-       ("mm-common" ,mm-common)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("xsltproc" ,libxslt)))
+     (list doxygen
+           graphviz                     ;for 'dot'
+           libxslt                      ;for 'xsltproc'
+           m4
+           mm-common
+           perl
+           pkg-config
+           python))
     (propagated-inputs
      (list cairo cairomm glibmm pango))
     (home-page "https://pango.gnome.org//")
