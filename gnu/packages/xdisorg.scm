@@ -1627,7 +1627,7 @@ less if you are working in front of the screen at night.")
 (define-public xscreensaver
   (package
     (name "xscreensaver")
-    (version "5.45")
+    (version "6.04")
     (source
      (origin
        (method url-fetch)
@@ -1635,7 +1635,7 @@ less if you are working in front of the screen at night.")
         (string-append "https://www.jwz.org/xscreensaver/xscreensaver-"
                        version ".tar.gz"))
        (sha256
-        (base32 "03fmyjlwjinzv7mih6n07glmys8s877snd8zijk2c0ds6rkxy5kh"))))
+        (base32 "0lmiyvp3qs2gngd53f191jmlizs9l04i2gnrqbn96mqckyr18w3q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
@@ -1646,9 +1646,24 @@ less if you are working in front of the screen at night.")
              (substitute* '("driver/Makefile.in" "po/Makefile.in.in")
                (("@GTK_DATADIR@") "@datadir@")
                (("@PO_DATADIR@") "@datadir@"))
-             #t)))
-       #:configure-flags '("--with-pam" "--with-proc-interrupts"
-                           "--without-readdisplay")
+             #t))
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; The tarball uses a very old version of autconf. It does not
+             ;; understand extra flags like `--enable-fast-install', so
+             ;; we need to invoke it with just what it understands.
+             (let ((out (assoc-ref outputs "out")))
+               ;; 'configure' doesn't understand '--host'.
+               ,@(if (%current-target-system)
+                     `((setenv "CHOST" ,(%current-target-system)))
+                     '())
+               (setenv "CONFIG_SHELL" (which "bash"))
+               (setenv "SHELL" (which "bash"))
+               (invoke "./configure"
+                       (string-append "--prefix=" out)
+                       "--with-pam"
+                       "--with-proc-interrupts"
+                       "--without-readdisplay")))))
        #:make-flags (list (string-append "AD_DIR="
                                          (assoc-ref %outputs "out")
                                          "/lib/X11/app-defaults"))))
@@ -1668,6 +1683,7 @@ less if you are working in front of the screen at night.")
        ("libjpeg" ,libjpeg-turbo)
        ("linux-pam" ,linux-pam)
        ("pango" ,pango)
+       ("gdk-pixbuf-xlib", gdk-pixbuf-xlib)
        ("gtk+" ,gtk+)
        ("perl" ,perl)
        ("cairo" ,cairo)
