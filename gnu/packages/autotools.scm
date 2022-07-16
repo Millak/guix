@@ -53,55 +53,55 @@
     (version "2.69")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/autoconf/autoconf-"
-                          version ".tar.xz"))
-      (sha256
-       (base32
-        "113nlmidxy9kjr45kg9x3ngar4951mvag1js2a3j8nxcz34wxsv4"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/autoconf/autoconf-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "113nlmidxy9kjr45kg9x3ngar4951mvag1js2a3j8nxcz34wxsv4"))))
     (build-system gnu-build-system)
     (inputs
-     `(("bash" ,bash-minimal)
-       ("perl" ,perl)
-       ("m4" ,m4)))
+     (list bash-minimal m4 perl))
     (native-inputs
      (list perl m4))
     (arguments
-     `(;; XXX: testsuite: 209 and 279 failed.  The latter is an impurity.  It
-       ;; should use our own "cpp" instead of "/lib/cpp".
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         ,@(if (%current-target-system)
-               '((add-after 'install 'patch-non-shebang-references
-                    (lambda* (#:key build inputs outputs #:allow-other-keys)
-                      ;; `patch-shebangs' patches shebangs only, and the Perl
-                      ;; scripts use a re-exec feature that references the
-                      ;; build hosts' perl.  Also, BASH and M4 store references
-                      ;; hide in the scripts.
-                      (let ((bash (assoc-ref inputs "bash"))
-                            (m4 (assoc-ref inputs "m4"))
-                            (perl (assoc-ref inputs "perl"))
-                            (out  (assoc-ref outputs "out"))
-                            (store-directory (%store-directory)))
-                        (substitute* (find-files (string-append out "/bin"))
-                          (((string-append store-directory "/[^/]*-bash-[^/]*"))
-                           bash)
-                          (((string-append store-directory "/[^/]*-m4-[^/]*"))
-                           m4)
-                          (((string-append store-directory "/[^/]*-perl-[^/]*"))
-                           perl))))))
-               '())
-         (add-after 'install 'unpatch-shebangs
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Scripts that "autoconf -i" installs (config.guess,
-             ;; config.sub, and install-sh) must use a regular shebang
-             ;; rather than a reference to the store.  Restore it.
-             (let* ((out (assoc-ref outputs "out"))
-                    (build-aux (string-append
-                                out "/share/autoconf/build-aux")))
-               (substitute* (find-files build-aux)
-                 (("^#!.*/bin/sh") "#!/bin/sh"))))))))
+     (list
+      ;; XXX: testsuite: 209 and 279 failed.  The latter is an impurity.  It
+      ;; should use our own "cpp" instead of "/lib/cpp".
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (%current-target-system)
+                 '((add-after 'install 'patch-non-shebang-references
+                     (lambda* (#:key build inputs #:allow-other-keys)
+                       ;; `patch-shebangs' patches shebangs only, and the Perl
+                       ;; scripts use a re-exec feature that references the
+                       ;; build hosts' perl.  Also, BASH and M4 store references
+                       ;; hide in the scripts.
+                       (let ((bash (dirname (dirname
+                                             (search-input-file inputs "bin/bash"))))
+                             (m4 (dirname (dirname
+                                           (search-input-file inputs "bin/m4"))))
+                             (perl (dirname (dirname
+                                             (search-input-file inputs "bin/perl"))))
+                             (store-directory (%store-directory)))
+                         (substitute* (find-files (string-append #$output "/bin"))
+                           (((string-append store-directory "/[^/]*-bash-[^/]*"))
+                            bash)
+                           (((string-append store-directory "/[^/]*-m4-[^/]*"))
+                            m4)
+                           (((string-append store-directory "/[^/]*-perl-[^/]*"))
+                            perl))))))
+                 '())
+          (add-after 'install 'unpatch-shebangs
+            (lambda _
+              ;; Scripts that "autoconf -i" installs (config.guess,
+              ;; config.sub, and install-sh) must use a regular shebang
+              ;; rather than a reference to the store.  Restore it.
+              (let ((build-aux (string-append #$output
+                                              "/share/autoconf/build-aux")))
+                (substitute* (find-files build-aux)
+                  (("^#!.*/bin/sh") "#!/bin/sh"))))))))
     (home-page "https://www.gnu.org/software/autoconf/")
     (synopsis "Create source code configuration scripts")
     (description
@@ -131,17 +131,17 @@ know anything about Autoconf or M4.")
         ;; FIXME: To run the test suite, fix all the instances where scripts
         ;; generates "#! /bin/sh" shebangs.
         #f)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-before 'check 'prepare-tests
-             (lambda _
-               (for-each patch-shebang
-                         (append (find-files "tests"
-                                             (lambda (file stat)
-                                               (executable-file? file)))
-                                 (find-files "bin"
-                                             (lambda (file stat)
-                                               (executable-file? file)))))))))))))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'prepare-tests
+              (lambda _
+                (for-each patch-shebang
+                          (append (find-files "tests"
+                                              (lambda (file stat)
+                                                (executable-file? file)))
+                                  (find-files "bin"
+                                              (lambda (file stat)
+                                                (executable-file? file)))))))))))))
 
 (define-public autoconf autoconf-2.69)
 
