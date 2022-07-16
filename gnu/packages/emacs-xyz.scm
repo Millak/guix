@@ -26644,7 +26644,7 @@ all of your projects, then override or add variables on a per-project basis.")
     (inputs
      (list calibre))
     (propagated-inputs
-     (list emacs-dash emacs-esxml emacs-s emacs-transient))
+     (list emacs-dash emacs-esxml emacs-s))
     (home-page "https://github.com/chenyanming/calibredb.el")
     (synopsis "Yet another calibre client for Emacs")
     (description "This package integrates calibre into Emacs.
