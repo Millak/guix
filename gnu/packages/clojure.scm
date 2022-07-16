@@ -482,7 +482,7 @@ work with command-line arguments.")
 (define-public clojure-tools-deps-alpha
   (package
     (name "clojure-tools-deps-alpha")
-    (version "0.12.1104")
+    (version "0.14.1212")
     (home-page "https://github.com/clojure/tools.deps.alpha")
     (source (origin
               (method git-fetch)
@@ -492,7 +492,7 @@ work with command-line arguments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "174m83n5m3arai2vbg434zjibbsr3r4pp7lz3adja8lxq7g21r80"))))
+                "0r8qfihii6cf95kl86x6zfldnm7wlkgda2qmq3340j1x03v244dd"))))
     (build-system clojure-build-system)
     (arguments
      `(#:source-dirs '("src/main/clojure" "src/main/resources")
