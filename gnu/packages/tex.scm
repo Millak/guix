@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2022 Fabio Natali <me@fabionatali.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11082,3 +11083,23 @@ to Norsk of standard “LaTeX names”.")
 Danish in @code{babel}.  It provides all the necessary macros, definitions and
 settings to typeset Danish documents.")
       (license license:lppl1.3c+))))
+
+(define-public texlive-mdframed
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-mdframed"
+      (list
+       "doc/latex/mdframed/"
+       "source/latex/mdframed/"
+       "tex/latex/mdframed/")
+      (base32 "1i5rm946wg43rjckxlfhx79zfx5cgd3bxk71206hd1dqkrgpdpa8")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/mdframed")
+    (synopsis "Framed environments that can split at page boundaries")
+    (description
+     "The @code{mdframed} package develops the facilities of @code{framed} in
+providing breakable framed and coloured boxes.  The user may instruct the
+package to perform its operations using default LaTeX commands, PStricks or
+TikZ.")
+    (license license:lppl)))
