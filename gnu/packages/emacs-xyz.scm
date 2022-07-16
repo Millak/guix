@@ -1088,8 +1088,7 @@ process, passing on the arguments as command line arguments.")
        (sha256
         (base32 "1amr2c08mq1nnn6k66mgz4rzyni4np7gxm96g4qyla2cbfbachgk"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-magit emacs-transient))
+    (propagated-inputs (list emacs-magit))
     (home-page "https://github.com/magit/magit-annex/")
     (synopsis "Git-annex support for Magit")
     (description
