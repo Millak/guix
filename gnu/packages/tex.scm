@@ -11244,3 +11244,25 @@ and @code{FlushRight}, which set ragged text and are easily configurable to
 allow hyphenation (the corresponding commands in LaTeX, all of whose names are
 lower-case, prevent hyphenation altogether).")
     (license license:lppl1.3c)))
+
+(define-public texlive-everysel
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-everysel"
+      (list "doc/latex/everysel/"
+            "source/latex/everysel/"
+            "tex/latex/everysel/")
+      (base32 "0skzm2qsk5vpjxgslclp4pvbbcrrnm1w3df8xfvfq252dyd7w8s5")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/everysel")
+    (synopsis "Provides hooks into @code{\\selectfont}")
+    (description
+     "The @code{everysel} package provided hooks whose arguments are executed just
+after LaTeX has loaded a new font by means of @code{\\selectfont}.  It has
+become obsolete with LaTeX versions 2021/01/05 or newer, since LaTeX now
+provides its own hooks to fulfill this task.  For newer versions of LaTeX
+@code{everysel} only provides macros using LaTeX's hook management due to
+compatibility reasons.  See @code{lthooks-doc.pdf} for instructions how to use
+@code{lthooks} instead of @code{everysel}.")
+    (license license:lppl1.3c)))
