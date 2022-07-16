@@ -18755,7 +18755,6 @@ interactive commands and functions, such as @code{completing-read}.")
            emacs-org-super-agenda
            emacs-ov
            emacs-peg
-           emacs-transient
            emacs-ts
            emacs-s))
     (native-inputs
