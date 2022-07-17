@@ -4362,8 +4362,7 @@ nothing and exit immediately.
 @item --delete-generations[=@var{duration}]
 @itemx -d [@var{duration}]
 Before starting the garbage collection process, delete all the generations
-older than @var{duration}, for all the user profiles and home environment
-generations; when run as root, this
+older than @var{duration}, for all the user profiles; when run as root, this
 applies to all the profiles @emph{of all the users}.
 
 For example, this command deletes all the generations of all your profiles
