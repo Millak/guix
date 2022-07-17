@@ -900,6 +900,37 @@ HostData=lib/qt5
     (description "The QtSvg module provides classes for displaying the
  contents of SVG files.")))
 
+(define-public qtsvg
+  (package
+    (name "qtsvg")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "1xvxz2jfpr1al85rhwss7ji5vkxa812d0b888hry5f7pwqcg86bv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-display
+            (lambda _
+              ;; Make Qt render "offscreen", required for tests.
+              (setenv "QT_QPA_PLATFORM" "offscreen")))
+          (add-after 'install 'delete-installed-tests
+            (lambda _
+              (delete-file-recursively (string-append #$output "/tests")))))))
+    (native-inputs (list perl))
+    (inputs (list libxkbcommon mesa qtbase zlib))
+    (synopsis "Qt module for displaying SVGs")
+    (description "The QtSvg module provides classes for displaying the
+ contents of SVG files.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
+
 (define-public qtimageformats
   (package (inherit qtsvg-5)
     (name "qtimageformats")
