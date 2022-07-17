@@ -7817,16 +7817,17 @@ available in the kernel Linux.")
                 "06nb69vlv1szdzq1dp784pgbr9z2py050v1hlrn4rr56jp0a2nci"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target)))
-       #:tests? #f                      ; no tests
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)   ; no configure script
-                  (add-before 'install 'fix-makefile
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (substitute* "Makefile"
-                        (("\\$\\(BUILDROOT\\)/usr")
-                         (assoc-ref outputs "out"))))))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (add-before 'install 'fix-makefile
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* "Makefile"
+                     (("\\$\\(BUILDROOT\\)/usr")
+                      (assoc-ref outputs "out"))))))))
     (inputs (list perl))
     (supported-systems '("i686-linux" "x86_64-linux"))
     (home-page "http://www.etallen.com/cpuid.html")
