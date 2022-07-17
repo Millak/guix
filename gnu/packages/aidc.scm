@@ -23,6 +23,7 @@
 
 (define-module (gnu packages aidc)
   #:use-module (gnu packages)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -159,6 +160,9 @@ characters, and is highly robust.")
        (sha256
         (base32 "0s95gplvb6x7gnl48yn7ywa9r15lfm8k2m60wm9i7w75ay4bq32i"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-static")))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://github.com/dmtx")
