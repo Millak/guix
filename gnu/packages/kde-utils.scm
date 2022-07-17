@@ -502,6 +502,7 @@ remind you to take a break now and then.")
        (method url-fetch)
        (uri (string-append "https://sourceforge.net/projects/smb4k/files/"
                            version "/smb4k-" version ".tar.xz/download"))
+       (file-name (string-append name "-" version ".tar.xz"))
        (sha256
         (base32 "0hz6nfd845bykf78s4g2qs77szl96gy6g8rpg44pqd39a0k0xbh7"))))
     (build-system qt-build-system)
