@@ -161,6 +161,48 @@ specified window, otherwise it outputs the title of the active window.  With
 outputs when titles change.")
     (license license:unlicense)))
 
+(define-public xvkbd
+  (package
+    (name "xvkbd")
+    (version "4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://t-sato.in.coocan.jp/xvkbd/xvkbd-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1x5yldv9y99cw5hzzs73ygdn1z80zns9hz0baa355r711zghfbcm"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-bugs
+                 ;; Both variables are inexplicably but explicitly set to
+                 ;; $(pkg-config --variable=VARIABLE xt) instead of our own.
+                 (lambda _
+                   (substitute* "Makefile.in"
+                     (("^(appdefaultdir|datarootdir) = .*" _ variable)
+                      (string-append variable " = @" variable "@\n"))))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libxaw libxmu libxtst))
+    (home-page "http://t-sato.in.coocan.jp/xvkbd/")
+    (synopsis "Virtual computer keyboard for the X Window System")
+    (description
+     "The @acronym{xvkbd, X virtual keyboard} displays a drawing of a computer
+keyboard in a window on the screen.  Clicking on its keys sends the
+corresponding keystroke(s) to other X clients, as if typed on a physical
+keyboard.
+
+This is useful for systems without keyboard hardware but with a pointing device,
+such as kiosk terminals or handheld devices with touch screens.
+
+A limited number of keyboard layouts are available, as is dictionary completion.
+You can also use xvkbd to send a series of predetermined keystrokes from the
+command line, without displaying a keyboard at all.")
+    (license license:gpl2+)))
+
 (define-public arandr
   (package
     (name "arandr")
