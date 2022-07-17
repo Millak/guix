@@ -125,6 +125,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -5848,12 +5849,12 @@ and DSD streams.")
                (base32
                 "1xqmlbqj6ny4cpclzr8xyy6d6i392h9f1vmlbasp6xfy5b0yya94"))))
     (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f))    ;; no tests
+    (arguments (list #:tests? #f)) ;; no tests
     (inputs (list alsa-lib
+                  libxkbcommon
                   pipewire-0.3
-                  qtbase-5
-                  qtsvg-5))
+                  qtbase
+                  qtsvg))
     (native-inputs (list pkg-config))
     (synopsis "PipeWire graph manager")
     (description
