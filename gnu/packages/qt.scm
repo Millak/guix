@@ -622,6 +622,9 @@ developers using C++ or QML, a CSS & JavaScript like language.")
             (delete 'patch-xdg-open)
             (add-after 'patch-paths 'patch-more-paths
               (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* (find-files "bin" "\\.in$")
+                  (("/bin/pwd")
+                   (search-input-file inputs "bin/pwd")))
                 (substitute* "src/gui/platform/unix/qgenericunixservices.cpp"
                   (("\"xdg-open\"")
                    (format #f "~s" (search-input-file inputs "bin/xdg-open"))))
@@ -687,7 +690,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 ninja wayland-protocols)))
     (inputs
      (modify-inputs (package-inputs qtbase-5)
-       (prepend bash-minimal libxcb md4c)
+       (prepend bash-minimal coreutils-minimal libxcb md4c)
        (replace "gtk+" gtk)                ;use latest gtk
        (replace "postgresql" postgresql))) ;use latest postgresql
     (native-search-paths
