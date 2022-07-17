@@ -11844,6 +11844,8 @@ configuration file is loaded when spawning a @code{guile} REPL.
 @node Using Guix Interactively
 @section Using Guix Interactively
 
+@cindex interactive use
+@cindex REPL, read-eval-print loop
 The @command{guix repl} command gives you access to a warm and friendly
 @dfn{read-eval-print loop} (REPL) (@pxref{Invoking guix repl}).  If
 you're getting into Guix programming---defining your own packages,
@@ -11861,7 +11863,7 @@ guix install guile guile-readline guile-colorized
 @end example
 
 @noindent
-... and then create a @file{.guile} in your home directory containing
+... and then create a @file{.guile} file in your home directory containing
 this:
 
 @lisp
