@@ -691,13 +691,17 @@ touchscreen devices and the ability to apply filters to their input events.")
              (("\\(A52DIR\\)/include")
               "(A52DIR)/include/a52dec")
              (("LIBS = " match)
-              (string-append match "-la52 ")))
-           #t))
+              (string-append match "-la52 ")))))
+       (add-after 'unpack 'preseed-cflags
+         (lambda _
+           (setenv "CFLAGS"
+                   (string-append "-D_FILE_OFFSET_BITS=64 "
+                                  "-D_LARGEFILE_SOURCE "
+                                  "-D_LARGEFILE64_SOURCE"))))
        (add-before 'install 'create-destination-directory
          (lambda* (#:key outputs #:allow-other-keys)
            (let* ((out (string-append (assoc-ref outputs "out"))))
-             (mkdir-p (string-append out "/bin"))
-             #t))))))
+             (mkdir-p (string-append out "/bin"))))))))
   (native-inputs
    (list nasm))
   (inputs
