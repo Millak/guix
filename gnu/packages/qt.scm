@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 TomZ <tomz@freedommail.ch>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -55,6 +55,7 @@
   #:use-module (guix deprecation)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages cmake)
@@ -84,6 +85,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
@@ -548,13 +550,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtbase
   (package/inherit qtbase-5
     (name "qtbase")
-    (version "6.1.1")
+    (version "6.3.1")
     (source (origin
               (inherit (package-source qtbase-5))
               (uri (qt5-urls name version))
               (sha256
                (base32
-                "1wizrfiw6h8bk99brbdpdli40vsk6yqchs66f1r083hp0ygsma11"))
+                "00sfya41ihqb0zwg6wf1kiy02iymj6mk584hhk2c4s94khfl4r0a"))
               (modules '((guix build utils)))
               (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
@@ -573,8 +575,6 @@ developers using C++ or QML, a CSS & JavaScript like language.")
        ;; enough) or a functional network.  It's also quite expensive to
        ;; build and run.
        ((#:tests? _ #f) #f)
-       ;; ((#:cmake _)
-       ;;  cmake)                          ;requires a CMake >= 3.18.4
        ((#:configure-flags _ ''())
         `(let ((out (assoc-ref %outputs "out")))
            (list "-GNinja"              ;the build fails otherwise
@@ -600,6 +600,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                  ;; cases such as for those below.
                  "-DFEATURE_system_pcre2=ON"
                  "-DFEATURE_system_sqlite=ON"
+                 "-DFEATURE_system_xcb_xinput=ON"
                  ;; Don't use the precompiled headers.
                  "-DBUILD_WITH_PCH=OFF"
                  ;; Drop special machine instructions that do not have runtime
@@ -616,67 +617,79 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                  "-DFEATURE_mips_dsp=OFF"
                  "-DFEATURE_mips_dspr2=OFF")))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'patch-bin-sh)
-           (delete 'patch-xdg-open)
-           (add-after 'patch-paths 'patch-more-paths
-             (lambda _
-               (substitute* "src/gui/platform/unix/qgenericunixservices.cpp"
-                 (("\"xdg-open\"")
-                  (format #f "~s" (which "xdg-open"))))
-               (substitute* '("mkspecs/features/qt_functions.prf"
-                              "qmake/library/qmakebuiltins.cpp")
-                 (("/bin/sh")
-                  (which "sh")))))
-           (replace 'configure
-             (assoc-ref %standard-phases 'configure))
-           (replace 'build
-             (lambda* (#:key parallel-build? #:allow-other-keys)
-               (apply invoke "cmake" "--build" "."
-                      (if parallel-build?
-                          `("--parallel" ,(number->string (parallel-job-count)))
-                          '()))))
-           (replace 'install
-             (lambda _
-               (invoke "cmake" "--install" ".")))
-           (replace 'patch-mkspecs
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (archdata (string-append out "/lib/qt6"))
-                      (mkspecs (string-append archdata "/mkspecs"))
-                      (qt_config.prf (string-append
-                                      mkspecs "/features/qt_config.prf")))
-                 ;; For each Qt module, let `qmake' uses search paths in the
-                 ;; module directory instead of all in QT_INSTALL_PREFIX.
-                 (substitute* qt_config.prf
-                   (("\\$\\$\\[QT_INSTALL_HEADERS\\]")
-                    "$$clean_path($$replace(dir, mkspecs/modules, ../../include/qt6))")
-                   (("\\$\\$\\[QT_INSTALL_LIBS\\]")
-                    "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
-                   (("\\$\\$\\[QT_HOST_LIBS\\]")
-                    "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
-                   (("\\$\\$\\[QT_INSTALL_BINS\\]")
-                    "$$clean_path($$replace(dir, mkspecs/modules, ../../bin))"))
+        #~(modify-phases #$phases
+            (delete 'patch-bin-sh)
+            (delete 'patch-xdg-open)
+            (add-after 'patch-paths 'patch-more-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/gui/platform/unix/qgenericunixservices.cpp"
+                  (("\"xdg-open\"")
+                   (format #f "~s" (search-input-file inputs "bin/xdg-open"))))
+                (substitute* '("mkspecs/features/qt_functions.prf"
+                               "qmake/library/qmakebuiltins.cpp")
+                  (("/bin/sh")
+                   (search-input-file inputs "bin/bash")))
+                (substitute* "src/corelib/CMakeLists.txt"
+                  (("/bin/ls")
+                   (search-input-file inputs "bin/ls")))))
+            (replace 'configure
+              (assoc-ref %standard-phases 'configure))
+            (replace 'build
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (apply invoke "cmake" "--build" "."
+                       (if parallel-build?
+                           `("--parallel" ,(number->string (parallel-job-count)))
+                           '()))))
+            (replace 'install
+              (lambda _
+                (invoke "cmake" "--install" ".")))
+            (replace 'patch-mkspecs
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((archdata (search-input-directory outputs "lib/qt6"))
+                       (mkspecs (search-input-directory outputs
+                                                        "lib/qt6/mkspecs"))
+                       (qt_config.prf
+                        (search-input-file
+                         outputs "lib/qt6/mkspecs/features/qt_config.prf"))
+                       (qt_functions.prf
+                        (search-input-file
+                         outputs "lib/qt6/mkspecs/features/qt_functions.prf")))
+                  ;; For each Qt module, let `qmake' uses search paths in the
+                  ;; module directory instead of all in QT_INSTALL_PREFIX.
+                  (substitute* qt_config.prf
+                    (("\\$\\$\\[QT_INSTALL_HEADERS\\]")
+                     "$$clean_path($$replace(dir, mkspecs/modules, ../../include/qt6))")
+                    (("\\$\\$\\[QT_INSTALL_LIBS\\]")
+                     "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
+                    (("\\$\\$\\[QT_HOST_LIBS\\]")
+                     "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
+                    (("\\$\\$\\[QT_INSTALL_BINS\\]")
+                     "$$clean_path($$replace(dir, mkspecs/modules, ../../bin))"))
 
-                 ;; Searches Qt tools in the current PATH instead of QT_HOST_BINS.
-                 (substitute* (string-append mkspecs "/features/qt_functions.prf")
-                   (("cmd = \\$\\$\\[QT_HOST_BINS\\]/\\$\\$2")
-                    "cmd = $$system(which $${2}.pl 2>/dev/null || which $${2})"))
+                  ;; Searches Qt tools in the current PATH instead of QT_HOST_BINS.
+                  (substitute* qt_functions.prf
+                    (("cmd = \\$\\$\\[QT_HOST_BINS\\]/\\$\\$2")
+                     "cmd = $$system(which $${2}.pl 2>/dev/null || which $${2})"))
 
-                 ;; Resolve qmake spec files within qtbase by absolute paths.
-                 (substitute*
-                     (map (lambda (file)
-                            (string-append mkspecs "/features/" file))
-                          '("device_config.prf" "moc.prf" "qt_build_config.prf"
-                            "qt_config.prf"))
-                   (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
-                   (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))))))
+                  ;; Resolve qmake spec files within qtbase by absolute paths.
+                  (substitute*
+                      (map (lambda (file)
+                             (search-input-file
+                              outputs
+                              (string-append "lib/qt6/mkspecs/features/" file)))
+                           '("device_config.prf" "moc.prf" "qt_build_config.prf"
+                             "qt_config.prf"))
+                    (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
+                    (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))))))
     (native-inputs
-     `(("gtk+" ,gtk+)                   ;for GTK theme support
-       ("ninja" ,ninja)
-       ("wayland-protocols" ,wayland-protocols)
-       ("xorg-server" ,xorg-server-for-tests)
-       ,@(package-native-inputs qtbase-5)))
+     (modify-inputs (package-native-inputs qtbase-5)
+       (prepend gtk                     ;for GTK theme support
+                ninja wayland-protocols)))
+    (inputs
+     (modify-inputs (package-inputs qtbase-5)
+       (prepend bash-minimal libxcb md4c)
+       (replace "gtk+" gtk)                ;use latest gtk
+       (replace "postgresql" postgresql))) ;use latest postgresql
     (native-search-paths
      (list (search-path-specification
             (variable "QMAKEPATH")
