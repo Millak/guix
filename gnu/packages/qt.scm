@@ -830,15 +830,16 @@ developers using C++ or QML, a CSS & JavaScript like language.")
             (files '("etc/xdg")))))))
 
 (define-public qtsvg-5
-  (package (inherit qtbase-5)
+  (package
+    (inherit qtbase-5)
     (name "qtsvg")
     (version "5.15.2")
     (source (origin
-             (method url-fetch)
-             (uri (qt5-urls name version))
-             (sha256
-              (base32
-               "0pjqrdmd1991x9h4rl8sf81pkd89hfd5h1a2gp3fjw96pk0w5hwb"))))
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "0pjqrdmd1991x9h4rl8sf81pkd89hfd5h1a2gp3fjw96pk0w5hwb"))))
     (propagated-inputs `())
     (native-inputs (list perl))
     (inputs
