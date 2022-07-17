@@ -2288,14 +2288,13 @@ network, which causes enabled computers to power on.")
         (base32 "04i2ahvqinkrnzfsbswplv9wff36xf9b3snvriwrjz26v18sijs3"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                                ; no 'check' target
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "prefix="
-                            (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))                   ; no configure script
+     (list #:tests? #f                  ; no 'check' target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "prefix=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))                   ; no configure script
     (home-page "https://www.nongnu.org/dmidecode/")
     (synopsis "Read hardware information from the BIOS")
     (description
