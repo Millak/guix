@@ -618,6 +618,27 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                  "-DFEATURE_mips_dspr2=OFF")))
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'honor-CMAKE_PREFIX_PATH
+              (lambda _
+                ;; The configuration files for other Qt packages are searched
+                ;; through a call to "find_package" in Qt5Config.cmake, which
+                ;; disables the use of CMAKE_PREFIX_PATH via the parameter
+                ;; "NO_DEFAULT_PATH".  Re-enable it so that the different
+                ;; components can be installed in different places.
+                (substitute* (find-files "." "\\.cmake(\\.in)?$")
+                  (("\\bNO_DEFAULT_PATH\\b") ""))
+                ;; Because Qt goes against the grain of CMake and set
+                ;; NO_DEFAULT_PATH, it needs to invent yet another variable
+                ;; to do what CMAKE_PREFIX_PATH could have done:
+                ;; QT_ADDITIONAL_PACKAGES_PREFIX_PATH.  Since we patch out
+                ;; the NO_DEFAULT_PATH, we can set the default value of
+                ;; QT_ADDITIONAL_PACKAGES_PREFIX_PATH to that of
+                ;; CMAKE_PREFIX_PATH to ensure tools such as
+                ;; 'qmlimportscanner' from qtdeclarative work out of the
+                ;; box.
+                (substitute* "cmake/QtConfig.cmake.in"
+                  (("(set\\(QT_ADDITIONAL_PACKAGES_PREFIX_PATH )\"\"" _ head)
+                   (string-append head "\"$ENV{CMAKE_PREFIX_PATH}\"")))))
             (delete 'patch-bin-sh)
             (delete 'patch-xdg-open)
             (add-after 'patch-paths 'patch-more-paths
