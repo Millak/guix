@@ -1,0 +1,32 @@
+From ef28dcf7a5bdbfd8ba586bb066d5ec53188a6bf9 Mon Sep 17 00:00:00 2001
+From: muradm <mail@muradm.net>
+Date: Fri, 15 Jul 2022 20:08:14 +0300
+Subject: [PATCH] Add paths-guix.conf file.
+
+---
+ config/paths-guix.conf | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+ create mode 100644 config/paths-guix.conf
+
+diff --git a/config/paths-guix.conf b/config/paths-guix.conf
+new file mode 100644
+index 00000000..b4a2e9f5
+--- /dev/null
++++ b/config/paths-guix.conf
+@@ -0,0 +1,13 @@
++# Guix
++
++[INCLUDES]
++
++before = paths-common.conf
++after = paths-overrides.local
++
++
++[DEFAULT]
++
++syslog_authpriv = /var/log/secure
++syslog_mail = /var/log/maillog
++syslog_mail_warn = /var/log/maillog
+-- 
+2.36.1
+
