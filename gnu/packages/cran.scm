@@ -30480,13 +30480,13 @@ package online.")
             texlive-amsmath
             texlive-booktabs
             texlive-etoolbox
-            texlive-generic-iftex
-            texlive-latex-fancyhdr
-            texlive-latex-fancyvrb
+            texlive-iftex
+            texlive-fancyhdr
+            texlive-fancyvrb
             texlive-latex-geometry
-            texlive-latex-graphics
+            texlive-graphics
             texlive-latex-threeparttable
-            texlive-latex-titlesec
+            texlive-titlesec
             texlive-latex-upquote
             texlive-listings
             texlive-polyglossia

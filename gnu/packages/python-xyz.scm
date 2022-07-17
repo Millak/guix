@@ -13070,8 +13070,8 @@ time.")
                           texlive-hyperref
                           texlive-iftex
                           texlive-jknappen
-                          texlive-latex-amsmath
-                          texlive-latex-enumitem
+                          texlive-amsmath
+                          texlive-enumitem
                           texlive-latex-float
                           texlive-latex-geometry
                           texlive-latex-jknapltx
@@ -13113,14 +13113,14 @@ time.")
            texlive-caption
            texlive-enumitem
            texlive-fontspec
-           texlive-generic-iftex
+           texlive-iftex
            texlive-grffile
            texlive-hyperref
-           texlive-latex-fancyvrb
+           texlive-fancyvrb
            texlive-latex-float
            texlive-latex-geometry
            texlive-latex-jknapltx
-           texlive-latex-ms
+           texlive-ms
            texlive-latex-parskip
            texlive-latex-trimspaces
            texlive-latex-upquote

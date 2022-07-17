@@ -5553,7 +5553,6 @@ set.")
                                      texlive-latex-parskip
                                      texlive-latex-stackengine
                                      texlive-latex-tabulary
-                                     texlive-latex-titlesec
                                      texlive-latex-tocloft
                                      texlive-latex-upquote
                                      texlive-latex-varwidth

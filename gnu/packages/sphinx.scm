@@ -109,7 +109,7 @@
            texlive-capt-of
            texlive-carlisle             ;remreset
            texlive-etoolbox
-           texlive-generic-ltxcmds
+           texlive-ltxcmds
            texlive-hyperref
            ;; TODO: Remove texlive-stringenc and texlive-zapfding after
            ;; propagating them in texlive-hyperref in next rebuild cycle.
@@ -117,20 +117,20 @@
            texlive-zapfding
            texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
            texlive-latex-cmap
-           texlive-latex-fancyhdr
-           texlive-latex-fancyvrb
+           texlive-fancyhdr
+           texlive-fancyvrb
            texlive-latex-float
            texlive-latex-fncychap
            texlive-latex-framed
            texlive-latex-geometry
-           texlive-latex-graphics       ;graphicx, color
-           texlive-latex-kvoptions
+           texlive-graphics                       ;graphicx, color
+           texlive-kvoptions
            texlive-latex-needspace
            texlive-latex-parskip
            texlive-latex-preview
            texlive-latex-tabulary
-           texlive-latex-titlesec
-           texlive-latex-tools          ;multicol, longtable
+           texlive-titlesec
+           texlive-tools                          ;multicol, longtable
            texlive-latex-upquote
            texlive-latex-varwidth
            texlive-oberdiek             ;hypcap
