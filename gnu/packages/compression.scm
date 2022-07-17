@@ -2660,16 +2660,16 @@ to their original, binary CD format.")
                 "16n9232zjavcp5wp17cx0gh2v7gipxpncsha05j3ybajfs7g88jv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-static-library-installation
-           (lambda _
-             (substitute* "Makefile"
-               (("install .*\\$\\(STATIC_LIB\\).*") ""))))
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-static-library-installation
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("install .*\\$\\(STATIC_LIB\\).*") ""))))
+               (delete 'configure))))   ; no configure script
     (inputs
      (list zlib))
     (home-page "https://github.com/ebiggers/libdeflate")
