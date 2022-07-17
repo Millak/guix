@@ -376,6 +376,7 @@ efficiency.")
     (description "MediaSDK provides a plain C API to access hardware-accelerated
 video decode, encode and filtering on Intel's Gen graphics hardware platforms.")
     (home-page "http://mediasdk.intel.com/")
+    (supported-systems '("x86_64-linux" "i686-linux"))
     (license (license:non-copyleft "file:///LICENSE"))))
 
 (define-public schroedinger
