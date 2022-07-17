@@ -1,6 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
-;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,8 +27,7 @@
   #:use-module (guix diagnostics)
   #:use-module (guix gexp)
   #:use-module (guix store)
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 regex)
+
   #:export (home-environment
             home-environment?
             this-home-environment
@@ -40,9 +38,7 @@
             home-environment-services
             home-environment-location
 
-            home-environment-with-provenance
-
-            home-generation-base))
+            home-environment-with-provenance))
 
 ;;; Comment:
 ;;;
@@ -118,21 +114,3 @@ of HOME-PROVENANCE-SERVICE-TYPE to its services."
       (run-with-store store (home-environment-derivation he)
                       #:system system
                       #:target target)))))
-
-(define %profile-generation-rx
-  ;; Regexp that matches profile generation.
-  (make-regexp "(.*)-([0-9]+)-link$"))
-
-(define (home-generation-base file)
-  "If FILE is a Home generation GC root such as \"guix-home-42-link\",
-return its corresponding base---e.g., \"guix-home\".  Otherwise return #f.
-
-This is similar to the 'generation-profile' procedure but applied to Home
-generations."
-  (match (regexp-exec %profile-generation-rx file)
-    (#f #f)
-    (m  (let ((profile (match:substring m 1)))
-          ;; Distinguish from a "real" profile and from a system generation.
-          (and (file-exists? (string-append profile "/on-first-login"))
-               (file-exists? (string-append profile "/profile/manifest"))
-               profile)))))
