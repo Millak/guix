@@ -2635,6 +2635,9 @@ various ways that may be running with too much privilege.")
                (base32
                 "1mlc25sd5rgj5xmzcllci47inmfdw7cp185fday6hc9rwqkqmnaw"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list "BUILD_INFO=\"(Guix)\"")))
     (inputs (list libcap-ng))
     (home-page "https://www.smartmontools.org/")
     (synopsis "S.M.A.R.T. harddisk control and monitoring tools")
