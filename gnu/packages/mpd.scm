@@ -463,7 +463,7 @@ support")
            libmtp
            mpg123
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            qtsvg-5
            taglib
            zlib))

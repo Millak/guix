@@ -607,7 +607,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
     (inputs
      (list qtbase-5
            qtlocation
-           qtmultimedia
+           qtmultimedia-5
            qtscript
            qtserialport
            zlib))

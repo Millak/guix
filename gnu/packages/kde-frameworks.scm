@@ -1715,7 +1715,7 @@ from DocBook files.")
            karchive
            kcoreaddons
            ki18n
-           qtmultimedia
+           qtmultimedia-5
            qtbase-5
            ;; Required run-time packages
            catdoc

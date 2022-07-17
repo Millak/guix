@@ -993,7 +993,7 @@ want what you have.")
       (inputs
        (list protobuf
              qtbase-5
-             qtmultimedia
+             qtmultimedia-5
              qtsvg-5
              qttools
              qtwebsockets
@@ -10153,7 +10153,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
    (native-inputs
     (list pkg-config))
    (inputs
-    (list qtbase-5 qtmultimedia qtsvg-5))
+    (list qtbase-5 qtmultimedia-5 qtsvg-5))
    (arguments
     '(#:phases
       (modify-phases %standard-phases
@@ -10247,7 +10247,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
            libkdegames
            python-wrapper
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            qtdeclarative
            qtsvg-5))
     (home-page "https://games.kde.org/")
@@ -11885,7 +11885,7 @@ and chess engines.")
     (native-inputs
      (list qttools))
     (inputs
-     (list qtbase-5 qtmultimedia qtspeech qtsvg-5 zlib))
+     (list qtbase-5 qtmultimedia-5 qtspeech qtsvg-5 zlib))
     (arguments
      `(#:tests? #f
        #:phases

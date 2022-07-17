@@ -134,7 +134,7 @@
            perl
            qca
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            qtscript
            qtsvg-5
            snorenotify

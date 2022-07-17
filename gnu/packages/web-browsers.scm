@@ -453,7 +453,7 @@ access.")
              font-openmoji
              openssl
              qtbase-5
-             qtmultimedia
+             qtmultimedia-5
              qtsvg-5))
       (home-page "https://kristall.random-projects.net")
       (synopsis "Small-internet graphical client")

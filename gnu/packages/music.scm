@@ -253,7 +253,7 @@
     (inputs
      (list dbus
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            ;; Plugin dependencies
            alsa-lib
            curl
@@ -5550,12 +5550,12 @@ discard bad quality ones.
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins"))
-                         '("qtbase" "qtmultimedia" "qtsvg-5")))
+                         '("qtbase" "qtmultimedia-5" "qtsvg-5")))
                  `("QML2_IMPORT_PATH" ":" prefix
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/qml"))
-                         '("qtmultimedia"))))
+                         '("qtmultimedia-5"))))
                #t))))))
     (inputs
      (list alsa-lib
@@ -5563,7 +5563,7 @@ discard bad quality ones.
            jack-1
            portaudio
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            qtsvg-5))
     (native-inputs
      `(("gettext" ,gettext-minimal)

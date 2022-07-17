@@ -1965,7 +1965,7 @@ Automated palette selection is supported.")
              ;; ("miniupnpc" ,miniupnpc) ;segfaults for some reason
              qtbase-5
              qtkeychain
-             qtmultimedia
+             qtmultimedia-5
              qtsvg-5
              qtx11extras))
       (home-page "https://drawpile.net")

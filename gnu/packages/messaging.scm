@@ -232,7 +232,7 @@ XMPP-based sessions.")
        ("libidn" ,libidn)
        ("qca" ,qca)
        ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)
+       ("qtmultimedia-5" ,qtmultimedia-5)
        ("qtsvg-5" ,qtsvg-5)
        ("qtwebkit" ,qtwebkit)
        ("qtx11extras" ,qtx11extras)
@@ -1481,7 +1481,7 @@ default.")
                   qtlocation
                   qtquickcontrols2
                   qtsvg-5
-                  qtmultimedia
+                  qtmultimedia-5
                   qtxmlpatterns
                   qqc2-desktop-style
                   qxmpp
@@ -2325,7 +2325,7 @@ notifications, and Python scripting support.")
         (base32 "0gkwr3yw6k2m0j8cc085b5p2q788rf5nhp1p5hc5d55pc7mci2qs"))))
     (build-system cmake-build-system)
     (inputs
-     (list qtbase-5 qtmultimedia))
+     (list qtbase-5 qtmultimedia-5))
     (arguments
      `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")
        #:tests? #f))                    ; no tests
@@ -2460,7 +2460,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            qtdeclarative
            qtkeychain
            qtgraphicaleffects
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols2
            qtsvg-5
            spdlog
@@ -2498,7 +2498,7 @@ notification, emojis, E2E encryption, and voip calls.")
      (list libqmatrixclient
            qtbase-5
            qtdeclarative
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols
            qtquickcontrols2
            qtsvg-5
@@ -3040,7 +3040,7 @@ social and chat platform.")
        ("qite" ,qite)
        ("qtbase" ,qtbase-5)
        ("qtkeychain" ,qtkeychain)
-       ("qtmultimedia" ,qtmultimedia)
+       ("qtmultimedia-5" ,qtmultimedia-5)
        ("qtsvg-5" ,qtsvg-5)
        ("qtx11extras" ,qtx11extras)
        ("usrsctp" ,usrsctp)

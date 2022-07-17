@@ -182,7 +182,7 @@ of categories with some of the activities available in that category.
            qtbase-5
            qtdeclarative
            qtgraphicaleffects
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols
            qtsensors
            qtsvg-5
@@ -302,7 +302,7 @@ frequently used words in American English.")
                ;; Recreate Makefile
                (invoke "qmake")))))))
     (inputs
-     (list qtbase-5 qtmultimedia))
+     (list qtbase-5 qtmultimedia-5))
     (home-page "https://www.tipp10.com/")
     (synopsis "Touch typing tutor")
     (description "Tipp10 is a touch typing tutor.  The ingenious thing about
@@ -559,7 +559,7 @@ specialized device.")
              poppler
              qtbase-5
              qtdeclarative
-             qtmultimedia
+             qtmultimedia-5
              qtsvg-5
              qtwebchannel
              qtwebengine
@@ -995,7 +995,7 @@ formats.")
     (inputs
      (list libeb
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols2
            qtdeclarative
            qtwebchannel

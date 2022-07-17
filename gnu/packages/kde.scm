@@ -287,7 +287,7 @@ browser for easy news reading.")
            qtbase-5
            qtdeclarative
            qtgraphicaleffects
-           qtmultimedia
+           qtmultimedia-5
            qtnetworkauth
            qtquickcontrols
            qtquickcontrols2
@@ -540,7 +540,7 @@ expression library, that is used in Krita.")
            poppler-qt5
            qtbase-5
            qtdeclarative
-           qtmultimedia
+           qtmultimedia-5
            qtsvg-5
            qtx11extras
            quazip-0
@@ -747,7 +747,7 @@ different notification systems.")
            qtbase-5
            qtdeclarative
            qtgraphicaleffects
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols
            qtquickcontrols2
            qtx11extras))

@@ -755,7 +755,7 @@ The following systems are supported:
            minizip
            ncurses
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            sdl2
            sqlite
            zlib))

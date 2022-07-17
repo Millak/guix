@@ -668,7 +668,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
      (list hunspell
            qtbase-5
            qtdeclarative
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols
            qtsvg-5
            qtwebchannel))
@@ -695,7 +695,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins/"))
-                         '("qtsvg-5" "qtmultimedia"))))))))))
+                         '("qtsvg-5" "qtmultimedia-5"))))))))))
     (home-page "https://wereturtle.github.io/ghostwriter/")
     (synopsis "Write without distractions")
     (description

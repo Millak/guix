@@ -174,7 +174,7 @@ This package is part of the KDE multimedia module.")
            qtbase-5
            qtdeclarative
            qtgraphicaleffects ; not listed as dependency
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols
            qtquickcontrols2
            qtsvg-5
@@ -336,7 +336,7 @@ This package is part of the KDE multimedia module.")
            libvorbis
            qtbase-5
            qtdeclarative
-           qtmultimedia
+           qtmultimedia-5
            readline
            taglib
            zlib))
@@ -698,7 +698,7 @@ Some features:
            oxygen-icons ; default icon set
            pulseaudio
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            zlib))
     (home-page "https://kde.org/applications/multimedia/org.kde.kwave")
     (synopsis "Sound editor for KDE")

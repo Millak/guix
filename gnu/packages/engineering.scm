@@ -2356,7 +2356,7 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
        ("opencsg" ,opencsg)
        ("qscintilla" ,qscintilla)
        ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)))
+       ("qtmultimedia-5" ,qtmultimedia-5)))
     (native-inputs
      `(("bison" ,bison)
        ("flex" ,flex)

@@ -435,7 +435,7 @@ language.")
            (add-after 'install 'wrap-executable
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
-                      (qt '("qt" "qtmultimedia")))
+                      (qt '("qt" "qtmultimedia-5")))
                  (wrap-program (string-append out "/bin/Papagayo")
                    `("QT_PLUGIN_PATH" ":" prefix
                      ,(map (lambda (label)
@@ -445,7 +445,7 @@ language.")
                  #t))))))
       (inputs
        `(("qt" ,qtbase-5)
-         ("qtmultimedia" ,qtmultimedia)
+         ("qtmultimedia-5" ,qtmultimedia-5)
          ("libsndfile" ,libsndfile)))
       (native-inputs
        (list qttools))
@@ -474,7 +474,7 @@ waveform until they line up with the proper sounds.")
                 "0b1nwiwyg01087q318vymg4si76dw41ykxbn2zwd6dqbxzbpr1dh"))))
     (build-system gnu-build-system)
     (inputs
-     (list qtbase-5 qtxmlpatterns qtmultimedia qtsvg-5))
+     (list qtbase-5 qtxmlpatterns qtmultimedia-5 qtsvg-5))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

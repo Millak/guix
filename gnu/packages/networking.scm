@@ -1636,7 +1636,7 @@ of the same name.")
            `(,nghttp2 "lib")
            minizip
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            qtsvg-5
            sbc
            snappy

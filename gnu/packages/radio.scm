@@ -1298,7 +1298,7 @@ instances over the network, and general QSO and DXpedition logging.")
        ("hamlib" ,wsjtx-hamlib)
        ("libusb" ,libusb)
        ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)
+       ("qtmultimedia-5" ,qtmultimedia-5)
        ("qtserialport" ,qtserialport)))
     (arguments
      `(#:tests? #f)) ; No test suite
@@ -1337,7 +1337,7 @@ weak-signal conditions.")
       libusb
       qtbase-5
       qtwebsockets
-      qtmultimedia
+      qtmultimedia-5
       qtserialport))
     (arguments
      `(#:tests? #f)) ; No test suite
@@ -1381,7 +1381,7 @@ focused on DXing and being shaped by community of DXers.JTDX")
        ("hamlib" ,wsjtx-hamlib)
        ("libusb" ,libusb)
        ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)
+       ("qtmultimedia-5" ,qtmultimedia-5)
        ("qtserialport" ,qtserialport)))
     (arguments
      `(#:tests? #f ; No test suite
@@ -1747,7 +1747,7 @@ intended for people who want to learn receiving and sending morse code.")
     (native-inputs
      (list qttools))
     (inputs
-     (list qtbase-5 qtmultimedia))
+     (list qtbase-5 qtmultimedia-5))
     (arguments
      `(#:tests? #f)) ; No test suite
     (home-page "https://dm3mat.darc.de/kochmorse/")
@@ -1930,7 +1930,7 @@ receiver.")
            qtcharts
            qtdeclarative
            qtgraphicaleffects
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols2
            soapysdr))
     (arguments
@@ -2161,7 +2161,7 @@ voice formats.")
            qtcharts
            qtdeclarative
            qtlocation
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols2
            qtserialport
            qtspeech
@@ -2293,7 +2293,7 @@ software-defined radio receivers.")
         (base32 "1kpkwxhcacgmprbr8xz840rj9a22513vxrh2q7d3js5i1dva8j2z"))))
     (build-system qt-build-system)
     (inputs
-     (list opus qcustomplot qtbase-5 qtmultimedia qtserialport))
+     (list opus qcustomplot qtbase-5 qtmultimedia-5 qtserialport))
     (arguments
      `(#:tests? #f  ; No test suite.
        #:phases

@@ -1000,7 +1000,7 @@ H.264 (MPEG-4 AVC) video streams.")
            pcre2
            pugixml
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            utfcpp
            zlib))
     (native-inputs
@@ -4687,7 +4687,7 @@ create smoother and stable videos.")
            jsoncpp
            libopenshot-audio
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            zeromq))
     (arguments
      `(#:configure-flags
@@ -4859,7 +4859,7 @@ transitions, and effects and then export your film to many common formats.")
            qtbase-5
            qtdeclarative
            qtgraphicaleffects
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols
            qtquickcontrols2
            qtsvg-5

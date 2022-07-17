@@ -140,7 +140,7 @@
                (chdir "libqite")
                #t)))))
       (inputs
-       (list qtbase-5 qtmultimedia))
+       (list qtbase-5 qtmultimedia-5))
       (home-page "https://github.com/Ri0n/qite/")
       (synopsis "Qt Interactive Text Elements")
       (description "Qite manages interactive elements on QTextEdit.")
@@ -1126,8 +1126,9 @@ consume data received from the server, or both.")))
 and C++ interfaces.  The Qt Sensors API also provides a motion gesture
 recognition API for devices.")))
 
-(define-public qtmultimedia
-  (package (inherit qtsvg-5)
+(define-public qtmultimedia-5
+  (package
+    (inherit qtsvg-5)
     (name "qtmultimedia")
     (version "5.15.2")
     (source (origin
@@ -1697,7 +1698,7 @@ processes or computers.")))
     (inputs
      (list qtbase-5))
     (native-inputs
-     (list perl qtdeclarative qtmultimedia qtxmlpatterns))
+     (list perl qtdeclarative qtmultimedia-5 qtxmlpatterns))
     (synopsis "Qt Speech module")
     (description "The Qt Speech module enables a Qt application to support
 accessibility features such as text-to-speech, which is useful for end-users
@@ -2022,7 +2023,7 @@ using the Enchant spell-checking library.")
            pulseaudio
            qtbase-5
            qtdeclarative
-           qtmultimedia
+           qtmultimedia-5
            qtwebchannel
            re2
            snappy
@@ -2261,7 +2262,7 @@ module provides support functions to the automatically generated code.")
        ("qtconnectivity" ,qtconnectivity)
        ("qtdeclarative" ,qtdeclarative)
        ("qtlocation" ,qtlocation)
-       ("qtmultimedia" ,qtmultimedia)
+       ("qtmultimedia-5" ,qtmultimedia-5)
        ("qtsensors" ,qtsensors)
        ("qtserialport" ,qtserialport)
        ("qtsvg-5" ,qtsvg-5)
@@ -2842,7 +2843,7 @@ different kinds of sliders, and much more.")
        ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtlocation" ,qtlocation)
-       ("qtmultimedia" ,qtmultimedia)
+       ("qtmultimedia-5" ,qtmultimedia-5)
        ("qtsensors" ,qtsensors)
        ("qtwebchannel" ,qtwebchannel)
        ("libxml2" ,libxml2)
@@ -3073,7 +3074,7 @@ color-related widgets.")
            qtdatavis3d
            qtdeclarative
            qtlocation
-           qtmultimedia
+           qtmultimedia-5
            qtquickcontrols
            qtquickcontrols2
            qtscript
@@ -3122,7 +3123,7 @@ color-related widgets.")
                               '("qtdatavis3d"
                                 "qtdeclarative"
                                 "qtlocation"
-                                "qtmultimedia"
+                                "qtmultimedia-5"
                                 "qtquickcontrols"
                                 "qtquickcontrols2"
                                 "qtscript"
