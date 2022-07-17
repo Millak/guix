@@ -476,19 +476,20 @@ and then run @command{scm example.scm}.")
     (inherit guile2.0-bash)
     (name "guile-bash")
     (inputs
-     `(("guile" ,guile-3.0-latest)
-       ,@(assoc-remove! (package-inputs guile2.0-bash) "guile")))
+     (modify-inputs (package-inputs guile2.0-bash)
+       (replace "guile" guile-3.0-latest)))
     (arguments
-     `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'install-guile
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (copy-recursively
-                       (string-append (assoc-ref outputs "out")
-                                      (assoc-ref inputs "guile") "/share")
-                       (string-append (assoc-ref outputs "out") "/share"))
-                      #t)))
-       ,@(package-arguments guile2.0-bash)))))
+     (substitute-keyword-arguments (package-arguments guile2.0-bash)
+       ;; XXX The tests succeed with Guile 2.0 but fail with 3.0.
+       ((#:tests? _ #f) #f)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'install-guile
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (copy-recursively
+                 (string-append (assoc-ref outputs "out")
+                                (assoc-ref inputs "guile") "/share")
+                 (string-append (assoc-ref outputs "out") "/share"))))))))))
 
 (define-public guile-8sync
   (let ((commit "183b4f02e68279d4984e79b79e06bfcf1861fcbf") (revision "0"))
