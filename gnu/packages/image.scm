@@ -1830,7 +1830,7 @@ parsing, viewing, modifying, and saving this metadata.")
     (native-inputs
      (list qttools))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (arguments
      `(#:tests? #f))                    ;no tests
     (home-page "https://github.com/flameshot-org/flameshot")

@@ -2137,7 +2137,7 @@ command.")
     (inherit wpa-supplicant)
     (name "wpa-supplicant-gui")
     (inputs (modify-inputs (package-inputs wpa-supplicant)
-              (prepend qtbase-5 qtsvg)))
+              (prepend qtbase-5 qtsvg-5)))
     (native-inputs
      ;; For icons.
      (modify-inputs (package-native-inputs wpa-supplicant)
@@ -2157,7 +2157,7 @@ command.")
                   (replace 'install
                     (lambda* (#:key inputs outputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out"))
-                            (qt '("qtbase" "qtsvg")))
+                            (qt '("qtbase" "qtsvg-5")))
                         (install-file "wpa_gui" (string-append out "/bin"))
                         (install-file "wpa_gui.desktop"
                                       (string-append out "/share/applications"))

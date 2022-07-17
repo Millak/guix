@@ -11264,7 +11264,7 @@ Thus the per-base error rate is similar to the raw input reads.")
                (install-file "Bandage" (string-append out "/bin"))
                #t))))))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (native-inputs
      (list imagemagick))
     (home-page "https://rrwick.github.io/Bandage/")

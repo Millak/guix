@@ -994,7 +994,7 @@ want what you have.")
        (list protobuf
              qtbase-5
              qtmultimedia
-             qtsvg
+             qtsvg-5
              qttools
              qtwebsockets
              xz
@@ -7199,7 +7199,7 @@ making Yamagi Quake II one of the most solid Quake II implementations available.
        ;; with multiple "QPainter:: ... Painter not active" warnings.
        #:tests? #f))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (native-inputs
      `(("cmake" ,cmake-minimal)
        ("gettext-minimal" ,gettext-minimal)
@@ -9271,7 +9271,7 @@ and also provides the base for the FlightGear Flight Simulator.")
            plib
            qtbase-5
            qtdeclarative
-           qtsvg
+           qtsvg-5
            simgear
            speexdsp
            sqlite
@@ -10153,7 +10153,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
    (native-inputs
     (list pkg-config))
    (inputs
-    (list qtbase-5 qtmultimedia qtsvg))
+    (list qtbase-5 qtmultimedia qtsvg-5))
    (arguments
     '(#:phases
       (modify-phases %standard-phases
@@ -10249,7 +10249,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
            qtbase-5
            qtmultimedia
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Stamp drawing toy")
     (description "KTuberling is a drawing toy intended for small children and
@@ -10295,7 +10295,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Number logic game")
     (description "Picmi is a number logic game in which cells in a grid have
@@ -10376,7 +10376,7 @@ This package is part of the KDE games module.")
            ki18n
            kwidgetsaddons
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Shared library for kmahjongg and kshisen")
     (description "Shared library and common files for kmahjongg, kshisen and
@@ -10409,7 +10409,7 @@ other Mah Jongg like games.")
            libkmahjongg
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Tile laying patience")
     (description "In KMahjongg the tiles are scrambled and staked on top of
@@ -10506,7 +10506,7 @@ This package is part of the KDE games module.")
            python-pyqt
            python-zope-interface
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Classical Mah Jongg game for 4 players")
     (description "Kajongg is the ancient Chinese board game for 4 players.
@@ -10623,7 +10623,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Simple turn-based strategy game")
     (description "Konquest is the KDE version of Gnu-Lactic Konquest.  Players
@@ -10662,7 +10662,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Jezzball arcade game")
     (description "KBounce is a single player arcade game with the elements of
@@ -10700,7 +10700,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Single player falling blocks puzzle game")
     (description "KBlocks is the classic Tetris-like falling blocks game.
@@ -10743,7 +10743,7 @@ This package is part of the KDE games module.")
            glu
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Sudoku puzzle game and solver")
     (description "KSudoku is a Sudoku game and solver, supporting a range of
@@ -10920,7 +10920,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Place 4 pieces in a row")
     (description "KFourInLine is a board game for two players based on the
@@ -10959,7 +10959,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Find atoms in a grid by shooting electrons")
     (description "KBlackbox is a game of hide and seek played on a grid of
@@ -11082,7 +11082,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Bomberman clone")
     (description "Granatier is a clone of the classic Bomberman game,
@@ -11118,7 +11118,7 @@ This package is part of the KDE games module.")
            qca
            qtbase-5
            qtdeclarative
-           qtsvg
+           qtsvg-5
            zlib))
     (home-page "https://games.kde.org/")
     (synopsis "Computerized version of the well known strategy board game
@@ -11179,7 +11179,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg
+           qtsvg-5
            shared-mime-info))
     (home-page "https://games.kde.org/")
     (synopsis "Jigsaw puzzle game")
@@ -11259,7 +11259,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Go board game")
     (description "Kigo is an open-source implementation of the popular Go
@@ -11304,7 +11304,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Game based on Rubik's Cube")
     (description "Kubrick is a game based on the Rubik's Cube puzzle.
@@ -11344,7 +11344,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Lieutnant Skat card game")
     (description "Lieutnant Skat (from German \"Offiziersskat\") is a fun and
@@ -11382,7 +11382,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Pac-Man clone")
     (description "Kapman is a clone of the well known game Pac-Man.
@@ -11421,7 +11421,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Two player game with shooting spaceships flying around a sun")
     (description "KSpaceduel is a space battle game for one or two players,
@@ -11454,7 +11454,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Classic pen and paper game: five in a line")
     (description "Bovo is a Gomoku (from Japanese 五目並べ - lit.  \"five
@@ -11534,7 +11534,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Snake race played against the computer")
     (description "KSnakeDuel is a fast action game where you steer a snake
@@ -11650,7 +11650,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Old reversi board game, also known as othello")
     (description "KReversi is a simple one player strategy game played
@@ -11727,7 +11727,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Simple tactical game for number-crunchers")
     (description "KJumpingcube is a simple tactical game for one or two
@@ -11885,7 +11885,7 @@ and chess engines.")
     (native-inputs
      (list qttools))
     (inputs
-     (list qtbase-5 qtmultimedia qtspeech qtsvg zlib))
+     (list qtbase-5 qtmultimedia qtspeech qtsvg-5 zlib))
     (arguments
      `(#:tests? #f
        #:phases

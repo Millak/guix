@@ -1971,7 +1971,7 @@ videoformats depend on the configuration flags of ffmpeg.")
            pulseaudio
            python-wrapper
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            samba
            sdl
@@ -3194,7 +3194,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
            libsamplerate
            pulseaudio
            qtbase-5
-           qtsvg
+           qtsvg-5
            rtaudio
            sdl2
            sdl2-image
@@ -3362,7 +3362,7 @@ be used for realtime video capture via Linux-specific APIs.")
       pipewire-0.3
       pulseaudio
       qtbase-5
-      qtsvg
+      qtsvg-5
       qtx11extras
       qtwayland
       speexdsp
@@ -4740,7 +4740,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
            python-pyqt
            python-pyzmq
            python-requests
-           qtsvg))
+           qtsvg-5))
     (arguments
      `(#:modules ((guix build python-build-system)
                   (guix build qt-utils)
@@ -4862,7 +4862,7 @@ transitions, and effects and then export your film to many common formats.")
            qtmultimedia
            qtquickcontrols
            qtquickcontrols2
-           qtsvg
+           qtsvg-5
            qtwebkit
            qtwebsockets
            qtx11extras

@@ -194,7 +194,7 @@
            qtkeychain
            qtquickcontrols2
            qtsolutions
-           qtsvg
+           qtsvg-5
            qtwebchannel
            qtwebsockets
            sqlite

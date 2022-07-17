@@ -604,7 +604,7 @@ decentralized calling using P2P-DHT.")
            libnotify
            network-manager
            qrencode
-           qtsvg
+           qtsvg-5
            qtwebengine
            qtwebchannel
            qtmultimedia

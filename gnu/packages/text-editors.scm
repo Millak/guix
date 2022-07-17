@@ -670,7 +670,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
            qtdeclarative
            qtmultimedia
            qtquickcontrols
-           qtsvg
+           qtsvg-5
            qtwebchannel))
     (propagated-inputs                  ; To get native-search-path
      (list qtwebengine))
@@ -695,7 +695,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins/"))
-                         '("qtsvg" "qtmultimedia"))))))))))
+                         '("qtsvg-5" "qtmultimedia"))))))))))
     (home-page "https://wereturtle.github.io/ghostwriter/")
     (synopsis "Write without distractions")
     (description
@@ -770,7 +770,7 @@ environment with Markdown markup.")
                    #:icon "manuskript"
                    #:categories "Office;WordProcessor;"))))))))
     (inputs
-     (list pandoc python-lxml python-markdown python-pyqt qtsvg))
+     (list pandoc python-lxml python-markdown python-pyqt qtsvg-5))
     (home-page "http://www.theologeek.ch/manuskript/")
     (synopsis "Tool for writers")
     (description "Manuskript provides a rich environment to help
@@ -870,7 +870,7 @@ editors.")
            perl
            python-wrapper
            qtbase-5
-           qtsvg
+           qtsvg-5
            sqlite))
     (arguments
      `(#:tests? #f                      ; no check target

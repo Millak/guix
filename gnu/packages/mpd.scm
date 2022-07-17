@@ -464,7 +464,7 @@ support")
            mpg123
            qtbase-5
            qtmultimedia
-           qtsvg
+           qtsvg-5
            taglib
            zlib))
     (synopsis "Graphical MPD Client")

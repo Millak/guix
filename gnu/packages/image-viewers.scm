@@ -520,7 +520,7 @@ It supports JPEG, PNG and GIF formats.")
     (inputs
      (list qtbase-5
            qtdeclarative
-           qtsvg
+           qtsvg-5
            boost
            eigen
            ;; gtest
@@ -673,7 +673,7 @@ For PDF support, install the @emph{mupdf} package.")
     (native-inputs
      (list qttools))
     (inputs
-     (list qtbase-5 qtimageformats qtsvg))
+     (list qtbase-5 qtimageformats qtsvg-5))
     (home-page "https://interversehq.com/qview/")
     (synopsis "Convenient and minimal image viewer")
     (description "qView is a Qt image viewer designed with visually
@@ -921,7 +921,7 @@ archives.")
        ("python" ,python-wrapper)
        ("quazip" ,quazip-0)
        ("qtbase" ,qtbase-5)
-       ("qtsvg" ,qtsvg)))
+       ("qtsvg-5" ,qtsvg-5)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("qtlinguist" ,qttools)))

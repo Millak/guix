@@ -187,7 +187,7 @@ itself as well as other components maintained by the LXQt project.")
              #t)))))
     (propagated-inputs
      ;; required by Qt5XdgIconLoader.pc
-     (list glib qtbase-5 qtsvg))
+     (list glib qtbase-5 qtsvg-5))
     (native-inputs
      (list lxqt-build-tools pkg-config))
     (home-page "https://github.com/lxqt/libqtxdg")
@@ -231,7 +231,7 @@ in Qt.")
            libqtxdg
            libxscrnsaver
            polkit-qt
-           qtsvg
+           qtsvg-5
            qtx11extras))
     (native-inputs
      (list lxqt-build-tools qttools))
@@ -284,7 +284,7 @@ and memory usage or network traffic.")
            liblxqt
            libqtxdg
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras))
     (native-inputs
      (list lxqt-build-tools qttools))
@@ -326,7 +326,7 @@ LXQt and the system it's running on.")
            liblxqt
            libqtxdg
            polkit-qt
-           qtsvg
+           qtsvg-5
            qtx11extras))
     (native-inputs
      (list lxqt-build-tools qttools))
@@ -375,7 +375,7 @@ the operating system LXQt is running on.")
            libxcursor
            libxi
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            solid
            xf86-input-libinput
@@ -443,7 +443,7 @@ configuration of both LXQt and the underlying operating system.")
            liblxqt
            libqtxdg
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras))
     (native-inputs
      (list pkg-config qttools lxqt-build-tools))
@@ -489,7 +489,7 @@ as a whole and are not limited to distinct applications.")
            liblxqt
            libqtxdg
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras))
     (native-inputs
      (list lxqt-build-tools qttools))
@@ -534,7 +534,7 @@ according to the Desktop Notifications Specification.")
            liblxqt
            libqtxdg
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras))
     (native-inputs
      (list lxqt-build-tools qttools))
@@ -584,7 +584,7 @@ of other programs.")
            pcre
            pulseaudio
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            solid
            xcb-util
@@ -646,7 +646,7 @@ of other programs.")
            pcre
            polkit-qt
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras))
     (native-inputs
      (list pkg-config polkit lxqt-build-tools qttools))
@@ -692,7 +692,7 @@ LXQt.")
            libqtxdg
            lxqt-globalkeys
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            solid))
     (native-inputs
@@ -739,7 +739,7 @@ when laptop batteries are low on power.")
            libfm-qt
            libqtxdg
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras))
     (native-inputs
      (list lxqt-build-tools qttools))
@@ -779,7 +779,7 @@ Qt with LXQt.")
            muparser
            pcre
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras))
     (native-inputs
      (list pkg-config qttools lxqt-build-tools))
@@ -825,7 +825,7 @@ allows for launching applications or shutting down the system.")
            libqtxdg
            procps
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            xdg-user-dirs))
     (native-inputs
@@ -893,7 +893,7 @@ for the LXQt desktop environment.")
            liblxqt
            libqtxdg
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            sudo))
     (native-inputs
@@ -1068,7 +1068,7 @@ manager Compton.")
         (base32 "0g6hs41xfw2ghhwpj0rqr2ciri0x9v984689yrnmnvah88zlya1f"))))
     (build-system cmake-build-system)
     (inputs
-     (list libexif libfm-qt qtbase-5 qtsvg qtx11extras))
+     (list libexif libfm-qt qtbase-5 qtsvg-5 qtx11extras))
     (native-inputs
      (list pkg-config lxqt-build-tools qttools))
     (arguments
@@ -1225,7 +1225,7 @@ QTermWidget.")
         (base32 "0cilzw7rz5m2klzpax7rrs5rr6whfda2svwzsn2jvmrirmh5by7r"))))
     (build-system cmake-build-system)
     (inputs
-     (list kwindowsystem libqtxdg qtbase-5 qtsvg qtx11extras))
+     (list kwindowsystem libqtxdg qtbase-5 qtsvg-5 qtx11extras))
     (native-inputs
      (list pkg-config perl qttools))
     (arguments
@@ -1283,7 +1283,7 @@ like @command{tar} and @command{zip}.")
       (inputs
         (list kwindowsystem
               qtbase-5
-              qtsvg
+              qtsvg-5
               liblxqt
               qtx11extras
               libqtxdg))
@@ -1332,9 +1332,9 @@ desktop.")
            xdg-user-dirs
            xdg-utils
            ;; Base
-           ;; TODO: qtsvg is needed for lxqt apps to display icons. Maybe it
+           ;; TODO: qtsvg-5 is needed for lxqt apps to display icons. Maybe it
            ;; should be added to their propagated-inputs?
-           qtsvg
+           qtsvg-5
            ;; Core
            lxqt-about
            lxqt-admin

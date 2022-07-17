@@ -2264,7 +2264,7 @@ users to select LV2 plugins and run them with jalv.")
            qtdeclarative
            qtkeychain
            qtscript
-           qtsvg
+           qtsvg-5
            qtx11extras
            rubberband
            soundtouch
@@ -2301,7 +2301,7 @@ perform creative live mixes with digital music files.")
            new-session-manager
            liblo
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://synthv1.sourceforge.io")
@@ -2334,7 +2334,7 @@ oscillators and stereo effects.")
            new-session-manager
            liblo
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://drumkv1.sourceforge.io")
@@ -2367,7 +2367,7 @@ effects.")
            new-session-manager
            liblo
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://samplv1.sourceforge.io")
@@ -2400,7 +2400,7 @@ effects.")
            liblo
            fftwf
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://padthv1.sourceforge.io")
@@ -2928,7 +2928,7 @@ browser.")
                                "/manpages/docbook.xsl")))
              #t)))))
     (inputs
-     (list qtbase-5 qtsvg qttools alsa-lib))
+     (list qtbase-5 qtsvg-5 qttools alsa-lib))
     (native-inputs
      (list pkg-config
            libxslt ; for xsltproc
@@ -2972,7 +2972,7 @@ backends, including ALSA, OSS, Network and FluidSynth.")
                                "/manpages/docbook.xsl")))
              #t)))))
     (inputs
-     (list drumstick qtbase-5 qtsvg qtx11extras))
+     (list drumstick qtbase-5 qtsvg-5 qtx11extras))
     (native-inputs
      (list libxslt ;for xsltproc
            docbook-xsl qttools pkg-config))
@@ -4761,7 +4761,7 @@ includes LV2 plugins and a JACK standalone client.")
            qtgraphicaleffects
            qtquickcontrols2
            qtscript
-           qtsvg
+           qtsvg-5
            qtxmlpatterns))
     (native-inputs
      (list pkg-config qttools))
@@ -4828,7 +4828,7 @@ sample library.")
            pcre
            pulseaudio                   ; required by rtaudio
            qtbase-5
-           qtsvg
+           qtsvg-5
            rtaudio
            rubberband
            sord))
@@ -5550,7 +5550,7 @@ discard bad quality ones.
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins"))
-                         '("qtbase" "qtmultimedia" "qtsvg")))
+                         '("qtbase" "qtmultimedia" "qtsvg-5")))
                  `("QML2_IMPORT_PATH" ":" prefix
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
@@ -5564,7 +5564,7 @@ discard bad quality ones.
            portaudio
            qtbase-5
            qtmultimedia
-           qtsvg))
+           qtsvg-5))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("hicolor-icon-theme" ,hicolor-icon-theme)

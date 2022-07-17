@@ -93,7 +93,7 @@
            qtgraphicaleffects
            qtquickcontrols
            qtquickcontrols2
-           qtsvg
+           qtsvg-5
            shadow
            wayland))
     (arguments

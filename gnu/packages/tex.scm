@@ -8099,7 +8099,7 @@ and Karl Berry.")
            mythes
            python
            qtbase-5
-           qtsvg
+           qtsvg-5
            zlib))
     (propagated-inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-fonts-ec)))))

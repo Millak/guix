@@ -136,7 +136,7 @@
            qtbase-5
            qtmultimedia
            qtscript
-           qtsvg
+           qtsvg-5
            snorenotify
            sonnet
            zlib))

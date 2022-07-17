@@ -789,7 +789,7 @@ base64url, base32, base32hex and hex.")
                   libnitrokey
                   libusb
                   qtbase-5
-                  qtsvg))
+                  qtsvg-5))
     (home-page "https://github.com/Nitrokey/nitrokey-app")
     (synopsis "GUI tool for Nitrokey devices")
     (description
@@ -856,7 +856,7 @@ devices.")
      (list pkg-config qttools))
     (inputs
      (list qtbase-5
-           qtsvg
+           qtsvg-5
            qtdeclarative
            qtwebsockets
            qtgraphicaleffects

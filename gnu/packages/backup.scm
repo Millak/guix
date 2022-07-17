@@ -1339,7 +1339,7 @@ borgmatic is powered by borg.")
            python-pyqt-without-qtwebkit
            python-secretstorage
            ;; This is included so that the qt-wrap phase picks it up.
-           qtsvg))
+           qtsvg-5))
     (home-page "https://github.com/borgbase/vorta")
     (synopsis "Graphical backup client based on BorgBackup")
     (description "Vorta is a graphical backup client based on the Borg backup

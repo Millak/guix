@@ -3064,7 +3064,7 @@ ASCII text files using Gmsh's own scripting language.")
              (let ((out (assoc-ref outputs "out")))
                (wrap-program (string-append out "/bin/veusz")
                  `("QT_PLUGIN_PATH" prefix
-                   ,(list (string-append (assoc-ref inputs "qtsvg")
+                   ,(list (string-append (assoc-ref inputs "qtsvg-5")
                                          "/lib/qt5/plugins/"))))))))))
     (native-inputs
      (list pkg-config
@@ -3076,7 +3076,7 @@ ASCII text files using Gmsh's own scripting language.")
            python-h5py ;optional, for HDF5 data
            python-pyqt
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://veusz.github.io/")

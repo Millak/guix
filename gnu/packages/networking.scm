@@ -1637,7 +1637,7 @@ of the same name.")
            minizip
            qtbase-5
            qtmultimedia
-           qtsvg
+           qtsvg-5
            sbc
            snappy
            zlib

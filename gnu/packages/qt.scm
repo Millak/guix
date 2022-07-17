@@ -187,7 +187,7 @@
     (native-inputs
      (list qttools))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (synopsis "Qt5 Configuration Tool")
     (description "Qt5CT is a program that allows users to configure Qt5
 settings (such as icons, themes, and fonts) in desktop environments or
@@ -829,7 +829,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
             (variable "XDG_CONFIG_DIRS")
             (files '("etc/xdg")))))))
 
-(define-public qtsvg
+(define-public qtsvg-5
   (package (inherit qtbase-5)
     (name "qtsvg")
     (version "5.15.2")
@@ -900,7 +900,7 @@ HostData=lib/qt5
  contents of SVG files.")))
 
 (define-public qtimageformats
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtimageformats")
     (version "5.15.2")
     (source (origin
@@ -915,7 +915,7 @@ HostData=lib/qt5
                  (delete-file-recursively "src/3rdparty")
                  #t))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'fix-build
@@ -938,7 +938,7 @@ HostData=lib/qt5
 support for MNG, TGA, TIFF and WBMP image formats.")))
 
 (define-public qtx11extras
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtx11extras")
     (version "5.15.2")
     (source (origin
@@ -948,7 +948,7 @@ support for MNG, TGA, TIFF and WBMP image formats.")))
               (base32
                "0gkfzj195v9flwljnqpdz3a532618yn4h2577nlsai56x4p7053h"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (native-inputs (list perl))
     (inputs
@@ -958,7 +958,7 @@ support for MNG, TGA, TIFF and WBMP image formats.")))
 from within Qt 5.")))
 
 (define-public qtxmlpatterns
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtxmlpatterns")
     (version "5.15.2")
     (source (origin
@@ -968,7 +968,7 @@ from within Qt 5.")))
               (base32
                "1ypj5jpa31rlx8yfw3y9jia212lfnxvnqkvygs6ihjf3lxi23skn"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f) ; TODO: Enable the tests
        ((#:phases phases)
         `(modify-phases ,phases
@@ -985,7 +985,7 @@ XML and custom data models.  It contains programs such as xmlpatterns and
 xmlpatternsvalidator.")))
 
 (define-public qtdeclarative
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtdeclarative")
     (version "5.15.2")
     (source (origin
@@ -995,7 +995,7 @@ xmlpatternsvalidator.")))
               (base32
                "0lancdn7y0lrlmyn5cbdm0izd5yprvd5n77nhkb7a3wl2sbx0066"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f)             ;TODO: Enable the tests
        ((#:phases phases)
         `(modify-phases ,phases
@@ -1013,7 +1013,7 @@ xmlpatternsvalidator.")))
            pkg-config
            python
            python-wrapper
-           qtsvg
+           qtsvg-5
            vulkan-headers))
     (inputs
      (list mesa qtbase-5))
@@ -1025,7 +1025,7 @@ developers to extend the QML language with custom types and integrate QML code
 with JavaScript and C++.")))
 
 (define-public qtconnectivity
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtconnectivity")
     (version "5.15.2")
     (source (origin
@@ -1043,7 +1043,7 @@ with JavaScript and C++.")))
 with Bluetooth and NFC.")))
 
 (define-public qtwebsockets
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtwebsockets")
     (version "5.15.2")
     (source (origin
@@ -1053,7 +1053,7 @@ with Bluetooth and NFC.")))
               (base32
                "0gr399fn5n8j3m9d3vv01vcbr1cb7pw043j04cnnxzrlvn2jvd50"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (native-inputs
      (list perl qtdeclarative))
@@ -1066,7 +1066,7 @@ to act as a server that can process WebSocket requests, or a client that can
 consume data received from the server, or both.")))
 
 (define-public qtsensors
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtsensors")
     (version "5.15.2")
     (source (origin
@@ -1076,7 +1076,7 @@ consume data received from the server, or both.")))
               (base32
                "0fa81r7bn1mf9ynwsx524a55dx1q0jb4vda6j48ssb4lx7wi201z"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:parallel-tests? _ #f) #f) ; can lead to race condition
        ((#:phases phases)
         `(modify-phases ,phases
@@ -1095,7 +1095,7 @@ and C++ interfaces.  The Qt Sensors API also provides a motion gesture
 recognition API for devices.")))
 
 (define-public qtmultimedia
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtmultimedia")
     (version "5.15.2")
     (source (origin
@@ -1114,7 +1114,7 @@ recognition API for devices.")))
                    (("spectrum") "#"))
                  #t))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
         `(modify-phases ,phases
            (replace 'configure
@@ -1140,7 +1140,7 @@ record media, and manage a collection of media content.  It also contains a
 set of plugins for interacting with pulseaudio and GStreamer.")))
 
 (define-public qtwayland
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtwayland")
     (version "5.15.2")
     (source (origin
@@ -1150,7 +1150,7 @@ set of plugins for interacting with pulseaudio and GStreamer.")))
               (base32
                "1ddfx4nak16xx0zh1kl836zxvpbixmmjyplsmfmg65pqkwi34dqr"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'disable-failing-tests
@@ -1189,7 +1189,7 @@ set of plugins for interacting with pulseaudio and GStreamer.")))
 compositor libraries.")))
 
 (define-public qtserialport
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtserialport")
     (version "5.15.2")
     (source (origin
@@ -1202,7 +1202,7 @@ compositor libraries.")))
     (inputs
      (list qtbase-5 eudev))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'patch-dlopen-paths
@@ -1219,7 +1219,7 @@ compositor libraries.")))
 interacting with serial ports from within Qt.")))
 
 (define-public qtserialbus
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtserialbus")
     (version "5.15.2")
     (source (origin
@@ -1229,7 +1229,7 @@ interacting with serial ports from within Qt.")))
               (base32
                "125x6756fjpldqy6wbw6cg7ngjh2016aiq92bchh719z1mf7xsxf"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (add-after 'unpack 'patch-libsocketcan-reference
@@ -1249,7 +1249,7 @@ access the various industrial serial buses and protocols, such as CAN, ModBus,
 and others.")))
 
 (define-public qtwebchannel
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtwebchannel")
     (version "5.15.2")
     (source (origin
@@ -1268,7 +1268,7 @@ application).  The transport mechanism is supported out of the box by the two
 popular web engines, Qt WebKit 2 and Qt WebEngine.")))
 
 (define-public qtwebglplugin
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtwebglplugin")
     (version "5.15.2")
     (source (origin
@@ -1278,7 +1278,7 @@ popular web engines, Qt WebKit 2 and Qt WebEngine.")))
               (base32
                "0ihlnhv8ldkqz82v3j7j22lrhk17b6ghra8sx85y2agd2ysq5rw1"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'disable-network-tests
@@ -1297,7 +1297,7 @@ compatible web browser without the use of plug-ins.  The API is similar to
 OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
 
 (define-public qtwebview
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtwebview")
     (version "5.15.2")
     (source (origin
@@ -1316,7 +1316,7 @@ application without necessarily including a full web browser stack by using
 native APIs where it makes sense.")))
 
 (define-public qtlocation
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtlocation")
     (version "5.15.2")
     (source (origin
@@ -1329,7 +1329,7 @@ native APIs where it makes sense.")))
               (base32
                "184jychnlfhplpwc5cdcsapwljgwvzk5qpf3val4kpq8w44wnkwq"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (native-inputs
      (list perl qtdeclarative qtquickcontrols qtserialport))
@@ -1340,7 +1340,7 @@ native APIs where it makes sense.")))
 positioning and geolocation plugins.")))
 
 (define-public qttools
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qttools")
     (version "5.15.2")
     (source (origin
@@ -1350,7 +1350,7 @@ positioning and geolocation plugins.")))
               (base32
                "1k618f7v6jaj0ygy8d7jvgb8zjr47sn55kiskbdkkizp3z7d12f1"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (native-inputs
      (list perl qtdeclarative vulkan-headers))
@@ -1362,7 +1362,7 @@ the documentation, translate applications, generate help files and other stuff
 that helps in Qt development.")))
 
 (define-public qtscript
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtscript")
     (version "5.15.2")
     (source (origin
@@ -1382,7 +1382,7 @@ The following guides and references cover aspects of programming with
 ECMAScript and Qt.")))
 
 (define-public qtquickcontrols
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtquickcontrols")
     (version "5.15.2")
     (source (origin
@@ -1392,7 +1392,7 @@ ECMAScript and Qt.")))
               (base32
                "1dczakl868mg0lnwpf082jjc5976ycn879li1vqlgw5ihirzp4y3"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
      (list qtbase-5 qtdeclarative))
@@ -1402,7 +1402,7 @@ applications scriptable.  This module provides a set of extra components that
 can be used to build complete interfaces in Qt Quick.")))
 
 (define-public qtquickcontrols2
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtquickcontrols2")
     (version "5.15.2")
     (source (origin
@@ -1412,7 +1412,7 @@ can be used to build complete interfaces in Qt Quick.")))
               (base32
                "06c9vrwvbjmzapmfa25y34lgjkzg57xxbm92nr6wkv5qykjnq6v7"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
      (list qtbase-5 qtdeclarative))
@@ -1423,7 +1423,7 @@ and tray icons.  It falls back to Qt Widgets when a native implementation is
 not available.")))
 
 (define-public qtgraphicaleffects
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtgraphicaleffects")
     (version "5.15.2")
     (source (origin
@@ -1433,7 +1433,7 @@ not available.")))
               (base32
                "1r6zfc0qga2ax155js7c8y5rx6vgayf582s921j09mb797v6g3gc"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
      (list qtbase-5 qtdeclarative))
@@ -1446,7 +1446,7 @@ types.  The effects cover functional areas such as blending, masking, blurring,
 coloring, and many more.")))
 
 (define-public qtgamepad
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtgamepad")
     (version "5.15.2")
     (source (origin
@@ -1472,7 +1472,7 @@ primary target audience are embedded devices with fullscreen user interfaces,
 and mobile applications targeting TV-like form factors.")))
 
 (define-public qtscxml
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtscxml")
     (version "5.15.2")
     (source (origin
@@ -1499,7 +1499,7 @@ generating a C++ file that has a class implementing the state machine.  It
 also contains functionality to support data models and executable content.")))
 
 (define-public qtpurchasing
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtpurchasing")
     (version "5.15.2")
     (source (origin
@@ -1515,7 +1515,7 @@ also contains functionality to support data models and executable content.")))
 purchasing goods and services.")))
 
 (define-public qtcharts
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtcharts")
     (version "5.15.2")
     (source (origin
@@ -1525,7 +1525,7 @@ purchasing goods and services.")))
               (base32
                "049x7z8zcp9jixmdv2fjscy2ggpd6za9hkdbb2bqp2mxjm0hwxg0"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
      (list qtbase-5 qtdeclarative))
@@ -1538,7 +1538,7 @@ selecting one of the charts themes.")
     (license license:gpl3)))
 
 (define-public qtdatavis3d
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtdatavis3d")
     (version "5.15.2")
     (source (origin
@@ -1548,7 +1548,7 @@ selecting one of the charts themes.")
               (base32
                "1zdn3vm0nfy9ny7c783aabp3mhlnqhi9fw2rljn7ibbksmsnasi2"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
      (list qtbase-5 qtdeclarative))
@@ -1561,7 +1561,7 @@ customized by using themes or by adding custom items and labels to them.")
     (license license:gpl3)))
 
 (define-public qtnetworkauth
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtnetworkauth")
     (version "5.15.2")
     (source (origin
@@ -1571,7 +1571,7 @@ customized by using themes or by adding custom items and labels to them.")
               (base32
                "11fdgacv4syr8bff2vdw7rb0dg1gcqpdf37hm3pn31d6z91frhpw"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'remove-failing-test
@@ -1587,7 +1587,7 @@ customized by using themes or by adding custom items and labels to them.")
 implementation of OAuth and OAuth2 authenticathon methods for Qt.")))
 
 (define-public qtremoteobjects
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtremoteobjects")
     (version "5.15.2")
     (source (origin
@@ -1597,7 +1597,7 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")))
               (base32
                "1hngbp0vkr35rpsrac7b9vx6f360v8v2g0fffzm590l8j2ybd0b7"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'remove-failing-test
@@ -1620,7 +1620,7 @@ Qt's functionalities to enable an easy exchange of information between
 processes or computers.")))
 
 (define-public qtspeech
-  (package (inherit qtsvg)
+  (package (inherit qtsvg-5)
     (name "qtspeech")
     (version "5.15.2")
     (source (origin
@@ -1631,7 +1631,7 @@ processes or computers.")))
                "1xc3x3ghnhgchsg1kgj156yg69wn4rwjx8r28i1jd05hxjggn468"))))
 
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
      (list qtbase-5))
@@ -1676,7 +1676,7 @@ using the Enchant spell-checking library.")
 
 (define-public qtwebengine
   (package
-    (inherit qtsvg)
+    (inherit qtsvg-5)
     (name "qtwebengine")
     (version (package-version qtbase-5))
     (source
@@ -1970,7 +1970,7 @@ using the Enchant spell-checking library.")
            vulkan-headers
            xcb-util))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:modules modules '())
         `((guix build gnu-build-system)
           (guix build utils)
@@ -2203,7 +2203,7 @@ module provides support functions to the automatically generated code.")
        ("qtmultimedia" ,qtmultimedia)
        ("qtsensors" ,qtsensors)
        ("qtserialport" ,qtserialport)
-       ("qtsvg" ,qtsvg)
+       ("qtsvg-5" ,qtsvg-5)
        ("qttools" ,qttools)
        ("qtwebchannel" ,qtwebchannel)
        ("qtwebkit" ,qtwebkit)
@@ -2307,7 +2307,7 @@ contain over 620 classes.")
        ("python-sip" ,python-sip)
        ("python-pyqt" ,python-pyqt-without-qtwebkit)
        ("qtbase" ,qtbase-5)
-       ("qtsvg" ,qtsvg)
+       ("qtsvg-5" ,qtsvg-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtwebchannel" ,qtwebchannel)
        ("qtwebengine" ,qtwebengine)))
@@ -2693,7 +2693,7 @@ that can be only started once per user.
          (base32 "0hf0mpca248xlqn7xnzkfj8drf19gdyg5syzklvq8pibxiixwxj0"))))
   (build-system gnu-build-system)
   (inputs
-   (list qtbase-5 qtsvg qttools))
+   (list qtbase-5 qtsvg-5 qttools))
   (arguments
    `(#:phases
      (modify-phases %standard-phases
@@ -3019,7 +3019,7 @@ color-related widgets.")
            qtscxml
            qtsensors
            qtspeech
-           qtsvg
+           qtsvg-5
            qtwebchannel
            qtwebengine
            qtwebsockets
@@ -3068,7 +3068,7 @@ color-related widgets.")
                                 "qtscxml"
                                 "qtsensors"
                                 "qtspeech"
-                                "qtsvg"
+                                "qtsvg-5"
                                 "qttools"
                                 "qtwebchannel"
                                 "qtwebengine"

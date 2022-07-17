@@ -3232,7 +3232,7 @@ link REQUIRED)"))))))
                   yaml-cpp
                   qtbase-5
                   qtdeclarative
-                  qtsvg
+                  qtsvg-5
                   qtwebchannel
                   qtwebsockets))
     (propagated-inputs                  ;to get native-search-path
@@ -5852,9 +5852,8 @@ and DSD streams.")
      `(#:tests? #f))    ;; no tests
     (inputs (list alsa-lib
                   pipewire-0.3
-                  ;; qtsvg is still on version 5; use qtbase-5 to match
                   qtbase-5
-                  qtsvg))
+                  qtsvg-5))
     (native-inputs (list pkg-config))
     (synopsis "PipeWire graph manager")
     (description

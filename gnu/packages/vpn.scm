@@ -260,7 +260,7 @@
        ("qtgraphicaleffects" ,qtgraphicaleffects)
        ("qtquickcontrols" ,qtquickcontrols)
        ("qtquickcontrols2" ,qtquickcontrols2)
-       ("qtsvg" ,qtsvg)))
+       ("qtsvg-5" ,qtsvg-5)))
     (propagated-inputs
      (list go-0xacab-org-leap-shapeshifter
            go-github-com-apparentlymart-go-openvpn-mgmt

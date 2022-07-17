@@ -185,7 +185,7 @@ of categories with some of the activities available in that category.
            qtmultimedia
            qtquickcontrols
            qtsensors
-           qtsvg
+           qtsvg-5
            qtxmlpatterns))
     (home-page "https://gcompris.net/index-en.html")
     (synopsis "Educational games for small children")
@@ -560,7 +560,7 @@ specialized device.")
              qtbase-5
              qtdeclarative
              qtmultimedia
-             qtsvg
+             qtsvg-5
              qtwebchannel
              qtwebengine
              qtxmlpatterns

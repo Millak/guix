@@ -474,7 +474,7 @@ waveform until they line up with the proper sounds.")
                 "0b1nwiwyg01087q318vymg4si76dw41ykxbn2zwd6dqbxzbpr1dh"))))
     (build-system gnu-build-system)
     (inputs
-     (list qtbase-5 qtxmlpatterns qtmultimedia qtsvg))
+     (list qtbase-5 qtxmlpatterns qtmultimedia qtsvg-5))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

@@ -381,7 +381,7 @@ such as:
            libsigrok
            libsigrokdecode
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (home-page "https://www.sigrok.org/wiki/PulseView")
     (synopsis "Qt based logic analyzer, oscilloscope and MSO GUI for sigrok")
     (description "PulseView is a Qt based logic analyzer, oscilloscope and MSO GUI

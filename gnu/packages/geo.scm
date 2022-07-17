@@ -2622,7 +2622,7 @@ growing set of geoscientific methods.")
            qtkeychain
            qtlocation
            qtserialport
-           qtsvg
+           qtsvg-5
            qwt
            ;;("saga" ,saga)
            sqlite))
@@ -2764,7 +2764,7 @@ using third-party geocoders and other data sources.")
            python-3
            python-numpy
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtxmlpatterns
            qwt
            zlib))

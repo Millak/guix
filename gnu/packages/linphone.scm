@@ -856,7 +856,7 @@ and video calls or instant messaging capabilities to an application.")
            qtgraphicaleffects
            qtquickcontrols
            qtquickcontrols2
-           qtsvg))
+           qtsvg-5))
     (synopsis "Desktop client for the Linphone SIP softphone")
     (description "Linphone is a SIP softphone for voice and video over IP calling
 (VoIP) and instant messaging.  Amongst its features are:

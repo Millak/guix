@@ -179,7 +179,7 @@ human.")
            pcsc-lite
            qrencode
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            quazip-0                     ; XC_KEESHARE
            readline
@@ -699,7 +699,7 @@ key URIs using the standard otpauth:// scheme.")
     (native-inputs
      (list qttools))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (home-page "https://qtpass.org")
     (synopsis "GUI for password manager password-store")
     (description

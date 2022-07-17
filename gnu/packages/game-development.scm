@@ -520,7 +520,7 @@ formats such as PNG.")
                 "05gczsywkk45bh0z1vv8l6cmrlncc2qj8agavj5ryxpnxkzy69r1"))))
     (build-system gnu-build-system)
     (inputs
-     (list qtbase-5 qtdeclarative qtsvg zlib))
+     (list qtbase-5 qtdeclarative qtsvg-5 zlib))
     (native-inputs
      (list qttools))
     (arguments

@@ -646,7 +646,7 @@ address of one of the participants.")
            protobuf
            pulseaudio
            qtbase-5
-           qtsvg
+           qtsvg-5
            speech-dispatcher
            speex ; avoid bundled
            speexdsp ; avoid bundled

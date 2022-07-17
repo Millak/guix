@@ -712,7 +712,7 @@ infrastructure.")
            graphviz
            kiconthemes
            kparts
-           qtsvg))
+           qtsvg-5))
     (native-inputs
      (list pkg-config extra-cmake-modules kdoctools))
     (home-page "https://apps.kde.org/en/kgraphviewer")
@@ -877,7 +877,7 @@ or user activity.")
            qtbase-5
            qtdeclarative
            qtquickcontrols2
-           qtsvg
+           qtsvg-5
            ;; Run-time dependency
            qtgraphicaleffects))
     (home-page "https://community.kde.org/Frameworks")
@@ -2546,7 +2546,7 @@ window does not need focus for them to be activated.")
            kitemviews
            kwidgetsaddons
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -3339,7 +3339,7 @@ setUrl, setUserAgent and call.")
        ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtquickcontrols2" ,qtquickcontrols2)
-       ("qtsvg" ,qtsvg)
+       ("qtsvg-5" ,qtsvg-5)
        ("qtx11extras" ,qtx11extras)
        ("solid" ,solid)))
     (arguments
@@ -3548,7 +3548,7 @@ workspace.")
            libsm
            networkmanager-qt
            openssl
-           qtsvg
+           qtsvg-5
            qttools
            qtx11extras))
     ;; FIXME: Use Guix ca-bundle.crt in etc/xdg/ksslcalist and
@@ -3700,7 +3700,7 @@ support.")
     (native-inputs
      (list extra-cmake-modules kdoctools qttools))
     (inputs
-     (list ki18n kjs qtbase-5 qtsvg))
+     (list ki18n kjs qtbase-5 qtsvg-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE Frameworks 5 embedded Javascript engine for Qt")
     (description "KJSEmbed provides a method of binding Javascript objects to
