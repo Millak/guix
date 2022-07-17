@@ -173,14 +173,16 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
                 "185wwqd60r2rk6lzcvd6sl58589qfqrfnf7lqd6friyj84n9cjc6"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases (delete 'configure))
-       #:test-target "test"
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "exif=1"
-             "inotify=1"
-             "magic=1")))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))     ; no configure script
+           #:test-target "test"
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output)
+                   "exif=1"
+                   "inotify=1"
+                   "magic=1")))
     (native-inputs
      (list perl perl-test-command))
     (inputs (list curl
