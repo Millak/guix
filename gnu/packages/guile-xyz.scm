@@ -417,13 +417,11 @@ dictionary and suggesting spelling corrections.")
     (package
       (name "guile2.0-bash")
       (version (string-append "0.1.6-" revision "." (string-take commit 7)))
-      (home-page
-       "https://anonscm.debian.org/cgit/users/kaction-guest/retired/dev.guile-bash.git")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (commit commit)
-                      (url home-page)))
+                      (url "https://git.sr.ht/~kaction/guile-bash")))
                 (sha256
                  (base32
                   "097vny990wp2qpjij6a5a5gwc6fxzg5wk56inhy18iki5v6pif1p"))
@@ -454,6 +452,7 @@ dictionary and suggesting spelling corrections.")
                        ("bash-full" ,bash)))
       (inputs `(("guile" ,guile-2.0)
                 ("bash:include" ,bash "include")))
+      (home-page "https://git.sr.ht/~kaction/guile-bash")
       (synopsis "Extend Bash using Guile")
       (description
        "Guile-Bash provides a shared library and set of Guile modules,
