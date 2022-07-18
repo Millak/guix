@@ -860,7 +860,7 @@ devices.")
            qtdeclarative-5
            qtwebsockets
            qtgraphicaleffects
-           qtquickcontrols2
+           qtquickcontrols2-5
            pcsc-lite
            openssl))
     (arguments

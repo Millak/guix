@@ -192,7 +192,7 @@
            qtdeclarative-5
            qtgraphicaleffects
            qtkeychain
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtsolutions
            qtsvg-5
            qtwebchannel

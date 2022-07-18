@@ -4759,7 +4759,7 @@ includes LV2 plugins and a JACK standalone client.")
            qtbase-5
            qtdeclarative-5
            qtgraphicaleffects
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtscript
            qtsvg-5
            qtxmlpatterns))

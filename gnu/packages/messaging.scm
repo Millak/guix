@@ -1479,7 +1479,7 @@ default.")
                   qtdeclarative-5
                   qtgraphicaleffects
                   qtlocation
-                  qtquickcontrols2
+                  qtquickcontrols2-5
                   qtsvg-5
                   qtmultimedia-5
                   qtxmlpatterns
@@ -2461,7 +2461,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            qtkeychain
            qtgraphicaleffects
            qtmultimedia-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtsvg-5
            spdlog
            single-application-qt5
@@ -2500,7 +2500,7 @@ notification, emojis, E2E encryption, and voip calls.")
            qtdeclarative-5
            qtmultimedia-5
            qtquickcontrols-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtsvg-5
            qttools
            xdg-utils))

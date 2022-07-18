@@ -290,7 +290,7 @@ browser for easy news reading.")
            qtmultimedia-5
            qtnetworkauth
            qtquickcontrols-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtscript
            qtsvg-5
            shared-mime-info))
@@ -347,7 +347,7 @@ projects.")
        ("qtbase" ,qtbase-5)
        ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtquickcontrols-5" ,qtquickcontrols-5)  ;; not checked as requirement
-       ("qtquickcontrols2" ,qtquickcontrols2)  ;; not checked as requirement
+       ("qtquickcontrols2-5" ,qtquickcontrols2-5)  ;; not checked as requirement
        ("qtwebkit" ,qtwebkit)
        ("threadweaver" ,threadweaver)
 
@@ -749,7 +749,7 @@ different notification systems.")
            qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtx11extras))
     (home-page "https://community.kde.org/KDEConnect")
     (synopsis "Enable your devices to communicate with each other")

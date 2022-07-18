@@ -4861,7 +4861,7 @@ transitions, and effects and then export your film to many common formats.")
            qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtsvg-5
            qtwebkit
            qtwebsockets

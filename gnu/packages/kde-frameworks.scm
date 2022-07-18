@@ -876,7 +876,7 @@ or user activity.")
            ;;("plasma-frameworks" ,plasma-framework) ;; Tier 3!
            qtbase-5
            qtdeclarative-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtsvg-5
            ;; Run-time dependency
            qtgraphicaleffects))
@@ -1342,7 +1342,7 @@ libpulse.")
            kirigami
            qtbase-5
            qtdeclarative-5
-           qtquickcontrols2))
+           qtquickcontrols2-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "QtQuickControls2 style that integrates with the desktop")
     (description "This is a style for QtQuickControls2 which is using
@@ -3338,7 +3338,7 @@ setUrl, setUserAgent and call.")
        ("phonon" ,phonon)
        ("qtbase" ,qtbase-5)
        ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtquickcontrols2" ,qtquickcontrols2)
+       ("qtquickcontrols2-5" ,qtquickcontrols2-5)
        ("qtsvg-5" ,qtsvg-5)
        ("qtx11extras" ,qtx11extras)
        ("solid" ,solid)))

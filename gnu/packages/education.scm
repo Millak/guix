@@ -674,7 +674,7 @@ language and very flexible regarding to new or unknown keyboard layouts.")
            qtbase-5
            qtdeclarative-5
            qtgraphicaleffects
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtx11extras
            qtxmlpatterns))
     (home-page "https://edu.kde.org/ktouch/")
@@ -996,7 +996,7 @@ formats.")
      (list libeb
            qtbase-5
            qtmultimedia-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtdeclarative-5
            qtwebchannel
            qtwebengine

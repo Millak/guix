@@ -611,7 +611,7 @@ decentralized calling using P2P-DHT.")
            qtdeclarative-5
            qtgraphicaleffects
            qtquickcontrols-5
-           qtquickcontrols2))
+           qtquickcontrols2-5))
     (home-page "https://jami.net")
     (synopsis "Qt Jami client")
     (description "This package provides the Jami Qt client.  Jami is a secure

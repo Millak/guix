@@ -92,7 +92,7 @@
            ;; 'wrap-qt-program'.
            qtgraphicaleffects
            qtquickcontrols-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtsvg-5
            shadow
            wayland))

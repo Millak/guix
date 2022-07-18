@@ -3425,7 +3425,7 @@ compiled translations.  Prebuilt Firmware files are removed.")
            qtdeclarative-5
            qtgraphicaleffects
            qtquickcontrols-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtsvg-5))
     (arguments
      `(;; FIXME: tests are disabled, because they cause an infinite loop.

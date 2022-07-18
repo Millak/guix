@@ -1931,7 +1931,7 @@ receiver.")
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            soapysdr))
     (arguments
      `(#:configure-flags '("-DRTLSDR=ON"
@@ -2162,7 +2162,7 @@ voice formats.")
            qtdeclarative-5
            qtlocation
            qtmultimedia-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtserialport
            qtspeech
            qtwebsockets

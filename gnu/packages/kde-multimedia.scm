@@ -176,7 +176,7 @@ This package is part of the KDE multimedia module.")
            qtgraphicaleffects ; not listed as dependency
            qtmultimedia-5
            qtquickcontrols-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtsvg-5
            qtx11extras
            ;; TODO: upnpqt https://gitlab.com/homeautomationqt/upnp-player-qt
@@ -532,7 +532,7 @@ autoloading of subtitle files for use while playing video.")
            qtdeclarative-5
            qtgraphicaleffects
            qtquickcontrols-5
-           qtquickcontrols2 ; not listed as dependency
+           qtquickcontrols2-5 ; not listed as dependency
            qtx11extras))
     (arguments
      (list #:tests? #f ; test program gets built, but is not found

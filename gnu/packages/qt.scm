@@ -1656,7 +1656,7 @@ ECMAScript and Qt.")))
 applications scriptable.  This module provides a set of extra components that
 can be used to build complete interfaces in Qt Quick.")))
 
-(define-public qtquickcontrols2
+(define-public qtquickcontrols2-5
   (package (inherit qtsvg-5)
     (name "qtquickcontrols2")
     (version "5.15.2")
@@ -3269,7 +3269,7 @@ color-related widgets.")
            qtlocation
            qtmultimedia-5
            qtquickcontrols-5
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtscript
            qtscxml
            qtsensors
@@ -3318,7 +3318,7 @@ color-related widgets.")
                                 "qtlocation"
                                 "qtmultimedia-5"
                                 "qtquickcontrols-5"
-                                "qtquickcontrols2"
+                                "qtquickcontrols2-5"
                                 "qtscript"
                                 "qtscxml"
                                 "qtsensors"

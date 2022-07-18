@@ -259,7 +259,7 @@
        ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtgraphicaleffects" ,qtgraphicaleffects)
        ("qtquickcontrols-5" ,qtquickcontrols-5)
-       ("qtquickcontrols2" ,qtquickcontrols2)
+       ("qtquickcontrols2-5" ,qtquickcontrols2-5)
        ("qtsvg-5" ,qtsvg-5)))
     (propagated-inputs
      (list go-0xacab-org-leap-shapeshifter
