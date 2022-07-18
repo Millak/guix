@@ -858,7 +858,7 @@ devices.")
      (list qtbase-5
            qtsvg-5
            qtdeclarative-5
-           qtwebsockets
+           qtwebsockets-5
            qtgraphicaleffects
            qtquickcontrols2-5
            pcsc-lite

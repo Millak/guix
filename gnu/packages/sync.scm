@@ -196,7 +196,7 @@
            qtsolutions
            qtsvg-5
            qtwebchannel
-           qtwebsockets
+           qtwebsockets-5
            sqlite
            xdg-utils
            zlib))

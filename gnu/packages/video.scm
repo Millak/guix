@@ -4864,7 +4864,7 @@ transitions, and effects and then export your film to many common formats.")
            qtquickcontrols2-5
            qtsvg-5
            qtwebkit
-           qtwebsockets
+           qtwebsockets-5
            qtx11extras
            sdl2))
     (home-page "https://www.shotcut.org/")

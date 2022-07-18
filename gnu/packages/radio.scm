@@ -1336,7 +1336,7 @@ weak-signal conditions.")
       jtdx-hamlib
       libusb
       qtbase-5
-      qtwebsockets
+      qtwebsockets-5
       qtmultimedia-5
       qtserialport))
     (arguments
@@ -2165,7 +2165,7 @@ voice formats.")
            qtquickcontrols2-5
            qtserialport
            qtspeech
-           qtwebsockets
+           qtwebsockets-5
            rtl-sdr
            serialdv
            soapysdr

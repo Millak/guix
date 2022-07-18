@@ -996,7 +996,7 @@ want what you have.")
              qtmultimedia-5
              qtsvg-5
              qttools
-             qtwebsockets
+             qtwebsockets-5
              xz
              zlib))
       (home-page "https://cockatrice.github.io")

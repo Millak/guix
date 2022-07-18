@@ -1202,7 +1202,7 @@ integrate QML code with JavaScript and C++.")
     (description "The Qt Connectivity modules provides modules for interacting
 with Bluetooth and NFC.")))
 
-(define-public qtwebsockets
+(define-public qtwebsockets-5
   (package (inherit qtsvg-5)
     (name "qtwebsockets")
     (version "5.15.2")
@@ -1514,7 +1514,7 @@ and others.")))
               (base32
                "1h9y634phvvk557mhmf9z4lmxr41rl8x9mqy2lzp31mk8ffffzqj"))))
     (native-inputs
-     (list perl qtdeclarative-5 qtwebsockets))
+     (list perl qtdeclarative-5 qtwebsockets-5))
     (inputs (list qtbase-5))
     (synopsis "Web communication library for Qt")
     (description "The Qt WebChannel module enables peer-to-peer communication
@@ -1542,7 +1542,7 @@ popular web engines, Qt WebKit 2 and Qt WebEngine.")))
                #t))))))
     (native-inputs '())
     (inputs
-     (list mesa qtbase-5 qtdeclarative-5 qtwebsockets zlib))
+     (list mesa qtbase-5 qtdeclarative-5 qtwebsockets-5 zlib))
     (synopsis "QPA plugin for running an application via a browser using
 streamed WebGL commands")
     (description "Qt back end that uses WebGL for rendering. It allows Qt
@@ -2468,7 +2468,7 @@ module provides support functions to the automatically generated code.")
        ("qttools" ,qttools)
        ("qtwebchannel" ,qtwebchannel)
        ("qtwebkit" ,qtwebkit)
-       ("qtwebsockets" ,qtwebsockets)
+       ("qtwebsockets-5" ,qtwebsockets-5)
        ("qtx11extras" ,qtx11extras)
        ("qtxmlpatterns" ,qtxmlpatterns)))
     (arguments
@@ -3283,7 +3283,7 @@ color-related widgets.")
            qtsvg-5
            qtwebchannel
            qtwebengine
-           qtwebsockets
+           qtwebsockets-5
            qtx11extras
            qtxmlpatterns))
     (propagated-inputs
@@ -3333,7 +3333,7 @@ color-related widgets.")
                                 "qttools"
                                 "qtwebchannel"
                                 "qtwebengine"
-                                "qtwebsockets"
+                                "qtwebsockets-5"
                                 "qtx11extras"
                                 "qtxmlpatterns"))))
                (substitute* "cmake/Macros/PySideModules.cmake"
