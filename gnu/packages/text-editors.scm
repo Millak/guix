@@ -669,7 +669,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
            qtbase-5
            qtdeclarative-5
            qtmultimedia-5
-           qtquickcontrols
+           qtquickcontrols-5
            qtsvg-5
            qtwebchannel))
     (propagated-inputs                  ; To get native-search-path

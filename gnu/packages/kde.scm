@@ -289,7 +289,7 @@ browser for easy news reading.")
            qtgraphicaleffects
            qtmultimedia-5
            qtnetworkauth
-           qtquickcontrols
+           qtquickcontrols-5
            qtquickcontrols2
            qtscript
            qtsvg-5
@@ -346,7 +346,7 @@ projects.")
        ("oxygen-icons" ,oxygen-icons)
        ("qtbase" ,qtbase-5)
        ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtquickcontrols" ,qtquickcontrols)  ;; not checked as requirement
+       ("qtquickcontrols-5" ,qtquickcontrols-5)  ;; not checked as requirement
        ("qtquickcontrols2" ,qtquickcontrols2)  ;; not checked as requirement
        ("qtwebkit" ,qtwebkit)
        ("threadweaver" ,threadweaver)
@@ -748,7 +748,7 @@ different notification systems.")
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
-           qtquickcontrols
+           qtquickcontrols-5
            qtquickcontrols2
            qtx11extras))
     (home-page "https://community.kde.org/KDEConnect")

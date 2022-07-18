@@ -1587,7 +1587,7 @@ native APIs where it makes sense.")))
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (native-inputs
-     (list perl qtdeclarative-5 qtquickcontrols qtserialport))
+     (list perl qtdeclarative-5 qtquickcontrols-5 qtserialport))
     (inputs
      (list icu4c openssl qtbase-5 zlib))
     (synopsis "Qt Location and Positioning modules")
@@ -1636,7 +1636,7 @@ that helps in Qt development.")))
 The following guides and references cover aspects of programming with
 ECMAScript and Qt.")))
 
-(define-public qtquickcontrols
+(define-public qtquickcontrols-5
   (package (inherit qtsvg-5)
     (name "qtquickcontrols")
     (version "5.15.2")
@@ -3268,7 +3268,7 @@ color-related widgets.")
            qtdeclarative-5
            qtlocation
            qtmultimedia-5
-           qtquickcontrols
+           qtquickcontrols-5
            qtquickcontrols2
            qtscript
            qtscxml
@@ -3317,7 +3317,7 @@ color-related widgets.")
                                 "qtdeclarative-5"
                                 "qtlocation"
                                 "qtmultimedia-5"
-                                "qtquickcontrols"
+                                "qtquickcontrols-5"
                                 "qtquickcontrols2"
                                 "qtscript"
                                 "qtscxml"

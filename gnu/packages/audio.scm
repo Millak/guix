@@ -5459,7 +5459,7 @@ Rate} 3600x2250 bit/s vocoder used in various radio systems.")
            qttools))
     (inputs
      (list jack-1 ;for JACK examples
-           qtquickcontrols)) ;for Qt examples
+           qtquickcontrols-5)) ;for Qt examples
     (propagated-inputs
      ;; This is because include/ableton/platforms/asio/AsioWrapper.hpp
      ;; contains '#include <asio.hpp>'.

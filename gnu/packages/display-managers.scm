@@ -91,7 +91,7 @@
            ;; QtQuick & co. here; they end up in QML2_IMPORT_PATH thanks to
            ;; 'wrap-qt-program'.
            qtgraphicaleffects
-           qtquickcontrols
+           qtquickcontrols-5
            qtquickcontrols2
            qtsvg-5
            shadow

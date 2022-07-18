@@ -258,7 +258,7 @@
        ("qtbase" ,qtbase-5)
        ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtgraphicaleffects" ,qtgraphicaleffects)
-       ("qtquickcontrols" ,qtquickcontrols)
+       ("qtquickcontrols-5" ,qtquickcontrols-5)
        ("qtquickcontrols2" ,qtquickcontrols2)
        ("qtsvg-5" ,qtsvg-5)))
     (propagated-inputs

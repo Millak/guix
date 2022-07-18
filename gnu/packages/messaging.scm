@@ -2499,7 +2499,7 @@ notification, emojis, E2E encryption, and voip calls.")
            qtbase-5
            qtdeclarative-5
            qtmultimedia-5
-           qtquickcontrols
+           qtquickcontrols-5
            qtquickcontrols2
            qtsvg-5
            qttools

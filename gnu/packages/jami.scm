@@ -610,7 +610,7 @@ decentralized calling using P2P-DHT.")
            qtmultimedia-5
            qtdeclarative-5
            qtgraphicaleffects
-           qtquickcontrols
+           qtquickcontrols-5
            qtquickcontrols2))
     (home-page "https://jami.net")
     (synopsis "Qt Jami client")

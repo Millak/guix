@@ -3424,7 +3424,7 @@ compiled translations.  Prebuilt Firmware files are removed.")
            qtbase
            qtdeclarative-5
            qtgraphicaleffects
-           qtquickcontrols
+           qtquickcontrols-5
            qtquickcontrols2
            qtsvg-5))
     (arguments

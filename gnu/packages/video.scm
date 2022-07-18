@@ -4860,7 +4860,7 @@ transitions, and effects and then export your film to many common formats.")
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
-           qtquickcontrols
+           qtquickcontrols-5
            qtquickcontrols2
            qtsvg-5
            qtwebkit

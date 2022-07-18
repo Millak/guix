@@ -183,7 +183,7 @@ of categories with some of the activities available in that category.
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
-           qtquickcontrols
+           qtquickcontrols-5
            qtsensors
            qtsvg-5
            qtxmlpatterns))

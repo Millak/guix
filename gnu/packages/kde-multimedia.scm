@@ -175,7 +175,7 @@ This package is part of the KDE multimedia module.")
            qtdeclarative-5
            qtgraphicaleffects ; not listed as dependency
            qtmultimedia-5
-           qtquickcontrols
+           qtquickcontrols-5
            qtquickcontrols2
            qtsvg-5
            qtx11extras
@@ -531,7 +531,7 @@ autoloading of subtitle files for use while playing video.")
            qtbase-5
            qtdeclarative-5
            qtgraphicaleffects
-           qtquickcontrols
+           qtquickcontrols-5
            qtquickcontrols2 ; not listed as dependency
            qtx11extras))
     (arguments
