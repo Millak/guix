@@ -1201,6 +1201,71 @@ supporting shader pipeline functionality as offered in Qt Quick to operate on
 Vulkan, OpenGL and other main graphic APIs.")
     (license (package-home-page qtbase))))
 
+(define-public qtmultimedia
+  (package
+    (name "qtmultimedia")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "0dkk3lmzi2fs13cnj8q1lpcs6gghj219826gkwnzyd6nmlm280vy"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively
+                   "examples/multimedia/spectrum/3rdparty")
+                  ;; We also prevent the spectrum example from being built.
+                  (substitute* "examples/multimedia/multimedia.pro"
+                    (("spectrum") "#"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON"
+                                "-DQT_FEATURE_pulseaudio=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-integration-tests
+            (lambda _
+              ;; XXX: The tst_qaudiodecoderbackend, tst_qaudiodevice,
+              ;; tst_qaudiosource, tst_qmediaplayerbackend and
+              ;; tst_qcamerabackend tests fail, presumably because they
+              ;; require a functional pulseaudio daemon (which requires a dbus
+              ;; session bus, which requires an X11 server, and then is still
+              ;; unhappy).
+              (substitute* "tests/auto/CMakeLists.txt"
+                (("add_subdirectory\\(integration)") ""))))
+          (add-before 'check 'prepare-for-tests
+            (lambda _
+              (setenv "QT_QPA_PLATFORM" "offscreen")))
+          (add-after 'install 'delete-installed-tests
+            (lambda _
+              (delete-file-recursively (string-append #$output "/tests")))))))
+    (native-inputs
+     (list perl
+           pkg-config
+           qtshadertools
+           vulkan-headers))
+    (inputs
+     (list alsa-lib
+           glib
+           gstreamer
+           gst-plugins-base             ;gstreamer-gl
+           gst-plugins-good             ;camera support, additional plugins
+           gst-libav                    ;ffmpeg plugin
+           libxkbcommon
+           mesa
+           qtbase
+           qtdeclarative
+           pulseaudio))
+    (home-page (package-home-page qtbase))
+    (synopsis "Qt Multimedia module")
+    (description "The Qt Multimedia module provides set of APIs to play and
+record media, and manage a collection of media content.  It also contains a
+set of plugins for interacting with pulseaudio and GStreamer.")
+    (license (package-license qtbase))))
+
 (define-public qtwayland
   (package (inherit qtsvg-5)
     (name "qtwayland")
