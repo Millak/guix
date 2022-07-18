@@ -8092,7 +8092,7 @@ It contains the code shared by all Kiwix ports.")
            pugixml
            qtbase-5
            qtdeclarative-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine
            xapian
            zlib

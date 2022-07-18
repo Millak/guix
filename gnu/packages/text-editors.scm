@@ -671,7 +671,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
            qtmultimedia-5
            qtquickcontrols-5
            qtsvg-5
-           qtwebchannel))
+           qtwebchannel-5))
     (propagated-inputs                  ; To get native-search-path
      (list qtwebengine))
     (arguments

@@ -2492,7 +2492,7 @@ comments.")))
            qtbase-5
            qtdeclarative-5
            qtsvg-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine
            qtx11extras
            qtxmlpatterns

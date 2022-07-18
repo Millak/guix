@@ -2911,7 +2911,7 @@ as phones, embedded computers or microcontrollers.")
                   "\"../build"))
                #t)))))
       (inputs
-       (list qtbase-5 qtdeclarative-5 qtwebchannel))
+       (list qtbase-5 qtdeclarative-5 qtwebchannel-5))
       (propagated-inputs
        (list qtwebengine))
       (home-page "https://movim.eu/")

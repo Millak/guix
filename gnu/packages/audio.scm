@@ -3234,7 +3234,7 @@ link REQUIRED)"))))))
                   qtbase-5
                   qtdeclarative-5
                   qtsvg-5
-                  qtwebchannel
+                  qtwebchannel-5
                   qtwebsockets-5))
     (propagated-inputs                  ;to get native-search-path
      (list qtwebengine))

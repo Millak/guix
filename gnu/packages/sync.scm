@@ -195,7 +195,7 @@
            qtquickcontrols2-5
            qtsolutions
            qtsvg-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebsockets-5
            sqlite
            xdg-utils

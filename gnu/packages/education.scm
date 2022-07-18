@@ -561,7 +561,7 @@ specialized device.")
              qtdeclarative-5
              qtmultimedia-5
              qtsvg-5
-             qtwebchannel
+             qtwebchannel-5
              qtwebengine
              qtxmlpatterns
              quazip-0
@@ -998,7 +998,7 @@ formats.")
            qtmultimedia-5
            qtquickcontrols2-5
            qtdeclarative-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine
            zlib))
     (synopsis "EPWING dictionary reader")

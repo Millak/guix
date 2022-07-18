@@ -1542,7 +1542,7 @@ interacting with serial ports from within Qt.")))
 access the various industrial serial buses and protocols, such as CAN, ModBus,
 and others.")))
 
-(define-public qtwebchannel
+(define-public qtwebchannel-5
   (package (inherit qtsvg-5)
     (name "qtwebchannel")
     (version "5.15.2")
@@ -2262,7 +2262,7 @@ using the Enchant spell-checking library.")
            qtbase-5
            qtdeclarative-5
            qtmultimedia-5
-           qtwebchannel
+           qtwebchannel-5
            re2
            snappy
            eudev
@@ -2505,7 +2505,7 @@ module provides support functions to the automatically generated code.")
        ("qtserialport" ,qtserialport)
        ("qtsvg-5" ,qtsvg-5)
        ("qttools" ,qttools)
-       ("qtwebchannel" ,qtwebchannel)
+       ("qtwebchannel-5" ,qtwebchannel-5)
        ("qtwebkit" ,qtwebkit)
        ("qtwebsockets-5" ,qtwebsockets-5)
        ("qtx11extras" ,qtx11extras)
@@ -2609,7 +2609,7 @@ contain over 620 classes.")
        ("qtbase" ,qtbase-5)
        ("qtsvg-5" ,qtsvg-5)
        ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtwebchannel" ,qtwebchannel)
+       ("qtwebchannel-5" ,qtwebchannel-5)
        ("qtwebengine" ,qtwebengine)))
     (arguments
      `(#:modules ((srfi srfi-1)
@@ -3083,7 +3083,7 @@ different kinds of sliders, and much more.")
        ("qtlocation" ,qtlocation)
        ("qtmultimedia-5" ,qtmultimedia-5)
        ("qtsensors" ,qtsensors)
-       ("qtwebchannel" ,qtwebchannel)
+       ("qtwebchannel-5" ,qtwebchannel-5)
        ("libxml2" ,libxml2)
        ("libxslt" ,libxslt)
        ("libx11" ,libx11)
@@ -3320,7 +3320,7 @@ color-related widgets.")
            qtsensors
            qtspeech
            qtsvg-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine
            qtwebsockets-5
            qtx11extras
@@ -3370,7 +3370,7 @@ color-related widgets.")
                                 "qtspeech"
                                 "qtsvg-5"
                                 "qttools"
-                                "qtwebchannel"
+                                "qtwebchannel-5"
                                 "qtwebengine"
                                 "qtwebsockets-5"
                                 "qtx11extras"

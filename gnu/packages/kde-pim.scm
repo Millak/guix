@@ -727,7 +727,7 @@ for KDE PIM.")
            qtdeclarative-5
            qtnetworkauth
            qtspeech
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine
            qtxmlpatterns))
     (arguments
@@ -1071,7 +1071,7 @@ and retrieving certificates from LDAP servers.")
            qgpgme
            qtbase-5
            qtdeclarative-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine
            sonnet))
     (arguments
@@ -1323,7 +1323,7 @@ using a Qt/KMime C++ API.")
            qgpgme
            qtbase-5
            qtdeclarative-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine
            qtwebkit
            sonnet))
@@ -1849,7 +1849,7 @@ and allows one to view/extract message formatted text in Rich Text Format.")
            kwindowsystem
            qtbase-5
            qtdeclarative-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine))
     (arguments
      `(#:tests? #f)) ;; TODO 6/48 tests fail
@@ -1932,7 +1932,7 @@ KDE using certificate-based crypto.")
            libkdepim
            qtbase-5
            qtdeclarative-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine))
     (arguments
      `(#:phases

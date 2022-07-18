@@ -206,7 +206,7 @@ This package contains GUI widgets for baloo.")
            qgpgme
            qtbase-5
            qtdeclarative-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine
            syndication))
     (home-page "https://apps.kde.org/en/akregator")
@@ -1028,7 +1028,7 @@ Python, PHP, and Perl.")
            qtlocation
            qtserialport
            qtsvg-5
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine
            shapelib
            shared-mime-info

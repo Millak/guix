@@ -1960,7 +1960,7 @@ using the dataset of topographical information collected by
            qtbase-5
            qtdeclarative-5
            qtlocation
-           qtwebchannel
+           qtwebchannel-5
            qtwebengine
            quazip
            routino

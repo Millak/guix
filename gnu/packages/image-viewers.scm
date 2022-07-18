@@ -533,7 +533,7 @@ It supports JPEG, PNG and GIF formats.")
            openexr-2
            qtwebengine
            qtdeclarative-5
-           qtwebchannel
+           qtwebchannel-5
            fftwf
            gsl
            libtiff))
