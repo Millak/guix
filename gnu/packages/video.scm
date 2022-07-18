@@ -4804,7 +4804,7 @@ transitions, and effects and then export your film to many common formats.")
 (define-public shotcut
   (package
     (name "shotcut")
-    (version "22.04.25")
+    (version "22.06.23")
     (source
      (origin
        (method git-fetch)
@@ -4813,7 +4813,7 @@ transitions, and effects and then export your film to many common formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ccbx2crqrnhl19d7267xc40vs0cjmps2cnhi1g1l6bqxbi7k88x"))))
+        (base32 "1kvhcblzjdjiv3jggdx41djq9pz6a9hg4ilgcwin13gb19ir7dcc"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f                      ;there are no tests
@@ -4830,14 +4830,6 @@ transitions, and effects and then export your film to many common formats.")
                (substitute* "src/jobs/meltjob.cpp"
                  (("\"melt\"") (string-append "\"" mlt "/bin/melt\""))
                  (("\"melt-7\"") (string-append "\"" mlt "/bin/melt-7\""))))))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (invoke "qmake"
-                       (string-append "PREFIX=" out)
-                       "QMAKE_LRELEASE=lrelease"
-                       "QMAKE_LUPDATE=lupdate"
-                       "shotcut.pro"))))
          (add-after 'install 'wrap-executable
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -4862,6 +4854,7 @@ transitions, and effects and then export your film to many common formats.")
     (inputs
      (list bash-minimal
            ffmpeg
+           fftw
            frei0r-plugins
            jack-1
            ladspa
