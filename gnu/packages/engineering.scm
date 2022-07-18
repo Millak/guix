@@ -2493,7 +2493,7 @@ comments.")))
            qtdeclarative-5
            qtsvg-5
            qtwebchannel-5
-           qtwebengine
+           qtwebengine-5
            qtx11extras
            qtxmlpatterns
            sqlite

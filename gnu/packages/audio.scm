@@ -3237,7 +3237,7 @@ link REQUIRED)"))))))
                   qtwebchannel-5
                   qtwebsockets-5))
     (propagated-inputs                  ;to get native-search-path
-     (list qtwebengine))
+     (list qtwebengine-5))
     (home-page "https://github.com/supercollider/supercollider")
     (synopsis "Synthesis engine and programming language")
     (description "SuperCollider is a synthesis engine (@code{scsynth} or

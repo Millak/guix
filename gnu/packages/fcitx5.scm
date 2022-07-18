@@ -394,7 +394,7 @@ the Anthy input method.")
        ("fcitx5-qt" ,fcitx5-qt)
        ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtwebchannel-5" ,qtwebchannel-5)
-       ("qtwebengine" ,qtwebengine)))
+       ("qtwebengine-5" ,qtwebengine-5)))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (outputs '("out" "gui"))

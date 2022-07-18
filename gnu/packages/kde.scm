@@ -170,7 +170,7 @@ This package contains GUI widgets for baloo.")
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/akregator"))
                     (qt-process-path (string-append
-                                       (assoc-ref inputs "qtwebengine")
+                                       (assoc-ref inputs "qtwebengine-5")
                                        "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
                  `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
@@ -207,7 +207,7 @@ This package contains GUI widgets for baloo.")
            qtbase-5
            qtdeclarative-5
            qtwebchannel-5
-           qtwebengine
+           qtwebengine-5
            syndication))
     (home-page "https://apps.kde.org/en/akregator")
     (synopsis "KDE Feed Reader")
@@ -1029,7 +1029,7 @@ Python, PHP, and Perl.")
            qtserialport
            qtsvg-5
            qtwebchannel-5
-           qtwebengine
+           qtwebengine-5
            shapelib
            shared-mime-info
            zlib))

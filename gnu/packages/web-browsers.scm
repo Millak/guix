@@ -492,11 +492,11 @@ interface.")
            ;; that it's __init__.py is used first.
            python-pyqtwebengine
            python-pyqt-without-qtwebkit
-           ;; While qtwebengine is provided by python-pyqtwebengine, it's
+           ;; While qtwebengine-5 is provided by python-pyqtwebengine, it's
            ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
-           qtwebengine))
+           qtwebengine-5))
     (arguments
-     `(;; FIXME: With the existance of qtwebengine, tests can now run.  But
+     `(;; FIXME: With the existance of qtwebengine-5, tests can now run.  But
        ;; they are still disabled because test phase hangs.  It's not readily
        ;; apparent as to why.
        #:tests? #f
@@ -543,7 +543,7 @@ interface.")
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/qutebrowser"))
                     (qt-process-path (string-append
-                                      (assoc-ref inputs "qtwebengine")
+                                      (assoc-ref inputs "qtwebengine-5")
                                       "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
                  `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))

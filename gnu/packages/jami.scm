@@ -605,7 +605,7 @@ decentralized calling using P2P-DHT.")
            network-manager
            qrencode
            qtsvg-5
-           qtwebengine
+           qtwebengine-5
            qtwebchannel-5
            qtmultimedia-5
            qtdeclarative-5

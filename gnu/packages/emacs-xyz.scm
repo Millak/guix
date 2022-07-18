@@ -13111,7 +13111,7 @@ programming and reproducible research.")
        (sha256
         (base32 "17aca4mc3gbdh6nhlcaa5ymh1yy76nwysrvy9sfcqkzvd5lgagzc"))
        ;; XXX: ob-sclang.el is packaged separately to avoid the dependency on
-       ;; SuperCollider and qtwebengine.  This will be unnecessary in 0.4+
+       ;; SuperCollider and qtwebengine-5.  This will be unnecessary in 0.4+
        ;; release as the file is going to be removed from the repository.
 
        ;; XXX: org-contacts.el is now maintained in a separate repository and

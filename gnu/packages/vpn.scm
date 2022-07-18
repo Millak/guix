@@ -737,7 +737,7 @@ and probably others.")
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/openconnect-sso"))
                     (qt-process-path (string-append
-                                       (assoc-ref inputs "qtwebengine")
+                                       (assoc-ref inputs "qtwebengine-5")
                                        "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
                  #:sh (search-input-file inputs "bin/bash")
@@ -757,7 +757,7 @@ and probably others.")
            python-pyxdg
            python-structlog
            python-toml
-           qtwebengine))
+           qtwebengine-5))
     (native-inputs
      (list python-pytest python-setuptools-scm))
     (home-page "https://github.com/vlaci/openconnect-sso")

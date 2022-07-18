@@ -728,7 +728,7 @@ for KDE PIM.")
            qtnetworkauth
            qtspeech
            qtwebchannel-5
-           qtwebengine
+           qtwebengine-5
            qtxmlpatterns))
     (arguments
       ;; TODO: 5/45 tests fail for quite different reasons, even with
@@ -1072,7 +1072,7 @@ and retrieving certificates from LDAP servers.")
            qtbase-5
            qtdeclarative-5
            qtwebchannel-5
-           qtwebengine
+           qtwebengine-5
            sonnet))
     (arguments
      `(#:phases
@@ -1324,7 +1324,7 @@ using a Qt/KMime C++ API.")
            qtbase-5
            qtdeclarative-5
            qtwebchannel-5
-           qtwebengine
+           qtwebengine-5
            qtwebkit
            sonnet))
     (arguments
@@ -1656,7 +1656,7 @@ Virtual Contact File}) files to the KPeople contact management library.")
            libxslt
            purpose
            qtbase-5
-           qtwebengine))
+           qtwebengine-5))
     (arguments
      `(#:tests? #f)) ;; TODO tests hang
     (home-page "https://invent.kde.org/pim/pimcommon")
@@ -1850,7 +1850,7 @@ and allows one to view/extract message formatted text in Rich Text Format.")
            qtbase-5
            qtdeclarative-5
            qtwebchannel-5
-           qtwebengine))
+           qtwebengine-5))
     (arguments
      `(#:tests? #f)) ;; TODO 6/48 tests fail
     (home-page "https://invent.kde.org/pim/libkgapi")
@@ -1933,7 +1933,7 @@ KDE using certificate-based crypto.")
            qtbase-5
            qtdeclarative-5
            qtwebchannel-5
-           qtwebengine))
+           qtwebengine-5))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

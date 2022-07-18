@@ -448,7 +448,7 @@ specialized device.")
 (define-public openboard
   ;; The last release builds from qtwebkit, which is planned for removal in
   ;; Guix, so use the latest commit of the 1.7-dev branch, which builds with
-  ;; qtwebengine.
+  ;; qtwebengine-5.
   (let ((commit "39e914f600d26565706f0e5b6ea2482b8b4038c7") ;1.6.2-rc0311
         (revision "1"))
     (package
@@ -562,7 +562,7 @@ specialized device.")
              qtmultimedia-5
              qtsvg-5
              qtwebchannel-5
-             qtwebengine
+             qtwebengine-5
              qtxmlpatterns
              quazip-0
              sdl
@@ -807,9 +807,9 @@ stored and user can review his performance in any time.")
        ("python-requests" ,python-requests)
        ("python-send2trash" ,python-send2trash)
        ("python-sip" ,python-sip)
-       ;; `qtwebengine' is included in `pyqtwebengine', included here for easy
+       ;; `qtwebengine-5' is included in `pyqtwebengine', included here for easy
        ;; wrapping.
-       ("qtwebengine" ,qtwebengine)))
+       ("qtwebengine-5" ,qtwebengine-5)))
     (home-page "https://apps.ankiweb.net/")
     (synopsis "Powerful, intelligent flash cards")
     (description "Anki is a program which makes remembering things
@@ -999,7 +999,7 @@ formats.")
            qtquickcontrols2-5
            qtdeclarative-5
            qtwebchannel-5
-           qtwebengine
+           qtwebengine-5
            zlib))
     (synopsis "EPWING dictionary reader")
     (description "qolibri is a dictionary viewer for the EPWING dictionary

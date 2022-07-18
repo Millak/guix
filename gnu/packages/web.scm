@@ -8078,7 +8078,7 @@ It contains the code shared by all Kiwix ports.")
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/kiwix-desktop"))
                     (qt-process-path (string-append
-                                      (assoc-ref inputs "qtwebengine")
+                                      (assoc-ref inputs "qtwebengine-5")
                                       "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
                  `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
@@ -8093,7 +8093,7 @@ It contains the code shared by all Kiwix ports.")
            qtbase-5
            qtdeclarative-5
            qtwebchannel-5
-           qtwebengine
+           qtwebengine-5
            xapian
            zlib
            `(,zstd "lib")))

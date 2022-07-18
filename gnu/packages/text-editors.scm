@@ -673,7 +673,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
            qtsvg-5
            qtwebchannel-5))
     (propagated-inputs                  ; To get native-search-path
-     (list qtwebengine))
+     (list qtwebengine-5))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

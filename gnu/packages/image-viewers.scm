@@ -531,7 +531,7 @@ It supports JPEG, PNG and GIF formats.")
            libjpeg-turbo
            lcms
            openexr-2
-           qtwebengine
+           qtwebengine-5
            qtdeclarative-5
            qtwebchannel-5
            fftwf

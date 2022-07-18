@@ -2913,7 +2913,7 @@ as phones, embedded computers or microcontrollers.")
       (inputs
        (list qtbase-5 qtdeclarative-5 qtwebchannel-5))
       (propagated-inputs
-       (list qtwebengine))
+       (list qtwebengine-5))
       (home-page "https://movim.eu/")
       (synopsis "Desktop Application for Movim")
       (description

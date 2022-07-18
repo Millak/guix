@@ -2011,7 +2011,7 @@ using the Enchant spell-checking library.")
     ;; COPYING file specify GPL3, but source code files all refer to GPL2+.
     (license license:gpl2+)))
 
-(define-public qtwebengine
+(define-public qtwebengine-5
   (package
     (inherit qtsvg-5)
     (name "qtwebengine")
@@ -2206,7 +2206,7 @@ using the Enchant spell-checking library.")
                  (_ #t)))
 
              (with-directory-excursion "src/3rdparty"
-               ;; TODO: Try removing "gn" too for future versions of qtwebengine.
+               ;; TODO: Try removing "gn" too for future versions of qtwebengine-5.
                (delete-file-recursively "ninja")
 
                (with-directory-excursion "chromium"
@@ -2324,7 +2324,7 @@ using the Enchant spell-checking library.")
                     (display "\ngn_args += use_system_openh264=true\n" out)))
                  ;; Qtwebengine is not installed into the same prefix as
                  ;; qtbase.  Some qtbase QTLibraryInfo constants will not
-                 ;; work.  Replace with the full path to the qtwebengine
+                 ;; work.  Replace with the full path to the qtwebengine-5
                  ;; translations and locales in the store.
                  (substitute* "src/core/web_engine_library_info.cpp"
                    (("QLibraryInfo::location\\(QLibraryInfo::TranslationsPath\\)")
@@ -2354,7 +2354,7 @@ using the Enchant spell-checking library.")
                (invoke "qmake" "QT_BUILD_PARTS = libs tools" "--"
                        "--webengine-printing-and-pdf=no"
                        "--webengine-ffmpeg=system"
-                       ;; FIXME: Building qtwebengine 5.12.2 with
+                       ;; FIXME: Building qtwebengine-5 5.12.2 with
                        ;; icu4c >= 68 fails.
                        ;;"--webengine-icu=system"
                        "--webengine-pepper-plugins=no"
@@ -2647,7 +2647,7 @@ contain over 620 classes.")
        ("qtsvg-5" ,qtsvg-5)
        ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtwebchannel-5" ,qtwebchannel-5)
-       ("qtwebengine" ,qtwebengine)))
+       ("qtwebengine-5" ,qtwebengine-5)))
     (arguments
      `(#:modules ((srfi srfi-1)
                   ((guix build python-build-system) #:select (python-version))
@@ -3358,7 +3358,7 @@ color-related widgets.")
            qtspeech
            qtsvg-5
            qtwebchannel-5
-           qtwebengine
+           qtwebengine-5
            qtwebsockets-5
            qtx11extras
            qtxmlpatterns))
@@ -3408,7 +3408,7 @@ color-related widgets.")
                                 "qtsvg-5"
                                 "qttools"
                                 "qtwebchannel-5"
-                                "qtwebengine"
+                                "qtwebengine-5"
                                 "qtwebsockets-5"
                                 "qtx11extras"
                                 "qtxmlpatterns"))))

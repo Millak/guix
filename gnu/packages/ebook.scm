@@ -202,7 +202,7 @@ with Microsoft Compiled HTML (CHM) files")
            python-regex
            speech-dispatcher
            python-zeroconf
-           qtwebengine
+           qtwebengine-5
            sqlite))
     (arguments
      (list

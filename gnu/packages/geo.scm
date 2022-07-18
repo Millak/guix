@@ -1961,7 +1961,7 @@ using the dataset of topographical information collected by
            qtdeclarative-5
            qtlocation
            qtwebchannel-5
-           qtwebengine
+           qtwebengine-5
            quazip
            routino
            sqlite ; See wrap phase
