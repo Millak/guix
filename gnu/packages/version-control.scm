@@ -2458,7 +2458,17 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
        (modify-phases %standard-phases
          (add-after 'install 'install-doc
            (lambda _
-             (invoke "make" "install-doc"))))
+             (invoke "make" "install-doc")))
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out   (assoc-ref outputs "out"))
+                    (share (string-append out "/share")))
+               (mkdir-p (string-append share "/bash-completion/completions"))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (copy-file "contrib/tig-completion.bash"
+                          (string-append share "/bash-completion/completions/tig"))
+               (copy-file "contrib/tig-completion.zsh"
+                          (string-append share "/zsh/site-functions/_tig"))))))
        #:test-target "test"
        #:tests? #f))                    ; tests require access to /dev/tty
     (home-page "https://jonas.github.io/tig/")
