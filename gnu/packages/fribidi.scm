@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Marek Benc <merkur32@gmail.com>
-;;; Copyright © 2016, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -97,4 +97,6 @@ or right-to-left ordering as necessary.")
 to visual-Hebrew output.  This is useful for reading Hebrew mail messages,
 viewing Hebrew texts, etc.  It was written for Hebrew but Arabic (or other BiDi
 languages) should work equally well.")
+    (properties
+     '((release-monitoring-url . "https://deb.debian.org/debian/pool/main/b/bidiv")))
     (license gpl2+)))
