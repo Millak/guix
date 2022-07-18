@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016, 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Troy Sankey <sankeytms@gmail.com>
 ;;; Copyright © 2016, 2021 Stefan Reichoer <stefan@xsteve.at>
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -181,13 +181,13 @@ data units.")
 (define-public khal
   (package
     (name "khal")
-    (version "0.10.4")
+    (version "0.10.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "khal" version))
               (sha256
                (base32
-                "17qj1n2l39pnzk4vjrmql90z7908nivnzcc2g9nj1h31k859inrz"))))
+                "0xhcrx7lcjk126i2xgqmgb199vd4hxsq34mkdmhdh9ia62nbgvsf"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; The test suite is unreliable. See <https://bugs.gnu.org/44197>
@@ -200,8 +200,7 @@ data units.")
             (invoke "make" "--directory=doc/" "man")
             (install-file
              "doc/build/man/khal.1"
-             (string-append (assoc-ref outputs "out") "/share/man/man1"))
-            #t)))))
+             (string-append (assoc-ref outputs "out") "/share/man/man1")))))))
     (native-inputs
      (list python-setuptools-scm
            ;; Required to build manpage
