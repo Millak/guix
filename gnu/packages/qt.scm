@@ -1561,6 +1561,43 @@ between the host (QML/C++ application) and the client (HTML/JavaScript
 application).  The transport mechanism is supported out of the box by the two
 popular web engines, Qt WebKit 2 and Qt WebEngine.")))
 
+(define-public qtwebchannel
+  (package
+    (name "qtwebchannel")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "0s16zx3qn3byldvhmsnwijm8rmizk8vpqj7fnwhjg6c67z10m8ma"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'check)      ;move after install
+                   (add-after 'install 'prepare-for-tests
+                     (lambda _
+                       (setenv "QT_QPA_PLATFORM" "offscreen")
+                       (setenv "QML2_IMPORT_PATH"
+                               (string-append #$output "/lib/qt6/qml:"
+                                              (getenv "QML2_IMPORT_PATH")))))
+                   (add-after 'prepare-for-tests 'check
+                     (assoc-ref %standard-phases 'check))
+                   (add-after 'check 'delete-installed-tests
+                     (lambda _
+                       (delete-file-recursively
+                        (string-append #$output "/tests")))))))
+    (native-inputs (list perl))
+    (inputs (list qtbase qtdeclarative qtwebsockets))
+    (home-page (package-home-page qtbase))
+    (synopsis "Web communication library for Qt")
+    (description "The Qt WebChannel module enables peer-to-peer communication
+between the host (QML/C++ application) and the client (HTML/JavaScript
+application).")
+    (license (package-license qtbase))))
+
 (define-public qtwebglplugin
   (package (inherit qtsvg-5)
     (name "qtwebglplugin")
