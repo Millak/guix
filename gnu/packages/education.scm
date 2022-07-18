@@ -180,7 +180,7 @@ of categories with some of the activities available in that category.
      (list openssl
            python-wrapper
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols
@@ -558,7 +558,7 @@ specialized device.")
              opus
              poppler
              qtbase-5
-             qtdeclarative
+             qtdeclarative-5
              qtmultimedia-5
              qtsvg-5
              qtwebchannel
@@ -672,7 +672,7 @@ language and very flexible regarding to new or unknown keyboard layouts.")
            libxcb
            libxkbfile
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtquickcontrols2
            qtx11extras
@@ -997,7 +997,7 @@ formats.")
            qtbase-5
            qtmultimedia-5
            qtquickcontrols2
-           qtdeclarative
+           qtdeclarative-5
            qtwebchannel
            qtwebengine
            zlib))

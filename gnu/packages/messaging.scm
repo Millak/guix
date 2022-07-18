@@ -1476,7 +1476,7 @@ default.")
     (inputs (list kirigami
                   knotifications
                   qtbase-5
-                  qtdeclarative
+                  qtdeclarative-5
                   qtgraphicaleffects
                   qtlocation
                   qtquickcontrols2
@@ -2457,7 +2457,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            mtxclient
            openssl
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtkeychain
            qtgraphicaleffects
            qtmultimedia-5
@@ -2497,7 +2497,7 @@ notification, emojis, E2E encryption, and voip calls.")
     (inputs
      (list libqmatrixclient
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtmultimedia-5
            qtquickcontrols
            qtquickcontrols2
@@ -2911,7 +2911,7 @@ as phones, embedded computers or microcontrollers.")
                   "\"../build"))
                #t)))))
       (inputs
-       (list qtbase-5 qtdeclarative qtwebchannel))
+       (list qtbase-5 qtdeclarative-5 qtwebchannel))
       (propagated-inputs
        (list qtwebengine))
       (home-page "https://movim.eu/")

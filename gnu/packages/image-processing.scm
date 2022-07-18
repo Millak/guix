@@ -1091,7 +1091,7 @@ combine the information contained in both.")
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins"))
-                         '("qtbase" "qtdeclarative"))))))))))
+                         '("qtbase" "qtdeclarative-5"))))))))))
     (inputs
      (list curl
            fftw
@@ -1104,7 +1104,7 @@ combine the information contained in both.")
            insight-toolkit-4.12
            vtk-7
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            vxl-1
            zlib))
     (native-inputs

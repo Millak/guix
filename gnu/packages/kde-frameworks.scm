@@ -304,7 +304,7 @@ http://freedesktop.org/wiki/Specifications/open-collaboration-services/")
     (native-inputs
      (list dbus extra-cmake-modules))
     (inputs
-     ;; TODO: qtdeclarative (yields one failing test)
+     ;; TODO: qtdeclarative-5 (yields one failing test)
      (list qtbase-5))
     (arguments
      (list #:configure-flags
@@ -775,7 +775,7 @@ interfaces in the areas of colors, fonts, text, images, keyboard input.")
     (native-inputs
      (list extra-cmake-modules qttools))
     (inputs
-     (list qtbase-5 qtdeclarative))
+     (list qtbase-5 qtdeclarative-5))
     (home-page "https://invent.kde.org/frameworks/kholidays")
     (synopsis "Library for regional holiday information")
     (description "This library provides a C++ API that determines holiday and
@@ -802,7 +802,7 @@ other special events for a geographical region.")
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list qtbase-5 qtdeclarative qtscript))
+     (list qtbase-5 qtdeclarative-5 qtscript))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -875,7 +875,7 @@ or user activity.")
            ;; introducing a recursive dependency.
            ;;("plasma-frameworks" ,plasma-framework) ;; Tier 3!
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtquickcontrols2
            qtsvg-5
            ;; Run-time dependency
@@ -904,7 +904,7 @@ of applications that follow the Kirigami Human Interface Guidelines.")
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list qtbase-5 qtdeclarative))
+     (list qtbase-5 qtdeclarative-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Set of item models extending the Qt model-view framework")
     (description "KItemModels provides the following models:
@@ -1306,7 +1306,7 @@ provides uniform access to generation of barcodes with data.")
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list glib pulseaudio qtdeclarative qtbase-5))
+     (list glib pulseaudio qtdeclarative-5 qtbase-5))
     (home-page "https://invent.kde.org/libraries/pulseaudio-qt/")
     (synopsis "Qt bindings for PulseAudio")
     (description
@@ -1341,7 +1341,7 @@ libpulse.")
            kiconthemes ; optional
            kirigami
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtquickcontrols2))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "QtQuickControls2 style that integrates with the desktop")
@@ -1376,7 +1376,7 @@ feel.")
      (list bison dbus extra-cmake-modules flex qttools))
     (inputs
      `(("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
+       ("qtdeclarative-5" ,qtdeclarative-5)
        ("udev" ,eudev)))
     ;; TODO: Add runtime-only dependency MediaPlayerInfo
     (home-page "https://community.kde.org/Frameworks")
@@ -1476,7 +1476,7 @@ uses a job-based interface to queue tasks and execute them in an efficient way."
            kwindowsystem
            kxmlgui
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            solid))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Core components for the KDE Activity concept")
@@ -2053,7 +2053,7 @@ between feed formats.")
            kxmlgui
            lmdb
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            solid))
     (arguments
      `(#:phases
@@ -2108,7 +2108,7 @@ maintaining an index of the contents of your files.")
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list boost kactivities kconfig qtbase-5 qtdeclarative))
+     (list boost kactivities kconfig qtbase-5 qtdeclarative-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Access usage statistics collected by the activity manager")
     (description "The KActivitiesStats library provides a querying mechanism for
@@ -2205,7 +2205,7 @@ using the XBEL format.")
            kwidgetsaddons
            kxmlgui
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Utilities for KDE System Settings modules")
     (description "KCMUtils provides various classes to work with KCModules.
@@ -2293,7 +2293,7 @@ their settings.")
            kxmlgui
            libepoxy
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            solid))
     (arguments
      `(#:phases
@@ -2761,7 +2761,7 @@ KIO enabled infrastructure.")
            ktextwidgets
            kwidgetsaddons
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            solid
            sonnet))
     (arguments
@@ -2897,7 +2897,7 @@ widgets with a user-interface defined in terms of actions.")
            kservice
            kwidgetsaddons
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (arguments
      `(#:tests? #f)) ; FIXME: 1/3 tests fail.
     (home-page "https://community.kde.org/Frameworks")
@@ -2947,7 +2947,7 @@ to easily extend the contacts collection.")
            kwindowsystem
            kxmlgui
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            solid
            threadweaver))
     (arguments
@@ -3078,7 +3078,7 @@ types or handled by application specific code.")
            libgit2
            perl
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtscript
            qtxmlpatterns
            solid
@@ -3337,7 +3337,7 @@ setUrl, setUserAgent and call.")
        ("kxmlgui" ,kxmlgui)
        ("phonon" ,phonon)
        ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
+       ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtquickcontrols2" ,qtquickcontrols2)
        ("qtsvg-5" ,qtsvg-5)
        ("qtx11extras" ,qtx11extras)
@@ -3384,7 +3384,7 @@ script engines.")
            kio
            kirigami
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (arguments
      `(#:tests? #f  ;; seem to require network; don't find QTQuick components
        #:phases

@@ -520,7 +520,7 @@ formats such as PNG.")
                 "05gczsywkk45bh0z1vv8l6cmrlncc2qj8agavj5ryxpnxkzy69r1"))))
     (build-system gnu-build-system)
     (inputs
-     (list qtbase-5 qtdeclarative qtsvg-5 zlib))
+     (list qtbase-5 qtdeclarative-5 qtsvg-5 zlib))
     (native-inputs
      (list qttools))
     (arguments
@@ -2623,7 +2623,7 @@ utilities frequently used in roguelikes.")
          ("openal" ,openal)
          ("pulseaudio" ,pulseaudio)
          ("qtbase" ,qtbase-5)
-         ("qtdeclarative" ,qtdeclarative)
+         ("qtdeclarative-5" ,qtdeclarative-5)
          ("sdl2" ,sdl2)
          ("uuid.h" ,util-linux "lib")
          ("zlib" ,zlib)))

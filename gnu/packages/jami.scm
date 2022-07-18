@@ -608,7 +608,7 @@ decentralized calling using P2P-DHT.")
            qtwebengine
            qtwebchannel
            qtmultimedia-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtquickcontrols
            qtquickcontrols2))

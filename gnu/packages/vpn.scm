@@ -256,7 +256,7 @@
        ("procps" ,procps)
        ("python" ,python)
        ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
+       ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtgraphicaleffects" ,qtgraphicaleffects)
        ("qtquickcontrols" ,qtquickcontrols)
        ("qtquickcontrols2" ,qtquickcontrols2)

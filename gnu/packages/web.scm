@@ -8091,7 +8091,7 @@ It contains the code shared by all Kiwix ports.")
            libzim
            pugixml
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtwebchannel
            qtwebengine
            xapian

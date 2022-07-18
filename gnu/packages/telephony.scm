@@ -120,7 +120,7 @@
     (native-inputs
      (list automake autoconf pkg-config))
     (inputs
-     (list qtbase-5 qtdeclarative))
+     (list qtbase-5 qtdeclarative-5))
     (synopsis "Phone Simulator for modem testing")
     (description
      "Phonesim is a modem emulator that oFono uses for development and
@@ -706,7 +706,7 @@ Mumble consists of two applications for separate usage:
            libsndfile
            libxml2
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtquickcontrols
            readline
            speex

@@ -1958,7 +1958,7 @@ using the dataset of topographical information collected by
            libjpeg-turbo
            proj
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtlocation
            qtwebchannel
            qtwebengine
@@ -2618,7 +2618,7 @@ growing set of geoscientific methods.")
            qca
            qscintilla
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtkeychain
            qtlocation
            qtserialport

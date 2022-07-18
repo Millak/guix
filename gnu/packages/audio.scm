@@ -3232,7 +3232,7 @@ link REQUIRED)"))))))
                   boost-sync
                   yaml-cpp
                   qtbase-5
-                  qtdeclarative
+                  qtdeclarative-5
                   qtsvg-5
                   qtwebchannel
                   qtwebsockets))
@@ -5455,7 +5455,7 @@ Rate} 3600x2250 bit/s vocoder used in various radio systems.")
            python ;for running tests
            portaudio ;for portaudio examples
            qtbase-5 ;for Qt examples
-           qtdeclarative
+           qtdeclarative-5
            qttools))
     (inputs
      (list jack-1 ;for JACK examples

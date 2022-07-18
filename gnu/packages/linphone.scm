@@ -852,7 +852,7 @@ and video calls or instant messaging capabilities to an application.")
            mediastreamer2
            ortp
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtquickcontrols
            qtquickcontrols2

@@ -2490,7 +2490,7 @@ comments.")))
            python-shiboken-2
            python-wrapper
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5
            qtwebchannel
            qtwebengine
@@ -3422,7 +3422,7 @@ compiled translations.  Prebuilt Firmware files are removed.")
            python-trimesh
            python-zeroconf
            qtbase
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtquickcontrols
            qtquickcontrols2

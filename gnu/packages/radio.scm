@@ -1928,7 +1928,7 @@ receiver.")
            rtl-sdr
            qtbase-5
            qtcharts
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols2
@@ -2159,7 +2159,7 @@ voice formats.")
            pulseaudio
            qtbase-5
            qtcharts
-           qtdeclarative
+           qtdeclarative-5
            qtlocation
            qtmultimedia-5
            qtquickcontrols2

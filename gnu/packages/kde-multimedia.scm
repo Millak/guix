@@ -172,7 +172,7 @@ This package is part of the KDE multimedia module.")
            oxygen-icons ; default icon set
            phonon
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects ; not listed as dependency
            qtmultimedia-5
            qtquickcontrols
@@ -335,7 +335,7 @@ This package is part of the KDE multimedia module.")
            kxmlgui
            libvorbis
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtmultimedia-5
            readline
            taglib
@@ -529,7 +529,7 @@ autoloading of subtitle files for use while playing video.")
            oxygen-icons ; default icon set
            purpose
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtquickcontrols
            qtquickcontrols2 ; not listed as dependency

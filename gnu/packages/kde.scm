@@ -205,7 +205,7 @@ This package contains GUI widgets for baloo.")
            libkleo
            qgpgme
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtwebchannel
            qtwebengine
            syndication))
@@ -285,7 +285,7 @@ browser for easy news reading.")
            mlt
            purpose
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
            qtnetworkauth
@@ -345,7 +345,7 @@ projects.")
        ("libkomparediff2" ,libkomparediff2)
        ("oxygen-icons" ,oxygen-icons)
        ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
+       ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtquickcontrols" ,qtquickcontrols)  ;; not checked as requirement
        ("qtquickcontrols2" ,qtquickcontrols2)  ;; not checked as requirement
        ("qtwebkit" ,qtwebkit)
@@ -539,7 +539,7 @@ expression library, that is used in Krita.")
            perl
            poppler-qt5
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtmultimedia-5
            qtsvg-5
            qtx11extras
@@ -745,7 +745,7 @@ different notification systems.")
            pulseaudio-qt
            qca
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols
@@ -863,7 +863,7 @@ to perform data analysis.")
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list qtbase-5 qtdeclarative))
+     (list qtbase-5 qtdeclarative-5))
     (home-page "https://phabricator.kde.org/source/kqtquickcharts/")
     (synopsis "Interactive charts for Qt Quick")
     (description
@@ -977,7 +977,7 @@ Python, PHP, and Perl.")
            libsndfile
            openal
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Runtime library for kdegames")
@@ -1024,7 +1024,7 @@ Python, PHP, and Perl.")
            phonon
            protobuf
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtlocation
            qtserialport
            qtsvg-5
@@ -1094,7 +1094,7 @@ creating routes by drag and drop and more.")
            phonon
            poppler-qt5
            qca
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5
            threadweaver
            kcrash
@@ -1225,7 +1225,7 @@ or Bonjour by other projects).")
            ;;("phpunit" ,phpunit)
            ))
     (inputs
-     (list qtbase-5 qtcharts qtdeclarative qtsvg-5))
+     (list qtbase-5 qtcharts qtdeclarative-5 qtsvg-5))
     (arguments
      `(#:tests? #f))  ;; 4/17 fail
     (home-page "https://api.kde.org/frameworks/kuserfeedback/html/")

@@ -4857,7 +4857,7 @@ transitions, and effects and then export your film to many common formats.")
            mlt
            pulseaudio
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols

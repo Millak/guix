@@ -857,7 +857,7 @@ devices.")
     (inputs
      (list qtbase-5
            qtsvg-5
-           qtdeclarative
+           qtdeclarative-5
            qtwebsockets
            qtgraphicaleffects
            qtquickcontrols2

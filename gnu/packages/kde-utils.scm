@@ -531,7 +531,7 @@ remind you to take a break now and then.")
            oxygen-icons ;; default icon set
            plasma-framework
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            solid))
     (home-page "https://kde.org/applications/utilities/org.kde.smb4k")
     (synopsis "Samba (SMB) share advanced browser")

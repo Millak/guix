@@ -392,7 +392,7 @@ the Anthy input method.")
        ("opencc" ,opencc)
        ("qtbase" ,qtbase-5)
        ("fcitx5-qt" ,fcitx5-qt)
-       ("qtdeclarative" ,qtdeclarative)
+       ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtwebchannel" ,qtwebchannel)
        ("qtwebengine" ,qtwebengine)))
     (native-inputs

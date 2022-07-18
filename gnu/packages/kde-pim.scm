@@ -724,7 +724,7 @@ for KDE PIM.")
            ;; TODO: libkolab
            qca
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtnetworkauth
            qtspeech
            qtwebchannel
@@ -1070,7 +1070,7 @@ and retrieving certificates from LDAP servers.")
            oxygen-icons ; default icon set, required for tests
            qgpgme
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtwebchannel
            qtwebengine
            sonnet))
@@ -1322,7 +1322,7 @@ using a Qt/KMime C++ API.")
            qca
            qgpgme
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtwebchannel
            qtwebengine
            qtwebkit
@@ -1848,7 +1848,7 @@ and allows one to view/extract message formatted text in Rich Text Format.")
            kwallet
            kwindowsystem
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtwebchannel
            qtwebengine))
     (arguments
@@ -1931,7 +1931,7 @@ KDE using certificate-based crypto.")
            kwindowsystem
            libkdepim
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtwebchannel
            qtwebengine))
     (arguments

@@ -519,7 +519,7 @@ It supports JPEG, PNG and GIF formats.")
      (list pkg-config qttools))
     (inputs
      (list qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5
            boost
            eigen
@@ -532,7 +532,7 @@ It supports JPEG, PNG and GIF formats.")
            lcms
            openexr-2
            qtwebengine
-           qtdeclarative
+           qtdeclarative-5
            qtwebchannel
            fftwf
            gsl

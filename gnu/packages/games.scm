@@ -9270,7 +9270,7 @@ and also provides the base for the FlightGear Flight Simulator.")
            openscenegraph
            plib
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5
            simgear
            speexdsp
@@ -10248,7 +10248,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
            python-wrapper
            qtbase-5
            qtmultimedia-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Stamp drawing toy")
@@ -10294,7 +10294,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Number logic game")
@@ -10332,7 +10332,7 @@ This package is part of the KDE games module.")
            ktextwidgets
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Miniature golf game")
     (description "Kolf is a miniature golf game for one to ten players.  The
@@ -10408,7 +10408,7 @@ other Mah Jongg like games.")
            libkdegames
            libkmahjongg
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Tile laying patience")
@@ -10451,7 +10451,7 @@ This package is part of the KDE games module.")
            libkdegames
            libkmahjongg
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Shisen-Sho solitaire game")
     (description "KShisen is a solitaire-like game played using the standard
@@ -10548,7 +10548,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Breakout like game")
     (description "KBreakout is similar to the classics breakout and xboing,
@@ -10586,7 +10586,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Classical mine sweeper game")
     (description "KMines is a classic Minesweeper game.  The idea is to
@@ -10622,7 +10622,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Simple turn-based strategy game")
@@ -10661,7 +10661,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Jezzball arcade game")
@@ -10699,7 +10699,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Single player falling blocks puzzle game")
@@ -10742,7 +10742,7 @@ This package is part of the KDE games module.")
            libkdegames
            glu
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Sudoku puzzle game and solver")
@@ -10798,7 +10798,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Place 5 equal pieces together, but wait, there are 3 new ones")
     (description "KLines is a simple but highly addictive one player game.
@@ -10841,7 +10841,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Action and puzzle solving game")
     (description "KGoldrunner is an action game where the hero runs through a
@@ -10884,7 +10884,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Three-in-a-row game")
     (description "KDiamond is a three-in-a-row game like Bejeweled.  It
@@ -10919,7 +10919,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Place 4 pieces in a row")
@@ -10958,7 +10958,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Find atoms in a grid by shooting electrons")
@@ -10999,7 +10999,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Turn the board pieces to get all computers connected")
     (description "KNetWalk is a small game where you have to build up a
@@ -11037,7 +11037,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Arcade bombing game")
     (description "Bomber is a single player arcade game.
@@ -11081,7 +11081,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Bomberman clone")
@@ -11117,7 +11117,7 @@ This package is part of the KDE games module.")
            phonon
            qca
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5
            zlib))
     (home-page "https://games.kde.org/")
@@ -11178,7 +11178,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5
            shared-mime-info))
     (home-page "https://games.kde.org/")
@@ -11219,7 +11219,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Yahtzee dice game")
     (description "Kiriki is an addictive and fun dice game, designed to be
@@ -11258,7 +11258,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Go board game")
@@ -11303,7 +11303,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Game based on Rubik's Cube")
@@ -11343,7 +11343,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Lieutnant Skat card game")
@@ -11381,7 +11381,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Pac-Man clone")
@@ -11420,7 +11420,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Two player game with shooting spaceships flying around a sun")
@@ -11453,7 +11453,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Classic pen and paper game: five in a line")
@@ -11492,7 +11492,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Port of the classic BSD console game robots")
     (description "Killbots is a simple game of evading killer robots.
@@ -11533,7 +11533,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Snake race played against the computer")
@@ -11570,7 +11570,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Simple ball dodging game")
     (description "In Kollision you use mouse to control a small blue ball in a
@@ -11610,7 +11610,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Battleship board game with built-in game server")
     (description "KBattleship is a Battle Ship game for KDE.
@@ -11649,7 +11649,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Old reversi board game, also known as othello")
@@ -11690,7 +11690,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Dots and Boxes game")
     (description "KSquares is an implementation of the popular paper based
@@ -11726,7 +11726,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Simple tactical game for number-crunchers")

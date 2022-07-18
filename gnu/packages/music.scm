@@ -2261,7 +2261,7 @@ users to select LV2 plugins and run them with jalv.")
            portmidi
            protobuf
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtkeychain
            qtscript
            qtsvg-5
@@ -4757,7 +4757,7 @@ includes LV2 plugins and a JACK standalone client.")
            portmidi
            pulseaudio
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtquickcontrols2
            qtscript

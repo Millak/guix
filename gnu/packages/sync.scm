@@ -189,7 +189,7 @@
            libzip
            openssl
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtkeychain
            qtquickcontrols2
