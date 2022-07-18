@@ -2447,7 +2447,12 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
                     version "/tig-" version ".tar.gz"))
               (sha256
                (base32
-                "0pwn7mlfnd5ngcbagjs9vsr7jgmia8676p0i91vvfl4v6qrmzfsh"))))
+                "0pwn7mlfnd5ngcbagjs9vsr7jgmia8676p0i91vvfl4v6qrmzfsh"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; TODO: Delete and rebuild doc/*.(1|5|7).
+                  (for-each delete-file (find-files "doc" "\\.html$"))))))
     (build-system gnu-build-system)
     (native-inputs
      (list asciidoc xmlto))
