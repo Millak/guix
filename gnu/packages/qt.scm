@@ -1225,6 +1225,45 @@ WebSockets module provides C++ and QML interfaces that enable Qt applications
 to act as a server that can process WebSocket requests, or a client that can
 consume data received from the server, or both.")))
 
+(define-public qtwebsockets
+  (package
+    (name "qtwebsockets")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "06hj0pkdzjicmbiinjp1dk1ziz8cb3fgcwy7a0dxxjvzr680v64z"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'check)      ;move after install
+                   (add-after 'install 'prepare-for-tests
+                     (lambda _
+                       (setenv "QT_QPA_PLATFORM" "offscreen")
+                       (setenv "QML2_IMPORT_PATH"
+                               (string-append #$output "/lib/qt6/qml:"
+                                              (getenv "QML2_IMPORT_PATH")))))
+                   (add-after 'prepare-for-tests 'check
+                     (assoc-ref %standard-phases 'check))
+                   (add-after 'check 'delete-installed-tests
+                     (lambda _
+                       (delete-file-recursively
+                        (string-append #$output "/tests")))))))
+    (native-inputs (list perl))
+    (inputs (list qtbase qtdeclarative))
+    (synopsis "Qt Web Sockets module")
+    (description "WebSocket is a web-based protocol designed to enable two-way
+communication between a client application and a remote host.  The Qt
+WebSockets module provides C++ and QML interfaces that enable Qt applications
+to act as a server that can process WebSocket requests, or a client that can
+consume data received from the server, or both.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
+
 (define-public qtsensors
   (package (inherit qtsvg-5)
     (name "qtsensors")
