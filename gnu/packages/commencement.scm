@@ -2220,7 +2220,13 @@ exec " gcc "/bin/" program
                       (lambda _
                         (substitute* "libstdc++-v3/configure"
                           (("g\\+\\+ -v") "true"))))))))
-             (_ (package-arguments lib)))))
+             (_ (package-arguments lib)))
+
+         ;; Explicitly add #:modules so MAKE-LIBSTDC++ can be changed
+         ;; without a full bootstrap.
+         #:modules ((guix build gnu-build-system)
+                    (guix build utils))))
+
       (inputs (%boot0-inputs))
       (native-inputs '()))))
 
@@ -2273,7 +2279,18 @@ exec " gcc "/bin/" program
     (inherit gcc)
     (name "gcc-cross-boot0")
     (outputs (delete "debug" (package-outputs gcc)))
-    (source (bootstrap-origin (package-source gcc)))
+    (source
+     (bootstrap-origin
+      (origin
+        (inherit (package-source gcc))
+        (snippet
+         #~(begin
+             ;; XXX: The GCC test suite contains files with non-ASCII file
+             ;; names, which cannot be repacked by BOOTSTRAP-ORIGIN.  Nor
+             ;; can it be deleted from Guile, so resort to this evil hack.
+             #$(origin-snippet (package-source gcc))
+             (system* #$(file-append coreutils-boot0 "/bin/rm") "-rf"
+                      "gcc/testsuite/go.test/test/fixedbugs/issue27836.dir"))))))
     (arguments
      `(#:guile ,%bootstrap-guile
        #:implicit-inputs? #f
@@ -2998,7 +3015,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
 (define libstdc++
   ;; Intermediate libstdc++ that will allow us to build the final GCC
   ;; (remember that GCC-BOOT0 cannot build libstdc++.)
-  (let ((lib (make-libstdc++ gcc)))
+  (let ((lib (make-libstdc++ gcc-boot0)))
     (package
       (inherit lib)
       (source (bootstrap-origin (package-source lib)))
@@ -3066,6 +3083,11 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
        ;; positive, so turn it off.
        #:validate-runpath? #f
 
+       ;; Additional modules for the libstdc++ phase below.
+       #:modules ((srfi srfi-1)
+                  (srfi srfi-26)
+                  ,@%gnu-build-system-modules)
+
        ,@(substitute-keyword-arguments (package-arguments gcc)
            ((#:make-flags flags)
             ;; Since $LIBRARY_PATH is not honored, add the relevant flags.
@@ -3103,7 +3125,26 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                            (package-full-name lib "-")
                                            char-set:letter)
                                          ,(package-name lib)))
-                             (list gmp-6.0 mpfr mpc))))))))))
+                             (list gmp-6.0 mpfr mpc)))))
+                (add-after 'unpack 'fix-build-with-external-libstdc++
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (let ((libstdc++ (assoc-ref inputs "libstdc++")))
+                      ;; Fix a regression in GCC 11 where the libstc++ input
+                      ;; shadows glibc headers when building libstdc++.  An
+                      ;; upstream fix was added in GCC 11.3.0, but it only
+                      ;; hides system include directories, not those on
+                      ;; CPLUS_INCLUDE_PATH.  See discussion at
+                      ;; <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100017>.
+                      (substitute* "libstdc++-v3/src/c++17/Makefile.in"
+                        (("AM_CXXFLAGS = ")
+                         (string-append "CPLUS_INCLUDE_PATH = "
+                                        (string-join
+                                         (remove (cut string-prefix? libstdc++ <>)
+                                                 (string-split
+                                                  (getenv "CPLUS_INCLUDE_PATH")
+                                                  #\:))
+                                         ":")
+                                        "\nAM_CXXFLAGS = ")))))))))))
 
     ;; This time we want Texinfo, so we get the manual.  Add
     ;; STATIC-BASH-FOR-GLIBC so that it's used in the final shebangs of
@@ -3414,10 +3455,10 @@ is the GNU Compiler Collection.")
   (make-gcc-toolchain gcc-9))
 
 (define-public gcc-toolchain-10
-  gcc-toolchain)
+  (make-gcc-toolchain gcc-10))
 
 (define-public gcc-toolchain-11
-  (make-gcc-toolchain gcc-11))
+  gcc-toolchain)
 
 (define-public gcc-toolchain-12
   (make-gcc-toolchain gcc-12))
@@ -3425,7 +3466,7 @@ is the GNU Compiler Collection.")
 (define-public gcc-toolchain-aka-gcc
   ;; It's natural for users to try "guix install gcc".  This package
   ;; automatically "redirects" them to 'gcc-toolchain'.
-  (deprecated-package "gcc" gcc-toolchain-10))
+  (deprecated-package "gcc" gcc-toolchain-11))
 
 
 (define-public gdc-toolchain-10

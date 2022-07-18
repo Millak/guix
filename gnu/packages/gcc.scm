@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
@@ -718,7 +718,7 @@ It also includes runtime support libraries for these languages.")
 
 ;; Note: When changing the default gcc version, update
 ;;       the gcc-toolchain-* definitions.
-(define-public gcc gcc-10)
+(define-public gcc gcc-11)
 
 
 ;;;
@@ -821,8 +821,33 @@ using compilers other than GCC."
     (name "libstdc++")
     (arguments
      `(#:out-of-source? #t
+       #:modules ((srfi srfi-1)
+                  (srfi srfi-26)
+                  ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
+         ,@(if (version>=? (package-version gcc) "11")
+               '((add-after 'unpack 'hide-gcc-headers
+                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                     (let ((gcc (assoc-ref (or native-inputs inputs) "gcc")))
+                       ;; Fix a regression in GCC 11 where the GCC headers
+                       ;; shadows glibc headers when building libstdc++.  An
+                       ;; upstream fix was added in GCC 11.3.0, but it only
+                       ;; hides system include directories, not those on
+                       ;; CPLUS_INCLUDE_PATH.  See discussion at
+                       ;; <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100017>
+                       ;; and the similar adjustment in GCC-FINAL.
+                       (substitute* "libstdc++-v3/src/c++17/Makefile.in"
+                         (("AM_CXXFLAGS = ")
+                          (string-append "CPLUS_INCLUDE_PATH = "
+                                         (string-join
+                                          (remove (cut string-prefix? gcc <>)
+                                                  (string-split
+                                                   (getenv "CPLUS_INCLUDE_PATH")
+                                                   #\:))
+                                          ":")
+                                         "\nAM_CXXFLAGS = ")))))))
+               '())
          ;; Force rs6000 (i.e., powerpc) libdir to be /lib and not /lib64.
          (add-before 'chdir 'fix-rs6000-libdir
            (lambda _
@@ -1109,7 +1134,7 @@ provides the GNU compiler for the Go programming language."))
   (custom-gcc gcc-12 "gcc-objc" '("objc")
               %objc-search-paths))
 
-(define-public gcc-objc gcc-objc-10)
+(define-public gcc-objc gcc-objc-11)
 
 (define %objc++-search-paths
   (list (search-path-specification
@@ -1159,7 +1184,7 @@ provides the GNU compiler for the Go programming language."))
   (custom-gcc gcc-12 "gcc-objc++" '("obj-c++")
               %objc++-search-paths))
 
-(define-public gcc-objc++ gcc-objc++-10)
+(define-public gcc-objc++ gcc-objc++-11)
 
 (define (make-libstdc++-doc gcc)
   "Return a package with the libstdc++ documentation for GCC."
