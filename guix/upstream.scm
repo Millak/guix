@@ -251,13 +251,17 @@ correspond to the same version."
                      #:warn warn-about-load-error)))
 
 (define %updaters
-  ;; The list of publically-known updaters.
-  (delay (fold-module-public-variables (lambda (obj result)
-                                         (if (upstream-updater? obj)
-                                             (cons obj result)
-                                             result))
-                                       '()
-                                       (importer-modules))))
+  ;; The list of publically-known updaters, alphabetically sorted.
+  (delay
+    (sort (fold-module-public-variables (lambda (obj result)
+                                          (if (upstream-updater? obj)
+                                              (cons obj result)
+                                              result))
+                                        '()
+                                        (importer-modules))
+          (lambda (updater1 updater2)
+            (string<? (symbol->string (upstream-updater-name updater1))
+                      (symbol->string (upstream-updater-name updater2)))))))
 
 ;; Tests need to mock this variable so mark it as "non-declarative".
 (set! %updaters %updaters)
