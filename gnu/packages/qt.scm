@@ -1171,6 +1171,35 @@ recognition API for devices.")))
 record media, and manage a collection of media content.  It also contains a
 set of plugins for interacting with pulseaudio and GStreamer.")))
 
+(define-public qtshadertools
+  (package
+    (name "qtshadertools")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              ;; Note: the source bundles *patched* glslang and SPIRV-Cross
+              ;; sources.
+              (sha256
+               (base32
+                "0nj35s2z5n438q7nqf6bnj3slwz2am3169ck1ixwqa0mjrv73dsr"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'prepare-for-tests
+                     (lambda _
+                       (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (native-inputs (list perl))
+    (inputs (list glslang libxkbcommon qtbase))
+    (home-page (package-home-page qtbase))
+    (synopsis "Shader pipeline API and and tools for Qt")
+    (description "The @code{qtshadertools} module provides APIs and tools
+supporting shader pipeline functionality as offered in Qt Quick to operate on
+Vulkan, OpenGL and other main graphic APIs.")
+    (license (package-home-page qtbase))))
+
 (define-public qtwayland
   (package (inherit qtsvg-5)
     (name "qtwayland")
