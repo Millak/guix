@@ -1056,6 +1056,134 @@ language and engine infrastructure, and provides an API to enable application
 developers to extend the QML language with custom types and integrate QML code
 with JavaScript and C++.")))
 
+(define-public qtdeclarative
+  (package
+    (name "qtdeclarative")
+    (version "6.3.1")
+    ;; TODO: Package 'masm' and unbundle from sources.
+    (source (origin
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "1s268fha3650dn1lqxf8jfa07wxpw09f6p7rjyiwq3w24d0nkrq3"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-GNinja" ;about twice as fast!
+                                "-DQT_BUILD_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'honor-cmake-install-rpath
+            ;; The build system goes out of its way to compute a runpath it
+            ;; thinks makes more sense, and fails.  Revert to the default
+            ;; behavior, which is to honor CMAKE_INSTALL_RPATH.
+            (lambda _
+              (substitute* "src/qml/Qt6QmlMacros.cmake"
+                (("set_target_properties.*PROPERTIES.*INSTALL_RPATH.*" all)
+                 (string-append "# " all)))))
+          (add-after 'unpack 'patch-qlibraryinfo-paths
+            (lambda _
+              ;; The QLibraryInfo paths are hard-coded to point to the qtbase
+              ;; installation, but all the tools used in the test suite come
+              ;; from this package.
+              (substitute* (find-files "tests" "\\.cpp$")
+                (("QLibraryInfo::path\\(QLibraryInfo::BinariesPath)")
+                 (string-append "QStringLiteral(\"" #$output "/bin\")"))
+                (("QLibraryInfo::path\\(QLibraryInfo::LibraryExecutablesPath)")
+                 (string-append "QStringLiteral(\"" #$output
+                                "/lib/qt6/libexec\")"))
+                (("QLibraryInfo::path\\(QLibraryInfo::QmlImportsPath)")
+                 (string-append "QStringLiteral(\"" #$output
+                                "/lib/qt6/qml\")")))))
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (apply invoke "cmake" "--build" "."
+                     (if parallel-build?
+                         `("--parallel" ,(number->string (parallel-job-count)))
+                         '()))))
+          (delete 'check)               ;move after the install phase
+          (replace 'install
+            (lambda _
+              (invoke "cmake" "--install" ".")))
+          (add-after 'install 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (when tests?
+                ;; The tests expect to find the modules provided by this
+                ;; package; extend the environment variables needed to do so.
+                                        ;(setenv "CMAKE_PREFIX_PATH" #$output)
+                (setenv "QML2_IMPORT_PATH"
+                        (string-append #$output "/lib/qt6/qml"))
+                (setenv "QT_PLUGIN_PATH"
+                        (string-append #$output "/lib/qt6/plugins:"
+                                       (getenv "QT_PLUGIN_PATH")))
+                (setenv "QT_QPA_PLATFORM" "offscreen")
+                ;; Skip tests known to fail on GNU/Linux, in a CI context or
+                ;; due to bitness (see: https://code.qt.io/cgit/qt/qtbase.git
+                ;; /tree/src/testlib/qtestblacklist.cpp).
+                (setenv "QTEST_ENVIRONMENT" "linux ci 32bit")
+                (setenv "HOME" "/tmp")  ;a few tests require a writable HOME
+                (invoke
+                 "ctest" "--output-on-failure"
+                 "-j" (if parallel-tests?
+                          (number->string (parallel-job-count))
+                          "1")
+                 "-E"                   ;exclude some tests by regex
+                 (string-append
+                  "("
+                  (string-join
+                   (list
+                    ;; This test is marked as flaky upstream (see:
+                    ;; https://bugreports.qt.io/browse/QTBUG-101488).
+                    "tst_qquickfiledialogimpl"
+                    ;; These tests all fail because 'test_overlappingHandles'
+                    ;; (see: https://bugreports.qt.io/browse/QTBUG-95750).
+                    "tst_basic"
+                    "tst_fusion"
+                    "tst_imagine"
+                    "tst_material"
+                    "tst_universal"
+                    ;; Fails due to using the wrong lib/qt6/qml prefix:
+                    ;; "Warning: Failed to find the following builtins:
+                    ;; builtins.qmltypes, jsroot.qmltypes (so will use
+                    ;; qrc). Import paths used:
+                    ;; /gnu/store/...-qtbase-6.3.1/lib/qt6/qml"
+                    "tst_qmltc_qprocess"
+                    ;; These test fail when running qmlimportscanner; perhaps
+                    ;; an extra CMAKE_PREFIX_PATH location is missing to
+                    ;; correctly locate the imports.
+                    "empty_qmldir"
+                    "qtquickcompiler"
+                    "cmake_tooling_imports"
+                    ;; This test seems to hangs for a long time, possibly
+                    ;; waiting for a killed process, which becomes a zombie in
+                    ;; the build container (perhaps solved after
+                    ;; fixing/applying #30948).
+                    "tst_qqmlpreview") "|")
+                  ")")))))
+          (add-after 'install 'delete-installed-tests
+            (lambda _
+              (delete-file-recursively (string-append #$output "/tests")))))))
+    (native-inputs
+     (list ninja
+           perl
+           pkg-config
+           python
+           qtshadertools
+           vulkan-headers))
+    (inputs
+     (list libxkbcommon
+           mesa
+           qtbase))
+    (home-page (package-home-page qtbase))
+    (synopsis "Qt QML module (Quick 2)")
+    (description "The Qt QML module provides a framework for developing
+applications and libraries with the QML language.  It defines and implements
+the language and engine infrastructure, and provides an API to enable
+application developers to extend the QML language with custom types and
+integrate QML code with JavaScript and C++.")
+    (license (package-license qtbase))))
+
 (define-public qtconnectivity
   (package (inherit qtsvg-5)
     (name "qtconnectivity")
