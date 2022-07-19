@@ -16421,8 +16421,9 @@ include @code{read-only}, @code{bind-mount}, @code{no-dev} (disallow
 access to special files), @code{no-suid} (ignore setuid and setgid
 bits), @code{no-atime} (do not update file access times),
 @code{strict-atime} (update file access time), @code{lazy-time} (only
-update time on the in-memory version of the file inode), and
-@code{no-exec} (disallow program execution).
+update time on the in-memory version of the file inode),
+@code{no-exec} (disallow program execution), and @code{shared} (make the
+mount shared).
 @xref{Mount-Unmount-Remount,,, libc, The GNU C Library Reference
 Manual}, for more information on these flags.
 

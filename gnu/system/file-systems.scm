@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -121,7 +122,8 @@
     ;; Note: Keep in sync with 'mount-flags->bit-mask'.
     (let ((known-flags '(read-only
                          bind-mount no-suid no-dev no-exec
-                         no-atime strict-atime lazy-time)))
+                         no-atime strict-atime lazy-time
+                         shared)))
       (lambda (flags)
         "Return the subset of FLAGS that is invalid."
         (remove (cut memq <> known-flags) flags))))
