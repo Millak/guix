@@ -4508,6 +4508,39 @@ user for a period of time only.")
 configuration of an online web shop.")
     (license license:gpl3+)))
 
+(define-public trytond-web-shop-shopify
+  (package
+    (name "trytond-web-shop-shopify")
+    (version "6.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_web_shop_shopify" version))
+              (sha256
+               (base32 "1nd2wnzr6cibqcsidk0k98iy4vs7dy7crhld60wkbza8pgc23hc4"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_web_shop_shopify"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list python-dateutil
+                             python-pyactiveresource
+                             python-shopifyapi
+                             python-sql
+                             trytond
+                             trytond-account-payment
+                             trytond-currency
+                             trytond-party
+                             trytond-product
+                             trytond-product-attribute
+                             trytond-sale
+                             trytond-sale-payment
+                             trytond-stock
+                             trytond-web-shop))
+    (home-page "https://docs.tryton.org/projects/modules-web-shop-shopify")
+    (synopsis "Integrate Tryton with Shopify")
+    (description "The @emph{Web Shop Shopify} Tryton module provides a way to
+manage @emph{Shopify} stores.  It uploads products, variants and collections
+to Shopify, and downloads orders, transactions and creates fulfilments.")
+    (license license:gpl3+)))
+
 (define-public trytond-web-shop-vue-storefront
   (package
     (name "trytond-web-shop-vue-storefront")
