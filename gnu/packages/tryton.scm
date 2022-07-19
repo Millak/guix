@@ -1333,6 +1333,29 @@ required to analyse accounting using multiple different axes.")
   (deprecated-package
    "python-trytond-analytic-account" trytond-analytic-account))
 
+(define-public trytond-analytic-budget
+  (package
+    (name "trytond-analytic-budget")
+    (version "6.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_analytic_budget" version))
+              (sha256
+               (base32 "080a1s9w6n50xi2r7d3jkyk84rdqzggbqzhab9qjgppl67q85m8p"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_analytic_budget"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list trytond trytond-account-budget
+                             trytond-analytic-account
+                             trytond-company))
+    (home-page "https://docs.tryton.org/projects/modules-analytic-budget")
+    (synopsis "Allow creating budgets for analytic accounts in Tryton")
+    (description "The @emph{Analytic Budget} Tryton module provides the
+ability to set budgets for analytic accounts over a defined period of time.
+These budgets can then be used to track the total amount from relevant
+transactions against the budgeted amount.")
+    (license license:gpl3+)))
+
 (define-public trytond-analytic-invoice
   (package
     (name "trytond-analytic-invoice")
