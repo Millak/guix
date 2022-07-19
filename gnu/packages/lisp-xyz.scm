@@ -22675,3 +22675,39 @@ between Lisp objects and some binary (i.e. octet-based) representation.")
 
 (define-public ecl-binary-types
   (sbcl-package->ecl-package sbcl-binary-types))
+
+(define-public sbcl-trivial-custom-debugger
+  (let ((commit "a560594a673bbcd88136af82086107ee5ff9ca81"))
+    (package
+      (name "sbcl-trivial-custom-debugger")
+      (version (git-version "1.0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/trivial-custom-debugger")
+               (commit commit)))
+         (file-name (git-file-name "trivial-custom-debugger" version))
+         (sha256
+          (base32 "1iri5wsp9sc1f5q934cj87zd79r5dc8fda0gl7x1pz95v0wx28yk"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (home-page "https://github.com/phoe/trivial-custom-debugger/")
+      (synopsis "Allow arbitrary functions as the standard Lisp debugger")
+      (description
+       "This is a portability library that allows one to fully override the
+standard debugger provided by their Common Lisp system for situations where
+binding @code{*debugger-hook*} is not enough -- most notably, for
+@code{break}.")
+      (license license:expat))))
+
+(define-public cl-trivial-custom-debugger
+  (sbcl-package->cl-source-package sbcl-trivial-custom-debugger))
+
+(define-public ecl-trivial-custom-debugger
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-trivial-custom-debugger))
+    (arguments
+     ;; Tests fail on ECL: https://github.com/phoe/trivial-custom-debugger/issues/3
+     '(#:tests? #f))))
