@@ -1134,11 +1134,12 @@ in the terminal or with an external viewer.")
      (list pkg-config texlive-tiny))
     (inputs
      (list cairo gd lua pango readline))
-    (arguments `(#:configure-flags (list (string-append
-                                          "--with-texdir=" %output
-                                          "/texmf-local/tex/latex/gnuplot"))
-                 ;; Plot on a dumb terminal during tests.
-                 #:make-flags '("GNUTERM=dumb")))
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-texdir=" #$output
+                                  "/texmf-local/tex/latex/gnuplot"))
+           ;; Plot on a dumb terminal during tests.
+           #:make-flags #~'("GNUTERM=dumb")))
     (home-page "http://www.gnuplot.info")
     (synopsis "Command-line driven graphing utility")
     (description "Gnuplot is a portable command-line driven graphing
