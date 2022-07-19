@@ -976,6 +976,26 @@ and category.")
 (define-public python-trytond-account-product
   (deprecated-package "python-trytond-account-product" trytond-account-product))
 
+(define-public trytond-account-rule
+  (package
+    (name "trytond-account-rule")
+    (version "6.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_account_rule" version))
+              (sha256
+               (base32 "1rn0xdqk5pcjybpyw09fqag6lyha06dq9qb3v0jc31cvwmd17ckl"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_account_rule"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list trytond trytond-account
+                             trytond-company trytond-party))
+    (home-page "https://docs.tryton.org/projects/modules-account-rule")
+    (synopsis "Tryton module to change accounts based on rules")
+    (description "The @emph{Account Rule} Tryton module allows rules which
+substitute default accounts with other accounts.")
+    (license license:gpl3+)))
+
 (define-public trytond-account-statement
   (package
     (name "trytond-account-statement")
