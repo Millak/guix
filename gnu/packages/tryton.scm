@@ -1782,6 +1782,26 @@ currency and rate.")
 National Bank as a source for currency exchange rates.")
     (license license:gpl3+)))
 
+(define-public trytond-currency-rs
+  (package
+    (name "trytond-currency-rs")
+    (version "6.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_currency_rs" version))
+              (sha256
+               (base32 "05admscvj5m7anhji2ni9w2d8b33vlgcifda6jbrxdw8g4c0yivn"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_currency_rs"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list python-lxml trytond trytond-currency
+                             python-zeep))
+    (home-page "https://docs.tryton.org/projects/modules-currency-rs")
+    (synopsis "Fetch currency rates from the Serbian National Bank")
+    (description "The @emph{Currency RS} Tryton module adds the Serbian
+National Bank as a source for currency exchange rates.")
+    (license license:gpl3+)))
+
 (define-public trytond-customs
   (package
     (name "trytond-customs")
