@@ -56,6 +56,34 @@
 architecture supporting plugins.")
     (license license:expat)))
 
+(define-public node-buffer-crc32
+  (package
+    (name "node-buffer-crc32")
+    (version "0.2.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/brianloveswords/buffer-crc32")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09qx2mnd898190m50mc0rhyvbm7d677sxz9bn09qmqkz6fnsddgf"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (home-page "https://github.com/brianloveswords/buffer-crc32")
+    (synopsis "CRC32 implementation in Javascript")
+    (description
+     "This package provides a CRC32 algorithm that works with binary data
+and fancy character sets, signed or unsigned data and has tests, for Node.")
+    (license license:expat)))
+
 (define-public node-color-name
   (package
     (name "node-color-name")
