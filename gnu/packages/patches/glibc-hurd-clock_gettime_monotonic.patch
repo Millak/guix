@@ -67,8 +67,8 @@ index fcd79fd554..1dd02aa449 100644
  
 diff --git a/sysdeps/pthread/timer_create.c b/sysdeps/pthread/timer_create.c
 index 9d8a9ea8ae..3430582c09 100644
---- a/sysdeps/pthread/timer_create.c
-+++ b/sysdeps/pthread/timer_create.c
+--- a/rt/timer_create.c
++++ b/rt/timer_create.c
 @@ -48,7 +48,7 @@ timer_create (clockid_t clock_id, struct sigevent *evp, timer_t *timerid)
        return -1;
      }
