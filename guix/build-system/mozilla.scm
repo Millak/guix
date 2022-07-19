@@ -33,7 +33,7 @@
                         #:rest arguments)
   (define lower (build-system-lower gnu-build-system))
   (if target
-      (apply lower
+      (apply lower name
              (substitute-keyword-arguments arguments
                ;; Override --target and --host to what Mozillian configure
                ;; scripts expect.
