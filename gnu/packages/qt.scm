@@ -1893,6 +1893,36 @@ machines (loading the SCXML file and instantiating states and transitions) and
 generating a C++ file that has a class implementing the state machine.  It
 also contains functionality to support data models and executable content.")))
 
+(define-public qtpositioning
+  (package
+    (name "qtpositioning")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "0v78wamvdw02kf9rq7m5v24q2g6jmgq4ch0fnfa014p1r978wy06"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'delete-installed-tests
+                     (lambda _
+                       (delete-file-recursively
+                        (string-append #$output "/tests")))))))
+    (inputs (list perl qtbase))
+    (home-page (package-home-page qtbase))
+    (synopsis "QML and C++ positioning information API")
+    (description "The Qt Positioning API provides positioning information via
+QML and C++ interfaces.  The Qt Positioning API lets you to determine a
+position by using a variety of possible sources, including satellite, wifi, or
+text files.  That information can then be used to, for example, determine a
+position on a map.  In addition, you can use to the API to retrieve satellite
+information and perform area based monitoring.")
+    (license (package-license qtbase))))
+
 (define-public qtpurchasing
   (package (inherit qtsvg-5)
     (name "qtpurchasing")
