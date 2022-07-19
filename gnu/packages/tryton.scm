@@ -3353,6 +3353,33 @@ lead/opportunity model.")
 payments prior to the creation of any invoice.")
     (license license:gpl3+)))
 
+(define-public trytond-sale-point
+  (package
+    (name "trytond-sale-point")
+    (version "6.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_sale_point" version))
+              (sha256
+               (base32 "0brysadw75rm80yk66wq68gqkyb28zk65sw530fyacx9ma0sq0pj"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_sale_point"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list python-sql
+                             trytond
+                             trytond-account
+                             trytond-account-product
+                             trytond-company
+                             trytond-party
+                             trytond-product
+                             trytond-sale
+                             trytond-stock))
+    (home-page "https://docs.tryton.org/projects/modules-sale-point")
+    (synopsis "Tryton module for Point of Sales")
+    (description "The @emph{Sale Point} Tryton module allows retail sales to
+be handled and recorded.")
+    (license license:gpl3+)))
+
 (define-public trytond-sale-price-list
   (package
     (name "trytond-sale-price-list")
