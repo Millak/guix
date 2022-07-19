@@ -2369,6 +2369,27 @@ cost price of products to be calculated separately for each warehouse.")
 product and variant.")
     (license license:gpl3+)))
 
+(define-public trytond-product-image-attribute
+  (package
+    (name "trytond-product-image-attribute")
+    (version "6.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_product_image_attribute" version))
+              (sha256
+               (base32 "1ywyh158325v461qkka5svp4gygsfkkrxd6yl9dgfgypd483qjs8"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_product_image_attribute"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list trytond trytond-product
+                             trytond-product-attribute
+                             trytond-product-image))
+    (home-page "https://docs.tryton.org/projects/modules-product-image-attribute")
+    (synopsis "Tryton module to select variant images based on attributes")
+    (description "The @emph{Product Image Attribute} Tryton module adds
+attributes to product images.")
+    (license license:gpl3+)))
+
 (define-public trytond-product-kit
   (package
     (name "trytond-product-kit")
