@@ -1723,6 +1723,33 @@ positioning and geolocation plugins.")))
 the documentation, translate applications, generate help files and other stuff
 that helps in Qt development.")))
 
+(define-public qttools
+  (package
+    (name "qttools")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "1h96w4bzkbd80vr7lh6hnypdlmbzc1y52c2zrqzvkgm3587pa4n4"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; The build system attempts to fetch online resources and fails when
+      ;; building the test suite.
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=OFF")))
+    (native-inputs (list perl qtdeclarative vulkan-headers))
+    (inputs (list libxkbcommon mesa qtbase))
+    (home-page (package-home-page qtbase))
+    (synopsis "Qt Tools and Designer modules")
+    (description "The Qt Tools module provides a set of applications to browse
+the documentation, translate applications, generate help files and other stuff
+that helps in Qt development.")
+    ;; GPL 3 only with Qt GPL exception 1.0 (see:
+    ;; LICENSES/Qt-GPL-exception-1.0.txt).
+    (license (list license:gpl3))))
+
 (define-public qtscript
   (package (inherit qtsvg-5)
     (name "qtscript")
