@@ -246,7 +246,7 @@ of those files are returned that are unexpectedly installed."
                           ;; entries with the same prefix.
                           (lambda (x y) (every equal? x y)))))
 
-(define (tlpdb->package name package-database)
+(define (tlpdb->package name version package-database)
   (and-let* ((data (assoc-ref package-database name))
              (dirs (files->directories
                     (map (lambda (dir)
@@ -255,7 +255,9 @@ of those files are returned that are unexpectedly installed."
                                  (or (assoc-ref data 'runfiles) (list))
                                  (or (assoc-ref data 'srcfiles) (list))))))
              (name (guix-name name))
-             (version (number->string %texlive-revision))
+             ;; TODO: we're ignoring the VERSION argument because that
+             ;; information is distributed across %texlive-tag and
+             ;; %texlive-revision.
              (ref (svn-multi-reference
                    (url (string-append "svn://www.tug.org/texlive/tags/"
                                        %texlive-tag "/Master/texmf-dist"))
@@ -276,6 +278,9 @@ of those files are returned that are unexpectedly installed."
                        (force-output port)
                        (get-hash))))
                   ,@(if (assoc-ref data 'srcfiles) '() '(#:trivial? #true))))
+        ;; package->definition in (guix import utils) expects to see a
+        ;; version field.
+        (version ,version)
         ,@(or (and=> (assoc-ref data 'depend)
                      (lambda (inputs)
                        `((propagated-inputs
@@ -297,13 +302,18 @@ of those files are returned that are unexpectedly installed."
 
 (define texlive->guix-package
   (memoize
-   (lambda* (name #:key repo version (package-database tlpdb))
+   (lambda* (name #:key
+                  repo
+                  (version (number->string %texlive-revision))
+                  (package-database tlpdb))
      "Find the metadata for NAME in the tlpdb and return the `package'
 s-expression corresponding to that package, or #f on failure."
-     (tlpdb->package name (package-database)))))
+     (tlpdb->package name version (package-database)))))
 
-(define (texlive-recursive-import name)
+(define* (texlive-recursive-import name #:key repo version)
   (recursive-import name
+                    #:repo repo
+                    #:version version
                     #:repo->guix-package texlive->guix-package
                     #:guix-name guix-name))
 

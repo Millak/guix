@@ -40965,6 +40965,16 @@ package, you can try and import it (@pxref{Invoking guix import}):
 guix import texlive @var{package}
 @end example
 
+Additional options include:
+
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
+@end table
+
 @quotation Note
 @TeX{} Live packaging is still very much work in progress, but you can
 help!  @xref{Contributing}, for more information.

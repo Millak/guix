@@ -341,6 +341,8 @@ APPEND-VERSION?/string is a string, append this string."
   (match guix-package
     ((or
       ('package ('name name) ('version version) . rest)
+      ('package ('inherit ('simple-texlive-package name . _))
+                ('version version) . rest)
       ('let _ ('package ('name name) ('version version) . rest)))
 
      `(define-public ,(string->symbol
