@@ -4062,6 +4062,31 @@ you to generate the DPD label using the DPD webservices.  DPD has many
 different web services, the module supports:")
     (license license:gpl3+)))
 
+(define-public trytond-stock-package-shipping-mygls
+  (package
+    (name "trytond-stock-package-shipping-mygls")
+    (version "6.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_stock_package_shipping_mygls" version))
+              (sha256
+               (base32 "0pwq720mqv473s5aqib89z5bjdl127l8nqw91prxsna82bm16kv2"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_stock_package_shipping_mygls"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list python-pypdf2
+                             trytond
+                             trytond-carrier
+                             trytond-stock
+                             trytond-stock-package
+                             trytond-stock-package-shipping
+                             python-zeep))
+    (home-page "https://docs.tryton.org/projects/modules-stock-package-shipping-mygls")
+    (synopsis "MyGLS connector for the Tryton application platform")
+    (description "The @emph{Stock Package Shipping MyGLS} Tryton module allows
+package labels to be generated for shipments using MyGLS webservices.")
+    (license license:gpl3+)))
+
 (define-public trytond-stock-package-shipping-ups
   (package
     (name "trytond-stock-package-shipping-ups")
