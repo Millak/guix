@@ -181,7 +181,7 @@
     "--enable-muxer=h263"
     "--enable-muxer=h264"
     "--enable-muxer=hevc"
-;    "--enable-muxer=matroska"
+    "--enable-muxer=matroska"
     "--enable-muxer=webm"
     "--enable-muxer=ogg"
     "--enable-muxer=pcm_s16be"
