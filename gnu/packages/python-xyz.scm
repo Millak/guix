@@ -18923,6 +18923,18 @@ from the header, as well as section details and data available.")
      through a Python API.")
     (license license:lgpl2.1+)))
 
+(define-public python-pycountry@20.7.3
+  (package
+    (inherit python-pycountry)
+    (name "python-pycountry")
+    (version "20.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pycountry" version))
+       (sha256
+        (base32 "0hnbabsmqimx5hqh0jbd2f64i8fhzhhbrvid57048hs5sd9ll241"))))))
+
 (define-public python-pycosat
   (package
     (name "python-pycosat")
