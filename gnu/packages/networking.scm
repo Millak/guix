@@ -3472,16 +3472,16 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
 (define-public opendht
   (package
     (name "opendht")
-    (version "2.3.4")
+    (version "2.4.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/savoirfairelinux/opendht")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gp1wdpk50y0pcvlhqfw9vpms8lsrjvv63x4dh40axsvf2ix9lkj"))))
+                "150yxlhn8ykhck7gr1i2bppbqpfyhk0cscn5z7vyn94y5fnqkxsb"))))
     (outputs '("out" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments
