@@ -1762,6 +1762,26 @@ currency and rate.")
 (define-public python-trytond-currency
   (deprecated-package "python-trytond-currency" trytond-currency))
 
+(define-public trytond-currency-ro
+  (package
+    (name "trytond-currency-ro")
+    (version "6.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_currency_ro" version))
+              (sha256
+               (base32 "1kn4bgh1gg5dcphb2afqb922myyg2012vdhixipmi7ccbv7ik46s"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_currency_ro"))
+        (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list python-lxml python-requests trytond
+                             trytond-currency))
+    (home-page "https://docs.tryton.org/projects/modules-currency-ro")
+    (synopsis "Fetch currency rates from the Romanian National Bank")
+    (description "The @emph{Currency RO} Tryton module adds the Romanian
+National Bank as a source for currency exchange rates.")
+    (license license:gpl3+)))
+
 (define-public trytond-customs
   (package
     (name "trytond-customs")
