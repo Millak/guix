@@ -88,6 +88,7 @@
   #:use-module (gnu packages markup)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pcre)
@@ -98,6 +99,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sdl)
@@ -2374,6 +2376,349 @@ using the Enchant spell-checking library.")
     (description "The Qt5WebEngine module provides support for web applications
 using the Chromium browser project.  The Chromium source code has Google services
 and binaries removed, and adds modular support for using system libraries.")
+    (license license:lgpl2.1+)))
+
+(define-public qtwebengine
+  (package
+    (name "qtwebengine")
+    (version "6.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (qt5-urls name version))
+       (sha256
+        (base32
+         "0ivfsqd5c0cxsnssj6z37901cf6a47w50zaqgjiysvcm3ar36ymd"))
+       (modules '((ice-9 ftw)
+                  (ice-9 match)
+                  (srfi srfi-1)
+                  (srfi srfi-26)
+                  (guix build utils)))
+       (snippet
+        '(begin
+           (let ((preserved-third-party-files
+                  '("base/third_party/double_conversion"
+                    "base/third_party/cityhash"
+                    "base/third_party/cityhash_v103"
+                    "base/third_party/dynamic_annotations"
+                    "base/third_party/icu"
+                    "base/third_party/libevent"
+                    "base/third_party/nspr"
+                    "base/third_party/superfasthash"
+                    "base/third_party/symbolize"
+                    "base/third_party/xdg_mime"
+                    "base/third_party/xdg_user_dirs"
+                    "net/third_party/mozilla_security_manager"
+                    "net/third_party/nss"
+                    "net/third_party/quiche"
+                    "net/third_party/uri_template"
+                    "third_party/abseil-cpp"
+                    "third_party/angle"
+                    "third_party/angle/src/common/third_party/base"
+                    "third_party/angle/src/common/third_party/smhasher"
+                    "third_party/angle/src/common/third_party/xxhash"
+                    "third_party/axe-core"
+                    "third_party/blink"
+                    "third_party/boringssl"
+                    "third_party/boringssl/src/third_party/fiat"
+                    "third_party/breakpad"
+                    "third_party/brotli"
+                    "third_party/ced"
+                    "third_party/cld_3"
+                    "third_party/closure_compiler"
+                    "third_party/crashpad"
+                    "third_party/crashpad/crashpad/third_party/lss"
+                    "third_party/crashpad/crashpad/third_party/zlib"
+                    "third_party/crc32c"
+                    "third_party/dav1d"
+                    "third_party/dawn"
+                    "third_party/devtools-frontend"
+                    "third_party/devtools-frontend/src/front_end/third_party/lighthouse"
+                    "third_party/devtools-frontend/src/front_end/third_party/wasmparser"
+                    "third_party/emoji-segmenter"
+                    "third_party/ffmpeg"
+                    "third_party/googletest"
+                    "third_party/harfbuzz-ng/utils"
+                    "third_party/hunspell"
+                    "third_party/iccjpeg"
+                    "third_party/icu"
+                    "third_party/inspector_protocol"
+                    "third_party/jinja2"
+                    "third_party/jsoncpp"
+                    "third_party/jstemplate"
+                    "third_party/khronos"
+                    "third_party/leveldatabase"
+                    "third_party/libaddressinput"
+                    "third_party/libgifcodec"
+                    "third_party/libjingle_xmpp"
+                    "third_party/libjpeg_turbo"
+                    "third_party/libpng"
+                    "third_party/libsrtp"
+                    "third_party/libsync"
+                    "third_party/libudev"
+                    "third_party/libvpx"
+                    "third_party/libwebm"
+                    "third_party/libwebp"
+                    "third_party/libxml"
+                    "third_party/libxslt"
+                    "third_party/libyuv"
+                    "third_party/lss"
+                    "third_party/mako"
+                    "third_party/markupsafe"
+                    "third_party/mesa_headers"
+                    "third_party/metrics_proto"
+                    "third_party/modp_b64"
+                    "third_party/nasm"
+                    "third_party/one_euro_filter"
+                    "third_party/openh264/src/codec/api/svc"
+                    "third_party/opus"
+                    "third_party/ots"
+                    "third_party/pdfium"
+                    "third_party/pdfium/third_party/agg23"
+                    "third_party/pdfium/third_party/base"
+                    "third_party/pdfium/third_party/freetype"
+                    "third_party/pdfium/third_party/lcms"
+                    "third_party/pdfium/third_party/libopenjpeg20"
+                    "third_party/pdfium/third_party/skia_shared"
+                    "third_party/perfetto"
+                    "third_party/pffft"
+                    "third_party/ply"
+                    "third_party/polymer"
+                    "third_party/protobuf"
+                    "third_party/protobuf/third_party/six"
+                    "third_party/pyjson5"
+                    "third_party/re2"
+                    "third_party/rnnoise"
+                    "third_party/skia"
+                    "third_party/skia/include/third_party/skcms/skcms.h"
+                    "third_party/skia/include/third_party/vulkan"
+                    "third_party/skia/third_party/skcms"
+                    "third_party/skia/third_party/vulkanmemoryallocator"
+                    "third_party/smhasher"
+                    "third_party/snappy"
+                    "third_party/sqlite"
+                    "third_party/usb_ids"
+                    "third_party/usrsctp"
+                    "third_party/web-animations-js"
+                    "third_party/webrtc"
+                    "third_party/webrtc/common_audio/third_party/ooura"
+                    "third_party/webrtc/common_audio/third_party/spl_sqrt_floor"
+                    "third_party/webrtc/modules/third_party/fft"
+                    "third_party/webrtc/modules/third_party/g711"
+                    "third_party/webrtc/modules/third_party/g722"
+                    "third_party/webrtc/rtc_base/third_party/base64"
+                    "third_party/webrtc/rtc_base/third_party/sigslot"
+                    "third_party/webrtc_overrides"
+                    "third_party/widevine/cdm/widevine_cdm_common.h"
+                    "third_party/widevine/cdm/widevine_cdm_version.h"
+                    "third_party/woff2"
+                    "third_party/zlib"
+                    "url/third_party/mozilla"
+                    "v8/src/third_party/utf8-decoder"
+                    "v8/src/third_party/valgrind"
+                    "v8/src/third_party/siphash"
+                    "v8/third_party/v8/builtins"
+                    "v8/third_party/inspector_protocol"))
+                 (protected (make-regexp "\\.(gn|gyp)i?$")))
+             (define preserved-club
+               (map (lambda (member)
+                      (string-append "./" member))
+                    preserved-third-party-files))
+             (define (empty? dir)
+               (equal? (scandir dir) '("." "..")))
+             (define (third-party? file)
+               (string-contains file "third_party/"))
+             (define (useless? file)
+               (any (cute string-suffix? <> file)
+                    '(".zip" ".so" ".dll" ".exe" ".jar")))
+             (define (parents child)
+               ;; Return all parent directories of CHILD up to and including
+               ;; the closest "third_party".
+               (let* ((dirs (match (string-split child #\/)
+                              ((dirs ... last) dirs)))
+                      (closest (list-index (lambda (dir)
+                                             (string=? "third_party" dir))
+                                           (reverse dirs)))
+                      (delim (- (length dirs) closest)))
+                 (fold (lambda (dir prev)
+                         (cons (string-append (car prev) "/" dir)
+                               prev))
+                       (list (string-join (list-head dirs delim) "/"))
+                       (list-tail dirs delim))))
+             (define (remove-loudly file)
+               (format #t "deleting ~a...~%" file)
+               (force-output)
+               (delete-file file))
+             (define (delete-unwanted-files child stat flag base level)
+               (match flag
+                 ((or 'regular 'symlink 'stale-symlink)
+                  (when (third-party? child)
+                    (unless (or (member child preserved-club)
+                                (any (cute member <> preserved-club)
+                                     (parents child))
+                                (regexp-exec protected child))
+                      (remove-loudly child)))
+                  (when (and (useless? child) (file-exists? child))
+                    (remove-loudly child)))
+                 ('directory-processed
+                  (when (empty? child)
+                    (rmdir child)))
+                 (_ #t)))
+
+             (with-directory-excursion "src/3rdparty"
+               (delete-file-recursively "ninja")
+
+               (with-directory-excursion "chromium"
+                 ;; Delete bundled software and binaries that were not
+                 ;; explicitly preserved above.
+                 (nftw "." delete-unwanted-files 'depth 'physical)
+
+                 ;; Assert that each preserved item is present to catch
+                 ;; removals.
+                 (for-each (lambda (third-party)
+                             (unless (file-exists? third-party)
+                               (error (format #f "~s does not exist!~%"
+                                              third-party))))
+                           preserved-club)
+
+                 ;; Use relative header locations instead of hard coded ones.
+                 (substitute*
+                     "base/third_party/dynamic_annotations/dynamic_annotations.c"
+                   (("base/third_party/valgrind") "valgrind"))
+                 (substitute* "third_party/breakpad/breakpad/src/common/\
+linux/libcurl_wrapper.h"
+                   (("third_party/curl") "curl"))
+                 (substitute*
+                     '("components/viz/common/gpu/vulkan_context_provider.h"
+                       "gpu/config/gpu_util.cc")
+                   (("third_party/vulkan/include/")
+                    ""))
+
+                 ;; Replace Google Analytics bundle with an empty file and
+                 ;; hope no one notices.
+                 (mkdir-p "third_party/analytics")
+                 (call-with-output-file
+                     "third_party/analytics/google-analytics-bundle.js"
+                   (lambda (port)
+                     (const #t)))))
+             ;; Do not enable support for loading the Widevine DRM plugin.
+             (substitute* "src/core/CMakeLists.txt"
+               (("enable_widevine=true")
+                "enable_widevine=false")))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; XXX: The test suite is not built by default; leave it off to save
+      ;; some build time and resources.
+      #:tests? #f
+      #:configure-flags
+      ;; Use the CMake ninja generator, otherwise the build fails (see:
+      ;; https://bugreports.qt.io/browse/QTBUG-96897).
+      #~(list "-GNinja"                 ;
+              ;; Manually add the NSS library prefix to the linker
+              ;; search path, otherwise it fails to be linked (see:
+              ;; https://bugreports.qt.io/browse/QTBUG-105053).
+              (string-append "-DCMAKE_SHARED_LINKER_FLAGS=-L"
+                             (search-input-directory %build-inputs "lib/nss"))
+
+              ;; The PDF renderer plugin fails to build with errors such as
+              ;; "src/3rdparty/chromium/components/pdf
+              ;; /renderer/pdf_accessibility_tree.cc:1373:39:
+              ;; error: use of undeclared identifier 'IDS_PDF_PAGE_INDEX'";
+              ;; disable it.
+              "-DQT_FEATURE_webengine_printing_and_pdf=OFF"
+              "-DQT_FEATURE_webengine_pepper_plugins=OFF" ;widevine
+              "-DQT_FEATURE_system_ffmpeg=ON"
+              ;; Do not artificially limit codec support; video decoding is
+              ;; done by ffmpeg.
+              "-DQT_FEATURE_webengine_proprietary_codecs=ON"
+              "-DQT_FEATURE_webengine_system_alsa=ON"
+              "-DQT_FEATURE_webengine_system_icu=ON"
+              "-DQT_FEATURE_webengine_system_libxml=ON"
+              "-DQT_FEATURE_webengine_system_libpci=ON"
+              "-DQT_FEATURE_webengine_system_libpng=ON"
+              "-DQT_FEATURE_webengine_system_pulseaudio=ON"
+              "-DQT_FEATURE_webengine_system_zlib=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Qtwebengine is not installed into the same prefix as qtbase.
+              ;; Some qtbase QTLibraryInfo constants will not work.  Replace
+              ;; with the full path to the qtwebengine translations and
+              ;; locales in the store.
+              (substitute* "src/core/web_engine_library_info.cpp"
+                (("QLibraryInfo::path\\(QLibraryInfo::TranslationsPath)")
+                 (string-append "QLatin1String(\"" #$output
+                                "/share/qt6/translations\")"))
+                (("QLibraryInfo::path\\(QLibraryInfo::DataPath)")
+                 (string-append "QLatin1String(\"" #$output
+                                "/share/qt6\")")))
+              ;; Substitute full dynamic library path for nss.
+              (substitute* "src/3rdparty/chromium/crypto/nss_util.cc"
+                (("libnssckbi.so")
+                 (search-input-file inputs "lib/nss/libnssckbi.so")))
+              ;; Substitute full dynamic library path for udev.
+              (substitute* "src/3rdparty/chromium/device/udev_linux/udev1_loader.cc"
+                (("libudev.so.1")
+                 (search-input-file inputs "lib/libudev.so.1")))
+              ;; Patch the location of the X11 keywoard layouts, otherwise
+              ;; webengine *crashes* at run time when the default directory,
+              ;; '/usr/share/X11/xkb' is empty (see:
+              ;; https://bugreports.qt.io/browse/QTBUG-105124).
+              (substitute* "src/3rdparty/chromium/ui/events/ozone/layout/xkb\
+/xkb_keyboard_layout_engine.cc"
+                (("/usr/share/X11/xkb")
+                 (search-input-directory inputs "share/X11/xkb")))))
+          (add-before 'configure 'prepare-build-environment
+            (lambda _
+              ;; Avoids potential race conditions.
+              (setenv "PYTHONDONTWRITEBYTECODE" "1")
+              (setenv "NINJAFLAGS"
+                      (string-append
+                       "-k1"  ;less verbose build output
+                       ;; Respect the '--cores' option of 'guix build'.
+                       " -j" (number->string (parallel-job-count))))
+              ;; Use Clang/LDD to help tame the memory requirements and hasten
+              ;; the build.
+              (setenv "AR" "llvm-ar") (setenv "NM" "llvm-nm")
+              (setenv "CC" "clang") (setenv "CXX" "clang++")))
+          (replace 'build
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (apply invoke "cmake" "--build" "."
+                     (if parallel-build?
+                         `("--parallel" ,(number->string (parallel-job-count)))
+                         '()))))
+          (replace 'install
+            (lambda _
+              (invoke "cmake" "--install" "."))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs qtwebengine-5)
+       (delete "python2" "python2-six")
+       (append clang-14
+               lld-as-ld-wrapper
+               node-lts
+               python-wrapper
+               python-html5lib)))
+    (inputs
+     (modify-inputs (package-inputs qtwebengine-5)
+       (replace "qtbase" qtbase)
+       (replace "qtdeclarative" qtdeclarative)
+       (replace "qtmultimedia" qtmultimedia)
+       (replace "qtwebchannel" qtwebchannel)
+       (append libxkbfile xkeyboard-config)))
+    (native-search-paths
+     (list (search-path-specification
+            (file-type 'regular)
+            (separator #f)
+            (variable "QTWEBENGINEPROCESS_PATH")
+            (files '("lib/qt5/libexec/QtWebEngineProcess")))))
+    (home-page "https://wiki.qt.io/QtWebEngine")
+    (synopsis "Qt WebEngine module")
+    (description "The Qt WebEngine module provides support for web
+applications using the Chromium browser project.  The Chromium source code has
+Google services and binaries removed, and adds modular support for using
+system libraries.")
     (license license:lgpl2.1+)))
 
 (define-public single-application-qt5
