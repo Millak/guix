@@ -2350,6 +2350,25 @@ and assets.")
 cost price of products to be calculated separately for each warehouse.")
     (license license:gpl3+)))
 
+(define-public trytond-product-image
+  (package
+    (name "trytond-product-image")
+    (version "6.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_product_image" version))
+              (sha256
+               (base32 "1xdqgc4y1sghnp5q25facdz3mnaxf8fysqlpbq3zrghsvi136mvd"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_product_image"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list python-pillow trytond trytond-product))
+    (home-page "https://docs.tryton.org/projects/modules-product-image")
+    (synopsis "Tryton module that adds images to products")
+    (description "The @emph{Product Image} Tryton module adds images to each
+product and variant.")
+    (license license:gpl3+)))
+
 (define-public trytond-product-kit
   (package
     (name "trytond-product-kit")
