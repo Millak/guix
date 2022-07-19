@@ -409,15 +409,17 @@
     (build-system gnu-build-system)
     (arguments
      (list
-      ;; The test suite fails to link when building libjami as a shared library:
-      ;; "testAccount_factory.cpp:(.text+0xc52): undefined reference to
-      ;; `jami::AccountFactory::AccountFactory()'.
+      ;; The test suite fails to link when building libjami as a shared
+      ;; library: "sip_account/sip_empty_offer.cpp:228:1: error: no
+      ;; declaration matches ‘void
+      ;; jami::test::SipEmptyOfferTest::onCallStateChange(const string&, const
+      ;; string&, jami::test::CallData&)’".
       #:tests? #f
       ;; The agent links the daemon binary with libguile, which enables the
       ;; execution of test plans described in Scheme.  It may be useful in
       ;; user scripts too, until more general purpose Scheme bindings are made
       ;; available (see: test/agent/README.md).
-      #:configure-flags #~(list "--disable-agent"
+      #:configure-flags #~(list "--enable-agent"
                                 "--enable-debug"
                                 ;; Disable static libraries to avoid
                                 ;; installing a 98 MiB archive.
