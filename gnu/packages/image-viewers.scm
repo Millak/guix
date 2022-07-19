@@ -516,7 +516,7 @@ It supports JPEG, PNG and GIF formats.")
                 "188q0l63nfasqfvwbq4mwx2vh7wsfi2bq9n5nksddspl1qz01lnp"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list qtbase-5
            qtdeclarative-5
@@ -671,7 +671,7 @@ For PDF support, install the @emph{mupdf} package.")
                   (invoke "qmake" "tests.pro")
                   (invoke "make" "tests"))))))))
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list qtbase-5 qtimageformats qtsvg-5))
     (home-page "https://interversehq.com/qview/")
@@ -924,7 +924,7 @@ archives.")
        ("qtsvg-5" ,qtsvg-5)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools)))
+       ("qtlinguist" ,qttools-5)))
     (synopsis "Image viewer supporting all common formats")
     (description "Nomacs is a simple to use image lounge featuring
 semi-transparent widgets that display additional information such as metadata,

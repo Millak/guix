@@ -1650,7 +1650,7 @@ of the same name.")
            perl
            pkg-config
            python-wrapper
-           qttools))
+           qttools-5))
     (synopsis "Network traffic analyzer")
     (description "Wireshark is a network protocol analyzer, or @dfn{packet
 sniffer}, that lets you capture and interactively browse the contents of

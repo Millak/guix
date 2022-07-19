@@ -234,7 +234,7 @@ in Qt.")
            qtsvg-5
            qtx11extras))
     (native-inputs
-     (list lxqt-build-tools qttools))
+     (list lxqt-build-tools qttools-5))
     (home-page "https://lxqt-project.org")
     (synopsis "Core utility library for all LXQt components")
     (description "liblxqt provides the basic libraries shared by the
@@ -287,7 +287,7 @@ and memory usage or network traffic.")
            qtsvg-5
            qtx11extras))
     (native-inputs
-     (list lxqt-build-tools qttools))
+     (list lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -329,7 +329,7 @@ LXQt and the system it's running on.")
            qtsvg-5
            qtx11extras))
     (native-inputs
-     (list lxqt-build-tools qttools))
+     (list lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -382,7 +382,7 @@ the operating system LXQt is running on.")
            xkeyboard-config
            zlib))
     (native-inputs
-     (list pkg-config lxqt-build-tools qttools))
+     (list pkg-config lxqt-build-tools qttools-5))
     ;; XXX: This is a workaround so libkscreen can find the backends as we
     ;; dont have a way specify them. We may want to  patch like Nix does.
     (propagated-inputs
@@ -446,7 +446,7 @@ configuration of both LXQt and the underlying operating system.")
            qtsvg-5
            qtx11extras))
     (native-inputs
-     (list pkg-config qttools lxqt-build-tools))
+     (list pkg-config qttools-5 lxqt-build-tools))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -492,7 +492,7 @@ as a whole and are not limited to distinct applications.")
            qtsvg-5
            qtx11extras))
     (native-inputs
-     (list lxqt-build-tools qttools))
+     (list lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f                      ; no test target
        #:phases
@@ -537,7 +537,7 @@ according to the Desktop Notifications Specification.")
            qtsvg-5
            qtx11extras))
     (native-inputs
-     (list lxqt-build-tools qttools))
+     (list lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -590,7 +590,7 @@ of other programs.")
            xcb-util
            xkeyboard-config))
     (native-inputs
-     (list pkg-config lxqt-build-tools qttools))
+     (list pkg-config lxqt-build-tools qttools-5))
     (propagated-inputs
      ;; Propagating KWINDOWSYSTEM so that the list of opened applications
      ;; shows up in lxqt-panel's taskbar plugin.
@@ -649,7 +649,7 @@ of other programs.")
            qtsvg-5
            qtx11extras))
     (native-inputs
-     (list pkg-config polkit lxqt-build-tools qttools))
+     (list pkg-config polkit lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f                      ; no test target
        #:phases
@@ -696,7 +696,7 @@ LXQt.")
            qtx11extras
            solid))
     (native-inputs
-     (list lxqt-build-tools qttools))
+     (list lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -742,7 +742,7 @@ when laptop batteries are low on power.")
            qtsvg-5
            qtx11extras))
     (native-inputs
-     (list lxqt-build-tools qttools))
+     (list lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -782,7 +782,7 @@ Qt with LXQt.")
            qtsvg-5
            qtx11extras))
     (native-inputs
-     (list pkg-config qttools lxqt-build-tools))
+     (list pkg-config qttools-5 lxqt-build-tools))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -829,7 +829,7 @@ allows for launching applications or shutting down the system.")
            qtx11extras
            xdg-user-dirs))
     (native-inputs
-     (list pkg-config lxqt-build-tools qttools))
+     (list pkg-config lxqt-build-tools qttools-5))
     (arguments
      `(#:tests? #f
        #:phases
@@ -897,7 +897,7 @@ for the LXQt desktop environment.")
            qtx11extras
            sudo))
     (native-inputs
-     (list pkg-config qttools lxqt-build-tools))
+     (list pkg-config qttools-5 lxqt-build-tools))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -978,7 +978,7 @@ for LXQt.")
            qtbase-5
            qtx11extras))
     (native-inputs
-     (list pkg-config lxqt-build-tools qttools))
+     (list pkg-config lxqt-build-tools qttools-5))
     (home-page "https://lxqt-project.org")
     (synopsis "Qt binding for libfm")
     (description "libfm-qt is the Qt port of libfm, a library providing
@@ -1000,7 +1000,7 @@ components to build desktop file managers which belongs to LXDE.")
     (inputs
      (list libfm-qt qtbase-5 qtx11extras))
     (native-inputs
-     (list pkg-config qttools lxqt-build-tools))
+     (list pkg-config qttools-5 lxqt-build-tools))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -1038,7 +1038,7 @@ LXDE.")
     (inputs
      (list libconfig qtbase-5))
     (native-inputs
-     (list lxqt-build-tools pkg-config qttools))
+     (list lxqt-build-tools pkg-config qttools-5))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -1070,7 +1070,7 @@ manager Compton.")
     (inputs
      (list libexif libfm-qt qtbase-5 qtsvg-5 qtx11extras))
     (native-inputs
-     (list pkg-config lxqt-build-tools qttools))
+     (list pkg-config lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f))                    ; no tests
     (home-page "https://lxqt-project.org")
@@ -1103,7 +1103,7 @@ image viewer.")
            qtbase-5
            qtx11extras))
     (native-inputs
-     (list lxqt-build-tools pkg-config qttools))
+     (list lxqt-build-tools pkg-config qttools-5))
     (arguments
      '(#:tests? #f))                    ; no tests
     (home-page "https://lxqt-project.org")
@@ -1127,7 +1127,7 @@ window manager OpenBox.")
     (inputs
      (list glib pcre pulseaudio qtbase-5 qtx11extras))
     (native-inputs
-     (list pkg-config lxqt-build-tools qttools))
+     (list pkg-config lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f))                    ; no tests
     (home-page "https://lxqt-project.org")
@@ -1156,7 +1156,7 @@ window manager OpenBox.")
            qtbase-5
            qtx11extras))
     (native-inputs
-     (list lxqt-build-tools qttools))
+     (list lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f))                    ; no tests
     (home-page "https://lxqt-project.org")
@@ -1180,7 +1180,7 @@ processes currently in existence, much like code{top} or code{ps}.")
     (inputs
      (list qtbase-5 utf8proc))
     (native-inputs
-     (list lxqt-build-tools qttools))
+     (list lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f))                    ; no tests
     (home-page "https://lxqt-project.org")
@@ -1203,7 +1203,7 @@ processes currently in existence, much like code{top} or code{ps}.")
     (inputs
      (list qtbase-5 qtx11extras qtermwidget))
     (native-inputs
-     (list lxqt-build-tools qttools))
+     (list lxqt-build-tools qttools-5))
     (arguments
      '(#:tests? #f))                      ; no tests
     (home-page "https://lxqt-project.org")
@@ -1227,7 +1227,7 @@ QTermWidget.")
     (inputs
      (list kwindowsystem libqtxdg qtbase-5 qtsvg-5 qtx11extras))
     (native-inputs
-     (list pkg-config perl qttools))
+     (list pkg-config perl qttools-5))
     (arguments
      '(#:tests? #f))                    ; no tests
     (home-page "https://lxqt-project.org")
@@ -1252,7 +1252,7 @@ easily publishing them on internet image hosting services.")
     (inputs
       (list glib json-glib libfm-qt qtbase-5 qtx11extras))
     (native-inputs
-      (list pkg-config lxqt-build-tools qttools))
+      (list pkg-config lxqt-build-tools qttools-5))
     (arguments
       '(#:tests? #f))
     (home-page "https://lxqt-project.org")
@@ -1289,7 +1289,7 @@ like @command{tar} and @command{zip}.")
               libqtxdg))
       (native-inputs
         `(("lxqt-build-tools" ,lxqt-build-tools)
-          ("qtlinguist" ,qttools)))
+          ("qtlinguist" ,qttools-5)))
       (arguments
         `(#:tests? #f                   ; no tests
           #:phases

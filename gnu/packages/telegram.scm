@@ -383,7 +383,7 @@ Telegram project, for its use in telegram desktop client.")
        ("gtk+:bin" ,gtk+ "bin")
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
-       ("qttools" ,qttools)))
+       ("qttools-5" ,qttools-5)))
     (inputs
      `(("alsa" ,alsa-lib)
        ("c++-gsl" ,c++-gsl)

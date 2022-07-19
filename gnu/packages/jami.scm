@@ -598,7 +598,7 @@ decentralized calling using P2P-DHT.")
                (("Qt::AA_UseOpenGLES")
                 "Qt::AA_UseDesktopOpenGL")))))))
     (native-inputs
-     (list pkg-config python qttools doxygen graphviz))
+     (list pkg-config python qttools-5 doxygen graphviz))
     (inputs
      (list jami-libclient
            libnotify

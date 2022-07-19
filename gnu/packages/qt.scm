@@ -187,7 +187,7 @@
          (add-after 'install 'qt-wrap
            (assoc-ref qt:%standard-phases 'qt-wrap)))))
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list qtbase-5 qtsvg-5))
     (synopsis "Qt5 Configuration Tool")
@@ -1701,7 +1701,7 @@ native APIs where it makes sense.")))
     (description "The Qt Location module provides an interface for location,
 positioning and geolocation plugins.")))
 
-(define-public qttools
+(define-public qttools-5
   (package (inherit qtsvg-5)
     (name "qttools")
     (version "5.15.2")
@@ -1735,7 +1735,7 @@ that helps in Qt development.")))
                "0gk74hk488k9ldacxbxcranr3arf8ifqg8kz9nm1rgdgd59p36d2"))
              (patches (search-patches "qtscript-disable-tests.patch"))))
     (native-inputs
-     (list perl qttools))
+     (list perl qttools-5))
     (inputs
      (list qtbase-5))
     (synopsis "Qt Script module")
@@ -2031,7 +2031,7 @@ message.")))
     (arguments
      `(#:tests? #f))                    ;no test
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list enchant qtbase-5))
     (home-page "https://github.com/manisandro/qtspell")
@@ -2915,7 +2915,7 @@ module provides support functions to the automatically generated code.")
        ("qtsensors" ,qtsensors)
        ("qtserialport" ,qtserialport)
        ("qtsvg-5" ,qtsvg-5)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ("qtwebchannel-5" ,qtwebchannel-5)
        ("qtwebkit" ,qtwebkit)
        ("qtwebsockets-5" ,qtwebsockets-5)
@@ -3260,7 +3260,7 @@ This package provides the Python bindings.")))
           "1zk6r2vc1q48qs7mw2h47bpgrfbb9r7lf9cwq4sb1a4nls87zznk"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list libsecret qtbase-5))
     (arguments
@@ -3404,7 +3404,7 @@ that can be only started once per user.
          (base32 "0hf0mpca248xlqn7xnzkfj8drf19gdyg5syzklvq8pibxiixwxj0"))))
   (build-system gnu-build-system)
   (inputs
-   (list qtbase-5 qtsvg-5 qttools))
+   (list qtbase-5 qtsvg-5 qttools-5))
   (arguments
    `(#:phases
      (modify-phases %standard-phases
@@ -3552,7 +3552,7 @@ time Web content can be enhanced with native controls.")
          "09fz6v8rp28997f235yaifj8p4vvsyv45knc1iivgdvx7msgcd0m"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list qtbase-5 qtdeclarative-5))
     (home-page "https://filcuc.github.io/DOtherSide/index.html")
@@ -3589,7 +3589,7 @@ a binding language:
       (build-system cmake-build-system)
       (arguments `(#:tests? #f)) ; There are no tests
       (native-inputs
-       (list qttools))
+       (list qttools-5))
       (inputs
        (list qtbase-5))
       (home-page "https://gitlab.com/mattia.basaglia/Qt-Color-Widgets")
@@ -3741,7 +3741,7 @@ color-related widgets.")
     (native-inputs
      `(("cmake" ,cmake-minimal)
        ("python" ,python-wrapper)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ("which" ,which)))
     (arguments
      `(#:tests? #f
@@ -3780,7 +3780,7 @@ color-related widgets.")
                                 "qtsensors"
                                 "qtspeech"
                                 "qtsvg-5"
-                                "qttools"
+                                "qttools-5"
                                 "qtwebchannel-5"
                                 "qtwebengine-5"
                                 "qtwebsockets-5"
@@ -3873,7 +3873,7 @@ generate Python bindings for your C or C++ code.")
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke (cons "qmake" make-flags)))))))
     (native-inputs
-     (list qtbase-5 qttools))
+     (list qtbase-5 qttools-5))
     (inputs
      (list glu))
     (home-page "http://libqglviewer.com")
@@ -3928,7 +3928,7 @@ being fully customizable and easy to extend.")
                            (install-file file include-dir))
                          (find-files "." "\\.h$"))))))))
     (inputs (list qtbase-5))
-    (native-inputs (list qttools))
+    (native-inputs (list qttools-5))
     (home-page "https://simsys.github.io")
     (synopsis "Binary editor widget for Qt")
     (description

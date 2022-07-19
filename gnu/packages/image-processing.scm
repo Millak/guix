@@ -770,7 +770,7 @@ including 2D color images.")
             (add-after 'unpack 'qt-chdir
               (lambda _ (chdir "gmic-qt") #t))))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (modify-inputs (package-inputs gmic)
        (prepend gmic qtbase-5)))
@@ -1109,7 +1109,7 @@ combine the information contained in both.")
            zlib))
     (native-inputs
      `(("googletest" ,googletest)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ("pkg-config" ,pkg-config)
        ("c3d-src"
         ,(let* ((commit "f521358db26e00002c911cc47bf463b043942ad3")
@@ -1224,7 +1224,7 @@ substituted by matching images.")
            "0kixwjb2x457dq7927hkh34c803p7yh1pmn6n61rk9shqrcg492h"))))
       (build-system qt-build-system)
       (native-inputs
-       (list qttools))
+       (list qttools-5))
       (inputs
        `(("boost" ,boost)
          ("libjpeg" ,libjpeg-turbo)

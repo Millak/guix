@@ -322,7 +322,7 @@ This package is part of the KDE multimedia module.")
            kdoctools
            libxslt
            python-wrapper
-           qttools))
+           qttools-5))
     (inputs
      (list chromaprint
            flac

@@ -609,7 +609,7 @@ and enhance them.")
                        (string-append "PREFIX=" out)
                        "Photoflare.pro")))))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list graphicsmagick libomp qtbase-5))
     (home-page "https://photoflare.io")

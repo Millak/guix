@@ -762,7 +762,7 @@ ready for production.")
                (substitute* "qelectrotech.pro" (("\\/usr\\/local") out))
                (invoke "qmake")))))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list kcoreaddons kwidgetsaddons qtbase-5 qtsvg-5 sqlite))
     (home-page "https://qelectrotech.org/")
@@ -2120,7 +2120,7 @@ parallel computing platforms.  It also supports serial execution.")
     (inputs
      (list qtbase-5 qtsvg-5 zlib))
     (native-inputs
-     (list qttools ; for lrelease
+     (list qttools-5 ; for lrelease
            unzip))
     (arguments
      `(#:phases
@@ -2452,7 +2452,7 @@ comments.")))
     (native-inputs
      (list doxygen
            graphviz
-           qttools
+           qttools-5
            pkg-config
            python-pyside-2-tools
            swig))
@@ -3715,7 +3715,7 @@ netlists from the drawn schematic, allowing the simulation of the circuit.")
                  (base32
                   "08rqhl6a5a8s67a8yl16944zgcsnnb08xfv4klzyqwlvaqgfp783"))))
       (build-system gnu-build-system)
-      (native-inputs (list qttools))
+      (native-inputs (list qttools-5))
       (inputs (list qtbase-5 qtserialport))
       (arguments
        (list #:tests? #f                      ; no tests.

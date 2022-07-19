@@ -522,7 +522,7 @@ formats such as PNG.")
     (inputs
      (list qtbase-5 qtdeclarative-5 qtsvg-5 zlib))
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -531,7 +531,7 @@ formats such as PNG.")
              (substitute* "translations/translations.pro"
                (("LRELEASE =.*")
                 (string-append "LRELEASE = "
-                               (assoc-ref inputs "qttools")
+                               (assoc-ref inputs "qttools-5")
                                "/bin/lrelease\n")))
              (let ((out (assoc-ref outputs "out")))
                (invoke "qmake"

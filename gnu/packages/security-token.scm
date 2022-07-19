@@ -759,7 +759,7 @@ an unprivileged user.")
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags (list "-DBUILD_TESTING=on")))
-    (native-inputs (list pkg-config qttools))
+    (native-inputs (list pkg-config qttools-5))
     (inputs (list catch-framework2))
     (home-page "https://github.com/tplgy/cppcodec")
     (synopsis "Header library to encode/decode base64, base64url, etc.")
@@ -783,7 +783,7 @@ base64url, base32, base32hex and hex.")
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ;no test suite
-    (native-inputs (list pkg-config qttools))
+    (native-inputs (list pkg-config qttools-5))
     (inputs (list cppcodec
                   hidapi
                   libnitrokey
@@ -853,7 +853,7 @@ devices.")
 
     (build-system cmake-build-system)
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list qtbase-5
            qtsvg-5

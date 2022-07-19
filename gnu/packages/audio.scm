@@ -587,7 +587,7 @@ implementation of Adaptive Multi Rate Narrowband and Wideband
            liblo
            qtbase-5))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "http://alsamodular.sourceforge.net/")
     (synopsis "Realtime modular synthesizer and effect processor")
     (description
@@ -3097,7 +3097,7 @@ different audio devices such as ALSA or PulseAudio.")
     (inputs
      (list jack-1 alsa-lib portaudio qtbase-5 qtx11extras))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "https://qjackctl.sourceforge.io/")
     (synopsis "Jack server control application")
     (description "Control a Jack server.  Allows you to plug various sources
@@ -3218,7 +3218,7 @@ link REQUIRED)"))))))
                              (string-append ide "/bin"))
                (delete-file scide)))))))
     (native-inputs
-     (list ableton-link pkg-config qttools xorg-server-for-tests))
+     (list ableton-link pkg-config qttools-5 xorg-server-for-tests))
     (inputs (list jack-1
                   libsndfile
                   fftw
@@ -3903,7 +3903,7 @@ interface.")
     (arguments
      `(#:tests? #f))                    ; no "check" phase
     (native-inputs
-     (list qttools pkg-config))
+     (list qttools-5 pkg-config))
     (inputs
      (list fluidsynth qtbase-5 qtx11extras))
     (home-page "https://qsynth.sourceforge.io")
@@ -5456,7 +5456,7 @@ Rate} 3600x2250 bit/s vocoder used in various radio systems.")
            portaudio ;for portaudio examples
            qtbase-5 ;for Qt examples
            qtdeclarative-5
-           qttools))
+           qttools-5))
     (inputs
      (list jack-1 ;for JACK examples
            qtquickcontrols-5)) ;for Qt examples

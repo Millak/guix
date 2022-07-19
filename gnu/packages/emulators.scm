@@ -744,7 +744,7 @@ The following systems are supported:
        (list "-DUSE_LZMA=OFF"           ;do not use bundled LZMA
              "-DUSE_LIBZIP=OFF")))      ;use "zlib" instead
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list ffmpeg
            libedit

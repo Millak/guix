@@ -470,7 +470,7 @@ desktops.")
                (wrap-qt-program "qbittorrent" #:output out #:inputs inputs))
              #t)))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      `(("boost" ,boost)
        ("libtorrent-rasterbar" ,libtorrent-rasterbar)

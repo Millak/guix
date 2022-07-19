@@ -2783,7 +2783,7 @@ script files.")
        ("qt" ,qtbase-5)
        ,@(package-inputs octave-cli)))
     (native-inputs
-     `(("qttools" , qttools) ;for lrelease
+     `(("qttools-5" , qttools-5) ;for lrelease
        ("texlive" ,(texlive-updmap.cfg (list texlive-epsf))) ; for texi2dvi
        ,@(package-native-inputs octave-cli)))
     (arguments
@@ -3069,7 +3069,7 @@ ASCII text files using Gmsh's own scripting language.")
     (native-inputs
      (list pkg-config
            ;;("python-astropy" ,python-astropy) ;; FIXME: Package this.
-           qttools python-sip-4))
+           qttools-5 python-sip-4))
     (inputs
      (list ghostscript ;optional, for EPS/PS output
            python-dbus
@@ -5468,7 +5468,7 @@ evaluates expressions using the standard order of operations.")
     (build-system gnu-build-system)
     (native-inputs `(("gettext" ,gettext-minimal)
                      ("qtbase" ,qtbase-5)
-                     ("qttools" ,qttools)))
+                     ("qttools-5" ,qttools-5)))
     (inputs (list libx11 zlib libpng gsl))
     ;; The upstream project file ("XaoS.pro") and the Makefile it generates are
     ;; not enough for this package to install properly.  These phases fix that.
@@ -7147,7 +7147,7 @@ functions.")
         "0vh7cd1915bjqzkdp3sk25ngy8cq624mkh8c53c5bnzk357kb0fk"))))
     (build-system cmake-build-system)
     (inputs (list qtbase-5))
-    (native-inputs (list qttools))
+    (native-inputs (list qttools-5))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

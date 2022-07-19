@@ -1495,7 +1495,7 @@ map display.  Downloads map data from a number of websites, including
                   (string-append "\"" font "/share/fonts/\"")))))))
        #:tests? #f)) ; no tests
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list bzip2
            font-liberation
@@ -1952,7 +1952,7 @@ using the dataset of topographical information collected by
         (base32 "184fqmsfzr3b333ssizjk6gvv7mncmygq8dj5r7rsvs5md26z2ys"))))
     (build-system qt-build-system)
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list gdal
            libjpeg-turbo
@@ -2199,7 +2199,7 @@ track your position right from your laptop.")
        ("zlib" ,zlib)))
     (native-inputs
      `(("doxygen" ,doxygen)
-       ("qttools" ,qttools)))
+       ("qttools-5" ,qttools-5)))
     (home-page "https://www.openorienteering.org/apps/mapper/")
     (synopsis "OpenOrienteering Mapper (OOM)")
     (description
@@ -2634,7 +2634,7 @@ growing set of geoscientific methods.")
            pkg-config
            python-mock
            python-nose2
-           qttools
+           qttools-5
            shellcheck
            xorg-server-for-tests))
     (home-page "https://qgis.org")

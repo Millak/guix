@@ -4782,7 +4782,7 @@ a Gtk.Grid Widget.")
            qscintilla
            qtbase-5
            sqlite))
-    (native-inputs (list qttools))
+    (native-inputs (list qttools-5))
     (home-page "https://sqlitebrowser.org/")
     (synopsis "Database browser for SQLite")
     (description "Sqlitebrowser is a high quaility, visual, open source tool to

@@ -261,7 +261,7 @@ browser for easy news reading.")
                   `("MLT_PREFIX" ":" =
                     (,#$(this-package-input "mlt"))))))))))
     (native-inputs
-     (list extra-cmake-modules pkg-config qttools))
+     (list extra-cmake-modules pkg-config qttools-5))
     (inputs
      (list bash-minimal
            breeze                       ; make dark them available easily
@@ -318,7 +318,7 @@ projects.")
          (base32 "02ip5r67hjfpywkm3mz86n6wbqcr7996ifzfd2fyzsvm4998hi4y"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules pkg-config shared-mime-info qttools))
+     (list extra-cmake-modules pkg-config shared-mime-info qttools-5))
     (inputs
      `(("boost" ,boost)
        ("clang" ,clang)
@@ -436,7 +436,7 @@ for some KDevelop language plugins (Ruby, PHP, CSS...).")
                  "kdiagram-Fix-missing-link-libraries.patch"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools))
+     (list extra-cmake-modules qttools-5))
     (inputs
      (list qtbase-5 qtsvg-5))
     (home-page "https://invent.kde.org/graphics/kdiagram")
@@ -690,7 +690,7 @@ cards.")
     (inputs
      (list qtbase-5))
     (native-inputs
-     (list extra-cmake-modules qttools))
+     (list extra-cmake-modules qttools-5))
     (home-page "https://techbase.kde.org/Projects/Snorenotify")
     (synopsis "Qt notification framework")
     (description "Snorenotify is a multi platform Qt notification framework.
@@ -804,7 +804,7 @@ communicate with each other.  Here's a few things KDE Connect can do:
        ("extra-cmake-modules" ,extra-cmake-modules)
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
-       ("qttools" ,qttools)))
+       ("qttools-5" ,qttools-5)))
     (inputs
      (list breeze ;for dark themes
            breeze-icons ;for icons
@@ -917,7 +917,7 @@ unmount drives and view them in a file manager.")
                 "0fx17s6fj1pxl1mgfrqhchk8sihkbji1x8y3nhb1r0971wzd1nsc"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules perl python qttools kdoctools))
+     (list extra-cmake-modules perl python qttools-5 kdoctools))
     (inputs
      (list qtbase-5 karchive ki18n kio kdbusaddons))
     ;; Note: The 'hotshot2calltree' and 'pprof2calltree' scripts depend on
@@ -1007,7 +1007,7 @@ Python, PHP, and Perl.")
              "-DBUILD_TOUCH=YES"
              "-DBUILD_MARBLE_TESTS=FALSE")))
     (native-inputs
-     (list extra-cmake-modules qttools))
+     (list extra-cmake-modules qttools-5))
     ;; One optional dependency missing: libwlocate.
     (inputs
      (list gpsd
@@ -1216,7 +1216,7 @@ or Bonjour by other projects).")
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules
-           qttools
+           qttools-5
            ;; For optional component "Survey target expression parser"
            bison
            flex

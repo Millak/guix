@@ -373,7 +373,7 @@ such as:
                  (rmdir "doc/pulseview")
                  (rmdir "doc"))))))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list boost
            glib

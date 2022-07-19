@@ -113,7 +113,7 @@ restrictions that stem from limitations of the standard RCX firmware.")
                 "1ifbxngkbmg6d8vv08amxbnfvlyjdwzykrjp98lbwvgb0b843ygq"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list qttools))           ; for lrelease
+     (list qttools-5))           ; for lrelease
     (inputs
      (list mesa qtbase-5 zlib))
     (arguments

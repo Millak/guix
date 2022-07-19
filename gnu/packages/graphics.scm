@@ -1438,7 +1438,7 @@ exec -a \"$0\" ~a/.brdf-real~%"
                             (chmod "brdf" #o555)))
                         #t)))))
       (native-inputs
-       (list qttools)) ;for 'qmake'
+       (list qttools-5)) ;for 'qmake'
       (inputs
        (list qtbase-5 mesa glew freeglut zlib))
       (home-page "https://www.disneyanimation.com/technology/brdf.html")

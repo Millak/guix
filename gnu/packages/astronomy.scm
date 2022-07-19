@@ -615,7 +615,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
      `(("gettext" ,gettext-minimal)     ; xgettext is used at compile time
        ("perl" ,perl)                   ; for pod2man
        ("qtbase" ,qtbase-5)               ; Qt MOC is needed at compile time
-       ("qttools" ,qttools)))
+       ("qttools-5" ,qttools-5)))
     (arguments
      `(#:test-target "test"
        #:configure-flags (list "-DENABLE_TESTING=1"

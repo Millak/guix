@@ -119,7 +119,7 @@ hundred times faster than real-time.")
              protobuf-3.5 ;for logging
              qtbase-5
              qtsvg-5
-             qttools ;for libQt5Help, needed by "studio"
+             qttools-5 ;for libQt5Help, needed by "studio"
              qtwebkit
              qtx11extras
              eudev

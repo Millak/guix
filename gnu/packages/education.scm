@@ -174,7 +174,7 @@ of categories with some of the activities available in that category.
            gettext-minimal
            kdoctools
            perl
-           qttools
+           qttools-5
            xorg-server-for-tests))
     (inputs
      (list openssl
@@ -540,7 +540,7 @@ specialized device.")
                     (symlink (string-append openboard "/OpenBoard")
                              (string-append bin "/openboard")))))))))
       (native-inputs
-       (list qttools))
+       (list qttools-5))
       (inputs
        (list alsa-lib
              coreutils-minimal          ;for patched 'env' shebang
@@ -991,7 +991,7 @@ formats.")
     (arguments
      '(#:tests? #f)) ; no test target
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list libeb
            qtbase-5

@@ -1810,7 +1810,7 @@ instant messenger with audio and video chat capabilities.")
                          ,(list (search-input-directory
                                  inputs "lib/qt5/plugins/"))))))))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list ffmpeg
            filteraudio
@@ -2468,7 +2468,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            xcb-util-wm
            zlib))
     (native-inputs
-     (list asciidoc doxygen graphviz pkg-config qttools))
+     (list asciidoc doxygen graphviz pkg-config qttools-5))
     (home-page "https://github.com/Nheko-Reborn/nheko")
     (synopsis "Desktop client for Matrix using Qt and C++14")
     (description "@code{Nheko} want to provide a native desktop app for the
@@ -2502,7 +2502,7 @@ notification, emojis, E2E encryption, and voip calls.")
            qtquickcontrols-5
            qtquickcontrols2-5
            qtsvg-5
-           qttools
+           qttools-5
            xdg-utils))
     (arguments
      `(#:tests? #f))                    ; no tests

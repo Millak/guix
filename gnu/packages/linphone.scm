@@ -843,7 +843,7 @@ and video calls or instant messaging capabilities to an application.")
                (symlink (string-append liblinphone "/share/belr/grammars")
                         grammar-dest)))))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list bctoolbox
            belcard

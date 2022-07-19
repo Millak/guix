@@ -448,7 +448,7 @@ language.")
          ("qtmultimedia-5" ,qtmultimedia-5)
          ("libsndfile" ,libsndfile)))
       (native-inputs
-       (list qttools))
+       (list qttools-5))
       (home-page "https://www.lostmarble.com/papagayo/")
       (synopsis "Lip-syncing for animations")
       (description

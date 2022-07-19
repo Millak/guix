@@ -78,7 +78,7 @@
                 "0hcdysw8ibr66vk8i7v56l0v5ijvhlq67v4460mc2xf2910g2m72"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules pkg-config qttools))
+     (list extra-cmake-modules pkg-config qttools-5))
     (inputs
      (list elogind
            glib

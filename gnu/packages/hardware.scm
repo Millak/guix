@@ -453,7 +453,7 @@ support.")
                  (wrap-qt-program "ckb-next"
                                   #:output out
                                   #:inputs inputs)))))))
-      (native-inputs (list qttools pkg-config))
+      (native-inputs (list qttools-5 pkg-config))
       (inputs (list qtbase-5
                     zlib
                     libdbusmenu-qt
@@ -534,7 +534,7 @@ calibrated, and restored when the calibration is applied.")
     (arguments
      '(#:tests? #f))                    ; No test suite
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list ddcutil glib qtbase-5))
     (home-page "https://www.ddcutil.com/")

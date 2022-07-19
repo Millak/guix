@@ -995,7 +995,7 @@ want what you have.")
              qtbase-5
              qtmultimedia-5
              qtsvg-5
-             qttools
+             qttools-5
              qtwebsockets-5
              xz
              zlib))
@@ -2504,7 +2504,7 @@ and defeat them with your bubbles!")
              (setenv "XDG_RUNTIME_DIR" (getcwd))
              #t)))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      `(("glm" ,glm)
        ("libmodplug" ,libmodplug)
@@ -7203,7 +7203,7 @@ making Yamagi Quake II one of the most solid Quake II implementations available.
     (native-inputs
      `(("cmake" ,cmake-minimal)
        ("gettext-minimal" ,gettext-minimal)
-       ("qttools" ,qttools)))
+       ("qttools-5" ,qttools-5)))
     (synopsis "Realistic physics puzzle game")
     (description "The Butterfly Effect (tbe) is a game that uses
 realistic physics simulations to combine lots of simple mechanical
@@ -9279,7 +9279,7 @@ and also provides the base for the FlightGear Flight Simulator.")
     (native-inputs
      `(("cppunit" ,cppunit)
        ("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ("flightgear-data"
         ,(origin
            (method url-fetch)
@@ -9407,7 +9407,7 @@ play with up to four players simultaneously.  It has network support.")
        ("sdl" ,(sdl-union
                 (list sdl2 sdl2-mixer sdl2-net sdl2-ttf sdl2-image)))))
     (native-inputs
-     (list clang-9 ghc pkg-config qttools))
+     (list clang-9 ghc pkg-config qttools-5))
     (home-page "https://hedgewars.org/")
     (synopsis "Turn-based artillery game featuring fighting hedgehogs")
     (description
@@ -11883,7 +11883,7 @@ and chess engines.")
         (base32 "01fjchil2h6ry2ywr0dwjw2g7zd29580cr4c74d5z74h999lp6nh"))))
     (build-system qt-build-system)
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list qtbase-5 qtmultimedia-5 qtspeech qtsvg-5 zlib))
     (arguments

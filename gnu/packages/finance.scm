@@ -143,7 +143,7 @@
            pkg-config
            python ; for the tests
            util-linux ; provides the hexdump command for tests
-           qttools))
+           qttools-5))
     (inputs
      (list bdb-4.8 ; 4.8 required for compatibility
            boost
@@ -159,12 +159,12 @@
                        (assoc-ref %build-inputs "boost"))
         ;; XXX: The configure script looks up Qt paths by
         ;; `pkg-config --variable=host_bins Qt5Core`, which fails to pick
-        ;; up executables residing in 'qttools', so we specify them here.
+        ;; up executables residing in 'qttools-5', so we specify them here.
         (string-append "ac_cv_path_LRELEASE="
-                       (assoc-ref %build-inputs "qttools")
+                       (assoc-ref %build-inputs "qttools-5")
                        "/bin/lrelease")
         (string-append "ac_cv_path_LUPDATE="
-                       (assoc-ref %build-inputs "qttools")
+                       (assoc-ref %build-inputs "qttools-5")
                        "/bin/lupdate"))
        #:phases
        (modify-phases %standard-phases
@@ -698,7 +698,7 @@ blockchain.")
            pkg-config
            protobuf
            python
-           qttools))
+           qttools-5))
     (inputs
      (list boost
            cppzmq
@@ -1543,7 +1543,7 @@ Trezor wallet.")
      (list pkg-config
            python ; for the tests
            util-linux ; provides the hexdump command for tests
-           qttools))
+           qttools-5))
     (inputs
      (list bdb-5.3
            boost
@@ -1657,7 +1657,7 @@ following three utilities are included with the library:
            pkg-config
            python ; for the tests
            util-linux ; provides the hexdump command for tests
-           qttools))
+           qttools-5))
     (inputs
      (list bdb-4.8
            boost
@@ -1677,12 +1677,12 @@ following three utilities are included with the library:
                        (assoc-ref %build-inputs "boost"))
         ;; XXX: The configure script looks up Qt paths by
         ;; `pkg-config --variable=host_bins Qt5Core`, which fails to pick
-        ;; up executables residing in 'qttools', so we specify them here.
+        ;; up executables residing in 'qttools-5', so we specify them here.
         (string-append "ac_cv_path_LRELEASE="
-                       (assoc-ref %build-inputs "qttools")
+                       (assoc-ref %build-inputs "qttools-5")
                        "/bin/lrelease")
         (string-append "ac_cv_path_LUPDATE="
-                       (assoc-ref %build-inputs "qttools")
+                       (assoc-ref %build-inputs "qttools-5")
                        "/bin/lupdate")
         "--disable-static")
        #:phases
@@ -1731,7 +1731,7 @@ a Qt GUI.")
               (string-append "PREFIX=" %output)
               "features="))))))
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list python qtbase-5 rocksdb zlib))
     (home-page "https://gitlab.com/FloweeTheHub/fulcrum/")
@@ -1798,7 +1798,7 @@ like Flowee the Hub, which Fulcrum connects to over RPC.")
            openssl
            qtbase-5))
     (native-inputs
-     (list pkg-config qttools util-linux))       ; provides the hexdump command for tests
+     (list pkg-config qttools-5 util-linux))       ; provides the hexdump command for tests
     (home-page "https://flowee.org")
     (synopsis "Flowee infrastructure tools and services")
     (description

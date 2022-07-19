@@ -1828,7 +1828,7 @@ parsing, viewing, modifying, and saving this metadata.")
          "1p7gqs5vqzbddlgl38lbanchwb14m6lx8f2cn2c5p0vyqwvqqv52"))))
     (build-system qt-build-system)
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list qtbase-5 qtsvg-5))
     (arguments

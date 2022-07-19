@@ -1290,7 +1290,7 @@ instances over the network, and general QSO and DXpedition logging.")
         (base32 "0nciw9smrfcsirlwyny5r9h7sk2zvm40m56y1hxpgpmbnh6mqikh"))))
     (build-system qt-build-system)
     (native-inputs
-     (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
+     (list asciidoc gfortran pkg-config qttools-5 ruby-asciidoctor))
     (inputs
      `(("boost" ,boost)
        ("fftw" ,fftw)
@@ -1327,7 +1327,7 @@ weak-signal conditions.")
         (base32 "1lw9q7ggh2jlasipl3v5pkbabysjr6baw15lnmg664ah3fwdrvnx"))))
     (build-system qt-build-system)
     (native-inputs
-     (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
+     (list asciidoc gfortran pkg-config qttools-5 ruby-asciidoctor))
     (inputs
      (list
       boost
@@ -1373,7 +1373,7 @@ focused on DXing and being shaped by community of DXers.JTDX")
            #t))))
     (build-system qt-build-system)
     (native-inputs
-     (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
+     (list asciidoc gfortran pkg-config qttools-5 ruby-asciidoctor))
     (inputs
      `(("boost" ,boost)
        ("fftw" ,fftw)
@@ -1745,7 +1745,7 @@ intended for people who want to learn receiving and sending morse code.")
         (base32 "1s1aj223n57rpc95rih98z08xnyhq2zp02byzrc3f7s01fv3nj0l"))))
     (build-system qt-build-system)
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list qtbase-5 qtmultimedia-5))
     (arguments
