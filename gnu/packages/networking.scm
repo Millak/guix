@@ -3491,7 +3491,6 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
       #:modules '(((guix build python-build-system) #:prefix python:)
                   (guix build gnu-build-system)
                   (guix build utils))
-      #:tests? #f                     ;tests require networking
       #:configure-flags
       #~(list "--enable-tests"
               "--enable-proxy-server"
@@ -3500,6 +3499,15 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               "--enable-proxy-client")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; The dhtrunnertester test suite includes 'testListen', which
+              ;; is sensitive to the performance/load of the machine it runs
+              ;; on, introducing nondeterminism (see:
+              ;; https://github.com/savoirfairelinux/opendht/issues/626).
+              (substitute* "tests/Makefile.am"
+                (("tests/dhtrunnertester.(h|cpp)$" all)
+                 (string-append "# " all)))))
           (add-after 'unpack 'fix-python-installation-prefix
             ;; Specify the installation prefix for the compiled Python module
             ;; that would otherwise attempt to installs itself to Python's own
@@ -3515,6 +3523,10 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (("extra_link_args=\\[(.*)\\]" _ args)
                  (string-append "extra_link_args=[" args
                                 ", '-Wl,-rpath=" #$output "/lib']")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "tests/opendht_unit_tests"))))
           (add-after 'install 'move-and-wrap-tools
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((tools (assoc-ref outputs "tools"))
@@ -3531,15 +3543,15 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                   `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
     (inputs (list bash-minimal fmt readline))
     (propagated-inputs
-     (list msgpack                    ;included in several installed headers
-           restinio                   ;included in opendht/http.h
+     (list msgpack                      ;included in several installed headers
+           restinio                     ;included in opendht/http.h
            ;; The following are listed in the 'Requires.private' field of
            ;; opendht.pc:
            argon2
            gnutls
            jsoncpp
            nettle
-           openssl))                  ;required for the DHT proxy
+           openssl))                    ;required for the DHT proxy
     (native-inputs
      (list autoconf
            automake
