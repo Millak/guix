@@ -918,9 +918,7 @@ applications in communication.  It is used by Jami, for example.")))
               (lambda (port)
                 (display "\
 ### These lines were generated from your system configuration:
-User tor
 DataDirectory /var/lib/tor
-PidFile /var/run/tor/tor.pid
 Log notice syslog\n" port)
                 (when (eq? 'unix '#$socks-socket-type)
                   (display "\
@@ -960,7 +958,25 @@ HiddenServicePort ~a ~a~%"
   "Return a <shepherd-service> running Tor."
   (match config
     (($ <tor-configuration> tor)
-     (let ((torrc (tor-configuration->torrc config)))
+     (let* ((torrc (tor-configuration->torrc config))
+            (tor   (least-authority-wrapper
+                    (file-append tor "/bin/tor")
+                    #:name "tor"
+                    #:mappings (list (file-system-mapping
+                                      (source "/var/lib/tor")
+                                      (target source)
+                                      (writable? #t))
+                                     (file-system-mapping
+                                      (source "/dev/log") ;for syslog
+                                      (target source))
+                                     (file-system-mapping
+                                      (source "/var/run/tor")
+                                      (target source)
+                                      (writable? #t))
+                                     (file-system-mapping
+                                      (source torrc)
+                                      (target source)))
+                    #:namespaces (delq 'net %namespaces))))
        (with-imported-modules (source-module-closure
                                '((gnu build shepherd)
                                  (gnu system file-systems)))
@@ -974,22 +990,15 @@ HiddenServicePort ~a ~a~%"
                 (modules '((gnu build shepherd)
                            (gnu system file-systems)))
 
-                (start #~(make-forkexec-constructor/container
-                          (list #$(file-append tor "/bin/tor") "-f" #$torrc)
-
-                          #:log-file "/var/log/tor.log"
-                          #:mappings (list (file-system-mapping
-                                            (source "/var/lib/tor")
-                                            (target source)
-                                            (writable? #t))
-                                           (file-system-mapping
-                                            (source "/dev/log") ;for syslog
-                                            (target source))
-                                           (file-system-mapping
-                                            (source "/var/run/tor")
-                                            (target source)
-                                            (writable? #t)))
-                          #:pid-file "/var/run/tor/tor.pid"))
+                ;; XXX: #:pid-file won't work because the wrapped 'tor'
+                ;; program would print its PID within the user namespace
+                ;; instead of its actual PID outside.  There's no inetd or
+                ;; systemd socket activation support either (there's
+                ;; 'sd_notify' though), so we're stuck with that.
+                (start #~(make-forkexec-constructor
+                          (list #$tor "-f" #$torrc)
+                          #:user "tor" #:group "tor"
+                          #:log-file "/var/log/tor.log"))
                 (stop #~(make-kill-destructor))
                 (documentation "Run the Tor anonymous network overlay."))))))))
 
