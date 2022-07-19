@@ -51,7 +51,9 @@
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
@@ -64,7 +66,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
-(define %jami-version "20211223.2.37be4c3")
+(define %jami-version "20220726.1515.da8d1da")
 
 (define %jami-sources
   ;; Return an origin object of the tarball release sources archive of the
@@ -85,14 +87,10 @@
         (for-each delete-file-recursively '("client-android"
                                             "client-ios"
                                             "client-macosx"
-                                            "client-uwp"))))
-    (patches (search-patches "jami-libclient-audio-managers.patch"
-                             "jami-fix-crash-on-quit.patch"
-                             "jami-images-loading.patch"
-                             "jami-memory-usage.patch"))
+                                            "plugins"))))
     (sha256
      (base32
-      "12h4a0nj3gh05w64gkywrrb64agrhn6y3q4b9cqnhvr1vdkzlj0h"))))
+      "1zx0i9aw8jsba3bjc5r4pkkybm8c0lyz420ciq89vsswd48gfdhg"))))
 
 ;; Jami maintains a set of patches for some key dependencies (currently
 ;; pjproject and ffmpeg) of Jami that haven't yet been integrated upstream.
@@ -104,7 +102,7 @@
         (invoke "tar" "-xvf" #$%jami-sources
                 "-C" patches-directory
                 "--strip-components=5"
-                (string-append "ring-project/daemon/contrib/src/"
+                (string-append "jami-project/daemon/contrib/src/"
                                dep-name))
         (for-each
          (lambda (file)
@@ -178,6 +176,8 @@
     "--disable-muxers"
     "--enable-muxer=rtp"
     "--enable-muxer=g722"
+    "--enable-muxer=g726"
+    "--enable-muxer=g726le"
     "--enable-muxer=h263"
     "--enable-muxer=h264"
     "--enable-muxer=hevc"
@@ -202,6 +202,9 @@
     "--enable-demuxer=wav"
     "--enable-demuxer=ac3"
     "--enable-demuxer=g722"
+    "--enable-demuxer=g723_1"
+    "--enable-demuxer=g726"
+    "--enable-demuxer=g726le"
     "--enable-demuxer=pcm_mulaw"
     "--enable-demuxer=pcm_alaw"
     "--enable-demuxer=pcm_s16be"
@@ -222,6 +225,13 @@
     ;; Encoders/decoders.
     "--enable-encoder=adpcm_g722"
     "--enable-decoder=adpcm_g722"
+    "--enable-encoder=adpcm_g726"
+    "--enable-decoder=adpcm_g726"
+    "--enable-encoder=adpcm_g726le"
+    "--enable-decoder=adpcm_g726le"
+    "--enable-decoder=g729"
+    "--enable-encoder=g723_1"
+    "--enable-decoder=g723_1"
     "--enable-encoder=rawvideo"
     "--enable-decoder=rawvideo"
     "--enable-encoder=libx264"
@@ -387,7 +397,7 @@
                              "change-RTCP-ratio"
                              "rtp_ext_abs_send_time"
                              "libopusdec-enable-FEC"
-                             "libopusenc-enable-FEC"
+                             "libopusenc-reload-packet-loss-at-encode"
                              "screen-sharing-x11-fix"))))))))))
 
 (define-public libjami
@@ -405,12 +415,13 @@
       #:tests? #f
       ;; The agent links the daemon binary with libguile, which enables the
       ;; execution of test plans described in Scheme.  It may be useful in
-      ;; user scripts too, until more generalized Scheme bindings are made
-      ;; (see: test/agent/README.md).
-      ;; FIXME: Fails to link when building libjami as a shared library:
-      ;; bindings.cpp:(.text+0x24): undefined reference to `jami::Logger::log
-      ;; [...].
-      #:configure-flags #~(list "--disable-agent" "--enable-debug")
+      ;; user scripts too, until more general purpose Scheme bindings are made
+      ;; available (see: test/agent/README.md).
+      #:configure-flags #~(list "--disable-agent"
+                                "--enable-debug"
+                                ;; Disable static libraries to avoid
+                                ;; installing a 98 MiB archive.
+                                "--disable-static")
       #:make-flags #~(list "V=1")       ;build verbosely
       #:phases
       #~(modify-phases %standard-phases
@@ -489,10 +500,9 @@ protocols, as well as decentralized calling using P2P-DHT.")
             (lambda _
               ;; Allow building from the tarball or a git checkout.
               (false-if-exception (chdir "lrc")))))))
-    (inputs
-     (list libjami network-manager))
-    (propagated-inputs
-     (list qtbase-5))             ;Qt is included in several installed headers
+    (native-inputs (list qttools vulkan-headers))
+    (inputs (list ffmpeg-jami libjami libxkbcommon network-manager))
+    (propagated-inputs (list qtbase)) ;qt included in several installed headers
     (synopsis "Jami client library")
     (description "This package provides a library common to all Jami clients.
 Jami is a secure and distributed voice, video and chat communication platform
