@@ -276,6 +276,28 @@ of fixed assets.")
 chart of account for Belgium.")
     (license license:gpl3+)))
 
+(define-public trytond-account-budget
+  (package
+    (name "trytond-account-budget")
+    (version "6.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_account_budget" version))
+              (sha256
+               (base32 "055y9jjpx4xfrc6dlssvjzmjz7rrvfljlaljx0v6c6s87mpzi3m5"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_account_budget"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list trytond trytond-account
+                             trytond-company trytond-currency))
+    (home-page "https://docs.tryton.org/projects/modules-account-budget")
+    (synopsis "Tryton module that allows budgets to be setup for accounts")
+    (description "The @emph{Account Budget} Tryton module provides the ability
+to set budgets for accounts over a defined period of time.  These budgets can
+then be used to track the total amount from relevant transactions against the
+budgeted amount.")
+    (license license:gpl3+)))
+
 (define-public trytond-account-cash-rounding
   (package
     (name "trytond-account-cash-rounding")
