@@ -102,6 +102,7 @@
             target-ppc64le?
             target-powerpc?
             target-riscv64?
+            target-mips64el?
             target-64bit?
             ar-for-target
             as-for-target
@@ -733,6 +734,10 @@ architecture (x86_64)?"
                                                  (%current-system))))
   "Is the architecture of TARGET a 'riscv64' machine?"
   (string-prefix? "riscv64" target))
+
+(define* (target-mips64el? #:optional (target (or (%current-target-system)
+                                                  (%current-system))))
+  (string-prefix? "mips64el-" target))
 
 (define* (target-64bit? #:optional (system (or (%current-target-system)
                                                (%current-system))))
