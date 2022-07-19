@@ -1130,10 +1130,10 @@ in the terminal or with an external viewer.")
        (sha256
         (base32 "112dplskbkdbaqi935m2xlk1xsw8s5l568wm7xad75hgp6x9py2i"))))
     (build-system gnu-build-system)
-    (inputs (list readline cairo pango gd lua))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("texlive" ,texlive-tiny)))
+     (list pkg-config texlive-tiny))
+    (inputs
+     (list cairo gd lua pango readline))
     (arguments `(#:configure-flags (list (string-append
                                           "--with-texdir=" %output
                                           "/texmf-local/tex/latex/gnuplot"))
