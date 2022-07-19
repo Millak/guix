@@ -4087,6 +4087,35 @@ different web services, the module supports:")
 package labels to be generated for shipments using MyGLS webservices.")
     (license license:gpl3+)))
 
+(define-public trytond-stock-package-shipping-sendcloud
+  (package
+    (name "trytond-stock-package-shipping-sendcloud")
+    (version "6.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trytond_stock_package_shipping_sendcloud" version))
+              (sha256
+               (base32 "1hvlyrdz1nv1l06qrdj1np8yfyip8hhw0l7wbin1rab63hbxa8rf"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_stock_package_shipping_sendcloud"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list python-requests
+                             trytond
+                             trytond-company
+                             trytond-party
+                             trytond-product
+                             trytond-stock
+                             trytond-stock-package
+                             trytond-stock-package-shipping
+                             trytond-stock-shipment-measurements))
+    (home-page
+     "https://docs.tryton.org/projects/modules-stock-package-shipping-sendcloud")
+    (synopsis "Sendcloud connector for the Tryton application platform")
+    (description "The @emph{Stock Package Shipping Sendcloud} Tryton module
+allows package labels to be generated for shipments made by any of Sendcloud’s
+supported carriers.")
+    (license license:gpl3+)))
+
 (define-public trytond-stock-package-shipping-ups
   (package
     (name "trytond-stock-package-shipping-ups")
