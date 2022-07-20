@@ -113,10 +113,10 @@ is in the public domain.")
 (define-public sqlite-next
   (package
     (inherit sqlite)
-    (version "3.37.0")
+    (version "3.39.1")
     (source (origin
               (method url-fetch)
-              (uri (sqlite-uri version 2021))
+              (uri (sqlite-uri version 2022))
               (sha256
                (base32
-                "1xvrfh2r5x5pljlvakym3zrhml2dvsr8dd8xsb3nzcylsi8lc6kk"))))))
+                "1i0wjd1mig720q1gk9jkpw6h0mialbrlkfh8w8lans0czakygj47"))))))
