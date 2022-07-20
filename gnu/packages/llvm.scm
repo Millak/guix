@@ -982,7 +982,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
        (replace "llvm" llvm-10)))))
 
 (define-public clang-toolchain-10
-  (make-clang-toolchain clang-10))
+  (make-clang-toolchain clang-10 libomp-10))
 
 (define-public llvm-9
   (package
