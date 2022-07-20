@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@reproducible-builds.org>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -176,10 +177,15 @@
 
              ;; XXX: Must be the same version as python-magic uses;
              ;; remove when 'file' is updated.
-             file-next
+             file-next)
 
-             fpc
-             gettext-minimal
+       (match (%current-system)
+              ;; fpc is only available on x86 currently.
+              ((or "x86_64-linux" "i686-linux")
+               (list fpc))
+              (_ '()))
+
+       (list gettext-minimal
              ghostscript
              `(,giflib "bin")
              gnumeric
