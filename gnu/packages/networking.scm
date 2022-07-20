@@ -3106,14 +3106,14 @@ eight bytes) tools
 (define-public asio
   (package
     (name "asio")
-    (version "1.20.0")
+    (version "1.22.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asio/asio/"
                            version " (Stable)/asio-" version ".tar.bz2"))
        (sha256
-        (base32 "0335kyxdnwnp96sh9p3jq1s87qnfmp5l7hzlcdxbbwfzrb9p8hr0"))))
+        (base32 "0v5w9j4a02j2rkc7mrdj3ms0kfpqbgq2ipkixlz2l0p8xs0vfsvp"))))
     (build-system gnu-build-system)
     (inputs
      (list boost openssl))
