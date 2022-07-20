@@ -4041,8 +4041,8 @@ according to Bitorrent BEP003.")
     (license license:gpl3+)))
 
 (define-public guile-irc
-  (let ((commit "375d3bde9c6ae7ccc9d7cc65817966b6fda8f26a")
-        (revision "0"))
+  (let ((commit "7d08ce6fdcb87ac668c5d3bfd5584247805507bb")
+        (revision "1"))
     (package
       (name "guile-irc")
       (version (git-version "0.3.0" revision commit))
@@ -4054,12 +4054,12 @@ according to Bitorrent BEP003.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "113lcckcywrz9060w1c3fnvr8d7crdsjgsv4h47hgmr1slgadl4y"))))
+                  "1jx8704200l29ndg9bfyamgxrzknya0f0vwb2sxhd0k3b8r94avw"))))
       (build-system gnu-build-system)
       (arguments
        `(#:configure-flags '("--enable-gnutls=yes")))
       (native-inputs
-       (list autoconf automake texinfo))
+       (list autoconf automake texinfo pkg-config))
       (inputs
        (list gnutls guile-3.0))
       (home-page "https://github.com/rekado/guile-irc")
