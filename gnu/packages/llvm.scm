@@ -1171,7 +1171,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
        (replace "llvm" llvm-6)))))
 
 (define-public clang-toolchain-6
-  (make-clang-toolchain clang-6))
+  (make-clang-toolchain clang-6 libomp-6))
 
 (define-public llvm-3.9.1
   (package (inherit llvm-6)
