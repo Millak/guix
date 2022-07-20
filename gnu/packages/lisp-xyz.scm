@@ -22665,6 +22665,38 @@ the Processing language and shares some of the API.")
 (define-public ecl-sketch
   (sbcl-package->ecl-package sbcl-sketch))
 
+(define-public sbcl-string-pokemonize
+  (let ((commit "2dc01643defb497e4d1eb833def71dfc1e8d5da6")
+        (revision "0"))
+    (package
+     (name "sbcl-string-pokemonize")
+     (version (git-version "20210503" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/string-pokemonize")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zk5klc94pxv7mhx6qrp93rk4ypwd6wfijap7gf9l0wpphg90r9x"))))
+     (build-system asdf-build-system/sbcl)
+     (arguments
+      `(#:tests? #f ; There are no tests.
+        #:asd-systems '("string-pokemonize")))
+     (synopsis "Alternate upper- and lowercase")
+     (description
+      "@code{string-pokemonize} provides a function that alternates uppercase
+and lowercase characters for a given string.")
+     (home-page "https://github.com/phoe/string-pokemonize")
+     (license license:expat))))
+
+(define-public cl-string-pokemonize
+  (sbcl-package->cl-source-package sbcl-string-pokemonize))
+
+(define-public ecl-string-pokemonize
+  (sbcl-package->ecl-package sbcl-string-pokemonize))
+
 (define-public sbcl-binary-types
   (let ((commit "9ec42042a50403961c08179a892ae3de725b1d7a"))
     (package
