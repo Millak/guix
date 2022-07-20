@@ -663,7 +663,7 @@ of programming tools as well as libraries with equivalent functionality.")
 (define-public libomp-14
   (package
     (name "libomp")
-    (version "14.0.6")
+    (version (package-version llvm-14))
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "openmp" version))
