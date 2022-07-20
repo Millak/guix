@@ -346,6 +346,64 @@ classes for implementing common patterns for using dynamically loaded
 extensions.")
     (license asl2.0)))
 
+(define-public python-tempest
+  (package
+    (name "python-tempest")
+    (version "31.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "tempest" version))
+              (sha256
+               (base32
+                "1bh250n0cf68jm68jd7pcrgf7zbsv74cq590ar1n002sijfcb80i"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "test-requirements.txt"
+               ;; unused, code-quality checks only
+               (("hacking[<>!=]" line) (string-append "# " line))
+               (("flake8-.*[<>!=]" line) (string-append "# " line))
+               (("pycodestyle[<>!=]" line) (string-append "# " line))
+               (("coverage[<>!=]" line) (string-append "# " line)))))
+         (add-before 'check 'setup-check
+           (lambda _
+             (substitute* "tempest/tests/lib/cli/test_execute.py"
+               (("cli_base.execute\\(\"env\",")
+                (string-append "cli_base.execute('" (which "env") "',")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "stestr" "--test-path" "./tempest/tests" "run")))))))
+    (propagated-inputs (list python-cliff
+                             python-cryptography
+                             python-debtcollector
+                             python-fixtures
+                             python-jsonschema
+                             python-netaddr
+                             python-oslo.concurrency
+                             python-oslo.config
+                             python-oslo.log
+                             python-oslo.serialization
+                             python-oslo.utils
+                             python-paramiko
+                             python-prettytable
+                             python-pyyaml
+                             python-stevedore
+                             python-subunit
+                             python-testtools
+                             python-urllib3))
+    (native-inputs (list python-oslotest python-pbr python-stestr python-hacking))
+    (home-page "https://docs.openstack.org/tempest/latest/")
+    (synopsis "OpenStack Integration Testing")
+    (description "This is a set of integration tests to be run against a live
+OpenStack cluster.  Tempest has batteries of tests for OpenStack API
+validation, scenarios, and other specific tests useful in validating an
+OpenStack deployment.")
+    (license asl2.0)))
+
 (define-public python-tempest-lib
   (package
     (name "python-tempest-lib")
