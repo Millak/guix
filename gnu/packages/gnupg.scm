@@ -292,9 +292,7 @@ compatible to GNU Pth.")
     (name "gnupg")
     ;; Note: The 2.2.X releases are Long Term Support (LTS), so stick to it
     ;; for our stable 'gnupg'.
-    ;; Note2: 2.2.33 currently suffers from regressions, so do not update to it
-    ;; (see: https://dev.gnupg.org/T5742).
-    (version "2.2.32")
+    (version "2.2.36")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-" version
@@ -302,7 +300,7 @@ compatible to GNU Pth.")
               (patches (search-patches "gnupg-default-pinentry.patch"))
               (sha256
                (base32
-                "0506gv54z10c96z5821z9p0ksibk1pfilsmag39ffqrcz0sinmxj"))))
+                "172cma86bsp8k1jn2khpy2gfwqyamhbii0cy7dqakv7w20w7izmx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
