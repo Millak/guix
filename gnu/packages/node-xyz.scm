@@ -106,6 +106,43 @@ and fancy character sets, signed or unsigned data and has tests, for Node.")
      "This package provides a JSON list with color names and their values.")
     (license license:expat)))
 
+(define-public node-crx3
+  (package
+    (name "node-crx3")
+    (version "1.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ahwayakchih/crx3")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1snqyw8c3s9p2clhqh1172z0rs1was36sfxkk6acgpar32c2rwzw"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'replace-mri-by-minimist
+                    (lambda _
+                      (substitute* "package.json"
+                        (("\"mri\": \"\\^1\\.1\\.6\",")
+                         "\"minimist\": \"^1.2.6\","))
+                      (substitute* "lib/configuration.js"
+                        (("mri")
+                         "minimist"))))
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (inputs (list node-minimist node-pbf node-yazl))
+    (home-page "https://github.com/ahwayakchih/crx3")
+    (synopsis "Create CRXv3 browser extensions with Javascript")
+    (description
+     "This package creates web extension files (CRXv3) for Chromium versions
+64.0.3242 and above and all other browsers supporting the file format and API.")
+    (license license:bsd-3)))
+
 (define-public node-env-variable
   (package
     (name "node-env-variable")
