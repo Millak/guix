@@ -257,6 +257,35 @@ while being as light-weight and simple as possible.")
 written in Javascript.")
     (license license:expat)))
 
+(define-public node-resolve-protobuf-schema
+  (package
+    (name "node-resolve-protobuf-schema")
+    (version "2.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mafintosh/resolve-protobuf-schema")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zxavr0b2yz9xzp6zlsg5g09i0a6zqb24j12rdvfgph6wd4mzk40"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (inputs (list node-protocol-buffers-schema))
+    (home-page "https://github.com/mafintosh/resolve-protobuf-schema")
+    (synopsis "Resolve protobuf imports")
+    (description
+     "This package can read a protobuf schema from the disk, parse it and
+resolve all imports.")
+    (license license:expat)))
+
 (define-public node-stack-trace
   ;; There have been improvements since the last release.
   (let ((commit "4fd379ee78965ce7ce8820b436f1b1b590d5dbcf")
