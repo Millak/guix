@@ -450,6 +450,33 @@ Subsequent calls will either return the cached previous value or throw an error
 if desired.")
     (license license:isc)))
 
+(define-public node-ieee754
+  (package
+    (name "node-ieee754")
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/feross/ieee754")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19rlg59lavnwsvbblhvrqwinz2wzqlxhddqpwrc3cyqkscjgza7i"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (home-page "https://github.com/feross/ieee754")
+    (synopsis "Read/write IEEE754 floating point numbers in Javascript")
+    (description "This package can read and write IEEE754 floating point
+numbers from/to a Buffer or array-like object in Javascript.")
+    (license license:bsd-3)))
+
 (define-public node-inherits
   (package
     (name "node-inherits")
