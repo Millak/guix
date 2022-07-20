@@ -725,6 +725,66 @@ functions, such as encoding, exception handling, string manipulation, and time
 handling.")
     (license asl2.0)))
 
+(define-public python-keystoneauth1
+  (package
+    (name "python-keystoneauth1")
+    (version "5.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "keystoneauth1" version))
+              (sha256
+               (base32
+                "08s36dqxrxqx37sdl28cr7fx2iwr8wfxaa53hwq2dzcx9h25zfvf"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "test-requirements.txt"
+               (("hacking[<>!=].*") "hacking\n")
+               ;; unused, code-quality checks only
+               (("flake8-.*[<>!=]" line) (string-append "# " line))
+               (("pycodestyle[<>!=]" line) (string-append "# " line))
+               (("bandit[<>!=]" line) (string-append "# " line))
+               (("coverage[<>!=]" line) (string-append "# " line))
+               (("reno[<>!=]" line) (string-append "# " line)))))
+         (add-before 'check 'check-setup
+           (lambda _
+             ;; remove code-quality checks
+             (delete-file "keystoneauth1/tests/unit/test_hacking_checks.py")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "stestr" "run")))))))
+    (propagated-inputs (list python-iso8601
+                             python-os-service-types
+                             python-requests
+                             python-six
+                             python-stevedore))
+    (native-inputs (list python-betamax
+                         python-fixtures
+                         python-hacking
+                         python-lxml
+                         python-oauthlib
+                         python-oslo.config
+                         python-oslo.utils
+                         python-oslotest
+                         python-pbr
+                         python-pyyaml
+                         python-requests-kerberos
+                         python-requests-mock
+                         python-stestr
+                         python-testresources
+                         python-testtools))
+    (home-page "https://docs.openstack.org/keystoneauth/latest/")
+    (synopsis "Authentication Library for OpenStack Identity")
+    (description "Keystoneauth provides a standard way to do authentication
+and service requests within the OpenStack ecosystem.  It is designed for use
+in conjunction with the existing OpenStack clients and for simplifying the
+process of writing new clients.")
+    (license asl2.0)))
+
 (define-public python-keystoneclient
   (package
     (name "python-keystoneclient")
