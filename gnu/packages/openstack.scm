@@ -848,49 +848,53 @@ process of writing new clients.")
 (define-public python-keystoneclient
   (package
     (name "python-keystoneclient")
-    (version "1.8.1")
+    (version "5.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "python-keystoneclient" version))
         (sha256
          (base32
-          "1w4csvkah67rfpxylxnvs2s3594i0f9isy8pf4gnsqs5zirvjaa4"))))
+          "0gza5fx3xl3l6vrc6pnhbzhipz1fz9h98kwxqp7mmd90pwrxll0g"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f)) ; FIXME: Many tests are failing.
+     '(#:tests? #f   ; FIXME: Many tests are failing.
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-requirements
+                    (lambda _
+                      (substitute* "test-requirements.txt"
+                        ;; unused, code-quality checks only
+                        (("hacking[<>!=]" line) (string-append "# " line))
+                        (("flake8-.*[<>!=]" line) (string-append "# " line))
+                        (("pycodestyle[<>!=]" line) (string-append "# " line))
+                        (("bandit[<>!=]" line) (string-append "# " line))
+                        (("coverage[<>!=]" line) (string-append "# " line))
+                        (("reno[<>!=]" line) (string-append "# " line))))))))
     (native-inputs
-     `(("python-sphinx" ,python-sphinx)
-       ;; and some packages for the tests
-       ("openssl" ,openssl)
-       ("python-coverage" ,python-coverage)
-       ("python-discover" ,python-discover)
-       ("python-fixtures" ,python-fixtures)
-       ("python-hacking" ,python-hacking)
-       ("python-keyring" ,python-keyring)
-       ("python-lxml" ,python-lxml)
-       ("python-mock" ,python-mock)
-       ("python-mox3" ,python-mox3)
-       ("python-oauthlib" ,python-oauthlib)
-       ("python-oslosphinx" ,python-oslosphinx)
-       ("python-oslotest" ,python-oslotest)
-       ("python-pycrypto" ,python-pycrypto)
-       ("python-requests-mock" ,python-requests-mock)
-       ("python-temptest-lib" ,python-tempest-lib)
-       ("python-testrepository" ,python-testrepository)
-       ("python-testresources" ,python-testresources)
-       ("python-testtools" ,python-testtools)
-       ("python-webob" ,python-webob)))
+     (list openssl
+           python-fixtures
+           python-keyring
+           python-lxml
+           python-mock
+           python-oauthlib
+           python-oslotest
+           python-pbr
+           python-requests-mock
+           python-stestr
+           python-tempest-lib
+           python-testresources
+           python-testscenarios
+           python-testtools))
     (propagated-inputs
      (list python-babel
            python-debtcollector
            python-iso8601
+           python-keystoneauth1
            python-netaddr
            python-oslo.config
            python-oslo.i18n
            python-oslo.serialization
            python-oslo.utils
-           python-pbr
            python-prettytable
            python-requests
            python-six
