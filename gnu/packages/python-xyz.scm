@@ -3763,34 +3763,23 @@ memory usage and transliteration quality.")
 (define-public python-pyjwt
   (package
     (name "python-pyjwt")
-    (version "1.7.1")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyJWT" version))
        (sha256
         (base32
-         "15hflax5qkw1v6nssk1r0wkj83jgghskcmn875m3wgvpzdvajncd"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (for-each delete-file-recursively
-                     (find-files "." "\\.pyc$"))
-           #t))))
+         "1fmbcwfw1463wjzwbcgg3s16rad6kfb1mc5y7jbkp6v9ihh0hafl"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda _
-                      ;; Mimic upstream commit 3a20892442b34c7 to get
-                      ;; rid of dependency on pytest-runner < 5.0.
-                      ;; Remove substitution for PyJWT > 1.7.1.
-                      (substitute* "setup.py"
-                        ((".*pytest-runner.*")
-                         ""))
-                      (invoke "pytest" "-vv"))))))
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-pytest python-pytest-cov))
+     (list python-cryptography python-pytest))
     (home-page "https://github.com/progrium/pyjwt")
     (synopsis "JSON Web Token implementation in Python")
     (description
