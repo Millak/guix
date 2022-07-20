@@ -230,6 +230,33 @@ random number generator.")
 while being as light-weight and simple as possible.")
       (license license:expat))))
 
+(define-public node-protocol-buffers-schema
+  (package
+    (name "node-protocol-buffers-schema")
+    (version "3.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mafintosh/protocol-buffers-schema")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lnckxj14jzsnfxdd5kmlwrac43c214bv8i2g5rdldymlpxzrz1v"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (home-page "https://github.com/mafintosh/protocol-buffers-schema")
+    (synopsis "Protocol buffers schema parser written in Javascript")
+    (description "This package provides a protocol buffers schema parser
+written in Javascript.")
+    (license license:expat)))
+
 (define-public node-stack-trace
   ;; There have been improvements since the last release.
   (let ((commit "4fd379ee78965ce7ce8820b436f1b1b590d5dbcf")
