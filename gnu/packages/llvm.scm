@@ -855,6 +855,27 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                       (base32
                        "1r9a4fdz9ci58b5z2inwvm4z4cdp6scrivnaw05dggkxz7yrwrb5")))))
 
+(define-public libomp-12
+  (package
+    (inherit libomp-13)
+    (version (package-version llvm-12))
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "14dh0r6h2xh747ffgnsl4z08h0ri04azi9vf79cbz7ma1r27kzk0"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (arguments
+     '(#:configure-flags '("-DLIBOMP_USE_HWLOC=ON"
+                           "-DOPENMP_TEST_C_COMPILER=clang"
+                           "-DOPENMP_TEST_CXX_COMPILER=clang++")
+       #:test-target "check-libomp"))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-13)
+       (replace "clang" clang-12)
+       (replace "llvm" llvm-12)))))
+
 (define-public clang-toolchain-12
   (make-clang-toolchain clang-12))
 
