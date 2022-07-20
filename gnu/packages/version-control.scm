@@ -2743,6 +2743,9 @@ by rclone usable with git-annex.")
      "Fossil is a distributed source control management system which supports
 access and administration over HTTP CGI or via a built-in HTTP server.  It has
 a built-in wiki, built-in file browsing, built-in tickets system, etc.")
+    (properties
+     '((release-monitoring-url
+        . "https://fossil-scm.org/home/uv/latest-release.md")))
     (license (list license:public-domain        ;src/miniz.c, src/shell.c
                    license:bsd-2))))
 
