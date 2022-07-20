@@ -7711,3 +7711,30 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
      "Starlette is a lightweight ASGI (Asynchronous Server Gateway
 Interface) framework/toolkit for building async web services in Python.")
     (license license:bsd-3)))
+
+(define-public python-pyactiveresource
+  (package
+    (name "python-pyactiveresource")
+    (version "2.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyactiveresource" version))
+              (sha256
+               (base32
+                "1n7xvzh1j8fxal0gx9bgg1ayrp3q9mb1a2vb12d6s86wa93880rg"))))
+    (build-system python-build-system)
+    (native-inputs (list python-dateutil python-pyyaml))
+    (propagated-inputs (list python-six))
+    (home-page "https://github.com/Shopify/pyactiveresource/")
+    (synopsis "ActiveResource for Python")
+    (description "This package provides a Python port of the ActiveResource
+project.
+
+Active Resource attempts to provide a coherent wrapper object-relational
+mapping for REST web services.  It follows the same philosophy as Active
+Record, in that one of its prime aims is to reduce the amount of code needed
+to map to these resources.  This is made possible by relying on a number of
+code- and protocol-based conventions that make it easy for Active Resource to
+infer complex relations and structures.")
+    (license license:expat)))
+
