@@ -485,7 +485,7 @@ code analysis tools.")
               "znver3")
             '())))))
 
-(define* (make-clang-toolchain clang #:optional (libomp libomp-13))
+(define (make-clang-toolchain clang libomp)
   (package
     (name (string-append (package-name clang) "-toolchain"))
     (version (package-version clang))
@@ -767,7 +767,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
        (replace "llvm" llvm-13)))))
 
 (define-public clang-toolchain-13
-  (make-clang-toolchain clang-13))
+  (make-clang-toolchain clang-13 libomp-13))
 
 (define-public llvm-12
   (package
