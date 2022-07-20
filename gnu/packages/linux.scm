@@ -60,7 +60,7 @@
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2021 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
-;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 
@@ -1340,6 +1340,37 @@ Interface} platform driver for the @acronym{EC, Embedded Controller} firmware
 on Purism Librem laptop computers.  It allows user-space control over the
 battery charging thresholds, keyboard backlight, fans and thermal monitors,
 and the notification, WiFi, and Bluetooth LED.")
+    (license license:gpl2)))
+
+(define-public lkrg
+  (package
+    (name "lkrg")
+    (version "0.9.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lkrg-org/lkrg")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yirb7n4mqv8cn0gziz1m7ymq00dhhy79j59jdgrx00b8rj57cfw"))))
+    (build-system linux-module-build-system)
+    (arguments
+     (list #:linux linux-libre
+           #:tests? #f
+           #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target))
+                                (string-append "SYSSRC="
+                                               (assoc-ref %build-inputs
+                                                "linux-module-builder")
+                                               "/lib/modules/build"))))
+    (inputs (list bash-minimal))
+    (home-page "https://lkrg.org/")
+    (synopsis "Linux Kernel Runtime Guard")
+    (description
+     "This package performs runtime integrity checking of the Linux kernel and
+detection of security vulnerability exploits against the kernel.")
     (license license:gpl2)))
 
 (define-public rtl8821ce-linux-module
