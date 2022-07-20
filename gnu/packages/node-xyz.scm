@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021 Charles <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1331,3 +1332,38 @@ connection.")))
 accessing serial ports.  This package is the recommended entry point for most
 projects.  It combines a high-level Node.js stream interface with a useful
 default set of parsers and bindings.")))
+
+(define-public node-yazl
+  (package
+    (name "node-yazl")
+    (version "2.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/thejoshwolfe/yazl")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lhwqqnvazpi4xw81ldpx0ky0h1j5rcx3br480q2bnzj21cm109n"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (inputs (list node-buffer-crc32))
+    (home-page "https://github.com/thejoshwolfe/yazl")
+    (synopsis "Yet another zip library for node")
+    (description
+     "This package provides a zip library for Node.  It follows the
+following principles:
+@enumerate
+@item Don't block the JavaScript thread.  Use and provide async APIs.
+@item Keep memory usage under control.  Don't attempt to buffer entire
+files in RAM at once.
+@item Prefer to open input files one at a time than all at once.
+@end enumerate")
+    (license license:expat)))
