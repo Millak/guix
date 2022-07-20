@@ -205,6 +205,33 @@ user-land JavaScript.")
 random number generator.")
     (license license:bsd-3)))
 
+(define-public node-minimist
+  (package
+    (name "node-minimist")
+    (version "1.2.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/substack/minimist")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mxj40mygbiy530wskc8l28wxb6fv3f8vrhpwjgprymhpgbaac7d"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (home-page "https://github.com/substack/minimist")
+    (synopsis "Parse CLI arguments in Javascript")
+    (description "This package can scan for CLI flags and arguments in
+Javascript.")
+    (license license:expat)))
+
 (define-public node-oop
   ;; No releases, last commit was February 2013.
   (let ((commit "f9d87cda0958886955c14a0a716e57021ed295dc")
