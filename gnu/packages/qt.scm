@@ -1981,6 +1981,26 @@ customized by using themes or by adding custom items and labels to them.")
     (description "The Qt Network Authorization module provides an
 implementation of OAuth and OAuth2 authenticathon methods for Qt.")))
 
+(define-public qtnetworkauth
+  (package
+    (name "qtnetworkauth")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "0apvsb2ip1m3kw8vi9spvf6f6q72ys8vr40rpyysi7shsjwm83yn"))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")))
+    (native-inputs (list perl))
+    (inputs (list qtbase))
+    (home-page (package-home-page qtbase))
+    (synopsis "Qt Network Authorization module")
+    (description "The Qt Network Authorization module provides an
+implementation of OAuth and OAuth2 authenticathon methods for Qt.")
+    (license (package-license qtbase))))
+
 (define-public qtremoteobjects
   (package (inherit qtsvg-5)
     (name "qtremoteobjects")
