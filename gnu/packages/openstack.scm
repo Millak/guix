@@ -7,6 +7,7 @@
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -249,6 +250,32 @@ to docs.openstack.org and developer.openstack.org.")
       "The OpenStack Client Configuration Library is a library for collecting
   client configuration for using an OpenStack cloud in a consistent and
   comprehensive manner.")
+    (license asl2.0)))
+
+(define-public python-os-service-types
+  (package
+    (name "python-os-service-types")
+    (version "1.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "os-service-types" version))
+              (sha256
+               (base32
+                "0v4chwr5jykkvkv4w7iaaic7gb06j6ziw7xrjlwkcf92m2ch501i"))))
+    (build-system python-build-system)
+    (arguments
+     ;; The tests are disabled to avoid a circular dependency with
+     ;; python-keystoneauth1.
+     `(#:tests? #f))
+    (native-inputs (list python-pbr))
+    (home-page "https://docs.openstack.org/os-service-types/latest/")
+    (synopsis "Library for consuming OpenStack Service Types Authority data")
+    (description "The @emph{OpenStack Service Types Authority} contains
+information about officiag OpenStack services and their historical
+service-type aliases.  The data is in JSON and the latest data should always
+be used.  This simple library exists to allow for easy consumption of the
+data, along with a built-in version of the data to use in case network access
+is for some reason not possible and local caching of the fetched data.")
     (license asl2.0)))
 
 (define-public python-os-testr
