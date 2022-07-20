@@ -388,6 +388,50 @@ common features used in Tempest.")
 ;;; Packages from the Oslo library
 ;;;
 
+(define-public python-oslo.concurrency
+  (package
+    (name "python-oslo.concurrency")
+    (version "5.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "oslo.concurrency" version))
+              (sha256
+               (base32
+                "0zl9wyxvs69i78wja5c3cacd6gadk8cc8ggy2ips0wlakxp98ilz"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "test-requirements.txt"
+               (("hacking[<>!=]" line) (string-append "# " line))
+               (("coverage[<>!=]" line) (string-append "# " line))
+               (("bandit[<>!=]" line) (string-append "# " line))
+               (("pre-commit[<>!=]" line) (string-append "# " line)))))
+         (add-before 'check 'fix-tests
+           (lambda _
+             (substitute* "oslo_concurrency/tests/unit/test_processutils.py"
+               (("#!/bin/bash") (string-append "#!" (which "bash")))
+               (("#!/bin/sh") (string-append "#!" (which "sh")))
+               (("'/usr/bin/env'") (string-append "'" (which "env") "'"))
+               (("'/usr/bin/env ") (string-append "'" (which "env") " "))
+               (("'/bin/true'") (string-append "'" (which "true") "'"))))))))
+    (native-inputs (list python-pbr
+                         ;; for tests:
+                         python-oslotest
+                         python-fixtures
+                         python-stestr
+                         python-eventlet))
+    (propagated-inputs (list python-fasteners python-oslo.config
+                             python-oslo.i18n python-oslo.utils))
+    (home-page "https://docs.openstack.org/oslo.concurrency/latest/")
+    (synopsis "Oslo Concurrency library")
+    (description "The Oslo Concurrency Library provides utilities for safely
+running multi-thread, multi-process applications using locking mechanisms and
+for running external processes.")
+    (license asl2.0)))
+
 (define-public python-oslo.config
   (package
     (name "python-oslo.config")
