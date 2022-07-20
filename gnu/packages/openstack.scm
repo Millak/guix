@@ -523,30 +523,31 @@ for running external processes.")
 (define-public python-oslo.context
   (package
     (name "python-oslo.context")
-    (version "3.1.1")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "oslo.context" version))
        (sha256
         (base32
-         "1l2z186rkd9acrb2ygf53yrdc1lgf7cy1akbhm21kgkzind4p2r6"))))
+         "091j2cjh1b60nx6s0a4amb2idh9awijnbmppc3an0738fv8cdh48"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'relax-requirements
                     (lambda _
                       (substitute* "test-requirements.txt"
-                        (("hacking>=3.0.1,<3.1.0")
-                         "hacking>=3.0.1"))
-                      #t)))))
+                        (("hacking[<>!=].*") "hacking\n")
+                        ;; unused, code-quality checks only
+                        (("bandit[<>!=]" line) (string-append "# " line))
+                        (("pre-commit[<>!=]" line) (string-append "# " line))))))))
     (propagated-inputs
      (list python-debtcollector))
     (native-inputs
-     (list python-bandit
-           python-coverage
+     (list python-coverage
            python-fixtures
            python-hacking
+           python-mypy
            python-oslotest
            python-pbr
            python-stestr))
