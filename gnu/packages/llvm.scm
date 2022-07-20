@@ -744,7 +744,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
 (define-public libomp-13
   (package
     (inherit libomp-14)
-    (version "13.0.1")
+    (version (package-version llvm-13))
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "openmp" version))
@@ -1205,6 +1205,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                    #:patches '("clang-3.5-libc-search-path.patch")))
 
 ;; Default LLVM and Clang version.
+(define-public libomp libomp-13)
 (define-public llvm llvm-13)
 (define-public clang-runtime clang-runtime-13)
 (define-public clang clang-13)
@@ -1582,8 +1583,6 @@ standard C++ library.")
 requirements according to version 1.1 of the OpenCL specification.")
     ;; Apache license 2.0 with LLVM exception
     (license license:asl2.0)))
-
-(define-public libomp libomp-13)
 
 (define-public python-llvmlite
   (package
