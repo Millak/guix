@@ -3472,20 +3472,25 @@ UnionFS-FUSE additionally supports copy-on-write.")
 (define-public sshfs
   (package
     (name "sshfs")
-    (version "2.10")
+    (version "3.7.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/libfuse/sshfs/releases/"
                                   "download/sshfs-" version "/sshfs-" version
-                                  ".tar.gz"))
+                                  ".tar.xz"))
               (sha256
                (base32
-                "00fir2iykdx11g8nv5gijg0zjrp2g3ldypnv0yi6lq3h5pg5v13h"))))
-    (build-system gnu-build-system)
+                "169fkilv060afgp9h7hvsbkg02bd1y77kmx06x0s7q1cvmxww62j"))))
+    (build-system meson-build-system)
+    (arguments
+     ;; XXX: tests are skipped: FUSE kernel module does not seem to be loaded
+     '(#:tests? #f))
     (inputs
-     (list fuse glib))
+     (list fuse-3 glib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           ;; man page
+           python-docutils))
     (home-page "https://github.com/libfuse/sshfs")
     (synopsis "Mount remote file systems over SSH")
     (description
