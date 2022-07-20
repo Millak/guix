@@ -2693,20 +2693,25 @@ by rclone usable with git-annex.")
 (define-public fossil
   (package
     (name "fossil")
-    (version "2.17")
+    (version "2.18")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://www.fossil-scm.org/home/tarball/"
-             "f48180f2ff3169651a725396d4f7d667c99a92873b9c3df7eee2f144be7a0721"
+             "84f25d7eb10c0714109d69bb2809abfa8b4b5c3d73b151a5b10df724dacd46d8"
              "/fossil-src-" version ".tar.gz"))
+       ;; XXX: Currently the above hash must be manually updated.
        (sha256
-        (base32 "1gvx6xzrw1a8snlq9qmr6099r44ifghg0h0fw4jazqmmyxriqzsw"))
+        (base32 "0cq7677p84nnbfvk2dsh3c3y900gslw3zaw8iipfq932vmf1s31h"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           (delete-file-recursively "compat") #t))))
+           (delete-file-recursively "compat")
+           ;; Disable obsolete SQLite feature check; remove for 2.19.
+           (substitute* "tools/sqlcompattest.c"
+             ((".*\"ENABLE_JSON1\".*")
+              ""))))))
     (build-system gnu-build-system)
     (native-inputs
      (list tcl                          ;for configuration only
