@@ -316,37 +316,39 @@ compatible to GNU Pth.")
            readline
            sqlite
            zlib))
-   (arguments
-    `(#:configure-flags '(;; Otherwise, the test suite looks for the `gpg`
-                          ;; executable in its installation directory in
-                          ;; /gnu/store before it has been installed.
-                          "--enable-gnupg-builddir-envvar"
-                          "--enable-all-tests")
+    (arguments
+     (list
+      #:configure-flags #~'(;; Otherwise, the test suite looks for the `gpg`
+                            ;; executable in its installation directory in
+                            ;; /gnu/store before it has been installed.
+                            "--enable-gnupg-builddir-envvar"
+                            "--enable-all-tests")
       #:phases
-      (modify-phases %standard-phases
-        (add-before 'configure 'patch-paths
-          (lambda* (#:key inputs #:allow-other-keys)
-            (substitute* "scd/scdaemon.c"
-              (("\"(libpcsclite\\.so[^\"]*)\"" _ name)
-               (string-append "\"" (assoc-ref inputs "pcsc-lite")
-                              "/lib/" name "\"")))))
-        (add-after 'build 'patch-scheme-tests
-          (lambda _
-            (substitute* (find-files "tests" ".\\.scm$")
-              (("/usr/bin/env gpgscm")
-               (string-append (getcwd) "/tests/gpgscm/gpgscm")))))
-        (add-before 'build 'patch-test-paths
-          (lambda _
-            (substitute* '("tests/inittests"
-                           "tests/pkits/inittests"
-                           "tests/Makefile"
-                           "tests/pkits/common.sh"
-                           "tests/pkits/Makefile")
-             (("/bin/pwd") (which "pwd")))
-            (substitute* "common/t-exectool.c"
-              (("/bin/cat") (which "cat"))
-              (("/bin/true") (which "true"))
-              (("/bin/false") (which "false"))))))))
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((libpcsclite.so (search-input-file inputs
+                                                       "lib/libpcsclite.so")))
+                (substitute* "scd/scdaemon.c"
+                  (("libpcsclite\\.so")
+                   libpcsclite.so)))))
+          (add-after 'build 'patch-scheme-tests
+            (lambda _
+              (substitute* (find-files "tests" ".\\.scm$")
+                (("/usr/bin/env gpgscm")
+                 (string-append (getcwd) "/tests/gpgscm/gpgscm")))))
+          (add-before 'build 'patch-test-paths
+            (lambda _
+              (substitute* '("tests/inittests"
+                             "tests/pkits/inittests"
+                             "tests/Makefile"
+                             "tests/pkits/common.sh"
+                             "tests/pkits/Makefile")
+                (("/bin/pwd") (which "pwd")))
+              (substitute* "common/t-exectool.c"
+                (("/bin/cat") (which "cat"))
+                (("/bin/true") (which "true"))
+                (("/bin/false") (which "false"))))))))
     (home-page "https://gnupg.org/")
     (synopsis "GNU Privacy Guard")
     (description
