@@ -420,6 +420,10 @@ OpenStack deployment.")
      `(#:tests? #f ; FIXME: Requires oslo.log >= 1.14.0.
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "requirements.txt"
+               (("jsonschema[<>!=].*") "jsonschema\n"))))
          (add-before
           'check 'pre-check
           (lambda _
@@ -432,10 +436,10 @@ OpenStack deployment.")
             python-jsonschema
             python-oslo.log
             python-paramiko
-            python-pbr
             python-six))
     (native-inputs
-      (list python-babel python-mock python-os-testr python-oslotest))
+      (list python-babel python-mock python-os-testr python-oslotest
+            python-pbr))
     (home-page "https://www.openstack.org/")
     (synopsis "OpenStack functional testing library")
     (description
