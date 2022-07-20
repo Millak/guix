@@ -909,6 +909,22 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                       (base32
                        "02bcwwn54661madhq4nxc069s7p7pj5gpqi8ww50w3anbpviilzy")))))
 
+(define-public libomp-11
+  (package
+    (inherit libomp-12)
+    (version (package-version llvm-11))
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "0k389d0g9zlfyzh1kpb3i5jdawzpn0hrdxzbjinpvdv7rbw4sw1d"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-12)
+       (replace "clang" clang-11)
+       (replace "llvm" llvm-11)))))
+
 (define-public clang-toolchain-11
   (make-clang-toolchain clang-11))
 
