@@ -21470,26 +21470,19 @@ with PEP 484 argument (and return) type annotations.")
 (define-public python-typing-extensions
   (package
     (name "python-typing-extensions")
-    (version "4.0.1")
+    (version "4.3.0")
     (source (origin
-              ;; The test script is missing from the PyPI archive.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/python/typing")
-                    (commit version)))
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (pypi-uri "typing_extensions" version))
               (sha256
                (base32
-                "0a35fh5wk9s538x0w3dz95y0avnhd2srzyv9s1a372711n8hdl4p"))))
+                "19n4l57qazwrbvxjrbxw2vvfyd0zbk8ivnwm4zmwfzzl69x6glp6"))))
     (build-system python-build-system)
     (arguments
      (list
       #:tests? #f       ;requires Python's test module, not available in Guix
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'enter-source-directory
-            (lambda _
-              (chdir "typing_extensions")))
           ;; XXX: PEP 517 manual build copied from python-isort.
           (replace 'build
             (lambda _
