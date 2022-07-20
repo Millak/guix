@@ -5607,7 +5607,7 @@ capabilities.")
   (package
     (inherit python-numpy)
     (name "python-numpy-next")
-    (version "1.22.3")
+    (version "1.23.1")
     (source
      (origin
        (inherit (package-source python-numpy))
@@ -5617,7 +5617,10 @@ capabilities.")
              version "/numpy-" version ".tar.gz"))
        (sha256
         (base32
-         "19dw91pqbqcniw2z57kiyqs1qp56g7kqy1bdyv664g8s62sc01m9"))))))
+         "095nv17vm8hvj8cj0d76syl9xh99bbnkgnjr9ccy3wpykcsfyj6p"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs python-numpy)
+       (append python-typing-extensions)))))
 
 (define-public python-numpy-documentation
   (package
