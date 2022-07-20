@@ -7738,3 +7738,26 @@ code- and protocol-based conventions that make it easy for Active Resource to
 infer complex relations and structures.")
     (license license:expat)))
 
+(define-public python-shopifyapi
+  (package
+    (name "python-shopifyapi")
+    (version "12.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ShopifyAPI" version))
+              (sha256
+               (base32
+                "03np9mkycqbw5l5vk0srmq353q3vmbycbbarzv0cg3z703p81gnb"))))
+    (build-system python-build-system)
+    (native-inputs (list python-mock))
+    (propagated-inputs (list python-pyactiveresource python-pyjwt
+                             python-pyyaml python-six))
+    (home-page "https://github.com/Shopify/shopify_python_api")
+    (synopsis "Shopify API for Python")
+    (description "This package provides the Shopify API for Python.
+
+The ShopifyAPI library allows Python developers to programmatically access the
+admin section of stores using an ActiveResource-like interface similar the
+ruby Shopify API gem.  The library makes HTTP requests to Shopify in order to
+list, create, update, or delete resources (e.g. Order, Product, Collection).")
+    (license license:expat)))
