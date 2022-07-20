@@ -725,7 +725,7 @@ for KDE PIM.")
            qca
            qtbase-5
            qtdeclarative-5
-           qtnetworkauth
+           qtnetworkauth-5
            qtspeech
            qtwebchannel-5
            qtwebengine-5

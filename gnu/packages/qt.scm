@@ -1955,7 +1955,7 @@ data received from multiple sensors. The look and feel of graphs can be
 customized by using themes or by adding custom items and labels to them.")
     (license license:gpl3)))
 
-(define-public qtnetworkauth
+(define-public qtnetworkauth-5
   (package (inherit qtsvg-5)
     (name "qtnetworkauth")
     (version "5.15.2")

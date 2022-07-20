@@ -288,7 +288,7 @@ browser for easy news reading.")
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
-           qtnetworkauth
+           qtnetworkauth-5
            qtquickcontrols-5
            qtquickcontrols2-5
            qtscript
