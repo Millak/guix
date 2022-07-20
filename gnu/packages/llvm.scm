@@ -1026,6 +1026,22 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                    "0ls2h3iv4finqyflyhry21qhc9cm9ga7g1zq21020p065qmm2y2p"
                    #:patches '("clang-9.0-libc-search-path.patch")))
 
+(define-public libomp-9
+  (package
+    (inherit libomp-10)
+    (version (package-version llvm-9))
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "1knafnpp0f7hylx8q20lkd6g1sf0flly572dayc5d5kghh7hd52w"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-10)
+       (replace "clang" clang-9)
+       (replace "llvm" llvm-9)))))
+
 (define-public clang-toolchain-9
   (make-clang-toolchain clang-9))
 
