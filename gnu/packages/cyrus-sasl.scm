@@ -3,6 +3,7 @@
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages tls)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu))
@@ -33,42 +35,35 @@
 (define-public cyrus-sasl
   (package
    (name "cyrus-sasl")
-   (version "2.1.27")
+   (version "2.1.28")
    (source (origin
             (method url-fetch)
-            (uri (list (string-append
-                        "https://cyrusimap.org/releases/cyrus-sasl-"
-                        version ".tar.gz")
-                       (string-append
-                        "ftp://ftp.cyrusimap.org/cyrus-sasl/cyrus-sasl-"
-                        version ".tar.gz")))
+            (uri (string-append "https://github.com/cyrusimap/cyrus-sasl"
+                                "/releases/download/cyrus-sasl-" version
+                                "/cyrus-sasl-" version ".tar.gz"))
             (sha256 (base32
-                     "1m85zcpgfdhm43cavpdkhb1s2zq1b31472hq1w1gs3xh94anp1i6"))
-            (patches (search-patches "cyrus-sasl-ac-try-run-fix.patch"
-                                     "cyrus-sasl-CVE-2019-19906.patch"))))
+                     "135kbgyfpa1mwqp5dm223yr6ddzi4vjm7cr414d7rmhys2mwdkvw"))))
    (build-system gnu-build-system)
-   (native-inputs
-     (list autoconf automake libtool))
    (inputs (list gdbm openssl))
    (propagated-inputs
     (list ;; cyrus-sasl.pc refers to -lkrb5, so propagate it.
           mit-krb5))
    (arguments
-    '(#:configure-flags (list (string-append "--with-plugindir="
-                                             (assoc-ref %outputs "out")
-                                             "/lib/sasl2"))
+    (list
+     #:configure-flags #~(list (string-append "--with-plugindir="
+                                              #$output "/lib/sasl2")
+                               ;; When cross-compiling the build system is
+                               ;; unable to determine whether SPNEGO is
+                               ;; supported; Kerberos does, so enable it.
+                               #$@(if (%current-target-system)
+                                      '("ac_cv_gssapi_supports_spnego=yes")
+                                      '()))
 
       ;; The 'plugins' directory has shared source files, such as
       ;; 'plugin_common.c'.  When building the shared libraries there, libtool
       ;; ends up doing "ln -s plugin_common.lo plugin_common.o", which can
       ;; fail with EEXIST when building things in parallel.
-      #:parallel-build? #f
-
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'autogen
-          (lambda _
-            (invoke "autoreconf" "-vif"))))))
+      #:parallel-build? #f))
    (synopsis "Simple Authentication Security Layer implementation")
    (description
     "SASL (Simple Authentication Security Layer) is an Internet
