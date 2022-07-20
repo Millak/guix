@@ -1405,9 +1405,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libmpeg2-global-symbol-test.patch	\
   %D%/packages/patches/libmygpo-qt-fix-qt-5.11.patch		\
   %D%/packages/patches/libmygpo-qt-missing-qt5-modules.patch	\
-  %D%/packages/patches/libpaper-free-systempapername.patch	\
-  %D%/packages/patches/libpaper-free-xdg-config-home.patch	\
-  %D%/packages/patches/libpaper-invalid-paperspecs.patch	\
   %D%/packages/patches/libqalculate-3.8.0-libcurl-ssl-fix.patch	\
   %D%/packages/patches/libquicktime-ffmpeg.patch 		\
   %D%/packages/patches/librecad-support-for-boost-1.76.patch	\
