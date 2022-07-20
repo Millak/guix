@@ -230,6 +230,38 @@ random number generator.")
 while being as light-weight and simple as possible.")
       (license license:expat))))
 
+(define-public node-pbf
+  (package
+    (name "node-pbf")
+    (version "3.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mapbox/pbf")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r8xs787ix79yr0vrwrizdml9h7cmxjrzhvnhkj784ac5f8nv5j7"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (inputs (list node-ieee754 node-resolve-protobuf-schema))
+    (home-page "https://github.com/mapbox/pbf")
+    (synopsis "Decode and encode protocol buffers in Javascript")
+    (description
+     "This package is a low-level, fast and lightweight JavaScript library
+for decoding and encoding protocol buffers, a compact binary format for
+structured data serialization.  Works both in Node and the browser.
+It supports lazy decoding and detailed customization of the reading/writing
+code.")
+    (license license:bsd-3)))
+
 (define-public node-protocol-buffers-schema
   (package
     (name "node-protocol-buffers-schema")
