@@ -2782,6 +2782,8 @@ asynchronicity.")
                     (url "https://github.com/google/libphonenumber")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
+              (patches (search-patches
+                        "libphonenumber-reproducible-build.patch"))
               (sha256
                (base32
                 "06y3mh1d1mks6d0ynxp3980g712nkf8l5nyljpybsk326b246hg9"))))
@@ -2802,7 +2804,6 @@ asynchronicity.")
 validating international phone numbers.")
    (home-page "https://github.com/google/libphonenumber")
    (license license:asl2.0)))
-
 
 (define-public chatty
  (package
