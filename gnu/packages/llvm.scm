@@ -1087,7 +1087,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
     (license license:ncsa)))
 
 (define-public clang-toolchain-8
-  (make-clang-toolchain clang-8))
+  (make-clang-toolchain clang-8 libomp-8))
 
 (define-public llvm-7
   (package
