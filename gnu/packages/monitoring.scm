@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -743,3 +744,21 @@ snapshots, without displaying anything.  When put into the foreground again,
 display resumes.
 @end itemize")
     (license license:bsd-2)))
+
+(define-public python-statsd
+  (package
+    (name "python-statsd")
+    (version "3.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "statsd" version))
+              (sha256
+               (base32
+                "07yxnlalvcglgwa9pjs1clwrmwx7a4575jai7q05jz3g4i6dprp3"))))
+    (build-system python-build-system)
+    (native-inputs (list python-mock python-nose))
+    (home-page "https://github.com/jsocol/pystatsd")
+    (synopsis "Simple StatsD client")
+    (description "StatsD is a friendly front-end to Graphite.  This package
+provides a simple Python client for the StatsD daemon.")
+    (license license:expat)))
