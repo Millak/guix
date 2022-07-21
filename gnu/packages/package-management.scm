@@ -1152,7 +1152,7 @@ written entirely in Python.")
 (define-public conan
   (package
     (name "conan")
-    (version "1.47.0")
+    (version "1.50.0")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -1162,7 +1162,7 @@ written entirely in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zs2xb22rsy5fsc0fd7c95vrx1mfz7vasyg1lqkzyfimvn5zah6n"))))
+         "1jjrinz5wkcxfvwdpldrv4h7vacdyz88cc4af5vi3sdnjra0i0m5"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1231,8 +1231,9 @@ written entirely in Python.")
                         ;; This one fails for unknown reasons (see:
                         ;; https://github.com/conan-io/conan/issues/9671).
                         "and not test_build "
-                        ;; This test expects the 'apt' command to be available.
+                        ;; These tests expect the 'apt' command to be available.
                         "and not test_apt_check "
+                        "and not test_apt_install_substitutes "
                         (if (not (string-prefix? "x86_64" system))
                             ;; These tests either assume the machine is
                             ;; x86_64, or require a cross-compiler to target
