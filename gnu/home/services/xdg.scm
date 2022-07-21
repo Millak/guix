@@ -23,6 +23,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu home services utils)
   #:use-module (guix gexp)
+  #:use-module (guix modules)
   #:use-module (guix records)
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
@@ -106,7 +107,7 @@ services more consistent."))
 
 (define (ensure-xdg-base-dirs-on-activation config)
   #~(map (lambda (xdg-base-dir-variable)
-           ((@@ (guix build utils) mkdir-p)
+           ((@ (guix build utils) mkdir-p)
             (getenv
              xdg-base-dir-variable)))
          '#$(map (lambda (field)
@@ -207,8 +208,8 @@ pre-populated content.")
                    home-xdg-user-directories-configuration-fields)))
     #~(let ((ensure-dir
              (lambda (path)
-               (mkdir-p
-                ((@@ (ice-9 string-fun) string-replace-substring)
+               ((@ (guix build utils) mkdir-p)
+                ((@ (ice-9 string-fun) string-replace-substring)
                  path "$HOME" (getenv "HOME"))))))
         (display "Creating XDG user directories...")
         (map ensure-dir '#$dirs)
