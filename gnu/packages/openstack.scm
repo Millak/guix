@@ -917,29 +917,31 @@ LDAP.")
 (define-public python-swiftclient
   (package
     (name "python-swiftclient")
-    (version "2.6.0")
+    (version "4.0.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "python-swiftclient" version))
         (sha256
          (base32
-          "1j33l4z9vqh0scfncl4fxg01zr1hgqxhhai6gvcih1gccqm4nd7p"))))
+          "1zwb4zcln454fzcnbwqhyzxb68wrsr1i2vvvrn5c7yy5k4vcfs1v"))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'relax-requirements
+                    (lambda _
+                      (delete-file "test-requirements.txt")))
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "stestr" "run")))))))
     (native-inputs
-     (list python-pbr
-           python-sphinx
-           ;; The folloing packages are needed for the tests.
-           python-coverage
-           python-discover
-           python-hacking
-           python-mock
-           python-oslosphinx
-           python-keystoneclient
-           python-testrepository
-           python-testtools))
+     (list python-keystoneclient
+           python-keystoneauth1
+           python-openstacksdk
+           python-stestr))
     (propagated-inputs
-     (list python-requests python-six))
+     (list python-requests))
     (home-page "https://www.openstack.org/")
     (synopsis "OpenStack Object Storage API Client Library")
     (description
