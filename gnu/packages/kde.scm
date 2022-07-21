@@ -173,8 +173,7 @@ This package contains GUI widgets for baloo.")
                                        (assoc-ref inputs "qtwebengine-5")
                                        "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
-               #t))))))
+                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -383,8 +382,7 @@ projects.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "cmake/modules/FindClang.cmake"
                (("^\\s*PATHS \"\\$\\{CLANG_LIBRARY_DIRS\\}\"" line)
-                (string-append line " " (assoc-ref inputs "clang") "/lib")))
-             #t)))))
+                (string-append line " " (assoc-ref inputs "clang") "/lib"))))))))
     (home-page "https://kdevelop.org")
     (synopsis "IDE for C, C++, Python, Javascript and PHP")
     (description "The KDevelop IDE provides semantic syntax highlighting, as
