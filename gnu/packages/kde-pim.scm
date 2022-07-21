@@ -102,8 +102,7 @@
                    (display
                     (call-with-input-file "CMakeLists.txt"
                       get-string-all))))
-               (rename-file "CMakeLists.txt.new" "CMakeLists.txt"))
-             #t)))))
+               (rename-file "CMakeLists.txt.new" "CMakeLists.txt")))))))
     (home-page "https://kontact.kde.org/components/akonadi/")
     (synopsis "Extensible cross-desktop storage service for PIM")
     (description "Akonadi is an extensible cross-desktop Personal Information
@@ -253,12 +252,10 @@ to list and filter contacts.")
              (let ((plugins-dir "/tmp/.local/share/akonadi/plugins/serializer"))
                (mkdir-p plugins-dir)
                (copy-file "serializers/akonadi_serializer_mail.desktop"
-                          (string-append plugins-dir "/akonadi_serializer_mail.desktop")))
-             #t))
+                          (string-append plugins-dir "/akonadi_serializer_mail.desktop")))))
          (add-before 'check 'check-setup
            (lambda _
-             (setenv "HOME" "/tmp")
-             #t)))))
+             (setenv "HOME" "/tmp"))))))
     (synopsis "Akonadi MIME handling library")
     (description "Akonadi Mime is a library that effectively bridges the
 type-agnostic API of the Akonadi client libraries and the domain-specific
@@ -334,8 +331,7 @@ wrapping notes into KMime::Message objects.")
                       ;; DBus communication.  See also 'korganizer'.
                       (substitute* "agent/autotests/CMakeLists.txt"
                         ((".*schedulertest\\.cpp.*")
-                         ""))
-                      #t))
+                         ""))))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
@@ -401,8 +397,7 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "dbus-launch" "ctest" ;; FIXME: test fails.
-                       "-E" "akonadi-sqlite-incidencedatetimetest"))
-             #t)))))
+                       "-E" "akonadi-sqlite-incidencedatetimetest")))))))
     (home-page "https://invent.kde.org/pim/incidenceeditor")
     (synopsis "KDE PIM library for editing incidences")
     (description "This library provides an incidence editor for KDE PIM.")
@@ -706,8 +701,7 @@ functions for accessing calendar data using the kcalcore API.")
 |akonadi-sqlite-ewstest|ewsmoveitemrequest_ut|ewsdeleteitemrequest_ut\
 |ewsgetitemrequest_ut|ewsunsubscriberequest_ut|ewssettings_ut\
 |templatemethodstest|akonadi-sqlite-serverbusytest|ewsattachment_ut|\\
-testmovecollectiontask)"))
-                      #t)))))
+testmovecollectiontask)")))))))
     (home-page "https://invent.kde.org/pim/kdepim-runtime")
     (synopsis "Runtime components for Akonadi KDE")
     (description "This package contains Akonadi agents written using KDE
@@ -857,8 +851,7 @@ cryptography to the contents of the clipboard.")
        (modify-phases %standard-phases
          (add-before 'check 'set-home
            (lambda _
-             (setenv "HOME" "/tmp/dummy-home") ;; FIXME: what is this?
-             #t)))))
+             (setenv "HOME" "/tmp/dummy-home")))))) ;; FIXME: what is this?
     (home-page "https://kontact.kde.org/")
     (synopsis "Library for shared identities between mail applications")
     (description "This library provides an API for managing user identities.")
@@ -966,8 +959,7 @@ protocol for querying and modifying directory services running over TCP/IP.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "dbus-launch" "ctest"))
-             #t)))))
+               (invoke "dbus-launch" "ctest")))))))
     (home-page "https://apps.kde.org/kleopatra/")
     (synopsis "Certificate Manager and Unified Crypto GUI")
     (description "Kleopatra is a certificate manager and a universal crypto
@@ -1063,8 +1055,7 @@ akonadi-sqlite-kmcommandstest|\
 sendlateragent-sendlaterutiltest|\
 sendlateragent-sendlaterconfigtest|\
 followupreminder-followupreminderconfigtest|\
-akonadi-sqlite-unifiedmailboxmanagertest)"))
-             #t)))))
+akonadi-sqlite-unifiedmailboxmanagertest)")))))))
     (home-page "https://kontact.kde.org/components/kmail/")
     (synopsis "Full featured graphical email client")
     (description "KMail supports multiple accounts, mail filtering and email
@@ -1363,9 +1354,8 @@ kwebengineviewer.")
              ;; the Qt locale returns different. See kmime commit 3a9651d26a.
              (substitute* "autotests/dateformattertest.cpp"
                (("(Today|Yesterday) 12:34:56" line day)
-                (string-append day " 12:34 PM")))
-             #t)))))
-    (home-page "https://api.kde.org/kdepim/kmime/html/index.html")
+                (string-append day " 12:34 PM"))))))))
+    (home-page "https://api.kde.org/stable/kdepimlibs-apidocs/")
     (synopsis "Library for handling MIME data")
     (description "This library provides an API for handling MIME
 data.  MIME (Multipurpose Internet Mail Extensions) is an Internet Standard
@@ -1545,13 +1535,11 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
              ;; See also 'akonadi-search' for a similar test failure.
              (substitute* "src/autotests/CMakeLists.txt"
                ((".*test_advanced\\(koeventpopupmenutest\\.cpp.*")
-                ""))
-             #t))
+                ""))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "dbus-launch" "ctest"))
-             #t)))))
+               (invoke "dbus-launch" "ctest")))))))
     (home-page "https://apps.kde.org/korganizer/")
     (synopsis "Organizational assistant, providing calendars and other similar
 functionality to help you organize your life")
@@ -1583,8 +1571,7 @@ and exchanging calendar data, vCalendar and iCalendar.")
      '(#:phases (modify-phases %standard-phases
                   (replace 'check-setup
                     (lambda _
-                      (setenv "HOME" "/tmp")
-                      #t)))))
+                      (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
@@ -1761,8 +1748,7 @@ text in the text edit to all kinds of markup, like HTML or BBCODE.")
              (substitute* "src/CMakeLists.txt"
                (("^(install\\(.* )\\$\\{KF5_INSTALL_TARGETS_DEFAULT_ARGS\\}\\)"
                  _ prefix)
-                (string-append prefix "${KDE_INSTALL_TARGETS_DEFAULT_ARGS})")))
-             #t)))))
+                (string-append prefix "${KDE_INSTALL_TARGETS_DEFAULT_ARGS})"))))))))
     (home-page "https://invent.kde.org/pim/ksmtp")
     (synopsis "Library for sending email through an SMTP server")
     (description "This library provides an API for handling SMTP
@@ -1923,8 +1909,7 @@ various Google services.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests? ;; FIXME: These tests fail.
                (invoke "ctest" "-E"
-                       "(keyresolvercoretest|newkeyapprovaldialogtest)"))
-             #t)))))
+                       "(keyresolvercoretest|newkeyapprovaldialogtest)")))))))
     (home-page "https://invent.kde.org/pim/libkleo")
     (synopsis "KDE PIM cryptographic library")
     (description "@code{libkleo} is a library for Kleopatra and other parts of
@@ -1980,8 +1965,7 @@ KDE using certificate-based crypto.")
              (substitute*
                  "src/ksieveui/editor/webengine/autotests/CMakeLists.txt"
                (("^\\s*(add_test|ecm_mark_as_test)\\W" line)
-                (string-append "# " line)))
-             #t)))))
+                (string-append "# " line))))))))
     (home-page "https://invent.kde.org/pim/libksieve")
     (synopsis "KDE Sieve library")
     (description "Sieve is a language that can be used filter emails.  KSieve
