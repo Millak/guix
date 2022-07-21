@@ -25,7 +25,7 @@
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mason Hock <chaosmonk@riseup.net>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
+;;; Copyright © 2020, 2022 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2020, 2021 Robert Karszniewicz <avoidr@posteo.de>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -89,6 +89,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages less)
   #:use-module (gnu packages libcanberra)
@@ -1175,7 +1176,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.4.5")
+    (version "1.4.6")
     (source
      (origin
        (method url-fetch)
@@ -1184,7 +1185,7 @@ of xmpppy.")
                        (version-major+minor version)
                        "/gajim-" version ".tar.gz"))
        (sha256
-        (base32 "08a7kkc8vzjr5jxjkb96vs1bqnrgmmmcc5spy308z0zfxbpamsin"))
+        (base32 "0ks25hh7ksx0nfydixpixcli556w7qcylxp2z2xsx8mgzqv7c9la"))
        (patches (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
     (arguments
@@ -1198,6 +1199,12 @@ of xmpppy.")
         (guix build utils))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'disable-failing-tests
+           (lambda _
+             ;; XXX Gajim builds fine on some (my) machines but fails elsewhere:
+             ;; ModuleNotFoundError: No module named 'gajim.gui.emoji_data'
+             ;; https://dev.gajim.org/gajim/gajim/-/issues/11041
+             (delete-file "test/no_gui/test_styling.py")))
          (replace 'check
            (lambda _
              ;; Tests require a running X server.
@@ -1269,6 +1276,7 @@ of xmpppy.")
        ("gtk+" ,gtk+)
        ("gtksourceview" ,gtksourceview)
        ("gupnp-igd" ,gupnp-igd)
+       ("libappindicator" ,libappindicator)
        ("libnice" ,libnice)
        ("libsecret" ,libsecret)
        ("libsoup" ,libsoup)
@@ -1297,16 +1305,16 @@ and OpenPGP) and available in 29 languages.")
 (define-public gajim-omemo
   (package
     (name "gajim-omemo")
-    (version "2.8.13")
+    (version "2.8.15")
     (source
      (origin
        (method url-fetch/zipbomb)
        (uri
         (string-append
-         "https://ftp.gajim.org/plugins_releases/omemo_"
+         "https://ftp.gajim.org/plugins/master/omemo/omemo_"
          version ".zip"))
        (sha256
-        (base32 "10ym9abvlfpi6llpsqc0691xdnqp9hrwnl361fnwb1nx2zw6bjbd"))))
+        (base32 "1hf148ywr8knk5y3y5xvvwgw74ld1pcfjkp78g514ikcnzfycfcn"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -1314,7 +1322,7 @@ and OpenPGP) and available in 29 languages.")
        (begin
          (use-modules (guix build utils))
          (let* ((out (assoc-ref %outputs "out"))
-                (share (in-vicinity out "share/gajim/plugins"))
+                (share (in-vicinity out "share/gajim/plugins/omemo"))
                 (source (assoc-ref %build-inputs "source")))
            (mkdir-p share)
            (copy-recursively source share)
@@ -1333,16 +1341,16 @@ multi-client end-to-end encryption.")
 (define-public gajim-openpgp
   (package
     (name "gajim-openpgp")
-    (version "1.4.8")
+    (version "1.4.9")
     (source
      (origin
        (method url-fetch/zipbomb)
        (uri
         (string-append
-         "https://ftp.gajim.org/plugins_releases/openpgp_"
+         "https://ftp.gajim.org/plugins/master/openpgp/openpgp_"
          version ".zip"))
        (sha256
-        (base32 "05kgcrxalxsc034kq1i6nriqjb6sdlgf3yb2mani8vk9p00v3j90"))))
+        (base32 "1xwmf6ai1z7z9x6p1ysglxji73r7d27c0gzc8ykab29cjhjyv0dq"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -1350,7 +1358,7 @@ multi-client end-to-end encryption.")
        (begin
          (use-modules (guix build utils))
          (let* ((out (assoc-ref %outputs "out"))
-                (share (in-vicinity out "share/gajim/plugins"))
+                (share (in-vicinity out "share/gajim/plugins/openpgp"))
                 (source (assoc-ref %build-inputs "source")))
            (mkdir-p share)
            (copy-recursively source share)
@@ -1378,64 +1386,122 @@ Encryption to Gajim.")
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
-     `(#:tests? #f
-       #:parallel-build? #f             ; not supported
-       #:modules ((guix build cmake-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  (guix build utils))
-       #:imported-modules (,@%gnu-build-system-modules
-                           (guix build cmake-build-system)
-                           (guix build glib-or-gtk-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         ;; For A/V support.
-         (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (dino (string-append out "/bin/dino"))
-                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program dino
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
-         (add-after 'install 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+     (list #:configure-flags #~(list "-DBUILD_TESTS=true")
+           #:parallel-build? #f         ; not supported
+           #:modules '((guix build cmake-build-system)
+                       ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                       (guix build utils))
+           #:imported-modules `(,@%gnu-build-system-modules
+                                (guix build cmake-build-system)
+                                (guix build glib-or-gtk-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; For A/V support.
+               (add-after 'install 'wrap
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (dino (string-append out "/bin/dino"))
+                          (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                     (wrap-program dino
+                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
+               (add-after 'install 'glib-or-gtk-wrap
+                 (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "./libdino-test")
+                     (invoke "./signal-protocol-vala-test")
+                     (invoke "./xmpp-vala-test")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           pkg-config
+           vala))
     (inputs
-     `(("atk" ,atk)
-       ("cairo" ,cairo)
-       ("librsvg" ,librsvg)
-       ("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("gpgme" ,gpgme)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gspell" ,gspell)               ;for spell-check support
-       ("gstreamer" ,gstreamer)         ;for A/V support
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gst-plugins-good" ,gst-plugins-good)
-       ("gtk+" ,gtk+)
-       ("icu4c" ,icu4c)                 ;for emoji support
-       ("libcanberra" ,libcanberra)    ;for sound-notification support
-       ("libgcrypt" ,libgcrypt)
-       ("libgee" ,libgee)
-       ("libnice" ,libnice)
-       ("libsignal-protocol-c" ,libsignal-protocol-c)
-       ("libsoup" ,libsoup-minimal-2)
-       ("libsrtp" ,libsrtp)             ;for calls support
-       ("pango" ,pango)
-       ("qrencode" ,qrencode)
-       ("sqlite" ,sqlite)
-       ("webrtc-audio-processing" ,webrtc-audio-processing))) ;for A/V support
+     (list atk
+           cairo
+           librsvg
+           glib
+           glib-networking
+           gpgme
+           gsettings-desktop-schemas
+           gspell                       ;for spell-check support
+           gstreamer                    ;for A/V support
+           gst-plugins-base
+           gst-plugins-good
+           gtk+
+           icu4c                        ;for emoji support
+           libcanberra                  ;for sound-notification support
+           libgcrypt
+           libgee
+           libnice
+           libsignal-protocol-c
+           libsoup-minimal-2
+           libsrtp                      ;for calls support
+           pango
+           qrencode
+           sqlite
+           webrtc-audio-processing))    ;for A/V support
     (synopsis "Graphical Jabber/XMPP Client using GTK+/Vala")
     (description "Dino is a chat client for the desktop.  It focuses on providing
 a minimal yet reliable Jabber/XMPP experience and having encryption enabled by
 default.")
     (home-page "https://dino.im")
     (license license:gpl3+)))
+
+(define-public kaidan
+  (package
+    (name "kaidan")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/unstable/kaidan/" version
+                                  "/kaidan-" version ".tar.xz"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "3rdparty")))
+       (sha256
+        (base32 "195iddv35gc3k83r226y17avsab2b9bszgd7z7ynbddsgbf75rx7"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_TESTS=true")))
+    (native-inputs (list extra-cmake-modules
+                         perl
+                         pkg-config
+                         python-wrapper))
+    (inputs (list kirigami
+                  knotifications
+                  qtbase-5
+                  qtdeclarative
+                  qtgraphicaleffects
+                  qtlocation
+                  qtquickcontrols2
+                  qtsvg
+                  qtmultimedia
+                  qtxmlpatterns
+                  qqc2-desktop-style
+                  qxmpp
+                  zxing-cpp))
+    (home-page "https://www.kaidan.im/")
+    (synopsis "Qt-based XMPP/Jabber Client")
+    (description "Kaidan is a chat client.  It uses the open communication
+protocol XMPP (Jabber).  The user interface makes use of Kirigami and QtQuick,
+while the back-end of Kaidan is entirely written in C++ using Qt and the
+Qt-based XMPP library QXmpp.")
+    (license (list
+              ;; Graphics
+              license:cc-by-sa4.0
+              ;; Files:
+              ;; src/{StatusBar.cpp|StatusBar.h|singleapp/*|hsluv-c/*}
+              ;; utils/generate-license.py
+              license:expat
+              ;; QrCodeVideoFrame
+              license:asl2.0
+              ;; Others
+              license:gpl3+))))
 
 (define-public prosody
   (package

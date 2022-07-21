@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
-;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -184,7 +184,9 @@ Python without keeping their credentials in a Docker configuration file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vsl747i3wyy68j4lp4nprwxadbyga8qxlrk892afcd2990zp5mr"))))
+        (base32 "1vsl747i3wyy68j4lp4nprwxadbyga8qxlrk892afcd2990zp5mr"))
+       (patches
+        (search-patches "containerd-create-pid-file.patch"))))
     (build-system go-build-system)
     (arguments
      (let ((make-flags #~(list (string-append "VERSION=" #$version)

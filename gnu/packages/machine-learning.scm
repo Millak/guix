@@ -73,6 +73,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages jupyter)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -752,7 +753,7 @@ in terms of new algorithms.")
 (define-public onnx
   (package
     (name "onnx")
-    (version "1.9.0")
+    (version "1.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -760,7 +761,7 @@ in terms of new algorithms.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1xnii361f68x0masxgfc4ai7hh3wlxxk56aznwf4m4yr6wqx47ml"))
+                "1g9f1hviksbn7gi6fnd0dsm7nf0w3yia0mjj33d9mggklrl0db6x"))
               (file-name (git-file-name name version))
               (patches (search-patches "onnx-use-system-googletest.patch"
                                        "onnx-shared-libraries.patch"
@@ -2821,8 +2822,8 @@ and Darknet.")
 (define-public xnnpack
   ;; There's currently no tag on this repo.
   (let ((version "0.0")
-        (commit "bbe88243aba847f6a3dd86defec0fea4a0e415a1")
-        (revision "1"))
+        (commit "ae108ef49aa5623b896fc93d4298c49d1750d9ba")
+        (revision "2"))
     (package
       (name "xnnpack")
       (version (git-version version revision commit))
@@ -2833,7 +2834,7 @@ and Darknet.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "19j605x1l2h95mjhcj90zwjh1153pdgmqggl35ya5w0wll628iiz"))
+                  "0q68q2jxiiiblx45q4337k13ppgh5vqjwrwznchcnpb8hawjj3zl"))
                 (patches (search-patches "xnnpack-system-libraries.patch"))))
       (build-system cmake-build-system)
       (arguments
@@ -2866,10 +2867,11 @@ high-level machine learning frameworks, such as TensorFlow Lite,
 TensorFlow.js, PyTorch, and MediaPipe.")
       (license license:bsd-3))))
 
+;; Please also update python-torchvision when updating this package.
 (define-public python-pytorch
   (package
     (name "python-pytorch")
-    (version "1.10.2")
+    (version "1.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2879,7 +2881,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15fi3nr7fx2zc9j2xf0jq627zfmnvs8hijyifg9769arm8kfijs1"))
+                "0pdqi91qzgyx947zv4pw2fdj9vpqvdhfzw1ydjd4mpqm8g5njgnz"))
               (patches (search-patches "python-pytorch-system-libraries.patch"
                                        "python-pytorch-runpath.patch"))
               (modules '((guix build utils)))
@@ -2899,12 +2901,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
                               "gloo" "googletest" "ios-cmake" "NNPACK"
                               "onnx" "protobuf" "pthreadpool"
                               "pybind11" "python-enum" "python-peachpy"
-                              "python-six" "tbb" "XNNPACK" "zstd"))
-
-                  ;; Adjust references to the onnx-optimizer headers.
-                  (substitute* "caffe2/onnx/backend.cc"
-                    (("onnx/optimizer/")
-                     "onnxoptimizer/"))))))
+                              "python-six" "tbb" "XNNPACK" "zstd"))))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -2914,6 +2911,10 @@ TensorFlow.js, PyTorch, and MediaPipe.")
                       ;; want to use "system libraries" instead of the bundled
                       ;; ones.
                       (setenv "USE_SYSTEM_LIBS" "1")
+
+                      (substitute* "cmake/Dependencies.cmake"
+                        (("if\\(USE_SYSTEM_BIND11\\)")
+                         "if(TRUE)"))
 
                       ;; XXX: Disable that for simplicity for now.
                       (setenv "USE_FBGEMM" "0")))
@@ -2942,7 +2943,23 @@ TensorFlow.js, PyTorch, and MediaPipe.")
                       (let ((python-site (site-packages inputs outputs)))
                         (for-each delete-file
                                   (find-files python-site
-                                              "(^test_cpp_rpc|_test)$"))))))
+                                              "(^test_cpp_rpc|_test)$")))))
+                  (add-after 'install 'remove-caffe2-onnx-scripts
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin")))
+                        ;; Remove 'convert-caffe2-to-onnx' and
+                        ;; 'convert-onnx-to-caffe2': they seem to be
+                        ;; deprecated and they cause a failure of the
+                        ;; 'sanity-check' phase:
+                        ;;
+                        ;; ImportError: cannot import name 'metanet_pb2' from partially initialized module 'caffe2.proto' (most likely due to a circular import)
+                        (for-each delete-file
+                                  (find-files bin "^convert-.*caffe2"))
+
+                        (substitute* (find-files out "^entry_points\\.txt$")
+                          (("^convert-.*" all)
+                           (string-append "# " all "\n")))))))
 
        ;; XXX: Tests attempt to download data such as
        ;; <https://raw.githubusercontent.com/pytorch/test-infra/master/stats/slow-tests.json>.
@@ -2977,7 +2994,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
            python-future
            python-six
            python-requests
-           onnx ;propagated for its Python modules
+           onnx                             ;propagated for its Python modules
            onnx-optimizer
            cpuinfo))
     (home-page "https://pytorch.org/")
@@ -2996,7 +3013,105 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
-(define-public python-pytorch-for-r-torch python-pytorch)
+(define-public python-pytorch-for-r-torch
+  (package
+    (inherit python-pytorch)
+    (name "python-pytorch")
+    (version "1.11.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/pytorch")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zbk7y74r0ycsfa7x59jnhwhs1gj5rs3n89p15y0212iszgbljq8"))
+              (patches (search-patches "python-pytorch-system-libraries.patch"
+                                       "python-pytorch-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; XXX: Let's be clear: this package is a bundling fest.  We
+                  ;; delete as much as we can, but there's still a lot left.
+                  (for-each (lambda (directory)
+                              (delete-file-recursively
+                               (string-append "third_party/" directory)))
+                            '("benchmark" "cpuinfo" "eigen"
+
+                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
+                              ;; needs these.
+                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
+
+                              "gloo" "googletest" "ios-cmake" "NNPACK"
+                              "onnx" "protobuf" "pthreadpool"
+                              "pybind11" "python-enum" "python-peachpy"
+                              "python-six" "tbb" "XNNPACK" "zstd"))))))))
+
+;; Keep this in sync with python-pytorch
+(define-public python-torchvision
+  (package
+    (name "python-torchvision")
+    (version "0.13.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/vision")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19f6s3ffwkdvjjbvib18c8n7vhysg58smxzq3rvii1c0z4g3b0cw"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false ;the test suite is expensive and there is no easy way
+                       ;to subset it.
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
+    (inputs
+     (list libpng
+           libjpeg-turbo))
+    (propagated-inputs
+     (list python-numpy
+           python-typing-extensions
+           python-requests
+           python-pillow
+           python-pillow-simd
+           python-pytorch))
+    (native-inputs
+     (list which python-pytest))
+    (home-page "https://pytorch.org/vision/stable/index.html")
+    (synopsis " Datasets, transforms and models specific to computer vision")
+    (description
+     "The torchvision package consists of popular datasets, model architectures,
+and common image transformations for computer vision.")
+    (license license:bsd-3)))
+
+(define-public python-torchfile
+  (package
+    (name "python-torchfile")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "torchfile" version))
+              (sha256
+               (base32
+                "0vhklj6krl9r0kdynb4kcpwp8y1ihl2zw96byallay3k9c9zwgd5"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #false)) ;there are no tests
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/bshillingford/python-torchfile")
+    (synopsis "Torch7 binary serialized file parser")
+    (description "This package enables you to deserialize Lua torch-serialized objects from
+Python.")
+    (license license:bsd-3)))
 
 (define-public python-hmmlearn
   (package
@@ -3039,7 +3154,7 @@ of Hidden Markov Models.")
 (define-public liblantern
   (package
     (name "liblantern")
-    (version "0.7.2")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -3048,7 +3163,7 @@ of Hidden Markov Models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nam375ych4nr7gk2dpbnzlanr2jc7akqjhmfs0ar9l34zmzz9m9"))))
+        (base32 "1xkqyj1clj1r70yrp5qpbpyf0xmh9c128005idshi7vk883wfp77"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3096,3 +3211,166 @@ of Hidden Markov Models.")
     (description
      "Lantern provides a C API to the libtorch machine learning library.")
     (license license:expat)))
+
+(define-public python-lap
+  (package
+    (name "python-lap")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "lap" version))
+              (sha256
+               (base32
+                "0fqfxpq4jg9h4wxjw540gjmvfg1ccc1nssk7i9njg7qfdybxknn4"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'build
+           (lambda* (#:key inputs #:allow-other-keys)
+             (invoke "python" "setup.py" "build"
+                     "--cpu-baseline=sse2")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; The tests must be run from elsewhere.
+               (mkdir-p "/tmp/test")
+               (copy-recursively "lap/tests" "/tmp/test")
+               (with-directory-excursion "/tmp/test"
+                 (invoke "pytest" "-vv"))))))))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-cython python-pytest))
+    (home-page "https://github.com/gatagat/lap")
+    (synopsis "Linear Assignment Problem solver (LAPJV/LAPMOD).")
+    (description "Lap is a linear assignment problem solver using Jonker-Volgenant
+algorithm for dense (LAPJV) or sparse (LAPMOD) matrices.")
+    (license license:bsd-2)))
+
+(define-public python-visdom
+  (package
+    (name "python-visdom")
+    (version "0.1.8.9")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "visdom" version))
+              (sha256
+               (base32
+                "09kiczx2i5asqsv214fz7sx8wlyldgbqvxwrd0alhjn24cvx4fn7"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-jsonpatch
+           python-numpy
+           python-pillow
+           python-pyzmq
+           python-requests
+           python-scipy
+           python-six
+           python-torchfile
+           python-tornado
+           python-websocket-client))
+    (home-page "https://github.com/fossasia/visdom")
+    (synopsis "Visualizations of live, rich data for Torch and Numpy")
+    (description
+     "This package provides a tool for visualizing live, rich data for Torch
+and Numpy.")
+    (license license:asl2.0)))
+
+(define-public python-pyro-api
+  (package
+    (name "python-pyro-api")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyro-api" version))
+              (sha256
+               (base32
+                "086r2h6x9i5d9ayl1x65lx6p84rlydzsn8xingxc588ab3ch1fd1"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #false)) ;requires pyro
+    (native-inputs
+     (list python-flake8
+           python-ipython
+           python-pytest
+           python-sphinx
+           python-sphinx-rtd-theme))
+    (home-page "https://github.com/pyro-ppl/pyro-api")
+    (synopsis "Generic API for dispatch to Pyro backends.")
+    (description "This package provides a generic API for dispatch to Pyro backends.")
+    (license license:asl2.0)))
+
+(define-public python-pyro-ppl
+  (package
+    (name "python-pyro-ppl")
+    (version "1.8.1")
+    ;; The sources on pypi don't include tests.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyro-ppl/pyro")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ns20mr8qgjshzbplrfzaz1xhb9ldbgvrj2rzlsxvns2bi1ddyl5"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             ;; This tests features that are only implemented when non-free
+             ;; software is available (Intel MKL or CUDA).
+             (for-each delete-file
+                       (list "tests/distributions/test_spanning_tree.py"
+                             "tests/infer/mcmc/test_mcmc_api.py"))
+
+             ;; Four test_gamma_elbo tests fail with bad values for unknown
+             ;; reasons.
+             (delete-file "tests/distributions/test_rejector.py")
+             ;; This test fails sometimes.
+             (delete-file "tests/optim/test_optim.py")
+             (invoke "pytest" "-vv" "--stage=unit"))))))
+    (propagated-inputs
+     (list python-numpy
+           python-opt-einsum
+           python-pyro-api
+           python-pytorch
+           python-tqdm))
+    (native-inputs
+     (list ninja
+           jupyter
+           python-black
+           python-flake8
+           python-graphviz
+           python-isort
+           python-lap
+           python-matplotlib
+           python-mypy
+           python-nbformat
+           python-nbsphinx
+           python-nbstripout
+           python-nbval
+           python-pandas
+           python-pillow
+           python-pypandoc
+           python-pytest
+           python-pytest-cov
+           python-pytest-xdist
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-sphinx
+           python-sphinx-rtd-theme
+           python-torchvision
+           python-visdom
+           python-wget
+           python-yapf))
+    (home-page "https://pyro.ai")
+    (synopsis "Python library for probabilistic modeling and inference")
+    (description
+     "This package provides a Python library for probabilistic modeling and
+inference.")
+    (license license:asl2.0)))

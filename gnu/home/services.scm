@@ -46,6 +46,7 @@
             home-run-on-change-service-type
             home-provenance-service-type
 
+            environment-variable-shell-definitions
             home-files-directory
             xdg-configuration-files-directory
             xdg-data-files-directory
@@ -169,6 +170,34 @@ packages, configuration files, activation script, and so on.")))
 configuration files that the user has declared in their
 @code{home-environment} record.")))
 
+(define (environment-variable-shell-definitions variables)
+  "Return a gexp that evaluates to a list of POSIX shell statements defining
+VARIABLES, a list of environment variable name/value pairs.  The returned code
+ensures variable values are properly quoted."
+  #~(let ((shell-quote
+           (lambda (value)
+             ;; Double-quote VALUE, leaving dollar sign as is.
+             (let ((quoted (list->string
+                            (string-fold-right
+                             (lambda (chr lst)
+                               (case chr
+                                 ((#\" #\\)
+                                  (append (list chr #\\) lst))
+                                 (else (cons chr lst))))
+                             '()
+                             value))))
+               (string-append "\"" quoted "\"")))))
+      (string-append
+       #$@(map (match-lambda
+                 ((key . #f)
+                  "")
+                 ((key . #t)
+                  #~(string-append "export " #$key "\n"))
+                 ((key . value)
+                  #~(string-append "export " #$key "="
+                                   (shell-quote #$value) "\n")))
+               variables))))
+
 (define (environment-variables->setup-environment-script vars)
   "Return a file that can be sourced by a POSIX compliant shell which
 initializes the environment.  The file will source the home
@@ -181,7 +210,7 @@ If value is @code{#f} variable will be omitted.
 If value is @code{#t} variable will be just exported.
 For any other, value variable will be set to the @code{value} and
 exported."
-  (define (warn-about-duplicate-defenitions)
+  (define (warn-about-duplicate-definitions)
     (fold
      (lambda (x acc)
        (when (equal? (car x) (car acc))
@@ -192,15 +221,18 @@ exported."
      (sort vars (lambda (a b)
                   (string<? (car a) (car b))))))
 
-  (warn-about-duplicate-defenitions)
+  (warn-about-duplicate-definitions)
   (with-monad
    %store-monad
    (return
     `(("setup-environment"
        ;; TODO: It's necessary to source ~/.guix-profile too
        ;; on foreign distros
-       ,(apply mixed-text-file "setup-environment"
-               "\
+       ,(computed-file "setup-environment"
+                       #~(call-with-output-file #$output
+                           (lambda (port)
+                             (set-port-encoding! port "UTF-8")
+                             (display "\
 HOME_ENVIRONMENT=$HOME/.guix-home
 GUIX_PROFILE=\"$HOME_ENVIRONMENT/profile\"
 PROFILE_FILE=\"$HOME_ENVIRONMENT/profile/etc/profile\"
@@ -227,17 +259,10 @@ case $XCURSOR_PATH in
   *) export XCURSOR_PATH=$HOME_ENVIRONMENT/profile/share/icons:$XCURSOR_PATH ;;
 esac
 
-"
-
-               (append-map
-                (match-lambda
-                  ((key . #f)
-                   '())
-                  ((key . #t)
-                   (list "export " key "\n"))
-                  ((key . value)
-                   (list "export " key "=" value "\n")))
-                vars)))))))
+" port)
+                             (display
+                              #$(environment-variable-shell-definitions vars)
+                              port)))))))))
 
 (define home-environment-variables-service-type
   (service-type (name 'home-environment-variables)

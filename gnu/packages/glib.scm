@@ -614,7 +614,7 @@ The intltool collection can be used to do these things:
             (lambda _
               (wrap-program (string-append #$output "/bin/itstool")
                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))))))))
-    (home-page "http://www.itstool.org")
+    (home-page "https://itstool.org")
     (synopsis "Tool to translate XML documents with PO files")
     (description
      "ITS Tool allows you to translate your XML documents with PO files, using

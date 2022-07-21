@@ -94,7 +94,7 @@
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021, 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -912,6 +912,77 @@ progress bar and a percentage indicator object that let you track the progress
 of a loop structure or other iterative computation.")
     (license license:bsd-3)))
 
+(define-public python-glymur
+  (package
+    (name "python-glymur")
+    (version "0.10.1")
+    (source
+     (origin
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/quintusdias/glymur")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cq9r8vzwvds1kasy5gc2rxw034jh9l43rraps1n739072pfz6qg"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-library-locations
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; XXX: It's a workaround for Python inability to find the
+              ;; .so libraries with ctypes.util.find_library()
+              (substitute* '("glymur/config.py")
+                (("path = find_library\\(libname\\)")
+                 (string-append
+                  "if libname == \"openjp2\":\n"
+                  "        path = \""
+                  (search-input-file inputs "/lib/libopenjp2.so") "\"\n"
+                  "    elif libname == \"tiff\":\n"
+                  "        path = \""
+                  (search-input-file inputs "/lib/libtiff.so") "\"\n"
+                  "    elif libname == \"c\":\n"
+                  "        path = \""
+                  (search-input-file inputs "/lib/libc.so.6") "\"\n")))))
+          ;; TODO: implement as a feature of python-build-system (PEP-621,
+          ;; PEP-631, PEP-660)
+          (replace 'build
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Failing test due to inability of
+                ;; ctypes.util.find_library() to determine library path,
+                ;; which is patched above.
+                (delete-file "tests/test_config.py")
+                (invoke "python" "-m" "pytest" "-vv" "tests")))))))
+    (native-inputs
+     (list python-pypa-build python-pytest))
+    (inputs
+     (list openjpeg  ; glymur/lib/openjp2.py
+           libtiff)) ; glymur/lib/tiff.py
+    (propagated-inputs
+     (list python-lxml
+           python-numpy
+           python-packaging))
+    (home-page "https://github.com/quintusdias/glymur")
+    (synopsis "Python interface to OpenJPEG and LibTIFF")
+    (description
+     "This package provides Python interface to the OpenJPEG library which
+allows one to read and write JPEG 2000 files")
+    (license license:expat)))
+
 (define-public python-gphoto2
   (package
     (name "python-gphoto2")
@@ -1233,14 +1304,14 @@ by @code{binstar}, @code{binstar-build}, and @code{chalmers}.")
 (define-public python-babel
   (package
     (name "python-babel")
-    (version "2.9.0")
+    (version "2.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Babel" version))
        (sha256
         (base32
-         "018yg7g2pa6vjixx1nx41cfispgfi0azzp0a1chlycbj8jsil0ys"))))
+         "0l9cvfmsz0hlvcinxaf6xf2f02ldgw3xq9i1fc7lk5zf24vma53n"))))
     (build-system python-build-system)
     (native-inputs
      (list python-freezegun python-pytest tzdata-for-tests))
@@ -5107,6 +5178,34 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
 errors when data is invalid.")
     (license license:expat)))
 
+(define-public python-pydantic-cli
+  (package
+    (name "python-pydantic-cli")
+    (version "4.3.0")
+    (source
+     (origin
+       (method git-fetch)               ;for tests
+       (uri (git-reference
+             (url "https://github.com/mpkocher/pydantic-cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1v4dx6n60rbsan5zpw2rgdih7lb3h0xclagn1p6zfwl0r9l9cvym"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-pydantic))
+    (native-inputs
+     (list python-black
+           python-mypy
+           python-pytest))
+    (home-page "https://github.com/mpkocher/pydantic-cli")
+    (synopsis "Turn Pydantic defined data models into CLI tools")
+    (description
+     "@code{python-pydantic} enables specifying @acronym{CLI, Command Line
+Interfaces} via data models provided in the JSON format.")
+    (license license:expat)))
+
 (define-public python-pydocstyle
   (package
     (name "python-pydocstyle")
@@ -5463,7 +5562,10 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
               ;; instead of /bin/sh.
               (substitute* "numpy/distutils/exec_command.py"
                 (("'/bin/sh'")
-                 (format #f "~s" (search-input-file inputs "bin/bash"))))))
+                 (format #f "~s" (search-input-file inputs "bin/bash"))))
+              ;; Don't try to call '/bin/true' specifically.
+              (substitute* "numpy/core/tests/test_cpu_features.py"
+                (("/bin/true") (search-input-file inputs "bin/true")))))
           (replace 'check
             (lambda* (#:key tests? outputs inputs #:allow-other-keys)
               (when tests?
@@ -6356,7 +6458,7 @@ toolkits.")
                          (string-append info "/matplotlib-figures"))))))))
     (native-inputs
      (list graphviz
-           inkscape
+           inkscape/stable
            python-colorspacious
            python-mpl-sphinx-theme
            python-scipy
@@ -6897,13 +6999,13 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
 (define-public python-pillow
   (package
     (name "python-pillow")
-    (version "9.0.0")
+    (version "9.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pillow" version))
               (sha256
                (base32
-                "0gjry0yqryd2678sm47jhdnbghzxn5wk8pgyaqwr4qi7x5ijjvpf"))
+                "011wgm1mssjchpva9wsi2a07im9czyjvik137xlp5f0g7vykdrkm"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (delete-file-recursively "src/thirdparty")))))
@@ -13049,47 +13151,15 @@ time.")
                            "and not test_execute_widgets_from_nbconvert "
                            "and not test_execute_multiple_notebooks ")))))))))
     (inputs
-     (list inkscape pandoc))
+     (list inkscape/stable pandoc))
     (native-inputs
-     `(("python-ipykernel" ,python-ipykernel)
-       ;; XXX: Disabled, not in guix.
-       ;;("python-pyppeteer" ,python-pyppeteer)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-dependency" ,python-pytest-dependency)
-       ("texlive" ,(texlive-updmap.cfg
-                    (list texlive-adjustbox
-                          texlive-amsfonts
-                          texlive-booktabs
-                          texlive-caption
-                          texlive-eurosym
-                          texlive-fancyvrb
-                          texlive-fonts-rsfs
-                          texlive-fontspec
-                          texlive-grffile
-                          texlive-hyperref
-                          texlive-iftex
-                          texlive-jknappen
-                          texlive-amsmath
-                          texlive-enumitem
-                          texlive-latex-float
-                          texlive-latex-geometry
-                          texlive-latex-jknapltx
-                          texlive-latex-parskip
-                          texlive-latex-trimspaces
-                          texlive-latex-ucs
-                          texlive-latex-upquote
-                          texlive-lm
-                          texlive-mathpazo
-                          texlive-ms
-                          texlive-oberdiek
-                          texlive-stringenc
-                          texlive-tcolorbox
-                          texlive-titling
-                          texlive-tools
-                          texlive-ulem
-                          texlive-xcolor
-                          texlive-zapfding)))))
+     (list python-ipykernel
+           ;; Adding ipywidgets would create a cycle.
+           ;;python-ipywidgets
+           ;; XXX: Disabled, not in guix.
+           ;;python-pyppeteer
+           python-pytest
+           python-pytest-xdist))
     (propagated-inputs
      (list python-beautifulsoup4
            python-bleach
@@ -13429,14 +13499,14 @@ simulation, statistical modeling, machine learning and much more.")
 (define-public python-chardet
   (package
     (name "python-chardet")
-    (version "4.0.0")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "chardet" version))
        (sha256
         (base32
-         "1ykr04qyhgpc0h5b7dhqw4g92b1xv7ki2ky910mhy4mlbnhm6vqd"))))
+         "1amqmz8731ly6f9rkbk09w4jqgmmgyxykd1bawhgrdbqzlmxys03"))))
     (native-inputs
      (list python-pytest))
     (build-system python-build-system)
@@ -13445,7 +13515,10 @@ simulation, statistical modeling, machine learning and much more.")
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda _
-                   (invoke "pytest" "-vv")))
+                   (invoke "pytest" "-vv" "-k"
+                           ;; Disable test that fails sporadically:
+                           ;; https://github.com/chardet/chardet/issues/256
+                           "not test_detect_all_and_detect_one_should_agree")))
                ;; This package provides a 'chardetect' executable that only
                ;; depends on Python, so customize the wrap phase to avoid
                ;; adding pytest and friends in order to save size.
@@ -13473,13 +13546,13 @@ automatically detect a wide range of file encodings.")
 (define-public python-charset-normalizer
   (package
     (name "python-charset-normalizer")
-    (version "2.0.11")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "charset-normalizer" version))
        (sha256
-        (base32 "071pi2kd222rjjrjdllffqv3iz4bfaj93a9bfs65907fd6fqlfcq"))))
+        (base32 "04zlajr77f6c7ai59l46as1idi0jjgbvj72lh4v5wfpz2s070pjp"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -16059,7 +16132,27 @@ graphviz.")
               (snippet
                '(begin
                   ;; unbunding libev and c-ares
-                  (delete-file-recursively "deps")))))
+                  (delete-file-recursively "deps")
+                  ;; Remove cythonized files.
+                  (with-directory-excursion "src/gevent"
+                    (for-each delete-file
+                              (append (list "resolver/cares.c"
+                                            "queue.c"
+                                            "local.c"
+                                            "libev/corecext.h"
+                                            "libev/corecext.c"
+                                            "greenlet.c"
+                                            "event.c"
+                                            "_waiter.c"
+                                            "_tracer.c"
+                                            "_semaphore.c"
+                                            "_imap.c"
+                                            "_ident.c"
+                                            "_hub_primitives.c"
+                                            "_hub_local.c"
+                                            "_greenlet_primitives.c"
+                                            "_abstract_linkable.c")
+                                      (find-files "." "\\.html$"))))))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((ice-9 ftw)
@@ -16132,7 +16225,11 @@ graphviz.")
                                "test__doctests.py"
                                "test__all__.py"
                                "test___config.py"
-                               "test__execmodules.py")))
+                               "test__execmodules.py"
+                               ;; This test contains 'test_unlink', which
+                               ;; fails on i686 (see:
+                               ;; https://github.com/gevent/gevent/issues/1558).
+                               "test__core_stat.py")))
                         (call-with-output-file "skipped_tests.txt"
                           (lambda (port)
                             (format port "~a~%"
@@ -16147,8 +16244,9 @@ graphviz.")
     (propagated-inputs
      (list python-greenlet python-zope-event python-zope-interface))
     (native-inputs
-     ;; For tests.
-     (list python-dnspython python-psutil python-objgraph))
+     (list python-cython
+           ;; For tests.
+           python-dnspython python-psutil python-objgraph))
     (inputs
      (list c-ares libev))
     (home-page "https://www.gevent.org/")
@@ -18911,6 +19009,12 @@ from the header, as well as section details and data available.")
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'remove-test-hypothesis-deadlines
+                    (lambda _
+                      (substitute* "tests/test_make.py"
+                        (("assume, given") "assume, given, settings")
+                        (("( +)@given" all spaces)
+                         (string-append spaces "@settings(deadline=None)\n" all)))))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
@@ -29988,6 +30092,26 @@ profile.  It supports:
 Currently, Linux is the only platform supported by this library.")
     (license license:expat)))
 
+(define-public python-clrprint
+  (package
+    (name "python-clrprint")
+    (version "2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "clrprint" version))
+              (sha256
+               (base32
+                "0xfn8d1by2w7pjiji887qljk1avn4fylbnz1mj28gysm5g0zvy43"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))                    ;there are no tests
+    (propagated-inputs (list python-colorama python-termcolor))
+    (home-page "https://github.com/AbhijithAJ/clrprint")
+    (synopsis "Print colorful output in the terminal")
+    (description "@code{clrprint} is developed to print colorful output in the
+terminal.  It has red, blue, green, yellow, purple and black/white (default)
+colors.")
+    (license license:expat)))
+
 (define-public python-musical-scales
   (package
     (name "python-musical-scales")
@@ -30037,3 +30161,44 @@ with it, and it also implements recommendations from the
 and names, built from Unicode CLDR and the IANA subtag registry, if you
 install @code{python-language-data}.")
     (license license:expat)))
+
+(define-public python-geomet
+  (package
+    (name "python-geomet")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "geomet" version))
+              (sha256
+               (base32
+                "06rfvadx5dr5xrgsc5bsmqil9c9kff6i13xl988gy0gfg0cl2lnb"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-click python-six))
+    (home-page "https://github.com/geomet/geomet")
+    (synopsis "Convert GeoJSON to WKT/WKB (Well-Known Text/Binary) or
+GeoPackage Binary")
+    (description "This package provides utilities and functions for converting
+GeoJSON to WKT/WKB (Well-Known Text/Binary) or GeoPackage Binary, and vice
+versa.  Extended WKB/WKT are also supported.")
+    (license license:asl2.0)))
+
+(define-public python-bsdiff4
+  (package
+    (name "python-bsdiff4")
+    (version "1.2.2")
+    (home-page "https://github.com/ilanschnell/bsdiff4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fa0vkmbr0a9xifq7i5gfcf7ifn739i1fdij8awynm299fsqvvhx"))))
+    (build-system python-build-system)
+    (synopsis "Binary diff and patch using the BSDIFF4 format")
+    (description "This package provides a Python library for the @code{bsdiff}
+binary diff utility.  It also provides two command-line tools, @code{bsdiff4}
+and @code{bspatch4}.")
+    (license license:bsd-2)))

@@ -839,19 +839,6 @@ JPEG 2000 Reference Software.")
     (home-page "https://github.com/uclouvain/openjpeg")
     (license license:bsd-2)))
 
-(define-public openjpeg-1
-  (package (inherit openjpeg)
-    (name "openjpeg")
-    (version "1.5.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://sourceforge/openjpeg.mirror/" version "/"
-                       name "-" version ".tar.gz"))
-       (sha256
-        (base32 "11waq9w215zvzxrpv40afyd18qf79mxc28fda80bm3ax98cpppqm"))))))
-
 (define-public giflib
   (package
     (name "giflib")
@@ -1270,7 +1257,7 @@ language bindings to VIGRA.")
 (define-public libwebp
   (package
     (name "libwebp")
-    (version "1.2.0")
+    (version "1.2.2")
     (source
      (origin
        ;; No tarballs are provided for >0.6.1.
@@ -1281,14 +1268,14 @@ language bindings to VIGRA.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rgblphsd56033w7lpkrzl7m5w0fi7wavxri1ayzlg8fhpmmqp4k"))))
+         "1khqkm5j9aiii9jfsbxzzyz3x33sifzcx537cyjyb3a2g2rl969k"))))
     (build-system gnu-build-system)
     (inputs
-     `(("freeglut" ,freeglut)
-       ("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)))
+     (list freeglut
+           giflib
+           libjpeg-turbo
+           libpng
+           libtiff))
     (native-inputs
      (list autoconf automake libtool))
     (arguments
@@ -1323,9 +1310,7 @@ channels.")
     (build-system gnu-build-system)
     (propagated-inputs
      ;; These are all in the 'Libs.private' field of libmng.pc.
-     `(("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("zlib" ,zlib)))
+     (list lcms libjpeg-turbo zlib))
     (home-page "https://www.libmng.com/")
     (synopsis "Library for handling MNG files")
     (description
@@ -1809,7 +1794,7 @@ parsing, viewing, modifying, and saving this metadata.")
 (define-public flameshot
   (package
     (name "flameshot")
-    (version "0.10.2")
+    (version "12.1.0")
     (source
      (origin
        (method git-fetch)
@@ -1819,7 +1804,7 @@ parsing, viewing, modifying, and saving this metadata.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07n98pp5i6i51g7a4vqwbd6xarihzl7r714r2knvw2zn5mlj55dd"))))
+         "1p7gqs5vqzbddlgl38lbanchwb14m6lx8f2cn2c5p0vyqwvqqv52"))))
     (build-system qt-build-system)
     (native-inputs
      (list qttools))

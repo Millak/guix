@@ -31,11 +31,14 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages web))
 
 (define-public breeze
   (package
@@ -82,6 +85,30 @@
     (description "Artwork, styles and assets for the Breeze visual style for
 the Plasma Desktop.  Breeze is the default theme for the KDE Plasma desktop.")
     (license license:gpl2+)))
+
+(define-public breeze-gtk
+  (package
+    (name "breeze-gtk")
+    (version "5.19.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name
+                                  "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1j2nq9yw1ragmgwrz9f6ca4ifpi86qv1bbprdgd2qm2yh7vb44sj"))))
+    (build-system qt-build-system)
+    (arguments
+     '(#:tests? #f))                              ;no 'test' target
+    (native-inputs (list breeze extra-cmake-modules sassc python
+                         python-pycairo))
+    (home-page "https://invent.kde.org/plasma/breeze")
+    (synopsis "Default KDE Plasma theme (GTK+ port)")
+    (description "GTK+ port of the Breeze visual style for the Plasma Desktop.
+Breeze is the default theme for the KDE Plasma desktop.")
+    (license (list license:bsd-3                  ;cmake/FindSass.cmake
+                   license:lgpl2.1+))))           ;<all other files>
 
 (define-public kdecoration
   (package

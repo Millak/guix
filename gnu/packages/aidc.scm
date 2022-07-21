@@ -2,7 +2,7 @@
 ;;; Copyright © 2014 John Darringon <jmd@gnu.org>
 ;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;;
@@ -23,6 +23,7 @@
 
 (define-module (gnu packages aidc)
   #:use-module (gnu packages)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -148,7 +149,7 @@ characters, and is highly robust.")
 (define-public libdmtx
   (package
     (name "libdmtx")
-    (version "0.7.5")
+    (version "0.7.7")
     (source
      (origin
        (method git-fetch)
@@ -157,11 +158,11 @@ characters, and is highly robust.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wk3fkxzf9ip75v8ia54v6ywx72ajp5s6777j4ay8barpbv869rj"))))
+        (base32 "0s95gplvb6x7gnl48yn7ywa9r15lfm8k2m60wm9i7w75ay4bq32i"))))
     (build-system gnu-build-system)
     (arguments
-     ;; XXX Test suite is broken: https://github.com/dmtx/libdmtx/issues/22
-     `(#:tests? #f))
+     (list #:configure-flags
+           #~(list "--disable-static")))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://github.com/dmtx")

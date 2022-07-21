@@ -1,0 +1,337 @@
+Taken from upstream:
+    https://github.com/mCRL2org/mCRL2/commit/f38998be5198236bc5bf5a957b0e132d6d6d8bee
+
+Fixes bug in ltsconvert:
+    https://listserver.tue.nl/pipermail/mcrl2-users/2022-June/000395.html
+
+From f38998be5198236bc5bf5a957b0e132d6d6d8bee Mon Sep 17 00:00:00 2001
+From: Jan Friso Groote <J.F.Groote@tue.nl>
+Date: Tue, 28 Jun 2022 12:27:47 +0200
+Subject: [PATCH] Solved bug report #1687
+
+Hidden actions were not properly recognized in ltsconvert. Multiactions
+that were partly hidden compared with the default action label, and had
+to be compared with a tau-action. This caused multiple tau-actions to be
+listed in the list of actions of an lts, and this caused other tools to
+go astray.
+
+The code to rename actions has completely be rewritten.
+
+This should solve #1687.
+
+A test have been added.
+---
+ libraries/lts/include/mcrl2/lts/lts.h   | 95 ++++++++++++++++++++++---
+ libraries/lts/test/lts_test.cpp         | 61 ++++++++--------
+ tools/release/ltsconvert/ltsconvert.cpp |  3 +-
+ 3 files changed, 116 insertions(+), 43 deletions(-)
+
+diff --git a/libraries/lts/include/mcrl2/lts/lts.h b/libraries/lts/include/mcrl2/lts/lts.h
+index 095031e7c..8562eb900 100644
+--- a/libraries/lts/include/mcrl2/lts/lts.h
++++ b/libraries/lts/include/mcrl2/lts/lts.h
+@@ -25,6 +25,7 @@
+ #include <algorithm>
+ #include <cassert>
+ #include <set>
++#include <map>
+ #include "mcrl2/lts/transition.h"
+ #include "mcrl2/lts/lts_type.h"
+ 
+@@ -482,40 +483,112 @@ class lts: public LTS_BASE
+         return;
+       }
+ 
++      std::map<labels_size_type, labels_size_type> action_rename_map;
+       for (labels_size_type i=0; i< num_action_labels(); ++i)
+       {
+         ACTION_LABEL_T a=action_label(i);
+         a.hide_actions(tau_actions);
+-        if (a==ACTION_LABEL_T())  
++        if (a==ACTION_LABEL_T::tau_action())  
+         {
+-          m_hidden_label_set.insert(i);
++          if (i!=const_tau_label_index)
++          {
++            m_hidden_label_set.insert(i);
++          }
+         }
+         else if (a!=action_label(i))
+         {
+-          set_action_label(i,a);  
++          /* In this the action_label i is changed by the tau_actions but not renamed to tau.
++             We check whether a maps onto another action label index. If yes, it is added to 
++             the rename map, and we explicitly rename transition labels with this label afterwards.
++             If no, we rename the action label.
++          */
++          bool found=false;
++          for (labels_size_type j=0; !found && j< num_action_labels(); ++j)
++          {
++            if (a==action_label(j))
++            { 
++              if (i!=j)
++              {
++                action_rename_map[i]=j;
++              }
++              found=true;
++            }
++          }
++          if (!found) // a!=action_label(j) for any j, then rename action_label(i) to a. 
++          { 
++            set_action_label(i,a);
++          }
++        }
++      }
++
++      if (action_rename_map.size()>0)    // Check whether there are action labels that must be renamed, and
++      {
++        for(transition& t: m_transitions)
++        {
++          auto i = action_rename_map.find(t.label());
++          if (i!=action_rename_map.end())
++          { 
++            t=transition(t.from(),i->second,t.to());
++          }
+         }
+       }
+     }
+ 
+-    /** \brief Apply the recorded actions that are renamed to internal actions to the lts. 
+-     *  \details After hiding actions, it checks whether action labels are
+-     *           equal and merges actions with the same labels in the lts.
++    /** \brief Rename the hidden actions in the lts. 
++     *  \details Multiactions can be partially renamed. I.e. a|b becomes a if b is hidden.
++     *           In such a case the new action a is mapped onto an existing action a; if such
++     *           a label a does not exist, the action a|b is renamed to a. 
+      *  \param[in] tau_actions Vector with strings indicating which actions must be
+      *       transformed to tau's */
+-    void apply_hidden_actions(void)
++    void apply_hidden_actions(const std::vector<std::string>& tau_actions)
+     {
+-      if (m_hidden_label_set.size()>0)    // Check whether there is something to rename.
++      if (tau_actions.size()==0)
++      { 
++        return;
++      }
++      
++      std::map<labels_size_type, labels_size_type> action_rename_map;
++      for (labels_size_type i=0; i< num_action_labels(); ++i)
++      {
++        ACTION_LABEL_T a=action_label(i);
++        a.hide_actions(tau_actions);
++#ifndef NDEBUG
++        ACTION_LABEL_T b=a;
++        b.hide_actions(tau_actions);
++        assert(a==b); // hide_actions applied twice yields the same result as applying it once.
++#endif
++        bool found=false;
++        for (labels_size_type j=0; !found && j< num_action_labels(); ++j)
++        {
++          if (a==action_label(j))
++          { 
++            if (i!=j)
++            {
++              action_rename_map[i]=j;
++            }
++            found=true;
++          }
++        }
++        if (!found) // a!=action_label(j) for any j, then rename action_label(i) to a. 
++        { 
++          set_action_label(i,a);
++        }
++      }
++    
++
++      if (action_rename_map.size()>0)    // Check whether there is something to rename.
+       {
+         for(transition& t: m_transitions)
+         {
+-          if (m_hidden_label_set.count(t.label()))
++          auto i = action_rename_map.find(t.label());
++          if (i!=action_rename_map.end())
+           { 
+-            t=transition(t.from(),tau_label_index(),t.to());
++            t=transition(t.from(),i->second,t.to());
+           }
+         }
+-        m_hidden_label_set.clear();       // Empty the hidden label set. 
+       }
+     }
++
+     /** \brief Checks whether this LTS has state values associated with its states.
+      * \retval true if the LTS has state information;
+      * \retval false otherwise.
+diff --git a/libraries/lts/test/lts_test.cpp b/libraries/lts/test/lts_test.cpp
+index 5840393d9..ad69f6275 100644
+--- a/libraries/lts/test/lts_test.cpp
++++ b/libraries/lts/test/lts_test.cpp
+@@ -149,7 +149,7 @@ static void reduce_lts_in_various_ways(const std::string& test_description,
+   BOOST_CHECK(is_deterministic(l));
+ }
+ 
+-static void reduce_simple_loop()
++BOOST_AUTO_TEST_CASE(reduce_simple_loop)
+ {
+   std::string SIMPLE_AUT =
+     "des (0,2,2)\n"
+@@ -173,7 +173,7 @@ static void reduce_simple_loop()
+   reduce_lts_in_various_ways("Simple loop", SIMPLE_AUT, expected);
+ }
+ 
+-static void reduce_simple_loop_with_tau()
++BOOST_AUTO_TEST_CASE(reduce_simple_loop_with_tau)
+ {
+   std::string SIMPLE_AUT =
+     "des (0,2,2)\n"
+@@ -200,7 +200,7 @@ static void reduce_simple_loop_with_tau()
+ /* The example below was encountered by David Jansen. The problem is that
+  * for branching bisimulations the tau may supersede the b, not leading to the
+  * necessary splitting into two equivalence classes. */
+-static void tricky_example_for_branching_bisimulation()
++BOOST_AUTO_TEST_CASE(tricky_example_for_branching_bisimulation)
+ {
+   std::string TRICKY_BB =
+     "des (0,3,2)\n"
+@@ -226,7 +226,7 @@ static void tricky_example_for_branching_bisimulation()
+ }
+ 
+ 
+-static void reduce_abp()
++BOOST_AUTO_TEST_CASE(reduce_abp)
+ {
+   std::string ABP_AUT =
+     "des (0,92,74)\n"
+@@ -342,7 +342,7 @@ static void reduce_abp()
+ 
+ // Peterson's protocol has the interesting property that the number of states modulo branching bisimulation
+ // differs from the number of states modulo weak bisimulation, as observed by Rob van Glabbeek.
+-static void reduce_peterson()
++BOOST_AUTO_TEST_CASE(reduce_peterson)
+ {
+   std::string PETERSON_AUT =
+     "des (0,59,35)\n"
+@@ -423,7 +423,7 @@ static void reduce_peterson()
+   reduce_lts_in_various_ways("Peterson protocol", PETERSON_AUT, expected);
+ }
+ 
+-static void test_reachability()
++BOOST_AUTO_TEST_CASE(test_reachability)
+ {
+   std::string REACH =
+     "des (0,4,5)       \n"
+@@ -449,7 +449,7 @@ static void test_reachability()
+ 
+ // The example below caused failures in the GW mlogn branching bisimulation
+ // algorithm when cleaning the code up.
+-static void failing_test_groote_wijs_algorithm()
++BOOST_AUTO_TEST_CASE(failing_test_groote_wijs_algorithm)
+ {
+   std::string GWLTS =
+     "des(0,29,10)\n"
+@@ -511,7 +511,7 @@ static void failing_test_groote_wijs_algorithm()
+ // It has not been implemented fully. The problem is that it is difficult to
+ // prescribe the order in which refinements have to be done.
+ 
+-static void counterexample_jk_1(std::size_t k)
++void counterexample_jk_1(std::size_t k)
+ {
+     // numbering scheme of states:
+     // states 0..k-1 are the blue squares
+@@ -571,7 +571,7 @@ static void counterexample_jk_1(std::size_t k)
+ 
+ // In the meantime, the bug is corrected:  this is why the first part of the
+ // algorithm now follows a much simpler line than previously.
+-static void counterexample_postprocessing()
++BOOST_AUTO_TEST_CASE(counterexample_postprocessing)
+ {
+   std::string POSTPROCESS_AUT =
+     "des(0,33,13)\n"
+@@ -634,7 +634,7 @@ static void counterexample_postprocessing()
+   test_lts("postprocessing problem (branching bisimulation signature [Blom/Orzan 2003])",l,expected_label_count, expected_state_count, expected_transition_count);
+ }
+ 
+-static void regression_delete_old_bb_slice()
++BOOST_AUTO_TEST_CASE(regression_delete_old_bb_slice)
+ {
+   std::string POSTPROCESS_AUT =
+     "des(0,163,100)\n"
+@@ -824,7 +824,7 @@ static void regression_delete_old_bb_slice()
+   test_lts("regression test for GJKW bug (branching bisimulation signature [Blom/Orzan 2003])",l,expected_label_count, expected_state_count, expected_transition_count);
+ }
+ 
+-void is_deterministic_test1()
++BOOST_AUTO_TEST_CASE(is_deterministic_test1)
+ {
+   std::string automaton =
+     "des(0,2,2)\n"
+@@ -837,7 +837,7 @@ void is_deterministic_test1()
+   BOOST_CHECK(is_deterministic(l_det));
+ }
+ 
+-void is_deterministic_test2()
++BOOST_AUTO_TEST_CASE(is_deterministic_test2)
+ {
+   std::string automaton =
+     "des(0,2,2)\n"
+@@ -850,24 +850,25 @@ void is_deterministic_test2()
+   BOOST_CHECK(!is_deterministic(l_det));
+ }
+ 
+-void test_is_deterministic()
++BOOST_AUTO_TEST_CASE(hide_actions1)
+ {
+-  is_deterministic_test1();
+-  is_deterministic_test2();
+-}
++  std::string automaton =
++     "des (0,4,3)\n"
++     "(0,\"<state>\",1)\n"
++     "(1,\"return|hello\",2)\n"
++     "(1,\"return\",2)\n"
++     "(2,\"world\",1)\n";
++
++  std::istringstream is(automaton);
++  lts::lts_aut_t l;
++  l.load(is);
++  std::vector<std::string>hidden_actions(1,"hello");
++  l.apply_hidden_actions(hidden_actions);
++  reduce(l,lts::lts_eq_bisim);
++  std::size_t expected_label_count = 5;
++  std::size_t expected_state_count = 3;
++  std::size_t expected_transition_count = 3;
++  test_lts("regression test for GJKW bug (branching bisimulation [Jansen/Groote/Keiren/Wijs 2019])",l,expected_label_count, expected_state_count, expected_transition_count);
++
+ 
+-BOOST_AUTO_TEST_CASE(test_main)
+-{
+-  reduce_simple_loop();
+-  reduce_simple_loop_with_tau();
+-  tricky_example_for_branching_bisimulation();
+-  reduce_abp();
+-  reduce_peterson();
+-  test_reachability();
+-  test_is_deterministic();
+-  failing_test_groote_wijs_algorithm();
+-  counterexample_jk_1(3);
+-  counterexample_postprocessing();
+-  regression_delete_old_bb_slice();
+-  // TODO: Add groote wijs branching bisimulation and add weak bisimulation tests. For the last Peterson is a good candidate.
+ }
+diff --git a/tools/release/ltsconvert/ltsconvert.cpp b/tools/release/ltsconvert/ltsconvert.cpp
+index 231deabe2..5645d31d1 100644
+--- a/tools/release/ltsconvert/ltsconvert.cpp
++++ b/tools/release/ltsconvert/ltsconvert.cpp
+@@ -123,8 +123,7 @@ class ltsconvert_tool : public input_output_tool
+ 
+       LTS_TYPE l;
+       l.load(tool_options.infilename);
+-      l.record_hidden_actions(tool_options.tau_actions);
+-      l.apply_hidden_actions();
++      l.apply_hidden_actions(tool_options.tau_actions);
+ 
+       if (tool_options.check_reach)
+       {
+-- 
+2.35.1
+

@@ -46,6 +46,7 @@
             guix-build-coordinator-configuration-client-communication-uri-string
             guix-build-coordinator-configuration-allocation-strategy
             guix-build-coordinator-configuration-hooks
+            guix-build-coordinator-configuration-parallel-hooks
             guix-build-coordinator-configuration-guile
 
             guix-build-coordinator-service-type
@@ -155,6 +156,8 @@
    (default #~basic-build-allocation-strategy))
   (hooks                           guix-build-coordinator-configuration-hooks
                                    (default '()))
+  (parallel-hooks                  guix-build-coordinator-configuration-parallel-hooks
+                                   (default '()))
   (guile                           guix-build-coordinator-configuration-guile
                                    (default guile-3.0-latest)))
 
@@ -246,6 +249,7 @@
                                                    agent-communication-uri-string
                                                    client-communication-uri-string
                                                    (hooks '())
+                                                   (parallel-hooks '())
                                                    (guile guile-3.0))
   (program-file
    "start-guix-build-coordinator"
@@ -304,7 +308,11 @@
             #:agent-communication-uri (string->uri
                                        #$agent-communication-uri-string)
             #:client-communication-uri (string->uri
-                                        #$client-communication-uri-string)))))
+                                        #$client-communication-uri-string)
+            #:parallel-hooks (list #$@(map (match-lambda
+                                             ((name . val)
+                                              #~(cons '#$name #$val)))
+                                           parallel-hooks))))))
    #:guile guile))
 
 (define (guix-build-coordinator-shepherd-services config)
@@ -314,6 +322,7 @@
              client-communication-uri-string
              allocation-strategy
              hooks
+             parallel-hooks
              guile)
     (list
      (shepherd-service
@@ -331,6 +340,7 @@
                          #:client-communication-uri-string
                          client-communication-uri-string
                          #:hooks hooks
+                         #:parallel-hooks parallel-hooks
                          #:guile guile))
                 #:user #$user
                 #:group #$group
@@ -642,8 +652,6 @@ ca-certificates.crt file in the system profile."
                 #:user #$user
                 #:group #$group
                 #:pid-file "/var/run/guix-data-service/pid"
-                ;; Allow time for migrations to run
-                #:pid-file-timeout 120
                 #:environment-variables
                 `(,(string-append
                     "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")

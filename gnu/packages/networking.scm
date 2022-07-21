@@ -469,7 +469,7 @@ from any network device in any of three ASCII graph formats.")
 (define-public srt
   (package
     (name "srt")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
      (origin
        (method git-fetch)
@@ -479,7 +479,7 @@ from any network device in any of three ASCII graph formats.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f60vlfxhh9bhafws82c3301whjlz5gy92jz9a9ymwfg5h53bv1j"))))
+        (base32 "1zr1l9zkai7rpw9cn5j9h4zrv08hgpfmwscwyscf2j4cgwf0rxrr"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -490,9 +490,7 @@ from any network device in any of three ASCII graph formats.")
         "-DENABLE_STATIC=OFF"
         "-DENABLE_UNITTESTS=ON")))
     (native-inputs
-     `(("gtest" ,googletest)
-       ("pkg-config" ,pkg-config)
-       ("tclsh" ,tcl)))
+     (list googletest pkg-config tcl))
     (propagated-inputs
      (list openssl))
     (synopsis "Secure Reliable Transport")
@@ -500,24 +498,6 @@ from any network device in any of three ASCII graph formats.")
 performance across unpredictable networks, such as the Internet.")
     (home-page "https://www.srtalliance.org/")
     (license license:mpl2.0)))
-
-;; FFmpeg, GStreamer, and VLC don't support SRT 1.4.2 yet.
-(define-public srt-1.4.1
-  (package
-    (inherit srt)
-    (name "srt")
-    (version "1.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/Haivision/srt")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "01xaq44j95kbgqfl41pnybvqy0yq6wd4wdw88ckylzf0nzp977xz"))))))
 
 (define-public lksctp-tools
   (package
@@ -1548,7 +1528,7 @@ test_parse_format_ipv(4(|_listen_all|_mapped_ipv6)|6)\\);")
                           (string-append "prefix=" (assoc-ref %outputs "out")))
        #:test-target "test"))
     (inputs (list net-tools zlib))
-    (native-inputs (list check-0.14 pkg-config))
+    (native-inputs (list check pkg-config))
     (home-page "https://code.kryo.se/iodine/")
     (synopsis "Tunnel IPv4 data through a DNS server")
     (description "Iodine tunnels IPv4 data through a DNS server.  This
@@ -3126,14 +3106,14 @@ eight bytes) tools
 (define-public asio
   (package
     (name "asio")
-    (version "1.20.0")
+    (version "1.22.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asio/asio/"
                            version " (Stable)/asio-" version ".tar.bz2"))
        (sha256
-        (base32 "0335kyxdnwnp96sh9p3jq1s87qnfmp5l7hzlcdxbbwfzrb9p8hr0"))))
+        (base32 "0v5w9j4a02j2rkc7mrdj3ms0kfpqbgq2ipkixlz2l0p8xs0vfsvp"))))
     (build-system gnu-build-system)
     (inputs
      (list boost openssl))
@@ -3492,16 +3472,16 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
 (define-public opendht
   (package
     (name "opendht")
-    (version "2.3.4")
+    (version "2.4.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/savoirfairelinux/opendht")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gp1wdpk50y0pcvlhqfw9vpms8lsrjvv63x4dh40axsvf2ix9lkj"))))
+                "150yxlhn8ykhck7gr1i2bppbqpfyhk0cscn5z7vyn94y5fnqkxsb"))))
     (outputs '("out" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments
@@ -3511,7 +3491,6 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
       #:modules '(((guix build python-build-system) #:prefix python:)
                   (guix build gnu-build-system)
                   (guix build utils))
-      #:tests? #f                     ;tests require networking
       #:configure-flags
       #~(list "--enable-tests"
               "--enable-proxy-server"
@@ -3520,6 +3499,15 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               "--enable-proxy-client")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; The dhtrunnertester test suite includes 'testListen', which
+              ;; is sensitive to the performance/load of the machine it runs
+              ;; on, introducing nondeterminism (see:
+              ;; https://github.com/savoirfairelinux/opendht/issues/626).
+              (substitute* "tests/Makefile.am"
+                (("tests/dhtrunnertester.(h|cpp)$" all)
+                 (string-append "# " all)))))
           (add-after 'unpack 'fix-python-installation-prefix
             ;; Specify the installation prefix for the compiled Python module
             ;; that would otherwise attempt to installs itself to Python's own
@@ -3535,6 +3523,10 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (("extra_link_args=\\[(.*)\\]" _ args)
                  (string-append "extra_link_args=[" args
                                 ", '-Wl,-rpath=" #$output "/lib']")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "tests/opendht_unit_tests"))))
           (add-after 'install 'move-and-wrap-tools
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((tools (assoc-ref outputs "tools"))
@@ -3551,15 +3543,15 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                   `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
     (inputs (list bash-minimal fmt readline))
     (propagated-inputs
-     (list msgpack                    ;included in several installed headers
-           restinio                   ;included in opendht/http.h
+     (list msgpack                      ;included in several installed headers
+           restinio                     ;included in opendht/http.h
            ;; The following are listed in the 'Requires.private' field of
            ;; opendht.pc:
            argon2
            gnutls
            jsoncpp
            nettle
-           openssl))                  ;required for the DHT proxy
+           openssl))                    ;required for the DHT proxy
     (native-inputs
      (list autoconf
            automake

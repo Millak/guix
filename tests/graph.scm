@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -244,10 +244,10 @@ edges."
                         edges)))))))))
 
 (test-assert "reverse bag DAG"
-  (let-values (((dune bap ocaml-base)
-                (values (specification->package "ocaml4.07-dune")
-                        (specification->package "bap")
-                        (specification->package "ocaml4.07-base")))
+  (let-values (((dune camomile utop)
+                (values (specification->package "dune")
+                        (specification->package "ocaml-camomile")
+                        (specification->package "ocaml-utop")))
                ((backend nodes+edges) (make-recording-backend)))
     (run-with-store %store
       (export-graph (list dune) 'port
@@ -256,17 +256,17 @@ edges."
 
     (run-with-store %store
       (mlet %store-monad ((dune-drv       (package->derivation dune))
-                          (bap-drv        (package->derivation bap))
-                          (ocaml-base-drv (package->derivation ocaml-base)))
-        ;; OCAML-BASE uses 'dune-build-system' so DUNE is a direct dependency.
-        ;; BAP is much higher in the stack but it should be there.
+                          (camomile-drv   (package->derivation camomile))
+                          (utop-drv       (package->derivation utop)))
+        ;; CAMOMILE uses 'dune-build-system' so DUNE is a direct dependency.
+        ;; UTOP is much higher in the stack but it should be there.
         (let-values (((nodes edges) (nodes+edges)))
           (return
-           (and (member `(,(derivation-file-name bap-drv)
-                          ,(package-full-name bap))
+           (and (member `(,(derivation-file-name camomile-drv)
+                          ,(package-full-name camomile))
                         nodes)
                 (->bool (member (map derivation-file-name
-                                     (list dune-drv ocaml-base-drv))
+                                     (list dune-drv utop-drv))
                                 edges)))))))))
 
 (test-assert "derivation DAG"

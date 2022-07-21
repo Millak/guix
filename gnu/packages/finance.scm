@@ -29,6 +29,7 @@
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +63,7 @@
   #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix utils)
+  #:use-module (srfi srfi-26)
   #:use-module (gnu packages)
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages autotools)
@@ -1349,6 +1351,126 @@ financial years, budget estimates, bankcard management and other
 information.")
     (home-page "https://grisbi.org")
     (license license:gpl2+)))
+
+(define-public gbonds
+  ;; The last "upstream" commit is from about 2008, but the Debian maintainers
+  ;; have effectively become the upstream with an extensive series of patches.
+  ;; However, the patches are stored "unapplied", and some enhancements (like
+  ;; a decade's worth of new data files) rely on the Debian packaging tools,
+  ;; so building normally even from the patched sources would miss them.
+  ;; Here, we do all of the patching in the origin, so that the result of
+  ;; `guix build --source` is actually useable for building without Guix.
+  (let ((revision "1")
+        (commit "3054ee2f90cc7c03ed6b131177d09701c7a4fced"))
+    (package
+      (name "gbonds")
+      (version (git-version "2.0.3" revision commit))
+      (source
+       (let ((unapplied
+              (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://salsa.debian.org/debian/gbonds.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1sqzzfymzxbnq6cjs5wvjbnvcrkdlimlmj2h7mlcaa9qqdpsgfki"))
+                (file-name (git-file-name name version)))))
+         (origin
+           (inherit unapplied)
+           (patches
+            ;; The order matters.
+            (map (cut file-append unapplied "/debian/patches/" <>)
+                 '("desktop-file"
+                   "POTFILES"
+                   "POTFILES.missing"
+                   "commands-compile"
+                   "egg-recent-model-compile"
+                   "gbonds-name-case"
+                   "copyright-update"
+                   "website-url"
+                   "link-libm"
+                   "xmldocs"
+                   "configure-compiler-warnings"
+                   "omf"
+                   "desktop-file-keywords"
+                   "replace-g_strcasecmp"
+                   "gtk3-port"
+                   "gsettings-port"
+                   "no-rarian-compat"
+                   "extern-gb_prefs"
+                   "use-treasury-api.patch")))
+           (snippet
+            #~(begin
+                (use-modules (guix build utils)
+                             (srfi srfi-26))
+
+                ;; Remove generated files, which have not been patched.
+                (for-each (lambda (pth)
+                            (when (file-exists? pth)
+                              (delete-file pth)))
+                          `(;; Things `make maintainer-clean` would do.
+                            "gbonds.spec"
+                            "src/marshal.c"
+                            "src/marshal.h"
+                            ;; Things upstream's distclean missed.
+                            "intltool-extract"
+                            "intltool-merge"
+                            "intltool-update"
+                            ;; Autotools generated files.
+                            "aclocal.m4"
+                            "config.guess"
+                            "config.h.in"
+                            "config.log"
+                            "config.sub"
+                            "configure"
+                            "depcomp"
+                            "intltool-extract.in"
+                            "intltool-merge.in"
+                            "intltool-update.in"
+                            "ltmain.sh"
+                            ,@(find-files "." "^Makefile\\.in$")))
+
+                ;; Arrange for `make install` to handle the additional
+                ;; redemption data files added in the Debian packaging.
+                (let* ((new-redemption-data-files
+                        (find-files "debian" "^sb[[:digit:]]+\\.asc$"))
+                       (names
+                        (map (cut substring <> (string-length "debian/"))
+                             new-redemption-data-files)))
+                  (for-each rename-file
+                            new-redemption-data-files
+                            (map (cut string-append "data/" <>)
+                                 names))
+                  (substitute* "data/Makefile.am"
+                    (("redemption_DATA = \\\\")
+                     (apply string-append
+                            "redemption_DATA = \\"
+                            (map (cut string-append "\n\t" <> " \\")
+                                 names))))))))))
+      (outputs '("out" "debug"))
+      (inputs (list gtk+
+                    glib
+                    json-glib
+                    libxml2
+                    libsoup-minimal-2
+                    cairo
+                    pango))
+      (native-inputs (list autoconf
+                           automake
+                           intltool
+                           libtool
+                           patch
+                           pkg-config))
+      (build-system glib-or-gtk-build-system)
+      (home-page "http://gbonds.sourceforge.net")
+      (synopsis "@acronym{U.S.} Savings Bond inventory program for GNOME")
+      (description
+       "GBonds is a @acronym{U.S.} Savings Bond inventory program for the
+GNOME desktop environment.  It allows you to track the current redemption
+value and performance of your @acronym{U.S.} Savings Bonds and keep a valuable
+record of the bonds you own.")
+      (license license:gpl2+))))
 
 (define-public trezord-udev-rules
   (let ((commit "bff7fdfe436c727982cc553bdfb29a9021b423b0")

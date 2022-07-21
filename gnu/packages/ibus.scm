@@ -30,6 +30,7 @@
 (define-module (gnu packages ibus)
   #:use-module (guix licenses)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -320,26 +321,26 @@ Chinese pinyin input methods.")
                 "16vd0k8wm13s38869jqs3dnwmjvywgn0snnpyi41m28binhlssf8"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       ;; Use absolute exec path in the anthy.xml.
-       (list (string-append "--libexecdir=" %output "/libexec"))
-       ;; The test suite fails (see:
-       ;; https://github.com/ibus/ibus-anthy/issues/28).
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-programs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (for-each (lambda (prog)
-                         (wrap-program (search-input-file
-                                        outputs (string-append "libexec/" prog))
-                           `("GUIX_PYTHONPATH" ":" prefix
-                             (,(getenv "GUIX_PYTHONPATH")))
-                           `("GI_TYPELIB_PATH" ":" prefix
-                             (,(getenv "GI_TYPELIB_PATH")
-                              ,(search-input-directory
-                                inputs "lib/girepository-1.0")))))
-                       '("ibus-engine-anthy" "ibus-setup-anthy")))))))
+     (list
+      #:configure-flags
+      ;; Use absolute exec path in the anthy.xml.
+      #~(list (string-append "--libexecdir=" #$output "/libexec"))
+      ;; The test suite fails (see:
+      ;; https://github.com/ibus/ibus-anthy/issues/28).
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-programs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (lambda (prog)
+                 (wrap-program (string-append #$output "/libexec/" prog)
+                   `("GUIX_PYTHONPATH" ":" prefix
+                     (,(getenv "GUIX_PYTHONPATH")))
+                   `("GI_TYPELIB_PATH" ":" prefix
+                     (,(getenv "GI_TYPELIB_PATH")
+                      ,(string-append #$output "/lib/girepository-1.0")))))
+               '("ibus-engine-anthy" "ibus-setup-anthy")))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")

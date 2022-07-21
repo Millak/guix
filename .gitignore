@@ -68,6 +68,7 @@
 /doc/version.texi
 /doc/version-*.texi
 /etc/committer.scm
+/etc/teams.scm
 /etc/gnu-store.mount
 /etc/guix-daemon.cil
 /etc/guix-daemon.conf

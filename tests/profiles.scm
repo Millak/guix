@@ -286,6 +286,34 @@
                  (string=? (dirname (readlink bindir))
                            (derivation->output-path guile))))))
 
+(test-assertm "profile-derivation format version 3"
+  ;; Make sure we can create and read a version 3 manifest.
+  (mlet* %store-monad
+      ((entry ->    (package->manifest-entry %bootstrap-guile
+                                             #:properties '((answer . 42))))
+       (manifest -> (manifest (list entry)))
+       (drv1        (profile-derivation manifest
+                                        #:format-version 3 ;old version
+                                        #:hooks '()
+                                        #:locales? #f))
+       (drv2        (profile-derivation manifest
+                                        #:hooks '()
+                                        #:locales? #f))
+       (profile1 -> (derivation->output-path drv1))
+       (profile2 -> (derivation->output-path drv2))
+       (_          (built-derivations (list drv1 drv2))))
+    (return (let ((manifest1 (profile-manifest profile1))
+                  (manifest2 (profile-manifest profile2)))
+              (match (manifest-entries manifest1)
+                ((entry1)
+                 (match (manifest-entries manifest2)
+                   ((entry2)
+                    (and (manifest-entry=? entry1 entry2)
+                         (equal? (manifest-entry-properties entry1)
+                                 '((answer . 42)))
+                         (equal? (manifest-entry-properties entry2)
+                                 '((answer . 42))))))))))))
+
 (test-assertm "profile-derivation, ordering & collisions"
   ;; ENTRY1 and ENTRY2 both provide 'bin/guile'--a collision.  Make sure
   ;; ENTRY1 "wins" over ENTRY2.  See <https://bugs.gnu.org/49102>.
@@ -556,14 +584,20 @@
         (return #f)))))
 
 (test-equal "collision of propagated inputs"
-  '(("guile-bootstrap" "2.0") ("guile-bootstrap" "42"))
+  '(("guile-bootstrap" "2.0") "p1"
+    <> ("guile-bootstrap" "42") "p2")
   (guard (c ((profile-collision-error? c)
              (let ((entry1 (profile-collision-error-entry c))
                    (entry2 (profile-collision-error-conflict c)))
                (list (list (manifest-entry-name entry1)
                            (manifest-entry-version entry1))
+                     (manifest-entry-name
+                      (force (manifest-entry-parent entry1)))
+                     '<>
                      (list (manifest-entry-name entry2)
-                           (manifest-entry-version entry2))))))
+                           (manifest-entry-version entry2))
+                     (manifest-entry-name
+                      (force (manifest-entry-parent entry2)))))))
     (run-with-store %store
       (mlet* %store-monad ((p0 -> (package
                                     (inherit %bootstrap-guile)
@@ -579,6 +613,48 @@
                                                     #:hooks '()
                                                     #:locales? #f)))
         (return #f)))))
+
+(test-assertm "deduplication of repeated entries"
+  ;; Make sure the 'manifest' file does not duplicate identical entries.
+  ;; See <https://issues.guix.gnu.org/55499>.
+  (mlet* %store-monad ((p0 -> (dummy-package "p0"
+                                (build-system trivial-build-system)
+                                (arguments
+                                 `(#:guile ,%bootstrap-guile
+                                   #:builder (mkdir (assoc-ref %outputs "out"))))
+                                (propagated-inputs
+                                 `(("guile" ,%bootstrap-guile)))))
+                       (p1 -> (package
+                                (inherit p0)
+                                (name "p1")))
+                       (drv (profile-derivation (packages->manifest
+                                                 (list p0 p1))
+                                                #:hooks '()
+                                                #:locales? #f)))
+    (mbegin %store-monad
+      (built-derivations (list drv))
+      (let ((file     (string-append (derivation->output-path drv)
+                                     "/manifest"))
+            (manifest (profile-manifest (derivation->output-path drv))))
+        (define (contains-repeated? sexp)
+          (match sexp
+            (('repeated _ ...) #t)
+            ((lst ...) (any contains-repeated? sexp))
+            (_ #f)))
+
+        (return (and (contains-repeated? (call-with-input-file file read))
+
+                     ;; MANIFEST has two entries for %BOOTSTRAP-GUILE since
+                     ;; it's propagated both from P0 and from P1.  When
+                     ;; reading a 'repeated' node, 'read-manifest' should
+                     ;; reuse the previously-read entry so the two
+                     ;; %BOOTSTRAP-GUILE entries must be 'eq?'.
+                     (match (manifest-entries manifest)
+                       (((= manifest-entry-dependencies (dep0))
+                         (= manifest-entry-dependencies (dep1)))
+                        (and (string=? (manifest-entry-name dep0)
+                                       (package-name %bootstrap-guile))
+                             (eq? dep0 dep1))))))))))
 
 (test-assertm "no collision"
   ;; Here we have an entry that is "lowered" (its 'item' field is a store file

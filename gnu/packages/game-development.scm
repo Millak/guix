@@ -1209,24 +1209,25 @@ to create fully featured games and multimedia programs in the python language.")
                    license:lgpl2.1+))))
 
 (define-public python-pygame-sdl2
-  ;; Using latest git commit as of 2022-06-17, because there is no tagged
-  ;; release for renpy 8.
-  ;; Revert back to URLs once renpy 8 is released!
   (let ((real-version "2.1.0")
-        ;;(renpy-version "8.0.0")
-        (commit "1705c6e3004dcb1daf859560bcd52eb093e97d45"))
+        (renpy-version "8.0.0"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
-      (version (git-version real-version "0" commit))
+      (version (string-append real-version "-for-renpy-" renpy-version))
       (source
        (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/renpy/pygame_sdl2")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256 (base32 "1g0arhpd59zypspk36sgajf1kzavppfkv766vifvxar60968rrjn"))))
+         (method url-fetch)
+         (uri (string-append "https://www.renpy.org/dl/" renpy-version
+                             "/pygame_sdl2-" version ".tar.gz"))
+         (sha256 (base32 "0majf64pdfba5byjlv41pgsdmwvy09hw3m7143jz3kc1wjd2gaw8"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; drop generated sources
+             (delete-file-recursively "gen")
+             (delete-file-recursively "gen3")
+             (delete-file-recursively "gen-static")))))
       (build-system python-build-system)
       (arguments
        `(#:tests? #f                ; tests require pygame to be installed first
@@ -1257,21 +1258,16 @@ While it aims to be used as a drop-in replacement, it appears to be
 developed mainly for Ren'py.")
       (license (list license:lgpl2.1 license:zlib)))))
 
-;; Using nightly from 2022-06-16.
-;; Revert back to URLs once renpy 8 is released!
-(define %renpy-commit "3e854bc7cb1642ca18b061a0c6e349f168965c43")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version (git-version "7.99.99" "0" %renpy-commit))
+    (version "8.0.0")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/renpy/renpy")
-             (commit %renpy-commit)))
-       (file-name (git-file-name name version))
-       (sha256 (base32 "11g7hqhw4gbkx5ib2wsawrznmjbn8r9zkgf2sg39z56h96y8wfbn"))
+       (method url-fetch)
+       (uri (string-append "https://www.renpy.org/dl/" version
+                           "/renpy-" version "-source.tar.bz2"))
+       (sha256 (base32 "09z3r16j4cxddkb50ghmi4xp0s05s15q4pzdmfajy85ignwqhjdi"))
        (modules '((guix build utils)))
        (patches
         (search-patches
@@ -1280,7 +1276,10 @@ developed mainly for Ren'py.")
         '(with-directory-excursion "module"
            ;; drop fribidi sources
            (delete-file-recursively "fribidi-src")
-           #t))))
+           ;; drop _renpytfd, as there are missing sources
+           (substitute* "setup.py"
+             (("cython\\(\"_renpytfd\"" all)
+              (string-append "pass # " all)))))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ; Ren'py doesn't seem to package tests
@@ -1432,6 +1431,8 @@ are only used to bootstrap it.")
                                   (string-append out "/share/renpy/common"))
                 (copy-recursively "gui"
                                   (string-append out "/share/renpy/gui"))
+                (copy-recursively "sdk-fonts"
+                                  (string-append out "/share/renpy/sdk-fonts"))
 
                 (mkdir-p (string-append out "/bin"))
                 (copy-file #$(local-file (search-auxiliary-file "renpy/renpy.in"))

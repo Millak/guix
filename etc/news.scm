@@ -25,6 +25,16 @@
 (channel-news
  (version 0)
 
+ (entry (commit "2ec7ab2610eb67e26dab52b671eb29e46f64ea0f")
+        (title
+          (en "Linux-libre kernel updated to 5.18")
+          (de "Linux-libre-Kernel wird auf 5.18 aktualisiert"))
+        (body
+          (en "The default version of the linux-libre kernel has been
+              updated to the 5.18 release series.")
+          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+jetzt auf der 5.18-Versionsreihe.")))
+
  (entry (commit "bdf422176739b473add66eb8cac9fdd8c654f794")
         (title
          (en "@option{-L} option of @command{guix refresh} repurposed")

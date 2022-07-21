@@ -1109,7 +1109,7 @@ of windows.")
      (list `(,glib "bin") ; for glib-compile-resources
            gnome-shell
            gtk+
-           inkscape
+           inkscape/stable
            optipng
            pkg-config
            sassc/libsass-3.5))

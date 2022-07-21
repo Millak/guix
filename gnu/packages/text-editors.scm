@@ -167,7 +167,7 @@ based command language.")
 (define-public kakoune
   (package
     (name "kakoune")
-    (version "2021.08.28")
+    (version "2021.11.08")
     (source
      (origin
        (method url-fetch)
@@ -175,7 +175,7 @@ based command language.")
                            "releases/download/v" version "/"
                            "kakoune-" version ".tar.bz2"))
        (sha256
-        (base32 "1jvn4b9rma5jjvg3xz8nf224pbq3ry570j6qvc834wn5v3gxfvkg"))))
+        (base32 "1x5mvmpf0rgmr2xdw5wjn4hr6qd8yvj0zx588fi324x1knfqhc5a"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -191,14 +191,9 @@ based command language.")
              (substitute* "src/shell_manager.cc"
                (("if \\(m_shell.empty\\(\\)\\)" line)
                 (string-append "m_shell = \"" (which "sh")
-                               "\";\n        " line)))
-             #t))
-         (delete 'configure)            ; no configure script
-         ;; kakoune requires us to be in the src/ directory to build.
-         (add-before 'build 'chdir
-           (lambda _ (chdir "src") #t)))))
-    (native-inputs
-     (list asciidoc pkg-config ruby))
+                               "\";\n        " line)))))
+         (delete 'configure))))            ; no configure script
+    (native-inputs (list pkg-config))
     (synopsis "Vim-inspired code editor")
     (description
      "Kakoune is a code editor heavily inspired by Vim, as such most of its
@@ -711,7 +706,7 @@ environment with Markdown markup.")
 (define-public manuskript
   (package
     (name "manuskript")
-    (version "0.13.1")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -720,60 +715,60 @@ environment with Markdown markup.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rj41wimmaq47lwaz0d1iq270klp96xv9dpfdsxi5a2xcdm80jac"))))
+        (base32 "0qhr9bkq4yl2qjainpsv7blzcji2q9ic9zcynawmhfqy3rmf8qlr"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/manuskript")))
-               ;; Install data.
-               (mkdir-p share)
-               (for-each
-                (lambda (d)
-                  (let ((destination  (string-append share "/" d)))
-                    (mkdir-p destination)
-                    (copy-recursively d destination)))
-                '("bin" "i18n" "icons" "libs" "manuskript" "resources"))
-               ;; Install documentation.
-               (let ((doc (string-append out
-                                         "/doc/manuskript-" ,version
-                                         "/sample-projects")))
-                 (mkdir-p doc)
-                 (copy-recursively "sample-projects" doc))
-               ;; Wrap executable in "$out/share/manuskript/bin" and
-               ;; link to it from "$out/bin".
-               (let ((bin (string-append out "/bin"))
-                     (executable (string-append share "/bin/manuskript")))
-                 (wrap-program executable
-                   (list "GUIX_PYTHONPATH" 'prefix
-                         (list (getenv "GUIX_PYTHONPATH"))))
-                 (mkdir-p bin)
-                 (with-directory-excursion bin
-                   (symlink (string-append share "/bin/manuskript")
-                            "manuskript")))
-               ;; Install icons and create .desktop file.
-               (let ((apps (string-append out "/share/applications"))
-                     (icons-dir (string-append out "/share/pixmaps")))
-                 (install-file "icons/Manuskript/manuskript.svg" icons-dir)
-                 (mkdir-p apps)
-                 (make-desktop-entry-file (string-append apps "/manuskript.desktop")
+     (list
+      #:tests? #f                       ;no test
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (let ((share (string-append #$output "/share/manuskript")))
+                ;; Install data.
+                (mkdir-p share)
+                (for-each
+                 (lambda (d)
+                   (let ((destination  (string-append share "/" d)))
+                     (mkdir-p destination)
+                     (copy-recursively d destination)))
+                 '("bin" "i18n" "icons" "libs" "manuskript" "resources"))
+                ;; Install documentation.
+                (let ((doc (string-append #$output
+                                          "/doc/manuskript-" #$version
+                                          "/sample-projects")))
+                  (mkdir-p doc)
+                  (copy-recursively "sample-projects" doc))
+                ;; Wrap executable in "$out/share/manuskript/bin" and
+                ;; link to it from "$out/bin".
+                (let ((bin (string-append #$output "/bin"))
+                      (executable (string-append share "/bin/manuskript")))
+                  (wrap-program executable
+                    (list "GUIX_PYTHONPATH" 'prefix
+                          (list (getenv "GUIX_PYTHONPATH"))))
+                  (mkdir-p bin)
+                  (with-directory-excursion bin
+                    (symlink (string-append share "/bin/manuskript")
+                             "manuskript")))
+                ;; Install icons and create .desktop file.
+                (let ((apps (string-append #$output "/share/applications"))
+                      (icons-dir (string-append #$output "/share/pixmaps")))
+                  (install-file "icons/Manuskript/manuskript.svg" icons-dir)
+                  (mkdir-p apps)
+                  (make-desktop-entry-file
+                   (string-append apps "/manuskript.desktop")
                    #:name "Manuskript"
                    #:mime-type "application/x-manuskript-book;"
-                   #:exec (string-append out "/bin/manuskript %f")
+                   #:exec (string-append #$output "/bin/manuskript %f")
                    #:comment '((#f "Tool for writers")
                                ("es" "Herramienta para escritores/as"))
                    #:keywords "manuskript;office;write;edit;novel;text;msk"
                    #:terminal #f
                    #:type "Application"
                    #:icon "manuskript"
-                   #:categories "Office;WordProcessor;"))
-               #t))))))
+                   #:categories "Office;WordProcessor;"))))))))
     (inputs
      (list pandoc python-lxml python-markdown python-pyqt qtsvg))
     (home-page "http://www.theologeek.ch/manuskript/")

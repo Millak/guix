@@ -251,13 +251,17 @@ correspond to the same version."
                      #:warn warn-about-load-error)))
 
 (define %updaters
-  ;; The list of publically-known updaters.
-  (delay (fold-module-public-variables (lambda (obj result)
-                                         (if (upstream-updater? obj)
-                                             (cons obj result)
-                                             result))
-                                       '()
-                                       (importer-modules))))
+  ;; The list of publically-known updaters, alphabetically sorted.
+  (delay
+    (sort (fold-module-public-variables (lambda (obj result)
+                                          (if (upstream-updater? obj)
+                                              (cons obj result)
+                                              result))
+                                        '()
+                                        (importer-modules))
+          (lambda (updater1 updater2)
+            (string<? (symbol->string (upstream-updater-name updater1))
+                      (symbol->string (upstream-updater-name updater2)))))))
 
 ;; Tests need to mock this variable so mark it as "non-declarative".
 (set! %updaters %updaters)
@@ -515,9 +519,10 @@ this method: ~s")
                       #:key-download key-download))))
          (values #f #f #f)))
     (#f
-     (raise (formatted-message
-             (G_ "updater failed to determine available releases for ~a~%")
-             (package-name package))))))
+     ;; Warn rather than abort so that other updates can still take place.
+     (warning (G_ "updater failed to determine available releases for ~a~%")
+              (package-name package))
+     (values #f #f #f))))
 
 (define* (update-package-source package source hash)
   "Modify the source file that defines PACKAGE to refer to SOURCE, an

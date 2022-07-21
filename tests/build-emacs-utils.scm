@@ -23,6 +23,7 @@
   #:use-module (guix build utils)
   #:use-module ((guix utils)
                 #:select (call-with-temporary-directory))
+  #:use-module (ice-9 regex)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-64))
 
@@ -36,8 +37,10 @@
 
 (test-assert "emacs-batch-script: raise &emacs-batch-error on failure"
   (guard (c ((emacs-batch-error? c)
-             (string-contains (emacs-batch-error-message c)
-                              "Lisp error: (wrong-type-argument numberp \"three\")")))
+             ;; The error message format changed between Emacs 27 and Emacs
+             ;; 28.
+             (string-match "[Ww]rong.*argument.*numberp.*\"three\""
+                           (emacs-batch-error-message c))))
     (emacs-batch-script '(mapcar 'number-to-string (list 1 2 "three")))))
 
 (call-with-temporary-directory

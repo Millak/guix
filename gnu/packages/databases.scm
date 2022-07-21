@@ -57,6 +57,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -147,6 +148,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages syncthing)           ;for go-github-com-lib-pq
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
@@ -1248,39 +1250,13 @@ pictures, sounds, or video.")
   (package
     (inherit postgresql-14)
     (version "13.6")
-    (replacement postgresql-13/replacement)
     (source (origin
               (inherit (package-source postgresql-14))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))
-              (patches (search-patches "postgresql-riscv-spinlocks.patch"))))))
-
-;; The merge of commit ...
-;;  781dd2de230e3 gnu: postgresql-13: Fix building on riscv64-linux.
-;; ... in ...
-;;  49b350fafc2c3 Merge branch 'master' into staging.
-;; ... lost the inherited patch from postgresql-14, causing problems such as ...
-;;  05fef7bfc6005 gnu: timescaledb: Adjust test preparation to PostgreSQL 13.6.
-;;
-;; While at it, remove the RISC-V spinlock patch, which has been upstreamed
-;; in a different form (so the old patch still applies).
-;; TODO: Remove in the next rebuild cycle.
-(define postgresql-13/replacement
-  (package
-    (inherit postgresql-13)
-    (version "13.7")
-    (source
-     (origin
-       (inherit (package-source postgresql-13))
-       (uri (string-append "https://ftp.postgresql.org/pub/source/v"
-                           version "/postgresql-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "16b3ljid7zd1v5l4l4pmwihx43wi8p9izidkjfii8dnqygs5p40v"))
-       (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))))
+                "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))))))
 
 (define-public postgresql-11
   (package
@@ -1293,9 +1269,7 @@ pictures, sounds, or video.")
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1983a7y4y6zhbgh0qcdfkf99445j1zm5q1ncrbkrx555y08y3n9d"))
-              (patches (search-patches
-                        "postgresql-disable-resolve_symlinks.patch"))))
+                "1983a7y4y6zhbgh0qcdfkf99445j1zm5q1ncrbkrx555y08y3n9d"))))
     (native-inputs
      (modify-inputs (package-native-inputs postgresql-13)
        (replace "docbook-xml" docbook-xml-4.2)))))
@@ -1578,7 +1552,7 @@ organized in a hash table or B+ tree.")
      ;; XXX Without labels, the default 'configure phase picks the wrong "bash".
      `(("bc" ,bc)
        ("bash:include" ,bash "include")
-       ("check" ,check-0.14)
+       ("check" ,check)
        ("pkg-config" ,pkg-config)))
     (inputs
      ;; TODO: Add more optional inputs.
@@ -1598,14 +1572,14 @@ types are supported, as is encryption.")
 (define-public emacs-rec-mode
   (package
     (name "emacs-rec-mode")
-    (version "1.8.3")
+    (version "1.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/"
                                   "rec-mode-" version ".tar"))
               (sha256
                (base32
-                "0lkmvvdj4xx3qhxqggizrcdawav0accyrza2wmhfdq88g2zh5575"))
+                "1w1q6kh567fd8xismq9i6wr1y893lypd30l452yvydi1qjiq1n6x"))
               (snippet '(begin (delete-file "rec-mode.info")))))
     (build-system emacs-build-system)
     (arguments
@@ -4789,3 +4763,35 @@ create design, and edit database file compatible with SQLite.")
      ;; dual license
      (list license:gpl3+
            license:mpl2.0))))
+
+(define-public sqls
+  (package
+    (name "sqls")
+    (version "0.2.18")
+    (home-page "https://github.com/lighttiger2505/sqls")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13837v27avdp2nls3vyy7ml12nj7rxragchwf92adn10ffp4aj6c"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/lighttiger2505/sqls"))
+    (inputs (list go-github-com-go-sql-driver-mysql
+                  go-github-com-lib-pq
+                  go-github-com-mattn-go-sqlite3
+                  go-github-com-olekukonko-tablewriter
+                  go-github-com-pkg-errors
+                  go-github-com-sourcegraph-jsonrpc2
+                  go-golang-org-x-crypto
+                  go-github.com-mattn-go-runewidth
+                  go-golang-org-x-xerrors
+                  go-gopkg-in-yaml-v2))
+    (synopsis "SQL language server written in Go")
+    (description
+     "This package implements the @acronym{LSP, Language Server Protocol} for SQL.")
+    (license license:expat)))

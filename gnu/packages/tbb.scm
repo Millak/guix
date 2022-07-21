@@ -3,6 +3,7 @@
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,10 +42,11 @@
               (sha256
                (base32
                 "1z0pqzfx63zrmyqdvvkk8vl5dc0i0n5cimdkrypd50ig4d4yi7sc"))
-              (patches (list
-                        ;; Backport an upstream commit that prevents the
-                        ;; "test_eh_thread" test failing on AArch64.
-                        (search-patch "tbb-fix-test-on-aarch64.patch")))))
+              (patches
+                ;; Backport an upstream commit that prevents the
+                ;; "test_eh_thread" test failing on AArch64.
+                (search-patches "tbb-fix-test-on-aarch64.patch"
+                                "tbb-other-arches.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DTBB_STRICT=OFF"))) ;; Don't fail on warnings

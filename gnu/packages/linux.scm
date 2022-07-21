@@ -352,25 +352,26 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.17-version "5.17.15")
-(define-public linux-libre-5.17-gnu-revision "gnu")
-(define deblob-scripts-5.17
+(define-public linux-libre-5.18-version "5.18.12")
+(define-public linux-libre-5.18-gnu-revision "gnu")
+(define deblob-scripts-5.18
   (linux-libre-deblob-scripts
-   linux-libre-5.17-version
-   linux-libre-5.17-gnu-revision
-   (base32 "08ip5g827f30qzb3j2l19zkbdqv00sij46nbrjg75h5kkasdbfgr")
-   (base32 "1654fibbwnbcgnikn1qqa5igd2j90kslbb3pshph5wpj052cvgjy")))
-(define-public linux-libre-5.17-pristine-source
-  (let ((version linux-libre-5.17-version)
-        (hash (base32 "0a5n1lb43nhnhwjwclkk3dqp2nxsx5ny7zfl8idvzshf94m9472a")))
+   linux-libre-5.18-version
+   linux-libre-5.18-gnu-revision
+   (base32 "09aikdhij4d89wqd8mmkdr0nrfwqz6dx3n74qm6wx815rfngd2dz")
+   (base32 "0vjpn8iw9yg39sr6jfhzyvivf159h9zfgnjamwa283zfll0h0a53")))
+(define-public linux-libre-5.18-pristine-source
+  (let ((version linux-libre-5.18-version)
+        (hash (base32 "09wmgfrnv1df6jg9v3svwhvnxl0j6h4f240p903xlmgj884lvds0")))
    (make-linux-libre-source version
+
                             (%upstream-linux-source version hash)
-                            deblob-scripts-5.17)))
+                            deblob-scripts-5.18)))
 
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.49")
+(define-public linux-libre-5.15-version "5.15.55")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -380,12 +381,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "129qlhwdv2mfb85gbvq03kkbdfp73b444rryr4rrbvi0jmq4cp24")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1p2r02h2z0j34hpkp3kr4741pr15ii72b94zllravx27pa9phj9j")))
+        (hash (base32 "1k7x7fp675wglfd357n7hjidnm3j8zj3gcymyazg6fkcid8bvxhy")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.124")
+(define-public linux-libre-5.10-version "5.10.131")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -395,12 +396,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1981axxswghza3iadp94q54y8w30h9w9vyq4cbjiiv9alvbv0pb8")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "0yz3yw02b6b1sq800r46x5b3dagswb6z4clrfq485c4669sb2ipc")))
+        (hash (base32 "1ki11mvl3dky7iih90znr47vr66dxnlwrqwg2jkk1hqn5i243i4b")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.200")
+(define-public linux-libre-5.4-version "5.4.206")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -410,12 +411,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1vnjbdyssa7dwyjl9kg35alwvf7yh597cl74yr1wy2gk5bc9paw6")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "1f15al9g4cd17fm43im5rqqrbz1cqhz2hq5ycpqvwa02pydprsga")))
+        (hash (base32 "1asvc7y1f938icspxx39n6y6r0w9mp0k9vik84rsx1hzzv0db41c")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.248")
+(define-public linux-libre-4.19-version "4.19.252")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -425,12 +426,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0cdflfk6l13slw1cawpkhpjzbbnffcbyffrh29p9jg73pdqx23y4")))
+        (hash (base32 "0ac7k6x9h8gqi37n8d4fyi52h4cmzyy8f5vfv1aiihww4kvzca7v")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.284")
+(define-public linux-libre-4.14-version "4.14.288")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -440,12 +441,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "1f7bidisa6b4ff0mgn66h1nmf94j5mcx4wnkwnd9f49im6hcqllq")))
+        (hash (base32 "0yyzxyz66mfngx3ll3pl43413xb67iyxddzh3lpzqcfg7d0rxfwz")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.319")
+(define-public linux-libre-4.9-version "4.9.323")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
@@ -455,7 +456,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0bib3641dbcqdkx3anna3caxnsg3nw9cnmhcklq0s93g3m57041h")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "11242bn95k51knm9da7xk7r10vk7iji06wix1cq4g5nzldrfp9sp")))
+        (hash (base32 "1h96ai9w5q2axhliw85aymdsg8py9y6gl8big5r2gwkbls6h7pa3")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -488,8 +489,8 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (patches (append (origin-patches source)
                      patches))))
 
-(define-public linux-libre-5.17-source
-  (source-with-patches linux-libre-5.17-pristine-source
+(define-public linux-libre-5.18-source
+  (source-with-patches linux-libre-5.18-pristine-source
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
@@ -602,10 +603,10 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
 
-(define-public linux-libre-headers-5.17
-  (make-linux-libre-headers* linux-libre-5.17-version
-                             linux-libre-5.17-gnu-revision
-                             linux-libre-5.17-source))
+(define-public linux-libre-headers-5.18
+  (make-linux-libre-headers* linux-libre-5.18-version
+                             linux-libre-5.18-gnu-revision
+                             linux-libre-5.18-source))
 
 (define-public linux-libre-headers-5.15
   (make-linux-libre-headers* linux-libre-5.15-version
@@ -923,18 +924,18 @@ It has been modified to remove all non-free binary blobs.")
 ;;; Generic kernel packages.
 ;;;
 
-(define-public linux-libre-5.17
-  (make-linux-libre* linux-libre-5.17-version
-                     linux-libre-5.17-gnu-revision
-                     linux-libre-5.17-source
+(define-public linux-libre-5.18
+  (make-linux-libre* linux-libre-5.18-version
+                     linux-libre-5.18-gnu-revision
+                     linux-libre-5.18-source
                      '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-version         linux-libre-5.17-version)
-(define-public linux-libre-gnu-revision    linux-libre-5.17-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-5.17-pristine-source)
-(define-public linux-libre-source          linux-libre-5.17-source)
-(define-public linux-libre                 linux-libre-5.17)
+(define-public linux-libre-version         linux-libre-5.18-version)
+(define-public linux-libre-gnu-revision    linux-libre-5.18-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-5.18-pristine-source)
+(define-public linux-libre-source          linux-libre-5.18-source)
+(define-public linux-libre                 linux-libre-5.18)
 
 (define-public linux-libre-5.15
   (make-linux-libre* linux-libre-5.15-version
@@ -1159,9 +1160,9 @@ It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-with-bpf
   (let ((base-linux-libre
          (make-linux-libre*
-          linux-libre-5.17-version
-          linux-libre-5.17-gnu-revision
-          linux-libre-5.17-source
+          linux-libre-5.18-version
+          linux-libre-5.18-gnu-revision
+          linux-libre-5.18-source
           '("x86_64-linux" "i686-linux" "armhf-linux"
             "aarch64-linux" "riscv64-linux")
           #:extra-version "bpf"
@@ -1342,8 +1343,8 @@ and the notification, WiFi, and Bluetooth LED.")
     (license license:gpl2)))
 
 (define-public rtl8821ce-linux-module
-  (let ((commit "dce62b9bbb7c76339b514153fcebb3a19bafdcc7")
-        (revision "5"))
+  (let ((commit "be733dc86781c68571650b395dd0fa6b53c0a039")
+        (revision "6"))
     (package
       (name "rtl8821ce-linux-module")
       (version (git-version "0.0.0" revision commit))
@@ -1356,7 +1357,7 @@ and the notification, WiFi, and Bluetooth LED.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0s5v6z4x7xdgr5qm4q7dr9nd5c8qy28jaw0p78hxji3m8if56vka"))))
+           "00sd7s0582b9jcpfgy0fw6418dwg700mfyizkfr22jf2x140iy70"))))
       (build-system linux-module-build-system)
       (arguments
        (list #:make-flags
@@ -1383,8 +1384,8 @@ network adapters.")
       (license license:gpl2))))
 
 (define-public rtl8812au-aircrack-ng-linux-module
-  (let ((commit "37e27f9165300c89607144b646545fac576ec510")
-        (revision "7"))
+  (let ((commit "6d0d9fb56d4d918012a5c7a030b9233cad039cdd")
+        (revision "8"))
     (package
       (inherit rtl8821ce-linux-module)
       (name "rtl8812au-aircrack-ng-linux-module")
@@ -1397,7 +1398,7 @@ network adapters.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "09n814pa6i0b0xkgssymcmbcdic05y9z5bsr6sxjfs40wawsk6af"))
+          (base32 "012asiy43ik13kl9p97sscdsqq5jihq73s4ws3g5wqqczqcgrsvc"))
          (modules '((guix build utils)))
          (snippet
           #~(begin
@@ -3515,13 +3516,12 @@ compressed, transparent to other programs, without decompressing them.")
                 "1xngddsph43bxljywahi9d44fxr022slsap4hh91w8xnq54d2sw2"))))
     (build-system gnu-build-system)
     (arguments
-     '(;; There's a 'test' target, but it requires NUMA support in the kernel
+     `(,@(if (target-riscv64?)
+           `(#:make-flags (list "LDFLAGS=-latomic"))
+           '())
+       ;; There's a 'test' target, but it requires NUMA support in the kernel
        ;; to run, which we can't assume to have.
        #:tests? #f))
-
-    ;; NUMA is apparently not supported on armhf, see
-    ;; http://www.spinics.net/lists/linux-numa/msg01157.html
-    (supported-systems (delete "armhf-linux" %supported-systems))
     (home-page "https://github.com/numactl/numactl")
     (synopsis "Tools for non-uniform memory access (NUMA) machines")
     (description
@@ -4735,14 +4735,14 @@ isolation or root privileges.")
 (define-public hdparm
   (package
     (name "hdparm")
-    (version "9.63")
+    (version "9.64")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hdparm/hdparm/"
                                   "hdparm-" version ".tar.gz"))
               (sha256
                (base32
-                "14cni5r116k07zqj0565byjhv6gf3ns6hd8jkjl7fn5sxgm5sy3h"))))
+                "16l5mc6dpqkzhwsljyzks05pq89l2lw09qkx50ks1zn3a5lranri"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -5364,7 +5364,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
 (define-public bluez
   (package
     (name "bluez")
-    (version "5.61")
+    (version "5.64")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5372,53 +5372,49 @@ Bluetooth audio output devices like headphones or loudspeakers.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "0fs2kjsdhylxniqhii63i85fjszbqbz3iddwmgz4nmbr472xdbw3"))))
+                "0d6yl7l5zrlx5w3y503k72m9xsydx6gi1c65icchq1xknrjpwhxf"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list "--sysconfdir=/etc"
-               "--localstatedir=/var"
-               "--enable-library"
-               "--disable-systemd"
-               ;; TODO: is this needed?  Not installed by default since 5.55.
-               "--enable-hid2hci"
-               ;; Install dbus/udev files to the correct location.
-               (string-append "--with-dbusconfdir=" out "/etc")
-               (string-append "--with-udevdir=" out "/lib/udev")))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Test unit/test-gatt fails unpredictably. Seems to be a timing
-         ;; issue (discussion on upstream mailing list:
-         ;; https://marc.info/?t=149578476300002&r=1&w=2)
-         (add-before 'check 'skip-wonky-test
+     (list
+      #:configure-flags
+      #~(list "--sysconfdir=/etc"
+              "--localstatedir=/var"
+              "--enable-library"
+              "--disable-systemd"
+              ;; TODO: is this needed?  Not installed by default since 5.55.
+              "--enable-hid2hci"
+              ;; Install dbus/udev files to the correct location.
+              (string-append "--with-dbusconfdir=" #$output "/etc")
+              (string-append "--with-udevdir=" #$output "/lib/udev"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Test unit/test-gatt fails unpredictably. Seems to be a timing
+          ;; issue (discussion on upstream mailing list:
+          ;; https://marc.info/?t=149578476300002&r=1&w=2)
+          (add-before 'check 'skip-wonky-test
             (lambda _
               (substitute* "unit/test-gatt.c"
-                (("tester_init\\(&argc, &argv\\);") "return 77;"))
-              #t))
-         (add-after 'install 'post-install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out        (assoc-ref outputs "out"))
-                    (servicedir (string-append out "/share/dbus-1/services"))
-                    (service    "obexd/src/org.bluez.obex.service")
-                    (rule       (string-append
-                                 out "/lib/udev/rules.d/97-hid2hci.rules")))
-               ;; Install the obex dbus service file.
-               (substitute* service
-                 (("/bin/false")
-                  (string-append out "/libexec/bluetooth/obexd")))
-               (install-file service servicedir)
-               ;; Fix paths in the udev rule.
-               (substitute* rule
-                 (("hid2hci --method")
-                  (string-append out "/lib/udev/hid2hci --method"))
-                 (("/sbin/udevadm")
-                  (search-input-file inputs "/bin/udevadm")))
-               #t))))))
+                (("tester_init\\(&argc, &argv\\);") "return 77;"))))
+          (add-after 'install 'post-install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out        #$output)
+                     (servicedir (string-append out "/share/dbus-1/services"))
+                     (service    "obexd/src/org.bluez.obex.service")
+                     (rule       (string-append
+                                  out "/lib/udev/rules.d/97-hid2hci.rules")))
+                ;; Install the obex dbus service file.
+                (substitute* service
+                  (("/bin/false")
+                   (string-append out "/libexec/bluetooth/obexd")))
+                (install-file service servicedir)
+                ;; Fix paths in the udev rule.
+                (substitute* rule
+                  (("hid2hci --method")
+                   (string-append out "/lib/udev/hid2hci --method"))
+                  (("/sbin/udevadm")
+                   (search-input-file inputs "/bin/udevadm")))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("rst2man" ,python-docutils)
-       ("gettext" ,gettext-minimal)))
+     (list pkg-config python-docutils gettext-minimal))
     (inputs
      (list glib dbus eudev libical readline))
     (home-page "http://www.bluez.org/")
@@ -7095,7 +7091,7 @@ every time the power supply source is changed.")
 (define-public tlpui
   (package
     (name "tlpui")
-    (version "1.5.0")
+    (version "1.5.0-1")
     (source
      (origin
        (method git-fetch)
@@ -7104,45 +7100,46 @@ every time the power supply source is changed.")
              (commit (string-append "tlpui-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ca18hazxksx516nkh28f6rd0l1039nkn7mszqfy68c461061q1h"))))
+        (base32 "16a6x733szsggn23ns7bj3gpvb80675plh96v4llrz0s8p3h47pg"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-setup.py
-           ;; Install data_files to $out/share instead of /usr/share.
-           (lambda _
-             (substitute* "setup.py"
-               (("/usr/") ""))))
-         (add-after 'unpack 'use-tlp-input
-           ;; Hard-code tlp-stat filename to avoid propagating "tlp".
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((tlp-stat (search-input-file inputs "/bin/tlp-stat")))
-               (with-directory-excursion "tlpui"
-                 (substitute* '("file.py" "settingshelper.py" "statui.py")
-                   (("which\\(\"tlp-stat\"\\)")
-                    (string-append "'" tlp-stat "'"))
-                   (("\"tlp-stat\"")
-                    (string-append "'" tlp-stat "'")))))))
-         (add-before 'check 'fix-home-directory
-           (lambda _
-             ;; Tests fail with "Permission denied:
-             ;; '/homeless-shelter'".
-             (setenv "HOME" "/tmp")))
-         ;; `sanity-check' phase errors out with the following
-         ;; messages: "Unable to init server: Could not connect:
-         ;; Connection refused" and "Error: cannot read user
-         ;; configuration from /etc/tlp.conf or /etc/default/tlp".
-         (delete 'sanity-check)
-         (replace 'check
-           (lambda _
-             (invoke "python" "-m" "discover")))
-         (add-after 'install 'wrap-gi-python
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-               (wrap-program (string-append out "/bin/tlpui")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setup.py
+            ;; Install data_files to $out/share instead of /usr/share.
+            (lambda _
+              (substitute* "setup.py"
+                (("/usr/") ""))))
+          (add-after 'unpack 'use-tlp-input
+            ;; Hard-code tlp-stat filename to avoid propagating "tlp".
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((tlp-stat (search-input-file inputs "/bin/tlp-stat")))
+                (with-directory-excursion "tlpui"
+                  (substitute* '("file.py" "settingshelper.py" "statui.py")
+                    (("which\\(\"tlp-stat\"\\)")
+                     (string-append "'" tlp-stat "'"))
+                    (("\"tlp-stat\"")
+                     (string-append "'" tlp-stat "'")))))))
+          (add-before 'check 'fix-home-directory
+            (lambda _
+              ;; Tests fail with "Permission denied:
+              ;; '/homeless-shelter'".
+              (setenv "HOME" "/tmp")))
+          ;; `sanity-check' phase errors out with the following
+          ;; messages: "Unable to init server: Could not connect:
+          ;; Connection refused" and "Error: cannot read user
+          ;; configuration from /etc/tlp.conf or /etc/default/tlp".
+          (delete 'sanity-check)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "discover"))))
+          (add-after 'install 'wrap-gi-python
+            (lambda _
+              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                (wrap-program (string-append #$output "/bin/tlpui")
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (native-inputs
      (list `(,glib "bin") gobject-introspection python-discover))
     (inputs
@@ -7766,26 +7763,27 @@ available in the kernel Linux.")
 (define-public cpuid
   (package
     (name "cpuid")
-    (version "20220224")
+    (version "20220620")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.etallen.com/cpuid/cpuid-"
                                   version ".src.tar.gz"))
               (sha256
                (base32
-                "178zv8jclzg3hqm3g5bpjnsp898rbbxfq6ydavw49vla24mdw6aa"))))
+                "06nb69vlv1szdzq1dp784pgbr9z2py050v1hlrn4rr56jp0a2nci"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target)))
-       #:tests? #f                      ; no tests
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)   ; no configure script
-                  (add-before 'install 'fix-makefile
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (substitute* "Makefile"
-                        (("\\$\\(BUILDROOT\\)/usr")
-                         (assoc-ref outputs "out"))))))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (add-before 'install 'fix-makefile
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* "Makefile"
+                     (("\\$\\(BUILDROOT\\)/usr")
+                      (assoc-ref outputs "out"))))))))
     (inputs (list perl))
     (supported-systems '("i686-linux" "x86_64-linux"))
     (home-page "http://www.etallen.com/cpuid.html")

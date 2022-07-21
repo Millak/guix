@@ -48,6 +48,7 @@
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4941,7 +4942,7 @@ specification and header.")
 (define-public rosegarden
   (package
     (name "rosegarden")
-    (version "21.12")
+    (version "22.06")
     (source
      (origin
        (method url-fetch)
@@ -4949,7 +4950,7 @@ specification and header.")
                            (version-major+minor version) "/"
                            "rosegarden-" version ".tar.bz2"))
        (sha256
-        (base32 "02984qff9rc2r83a5a5zgwawfgd583gnj2w3zvllsxaf0vdx6gnw"))))
+        (base32 "1nzs6g8g36g37zi8dl7gznc77596418g6rzm9a5vxcgbam8q494h"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DCMAKE_BUILD_TYPE=Release")
@@ -5054,45 +5055,110 @@ kit.  It provides a patch bay in flow matrix style for audio, MIDI, CV, and
 OSC connections.")
     (license license:artistic2.0)))
 
+(define-public luppp
+  (let ((revision "1")
+        ;; The last release was in 2019.  Since then some build fixes have
+        ;; been added.
+        (commit "23da1497f80dbace48b7807afd3570c57a4d5994"))
+    (package
+      (name "luppp")
+      (version (git-version "1.2.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/openAVproductions/openAV-Luppp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rjl7fwnqq1gxa3haw1z0p1mld23i194sc43m03h9isagkwxrx9d"))))
+      (build-system meson-build-system)
+      (inputs
+       (list cairo
+             ntk
+             liblo
+             jack-2
+             libsndfile
+             libsamplerate))
+      (native-inputs (list pkg-config cmake-minimal))
+      (home-page "http://openavproductions.com/luppp/")
+      (synopsis "Live performance tool")
+      (description
+       "Luppp is a music creation tool, intended for live use.  The focus is on real
+time processing and a fast and intuitive workflow.  With extensive MIDI
+mapping support, you can get looping just how you like!")
+      (license license:gpl3+))))
+
+(define-public fabla
+  (let ((revision "1")
+        ;; The last release was in 2016.  Since then a number of commits have
+        ;; been added to fix build problems.
+        (commit "10acf03046d980f96ed192d5acb9deb812f5c639"))
+    (package
+      (name "fabla")
+      (version (git-version "1.3.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/openAVproductions/openAV-Fabla")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ybbzb86j1n5dfhzc6aa3cibkwi6q3x0c18b1w3anyibanmr1wmc"))))
+      (build-system cmake-build-system)
+      (arguments '(#:tests? #f)) ;there are none
+      (inputs (list ntk cairomm libsndfile))
+      (native-inputs (list pkg-config lv2 mesa))
+      (home-page "http://openavproductions.com/fabla/")
+      (synopsis "Sampler LV2 plugin")
+      (description
+       "Fabla is an LV2 drum sampler plugin instrument.  It is ideal for loading up
+your favorite sampled sounds and bashing away on a MIDI controller.")
+      (license license:gpl2+))))
+
 (define-public sorcer
-  (package
-    (name "sorcer")
-    (version "1.1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/openAVproductions/"
-                                  "openAV-Sorcer/archive/release-"
-                                  version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "07iyqj28wm0xc4arrq893bm12xjpz65db7ynrlmf6w8krg8wjmd0"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f                      ; no tests included
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-architecture-specific-flags
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("-msse2 -mfpmath=sse") ""))
-             #t))
-         (add-after 'unpack 'build-faust-sources
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "faust"
-               (delete-file "main.cpp")
-               (invoke "faust" "-i"
-                       "-a" "lv2synth.cpp"
-                       "-o" "main.cpp" "main.dsp")))))))
-    (inputs
-     (list boost lv2 ntk))
-    (native-inputs
-     (list faust pkg-config))
-    (home-page "http://openavproductions.com/sorcer/")
-    (synopsis "Wavetable LV2 plugin synth")
-    (description "Sorcer is a wavetable LV2 plugin synthesizer, targeted at
+  (let ((revision "1")
+        ;; The last release was in 2016.  Since then a couple of commits have
+        ;; been added to fix build problems, so we take this arbitrary recent
+        ;; commit.
+        (commit "cc7f6f58af3188a8620b90fdad6e8ca5d026f543"))
+    (package
+      (name "sorcer")
+      (version (git-version "1.1.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/openAVproductions/openAV-Sorcer")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ryaglp2pzln2bm0pwc5p9lb2nk0x4wmrs4c4cp6d2m2hhk82yk7"))
+                (snippet
+                 '(delete-file "faust/main.cpp"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:tests? #f                    ;no tests included
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'remove-architecture-specific-flags
+             (lambda _
+               (substitute* "CMakeLists.txt"
+                 (("-msse2 -mfpmath=sse") ""))))
+           (add-after 'unpack 'build-faust-sources
+             (lambda* (#:key inputs #:allow-other-keys)
+               (with-directory-excursion "faust"
+                 (invoke "faust" "-i"
+                         "-a" "lv2synth.cpp"
+                         "-o" "main.cpp" "main.dsp")))))))
+      (inputs (list boost lv2 ntk))
+      (native-inputs (list faust-0.9.67 pkg-config))
+      (home-page "http://openavproductions.com/sorcer/")
+      (synopsis "Wavetable LV2 plugin synth")
+      (description "Sorcer is a wavetable LV2 plugin synthesizer, targeted at
 the electronic or dubstep genre.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public sonivox-eas
   (package
@@ -5308,7 +5374,7 @@ at @code{musicbrainz.org}.")
 (define-public clyrics
   (package
     (name "clyrics")
-    (version "0.12")
+    (version "0.13")
     (source
      (origin
        (method git-fetch)
@@ -5317,7 +5383,7 @@ at @code{musicbrainz.org}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l9iqz6vxrrxapv7s110g360bqxksir4dcqd8w0l4lhmnfmz3vnk"))))
+        (base32 "0py31linlbphl18wxj5v00gggvxp9djg466mjncf5wpa147hs8r3"))))
     (build-system trivial-build-system)
     (inputs
      (list bash ; for the wrapped program
@@ -5562,7 +5628,7 @@ complete without obstructing your daily work.")
 (define-public playerctl
   (package
     (name "playerctl")
-    (version "2.2.1")
+    (version "2.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5571,14 +5637,14 @@ complete without obstructing your daily work.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17hi33sw3663qz5v54bqqil31sgkrlxkb2l5bgqk87pac6x2wnbz"))))
+                "0ij065blj3h5v6iivvpmgh1095vicj1nc7hp1nhlhpqagd98l89s"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Dintrospection=false" "-Dgtk-doc=false")))
-    (inputs (list python-pygobject))
+     `(#:configure-flags '("-Dgtk-doc=false")))
     (native-inputs
      `(("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ("gobject-introspection" ,gobject-introspection)))
     (synopsis "Control MPRIS-supporting media player applications")
     (description
      "Playerctl is a command-line utility and library for controlling media

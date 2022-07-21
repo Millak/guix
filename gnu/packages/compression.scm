@@ -1895,14 +1895,14 @@ timestamps in the file header with a fixed time (1 January 2008).
 (define-public libzip
   (package
     (name "libzip")
-    (version "1.8.0")
+    (version "1.9.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://libzip.org/download/libzip-" version ".tar.xz"))
               (sha256
                (base32
-                "0zn9vaiwy2izj8cnm8i7c2mbdn38n328grqb8f07x55s4kd3nxph"))))
+                "0dsrpb1faywhm0j8akx21gp7cn99wpz3h543jw8r7p5jnx99hgn9"))))
     (native-inputs
      (list perl pkg-config))
     (inputs
@@ -2628,7 +2628,7 @@ to their original, binary CD format.")
 (define-public libdeflate
   (package
     (name "libdeflate")
-    (version "1.10")
+    (version "1.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2637,19 +2637,19 @@ to their original, binary CD format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v5qh1cz787xj86l15x6brkkaw0jbxhqj5f85275q0l945qazvwm"))))
+                "16n9232zjavcp5wp17cx0gh2v7gipxpncsha05j3ybajfs7g88jv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-static-library-installation
-           (lambda _
-             (substitute* "Makefile"
-               (("install .*\\$\\(STATIC_LIB\\).*") ""))))
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-static-library-installation
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("install .*\\$\\(STATIC_LIB\\).*") ""))))
+               (delete 'configure))))   ; no configure script
     (inputs
      (list zlib))
     (home-page "https://github.com/ebiggers/libdeflate")

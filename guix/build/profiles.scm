@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -149,19 +149,33 @@ instead make DIRECTORY a \"real\" directory containing symlinks."
   "Parse MANIFEST, an sexp as produced by 'manifest->gexp', and return two
 values: the list of store items of its manifest entries, and the list of
 search path specifications."
+  (define-syntax let-fields
+    (syntax-rules ()
+      ;; Bind the fields NAME of LST to same-named variables in the lexical
+      ;; scope of BODY.
+      ((_ lst (name rest ...) body ...)
+       (let ((name (match (assq 'name lst)
+                     ((_ value) value)
+                     (#f '()))))
+         (let-fields lst (rest ...) body ...)))
+      ((_ lst () body ...)
+       (begin body ...))))
+
   (match manifest                            ;this must match 'manifest->gexp'
-    (('manifest ('version 3)
+    (('manifest ('version (or 3 4))
                 ('packages (entries ...)))
      (let loop ((entries entries)
                 (inputs '())
                 (search-paths '()))
        (match entries
-         (((name version output item
-                 ('propagated-inputs deps)
-                 ('search-paths paths) _ ...) . rest)
-          (loop (append rest deps)                ;breadth-first traversal
-                (cons item inputs)
-                (append paths search-paths)))
+         (((name version output item fields ...) . rest)
+          (let ((paths search-paths))
+            (let-fields fields (propagated-inputs search-paths)
+              (loop (append rest propagated-inputs) ;breadth-first traversal
+                    (cons item inputs)
+                    (append search-paths paths)))))
+         ((('repeated name version item) . rest)
+          (loop rest inputs search-paths))
          (()
           (values (reverse inputs)
                   (delete-duplicates
@@ -211,5 +225,9 @@ search paths of MANIFEST's entries."
 
     ;; Write 'OUTPUT/etc/profile'.
     (build-etc/profile output search-paths)))
+
+;;; Local Variables:
+;;; eval: (put 'let-fields 'scheme-indent-function 2)
+;;; End:
 
 ;;; profile.scm ends here

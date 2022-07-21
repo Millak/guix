@@ -4781,6 +4781,25 @@ provided base directory and can return files (and/or directories if desired)
 matching a regular expression.")
     (home-page "https://metacpan.org/release/File-List")))
 
+(define-public perl-file-next
+  (package
+    (name "perl-file-next")
+    (version "1.18")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/petdance/file-next")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zdrxk409qxkbbv4fl4wi285kfzyrpaja9wfl00vrxc078rs4afm"))))
+    (build-system perl-build-system)
+    (synopsis "Lightweight, taint-safe file-finding Perl module")
+    (description "File::Next is a Perl CPAN module for finding files.")
+    (home-page "https://metacpan.org/pod/File::Next")
+    (license license:artistic2.0)))
+
 (define-public perl-file-readbackwards
   (package
     (name "perl-file-readbackwards")
@@ -11417,14 +11436,14 @@ files, using JSON::PP and/or CPAN::Meta::YAML.")
 (define-public perl-scalar-list-utils
   (package
     (name "perl-scalar-list-utils")
-    (version "1.60")
+    (version "1.62")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/P/PE/PEVANS/"
                            "Scalar-List-Utils-" version ".tar.gz"))
        (sha256
-        (base32 "01szp3agmww6gj3hwqbpi8csn9675qcc7dw828r8y00z0bcbm1f6"))))
+        (base32 "17rk9n5fvyzdavdp8ja1s8l50vwmhvzbsjl7rc52rkzhgpnc8ybj"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Scalar-List-Utils")
     (synopsis "Common Scalar and List utility subroutines")

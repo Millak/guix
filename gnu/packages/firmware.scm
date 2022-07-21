@@ -225,7 +225,7 @@ broadband modem as found, for example, on PinePhone.")
 (define* (make-opensbi-package platform name #:optional (arch "riscv64"))
   (package
     (name name)
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -234,7 +234,7 @@ broadband modem as found, for example, on PinePhone.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0srqkhd9b1mq4qkqk31dlrzy4mhljr49bzjxm0saylsbwhgxq31s"))))
+        (base32 "0xlnhl965286kvizyjm571qbhj3l5n71a02dmbmgxzcqapzgi9wk"))))
     (build-system gnu-build-system)
     (native-inputs
      `(,@(if (and (not (string-prefix? "riscv64" (%current-system)))

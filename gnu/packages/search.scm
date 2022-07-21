@@ -74,7 +74,8 @@
   (package
     (name "xapian")
     (version "1.4.19")
-    ;; Note: When updating Xapian, remember to update xapian-bindings below.
+    ;; Note: When updating Xapian, remember to update omega and
+    ;; python-xapian-bindings below.
     (source (origin
               (method url-fetch)
               (uri (string-append "https://oligarchy.co.uk/xapian/" version
@@ -107,6 +108,35 @@ supports the Probabilistic Information Retrieval model and also supports a
 rich set of boolean query operators.")
     (home-page "https://xapian.org/")
     (license (list license:gpl2+ license:bsd-3 license:x11))))
+
+(define-public omega
+  (package
+    (name "omega")
+    (version (package-version xapian))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://oligarchy.co.uk/xapian/" version
+                           "/xapian-omega-" version ".tar.xz"))
+       (sha256
+        (base32
+         "136dsna6jvq48j4x4rr5y9nxmgrif9kvf4ybl5a6gpsmgqlfzcp4"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list (list pcre "bin") perl xapian zlib))
+    (home-page "https://xapian.org/")
+    (synopsis "Search engine built on Xapian")
+    (description
+     "Omega is a search application built on Xapian.  It provides indexers and
+a CGI web search frontend.")
+    (license (list license:gpl2+        ; Main license
+                   ;; csvescape.cc, csvescape.h, csvesctest.cc, datetime.cc,
+                   ;; datetime.h, jsonescape.cc, jsonescape.h, jsonesctest.cc,
+                   ;; mimemap.h, my-html-tok.h, namedents.h, pkglibbindir.cc,
+                   ;; pkglibbindir.h, timegm.cc, timegm.h, urldecode.h,
+                   ;; urlencode.cc, urlencode.h, urlenctest.cc, common/Tokeniseise.pm,
+                   ;; common/keyword.cc, common/keyword.h
+                   license:expat))))
 
 (define-public python-xapian-bindings
   (package (inherit xapian)
@@ -299,7 +329,7 @@ for parsing HTML files.")
 (define-public fsearch
   (package
     (name "fsearch")
-    (version "0.1.2")
+    (version "0.1.4")
     (source
      (origin
        (method git-fetch)
@@ -308,7 +338,7 @@ for parsing HTML files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qbayssdj5pgc4s3ncf7snncp003g8yklirzj1bjc2kxp5y0igv7"))))
+        (base32 "1lc6fhz4zhjbs29xn53v97dqrxwmqaplhky8sm9776ws6fyifwd7"))))
     (build-system meson-build-system)
     (native-inputs
      (list autoconf

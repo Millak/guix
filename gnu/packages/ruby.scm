@@ -12763,3 +12763,224 @@ Faraday-based API wrappers.")
     (description "Bandwidth IRIS is a Ruby SDK for Bandwidth Phone Number
 Dashboard.  It is a Ruby Client library for IRIS / BBS API.")
     (license license:expat)))
+
+(define-public ruby-sentry-core
+  (package
+    (name "ruby-sentry-core")
+    (version "5.3.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "sentry-ruby-core" version))
+        (sha256
+          (base32 "141mrw8wghhsjvln9m6ld3hap3xc5v901jjiz007xywy25725hyd"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile in gem.
+     `(#:tests? #f))
+    (propagated-inputs
+      (list ruby-concurrent
+             ruby-faraday))
+    (home-page "https://sentry.io/for/ruby/")
+    (synopsis "Client interface for the Sentry error logger")
+    (description "Sentry-Core provides a gem that provides a client
+interface for the Sentry error logger.")
+    (license license:expat)))
+
+(define-public ruby-sentry
+  (package
+    (name "ruby-sentry")
+    (version "5.3.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "sentry-ruby" version))
+        (sha256
+          (base32 "0by9mvw8rklzpyx59vfija8h3ssfvxvf5nbqxfmygfy6lm1vdngz"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; No rakefile in gem
+     `(#:tests? #f))
+    (propagated-inputs
+      (list ruby-concurrent
+             ruby-faraday
+             ruby-sentry-core))
+    (home-page "https://sentry.io/for/ruby/")
+    (synopsis "Client interface for the Sentry error logger")
+    (description "Sentry provides a gem that provides a client
+interface for the Sentry error logger.")
+    (license license:expat)))
+
+(define-public ruby-webrick
+  (package
+    (name "ruby-webrick")
+    (version "1.7.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "webrick" version))
+        (sha256
+          (base32 "1d4cvgmxhfczxiq5fr534lmizkhigd15bsx5719r5ds7k7ivisc7"))))
+    (build-system ruby-build-system)
+    (home-page "https://github.com/ruby/webrick")
+    (synopsis "HTTP server toolkit")
+    (description "WEBrick is an HTTP server toolkit that can be configured as an
+HTTPS server, a proxy server, and a virtual-host server.")
+    (license license:bsd-2)))
+
+(define-public ruby-interception
+  (package
+    (name "ruby-interception")
+    (version "0.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "interception" version))
+        (sha256
+          (base32 "01vrkn28psdx1ysh5js3hn17nfp1nvvv46wc1pwqsakm6vb1hf55"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-rspec))
+    (home-page "https://github.com/ConradIrwin/interception")
+    (synopsis "Listen to raise in Ruby")
+    (description "Interception provides a cross-platform ability to intercept all
+exceptions as they are raised.")
+    (license license:expat)))
+
+(define-public ruby-pry-rescue
+  (package
+    (name "ruby-pry-rescue")
+    (version "1.5.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "pry-rescue" version))
+        (sha256
+          (base32 "1wn72y8y3d3g0ng350ld92nyjln012432q2z2iy9lhwzjc4dwi65"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'nuke-bad-test
+           (lambda _
+             (substitute* "spec/source_location_spec.rb"
+               (("time = Time.now") "skip")))))))
+    (native-inputs
+     (list ruby-rspec
+            ruby-pry-stack-explorer))
+    (propagated-inputs
+     (list ruby-interception
+            ruby-pry))
+    (home-page
+      "https://github.com/ConradIrwin/pry-rescue")
+    (synopsis "Start Pry session for rescue")
+    (description "Pry-Rescue allows you to wrap code, to open a pry session at
+any unhandled exceptions.")
+    (license license:expat)))
+
+(define-public ruby-braintree
+  (package
+    (name "ruby-braintree")
+    (version "4.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Download from GitHub because the rubygems version does not contain
+       ;; Rakefile.
+       (uri (git-reference
+             (url "https://github.com/braintree/braintree_ruby")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gixqf9vsjsyrk45lf9xcz0ggdydpgsk8ahknd27bbigz1j4pdf6"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "test:unit"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'less-strict-dependencies
+           (lambda _
+             (substitute* "Gemfile"
+              (("gem \"libxml-ruby\", \"3.2.0\"")
+                "gem \"libxml-ruby\", \"~> 3.0.0\"")
+               (("gem \"rspec\", \"3.9.0\"")
+                 "gem \"rspec\", \"~> 3.8.0\"")
+               (("gem \"rubocop\", \"~>1.12.0\"")
+                 "gem \"rubocop\", \"~> 1.10.0\"")))))))
+    (native-inputs
+     (list ruby-libxml
+            ruby-pry
+            ruby-rake
+            ruby-rspec
+            ruby-rubocop
+            ruby-webrick))
+    (propagated-inputs
+     (list ruby-builder
+            ruby-rexml))
+    (home-page "https://www.braintreepayments.com/")
+    (synopsis "Integration access to the Braintree Gateway")
+    (description "Braintree provides resources and tools for developers to
+integrate Braintree's global payments platform.")
+    (license license:expat)))
+
+(define-public ruby-niceogiri
+  (package
+   (name "ruby-niceogiri")
+   (version "1.1.2")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (rubygems-uri "niceogiri" version))
+     (sha256
+      (base32 "1ha93211bc9cvh23s9w89zz7rq8irpf64ccd9arvg8v1sxg2798a"))))
+   (build-system ruby-build-system)
+   (arguments
+    `(#:test-target "spec"
+      #:phases
+      (modify-phases %standard-phases
+        (add-after 'extract-gemspec 'less-strict-dependencies
+          (lambda _
+            (substitute* "niceogiri.gemspec"
+              (("2\\.7") "3.8")      ;rspec
+              ((".*dependency.*bundler.*") "\n")
+              ((".*dependency.*guard-rspec.*") "\n")))))))
+   (native-inputs
+    (list ruby-rspec
+           ruby-yard))
+   (propagated-inputs (list ruby-nokogiri))
+   (home-page "https://github.com/benlangfeld/Niceogiri")
+   (synopsis "Supplement for Nokogiri")
+   (description "Niceogiri provides wrappers and helpers for XML manipulation
+using Nokogiri.")
+   (license license:expat)))
+
+(define-public ruby-blather
+  (package
+    (name "ruby-blather")
+    (version "2.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "blather" version))
+        (sha256
+          (base32 "05ry2x835fj4pzk61282pcz86n018cr39zbgwbi213md74i90s7c"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; XXX: Tests require too old version of rspec.
+     `(#:tests? #f))
+    (native-inputs
+     (list ruby-countdownlatch
+            ruby-mocha
+            ruby-rb-fsevent
+            ruby-rspec
+            ruby-yard))
+    (propagated-inputs
+     (list ruby-activesupport
+            ruby-eventmachine
+            ruby-niceogiri
+            ruby-nokogiri
+            ruby-sucker-punch))
+    (home-page "https://github.com/adhearsion/blather")
+    (synopsis "XMPP Domain Specific Language for Ruby")
+    (description "Blather is a XMPP DSL for Ruby written on top of EventMachine
+and Nokogiri.")
+    (license license:expat)))

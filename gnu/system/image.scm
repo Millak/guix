@@ -275,7 +275,9 @@ set to the given OS."
 
 (define (find-root-partition image)
   "Return the root partition of the given IMAGE."
-  (srfi-1:find root-partition? (image-partitions image)))
+  (or (srfi-1:find root-partition? (image-partitions image))
+      (raise (formatted-message
+              (G_ "image lacks a partition with the 'boot' flag")))))
 
 (define (root-partition-index image)
   "Return the index of the root partition of the given IMAGE."
@@ -374,7 +376,8 @@ used in the image."
              (type (partition-file-system partition))
              (image-builder
               (with-imported-modules*
-               (let ((initializer #$(partition-initializer partition))
+               (let ((initializer (or #$(partition-initializer partition)
+                                      initialize-root-partition))
                      (inputs '#+(list e2fsprogs fakeroot dosfstools mtools))
                      (image-root "tmp-root"))
                  (sql-schema #$schema)
@@ -444,8 +447,8 @@ used in the image."
     (define (genimage-type-options image-type image)
       (cond
        ((equal? image-type "hdimage")
-        (format #f "~%~/~/gpt = ~a~%~/"
-                (if (gpt-image? image) "true" "false")))
+        (format #f "~%~/~/partition-table-type = \"~a\"~%~/"
+                (image-partition-table-type image)))
        (else "")))
 
     (let* ((format (image-format image))
@@ -842,7 +845,10 @@ image, depending on IMAGE format."
           ;; This happens if some limits are exceeded, see:
           ;; https://lists.gnu.org/archive/html/grub-devel/2020-06/msg00048.html
           #:grub-mkrescue-environment
-          '(("MKRESCUE_SED_MODE" . "mbr_only"))))))))
+          '(("MKRESCUE_SED_MODE" . "mbr_only"))))
+       (else
+        (raise (formatted-message
+                (G_ "~a: unsupported image format") image-format)))))))
 
 
 ;;

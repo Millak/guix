@@ -62,17 +62,17 @@
 (define-public python-sphinx
   (package
     (name "python-sphinx")
-    (version "4.5.0")
+    (version "5.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Sphinx" version))
        (sha256
         (base32
-         "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))
+         "1c67w48509k07pa1q3rp93lpchy8hp6h5iqrc3r20msnly79g3mi"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)

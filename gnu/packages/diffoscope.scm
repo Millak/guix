@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@reproducible-builds.org>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,7 +74,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "217")
+    (version "219")
     (source
      (origin
        (method git-fetch)
@@ -82,7 +83,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vbyg8lm5ddrdkhahcs70rhdmz42blppzliryghxcyyxs7g3gzq5"))
+        (base32 "0n6dn53paxi1316fnv5abw5rlvpfd2kpfn3b08wfzrcb6chsx7br"))
        (patches
         (search-patches "diffoscope-fix-llvm-test.patch"))))
     (build-system python-build-system)
@@ -171,9 +172,15 @@
              docx2txt
              dtc
              e2fsprogs
-             ffmpeg
-             fpc
-             gettext-minimal
+             ffmpeg)
+
+       (match (%current-system)
+              ;; fpc is only available on x86 currently.
+              ((or "x86_64-linux" "i686-linux")
+               (list fpc))
+              (_ '()))
+
+       (list gettext-minimal
              ghostscript
              `(,giflib "bin")
              gnumeric

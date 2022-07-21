@@ -221,14 +221,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
     (name "git")
-    (version "2.36.1")
+    (version "2.37.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0w43a35mhc2qf2gjkxjlnkf2lq8g0snf34iy5gqx2678yq7llpa0"))))
+                "07s1jmsc1d4dlmr3qpibfzj14gy1gm049zp2vp1lw36h3dqs2zwz"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("native-perl" ,perl)
@@ -248,7 +248,7 @@ Python 3.3 and later, rather than on Python 2.")
                  version ".tar.xz"))
            (sha256
             (base32
-             "0vsfjs6xg228yhqcpaiwkpncaqcghnm0pwdxmgibz0rj6d8ydrmi"))))
+             "1q68mnbpznapxxyjpysjx5lz8m6y25frxl5yshgx139c0xcr64c0"))))
        ;; For subtree documentation.
        ("asciidoc" ,asciidoc)
        ("docbook2x" ,docbook2x)
@@ -2436,7 +2436,7 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
 (define-public tig
   (package
     (name "tig")
-    (version "2.5.5")
+    (version "2.5.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2444,7 +2444,12 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
                     version "/tig-" version ".tar.gz"))
               (sha256
                (base32
-                "04skfsw5wkf6p47lis7x4xyfbpjik3id1km75q0fd2g8xa5jrfi4"))))
+                "0pwn7mlfnd5ngcbagjs9vsr7jgmia8676p0i91vvfl4v6qrmzfsh"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; TODO: Delete and rebuild doc/*.(1|5|7).
+                  (for-each delete-file (find-files "doc" "\\.html$"))))))
     (build-system gnu-build-system)
     (native-inputs
      (list asciidoc xmlto))
@@ -2455,7 +2460,17 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
        (modify-phases %standard-phases
          (add-after 'install 'install-doc
            (lambda _
-             (invoke "make" "install-doc"))))
+             (invoke "make" "install-doc")))
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out   (assoc-ref outputs "out"))
+                    (share (string-append out "/share")))
+               (mkdir-p (string-append share "/bash-completion/completions"))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (copy-file "contrib/tig-completion.bash"
+                          (string-append share "/bash-completion/completions/tig"))
+               (copy-file "contrib/tig-completion.zsh"
+                          (string-append share "/zsh/site-functions/_tig"))))))
        #:test-target "test"
        #:tests? #f))                    ; tests require access to /dev/tty
     (home-page "https://jonas.github.io/tig/")
@@ -2675,20 +2690,25 @@ by rclone usable with git-annex.")
 (define-public fossil
   (package
     (name "fossil")
-    (version "2.17")
+    (version "2.18")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://www.fossil-scm.org/home/tarball/"
-             "f48180f2ff3169651a725396d4f7d667c99a92873b9c3df7eee2f144be7a0721"
+             "84f25d7eb10c0714109d69bb2809abfa8b4b5c3d73b151a5b10df724dacd46d8"
              "/fossil-src-" version ".tar.gz"))
+       ;; XXX: Currently the above hash must be manually updated.
        (sha256
-        (base32 "1gvx6xzrw1a8snlq9qmr6099r44ifghg0h0fw4jazqmmyxriqzsw"))
+        (base32 "0cq7677p84nnbfvk2dsh3c3y900gslw3zaw8iipfq932vmf1s31h"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           (delete-file-recursively "compat") #t))))
+           (delete-file-recursively "compat")
+           ;; Disable obsolete SQLite feature check; remove for 2.19.
+           (substitute* "tools/sqlcompattest.c"
+             ((".*\"ENABLE_JSON1\".*")
+              ""))))))
     (build-system gnu-build-system)
     (native-inputs
      (list tcl                          ;for configuration only
@@ -2725,6 +2745,9 @@ by rclone usable with git-annex.")
      "Fossil is a distributed source control management system which supports
 access and administration over HTTP CGI or via a built-in HTTP server.  It has
 a built-in wiki, built-in file browsing, built-in tickets system, etc.")
+    (properties
+     '((release-monitoring-url
+        . "https://fossil-scm.org/home/uv/latest-release.md")))
     (license (list license:public-domain        ;src/miniz.c, src/shell.c
                    license:bsd-2))))
 

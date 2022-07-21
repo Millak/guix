@@ -10,6 +10,7 @@
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -682,3 +683,63 @@ processes which keep waking up the disk unnecessarily and thus prevent some
 power saving.")
     (home-page "https://github.com/martinpitt/fatrace")
     (license license:gpl3+)))
+
+(define-public pw
+  (package
+    (name "pw")
+    (version "2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://www.kylheku.com/git/pw")
+             (commit (string-append "pw-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xn3qnzz48xan78cp83hfrcifrxx9lgnm14134qhyr5wvj7dk246"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ; There are no tests
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "DESTDIR=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("/share/man/man1 \\\\") "/share/man/man1; \\"))))
+               (delete 'configure)
+               (add-before 'install 'make-install-dirs
+                 (lambda _
+                   (mkdir-p (string-append #$output "/bin"))
+                   (mkdir-p (string-append #$output "/share/man/man1"))
+                   (mkdir-p (string-append #$output "/share/man/man5")))))))
+    (home-page "https://www.kylheku.com/cgit/pw/")
+    (synopsis "Monitor recent lines of output from pipe")
+    (description
+     "@command{pw} is Pipe Watch, a utility that continuously reads lines of
+text from a pipe or pipe-like source, passes them through a FIFO buffer, and
+maintains a display based on the occasional sampling of the contents of the
+FIFO buffer, with useful features such as triggering and filtering.
+
+With @command{pw} you can:
+
+@itemize
+@item Interactively apply and remove filters on-the-fly, without interrupting
+the source.
+
+@item Make recurring patterns in the stream appear to ``freeze'' on the
+screen, using triggers.
+
+@item Prevent the overwhelming amount of output from a program from flooding
+the terminal, while consuming all of that output so that the program isn't
+blocked.  @command{pw} can pause its display updates entirely.
+
+@item Juggle multiple shell background jobs that produce output, yet execute
+indefinitely without blocking.  When @command{pw} runs as part of a shell
+background job, it continues to consume input, process filters and take
+snapshots, without displaying anything.  When put into the foreground again,
+display resumes.
+@end itemize")
+    (license license:bsd-2)))

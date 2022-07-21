@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -42,7 +42,7 @@
 (define-public radicale
   (package
     (name "radicale")
-    (version "3.1.5")
+    (version "3.1.7")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -52,7 +52,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wg0dg5bq221c6mj6fq53x82w0hb5hyyi8dqxkf6qnhf99bx8qrw"))))
+        (base32 "1mv1w9qazbis9ir5shr1ybsfn4cxd3rmxa3ns6kbk23yramlzwhg"))))
     (build-system python-build-system)
     (arguments
       (list

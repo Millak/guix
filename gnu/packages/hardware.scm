@@ -84,6 +84,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
@@ -318,7 +319,7 @@ operability and find drivers.")
 (define-public hwinfo
   (package
     (name "hwinfo")
-    (version "21.81")
+    (version "21.82")
     (home-page "https://github.com/openSUSE/hwinfo")
     (source
      (origin
@@ -329,7 +330,7 @@ operability and find drivers.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iyx1fb66s6b5ai4agw91nvl9wwk7z8g6y475vry3wv80dngzc43"))
+        (base32 "1ih6vrgh64408cijywy9by2snynkw91p3h0ry5pzk3lyqsl0wnlh"))
        (modules
         '((guix build utils)))
        (snippet
@@ -598,8 +599,36 @@ human-readable format and checks if it conforms to the standards.")
          (sha256
           (base32 "0hm86d51kj5r3yxq4c23aa57cs8igz3wrkbjn20z4frx75rpf46m"))))
       (build-system python-build-system)
+      (arguments
+       (list
+        #:imported-modules `(,@%python-build-system-modules
+                             ,@%glib-or-gtk-build-system-modules)
+        #:modules '(((guix build glib-or-gtk-build-system) #:prefix glib:)
+                    (guix build python-build-system)
+                    (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+              (assoc-ref glib:%standard-phases
+                         'generate-gdk-pixbuf-loaders-cache-file))
+            (add-after 'install 'glib-or-gtk-compile-schemas
+              (assoc-ref glib:%standard-phases 'glib-or-gtk-compile-schemas))
+            (add-after 'install 'glib-or-gtk-wrap
+              (assoc-ref glib:%standard-phases 'glib-or-gtk-wrap))
+            (add-after 'glib-or-gtk-wrap 'wrap-more
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (wrap-script (search-input-file outputs "bin/h-client")
+                  ;; Wrap GI_TYPELIB_PATH to avoid the error "ValueError:
+                  ;; Namespace GdkPixbuf not available".
+                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
+                  `("PATH" = (,(dirname (search-input-file
+                                         inputs "sbin/lspci"))
+                              ,(dirname (search-input-file
+                                         inputs "bin/lsusb"))))))))))
       (inputs
        (list gdk-pixbuf
+             gobject-introspection      ;for GI_TYPELIB_PATH
+             guile-3.0
              gtk+
              pciutils
              python-pycurl

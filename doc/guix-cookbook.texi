@@ -122,7 +122,7 @@ language, install it with @code{guix install guile} and start a
 @dfn{REPL}---short for @uref{https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop,
 @dfn{read-eval-print loop}}---by running @code{guile} from the command line.
 
-Alternatively you can also run @code{guix environment --ad-hoc guile -- guile}
+Alternatively you can also run @code{guix shell guile -- guile}
 if you'd rather not have Guile installed in your user profile.
 
 In the following examples, lines show what you would type at the REPL;
@@ -284,24 +284,41 @@ depends on the @code{(guix store)} module and it exports two variables,
 @code{ruby-build} and @code{ruby-build-system}.
 @end itemize
 
-For a more detailed introduction, check out
-@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, Scheme
-at a Glance}, by Steve Litt.
+@quotation Going further
+Scheme is a language that has been widely used to teach programming and
+you'll find plenty of material using it as a vehicle.  Here's a
+selection of documents to learn more about Scheme:
 
-One of the reference Scheme books is the seminal ``Structure and
-Interpretation of Computer Programs'', by Harold Abelson and Gerald Jay
-Sussman, with Julie Sussman.  You'll find a
-@uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html, free copy
-online}, together with
-@uref{https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video-lectures/,
-videos of the lectures by the authors}.  The book is available in Texinfo
-format as the @code{sicp} Guix package.  Go ahead, run @code{guix install
-sicp} and start reading with @code{info sicp} (@pxref{Top,,, sicp, Structure and Interpretation of Computer Programs}).
-An @uref{https://sarabander.github.io/sicp/, unofficial ebook is also
-available}.
+@itemize
+@item
+@uref{https://spritely.institute/static/papers/scheme-primer.html, @i{A
+Scheme Primer}}, by Christine Lemmer-Webber and the Spritely Institute.
+
+@item
+@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm,
+@i{Scheme at a Glance}}, by Steve Litt.
+
+@item
+@uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html,
+@i{Structure and Interpretation of Computer Programs}}, by Harold
+Abelson and Gerald Jay Sussman, with Julie Sussman.  Colloquially known
+as ``SICP'', this book is a reference.
+
+You can also install it and read it from your computer:
+
+@example
+guix install sicp info-reader
+info sicp
+@end example
+
+An @uref{https://sarabander.github.io/sicp/, unofficial ebook} is also
+available.
+
+@end itemize
 
 You'll find more books, tutorials and other resources at
 @url{https://schemers.org/}.
+@end quotation
 
 
 @c *********************************************************************
@@ -1600,7 +1617,7 @@ letting you know what you're missing.  If the file is blank then you're
 missing everything.  The next step is to run:
 
 @example shell
-guix environment linux-libre -- make localmodconfig
+guix shell -D linux-libre -- make localmodconfig
 @end example
 
 and note the output.  Do note that the @file{.config} file is still empty.
@@ -2787,7 +2804,7 @@ Maybe a dependency from our manifest has been updated; or we may have run
 garbage-collected.
 
 @item
-Eventually, we set to work on that project again, so we run @code{guix environment
+Eventually, we set to work on that project again, so we run @code{guix shell
    -m manifest.scm}.  But now we have to wait for Guix to build and install
 stuff!
 @end enumerate

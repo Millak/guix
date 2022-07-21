@@ -30501,6 +30501,32 @@ kernel32.")
     (description "This package provides a kqueue interface for BSDs.")
     (license license:expat)))
 
+(define-public rust-kstring-2
+  (package
+    (name "rust-kstring")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "kstring" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0isp7kmk4q0qxpcd877q77ykgb3ryfbmj18djmnwv8c210sncc7c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t                 ; Uses unstable features.
+       #:cargo-inputs
+       (("rust-document-features" ,rust-document-features-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-proptest" ,rust-proptest-1))))
+    (home-page "https://github.com/cobalt-org/kstring")
+    (synopsis "String optimized for map keys")
+    (description "Key String provides a Rust package optimized for map keys.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-kstring-1
   (package
     (name "rust-kstring")
@@ -32248,6 +32274,31 @@ pseudo-random text.")
      "This package provides native rust bindings to the @code{libssh2} library.")
     (license (list license:asl2.0
                    license:expat))))
+
+(define-public rust-libtest-mimic-0.3
+  (package
+    (name "rust-libtest-mimic")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libtest-mimic" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1bp2jllwpciljr14g6s9bk4835g46kszgrjwi66vxxsk3ynbi9q8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.4)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-termcolor" ,rust-termcolor-1))))
+    (home-page "https://github.com/LukasKalbertodt/libtest-mimic")
+    (synopsis "Tools for writing a test harness")
+    (description
+     "Write your own test harness that looks and behaves like the built-in test
+harness used by @code{rustc --test}.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-lmdb-rkv-0.14
   (package
@@ -44455,6 +44506,31 @@ particularly useful for printing structured recursive data like trees.")
        (("rust-termcolor" ,rust-termcolor-0.3)
         ("rust-typed-arena" ,rust-typed-arena-1))))))
 
+(define-public rust-pretty-assertions-1
+  (package
+    (name "rust-pretty-assertions")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pretty_assertions" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0qrmkdwqn56af498vi8zjyq44wzcyvj5ic1dv54d01s2r6d9i7y8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-ctor" ,rust-ctor-0.1)
+        ("rust-diff" ,rust-diff-0.1)
+        ("rust-output-vt100" ,rust-output-vt100-0.1))))
+    (home-page "https://github.com/colin-kiegel/rust-pretty-assertions")
+    (synopsis "Drop-in replacements for assert_eq! and assert_ne!")
+    (description
+     "Overwrite @code{assert_eq!} and @code{assert_ne!} with drop-in
+replacements, adding colorful diffs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pretty-assertions-0.7
   (package
     (name "rust-pretty-assertions")
@@ -56347,6 +56423,31 @@ CPUs, as well as raw interfaces to platform-specific instructions.
 extensions.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-similar-2
+  (package
+    (name "rust-similar")
+    (version "2.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "similar" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1lw33na01r35h09s47jqhjgz3m29wapl20f6ybsla5d1cfgrf91f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))
+       #:cargo-development-inputs
+       (("rust-insta" ,rust-insta-1)
+        ("rust-console" ,rust-console-0.14))))
+    (home-page "https://github.com/mitsuhiko/similar")
+    (synopsis "Diff library for Rust")
+    (description "This package provides a diff library for Rust.")
+    (license license:asl2.0)))
+
 (define-public rust-similar-1
   (package
     (name "rust-similar")
@@ -57513,6 +57614,78 @@ algorithm.  Includes streaming compression and decompression.")
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-snappy-cpp" ,rust-snappy-cpp-0.1))))))
+
+(define-public rust-snapbox-macros-0.2
+  (package
+    (name "rust-snapbox-macros")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "snapbox-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c79lnjcs9yp62y665swv5y5y6088qc256bfr3s7xcnb0izfl7f0"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
+    (synopsis "Snapshot testing toolbox")
+    (description
+     "snapbox is a snapshot-testing toolbox that is ready to use for verifying
+output from
+
+@itemize
+@item Function return values
+@item CLI stdout/stderr
+@item Filesystem changes
+@end itemize
+
+It is also flexible enough to build your own test harness like @code{trycmd}.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-snapbox-0.2
+  (package
+    (name "rust-snapbox")
+    (version "0.2.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "snapbox" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "14zxmsi4k9a9vgp9vs1q62ff1k57p26rwp5xs6f9bdijl9fisykn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-concolor" ,rust-concolor-0.0.8)
+        ("rust-content-inspector" ,rust-content-inspector-0.2)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-dunce" ,rust-dunce-1)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-ignore" ,rust-ignore-0.4)
+        ("rust-libtest-mimic" ,rust-libtest-mimic-0.3)
+        ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
+        ("rust-os-pipe" ,rust-os-pipe-1)
+        ("rust-similar" ,rust-similar-2)
+        ("rust-snapbox-macros" ,rust-snapbox-macros-0.2)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-wait-timeout" ,rust-wait-timeout-0.2)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-yansi" ,rust-yansi-0.5))))
+    (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
+    (synopsis "Snapshot testing toolbox")
+    (description
+     "snapbox is a snapshot-testing toolbox that is ready to use for verifying
+output from
+
+@itemize
+@item Function return values
+@item CLI stdout/stderr
+@item Filesystem changes
+@end itemize
+
+It is also flexible enough to build your own test harness like @code{trycmd}.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-snappy-cpp-0.1
   (package
@@ -65185,6 +65358,36 @@ serializing Rust structures.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-toml-edit-0.14
+  (package
+    (name "rust-toml-edit")
+    (version "0.14.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "toml_edit" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "01g772nkn5lmzaayssjd83rs3ri9ivny8r3wz2b3df1isrgkg65s"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-combine" ,rust-combine-4)
+         ("rust-indexmap" ,rust-indexmap-1)
+         ("rust-itertools" ,rust-itertools-0.10)
+         ("rust-kstring" ,rust-kstring-2)
+         ("rust-serde" ,rust-serde-1))
+        #:cargo-development-inputs
+        (("rust-criterion" ,rust-criterion-0.3)
+         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+         ("rust-snapbox" ,rust-snapbox-0.2))))
+    (home-page "https://github.com/ordian/toml_edit")
+    (synopsis "Yet another format-preserving TOML parser.")
+    (description "This package provides yet another format-preserving TOML
+parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-toml-edit-0.3
   (package
     (name "rust-toml-edit")
@@ -66881,6 +67084,38 @@ the Trust-DNS client to use rustls for TLS.")
     (synopsis "Test harness for ui tests of compiler diagnostics")
     (description
      "Test harness for ui tests of compiler diagnostics.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-trycmd-0.13
+  (package
+    (name "rust-trycmd")
+    (version "0.13.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "trycmd" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04wzh907rkxac5kxlai0s630qh9z122w2m1s2x14d46c4r8iid7z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-escargot" ,rust-escargot-0.5)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-humantime-serde" ,rust-humantime-serde-1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-schemars" ,rust-schemars-0.8)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-shlex" ,rust-shlex-1)
+        ("rust-snapbox" ,rust-snapbox-0.2)
+        ("rust-toml-edit" ,rust-toml-edit-0.14))))
+    (home-page "https://github.com/assert-rs/trycmd")
+    (synopsis "Snapshot testing for a herd of CLI tests")
+    (description
+     "trycmd is a test harness that will enumerate test case files and run them to
+verify the results, taking inspiration from @code{trybuild} and @code{cram}.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-ttf-parser-0.12

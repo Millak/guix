@@ -486,33 +486,33 @@ the in DocBook SGML DTDs.")
     ;; TODO: Add xfig/transfig for fig2dev utility
     (inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                        texlive-latex-anysize
-                                        texlive-latex-appendix
-                                        texlive-latex-bookmark
-                                        texlive-latex-changebar
-                                        texlive-latex-colortbl
-                                        texlive-latex-fancybox
-                                        texlive-fancyhdr
-                                        texlive-fancyvrb
-                                        texlive-latex-float
-                                        texlive-latex-footmisc
-                                        texlive-hyperref
-                                        texlive-latex-jknapltx
-                                        texlive-listings
-                                        texlive-latex-multirow
-                                        texlive-latex-overpic
-                                        texlive-pdfpages
-                                        texlive-refcount
-                                        texlive-subfigure
-                                        texlive-titlesec
-                                        texlive-wasysym
+                                             texlive-latex-anysize
+                                             texlive-latex-appendix
+                                             texlive-latex-bookmark
+                                             texlive-latex-changebar
+                                             texlive-latex-colortbl
+                                             texlive-latex-fancybox
+                                             texlive-fancyhdr
+                                             texlive-fancyvrb
+                                             texlive-latex-float
+                                             texlive-latex-footmisc
+                                             texlive-hyperref
+                                             texlive-latex-jknapltx
+                                             texlive-listings
+                                             texlive-latex-multirow
+                                             texlive-latex-overpic
+                                             texlive-pdfpages
+                                             texlive-refcount
+                                             texlive-subfigure
+                                             texlive-titlesec
+                                             texlive-wasysym
 
-                                        texlive-fonts-rsfs
-                                        texlive-stmaryrd
+                                             texlive-fonts-rsfs
+                                             texlive-stmaryrd
 
-                                        texlive-iftex)))
+                                             texlive-iftex)))
        ("imagemagick" ,imagemagick)     ;for convert
-       ("inkscape" ,inkscape)           ;for svg conversion
+       ("inkscape" ,inkscape/stable)    ;for svg conversion
        ("docbook" ,docbook-xml)
        ("libxslt" ,libxslt)))           ;for xsltproc
     (arguments

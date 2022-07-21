@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -722,7 +723,13 @@ MesCC-Tools), and finally M2-Planet.")
     (inherit tcc-boot0)
     (name "tcc-boot")
     (version "0.9.27")
-    (source (package-source tcc))
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://savannah/tinycc/tcc-"
+                                  version ".tar.bz2"))
+              (sha256
+               (base32
+                "177bdhwzrnqgyrdv1dwvpd04fcxj68s5pm1dzwny6359ziway8yy"))))
     (build-system gnu-build-system)
     (inputs '())
     (propagated-inputs '())

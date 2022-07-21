@@ -773,7 +773,7 @@ and Game Boy Color games.")
 (define-public sameboy
   (package
     (name "sameboy")
-    (version "0.14.7")
+    (version "0.15")
     (source
      (origin
        (method git-fetch)
@@ -782,7 +782,7 @@ and Game Boy Color games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r391jdh0gjnx8bwmr63dcdmq58lpm162mng2ncrx53ydbb13xxf"))))
+        (base32 "0rhl9khc5pxbikjsq4aha5cpqfxf3bnxalc94idd4haw0zf892q9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list rgbds pkg-config))
@@ -1712,7 +1712,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.241")
+    (version "0.245")
     (source
      (origin
        (method git-fetch)
@@ -1721,7 +1721,7 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13bm81qyzvpllzmrak5nb87cdyyvsv4hcnznnrz4jyx1bd8ky6ap"))
+        (base32 "1w34hcvnibnz0xaydh2kdciffng07zins9lnrv041fmzlk4318qb"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.

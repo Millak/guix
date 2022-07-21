@@ -98,6 +98,8 @@ loop-back communications.")
                      ;; For finding containerd-shim binary.
                      #:environment-variables
                      (list (string-append "PATH=" #$containerd "/bin"))
+                     #:pid-file "/run/containerd/containerd.pid"
+                     #:pid-file-timeout 300
                      #:log-file "/var/log/containerd.log"))
            (stop #~(make-kill-destructor)))))
 
@@ -135,7 +137,8 @@ loop-back communications.")
                                   '("--userland-proxy=false"))
                            (if #$enable-iptables?
                                "--iptables"
-                               "--iptables=false"))
+                               "--iptables=false")
+                           "--containerd" "/run/containerd/containerd.sock")
                      #:environment-variables
                      (list #$@environment-variables)
                      #:pid-file "/var/run/docker.pid"

@@ -162,7 +162,7 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
 (define-public feh
   (package
     (name "feh")
-    (version "3.8")
+    (version "3.9")
     (home-page "https://feh.finalrewind.org/")
     (source (origin
               (method url-fetch)
@@ -170,16 +170,19 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1a9bsq5j9sl2drzkab0hdhnamalpaszw9mz2prz6scrr5dak8g3z"))))
+                "185wwqd60r2rk6lzcvd6sl58589qfqrfnf7lqd6friyj84n9cjc6"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases (delete 'configure))
-       #:test-target "test"
-       #:make-flags
-       (list ,(string-append "CC=" (cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "exif=1"
-             "inotify=1")))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))     ; no configure script
+           #:test-target "test"
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output)
+                   "exif=1"
+                   "inotify=1"
+                   "magic=1")))
     (native-inputs
      (list perl perl-test-command))
     (inputs (list curl

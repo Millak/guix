@@ -3,7 +3,7 @@
 ;;; Copyright © 2017 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2017, 2018, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
@@ -428,7 +428,9 @@ from a mounted file system.")
                      "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
                      (string-append "CC=" #$(cc-for-target))
                      (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
-                     "PYTEST=pytest")
+                     (string-append "PYTEST_CMD="
+                                    #$(this-package-native-input "python-pytest")
+                                    "/bin/pytest"))
              #:phases
              #~(modify-phases %standard-phases
                  (delete 'configure)    ; no configure script
@@ -444,16 +446,18 @@ from a mounted file system.")
                            ,(list (string-append #$output            "/sbin")
                                   (string-append #$coreutils-minimal "/bin")
                                   (string-append #$gawk              "/bin")
-                                  (string-append #$util-linux        "/bin"))))))))
-             #:tests? #f))                  ; XXX 6 valgrind tests fail
+                                  (string-append #$util-linux        "/bin"))))))))))
       (native-inputs
-       (list pkg-config
-             ;; For tests.
-             python-pytest
-             valgrind
-             ;; For generating documentation with rst2man.
-             python
-             python-docutils))
+       (append
+         (list pkg-config
+               ;; For tests.
+               python-pytest)
+         (if (member (%current-system) (package-supported-systems valgrind))
+           (list valgrind)
+           '())
+         ;; For generating documentation with rst2man.
+         (list python
+               python-docutils)))
       (inputs
        (list eudev
              keyutils

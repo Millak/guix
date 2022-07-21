@@ -328,7 +328,18 @@ interface and is based on GNU Guile.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0l2arn6gsyw88xk9phxnyplvv1mn8sqp3ipgyyb0nszdzvxlgd36"))))
+                "0l2arn6gsyw88xk9phxnyplvv1mn8sqp3ipgyyb0nszdzvxlgd36"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Avoid continuation barriers so (@ (fibers) sleep) can be
+               ;; called from a service's 'stop' method
+               '(substitute* "modules/shepherd/service.scm"
+                  (("call-with-blocked-asyncs")   ;in 'stop' method
+                   "(lambda (thunk) (thunk))")
+                  (("\\(for-each-service\n")      ;in 'shutdown-services'
+                   "((lambda (proc)
+                       (for-each proc
+                                 (fold-services cons '())))\n")))))
     (arguments
      (list #:configure-flags #~'("--localstatedir=/var")
            #:make-flags #~'("GUILE_AUTO_COMPILE=0")
@@ -2133,7 +2144,7 @@ command.")
     (native-inputs
      ;; For icons.
      (modify-inputs (package-native-inputs wpa-supplicant)
-       (prepend imagemagick inkscape)))
+       (prepend imagemagick inkscape/stable)))
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'chdir
@@ -2267,24 +2278,23 @@ network, which causes enabled computers to power on.")
 (define-public dmidecode
   (package
     (name "dmidecode")
-    (version "3.3")
+    (version "3.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/dmidecode/dmidecode-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0m8lzg9rf1qssasiix672bxk5qwms90561g8hfkkhk31h2kkgiw2"))))
+        (base32 "04i2ahvqinkrnzfsbswplv9wff36xf9b3snvriwrjz26v18sijs3"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                                ; no 'check' target
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "prefix="
-                            (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))                   ; no configure script
+     (list #:tests? #f                  ; no 'check' target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "prefix=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))                   ; no configure script
     (home-page "https://www.nongnu.org/dmidecode/")
     (synopsis "Read hardware information from the BIOS")
     (description
@@ -2624,6 +2634,9 @@ various ways that may be running with too much privilege.")
                (base32
                 "1mlc25sd5rgj5xmzcllci47inmfdw7cp185fday6hc9rwqkqmnaw"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list "BUILD_INFO=\"(Guix)\"")))
     (inputs (list libcap-ng))
     (home-page "https://www.smartmontools.org/")
     (synopsis "S.M.A.R.T. harddisk control and monitoring tools")
@@ -4183,7 +4196,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.15-1")
+      (version "3.3.19-1")
       (source
        (origin
          (method git-fetch)
@@ -4192,7 +4205,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "02zy94bd6ayfl9y7ka6gk32q254k49cbq3a6wgi31r2fcvybyrf7"))))
+          (base32 "0g5m43cj4534gb181zy1hwjz5il88xibf8psxw8a4s6jnaq1zdlk"))))
       (build-system trivial-build-system)
       (inputs
        `(("bash" ,bash-minimal)

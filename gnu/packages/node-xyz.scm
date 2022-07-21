@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021 Charles <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +57,34 @@
 architecture supporting plugins.")
     (license license:expat)))
 
+(define-public node-buffer-crc32
+  (package
+    (name "node-buffer-crc32")
+    (version "0.2.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/brianloveswords/buffer-crc32")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09qx2mnd898190m50mc0rhyvbm7d677sxz9bn09qmqkz6fnsddgf"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (home-page "https://github.com/brianloveswords/buffer-crc32")
+    (synopsis "CRC32 implementation in Javascript")
+    (description
+     "This package provides a CRC32 algorithm that works with binary data
+and fancy character sets, signed or unsigned data and has tests, for Node.")
+    (license license:expat)))
+
 (define-public node-color-name
   (package
     (name "node-color-name")
@@ -76,6 +105,43 @@ architecture supporting plugins.")
     (description
      "This package provides a JSON list with color names and their values.")
     (license license:expat)))
+
+(define-public node-crx3
+  (package
+    (name "node-crx3")
+    (version "1.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ahwayakchih/crx3")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1snqyw8c3s9p2clhqh1172z0rs1was36sfxkk6acgpar32c2rwzw"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'replace-mri-by-minimist
+                    (lambda _
+                      (substitute* "package.json"
+                        (("\"mri\": \"\\^1\\.1\\.6\",")
+                         "\"minimist\": \"^1.2.6\","))
+                      (substitute* "lib/configuration.js"
+                        (("mri")
+                         "minimist"))))
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (inputs (list node-minimist node-pbf node-yazl))
+    (home-page "https://github.com/ahwayakchih/crx3")
+    (synopsis "Create CRXv3 browser extensions with Javascript")
+    (description
+     "This package creates web extension files (CRXv3) for Chromium versions
+64.0.3242 and above and all other browsers supporting the file format and API.")
+    (license license:bsd-3)))
 
 (define-public node-env-variable
   (package
@@ -176,6 +242,33 @@ user-land JavaScript.")
 random number generator.")
     (license license:bsd-3)))
 
+(define-public node-minimist
+  (package
+    (name "node-minimist")
+    (version "1.2.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/substack/minimist")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mxj40mygbiy530wskc8l28wxb6fv3f8vrhpwjgprymhpgbaac7d"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (home-page "https://github.com/substack/minimist")
+    (synopsis "Parse CLI arguments in Javascript")
+    (description "This package can scan for CLI flags and arguments in
+Javascript.")
+    (license license:expat)))
+
 (define-public node-oop
   ;; No releases, last commit was February 2013.
   (let ((commit "f9d87cda0958886955c14a0a716e57021ed295dc")
@@ -200,6 +293,94 @@ random number generator.")
       (description "This library tries to bring basic oop features to JavaScript
 while being as light-weight and simple as possible.")
       (license license:expat))))
+
+(define-public node-pbf
+  (package
+    (name "node-pbf")
+    (version "3.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mapbox/pbf")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r8xs787ix79yr0vrwrizdml9h7cmxjrzhvnhkj784ac5f8nv5j7"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (inputs (list node-ieee754 node-resolve-protobuf-schema))
+    (home-page "https://github.com/mapbox/pbf")
+    (synopsis "Decode and encode protocol buffers in Javascript")
+    (description
+     "This package is a low-level, fast and lightweight JavaScript library
+for decoding and encoding protocol buffers, a compact binary format for
+structured data serialization.  Works both in Node and the browser.
+It supports lazy decoding and detailed customization of the reading/writing
+code.")
+    (license license:bsd-3)))
+
+(define-public node-protocol-buffers-schema
+  (package
+    (name "node-protocol-buffers-schema")
+    (version "3.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mafintosh/protocol-buffers-schema")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lnckxj14jzsnfxdd5kmlwrac43c214bv8i2g5rdldymlpxzrz1v"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (home-page "https://github.com/mafintosh/protocol-buffers-schema")
+    (synopsis "Protocol buffers schema parser written in Javascript")
+    (description "This package provides a protocol buffers schema parser
+written in Javascript.")
+    (license license:expat)))
+
+(define-public node-resolve-protobuf-schema
+  (package
+    (name "node-resolve-protobuf-schema")
+    (version "2.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mafintosh/resolve-protobuf-schema")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zxavr0b2yz9xzp6zlsg5g09i0a6zqb24j12rdvfgph6wd4mzk40"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (inputs (list node-protocol-buffers-schema))
+    (home-page "https://github.com/mafintosh/resolve-protobuf-schema")
+    (synopsis "Resolve protobuf imports")
+    (description
+     "This package can read a protobuf schema from the disk, parse it and
+resolve all imports.")
+    (license license:expat)))
 
 (define-public node-stack-trace
   ;; There have been improvements since the last release.
@@ -364,6 +545,33 @@ function with browser support.")
 Subsequent calls will either return the cached previous value or throw an error
 if desired.")
     (license license:isc)))
+
+(define-public node-ieee754
+  (package
+    (name "node-ieee754")
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/feross/ieee754")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19rlg59lavnwsvbblhvrqwinz2wzqlxhddqpwrc3cyqkscjgza7i"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (home-page "https://github.com/feross/ieee754")
+    (synopsis "Read/write IEEE754 floating point numbers in Javascript")
+    (description "This package can read and write IEEE754 floating point
+numbers from/to a Buffer or array-like object in Javascript.")
+    (license license:bsd-3)))
 
 (define-public node-inherits
   (package
@@ -1303,3 +1511,38 @@ connection.")))
 accessing serial ports.  This package is the recommended entry point for most
 projects.  It combines a high-level Node.js stream interface with a useful
 default set of parsers and bindings.")))
+
+(define-public node-yazl
+  (package
+    (name "node-yazl")
+    (version "2.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/thejoshwolfe/yazl")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lhwqqnvazpi4xw81ldpx0ky0h1j5rcx3br480q2bnzj21cm109n"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda _
+                      (invoke "npm" "--offline" "--ignore-scripts" "install"
+                              "--production"))))))
+    (inputs (list node-buffer-crc32))
+    (home-page "https://github.com/thejoshwolfe/yazl")
+    (synopsis "Yet another zip library for node")
+    (description
+     "This package provides a zip library for Node.  It follows the
+following principles:
+@enumerate
+@item Don't block the JavaScript thread.  Use and provide async APIs.
+@item Keep memory usage under control.  Don't attempt to buffer entire
+files in RAM at once.
+@item Prefer to open input files one at a time than all at once.
+@end enumerate")
+    (license license:expat)))

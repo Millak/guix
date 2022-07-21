@@ -13711,7 +13711,7 @@ network protocols, and core version control algorithms.")
 (define-public abcl
   (package
     (name "abcl")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
@@ -13719,7 +13719,7 @@ network protocols, and core version control algorithms.")
                            version "/abcl-src-" version ".tar.gz"))
        (sha256
         (base32
-         "0zr5mmqyj484vza089l8vc88d07g0m8ymxzglvar3ydwyvi1x1qx"))
+         "0scqq5c7201xhp0g6i4y3m2nrk6l5any1nisiscbsd48ya25qax1"))
        (patches
         (search-patches
          "abcl-fix-build-xml.patch"))))
@@ -13766,6 +13766,10 @@ Lisp language featuring both an interpreter and a compiler, running in the
 JVM.  It supports JSR-223 (Java scripting API): it can be a scripting engine
 in any Java application.  Additionally, it can be used to implement (parts of)
 the application using Java to Lisp integration APIs.")
+    (native-search-paths
+     (list (search-path-specification
+            (variable "XDG_DATA_DIRS")
+            (files '("share")))))
     (license (list license:gpl2+
                    ;; named-readtables is released under 3 clause BSD
                    license:bsd-3

@@ -42,6 +42,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1614,7 +1615,7 @@ for MySQL.")
 (define-public guile-config
   (package
     (name "guile-config")
-    (version "0.4.2")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -1623,7 +1624,7 @@ for MySQL.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256 (base32
-                "09028ylbddjdp3d67zdjz3pnsjqz6zs2bfck5rr3dfaa0qjap40n"))))
+                "0s708k6qnk9155bjrcy1f1v7lqhlpaj4mjip46sr3iw85hca92wz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config texinfo))
@@ -1652,16 +1653,16 @@ above command-line parameters.")
 (define-public guile-hall
   (package
     (name "guile-hall")
-    (version "0.3.1")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.com/a-sassmannshausen/guile-hall")
              (commit version)))
-       (file-name "guile-hall-0.3.1-checkout")
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1s24nigdra6rvclvy15l2aw00c3aq9vv8qwxylzs60darbl36206"))))
+        (base32 "0yrrik1v1xbik5h5q7w2cxrx6gvkmcdm32dl36i7xqdq8pr8sh2d"))))
     (build-system gnu-build-system)
     (arguments
       `(#:modules
@@ -4041,8 +4042,8 @@ according to Bitorrent BEP003.")
     (license license:gpl3+)))
 
 (define-public guile-irc
-  (let ((commit "375d3bde9c6ae7ccc9d7cc65817966b6fda8f26a")
-        (revision "0"))
+  (let ((commit "7d08ce6fdcb87ac668c5d3bfd5584247805507bb")
+        (revision "1"))
     (package
       (name "guile-irc")
       (version (git-version "0.3.0" revision commit))
@@ -4054,12 +4055,12 @@ according to Bitorrent BEP003.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "113lcckcywrz9060w1c3fnvr8d7crdsjgsv4h47hgmr1slgadl4y"))))
+                  "1jx8704200l29ndg9bfyamgxrzknya0f0vwb2sxhd0k3b8r94avw"))))
       (build-system gnu-build-system)
       (arguments
        `(#:configure-flags '("--enable-gnutls=yes")))
       (native-inputs
-       (list autoconf automake texinfo))
+       (list autoconf automake texinfo pkg-config))
       (inputs
        (list gnutls guile-3.0))
       (home-page "https://github.com/rekado/guile-irc")

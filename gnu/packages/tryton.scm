@@ -29,6 +29,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -1745,6 +1746,47 @@ from the UNECE.  Supported formats are:
 @item 5153  Duty or tax or fee type name code
 @item 5305  Duty or tax or fee category code
 @end itemize")
+    (license license:gpl3+)))
+
+(define-public trytond-gis
+  (package
+    (name "trytond-gis")
+    (version "6.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_gis" version))
+       (sha256
+        (base32 "1z6rvwyzisd62bmzhh1g56as7xyvchdsgj52w9q5x908k2jr4pl4"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_gis"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list python-geomet  trytond))
+    (home-page "https://docs.tryton.org/projects/backend-gis")
+    (synopsis "Geographic Information System support from Tryton")
+    (description "The @emph{Trytond GIS} Tryton module adds GIS (Geographic
+information system) support to Tryton.")
+    (license license:gpl3+)))
+
+(define-public trytond-google-maps
+  (package
+    (name "trytond-google-maps")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_google_maps" version))
+       (sha256
+        (base32 "1wgcnl3r1017vicbf7rkcwv2ffrhaah90hcajn3i78bywjdag6nj"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "trytond_google_maps"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs (list trytond trytond-party))
+    (home-page "https://docs.tryton.org/projects/modules-google-maps")
+    (synopsis "Tryton module to link addresses to Google Maps")
+    (description "The @emph{Trytond Google Maps} Tryton module adds a new URL
+field on the party addresses.  This link open the Google Maps page on the
+default browser with the map centered on the selected address.")
     (license license:gpl3+)))
 
 (define-public trytond-incoterm
@@ -3769,6 +3811,31 @@ packaging information about customer and supplier return shipments.")
     (synopsis "Tryton base module for interacting with shipping services")
     (description "This Tryton module is the Fundamental module required to
 interact with shipping service providers.")
+    (license license:gpl3+)))
+
+(define-public trytond-stock-package-shipping-dpd
+  (package
+    (name "trytond-stock-package-shipping-dpd")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_stock_package_shipping_dpd" version))
+       (sha256
+        (base32 "11jn2i7gkxj4nck5fkp0j8n8r6vhsv26rcnmmmmdh1iqji7cv8yf"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "stock_package_shipping_dpd"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs
+     (list python-pypdf2 trytond trytond-party trytond-product trytond-stock
+           trytond-stock-package trytond-stock-package-shipping
+           trytond-stock-shipment-measurements python-zeep))
+    (home-page
+     "https://docs.tryton.org/projects/modules-stock-package-shipping-dpd")
+    (synopsis "DPD connector for the Tryton application platform")
+    (description "The @emph{Stock Package Shipping DPD} Tryton module allows
+you to generate the DPD label using the DPD webservices.  DPD has many
+different web services, the module supports:")
     (license license:gpl3+)))
 
 (define-public trytond-stock-package-shipping-ups

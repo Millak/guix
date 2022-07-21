@@ -50,7 +50,8 @@
   #:use-module (guix channels)
   #:use-module (guix scripts build)
   #:autoload   (guix scripts package) (delete-generations
-                                       delete-matching-generations)
+                                       delete-matching-generations
+                                       list-installed)
   #:autoload   (guix scripts pull) (channel-commit-hyperlink)
   #:autoload   (guix graph) (export-graph node-type
                              graph-backend-name lookup-backend)
@@ -480,8 +481,10 @@ list of services."
 ;;;
 
 (define* (display-system-generation number
-                                    #:optional (profile %system-profile))
-  "Display a summary of system generation NUMBER in a human-readable format."
+                                    #:optional (profile %system-profile)
+                                    #:key (list-installed-regex #f))
+  "Display a summary of system generation NUMBER in a human-readable format.
+List packages in that system that match LIST-INSTALLED-REGEX."
   (define (display-channel channel)
     (format #t     "    ~a:~%" (channel-name channel))
     (format #t (G_ "      repository URL: ~a~%") (channel-url channel))
@@ -544,23 +547,35 @@ list of services."
         (format #t (G_ "  configuration file: ~a~%")
                 (if (supports-hyperlinks?)
                     (file-hyperlink config-file)
-                    config-file))))))
+                    config-file)))
+      (when list-installed-regex
+        (format #t (G_ "  packages:\n"))
+        (pretty-print-table (list-installed
+                             list-installed-regex
+                             (list (string-append generation "/profile")))
+                            #:left-pad 4)))))
 
-(define* (list-generations pattern #:optional (profile %system-profile))
+(define* (list-generations pattern #:optional (profile %system-profile)
+                           #:key (list-installed-regex #f))
   "Display in a human-readable format all the system generations matching
-PATTERN, a string.  When PATTERN is #f, display all the system generations."
+PATTERN, a string.  When PATTERN is #f, display all the system generations.
+List installed packages that match LIST-INSTALLED-REGEX."
   (cond ((not (file-exists? profile))             ; XXX: race condition
          (raise (condition (&profile-not-found-error
                             (profile profile)))))
         ((not pattern)
-         (for-each display-system-generation (profile-generations profile)))
+         (for-each (cut display-system-generation <>
+                        #:list-installed-regex list-installed-regex)
+                   (profile-generations profile)))
         ((matching-generations pattern profile)
          =>
          (lambda (numbers)
            (if (null-list? numbers)
                (exit 1)
                (leave-on-EPIPE
-                (for-each display-system-generation numbers)))))))
+                (for-each (cut display-system-generation <>
+                               #:list-installed-regex list-installed-regex)
+                          numbers)))))))
 
 
 ;;;
@@ -1032,6 +1047,11 @@ Some ACTIONS support additional ARGS.\n"))
                          use BACKEND for 'extension-graphs' and 'shepherd-graph'"))
   (newline)
   (display (G_ "
+  -I, --list-installed[=REGEXP]
+                         for 'describe' and 'list-generations', list installed
+                         packages matching REGEXP"))
+  (newline)
+  (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
   -V, --version          display version information and exit"))
@@ -1135,6 +1155,9 @@ Some ACTIONS support additional ARGS.\n"))
          (option '("graph-backend") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'graph-backend arg result)))
+         (option '(#\I "list-installed") #f #t
+                 (lambda (opt name arg result)
+                   (alist-cons 'list-installed (or arg "") result)))
          %standard-build-options))
 
 (define %default-options
@@ -1322,25 +1345,29 @@ argument list and OPTS is the option alist."
     ;; The following commands do not need to use the store, and they do not need
     ;; an operating system configuration file.
     ((list-generations)
-     (let ((pattern (match args
+     (let ((list-installed-regex (assoc-ref opts 'list-installed))
+           (pattern (match args
                       (() #f)
                       ((pattern) pattern)
                       (x (leave (G_ "wrong number of arguments~%"))))))
-       (list-generations pattern)))
+       (list-generations pattern #:list-installed-regex list-installed-regex)))
     ((describe)
      ;; Describe the running system, which is not necessarily the current
      ;; generation.  /run/current-system might point to
      ;; /var/guix/profiles/system-N-link, or it might point directly to
      ;; /gnu/store/…-system.  Try both.
-     (match (generation-number "/run/current-system" %system-profile)
-       (0
-        (match (generation-number %system-profile)
-          (0
-           (leave (G_ "no system generation, nothing to describe~%")))
-          (generation
-           (display-system-generation generation))))
-       (generation
-        (display-system-generation generation))))
+     (let ((list-installed-regex (assoc-ref opts 'list-installed)))
+       (match (generation-number "/run/current-system" %system-profile)
+         (0
+          (match (generation-number %system-profile)
+            (0
+             (leave (G_ "no system generation, nothing to describe~%")))
+            (generation
+             (display-system-generation
+              generation #:list-installed-regex list-installed-regex))))
+         (generation
+          (display-system-generation
+           generation #:list-installed-regex list-installed-regex)))))
     ((search)
      (apply (resolve-subcommand "search") args))
     ((edit)

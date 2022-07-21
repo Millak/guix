@@ -1761,7 +1761,7 @@ addons which can add many functionalities to the base client.")
                     (bin (string-append out "/bin"))
                     (doc (string-append out "/share/doc/msmtp"))
                     (msmtpq "scripts/msmtpq")
-                    (vimfiles (string-append out "/share/vim/vimfiles/plugin")))
+                    (vimfiles (string-append out "/share/vim/vimfiles/syntax")))
                (install-file (string-append msmtpq "/msmtpq") bin)
                (install-file (string-append msmtpq "/msmtp-queue") bin)
                (install-file (string-append msmtpq "/README.msmtpq") doc)
@@ -3959,11 +3959,11 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "9b28ec7d152623692877bcb767e5c654e59e57ed")
-        (revision "8"))
+  (let ((commit "02485074c9ae3d3b0039ac4c44fa37f2e2e75eac")
+        (revision "1"))
     (package
       (name "mumi")
-      (version (git-version "0.0.1" revision commit))
+      (version (git-version "0.0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3972,7 +3972,7 @@ It is a replacement for the @command{urlview} program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1njnzqv4h2msfa86qfbvm54vfdwlikwzs4134fcffcf4l86bs9fl"))))
+                  "1ppqz4bclbw3rqgd2fq4mj8hsrd9cfdddjzaycm5b0ffdsm8nrs3"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)

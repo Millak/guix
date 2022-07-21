@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,10 +20,9 @@
 (define-module (gnu build chromium-extension)
   #:use-module (guix gexp)
   #:use-module (guix packages)
-  #:use-module (gnu packages chromium)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages node-xyz)
   #:use-module (guix build-system trivial)
   #:export (make-chromium-extension))
 
@@ -69,24 +69,14 @@ in PACKAGE-OUTPUT of PACKAGE.  The extension will be signed with SIGNING-KEY."
    (string-append name "-" version ".crx")
    (with-imported-modules '((guix build utils))
      #~(begin
-         ;; This is not great.  We pull Xorg and Chromium just to Zip and
-         ;; sign an extension.  This should be implemented with something
-         ;; lighter.  (TODO: where is the CRXv3 documentation..?)
          (use-modules (guix build utils))
-         (let ((chromium #$(file-append ungoogled-chromium "/bin/chromium"))
-               (xvfb #$(file-append xorg-server "/bin/Xvfb"))
+         (let ((crx3 #+(file-append node-crx3 "/bin/crx3"))
                (packdir (string-append (getcwd) "/extension")))
            (mkdir packdir)
            (copy-recursively (ungexp package package-output) packdir
                              ;; Ensure consistent file modification times.
                              #:keep-mtime? #t)
-           (system (string-append xvfb " :1 &"))
-           (setenv "DISPLAY" ":1")
-           (sleep 2)                    ;give Xorg some time to initialize...
-           (invoke chromium
-                   "--user-data-dir=chromium-profile"
-                   (string-append "--pack-extension=" packdir)
-                   (string-append "--pack-extension-key=" #$signing-key))
+           (invoke crx3 "--keyPath" #$signing-key packdir)
            (copy-file (string-append packdir ".crx") #$output))))
    #:local-build? #t))
 

@@ -49,6 +49,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,6 +91,26 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages xorg))
+
+(define-public font-artifika
+  (package
+    (name "font-artifika")
+    (version "1.102")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cyrealtype/Artifika")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nwjm44nys1qz3wyg0mm15gdjpz641xpmsz00n6m8065xrw86q7i"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/cyrealtype/Artifika")
+    (synopsis "Upright italic font")
+    (description "Artifika is an upright italic font for fashionable display
+titling.")
+    (license license:silofl1.1)))
 
 (define-public font-ibm-plex
   (package
@@ -2182,14 +2203,14 @@ always uses Farsi digits, and does not include Latin glyphs from Roboto.
 (define-public font-victor-mono
   (package
    (name "font-victor-mono")
-   (version "1.4.2")
+   (version "1.5.3")
    (source (origin
             (method url-fetch/zipbomb)
             (uri (string-append
                        "https://github.com/rubjo/victor-mono/raw/v"
                        version
                        "/public/VictorMonoAll.zip"))
-            (sha256 "01260vja0d22mcvkzspf0xnl7b851r0265arqkm12q1vagzyxvkm")))
+            (sha256 "1axiwxz8l46cc60jfp2la8a9qpj866236lz3dc5l6m35r9as56l3")))
    (build-system font-build-system)
    (synopsis "Font with support for italics and ligatures")
    (description "Victor Mono is an open-source monospaced font with

@@ -381,14 +381,14 @@ the same, being completely separated from the Internet.")
     ;; Track the ‘mainline’ branch.  Upstream considers it more reliable than
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
-    (version "1.21.6")
+    (version "1.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1bh52jqqcaj5wlh2kvhxr00jhk2hnk8k97ki4pwyj4c8920p1p36"))))
+                "1lacv4gb72n7f93smy098y122aaz9bxdxxkjksgbwwljbfiwl2l2"))))
     (build-system gnu-build-system)
     (inputs (list libxml2 libxslt openssl pcre zlib))
     (arguments
@@ -476,9 +476,9 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((version "1.21.6")
-        (revision 2829)
-        (changeset "1ecf0e0526da"))
+  (let ((version "1.23.0")
+        (revision 2862)
+        (changeset "cf7551842617"))
     (package
       (name "nginx-documentation")
       (version (simple-format #f "~A-~A-~A" version revision changeset))
@@ -490,7 +490,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                (file-name (string-append name "-" version))
                (sha256
                 (base32
-                 "1r3y9wv4bhji5b16ljb557llf6ih3z2mzgwbia79h7223468w3fg"))))
+                 "1qfrcakj6dzdypn01dngjqvsi4b4fsbpxziy5m2x1rs1z6gv7ia3"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f                    ; no test suite
@@ -4662,8 +4662,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "198b6ef719745a48918e703990d1e846ffcd65b0")
-        (revision "31"))
+  (let ((commit "ee73d2cc9857533020535eb8e1ad856e04fb5152")
+        (revision "33"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4675,7 +4675,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "00ma74v9nrza5xpgpgr757hfdlp1cd9rnrpks99mqpjkz73sj1m6"))))
+                  "0rmx728md50nlka61f4gma58avplyaf32k71hazprijdqii2vkgf"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -7870,7 +7870,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "1.8.3")
+    (version "1.8.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7878,7 +7878,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "1qbzlrzhyj7gvhgbm057zs1g5ajw1w6499qz61154v7ax8fwrdpp"))))
+                "0bwxr08n6zzhc70a71jhgr9zr1246d1lxf2pknndxwn2pz1xxv5b"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"
@@ -7895,7 +7895,7 @@ solution for any project's interface needs:
                          pkg-config
                          procps))
     (inputs (list libevent libressl))
-    (home-page "https://git.omarpolo.com/gmid/about/")
+    (home-page "https://gmid.omarpolo.com/")
     (synopsis "Simple and secure Gemini server")
     (description "@command{gmid} is a fast Gemini server written with security
 in mind.  It has features such as:

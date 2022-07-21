@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2019–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
@@ -413,14 +413,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.2.2")
+    (version "2.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "1xjhg473ibfiplvvyg1grxrh0nqqbg72acc2pcacw7bijyzdp447"))))
+        (base32 "18044dqx37mkipnrzs7jrp0cbnwp6snb5gi06a8zn9m8iy6088ry"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -441,28 +441,38 @@ an interpreter, a compiler, a debugger, and much more.")
      ;; ECL too.  As of 2020-07-01, ECL was last updated in 2020 while CLISP
      ;; was last updated in 2010, and both take about the same time to build SBCL.
      ;;
-     ;; For now we stick to CLISP for all systems.  We keep the `match' here
-     ;; to make it easier to change the host compiler for various
+     ;; For now we stick to CLISP as the default for all systems.  In any event, keep
+     ;; the `match' here to make it easier to change the host compiler for various
      ;; architectures.  Consider switching to ECL if it gets faster than CLISP
      ;; (maybe post 2020 release).
-     `(,@(match (%current-system)
-           ((or "x86_64-linux" "i686-linux")
-            `(("clisp" ,clisp)))
-           (_
-            `(("clisp" ,clisp))))
-       ("cl-asdf" ,cl-asdf)
-       ("ed" ,ed)
-       ("inetutils" ,inetutils)         ;for hostname(1)
-       ("texinfo" ,texinfo)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-tex-texinfo)))
-       ("which" ,which)
-       ("zlib" ,zlib)))
+     (list (match (%current-system)
+             ("powerpc-linux"       ; CLISP fails to build, needs investigating.
+              ecl)
+             (_
+              clisp))
+           cl-asdf
+           ed
+           inetutils         ;for hostname(1)
+           texinfo
+           (texlive-updmap.cfg (list texlive-tex-texinfo))
+           which))
+    (inputs
+     (list gmp                          ; for sb-gmp
+           mpfr                         ; for sb-mpfr
+           (list zstd "lib")))
     (arguments
      `(#:modules ((guix build gnu-build-system)
                   (guix build utils)
                   (srfi srfi-1))
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-arm32?)
+             ;; TODO: Move to snippet in staging.
+             `((add-after 'unpack 'dont-force-armv5
+                 (lambda _
+                   (substitute* "src/runtime/Config.arm-linux"
+                     (("-march=armv5") "")))))
+             '())
          (delete 'configure)
          (add-after 'unpack 'fix-build-id
            ;; One of the build scripts makes a build id using the current date.
@@ -538,25 +548,55 @@ an interpreter, a compiler, a debugger, and much more.")
                  (("\\(deftest grent\\.[12]" all)
                   (string-append "#+nil ;disabled by Guix\n" all))))
              #t))
+         (add-before 'build 'fix-shared-library-makefile
+           (lambda _
+             (substitute* '("src/runtime/GNUmakefile")
+               (("	cc") "	$(CC)"))
+             #t))
+         (add-before 'build 'fix-contrib-library-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((gmp (assoc-ref inputs "gmp"))
+                   (mpfr (assoc-ref inputs "mpfr")))
+               (substitute* '("contrib/sb-gmp/gmp.lisp")
+                 (("\"libgmp\\.so") (string-append "\"" gmp "/lib/libgmp.so")))
+               (substitute* '("contrib/sb-mpfr/mpfr.lisp")
+                 (("\"libmpfr\\.so") (string-append "\"" mpfr "/lib/libmpfr.so"))))
+             #t))
          (replace 'build
            (lambda* (#:key outputs #:allow-other-keys)
              (setenv "CC" "gcc")
              (invoke "sh" "make.sh" ,@(match (%current-system)
-                                        ((or "x86_64-linux" "i686-linux")
-                                         `("clisp"))
+                                        ("powerpc-linux"
+                                         `("ecl"))
                                         (_
                                          `("clisp")))
                      (string-append "--prefix="
                                     (assoc-ref outputs "out"))
-                     "--dynamic-space-size=3072"
+                     ,@(if (target-ppc32?)
+                         ;; 3072 is too much for this architecture.
+                         `("--dynamic-space-size=2048")
+                         `("--dynamic-space-size=3072"))
                      "--with-sb-core-compression"
-                     "--with-sb-xref-for-internals")))
+                     "--with-sb-xref-for-internals"
+                     ;; SB-SIMD will only be built on x86_64 CPUs supporting
+                     ;; AVX2 instructions. Some x86_64 CPUs don't, so for reproducibility
+                     ;; we disable it and we don't build its documentation (see the
+                     ;; 'build-doc' phase).
+                     "--without-sb-simd")))
+         (add-after 'build 'build-shared-library
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "CC" "gcc")
+             (invoke "sh" "make-shared-library.sh")))
          (replace 'install
            (lambda _
              (invoke "sh" "install.sh")))
          (add-after 'build 'build-doc
            (lambda _
-             ;; TODO: Doc is not deterministic, maybe there is a timespamp?
+             ;; Don't build the documentation for SB-SIMD as it is disabled in
+             ;; the 'build' phase.
+             (substitute* "doc/manual/generate-texinfo.lisp"
+               (("exclude '\\(\"asdf\"\\)")
+                "exclude '(\"asdf\" \"sb-simd\")"))
              (with-directory-excursion "doc/manual"
                (and  (invoke "make" "info")
                      (invoke "make" "dist")))))
@@ -574,6 +614,27 @@ an interpreter, a compiler, a debugger, and much more.")
                    (display
                     (string-append "(sb-ext:set-sbcl-source-location \""
                                    source-dir "\")") )))
+               #t)))
+         (add-after 'install 'remove-coreutils-references
+           ;; They are only useful on non-Linux, non-SBCL.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share-dir (string-append out "/share/sbcl/")))
+               (substitute* (string-append share-dir "src/code/run-program.lisp")
+                 (("\\(run-program \".*uname\"")
+                  "(run-program \"uname\""))
+               (substitute* (string-append share-dir "contrib/asdf/asdf.lisp")
+                 (("\\(\".*/usr/bin/env\"")
+                  "(\"/usr/bin/env\""))
+               (substitute* (string-append share-dir "contrib/asdf/uiop.lisp")
+                 (("\\(\".*/usr/bin/env\"")
+                  "(\"/usr/bin/env\""))
+               #t)))
+         (add-after 'install 'install-shared-library
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib-dir (string-append out "/lib")))
+               (install-file "src/runtime/libsbcl.so" lib-dir)
                #t)))
          (add-after 'install 'install-doc
            (lambda* (#:key outputs #:allow-other-keys)
@@ -923,16 +984,16 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "277")
+    (version "278")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "http://www.kylheku.com/git/txr/")
+             (url "https://www.kylheku.com/git/txr/")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w6q5inydz0cf4g3y8954msxfb2clf4nj4aqiiayp0z2y96b7bhk"))))
+        (base32 "08jmqv245vnvl4xx6x5a5hxlnhdcipfdbja54dvsi6wkiks2fif7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -983,7 +1044,13 @@ the HTML documentation of TXR.")
              (let ((doc (string-append (assoc-ref outputs "out")
                                        "/share/doc/" ,name "-" ,version)))
                (for-each (lambda (f) (install-file f doc))
-                         '("txr-manpage.html" "txr-manpage.pdf"))))))))
+                         '("txr-manpage.html" "txr-manpage.pdf")))))
+         (add-after 'install 'install-vim-files
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out    (assoc-ref outputs "out"))
+                    (syntax (string-append out "/share/vim/vimfiles/syntax")))
+               (install-file "tl.vim" syntax)
+               (install-file "txr.vim" syntax)))))))
     (native-inputs
      ;; Required to build the documentation.
      (list ghostscript

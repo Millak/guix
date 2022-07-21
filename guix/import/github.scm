@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -95,8 +96,8 @@ false if none is recognized"
            ((string-suffix? (string-append "/releases/download/" repo "-"
                                            version "/" repo "-" version ext)
                             url)
-            (string-append "/releases/download/" repo "-" version "/" repo "-"
-                           version ext))
+            (string-append prefix "/releases/download/" repo "-" new-version "/"
+                           repo "-" new-version ext))
            (#t #f))) ; Some URLs are not recognised.
         #f))
 

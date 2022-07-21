@@ -46,6 +46,7 @@
   #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system r)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
@@ -121,6 +122,35 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
+(define-public cdo
+  (package
+    (name "cdo")
+    (version "2.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://code.mpimet.mpg.de/attachments/download/26823/cdo-"
+                     version ".tar.gz"))
+              (sha256
+               (base32
+                "1khdbd5cmnn7qm6hcqg4md5wbq14fs6brrns8b3g18diqgqvpvpd"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-netcdf="
+                                  #$(this-package-input "netcdf")))))
+    (inputs
+     (list netcdf))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://code.mpimet.mpg.de/projects/cdo")
+    (synopsis "Climate data operators")
+    (description "@acronym{CDO, Climate Data Operators} is a collection of command-line
+operators to manipulate and analyse climate and NWP model data.  Supported
+data formats are GRIB 1/2, netCDF 3/4, SERVICE, EXTRA and IEG.  There are more
+than 600 operators available.")
+    (license license:bsd-3)))
+
 (define-public memphis
   (package
     (name "memphis")
@@ -186,7 +216,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
 (define-public geos
   (package
     (name "geos")
-    (version "3.8.1")
+    (version "3.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.osgeo.org/geos/geos-"
@@ -194,8 +224,8 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "1xqpmr10xi0n9sj47fbwc89qb0yr9imh4ybk0jsxpffy111syn22"))))
-    (build-system gnu-build-system)
+                "05apyh6dvv15fax4xvxa0kr622h4y08w9p3274mlqsrqmjcwbfsh"))))
+    (build-system cmake-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
                    (add-after
@@ -203,11 +233,10 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                     (lambda _
                       (substitute* '("tests/xmltester/testrunner.sh"
                                      "tests/geostest/testrunner.sh")
-                        (("/bin/sh") (which "sh")))
-                      #t)))))
+                        (("/bin/sh") (which "sh"))))))))
     (inputs
      (list glib))
-    (home-page "https://geos.osgeo.org/")
+    (home-page "https://libgeos.org/")
     (synopsis "Geometry Engine for Geographic Information Systems")
     (description
      "GEOS provides a spatial object model and fundamental geometric
@@ -312,18 +341,14 @@ and driving.")
 (define-public libgeotiff
   (package
     (name "libgeotiff")
-    (version "1.5.1")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://download.osgeo.org/geotiff/libgeotiff/libgeotiff-"
                            version ".tar.gz"))
-       (patches (search-patches
-                 ;; See libgeotiff 1.5.1 issue
-                 ;; https://github.com/OSGeo/libgeotiff/issues/22
-                 "libgeotiff-adapt-test-script-for-proj-6.2.patch"))
        (sha256
-        (base32 "0b31mlzcv5b1y7jdvb7p0pa3xradrg3x5g32ym911lbhq4rrgsgr"))
+        (base32 "1mjmgv48x51ppax5dnb6lq7z600czxll53bx6jbzqwd4m93i7aq5"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -809,7 +834,7 @@ street bearings/orientations, and speed/travel time.")
 (define-public mapnik
   (package
     (name "mapnik")
-    (version "3.0.18")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
@@ -817,7 +842,7 @@ street bearings/orientations, and speed/travel time.")
                            version "/mapnik-v" version ".tar.bz2"))
        (sha256
         (base32
-         "06frcikaj2mgz3abfk5h0z4j3hbksi0zikwjngbjv4p5f3pwxf8q"))))
+         "0qb2irykja5qhr9apz9r230pcxap9v3j85fi98mj2xd9sa163ms3"))))
     (build-system scons-build-system)
     (inputs
      (list boost
@@ -834,10 +859,9 @@ street bearings/orientations, and speed/travel time.")
            sqlite
            zlib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config postgresql))
     (arguments
-     `(#:scons ,scons-python2
-       #:scons-flags
+     `(#:scons-flags
        (list "CC=gcc"
              (string-append "PREFIX=" %output)
              (string-append "CUSTOM_LDFLAGS=-Wl,-rpath=" %output "/lib"))))
@@ -939,29 +963,12 @@ development.")
                        "frmts/gtiff/libgeotiff"
                        "frmts/zlib"
                        "ogr/ogrsf_frmts/geojson/libjson"))))))
-    (build-system gnu-build-system)
+    (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
        #:configure-flags
-       (let-syntax ((with (syntax-rules ()
-                            ((_ option input)
-                             (string-append option "="
-                                            (assoc-ref %build-inputs input))))))
-         (list
-          ;; TODO: --with-pcidsk, --with-pcraster
-          (with "--with-expat" "expat")
-          (with "--with-freexl" "freexl")
-          (with "--with-geotiff" "libgeotiff")
-          (with "--with-gif" "giflib")
-          (with "--with-jpeg" "libjpeg-turbo")
-          (with "--with-libjson-c" "json-c")
-          (with "--with-libtiff" "libtiff")
-          (with "--with-libz" "zlib")
-          (with "--with-png" "libpng")
-          (with "--with-sqlite3" "sqlite")
-          (with "--with-webp" "libwebp")
-          "--without-jpeg12"
-          "--with-pcre"))))
+       (list "-DGDAL_USE_INTERNAL_LIBS=WHEN_NO_EXTERNAL"
+             "-DGDAL_USE_JPEG12_INTERNAL=OFF")))
     (inputs
      (list curl
            expat
@@ -976,9 +983,10 @@ development.")
            libwebp
            netcdf
            openssl
-           pcre
+           pcre2
            postgresql ; libpq
            proj
+           qhull
            sqlite
            zlib))
     (native-inputs
@@ -2200,7 +2208,7 @@ orienteering sport.")
     (license license:gpl3+)))
 
 (define-public grass
-  (let* ((version "7.8.6")
+  (let* ((version "7.8.7")
          (majorminor (string-join (list-head (string-split version #\.) 2) ""))
          (grassxx (string-append "grass" majorminor)))
     (package
@@ -2212,7 +2220,7 @@ orienteering sport.")
          (uri (string-append "https://grass.osgeo.org/" grassxx
                              "/source/grass-" version ".tar.gz"))
          (sha256
-          (base32 "1glk74ly3j0x8ymn4jp73s6y8qv7p3g5nv4gvb6l9qqplyq1fpnq"))))
+          (base32 "0sbz0ba9p963phvd0gmvfqq1fg4ixpipzcjbf20ys86qavjppzsg"))))
       (build-system gnu-build-system)
       (inputs
        `(("bzip2" ,bzip2)
@@ -2323,7 +2331,7 @@ visualization.")
 (define-public saga
   (package
     (name "saga")
-    (version "7.9.0")
+    (version "8.2.1")
     (source
      (origin
        (method url-fetch)
@@ -2331,8 +2339,8 @@ visualization.")
                            (version-major version) "/SAGA%20-%20" version
                            "/saga-" version ".tar.gz"))
        (sha256
-        (base32 "1n051yxxkylly0k9rlkx2ih3j2lf9d4csg00sm7161r7nhjvggd1"))))
-    (build-system gnu-build-system)
+        (base32 "008izjs6gvj09abxf16ssl1xy0ay3ljq4jswbggp6wiiq459minv"))))
+    (build-system cmake-build-system)
     (native-inputs
      (list pkg-config swig))
     (inputs
@@ -2352,7 +2360,12 @@ visualization.")
            vigra
            wxwidgets))
     (arguments
-     '(#:configure-flags '("--enable-python")))
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'cd-to-source-dir
+           (lambda _
+             (chdir "saga-gis"))))))
     (synopsis "System for Automated Geoscientific Analyses")
     (description
      "SAGA (System for Automated Geoscientific Analyses) is a Geographic
@@ -2473,12 +2486,14 @@ growing set of geoscientific methods.")
                              "PyQgsLayoutHtml"
                              "PyQgsLayoutLegend"
                              "PyQgsLayoutMapGrid"
+                             "PyQgsMapClippingUtils"
                              "PyQgsMapLayer"
                              "PyQgsMetadataBase"
                              "PyQgsOGRProvider"
                              "PyQgsOGRProviderGpkg"
                              "PyQgsOapifProvider"
                              "PyQgsPalLabelingLayout"
+                             "PyQgsProcessingInPlace"
                              "PyQgsProject"
                              "PyQgsProviderConnectionGpkg"
                              "PyQgsProviderConnectionPostgres"
@@ -2515,6 +2530,7 @@ growing set of geoscientific methods.")
                              "qgis_layoutlabeltest"
                              "qgis_layoutmanualtabletest"
                              "qgis_layoutmapgridtest"
+                             "qgis_layoutmapoverviewtest"
                              "qgis_layoutmaptest"
                              "qgis_layoutmultiframetest"
                              "qgis_layoutpicturetest"
@@ -2522,6 +2538,7 @@ growing set of geoscientific methods.")
                              "qgis_layouttest"
                              "qgis_mapdevicepixelratiotest"
                              "qgis_maprendererjobtest"
+                             "qgis_meshcontourstest"
                              "qgis_ogrproviderguitest"
                              "qgis_painteffecttest"
                              "qgis_pallabelingtest"
@@ -2535,7 +2552,8 @@ growing set of geoscientific methods.")
                              "qgis_svgmarkertest"
                              "qgis_taskmanagertest"
                              "qgis_wcsprovidertest"
-                             "qgis_ziplayertest")
+                             "qgis_ziplayertest"
+                             "TestQgsRandomMarkerSymbolLayer")
                            "|")))))
          (add-after 'install 'wrap-python
            (assoc-ref python:%standard-phases 'wrap))
