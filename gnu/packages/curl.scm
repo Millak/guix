@@ -63,16 +63,16 @@
 (define-public curl
   (package
    (name "curl")
-   (version "7.82.0")
-   (replacement curl-7.84.0)
+   (version "7.84.0")
    (source (origin
              (method url-fetch)
              (uri (string-append "https://curl.se/download/curl-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0g2qibjxq3397myjkw3asyxqvhym1pl3qw7jaii9dc04ppbi5aha"))
-             (patches (search-patches "curl-use-ssl-cert-env.patch"))))
+               "1f2xgj0wvys9xw50h7vcbaraavjr9rxx9n06x2xfbgs7ym1qn49d"))
+             (patches (search-patches "curl-use-ssl-cert-env.patch"
+                                      "curl-easy-lock.patch"))))
    (build-system gnu-build-system)
    (outputs '("out"
               "doc"))                             ;1.2 MiB of man3 pages
@@ -103,6 +103,12 @@
                               "--disable-static")
       #:phases
       (modify-phases %standard-phases
+        (add-after 'unpack 'tweak-lib3026-test
+          (lambda _
+            ;; Have that test create a hundred threads, not a thousand.
+            (substitute* "tests/libtest/lib3026.c"
+              (("NUM_THREADS .*$")
+               "NUM_THREADS 100\n"))))
         (add-after 'unpack 'do-not-record-configure-flags
           (lambda _
             ;; Do not save the configure options to avoid unnecessary references.
@@ -140,35 +146,6 @@ tunneling, and so on.")
    (license (license:non-copyleft "file://COPYING"
                                   "See COPYING in the distribution."))
    (home-page "https://curl.haxx.se/")))
-
-;; Replacement package with fixes for multiple vulnerabilities.
-;; See <https://curl.se/docs/security.html>.
-(define curl-7.84.0
-  (package
-    (inherit curl)
-    (version "7.84.0")
-    (source (origin
-              (inherit (package-source curl))
-              (uri (string-append "https://curl.se/download/curl-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1f2xgj0wvys9xw50h7vcbaraavjr9rxx9n06x2xfbgs7ym1qn49d"))
-              (patches (append (origin-patches (package-source curl))
-                               (search-patches "curl-easy-lock.patch")))))
-    (arguments (substitute-keyword-arguments (package-arguments curl)
-                 ((#:phases phases)
-                  (cond
-                   ((not (target-64bit?))
-                    #~(modify-phases #$phases
-                        (add-after 'unpack 'tweak-lib3026-test
-                          (lambda _
-                            ;; Have that test create a hundred threads, not a
-                            ;; thousand.
-                            (substitute* "tests/libtest/lib3026.c"
-                              (("NUM_THREADS .*$")
-                               "NUM_THREADS 100\n"))))))
-                   (else phases)))))))
 
 (define-public curl-minimal
   (deprecated-package "curl-minimal" curl))
