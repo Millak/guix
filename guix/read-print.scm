@@ -156,7 +156,6 @@
    ('unless 2)
    ('package 1)
    ('origin 1)
-   ('operating-system 1)
    ('modify-inputs 2)
    ('modify-phases 2)
    ('add-after '(((modify-phases) . 3)))
@@ -167,7 +166,22 @@
    ('call-with-input-file 2)
    ('call-with-output-file 2)
    ('with-output-to-file 2)
-   ('with-input-from-file 2)))
+   ('with-input-from-file 2)
+   ('with-directory-excursion 2)
+
+   ;; (gnu system) and (gnu services).
+   ('operating-system 1)
+   ('bootloader-configuration 1)
+   ('mapped-device 1)
+   ('file-system 1)
+   ('swap-space 1)
+   ('user-account 1)
+   ('user-group 1)
+   ('setuid-program 1)
+   ('modify-services 2)
+
+   ;; (gnu home).
+   ('home-environment 1)))
 
 (define %newline-forms
   ;; List heads that must be followed by a newline.  The second argument is
@@ -180,7 +194,11 @@
    ('git-reference '(uri origin source))
    ('search-paths '(package))
    ('native-search-paths '(package))
-   ('search-path-specification '())))
+   ('search-path-specification '())
+
+   ('services '(operating-system))
+   ('set-xorg-configuration '())
+   ('services '(home-environment))))
 
 (define (prefix? candidate lst)
   "Return true if CANDIDATE is a prefix of LST."
