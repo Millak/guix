@@ -108,6 +108,7 @@ Copyright @copyright{} 2022 Justin Veilleux@*
 Copyright @copyright{} 2022 Reily Siegel@*
 Copyright @copyright{} 2022 Simon Streit@*
 Copyright @copyright{} 2022 (@*
+Copyright @copyright{} 2022 John Kehayias@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -6195,6 +6196,27 @@ directory:
 guix shell --container --expose=$HOME=/exchange guile -- guile
 @end example
 
+@cindex file system hierarchy standard (FHS)
+@cindex FHS (file system hierarchy standard)
+@item --emulate-fhs
+@itemx -F
+When used with @option{--container}, emulate a
+@uref{https://refspecs.linuxfoundation.org/fhs.shtml, Filesystem
+Hierarchy Standard (FHS)} configuration within the container, providing
+@file{/bin}, @file{/lib}, and other directories and files specified by
+the FHS.
+
+As Guix deviates from the FHS specification, this
+option sets up the container to more closely mimic that of other
+GNU/Linux distributions.  This is useful for reproducing other
+development environments, testing, and using programs which expect the
+FHS specification to be followed.  With this option, the container will
+include a version of glibc that will read
+@file{/etc/ld.so.cache} within the container for the shared library
+cache (contrary to glibc in regular Guix usage) and set up the
+expected FHS directories: @file{/bin}, @file{/etc}, @file{/lib}, and
+@file{/usr} from the container's profile.
+
 @item --rebuild-cache
 @cindex caching, of profiles
 @cindex caching, in @command{guix shell}
@@ -6613,6 +6635,22 @@ directory:
 @example
 guix environment --container --expose=$HOME=/exchange --ad-hoc guile -- guile
 @end example
+
+@item --emulate-fhs
+@item -F
+For containers, emulate a Filesystem Hierarchy Standard (FHS)
+configuration within the container, see
+@uref{https://refspecs.linuxfoundation.org/fhs.shtml, the official
+specification}.  As Guix deviates from the FHS specification, this
+option sets up the container to more closely mimic that of other
+GNU/Linux distributions.  This is useful for reproducing other
+development environments, testing, and using programs which expect the
+FHS specification to be followed.  With this option, the container will
+include a version of @code{glibc} which will read
+@code{/etc/ld.so.cache} within the container for the shared library
+cache (contrary to @code{glibc} in regular Guix usage) and set up the
+expected FHS directories: @code{/bin}, @code{/etc}, @code{/lib}, and
+@code{/usr} from the container's profile.
 
 @end table
 

@@ -197,3 +197,37 @@ then false;
 else
     test $? -gt 127
 fi
+
+# Test the Filesystem Hierarchy Standard (FHS) container option, --emulate-fhs (-F)
+
+# As this option requires a glibc package (glibc-for-fhs), try to run these
+# tests with the user's global store to make it easier to build or download a
+# substitute.
+storedir="`guile -c '(use-modules (guix config))(display %storedir)'`"
+localstatedir="`guile -c '(use-modules (guix config))(display %localstatedir)'`"
+NIX_STORE_DIR="$storedir"
+GUIX_DAEMON_SOCKET="$localstatedir/guix/daemon-socket/socket"
+export NIX_STORE_DIR GUIX_DAEMON_SOCKET
+
+if ! guile -c '(use-modules (guix)) (exit (false-if-exception (open-connection)))'
+then
+    exit 77
+fi
+
+# Test that the container has FHS specific files/directories.  Note that /bin
+# exists in a non-FHS container as it will contain sh, a symlink to the bash
+# package, so we don't test for it.
+guix environment -C --emulate-fhs --ad-hoc --bootstrap guile-bootstrap \
+     -- guile -c '(exit (and (file-exists? "/etc/ld.so.cache")
+                             (file-exists? "/lib")
+                             (file-exists? "/sbin")
+                             (file-exists? "/usr/bin")
+                             (file-exists? "/usr/include")
+                             (file-exists? "/usr/lib")
+                             (file-exists? "/usr/libexec")
+                             (file-exists? "/usr/sbin")
+                             (file-exists? "/usr/share")))'
+
+# Test that the ld cache was generated and can be successfully read.
+guix environment -C --emulate-fhs --ad-hoc --bootstrap guile-bootstrap \
+     -- guile -c '(execlp "ldconfig" "ldconfig" "-p")'

@@ -2,6 +2,7 @@
 ;;; Copyright © 2014, 2015, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mike Gerwitz <mtg@gnu.org>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -119,6 +120,9 @@ shell'."
   (display (G_ "
       --expose=SPEC      for containers, expose read-only host file system
                          according to SPEC"))
+  (display (G_ "
+  -F, --emulate-fhs      for containers, emulate the Filesystem Hierarchy
+                         Standard (FHS)"))
   (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
   (display (G_ "
@@ -256,6 +260,9 @@ use '--preserve' instead~%"))
                    (alist-cons 'file-system-mapping
                                (specification->file-system-mapping arg #f)
                                result)))
+         (option '(#\F "emulate-fhs") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'emulate-fhs? #t result)))
          (option '(#\r "root") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'gc-root arg result)))
@@ -375,6 +382,65 @@ requisite store items i.e. the union closure of all the inputs."
                                   input->requisites inputs)))
     (return (delete-duplicates (concatenate reqs)))))
 
+(define (setup-fhs profile)
+  "Setup the FHS container by creating and linking expected directories from
+PROFILE (other bind mounts are done in LAUNCH-ENVIRONMENT/CONTAINER),
+providing a symlink for CC if GCC is in the container PROFILE, and writing
+/etc/ld.so.conf."
+  ;; Additional symlinks for an FHS container.
+  (define fhs-symlinks
+    `(("/lib" . "/usr/lib")
+      ,(if (target-64bit?)
+           '("/lib" . "/lib64")
+           '("/lib" . "/lib32"))
+      ("/bin" . "/usr/bin")
+      ("/sbin" . "/usr/sbin")))
+
+  ;; A procedure to symlink the contents (at the top level) of a directory,
+  ;; excluding the directory itself and parent, along with any others provided
+  ;; in EXCLUDE.
+  (define* (link-contents dir #:key (exclude '()))
+    (for-each (lambda (file)
+                (symlink (string-append profile dir "/" file)
+                         (string-append dir "/" file)))
+              (scandir (string-append profile dir)
+                       (negate (cut member <>
+                                    (append exclude '("." ".." )))))))
+
+  ;; The FHS container sets up the expected filesystem through MAPPINGS with
+  ;; FHS-MAPPINGS (in LAUNCH-ENVIRONMENT/CONTAINER), the symlinks through
+  ;; FHS-SYMLINKS, and linking the contents of PROFILE/bin and PROFILE/etc
+  ;; using LINK-CONTENTS, as these both have or will have contents for a
+  ;; non-FHS container so must be handled separately.
+  (mkdir-p "/usr")
+  (for-each (lambda (link)
+              (if (file-exists? (car link))
+                  (symlink (car link) (cdr link))))
+            fhs-symlinks)
+  (link-contents "/bin" #:exclude '("sh"))
+  (mkdir-p "/etc")
+  (link-contents "/etc")
+
+  ;; Provide a frequently expected 'cc' symlink to gcc (in case it is in
+  ;; PROFILE), though this could also be done by the user in the container,
+  ;; e.g. in $HOME/.local/bin and adding that to $PATH.  Note: we do this in
+  ;; /bin since that already has the sh symlink and the other (optional) FHS
+  ;; bin directories will link to /bin.
+  (let ((gcc-path (string-append profile "/bin/gcc")))
+    (if (file-exists? gcc-path)
+        (symlink gcc-path "/bin/cc")))
+
+  ;; Guix's ldconfig doesn't search in FHS default locations, so provide a
+  ;; minimal ld.so.conf.
+  (call-with-output-file "/etc/ld.so.conf"
+    (lambda (port)
+      (for-each (lambda (directory)
+                  (display directory port)
+                  (newline port))
+                ;; /lib/nss is needed as Guix's nss puts libraries
+                ;; there rather than in the lib directory.
+                '("/lib" "/lib/nss")))))
+
 (define (status->exit-code status)
   "Compute the exit code made from STATUS, a value as returned by 'waitpid',
 and suitable for 'exit'."
@@ -386,11 +452,13 @@ and suitable for 'exit'."
 (define primitive-exit/status (compose primitive-exit status->exit-code))
 
 (define* (launch-environment command profile manifest
-                             #:key pure? (white-list '()))
+                             #:key pure? (white-list '())
+                             emulate-fhs?)
   "Run COMMAND in a new environment containing INPUTS, using the native search
 paths defined by the list PATHS.  When PURE?, pre-existing environment
 variables are cleared before setting the new ones, except those matching the
-regexps in WHITE-LIST."
+regexps in WHITE-LIST.  When EMULATE-FHS?, first set up an FHS environment
+with $PATH and generate the LD cache."
   ;; Properly handle SIGINT, so pressing C-c in an interactive terminal
   ;; application works.
   (sigaction SIGINT SIG_DFL)
@@ -406,6 +474,12 @@ regexps in WHITE-LIST."
     ((program . args)
      (catch 'system-error
        (lambda ()
+         (when emulate-fhs?
+           ;; When running in a container with EMULATE-FHS?, override $PATH
+           ;; (optional, but to better match FHS expectations), and generate
+           ;; /etc/ld.so.cache.
+           (setenv "PATH" "/bin:/usr/bin:/sbin:/usr/sbin")
+           (invoke "ldconfig" "-X"))
          (apply execlp program program args))
        (lambda _
          ;; Report the error from here because the parent process cannot
@@ -604,22 +678,45 @@ regexps in WHITE-LIST."
 
 (define* (launch-environment/container #:key command bash user user-mappings
                                        profile manifest link-profile? network?
-                                       map-cwd? (white-list '()))
+                                       map-cwd? emulate-fhs? (setup-hook #f)
+                                       (white-list '()))
   "Run COMMAND within a container that features the software in PROFILE.
-Environment variables are set according to the search paths of MANIFEST.
-The global shell is BASH, a file name for a GNU Bash binary in the
-store.  When NETWORK?, access to the host system network is permitted.
-USER-MAPPINGS, a list of file system mappings, contains the user-specified
-host file systems to mount inside the container.  If USER is not #f, each
-target of USER-MAPPINGS will be re-written relative to '/home/USER', and USER
-will be used for the passwd entry.  LINK-PROFILE? creates a symbolic link from
-~/.guix-profile to the environment profile.
+Environment variables are set according to the search paths of MANIFEST.  The
+global shell is BASH, a file name for a GNU Bash binary in the store.  When
+NETWORK?, access to the host system network is permitted.  USER-MAPPINGS, a
+list of file system mappings, contains the user-specified host file systems to
+mount inside the container.  If USER is not #f, each target of USER-MAPPINGS
+will be re-written relative to '/home/USER', and USER will be used for the
+passwd entry.
+
+When EMULATE-FHS?, set up the container to follow the Filesystem Hierarchy
+Standard and provide a glibc that reads the cache from /etc/ld.so.cache.
+SETUP-HOOK is an additional setup procedure to be called, currently only used
+with the EMULATE-FHS? option.
+
+LINK-PROFILE? creates a symbolic link from ~/.guix-profile to the
+environment profile.
 
 Preserve environment variables whose name matches the one of the regexps in
 WHILE-LIST."
   (define (optional-mapping->fs mapping)
     (and (file-exists? (file-system-mapping-source mapping))
          (file-system-mapping->bind-mount mapping)))
+
+  ;; File system mappings for an FHS container, where the entire directory can
+  ;; be mapped.  Others (bin and etc) will already have contents and need to
+  ;; use LINK-CONTENTS (defined in SETUP-FHS) to symlink the directory
+  ;; contents.
+  (define fhs-mappings
+    (map (lambda (mapping)
+           (file-system-mapping
+            (source (string-append profile (car mapping)))
+            (target (cdr mapping))))
+         '(("/lib"     . "/lib")
+           ("/include" . "/usr/include")
+           ("/sbin"    . "/sbin")
+           ("/libexec" . "/usr/libexec")
+           ("/share"   . "/usr/share"))))
 
   (mlet %store-monad ((reqs (inputs->requisites
                              (list (direct-store-path bash) profile))))
@@ -675,6 +772,11 @@ WHILE-LIST."
                                       (filter-map optional-mapping->fs
                                                   %network-file-mappings)
                                       '())
+                                  ;; Mappings for an FHS container.
+                                  (if emulate-fhs?
+                                      (filter-map optional-mapping->fs
+                                                  fhs-mappings)
+                                      '())
                                   (map file-system-mapping->bind-mount
                                        mappings))))
        (exit/status
@@ -701,6 +803,10 @@ WHILE-LIST."
             ;; Create a dummy home directory.
             (mkdir-p home-dir)
             (setenv "HOME" home-dir)
+
+            ;; Call an additional setup procedure, if provided.
+            (when setup-hook
+              (setup-hook profile))
 
             ;; If requested, link $GUIX_ENVIRONMENT to $HOME/.guix-profile;
             ;; this allows programs expecting that path to continue working as
@@ -743,7 +849,8 @@ WHILE-LIST."
                                  (if link-profile?
                                      (string-append home-dir "/.guix-profile")
                                      profile)
-                                 manifest #:pure? #f)))
+                                 manifest #:pure? #f
+                                 #:emulate-fhs? emulate-fhs?)))
           #:guest-uid uid
           #:guest-gid gid
           #:namespaces (if network?
@@ -867,16 +974,17 @@ message if any test fails."
   "Run the 'guix environment' command on OPTS, an alist resulting for
 command-line option processing with 'parse-command-line'."
   (with-error-handling
-    (let* ((pure?      (assoc-ref opts 'pure))
-           (container? (assoc-ref opts 'container?))
-           (link-prof? (assoc-ref opts 'link-profile?))
-           (network?   (assoc-ref opts 'network?))
-           (no-cwd?    (assoc-ref opts 'no-cwd?))
-           (user       (assoc-ref opts 'user))
-           (bootstrap? (assoc-ref opts 'bootstrap?))
-           (system     (assoc-ref opts 'system))
-           (profile    (assoc-ref opts 'profile))
-           (command    (or (assoc-ref opts 'exec)
+    (let* ((pure?        (assoc-ref opts 'pure))
+           (container?   (assoc-ref opts 'container?))
+           (link-prof?   (assoc-ref opts 'link-profile?))
+           (network?     (assoc-ref opts 'network?))
+           (no-cwd?      (assoc-ref opts 'no-cwd?))
+           (emulate-fhs? (assoc-ref opts 'emulate-fhs?))
+           (user         (assoc-ref opts 'user))
+           (bootstrap?   (assoc-ref opts 'bootstrap?))
+           (system       (assoc-ref opts 'system))
+           (profile      (assoc-ref opts 'profile))
+           (command  (or (assoc-ref opts 'exec)
                            ;; Spawn a shell if the user didn't specify
                            ;; anything in particular.
                            (if container?
@@ -915,12 +1023,22 @@ command-line option processing with 'parse-command-line'."
         (leave (G_ "'--user' cannot be used without '--container'~%")))
       (when (and (not container?) no-cwd?)
         (leave (G_ "--no-cwd cannot be used without --container~%")))
+      (when (and (not container?) emulate-fhs?)
+        (leave (G_ "'--emulate-fhs' cannot be used without '--container~'%")))
 
 
       (with-store/maybe store
         (with-status-verbosity (assoc-ref opts 'verbosity)
           (define manifest-from-opts
-            (options/resolve-packages store opts))
+            (options/resolve-packages
+             store
+             ;; For an FHS-container, add the (hidden) package glibc-for-fhs
+             ;; which uses the global cache at /etc/ld.so.cache.
+             (if emulate-fhs?
+                 (alist-cons 'expression
+                             '(ad-hoc-package "(@@ (gnu packages base) glibc-for-fhs)")
+                             opts)
+                 opts)))
 
           (define manifest
             (if profile
@@ -994,7 +1112,11 @@ when using '--container'; doing nothing~%"))
                                                     #:white-list white-list
                                                     #:link-profile? link-prof?
                                                     #:network? network?
-                                                    #:map-cwd? (not no-cwd?))))
+                                                    #:map-cwd? (not no-cwd?)
+                                                    #:emulate-fhs? emulate-fhs?
+                                                    #:setup-hook
+                                                    (and emulate-fhs?
+                                                         setup-fhs))))
 
                    (else
                     (return
