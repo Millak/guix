@@ -350,7 +350,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
            python-wrapper
            bash-minimal
            dbus
-           libelf))
+           elfutils))
     (propagated-inputs
      (list libffi ; in the Requires.private field of gobject-2.0.pc
            pcre ; in the Requires.private field of glib-2.0.pc
