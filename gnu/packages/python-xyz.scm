@@ -4589,7 +4589,7 @@ to deprecate classes, functions or methods.")
 (define-public python-pygithub
   (package
     (name "python-pygithub")
-    (version "1.54.1")
+    (version "1.55")
     (source
      ;; We fetch from the Git repo because there are no tests in the PyPI
      ;; archive.
@@ -4600,7 +4600,7 @@ to deprecate classes, functions or methods.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nl74bp5ikdnrc8xq0qr25ryl1mvarf0xi43k8w5jzlrllhq0nkq"))))
+        (base32 "082bxffpy4h97dsay3l75cpgfjj10kywkvicnm6xscwvah285q9y"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -4612,7 +4612,7 @@ to deprecate classes, functions or methods.")
              #t)))))
     (propagated-inputs
      (list python-cryptography python-deprecated python-pyjwt
-           python-requests))
+           python-pynacl python-requests))
     (native-inputs
      (list python-httpretty python-pytest))
     (home-page "https://pygithub.readthedocs.io/en/latest/")
