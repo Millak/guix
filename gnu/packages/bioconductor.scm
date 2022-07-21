@@ -2940,6 +2940,25 @@ measures for Affymetrix Oligonucleotide Arrays.")
     (properties
      `((upstream-name . "AffyCompatible")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      `(modify-phases %standard-phases
+         (add-after 'unpack 'make-reproducible
+           (lambda _
+             ;; Order DTD elements before generating R code from them.
+             (substitute* "R/methods-AffyCompatible.R"
+               (("dtd <- .*" m)
+                (string-append m "
+elements <- dtd$elements
+ordered <- elements[order(names(elements))]\n"))
+               (("elt in dtd\\$elements")
+                "elt in ordered"))
+             ;; Use a predictable directory name for code generation.
+             (mkdir-p "/tmp/NetAffxResourcePrototype")
+             (substitute* "R/DataClasses.R"
+               (("directory=tempdir\\(\\)")
+                "directory=\"/tmp/NetAffxResourcePrototype\"")))))))
     (propagated-inputs
      (list r-biostrings r-rcurl r-xml))
     (home-page "https://bioconductor.org/packages/AffyCompatible/")

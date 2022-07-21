@@ -278,8 +278,6 @@
                        "-o" "geiser.info" "geiser.texi")))))))
     (native-inputs
      (list texinfo))
-    (propagated-inputs
-     (list emacs-project emacs-transient))
     (home-page "https://www.nongnu.org/geiser/")
     (synopsis "Collection of Emacs modes for Scheme hacking")
     (description
@@ -1010,7 +1008,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
     (inputs
      (list git perl))
     (propagated-inputs
-     (list emacs-dash emacs-transient emacs-with-editor))
+     (list emacs-dash emacs-with-editor))
     (home-page "https://magit.vc/")
     (synopsis "Emacs interface for the Git version control system")
     (description
@@ -1035,8 +1033,7 @@ rebasing, and other common Git operations.")
                (base32
                 "1v1y4fir1plz4kj0cvkcd29wibli4dw7vp4fmbxq4df76d8iy8yd"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-dash emacs-with-editor emacs-magit
-                             emacs-transient))
+    (propagated-inputs (list emacs-dash emacs-with-editor emacs-magit))
     (home-page "https://github.com/magit/magit-svn")
     (synopsis "Git-SVN extension to Magit")
     (description
@@ -1091,8 +1088,7 @@ process, passing on the arguments as command line arguments.")
        (sha256
         (base32 "1amr2c08mq1nnn6k66mgz4rzyni4np7gxm96g4qyla2cbfbachgk"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-magit emacs-transient))
+    (propagated-inputs (list emacs-magit))
     (home-page "https://github.com/magit/magit-annex/")
     (synopsis "Git-annex support for Magit")
     (description
@@ -4650,8 +4646,6 @@ saving won't move point back to the beginning of the buffer.")
         (base32
          "1pz4l1xnq6s67w5yq9107vm8dg7rqf8n9dmbn90jys97c722g70n"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-transient))
     (home-page "https://gitlab.com/pidu/git-timemachine")
     (synopsis "Step through historic versions of Git-controlled files")
     (description "This package enables you to step through historic versions
@@ -5075,7 +5069,7 @@ result.")
                 (emacs-substitute-sexps file
                   ("(defcustom rg-executable" "rg"))))))))
     (propagated-inputs
-     (list emacs-s emacs-transient emacs-wgrep ripgrep))
+     (list emacs-s emacs-wgrep ripgrep))
     (home-page "https://rgel.readthedocs.io/en/latest/")
     (synopsis "Search tool based on @code{ripgrep}")
     (description
@@ -5598,16 +5592,16 @@ displays the priority part of a heading as your preferred string value.")
 (define-public emacs-org-fragtog
   (package
     (name "emacs-org-fragtog")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/io12/org-fragtog.git")
+             (url "https://github.com/io12/org-fragtog")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1912nlnk5v20szlmxr6y7chvms294z0p0hzdfgi8i3c7yrz7lmsj"))))
+        (base32 "1xag0pdphigk0ilrj2hacai3p6xgl27jji08aa1zlhq7p3rbay7m"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-org))
@@ -7526,6 +7520,32 @@ to a key in your preferred mode.")
       (description "@code{emacs-scel} is an Emacs interface to SuperCollider.
 SuperCollider is a platform for audio synthesis and algorithmic composition.")
       (license license:gpl2+))))
+
+(define-public emacs-soothe-theme
+  ;; There is no named branch.
+  (let ((commit "0786fe70c6c1b4ddcfb932fdc6862b9611cfc09b")
+	(revision "0"))
+    (package
+     (name "emacs-soothe-theme")
+     (version (git-version "20141027.2233" revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+	     (url "https://github.com/emacsfodder/emacs-soothe-theme")
+	     (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+	(base32 "10gh1hvxq9gm29r6qzlnva7vjidd7n4kih4z2ihyvbvy9za20xqw"))))
+     (build-system emacs-build-system)
+     (home-page "https://github.com/emacsfodder/emacs-soothe-theme")
+     (synopsis "Colorful, but muted theme for Emacs, dark background with light text")
+     (description
+      "Soothe theme is an amalgam of muted color tones and highlighted
+backgrounds.  It has builtin support for Rainbow delimiters, Org mode,
+Whitespace mode, ECB, Flyspell, Ido, Linum, highlight indentation, Show Paren
+mode.")
+     (license license:gpl3))))
 
 (define-public emacs-company-auctex
   (let ((commit "48c42c58ce2f0e693301b0cb2d085055410c1b25")
@@ -13250,7 +13270,7 @@ a DONE state.")
         (base32
          "00q7aym0kl03j9m66pivgy0snxcjjg402049b2wdy18kgyypfvx8"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-transient emacs-evil))
+    (propagated-inputs (list emacs-evil))
     (home-page "https://github.com/ChanderG/toodoo.el")
     (synopsis "Magit-like interface for a Todo workflow built on top of Org")
     (description "This package provides a minor mode for fast and easy management of Todos
@@ -15503,14 +15523,14 @@ one if it fails.")
 (define-public emacs-eldoc
   (package
     (name "emacs-eldoc")
-    (version "1.12.0")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://elpa.gnu.org/packages/eldoc-" version ".tar"))
        (sha256
-        (base32 "1npggpisqnfkc3gx7dr3pjnif7gf571z7s9g7n6vnb213353qskk"))))
+        (base32 "0c05dzrs7vrhibj46jpz625482ah6xywji7way6wcvwc711y74fz"))))
     (build-system emacs-build-system)
     (home-page "http://elpa.gnu.org/packages/eldoc.html")
     (synopsis "Show function arglist or variable docstring in echo area")
@@ -16129,7 +16149,7 @@ multiplexer.")
 (define-public emacs-plz
   (package
     (name "emacs-plz")
-    (version "0.1")
+    (version "0.2")
     (source
      (origin
        (method git-fetch)
@@ -16138,7 +16158,7 @@ multiplexer.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0psdjmj1r4g57vhm6c4hajmma72jk893fk820fbjgjwqihr1bxx9"))))
+        (base32 "170pbqiywk1zyhd0ig4f25qnjf7r1gwy0c6h343bcnl6qxvkvlv2"))))
     (build-system emacs-build-system)
     (inputs (list curl))
     (home-page "https://github.com/alphapapa/plz.el")
@@ -18761,7 +18781,6 @@ interactive commands and functions, such as @code{completing-read}.")
            emacs-org-super-agenda
            emacs-ov
            emacs-peg
-           emacs-transient
            emacs-ts
            emacs-s))
     (native-inputs
@@ -23352,7 +23371,7 @@ can be queued at any time.")
     (inputs
      (list youtube-dl))
     (propagated-inputs
-     (list emacs-async emacs-transient))
+     (list emacs-async emacs-dash))
     (home-page "https://gitlab.com/tuedachu/ytdl")
     (synopsis "Emacs interface for youtube-dl")
     (description
@@ -25058,8 +25077,7 @@ constant expressions.")
            emacs-docker-tramp
            emacs-json-mode
            emacs-s
-           emacs-tablist
-           emacs-transient))
+           emacs-tablist))
     (arguments `(#:tests? #false))      ;no tests
     (build-system emacs-build-system)
     (home-page "https://github.com/Silex/docker.el")
@@ -25439,7 +25457,7 @@ to Metals.")
 (define-public emacs-lsp-ui
   (package
     (name "emacs-lsp-ui")
-    (version "8.0.0")
+    (version "8.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -25448,7 +25466,7 @@ to Metals.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00yirx6qzlb8fv8rd53zaw93nw72z3br40rb16scdqj1v20qsp47"))))
+                "1pd5lvjlmd6zq64py21yi5zxhcza9g5q48ngfivv7fi7pf3vsv00"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-lsp-mode emacs-markdown-mode emacs-flycheck))
@@ -25676,7 +25694,6 @@ commands (a prefix and a suffix) we prefer to call it just a \"transient\".")
             emacs-let-alist
             emacs-magit
             emacs-markdown-mode
-            emacs-transient
             emacs-yaml))
      (home-page "https://github.com/magit/forge/")
      (synopsis "Access Git forges from Magit")
@@ -25698,8 +25715,7 @@ comfort of Magit and the rest of Emacs.")
                 (sha256
                  (base32
                   "1lfnh1glg6al677m7ci0x8g5wjdhjxlfl3nv1f1ppsw4dpnwsj9b"))))
-      (propagated-inputs
-       (list emacs-hydra emacs-transient))
+      (propagated-inputs (list emacs-hydra))
       (build-system emacs-build-system)
       (home-page "https://github.com/jojojames/matcha/")
       (synopsis "Collection of hydras with a generic interface to launch them")
@@ -26065,8 +26081,7 @@ output.")
           (base32
            "16cjmrzflf2i1w01973sl944xrfanakba8sb4dpwi79d92xp03xy"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-vdiff emacs-magit emacs-transient))
+      (propagated-inputs (list emacs-vdiff emacs-magit))
       (home-page "https://github.com/justbur/emacs-vdiff-magit/")
       (synopsis "Frontend for diffing based on vimdiff")
       (description "This package permits comparisons of two or three buffers
@@ -26655,7 +26670,7 @@ all of your projects, then override or add variables on a per-project basis.")
     (inputs
      (list calibre))
     (propagated-inputs
-     (list emacs-dash emacs-esxml emacs-s emacs-transient))
+     (list emacs-dash emacs-esxml emacs-s))
     (home-page "https://github.com/chenyanming/calibredb.el")
     (synopsis "Yet another calibre client for Emacs")
     (description "This package integrates calibre into Emacs.
@@ -27409,7 +27424,7 @@ it forcibly
 (define-public emacs-elpher
   (package
     (name "emacs-elpher")
-    (version "3.4.1")
+    (version "3.4.2")
     (source
      (origin
        (method git-fetch)
@@ -27418,7 +27433,7 @@ it forcibly
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dv71zc95m5sa4824vk3d1xk726nh2v50i0yp6w3ydfzzsfph6j6"))))
+        (base32 "1c6pid2ip2c2lpww42wxgq4qflx1m8vxilyva03h8xzgr39kwq64"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -27824,7 +27839,7 @@ contains a track position, playback will start at the specified position.")
 (define-public emacs-org-jira
   (package
    (name "emacs-org-jira")
-   (version "4.3.2")
+   (version "4.3.3")
    (source
     (origin
      (method git-fetch)
@@ -27834,7 +27849,7 @@ contains a track position, playback will start at the specified position.")
      (file-name (git-file-name name version))
      (sha256
       (base32
-       "1hsfkkm3ykdf7n8a6k0mpzilhjpy7vllwrl2s4rfb9mhnaq5yb8y"))))
+       "0awfz4c70pxfj401p4h4j1lxic4pqpgigkldy9wvdkcyhqbphswj"))))
    (build-system emacs-build-system)
    (propagated-inputs
     (list emacs-request emacs-s emacs-dash emacs-org))
@@ -28567,8 +28582,7 @@ for the Telegram messaging platform.")))
     (inputs '())
     (native-inputs '())
     (propagated-inputs
-     (list emacs-alert emacs-all-the-icons emacs-dashboard emacs-telega
-           emacs-transient))
+     (list emacs-alert emacs-all-the-icons emacs-dashboard emacs-telega))
     (synopsis "Contributed packages to Telega")
     (description "Telega-contrib is a collection of third-party
 contributed packages to Telega.")))
@@ -30445,8 +30459,6 @@ you use some other configuration.")
          (sha256
           (base32 "0yv38bqdp6b614lbj4v408vv5mlic3vs1v7266xrfxm1cm903apj"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-transient))
       (home-page "https://github.com/TatriX/tshell")
       (synopsis "Experimental buffer-oriented Emacs shell")
       (description
@@ -30774,8 +30786,8 @@ and allows for an arbitrary number of leader keys.")
       (license license:gpl3+))))
 
 (define-public emacs-spaceleader
-  (let ((commit "35368b03c094399c487cce93ab5b7ac725bd04f5")
-        (revision "0"))
+  (let ((commit "5d88d120494623d6777d464ec40ff4bb7d6b1d57")
+        (revision "1"))
     (package
       (name "emacs-spaceleader")
       (version (git-version "0.0.3" revision commit))
@@ -30787,7 +30799,7 @@ and allows for an arbitrary number of leader keys.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1lg51y59z6igqjw3vgyjc5zw32j11xhzw8y0svlx3ry415b0lnls"))))
+          (base32 "1prnjf7zs49z5a8qwhn8d0qnp60b3l0xhjkqg6v237acvk2axixr"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-dash
@@ -31077,8 +31089,7 @@ rules about where space should be left to separate words and parentheses.")
        (sha256
         (base32 "0b9hf20iah3ym2d4kz67k0kb48dq0442zxw4zmc03zg3sxfdxh0x"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dash emacs-transient))
+    (propagated-inputs (list emacs-dash))
     (home-page "https://github.com/MaximeWack/seriesTracker")
     (synopsis "Keep track of the TV shows you watch from Emacs")
     (description
@@ -31693,7 +31704,7 @@ Fennel code within Emacs.")
 (define-public emacs-org-modern
   (package
    (name "emacs-org-modern")
-   (version "0.3")
+   (version "0.4")
    (source
      (origin
        (method git-fetch)
@@ -31701,7 +31712,7 @@ Fennel code within Emacs.")
              (url "https://github.com/minad/org-modern")
              (commit version)))
        (sha256
-        (base32 "187fxw2rg0kw1d2binpa32ckp67r4v10j6ypr077g9qn6nkmyvvn"))
+        (base32 "0af9dzp9n3882kvsp3q4008hffq1mp9hjl964mlp5j8vay3x7qbz"))
        (file-name (git-file-name name version))))
    (build-system emacs-build-system)
    (home-page "https://github.com/minad/org-modern")

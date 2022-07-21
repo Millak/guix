@@ -390,6 +390,11 @@ return #f and #f."
        ;; If the user already specified a profile, there's nothing more to
        ;; cache.
        (values #f #f))
+      ((('export-manifest? . #t) . _)
+       ;; When exporting a manifest, compute it anew so that '-D' packages
+       ;; lead to 'package-development-manifest' expressions rather than an
+       ;; expanded list of inputs.
+       (values #f #f))
       ((('system . system) . rest)
        (loop rest system file specs))
       ((_ . rest) (loop rest system file specs)))))

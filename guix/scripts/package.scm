@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,7 @@
             delete-generations
             delete-matching-generations
             guix-package
+            list-installed
 
             search-path-environment-variables
             manifest-entry-version-prefix
@@ -773,6 +775,22 @@ doesn't need it."
 
   (add-indirect-root store absolute))
 
+(define (list-installed regexp profiles)
+  "Write to the current output port the list of packages matching REGEXP in
+PROFILES."
+  (let* ((regexp    (and regexp (make-regexp* regexp regexp/icase)))
+         (manifest  (concatenate-manifests
+                     (map profile-manifest profiles)))
+         (installed (manifest-entries manifest)))
+    (leave-on-EPIPE
+     (let ((rows (filter-map
+                  (match-lambda
+                    (($ <manifest-entry> name version output path _)
+                     (and (regexp-exec regexp name)
+                          (list name (or version "?") output path))))
+                  installed)))
+       rows))))
+
 
 ;;;
 ;;; Queries and actions.
@@ -824,19 +842,8 @@ processed, #f otherwise."
        #t)
 
       (('list-installed regexp)
-       (let* ((regexp    (and regexp (make-regexp* regexp regexp/icase)))
-              (manifest  (concatenate-manifests
-                          (map profile-manifest profiles)))
-              (installed (manifest-entries manifest)))
-         (leave-on-EPIPE
-          (let ((rows (filter-map
-                       (match-lambda
-                         (($ <manifest-entry> name version output path _)
-                          (and (regexp-exec regexp name)
-                               (list name (or version "?") output path))))
-                       installed)))
-            ;; Show most recently installed packages last.
-            (pretty-print-table (reverse rows)))))
+       ;; Show most recently installed packages last.
+       (pretty-print-table (reverse (list-installed regexp profiles)))
        #t)
 
       (('list-available regexp)

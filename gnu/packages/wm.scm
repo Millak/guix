@@ -2715,6 +2715,63 @@ which do not support it.")
     (description "wlogout is a logout menu for Wayland environments.")
     (license license:expat)))
 
+(define-public berry
+  (package
+    (name "berry")
+    (version "0.1.11")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+          (url "https://github.com/jlervin/berry")
+          (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1qyq3g0m7rb9gpk1i5kfy9nr8sqivjiilbi4g0nw4d400rblvkbj"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; There are no tests.
+       #:make-flags
+       ,#~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "prefix=" #$output)
+                (string-append "CFLAGS="
+                               "-I" (assoc-ref %build-inputs "freetype")
+                               "/include/freetype2"))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-after 'build 'install-xsession
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((output (assoc-ref outputs "out"))
+                    (xsessions (string-append output "/share/xsessions")))
+               (mkdir-p xsessions)
+               (with-output-to-file (string-append xsessions "/berry.desktop")
+                 (lambda _
+                   (format #t
+                    "\
+[Desktop Entry]~@
+Name=berry~@
+Comment=Berry Window Manager~@
+Exec=~a/bin/berry~@
+TryExec=~@*~a/bin/berry~@
+Icon=~@
+Type=Application~%"
+                    output)))))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+      (list freetype
+            fontconfig
+            libxext
+            libx11
+            libxft
+            libxinerama))
+    (home-page "https://berrywm.org/")
+    (synopsis "Healthy, byte-sized window manager")
+    (description
+     "@code{berry} is a healthy, bite-sized window manager written in C using XLib.")
+    (license license:expat)))
+
 (define-public avizo
   (package
     (name "avizo")

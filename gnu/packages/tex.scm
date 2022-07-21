@@ -11034,3 +11034,51 @@ settings to typeset Dutch documents.")
 Finnish in @code{babel}.  It provides all the necessary macros, definitions and
 settings to typeset Finnish documents.")
       (license license:lppl1.3c+))))
+
+(define-public texlive-generic-babel-norsk
+  (package
+    (name "texlive-generic-babel-norsk")
+    (version (number->string %texlive-revision))
+    (source (origin
+              (method svn-fetch)
+              (uri (texlive-ref "generic" "babel-norsk"))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1yf538l2isxgmab8jslxxx5fbdk4njf147n4raf5vyw3l4slxm6m"))))
+    (build-system texlive-build-system)
+    (arguments '(#:tex-directory "generic/babel-norsk"))
+    (home-page "https://www.ctan.org/pkg/babel-norsk")
+    (synopsis "Babel support for Norwegian")
+    (description
+       "The package provides the language definition file for support of
+Norwegian in @code{babel}.  Some shortcuts are defined, as well as translations
+to Norsk of standard “LaTeX names”.")
+    (license license:lppl1.3+)))
+
+(define-public texlive-babel-danish
+  (let ((template (simple-texlive-package
+                   "texlive-babel-danish"
+                   (list "/source/generic/babel-danish/")
+                   (base32
+                    "00dryb078fqckqjnxa2riq478j6d5i28j5cclv4bw7dn5naa3lz7"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/babel-danish")
+         ((#:build-targets _ '())
+          ''("danish.ins")) ; TODO: use dtx and build documentation
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'chdir
+               (lambda _
+                 (chdir "source/generic/babel-danish")))))))
+      (home-page "https://www.ctan.org/pkg/babel-danish")
+      (synopsis "Babel support for Danish")
+      (description
+       "This package provides the language definition file for support of
+Danish in @code{babel}.  It provides all the necessary macros, definitions and
+settings to typeset Danish documents.")
+      (license license:lppl1.3c+))))

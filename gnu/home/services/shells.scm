@@ -111,16 +111,7 @@ service type can be extended with a list of file-like objects.")))
 
 (define (serialize-boolean field-name val) "")
 (define (serialize-posix-env-vars field-name val)
-  #~(string-append
-     #$@(map
-         (match-lambda
-           ((key . #f)
-            "")
-           ((key . #t)
-            #~(string-append "export " #$key "\n"))
-           ((key . value)
-            #~(string-append "export " #$key "=" #$value "\n")))
-         val)))
+  (environment-variable-shell-definitions val))
 
 
 ;;;
@@ -192,9 +183,9 @@ another process for example)."))
   (mixed-text-file
    "zprofile"
    "\
-# Setups system and user profiles and related variables
+# Set up the system, user profile, and related variables.
 source /etc/profile
-# Setups home environment profile
+# Set up the home environment profile.
 source ~/.profile
 
 # It's only necessary if zsh is a login shell, otherwise profiles will
@@ -443,9 +434,9 @@ alias grep='grep --color=auto'\n")
       ,(mixed-text-file
         "bash_profile"
         "\
-# Setups system and user profiles and related variables
+# Set up the system, user profile, and related variables.
 # /etc/profile will be sourced by bash automatically
-# Setups home environment profile
+# Set up the home environment profile.
 if [ -f ~/.profile ]; then source ~/.profile; fi
 
 # Honor per-interactive-shell startup file

@@ -222,14 +222,23 @@ host	all	all	::1/128 	trust"))))))
                      ((pid) (number? pid))))))
              marionette))
 
+          ;; The service starts immediately but replies with status 500 until
+          ;; initialization is complete, so keep trying for a while.
+          (define (try-http-get attempts)
+            (let ((status
+                   (let-values (((response text)
+                                 (http-get #$(simple-format
+                                              #f "http://localhost:~A/healthcheck"
+                                              forwarded-port))))
+                     (response-code response))))
+              (if (or (= status 200) (<= attempts 1))
+                  status
+                  (begin (sleep 5)
+                         (try-http-get (- attempts 1))))))
+
           (test-equal "http-get"
             200
-            (let-values
-                (((response text)
-                  (http-get #$(simple-format
-                               #f "http://localhost:~A/healthcheck" forwarded-port)
-                            #:decode-body? #t)))
-              (response-code response)))
+            (try-http-get 12))
 
           (test-end))))
 

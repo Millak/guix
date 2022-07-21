@@ -302,7 +302,7 @@ upstream occasionally.")
 (define-public exo
   (package
     (name "exo")
-    (version "4.16.3")
+    (version "4.16.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -310,7 +310,7 @@ upstream occasionally.")
                                   "exo-" version ".tar.bz2"))
               (sha256
                (base32
-                "1rpsp37n5l3qxinv37rz5l4rvja7yaf8hqsy81jhlgz27wygybbj"))))
+                "1jifknw0chyaismj94mrx9pbhnd7ridm25bn1d15q7lgwxkhr9c2"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -579,7 +579,7 @@ applications, and includes a search bar to search for applications.")
 (define-public xfce4-xkb-plugin
   (package
     (name "xfce4-xkb-plugin")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -587,7 +587,7 @@ applications, and includes a search bar to search for applications.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0rvrz464y7ji989zvi2v85kg47444nqsdq9rv6k8dkbkdwzy2jxv"))))
+                "11s9s0634g9rf5hcj6nga6hsv71wcq9c7ym6nsis077gfmwfkgzh"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -693,7 +693,7 @@ allows you to shut down the computer from Xfce.")
 (define-public xfce4-settings
   (package
     (name "xfce4-settings")
-    (version "4.16.2")
+    (version "4.16.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -701,7 +701,7 @@ allows you to shut down the computer from Xfce.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0zixl1yiksavp3a824hqczxx5q3l09f0ng37gxl5wlv0111cpmsd"))
+                "0r4fmcmqzik9a1cflm3jck40pmbbgn8viffygq5jq54fdp9fd6gj"))
               (patches (search-patches "xfce4-settings-defaults.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -1155,7 +1155,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
 (define-public ristretto
   (package
     (name "ristretto")
-    (version "0.12.2")
+    (version "0.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/ristretto/"
@@ -1163,7 +1163,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
                                   "ristretto-" version ".tar.bz2"))
               (sha256
                (base32
-                "0sfrvb19xkiphcp2ddqxgvh9hbramlm6qi7sv99s407c4acqdvhf"))))
+                "0gizrn49ayamb1sqfxi3mdxas9dz4dw1sv3iyji718az48hp13w6"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool desktop-file-utils
@@ -1305,7 +1305,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.5.9")
+    (version "0.5.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/mousepad/"
@@ -1313,7 +1313,7 @@ of data to either CD/DVD/BD.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0wzlcwhvpnig6123k83fsmrfjq5x1pqncxmnd8k2fmzccz0sh27i"))))
+                "1b9bal9wxmgpff6r7k48gnkd0vla7xljmiahjq6mdrdyaa6z7fkf"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '(;; Use the GSettings keyfile backend rather than
@@ -2070,7 +2070,7 @@ for the Xfce panel.  It supports several features, such as:
 (define-public xfce4-wavelan-plugin
   (package
    (name "xfce4-wavelan-plugin")
-   (version "0.6.2")
+   (version "0.6.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -2079,7 +2079,7 @@ for the Xfce panel.  It supports several features, such as:
                                   "/xfce4-wavelan-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "07a8nmc60in48licjj0gmwm77vb8divh1lb7jnib35n5a1ka6ypa"))))
+                "0azpv0s3r4ag3gp0bsfvq0jgzycx6ivdsw5p0ga7425pdksw5h31"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))

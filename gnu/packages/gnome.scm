@@ -4373,6 +4373,44 @@ the GObject type system and has additional code generation routines that make
 targeting the GNOME stack simple.")
     (license license:lgpl2.1+)))
 
+(define-public vala-next
+  (package
+    (inherit vala)
+    (version "0.56.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/vala/"
+                                  (version-major+minor version) "/"
+                                  "vala-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0k0jj3xwjq222x0hbqqy5bykhgk1f1wsb85bqcdgsnbqn6dn3jb6"))))
+    (arguments
+     (list
+      #:configure-flags #~(list "CC=gcc" "--enable-coverage")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-gcc-by-default
+            (lambda _
+              (substitute* "codegen/valaccodecompiler.c"
+                (("cc_command = \"cc\"")
+                 "cc_command = \"gcc\""))))
+          (add-after 'unpack 'patch-docbook-xml
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "doc/manual"
+                (substitute* '("manual.xml" "version.xml.in")
+                  (("http://www.oasis-open.org/docbook/xml/4.4/")
+                   (search-input-directory inputs "xml/dtd/docbook"))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (substitute* "valadoc/tests/libvaladoc/tests-extra-environment.sh"
+                (("export PKG_CONFIG_PATH=" m)
+                 (string-append m "$PKG_CONFIG_PATH:")))))
+          ;; Wrapping the binaries breaks vala's behavior adaptations based on
+          ;; the file name of the program executed (vala: compile and execute,
+          ;; valac: compile into a binary).
+          (delete 'glib-or-gtk-wrap))))))
+
 ;;; An older variant kept to build libsoup-minimal-2.
 (define-public vala-0.52
   (package/inherit vala

@@ -225,8 +225,7 @@ $ ./pre-inst-env guile -c '(use-modules (guix utils)) (pk (%current-system))'
 @noindent
 @cindex REPL
 @cindex read-eval-print loop
-@dots{} and for a REPL (@pxref{Using Guile Interactively,,, guile, Guile
-Reference Manual}):
+@dots{} and for a REPL (@pxref{Using Guix Interactively}):
 
 @example
 $ ./pre-inst-env guile
@@ -279,8 +278,8 @@ prepared Guile object (@file{.go}) files.
 
 You can run @command{make} automatically as you work using
 @command{watchexec} from the @code{watchexec} package.  For example,
-to build again each time you update a package file, you can run
-@samp{watchexec -w gnu/packages make -j4}.
+to build again each time you update a package file, run
+@samp{watchexec -w gnu/packages -- make -j4}.
 
 @node The Perfect Setup
 @section The Perfect Setup
@@ -292,7 +291,7 @@ Manual}).  First, you need more than an editor, you need
 wonderful @url{https://nongnu.org/geiser/, Geiser}.  To set that up, run:
 
 @example
-guix package -i emacs guile emacs-geiser emacs-geiser-guile
+guix install emacs guile emacs-geiser emacs-geiser-guile
 @end example
 
 Geiser allows for interactive and incremental development from within

@@ -333,6 +333,7 @@ the SVT-HEVC encoder, it is possible to spread video encoding processing across
 multiple Intel's Xeon processors to achieve a real advantage of processing
 efficiency.")
     (home-page "https://01.org/svt")
+    (supported-systems '("x86_64-linux" "i686-linux"))
     (license (license:non-copyleft "file:///LICENSE.md"))))
 
 (define-public mediasdk
@@ -375,6 +376,7 @@ efficiency.")
     (description "MediaSDK provides a plain C API to access hardware-accelerated
 video decode, encode and filtering on Intel's Gen graphics hardware platforms.")
     (home-page "http://mediasdk.intel.com/")
+    (supported-systems '("x86_64-linux" "i686-linux"))
     (license (license:non-copyleft "file:///LICENSE"))))
 
 (define-public schroedinger
@@ -691,13 +693,17 @@ touchscreen devices and the ability to apply filters to their input events.")
              (("\\(A52DIR\\)/include")
               "(A52DIR)/include/a52dec")
              (("LIBS = " match)
-              (string-append match "-la52 ")))
-           #t))
+              (string-append match "-la52 ")))))
+       (add-after 'unpack 'preseed-cflags
+         (lambda _
+           (setenv "CFLAGS"
+                   (string-append "-D_FILE_OFFSET_BITS=64 "
+                                  "-D_LARGEFILE_SOURCE "
+                                  "-D_LARGEFILE64_SOURCE"))))
        (add-before 'install 'create-destination-directory
          (lambda* (#:key outputs #:allow-other-keys)
            (let* ((out (string-append (assoc-ref outputs "out"))))
-             (mkdir-p (string-append out "/bin"))
-             #t))))))
+             (mkdir-p (string-append out "/bin"))))))))
   (native-inputs
    (list nasm))
   (inputs
@@ -4915,7 +4921,7 @@ video from a Wayland session.")
 (define-public gaupol
   (package
     (name "gaupol")
-    (version "1.9")
+    (version "1.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4924,7 +4930,7 @@ video from a Wayland session.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mmjg8nwhif2hmmp8i11643izwzdf839brqdai3ksfg0qkh8rnxk"))))
+                "01qbhhycmy26b2mw2jlri321k478jhp7y0jzlcv87iaq05qr4pc8"))))
     (build-system python-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)

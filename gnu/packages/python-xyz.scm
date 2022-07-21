@@ -5562,7 +5562,10 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
               ;; instead of /bin/sh.
               (substitute* "numpy/distutils/exec_command.py"
                 (("'/bin/sh'")
-                 (format #f "~s" (search-input-file inputs "bin/bash"))))))
+                 (format #f "~s" (search-input-file inputs "bin/bash"))))
+              ;; Don't try to call '/bin/true' specifically.
+              (substitute* "numpy/core/tests/test_cpu_features.py"
+                (("/bin/true") (search-input-file inputs "bin/true")))))
           (replace 'check
             (lambda* (#:key tests? outputs inputs #:allow-other-keys)
               (when tests?
@@ -16223,7 +16226,11 @@ graphviz.")
                                "test__doctests.py"
                                "test__all__.py"
                                "test___config.py"
-                               "test__execmodules.py")))
+                               "test__execmodules.py"
+                               ;; This test contains 'test_unlink', which
+                               ;; fails on i686 (see:
+                               ;; https://github.com/gevent/gevent/issues/1558).
+                               "test__core_stat.py")))
                         (call-with-output-file "skipped_tests.txt"
                           (lambda (port)
                             (format port "~a~%"
@@ -30086,6 +30093,26 @@ profile.  It supports:
 Currently, Linux is the only platform supported by this library.")
     (license license:expat)))
 
+(define-public python-clrprint
+  (package
+    (name "python-clrprint")
+    (version "2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "clrprint" version))
+              (sha256
+               (base32
+                "0xfn8d1by2w7pjiji887qljk1avn4fylbnz1mj28gysm5g0zvy43"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))                    ;there are no tests
+    (propagated-inputs (list python-colorama python-termcolor))
+    (home-page "https://github.com/AbhijithAJ/clrprint")
+    (synopsis "Print colorful output in the terminal")
+    (description "@code{clrprint} is developed to print colorful output in the
+terminal.  It has red, blue, green, yellow, purple and black/white (default)
+colors.")
+    (license license:expat)))
+
 (define-public python-musical-scales
   (package
     (name "python-musical-scales")
@@ -30155,3 +30182,24 @@ GeoPackage Binary")
 GeoJSON to WKT/WKB (Well-Known Text/Binary) or GeoPackage Binary, and vice
 versa.  Extended WKB/WKT are also supported.")
     (license license:asl2.0)))
+
+(define-public python-bsdiff4
+  (package
+    (name "python-bsdiff4")
+    (version "1.2.2")
+    (home-page "https://github.com/ilanschnell/bsdiff4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fa0vkmbr0a9xifq7i5gfcf7ifn739i1fdij8awynm299fsqvvhx"))))
+    (build-system python-build-system)
+    (synopsis "Binary diff and patch using the BSDIFF4 format")
+    (description "This package provides a Python library for the @code{bsdiff}
+binary diff utility.  It also provides two command-line tools, @code{bsdiff4}
+and @code{bspatch4}.")
+    (license license:bsd-2)))

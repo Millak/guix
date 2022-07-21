@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +22,7 @@
 (define-module (gnu packages slang)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
@@ -47,31 +48,29 @@
                 "06p379fqn6w38rdpqi98irxi2bf4llb0rja3dlgkqz7nqh7kp7pw"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (substitute* "src/Makefile.in"
-                    (("/bin/ln") "ln"))
-                  #t))))
+               #~(begin
+                   (substitute* "src/Makefile.in"
+                     (("/bin/ln") "ln"))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:parallel-tests? #f
-       #:parallel-build? #f  ; there's at least one race
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'reduce-array-test-size
-           ;; Reduce the size of the array, otherwise the array.sl/array.slc
-           ;; tests fails with "Unable to create a multi-dimensional array of
-           ;; the desired size" on 32 bit systems.
-           (lambda _
-             (substitute* "src/test/array.sl"
-               (("10000,10000,10000,10000,10000,10000")
-                "10,10,10,10,10,10"))))
-         (add-before 'configure 'substitute-before-config
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ncurses (assoc-ref inputs "ncurses")))
-               (substitute* "configure"
-                 (("MISC_TERMINFO_DIRS=\"\"")
-                  (string-append "MISC_TERMINFO_DIRS="
-                                 "\"" ncurses "/share/terminfo" "\"")))))))))
+     (list #:parallel-tests? #f
+           #:parallel-build? #f         ; race to build/use elfobj
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'reduce-array-test-size
+                 ;; Fix array.sl/array.slc failure on 32-bit systems ("Unable to
+                 ;; to create a multi-dimensional array of the desired size").
+                 (lambda _
+                   (substitute* "src/test/array.sl"
+                     (("10000,10000,10000,10000,10000,10000")
+                      "10,10,10,10,10,10"))))
+               (add-before 'configure 'fix-configure-script
+                 ;; Don't try to link to the long-obsolete (and gone) -ltermcap.
+                 (lambda _
+                   (substitute* "configure"
+                     (("(MISC_TERMINFO_DIRS)=.*" _ variable)
+                      (format #f "~a=\"~a/share/terminfo\"\n" variable
+                              #$(this-package-input "ncurses")))))))))
     (inputs
      (list readline zlib libpng pcre ncurses))
     (home-page "https://www.jedsoft.org/slang/")
@@ -85,6 +84,51 @@ is the slang interpreter that may be easily embedded into a program to make it
 extensible.  While the emphasis has always been on the embedded nature of the
 interpreter, it may also be used in a stand-alone fashion through the use of
 slsh, which is part of the S-Lang distribution.")
+    (license license:gpl2+)))
+
+(define-public most
+  (package
+    (name "most")
+    (version "5.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.jedsoft.org/releases/most/most-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "008537ns659pw2aag15imwjrxj73j26aqq90h285is6kz8gmv06v"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (substitute* "src/Makefile.in"
+              (("/bin/cp") "cp"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-slang="
+                                  #$(this-package-input "slang")))
+           #:tests? #f                  ; no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'fix-configure-script
+                 ;; Don't try to link to the long-obsolete (and gone) -ltermcap.
+                 (lambda _
+                   (substitute* "configure"
+                     (("(MISC_TERMINFO_DIRS)=.*" _ variable)
+                      (format #f "~a=\"~a/share/terminfo\"\n" variable
+                              #$(this-package-input "ncurses")))))))))
+    (inputs
+     (list ncurses slang))
+    (home-page "https://www.jedsoft.org/most/")
+    (synopsis
+     "@dfn{Pager} (terminal text viewer) with multiple windows and filters")
+    (description
+     "Most is a paging text viewer.  It displays the contents of a file or the
+output of a command on the terminal, one screenful at a time, and lets you
+scroll up and down to (re)view the entire text.
+
+You can open multiple windows within @command{most} to view different files, or
+to inspect different parts of the same file, at the same time.")
     (license license:gpl2+)))
 
 (define-public newt

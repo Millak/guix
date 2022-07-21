@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2015, 2016, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +21,12 @@
   #:use-module (guix monads)
   #:use-module (guix utils)
   #:use-module (guix packages)
+  #:use-module (guix status)
+  #:autoload   (guix gexp) (lower-object)
+  #:use-module ((guix derivations)
+                #:select (derivation?
+                          derivation->output-paths built-derivations))
+  #:use-module (ice-9 match)
   #:use-module (ice-9 pretty-print)
   #:use-module (system repl repl)
   #:use-module (system repl common)
@@ -69,16 +75,58 @@
                          #:guile-for-build guile)
                     'store-monad)))
 
+(define %build-verbosity
+  ;; Current build verbosity level.
+  1)
+
+(define* (evaluate/print-with-store mvalue #:key build?)
+  "Run monadic value MVALUE in the store monad and print its value."
+  (with-store store
+    (set-build-options store
+                       #:print-build-trace #t
+                       #:print-extended-build-trace? #t
+                       #:multiplexed-build-output? #t)
+    (with-status-verbosity %build-verbosity
+      (let* ((guile  (or (%guile-for-build)
+                         (default-guile-derivation store)))
+             (values (run-with-store store
+                       (if build?
+                           (mlet %store-monad ((obj mvalue))
+                             (if (derivation? obj)
+                                 (mbegin %store-monad
+                                   (built-derivations (list obj))
+                                   (return
+                                    (match (derivation->output-paths obj)
+                                      (((_ . files) ...) files))))
+                                 (return (list obj))))
+                           (mlet %store-monad ((obj mvalue))
+                             (return (list obj))))
+                       #:guile-for-build guile)))
+        (for-each (lambda (value)
+                    (run-hook before-print-hook value)
+                    (pretty-print value))
+                  values)))))
+
 (define-meta-command ((run-in-store guix) repl (form))
   "run-in-store EXP
 Run EXP through the store monad."
-  (with-store store
-    (let* ((guile (or (%guile-for-build)
-                      (default-guile-derivation store)))
-           (value (run-with-store store (repl-eval repl form)
-                                  #:guile-for-build guile)))
-      (run-hook before-print-hook value)
-      (pretty-print value))))
+  (evaluate/print-with-store (repl-eval repl form)))
+
+(define-meta-command ((verbosity guix) repl (level))
+  "verbosity LEVEL
+Change build verbosity to LEVEL."
+  (set! %build-verbosity (repl-eval repl level)))
+
+(define-meta-command ((lower guix) repl (form))
+  "lower OBJECT
+Lower OBJECT into a derivation or store file and return it."
+  (evaluate/print-with-store (lower-object (repl-eval repl form))))
+
+(define-meta-command ((build guix) repl (form))
+  "build OBJECT
+Lower OBJECT and build it, returning its output file name(s)."
+  (evaluate/print-with-store (lower-object (repl-eval repl form))
+                             #:build? #t))
 
 (define-meta-command ((enter-store-monad guix) repl)
   "enter-store-monad

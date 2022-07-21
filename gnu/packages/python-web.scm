@@ -73,16 +73,20 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system python)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages libevent)
@@ -2954,6 +2958,76 @@ with python-requests.")
      "Requests-FTP is an implementation of a simple FTP transport
 adapter for use with the Requests library.")
     (license license:asl2.0)))
+
+(define-public python-msal
+  (package
+    (name "python-msal")
+    (version "1.18.0")
+    (home-page
+     "https://github.com/AzureAD/microsoft-authentication-library-for-python")
+    (source (origin
+              (method git-fetch)
+              ;; Pypi does not have tests.
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02d9vlvp08q1yffgn7a0y19451py1jly67q5ld6m2d9xidbrvac1"))))
+    (build-system python-build-system)
+    (arguments
+     ;; Tests (all?) rely on network access and only some can be disabled by
+     ;; setting the environment variable TRAVIS_TAG.
+     (list #:tests? #f))
+    (native-inputs (list python-mock))
+    (propagated-inputs (list python-cryptography python-pyjwt python-requests))
+    (synopsis "Microsoft Authentication Library (MSAL) for Python")
+    (description
+     "The Microsoft Authentication Library for Python enables applications to
+integrate with the Microsoft identity platform.  It allows you to sign in
+users or apps with Microsoft identities (Azure AD, Microsoft Accounts and
+Azure AD B2C accounts) and obtain tokens to call Microsoft APIs such as
+Microsoft Graph or your own APIs registered with the Microsoft identity
+platform.  It is built using industry standard OAuth2 and OpenID Connect
+protocols.")
+    (license license:expat)))
+
+(define-public oauth2ms
+  (let ((commit "a1ef0cabfdea57e9309095954b90134604e21c08")
+        (revision "0"))
+    (package
+      (name "oauth2ms")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/harishkrupo/oauth2ms")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0dqi6n4npdrvb42r672n4sl1jl8z5lsk554fwiiihpj0faa9dx64"))))
+      (build-system copy-build-system)
+      (arguments
+       (list #:install-plan #~`(("oauth2ms" "bin/oauth2ms")
+                                ("." #$(string-append "share/doc/" name "-"
+                                                      version "/")
+                                 #:include-regexp ("\\.org$")))
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'install 'wrap-pythonpath
+                            (lambda* (#:key inputs outputs #:allow-other-keys)
+                              (let ((path (getenv "GUIX_PYTHONPATH")))
+                                (wrap-program (string-append #$output
+                                                             "/bin/oauth2ms")
+                                              `("GUIX_PYTHONPATH" ":" prefix
+                                                (,path)))))))))
+      (inputs (list bash-minimal python python-gnupg python-msal python-pyxdg))
+      (home-page "https://github.com/harishkrupo/oauth2ms")
+      (synopsis "XOAUTH2 compatible Microsoft Office 365 token fetcher")
+      (description
+       "Oauth2ms can be used to fetch OAuth 2.0 tokens from the Microsoft Identity
+endpoint.  Additionally, it can encode the token in the XOAUTH2 format to be
+used as authentication in IMAP mail servers.")
+      (license license:asl2.0))))
 
 (define-public python-oauthlib
   (package

@@ -29,6 +29,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages docbook)
@@ -373,6 +374,16 @@ variety of formats.")
                  (("\"(dvdcss)\"" _ library)
                   (string-append "\"" libdvdcss "/lib/" library "\""))))
              #t))
+         (add-before 'configure 'fix-cmake-taglib
+           (lambda _
+             ;; Use the CMake variables provided by FindTaglib from
+             ;; extra-cmake-modules, instead of bundled FindTaglib.cmake:
+             (substitute*
+                 '("plugins/decoder/mp3/CMakeLists.txt"
+                   "plugins/decoder/flac/CMakeLists.txt"
+                   "plugins/project/audiometainforenamer/CMakeLists.txt")
+               (("TAGLIB_INCLUDES") "Taglib_INCLUDE_DIRS")
+               (("TAGLIB_LIBRARIES") "Taglib_LIBRARIES"))))
          (add-after 'qt-wrap 'wrap-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Set paths to backend programs.
@@ -380,12 +391,14 @@ variety of formats.")
                `("PATH" ":" prefix
                  ,(map (lambda (input)
                          (string-append (assoc-ref inputs input) "/bin"))
-                       '("cdrdao" "dvd+rw-tools" "libburn" "sox"))))
+                       '("cdrdao" "cdrtools" "dvd+rw-tools" "libburn" "sox"))))
              #t)))))
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
     (inputs
-     (list cdrdao
+     (list bash-minimal
+           cdrdao
+           cdrtools
            dvd+rw-tools
            ffmpeg
            flac

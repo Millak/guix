@@ -167,7 +167,7 @@ based command language.")
 (define-public kakoune
   (package
     (name "kakoune")
-    (version "2021.08.28")
+    (version "2021.11.08")
     (source
      (origin
        (method url-fetch)
@@ -175,7 +175,7 @@ based command language.")
                            "releases/download/v" version "/"
                            "kakoune-" version ".tar.bz2"))
        (sha256
-        (base32 "1jvn4b9rma5jjvg3xz8nf224pbq3ry570j6qvc834wn5v3gxfvkg"))))
+        (base32 "1x5mvmpf0rgmr2xdw5wjn4hr6qd8yvj0zx588fi324x1knfqhc5a"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -191,14 +191,9 @@ based command language.")
              (substitute* "src/shell_manager.cc"
                (("if \\(m_shell.empty\\(\\)\\)" line)
                 (string-append "m_shell = \"" (which "sh")
-                               "\";\n        " line)))
-             #t))
-         (delete 'configure)            ; no configure script
-         ;; kakoune requires us to be in the src/ directory to build.
-         (add-before 'build 'chdir
-           (lambda _ (chdir "src") #t)))))
-    (native-inputs
-     (list asciidoc pkg-config ruby))
+                               "\";\n        " line)))))
+         (delete 'configure))))            ; no configure script
+    (native-inputs (list pkg-config))
     (synopsis "Vim-inspired code editor")
     (description
      "Kakoune is a code editor heavily inspired by Vim, as such most of its

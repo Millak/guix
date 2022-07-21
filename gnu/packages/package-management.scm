@@ -1302,18 +1302,18 @@ allow for great power and flexibility.
 (define-public gwl
   (package
     (name "gwl")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gwl/gwl-" version ".tar.gz"))
               (sha256
                (base32
-                "0sgaaq430l3dqmqqiikfb0ilxnd2cq28626y18kxx5c781qwpys9"))))
+                "09r22gqgaj2mxvlwvfach5j1n66y3yggmzc6d2gxq7lyywbcvjvs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-build? #false ; for reproducibility
        #:make-flags
-       '("GUILE_AUTO_COMPILE=0")))
+       '("GUILE_AUTO_COMPILE=0" "GWL_SKIP_INTEGRATION_TESTS=1")))
     (native-inputs
      (list autoconf automake pkg-config texinfo graphviz))
     (inputs
@@ -1342,8 +1342,8 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public guix-build-coordinator
-  (let ((commit "a7bbf9da27120839c22cc40abc6fad651df0a762")
-        (revision "58"))
+  (let ((commit "cc884efa7ee8a481cd3dae1b93d27454ac8dfcd2")
+        (revision "59"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1354,7 +1354,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1ryw2hpasq24zzaiz8dwn2krkb0vj3391plzfarjpvsk4058jhd5"))
+                  "03yz8if282mvkgqn0pxlqj0h3nyjfag7a835v9s98nkqfbj1ixcl"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

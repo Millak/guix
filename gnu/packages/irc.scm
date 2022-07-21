@@ -194,21 +194,20 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "3.5")
+    (version "3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "030p1264rrbr5sbyww85xq0cm5zzdmnpz89y9z90ppcfxi64x47a"))))
+                "1ppj676gwh67krq92xnfkmh3qnwbz8d51djsscxw013x7cdxg1cx"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
      `(("gettext-minimal" ,gettext-minimal)
        ("pkg-config" ,pkg-config)
-       ,@(if (or (target-x86-64?)
-                 (target-x86-32?))
+       ,@(if (target-x86?)
            `(("ruby-asciidoctor" ,ruby-asciidoctor))
            '())
        ;; For tests.
@@ -231,16 +230,14 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
     (arguments
      `(#:configure-flags
        (list "-DENABLE_PHP=OFF"
-             ,@(if (or (target-x86-64?)
-                       (target-x86-32?))
+             ,@(if (target-x86?)
                  '("-DENABLE_MAN=ON"
                    "-DENABLE_DOC=ON")
                 '())
              "-DENABLE_TESTS=ON")       ; ‘make test’ fails otherwise
        #:phases
        (modify-phases %standard-phases
-         ,@(if (or (target-x86-64?)
-                   (target-x86-32?))
+         ,@(if (target-x86?)
              '((add-after 'install 'move-doc
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let* ((out (assoc-ref outputs "out"))

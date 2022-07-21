@@ -1124,11 +1124,11 @@ according to THRESHOLD, then #f is returned."
 ;;; Prettified output.
 ;;;
 
-(define* (pretty-print-table rows #:key (max-column-width 20))
+(define* (pretty-print-table rows #:key (max-column-width 20) (left-pad 0))
   "Print ROWS in neat columns.  All rows should be lists of strings and each
 row should have the same length.  The columns are separated by a tab
 character, and aligned using spaces.  The maximum width of each column is
-bound by MAX-COLUMN-WIDTH."
+bound by MAX-COLUMN-WIDTH.  Each row is prefixed with LEFT-PAD spaces."
   (let* ((number-of-columns-to-pad (if (null? rows)
                                        0
                                        (1- (length (first rows)))))
@@ -1143,7 +1143,7 @@ bound by MAX-COLUMN-WIDTH."
                               (map (cut min <> max-column-width)
                                    column-widths)))
          (fmt (string-append (string-join column-formats "\t") "\t~a")))
-    (for-each (cut format #t "~?~%" fmt <>) rows)))
+    (for-each (cut format #t "~v_~?~%" left-pad fmt <>) rows)))
 
 ;;; Local Variables:
 ;;; eval: (put 'call-with-progress-reporter 'scheme-indent-function 1)
