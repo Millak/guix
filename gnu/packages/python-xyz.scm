@@ -5742,15 +5742,17 @@ the Texinfo, HTML, and PDF formats.")))
 (define-public python-munch
   (package
     (name "python-munch")
-    (version "2.0.4")
+    (version "2.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "munch" version))
         (sha256
          (base32
-          "1cmqg91xnqx8gvnh4pmp0bfl1dfcm65d5p9mg73zz8pkjhx6h80l"))))
+          "1lnvlic9g68hcmgdnv5bzp0nx2bf1kjclj54gx0s7nyl4ipmywrd"))))
     (build-system python-build-system)
+    (native-inputs (list python-pbr python-pytest))
+    (propagated-inputs (list python-six))
     (home-page "https://github.com/Infinidat/munch")
     (synopsis "Dot-accessible dictionary")
     (description "Munch is a dot-accessible dictionary similar to JavaScript
