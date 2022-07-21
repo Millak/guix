@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -927,6 +928,20 @@ The GNU C library is used as the C library in the GNU system and most systems
 with the Linux kernel.")
    (license lgpl2.0+)
    (home-page "https://www.gnu.org/software/libc/")))
+
+;; Define a variation of glibc which uses the default /etc/ld.so.cache, useful
+;; in FHS containers.
+(define-public glibc-for-fhs
+  (hidden-package
+   (package/inherit glibc
+     (name "glibc-for-fhs")
+     (source (origin (inherit (package-source glibc))
+                     ;; Remove Guix's patch to read ld.so.cache from /gnu/store
+                     ;; directories, re-enabling the default /etc/ld.so.cache
+                     ;; behavior.
+                     (patches
+                      (delete (search-patch "glibc-dl-cache.patch")
+                              (origin-patches (package-source glibc)))))))))
 
 ;; Below are old libc versions, which we use mostly to build locale data in
 ;; the old format (which the new libc cannot cope with.)
