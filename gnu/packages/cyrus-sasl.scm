@@ -34,42 +34,44 @@
 
 (define-public cyrus-sasl
   (package
-   (name "cyrus-sasl")
-   (version "2.1.28")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "https://github.com/cyrusimap/cyrus-sasl"
-                                "/releases/download/cyrus-sasl-" version
-                                "/cyrus-sasl-" version ".tar.gz"))
-            (sha256 (base32
-                     "135kbgyfpa1mwqp5dm223yr6ddzi4vjm7cr414d7rmhys2mwdkvw"))))
-   (build-system gnu-build-system)
-   (inputs (list gdbm openssl))
-   (propagated-inputs
-    (list ;; cyrus-sasl.pc refers to -lkrb5, so propagate it.
-          mit-krb5))
-   (arguments
-    (list
-     #:configure-flags #~(list (string-append "--with-plugindir="
-                                              #$output "/lib/sasl2")
-                               ;; When cross-compiling the build system is
-                               ;; unable to determine whether SPNEGO is
-                               ;; supported; Kerberos does, so enable it.
-                               #$@(if (%current-target-system)
-                                      '("ac_cv_gssapi_supports_spnego=yes")
-                                      '()))
+    (name "cyrus-sasl")
+    (version "2.1.28")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/cyrusimap/cyrus-sasl"
+                                  "/releases/download/cyrus-sasl-" version
+                                  "/cyrus-sasl-" version ".tar.gz"))
+              (sha256
+               (base32
+                "135kbgyfpa1mwqp5dm223yr6ddzi4vjm7cr414d7rmhys2mwdkvw"))))
+    (build-system gnu-build-system)
+    (inputs (list gdbm openssl))
+    (propagated-inputs
+     ;; cyrus-sasl.pc refers to -lkrb5, so propagate it.
+     (list mit-krb5))
+    (arguments
+     (list
+      #:configure-flags #~(list (string-append "--with-plugindir="
+                                               (assoc-ref %outputs "out")
+                                               "/lib/sasl2")
+                                ;; When cross-compiling the build system is
+                                ;; unable to determine whether SPNEGO is
+                                ;; supported; Kerberos does, so enable it.
+                                #$@(if (%current-target-system)
+                                       '("ac_cv_gssapi_supports_spnego=yes")
+                                       '()))
 
       ;; The 'plugins' directory has shared source files, such as
       ;; 'plugin_common.c'.  When building the shared libraries there, libtool
       ;; ends up doing "ln -s plugin_common.lo plugin_common.o", which can
       ;; fail with EEXIST when building things in parallel.
       #:parallel-build? #f))
-   (synopsis "Simple Authentication Security Layer implementation")
-   (description
-    "SASL (Simple Authentication Security Layer) is an Internet
+    (synopsis "Simple Authentication Security Layer implementation")
+    (description
+     "SASL (Simple Authentication Security Layer) is an Internet
 standards-track method for remote computers to authenticate.  The Cyrus SASL
 library makes supporting various SASL mechanisms easy for both client and
 server writers.")
-   (license (license:non-copyleft "file://COPYING"
-                                  "See COPYING in the distribution."))
-   (home-page "https://cyrusimap.org/sasl/")))
+    (license (license:non-copyleft "file://COPYING"
+                                   "See COPYING in the distribution."))
+    (home-page "https://cyrusimap.org/sasl/")))
