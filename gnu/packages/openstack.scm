@@ -27,7 +27,9 @@
 (define-module (gnu packages openstack)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages monitoring)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -947,4 +949,73 @@ library.  This makes some operations difficult, such as suppressing the
 “insecure platform warning” messages that urllib emits.  This package is a
 simple library to find the correct path to exceptions in the requests library
 regardless of whether they are bundled or not.")
+    (license asl2.0)))
+
+(define-public python-openstacksdk
+  (package
+    (name "python-openstacksdk")
+    (version "0.100.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "openstacksdk" version))
+              (sha256
+               (base32
+                "0iq7rxw59ibl6xsqh3jw56yg3zfbz3cqgx1239n6xd9iv86mcgq1"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (with-output-to-file "exclusion-list.txt"
+                          (lambda _
+	                    (display
+                             (string-append
+                              ;; tests timing out
+                              "test_create_dynamic_large_object$\n"
+                              "test_create_object_index_rax$\n"
+                              "test_create_object_skip_checksum$\n"
+                              "test_inspect_machine_inspect_failed$\n"
+                              "test_inspect_machine_wait$\n"
+                              "test_status_fails_different_attribute$\n"
+                              "test_status_match$\n"
+                              "test_status_match_different_attribute$\n"
+                              "test_status_match_with_none$\n"
+                              "test_wait_for_baremetal_node_lock_locked$\n"
+                              "test_wait_for_task_error_396$\n"
+                              "test_wait_for_task_wait$\n"))))
+                        (invoke "stestr" "run"
+                                "--exclude-list" "exclusion-list.txt")))))))
+    (native-inputs (list python-ddt
+                         python-hacking
+                         python-jsonschema
+                         python-pbr
+                         python-prometheus-client
+                         python-requests-mock
+                         python-statsd
+                         python-stestr
+                         python-testscenarios
+                         python-oslo.config
+                         python-oslotest))
+    (propagated-inputs (list python-appdirs
+                             python-cryptography
+                             python-decorator
+                             python-dogpile.cache
+                             python-importlib-metadata
+                             python-iso8601
+                             python-jmespath
+                             python-jsonpatch
+                             python-keystoneauth1
+                             python-munch
+                             python-netifaces
+                             python-os-service-types
+                             python-pbr   ; run-time dependency actually
+                             python-pyyaml
+                             python-requestsexceptions))
+    (home-page "https://docs.openstack.org/openstacksdk/latest/")
+    (synopsis "SDK for building applications to work with OpenStack")
+    (description "This package provides a client library for building
+applications to work with OpenStack clouds.  The SDK aims to provide a
+consistent and complete set of interactions with OpenStack’s many services,
+along with complete documentation, examples, and tools.")
     (license asl2.0)))
