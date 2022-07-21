@@ -1805,6 +1805,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/syslinux-strip-gnu-property.patch	\
   %D%/packages/patches/snappy-add-O2-flag-in-CmakeLists.txt.patch	\
   %D%/packages/patches/snappy-add-inline-for-GCC.patch		\
+  %D%/packages/patches/source-highlight-gcc-compat.patch	\
   %D%/packages/patches/sphinxbase-fix-doxygen.patch		\
   %D%/packages/patches/spice-vdagent-glib-2.68.patch		\
   %D%/packages/patches/sssd-optional-systemd.patch		\

@@ -266,6 +266,7 @@ to @code{IOStreams}.")
       (method url-fetch)
       (uri (string-append "mirror://gnu/src-highlite/source-highlight-"
                           version ".tar.gz"))
+      (patches (search-patches "source-highlight-gcc-compat.patch"))
       (sha256
        (base32
         "148w47k3zswbxvhg83z38ifi85f9dqcpg7icvvw1cm6bg21x4zrs"))))

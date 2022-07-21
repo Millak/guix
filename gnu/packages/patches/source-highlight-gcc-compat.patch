@@ -1,0 +1,74 @@
+Fix various compatibility problems with newer GCC.
+
+This is an amalgamation of these upstream commits:
+
+  https://git.savannah.gnu.org/cgit/src-highlite.git/commit/?id=904949c9026cb772dc93fbe0947a252ef47127f4
+  https://git.savannah.gnu.org/cgit/src-highlite.git/commit/?id=ab9fe5cb9b85c5afab94f2a7f4b6d7d473c14ee9
+
+diff --git a/lib/srchilite/fileutil.cc b/lib/srchilite/fileutil.cc
+index 59a6d64..963178c 100644
+--- a/lib/srchilite/fileutil.cc
++++ b/lib/srchilite/fileutil.cc
+@@ -48,7 +48,7 @@ void set_file_util_verbose(bool b) {
+ // FIXME avoid using a global variable
+ std::string start_path;
+ 
+-string readFile(const string &fileName) throw (IOException) {
++string readFile(const string &fileName) {
+     ifstream file(fileName.c_str());
+ 
+     if (!file.is_open()) {
+diff --git a/lib/srchilite/fileutil.h b/lib/srchilite/fileutil.h
+index 7335a9b..042eb56 100644
+--- a/lib/srchilite/fileutil.h
++++ b/lib/srchilite/fileutil.h
+@@ -27,7 +27,7 @@ extern std::string start_path;
+  * @return the contents of the file
+  * @throw IOException
+  */
+-string readFile(const string &fileName) throw (IOException);
++string readFile(const string &fileName);
+ 
+ //char *read_file(const string &fileName);
+ 
+diff --git a/lib/tests/stdboosterror.h b/lib/tests/stdboosterror.h
+index 568545b..d59bfa6 100644
+--- a/lib/tests/stdboosterror.h
++++ b/lib/tests/stdboosterror.h
+@@ -4,7 +4,7 @@
+ #include <boost/regex/pattern_except.hpp>
+ 
+ static boost::regex_error
+-        std_boost_exception(boost::regex_error(boost::regex_constants::error_bad_pattern));
++        std_boost_exception = boost::regex_error(boost::regex_constants::error_bad_pattern);
+ 
+ /**
+  * returns the string representing a standard exception (which
+diff --git a/lib/tests/test_wordtokenizer_main.cpp b/lib/tests/test_wordtokenizer_main.cpp
+index 40e23b1..11ba389 100644
+--- a/lib/tests/test_wordtokenizer_main.cpp
++++ b/lib/tests/test_wordtokenizer_main.cpp
+@@ -11,6 +11,14 @@
+ using namespace std;
+ using namespace srchilite;
+ 
++/*
++ * We have to use 'std' namespaces because 'WordTokenizer::WordTokenizerResults::value_type'
++ * is an std::pair<std::string, std::string> in disguise. We have to place 'operator<<()'
++ * into the same namespace for ADL to work. Otherwise gcc-12 or clang-13 can't find the
++ * overload.
++ */
++namespace std {
++
+ static ostream &operator <<(ostream &os, const WordTokenizer::WordTokenizerResults::value_type &);
+ 
+ ostream &operator <<(ostream &os, const WordTokenizer::WordTokenizerResults::value_type &token) {
+@@ -23,6 +31,8 @@ ostream &operator <<(ostream &os, const WordTokenizer::WordTokenizerResults::val
+     return os;
+ }
+ 
++}
++
+ int main() {
+     WordTokenizer::WordTokenizerResults tokens;
+ 
