@@ -108,7 +108,7 @@
              '()))))
 
     (native-inputs (list m4))
-    (inputs (list zlib))
+    (inputs (list xz zlib))
     (home-page "https://sourceware.org/elfutils/")
     (synopsis "Collection of utilities and libraries to handle ELF files and
 DWARF data")
