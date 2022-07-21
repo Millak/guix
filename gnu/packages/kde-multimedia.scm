@@ -605,55 +605,59 @@ This package is part of the KDE multimedia module.")
      (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
 
 (define-public kmplayer
-  (package
-    (name "kmplayer")
-    (version "0.12.0b")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/kmplayer/0.12"
-                           "/kmplayer-" version ".tar.bz2"))
-       (sha256
-        (base32 "0wzdxym4fc83wvqyhcwid65yv59a2wvp1lq303cn124mpnlwx62y"))
-       (patches (search-patches
-                 "kmplayer-aarch64.patch"
-                 "kmplayer-upstream_Fix-build-with-Qt-5.9.patch"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules pkg-config kdoctools))
-    (inputs
-     (list kbookmarks
-           kconfig
-           kcoreaddons
-           kdelibs4support
-           ki18n
-           kinit
-           kio
-           kparts
-           kmediaplayer
-           kwidgetsaddons
-           libxcb ;; FIXME: why does cmake not find XEVIE and XPRINT?
-           oxygen-icons ; default icon set
-           phonon
-           qtbase-5
-           cairo
-           qtsvg-5
-           qtx11extras
-           xcb-util
-           xcb-util-cursor
-           xcb-util-errors
-           xcb-util-image
-           xcb-util-keysyms
-           xcb-util-wm))
-    (arguments
-     (list #:configure-flags
-           #~(list (string-append
-                    "-DCMAKE_CXX_FLAGS=-I"
-                    #$(this-package-input "qtx11extras")
-                    "/include/qt5"))))
-    (home-page "https://apps.kde.org/kmplayer/")
-    (synopsis "Media player using mplayer/phonon as backend")
-    (description "Kmplayer can play all the audio/video supported by
+  ;; The latest release was in 2016, and does not work with the newer
+  ;; KDE libraries.
+  (let ((commit "88e85308b71dc5e58cc655b5b9a13cd71b78233f")
+        (revision "1"))
+    (package
+      (name "kmplayer")
+      (version (git-version "0.12.0b" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://invent.kde.org/multimedia/kmplayer")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1pzk0js499diqabpwxjq6nnwpmj1ikpyyykzjbm844xcbm74cl19"))))
+      (build-system qt-build-system)
+      (native-inputs
+       (list extra-cmake-modules pkg-config kdoctools))
+      (inputs
+       (list kbookmarks
+             kconfig
+             kcoreaddons
+             kdelibs4support
+             ki18n
+             kinit
+             kio
+             kparts
+             kmediaplayer
+             kwidgetsaddons
+             libxcb       ;; FIXME: why does cmake not find XEVIE and XPRINT?
+             oxygen-icons ; default icon set
+             phonon
+             qtbase-5
+             cairo
+             qtsvg-5
+             qtx11extras
+             xcb-util
+             xcb-util-cursor
+             xcb-util-errors
+             xcb-util-image
+             xcb-util-keysyms
+             xcb-util-wm))
+      (arguments
+       (list #:configure-flags
+             #~(list (string-append
+                      "-DCMAKE_CXX_FLAGS=-I"
+                      #$(this-package-input "qtx11extras")
+                      "/include/qt5"))))
+      (home-page "https://apps.kde.org/kmplayer/")
+      (synopsis "Media player using mplayer/phonon as backend")
+      (description "Kmplayer can play all the audio/video supported by
 mplayer/phonon from a local file or URL and be embedded in Konqueror and
 KHTML.  It also plays DVDs.
 
@@ -667,8 +671,8 @@ Some features:
 @item Broadcasting, http streaming, using ffserver/ffmpeg
 @item For TV sources, you need v4lctl (part of the xawtv package)
 @end itemize")
-    (license ;; GPL for programs, LGPL for libraries, FDL for documentation
-     (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
+      (license ;; GPL for programs, LGPL for libraries, FDL for documentation
+       (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+)))))
 
 (define-public kwave
   (package

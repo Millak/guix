@@ -1373,8 +1373,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/kismet-unbundle-boost.patch		\
   %D%/packages/patches/kmod-module-directory.patch		\
   %D%/packages/patches/kmscon-runtime-keymap-switch.patch	\
-  %D%/packages/patches/kmplayer-aarch64.patch			\
-  %D%/packages/patches/kmplayer-upstream_Fix-build-with-Qt-5.9.patch	\
   %D%/packages/patches/kobodeluxe-paths.patch			\
   %D%/packages/patches/kobodeluxe-enemies-pipe-decl.patch	\
   %D%/packages/patches/kobodeluxe-const-charp-conversion.patch	\
