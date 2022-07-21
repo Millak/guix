@@ -1302,18 +1302,18 @@ allow for great power and flexibility.
 (define-public gwl
   (package
     (name "gwl")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gwl/gwl-" version ".tar.gz"))
               (sha256
                (base32
-                "0sgaaq430l3dqmqqiikfb0ilxnd2cq28626y18kxx5c781qwpys9"))))
+                "09r22gqgaj2mxvlwvfach5j1n66y3yggmzc6d2gxq7lyywbcvjvs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-build? #false ; for reproducibility
        #:make-flags
-       '("GUILE_AUTO_COMPILE=0")))
+       '("GUILE_AUTO_COMPILE=0" "GWL_SKIP_INTEGRATION_TESTS=1")))
     (native-inputs
      (list autoconf automake pkg-config texinfo graphviz))
     (inputs
