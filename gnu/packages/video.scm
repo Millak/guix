@@ -1475,14 +1475,14 @@ quality and performance.")
 (define-public libva
   (package
     (name "libva")
-    (version "2.14.0")
+    (version "2.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/intel/libva/releases/download/"
                            version "/libva-" version ".tar.bz2"))
        (sha256
-        (base32 "0m44wn9kysnmspgsl5wvqm50f49c101hcacjq65m9yycs5s9l7ji"))))
+        (base32 "1jhy8qzfp4ydbxs9qd9km7k5wq8r4s2vq20r1q07lgld8l4x93i5"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
