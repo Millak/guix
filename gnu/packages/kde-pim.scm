@@ -1653,16 +1653,14 @@ Virtual Contact File}) files to the KPeople contact management library.")
        (sha256
         (base32 "0981ci2kr20v4fk11h57rqya0brgslfazpgq1yk5yqiwyqqm49r2"))))
     (build-system qt-build-system)
-    (native-inputs
-     `(("extra-cmake-modules" ,extra-cmake-modules)))
-    (inputs
-     `(("kconfig" ,kconfig)
-       ("ki18n" ,ki18n)
-       ("kio" ,kio)
-       ("kpimcommon" ,kpimcommon)
-       ("ktextwidgets" ,ktextwidgets)
-       ("kwidgetsaddons" ,kwidgetsaddons)
-       ("qtbase" ,qtbase-5)))
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kconfig
+                  ki18n
+                  kio
+                  kpimcommon
+                  ktextwidgets
+                  kwidgetsaddons
+                  qtbase-5))
     (arguments
      `(#:tests? #f)) ;; 2/7 tests fail (due to network issues?)
     (home-page "https://invent.kde.org/pim/libgravatar")
