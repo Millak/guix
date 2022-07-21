@@ -173,7 +173,7 @@ where the OS part is overloaded to denote a specific ABI---into GCC
                   "lib"                    ;libgcc_s, libgomp, etc. (15+ MiB)
                   "debug"))                ;debug symbols of run-time libraries
 
-       (inputs (list gmp mpfr mpc libelf zlib))
+       (inputs (list gmp mpfr mpc elfutils zlib))
 
        ;; GCC < 5 is one of the few packages that doesn't ship .info files.
        ;; Newer texinfos fail to build the manual, so we use an older one.
