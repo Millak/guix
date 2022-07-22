@@ -1641,14 +1641,14 @@ of the netcdf4 package before.")
 (define-public python-netcdf4
   (package
     (name "python-netcdf4")
-    (version "1.5.3")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "netCDF4" version))
        (sha256
         (base32
-         "1gn35mb2yc263pci720aik8ymz41lrvxlrn3z83vyjwghiashg1a"))))
+         "0qxs8r1qmsmg760wm5q0wqlcm7hdd3k7cghryw6wvqd3v5rs7vwm"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
