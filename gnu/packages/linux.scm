@@ -3229,7 +3229,7 @@ processes currently causing I/O.")
 (define-public iotop
   (package
     (name "iotop")
-    (version "1.21")
+    (version "1.22")
     (source
      (origin
        (method git-fetch)
@@ -3238,7 +3238,7 @@ processes currently causing I/O.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03wdnkfl51dapilg6r9vjga1xrl9lxlypfz07k50nscvbq8v8fb7"))))
+        (base32 "04a77qir35s1bwvd39qddx2kfizdbf5jxlnz8zmy1cnrigbwcy1h"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
