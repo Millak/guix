@@ -10503,14 +10503,14 @@ as Fuseki or DBPedia.")
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/technomancy/better-defaults")
+              (url "https://git.sr.ht/~technomancy/better-defaults")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
          "1rxznx2l0cdpiz8mad8s6q17m1fngpgb1cki7ch6yh18r3qz8ysr"))))
     (build-system emacs-build-system)
-    (home-page "https://github.com/technomancy/better-defaults")
+    (home-page "https://git.sr.ht/~technomancy/better-defaults")
     (synopsis "Better defaults for Emacs")
     (description
      "Better defaults attempts to address the most obvious deficiencies of the
