@@ -305,7 +305,7 @@ also known as DXTn or DXTC) for Mesa.")
                    wayland-protocols)
              ;; TODO: Resort alphabetically.
              ;; Note: update the 'clang' input of mesa-opencl when bumping this.
-             (list llvm-11)))
+             (list llvm)))
     (native-inputs
      (append (list bison
                    flex
@@ -507,7 +507,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
        (prepend libclc)))
     (native-inputs
      (modify-inputs (package-native-inputs mesa)
-       (prepend clang-11)))))
+       (prepend clang)))))
 
 (define-public mesa-opencl-icd
   (package/inherit mesa-opencl
