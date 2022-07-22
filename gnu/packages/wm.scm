@@ -1776,7 +1776,7 @@ Wlroots based compositors.")
 (define-public mako
   (package
     (name "mako")
-    (version "1.6")
+    (version "1.7.1")
     (source
      (origin
        (method git-fetch)
@@ -1785,9 +1785,9 @@ Wlroots based compositors.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vbx2r01rq3r9zc6kflah44ms1fzf4z857zmq3qxnfsyjdkz1hs5"))))
+        (base32 "0vpar1a7zafkd2plmyaackgba6fyg35s9zzyxmj8j7v2q5zxirgz"))))
     (build-system meson-build-system)
-    (inputs (list cairo elogind gdk-pixbuf pango wayland))
+    (inputs (list basu cairo gdk-pixbuf pango wayland))
     (native-inputs (list pkg-config scdoc wayland-protocols))
     (home-page "https://wayland.emersion.fr/mako")
     (synopsis "Lightweight Wayland notification daemon")
