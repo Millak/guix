@@ -122,6 +122,7 @@
     (service seatd-service-type)
     (service greetd-service-type
              (greetd-configuration
+              (greeter-supplementary-groups '("input" "video"))
               (terminals
                (list
                 ;; we can make any terminal active by default
@@ -294,6 +295,13 @@ minimal %BASE-SERVICES."
             (begin
               (marionette-type "echo alice > /run/user/1000/test\n" marionette)
               (file-get-all-strings "/run/user/1000/test")))
+
+          (test-equal "check greeter user has correct groups"
+            "greeter input video\n"
+            (begin
+              (marionette-type "id -Gn greeter > /run/user/1000/greeter-groups\n"
+                               marionette)
+              (file-get-all-strings "/run/user/1000/greeter-groups")))
 
           (test-assert "screendump"
             (begin

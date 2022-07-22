@@ -18559,6 +18559,13 @@ the 'root' account has just been created.
 @item @code{terminals} (default: @code{'()})
 List of @code{greetd-terminal-configuration} per terminal for which
 @code{greetd} should be started.
+
+@item @code{greeter-supplementary-groups} (default: @code{'()})
+List of groups which should be added to @code{greeter} user. For instance:
+@lisp
+(greeter-supplementary-groups '("seat" "video"))
+@end lisp
+Note that this example will fail if @code{seat} group does not exist.
 @end table
 @end deftp
 

@@ -2918,17 +2918,6 @@ to handle."
      "user = " default-session-user "\n"
      "command = " default-session-command "\n")))
 
-(define %greetd-accounts
-  (list (user-account
-         (name "greeter")
-         (group "greeter")
-         ;; video group is required for graphical greeters.
-         (supplementary-groups '("video"))
-         (system? #t))
-        (user-group
-         (name "greeter")
-         (system? #t))))
-
 (define %greetd-file-systems
   (list (file-system
           (device "none")
@@ -2956,7 +2945,16 @@ to handle."
   greetd-configuration?
   (motd greetd-motd (default %default-motd))
   (allow-empty-passwords? greetd-allow-empty-passwords? (default #t))
-  (terminals greetd-terminals (default '())))
+  (terminals greetd-terminals (default '()))
+  (greeter-supplementary-groups greetd-greeter-supplementary-groups (default '())))
+
+(define (greetd-accounts config)
+  (list (user-group (name "greeter") (system? #t))
+        (user-account
+         (name "greeter")
+         (group "greeter")
+         (supplementary-groups (greetd-greeter-supplementary-groups config))
+         (system? #t))))
 
 (define (make-greetd-pam-mount-conf-file config)
   (computed-file
@@ -3033,7 +3031,7 @@ mount/unmount /run/user/<uid> directory for user and @code{greetd}
 login manager daemon.")
    (extensions
     (list
-     (service-extension account-service-type (const %greetd-accounts))
+     (service-extension account-service-type greetd-accounts)
      (service-extension file-system-service-type (const %greetd-file-systems))
      (service-extension etc-service-type greetd-etc-service)
      (service-extension pam-root-service-type greetd-pam-service)
