@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -184,6 +184,7 @@ completely compatible with Plain TeX.")
                                  "tex/texsis/config/")
                           ('base32 (? string? hash))
                           #:trivial? #t))
+               ('version . any)
                ('propagated-inputs
                 ('list 'texlive-cm
                        'texlive-hyphen-base
