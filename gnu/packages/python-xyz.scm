@@ -14920,27 +14920,27 @@ of @acronym{REGEXPs, regular expressions}.")
 (define-public python-mako
   (package
     (name "python-mako")
-    (version "1.1.3")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Mako" version))
        (sha256
         (base32
-         "09ywrmhr6gdyfx6d5727wwjnz73i6rklqcb4c14m7sqc830wi5c1"))))
+         "01q3gdqpxqcxdhacrzrwk6fjpd1krdr73i7cm4d2yja38zzsam7h"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (if tests?
-                          (invoke "nosetests" "-v")
+                          (invoke "pytest" "-vv")
                           (format #t "test suite not run~%"))
                       #t)))))
     (propagated-inputs
      (list python-markupsafe))
     (native-inputs
-     (list python-mock python-nose))
+     (list python-mock python-pytest))
     (home-page "https://www.makotemplates.org/")
     (synopsis "Templating language for Python")
     (description "Mako is a templating language for Python that compiles
