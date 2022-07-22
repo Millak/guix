@@ -101,13 +101,6 @@
                        (setenv "CC" (string-append target "-gcc"))
                        (setenv "STRIP" (string-append target "-strip")))))
                  '())
-          (add-after 'install 'patch-sasl-path
-            ;; Give -L arguments for cyrus-sasl to avoid propagation.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((krb5 (search-input-file inputs "/lib/libkrb5.so")))
-                (substitute* (string-append #$output "/lib/libldap.la")
-                  (("-lkrb5" lib)
-                   (string-append "-L" (dirname krb5) "/lib " lib))))))
           (add-after 'install 'provide-libldap_r
             (lambda _
               ;; The re-entrant libldap_r no longer exists since 2.6
