@@ -1476,6 +1476,37 @@ NetCDF files can also be read and modified.  Python-HDF4 is a fork of
 @url{http://hdfeos.org/software/pyhdf.php,pyhdf}.")
    (license license:expat)))
 
+(define-public python-h5netcdf
+  (package
+    (name "python-h5netcdf")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "h5netcdf" version))
+       (sha256
+        (base32 "1b2dcgf5rwy7pb7hr4prkc5vgcw9qc2was20dmnj90lbrpx08rvp"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv" "h5netcdf/tests")))))))
+    (native-inputs
+     (list python-netcdf4
+           python-pytest
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-h5py python-packaging))
+    (home-page "https://h5netcdf.org")
+    (synopsis "Python interface for the netCDF4 file-format based on h5py")
+    (description "This package provides Python interface for the netCDF4
+file-format that reads and writes local or remote HDF5 files directly via h5py
+or h5pyd, without relying on the Unidata netCDF library")
+    (license license:bsd-3)))
+
 (define-public python-h5py
   (package
     (name "python-h5py")
