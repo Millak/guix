@@ -23189,6 +23189,30 @@ input), without requiring the applications needing access to be root.
   %base-services)
 
 @end lisp
+
+@code{seatd} operates over a UNIX domain socket, with @code{libseat}
+providing the client side of the protocol.  Applications that acquire
+access to the shared resources via @code{seatd} (e.g. @code{sway})
+need to be able to talk to this socket.
+This can be achieved by adding the user they run under to the group
+owning @code{seatd}'s socket (usually ``seat''), like so:
+
+@lisp
+(user-account
+  (name "alice")
+  (group "users")
+  (supplementary-groups '("wheel"   ; allow use of sudo, etc.
+                          "seat"    ; seat management
+                          "audio"   ; sound card
+                          "video"   ; video devices such as webcams
+                          "cdrom")) ; the good ol' CD-ROM
+  (comment "Bob's sister"))
+@end lisp
+
+Depending on your setup, you will have to not only add regular users,
+but also system users to this group.  For instance, some greetd greeters
+require graphics and therefore also need to negotiate with seatd.
+
 @end defvr
 
 @deftp {Data Type} seatd-configuration
@@ -23198,10 +23222,7 @@ Configuration record for the seatd daemon service.
 @item @code{seatd} (default: @code{seatd})
 The seatd package to use.
 
-@item @code{user} (default: @samp{"root"})
-User to own the seatd socket.
-
-@item @code{group} (default: @samp{"users"})
+@item @code{group} (default: @samp{"seat"})
 Group to own the seatd socket.
 
 @item @code{socket} (default: @samp{"/run/seatd.sock"})

@@ -13,7 +13,7 @@
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2021 muradm <mail@muradm.net>
+;;; Copyright © 2021, 2022 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,6 +69,7 @@
   #:use-module (guix records)
   #:use-module (guix packages)
   #:use-module (guix store)
+  #:use-module (guix ui)
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
@@ -1643,12 +1644,19 @@ or setting its password with passwd.")))
 ;;; seatd-service-type -- minimal seat management daemon
 ;;;
 
+(define (seatd-group-sanitizer group-or-name)
+  (match group-or-name
+    ((? user-group? group) group)
+    ((? string? group-name) (user-group (name group-name) (system? #t)))
+    (_ (leave (G_ "seatd: '~a' is not a valid group~%") group-or-name))))
+
 (define-record-type* <seatd-configuration> seatd-configuration
   make-seatd-configuration
   seatd-configuration?
   (seatd seatd-package (default seatd))
-  (user seatd-user (default "root"))
-  (group seatd-group (default "users"))
+  (group seatd-group                    ; string | <user-group>
+         (default "seat")
+         (sanitize seatd-group-sanitizer))
   (socket seatd-socket (default "/run/seatd.sock"))
   (logfile seatd-logfile (default "/var/log/seatd.log"))
   (loglevel seatd-loglevel (default "info")))
@@ -1662,8 +1670,7 @@ or setting its password with passwd.")))
          (provision '(seatd elogind))
          (start #~(make-forkexec-constructor
                    (list #$(file-append (seatd-package config) "/bin/seatd")
-                         "-u" #$(seatd-user config)
-                         "-g" #$(seatd-group config))
+                         "-g" #$(user-group-name (seatd-group config)))
                    #:environment-variables
                    (list (string-append "SEATD_LOGLEVEL="
                                         #$(seatd-loglevel config))
@@ -1672,9 +1679,12 @@ or setting its password with passwd.")))
                    #:log-file #$(seatd-logfile config)))
          (stop #~(make-kill-destructor)))))
 
+(define seatd-accounts
+  (match-lambda (($ <seatd-configuration> _ group) (list group))))
+
 (define seatd-environment
   (match-lambda
-    (($ <seatd-configuration> _ _ _ socket)
+    (($ <seatd-configuration> _ _ socket)
      `(("SEATD_SOCK" . ,socket)))))
 
 (define seatd-service-type
@@ -1685,6 +1695,7 @@ to shared devices (graphics, input), without requiring the
 applications needing access to be root.")
    (extensions
     (list
+     (service-extension account-service-type seatd-accounts)
      (service-extension session-environment-service-type seatd-environment)
      ;; TODO: once cgroups is separate dependency we should not mount it here
      ;; for now it is mounted here, because elogind mounts it

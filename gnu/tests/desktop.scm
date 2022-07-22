@@ -255,6 +255,15 @@ minimal %BASE-SERVICES."
                    (socks (map wait-for-unix-socket-m socks)))
                 (and (= 2 (length socks)) (every identity socks)))))
 
+          (test-equal "seatd.sock ownership"
+            '("root" "seat")
+            `(,(marionette-eval
+                '(passwd:name (getpwuid (stat:uid (stat "/run/seatd.sock"))))
+                marionette)
+              ,(marionette-eval
+                '(group:name (getgrgid (stat:gid (stat "/run/seatd.sock"))))
+                marionette)))
+
           (test-assert "greetd is ready"
             (begin
               (marionette-type "ps -C greetd -o pid,args --no-headers > ps-greetd\n"
