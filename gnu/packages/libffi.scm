@@ -110,7 +110,12 @@ conversions for values passed between the two languages.")
                                "linker_so='gcc -shared')")))
              (substitute* "testing/cffi0/test_ownlib.py"
                (("\"cc testownlib") "\"gcc testownlib"))
-             (invoke "py.test" "-v" "c/" "testing/")))
+             (invoke "pytest" "-v" "c/" "testing/"
+                     ;; Disable tests that fail (harmlessly) with glibc
+                     ;; 2.34 and later:
+                     ;; https://foss.heptapod.net/pypy/cffi/-/issues/528
+                     "-k" (string-append "not TestFFI.test_dlopen_handle "
+                                         "and not test_dlopen_handle"))))
          (add-before 'check 'patch-paths-of-dynamically-loaded-libraries
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Shared libraries should be referred by their absolute path as
