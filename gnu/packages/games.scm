@@ -7632,65 +7632,6 @@ original.")
     (sha256
      (base32 "05xdikw5ln0yh8p5chsmd8qnndmxg5b5vjlfpdqrjcb1ncqzywkc"))))
 
-(define-public rinutils
-  (package
-    (name "rinutils")
-    (version "0.10.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/shlomif/rinutils")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0r90kncf6mvyklifpdsnm50iya7w2951nz35nlgndmqnr82gvdwf"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'copy-cmake-modules
-                 (lambda _
-                   (copy-file #$shlomif-cmake-modules
-                              (string-append "cmake/"
-                                             (strip-store-file-name
-                                              #$shlomif-cmake-modules)))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (with-directory-excursion "../source"
-                       (setenv "FCS_TEST_BUILD" "1")
-                       (setenv "RINUTILS_TEST_BUILD" "1")
-                       ;; TODO: Run tests after setting RINUTILS_TEST_TIDY to `1',
-                       ;; which requires tidy-all.
-                       ;; (setenv "RINUTILS_TEST_TIDY" "1")
-                       (invoke "perl"
-                               "CI-testing/continuous-integration-testing.pl"))))))))
-    (native-inputs
-     (list perl
-           ;; The following are needed only for tests.
-           perl-class-xsaccessor
-           perl-file-find-object
-           perl-io-all
-           perl-test-differences
-           perl-test-runvalgrind
-           pkg-config))
-    (inputs
-     (list cmocka
-           perl-env-path
-           perl-inline
-           perl-inline-c
-           perl-string-shellquote
-           perl-test-trailingspace
-           perl-file-find-object-rule
-           perl-text-glob
-           perl-number-compare
-           perl-moo))
-    (home-page "https://www.shlomifish.org/open-source/projects/")
-    (synopsis "C11 / gnu11 utilities C library")
-    (description "This package provides C11 / gnu11 utilities C library")
-    (license license:expat)))
-
 (define xonotic-data
   (package
     (name "xonotic-data")
