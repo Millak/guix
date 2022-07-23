@@ -37,6 +37,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system meson)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -81,6 +82,59 @@ This package provides just the utilities and no quotes.")
      (list (search-path-specification
             (variable "DAIKICHI_FORTUNE_PATH")
             (files '("share/fortunes")))))))
+
+(define-public fortunes-jkirchartz
+  ;; No public release.
+  ;; Note to updaters: Please ensure that new quotes do not bring harm
+  ;; rather than fortune.
+  (let ((commit "2e32ba0a57e3842dc06c8128d880ab4c8ec3aefc")
+        (revision "0"))
+    (package
+      (name "fortunes-jkirchartz")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/JKirchartz/fortunes")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ym4ldzww5yfd76q7zvhi491bqlykfjnc215bqx1cbj0c8ndb2l4"))
+                (snippet
+                 #~(for-each delete-file
+                             ;; incompatible license
+                             '("BibleAbridged")))))
+      (build-system copy-build-system)
+      (native-inputs (list daikichi gnu-make))
+      (arguments
+       (list #:install-plan
+             #~`(("." "share/fortunes" #:include-regexp ("\\.dat$")))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-source
+                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                     (substitute* "showerthoughts"
+                       (("&lt;") "<")
+                       (("&gt;") ">")
+                       (("&amp;") "&"))
+                     (substitute* "Makefile"
+                       (("strfile") "daikichi pack"))))
+                 (add-before 'install 'build
+                   (lambda _
+                     (invoke "make")))
+                 (add-after 'build 'check
+                   (lambda* (#:key inputs tests? #:allow-other-keys)
+                     (when tests?
+                       (apply
+                        invoke
+                        (search-input-file inputs "libexec/daikichi/test-dat")
+                        (find-files "." "\\.dat$"))))))))
+      (home-page "https://github.com/JKirchartz/fortunes")
+      (synopsis "Collection of fortunes")
+      (description "This package contains a large collection of quotes to
+display via @command{fortune}, drawn from sources all around the world.")
+      (license license:unlicense))))
 
 (define-public lolcat
   (let ((commit "35dca3d0a381496d7195cd78f5b24aa7b62f2154")
