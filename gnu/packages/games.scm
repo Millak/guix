@@ -7622,16 +7622,6 @@ entirely config file, savegame, netplay and demo compatible with the
 original.")
     (home-page "https://www.chocolate-doom.org/wiki/index.php/Crispy_Doom")))
 
-(define shlomif-cmake-modules
-  (origin
-    (method url-fetch)
-    (uri (string-append
-          "https://raw.githubusercontent.com/shlomif/shlomif-cmake-modules/"
-          "89f05caf86078f783873975525230cf4fecede8a"
-          "/shlomif-cmake-modules/Shlomif_Common.cmake"))
-    (sha256
-     (base32 "05xdikw5ln0yh8p5chsmd8qnndmxg5b5vjlfpdqrjcb1ncqzywkc"))))
-
 (define xonotic-data
   (package
     (name "xonotic-data")
