@@ -1589,16 +1589,16 @@ of M4RI from F_2 to F_{2^e}.")
 (define-public eclib
   (package
     (name "eclib")
-    (version "20190909")
+    (version "20220621")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/JohnCremona/eclib/")
-                    (commit (string-append "v" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gw27lqc3f525n8qdcmr2nyn16y9g10z9f6dnmckyyxcdzvhq35n"))))
+                "07wbkzmn6w0hrv2vim7f0il7k59ccc66x5vnn623xkmhfw32b3nz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
