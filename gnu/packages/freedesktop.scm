@@ -1546,6 +1546,8 @@ broadband (2G/3G/4G) devices and connections.  Whether built-in devices, USB
 dongles, bluetooth-paired telephones, or professional RS232/USB devices with
 external power supplies, ModemManager is able to prepare and configure the
 modems and setup connections with them.")
+    (properties
+     '((upstream-name . "ModemManager")))
     (license license:gpl2+)))
 
 (define-public telepathy-logger
