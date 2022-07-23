@@ -1524,8 +1524,9 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
                 "1apq9camys2gaw6y6ic1ld20cncfwpmxnzvh4j5zkbbjpf5hbcxj"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       `(,(string-append "--with-udev-base-dir=" %output "/lib/udev"))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-udev-base-dir=" #$output "/lib/udev"))))
     (native-inputs
      (list `(,glib "bin") ; for glib-mkenums
            gobject-introspection
