@@ -30329,3 +30329,27 @@ compatible with BibTeX's own parser.")
      "This package provides a Python library for controlling the i3 and Sway
 window managers.")
     (license license:bsd-3)))
+
+(define-public i3-autotiling
+  (package
+    (name "i3-autotiling")
+    (version "1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nwg-piotr/autotiling")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hjlvg7095s322gb43r9g7mqlsy3pj13l827jpnbn5x0918rq9rr"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-wheel))
+    (propagated-inputs (list python-i3ipc))
+    (home-page "https://github.com/nwg-piotr/autotiling")
+    (synopsis "Automatically tile windows in i3 and Sway")
+    (description
+     "Script for Sway and i3 to automatically switch the horizontal/vertical
+ window split orientation.")
+    (license license:gpl3)))
