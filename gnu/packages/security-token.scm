@@ -242,7 +242,7 @@ with a PKCS #11 Cryptographic Token Interface.")
      (list perl ; for pod2man
            pkg-config))
     (inputs
-     `(("libudev" ,eudev)))
+     (list python eudev))
     (home-page "https://pcsclite.apdu.fr/")
     (synopsis "Middleware to access a smart card using PC/SC")
     (description
