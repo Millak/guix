@@ -1920,7 +1920,7 @@ applications define in those files.")
 (define-public perl-file-mimeinfo
   (package
     (name "perl-file-mimeinfo")
-    (version "0.29")
+    (version "0.33")
     (source
      (origin
        (method url-fetch)
@@ -1928,7 +1928,7 @@ applications define in those files.")
                            "File-MimeInfo-" version ".tar.gz"))
        (sha256
         (base32
-         "1sh8r6vczyz08zm8vfsjmkg6a165wch54akjdrd1vbifcmwjg5pi"))))
+         "1i5iw6ri0w9clwpqf40xmsh4isc8xvx2lyf2r5g34886i6rsdgpn"))))
     (build-system perl-build-system)
     ;; If the tests are fixed, add perl-test-pod, perl-test-pod-coverage, and
     ;; perl-test-tiny as native-inputs.
