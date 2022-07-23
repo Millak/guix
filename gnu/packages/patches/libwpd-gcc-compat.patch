@@ -1,0 +1,17 @@
+Fix build with newer GCC.
+
+Taken from upstream:
+
+  https://sourceforge.net/p/libwpd/code/ci/333c8a26f231bea26ec3d56245315041bbf5577f/
+
+--- a/src/lib/WPXTable.h
++++ b/src/lib/WPXTable.h
+@@ -53,7 +53,7 @@
+ 	~WPXTable();
+ 	void insertRow();
+ 	void insertCell(unsigned char colSpan, unsigned char rowSpan, unsigned char borderBits);
+-	const WPXTableCell  *getCell(size_t i, size_t j)
++	const WPXTableCell  *getCell(std::size_t i, std::size_t j)
+ 	{
+ 		return &(m_tableRows[i])[j];
+ 	}

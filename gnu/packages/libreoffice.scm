@@ -236,6 +236,7 @@ spreadsheets and presentations.")
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/libwpd/libwpd/"
                           "libwpd-" version "/libwpd-" version ".tar.xz"))
+      (patches (search-patches "libwpd-gcc-compat.patch"))
       (sha256 (base32
                "02fx8bngslcj7i5g1gx2kiign4vp09wrmp5wpvix9igxcavb0r94"))))
     (build-system gnu-build-system)
