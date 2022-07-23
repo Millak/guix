@@ -115,6 +115,7 @@
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Haider Mirza <haider@haider.gq>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
+;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31946,3 +31947,23 @@ can bind a popon to a specific buffer to only show on that buffer.")
 be useful when working with the bitbake files in Yocto and OpenEmbedded
 projects.")
    (license license:gpl3+)))
+
+(define-public emacs-vundo
+  (package
+    (name "emacs-vundo")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/vundo-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "032aqcqq2xhh12qcpp8p3qldv0r9cnqr2y11jk1m5cvgal1cbb68"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/casouri/vundo")
+    (synopsis "Visualize the undo tree")
+    (description
+     "Vundo (visual undo) displays the undo history as a tree and lets you move in the
+tree to go back to previous buffer states.  To use vundo, type @kbd{M-x vundo RET} in
+the buffer you want to undo.  An undo tree buffer should pop up.")
+    (license license:gpl3+)))
