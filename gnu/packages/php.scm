@@ -70,7 +70,8 @@
               (sha256
                (base32
                 "03d7icwys4ikl45q3rgsxv1m3i7kfxhykpx75nn7jzn6697s6wpa"))
-              (patches (search-patches "php-bug-74093-test.patch"))
+              (patches (search-patches "php-bug-74093-test.patch"
+                                       "php-curl-compat.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"

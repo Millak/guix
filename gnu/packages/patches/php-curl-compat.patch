@@ -1,0 +1,17 @@
+Fix test result with cURL 7.83 and later.
+
+Taken from upstream:
+
+  https://github.com/php/php-src/commit/a4179e4c92b6365d39e09cb9cd63c476848013af
+
+diff --git a/ext/curl/tests/curl_basic_007.phpt b/ext/curl/tests/curl_basic_007.phpt
+index 3b53658d6a7e..3834e4674f82 100644
+--- a/ext/curl/tests/curl_basic_007.phpt
++++ b/ext/curl/tests/curl_basic_007.phpt
+@@ -20,5 +20,5 @@ curl_close($ch);
+ 
+ ?>
+ --EXPECTF--
+-string(%d) "No URL set!%w"
++string(%d) "No URL set%A"
+ int(3)
