@@ -540,14 +540,14 @@ these types and other mathematical functions.")
 (define-public ntl
   (package
    (name "ntl")
-   (version "11.4.4")
+   (version "11.5.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://shoup.net/ntl/ntl-"
                                 version ".tar.gz"))
             (sha256
              (base32
-              "1nr1h27j2gdz6badzz9lk2pknxhdijqdxqhd3haryh0sw616wzwx"))
+              "12ka3hym4skg63mp8vgkin79svbpdk2m6i41yvmcdjq62g1hc391"))
             (modules '((guix build utils)))
             (snippet
              '(begin
