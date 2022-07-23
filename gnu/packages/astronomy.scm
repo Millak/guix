@@ -1650,27 +1650,18 @@ functions, so that they can be called with scalar or array inputs.")
 
 (define-public python-sep
   (package
+    (inherit libsep)
     (name "python-sep")
-    (version "1.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sep" version))
-       (sha256
-        (base32 "0wxdqn92q1grv8k7xi7h88ac6wnznw4xh5bdlz1vz6za2dgsyj4m"))))
     (build-system python-build-system)
+    (arguments
+     (strip-keyword-arguments
+      '(#:make-flags) (package-arguments libsep)))
     (native-inputs
-     (list python-cython python-pytest))
-    (inputs
-     (list python-numpy))
-    (home-page "https://github.com/kbarbary/sep")
-    (synopsis "Astronomical source extraction and photometry library")
-    (description
-     "SEP makes the core algorithms of Source Extractor available as a library
-of stand-alone functions and classes.")
-    (license (list license:bsd-3
-                   license:expat
-                   license:lgpl3+))))
+     (modify-inputs (package-inputs libsep)
+       (prepend python-cython)))
+    (propagated-inputs
+     (modify-inputs (package-inputs libsep)
+       (prepend python-numpy)))))
 
 (define-public python-asdf
   (package
