@@ -5524,7 +5524,7 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-numpy
   (package
     (name "python-numpy")
-    (version "1.21.6")
+    (version "1.23.1")
     (source
      (origin
        (method url-fetch)
@@ -5533,7 +5533,7 @@ writing C extensions for Python as easy as Python itself.")
              version "/numpy-" version ".tar.gz"))
        (sha256
         (base32
-         "0b0c5y35rd3mvwfk5is1d5ppfw9nl4d2rgx9xkwh1p0w394wdvyl"))))
+         "095nv17vm8hvj8cj0d76syl9xh99bbnkgnjr9ccy3wpykcsfyj6p"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -5592,6 +5592,7 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
            python-hypothesis-next
            python-pytest
            python-pytest-xdist
+           python-typing-extensions
            gfortran))
     (inputs (list bash openblas))
     (home-page "https://numpy.org")
@@ -5602,25 +5603,6 @@ object, sophisticated (broadcasting) functions, tools for integrating C/C++
 and Fortran code, useful linear algebra, Fourier transform, and random number
 capabilities.")
     (license license:bsd-3)))
-
-(define-public python-numpy-next
-  (package
-    (inherit python-numpy)
-    (name "python-numpy-next")
-    (version "1.23.1")
-    (source
-     (origin
-       (inherit (package-source python-numpy))
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/numpy/numpy/releases/download/v"
-             version "/numpy-" version ".tar.gz"))
-       (sha256
-        (base32
-         "095nv17vm8hvj8cj0d76syl9xh99bbnkgnjr9ccy3wpykcsfyj6p"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-numpy)
-       (append python-typing-extensions)))))
 
 (define-public python-numpy-documentation
   (package
