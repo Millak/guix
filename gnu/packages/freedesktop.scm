@@ -1513,7 +1513,7 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
 (define-public modem-manager
   (package
     (name "modem-manager")
-    (version "1.12.10")
+    (version "1.18.10")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1521,7 +1521,7 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
                     "ModemManager-" version ".tar.xz"))
               (sha256
                (base32
-                "1apq9camys2gaw6y6ic1ld20cncfwpmxnzvh4j5zkbbjpf5hbcxj"))))
+                "1sv53lvz9nfbq6jzprl5xhai0vylc01kglcdrgz2vszf5615y98n"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1534,7 +1534,10 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
            pkg-config
            vala
            ;; For testing.
-           dbus))
+           dbus
+           python
+           python-dbus
+           python-pygobject))
     (propagated-inputs
      (list glib)) ; required by mm-glib.pc
     (inputs
