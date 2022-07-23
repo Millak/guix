@@ -10421,8 +10421,34 @@ that need to represent UTF-16 data as 8-bit characters.")
 winded @code{#[cfg()]} checks.")
     (license license:expat)))
 
+(define-public rust-cfg-expr-0.10
+  (package
+    (name "rust-cfg-expr")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cfg-expr" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nw50j1sl6q96067399r1c6ppwp483q6vvmqdsnv493cv7sarb0a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-smallvec" ,rust-smallvec-1)
+        ("rust-target-lexicon" ,rust-target-lexicon-0.12))
+       #:cargo-development-inputs
+       (("rust-similar-asserts" ,rust-similar-asserts-1))))
+    (home-page "https://github.com/EmbarkStudios/cfg-expr")
+    (synopsis "Parser and evaluator for Rust @code{cfg()} expressions")
+    (description
+     "This package provides a parser and evaluator for Rust @code{cfg()}
+expressions.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cfg-expr-0.8
   (package
+    (inherit rust-cfg-expr-0.10)
     (name "rust-cfg-expr")
     (version "0.8.1")
     (source
@@ -10438,13 +10464,7 @@ winded @code{#[cfg()]} checks.")
        (("rust-smallvec" ,rust-smallvec-1)
         ("rust-target-lexicon" ,rust-target-lexicon-0.12))
        #:cargo-development-inputs
-       (("rust-difference" ,rust-difference-2))))
-    (home-page "https://github.com/EmbarkStudios/cfg-expr")
-    (synopsis "Parser and evaluator for Rust @code{cfg()} expressions")
-    (description
-     "This package provides a parser and evaluator for Rust @code{cfg()}
-expressions.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-difference" ,rust-difference-2))))))
 
 (define-public rust-cfg-expr-0.7
   (package
