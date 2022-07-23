@@ -1868,15 +1868,15 @@ manually by a user.")
 (define-public perl-file-basedir
   (package
     (name "perl-file-basedir")
-    (version "0.08")
+    (version "0.09")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://cpan/authors/id/K/KI/KIMRYAN/"
+       (uri (string-append "mirror://cpan/authors/id/P/PL/PLICEASE/"
                            "File-BaseDir-" version ".tar.gz"))
        (sha256
         (base32
-         "1qq5ag9zffx8zc5i9b4z03ar80pqj4drgk3vjdlyfapjwb9zqrf0"))))
+         "1nb757cyyy80xln147qgns113i2ivfpgcfhsxw8qzb322llgg9kd"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-module-build perl-file-which perl-test-pod
