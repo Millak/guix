@@ -1527,13 +1527,13 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
      '(#:configure-flags
        `(,(string-append "--with-udev-base-dir=" %output "/lib/udev"))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-mkenums
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ;; For testing.
-       ("dbus" ,dbus)))
+     (list `(,glib "bin") ; for glib-mkenums
+           gobject-introspection
+           intltool
+           pkg-config
+           vala
+           ;; For testing.
+           dbus))
     (propagated-inputs
      (list glib)) ; required by mm-glib.pc
     (inputs
