@@ -2729,3 +2729,21 @@ and readability.  This package bundles those icons into a font.")
     (description
      "An open-source Chinese font derived from Fontworks' Klee One.")
     (license license:silofl1.1)))
+
+(define-public font-lxgw-wenkai-tc
+  (package
+    (name "font-lxgw-wenkai-tc")
+    (version "0.920")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/lxgw/LxgwWenKaiTC/releases/download/v"
+                    version "/lxgw-wenkai-tc-v" version ".tar.gz"))
+              (sha256
+               (base32
+                "1kysqzi19ldd1a3pd9axmggcbm1719myq6i6q6fdb1afscn272cp"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/lxgw/LxgwWenKaitc")
+    (synopsis "LXGW WenKai TC / 霞鶩文楷 TC")
+    (description "The Traditional Chinese Version of LXGW WenKai.")
+    (license license:silofl1.1)))
