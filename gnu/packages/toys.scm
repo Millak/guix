@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2019 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2019, 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;;
@@ -23,21 +23,64 @@
 
 (define-module (gnu packages toys)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public daikichi
+  (package
+    (name "daikichi")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/lilyp/daikichi")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1y35f1qpxl743s0s83dg5ivkvprv19mqn0azm14k3y8pmp6cs52z"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'hard-code-test-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (list "test-dat.in" "test-strings.in")
+                     (("(basename|cmp|diff|mktemp|rm|sed|seq)" cmd)
+                      (search-input-file inputs
+                                         (string-append "bin/" cmd)))))))))
+    (inputs (list bash-minimal coreutils sed
+                  fmt gmp))
+    (native-inputs (list pkg-config))
+    (home-page "https://gitlab.com/lilyp/daikichi")
+    (synopsis "Display random fortunes")
+    (description "Daikichi is an alternative implementation of
+@command{fortune}, which displays random quotes from a database.
+This package provides just the utilities and no quotes.")
+    (license license:gpl3+)
+    (native-search-paths
+     (list (search-path-specification
+            (variable "DAIKICHI_FORTUNE_PATH")
+            (files '("share/fortunes")))))))
 
 (define-public lolcat
   (let ((commit "35dca3d0a381496d7195cd78f5b24aa7b62f2154")
