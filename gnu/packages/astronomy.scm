@@ -1131,6 +1131,48 @@ Mechanics, Astrometry and Astrodynamics library.")
     (license (list license:lgpl2.0+
                    license:gpl2+)))) ; examples/transforms.c & lntest/*.c
 
+(define-public libsep
+  (package
+    (name "libsep")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kbarbary/sep")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sag96am6r1ffh9860yq40js874362v3132ahlm6sq7padczkicf"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (chdir "../source")
+                         (invoke "make"
+                                 (string-append "CC=" #$(cc-for-target))
+                                 "test")))))))
+    (native-inputs
+     (list python-wrapper))
+    (home-page "https://github.com/kbarbary/sep")
+    (synopsis "Astronomical source extraction and photometry library")
+    (description
+     "SEP makes the core algorithms of
+@url{https://www.astromatic.net/software/sextractor/, sextractor} available as a
+library of stand-alone functions and classes.  These operate directly on
+in-memory arrays (no FITS files or configuration files).  The code is derived
+from the Source Extractor code base (written in C) and aims to produce results
+compatible with Source Extractor whenever possible.  SEP consists of a C library
+with no dependencies outside the standard library, and a Python module that
+wraps the C library in a Pythonic API.  The Python wrapper operates on NumPy
+arrays with NumPy as its only dependency.")
+    (license (list license:expat license:lgpl3+ license:bsd-3))))
+
 (define-public libskry
   (package
     (name "libskry")
