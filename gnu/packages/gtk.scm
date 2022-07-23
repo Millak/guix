@@ -279,19 +279,6 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
                                 "See 'COPYING' in the distribution."))
     (home-page "https://www.freedesktop.org/wiki/Software/HarfBuzz/")))
 
-(define-public harfbuzz-4
-  (package
-    (inherit harfbuzz)
-    (version "4.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/harfbuzz/harfbuzz"
-                                  "/releases/download/" version
-                                  "/harfbuzz-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0c5mzwgz43d37h75p4b6cgjg4v24jdd96i7gjpgxirn8qks2i5m4"))))))
-
 (define-public libdatrie
   (package
     (name "libdatrie")
@@ -458,9 +445,7 @@ handling for GTK+-2.x.")
                #~(begin
                    (substitute* "pango/pangocairo-font.c"
                      (("cairo_user_font_face_set_render_color_glyph_func")
-                      "cairo_user_font_face_set_render_glyph_func"))))))
-    (inputs (modify-inputs (package-inputs pango)
-               (prepend harfbuzz-4)))))
+                      "cairo_user_font_face_set_render_glyph_func"))))))))
 
 (define-public pangox-compat
   (package
