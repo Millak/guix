@@ -621,7 +621,8 @@ Unix-style DSV format and RFC 4180 format.")
                (base32
                 "0ll63d7202clapg1k4bilbnlmfa4qvpjnsd7chbkka4kxf5klilc"))
               (patches
-               (search-patches "guile-fibers-wait-for-io-readiness.patch"))))
+               (search-patches "guile-fibers-wait-for-io-readiness.patch"
+                               "guile-fibers-epoll-instance-is-dead.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list texinfo pkg-config autoconf automake libtool
