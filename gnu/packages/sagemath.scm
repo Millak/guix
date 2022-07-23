@@ -110,19 +110,18 @@ modular forms.")
 (define-public cliquer
   (package
     (name "cliquer")
-    (version "1.21")
-    ;; The original source package is available from the home page and
-    ;; has not seen any release since 2010; it comes with only a Makefile
-    ;; without an "install" target. Instead, there is an autotoolized
-    ;; tarball available from the Sage project.
-    (source
-     (origin
-       (method url-fetch)
-       (uri "http://users.ox.ac.uk/~coml0531/sage/cliquer-1.21.tar.gz")
-       (sha256
-        (base32
-         "1hdzrmrx0nvvj8kbwxrs8swqgkd284khzl623jizixcv28xb77aq"))))
+    (version "1.22")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dimpase/autocliquer")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00gcmrhi2fjn8b246w5a3b0pl7p6haxy5wjvd9kcqib1xanz59z4"))))
     (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool))
     (synopsis "C routines for finding cliques in weighted graphs")
     (description "Cliquer is a set of reentrant C routines for finding
 cliques in a weighted or unweighted graph.  It uses an exact
@@ -131,7 +130,7 @@ cliques or cliques with size or weight within a given range, restrict the
 search to maximal cliques, store cliques in memory and call a user-defined
 function for every found clique.")
     (license license:gpl2+)
-    (home-page "https://users.aalto.fi/~pat/cliquer.html")))
+    (home-page "https://github.com/dimpase/autocliquer")))
 
 (define-public libbraiding
   (package
