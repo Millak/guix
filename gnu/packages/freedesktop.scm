@@ -1528,9 +1528,9 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
       #:configure-flags
       #~(list (string-append "--with-udev-base-dir=" #$output "/lib/udev"))))
     (native-inputs
-     (list `(,glib "bin") ; for glib-mkenums
+     (list gettext-minimal
+           `(,glib "bin") ; for glib-mkenums
            gobject-introspection
-           intltool
            pkg-config
            vala
            ;; For testing.
