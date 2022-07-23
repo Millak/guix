@@ -61579,14 +61579,14 @@ memory all at once.")
 (define-public rust-target-lexicon-0.12
   (package
     (name "rust-target-lexicon")
-    (version "0.12.2")
+    (version "0.12.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "target-lexicon" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zsvillq0zsggg3fb0mfmcia0f68wfclahaqc0zgln14pkfzrgyr"))))
+        (base32 "1hfk4v8gbhczr6jwsy1ja6yg4npkvznym6b7r4fbgjc0fw428960"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/CraneStation/target-lexicon")
