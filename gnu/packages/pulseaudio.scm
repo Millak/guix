@@ -436,15 +436,14 @@ README.md for a detailed list of features.")
 (define-public paprefs
   (package
     (name "paprefs")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.freedesktop.org/software/pulseaudio/"
-                           name "/" name "-" version ".tar.xz"))
+                           "paprefs/paprefs-" version ".tar.xz"))
        (sha256
-        (base32
-         "189z5p20hk0xv9vwvym293503j4pwl03xqk9hl7cl6dwgv0l7wkf"))))
+        (base32 "0czn71vc2j59ass1axr8ij7bh53wq2q0z4gw7xgd2dirvi01xwmk"))))
     (build-system meson-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))
