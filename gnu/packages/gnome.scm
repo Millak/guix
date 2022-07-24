@@ -21,7 +21,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017, 2018 nee <nee-git@hidamari.blue>
@@ -1846,7 +1846,7 @@ either on a local, or remote machine via a number of methods.")
 (define-public gnome-commander
   (package
     (name "gnome-commander")
-    (version "1.14.2")
+    (version "1.14.3")
     (source
      (origin
        (method url-fetch)
@@ -1854,7 +1854,7 @@ either on a local, or remote machine via a number of methods.")
                            (version-major+minor version)  "/"
                            "gnome-commander-" version ".tar.xz"))
        (sha256
-        (base32 "1s8fdwp0z1smzkwrsvssp9g3yak6z4cdk0qx0c4qmwca9z9fyy0k"))))
+        (base32 "0yzx9slg632iflw9p96nlh9i50dhacq7hrzpkj8b48mr1zkxrn3q"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list desktop-file-utils
