@@ -1,38 +1,48 @@
 sentry-sdk provides a link to sentry.io, a service which monitors applications deployed in the wild.
 Defaults to true. Best to just remove the option.
 
----
- dbxfs/main.py | 16 ----------------
- setup.py      |  1 -
- 2 files changed, 17 deletions(-)
-
 diff --git a/dbxfs/main.py b/dbxfs/main.py
-index 5a6cea1..5d00818 100755
+index 458e82a..784dd2a 100755
 --- a/dbxfs/main.py
 +++ b/dbxfs/main.py
-@@ -40,8 +40,6 @@ import userspacefs
+@@ -43,8 +43,6 @@ import userspacefs
  import keyring
  from keyring.errors import KeyringError
  
 -import sentry_sdk
 -
- from block_tracing import block_tracing, BLOCK_TRACING_INHERITS
+ from block_tracing import block_tracing
  
  from dbxfs.dbxfs import FileSystem as DropboxFileSystem
-@@ -299,12 +297,6 @@ def _main(argv=None):
-             config['keyring_user'] = keyring_user
-             save_config = True
+@@ -127,16 +125,6 @@ def on_new_process(proc_args):
+     level = [logging.WARNING, logging.INFO, logging.DEBUG][min(2, verbose)]
+     logging.basicConfig(level=level, handlers=[logging_stream], format=format_)
  
--    if not config.get("asked_send_error_reports", False):
--        if yes_no_input("Would you like to help us improve %s by providing anonymous error reports?" % (APP_NAME,), default_yes=True):
--            config['send_error_reports'] = True
--        config['asked_send_error_reports'] = True
+-    if int(proc_args.get('send_error_reports', '0')):
+-        version = proc_args['version']
+-        try:
+-            sentry_sdk.init("https://b4b13ebd300849bd92260507a594e618@sentry.io/1293235",
+-                            release='%s@%s' % (APP_NAME, version),
+-                            with_locals=False)
+-            sentry_sdk.set_user(dict(id=proc_args['sentry_user']))
+-        except Exception:
+-            log.warning("Failed to initialize sentry", exc_info=True)
+-
+ def create_fs(fs_args):
+     refresh_token = fs_args.get('refresh_token')
+     access_token = fs_args.get('access_token')
+@@ -527,10 +515,6 @@ deprecated, this functionality will be removed in the future.
+         config['asked_send_error_reports'] = True
+         save_config = True
+ 
+-    if config.get("send_error_reports", False) and not isinstance(config.get("sentry_user", None), str):
+-        config['sentry_user'] = uuid.uuid4().hex
 -        save_config = True
 -
-     if save_access_token and yes_no_input("Do you want \"%s\" to be the default mount point?" % (mount_point,), default_yes=True):
+     if save_refresh_token and yes_no_input("Do you want \"%s\" to be the default mount point?" % (mount_point,), default_yes=True):
          config['mount_point'] = mount_point
          save_config = True
-@@ -315,14 +307,6 @@ def _main(argv=None):
+@@ -541,15 +525,6 @@ deprecated, this functionality will be removed in the future.
  
      log.info("Starting %s...", APP_NAME)
  
@@ -41,24 +51,31 @@ index 5a6cea1..5d00818 100755
 -            sentry_sdk.init("https://b4b13ebd300849bd92260507a594e618@sentry.io/1293235",
 -                            release='%s@%s' % (APP_NAME, version),
 -                            with_locals=False)
+-            sentry_sdk.set_user(dict(id=config['sentry_user']))
 -        except Exception:
 -            log.warning("Failed to initialize sentry", exc_info=True)
 -
      if cache_folder is None:
          cache_folder = os.path.join(appdirs.user_cache_dir(APP_NAME), "file_cache")
          try:
+@@ -602,8 +577,6 @@ deprecated, this functionality will be removed in the future.
+     proc_args['verbose'] = str(args.verbose)
+     proc_args['version'] = version
+     proc_args['send_error_reports'] = str(int(config.get('send_error_reports', False)))
+-    if config.get('send_error_reports', False):
+-        proc_args['sentry_user'] = config['sentry_user']
+ 
+     return userspacefs.simple_main(mount_point, display_name,
+                                    ('dbxfs.main.create_fs', fs_args),
 diff --git a/setup.py b/setup.py
-index 89e25c6..f940d47 100644
+index ae696e9..869d0db 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -43,7 +43,6 @@ setup(
+@@ -47,7 +47,6 @@ setup(
          "privy>=6.0,<7",
          "keyring>=15.1.0",
          "keyrings.alt>=3.1,<5",
--        "sentry_sdk>=0.3,<1",
+-        "sentry_sdk>=1.0,<2",
      ],
      extras_require={
          'safefs': ["safefs"],
--- 
-2.28.0
-
