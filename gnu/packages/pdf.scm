@@ -672,14 +672,14 @@ interaction.")
     (native-inputs
      (list cppunit pkg-config))
     (inputs
-     `(("libjpeg" ,libjpeg-turbo)
-       ("libtiff" ,libtiff)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libpng" ,libpng)
-       ("lua" ,lua-5.1)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list fontconfig
+           freetype
+           libjpeg-turbo
+           libpng
+           libtiff
+           lua-5.1
+           openssl
+           zlib))
     (arguments
      `(#:configure-flags
        (list "-DPODOFO_BUILD_SHARED=ON")
