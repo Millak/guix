@@ -7685,3 +7685,29 @@ resources using Web Application Description Language (WADL) files as guides.")
 SendGrid Web API v3.  Version 3+ of the library provides full support for all
 SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
     (license license:expat)))
+
+(define-public python-starlette
+  (package
+    (name "python-starlette")
+    (version "0.20.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "starlette" version))
+              (sha256
+               (base32
+                "112hmwk4fh4dl21nlr2xd37h43xzxpjxfnic7v7fz3wr5w9g7z22"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-anyio
+                             python-typing-extensions
+                             ;; [all] extra dependencies:
+                             python-itsdangerous
+                             python-jinja2
+                             python-multipart
+                             python-pyyaml
+                             python-requests))
+    (home-page "https://github.com/encode/starlette")
+    (synopsis "Little ASGI library")
+    (description
+     "Starlette is a lightweight ASGI (Asynchronous Server Gateway
+Interface) framework/toolkit for building async web services in Python.")
+    (license license:bsd-3)))
