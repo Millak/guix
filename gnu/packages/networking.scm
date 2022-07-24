@@ -4035,17 +4035,16 @@ thousands of connections is clearly realistic with today's hardware.")
            ;; Drop bundled library.
            (delete-file-recursively "libevent")))))
     (arguments
-     `(#:configure-flags
-       (list
-        "--with-privsep-user=nobody"
-        "--with-privsep-group=nogroup"
-        "--localstatedir=/var"
-        "--enable-pie"
-        "--disable-static"
-        "--without-embedded-libevent"
-        (string-append "--with-systemdsystemunitdir="
-                       (assoc-ref %outputs "out")
-                       "/lib/systemd/system"))))
+     (list #:configure-flags
+           #~(list
+              "--with-privsep-user=nobody"
+              "--with-privsep-group=nogroup"
+              "--localstatedir=/var"
+              "--enable-pie"
+              "--disable-static"
+              "--without-embedded-libevent"
+              (string-append "--with-systemdsystemunitdir="
+                             #$output "/lib/systemd/system"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent libxml2 openssl readline))
