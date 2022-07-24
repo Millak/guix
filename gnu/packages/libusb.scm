@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
@@ -471,14 +471,14 @@ over USB.")
 (define-public libmtp
   (package
     (name "libmtp")
-    (version "1.1.19")
+    (version "1.1.20")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://sourceforge/libmtp/libmtp/" version
                                  "/libmtp-" version ".tar.gz"))
              (sha256
               (base32
-               "0a1jlf5b2c2vylkvdd3cxjs20a96jlbrdyx7rwai5rzmcdpszd6y"))))
+               "1l2npk3b5v9cxhs2g01w3b13mxvin881cr085r0cyi2p5yn1s6f9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
