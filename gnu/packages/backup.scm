@@ -1121,20 +1121,23 @@ interactive mode.")
                           (string-append "program_name = "
                                          "$ENV{'BTRBK_PROGRAM_NAME'}")))
                        ;; Wrap the script, so that it works with SSH URI and
-                       ;; finds mbuffer out of the box.
+                       ;; finds mbuffer and other tools out of the box.
                        (wrap-program btrbk
                          #:sh (search-input-file inputs "bin/bash")
                          '("BTRBK_PROGRAM_NAME" = ("$0"))
                          `("PATH" prefix
-                           ,(list (string-append #$btrfs-progs "/bin")
-                                  (string-append #$coreutils "/bin")
-                                  (string-append #$findutils "/bin")
-                                  (string-append #$mbuffer "/bin")
-                                  (string-append #$openssh "/bin")))))))))
+                           ,(map (lambda (command)
+                                   (dirname (search-input-file inputs command)))
+                                 (list "bin/btrfs"
+                                       "bin/cat"
+                                       "bin/find"
+                                       "bin/mbuffer"
+                                       "bin/ssh")))))))))
     (native-inputs (list ruby-asciidoctor))
     (inputs (list bash-minimal
                   btrfs-progs
                   coreutils
+                  findutils
                   mbuffer
                   openssh
                   perl))
