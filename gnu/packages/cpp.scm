@@ -1486,7 +1486,9 @@ output randomness while retaining speed, simplicity, and conciseness.")
                 "002lmf1b2phmc6s348k00yx5shrcc7psn3pgqvraxvr6n8g747jx"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (list "--disable-static")
+       #:phases
        (modify-phases %standard-phases
          (replace 'bootstrap
            (lambda _ (invoke "sh" "bootstrap" "--noconfigure"))))))
