@@ -82,8 +82,8 @@ XML, JSON, MessagePack, YAML, etc.
 Frame Streams can be used either as a streaming transport over a reliable byte
 stream socket (TCP sockets, TLS connections, @code{AF_UNIX} sockets, etc.) for
 data in motion, or as a file format for data at rest.")
-    (license (list license:expat
-                   (license:non-copyleft #f "See libmy/argv*")))))
+    (license (list license:expat        ; the combined work
+                   license:hpnd))))     ; libmy/argv*
 
 (define-public protobuf
   (package
