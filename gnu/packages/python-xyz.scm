@@ -693,6 +693,32 @@ project documentation.  Documentation source files are written in Markdown, and
 configured with a single YAML configuration file.")
     (license license:bsd-3)))
 
+(define-public python-mkdocs-markdownextradata-plugin
+  (package
+    (name "python-mkdocs-markdownextradata-plugin")
+    (version "0.2.5")
+    (source (origin
+       ;; Use git, as there are some test files missing from the PyPI release,
+       ;; see https://github.com/rosscdh/mkdocs-markdownextradata-plugin/issues/41.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rosscdh/mkdocs-markdownextradata-plugin")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1a3868s9m7pzyfncpjbjsa9vw5nihssl2v47pxj7h6qa67kvlk3g"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-mkdocs python-pyyaml))
+    (home-page "https://github.com/rosscdh/mkdocs-markdownextradata-plugin/")
+    (synopsis "Inject mkdocs.yml extra variables into the MkDocs markdown
+template")
+    (description
+     "This package provides a MkDocs plugin that injects the mkdocs.yml extra
+variables into the markdown template")
+    (license license:expat)))
+
 (define-public python-pymdown-extensions
   (package
     (name "python-pymdown-extensions")
