@@ -1324,7 +1324,7 @@ incompatible with HDF5.")
                (("/bin/mv") "mv"))
              (substitute* "fortran/src/Makefile.in"
                (("libhdf5_fortran_la_LDFLAGS =")
-                (string-append "libhdf5_fortran_la_LDFLAGS = -Wl-rpath="
+                (string-append "libhdf5_fortran_la_LDFLAGS = -Wl,-rpath="
                                (assoc-ref outputs "fortran") "/lib")))
              (substitute* "hl/fortran/src/Makefile.in"
                (("libhdf5hl_fortran_la_LDFLAGS =")
