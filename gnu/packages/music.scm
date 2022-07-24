@@ -3299,22 +3299,22 @@ from the command line.")
     (arguments
      `(#:tests? #f))                    ; no "check" target
     (inputs
-     `(("qt" ,qtbase-5)
-       ("qtsvg" ,qtsvg)
-       ("qtx11extras" ,qtx11extras)
-       ("alsa-lib" ,alsa-lib)
-       ("jack" ,jack-1)
-       ("libsndfile" ,libsndfile)
-       ("ladspa" ,ladspa)
-       ("lv2" ,lv2)
-       ("lilv" ,lilv)
-       ("suil" ,suil)
-       ("libsamplerate" ,libsamplerate)
-       ("libvorbis" ,libvorbis)
-       ("libmad" ,libmad)
-       ("rubberband" ,rubberband)
-       ("liblo" ,liblo)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           jack-1
+           ladspa
+           liblo
+           libmad
+           libsamplerate
+           libsndfile
+           libvorbis
+           lilv
+           lv2
+           qtbase-5
+           qtsvg
+           qtx11extras
+           rubberband
+           suil
+           zlib))
     (native-inputs
      (list pkg-config qttools))
     (home-page "https://qtractor.org/")
