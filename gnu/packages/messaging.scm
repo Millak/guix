@@ -583,7 +583,7 @@ end-to-end encryption.")
 (define-public axc
   (package
     (name "axc")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method git-fetch)
@@ -593,12 +593,13 @@ end-to-end encryption.")
        (modules '((guix build utils)))
        (snippet
         `(begin
-           ;; Submodules
+           ;; Empty directories meant to hold submodules that we provide as
+           ;; proper inputs below.
            (delete-file-recursively "lib")))
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "05sv7l6lk0xk4wb2bspc2sdpygrb1f0szzi82a1kyfm0fjz887b3"))))
+        (base32 "0b02b9flri374f8aw6xfz7mm9s57rb7393r8mdphv7kcsf76i7i5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
