@@ -1357,7 +1357,7 @@ reliably with @code{bmaptool} than with traditional tools, like @code{dd} or
 (define-public duc
   (package
     (name "duc")
-    (version "1.4.4")
+    (version "1.4.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1366,7 +1366,7 @@ reliably with @code{bmaptool} than with traditional tools, like @code{dd} or
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1i7ry25xzy027g6ysv6qlf09ax04q4vy0kikl8h0aq5jbxsl9q52"))))
+                "0sglcn38rgn6y3m5ahngizyn3x2rzhqjphs7g0ppnlinkz56rcv4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
