@@ -28,6 +28,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages libusb)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -488,11 +489,9 @@ over USB.")
      ;; libmtp.pc refers to all these.
      (list libusb))
     (arguments
-     `(#:configure-flags
-       (list "--disable-static"
-             (string-append "--with-udev="
-                            (assoc-ref %outputs "out")
-                            "/lib/udev"))))
+     (list #:configure-flags
+           #~(list "--disable-static"
+                   (string-append "--with-udev=" #$output "/lib/udev"))))
     (home-page "http://libmtp.sourceforge.net/")
     (synopsis "Library implementing the Media Transfer Protocol")
     (description "Libmtp implements an MTP (Media Transfer Protocol)
