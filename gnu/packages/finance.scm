@@ -1843,7 +1843,7 @@ that allows you to run services and through them access the Bitcoin Cash network
            python-requests))
     (native-inputs
      (list python-pytest))
-    (home-page "http://furius.ca/beancount")
+    (home-page "https://beancount.github.io/")
     (synopsis "Command-line double-entry accounting tool")
     (description
      "Beancount is a double-entry bookkeeping computer language that lets you
