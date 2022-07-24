@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2015, 2016, 2017, 2021, 2022 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
@@ -1091,14 +1091,14 @@ interactive mode.")
 (define-public btrbk
   (package
     (name "btrbk")
-    (version "0.31.3")
+    (version "0.32.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://digint.ch/download/btrbk/releases/"
-                                  name "-" version ".tar.xz"))
+                                  "btrbk-" version ".tar.xz"))
               (sha256
                (base32
-                "1lx7vnf386nsik8mxrrfyx1h7mkqk5zs26sy0s0lynfxcm4lkxb2"))))
+                "0gi0j09fm4pgw3dq0z27lkpyvrs3ssyqg9b46v5ba794z63w753z"))))
     (build-system gnu-build-system)
     (arguments
      (list
