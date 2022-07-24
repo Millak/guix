@@ -30464,3 +30464,21 @@ sliceables (1 indexed, both start and end index are inclusive).  Helps to
 slice file content line by line or column by column or a combination of
 both.")
     (license license:bsd-3)))
+
+(define-public python-types-orjson
+  (package
+    (name "python-types-orjson")
+    (version "3.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "types-orjson" version))
+              (sha256
+               (base32
+                "0f66lf2qrl9d4vad42db3dmnzv89h4rr05r5zxx5qcl6kb3zr6ng"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for orjson")
+    (description "This is a PEP 561 type stub package for the @code{orjson}
+package.  It can be used by type-checking tools like mypy, PyCharm, pytype
+etc. to check code that uses @code{orjson}.")
+    (license license:asl2.0)))
