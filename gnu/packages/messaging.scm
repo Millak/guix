@@ -2091,20 +2091,22 @@ support, and more.")
                 "105mw7pg2mcp85r82cs4rv77nwvbw8025047364jzbq6lwllynxv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; For 'system' commands in Scheme code.
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out       (assoc-ref outputs "out"))
-                    (bash      (assoc-ref inputs "bash"))
-                    (coreutils (assoc-ref inputs "coreutils"))
-                    (less      (assoc-ref inputs "less")))
-               (wrap-program (string-append out "/bin/freetalk")
-                 `("PATH" ":" prefix
-                   ,(map (lambda (dir)
-                           (string-append dir "/bin"))
-                         (list bash coreutils less))))))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (wrap-program (string-append out "/bin/freetalk")
+                       `("PATH" ":" suffix
+                         ,(map (lambda (command)
+                                 (dirname
+                                  (search-input-file
+                                   inputs (string-append "bin/" command))))
+                               ;; This list is not exhaustive: we assume that,
+                               ;; e.g., cat is packaged with other coreutils.
+                               (list "bash" ; src/{commands,util}.c et al
+                                     "cat"  ; extensions/first-time-run.sh
+                                     "less")))))))))) ; extensions/history.scm.
     (native-inputs
      (list autoconf automake pkg-config texinfo))
     (inputs
