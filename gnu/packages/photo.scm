@@ -690,7 +690,7 @@ off' shooting directly from the controlling computer.")
 (define-public hugin
   (package
     (name "hugin")
-    (version "2020.0.0")
+    (version "2021.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hugin/hugin/hugin-"
@@ -698,7 +698,7 @@ off' shooting directly from the controlling computer.")
                                   "/hugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1jyazc0mbr9g7vrichpqqnfl72lj21244csk0z5i8ycs4l0pcgi8"))))
+                "1ngadsv22ii05kmvpzdivhwlks4pnv9ijz7j9srl8y54gy5flyh4"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -747,8 +747,7 @@ off' shooting directly from the controlling computer.")
                (("wxT\\(\"enblend\"\\)")
                 (string-append "wxT(\"" (which "enblend") "\")"))
                (("wxT\\(\"enfuse\"\\)")
-                (string-append "wxT(\"" (which "enfuse") "\")")))
-             #t)))))
+                (string-append "wxT(\"" (which "enfuse") "\")"))))))))
     (home-page "http://hugin.sourceforge.net/")
     (synopsis "Panorama photo stitcher")
     (description
