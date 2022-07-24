@@ -6735,7 +6735,7 @@ exceeded.")
 (define-public mtd-utils
   (package
     (name "mtd-utils")
-    (version "2.1.2")
+    (version "2.1.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6743,7 +6743,7 @@ exceeded.")
                     "mtd-utils-" version ".tar.bz2"))
               (sha256
                (base32
-                "1mp9fqgnz5r69s8ly98ry6k2blqnaqpllwi8m930dm0n8zrwbm4a"))))
+                "168vyzpfa0n66i8lcf626b9jczjr81rqbdk7735lfb18bp8i2rrc"))))
     (arguments
      (list #:configure-flags
            (if (%current-target-system) ; When cross-compiling.
