@@ -130,14 +130,14 @@ readers and is needed to communicate with such devices through the
         (base32 "19sq9bs1580zrjw0cxykdvrm1rwfw8n0vbvy9kdjnykjjnb7g6g1"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("autoconf-archive" ,autoconf-archive)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("libassuan" ,libassuan)
-       ("pkg-config" ,pkg-config)
-       ("perl" ,perl)))
+     (list autoconf
+           autoconf-archive
+           automake
+           gettext-minimal
+           libassuan
+           libtool
+           perl
+           pkg-config))
     (inputs
      (list curl
            openssl
