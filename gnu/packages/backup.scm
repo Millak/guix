@@ -1128,6 +1128,7 @@ interactive mode.")
                          `("PATH" prefix
                            ,(list (string-append #$btrfs-progs "/bin")
                                   (string-append #$coreutils "/bin")
+                                  (string-append #$findutils "/bin")
                                   (string-append #$mbuffer "/bin")
                                   (string-append #$openssh "/bin")))))))))
     (native-inputs (list ruby-asciidoctor))
