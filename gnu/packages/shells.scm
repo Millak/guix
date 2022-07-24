@@ -363,7 +363,7 @@ has a small feature set similar to a traditional Bourne shell.")
     (version "0.9.2")
     (source
      (origin
-       (method url-fetch)
+       (method url-fetch/tarbomb)
        (uri (string-append "https://github.com/wryun/es-shell/releases/"
                            "download/v" version "/es-" version ".tar.gz"))
        (sha256
@@ -371,13 +371,7 @@ has a small feature set similar to a traditional Bourne shell.")
        (file-name (string-append name "-" version ".tar.gz"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 're-enter-rootdir
-           ;; The tarball has no folder.
-           (lambda _
-             (chdir ".."))))))
+     (list #:test-target "test"))
     (inputs
      (list readline))
     (native-inputs
