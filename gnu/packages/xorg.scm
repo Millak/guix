@@ -6585,29 +6585,30 @@ output.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
-       (list (string-append "SHELL=" (assoc-ref %build-inputs "bash")
-                            "/bin/bash")
-             (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'patch-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; 'ckbcomp' calls out to 'cat' (!).  Give it the right file
-             ;; name.
-             (substitute* '("Keyboard/ckbcomp")
-               (("\"cat ")
-                (format #f "\"~a " (search-input-file inputs "bin/cat"))))))
-         (add-before 'build 'make-doubled-bdfs
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "-C" "Fonts" "doubled_bdfs"
-                    make-flags)))
-         (replace 'install
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "install-linux"
-                    make-flags))))))
+     (list #:make-flags
+           #~(list (string-append "SHELL=" (assoc-ref %build-inputs "bash")
+                                  "/bin/bash")
+                   (string-append "prefix=" #$output))
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'patch-file-names
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; 'ckbcomp' calls out to 'cat' (!).  Give it the right file
+                   ;; name.
+                   (substitute* '("Keyboard/ckbcomp")
+                     (("\"cat ")
+                      (format #f "\"~a "
+                              (search-input-file inputs "bin/cat"))))))
+               (add-before 'build 'make-doubled-bdfs
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "-C" "Fonts" "doubled_bdfs"
+                          make-flags)))
+               (replace 'install
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "install-linux"
+                          make-flags))))))
     (native-inputs
      (list pkg-config
            bdftopcf
