@@ -3044,7 +3044,7 @@ networks using zeromq.  It has these key characteristics:
 (define-public libsocketcan
   (package
     (name "libsocketcan")
-    (version "0.0.11")
+    (version "0.0.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3053,7 +3053,7 @@ networks using zeromq.  It has these key characteristics:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17z2y2r9xkixhr9bxr50m77fh710afl30s7jdhbxrvf56vmal2jr"))))
+                "0nrav2yqxgb7jwnhrwirnxs9ycqqh90sqgv5a8lns837jf385jvq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
