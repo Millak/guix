@@ -25,6 +25,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages protobuf)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -58,6 +59,9 @@
        (sha256
         (base32 "13q9iz5fpp607zvk0i39158fvvjciz4y5k14rly94b9ak0gar95w"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-static")))
     (native-inputs
      (list pkg-config))
     (inputs
