@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -350,7 +351,7 @@ Graphviz and LaTeX.")
                  (,(dirname (search-input-file inputs "bin/dot"))))))))))
     (inputs
      (list atk
-           librsvg
+           (librsvg-for-system)
            harfbuzz
            graphviz
            gtk+
