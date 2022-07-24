@@ -19659,7 +19659,7 @@ while only declaring the test-specific fields.")
      Supported metrics are:
      @itemize @bullet
      @item raw metrics: SLOC, comment lines, blank lines, &c.
-     @item Cyclomatic Complexity (i.e.  McCabe’s Complexity)
+     @item Cyclomatic Complexity (i.e., McCabe’s Complexity)
      @item Halstead metrics (all of them)
      @item the Maintainability Index (a Visual Studio metric)
      @end itemize")

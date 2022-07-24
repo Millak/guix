@@ -6624,7 +6624,7 @@ or eta squared effect size.")
     (description
       "Contains routines for logspline density estimation.  The function
 @code{oldlogspline()} uses the same algorithm as the logspline package version
-1.0.x; i.e.  the Kooperberg and Stone (1992) algorithm (with an improved
+1.0.x; i.e., the Kooperberg and Stone (1992) algorithm (with an improved
 interface).  The recommended routine @code{logspline()} uses an algorithm from
 @url{doi:10.1214/aos/1031594728,Stone et al (1997)}.")
     (license license:asl2.0)))

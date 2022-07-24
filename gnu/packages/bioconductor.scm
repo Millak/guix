@@ -8834,7 +8834,7 @@ study various biological conditions.  The output from such analysis is both
 the mRNA level (e.g. cytosolic mRNA level) and the level of mRNA actively
 involved in translation (the actively translating mRNA level) for each mRNA.
 The standard analysis of such data strives towards identifying differential
-translational between two or more sample classes - i.e.  differences in
+translational between two or more sample classes - i.e., differences in
 actively translated mRNA levels that are independent of underlying differences
 in cytosolic mRNA levels.  This package allows for such analysis using partial
 variances and the random variance model.  As 10s of thousands of mRNAs are

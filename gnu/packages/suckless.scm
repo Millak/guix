@@ -122,7 +122,7 @@ terminal like @code{st}.")
     (synopsis "Tab interface for application supporting Xembed")
     (description "Tabbed is a generic tabbed frontend to xembed-aware
 applications.  It was originally designed for surf but also usable with many
-other applications, i.e. st, uzbl, urxvt and xterm.")
+other applications, i.e., st, uzbl, urxvt and xterm.")
     (license
      ;; Dual-licensed.
      (list

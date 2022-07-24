@@ -3315,7 +3315,7 @@ punctuation.")
     (synopsis "Inter-widget interactivity for HTML widgets")
     (description
      "This package provides building blocks for allowing HTML widgets to
-communicate with each other, with Shiny or without (i.e.  static @code{.html}
+communicate with each other, with Shiny or without (i.e., static @code{.html}
 files).  It currently supports linked brushing and filtering.")
     (license license:expat)))
 
