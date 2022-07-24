@@ -43,6 +43,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3944,7 +3945,7 @@ as signed sessions, multipart message support, etc.")
            (add-after 'unpack 'run-hall
              (lambda _
                (setenv "HOME" "/tmp")   ; for ~/.hall
-               (invoke "hall" "dist" "-x"))))))
+               (invoke "hall" "build-system" "-x"))))))
       (native-inputs
        (list autoconf
              automake
