@@ -59,7 +59,6 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
-  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
@@ -119,8 +118,7 @@ readers and is needed to communicate with such devices through the
 (define-public eid-mw
   (package
     (name "eid-mw")
-    ;; When updating, remove the short-lived libbsd input and module import!
-    (version "5.0.28")
+    (version "5.1.6")
     (source
      (origin
        (method git-fetch)
@@ -129,7 +127,7 @@ readers and is needed to communicate with such devices through the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fmpdx09a60ndbsvy3m6w77naqy3j6k2ydq6jdcmdvxnr31z7fmf"))))
+        (base32 "19sq9bs1580zrjw0cxykdvrm1rwfw8n0vbvy9kdjnykjjnb7g6g1"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -142,7 +140,6 @@ readers and is needed to communicate with such devices through the
        ("perl" ,perl)))
     (inputs
      (list curl
-           libbsd
            openssl
            gtk+
            pcsc-lite
