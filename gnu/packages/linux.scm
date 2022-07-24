@@ -6630,6 +6630,65 @@ the default @code{nsswitch} and the experimental @code{umich_ldap}.")
 @code{modprobe}, @code{insmod}, @code{lsmod}, and more.")
     (license license:gpl2+)))
 
+(define-public mce-inject
+  (let ((revision "0")                  ; no git tags :-/
+        (commit "4cbe46321b4a81365ff3aafafe63967264dbfec5"))
+    (package
+      (name "mce-inject")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.kernel.org/pub/scm/utils/cpu/mce/mce-inject.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0gjapg2hrlxp8ssrnhvc19i3r1xpcnql7xv0zjgbv09zyha08g6z"))))
+      (build-system gnu-build-system)
+      (arguments
+       ;; There is no test suite.  There's a test/ directory, but it just holds
+       ;; example text files you could feed to the programme to crash something.
+       (list #:tests? #f
+             #:make-flags
+             #~(list (string-append "prefix=" #$output)
+                     (string-append "CC=" #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)    ; no configure script
+                 (add-after 'install 'install-examples
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let* ((out (assoc-ref outputs "out"))
+                            (doc (string-append out "/share/doc/" #$name))
+                            (dir (string-append doc "/examples")))
+                       (copy-recursively "test" dir )))))))
+      (native-inputs
+       (list bison flex))
+      (supported-systems (list "i686-linux" "x86_64-linux"))
+      (home-page
+       "https://git.kernel.org/pub/scm/utils/cpu/mce/mce-inject.git/about/")
+      (synopsis
+       "Inject x86 @acronym{MCEs, machine-check exceptions} into Linux")
+      (description
+       "This simple tool injects fake @acronym{MCEs, machine-check exceptions}
+into a running Linux kernel, to debug or test the kernel's @acronym{EDAC, error
+detection and correction}-handling code specific to x86 and x86_64 platforms.
+
+Real MCEs are internal CPU errors.  Handling them correctly can be important to
+system stability and even prevent physical damage.  In contrast, simulated MCEs
+produced by @command{mce-inject} are purely synthetic: injection happens only at
+the software level, inside the kernel, and is not visible to the platform
+hardware or firmware.
+
+A convenient feature of @command{mce-inject} is that the input language used to
+describe MCEs is similar to the format used in Linux panic messages, with a few
+extensions.  In general, you should be able to pipe in any logged MCE panic to
+simulate that same MCE.
+
+The target kernel must have the @code{CONFIG_X86_MCE_INJECT} option enabled and
+the @code{mce-inject} module loaded if it exists.")
+      (license license:gpl2))))
+
 (define-public mcelog
   (package
     (name "mcelog")
