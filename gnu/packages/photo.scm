@@ -701,29 +701,28 @@ off' shooting directly from the controlling computer.")
                 "1ngadsv22ii05kmvpzdivhwlks4pnv9ijz7j9srl8y54gy5flyh4"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
-     `(("boost" ,boost)
-       ("enblend-enfuse" ,enblend-enfuse)
-       ("exiv2" ,exiv2)
-       ("fftw" ,fftw)
-       ("flann" ,flann)
-       ("freeglut" ,freeglut)
-       ("glew" ,glew)
-       ("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpano13" ,libpano13)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libxi" ,libxi)
-       ("libxmu" ,libxmu)
-       ("mesa" ,mesa)
-       ("openexr" ,openexr-2)
-       ("sqlite" ,sqlite)
-       ("vigra" ,vigra)
-       ("wxwidgets" ,wxwidgets)
-       ("zlib" ,zlib)))
+     (list boost
+           enblend-enfuse
+           exiv2
+           fftw
+           flann
+           freeglut
+           glew
+           lcms
+           libjpeg-turbo
+           libpano13
+           libpng
+           libtiff
+           libxi
+           libxmu
+           mesa
+           openexr-2
+           sqlite
+           vigra
+           wxwidgets
+           zlib))
     (arguments
      `(#:tests? #f                      ; no check target
        #:configure-flags
