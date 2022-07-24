@@ -3055,6 +3055,11 @@ networks using zeromq.  It has these key characteristics:
                (base32
                 "0nrav2yqxgb7jwnhrwirnxs9ycqqh90sqgv5a8lns837jf385jvq"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Upstream already puts (more) files in share/doc/libsocketcan.
+               (delete 'install-license-files))))
     (native-inputs
      (list autoconf automake libtool))
     (home-page "https://git.pengutronix.de/cgit/tools/libsocketcan")
