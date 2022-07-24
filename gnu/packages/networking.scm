@@ -4021,20 +4021,19 @@ thousands of connections is clearly realistic with today's hardware.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.13")
+    (version "1.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "00a7v24qhxw80yk2v79wrkfn7br4r8pcajyrpz8j0xx2v1zq4ffn"))
+        (base32 "1s0j5p0mjh1pda1aq5wm4hd41fh1m864jgbs82y5sshi9whijj57"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Drop bundled library.
-           (delete-file-recursively "libevent")
-           #t))))
+           (delete-file-recursively "libevent")))))
     (arguments
      `(#:configure-flags
        (list
