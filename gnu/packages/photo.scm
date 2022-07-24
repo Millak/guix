@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2017 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -347,7 +347,7 @@ and a wide variety of other metadata.")
 (define-public libpano13
   (package
     (name "libpano13")
-    (version "2.9.20_rc3")
+    (version "2.9.21")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/panotools/libpano13/"
@@ -356,8 +356,10 @@ and a wide variety of other metadata.")
                                   "/libpano13-" version ".tar.gz"))
               (sha256
                (base32
-                "12cv4886l1czfjwy7k6ipgf3zjksgwhdjzr2s9fdg33vqcv2hlrv"))))
+                "141mccp4klj0qdpvki97q5wjf5a1b7pj09s6c4lmwc4r452s3rbr"))))
     (build-system cmake-build-system)
+    (native-inputs
+     (list perl))                       ; for pod2man
     (inputs
      (list libjpeg-turbo libpng libtiff zlib))
     (home-page "http://panotools.sourceforge.net/")
