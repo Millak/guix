@@ -2081,19 +2081,17 @@ support, and more.")
 (define-public freetalk
   (package
     (name "freetalk")
-    (version "4.1")
+    (version "4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/freetalk/freetalk-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1rmrn7a1bb7vm26yaklrvx008a9qhwc32s57dwrlf40lv9gffwny"))))
+                "105mw7pg2mcp85r82cs4rv77nwvbw8025047364jzbq6lwllynxv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "CFLAGS=-fcommon")
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          ;; For 'system' commands in Scheme code.
          (add-after 'install 'wrap-program
@@ -2106,14 +2104,13 @@ support, and more.")
                  `("PATH" ":" prefix
                    ,(map (lambda (dir)
                            (string-append dir "/bin"))
-                         (list bash coreutils less))))
-               #t))))))
+                         (list bash coreutils less))))))))))
     (native-inputs
      (list autoconf automake pkg-config texinfo))
     (inputs
      (list bash
            glib
-           guile-2.0
+           guile-3.0
            less
            loudmouth
            readline))
