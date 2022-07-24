@@ -30402,3 +30402,29 @@ window managers.")
     (synopsis "Handle cyclic relations")
     (description "This package handles cyclic relations compared by value.")
     (license license:bsd-3)))
+
+(define-public python-rcslice
+  (package
+    (name "python-rcslice")
+    (version "1.1.0")
+    (source (origin
+              ;; Use git, as there are some test files missing from the PyPI
+              ;; release, see https://github.com/neurobin/rcslice/issues/1
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/neurobin/rcslice")
+                    ;; Releases are not tagged on github, see
+                    ;; https://github.com/neurobin/rcslice/issues/2
+                    (commit "1e1ef42cd262db76b67ded430630d5b499790f42")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lmhcgghh60kvdlx0cin1phhgfy9jivc6l0mb4ibnpa1x1md0zvv"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/neurobin/rcslice")
+    (synopsis "Slice a list of sliceables")
+    (description "This package provides Python module to slice a list of
+sliceables (1 indexed, both start and end index are inclusive).  Helps to
+slice file content line by line or column by column or a combination of
+both.")
+    (license license:bsd-3)))
