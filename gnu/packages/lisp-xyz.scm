@@ -22830,3 +22830,41 @@ It has extensive support for Guix, among others:
       (inputs
        (cons (list "osicat" cl-osicat)
              (package-inputs pkg))))))
+
+(define-public sbcl-ndebug
+  (package
+    (name "sbcl-ndebug")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atlas-engineer/ndebug")
+             (commit version)))
+       (file-name (git-file-name "ndebug" version))
+       (sha256
+        (base32 "0wdp0wqk6clq3hh9yqmgdm55x50b5m7ly9004j2c8k5zz1rgi4rr"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list
+      sbcl-dissect
+      sbcl-lparallel
+      sbcl-slime-swank
+      sbcl-trivial-custom-debugger))
+    (native-inputs
+     (list sbcl-lisp-unit2))
+    (home-page "https://github.com/atlas-engineer/ndebug/")
+    (synopsis "Toolkit to build UI-aware Common Lisp debugger hooks")
+    (description
+     "NDebug provides a small set of utilities to make graphical (or, rather
+non-REPL-resident) Common Lisp applications easier to integrate with the
+standard Lisp debugger (@code{*debugger-hook*}, namely) and
+implementation-specific debugger hooks (via @code{trivial-custom-debugger}),
+especially in a multi-threaded context.")
+    (license license:bsd-3)))
+
+(define-public cl-ndebug
+  (sbcl-package->cl-source-package sbcl-ndebug))
+
+(define-public ecl-ndebug
+  (sbcl-package->ecl-package sbcl-ndebug))
