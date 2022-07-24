@@ -48,8 +48,8 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
-  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages freedesktop)
@@ -370,7 +370,7 @@ curses-style interfaces.")
 (define-public pamixer
   (package
     (name "pamixer")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method git-fetch)
@@ -379,20 +379,12 @@ curses-style interfaces.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d5arjbsh3q9z693pi2rq553ai9b18iz36ss7q8ff29m0hf62lzd"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'install 'mkdir-bin
-           (lambda _
-             (mkdir-p (string-append (assoc-ref %outputs "out") "/bin")))))))
+        (base32 "0d0fcqv9fri1y2701lasscgmvljxzpyg95vy90b3d2ccdnqn3d1d"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config))
     (inputs
-     (list boost pulseaudio))
+     (list cxxopts pulseaudio))
     (home-page "https://github.com/cdemoulins/pamixer")
     (synopsis "PulseAudio command line mixer")
     (description
