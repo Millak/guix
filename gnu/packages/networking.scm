@@ -4111,14 +4111,14 @@ stamps.")
 (define-public nbd
   (package
     (name "nbd")
-    (version "3.23")
+    (version "3.24")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://sourceforge/nbd/nbd/" version
                             "/nbd-" version ".tar.xz"))
         (sha256
-         (base32 "1d2phi0m9x32p9zddv9fpkhj1rbhlvq93wsn9niy7i3aavn71x6y"))))
+         (base32 "036ib2d5722sx9nn7jydqfpl5ici5if2z7g8xrskzcx74dniaxv8"))))
     (build-system gnu-build-system)
     (inputs
      (list glib))
