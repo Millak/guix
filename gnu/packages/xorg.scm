@@ -6586,9 +6586,9 @@ output.")
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags
-       (let ((bash (assoc-ref %build-inputs "bash"))
-             (out (assoc-ref %outputs "out")))
-         (list (string-append "SHELL=" bash "/bin/bash")))
+       (list (string-append "SHELL=" (assoc-ref %build-inputs "bash")
+                            "/bin/bash")
+             (string-append "prefix=" (assoc-ref %outputs "out")))
        #:tests? #f                      ; no tests
        #:phases
        (modify-phases %standard-phases
@@ -6601,22 +6601,13 @@ output.")
                (("\"cat ")
                 (format #f "\"~a " (search-input-file inputs "bin/cat"))))))
          (add-before 'build 'make-doubled-bdfs
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (invoke "make" "-C" "Fonts"
-                     "doubled_bdfs"
-                     (string-append "SHELL="
-                                    (assoc-ref (or native-inputs inputs)
-                                               "bash")
-                                    "/bin/bash"))))
+           (lambda* (#:key make-flags #:allow-other-keys)
+             (apply invoke "make" "-C" "Fonts" "doubled_bdfs"
+                    make-flags)))
          (replace 'install
-           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref %outputs "out")))
-               (invoke "make" "install-linux"
-                       (string-append "prefix=" out)
-                       (string-append "SHELL="
-                                      (assoc-ref (or native-inputs inputs)
-                                                 "bash")
-                                      "/bin/bash"))))))))
+           (lambda* (#:key make-flags #:allow-other-keys)
+             (apply invoke "make" "install-linux"
+                    make-flags))))))
     (native-inputs
      (list pkg-config
            bdftopcf
