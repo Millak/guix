@@ -3807,18 +3807,19 @@ service is available at @url{https://pagekite.net/}, or you can run your own.")
 (define-public ipcalc
   (package
     (name "ipcalc")
-    (version "0.41")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://jodies.de/ipcalc-archive/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "12if9sm8h2ac0pgwkw835cgyqjxm6h27k4kfn2vfas9krrqwbafx"))))
-    (inputs `(("perl" ,perl)
-              ("tar" ,tar)
-              ("gzip" ,gzip)
-              ("tarball" ,source)))
+    (version "0.51")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             ;; This is the IPv6-capable continuation of the unmaintained
+             ;; <https://jodies.de/ipcalc-archive/>.
+             (url "https://github.com/kjokjo/ipcalc")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cnygb69vjmp3by75jcd2z4y3ybp1s7x4nl3d32xa49h8lkhdbfv"))))
+    (inputs `(("perl" ,perl)))
     (build-system trivial-build-system) ;no Makefile.PL
     (arguments
      `(#:modules ((guix build utils))
@@ -3829,25 +3830,21 @@ service is available at @url{https://pagekite.net/}, or you can run your own.")
          (let* ((source (assoc-ref %build-inputs "source"))
                 (perl (string-append (assoc-ref %build-inputs "perl")
                                      "/bin"))
-                (tar (assoc-ref %build-inputs "tar"))
-                (gz  (assoc-ref %build-inputs "gzip"))
                 (out (assoc-ref %outputs "out"))
                 (bin (string-append out "/bin"))
                 (doc (string-append out "/share/doc/ipcalc")))
-           (setenv "PATH" (string-append gz "/bin"))
-           (invoke (string-append tar "/bin/tar") "xvf" source)
-           (chdir (string-append ,name "-" ,version))
+           (copy-recursively source "source")
+           (chdir "source")
 
            (install-file "ipcalc" bin)
-           (patch-shebang (string-append bin "/ipcalc") (list perl))
-           #t))))
+           (patch-shebang (string-append bin "/ipcalc") (list perl))))))
     (synopsis "Simple IP network calculator")
     (description "ipcalc takes an IP address and netmask and calculates the
 resulting broadcast, network, Cisco wildcard mask, and host range.  By giving
 a second netmask, you can design subnets and supernets.  It is also intended
 to be a teaching tool and presents the subnetting results as
 easy-to-understand binary values.")
-    (home-page "http://jodies.de/ipcalc")
+    (home-page "https://github.com/kjokjo/ipcalc")
     (license license:gpl2+)))
 
 (define-public tunctl
