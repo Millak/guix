@@ -10900,6 +10900,42 @@ extensions, and several HTML output formats.  A command line wrapper
 markdown_py is also provided to convert Markdown files to HTML.")
     (license license:bsd-3)))
 
+(define-public python-mdx-include
+  (package
+    (name "python-mdx-include")
+    (version "1.4.1")
+    (source (origin
+              ;; Use git, as there are some test files missing from the PyPI
+              ;; release, see https://github.com/neurobin/mdx_include/issues/9
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/neurobin/mdx_include")
+                    ;; Releases are not tagged on github, see
+                    ;; https://github.com/neurobin/mdx_include/issues/10
+                    (commit "683e6be7a00a1ef4d673ad0294458fa61bc97286")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qpzgln4ybd7pl0m9s19dv60aq9cvwrk7x3yz96kjhcywaa5w386"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'disable-test-requiring-network
+           (lambda _
+             (substitute* "mdx_include/test/test.py"
+               (("(\\s+def )test_(cache|config|default)\\(" _ pre post)
+                (string-append pre "__off__test_" post "("))))))))
+    (propagated-inputs (list python-cyclic python-markdown python-rcslice))
+    (home-page "https://github.com/neurobin/mdx_include")
+    (synopsis "Python Markdown extension to include local or remote files")
+    (description "Include extension for Python Markdown.  It lets you include
+local or remote (downloadable) files into your markdown at arbitrary
+positions.
+
+This project is motivated by markdown-include and provides the same
+functionalities with some extras.")
+    (license license:bsd-3)))
 
 (define-public python-ptyprocess
   (package
