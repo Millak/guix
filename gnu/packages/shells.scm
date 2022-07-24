@@ -360,15 +360,14 @@ has a small feature set similar to a traditional Bourne shell.")
 (define-public es
   (package
     (name "es")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/wryun/es-shell/releases/"
                            "download/v" version "/es-" version ".tar.gz"))
        (sha256
-        (base32
-         "1fplzxc6lncz2lv2fyr2ig23rgg5j96rm2bbl1rs28mik771zd5h"))
+        (base32 "1pgmqhsk14wyvl489sxdy7kdl2gwrsq1xvkip0z90kh888mlh9n9"))
        (file-name (string-append name "-" version ".tar.gz"))))
     (build-system gnu-build-system)
     (arguments
