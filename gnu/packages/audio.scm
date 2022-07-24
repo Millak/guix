@@ -3597,16 +3597,16 @@ stretching and pitch scaling of audio.  This package contains the library.")
 (define-public libkeyfinder
   (package
     (name "libkeyfinder")
-    (version "2.2.6")
+    (version "2.2.7")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/mixxxdj/libkeyfinder")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s7nqjmv44q5qjynfcs0j6h4a6qcz4mxzandkkdjjbnwv5rxc3zg"))))
+        (base32 "0nvhdzy0m3bchk3dpnspv2f518p2v9fjcrv36z1sva1pv9a2g35w"))))
     (build-system cmake-build-system)
     (native-inputs
      (list catch-framework2))
