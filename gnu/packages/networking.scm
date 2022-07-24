@@ -3179,20 +3179,19 @@ Features:
 (define-public net-snmp
   (package
     (name "net-snmp")
-    (version "5.9.1")
+    (version "5.9.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/net-snmp/net-snmp/"
                                   version "/net-snmp-" version ".tar.gz"))
               (sha256
                (base32
-                "0gwcyi9qk707jgfsgmdr9w2w3r892fnqaam9v7zxpkg69njd8zzb"))
+                "02pgl89s8qll5zhdp61rbn6vpl084gx55bjb1cqg3wqvgsdz55r0"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   ;; Drop bundled libraries.
-                  (delete-file-recursively "snmplib/openssl")
-                  #t))))
+                  (delete-file-recursively "snmplib/openssl")))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -3222,8 +3221,7 @@ Features:
              ;; These tests require network access.
              (for-each delete-file
                        '("testing/fulltests/default/T070com2sec_simple"
-                         "testing/fulltests/default/T071com2sec6_simple"))
-             #t))
+                         "testing/fulltests/default/T071com2sec6_simple"))))
          (add-after 'unpack 'patch-Makefile.PL
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "Makefile.in"
@@ -3231,8 +3229,7 @@ Features:
                 (string-append "Makefile.PL PREFIX="
                                (assoc-ref outputs "out")
                                " INSTALLDIRS=site" " NO_PERLLOCAL=1"
-                               " -NET")))
-             #t)))))
+                               " -NET"))))))))
     (inputs
      (list libnl ncurses ; for the ‘apps’
            openssl perl))
