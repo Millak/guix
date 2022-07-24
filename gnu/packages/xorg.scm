@@ -66,6 +66,7 @@
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages anthy)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
@@ -6593,13 +6594,12 @@ output.")
        (modify-phases %standard-phases
          (delete 'configure)
          (add-after 'unpack 'patch-file-names
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              ;; 'ckbcomp' calls out to 'cat' (!).  Give it the right file
              ;; name.
              (substitute* '("Keyboard/ckbcomp")
                (("\"cat ")
-                (string-append "\"" (which "cat")
-                               " ")))))
+                (format #f "\"~a " (search-input-file inputs "bin/cat"))))))
          (add-before 'build 'make-doubled-bdfs
            (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (invoke "make" "-C" "Fonts"
@@ -6621,10 +6621,12 @@ output.")
      (list pkg-config
            bdftopcf
            bdfresize
-           sharutils ; for 'uuencode'
+           sharutils                    ; for 'uuencode'
            perl))
     (inputs
-     (list perl))                 ; used by 'ckbcomp'
+     (list bash-minimal
+           coreutils
+           perl))                       ; used by 'ckbcomp'
     (synopsis "Set up the Linux console font and keyboard")
     (description
      "console-setup provides the console with the same keyboard
