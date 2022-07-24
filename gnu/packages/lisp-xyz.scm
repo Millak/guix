@@ -95,6 +95,7 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -22779,3 +22780,53 @@ binding @code{*debugger-hook*} is not enough -- most notably, for
     (arguments
      ;; Tests fail on ECL: https://github.com/phoe/trivial-custom-debugger/issues/3
      '(#:tests? #f))))
+
+(define-public sbcl-ospm
+  (package
+    (name "sbcl-ospm")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atlas-engineer/ospm")
+             (commit version)))
+       (file-name (git-file-name "cl-ospm" version))
+       (sha256
+        (base32 "1b64ar6x08bcig4brlsim445favjf1zhyj6qz018cildp3xs4miz"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-alexandria
+           sbcl-calispel
+           sbcl-hu.dwim.defclass-star
+           sbcl-local-time
+           sbcl-moptilities
+           sbcl-named-readtables
+           sbcl-serapeum
+           sbcl-trivia))
+    (native-inputs
+     ;; FIXME: Tests have execution errors because of Guix being run in a container.
+     (list sbcl-lisp-unit2 guix))
+    (home-page "https://github.com/atlas-engineer/ospm")
+    (synopsis "System package manager in Common Lisp")
+    (description
+     "This library is a universal interface to the operating system package manager.
+It has extensive support for Guix, among others:
+
+@itemize
+@item package listing and searching;
+@item package installation and uninstallation;
+@item package file listing;
+@item profile listing;
+@item manifest listing and installation;
+@item generation listing, switching and deletion.
+@end itemize\n")
+    (license license:bsd-3)))
+
+(define-public cl-ospm
+  (let ((pkg (sbcl-package->cl-source-package sbcl-ospm)))
+    (package
+      (inherit pkg)
+      (inputs
+       (cons (list "osicat" cl-osicat)
+             (package-inputs pkg))))))
