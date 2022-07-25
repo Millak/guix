@@ -63935,14 +63935,14 @@ C library.")
 (define-public rust-tinyvec-1
   (package
     (name "rust-tinyvec")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tinyvec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08qhf0a9vxf85bj1hd38i8qzwiwm6v4vvwd11k7c728f59bwlz1i"))))
+        (base32 "0hn3fkpb9nca9nf9znz2dxlp4ccv37hnbh67aczpzpmpbgq20ljv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
