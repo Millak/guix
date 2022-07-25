@@ -570,14 +570,10 @@ developers using C++ or QML, a CSS & JavaScript like language.")
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments qtbase-5)
-       ;; XXX: There are many test failures, because the test suite
-       ;; requires a real X server (a virtual one such as Xvfb is not
-       ;; enough) or a functional network.  It's also quite expensive to
-       ;; build and run.
-       ((#:tests? _ #f) #f)
        ((#:configure-flags _ ''())
         `(let ((out (assoc-ref %outputs "out")))
            (list "-GNinja"              ;the build fails otherwise
+                 "-DQT_BUILD_TESTS=ON"
                  (string-append "-DINSTALL_ARCHDATADIR=" out "/lib/qt6")
                  (string-append "-DINSTALL_DATADIR=" out "/share/qt6")
                  (string-append "-DINSTALL_DOCDIR=" out "/share/doc/qt6")
@@ -664,6 +660,108 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                        (if parallel-build?
                            `("--parallel" ,(number->string (parallel-job-count)))
                            '()))))
+            (delete 'check)             ;move after patch-prl-files
+            (add-after 'patch-prl-files 'check
+              (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                (when tests?
+                  ;; The tests expect to find the modules provided by this
+                  ;; package; extend the environment variables needed to do so.
+                  (setenv "CMAKE_PREFIX_PATH"
+                          (string-append #$output
+                                         ":" (getenv "CMAKE_PREFIX_PATH")))
+                  (setenv "QMAKEPATH" (string-append #$output "/lib/qt6"))
+                  (setenv "QML2_IMPORT_PATH"
+                          (string-append #$output "/lib/qt6/qml"))
+                  (setenv "QT_PLUGIN_PATH"
+                          (string-append #$output "/lib/qt6/plugins"))
+                  (setenv "QT_QPA_PLATFORM" "offscreen")
+                  ;; Skip tests known to fail on GNU/Linux, in a CI context or
+                  ;; due to bitness (see: https://code.qt.io/cgit/qt/qtbase.git
+                  ;; /tree/src/testlib/qtestblacklist.cpp).
+                  (setenv "QTEST_ENVIRONMENT" "linux ci 32bit")
+                  (setenv "HOME" "/tmp") ;some tests require a writable HOME
+                  (invoke
+                   "xvfb-run" "ctest" "--output-on-failure"
+                   "-j" (if parallel-tests?
+                            (number->string (parallel-job-count))
+                            "1")
+                   "-E"                 ;disable problematic tests
+                   (string-append
+                    "("
+                    (string-join
+                     (list
+                      ;; The 'tst_moc' test fails with "'fi.exists()' returned FALSE".
+                      "tst_moc"
+                      ;; The 'test_rcc' test fails on a comparison:
+                      ;; <<<<<< actual
+                      ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x3,0xe8,
+                      ;; ======
+                      ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+                      ;; >>>>>> expected
+                      "tst_rcc"
+                      ;; The 'tst_qtemporarydir' and 'tst_qtemporaryfile'
+                      ;; tests depend on '/home' not being writable.
+                      "tst_qtemporarydir"
+                      "tst_qtemporaryfile"
+                      ;; The 'tst_qdir' compares two directories which are
+                      ;; unexpectedly different when inside the build
+                      ;; container.
+                      "tst_qdir"
+                      ;; This checks the last modified time of '/', and fails
+                      ;; because Epoch 0 is considered to be invalid.
+                      "tst_qresourceengine"
+                      ;; The 'tst_qfilesystemwatcher' installs a watcher on
+                      ;; '/home', which doesn't exist in the build container.
+                      "tst_qfilesystemwatcher"
+                      ;; The 'mockplugins' test fail following error: "Unknown
+                      ;; platform linux-g++", and the other plugin tests
+                      ;; depend on it.
+                      "mockplugins"
+                      "test_plugin_flavor.*"
+                      ;; The 'test_import_plugins' fails with "Could NOT find
+                      ;; Qt6MockPlugins1".
+                      "test_import_plugins"
+                      ;; The 'tst_QTimeZone::systemZone' validates the
+                      ;; currently set timezone and fails.
+                      "tst_qtimezone"
+                      ;; The 'tst_qdatetime' fails with:
+                      ;; FAIL!  : tst_QDateTime::offsetFromUtc() Compared values are not the same
+                      ;; Actual   (dt5.offsetFromUtc()): 0
+                      ;; Expected (46800)              : 46800
+                      "tst_qdatetime"
+                      ;; The 'tst_QSettings::fromFile' assumes the data
+                      ;; location to be relative to the root directory and
+                      ;; fails.
+                      "tst_qsettings"
+                      ;; The 'tst_qaddpreroutine',
+                      ;; 'test_generating_cpp_exports' and
+                      ;; 'test_static_resources' tests fail with: "Unknown
+                      ;; platform linux-g++.
+                      "tst_qaddpreroutine"
+                      "test_generating_cpp_exports"
+                      "test_static_resources"
+                      ;; The 'tst_qfile' fails since there is no /home in the
+                      ;; build container.
+                      "tst_qfile"
+                      ;; The 'tst_QGlyphRun::mixedScripts' test fails with:
+                      ;; Actual   (glyphRuns.size()): 1
+                      ;; Expected (2)               : 2
+                      "tst_qglyphrun"
+                      ;; The 'tst_qx11info' test fails with "Internal error:
+                      ;; QPA plugin doesn't implement generatePeekerId",
+                      ;; likely requires a real display.
+                      "tst_qx11info"
+                      ;; The 'tst_qgraphicswidget' test fails because "This
+                      ;; plugin does not support propagateSizeHints".
+                      "tst_qgraphicswidget"
+                      ;; The 'tst_qdnslookup' test requires networking.
+                      "tst_qdnslookup"
+                      ;; The 'tst_qcompleter' and 'tst_QFiledialog::completer'
+                      ;; attempt to complete paths they assume exist, such as
+                      ;; "/home", "/etc" or "/root" and fail.
+                      "tst_qcompleter"
+                      "tst_qfiledialog") "|")
+                    ")")))))
             (replace 'install
               (lambda _
                 (invoke "cmake" "--install" ".")))
@@ -708,7 +806,9 @@ developers using C++ or QML, a CSS & JavaScript like language.")
     (native-inputs
      (modify-inputs (package-native-inputs qtbase-5)
        (prepend gtk                     ;for GTK theme support
-                ninja wayland-protocols)))
+                ninja
+                wayland-protocols
+                xvfb-run)))
     (inputs
      (modify-inputs (package-inputs qtbase-5)
        (prepend bash-minimal coreutils-minimal libxcb md4c)
