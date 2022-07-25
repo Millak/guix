@@ -5152,34 +5152,35 @@ revised simplex and the branch-and-bound methods.")
         (base32 "0fnwlhzsh85qj38cq3igbs8nm1b2jdgr2z734sapmyyzsy21mkgp"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(;; The build fails with the current gcc.
-       ;; Use the version from when Trilinos was added.
-       ("gcc" ,gcc-7)
-       ("gfortran" ,gfortran)
-       ;; Trilinos's repository contains several C-shell scripts, but adding
-       ;; tcsh to the native inputs does not result in the check phase running
-       ;; any more tests than without it (nor is tcsh required to build
-       ;; Trilinos).
-       ;; It seems that Trilinos has replaced its use of C-shell test scripts
-       ;; with CMake's testing facilities.
-       ;; For example,
-       ;; packages/zoltan/doc/Zoltan_html/dev_html/dev_test_script.html [1]
-       ;; states that Zoltan's C-shell test script
-       ;; packages/zoltan/test/test_zoltan has been obsoleted by the tests now
-       ;; performed through CMake.
-       ;;
-       ;; Perl is required for some Zoltan tests and Python 2 for one ML test.
-       ;;
-       ;; [1]: https://cs.sandia.gov/zoltan/dev_html/dev_test_script.html
-       ("perl" ,perl)
-       ("python" ,python-2)))
+     (list
+      ;; The build fails with the current gcc.
+      ;; Use the version from when Trilinos was added.
+      gcc-7
+      gfortran
+      ;; Trilinos's repository contains several C-shell scripts, but adding
+      ;; tcsh to the native inputs does not result in the check phase running
+      ;; any more tests than without it (nor is tcsh required to build
+      ;; Trilinos).
+      ;; It seems that Trilinos has replaced its use of C-shell test scripts
+      ;; with CMake's testing facilities.
+      ;; For example,
+      ;; packages/zoltan/doc/Zoltan_html/dev_html/dev_test_script.html [1]
+      ;; states that Zoltan's C-shell test script
+      ;; packages/zoltan/test/test_zoltan has been obsoleted by the tests now
+      ;; performed through CMake.
+      ;;
+      ;; Perl is required for some Zoltan tests and Python 2 for one ML test.
+      ;;
+      ;; [1]: https://cs.sandia.gov/zoltan/dev_html/dev_test_script.html
+      perl
+      python-2))
     (inputs
-     `(("blas" ,openblas)
-       ("lapack" ,lapack)
-       ("mumps" ,mumps-openmpi)
-       ("scalapack" ,scalapack)))
+     (list openblas
+           lapack
+           mumps-openmpi
+           scalapack))
     (propagated-inputs
-     `(("mpi" ,openmpi)))
+     (list openmpi))
     (arguments
      `(#:build-type "Release"
        #:configure-flags
