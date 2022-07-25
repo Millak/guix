@@ -13163,3 +13163,24 @@ original use was as an input filter for BibTeX-Ruby, but it can be used
 independently to decode LaTeX.  Many of the patterns used by this Ruby gem are
 based on François Charette's equivalent Perl module @code{LaTeX::Decode}.")
     (license license:gpl3+)))
+
+(define-public ruby-link-header
+  (package
+    (name "ruby-link-header")
+    (version "0.0.8")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "link_header" version))
+              (sha256
+               (base32
+                "1yamrdq4rywmnpdhbygnkkl9fdy249fg5r851nrkkxr97gj5rihm"))))
+    (build-system ruby-build-system)
+    (home-page "https://github.com/asplake/link_header")
+    (synopsis "Parse and format HTTP @code{Link} headers")
+    (description
+     "This gem provides the classes @code{LinkHeader} and
+@code{LinkHeader::Link}, which represent HTTP @code{Link} headers conforming
+to RFC 5988.  Objects can be constructed from and converted to text or a
+JSON-friendly @code{Array} representation.  They can also be used to generate
+corresponding HTML @code{link} elements.")
+    (license license:expat)))
