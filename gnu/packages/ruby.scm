@@ -13613,6 +13613,7 @@ though the later has not yet been packaged for Guix.")
       #:modules
       `((guix build ruby-build-system)
         (ice-9 popen)
+        (srfi srfi-1)
         (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
@@ -13621,7 +13622,30 @@ though the later has not yet been packaged for Guix.")
               (substitute* "anystyle-cli.gemspec"
                 (("'bibtex-ruby', '[^']*'")
                  "'bibtex-ruby'"))))
-          (delete 'check) ;; there are no upstream tests
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              ;; There are no tests, but let's use this opportunity to do a
+              ;; basic test of our own that things run ok. It works especially
+              ;; well to test this here since we know the 'ruby-anystile'
+              ;; package is in its final, immutable installed form.
+              (when tests?
+                (let ((common
+                       `("require 'anystyle'"
+                         ,(string-append
+                           "pp AnyStyle.parse 'Derrida, J. (1967). L’écriture"
+                           " et la différence (1 éd.). Paris: Éditions du"
+                           " Seuil.'"))))
+                  (for-each
+                   (lambda (lines)
+                     (apply invoke "ruby"
+                            (fold-right (lambda (line lst)
+                                          (cons* "-e" line lst))
+                                        '()
+                                        lines)))
+                   `(,common
+                     ("require 'anystyle/dictionary'"
+                      "AnyStyle::Dictionary.defaults[:adapter] = :gdbm"
+                      ,@common)))))))
           (add-after 'wrap 'check-cli
             (lambda* (#:key tests? outputs #:allow-other-keys)
               (when tests?
