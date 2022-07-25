@@ -71042,8 +71042,53 @@ It locates installed executable in cross platforms.")
 environment.")
     (license (list license:expat license:boost1.0))))
 
+(define-public rust-wide-0.7
+  (package
+    (name "rust-wide")
+    (version "0.7.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "wide" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0psw31mh21cn4w7i0klsz7law8p8iddsqir8x35cf6n3vb8s5axk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-safe-arch" ,rust-safe-arch-0.6))))
+    (home-page "https://github.com/Lokathor/wide")
+    (synopsis "Rust for wide blocks")
+    (description "This crate has data types for blocks of primitives packed
+together and used as a single unit.  This works very well with SIMD/vector
+hardware of various targets.  Both in terms of explicit SIMD usage and also in
+terms of allowing LLVM's auto-vectorizer to do its job.")
+    (license (list license:zlib license:asl2.0 license:expat))))
+
+(define-public rust-wide-0.6
+  (package
+    (inherit rust-wide-0.7)
+    (name "rust-wide")
+    (version "0.6.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wide" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16yqf8xsvns21clg3rk8nljq4qnsfqg240smbjqa0z520k3fgfs6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-safe-arch" ,rust-safe-arch-0.5))))))
+
 (define-public rust-wide-0.4
   (package
+    (inherit rust-wide-0.6)
     (name "rust-wide")
     (version "0.4.6")
     (source
@@ -71059,32 +71104,7 @@ environment.")
     (arguments
      `(#:cargo-inputs
        (("rust-bytemuck" ,rust-bytemuck-1))))
-    (home-page "https://github.com/Lokathor/wide")
-    (synopsis "Rust for wide blocks")
-    (description "This crate has data types for blocks of primitives packed
-together and used as a single unit.  This works very well with SIMD/vector
-hardware of various targets.  Both in terms of explicit SIMD usage and also in
-terms of allowing LLVM's auto-vectorizer to do its job.")
-    (license license:zlib)))
-
-(define-public rust-wide-0.6
-  (package
-    (inherit rust-wide-0.4)
-    (name "rust-wide")
-    (version "0.6.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "wide" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "16yqf8xsvns21clg3rk8nljq4qnsfqg240smbjqa0z520k3fgfs6"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bytemuck" ,rust-bytemuck-1)
-        ("rust-safe-arch" ,rust-safe-arch-0.5))))
-    (license (list license:zlib license:asl2.0 license:expat))))
+    (license (list license:zlib))))
 
 (define-public rust-widestring-0.4
   (package
