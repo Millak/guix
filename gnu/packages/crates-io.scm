@@ -29758,14 +29758,14 @@ whether or not a given path points to an executable file.")
 (define-public rust-itertools-0.10
   (package
     (name "rust-itertools")
-    (version "0.10.0")
+    (version "0.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "itertools" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06dkghwi1a6ah2103gibxnr2ys762m5x4rp75x0q43imis8p5m9p"))))
+        (base32 "1qy55fqbaisr9qgbn7cvdvqlfqbh1f4ddf99zwan56z7l6gx3ad9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
