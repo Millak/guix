@@ -1876,8 +1876,44 @@ library.")
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-pangocairo-0.15
+  (package
+    (name "rust-pangocairo")
+    (version "0.15.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "pangocairo" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0rjk0clrjxah4kc0kybn7l7bxa5m5kpxkihxc2i7a6hx3xfa8xkq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cairo-rs" ,rust-cairo-rs-0.15)
+        ("rust-glib" ,rust-glib-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pango" ,rust-pango-0.15)
+        ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.15))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pango))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the PangoCairo library")
+    (description
+     "Rust bindings for the PangoCairo library.")
+    (license license:expat)))
+
 (define-public rust-pangocairo-0.9
   (package
+    (inherit rust-pangocairo-0.15)
     (name "rust-pangocairo")
     (version "0.9.0")
     (source
@@ -1904,14 +1940,7 @@ library.")
         ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.10)
         ("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (inputs
-     (list gtk+))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the PangoCairo library")
-    (description
-     "Rust bindings for the PangoCairo library.")
-    (license license:expat)))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-pangocairo-0.8
   (package
