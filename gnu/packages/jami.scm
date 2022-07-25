@@ -482,43 +482,68 @@ protocols, as well as decentralized calling using P2P-DHT.")
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments
-     `(#:tests? #f                      ;no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'change-directory/maybe
-           (lambda _
-             ;; Allow building from the tarball or a git checkout.
-             (false-if-exception (chdir "client-qt"))))
-         (add-after 'change-directory/maybe 'fix-version-string
-           (lambda _
-             (substitute* "src/version.h"
-               (("VERSION_STRING")
-                "BUILD_DATE")           ;to avoid a redefinition error
-               (("// clang-format on.*" anchor)
-                (string-append "const char VERSION_STRING[] = \""
-                               ,version "\";\n"
-                               anchor)))))
-         (add-after 'change-directory/maybe 'use-desktop-opengl
-           ;; TODO: Remove after next release; this is no longer specified in
-           ;; the source following the update to Qt 6.
-           (lambda _
-             (substitute* "src/main.cpp"
-               (("Qt::AA_UseOpenGLES")
-                "Qt::AA_UseDesktopOpenGL")))))))
+     (list
+      #:qtbase qtbase
+      #:tests? #f                       ;see comment below
+      #:configure-flags
+      ;; The test suite fails to build with:
+      ;; "../../../client-qt/src/app/utils.h:29:10: fatal error: QLabel: No
+      ;; such file or directory".
+      #~(list "-DENABLE_TESTS=OFF"
+              "-DWITH_WEBENGINE=OFF" ;reduce transitive closure size by 450 MiB
+              ;; Use libwrap to link directly to libjami instead of
+              ;; communicating via D-Bus to jamid, the Jami daemon.
+              "-DENABLE_LIBWRAP=ON"
+              (string-append "-DLIBJAMI_XML_INTERFACES_DIR="
+                             #$(this-package-input "libjami")
+                             "/share/dbus-1/interfaces")
+              (string-append "-DLIBJAMI_INCLUDE_DIR="
+                             #$(this-package-input "libjami") "/include/jami"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory/maybe
+            (lambda _
+              ;; Allow building from the tarball or a git checkout.
+              (false-if-exception (chdir "client-qt"))))
+          (add-after 'change-directory/maybe 'fix-version-string
+            (lambda _
+              (substitute* "src/app/version.h"
+                (("VERSION_STRING")
+                 "BUILD_DATE")          ;to avoid a redefinition error
+                (("// clang-format on.*" anchor)
+                 (string-append "const char VERSION_STRING[] = \""
+                                #$version "\";\n"
+                                anchor)))))
+          (add-after 'change-directory/maybe 'patch-source
+            (lambda _
+              (substitute* "src/libclient/CMakeLists.txt"
+                ;; Fix submitted upstream (see:
+                ;; https://review.jami.net/c/jami-client-qt/+/21830).
+                (("target_link_libraries\\(\\$\\{LIBCLIENT_NAME} qtwrapper.*" all)
+                 (string-append
+                  all "  target_link_libraries(${LIBCLIENT_NAME} avutil)\n"))))))))
     (native-inputs
-     (list pkg-config python qttools-5 doxygen graphviz))
+     (list googletest
+           pkg-config
+           python
+           qttools
+           doxygen
+           graphviz
+           vulkan-headers))
     (inputs
-     (list libnotify
+     (list ffmpeg-jami
+           libjami
+           libnotify
+           libxkbcommon
            network-manager
            qrencode
-           qtsvg-5
-           qtwebengine-5
-           qtwebchannel-5
-           qtmultimedia-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtquickcontrols-5
-           qtquickcontrols2-5))
+           qt5compat
+           qtdeclarative
+           qtmultimedia
+           qtnetworkauth
+           qtpositioning
+           qtsvg
+           vulkan-loader))
     (home-page "https://jami.net")
     (synopsis "Qt Jami client")
     (description "This package provides the Jami Qt client.  Jami is a secure
