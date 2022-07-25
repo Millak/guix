@@ -13271,3 +13271,25 @@ variables, supports cross-references, and decodes common LaTeX formatting
 instructions to unicode.  If you are in a hurry, it also allows for easy
 export/conversion to formats such as YAML, JSON, CSL, and XML (BibTeXML).")
     (license license:gpl3+)))
+
+(define-public ruby-unicode-scripts
+  (package
+    (name "ruby-unicode-scripts")
+    (version "1.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "unicode-scripts" version))
+              (sha256
+               (base32
+                "1k7kbfk806zam129bp7pdiqkfb5hn51x149irzvjhs4xf22m4yvi"))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list ruby-minitest))
+    (arguments
+     (list #:test-target "spec"))
+    (home-page "https://github.com/janlelis/unicode-scripts")
+    (synopsis "Unicode script classification library")
+    (description
+     "This gem provides a simple interface for classifying Ruby strings using
+the Unicode @code{Script} and @code{Script_Extensions} properties.")
+    (license license:expat)))
