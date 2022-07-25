@@ -2628,31 +2628,29 @@ consumption.")
            solid))
     (native-inputs
      (list extra-cmake-modules dbus kdoctools qttools-5))
-    (inputs
-     `(;; TODO:  LibACL , <ftp://oss.sgi.com/projects/xfs/cmd_tars>
-       ("krb5" ,mit-krb5)
-       ("karchive" ,karchive)
-       ("kauth" ,kauth)
-       ("kcodecs" ,kcodecs)
-       ("kconfigwidgets" ,kconfigwidgets)
-       ("kcrash" ,kcrash)
-       ("kdbusaddons" ,kdbusaddons)
-       ("kdoctools" ,kdoctools)
-       ("kguiaddons" ,kguiaddons)
-       ("kiconthemes" ,kiconthemes)
-       ("ki18n" ,ki18n)
-       ("knotifications" ,knotifications)
-       ("ktextwidgets" ,ktextwidgets)
-       ("kwallet" ,kwallet)
-       ("kwidgetsaddons" ,kwidgetsaddons)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("qtbase" ,qtbase-5)
-       ("qtscript" ,qtscript)
-       ("qtx11extras" ,qtx11extras)
-       ("sonnet" ,sonnet)
-       ("util-linux:lib" ,util-linux "lib") ; libmount
-       ("zlib" ,zlib)))
+    (inputs (list ;; TODO:  LibACL , <ftp://oss.sgi.com/projects/xfs/cmd_tars>
+                  mit-krb5
+                  karchive
+                  kauth
+                  kcodecs
+                  kconfigwidgets
+                  kcrash
+                  kdbusaddons
+                  kguiaddons
+                  kiconthemes
+                  ki18n
+                  knotifications
+                  ktextwidgets
+                  kwallet
+                  kwidgetsaddons
+                  libxml2
+                  libxslt
+                  qtbase-5
+                  qtscript
+                  qtx11extras
+                  sonnet
+                  `(,util-linux "lib") ; libmount
+                  zlib))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
