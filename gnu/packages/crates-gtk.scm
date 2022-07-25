@@ -962,8 +962,51 @@
     (description "File format checker in Rust.")
     (license license:expat)))
 
+(define-public rust-glib-0.15
+  (package
+    (name "rust-glib")
+    (version "0.15.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glib" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pahikbwxr3vafdrr5l2hnlhkf9xi4illryan0l59ayhp9pk1c7d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-futures-task" ,rust-futures-task-0.3)
+        ("rust-glib-macros" ,rust-glib-macros-0.15)
+        ("rust-glib-sys" ,rust-glib-sys-0.15)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the GLib library")
+    (description "Rust bindings for the GLib library")
+    (license license:expat)))
+
 (define-public rust-glib-0.14
   (package
+    (inherit rust-glib-0.15)
     (name "rust-glib")
     (version "0.14.8")
     (source
@@ -989,13 +1032,7 @@
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-smallvec" ,rust-smallvec-1))))
-    (inputs
-     (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the GLib library")
-    (description "Rust bindings for the GLib library")
-    (license license:expat)))
+        ("rust-smallvec" ,rust-smallvec-1))))))
 
 (define-public rust-glib-0.10
   (package
