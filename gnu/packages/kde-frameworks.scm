@@ -3474,19 +3474,18 @@ need.")
     (native-inputs
      (list extra-cmake-modules pkg-config))
     ;; TODO: Optional packages not yet in Guix: packagekitqt5, AppStreamQt
-    (inputs
-     `(("kconfig" ,kconfig)
-       ("kconfigwidgets" ,kconfigwidgets)
-       ("kcoreaddons" ,kcoreaddons)
-       ("ki18n" ,ki18n)
-       ("kiconthemes" ,kiconthemes)
-       ("kitemviews" ,kitemviews)
-       ("knewstuff" ,knewstuff)
-       ("knotificantions" ,knotifications)
-       ("kpackage" ,kpackage)
-       ("kwidgetsaddons" ,kwidgetsaddons)
-       ("qtbase" ,qtbase-5)
-       ("qtx11extras" ,qtx11extras)))
+    (inputs (list kconfig
+                  kconfigwidgets
+                  kcoreaddons
+                  ki18n
+                  kiconthemes
+                  kitemviews
+                  knewstuff
+                  knotifications
+                  kpackage
+                  kwidgetsaddons
+                  qtbase-5
+                  qtx11extras))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
