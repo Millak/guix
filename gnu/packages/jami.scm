@@ -474,65 +474,6 @@ protocols, as well as decentralized calling using P2P-DHT.")
 (define-public libring
   (deprecated-package "libring" libjami))
 
-(define-public jami-gnome
-  (package
-    (name "jami-gnome")
-    (version %jami-version)
-    (source %jami-sources)
-    (outputs '("out" "debug"))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f                      ;no test suite
-       #:imported-modules (,@%cmake-build-system-modules
-                           (guix build glib-or-gtk-build-system))
-       #:modules ((guix build cmake-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix gtk:)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'change-directory/maybe
-           (lambda _
-             ;; Allow building from the tarball or a git checkout.
-             (false-if-exception (chdir "client-gnome"))))
-         (add-after 'change-directory/maybe 'fix-webkit-detection
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("WEBKIT webkit2gtk-4.0")
-                "WEBKIT webkit2gtk-4.1"))))
-         (add-after 'change-directory/maybe 'fix-version-string
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("^# Set VERSION.*" anchor)
-                (string-append anchor
-                               "set(PROJECT_VERSION \"" ,version "\")\n")))))
-         (add-after 'install 'glib-or-gtk-compile-schemas
-           (assoc-ref gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
-           (assoc-ref gtk:%standard-phases 'glib-or-gtk-wrap)))))
-    (inputs
-     (list clutter
-           clutter-gtk
-           gtk+
-           libcanberra
-           libappindicator
-           libnotify
-           network-manager
-           qrencode
-           sqlite
-           webkitgtk))
-    (native-inputs
-     (list pkg-config
-           gettext-minimal
-           `(,glib "bin")))             ;for glib-compile-resources
-    (synopsis "Jami client for GNOME")
-    (description "This package provides a Jami client for the GNOME desktop.
-Jami is a secure and distributed voice, video and chat communication platform
-that requires no centralized server and leaves the power of privacy in the
-hands of the user.  It supports the SIP and IAX protocols, as well as
-decentralized calling using P2P-DHT.")
-    (home-page "https://jami.net")
-    (license license:gpl3+)))
-
 (define-public jami
   (package
     (name "jami")
@@ -586,6 +527,10 @@ centralized server and leaves the power of privacy in the hands of the user.
 It supports the SIP and IAX protocols, as well as decentralized calling using
 P2P-DHT.")
     (license license:gpl3+)))
+
+;;; Remove when 2023 comes.
+(define-public jami-gnome
+  (deprecated-package "jami-gnome" jami))
 
 ;;; Remove when 2023 comes.
 (define-public jami-qt
