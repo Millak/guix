@@ -1109,8 +1109,40 @@
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-glib-sys-0.15
+  (package
+    (name "rust-glib-sys")
+    (version "0.15.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "glib-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1m5sqm69fdk8vaw6hggyizhs1r1vivx73splrdvczsb5iqpijjzg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; XXX: Tests are sensitive to the version of glib, even though
+       ;; the library supports a wide range.  Skip for now.
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs
+       (("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings to libglib-2.0")
+    (description "This package provides FFI bindings to libglib-2.0.")
+    (license license:expat)))
+
 (define-public rust-glib-sys-0.14
   (package
+    (inherit rust-glib-sys-0.15)
     (name "rust-glib-sys")
     (version "0.14.0")
     (source
@@ -1120,7 +1152,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1bjlymn3fw4g8slij6iiggaipknf9072mr2qm3i4a91199an078w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build?
        #t
@@ -1130,12 +1161,7 @@
        #:cargo-development-inputs
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))
-    (inputs
-     (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings to libglib-2.0")
-    (description "This package provides FFI bindings to libglib-2.0.")
-    (license license:expat)))
+    (native-inputs '())))
 
 (define-public rust-glib-sys-0.10
   (package
