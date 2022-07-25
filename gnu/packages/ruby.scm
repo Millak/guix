@@ -13206,3 +13206,25 @@ corresponding HTML @code{link} elements.")
 programming with @acronym{RDF, Resource Description Framework} data,
 implemented in pure Ruby.")
     (license license:unlicense)))
+
+(define-public ruby-rdf-vocab
+  (package
+    (name "ruby-rdf-vocab")
+    (version "3.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "rdf-vocab" version))
+              (sha256
+               (base32
+                "1bqmp9rfjvd56ajjz68ij6jla1wjf1fqg7bi4dpnjrsmn4pwaq7l"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-rdf))
+    (arguments
+     (list #:tests? #f)) ;; tests have many cyclic dependencies
+    (home-page "https://github.com/ruby-rdf/rdf-vocab")
+    (synopsis "Common RDF vocabularies")
+    (description
+     "This gem extends @code{ruby-rdf} with several common @acronym{RDF,
+Resource Description Framework} vocabularies.")
+    (license license:unlicense)))
