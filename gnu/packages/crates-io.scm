@@ -35919,8 +35919,65 @@ quick compile time, and minimal dependencies.")
        #:cargo-inputs
        (("rust-rayon" ,rust-rayon-1))))))
 
+(define-public rust-nalgebra-0.29
+  (package
+    (name "rust-nalgebra")
+    (version "0.29.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "nalgebra" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "1zri11vkrbk3ayvy8xqcdvvyjvfcbl5a18x8z82racnn11zfn1nm"))
+       (modules '((guix build utils)))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:tests? #f       ;TODO: how to enable required features?
+        #:cargo-inputs
+        (("rust-abomonation" ,rust-abomonation-0.7)
+         ("rust-alga" ,rust-alga-0.9)
+         ("rust-approx" ,rust-approx-0.5)
+         ("rust-bytemuck" ,rust-bytemuck-1)
+         ("rust-glam" ,rust-glam-0.17)
+         ("rust-glam" ,rust-glam-0.16)
+         ("rust-glam" ,rust-glam-0.15)
+         ("rust-glam" ,rust-glam-0.14)
+         ("rust-glam" ,rust-glam-0.13)
+         ("rust-matrixcompare-core" ,rust-matrixcompare-core-0.1)
+         ("rust-matrixmultiply" ,rust-matrixmultiply-0.3)
+         ("rust-mint" ,rust-mint-0.5)
+         ("rust-nalgebra-macros" ,rust-nalgebra-macros-0.1)
+         ("rust-num-complex" ,rust-num-complex-0.4)
+         ("rust-num-rational" ,rust-num-rational-0.4)
+         ("rust-num-traits" ,rust-num-traits-0.2)
+         ("rust-pest" ,rust-pest-2)
+         ("rust-pest-derive" ,rust-pest-derive-2)
+         ("rust-proptest" ,rust-proptest-1)
+         ("rust-quickcheck" ,rust-quickcheck-1)
+         ("rust-rand" ,rust-rand-0.8)
+         ("rust-rand-distr" ,rust-rand-distr-0.4)
+         ("rust-rkyv" ,rust-rkyv-0.6)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-simba" ,rust-simba-0.6)
+         ("rust-typenum" ,rust-typenum-1))
+        #:cargo-development-inputs
+        (("rust-criterion" ,rust-criterion-0.3)
+         ("rust-itertools" ,rust-itertools-0.10)
+         ("rust-matrixcompare" ,rust-matrixcompare-0.3)
+         ("rust-rand-isaac" ,rust-rand-isaac-0.3)
+         ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+         ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://nalgebra.org")
+    (synopsis "Linear algebra library")
+    (description
+     "This package provides a general-purpose linear algebra library with
+transformations and statically-sized or dynamically-sized matrices.")
+    (license license:bsd-3)))
+
 (define-public rust-nalgebra-0.26
   (package
+    (inherit rust-nalgebra-0.29)
     (name "rust-nalgebra")
     (version "0.26.2")
     (source
@@ -35966,13 +36023,7 @@ quick compile time, and minimal dependencies.")
          ("rust-matrixcompare" ,rust-matrixcompare-0.2)
          ("rust-rand-isaac" ,rust-rand-isaac-0.3)
          ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
-         ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://nalgebra.org")
-    (synopsis "Linear algebra library")
-    (description
-     "This package provides a general-purpose linear algebra library with
-transformations and statically-sized or dynamically-sized matrices.")
-    (license license:bsd-3)))
+         ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-nalgebra-0.21
   (package
