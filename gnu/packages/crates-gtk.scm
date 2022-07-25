@@ -489,8 +489,41 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
+(define-public rust-gdk-pixbuf-0.15
+  (package
+    (name "rust-gdk-pixbuf")
+    (version "0.15.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk-pixbuf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16k1z21r76m620z61kfmgid1n6s8dnxpa4zlrppcr6dhr2fdsf5d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.15)
+        ("rust-gio" ,rust-gio-0.15)
+        ("rust-glib" ,rust-glib-0.15)
+        ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list gdk-pixbuf))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the GdkPixbuf library")
+    (description "Rust bindings for the GdkPixbuf library")
+    (license license:expat)))
+
 (define-public rust-gdk-pixbuf-0.14
   (package
+    (inherit rust-gdk-pixbuf-0.15)
     (name "rust-gdk-pixbuf")
     (version "0.14.0")
     (source
@@ -510,13 +543,7 @@
         ("rust-glib" ,rust-glib-0.14)
         ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (inputs
-     (list gdk-pixbuf))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the GdkPixbuf library")
-    (description "Rust bindings for the GdkPixbuf library")
-    (license license:expat)))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-gdk-pixbuf-0.9
   (package
