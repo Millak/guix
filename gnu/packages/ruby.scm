@@ -66,6 +66,7 @@
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lsof)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
@@ -13549,5 +13550,127 @@ the power of the built-in @code{OptionParser}.")
        "AnyStyle is a very fast and smart parser for academic reference lists
 and bibliographies.  AnyStyle uses powerful machine learning heuristics based
 on Conditional Random Fields and aims to make it easy to train the model with
-data that is relevant to your parsing needs.")
+data that is relevant to your parsing needs.
+
+This package provides the Ruby module @code{AnyStyle}.  AnyStyle can also be
+used via the @command{anystyle} command-line utility or a web application,
+though the later has not yet been packaged for Guix.")
       (license license:bsd-2))))
+
+(define-public anystyle
+  (package
+    (name "anystyle")
+    (version "1.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/anystyle-cli")
+                    (commit version)))
+              (sha256
+               (base32
+                "1bazzms04cra8516q7vydmcm31yd0a7si1pxk4waffqy7lh0pksg"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-anystyle
+           ruby-bibtex-ruby
+           ruby-gli))
+    (native-inputs
+     (list txt2man))
+    (arguments
+     (list
+      #:modules
+      `((guix build ruby-build-system)
+        (ice-9 popen)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'less-strict-dependencies
+            (lambda args
+              (substitute* "anystyle-cli.gemspec"
+                (("'bibtex-ruby', '[^']*'")
+                 "'bibtex-ruby'"))))
+          (delete 'check) ;; there are no upstream tests
+          (add-after 'wrap 'check-cli
+            (lambda* (#:key tests? outputs #:allow-other-keys)
+              (when tests?
+                (with-output-to-file "check-cli.in"
+                  (lambda ()
+                    (for-each
+                     display
+                     '("Derrida, J. (1967). L’écriture et la différence "
+                       "(1 éd.). Paris: Éditions du Seuil.\n"))))
+                (invoke (search-input-file outputs "/bin/anystyle")
+                        "parse"
+                        "check-cli.in"))))
+          (add-after 'wrap 'generate-man-page
+            ;; generating a man page also tests that the command actually runs
+            (lambda args
+              (define (run-with-output-file file command . args)
+                (format (current-output-port)
+                        "running: ~s\nwith output to: ~s\n"
+                        (cons command args)
+                        file)
+                (unless (zero?
+                         (with-output-to-file file
+                           (lambda ()
+                             (status:exit-val
+                              (close-pipe
+                               (apply open-pipe* OPEN_WRITE command args))))))
+                  (error "command failed")))
+              (let ((anystyle (string-append #$output "/bin/anystyle")))
+                (run-with-output-file "intro.txt"
+                                      anystyle "--help")
+                (for-each (lambda (cmd)
+                            (let ((file (string-append cmd ".txt")))
+                              (run-with-output-file file
+                                                    anystyle cmd "--help")
+                              ;; indent headings to create subsections
+                              (substitute* file
+                                (("^[A-Z]" orig)
+                                 (string-append " " orig)))
+                              ;; generate a section heading
+                              (call-with-output-file
+                                  (string-append "section-" file)
+                                (lambda (out)
+                                  (format out "\n\n~a COMMAND\n\n"
+                                          (string-upcase cmd))))))
+                          '("check" "find" "parse" "train"))
+                (substitute* `("intro.txt"
+                               "check.txt" "find.txt" "parse.txt" "train.txt")
+                  ;; format "tag list" for txt2man"
+                  ((" - ")
+                   "    ")
+                  ;; restore formatting of the "name" sections
+                  (("(anystyle|check|find|parse|train)    ([A-Z])" _ cmd post)
+                   (string-append cmd " - " post)))
+                (run-with-output-file "anystyle.txt"
+                                      "cat"
+                                      "intro.txt"
+                                      "section-check.txt" "check.txt"
+                                      "section-find.txt" "find.txt"
+                                      "section-parse.txt" "parse.txt"
+                                      "section-train.txt" "train.txt")
+                (run-with-output-file
+                 "anystyle.1"
+                 "txt2man"
+                 "-v" "General Commands Manual" "-t" "anystyle" "-s" "1"
+                 "-r" #$(string-append "anystyle-cli "
+                                       (package-version this-package))
+                 "-B" "check" "-B" "find" "-B" "parse" "-B" "train"
+                 "anystyle.txt")
+                (install-file "anystyle.1"
+                              (string-append #$output "/share/man/man1"))))))))
+    (home-page "https://anystyle.io")
+    (synopsis "Fast and smart citation reference parsing")
+    (description
+     "AnyStyle is a very fast and smart parser for academic reference lists
+and bibliographies.  AnyStyle uses powerful machine learning heuristics based
+on Conditional Random Fields and aims to make it easy to train the model with
+data that is relevant to your parsing needs.
+
+This package provides the @command{anystyle} command-line utility.  AnyStyle
+can also be used as a Ruby library or as a web application, though the later
+has not yet been packaged for Guix.")
+    (license license:bsd-2)
+    (properties `((upstream-name . "anystyle-cli")))))
