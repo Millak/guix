@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -204,8 +205,7 @@ common build settings used in software produced by the KDE community.")
                                          (assoc-ref inputs "qtbase"))))
                (substitute* "cmake_install.cmake"
                  ((regex all dest)
-                  (string-append dest (assoc-ref outputs "out")))))
-           #t)))))
+                  (string-append dest (assoc-ref outputs "out"))))))))))
     (home-page "https://phonon.kde.org")
     (synopsis "KDE's multimedia library")
     (description "KDE's multimedia library.")
@@ -465,8 +465,7 @@ GZip format, via a subclass of QIODevice.")
              (when tests?
                ;; Its already been fixed upstream; remove in 5.93.
                ;; c0428a284444b995d320046c04ef5377d51e4c5c
-               (invoke "ctest" "-E" "testdateserialization"))
-             #t)))))
+               (invoke "ctest" "-E" "testdateserialization")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Library for interfacing with calendars")
     (description "This library provides access to and handling of calendar
@@ -541,8 +540,7 @@ Internet).")
                (setenv "HOME" (getcwd))
                (setenv "QT_QPA_PLATFORM" "offscreen")
                (invoke "ctest" "-E" "(kconfigcore-kconfigtest|\
-kconfiggui-kstandardshortcutwatchertest)"))
-             #t)))))
+kconfiggui-kstandardshortcutwatchertest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Kconfiguration settings framework for Qt")
     (description "KConfig provides an advanced configuration system.
@@ -602,8 +600,7 @@ propagate their changes to their respective configuration files.")
              (setenv "TMPDIR" (getcwd))
              (when tests? ;; kdirwatch test fails inconsistently. kprocesstest fails.
                (invoke "ctest" "-E" "(kdirwatch_qfswatch_unittest|kprocesstest|\
-kdirwatch_stat_unittest)"))
-             #t)))))
+kdirwatch_stat_unittest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Qt addon library with a collection of non-GUI utilities")
     (description "KCoreAddons provides classes built on top of QtCore to
@@ -1001,8 +998,7 @@ pixel units.")
                (((which "sh")) " /bin/sh")) ;; space in front!
              (substitute* '("autotests/input/highlight.pl"
                             "autotests/folding/highlight.pl.fold")
-               (((which "perl")) "/usr/bin/perl"))
-             #t)))))
+               (((which "perl")) "/usr/bin/perl")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Syntax highlighting engine for Kate syntax definitions")
     (description "This is a stand-alone implementation of the Kate syntax
@@ -1063,8 +1059,7 @@ protocols used in KDE Plasma.")
              (setenv "XDG_RUNTIME_DIR" (getcwd))
              (setenv "QT_QPA_PLATFORM" "offscreen")
              (when tests? ;; One test fails.
-               (invoke "ctest" "-E" "kwayland-testWaylandRegistry"))
-             #t)))))
+               (invoke "ctest" "-E" "kwayland-testWaylandRegistry")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Qt-style API to interact with the wayland client and server")
     (description "As the names suggest they implement a Client respectively a
@@ -1146,8 +1141,7 @@ configuration pages, message boxes, and password requests.")
              (with-output-to-file "autotests/BLACKLIST"
                (lambda _
                  (display "[testGroupLeader]\n*\n")
-                 (display "[testClientMachine]\n*\n"))) ;; requires network
-             #t))
+                 (display "[testClientMachine]\n*\n"))))) ;; requires network
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              ;; The test suite requires a running window anager
@@ -1203,8 +1197,7 @@ lower level classes for interaction with the X Windowing System.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest"))
-             #t)))))
+               (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Qt wrapper for ModemManager DBus API")
     (description "ModemManagerQt provides access to all ModemManager features
@@ -1605,8 +1598,7 @@ integrated it into your application's other widgets.")
                ;;Expected (result)                                               :
                ;;"Jim Knopf\nLummerlandstr. 1\n12345 Lummerstadt\n\nGERMANIA"
                (invoke "ctest" "-E"
-			   "(kcontacts-addresstest|kcontacts-emailtest|kcontacts-phonenumbertest|kcontacts-secrecytest|kcontacts-geotest|kcontacts-keytest|kcontacts-testroundtrip|kcontacts-impptest|kcontacts-birthdaytest|kcontacts-addresseetest)"))
-             #t)))))
+			   "(kcontacts-addresstest|kcontacts-emailtest|kcontacts-phonenumbertest|kcontacts-secrecytest|kcontacts-geotest|kcontacts-keytest|kcontacts-testroundtrip|kcontacts-impptest|kcontacts-birthdaytest|kcontacts-addresseetest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "API for contacts/address book data following the vCard standard")
     (description "This library provides a vCard data model, vCard
@@ -1679,8 +1671,7 @@ application crashes.")
              (substitute* "cmake/FindDocBookXSL.cmake"
                (("^.*xml/docbook/stylesheet.*$")
                 (string-append "xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl) "\n")))
-             #t))
+                               ,(package-version docbook-xsl) "\n")))))
          (add-after 'install 'add-symlinks
            ;; Some package(s) (e.g. kdelibs4support) refer to this locale by a
            ;; different spelling.
@@ -1688,8 +1679,7 @@ application crashes.")
              (let ((xsl (string-append (assoc-ref outputs "out")
                                        "/share/kf5/kdoctools/customization/xsl/")))
                (symlink (string-append xsl "pt_br.xml")
-                        (string-append xsl "pt-BR.xml")))
-             #t)))))
+                        (string-append xsl "pt-BR.xml"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Create documentation from DocBook")
     (description "Provides tools to generate documentation in various format
@@ -1719,8 +1709,7 @@ from DocBook files.")
                ;; FIXME: Test can't find audio/x-speex mimeinfo
                ;; (but it can find audio/x-speex+ogg).
                (invoke "ctest" "-E"
-                "(usermetadatawritertest|embeddedimagedatatest|taglibextractortest)"))
-             #t)))))
+                "(usermetadatawritertest|embeddedimagedatatest|taglibextractortest)")))))))
     (native-inputs
      `(("extra-cmake-modules" ,extra-cmake-modules)
        ("pkg-config" ,pkg-config)))
@@ -1783,8 +1772,7 @@ by applications to write metadata.")
              (setenv "QT_QPA_PLATFORM" "offscreen")
              (setenv "QT_PLUGIN_PATH"
                      (string-append (getcwd) "/bin:"
-                                    (getenv "QT_PLUGIN_PATH")))
-             #t)))
+                                    (getenv "QT_PLUGIN_PATH"))))))
        ;; FIXME: The header files of ilmbase (propagated by openexr) are not
        ;; found when included by the header files of openexr, and an explicit
        ;; flag needs to be set.
@@ -1860,8 +1848,7 @@ asynchronous jobs.")
              (when tests?
                (setenv "HOME" (getcwd))
                (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest"))
-             #t)))))
+               (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Desktop notifications")
     (description "KNotification is used to notify the user of an event.  It
@@ -1903,8 +1890,7 @@ covers feedback and persistent events.")
                (("^\\s*(const QDirIterator::IteratorFlags flags = QDirIterator::Subdirectories)(;)" _ a b)
                 (string-append a " | QDirIterator::FollowSymlinks" b))
                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
-                (string-append a " | QDirIterator::FollowSymlinks" b)))
-             #t))
+                (string-append a " | QDirIterator::FollowSymlinks" b)))))
          (add-after 'unpack 'patch-tests
            (lambda _
              ;; /bin/ls doesn't exist in the build-container use /etc/passwd
@@ -1914,12 +1900,10 @@ covers feedback and persistent events.")
                 (string-append a "etc" b "etc" c "etc\""))
                (("filePath\\(\"bin\", QStringLiteral\\(\"ls\"))")
                 "filePath(\"etc\", QStringLiteral(\"passwd\"))")
-               (("\"/bin/ls\"") "\"/etc/passwd\""))
-             #t))
+               (("\"/bin/ls\"") "\"/etc/passwd\""))))
          (add-before 'check 'check-setup
            (lambda _
-             (setenv "HOME" (getcwd))
-             #t)))))
+             (setenv "HOME" (getcwd)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Installation and loading of additional content as packages")
     (description "The Package framework lets the user install and load packages
@@ -1954,8 +1938,7 @@ were traditional plugins.")
          (add-after 'unpack 'patch-tests
            (lambda _
              (substitute* "autotests/kptyprocesstest.cpp"
-               (("/bin/bash") (which "bash")))
-             #t)))))
+               (("/bin/bash") (which "bash"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Interfacing with pseudo terminal devices")
     (description "This library provides primitives to interface with pseudo
@@ -2070,15 +2053,13 @@ between feed formats.")
              (substitute* "autotests/unit/file/CMakeLists.txt"
                ;; The test only runs on GNU/Linux, piggy-back on the check.
                (("CMAKE_SYSTEM_NAME MATCHES \"Linux\"" all)
-                (string-append all " AND NOT TRUE")))
-             #t))
+                (string-append all " AND NOT TRUE")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (setenv "DBUS_FATAL_WARNINGS" "0")
                (setenv "HOME" (getcwd))
-               (invoke "dbus-launch" "ctest"))
-             #t)))))
+               (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "File searching and indexing")
     (description "Baloo provides file searching and indexing.  It does so by
@@ -2146,8 +2127,7 @@ by which applications, and what documents have been linked to which activity.")
            (lambda _
              (setenv "HOME" (getcwd))
              ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Bookmarks management library")
     (description "KBookmarks lets you access and manipulate bookmarks stored
@@ -2184,12 +2164,10 @@ using the XBEL format.")
              (substitute* "src/kcmoduleloader.cpp"
                ;; print plugin name when loading fails
                (("^\\s*(qWarning\\(\\) << \"Error loading) (plugin:\")( << loader\\.errorString\\(\\);)" _ a b c)
-                (string-append a " KCM plugin\" << mod.service()->library() << \":\"" c)))
-             #t))
+                (string-append a " KCM plugin\" << mod.service()->library() << \":\"" c)))))
          (add-before 'check 'check-setup
            (lambda _
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (inputs
      (list kauth
            kcodecs
@@ -2246,13 +2224,11 @@ KCModules can be created with the KConfigWidgets framework.")
                (("^\\s*(QDirIterator it\\(.*, QDirIterator::Subdirectories)(\\);)" _ a b)
                 (string-append a " | QDirIterator::FollowSymlinks" b)))
              (substitute* "CMakeLists.txt"
-               (("5\\.90\\.0") "5.92.0"))
-             #t))
+               (("5\\.90\\.0") "5.92.0"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "ctest" "-E" "kstandardactiontest"))
-             #t)))))
+               (invoke "ctest" "-E" "kstandardactiontest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Widgets for configuration dialogs")
     (description "KConfigWidgets provides easy-to-use classes to create
@@ -2471,8 +2447,7 @@ engine WebKit via QtWebKit.")
            (lambda _
              (setenv "HOME" (getcwd))
              ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Convert text emoticons to graphical emoticons")
     (description "KEmoticons converts emoticons from text to a graphical
@@ -2551,8 +2526,7 @@ window does not need focus for them to be activated.")
                                     "/share"))
              (setenv "HOME" (getcwd))
              ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Icon GUI utilities")
     (description "This library contains classes to improve the handling of icons
@@ -2585,8 +2559,7 @@ in applications using the KDE Frameworks.")
              (substitute* "src/kdeinit/kinit.cpp"
                (("GUIX_PKGS_KF5_KIO") (assoc-ref inputs "kio"))
                (("GUIX_PKGS_KF5_PARTS") (assoc-ref inputs "kparts"))
-               (("GUIX_PKGS_KF5_PLASMA") (assoc-ref inputs "plasma-framework")))
-             #t)))))
+               (("GUIX_PKGS_KF5_PLASMA") (assoc-ref inputs "plasma-framework"))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "KDEINIT5_LIBRARY_PATH")
@@ -2688,8 +2661,7 @@ consumption.")
              ;; Better error message (taken from NixOS)
              (substitute* "src/kiod/kiod_main.cpp"
                (("(^\\s*qCWarning(KIOD_CATEGORY) << \"Error loading plugin:\")( << loader.errorString();)" _ a b)
-                (string-append a "<< name" b)))
-             #t))
+                (string-append a "<< name" b)))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -2717,8 +2689,7 @@ consumption.")
                                       "|kiowidgets-kfileitemactionstest"
                                       "|kiowidgets-kurifiltertest-colon-separator"
                                       "|kiowidgets-kurifiltertest-space-separator"
-                                      "|kiofilewidgets-knewfilemenutest)")))
-             #t))
+                                      "|kiofilewidgets-knewfilemenutest)")))))
          (add-after 'install 'add-symlinks
            ;; Some package(s) (e.g. bluedevil) refer to these service types by
            ;; the wrong name.  I would prefer to patch those packages, but I
@@ -2785,8 +2756,7 @@ KIO enabled infrastructure.")
            (lambda _ ; XDG_DATA_DIRS isn't set
              (setenv "HOME" (getcwd))
              ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Framework for downloading and sharing additional application data")
     (description "The KNewStuff library implements collaborative data sharing
@@ -2858,8 +2828,7 @@ notifications which can be embedded in your application.")
                         ;; XXX: PartLoaderTest wants to create a .desktop file
                         ;; in the common locations and test that MIME types work.
                         ;; The setup required for this is extensive, skip for now.
-                        (("partloadertest\\.cpp") ""))
-                      #t)))))
+                        (("partloadertest\\.cpp") "")))))))
     (propagated-inputs
      (list kio ktextwidgets kxmlgui))
     (native-inputs
@@ -3028,8 +2997,7 @@ typed.")
                ;; Normalize path, but don't resolve symlinks (taken from
                ;; NixOS)
                (("^\\s*QString resolved = QDir\\(dir\\)\\.canonicalPath\\(\\);")
-                "QString resolved = QDir::cleanPath(dir);"))
-             #t))
+                "QString resolved = QDir::cleanPath(dir);"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -3098,14 +3066,12 @@ types or handled by application specific code.")
          (add-after 'unpack 'setup
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "XDG_DATA_DIRS" ; FIXME build phase doesn't find parts.desktop
-                     (string-append (assoc-ref inputs "kparts") "/share"))
-             #t))
+                     (string-append (assoc-ref inputs "kparts") "/share"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests? ;; Maybe locale issues with tests?
                (setenv "QT_QPA_PLATFORM" "offscreen")
-               (invoke "ctest" "-E" "(completion_test|kateview_test|movingrange_test)"))
-             #t))
+               (invoke "ctest" "-E" "(completion_test|kateview_test|movingrange_test)"))))
          (add-after 'install 'add-symlinks
            ;; Some package(s) (e.g. plasma-sdk) refer to these service types
            ;; by the wrong name.  I would prefer to patch those packages, but
@@ -3114,8 +3080,7 @@ types or handled by application specific code.")
              (let ((kst5 (string-append (assoc-ref outputs "out")
                                         "/share/kservicetypes5/")))
                (symlink (string-append kst5 "ktexteditorplugin.desktop")
-                        (string-append kst5 "ktexteditor-plugin.desktop"))
-               #t))))))
+                        (string-append kst5 "ktexteditor-plugin.desktop"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Full text editor component")
     (description "KTextEditor provides a powerful text editor component that you
@@ -3245,8 +3210,7 @@ the passwords on KDE work spaces.")
            (lambda _
              (setenv "HOME" (getcwd))
              ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Framework for managing menu and toolbar actions")
     (description "KXMLGUI provides a framework for managing menu and toolbar
@@ -3362,8 +3326,7 @@ setUrl, setUserAgent and call.")
                (invoke "ctest" "-E" (string-append "(plasma-dialogstatetest"
                                                    "|plasma-iconitemtest"
                                                    "|plasma-themetest"
-                                                   "|dialognativetest)")))
-             #t)))))
+                                                   "|dialognativetest)"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Libraries, components and tools of Plasma workspaces")
     (description "The plasma framework provides QML components, libplasma and
@@ -3473,8 +3436,7 @@ need.")
            (lambda _
              (setenv "HOME" (getcwd))
              ;; Make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE Frameworks 5 workspace and cross-framework integration plugins")
     (description "Framework Integration is a set of plugins responsible for
@@ -3568,8 +3530,7 @@ workspace.")
            (lambda _
              (substitute* "cmake/FindDocBookXML4.cmake"
                (("^.*xml/docbook/schema/dtd.*$")
-                "xml/dtd/docbook\n"))
-             #t))
+                "xml/dtd/docbook\n"))))
          (delete 'check)
          (add-after 'install 'check-post-install
            (lambda* (#:key inputs tests? #:allow-other-keys)
@@ -3815,8 +3776,7 @@ offers abstract functionality to deal with scripts.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests? ;; Seems to require network.
                (invoke "ctest" "-E"
-                       "(kdav-davcollectionsmultifetchjobtest|kdav-davitemfetchjob)"))
-             #t)))))
+                       "(kdav-davcollectionsmultifetchjobtest|kdav-davitemfetchjob)")))))))
     (home-page "https://invent.kde.org/frameworks/kdav")
     (synopsis "DAV protocol implementation with KJobs")
     (description "This is a DAV protocol implementation with KJobs.  Calendars
