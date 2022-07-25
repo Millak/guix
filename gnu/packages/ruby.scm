@@ -13377,3 +13377,55 @@ engine is available in the @code{citeproc-ruby} gem.")
 Date/Time Format} standard, implemented as an extension to Ruby's @code{Date}
 class.")
     (license license:bsd-2)))
+
+(define-public ruby-gli
+  (package
+    (name "ruby-gli")
+    (version "2.21.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/davetron5000/gli")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "09b1r9hlx4dy2yq036nk7hc2nbswhia6q3na9v11z94yibc8mgja"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list ruby-minitest
+           ruby-rainbow
+           ruby-rdoc
+           ruby-sdoc))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'patch-gemspec-version
+            (lambda args
+              (substitute* "gli.gemspec"
+                ;; this trick fails in our build environment
+                (("require File\\.join[(]\\[" orig)
+                 (string-append "# patched for Guix # " orig))
+                (("s\\.version = GLI::VERSION")
+                 #$(string-append "s.version = '"
+                                  (package-version this-package)
+                                  "' # patched for Guix")))))
+          (add-after 'replace-git-ls-files 'replace-another-git-ls-files
+            (lambda args
+              (substitute* "gli.gemspec"
+                (("`git ls-files -- [{]test,spec,features[}]/\\*`")
+                 "`find {test,spec,features} -type f | sort`"))))
+          (add-after 'replace-another-git-ls-files 'fix-rubyopt
+            (lambda args
+              (substitute* "Rakefile"
+                (("ENV\\[\"RUBYOPT\"]")
+                 "(ENV['RUBYOPT'] || '')")))))))
+    (home-page "https://davetron5000.github.io/gli/")
+    (synopsis "Git-Like Interface command-line parser")
+    (description
+     "GLI allows you to create command-line applications in Ruby with Git-Like
+Interfaces: that is, they take subcommands in the style of @command{git} and
+@command{gem}.  GLI uses a simple domain-specific language, but retains all
+the power of the built-in @code{OptionParser}.")
+    (license license:asl2.0)))
