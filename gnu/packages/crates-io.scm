@@ -55157,8 +55157,37 @@ for later processing.")
      `(#:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1))))))
 
+(define-public rust-serial-test-derive-0.6
+  (package
+    (name "rust-serial-test-derive")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial_test_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1s6aj2bs0rr8hnralx16bvbqlbrihmii7cyplggk5yv0gp6vr098"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/palfrey/serial_test")
+    (synopsis "Helper crate for serial_test")
+    (description
+     "This package is an helper crate for @code{rust-serial-test}.")
+    (license license:expat)))
+
 (define-public rust-serial-test-derive-0.5
   (package
+    (inherit rust-serial-test-derive-0.6)
     (name "rust-serial-test-derive")
     (version "0.5.1")
     (source
@@ -55168,19 +55197,13 @@ for later processing.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1m8sd97xr8dn6p9by0xwfqm0rz8cbn1ghs5l1fv1xd6xzvgddb5j"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7))))
-    (home-page "https://github.com/palfrey/serial_test")
-    (synopsis "Helper crate for serial_test")
-    (description
-     "This package is an helper crate for @code{rust-serial-test}.")
-    (license license:expat)))
+       (("rust-env-logger" ,rust-env-logger-0.7))))))
 
 (define-public rust-serial-test-derive-0.1
   (package
