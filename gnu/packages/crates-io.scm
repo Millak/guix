@@ -10177,8 +10177,32 @@ using linear constraints, like ``this button must line up with this text
 box''.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cast-0.3
+  (package
+    (name "rust-cast")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cast" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1dbyngbyz2qkk0jn2sxil8vrz3rnpcj142y184p9l4nbl9radcip"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/japaric/cast.rs")
+    (synopsis
+     "Ergonomic, checked cast functions for primitive types")
+    (description
+     "Ergonomic, checked cast functions for primitive types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cast-0.2
   (package
+    (inherit rust-cast-0.3)
     (name "rust-cast")
     (version "0.2.3")
     (source
@@ -10196,13 +10220,7 @@ box''.")
        #:cargo-inputs
        (("rust-rustc-version" ,rust-rustc-version-0.2))
        #:cargo-development-inputs
-       (("rust-quickcheck" ,rust-quickcheck-0.9))))
-    (home-page "https://github.com/japaric/cast.rs")
-    (synopsis
-     "Ergonomic, checked cast functions for primitive types")
-    (description
-     "Ergonomic, checked cast functions for primitive types.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
 (define-public rust-cblas-sys-0.1
   (package
