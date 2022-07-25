@@ -644,20 +644,6 @@ highlighting and other features typical of a source code editor.")
        #:configure-flags '("-Dinstalled_tests=false")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (with-directory-excursion "docs"
-               (substitute* "meson.build"
-                 (("http://docbook.sourceforge.net/release/xsl/current/")
-                  (string-append (assoc-ref (or native-inputs inputs)
-                                            "docbook-xsl")
-                                 "/xml/xsl/docbook-xsl-1.79.2/")))
-               (substitute* (find-files "." "\\.xml$")
-                 (("http://www.oasis-open.org/docbook/xml/4\\.3/")
-                  (string-append (assoc-ref ,(if (%current-target-system)
-                                                 '(or native-inputs inputs)
-                                                 'inputs) "docbook-xml")
-                                 "/xml/dtd/docbook/"))))))
          (add-before 'configure 'disable-failing-tests
            (lambda _
              (substitute* "tests/meson.build"
@@ -688,6 +674,7 @@ highlighting and other features typical of a source code editor.")
        ("gettext" ,gettext-minimal)
        ("glib" ,glib "bin")                             ; glib-mkenums, etc.
        ("gobject-introspection" ,gobject-introspection) ; g-ir-compiler, etc.
+       ("libxml2" ,libxml2)             ;for XML_CATALOG_FILES
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("xsltproc" ,libxslt)))
