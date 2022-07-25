@@ -13184,3 +13184,25 @@ to RFC 5988.  Objects can be constructed from and converted to text or a
 JSON-friendly @code{Array} representation.  They can also be used to generate
 corresponding HTML @code{link} elements.")
     (license license:expat)))
+
+(define-public ruby-rdf
+  (package
+    (name "ruby-rdf")
+    (version "3.2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "rdf" version))
+              (sha256
+               (base32
+                "1cj0k8ryd8hgbkgqb5swvy6fiygxny3y5bln0my5gv6dbfv3gm20"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-link-header))
+    (arguments
+     (list #:tests? #f)) ;; tests have many cyclic dependencies
+    (home-page "https://ruby-rdf.github.io/")
+    (synopsis "Linked Data for Ruby")
+    (description
+     "This gem contains the core algorithms and classes used for doing basic
+programming with @acronym{RDF, Resource Description Framework} data,
+implemented in pure Ruby.")
+    (license license:unlicense)))
