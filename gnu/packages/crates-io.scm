@@ -23054,6 +23054,27 @@ macOS API for file changes notifications")
      `(#:skip-build? #t     ; only available on macOS
        #:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-fslock-0.2
+  (package
+    (name "rust-fslock")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fslock" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yrv9j44k3njzpnh8m2jc0gr3hklzyzwfj3gmsdklbi76n4jnh84"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/brunoczim/fslock")
+    (synopsis "Lock file library")
+    (description "This package provides a library to use files as locks.")
+    (license license:expat)))
+
 (define-public rust-fst-0.4
   (package
     (name "rust-fst")
