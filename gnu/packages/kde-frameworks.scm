@@ -1155,11 +1155,11 @@ configuration pages, message boxes, and password requests.")
            qttools-5
            xorg-server-for-tests)) ; for the tests
     (inputs
-     `(("libxrender" ,libxrender)
-       ("qtbase" ,qtbase-5)
-       ("qtx11extras" ,qtx11extras)
-       ("xcb-utils-keysyms" ,xcb-util-keysyms)
-       ("xcb-util-wm" ,xcb-util-wm)))
+     (list libxrender
+           qtbase-5
+           qtx11extras
+           xcb-util-keysyms
+           xcb-util-wm))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
