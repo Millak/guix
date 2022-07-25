@@ -5758,7 +5758,7 @@ keywords and smart indentation.")
 (define-public emacs-robot-log
   (package
     (name "emacs-robot-log")
-    (version "0.1.3")
+    (version "0.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5767,7 +5767,7 @@ keywords and smart indentation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pv0kljx2n2n7ql6rfw1x63mbd1k2qwbq3zkw452lb8jmnp7dr3y"))))
+                "1l9yxryrhvylh2x17cczd8v8978w1nv8173d4l9hv0cr26kp5b68"))))
     (build-system emacs-build-system)
     (native-inputs (list python-robotframework))
     (arguments (list #:tests? #t))
