@@ -474,50 +474,6 @@ protocols, as well as decentralized calling using P2P-DHT.")
 (define-public libring
   (deprecated-package "libring" libjami))
 
-;;; Note: this package will eventually be absorbed into jami itself (the Qt
-;;; client).
-(define-public jami-libclient
-  (package
-    (name "jami-libclient")
-    (version %jami-version)
-    (source %jami-sources)
-    (build-system cmake-build-system)
-    (outputs '("out" "debug"))
-    (arguments
-     (list
-      #:tests? #f                       ;no test suite
-      #:configure-flags
-      #~(list (string-append "-DRING_XML_INTERFACES_DIR="
-                             #$(this-package-input "libjami")
-                             "/share/dbus-1/interfaces")
-              (string-append "-DRING_BUILD_DIR="
-                             #$(this-package-input "libjami")
-                             "/include")
-              ;; Call to the libraries directly instead of going through DBus
-              ;; to avoid issues (see: https://issues.guix.gnu.org/48538).
-              "-DENABLE_LIBWRAP=true")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory/maybe
-            (lambda _
-              ;; Allow building from the tarball or a git checkout.
-              (false-if-exception (chdir "lrc")))))))
-    (native-inputs (list qttools vulkan-headers))
-    (inputs (list ffmpeg-jami libjami libxkbcommon network-manager))
-    (propagated-inputs (list qtbase)) ;qt included in several installed headers
-    (synopsis "Jami client library")
-    (description "This package provides a library common to all Jami clients.
-Jami is a secure and distributed voice, video and chat communication platform
-that requires no centralized server and leaves the power of privacy in the
-hands of the user.  It supports the SIP and IAX protocols, as well as
-decentralized calling using P2P-DHT.")
-    (home-page "https://jami.net")
-    (license license:gpl3+)))
-
-;;; Remove when 2023 comes.
-(define-public libringclient
-  (deprecated-package "libringclient" jami-libclient))
-
 (define-public jami-gnome
   (package
     (name "jami-gnome")
@@ -557,7 +513,6 @@ decentralized calling using P2P-DHT.")
      (list clutter
            clutter-gtk
            gtk+
-           jami-libclient
            libcanberra
            libappindicator
            libnotify
@@ -612,8 +567,7 @@ decentralized calling using P2P-DHT.")
     (native-inputs
      (list pkg-config python qttools-5 doxygen graphviz))
     (inputs
-     (list jami-libclient
-           libnotify
+     (list libnotify
            network-manager
            qrencode
            qtsvg-5
