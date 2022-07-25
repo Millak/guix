@@ -13293,3 +13293,27 @@ export/conversion to formats such as YAML, JSON, CSL, and XML (BibTeXML).")
      "This gem provides a simple interface for classifying Ruby strings using
 the Unicode @code{Script} and @code{Script_Extensions} properties.")
     (license license:expat)))
+
+(define-public ruby-citeproc
+  (package
+    (name "ruby-citeproc")
+    (version "1.0.10")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "citeproc" version))
+              (sha256
+               (base32
+                "13vl5sjmksk5a8kjcqnjxh7kn9gn1n4f9p1rvqfgsfhs54p0m6l2"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-namae))
+    (arguments
+     (list #:tests? #f)) ;; tests have a cyclic dependency
+    (home-page "https://github.com/inukshuk/citeproc")
+    (synopsis "Interface for Ruby citation processors")
+    (description
+     "CiteProc is a citation processor interface and citation data API based
+on the @acronym{CSL, Citation Style Language} specifications.  To actually
+process citations, a dedicated processor engine is required: a pure Ruby
+engine is available in the @code{citeproc-ruby} gem.")
+    (license (list license:agpl3+ license:bsd-2))))
