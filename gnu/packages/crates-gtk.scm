@@ -168,8 +168,40 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
+(define-public rust-cairo-rs-0.15
+  (package
+    (name "rust-cairo-rs")
+    (version "0.15.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cairo-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g396fdz8crf74dmmjarcsdbsm8qgxy3a5x9kw6m2d9xn28y6vn7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.15)
+        ("rust-freetype" ,rust-freetype-0.7)
+        ("rust-glib" ,rust-glib-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list cairo))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the Cairo library")
+    (description "Rust bindings for the Cairo library")
+    (license license:expat)))
+
 (define-public rust-cairo-rs-0.14
   (package
+    (inherit rust-cairo-rs-0.15)
     (name "rust-cairo-rs")
     (version "0.14.9")
     (source
@@ -191,13 +223,7 @@
         ("rust-libc" ,rust-libc-0.2)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (inputs
-     (list cairo))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the Cairo library")
-    (description "Rust bindings for the Cairo library")
-    (license license:expat)))
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-cairo-rs-0.9
   (package
