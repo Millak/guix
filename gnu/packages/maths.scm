@@ -5275,14 +5275,14 @@ A unique design feature of Trilinos is its focus on packages.")
 (define-public dealii
   (package
     (name "dealii")
-    (version "9.3.3")
+    (version "9.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/dealii/dealii/releases/"
                            "download/v" version "/dealii-" version ".tar.gz"))
        (sha256
-        (base32 "0a8s4yxcbvzmfgv5qcg27h2ss4fcnyhrhhs35glqj59l9cbmkysx"))
+        (base32 "0v73q6f35f2yrjihaq6vh9lma07qc4cdv75nwmc3c5yrdh07g1i3"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled boost, muparser, TBB and UMFPACK.
@@ -5310,8 +5310,7 @@ A unique design feature of Trilinos is its focus on packages.")
      (list boost
            hdf5
            suitesparse                  ; For UMFPACK.
-           ;; SUNDIALS 6.0.0 and later will be supported in deal.II 9.4.0.
-           sundials-5
+           sundials
            tbb))
     (arguments
      (list #:build-type "DebugRelease"  ; Only Debug, Release or DebugRelease.
@@ -5371,7 +5370,7 @@ in finite element programs.")
                 p4est-openmpi
                 petsc-openmpi
                 slepc-openmpi
-                sundials-openmpi-5
+                sundials-openmpi
                 trilinos-for-dealii-openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments dealii)
