@@ -55136,8 +55136,35 @@ for later processing.")
     (description "This package provides YAML support for Serde.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serial-test-0.6
+  (package
+    (name "rust-serial-test")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial-test" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05gcah6s133r44y4z5qskx7prs1vjlzgv06h4l2xb8gp30fw9g75"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-document-features" ,rust-document-features-0.2)
+        ("rust-fslock" ,rust-fslock-0.2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
+        ("rust-serial-test-derive" ,rust-serial-test-derive-0.6))))
+    (home-page "https://github.com/palfrey/serial_test")
+    (synopsis "Allows for the creation of serialised Rust tests")
+    (description
+     "This package allows for the creation of serialised Rust tests.")
+    (license license:expat)))
+
 (define-public rust-serial-test-0.5
   (package
+    (inherit rust-serial-test-0.6)
     (name "rust-serial-test")
     (version "0.5.1")
     (source
@@ -55148,17 +55175,11 @@ for later processing.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0pchc7imdi9wv8xxnwkb9lzs6cg06ghs0gaajjb834y8837wpg70"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-parking-lot" ,rust-parking-lot-0.11)
-        ("rust-serial-test-derive" ,rust-serial-test-derive-0.5))))
-    (home-page "https://github.com/palfrey/serial_test")
-    (synopsis "Allows for the creation of serialised Rust tests")
-    (description
-     "This package allows for the creation of serialised Rust tests.")
-    (license license:expat)))
+        ("rust-serial-test-derive" ,rust-serial-test-derive-0.5))))))
 
 (define-public rust-serial-test-0.1
   (package
