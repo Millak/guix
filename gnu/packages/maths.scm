@@ -5152,7 +5152,10 @@ revised simplex and the branch-and-bound methods.")
         (base32 "0fnwlhzsh85qj38cq3igbs8nm1b2jdgr2z734sapmyyzsy21mkgp"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("gfortran" ,gfortran)
+     `(;; The build fails with the current gcc.
+       ;; Use the version from when Trilinos was added.
+       ("gcc" ,gcc-7)
+       ("gfortran" ,gfortran)
        ;; Trilinos's repository contains several C-shell scripts, but adding
        ;; tcsh to the native inputs does not result in the check phase running
        ;; any more tests than without it (nor is tcsh required to build
