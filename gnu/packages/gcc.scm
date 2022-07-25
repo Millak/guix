@@ -665,7 +665,8 @@ It also includes runtime support libraries for these languages.")
              (base32
               "1wg4xdizkksmwi66mvv2v4pk3ja8x64m7v9gzhykzd3wrmdpsaf9"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
-                                     "gcc-5.0-libvtv-runpath.patch"))
+                                     "gcc-5.0-libvtv-runpath.patch"
+                                     "gcc-10-tree-sra-union-handling.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
    (properties
@@ -686,7 +687,8 @@ It also includes runtime support libraries for these languages.")
              (base32
               "0fdclcwf728wbq52vphfcjywzhpsjp3kifzj3pib3xcihs0z4z5l"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
-                                     "gcc-5.0-libvtv-runpath.patch"))
+                                     "gcc-5.0-libvtv-runpath.patch"
+                                     "gcc-10-tree-sra-union-handling.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
 

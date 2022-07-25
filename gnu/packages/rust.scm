@@ -169,14 +169,6 @@
        ("zlib" ,zlib)))
     (native-inputs
      `(("bison" ,bison)
-       ;; A compiler bug in gcc 10/11/12/13 prevents us from using gcc-10.4. See:
-       ;; https://github.com/thepowersgang/mrustc/issues/266
-       ;; https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105860
-       ("gcc" ,gcc-9)
-       ;; TODO: STARTFILE_PREFIX_SPEC is fixed on gcc<10 on core-updates.
-       ,@(if (target-riscv64?)
-           `(("gcc:lib" ,gcc-9 "lib"))
-           '())
        ("flex" ,flex)
        ("pkg-config" ,pkg-config)
        ;; Required for the libstd sources.
