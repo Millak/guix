@@ -13622,6 +13622,14 @@ though the later has not yet been packaged for Guix.")
               (substitute* "anystyle-cli.gemspec"
                 (("'bibtex-ruby', '[^']*'")
                  "'bibtex-ruby'"))))
+          (add-before 'build 'change-default-dictionary-adapter
+            (lambda args
+              ;; Since we always have gdbm available, using it will give a
+              ;; faster startup time, which is particularly worth-while for
+              ;; a command-line tool.
+              (substitute* "bin/anystyle"
+                (("default_value: 'ruby',")
+                 "default_value: 'gdbm', # patched for Guix"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               ;; There are no tests, but let's use this opportunity to do a
