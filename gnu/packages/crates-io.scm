@@ -30630,8 +30630,38 @@ kernel32.")
      "This package provides a Log macro for log's kv-unstable backend.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-language-tags-0.3
+  (package
+    (name "rust-language-tags")
+    (version "0.3.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "language-tags" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "124k6w9nx33q4xs8rpa9f7klshrsa0x4f7qngdwq890lpdj5jd6l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/pyfisch/rust-language-tags")
+    (synopsis "Language tags for Rust")
+    (description
+     "Language tags can be used identify human languages, scripts e.g. Latin
+script, countries and other regions.  They are commonly used in HTML and HTTP
+@code{Content-Language} and @code{Accept-Language} header fields.  This package
+currently supports parsing (fully conformant parser), formatting and comparing
+language tags.")
+    (license license:expat)))
+
 (define-public rust-language-tags-0.2
   (package
+    (inherit rust-language-tags-0.3)
     (name "rust-language-tags")
     (version "0.2.2")
     (source
@@ -30642,21 +30672,11 @@ kernel32.")
         (sha256
          (base32
           "16hrjdpa827carq5x4b8zhas24d8kg4s16m6nmmn1kb7cr5qh7d9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-heapsize" ,rust-heapsize-0.3)
-        ("rust-heapsize-plugin" ,rust-heapsize-plugin-0.1))))
-    (home-page "https://github.com/pyfisch/rust-language-tags")
-    (synopsis "Language tags for Rust")
-    (description
-     "Language tags can be used identify human languages, scripts e.g. Latin
-script, countries and other regions.  They are commonly used in HTML and HTTP
-@code{Content-Language} and @code{Accept-Language} header fields.  This package
-currently supports parsing (fully conformant parser), formatting and comparing
-language tags.")
-    (license license:expat)))
+        ("rust-heapsize-plugin" ,rust-heapsize-plugin-0.1))))))
 
 (define-public rust-lab-0.11
   (package
