@@ -3281,40 +3281,39 @@ setUrl, setUserAgent and call.")
      (list kpackage kservice))
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
-    (inputs
-     `(("kactivities" ,kactivities)
-       ("karchive" ,karchive)
-       ("kauth" ,kauth)
-       ("kbookmarks" ,kbookmarks)
-       ("kcodecs" ,kcodecs)
-       ("kcompletion" ,kcompletion)
-       ("kconfig" ,kconfig)
-       ("kconfigwidgets" ,kconfigwidgets)
-       ("kcoreaddons" ,kcoreaddons)
-       ("kdbusaddons" ,kdbusaddons)
-       ("kdeclarative" ,kdeclarative)
-       ("kglobalaccel" ,kglobalaccel)
-       ("kguiaddons" ,kguiaddons)
-       ("kiconthemes" ,kiconthemes)
-       ("kirigami" ,kirigami)
-       ("kitemviews" ,kitemviews)
-       ("kio" ,kio)
-       ("ki18n" ,ki18n)
-       ("kjobwidgets" ,kjobwidgets)
-       ("knotifications" ,knotifications)
-       ("kwayland" ,kwayland)
-       ("kwidgetsaddons" ,kwidgetsaddons)
-       ("kwindowsystem" ,kwindowsystem)
-       ("kxmlgui" ,kxmlgui)
-       ;; XXX: "undefined reference to `glGetString'" errors occur without libglvnd,
-       ("libglvnd" ,libglvnd)
-       ("phonon" ,phonon)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtquickcontrols2-5" ,qtquickcontrols2-5)
-       ("qtsvg-5" ,qtsvg-5)
-       ("qtx11extras" ,qtx11extras)
-       ("solid" ,solid)))
+    (inputs (list kactivities
+                  karchive
+                  kauth
+                  kbookmarks
+                  kcodecs
+                  kcompletion
+                  kconfig
+                  kconfigwidgets
+                  kcoreaddons
+                  kdbusaddons
+                  kdeclarative
+                  kglobalaccel
+                  kguiaddons
+                  kiconthemes
+                  kirigami
+                  kitemviews
+                  kio
+                  ki18n
+                  kjobwidgets
+                  knotifications
+                  kwayland
+                  kwidgetsaddons
+                  kwindowsystem
+                  kxmlgui
+                  ;; XXX: "undefined reference to `glGetString'" errors occur without libglvnd,
+                  libglvnd
+                  phonon
+                  qtbase-5
+                  qtdeclarative-5
+                  qtquickcontrols2-5
+                  qtsvg-5
+                  qtx11extras
+                  solid))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
