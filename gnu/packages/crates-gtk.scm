@@ -598,8 +598,42 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
+(define-public rust-gdk-pixbuf-sys-0.15
+  (package
+    (name "rust-gdk-pixbuf-sys")
+    (version "0.15.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk-pixbuf-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19q2qjrzmmgc7bbs59sk6k0sv3xhpmnk9a2h0cajfr95g19jy2ql"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;#:skip-build?
+       ;#t
+       #:cargo-inputs
+       (("rust-gio-sys" ,rust-gio-sys-0.15)
+        ("rust-glib-sys" ,rust-glib-sys-0.15)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs
+       (("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list gdk-pixbuf))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings to libgdk_pixbuf-2.0")
+    (description "This package provides FFI bindings to @code{libgdk_pixbuf-2.0}.")
+    (license license:expat)))
+
 (define-public rust-gdk-pixbuf-sys-0.14
   (package
+    (inherit rust-gdk-pixbuf-sys-0.15)
     (name "rust-gdk-pixbuf-sys")
     (version "0.14.0")
     (source
@@ -621,13 +655,7 @@
         ("rust-system-deps" ,rust-system-deps-3))
        #:cargo-development-inputs
        (("rust-shell-words" ,rust-shell-words-0.1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (inputs
-     (list gdk-pixbuf))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings to libgdk_pixbuf-2.0")
-    (description "This package provides FFI bindings to @code{libgdk_pixbuf-2.0}.")
-    (license license:expat)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gdk-pixbuf-sys-0.10
   (package
