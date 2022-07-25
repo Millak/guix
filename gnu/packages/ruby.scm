@@ -13317,3 +13317,63 @@ on the @acronym{CSL, Citation Style Language} specifications.  To actually
 process citations, a dedicated processor engine is required: a pure Ruby
 engine is available in the @code{citeproc-ruby} gem.")
     (license (list license:agpl3+ license:bsd-2))))
+
+(define-public ruby-edtf
+  (package
+    (name "ruby-edtf")
+    (version "3.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/edtf-ruby")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "18j8xq8zmrn41cs2gpd1i87agi9905asvnjqndky2cqb5zg3q14g"))
+              (snippet
+               ;; remove generated file
+               #~(delete-file "lib/edtf/parser.rb"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-activesupport))
+    (native-inputs
+     (list ruby-cucumber
+           ruby-rspec))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'avoid-bundler
+            (lambda args
+              (substitute* "Rakefile"
+                (("require 'bundler" orig)
+                 (string-append "# " orig " # patched for Guix"))
+                (("bundle exec racc")
+                 "racc")
+                (("Cucumber::Rake::Task\\.new[(]:cucumber[)]" orig)
+                 (string-append orig " do |c|\n"
+                                "  c.bundler = false # patched for Guix\n"
+                                "end"))
+                (("Bundler\\.setup" orig)
+                 (string-append "true # " orig " # patched for Guix")))))
+          (add-after 'avoid-bundler 'patch-cucumber-options
+            (lambda args
+              (substitute* "cucumber.yml"
+                ;; this option is not supported, at least in our configuration
+                ((" --publish-quiet")
+                 ""))))
+          (add-before 'build 'compile
+            (lambda args
+              (invoke "rake" "racc")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rake")))))))
+    (home-page "https://github.com/inukshuk/edtf-ruby")
+    (synopsis "Ruby implementation of Extended Date/Time Format")
+    (description
+     "EDTF-Ruby provides a parser and an API for the @acronym{EDTF, Extended
+Date/Time Format} standard, implemented as an extension to Ruby's @code{Date}
+class.")
+    (license license:bsd-2)))
