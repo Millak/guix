@@ -5286,7 +5286,7 @@ A unique design feature of Trilinos is its focus on packages.")
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled boost, muparser, TBB and UMFPACK.
-        '(delete-file-recursively "bundled"))))
+        #~(delete-file-recursively "bundled"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -5314,32 +5314,36 @@ A unique design feature of Trilinos is its focus on packages.")
            sundials-5
            tbb))
     (arguments
-     `(#:build-type "DebugRelease" ; Supports only Debug, Release and DebugRelease.
-       ;; The tests take too long and must be explicitly enabled with "make
-       ;; setup_tests".
-       ;; See https://www.dealii.org/developer/developers/testsuite.html.
-       ;; (They can also be run for an already installed deal.II.)
-       #:tests? #f
-       #:configure-flags
-       (let ((doc (string-append (assoc-ref %outputs "doc")
-                                 "/share/doc/" ,name "-" ,version)))
-         `("-DDEAL_II_COMPONENT_DOCUMENTATION=ON"
-           ,(string-append "-DDEAL_II_DOCREADME_RELDIR=" doc)
-           ,(string-append "-DDEAL_II_DOCHTML_RELDIR=" doc "/html")
-           ;; Don't compile the examples because the source and CMakeLists.txt
-           ;; are installed anyway, allowing users to do so for themselves.
-           "-DDEAL_II_COMPILE_EXAMPLES=OFF"
-           ,(string-append "-DDEAL_II_EXAMPLES_RELDIR=" doc "/examples")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'remove-build-logs
-           ;; These build logs leak the name of the build directory by storing
-           ;; the values of CMAKE_SOURCE_DIR and CMAKE_BINARY_DIR.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((doc (string-append (assoc-ref outputs "doc")
-                                       "/share/doc/" ,name "-" ,version)))
-               (for-each delete-file (map (lambda (f) (string-append doc "/" f))
-                                          '("detailed.log" "summary.log")))))))))
+     (list #:build-type "DebugRelease"  ; Only Debug, Release or DebugRelease.
+           ;; The tests take too long and must be explicitly enabled with
+           ;; "make setup_tests".
+           ;; See https://www.dealii.org/developer/developers/testsuite.html.
+           ;; (They can also be run for an already installed deal.II.)
+           #:tests? #f
+           #:configure-flags
+           #~(let ((doc (string-append #$output:doc "/share/doc/"
+                                       #$name "-" #$version)))
+               (list "-DDEAL_II_COMPONENT_DOCUMENTATION=ON"
+                     (string-append "-DDEAL_II_DOCREADME_RELDIR=" doc)
+                     (string-append "-DDEAL_II_DOCHTML_RELDIR=" doc "/html")
+                     ;; Don't compile the examples because the source and
+                     ;; CMakeLists.txt are installed anyway, allowing users to
+                     ;; do so for themselves.
+                     "-DDEAL_II_COMPILE_EXAMPLES=OFF"
+                     (string-append "-DDEAL_II_EXAMPLES_RELDIR=" doc
+                                    "/examples")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'remove-build-logs
+                 ;; These build logs leak the name of the build directory by
+                 ;; storing the values of CMAKE_SOURCE_DIR and
+                 ;; CMAKE_BINARY_DIR.
+                 (lambda _
+                   (let ((doc (string-append #$output:doc "/share/doc/"
+                                             #$name "-" #$version)))
+                     (for-each delete-file
+                               (map (lambda (f) (string-append doc "/" f))
+                                    '("detailed.log" "summary.log")))))))))
     (home-page "https://www.dealii.org/")
     (synopsis "Finite element library")
     (description
@@ -5372,7 +5376,7 @@ in finite element programs.")
     (arguments
      (substitute-keyword-arguments (package-arguments dealii)
        ((#:configure-flags flags)
-        `(cons "-DDEAL_II_WITH_MPI=ON" ,flags))))
+        #~(cons "-DDEAL_II_WITH_MPI=ON" #$flags))))
     (synopsis "Finite element library (with MPI support)")))
 
 (define-public flann
