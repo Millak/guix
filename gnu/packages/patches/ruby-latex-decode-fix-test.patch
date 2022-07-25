@@ -1,0 +1,66 @@
+From 698e39a251d433e2cd2934586a2dfc5e6582c4f9 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Sun, 24 Jul 2022 09:12:55 -0400
+Subject: [PATCH] Improve readability of whitespace tests
+
+This change fixes the test for `~x` in some environments in which it
+was previously failing.
+
+Related to https://github.com/inukshuk/latex-decode/issues/13
+---
+ features/step_definitions/latex.rb |  5 +++++
+ features/symbols.feature           |  7 -------
+ features/whitespace.feature        | 13 +++++++++++++
+ 3 files changed, 18 insertions(+), 7 deletions(-)
+ create mode 100644 features/whitespace.feature
+
+diff --git a/features/step_definitions/latex.rb b/features/step_definitions/latex.rb
+index 4b1b595..fca63c0 100644
+--- a/features/step_definitions/latex.rb
++++ b/features/step_definitions/latex.rb
+@@ -5,3 +5,8 @@ end
+ Then /^the result should be ('|")(.*)\1$/ do |quote,value|
+   expect(@result).to eq(value)
+ end
++
++# For whitespace or other characters that are hard to read in source code:
++Then /^I should get '([^']*)' \+ U\+(\h{4,}) \+ '([^']*)'$/ do |pre,code,post|
++  expect(@result).to eq(pre + code.hex.chr(Encoding::UTF_8) + post)
++end
+diff --git a/features/symbols.feature b/features/symbols.feature
+index 46d9a51..f8a5e84 100644
+--- a/features/symbols.feature
++++ b/features/symbols.feature
+@@ -12,10 +12,3 @@ Feature: Decode LaTeX symbol directives
+     | \\uparrow            | ↑       |
+     | \\downarrow          | ↓       |
+     | \\rightarrow         | →       |
+-
+-  Scenarios: Whitespace
+-    | latex | unicode | description        |
+-    | x\\,x | x x     | small space        |
+-    | x~x   | x x     | non-breaking space |
+-    | ~x    |  x      | non-breaking space |
+-
+diff --git a/features/whitespace.feature b/features/whitespace.feature
+new file mode 100644
+index 0000000..fe5b208
+--- /dev/null
++++ b/features/whitespace.feature
+@@ -0,0 +1,13 @@
++Feature: Decode LaTeX whitespace directives
++  As a hacker who works with LaTeX
++  I want to be able to decode LaTeX whitespace
++
++  Scenario Outline: LaTeX to Unicode transformation
++    When I decode the string '<latex>'
++    Then I should get <pre> + U+<code> + <post>
++
++  Scenarios: Whitespace
++    | latex | pre | code | post | description                |
++    | x~x   | 'x' | 00A0 | 'x'  | non-breaking space         |
++    | ~y    | ''  | 00A0 | 'y'  | leading non-breaking space |
++    | z\\,z | 'z' | 2009 | 'z'  | small space                |
+-- 
+2.32.0
+

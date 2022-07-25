@@ -13111,3 +13111,55 @@ adaptation of TeX math syntax for web display.  Ritex makes inserting math
 into HTML pages easy.  It supports most TeX math syntax as well as macros.")
     ;; doesn't clearly state -only vs -or-later
     (license license:gpl2)))
+
+(define-public ruby-latex-decode
+  (package
+    (name "ruby-latex-decode")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/latex-decode")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1f5j67ayd04pjkmzvn0hk7cr8yqvn0gyg9ns6a0vhzj2gwna9ihy"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list ruby-cucumber
+           ruby-ritex
+           ruby-rspec))
+    (arguments
+     (list
+      #:test-target "cucumber"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'avoid-bundler
+            (lambda args
+              (substitute* "Rakefile"
+                (("require 'bundler" orig)
+                 (string-append "# " orig " # patched for Guix"))
+                (("Cucumber::Rake::Task\\.new[(]:cucumber[)]" orig)
+                 (string-append orig " do |c|\n"
+                                "  c.bundler = false # patched for Guix\n"
+                                "end"))
+                (("Bundler\\.setup" orig)
+                 (string-append "true # " orig " # patched for Guix")))
+              (substitute* "cucumber.yml"
+                ;; thanks to avoiding bundler, we can't use this option
+                ((" --publish-quiet")
+                 ""))))
+          (add-after 'replace-git-ls-files 'replace-another-git-ls-files
+            (lambda args
+              (substitute* "latex-decode.gemspec"
+                (("`git ls-files -- [{]test,spec,features[}]/\\*`")
+                 "`find {test,spec,features} -type f | sort`")))))))
+    (home-page "https://github.com/inukshuk/latex-decode")
+    (synopsis "Convert LaTeX to Unicode")
+    (description
+     "This package provides a gem to convert LaTeX input to Unicode.  Its
+original use was as an input filter for BibTeX-Ruby, but it can be used
+independently to decode LaTeX.  Many of the patterns used by this Ruby gem are
+based on François Charette's equivalent Perl module @code{LaTeX::Decode}.")
+    (license license:gpl3+)))
