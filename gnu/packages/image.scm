@@ -55,6 +55,7 @@
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -2421,7 +2422,7 @@ Wacom-style graphics tablets.")
                    ,(search-path-as-string->list
                      (getenv "GUIX_PYTHONPATH"))))))))))
     (inputs
-     (list perl-image-exiftool python python-tqdm))
+     (list bash-minimal perl-image-exiftool python python-tqdm))
     (native-inputs
      (list python-pytest python-pytest-mock))
     (home-page "https://github.com/ivandokov/phockup")
