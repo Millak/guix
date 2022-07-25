@@ -13228,3 +13228,46 @@ implemented in pure Ruby.")
      "This gem extends @code{ruby-rdf} with several common @acronym{RDF,
 Resource Description Framework} vocabularies.")
     (license license:unlicense)))
+
+(define-public ruby-bibtex-ruby
+  (package
+    (name "ruby-bibtex-ruby")
+    (version "6.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "bibtex-ruby" version))
+              (sha256
+               (base32
+                "0vynqa8q9hwghw6sdljr304b5gh11nqzy5nwqqwxmgy7pqyf7qw5"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-latex-decode
+           ruby-rdf
+           ruby-rdf-vocab))
+    (native-inputs
+     (list ruby-byebug
+           ruby-cucumber
+           ruby-minitest
+           ruby-yard))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'avoid-bundler
+            (lambda args
+              (substitute* "Rakefile"
+                (("require 'bundler" orig)
+                 (string-append "# " orig " # patched for Guix"))
+                (("Bundler\\.setup" orig)
+                 (string-append "true # " orig " # patched for Guix"))))))))
+    (home-page "https://github.com/inukshuk/bibtex-ruby")
+    (synopsis "Rubyist's Swiss Army knife for all things BibTeX")
+    (description
+     "BibTeX-Ruby is the Rubyist's Swiss Army knife for all things BibTeX.
+It includes a parser for all common BibTeX objects and a sophisticated name
+parser that tokenizes correctly formatted names.  BibTeX-Ruby recognizes
+BibTeX string replacements, joins values containing multiple strings or
+variables, supports cross-references, and decodes common LaTeX formatting
+instructions to unicode.  If you are in a hurry, it also allows for easy
+export/conversion to formats such as YAML, JSON, CSL, and XML (BibTeXML).")
+    (license license:gpl3+)))
