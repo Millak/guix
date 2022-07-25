@@ -13446,6 +13446,8 @@ the power of the built-in @code{OptionParser}.")
               (snippet
                ;; remove pre-built file
                #~(delete-file "lib/anystyle/data/dict.txt.gz"))
+              (patches
+               (search-patches "ruby-anystyle-data-immutable-install.patch"))
               (file-name (git-file-name name version))))
     (build-system ruby-build-system)
     (arguments

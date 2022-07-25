@@ -1,0 +1,40 @@
+From a6f5b37cd22daa6069d8fbef8cba9dc60a6731f6 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Sun, 24 Jul 2022 23:54:19 -0400
+Subject: [PATCH] `AnyStyle::Data.setup()`: adjust for immutable install
+
+Don't override the default paths for `Dictionary::Marshal`,
+`Dictionary::GDBM`, and `Dictionary:LDBM` to point to this gem: we can't
+populate such files without the 'anystyle' gem (which depends on this
+one), and we won't be able to write to the directory where this gem is
+installed later, so the files will never exist at those locations.
+---
+ lib/anystyle/data/setup.rb | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/lib/anystyle/data/setup.rb b/lib/anystyle/data/setup.rb
+index 17efdf8..08246fa 100644
+--- a/lib/anystyle/data/setup.rb
++++ b/lib/anystyle/data/setup.rb
+@@ -4,18 +4,6 @@ module AnyStyle
+ 
+     def self.setup
+       Dictionary.defaults[:source] = File.join(ROOT, 'dict.txt.gz')
+-
+-      if defined? Dictionary::Marshal
+-        Dictionary::Marshal.defaults[:path] = File.join(ROOT, 'dict.marshal')
+-      end
+-
+-      if defined? Dictionary::GDBM
+-        Dictionary::GDBM.defaults[:path] = File.join(ROOT, 'dict.db')
+-      end
+-
+-      if defined? Dictionary::LDBM
+-        Dictionary::LDBM.defaults[:path] = ROOT
+-      end
+     end
+   end
+ end
+-- 
+2.32.0
+
