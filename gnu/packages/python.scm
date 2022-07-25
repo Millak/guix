@@ -58,6 +58,7 @@
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -662,10 +663,13 @@ for more information.")))
     (synopsis "Wrapper for the Python 3 commands")
     (description
      "This package provides wrappers for the commands of Python@tie{}3.x such
-that they can be invoked under their usual name---e.g., @command{python}
+that they can also be invoked under their usual names---e.g., @command{python}
 instead of @command{python3} or @command{pip} instead of @command{pip3}.
+
 To function properly, this package should not be installed together with the
-@command{python} package.")))
+@code{python} package: this package uses the @code{python} package as a
+propagated input, so installing this package already makes both the versioned
+and the unversioned commands available.")))
 
 (define-public python-wrapper (wrap-python3 python))
 (define-public python-minimal-wrapper (wrap-python3 python-minimal))
