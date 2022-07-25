@@ -124,6 +124,7 @@
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30203,3 +30204,32 @@ versa.  Extended WKB/WKT are also supported.")
 binary diff utility.  It also provides two command-line tools, @code{bsdiff4}
 and @code{bspatch4}.")
     (license license:bsd-2)))
+
+(define-public python-biblib
+  (let ((upstream-version "0.1.0")
+        (commit "ab0e857b9198fe425ec9b02fcc293b5d9fd0c406")
+        (revision "1"))
+    (package
+      (name "python-biblib")
+      (version (git-version upstream-version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aclements/biblib")
+               (commit commit)))
+         (sha256
+          (base32 "1ym1gwxys9gl5a7fjs6xh5z9w50pnq4z3rs6fx7kpv78hlrbjlip"))
+         (file-name (git-file-name name version))))
+      (build-system python-build-system)
+      (home-page "https://github.com/aclements/biblib")
+      (synopsis "BibTeX parsing and transformation library")
+      (description
+       "Biblib provides a simple, standalone Python 3 package for parsing
+BibTeX bibliographic databases, as well as algorithms for manipulating BibTeX
+entries in BibTeX-y ways.  Biblib's parser is derived directly from the WEB
+source code for BibTeX and hence (barring bugs in translation) should be fully
+compatible with BibTeX's own parser.")
+      ;; N.B. It seems the parser was translated from WEB by hand: this
+      ;; package does not contain any generated files.
+      (license license:expat))))
