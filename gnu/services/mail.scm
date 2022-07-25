@@ -30,6 +30,7 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu system pam)
   #:use-module (gnu system shadow)
+  #:use-module (gnu system setuid)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages dav)
@@ -1653,7 +1654,8 @@ by @code{dovecot-configuration}.  @var{config} may also be created by
   (package     opensmtpd-configuration-package
                (default opensmtpd))
   (config-file opensmtpd-configuration-config-file
-               (default %default-opensmtpd-config-file)))
+               (default %default-opensmtpd-config-file))
+  (setgid-commands? opensmtpd-setgid-commands? (default #t)))
 
 (define %default-opensmtpd-config-file
   (plain-file "smtpd.conf" "
@@ -1714,6 +1716,43 @@ match from local for any action outbound
 (define %opensmtpd-pam-services
   (list (unix-pam-service "smtpd")))
 
+(define opensmtpd-set-gids
+  (match-lambda
+    (($ <opensmtpd-configuration> package config-file set-gids?)
+     (if set-gids?
+         (list
+          (setuid-program
+           (program (file-append package "/sbin/smtpctl"))
+           (setuid? #false)
+           (setgid? #true)
+           (group "smtpq"))
+          (setuid-program
+           (program (file-append package "/sbin/sendmail"))
+           (setuid? #false)
+           (setgid? #true)
+           (group "smtpq"))
+          (setuid-program
+           (program (file-append package "/sbin/send-mail"))
+           (setuid? #false)
+           (setgid? #true)
+           (group "smtpq"))
+          (setuid-program
+           (program (file-append package "/sbin/makemap"))
+           (setuid? #false)
+           (setgid? #true)
+           (group "smtpq"))
+          (setuid-program
+           (program (file-append package "/sbin/mailq"))
+           (setuid? #false)
+           (setgid? #true)
+           (group "smtpq"))
+          (setuid-program
+           (program (file-append package "/sbin/newaliases"))
+           (setuid? #false)
+           (setgid? #true)
+           (group "smtpq")))
+         '()))))
+
 (define opensmtpd-service-type
   (service-type
    (name 'opensmtpd)
@@ -1727,7 +1766,9 @@ match from local for any action outbound
           (service-extension profile-service-type
                              (compose list opensmtpd-configuration-package))
           (service-extension shepherd-root-service-type
-                             opensmtpd-shepherd-service)))
+                             opensmtpd-shepherd-service)
+          (service-extension setuid-program-service-type
+                             opensmtpd-set-gids)))
    (description "Run the OpenSMTPD, a lightweight @acronym{SMTP, Simple Mail
 Transfer Protocol} server.")))
 

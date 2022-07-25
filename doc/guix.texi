@@ -25149,6 +25149,11 @@ it listens on the loopback network interface, and allows for mail from
 users and daemons on the local machine, as well as permitting email to
 remote servers.  Run @command{man smtpd.conf} for more information.
 
+@item @code{setgid-commands?} (default: @code{#t})
+Make the following commands setgid to @code{smtpq} so they can be
+executed: @command{smtpctl}, @command{sendmail}, @command{send-mail},
+@command{makemap}, @command{mailq}, and @command{newaliases}.
+@xref{Setuid Programs}, for more information on setgid programs.
 @end table
 @end deftp
 
