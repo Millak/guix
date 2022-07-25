@@ -13030,3 +13030,42 @@ and Nokogiri.")
 Conditional Random Fields} API for sequence segmentation and labelling.  It is
 based on the codebase of @url{https://wapiti.limsi.fr, Wapiti}.")
     (license license:bsd-2)))
+
+(define-public ruby-namae
+  (package
+    (name "ruby-namae")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "namae" version))
+              (sha256
+               (base32
+                "1j3nl1klkx3gymrdxfc1hlq4a8qlvhhl9aj5v1v08b9fz27sky0l"))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list ruby-cucumber
+           ruby-rspec
+           ruby-simplecov))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'allow-newer-cucumber
+            (lambda args
+              (substitute* "Gemfile"
+                (("'cucumber', '[^']*'")
+                 "'cucumber'"))))
+          (replace 'check
+            ;; Avoid 'rake' so we don't need jeweler.
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (apply invoke
+                       "rspec"
+                       (find-files "spec" "_spec\\.rb$"))))))))
+    (home-page "https://github.com/berkmancenter/namae")
+    (synopsis "Parser for human names")
+    (description
+     "Namae (名前) is a parser for human names.  It recognizes personal names
+of various cultural backgrounds and tries to split them into their component
+parts (e.g., given and family names, honorifics etc.).")
+    (license (list license:bsd-2 license:agpl3+))))
