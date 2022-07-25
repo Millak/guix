@@ -72389,6 +72389,35 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-yeslogic-fontconfig-sys-3
+  (package
+    (name "rust-yeslogic-fontconfig-sys")
+    (version "3.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "yeslogic-fontconfig-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "11n3126s717rjqxhf5js3hc0qq8qv7jbicbiyszyp5yk6s8ddfzj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-const-cstr" ,rust-const-cstr-0.3)
+        ("rust-dlib" ,rust-dlib-0.5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list fontconfig))
+    (home-page "https://github.com/yeslogic/fontconfig-rs")
+    (synopsis "Raw bindings to Fontconfig without a vendored C library")
+    (description
+     "This package provides a wrapper around the @code{Fontconfig} library,
+for locating fonts.")
+    (license license:expat)))
+
 (define-public rust-zbase32-0.1
   (package
     (name "rust-zbase32")
