@@ -13516,6 +13516,9 @@ the power of the built-in @code{OptionParser}.")
                      (substitute* "spec/anystyle/parser_spec.rb"
                        (("language: 'en'," orig)
                         (string-append "# " orig " # no lanugage_detector")))))
+                (patches
+                 (search-patches
+                  "ruby-anystyle-fix-dictionary-populate.patch"))
                 (file-name (git-file-name name version))))
       (build-system ruby-build-system)
       (propagated-inputs
@@ -13545,7 +13548,33 @@ the power of the built-in @code{OptionParser}.")
               (lambda args
                 (substitute* "anystyle.gemspec"
                   (("`git ls-files spec`")
-                   "`find spec -type f | sort`")))))))
+                   "`find spec -type f | sort`"))))
+            (add-after 'wrap 'populate-dictionaries
+              (lambda args
+                ;; We must initiallize these files here, or they will never be
+                ;; usable with the default settings. A more flexible approach
+                ;; might use something like `Gem.find_files()` or
+                ;; XDG_DATA_DIRS.
+                (with-output-to-file "initialize-dictionaries.rb"
+                  (lambda ()
+                    (display "
+require 'anystyle/dictionary' # must come before 'anystyle/data'
+require 'anystyle/data'
+[:marshal, :gdbm].each do |adapter|
+  AnyStyle::Dictionary.create({adapter: adapter}).open().close()
+end
+")))
+                (let* ((old-gems (getenv "GEM_PATH"))
+                       (new-gems (string-append #$output
+                                                "/lib/ruby/vendor_ruby:"
+                                                old-gems)))
+                  (dynamic-wind
+                    (lambda ()
+                      (setenv "GEM_PATH" new-gems))
+                    (lambda ()
+                      (invoke "ruby" "initialize-dictionaries.rb"))
+                    (lambda ()
+                      (setenv "GEM_PATH" old-gems)))))))))
       (home-page "https://anystyle.io")
       (synopsis "Fast and smart citation reference parsing (Ruby library)")
       (description
