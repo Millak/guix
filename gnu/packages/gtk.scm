@@ -669,15 +669,17 @@ highlighting and other features typical of a source code editor.")
          (list bash-minimal)            ;for glib-or-gtk-wrap
          '()))
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.3)
-       ("docbook-xsl" ,docbook-xsl)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")                             ; glib-mkenums, etc.
-       ("gobject-introspection" ,gobject-introspection) ; g-ir-compiler, etc.
-       ("libxml2" ,libxml2)             ;for XML_CATALOG_FILES
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)))
+     (list gettext-minimal
+           `(,glib "bin")               ;glib-mkenums, etc.
+           gobject-introspection        ;g-ir-compiler, etc.
+           perl
+           pkg-config
+
+           ;; For the documentation.
+           docbook-xml-4.3
+           docbook-xsl
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt))                    ;for xsltproc
     (native-search-paths
      ;; This file is produced by the gdk-pixbuf-loaders-cache-file
      ;; profile hook.
