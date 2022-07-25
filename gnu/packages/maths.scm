@@ -52,6 +52,7 @@
 ;;; Copyright © 2021 Pierre-Antoine Bouttier <pierre-antoine.bouttier@univ-grenoble-alpes.fr>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1738,6 +1739,58 @@ Blosc-compressed datasets.")
     (description "@code{h5check} is a validation tool for verifying that an
 HDF5 file is encoded according to the HDF File Format Specification.")
     (license (license:x11-style "file://COPYING"))))
+
+(define-public itex2mml
+  (package
+    (name "itex2mml")
+    (version "1.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://golem.ph.utexas.edu"
+                                  "/~distler/blog/files/itexToMML-"
+                                  version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0pz51c0hfh2mg8xli0wj7hf92s3b7yf5r4114g8z8722lcm5gwiy"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "itex-binaries")))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list bison
+           flex))
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "BINDIR=" #$output "/bin/")
+                           (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f ;; there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'chdir
+            (lambda args
+              (chdir "itex-src")))
+          (add-before 'install 'make-bindir
+            (lambda args
+              (mkdir-p (string-append #$output "/bin"))))
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((doc-prefix (or (assoc-ref outputs "doc")
+                                     #$output))
+                     (itex2mml+version (strip-store-file-name #$output))
+                     (doc-dir (string-append doc-prefix
+                                             "/share/doc/"
+                                             itex2mml+version)))
+                (install-file "../README" doc-dir)))))))
+    (home-page "https://golem.ph.utexas.edu/~distler/blog/itex2MML.html")
+    (synopsis "LaTeX to XHTML/MathML converter")
+    (description
+     "The @command{itex2MML} utility is a stream filter.  It takes text with
+embedded itex equations, converts the itex equations to MathML, and outputs
+the resulting text.")
+    (license (list license:lgpl2.0+ license:gpl2+ license:mpl1.1))))
 
 (define-public itpp
   (package
