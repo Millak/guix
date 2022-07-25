@@ -13429,3 +13429,54 @@ Interfaces: that is, they take subcommands in the style of @command{git} and
 @command{gem}.  GLI uses a simple domain-specific language, but retains all
 the power of the built-in @code{OptionParser}.")
     (license license:asl2.0)))
+
+(define-public ruby-anystyle-data
+  (package
+    (name "ruby-anystyle-data")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/anystyle-data")
+                    (commit version)))
+              (sha256
+               (base32
+                "025mxa7r9d7izqn6bc1wr40ijp64da0jh211prlpjl6svilgd6rm"))
+              (snippet
+               ;; remove pre-built file
+               #~(delete-file "lib/anystyle/data/dict.txt.gz"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f ;; there are none
+      #:modules
+      `((guix build ruby-build-system)
+        (guix build utils)
+        (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'replace-git-ls-files 'replace-another-git-ls-files
+            (lambda args
+              (substitute* "anystyle-data.gemspec"
+                (("`git ls-files lib README\\.md LICENSE`\\.split[(][^)]*[)]")
+                 (string-append
+                  "["
+                  (string-join
+                   (map (cut string-append "\"" <> "\"")
+                        `("README.md"
+                          "LICENSE"
+                          "lib/anystyle/data.rb"
+                          "lib/anystyle/data/dict.txt.gz"
+                          "lib/anystyle/data/setup.rb"
+                          "lib/anystyle/data/version.rb"))
+                   ", ")
+                  "]")))))
+          (add-before 'build 'compile-dict
+            (lambda args
+              (invoke "rake" "compile"))))))
+    (home-page "https://anystyle.io")
+    (synopsis "AnyStyle parser dictionary data")
+    (description
+     "This gem provides parser dictionary data for AnyStyle.")
+    (license license:bsd-2)))
