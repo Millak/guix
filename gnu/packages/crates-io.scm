@@ -61392,8 +61392,28 @@ without a mutable reference.")
     (description "This package lets you temporarily take a T from a &mut T.")
     (license license:expat)))
 
+(define-public rust-takeable-option-0.5
+  (package
+    (name "rust-takeable-option")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "takeable-option" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "182axkm8pq7cynsfn65ar817mmdhayrjmbl371yqp8zyzhr8kbin"))))
+    (build-system cargo-build-system)
+    (home-page "https://docs.rs/takeable-option/")
+    (synopsis "Small wrapper around option")
+    (description
+     "This package provides a small wrapper around option.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-takeable-option-0.4
   (package
+    (inherit rust-takeable-option-0.5)
     (name "rust-takeable-option")
     (version "0.4.0")
     (source
@@ -61404,13 +61424,7 @@ without a mutable reference.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0hvd6vk4ksgg2y99498jw52ric4lxm0i6ygpzqm95gdrhvsxyynp"))))
-    (build-system cargo-build-system)
-    (home-page "https://docs.rs/takeable-option/")
-    (synopsis "Small wrapper around option")
-    (description
-     "This package provides a small wrapper around option.")
-    (license (list license:asl2.0 license:expat))))
+         "0hvd6vk4ksgg2y99498jw52ric4lxm0i6ygpzqm95gdrhvsxyynp"))))))
 
 (define-public rust-tap-1
   (package
