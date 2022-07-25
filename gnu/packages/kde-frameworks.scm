@@ -798,8 +798,7 @@ other special events for a geographical region.")
                 "1f952488492sm904i1iwgjp2gc7z07312mlshw4ckh2801y0qclc"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     `(("gettext" ,gettext-minimal)
-       ("python" ,python)))
+     (list gettext-minimal python))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
