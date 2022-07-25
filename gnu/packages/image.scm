@@ -11,7 +11,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016, 2017, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016, 2017, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017,2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -2402,8 +2402,8 @@ Wacom-style graphics tablets.")
          (add-after 'unpack 'configure
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* (list "src/dependency.py" "src/exif.py")
-               (("exiftool")
-                (search-input-file inputs "/bin/exiftool")))))
+               (("'exiftool'")
+                (string-append "'" (search-input-file inputs "/bin/exiftool") "'")))))
          (add-before 'install 'check
            (lambda _
              (invoke "pytest")))
