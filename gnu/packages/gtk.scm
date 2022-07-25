@@ -671,20 +671,17 @@ highlighting and other features typical of a source code editor.")
                        (invoke "meson" "test" "--timeout-multiplier" "5")))))
                '()))))
     (propagated-inputs
-     (list ;; Required by gdk-pixbuf-2.0.pc
-           glib
-           ;; Required by gdk-pixbuf-xlib-2.0.pc
-           ;; TODO: Remove on core-updates.
-           libx11
-           ;; Used for testing and required at runtime.
-           shared-mime-info))
+     (list glib                         ;in Requires of gdk-pixbuf-2.0.pc
+
+           ;; These are in Requires.private of gdk-pixbuf-2.0.pc
+           libjpeg-turbo
+           libpng
+           libtiff
+           shared-mime-info))           ;required at runtime, too
     (inputs
-     `(,@(if (%current-target-system)
-             `(("bash-minimal" ,bash-minimal)) ; for glib-or-gtk-wrap
-             '())
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng"  ,libpng)
-       ("libtiff" ,libtiff)))
+     (if (%current-target-system)
+         (list bash-minimal)            ;for glib-or-gtk-wrap
+         '()))
     (native-inputs
      `(("docbook-xml" ,docbook-xml-4.3)
        ("docbook-xsl" ,docbook-xsl)
