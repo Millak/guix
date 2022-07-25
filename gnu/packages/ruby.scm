@@ -28,6 +28,7 @@
 ;;; Copyright © 2021 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -12984,3 +12985,48 @@ using Nokogiri.")
     (description "Blather is a XMPP DSL for Ruby written on top of EventMachine
 and Nokogiri.")
     (license license:expat)))
+
+(define-public ruby-wapiti
+  (package
+    (name "ruby-wapiti")
+    (version "2.0.0")
+    ;; the gem archive lacks tests
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/wapiti-ruby")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1kawqw45j7mqk5zmwbn67x1vxiapdgm2ypqqz2bs9l5s7nglzr5b"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-builder
+           ruby-rexml))
+    (native-inputs
+     (list ruby-byebug
+           ruby-pry
+           ruby-rake-compiler
+           ruby-rspec
+           ruby-simplecov))
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'replace-git-ls-files 'replace-another-git-ls-files
+            (lambda args
+              (substitute* "wapiti.gemspec"
+                (("`git ls-files spec`")
+                 "`find spec -type f | sort`"))))
+          (add-before 'build 'compile
+            (lambda args
+              (invoke "rake" "compile"))))))
+    (home-page "https://github.com/inukshuk/wapiti-ruby")
+    (synopsis "Wicked fast Conditional Random Fields for Ruby")
+    (description
+     "The Wapiti-Ruby gem provides a wicked fast linear-chain @acronym{CRF,
+Conditional Random Fields} API for sequence segmentation and labelling.  It is
+based on the codebase of @url{https://wapiti.limsi.fr, Wapiti}.")
+    (license license:bsd-2)))
