@@ -638,7 +638,7 @@ This package is part of the KDE multimedia module.")
                     "-DCMAKE_CXX_FLAGS=-I"
                     #$(this-package-input "qtx11extras")
                     "/include/qt5"))))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kmplayer")
+    (home-page "https://apps.kde.org/kmplayer/")
     (synopsis "Media player using mplayer/phonon as backend")
     (description "Kmplayer can play all the audio/video supported by
 mplayer/phonon from a local file or URL and be embedded in Konqueror and
