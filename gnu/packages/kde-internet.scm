@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -172,7 +173,7 @@ Other notable features include:
     (synopsis "Versatile and user-friendly download manager")
     (description "KGet is an advanced download manager with support for
 Metalink and Bittorrent.  Downloads are added to the list, where they can be
-paused, queued, or scheduled for later. KGet supports download via FTP anf
+paused, queued, or scheduled for later.  KGet supports download via FTP anf
 HTTP(S) as well as pausing downloads.
 
 This package is part of the KDE networking module.")
@@ -221,7 +222,7 @@ This package is part of the KDE networking module.")
            qca
            solid
            sonnet))
-    (home-page "https://kde.org/applications/internet/org.kde.konversations")
+    (home-page "https://apps.kde.org/konversation/")
     (synopsis "Graphical Internet Relay Chat (IRC) client for KDE")
     (description "Konversation is a graphical Internet Relay Chat client (IRC)
 with KDE support.
@@ -311,7 +312,7 @@ Features are:
            ;; TODO: Xmms
            zlib))
     ;; TODO: enable video support
-    (home-page "https://kde.org/applications/internet/org.kde.kopete")
+    (home-page "https://apps.kde.org/kopete/")
     (synopsis "Instant messaging and chat application")
     (description "Kopete is an instant messenger supporting Jabber/XMPP ,AIM,
 ICQ, Gadu-Gadu, Novell GroupWise Messenger, and more.  It is designed to be a
@@ -362,7 +363,7 @@ This package is part of the KDE networking module.")
            qtbase-5))
     (arguments ;; FIXEME: libvnc can't be found for some reason.
      (list #:configure-flags #~(list "-DWITH_VNC=NO")))
-    (home-page "https://kde.org/applications/internet/org.kde.krdc")
+    (home-page "https://apps.kde.org/krdc/")
     (synopsis "Remote desktop client")
     (description "KRDC is a client application that allows you to view or even
 control the desktop session on another machine that is running a compatible
@@ -419,7 +420,7 @@ This package is part of the KDE networking module.")
            solid
            syndication
            taglib))
-    (home-page "https://kde.org/applications/internet/org.kde.ktorrent")
+    (home-page "https://apps.kde.org/ktorrent/")
     (synopsis "BitTorrent client")
     (description "KTorrent is a BitTorrent application by KDE which allows you
 to download files using the BitTorrent protocol.  It enables you to run
