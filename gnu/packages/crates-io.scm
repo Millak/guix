@@ -56393,6 +56393,33 @@ CPUs, as well as raw interfaces to platform-specific instructions.
        #:cargo-development-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1))))))
 
+(define-public rust-simd-adler32-0.3
+  (package
+    (name "rust-simd-adler32")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simd-adler32" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "060b9v15s3miq06582cj2ywam92ph6xs34s62mc8az3xc4wxz98l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-adler" ,rust-adler-1)
+        ("rust-adler32" ,rust-adler32-1)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/mcountryman/simd-adler32")
+    (synopsis
+     "Adler-32 rolling hash algorithm implementation")
+    (description
+     "This package provides a SIMD-accelerated Adler-32 rolling hash algorithm
+implementation in Rust.")
+    (license license:expat)))
+
 (define-public rust-simd-helpers-0.1
   (package
     (name "rust-simd-helpers")
