@@ -9449,8 +9449,35 @@ spreadsheet file.")
         ("rust-serde" ,rust-serde-1)
         ("rust-zip" ,rust-zip-0.5))))))
 
+(define-public rust-calloop-0.9
+  (package
+    (name "rust-calloop")
+    (version "0.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "calloop" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10mbcsd7fj3cg0a463h3003wycv955cnj4pm2gla2sp5xxhyqbmz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;XXX fails without stdin, fixed in 0.11
+       #:cargo-inputs
+       (("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nix" ,rust-nix-0.22))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3))))
+    (home-page "https://github.com/Smithay/calloop")
+    (synopsis "Callback-based event loop")
+    (description "This package provides a callback-based event loop.")
+    (license license:expat)))
+
 (define-public rust-calloop-0.6
   (package
+    (inherit rust-calloop-0.9)
     (name "rust-calloop")
     (version "0.6.5")
     (source
@@ -9465,11 +9492,7 @@ spreadsheet file.")
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-log" ,rust-log-0.4)
-        ("rust-nix" ,rust-nix-0.18))))
-    (home-page "https://github.com/Smithay/calloop")
-    (synopsis "Callback-based event loop")
-    (description "This package provides a callback-based event loop.")
-    (license license:expat)))
+        ("rust-nix" ,rust-nix-0.18))))))
 
 (define-public rust-calloop-0.4
   (package
