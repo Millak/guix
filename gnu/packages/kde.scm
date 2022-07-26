@@ -261,7 +261,7 @@ browser for easy news reading.")
                   `("MLT_PREFIX" ":" =
                     (,#$(this-package-input "mlt"))))))))))
     (native-inputs
-     (list extra-cmake-modules pkg-config qttools-5))
+     (list extra-cmake-modules kdoctools pkg-config qttools-5))
     (inputs
      (list bash-minimal
            breeze                       ; make dark them available easily
@@ -1007,13 +1007,12 @@ Python, PHP, and Perl.")
              "-DBUILD_TOUCH=YES"
              "-DBUILD_MARBLE_TESTS=FALSE")))
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules kdoctools qttools-5))
     ;; One optional dependency missing: libwlocate.
     (inputs
      (list gpsd
            kcoreaddons
            kcrash
-           kdoctools
            ki18n
            kio
            knewstuff
