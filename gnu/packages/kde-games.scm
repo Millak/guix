@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,7 +68,7 @@
            qtmultimedia-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/ktuberling/")
     (synopsis "Stamp drawing toy")
     (description "KTuberling is a drawing toy intended for small children and
 adults who remain young at heart.  The game has no winner; the only purpose is
@@ -113,7 +114,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/picmi/")
     (synopsis "Number logic game")
     (description "Picmi is a number logic game in which cells in a grid have
 to be colored or left blank according to numbers given at the side of the
@@ -150,7 +151,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kolf/")
     (synopsis "Miniature golf game")
     (description "Kolf is a miniature golf game for one to ten players.  The
 game is played from an overhead view, with a short bar representing the golf
@@ -227,7 +228,7 @@ other Mah Jongg like games.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kmahjongg/")
     (synopsis "Tile laying patience")
     (description "In KMahjongg the tiles are scrambled and staked on top of
 each other to resemble a certain shape.  The player is then expected to remove
@@ -269,7 +270,7 @@ This package is part of the KDE games module.")
            libkmahjongg
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kshisen/")
     (synopsis "Shisen-Sho solitaire game")
     (description "KShisen is a solitaire-like game played using the standard
 set of Mahjong tiles.  Unlike Mahjong however, KShisen has only one layer of
@@ -324,7 +325,7 @@ This package is part of the KDE games module.")
            python-zope-interface
            qtbase-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kajongg/")
     (synopsis "Classical Mah Jongg game for 4 players")
     (description "Kajongg is the ancient Chinese board game for 4 players.
 
@@ -366,7 +367,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kbreakout/")
     (synopsis "Breakout like game")
     (description "KBreakout is similar to the classics breakout and xboing,
 featuring a number of added graphical enhancements and effects.  You control a
@@ -404,7 +405,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kmines/")
     (synopsis "Classical mine sweeper game")
     (description "KMines is a classic Minesweeper game.  The idea is to
 uncover all the squares without blowing up any mines.  When a mine is blown
@@ -441,7 +442,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/konquest/")
     (synopsis "Simple turn-based strategy game")
     (description "Konquest is the KDE version of Gnu-Lactic Konquest.  Players
 conquer other planets by sending ships to them.  The goal is to build an
@@ -480,7 +481,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kbounce/")
     (synopsis "Jezzball arcade game")
     (description "KBounce is a single player arcade game with the elements of
 puzzle.  It is played on a field, surrounded by wall, with two or more balls
@@ -518,7 +519,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kblocks/")
     (synopsis "Single player falling blocks puzzle game")
     (description "KBlocks is the classic Tetris-like falling blocks game.
 
@@ -561,7 +562,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/ksudoku/")
     (synopsis "Sudoku puzzle game and solver")
     (description "KSudoku is a Sudoku game and solver, supporting a range of
 2D and 3D Sudoku variants.  In addition to playing Sudoku, it can print Sudoku
@@ -616,7 +617,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/klines/")
     (synopsis "Place 5 equal pieces together, but wait, there are 3 new ones")
     (description "KLines is a simple but highly addictive one player game.
 
@@ -659,7 +660,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kgoldrunner/")
     (synopsis "Action and puzzle solving game")
     (description "KGoldrunner is an action game where the hero runs through a
 maze, climbs stairs, dig holes and dodges enemies in order to collect all the
@@ -702,7 +703,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kdiamond/")
     (synopsis "Three-in-a-row game")
     (description "KDiamond is a three-in-a-row game like Bejeweled.  It
 features unlimited fun with randomly generated games and five difficulty
@@ -738,7 +739,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kfourinline/")
     (synopsis "Place 4 pieces in a row")
     (description "KFourInLine is a board game for two players based on the
 Connect-Four game.
@@ -777,7 +778,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kblackbox/")
     (synopsis "Find atoms in a grid by shooting electrons")
     (description "KBlackbox is a game of hide and seek played on a grid of
 boxes where the computer has hidden several balls.  The position of the hidden
@@ -817,7 +818,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/knetwalk/")
     (synopsis "Turn the board pieces to get all computers connected")
     (description "KNetWalk is a small game where you have to build up a
 computer network by rotating the wires to connect the terminals to the server.
@@ -855,7 +856,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/bomber/")
     (synopsis "Arcade bombing game")
     (description "Bomber is a single player arcade game.
 
@@ -900,7 +901,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/granatier/")
     (synopsis "Bomberman clone")
     (description "Granatier is a clone of the classic Bomberman game,
 inspired by the work of the Clanbomber clone.
@@ -937,7 +938,7 @@ This package is part of the KDE games module.")
            qtdeclarative-5
            qtsvg-5
            zlib))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/ksirk/")
     (synopsis "Computerized version of the well known strategy board game
 'Risk'")
     (description "KsirK is a multi-player network-enabled game.  The goal of
@@ -998,7 +999,7 @@ This package is part of the KDE games module.")
            qtdeclarative-5
            qtsvg-5
            shared-mime-info))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/palapeli/")
     (synopsis "Jigsaw puzzle game")
     (description "Palapeli is a jigsaw puzzle game.  Unlike other games in
 that genre, you are not limited to aligning pieces on imaginary grids.  The
@@ -1037,7 +1038,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kiriki/")
     (synopsis "Yahtzee dice game")
     (description "Kiriki is an addictive and fun dice game, designed to be
 played by as many as six players.
@@ -1077,7 +1078,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kigo/")
     (synopsis "Go board game")
     (description "Kigo is an open-source implementation of the popular Go
 game.
@@ -1122,7 +1123,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kubrick/")
     (synopsis "Game based on Rubik's Cube")
     (description "Kubrick is a game based on the Rubik's Cube puzzle.
 
@@ -1162,7 +1163,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/lskat/")
     (synopsis "Lieutnant Skat card game")
     (description "Lieutnant Skat (from German \"Offiziersskat\") is a fun and
 engaging card game for two players, where the second player is either live
@@ -1200,7 +1201,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kapman/")
     (synopsis "Pac-Man clone")
     (description "Kapman is a clone of the well known game Pac-Man.
 
@@ -1239,7 +1240,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kspaceduel/")
     (synopsis "Two player game with shooting spaceships flying around a sun")
     (description "KSpaceduel is a space battle game for one or two players,
 where two ships fly around a star in a struggle to be the only survivor.
@@ -1272,7 +1273,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/bovo/")
     (synopsis "Classic pen and paper game: five in a line")
     (description "Bovo is a Gomoku (from Japanese 五目並べ - lit.  \"five
 points\") like game for two players, where the opponents alternate in placing
@@ -1310,7 +1311,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/killbots/")
     (synopsis "Port of the classic BSD console game robots")
     (description "Killbots is a simple game of evading killer robots.
 
@@ -1352,7 +1353,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/ksnakeduel/")
     (synopsis "Snake race played against the computer")
     (description "KSnakeDuel is a fast action game where you steer a snake
 which has to eat food.  While eating the snake grows.  But once a player
@@ -1388,7 +1389,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kollision/")
     (synopsis "Simple ball dodging game")
     (description "In Kollision you use mouse to control a small blue ball in a
 closed space environment filled with small red balls, which move about
@@ -1428,7 +1429,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/knavalbattle/")
     (synopsis "Battleship board game with built-in game server")
     (description "KBattleship is a Battle Ship game for KDE.
 
@@ -1468,7 +1469,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kreversi/")
     (synopsis "Old reversi board game, also known as othello")
     (description "KReversi is a simple one player strategy game played
 against the computer.
@@ -1508,7 +1509,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase-5
            qtdeclarative-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/ksquares/")
     (synopsis "Dots and Boxes game")
     (description "KSquares is an implementation of the popular paper based
 game Squares.  Two players take turns connecting dots on a grid to complete
@@ -1545,7 +1546,7 @@ This package is part of the KDE games module.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/kjumpingcube/")
     (synopsis "Simple tactical game for number-crunchers")
     (description "KJumpingcube is a simple tactical game for one or two
 players, played on a grid of numbered squares.  Each turn, players compete for
