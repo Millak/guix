@@ -23,7 +23,7 @@
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Jacob Hrbek <kreyren@rixotstudio.cz>
-;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2021, 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Evgenii Lepikhin <e.lepikhin@corp.mail.ru>
@@ -34808,8 +34808,7 @@ float parser.")
         (base32 "17d1xp29v5xgh4vahxld14w1c1hgh38qmxpv7i18wy096gn2cb8g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-adler" ,rust-adler-0.2)
         ("rust-autocfg" ,rust-autocfg-1)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
@@ -34837,8 +34836,7 @@ streaming API for miniz_oxide.")
          (base32
           "198n4hfpq0qcxf275l6fpzh7b9cl7ck2xs6pjgpds74bazv9yrxa"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-adler32" ,rust-adler32-1))))))
+     `(#:cargo-inputs (("rust-adler32" ,rust-adler32-1))))))
 
 (define-public rust-miniz-oxide-0.2
   (package
@@ -34853,7 +34851,8 @@ streaming API for miniz_oxide.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "17f92krv9hhsyc38prpfyn99m2hqhr4fgszpsla66a6gcrnpbhxn"))))))
+         "17f92krv9hhsyc38prpfyn99m2hqhr4fgszpsla66a6gcrnpbhxn"))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-miniz-oxide-c-api-0.2
   (package
