@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Lu hui <luhux76@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -769,7 +770,7 @@ and probably others.")
 (define-public openfortivpn
   (package
     (name "openfortivpn")
-    (version "1.15.0")
+    (version "1.17.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -778,7 +779,7 @@ and probably others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qsfgpxg553s8rc9cyrc4k96z0pislxsdxb9wyhp8fdprkak2mw2"))))
+                "0an58f0qcyxdx3d5zb5m8vi45a0251b950b5lh16572n8z2g6s2l"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
