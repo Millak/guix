@@ -1845,7 +1845,7 @@ checksum, used in the zlib compression format.")
 (define-public rust-adler32-1
   (package
     (name "rust-adler32")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
       (origin
         (method url-fetch)
@@ -1854,15 +1854,19 @@ checksum, used in the zlib compression format.")
           (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0bgks405vz823bphgwhj4l9h6vpfh900s0phfk4qqijyh9xhfysn"))))
+          "0d7jq7jsjyhsgbhnfq5fvrlh9j0i9g1fqrl2735ibv5f75yjgqda"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))
        #:cargo-development-inputs
-       (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-rand" ,rust-rand-0.4))))
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-getrandom" ,rust-getrandom-0.1)
+        ("rust-humansize" ,rust-humansize-1)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://github.com/remram44/adler32-rs")
     (synopsis "Implementation of the Adler32 rolling hash algorithm")
     (description
