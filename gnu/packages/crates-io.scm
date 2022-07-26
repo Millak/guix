@@ -38604,8 +38604,35 @@ Rust.")
 primitives and enums easier.")
     (license license:bsd-3)))
 
+(define-public rust-num-enum-derive-0.5
+  (package
+    (name "rust-num-enum-derive")
+    (version "0.5.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "num_enum_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kj6b8f2fx8prlcl6y1k97668s5aiia4f9gjlk0nmpak3rj9h11v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ;FIXME: some doc tests fail
+       #:cargo-inputs
+       (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/illicitonion/num_enum")
+    (synopsis "Procedural macros to ease operation between primitives and enums")
+    (description
+     "This package provides procedural macros to make inter-operation between
+primitives and enums easier.")
+    (license license:bsd-3)))
+
 (define-public rust-num-enum-derive-0.4
   (package
+    (inherit rust-num-enum-derive-0.5)
     (name "rust-num-enum-derive")
     (version "0.4.3")
     (source
@@ -38622,13 +38649,7 @@ primitives and enums easier.")
        (("rust-proc-macro-crate" ,rust-proc-macro-crate-0.1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/illicitonion/num_enum")
-    (synopsis "Procedural macros to ease operation between primitives and enums")
-    (description
-     "This package provides procedural macros to make inter-operation between
-primitives and enums easier.")
-    (license license:bsd-3)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-num-format-0.4
   (package
