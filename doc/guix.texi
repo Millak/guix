@@ -17554,6 +17554,7 @@ declaration.
 * Web Services::                Web servers.
 * Certificate Services::        TLS certificates via Let's Encrypt.
 * DNS Services::                DNS daemons.
+* VNC Services::                VNC daemons.
 * VPN Services::                VPN daemons.
 * Network File System::         NFS related services.
 * Samba Services::              Samba services.
@@ -21062,6 +21063,7 @@ started by the @dfn{login manager}, by default the GNOME Display Manager (GDM).
 
 @cindex GDM
 @cindex GNOME, login manager
+@anchor{gdm}
 GDM of course allows users to log in into window managers and desktop
 environments other than GNOME; for those using GNOME, GDM is required for
 features such as automatic screen locking.
@@ -21363,6 +21365,7 @@ Relogin after logout.
 
 @cindex lightdm, graphical login manager
 @cindex display manager, lightdm
+@anchor{lightdm}
 @defvr {Scheme Variable} lightdm-service-type
 This is the type of the service to run the
 @url{https://github.com/canonical/lightdm,LightDM display manager}.  Its
@@ -21566,10 +21569,11 @@ Extra configuration values to append to the seat configuration section.
 
 @cindex Xorg, configuration
 @deftp {Data Type} xorg-configuration
-This data type represents the configuration of the Xorg graphical display
-server.  Note that there is no Xorg service; instead, the X server is started
-by a ``display manager'' such as GDM, SDDM, and SLiM@.  Thus, the configuration
-of these display managers aggregates an @code{xorg-configuration} record.
+This data type represents the configuration of the Xorg graphical
+display server.  Note that there is no Xorg service; instead, the X
+server is started by a ``display manager'' such as GDM, SDDM, LightDM or
+SLiM@.  Thus, the configuration of these display managers aggregates an
+@code{xorg-configuration} record.
 
 @table @asis
 @item @code{modules} (default: @code{%default-xorg-modules})
@@ -30836,6 +30840,157 @@ Defaults to @samp{()}.
 
 @c %end of fragment
 
+@node VNC Services
+@subsection VNC Services
+@cindex VNC (virtual network computing)
+@cindex XDMCP (x display manager control protocol)
+
+The @code{(gnu services vnc)} module provides services related to
+@dfn{Virtual Network Computing} (VNC), which makes it possible to
+locally use graphical Xorg applications running on a remote machine.
+Combined with a graphical manager that supports the @dfn{X Display
+Manager Control Protocol}, such as GDM (@pxref{gdm}) or LightDM
+(@pxref{lightdm}), it is possible to remote an entire desktop for a
+multi-user environment.
+
+@subsubheading Xvnc
+
+Xvnc is a VNC server that spawns its own X window server; which means it
+can run on headless servers.  The Xvnc implementations provided by the
+@code{tigervnc-server} and @code{turbovnc} aim to be fast and efficient.
+
+@defvar {Scheme Variable} xvnc-service-type
+
+The @code{xvnc-server-type} service can be configured via the
+@code{xvnc-configuration} record, documented below.  A second virtual
+display could be made available on a remote machine for via the
+following configuration:
+@end defvar
+
+@lisp
+(service xvnc-service-type (xvnc-configuration (display-number 10)
+@end lisp
+
+As a demonstration, the @command{xclock} command could then be started
+on the remote machine on display number 10, and it could be display
+locally via the @command{vncviewer} command:
+@example
+# Start xclock on the remote machine.
+ssh -L5910:localhost:5910 -- guix shell xclock -- env DISPLAY=:10 xclock
+# Access it via VNC.
+guix shell tigervnc-client -- vncviewer localhost:5910
+@end example
+
+The following configuration combines XDMCP and Inetd to allow multiple
+users to concurrently use the remote system, login in graphically via
+the GDM display manager:
+
+@lisp
+(operating-system
+  [...]
+  (services (cons*
+             [...]
+             (service xvnc-service-type (xvnc-configuration
+                                         (display-number 5)
+                                         (localhost? #f)
+                                         (xdmcp? #t)
+                                         (inetd? #t)))
+             (modify-services %desktop-services
+               (gdm-service-type config => (gdm-configuration
+                                            (inherit config)
+                                            (auto-suspend? #f)
+                                            (xdmcp? #t)))))))
+@end lisp
+
+A remote user could then connect to it by using the @command{vncviewer}
+command or a compatible VNC client and start a desktop session of their
+choosing:
+@example
+vncviewer remote-host:5905
+@end example
+
+@quotation Warning
+Unless your machine is in a controlled environment, for security
+reasons, the @code{localhost?} configuration of the
+@code{xvnc-configuration} record should be left to its default @code{#t}
+value and exposed via a secure means such as an SSH port forward.  The
+XDMCP port, UDP 177 should also be blocked from the outside by a
+firewall, as it is not a secure protocol and can expose login
+credentials in clear.
+@end quotation
+
+@c Use (configuration->documentation 'xvnc-configuration) to regenerate
+@c the documentation.
+@c %start of fragment
+@deftp {Data Type} xvnc-configuration
+Available @code{xvnc-configuration} fields are:
+
+@table @asis
+@item @code{xvnc} (default: @code{tigervnc-server}) (type: file-like)
+The package that provides the Xvnc binary.
+
+@item @code{display-number} (default: @code{0}) (type: number)
+The display number used by Xvnc.  You should set this to a number not
+already used a Xorg server.
+
+@item @code{geometry} (default: @code{"1024x768"}) (type: string)
+The size of the desktop to be created.
+
+@item @code{depth} (default: @code{24}) (type: color-depth)
+The pixel depth in bits of the desktop to be created.  Accepted values
+are 16, 24 or 32.
+
+@item @code{port} (type: maybe-port)
+The port on which to listen for connections from viewers.  When left
+unspecified, it defaults to 5900 plus the display number.
+
+@item @code{ipv4?} (default: @code{#t}) (type: boolean)
+Use IPv4 for incoming and outgoing connections.
+
+@item @code{ipv6?} (default: @code{#t}) (type: boolean)
+Use IPv6 for incoming and outgoing connections.
+
+@item @code{password-file} (type: maybe-string)
+The password file to use, if any.  Refer to vncpasswd(1) to learn how to
+generate such a file.
+
+@item @code{xdmcp?} (default: @code{#f}) (type: boolean)
+Query the XDMCP server for a session.  This enables users to log in a
+desktop session from the login manager screen.  For a multiple users
+scenario, you'll want to enable the @code{inetd?} option as well, so
+that each connection to the VNC server is handled separately rather than
+shared.
+
+@item @code{inetd?} (default: @code{#f}) (type: boolean)
+Use an Inetd-style service, which runs the Xvnc server on demand.
+
+@item @code{frame-rate} (default: @code{60}) (type: number)
+The maximum number of updates per second sent to each client.
+
+@item @code{security-types} (default: @code{("None")}) (type: security-types)
+The allowed security schemes to use for incoming connections.  The
+default is "None", which is safe given that Xvnc is configured to
+authenticate the user via the display manager, and only for local
+connections.  Accepted values are any of the following: ("None"
+"VncAuth" "Plain" "TLSNone" "TLSVnc" "TLSPlain" "X509None" "X509Vnc")
+
+@item @code{localhost?} (default: @code{#t}) (type: boolean)
+Only allow connections from the same machine.  It is set to #true by
+default for security, which means SSH or another secure means should be
+used to expose the remote port.
+
+@item @code{log-level} (default: @code{30}) (type: log-level)
+The log level, a number between 0 and 100, 100 meaning most verbose
+output.  The log messages are output to syslog.
+
+@item @code{extra-options} (default: @code{()}) (type: strings)
+This can be used to provide extra Xvnc options not exposed via this
+<xvnc-configuration> record.
+
+@end table
+
+@end deftp
+@c %end of fragment
 
 @node VPN Services
 @subsection VPN Services
