@@ -154,8 +154,7 @@ well as CD-ROM images.")
            (lambda _
              ;; make Qt render "offscreen", required for tests
              (setenv "QT_QPA_PLATFORM" "offscreen")
-             (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache")
-             #t)))))
+             (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache"))))))
     (home-page "https://kate-editor.org/")
     (synopsis "Multi-document, multi-view text editor")
     (description "Kate is a powerful text editor that can open multiple files
@@ -435,8 +434,7 @@ either be created or generated from a image.")
            (lambda _
              ;; make Qt render "offscreen", required for tests
              (setenv "QT_QPA_PLATFORM" "offscreen")
-             (setenv "HOME" "/tmp/dummy-home")
-             #t)))))
+             (setenv "HOME" "/tmp/dummy-home"))))))
     (home-page "https://apps.kde.org/okteta/")
     (synopsis "Hexadecimal editor for binary files")
     (description "Okteta is a simple editor for the raw data of files.  This
