@@ -31980,6 +31980,29 @@ scrolling, and they even don't go away when switching buffer, but you
 can bind a popon to a specific buffer to only show on that buffer.")
       (license license:gpl3+))))
 
+(define-public emacs-consult-lsp
+  (package
+    (name "emacs-consult-lsp")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gagbo/consult-lsp")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14dyclspkf1a34nvjj800ckz1phsizq07ps8k4x0ah6ik0hfhy1w"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-consult emacs-lsp-mode emacs-f))
+    (home-page "https://github.com/gagbo/consult-lsp/")
+    (synopsis "LSP-mode and consult helping each other")
+    (description
+"@code{emacs-consult-lsp} provides helpers for interactively selecting LSP
+workspace diagnostics, symbols, and file symbols from @{emacs-lsp-mode}
+by leveraging @code{emacs-consult} APIs.")
+    (license license:expat)))
+
 (define-public emacs-bitbake-modes
   (package
    (name "emacs-bitbake-modes")
