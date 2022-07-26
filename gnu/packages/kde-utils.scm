@@ -3,6 +3,7 @@
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gnome)
@@ -80,7 +82,8 @@
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools xorg-server))
     (inputs
-     (list breeze-icons
+     (list bash-minimal
+           breeze-icons
            karchive
            kconfig
            kcrash
