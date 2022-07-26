@@ -4,6 +4,7 @@
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -79,7 +80,7 @@
            libvorbis
            phonon
            qtbase-5))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kio_audiocd")
+    (home-page "https://apps.kde.org/kio_audiocd/")
     (synopsis "Transparent audio CD integration for applications using the KDE
 Platform")
     (description "KIO AudioCD is a KIO slave that enables KIO-aware
@@ -138,7 +139,7 @@ This package is part of the KDE multimedia module.")
                (wrap-program (string-append out "/bin/dragon")
                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))
                #t))))))
-    (home-page "https://kde.org/applications/multimedia/org.kde.dragonplayer")
+    (home-page "https://apps.kde.org/dragonplayer/")
     (synopsis "Simple video player")
     (description "Dragon Player is a multimedia player where the focus is on
 simplicity, instead of features.  Dragon Player does one thing, and only one
@@ -213,7 +214,7 @@ This package is part of the KDE multimedia module.")
                (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
                (invoke "dbus-launch" "make" test-target))
              #t)))))
-    (home-page "https://kde.org/applications/multimedia/org.kde.elisa")
+    (home-page "https://apps.kde.org/elisa/")
     (synopsis "Powerful music player for Plasma 5")
     (description "Elisa is a simple music player aiming to provide a nice
 experience for its users.  Elisa browses music by album, artist or
@@ -239,7 +240,7 @@ its own database.  You can build and play your own playlist.")
      (list extra-cmake-modules pkg-config))
     (inputs
      (list ffmpeg kconfig ki18n kio taglib qtbase-5))
-    (home-page "https://kde.org/applications/multimedia/org.kde.ffmpegthumbs")
+    (home-page "https://apps.kde.org/ffmpegthumbs/")
     (synopsis "Video thumbnail generator for KDE using ffmpeg")
     (description "
 FFMpegThumbs is a video thumbnail generator for KDE file managers
@@ -286,7 +287,7 @@ This package is part of the KDE multimedia module.")
            qtbase-5
            qtsvg-5
            taglib))
-    (home-page "https://kde.org/applications/multimedia/org.kde.juk")
+    (home-page "https://apps.kde.org/juk/")
     (synopsis "Music jukebox / music player")
     (description "JuK is a powerful music player capable of managing a large
 music collection.
@@ -452,7 +453,7 @@ variety of formats.")
            sox
            taglib
            zlib))
-    (home-page "https://kde.org/applications/multimedia/org.kde.k3b")
+    (home-page "https://apps.kde.org/k3b/")
     (synopsis "Sophisticated CD/DVD burning application")
     (description "K3b is CD-writing software which intends to be feature-rich
 and provide an easily usable interface.  Features include burning audio CDs
@@ -503,7 +504,7 @@ available CD drives.")
                (("\\s*qPrintable\\(transponder\\.getTransmissionType\\(\\)\\)\\);")
                  "transponder.getTransmissionType());"))
              #t)))))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kaffeine")
+    (home-page "https://apps.kde.org/kaffeine/")
     (synopsis "Versatile media player for KDE")
     (description "Kaffeine is a media player for KDE.  While it supports
 multiple Phonon backends, its default backend is Xine, giving Kaffeine a wide
@@ -551,7 +552,7 @@ autoloading of subtitle files for use while playing video.")
            qtx11extras))
     (arguments
      (list #:tests? #f)) ; test program gets built, but is not found
-    (home-page "https://kde.org/applications/multimedia/org.kde.kamoso")
+    (home-page "https://apps.kde.org/kamoso/")
     (synopsis "Take pictures and videos out of your webcam")
     (description "Kamoso is a simple and friendly program to use your
 camera.  Use it to take pictures and make videos to share.")
@@ -594,7 +595,7 @@ camera.  Use it to take pictures and make videos to share.")
            pulseaudio
            qtbase-5
            solid))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kmix")
+    (home-page "https://apps.kde.org/kmix/")
     (synopsis "Volume control and mixer")
     (description "KMix is an audio device mixer, used to adjust volume, select
 recording inputs, and set other hardware options.
@@ -711,7 +712,7 @@ Some features:
            qtbase-5
            qtmultimedia-5
            zlib))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kwave")
+    (home-page "https://apps.kde.org/kwave/")
     (synopsis "Sound editor for KDE")
     (description "Kwave is a sound editor designed for the KDE Desktop
 Environment.
