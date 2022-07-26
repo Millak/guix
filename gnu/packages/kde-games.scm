@@ -27,6 +27,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system qt)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gl)
   #:use-module ((gnu packages gnome) #:select (shared-mime-info))
@@ -314,7 +315,8 @@ This package is part of the KDE games module.")
            ;("perl" ,perl)
            kdoctools))
     (inputs
-     (list kconfig
+     (list bash-minimal
+           kconfig
            kconfigwidgets
            kcoreaddons
            ki18n
