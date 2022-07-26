@@ -2799,3 +2799,46 @@ Type=Application~%"
      "Avizo is a simple notification daemon for Sway, mainly intended to be
 used for multimedia keys.")
     (license license:gpl3+)))
+
+(define-public grimshot
+  (package
+    (inherit sway)
+    (name "grimshot")
+    (source (origin
+              (inherit (package-source sway))
+              (snippet #~(delete-file "contrib/grimshot.1"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan #~`(("grimshot" "bin/")
+                              ("grimshot.1" "usr/share/man/man1/"))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "contrib")))
+                        (add-after 'chdir 'patch-script-dependencies
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (substitute* "grimshot"
+                              (("\\b(date|grim|jq|notify-send|slurp|swaymsg|wl-copy)\\b"
+                                _ binary)
+                               (search-input-file
+                                inputs (string-append "bin/" binary))))))
+                        (add-after 'patch-script-dependencies 'build-man-page
+                          (lambda _
+                            (with-input-from-file "grimshot.1.scd"
+                              (lambda _
+                                (with-output-to-file "grimshot.1"
+                                  (lambda _
+                                    (invoke "scdoc"))))))))))
+    (native-inputs (list scdoc))
+    (inputs (list coreutils
+                  grim
+                  jq
+                  libnotify
+                  slurp
+                  sway
+                  wl-clipboard))
+    (synopsis "Screenshot utility for the Sway window manager")
+    (description "Grimshot is a screenshot utility for @code{sway}.  It provides
+an interface over @code{grim}, @code{slurp} and @code{jq}, and supports storing
+the screenshot either directly to the clipboard using @code{wl-copy} or to a
+file.")))
