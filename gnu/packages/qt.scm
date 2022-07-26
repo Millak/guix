@@ -805,14 +805,12 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                     (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))))))
     (native-inputs
      (modify-inputs (package-native-inputs qtbase-5)
-       (prepend gtk                     ;for GTK theme support
-                ninja
+       (prepend ninja
                 wayland-protocols
                 xvfb-run)))
     (inputs
      (modify-inputs (package-inputs qtbase-5)
        (prepend bash-minimal coreutils-minimal libxcb md4c)
-       (replace "gtk+" gtk)                ;use latest gtk
        (replace "postgresql" postgresql))) ;use latest postgresql
     (native-search-paths
      (list (search-path-specification
