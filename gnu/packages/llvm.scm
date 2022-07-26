@@ -1374,21 +1374,22 @@ misuse of libraries outside of the store.")
 (define-public lldb
   (package
     (name "lldb")
-    (version "13.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (llvm-uri "lldb" version))
-              (sha256
-               (base32
-                "05nvcbgb4rx860r3jzsbpvcbzpd0i7nsm5qrpkyfhg5vrh5mj32a"))))
+    (version "14.0.6")
+    (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DCMAKE_CXX_COMPILER=clang++")))
+     (list
+       #:configure-flags #~(list "-DOPENMP_TEST_CXX_COMPILER=clang++")
+       #:phases
+       #~(modify-phases %standard-phases
+         (add-after 'unpack 'chdir-to-source
+           (lambda _
+             (chdir "lldb"))))))
     (native-inputs
      (list pkg-config swig))
     (inputs
-     (list clang-13
-           llvm-13
+     (list clang-14
+           llvm-14
            ;; Optional (but recommended) inputs.
            ncurses
            libedit
