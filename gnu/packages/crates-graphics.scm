@@ -2629,8 +2629,35 @@ and wayland-server.")
        (("rust-nix" ,rust-nix-0.14)
         ("rust-wayland-sys" ,rust-wayland-sys-0.21))))))
 
+(define-public rust-wayland-cursor-0.29
+  (package
+    (name "rust-wayland-cursor")
+    (version "0.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-cursor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gd6aswkrdz556n54pjpd4rchw7jkgcx6hnrhgy62y2y7pqmh9y5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nix" ,rust-nix-0.22)
+        ("rust-xcursor" ,rust-xcursor-0.3))))
+    (inputs
+     (list rust-nix-0.22 rust-wayland-client-0.29 rust-xcursor-0.3))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Bindings to libwayland-cursor")
+    (description
+     "This crate provides helpers to load the system provided cursor images
+and load them into WlBuffers as well as obtain the necessary metadata to
+properly display animated cursors.")
+    (license license:expat)))
+
 (define-public rust-wayland-cursor-0.28
   (package
+    (inherit rust-wayland-cursor-0.29)
     (name "rust-wayland-cursor")
     (version "0.28.3")
     (source
@@ -2646,14 +2673,7 @@ and wayland-server.")
        (("rust-nix" ,rust-nix-0.18)
         ("rust-xcursor" ,rust-xcursor-0.3))))
     (inputs
-     (list rust-nix-0.18 rust-wayland-client-0.28 rust-xcursor-0.3))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Bindings to libwayland-cursor")
-    (description
-     "This crate provides helpers to load the system provided cursor images
-and load them into WlBuffers as well as obtain the necessary metadata to
-properly display animated cursors.")
-    (license license:expat)))
+     (list rust-nix-0.18 rust-wayland-client-0.28 rust-xcursor-0.3))))
 
 (define-public rust-wayland-egl-0.29
   (package
