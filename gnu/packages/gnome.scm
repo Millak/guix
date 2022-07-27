@@ -3397,7 +3397,7 @@ for dealing with different structured file formats.")
 (define-public librsvg
   (package
     (name "librsvg")
-    (version "2.50.7")
+    (version "2.54.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/librsvg/"
@@ -3405,7 +3405,7 @@ for dealing with different structured file formats.")
                                   "librsvg-" version ".tar.xz"))
               (sha256
                (base32
-                "1g3f8byg5w08fx1bka12mmpl59v6a4q2p827w6m2la6mijq63yzz"))
+                "0cs8qbn2khibb5w1r0f6cibfmkfb7zg713526vhc0hva7wj2l5ga"))
               (modules '((guix build utils)))
               (snippet
                '(begin (delete-file-recursively "vendor")))))
@@ -3418,61 +3418,57 @@ for dealing with different structured file formats.")
         (guix build utils)
         ((guix build gnu-build-system) #:prefix gnu:))
        #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-cairo-rs" ,rust-cairo-rs-0.8)
-        ("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.9)
-        ("rust-cast" ,rust-cast-0.2)
-        ("rust-cssparser" ,rust-cssparser-0.27)
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-cairo-rs" ,rust-cairo-rs-0.15)
+        ("rust-cast" ,rust-cast-0.3)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-cssparser" ,rust-cssparser-0.28)
         ("rust-data-url" ,rust-data-url-0.1)
         ("rust-encoding" ,rust-encoding-0.2)
-        ("rust-float-cmp" ,rust-float-cmp-0.8)
-        ("rust-gdk-pixbuf" ,rust-gdk-pixbuf-0.8)
-        ("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.9)
-        ("rust-gio" ,rust-gio-0.8)
-        ("rust-gio-sys" ,rust-gio-sys-0.9)
-        ("rust-glib" ,rust-glib-0.9)
-        ("rust-glib-sys" ,rust-glib-sys-0.9)
-        ("rust-gobject-sys" ,rust-gobject-sys-0.9)
-        ("rust-itertools" ,rust-itertools-0.9)
-        ("rust-language-tags" ,rust-language-tags-0.2)
+        ("rust-float-cmp" ,rust-float-cmp-0.9)
+        ("rust-gdk-pixbuf" ,rust-gdk-pixbuf-0.15)
+        ("rust-gio" ,rust-gio-0.15)
+        ("rust-glib" ,rust-glib-0.15)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-language-tags" ,rust-language-tags-0.3)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-locale-config" ,rust-locale-config-0.3)
         ("rust-markup5ever" ,rust-markup5ever-0.10)
-        ("rust-nalgebra" ,rust-nalgebra-0.21)
+        ("rust-nalgebra" ,rust-nalgebra-0.29)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-pkg-config" ,rust-pkg-config-0.3)
-        ("rust-pango" ,rust-pango-0.8)
-        ("rust-pango-sys" ,rust-pango-sys-0.9)
-        ("rust-pangocairo" ,rust-pangocairo-0.9)
+        ("rust-pango" ,rust-pango-0.15)
+        ("rust-pangocairo" ,rust-pangocairo-0.15)
         ("rust-rayon" ,rust-rayon-1)
-        ("rust-rctree" ,rust-rctree-0.3)
+        ("rust-rctree" ,rust-rctree-0.4)
         ("rust-rgb" ,rust-rgb-0.8)
         ("rust-regex" ,rust-regex-1)
-        ("rust-selectors" ,rust-selectors-0.22)
+        ("rust-selectors" ,rust-selectors-0.23)
         ("rust-string-cache" ,rust-string-cache-0.8)
-        ("rust-tinyvec" ,rust-tinyvec-0.3)
+        ("rust-tinyvec" ,rust-tinyvec-1)
         ("rust-url" ,rust-url-2)
         ("rust-xml5ever" ,rust-xml5ever-0.16))
        #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1)
-        ("rust-cairo-rs" ,rust-cairo-rs-0.8)
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-cairo-rs" ,rust-cairo-rs-0.15)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-criterion" ,rust-criterion-0.3)
-        ("rust-float-cmp" ,rust-float-cmp-0.8)
+        ("rust-glib" ,rust-glib-0.15)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-lopdf" ,rust-lopdf-0.26)
-        ("rust-png" ,rust-png-0.16)
-        ("rust-predicates" ,rust-predicates-1)
-        ("rust-tempfile" ,rust-tempfile-3))
+        ("rust-matches" ,rust-matches-0.1)
+        ("rust-png" ,rust-png-0.17)
+        ("rust-predicates" ,rust-predicates-2)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-test-generator" ,rust-test-generator-0.3)
+        ("rust-yeslogic-fontconfig-sys" ,rust-yeslogic-fontconfig-sys-2))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "doc"
-               (substitute* "rsvg-docs.xml"
-                 (("http://www.oasis-open.org/docbook/xml/4.3/")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))))
          (add-after 'unpack 'prepare-for-build
            (lambda _
              ;; In lieu of #:make-flags
@@ -3513,30 +3509,6 @@ for dealing with different structured file formats.")
               (string-append vendor-dir "/" ,name "-" ,version ".tar.xz"))))
          (replace 'build
            (assoc-ref gnu:%standard-phases 'build))
-         (add-before 'check 'ignore-failing-tests
-           ;; stderr=```/tmp/guix-build-.../librsvg-2.50.1/rsvg-convert: line 150: ls: command not found
-           (lambda _
-             (substitute* "tests/src/cmdline/rsvg_convert.rs"
-               (("fn background_color_option_invalid_color_yields_error" all)
-                (string-append "#[ignore] " all))
-               (("fn empty_input_yields_error" all)
-                (string-append "#[ignore] " all))
-               (("fn empty_svg_yields_error" all)
-                (string-append "#[ignore] " all))
-               (("fn env_source_data_epoch_empty" all)
-                (string-append "#[ignore] " all))
-               (("fn env_source_data_epoch_no_digits" all)
-                (string-append "#[ignore] " all))
-               (("fn env_source_data_epoch_trailing_garbage" all)
-                (string-append "#[ignore] " all))
-               (("fn export_id_option_error" all)
-                (string-append "#[ignore] " all))
-               (("fn huge_zoom_factor_yields_error" all)
-                (string-append "#[ignore] " all))
-               (("fn multiple_input_files_not_allowed_for_png_output" all)
-                (string-append "#[ignore] " all))
-               (("fn stylesheet_option_error" all)
-                (string-append "#[ignore] " all)))))
          (replace 'check
            (lambda* args
              ((assoc-ref gnu:%standard-phases 'check)
@@ -3544,8 +3516,7 @@ for dealing with different structured file formats.")
          (replace 'install
            (assoc-ref gnu:%standard-phases 'install)))))
     (native-inputs
-     (list docbook-xml-4.3
-           `(,glib "bin")
+     (list `(,glib "bin")
            gobject-introspection
            pkg-config
            vala))
@@ -3568,16 +3539,9 @@ diagrams.")
 (define-public librsvg-bootstrap
   (package
     (inherit librsvg)
-    (name "librsvg")
-    (version "2.50.7")
+    (name "librsvg-bootstrap")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/librsvg/"
-                                  (version-major+minor version)  "/"
-                                  "librsvg-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1g3f8byg5w08fx1bka12mmpl59v6a4q2p827w6m2la6mijq63yzz"))
+              (inherit (package-source librsvg))
               (modules '((guix build utils)))
               (snippet
                '(begin
