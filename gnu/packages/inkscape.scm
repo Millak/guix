@@ -216,37 +216,37 @@ endif()~%~%"
                    `("GDK_PIXBUF_MODULE_FILE" =
                      (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))))))
      (inputs
-      `(("aspell" ,aspell)
-        ("autotrace" ,autotrace)
-        ("bash-minimal" ,bash-minimal)
-        ("gdl" ,gdl-minimal)
-        ("gtkmm" ,gtkmm-3)
-        ("gtk" ,gtk+)
-        ("gtkspell3" ,gtkspell3)
-        ("gsl" ,gsl)
-        ("poppler" ,poppler)
-        ("lib2geom" ,lib2geom-1.2)
-        ("libjpeg" ,libjpeg-turbo)
-        ("libpng" ,libpng)
-        ("libxml2" ,libxml2)
-        ("libxslt" ,libxslt)
-        ("libgc" ,libgc)
-        ("librsvg" ,librsvg)            ;for the pixbuf loader
-        ("libsoup" ,libsoup-minimal-2)
-        ("libcdr" ,libcdr)
-        ("libvisio" ,libvisio)
-        ("libwpd" ,libwpd)
-        ("libwpg" ,libwpg)
-        ("freetype" ,freetype)
-        ("popt" ,popt)
-        ("potrace" ,potrace)
-        ("lcms" ,lcms)
-        ("boost" ,boost)
-        ("python" ,python-wrapper)
-        ("python-scour" ,python-scour)
-        ("python-pyserial" ,python-pyserial)
-        ("python-numpy" ,python-numpy)
-        ("python-lxml" ,python-lxml)))
+      (list aspell
+            autotrace
+            bash-minimal
+            gdl-minimal
+            gtkmm-3
+            gtk+
+            gtkspell3
+            gsl
+            poppler
+            lib2geom-1.2
+            libjpeg-turbo
+            libpng
+            libxml2
+            libxslt
+            libgc
+            librsvg                     ;for the pixbuf loader
+            libsoup-minimal-2
+            libcdr
+            libvisio
+            libwpd
+            libwpg
+            freetype
+            popt
+            potrace
+            lcms
+            boost
+            python-wrapper
+            python-scour
+            python-pyserial
+            python-numpy
+            python-lxml))
      (native-inputs
       (list gettext-minimal
             imagemagick                  ;for tests
