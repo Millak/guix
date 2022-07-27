@@ -4877,8 +4877,9 @@ and the GLib main loop, to integrate well with GNOME applications.")
 
 ;;; An older variant kept to build the 'rest' package.
 (define-public libsoup-minimal-2
-  (package/inherit libsoup-minimal
-    (version "2.72.0")
+  (package
+    (inherit libsoup-minimal)
+    (version "2.74.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libsoup/"
@@ -4886,7 +4887,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
                                   "libsoup-" version ".tar.xz"))
               (sha256
                (base32
-                "11skbyw2pw32178q3h8pi7xqa41b2x4k6q4k9f75zxmh8s23y30p"))))
+                "0n8is108n0dn4dw7nm2wq9rydcm1vy47w40wywfrxqazdrjjg97h"))))
     (arguments
      (substitute-keyword-arguments (package-arguments libsoup-minimal)
        ((#:phases phases)
