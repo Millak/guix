@@ -115,7 +115,7 @@ type generated and used by Transmission clients, suitable for passing to the
 (set! serialize-maybe-string
   (lambda (field-name val)
     (serialize-string field-name
-                      (if (unspecified? val)
+                      (if (eq? val 'unset)
                           ""
                           val))))
 
@@ -180,7 +180,7 @@ type generated and used by Transmission clients, suitable for passing to the
 (define-maybe file-object)
 (set! serialize-maybe-file-object
   (lambda (field-name val)
-    (if (unspecified? val)
+    (if (eq? val 'unset)
         (serialize-string field-name "")
         (serialize-file-object field-name val))))
 

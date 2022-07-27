@@ -772,11 +772,11 @@ logging is disabled.")
 network.  A specific port value can be provided by appending the @code{:PORT}
 suffix.  By default, it uses the Jami bootstrap nodes, but any host can be
 specified here.  It's also possible to disable bootstrapping by explicitly
-setting this field to the @code{*unspecified*} value.")
+setting this field to the @code{'unset} value.")
   (port
    (maybe-number 4222)
-   "The UDP port to bind to.  When set to @code{*unspecified*}, an available
-port is automatically selected.")
+   "The UDP port to bind to.  When left unspecified, an available port is
+automatically selected.")
   (proxy-server-port
    maybe-number
    "Spawn a proxy server listening on the specified port.")

@@ -151,9 +151,9 @@
   (not (defined? 'serialize-maybe-string)))
 
 (test-assert "maybe type, no default"
-  (unspecified?
-   (config-with-maybe-string/no-serialization-name
-    (config-with-maybe-string/no-serialization))))
+  (eq? 'unset
+       (config-with-maybe-string/no-serialization-name
+        (config-with-maybe-string/no-serialization))))
 
 (test-assert "maybe type, with default"
   (equal?

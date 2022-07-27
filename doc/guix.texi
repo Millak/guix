@@ -19769,75 +19769,46 @@ The value of this service is a @code{opendht-configuration} object, as
 described below.
 @end defvr
 
-@deftp {Data Type} opendht-configuration
-This is the data type for the OpenDHT service configuration.
-
 @c The fields documentation has been auto-generated using the
 @c configuration->documentation procedure from
 @c (gnu services configuration).
+@deftp {Data Type} opendht-configuration
 Available @code{opendht-configuration} fields are:
 
-@deftypevr {@code{opendht-configuration} parameter} package opendht
+@table @asis
+@item @code{opendht} (default: @code{opendht}) (type: file-like)
 The @code{opendht} package to use.
 
-@end deftypevr
-
-@deftypevr {@code{opendht-configuration} parameter} boolean peer-discovery?
+@item @code{peer-discovery?} (default: @code{#f}) (type: boolean)
 Whether to enable the multicast local peer discovery mechanism.
 
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@deftypevr {@code{opendht-configuration} parameter} boolean enable-logging?
+@item @code{enable-logging?} (default: @code{#f}) (type: boolean)
 Whether to enable logging messages to syslog.  It is disabled by default
 as it is rather verbose.
 
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@deftypevr {@code{opendht-configuration} parameter} boolean debug?
+@item @code{debug?} (default: @code{#f}) (type: boolean)
 Whether to enable debug-level logging messages.  This has no effect if
 logging is disabled.
 
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@deftypevr {@code{opendht-configuration} parameter} maybe-string bootstrap-host
+@item @code{bootstrap-host} (default: @code{"bootstrap.jami.net:4222"}) (type: maybe-string)
 The node host name that is used to make the first connection to the
 network.  A specific port value can be provided by appending the
 @code{:PORT} suffix.  By default, it uses the Jami bootstrap nodes, but
 any host can be specified here.  It's also possible to disable
-bootsrapping by explicitly setting this to the @code{*unspecified*}
-value.
+bootstrapping by explicitly setting this field to the
+@code{'unset} value.
 
-Defaults to @samp{"bootstrap.jami.net:4222"}.
+@item @code{port} (default: @code{4222}) (type: maybe-number)
+The UDP port to bind to.  When left unspecified, an available port is
+automatically selected.
 
-@end deftypevr
-
-@deftypevr {@code{opendht-configuration} parameter} maybe-number port
-The UDP port to bind to.  When explicitly set to @code{*unspecified*},
-an available port is automatically selected.
-
-Defaults to @samp{4222}.
-
-@end deftypevr
-
-@deftypevr {@code{opendht-configuration} parameter} maybe-number proxy-server-port
+@item @code{proxy-server-port} (type: maybe-number)
 Spawn a proxy server listening on the specified port.
 
-Defaults to @samp{disabled}.
-
-@end deftypevr
-
-@deftypevr {@code{opendht-configuration} parameter} maybe-number proxy-server-port-tls
+@item @code{proxy-server-port-tls} (type: maybe-number)
 Spawn a proxy server listening to TLS connections on the specified port.
 
-Defaults to @samp{disabled}.
-
-@end deftypevr
+@end table
 @end deftp
 
 @cindex Tor
@@ -30532,362 +30503,184 @@ Both can be run simultaneously.
 
 @c %automatically generated documentation
 
+@deftp {Data Type} openvpn-client-configuration
 Available @code{openvpn-client-configuration} fields are:
 
-@deftypevr {@code{openvpn-client-configuration} parameter} package openvpn
+@table @asis
+@item @code{openvpn} (default: @code{openvpn}) (type: file-like)
 The OpenVPN package.
 
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} string pid-file
+@item @code{pid-file} (default: @code{"/var/run/openvpn/openvpn.pid"}) (type: string)
 The OpenVPN pid file.
 
-Defaults to @samp{"/var/run/openvpn/openvpn.pid"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} proto proto
+@item @code{proto} (default: @code{udp}) (type: proto)
 The protocol (UDP or TCP) used to open a channel between clients and
 servers.
 
-Defaults to @samp{udp}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} dev dev
+@item @code{dev} (default: @code{tun}) (type: dev)
 The device type used to represent the VPN connection.
 
-Defaults to @samp{tun}.
-
-@end deftypevr
-
-If you do not have some of these files (eg.@: you use a username and
-password), you can disable any of the following three fields by setting
-it to @code{*unspecified*}.
-
-@deftypevr {@code{openvpn-client-configuration} parameter} maybe-string ca
+@item @code{ca} (default: @code{"/etc/openvpn/ca.crt"}) (type: maybe-string)
 The certificate authority to check connections against.
 
-Defaults to @samp{"/etc/openvpn/ca.crt"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} maybe-string cert
+@item @code{cert} (default: @code{"/etc/openvpn/client.crt"}) (type: maybe-string)
 The certificate of the machine the daemon is running on.  It should be
 signed by the authority given in @code{ca}.
 
-Defaults to @samp{"/etc/openvpn/client.crt"}.
+@item @code{key} (default: @code{"/etc/openvpn/client.key"}) (type: maybe-string)
+The key of the machine the daemon is running on.  It must be the key
+whose certificate is @code{cert}.
 
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} maybe-string key
-The key of the machine the daemon is running on.  It must be the key whose
-certificate is @code{cert}.
-
-Defaults to @samp{"/etc/openvpn/client.key"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} boolean comp-lzo?
+@item @code{comp-lzo?} (default: @code{#t}) (type: boolean)
 Whether to use the lzo compression algorithm.
 
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} boolean persist-key?
+@item @code{persist-key?} (default: @code{#t}) (type: boolean)
 Don't re-read key files across SIGUSR1 or --ping-restart.
 
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} boolean persist-tun?
+@item @code{persist-tun?} (default: @code{#t}) (type: boolean)
 Don't close and reopen TUN/TAP device or run up/down scripts across
 SIGUSR1 or --ping-restart restarts.
 
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} boolean fast-io?
+@item @code{fast-io?} (default: @code{#f}) (type: boolean)
 (Experimental) Optimize TUN/TAP/UDP I/O writes by avoiding a call to
 poll/epoll/select prior to the write operation.
 
-Defaults to @samp{#f}.
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} number verbosity
+@item @code{verbosity} (default: @code{3}) (type: number)
 Verbosity level.
 
-Defaults to @samp{3}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} tls-auth-client tls-auth
+@item @code{tls-auth} (default: @code{#f}) (type: tls-auth-client)
 Add an additional layer of HMAC authentication on top of the TLS control
 channel to protect against DoS attacks.
 
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} maybe-string auth-user-pass
+@item @code{auth-user-pass} (type: maybe-string)
 Authenticate with server using username/password.  The option is a file
-containing username/password on 2 lines.  Do not use a file-like object as it
-would be added to the store and readable by any user.
+containing username/password on 2 lines.  Do not use a file-like object
+as it would be added to the store and readable by any user.
 
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} key-usage verify-key-usage?
+@item @code{verify-key-usage?} (default: @code{#t}) (type: key-usage)
 Whether to check the server certificate has server usage extension.
 
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} bind bind?
+@item @code{bind?} (default: @code{#f}) (type: bind)
 Bind to a specific local port number.
 
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} resolv-retry resolv-retry?
+@item @code{resolv-retry?} (default: @code{#t}) (type: resolv-retry)
 Retry resolving server address.
 
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-client-configuration} parameter} openvpn-remote-list remote
+@item @code{remote} (default: @code{()}) (type: openvpn-remote-list)
 A list of remote servers to connect to.
 
-Defaults to @samp{()}.
-
+@deftp {Data Type} openvpn-remote-configuration
 Available @code{openvpn-remote-configuration} fields are:
 
-@deftypevr {@code{openvpn-remote-configuration} parameter} string name
+@table @asis
+@item @code{name} (default: @code{"my-server"}) (type: string)
 Server name.
 
-Defaults to @samp{"my-server"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-remote-configuration} parameter} number port
+@item @code{port} (default: @code{1194}) (type: number)
 Port number the server listens to.
 
-Defaults to @samp{1194}.
+@end table
 
-@end deftypevr
+@end deftp
 
-@end deftypevr
+@end table
+
+@end deftp
+
 @c %end of automatic openvpn-client documentation
 
 @c %automatically generated documentation
 
+@deftp {Data Type} openvpn-server-configuration
 Available @code{openvpn-server-configuration} fields are:
 
-@deftypevr {@code{openvpn-server-configuration} parameter} package openvpn
+@table @asis
+@item @code{openvpn} (default: @code{openvpn}) (type: file-like)
 The OpenVPN package.
 
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} string pid-file
+@item @code{pid-file} (default: @code{"/var/run/openvpn/openvpn.pid"}) (type: string)
 The OpenVPN pid file.
 
-Defaults to @samp{"/var/run/openvpn/openvpn.pid"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} proto proto
+@item @code{proto} (default: @code{udp}) (type: proto)
 The protocol (UDP or TCP) used to open a channel between clients and
 servers.
 
-Defaults to @samp{udp}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} dev dev
+@item @code{dev} (default: @code{tun}) (type: dev)
 The device type used to represent the VPN connection.
 
-Defaults to @samp{tun}.
-
-@end deftypevr
-
-If you do not have some of these files (eg.@: you use a username and
-password), you can disable any of the following three fields by setting
-it to @code{*unspecified*}.
-
-@deftypevr {@code{openvpn-server-configuration} parameter} maybe-string ca
+@item @code{ca} (default: @code{"/etc/openvpn/ca.crt"}) (type: maybe-string)
 The certificate authority to check connections against.
 
-Defaults to @samp{"/etc/openvpn/ca.crt"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} maybe-string cert
+@item @code{cert} (default: @code{"/etc/openvpn/client.crt"}) (type: maybe-string)
 The certificate of the machine the daemon is running on.  It should be
 signed by the authority given in @code{ca}.
 
-Defaults to @samp{"/etc/openvpn/client.crt"}.
+@item @code{key} (default: @code{"/etc/openvpn/client.key"}) (type: maybe-string)
+The key of the machine the daemon is running on.  It must be the key
+whose certificate is @code{cert}.
 
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} maybe-string key
-The key of the machine the daemon is running on.  It must be the key whose
-certificate is @code{cert}.
-
-Defaults to @samp{"/etc/openvpn/client.key"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} boolean comp-lzo?
+@item @code{comp-lzo?} (default: @code{#t}) (type: boolean)
 Whether to use the lzo compression algorithm.
 
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} boolean persist-key?
+@item @code{persist-key?} (default: @code{#t}) (type: boolean)
 Don't re-read key files across SIGUSR1 or --ping-restart.
 
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} boolean persist-tun?
+@item @code{persist-tun?} (default: @code{#t}) (type: boolean)
 Don't close and reopen TUN/TAP device or run up/down scripts across
 SIGUSR1 or --ping-restart restarts.
 
-Defaults to @samp{#t}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} boolean fast-io?
+@item @code{fast-io?} (default: @code{#f}) (type: boolean)
 (Experimental) Optimize TUN/TAP/UDP I/O writes by avoiding a call to
 poll/epoll/select prior to the write operation.
 
-Defaults to @samp{#f}.
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} number verbosity
+@item @code{verbosity} (default: @code{3}) (type: number)
 Verbosity level.
 
-Defaults to @samp{3}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} tls-auth-server tls-auth
+@item @code{tls-auth} (default: @code{#f}) (type: tls-auth-server)
 Add an additional layer of HMAC authentication on top of the TLS control
 channel to protect against DoS attacks.
 
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} number port
+@item @code{port} (default: @code{1194}) (type: number)
 Specifies the port number on which the server listens.
 
-Defaults to @samp{1194}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} ip-mask server
+@item @code{server} (default: @code{"10.8.0.0 255.255.255.0"}) (type: ip-mask)
 An ip and mask specifying the subnet inside the virtual network.
 
-Defaults to @samp{"10.8.0.0 255.255.255.0"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} cidr6 server-ipv6
+@item @code{server-ipv6} (default: @code{#f}) (type: cidr6)
 A CIDR notation specifying the IPv6 subnet inside the virtual network.
 
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} string dh
+@item @code{dh} (default: @code{"/etc/openvpn/dh2048.pem"}) (type: string)
 The Diffie-Hellman parameters file.
 
-Defaults to @samp{"/etc/openvpn/dh2048.pem"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} string ifconfig-pool-persist
+@item @code{ifconfig-pool-persist} (default: @code{"/etc/openvpn/ipp.txt"}) (type: string)
 The file that records client IPs.
 
-Defaults to @samp{"/etc/openvpn/ipp.txt"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} gateway redirect-gateway?
+@item @code{redirect-gateway?} (default: @code{#f}) (type: gateway)
 When true, the server will act as a gateway for its clients.
 
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} boolean client-to-client?
+@item @code{client-to-client?} (default: @code{#f}) (type: boolean)
 When true, clients are allowed to talk to each other inside the VPN.
 
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} keepalive keepalive
+@item @code{keepalive} (default: @code{(10 120)}) (type: keepalive)
 Causes ping-like messages to be sent back and forth over the link so
 that each side knows when the other side has gone down.  @code{keepalive}
 requires a pair.  The first element is the period of the ping sending,
 and the second element is the timeout before considering the other side
 down.
 
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} number max-clients
+@item @code{max-clients} (default: @code{100}) (type: number)
 The maximum number of clients.
 
-Defaults to @samp{100}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} string status
+@item @code{status} (default: @code{"/var/run/openvpn/status"}) (type: string)
 The status file.  This file shows a small report on current connection.
 It is truncated and rewritten every minute.
 
-Defaults to @samp{"/var/run/openvpn/status"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-server-configuration} parameter} openvpn-ccd-list client-config-dir
+@item @code{client-config-dir} (default: @code{()}) (type: openvpn-ccd-list)
 The list of configuration for some clients.
 
-Defaults to @samp{()}.
+@end table
 
-Available @code{openvpn-ccd-configuration} fields are:
-
-@deftypevr {@code{openvpn-ccd-configuration} parameter} string name
-Client name.
-
-Defaults to @samp{"client"}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-ccd-configuration} parameter} ip-mask iroute
-Client own network
-
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@deftypevr {@code{openvpn-ccd-configuration} parameter} ip-mask ifconfig-push
-Client VPN IP.
-
-Defaults to @samp{#f}.
-
-@end deftypevr
-
-@end deftypevr
+@end deftp
 
 @c %end of automatic openvpn-server documentation
 
@@ -31519,7 +31312,7 @@ Each parameter definition is preceded by its type; for example,
 @samp{boolean foo} indicates that the @code{foo} parameter should be
 specified as a boolean.  Types starting with @code{maybe-} denote
 parameters that won't show up in TLP config file when their value is
-left unset, or is explicitly set to the @code{*unspecified*} value.
+left unset, or is explicitly set to the @code{'unset} value.
 
 @c The following documentation was initially generated by
 @c (generate-tlp-documentation) in (gnu services pm).  Manually maintained
@@ -39136,7 +38929,7 @@ macro which is a shorthand of this.
 Sometimes a field should not be serialized if the user doesn’t specify a
 value.  To achieve this, you can use the @code{define-maybe} macro to
 define a ``maybe type''; if the value of a maybe type is left unset, or
-is set to the @code{*unspecified*} value, then it will not be
+is set to the @code{'unset} value, then it will not be
 serialized.
 
 When defining a ``maybe type'', the corresponding serializer for the

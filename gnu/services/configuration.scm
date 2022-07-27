@@ -3,7 +3,7 @@
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
@@ -142,8 +142,7 @@ does not have a default value" field kind)))
                                     (id #'stem #'serialize-maybe- #'stem))))
        #`(begin
            (define (maybe-stem? val)
-             (or (unspecified? val)
-                 (stem? val)))
+             (or (eq? val 'unset) (stem? val)))
            #,@(if serialize?
                   (list #'(define (serialize-maybe-stem field-name val)
                             (if (stem? val)
@@ -171,10 +170,10 @@ does not have a default value" field kind)))
      (values #'(field-type def)))
     ((field-type)
      (identifier? #'field-type)
-     (values #'(field-type *unspecified*)))
+     (values #'(field-type 'unset)))
     (field-type
      (identifier? #'field-type)
-     (values #'(field-type *unspecified*)))))
+     (values #'(field-type 'unset)))))
 
 (define (define-configuration-helper serialize? serializer-prefix syn)
   (syntax-case syn ()
@@ -262,7 +261,7 @@ does not have a default value" field kind)))
                         (lambda ()
                           (display '#,(id #'stem #'% #'stem))
                           (if (eq? (syntax->datum field-default)
-                                   '*unspecified*)
+                                   'unset)
                               (configuration-missing-default-value
                                '#,(id #'stem #'% #'stem) 'field)
                               field-default)))
