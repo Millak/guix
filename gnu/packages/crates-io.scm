@@ -36820,14 +36820,14 @@ general elements and for numerics.")
 (define-public rust-ndk-sys-0.2
   (package
     (name "rust-ndk-sys")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ndk-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13c68a217ag3k18vlffpcj2qjfinchxxchzlwnsp075v7p5j4jf4"))))
+        (base32 "08915adplysmvx0ha12if1v7zxzx82xgj3nnmiddkm8aq9sdvg71"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/rust-windowing/android-ndk-rs")
