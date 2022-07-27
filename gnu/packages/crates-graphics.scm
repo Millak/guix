@@ -2655,8 +2655,35 @@ and load them into WlBuffers as well as obtain the necessary metadata to
 properly display animated cursors.")
     (license license:expat)))
 
+(define-public rust-wayland-egl-0.29
+  (package
+    (name "rust-wayland-egl")
+    (version "0.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-egl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0flslbp8q4nv3hcw941vapn3jh6y7glqaqv63h1mjaqnxrlisa43"))))
+    (build-system cargo-build-system)
+    (inputs
+     (list rust-wayland-client-0.29 rust-wayland-sys-0.29))
+    ;; For the PKG_CONFIG_PATH environment variable.
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Bindings to libwayland-egl")
+    (description
+     "This crate provides bindings for OpenGL/Vulkan support for
+Wayland client apps.  It creates an EGLSurface from any
+WlSurface, which can then play the role of the base surface for
+initializing an OpenGL or Vulkan context.")
+    (license license:expat)))
+
 (define-public rust-wayland-egl-0.28
   (package
+    (inherit rust-wayland-egl-0.29)
     (name "rust-wayland-egl")
     (version "0.28.3")
     (source
@@ -2669,17 +2696,8 @@ properly display animated cursors.")
     (build-system cargo-build-system)
     (inputs
      (list rust-wayland-client-0.28 rust-wayland-sys-0.28))
-    ;; For the PKG_CONFIG_PATH environment variable.
     (native-inputs
-     (list pkg-config))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Bindings to libwayland-egl")
-    (description
-     "This crate provides bindings for OpenGL/Vulkan support for
-Wayland client apps.  It creates an EGLSurface from any
-WlSurface, which can then play the role of the base surface for
-initializing an OpenGL or Vulkan context.")
-    (license license:expat)))
+     (list pkg-config))))
 
 (define-public rust-wayland-protocols-0.29
   (package
