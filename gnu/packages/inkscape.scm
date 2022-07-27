@@ -35,6 +35,7 @@
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages graphics)
@@ -247,8 +248,8 @@ endif()~%~%"
         ("python-numpy" ,python-numpy)
         ("python-lxml" ,python-lxml)))
      (native-inputs
-      (list imagemagick                  ;for tests
-            intltool
+      (list gettext-minimal
+            imagemagick                  ;for tests
             `(,glib "bin")
             googletest
             perl
