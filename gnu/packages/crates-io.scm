@@ -37291,7 +37291,10 @@ while still providing platform specific APIs.")
         ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-memoffset" ,rust-memoffset-0.6))))))
+        ("rust-memoffset" ,rust-memoffset-0.6))))
+    (inputs
+     (list rust-bitflags-1.2 rust-cc-1 rust-cfg-if-1 rust-libc-0.2
+           rust-memoffset-0.6))))
 
 (define-public rust-nix-0.21
   (package
