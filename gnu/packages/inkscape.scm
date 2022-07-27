@@ -60,7 +60,7 @@
   (hidden-package
    (package
      (name "inkscape")
-     (version "1.1.1")
+     (version "1.2.1")
      (source
       (origin
         (method url-fetch)
@@ -68,7 +68,7 @@
                             "resources/file/"
                             "inkscape-" version ".tar.xz"))
         (sha256
-         (base32 "1bvqg5xfs3m6r7qfdhmgzwhd1hx8wvg3nhvhmalwzcdm6ffhpjmf"))
+         (base32 "06scilds4p4bw337ss22nfdxy2kynv5yjw6vq6nlpjm7xfh7vkj6"))
         (modules '((guix build utils)
                    (ice-9 format)))
         (snippet
@@ -204,27 +204,33 @@ endif()~%~%"
           (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
           (add-after 'install 'wrap-program
-            ;; Ensure Python is available at runtime.
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
-                (wrap-program (string-append out "/bin/inkscape")
-                  `("GUIX_PYTHONPATH" ":" prefix
-                    (,(getenv "GUIX_PYTHONPATH"))))))))))
+             ;; Ensure Python is available at runtime.
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-program (string-append out "/bin/inkscape")
+                   `("GUIX_PYTHONPATH" prefix
+                     (,(getenv "GUIX_PYTHONPATH")))
+                   ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Inkscape to load
+                   ;; its own icons in pure environments.
+                   `("GDK_PIXBUF_MODULE_FILE" =
+                     (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))))))
      (inputs
       `(("aspell" ,aspell)
         ("autotrace" ,autotrace)
+        ("bash-minimal" ,bash-minimal)
         ("gdl" ,gdl-minimal)
         ("gtkmm" ,gtkmm-3)
         ("gtk" ,gtk+)
         ("gtkspell3" ,gtkspell3)
         ("gsl" ,gsl)
         ("poppler" ,poppler)
-        ("lib2geom" ,lib2geom)
+        ("lib2geom" ,lib2geom-1.2)
         ("libjpeg" ,libjpeg-turbo)
         ("libpng" ,libpng)
         ("libxml2" ,libxml2)
         ("libxslt" ,libxslt)
         ("libgc" ,libgc)
+        ("librsvg" ,librsvg)            ;for the pixbuf loader
         ("libsoup" ,libsoup-minimal-2)
         ("libcdr" ,libcdr)
         ("libvisio" ,libvisio)
@@ -268,24 +274,4 @@ as the native format.")
                            "inkscape-" version ".tar.xz"))
        (sha256
         (base32 "06scilds4p4bw337ss22nfdxy2kynv5yjw6vq6nlpjm7xfh7vkj6"))))
-    (build-system cmake-build-system)
-    (arguments
-     (substitute-keyword-arguments (package-arguments inkscape/stable)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'wrap-program
-             ;; Ensure Python is available at runtime.
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (wrap-program (string-append out "/bin/inkscape")
-                   `("GUIX_PYTHONPATH" prefix
-                     (,(getenv "GUIX_PYTHONPATH")))
-                   ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Inkscape to load
-                   ;; its own icons in pure environments.
-                   `("GDK_PIXBUF_MODULE_FILE" =
-                     (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))))
-    (inputs (modify-inputs (package-inputs inkscape/stable)
-              (replace "lib2geom" lib2geom-1.2)
-              (append bash-minimal
-                      librsvg)))        ;for the pixbuf loader
     (properties (alist-delete 'hidden? (package-properties inkscape/stable)))))
