@@ -31620,8 +31620,7 @@ library.")
          "0sidr67nsa693mqrqgk2np3bkqni0778yk147xncspy171jdk13g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
