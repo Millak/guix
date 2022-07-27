@@ -914,6 +914,12 @@ is part of the GNOME accessibility project.")
                (("g_test_add_func \\(\"/recent-manager.*;") ""))
              (substitute* "gtk/tests/defaultvalue.c"
                (("return g_test_run\\(\\);") ""))
+             ;; These require XPM support in Gdk-Pixbuf which is obsolete.
+             (substitute* "gtk/tests/textbuffer.c"
+               (("g_test_add_func.*test_fill_empty\\);")
+                "")
+               (("g_test_add_func.*test_tag\\);")
+                ""))
              #t))
          (add-before 'check 'pre-check
            (lambda _
