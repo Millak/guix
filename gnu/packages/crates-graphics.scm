@@ -2504,8 +2504,37 @@ the wayland protocol, client side.")
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-wayland-commons-0.29
+  (package
+    (name "rust-wayland-commons")
+    (version "0.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-commons" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gnk4a771i3g1k4fbzx54xnganpc9j68jrx8xj839hfp83iybxll"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nix" ,rust-nix-0.22)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-wayland-sys" ,rust-wayland-sys-0.29))))
+    (inputs
+     (list rust-nix-0.22 rust-once-cell-1 rust-smallvec-1
+           rust-wayland-sys-0.29))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Types and structures used by wayland-client and wayland-server")
+    (description
+     "This package provides common types and structures used by wayland-client
+and wayland-server.")
+    (license license:expat)))
+
 (define-public rust-wayland-commons-0.28
   (package
+    (inherit rust-wayland-commons-0.29)
     (name "rust-wayland-commons")
     (version "0.28.3")
     (source
@@ -2523,13 +2552,7 @@ the wayland protocol, client side.")
         ("rust-smallvec" ,rust-smallvec-1))))
     (inputs
      (list rust-nix-0.18 rust-once-cell-1 rust-smallvec-1
-           rust-wayland-sys-0.28))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Types and structures used by wayland-client and wayland-server")
-    (description
-     "This package provides common types and structures used by wayland-client
-and wayland-server.")
-    (license license:expat)))
+           rust-wayland-sys-0.28))))
 
 (define-public rust-wayland-commons-0.23
   (package
