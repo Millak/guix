@@ -1478,13 +1478,13 @@ compatible directories.")
 (define-public python-dropbox
   (package
     (name "python-dropbox")
-    (version "11.25.0")
+    (version "11.33.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "dropbox" version))
         (sha256
-         (base32 "0vq9c2hp2amsxr2ys2mlgqp6a8hxmvrcwav70ri7wjzalfs32gj6"))))
+         (base32 "1hd9gprvcr6h0p8fxhynf97qf6799whfpsmr73g619392598nqvw"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))  ; Tests require a network connection.
     (native-inputs
@@ -1500,7 +1500,7 @@ Dropbox API v2.")
 (define-public dbxfs
   (package
     (name "dbxfs")
-    (version "1.0.51")
+    (version "1.0.63")
     (source
       (origin
         ;; Release tarball contains files not in git repository.
@@ -1511,7 +1511,7 @@ Dropbox API v2.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0bidb1gg5lqa1561f20qnj7gy323q65qwzfrb8h8gs6dsl3g6yfg"))
+          "1vzfhw3z2r0rb6s0qdzirh3pl7rv1z8xmxa0z5h7h1wqhpl05ai7"))
         (patches (search-patches "dbxfs-remove-sentry-sdk.patch"))))
     (build-system python-build-system)
     (arguments

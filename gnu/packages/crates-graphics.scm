@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -345,8 +346,39 @@ alpha channel embedding.")
        (("rust-gleam" ,rust-gleam-0.6)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-cgmath-0.18
+  (package
+    (name "rust-cgmath")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cgmath" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "05sk7c1c1jg5ygqvc3y77kxddp177gwazfibhd864ag3800x760s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-approx" ,rust-approx-0.4)
+        ("rust-mint" ,rust-mint-0.5)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/brendanzab/cgmath")
+    (synopsis "Linear algebra and mathematics library")
+    (description
+     "This package provides a linear algebra and mathematics library
+for computer graphics.")
+    (license license:asl2.0)))
+
 (define-public rust-cgmath-0.17
   (package
+    (inherit rust-cgmath-0.18)
     (name "rust-cgmath")
     (version "0.17.0")
     (source
@@ -358,7 +390,6 @@ alpha channel embedding.")
        (sha256
         (base32
          "1rvgila6ivr0dh1bxza450a4yfwdi2pwj3h1vnwg0jy4xk6l8f98"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Crate won't build without glium.
        #:cargo-inputs
@@ -370,13 +401,7 @@ alpha channel embedding.")
         ("rust-simd" ,rust-simd-0.2))
        #:cargo-development-inputs
        (;("rust-glium" ,rust-glium-0.23)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/brendanzab/cgmath")
-    (synopsis "Linear algebra and mathematics library")
-    (description
-     "This package provides a linear algebra and mathematics library
-for computer graphics.")
-    (license license:asl2.0)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-cgmath-0.16
   (package
@@ -966,8 +991,48 @@ EUI-64, also known as MAC-48 media access control addresses.")
      "Generated OpenGL bindings and wrapper for Servo.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-glutin-0.28
+  (package
+    (name "rust-glutin")
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glutin" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lpnf61x4jbm55bpdr10k1a1pl3cs719i9y4qibsdj2bajz9vsh0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-android-glue" ,rust-android-glue-0.2)
+        ("rust-cgl" ,rust-cgl-0.3)
+        ("rust-cocoa" ,rust-cocoa-0.24)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-glutin-egl-sys" ,rust-glutin-egl-sys-0.1)
+        ("rust-glutin-emscripten-sys" ,rust-glutin-emscripten-sys-0.1)
+        ("rust-glutin-gles2-sys" ,rust-glutin-gles2-sys-0.1)
+        ("rust-glutin-glx-sys" ,rust-glutin-glx-sys-0.1)
+        ("rust-glutin-wgl-sys" ,rust-glutin-wgl-sys-0.1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-objc" ,rust-objc-0.2)
+        ("rust-osmesa-sys" ,rust-osmesa-sys-0.1)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
+        ("rust-wayland-egl" ,rust-wayland-egl-0.29)
+        ("rust-winapi" ,rust-winapi-0.3)
+        ("rust-winit" ,rust-winit-0.26))))
+    (inputs
+     (list rust-wayland-client-0.29 rust-wayland-egl-0.29))
+    (home-page "https://github.com/tomaka/glutin")
+    (synopsis "Cross-platform OpenGL context provider")
+    (description "This package provides an OpenGL context provider.")
+    (license license:asl2.0)))
+
 (define-public rust-glutin-0.26
   (package
+    (inherit rust-glutin-0.28)
     (name "rust-glutin")
     (version "0.26.0")
     (source
@@ -977,7 +1042,6 @@ EUI-64, also known as MAC-48 media access control addresses.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "18szbh4dixcr7pmymvbrpv21hv0wrpii5w03rv2534bb2ywwpq8s"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-android-glue" ,rust-android-glue-0.2)
@@ -999,11 +1063,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-winit" ,rust-winit-0.24))))
     (inputs
-     (list rust-wayland-client-0.28 rust-wayland-egl-0.28))
-    (home-page "https://github.com/tomaka/glutin")
-    (synopsis "Cross-platform OpenGL context provider")
-    (description "This package provides an OpenGL context provider.")
-    (license license:asl2.0)))
+     (list rust-wayland-client-0.28 rust-wayland-egl-0.28))))
 
 (define-public rust-glutin-0.22
   (package
@@ -1079,7 +1139,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
 (define-public rust-glutin-egl-sys-0.1
   (package
     (name "rust-glutin-egl-sys")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
@@ -1088,7 +1148,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0k1x1frdp4wp47qkai8zzmgqxzpfcn7780m29qgd92lbnbrxwbkp"))))
+         "04f2ci9kb8q4dv4kviigvgfy54lr4jmbnmjsvi50qj13anjnmfra"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -1945,8 +2005,41 @@ interactive applications.")
      "This package provides a library for window abstraction.")
     (license license:expat)))
 
+(define-public rust-png-0.17
+  (package
+    (name "rust-png")
+    (version "0.17.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "png" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fp3vnaxmjdv71dcakc21k07ir5s31dlx1mrazfqddzgaynw0f6w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #false                  ;XXX missing files in tarball
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-crc32fast" ,rust-crc32fast-1)
+        ("rust-deflate" ,rust-deflate-1)
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.5))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-getopts" ,rust-getopts-0.2)
+        ("rust-glium" ,rust-glium-0.31)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-term" ,rust-term-0.7))))
+    (home-page "https://github.com/image-rs/image-png")
+    (synopsis "PNG decoding and encoding library in pure Rust")
+    (description
+     "This package is a PNG decoding and encoding library in pure Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-png-0.16
   (package
+    (inherit rust-png-0.17)
     (name "rust-png")
     (version "0.16.8")
     (source
@@ -1956,19 +2049,13 @@ interactive applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ipl44q3vy4kvx6j296vk7d4v8gvcg203lrkvvixwixq1j98fciw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-crc32fast" ,rust-crc32fast-1)
         ("rust-deflate" ,rust-deflate-0.8)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.3))))
-    (home-page "https://github.com/image-rs/image-png.git")
-    (synopsis "PNG decoding and encoding library in pure Rust")
-    (description
-     "This package is a PNG decoding and encoding library in pure Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.3))))))
 
 (define-public rust-png-0.15
   (package
@@ -2087,8 +2174,31 @@ interactive applications.")
 images in AVIF format.")
     (license license:bsd-3)))
 
+(define-public rust-raw-window-handle-0.4
+  (package
+    (name "rust-raw-window-handle")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "raw-window-handle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0hgvrqbr2b62zhq4ryv08h92mwis9v8f7j9pwcgxzlp7nswvw05q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cty" ,rust-cty-0.2))))
+    (home-page "https://github.com/rust-windowing/raw-window-handle")
+    (synopsis "Interoperability library for Rust Windowing applications")
+    (description
+     "Interoperability library for Rust Windowing applications.")
+    (license license:expat)))
+
 (define-public rust-raw-window-handle-0.3
   (package
+    (inherit rust-raw-window-handle-0.4)
     (name "rust-raw-window-handle")
     (version "0.3.3")
     (source
@@ -2100,14 +2210,8 @@ images in AVIF format.")
        (sha256
         (base32
          "04c2wir7qq3g2b143yav52a1g5ack8ffqx2bpmrn9bc0dix1li0a"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
-    (home-page "https://github.com/rust-windowing/raw-window-handle")
-    (synopsis "Interoperability library for Rust Windowing applications")
-    (description
-     "Interoperability library for Rust Windowing applications.")
-    (license license:expat)))
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-resize-0.3
   (package
@@ -2161,8 +2265,41 @@ implements standard Rust traits to make `RGB`/`RGBA` pixels and slices
 first-class Rust objects.")
     (license license:expat)))
 
+(define-public rust-smithay-client-toolkit-0.15
+  (package
+    (name "rust-smithay-client-toolkit")
+    (version "0.15.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smithay-client-toolkit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18wxla80y6m4l3dwawi7bl1d9m9dfcg4sxxjcgjqq3psjxmg2a4a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-calloop" ,rust-calloop-0.9)
+        ("rust-dlib" ,rust-dlib-0.5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-memmap2" ,rust-memmap2-0.3)
+        ("rust-nix" ,rust-nix-0.22)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-wayland-client" ,rust-wayland-client-0.29)
+        ("rust-wayland-cursor" ,rust-wayland-cursor-0.29)
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))))
+    (home-page "https://github.com/smithay/client-toolkit")
+    (synopsis "Toolkit for making client Wayland applications")
+    (description
+     "This package provides a toolkit for making client Wayland applications.")
+    (license license:expat)))
+
 (define-public rust-smithay-client-toolkit-0.12
   (package
+    (inherit rust-smithay-client-toolkit-0.15)
     (name "rust-smithay-client-toolkit")
     (version "0.12.2")
     (source
@@ -2186,12 +2323,7 @@ first-class Rust objects.")
         ("rust-nix" ,rust-nix-0.18)
         ("rust-wayland-client" ,rust-wayland-client-0.28)
         ("rust-wayland-cursor" ,rust-wayland-cursor-0.28)
-        ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))
-    (home-page "https://github.com/smithay/client-toolkit")
-    (synopsis "Toolkit for making client Wayland applications")
-    (description
-     "This package provides a toolkit for making client Wayland applications.")
-    (license license:expat)))
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))))
 
 (define-public rust-smithay-client-toolkit-0.6
   (package
@@ -2389,8 +2521,50 @@ applications.")
         ("rust-num-derive" ,rust-num-derive-0.2)
         ("rust-num-traits" ,rust-num-traits-0.2))))))
 
+(define-public rust-wayland-client-0.29
+  (package
+    (name "rust-wayland-client")
+    (version "0.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-client" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13s5sj9344izk2g48yizk81kcg8jg4940gg2v6bzcmrjwxh388li"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #false               ;circular dependency on wayland-protocols
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-downcast-rs" ,rust-downcast-rs-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-nix" ,rust-nix-0.22)
+        ("rust-scoped-tls" ,rust-scoped-tls-1)
+        ("rust-wayland-commons" ,rust-wayland-commons-0.29)
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.29))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (inputs
+     (list rust-bitflags-1
+           rust-downcast-rs-1
+           rust-libc-0.2
+           rust-nix-0.22
+           rust-scoped-tls-1
+           rust-wayland-commons-0.29
+           rust-wayland-scanner-0.29
+           rust-wayland-sys-0.29))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis
+     "Rust bindings to the standard C implementation of the wayland protocol")
+    (description
+     "This package provides Rust bindings to the standard C implementation of
+the wayland protocol, client side.")
+    (license license:expat)))
+
 (define-public rust-wayland-client-0.28
   (package
+    (inherit rust-wayland-client-0.29)
     (name "rust-wayland-client")
     (version "0.28.3")
     (source
@@ -2418,14 +2592,7 @@ applications.")
            rust-scoped-tls-1
            rust-wayland-commons-0.28
            rust-wayland-scanner-0.28
-           rust-wayland-sys-0.28))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis
-     "Rust bindings to the standard C implementation of the wayland protocol")
-    (description
-     "This package provides Rust bindings to the standard C implementation of
-the wayland protocol, client side.")
-    (license license:expat)))
+           rust-wayland-sys-0.28))))
 
 (define-public rust-wayland-client-0.23
   (package
@@ -2487,8 +2654,37 @@ the wayland protocol, client side.")
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-wayland-commons-0.29
+  (package
+    (name "rust-wayland-commons")
+    (version "0.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-commons" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gnk4a771i3g1k4fbzx54xnganpc9j68jrx8xj839hfp83iybxll"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nix" ,rust-nix-0.22)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-wayland-sys" ,rust-wayland-sys-0.29))))
+    (inputs
+     (list rust-nix-0.22 rust-once-cell-1 rust-smallvec-1
+           rust-wayland-sys-0.29))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Types and structures used by wayland-client and wayland-server")
+    (description
+     "This package provides common types and structures used by wayland-client
+and wayland-server.")
+    (license license:expat)))
+
 (define-public rust-wayland-commons-0.28
   (package
+    (inherit rust-wayland-commons-0.29)
     (name "rust-wayland-commons")
     (version "0.28.3")
     (source
@@ -2506,13 +2702,7 @@ the wayland protocol, client side.")
         ("rust-smallvec" ,rust-smallvec-1))))
     (inputs
      (list rust-nix-0.18 rust-once-cell-1 rust-smallvec-1
-           rust-wayland-sys-0.28))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Types and structures used by wayland-client and wayland-server")
-    (description
-     "This package provides common types and structures used by wayland-client
-and wayland-server.")
-    (license license:expat)))
+           rust-wayland-sys-0.28))))
 
 (define-public rust-wayland-commons-0.23
   (package
@@ -2554,8 +2744,35 @@ and wayland-server.")
        (("rust-nix" ,rust-nix-0.14)
         ("rust-wayland-sys" ,rust-wayland-sys-0.21))))))
 
+(define-public rust-wayland-cursor-0.29
+  (package
+    (name "rust-wayland-cursor")
+    (version "0.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-cursor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gd6aswkrdz556n54pjpd4rchw7jkgcx6hnrhgy62y2y7pqmh9y5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nix" ,rust-nix-0.22)
+        ("rust-xcursor" ,rust-xcursor-0.3))))
+    (inputs
+     (list rust-nix-0.22 rust-wayland-client-0.29 rust-xcursor-0.3))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Bindings to libwayland-cursor")
+    (description
+     "This crate provides helpers to load the system provided cursor images
+and load them into WlBuffers as well as obtain the necessary metadata to
+properly display animated cursors.")
+    (license license:expat)))
+
 (define-public rust-wayland-cursor-0.28
   (package
+    (inherit rust-wayland-cursor-0.29)
     (name "rust-wayland-cursor")
     (version "0.28.3")
     (source
@@ -2571,29 +2788,22 @@ and wayland-server.")
        (("rust-nix" ,rust-nix-0.18)
         ("rust-xcursor" ,rust-xcursor-0.3))))
     (inputs
-     (list rust-nix-0.18 rust-wayland-client-0.28 rust-xcursor-0.3))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Bindings to libwayland-cursor")
-    (description
-     "This crate provides helpers to load the system provided cursor images
-and load them into WlBuffers as well as obtain the necessary metadata to
-properly display animated cursors.")
-    (license license:expat)))
+     (list rust-nix-0.18 rust-wayland-client-0.28 rust-xcursor-0.3))))
 
-(define-public rust-wayland-egl-0.28
+(define-public rust-wayland-egl-0.29
   (package
     (name "rust-wayland-egl")
-    (version "0.28.3")
+    (version "0.29.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-egl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xd7iap0x4sidmy9dv02cdnxjhnbk9li7r7f39x9cg0i8xs50ly6"))))
+        (base32 "0flslbp8q4nv3hcw941vapn3jh6y7glqaqv63h1mjaqnxrlisa43"))))
     (build-system cargo-build-system)
     (inputs
-     (list rust-wayland-client-0.28 rust-wayland-sys-0.28))
+     (list rust-wayland-client-0.29 rust-wayland-sys-0.29))
     ;; For the PKG_CONFIG_PATH environment variable.
     (native-inputs
      (list pkg-config))
@@ -2606,8 +2816,53 @@ WlSurface, which can then play the role of the base surface for
 initializing an OpenGL or Vulkan context.")
     (license license:expat)))
 
+(define-public rust-wayland-egl-0.28
+  (package
+    (inherit rust-wayland-egl-0.29)
+    (name "rust-wayland-egl")
+    (version "0.28.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-egl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xd7iap0x4sidmy9dv02cdnxjhnbk9li7r7f39x9cg0i8xs50ly6"))))
+    (build-system cargo-build-system)
+    (inputs
+     (list rust-wayland-client-0.28 rust-wayland-sys-0.28))
+    (native-inputs
+     (list pkg-config))))
+
+(define-public rust-wayland-protocols-0.29
+  (package
+    (name "rust-wayland-protocols")
+    (version "0.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-protocols" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hap8vky2fwsq05c98c8xs00gb9m5kxp8kq3zr0jwh036gi7l530"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1.2))))
+    (inputs
+     (list rust-bitflags-1.2 rust-wayland-client-0.29
+           rust-wayland-commons-0.29 rust-wayland-scanner-0.29
+           rust-wayland-server-0.29))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Generated API for the officials Wayland protocol extensions")
+    (description
+     "This package provides a generated API for the officials Wayland protocol
+extensions.")
+    (license license:expat)))
+
 (define-public rust-wayland-protocols-0.28
   (package
+    (inherit rust-wayland-protocols-0.29)
     (name "rust-wayland-protocols")
     (version "0.28.3")
     (source
@@ -2624,13 +2879,7 @@ initializing an OpenGL or Vulkan context.")
     (inputs
      (list rust-bitflags-1 rust-wayland-client-0.28
            rust-wayland-commons-0.28 rust-wayland-scanner-0.28
-           rust-wayland-server-0.28))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Generated API for the officials Wayland protocol extensions")
-    (description
-     "This package provides a generated API for the officials Wayland protocol
-extensions.")
-    (license license:expat)))
+           rust-wayland-server-0.28))))
 
 (define-public rust-wayland-protocols-0.23
   (package
@@ -2679,17 +2928,17 @@ extensions.")
         ("rust-wayland-sys" ,rust-wayland-sys-0.21)
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.21))))))
 
-(define-public rust-wayland-scanner-0.28
+(define-public rust-wayland-scanner-0.29
   (package
     (name "rust-wayland-scanner")
-    (version "0.28.3")
+    (version "0.29.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-scanner" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0g8ky63qk27in7zajycj3fyydsxlj19hanfcvr8d7z5kcxbvl43h"))))
+        (base32 "1q7r764z8k922xf51fj56b1xm29ffi9ap8jnf4c478gp8cqyv89r"))))
     (build-system cargo-build-system)
     (inputs
      (list rust-proc-macro2-1 rust-quote-1 rust-xml-rs-0.8))
@@ -2701,6 +2950,21 @@ It is intended for use with wayland-sys.  You should only need this crate if
 you are working on custom Wayland protocol extensions.  Look at the
 wayland-client crate for usable bindings.")
     (license license:expat)))
+
+(define-public rust-wayland-scanner-0.28
+  (package
+    (inherit rust-wayland-scanner-0.29)
+    (name "rust-wayland-scanner")
+    (version "0.28.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-scanner" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g8ky63qk27in7zajycj3fyydsxlj19hanfcvr8d7z5kcxbvl43h"))))
+    (inputs
+     (list rust-proc-macro2-1 rust-quote-1 rust-xml-rs-0.8))))
 
 (define-public rust-wayland-scanner-0.23
   (package
@@ -2738,8 +3002,49 @@ wayland-client crate for usable bindings.")
         (base32
          "17mp49v7w0p0x5ry628lj2llljnwkr9aj9g4bqqhfibid32jhf5z"))))))
 
+(define-public rust-wayland-server-0.29
+  (package
+    (name "rust-wayland-server")
+    (version "0.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-server" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wj8gf28dbjwb824i29wf3wr5r6wp6ssknjm9b5dnb1fah47mk66"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-downcast-rs" ,rust-downcast-rs-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-nix" ,rust-nix-0.22)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
+        ("rust-scoped-tls" ,rust-scoped-tls-1))))
+    (inputs
+     (list rust-bitflags-1
+           rust-downcast-rs-1
+           rust-lazy-static-1
+           rust-libc-0.2
+           rust-nix-0.22
+           rust-parking-lot-0.11
+           rust-scoped-tls-1
+           rust-wayland-commons-0.29
+           rust-wayland-scanner-0.29
+           rust-wayland-sys-0.29))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis
+     "Bindings to the standard C implementation of the wayland protocol")
+    (description
+     "This package provides Rust bindings to the standard C implementation of
+the wayland protocol, server side.")
+    (license license:expat)))
+
 (define-public rust-wayland-server-0.28
   (package
+    (inherit rust-wayland-server-0.29)
     (name "rust-wayland-server")
     (version "0.28.3")
     (source
@@ -2749,7 +3054,6 @@ wayland-client crate for usable bindings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "09jfdjfqhjfcpiz4csgh60ymfkmz1cl3jmxyzq9hzcp0kyyxix93"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -2769,14 +3073,7 @@ wayland-client crate for usable bindings.")
            rust-scoped-tls-1
            rust-wayland-commons-0.28
            rust-wayland-scanner-0.28
-           rust-wayland-sys-0.28))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis
-     "Bindings to the standard C implementation of the wayland protocol")
-    (description
-     "This package provides Rust bindings to the standard C implementation of
-the wayland protocol, server side.")
-    (license license:expat)))
+           rust-wayland-sys-0.28))))
 
 (define-public rust-wayland-server-0.23
   (package
@@ -2832,8 +3129,51 @@ the wayland protocol, server side.")
         ("rust-wayland-sys" ,rust-wayland-sys-0.21)
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.21))))))
 
+(define-public rust-wayland-sys-0.29
+  (package
+    (name "rust-wayland-sys")
+    (version "0.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m2jwk5q36jidwbdmdicmi27r9dzi4wanzg3i28nfxc9kbvisd6r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-dlib" ,rust-dlib-0.5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memoffset" ,rust-memoffset-0.6)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-libraries
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((libwayland (dirname (search-input-file
+                                         inputs "lib/libwayland-client.so"))))
+               (substitute* (find-files "src" "\\.rs$")
+                 (("libwayland.*\\.so" shared-lib)
+                  (string-append libwayland "/" shared-lib)))))))))
+    (inputs
+     (list rust-dlib-0.5 rust-lazy-static-1 rust-libc-0.2
+           rust-pkg-config-0.3))
+    (propagated-inputs
+     (list wayland))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "FFI bindings to the various @file{libwayland-*.so} libraries")
+    (description
+     "This package provides FFI bindings to the various
+@file{libwayland-*.so} libraries.  You should only need this crate if
+you are working on custom Wayland protocol extensions.  Look at the
+crate @code{rust-wayland-client} for usable bindings.")
+    (license license:expat)))
+
 (define-public rust-wayland-sys-0.28
   (package
+    (inherit rust-wayland-sys-0.29)
     (name "rust-wayland-sys")
     (version "0.28.3")
     (source
@@ -2863,15 +3203,7 @@ the wayland protocol, server side.")
      (list rust-dlib-0.4 rust-lazy-static-1 rust-libc-0.2
            rust-pkg-config-0.3))
     (propagated-inputs
-     (list wayland))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "FFI bindings to the various @file{libwayland-*.so} libraries")
-    (description
-     "This package provides FFI bindings to the various
-@file{libwayland-*.so} libraries.  You should only need this crate if
-you are working on custom Wayland protocol extensions.  Look at the
-crate @code{rust-wayland-client} for usable bindings.")
-    (license license:expat)))
+     (list wayland))))
 
 (define-public rust-wayland-sys-0.23
   (package
@@ -2911,8 +3243,64 @@ crate @code{rust-wayland-client} for usable bindings.")
         (base32
          "0a0ndgkg98pvmkv44yya4f7mxzjaxylknqh64bpa05w0azyv02jj"))))))
 
+(define-public rust-winit-0.26
+  (package
+    (name "rust-winit")
+    (version "0.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fp7cdh7llbqmm6ga8f6bzk9785jmkbyy1w631hr9faq3n9wqhwv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cocoa" ,rust-cocoa-0.24)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-core-graphics" ,rust-core-graphics-0.22)
+        ("rust-core-video-sys" ,rust-core-video-sys-0.1)
+        ("rust-dispatch" ,rust-dispatch-0.2)
+        ("rust-instant" ,rust-instant-0.1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mint" ,rust-mint-0.5)
+        ("rust-mio" ,rust-mio-0.8)
+        ("rust-ndk" ,rust-ndk-0.5)
+        ("rust-ndk-glue" ,rust-ndk-glue-0.5)
+        ("rust-ndk-sys" ,rust-ndk-sys-0.2)
+        ("rust-objc" ,rust-objc-0.2)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.15)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-web-sys" ,rust-web-sys-0.3)
+        ("rust-winapi" ,rust-winapi-0.3)
+        ("rust-x11-dl" ,rust-x11-dl-2))))
+    (inputs
+     (list rust-wayland-client-0.29 rust-wayland-protocols-0.29))
+    (home-page "https://github.com/rust-windowing/winit")
+    (synopsis "Window creation library")
+    (description
+     "Winit is a window creation and management library. It can create
+windows and lets you handle events (for example: the window being
+resized, a key being pressed, a mouse movement, etc.) produced by
+window.
+
+Winit is designed to be a low-level brick in a hierarchy of libraries.
+Consequently, in order to show something on the window you need to use
+the platform-specific getters provided by winit, or another library.")
+    (license license:asl2.0)))
+
 (define-public rust-winit-0.24
   (package
+    (inherit rust-winit-0.26)
     (name "rust-winit")
     (version "0.24.0")
     (source
@@ -2922,7 +3310,6 @@ crate @code{rust-wayland-client} for usable bindings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "15zmpx5ip6ziqhds7md1s0ri0blhxfa8fg1ylg84pf0frrpxlkns"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -2953,19 +3340,7 @@ crate @code{rust-wayland-client} for usable bindings.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-x11-dl" ,rust-x11-dl-2))))
     (inputs
-     (list rust-wayland-client-0.28))
-    (home-page "https://github.com/rust-windowing/winit")
-    (synopsis "Window creation library")
-    (description
-     "Winit is a window creation and management library. It can create
-windows and lets you handle events (for example: the window being
-resized, a key being pressed, a mouse movement, etc.) produced by
-window.
-
-Winit is designed to be a low-level brick in a hierarchy of libraries.
-Consequently, in order to show something on the window you need to use
-the platform-specific getters provided by winit, or another library.")
-    (license license:asl2.0)))
+     (list rust-wayland-client-0.28))))
 
 (define-public rust-winit-0.20
   (package

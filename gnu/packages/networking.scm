@@ -906,14 +906,14 @@ residing in IPv4-only networks, even when they are behind a NAT device.")
 (define-public ndisc6
   (package
     (name "ndisc6")
-    (version "1.0.5")
+    (version "1.0.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.remlab.net/files/ndisc6/ndisc6-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0lgkbnnll8nrr7h63ywd42sg8fiv6jhhymd7rnml8a3yqjgjz4rn"))))
+                "1yrw8maj1646d498ax8xi0jmzk80idrc5x0913x5rwg1kc7224x7"))))
     (build-system gnu-build-system)
     (home-page "https://www.remlab.net/ndisc6/")
     (synopsis "IPv6 diagnostic tools")
@@ -3506,8 +3506,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               ;; on, introducing nondeterminism (see:
               ;; https://github.com/savoirfairelinux/opendht/issues/626).
               (substitute* "tests/Makefile.am"
-                (("tests/dhtrunnertester.(h|cpp)$" all)
-                 (string-append "# " all)))))
+                (("\\bdhtrunnertester\\.(h|cpp)\\b")
+                 ""))))
           (add-after 'unpack 'fix-python-installation-prefix
             ;; Specify the installation prefix for the compiled Python module
             ;; that would otherwise attempt to installs itself to Python's own
@@ -4111,14 +4111,14 @@ stamps.")
 (define-public nbd
   (package
     (name "nbd")
-    (version "3.23")
+    (version "3.24")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://sourceforge/nbd/nbd/" version
                             "/nbd-" version ".tar.xz"))
         (sha256
-         (base32 "1d2phi0m9x32p9zddv9fpkhj1rbhlvq93wsn9niy7i3aavn71x6y"))))
+         (base32 "036ib2d5722sx9nn7jydqfpl5ici5if2z7g8xrskzcx74dniaxv8"))))
     (build-system gnu-build-system)
     (inputs
      (list glib))

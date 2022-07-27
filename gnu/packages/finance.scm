@@ -190,7 +190,7 @@
               "python3" "./test/functional/test_runner.py"
               (string-append "--jobs=" (number->string (parallel-job-count))))
              #t)))))
-    (home-page "https://bitcoin.org/en/")
+    (home-page "https://bitcoin.org/")
     (synopsis "Bitcoin peer-to-peer client")
     (description
      "Bitcoin is a digital currency that enables instant payments to anyone
@@ -1843,7 +1843,7 @@ that allows you to run services and through them access the Bitcoin Cash network
            python-requests))
     (native-inputs
      (list python-pytest))
-    (home-page "http://furius.ca/beancount")
+    (home-page "https://beancount.github.io/")
     (synopsis "Command-line double-entry accounting tool")
     (description
      "Beancount is a double-entry bookkeeping computer language that lets you

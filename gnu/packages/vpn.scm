@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Lu hui <luhux76@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -676,13 +677,13 @@ the user specifically asks to proxy, so the @dfn{VPN} interface no longer
 (define-public openconnect
   (package
    (name "openconnect")
-   (version "8.10")
+   (version "9.01")
    (source (origin
             (method url-fetch)
             (uri (string-append "ftp://ftp.infradead.org/pub/openconnect/"
                                 "openconnect-" version ".tar.gz"))
             (sha256
-             (base32 "1cdsx4nsrwawbsisfkldfc9i4qn60g03vxb13nzppr2br9p4rrih"))))
+             (base32 "1iz4j00031a5ircrx30lkiwf58yl9kc827m4ssck4yg963wgmmxk"))))
    (build-system gnu-build-system)
    (propagated-inputs
     (list libxml2 gnutls zlib))
@@ -769,7 +770,7 @@ and probably others.")
 (define-public openfortivpn
   (package
     (name "openfortivpn")
-    (version "1.15.0")
+    (version "1.17.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -778,7 +779,7 @@ and probably others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qsfgpxg553s8rc9cyrc4k96z0pislxsdxb9wyhp8fdprkak2mw2"))))
+                "0an58f0qcyxdx3d5zb5m8vi45a0251b950b5lh16572n8z2g6s2l"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))

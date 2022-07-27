@@ -43,36 +43,44 @@
          ;; The libraries below are needed to run the tests.
          (libraries
           `(("core-specs-alpha-src"
-             ,(lib "core.specs.alpha/archive/core.specs.alpha-"
-                   "0.1.24"
-                   "0v2a0svf1ar2y42ajxwsjr7zmm5j7pp2zwrd2jh3k7xzd1p9x1fv"))
+             ,(lib "core.specs.alpha/archive/v"
+                   "0.2.62"
+                   "0v6nhghsigpzm8y7dykfm318q5dvk5l8sykmn1hr0qgs1jsjqh9j"))
             ("data-generators-src"
              ,(lib "data.generators/archive/data.generators-"
-                   "0.1.2"
-                   "0kki093jp4ckwxzfnw8ylflrfqs8b1i1wi9iapmwcsy328dmgzp1"))
+                   "1.0.0"
+                   "0s3hf1njvs68b8igasikvzagzqxl0gbri7w2qhzsypkhfh60v2cp"))
+            ("java-classpath-src"
+             ,(lib "java.classpath/archive/java.classpath-"
+                   "1.0.0"
+                   "178zajjsc9phk5l61r8w9hcpk0wgc9a811pl7kjgvn7rg4l7fh7j"))
             ("spec-alpha-src"
-             ,(lib "spec.alpha/archive/spec.alpha-"
-                   "0.1.143"
-                   "00alf0347licdn773w2jarpllyrbl52qz4d8mw61anjksacxylzz"))
+             ,(lib "spec.alpha/archive/v"
+                   "0.3.218"
+                   "0h5nd9xlind1a2vmllr2yfhnirgj2pm5dndgqzrly78l5iwcc3wa"))
             ("test-check-src"
-             ,(lib "test.check/archive/test.check-"
-                   "0.9.0"
-                   "0p0mnyhr442bzkz0s4k5ra3i6l5lc7kp6ajaqkkyh4c2k5yck1md"))
+             ,(lib "test.check/archive/v"
+                   "1.1.1"
+                   "0kx8l79mhpnn94rpsgc7nac7gb222g7a47mzrycj8crfc54wf0c1"))
             ("test-generative-src"
              ,(lib "test.generative/archive/test.generative-"
-                   "0.5.2"
-                   "1pjafy1i7yblc7ixmcpfq1lfbyf3jaljvkgrajn70sws9xs7a9f8"))
+                   "1.0.0"
+                   "0yy2vc38s4j5n94jdcjx1v7l2gdq0lywam31id1jh07sx37lv5il"))
             ("tools-namespace-src"
              ,(lib "tools.namespace/archive/tools.namespace-"
-                   "0.2.11"
-                   "10baak8v0hnwz2hr33bavshm7y49mmn9zsyyms1dwjz45p5ymhy0"))))
+                   "1.0.0"
+                   "1ifpk93m33rj2xm1qnnninlsdvm1liqmsp9igr63pjjwwwjw1cnn"))
+            ("tools-reader-src"
+             ,(lib "tools.reader/archive/tools.reader-"
+                   "1.3.2"
+                   "1n4dhg61iyypnjbxmihhqjb7lfpc0lzfvlk4jd8w0yr6za414f3a"))))
          (library-names (match libraries
                           (((library-name _) ...)
                            library-name))))
 
     (package
       (name "clojure")
-      (version "1.10.0")
+      (version "1.11.1")
       (source (let ((name+version (string-append name "-" version)))
                 (origin
                   (method git-fetch)
@@ -81,18 +89,23 @@
                         (commit name+version)))
                   (file-name (string-append name+version "-checkout"))
                   (sha256
-                   (base32 "1kcyv2836acs27vi75hvf3r773ahv2nlh9b3j9xa9m9sdanz1h83")))))
+                   (base32 "1xbab21rm9zvhmw1i2h5lqm7612vrdkxprq0rgb2i3sbgsxcdsn4")))))
       (build-system ant-build-system)
       (inputs
        `(("jre" ,icedtea)))
       (arguments
        `(#:imported-modules ((guix build clojure-utils)
+                             (guix build clojure-build-system)
                              (guix build guile-build-system)
                              ,@%ant-build-system-modules)
          #:modules ((guix build ant-build-system)
+                    ((guix build clojure-build-system) #:prefix clj:)
                     (guix build clojure-utils)
                     (guix build java-utils)
                     (guix build utils)
+                    (guix build syscalls)
+                    (ice-9 match)
+                    (ice-9 regex)
                     (srfi srfi-26))
          #:test-target "test"
          #:phases
@@ -106,22 +119,60 @@
                            "--extract"
                            "--verbose"
                            "--file" (assoc-ref inputs name)
-                           "--strip-components=1"))
-                 (copy-recursively (string-append name "/src/main/clojure/")
-                                   "src/clj/"))
+                           "--strip-components=1")))
                (for-each extract-library ',library-names)
+               (copy-recursively "core-specs-alpha-src/src/main/clojure"
+                                 "src/clj/")
+               (copy-recursively "spec-alpha-src/src/main/clojure"
+                                 "src/clj/")
                #t))
            (add-after 'unpack-library-sources 'fix-manifest-classpath
              (lambda _
                (substitute* "build.xml"
                  (("<attribute name=\"Class-Path\" value=\".\"/>") ""))
                #t))
+           (add-after 'unpack-library-sources 'clojure-spec-skip-macros
+             ;; Disable spec macro instrumentation when compiling clojure.spec
+             ;; See: https://clojure.atlassian.net/browse/CLJ-2254
+             (lambda _
+               (substitute* "build.xml"
+                 (("<sysproperty key=\"java.awt.headless\" value=\"true\"/>")
+                  ,(string-join
+                    '("<sysproperty key=\"java.awt.headless\" value=\"true\"/>"
+                      "<sysproperty key=\"clojure.spec.skip-macros\" value=\"true\"/>\n")
+                    "\n")))
+               #t))
+           (add-after 'unpack-library-sources 'clojure-spec-compile
+             ;; Compile and include clojure.spec.alpha & clojure.core.specs.alpha
+             (lambda _
+               (substitute* "build.xml"
+                 (("<arg value=\"clojure.math\"/>")
+                  ,(string-join
+                    '("<arg value=\"clojure.math\"/>"
+                      "<arg value=\"clojure.spec.alpha\"/>"
+                      "<arg value=\"clojure.spec.gen.alpha\"/>"
+                      "<arg value=\"clojure.spec.test.alpha\"/>"
+                      "<arg value=\"clojure.core.specs.alpha\"/>"))))
+               #t))
+           (add-before 'build 'maven-classpath-properties
+             (lambda _
+               (define (make-classpath libraries)
+                 (string-join (map (lambda (library)
+                                     (string-append library "/src/main/clojure"))
+                                   libraries) ":"))
+               (with-output-to-file "maven-classpath.properties"
+                 (lambda ()
+                   (let ((classpath (make-classpath ',library-names)))
+                     (display (string-append "maven.compile.classpath=" classpath "\n"))
+                     (display (string-append "maven.test.classpath=" classpath "\n")))))
+               #t))
            (add-after 'build 'build-javadoc ant-build-javadoc)
            (replace 'install (install-jars "./"))
            (add-after 'install-license-files 'install-doc
              (cut install-doc #:doc-dirs '("doc/clojure/") <...>))
            (add-after 'install-doc 'install-javadoc
-             (install-javadoc "target/javadoc/")))))
+             (install-javadoc "target/javadoc/"))
+           (add-after 'reset-gzip-timestamps 'reset-class-timestamps clj:reset-class-timestamps))))
       (native-inputs libraries)
       (home-page "https://clojure.org/")
       (synopsis "Lisp dialect running on the JVM")
@@ -153,14 +204,14 @@ designs.")
 (define-public clojure-tools
   (package
     (name "clojure-tools")
-    (version "1.10.3.1040")
+    (version "1.11.1.1149")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.clojure.org/install/clojure-tools-"
                            version
                            ".tar.gz"))
-       (sha256 (base32 "0xvr9nmk9q789vp32zmmzj4macv8v7y9ivnfd6lf7i8vxgg6hvgv"))
+       (sha256 (base32 "196wl87br8zg3npfwpr5c1q0knxd1810vzgb0b6h195hyjf6i210"))
        ;; Remove AOT compiled JAR.  The other JAR only contains uncompiled
        ;; Clojure source code.
        (snippet
@@ -224,7 +275,15 @@ Clojure repl, use Clojure and Java libraries, and start Clojure programs.")
     (arguments
      '(#:source-dirs '("src/main/clojure/")
        #:test-dirs '("src/test/clojure/")
-       #:doc-dirs '()))
+       #:doc-dirs '()
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-import
+           (lambda _
+             (substitute*
+                 "src/main/clojure/clojure/algo/generic/math_functions.clj"
+               (("clojure.algo.generic.math-functions")
+                "clojure.algo.generic.math-functions\n(:refer-clojure :exclude [abs])")))))))
     (synopsis "Generic versions of common functions")
     (description
      "Generic versions of commonly used functions, implemented as multimethods
@@ -261,31 +320,29 @@ defining and using monads and useful monadic functions.")
     (license license:epl1.0)))
 
 (define-public clojure-core-match
-  (let ((commit "1837ffbd4a150e8f3953b2d9ed5cf4a4ad3720a7")
-        (revision "1")) ; this is the 1st commit buildable with clojure 1.9
-    (package
-      (name "clojure-core-match")
-      (version (git-version "0.3.0-alpha5" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/clojure/core.match")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "04bdlp5dgkrqzrz0lw3mfwmygj2218qnm1cz3dkb9wy4m0238s4d"))))
-      (build-system clojure-build-system)
-      (arguments
-       '(#:source-dirs '("src/main/clojure")
-         #:test-dirs '("src/test/clojure")
-         #:doc-dirs '()))
-      (synopsis "Optimized pattern matching for Clojure")
-      (description
-       "An optimized pattern matching library for Clojure.
+  (package
+    (name "clojure-core-match")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/clojure/core.match")
+                    (commit (string-append "core.match-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ajpxjv4yc282cm0jw8819fay2j6jqp9nfy69k7vll09q7vqsd22"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()))
+    (synopsis "Optimized pattern matching for Clojure")
+    (description
+     "An optimized pattern matching library for Clojure.
 It supports Clojure 1.5.1 and later as well as ClojureScript.")
-      (home-page "https://github.com/clojure/core.match")
-      (license license:epl1.0))))
+    (home-page "https://github.com/clojure/core.match")
+    (license license:epl1.0)))
 
 (define-public clojure-data-codec
   (package
@@ -354,8 +411,7 @@ lazy - should allow parsing and emitting of large XML documents")
     (license license:epl1.0)))
 
 (define-public clojure-instaparse
-  (let ((commit "dcfffad5b065e750f0f5835f017cdd8188b8ca2e")
-        (version "1.4.9")) ; upstream forget to tag this release
+  (let ((version "1.4.12"))
     (package
       (name "clojure-instaparse")
       (version version)
@@ -363,14 +419,27 @@ lazy - should allow parsing and emitting of large XML documents")
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/Engelberg/instaparse")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "002mrgin4z3dqy88r1lak7smd0m7x8d22vmliw0m6w6mh5pa17lk"))))
+                  "1xdiwsv1dc8mvrmvgs4xdqk3z6ddsammc6brhcb771yhimx8jjcr"))))
       (build-system clojure-build-system)
       (arguments
-       '(#:doc-dirs '("docs/")))
+       '(;; Disabled AOT, because of failing test: No implementation of
+         ;; method: :conj-flat of protocol:
+         ;; #'instaparse.auto-flatten-seq/ConjFlat found for class:
+         ;; instaparse.auto_flatten_seq.AutoFlattenSeq
+         #:aot-exclude '(#:all)
+         #:doc-dirs '("docs/")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-import
+             (lambda _
+               (substitute*
+                   "test/instaparse/defparser_test.cljc"
+                 (("AssertionError")
+                  "Exception")))))))
       (synopsis "No grammar left behind")
       (description
        "Instaparse aims to be the simplest way to build parsers in Clojure.
@@ -458,7 +527,7 @@ concise, powerful tests.")
 (define-public clojure-tools-cli
   (package
     (name "clojure-tools-cli")
-    (version "0.4.2")
+    (version "1.0.206")
     (home-page "https://github.com/clojure/tools.cli")
     (source (origin
               (method git-fetch)
@@ -467,7 +536,7 @@ concise, powerful tests.")
                     (commit (string-append "tools.cli-" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1yqlm8lwbcjm0dp032z7vzc4bdlmc4jixznvf4adsqhvqw85hvj2"))))
+               (base32 "1hvk5zacl3fr8lfcbfgckaicqjx697j0kzw2x5hwj8j5xlr8ri2r"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure/")
@@ -482,7 +551,7 @@ work with command-line arguments.")
 (define-public clojure-tools-deps-alpha
   (package
     (name "clojure-tools-deps-alpha")
-    (version "0.12.1104")
+    (version "0.14.1212")
     (home-page "https://github.com/clojure/tools.deps.alpha")
     (source (origin
               (method git-fetch)
@@ -492,7 +561,7 @@ work with command-line arguments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "174m83n5m3arai2vbg434zjibbsr3r4pp7lz3adja8lxq7g21r80"))))
+                "0r8qfihii6cf95kl86x6zfldnm7wlkgda2qmq3340j1x03v244dd"))))
     (build-system clojure-build-system)
     (arguments
      `(#:source-dirs '("src/main/clojure" "src/main/resources")
@@ -544,7 +613,7 @@ dependency graph expansion and the creation of classpaths.")
 (define-public clojure-tools-gitlibs
   (package
     (name "clojure-tools-gitlibs")
-    (version "2.4.172")
+    (version "2.4.181")
     (home-page "https://github.com/clojure/tools.gitlibs")
     (source (origin
               (method git-fetch)
@@ -554,7 +623,7 @@ dependency graph expansion and the creation of classpaths.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19d83wigmigy66f5i61a3ishg7zrlv8jngj8m9brsh9v38a0fwdr"))))
+                "1d8c79f33axghadwqa955yjfsxa6fgl8jq4nfll2zrp6sjw0597k"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")

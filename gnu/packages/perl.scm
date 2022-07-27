@@ -2147,14 +2147,14 @@ CPAN::Meta object are present.")
 (define-public perl-cpanel-json-xs
   (package
     (name "perl-cpanel-json-xs")
-    (version "4.26")
+    (version "4.30")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/R/RU/RURBAN/"
                            "Cpanel-JSON-XS-" version ".tar.gz"))
        (sha256
-        (base32 "0c07jfh6pq0f3hlhg0cqmznna7rlcflgrqv17mbkz9gnvg4x3szv"))))
+        (base32 "1d5xwk3j3pvc2s439vjrnhwcx44wkskda9mrwv3ix2c6pp7slpsn"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-common-sense))
@@ -8571,7 +8571,7 @@ for a given module is comprehensive.")
 (define-public perl-pod-parser
   (package
     (name "perl-pod-parser")
-    (version "1.63")
+    (version "1.65")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8579,7 +8579,7 @@ for a given module is comprehensive.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1k8clxxdjag56zm6cv38c3q81gj7xphfhh98l21jynwp55hvbq6v"))))
+                "12mj07a34shx5h203l693fra7ip9hc49zrd7w8gsa5llcpnbv9rv"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Pod-Parser")
     (synopsis "Modules for parsing/translating POD format documents")

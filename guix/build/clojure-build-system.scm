@@ -22,11 +22,15 @@
                           ant-build))
   #:use-module (guix build clojure-utils)
   #:use-module (guix build java-utils)
+  #:use-module (guix build syscalls)
   #:use-module (guix build utils)
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (%standard-phases
-            clojure-build))
+            clojure-build
+            reset-class-timestamps))
 
 ;; Commentary:
 ;;
@@ -108,6 +112,55 @@ priority over TEST-INCLUDE."
                   jar-names)))
   #t)
 
+(define (regular-jar-file? file stat)
+  "Predicate returning true if FILE is ending on '.jar'
+and STAT indicates it is a regular file."
+    (and (string-suffix? ".jar" file)
+         (eq? 'regular (stat:type stat))))
+
+;; XXX: The only difference compared to 'strip-jar-timestamps' in
+;; ant-build-system.scm is the date.  TODO: Adjust and factorize.
+(define* (reset-class-timestamps #:key outputs #:allow-other-keys)
+  "Unpack all jar archives, reset the timestamp of all contained class files,
+and repack them.  This is necessary to ensure that archives are reproducible."
+  (define (repack-archive jar)
+    (format #t "resetting class timestamps and repacking ~a\n" jar)
+
+    ;; Note: .class files need to be strictly newer than source files,
+    ;; otherwise the Clojure compiler will recompile sources.
+    (let* ((early-1980 315619200) ; 1980-01-02 UTC
+           (dir (mkdtemp! "jar-contents.XXXXXX"))
+           (manifest (string-append dir "/META-INF/MANIFEST.MF")))
+      (with-directory-excursion dir
+        (invoke "jar" "xf" jar))
+      (delete-file jar)
+      (for-each (lambda (file)
+                  (let ((s (lstat file)))
+                    (unless (eq? (stat:type s) 'symlink)
+                      (when (string-match "^(.*)\\.class$" file)
+                        (utime file early-1980 early-1980)))))
+                (find-files dir #:directories? #t))
+      ;; The jar tool will always set the timestamp on the manifest file
+      ;; and the containing directory to the current time, even when we
+      ;; reuse an existing manifest file.  To avoid this we use "zip"
+      ;; instead of "jar".  It is important that the manifest appears
+      ;; first.
+      (with-directory-excursion dir
+        (let* ((files (find-files "." ".*" #:directories? #t))
+               ;; To ensure that the reference scanner can detect all
+               ;; store references in the jars we disable compression
+               ;; with the "-0" option.
+               (command (if (file-exists? manifest)
+                            `("zip" "-0" "-X" ,jar ,manifest ,@files)
+                            `("zip" "-0" "-X" ,jar ,@files))))
+          (apply invoke command)))
+      (utime jar 0 0)))
+  (for-each (match-lambda
+              ((output . directory)
+               (for-each repack-archive
+                         (find-files directory regular-jar-file?))))
+            outputs))
+
 (define-with-docs install
   "Standard 'install' phase for clojure-build-system."
   (install-jars "./"))
@@ -119,7 +172,8 @@ priority over TEST-INCLUDE."
     (replace 'build build)
     (replace 'check check)
     (replace 'install install)
-    (add-after 'install-license-files 'install-doc install-doc)))
+    (add-after 'install-license-files 'install-doc install-doc)
+    (add-after 'reset-gzip-timestamps 'reset-class-timestamps reset-class-timestamps)))
 
 (define* (clojure-build #:key
                         inputs

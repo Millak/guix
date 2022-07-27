@@ -4352,7 +4352,7 @@ code, used in @code{libtoxcore}.")
 (define-public gsm
   (package
     (name "gsm")
-    (version "1.0.19")
+    (version "1.0.20")
     (source
      (origin
        (method url-fetch)
@@ -4360,8 +4360,7 @@ code, used in @code{libtoxcore}.")
         (string-append "http://www.quut.com/" name "/" name
                        "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1xkha9ss5g5qnfaybi8il0mcvp8knwg9plgh8404vh58d0pna0s9"))))
+        (base32 "1gwhmqs24c14gc9qr91iqb2jkbr3qqy4dvf27yf8j7mq322w65b3"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "tst"
@@ -4374,8 +4373,7 @@ code, used in @code{libtoxcore}.")
              ;; mediastreamer.
              (substitute* "Makefile"
                (("^CCFLAGS.*" all)
-                (string-append all "CCFLAGS += -fPIC\n")))
-             #t))
+                (string-append all "CCFLAGS += -fPIC\n")))))
          (add-before 'install 'pre-install
            (lambda _
              (let ((out (assoc-ref %outputs "out")))
@@ -4384,8 +4382,7 @@ code, used in @code{libtoxcore}.")
                (mkdir-p (string-append out "/man/man1"))
                (mkdir-p (string-append out "/man/man3"))
                (mkdir-p (string-append out "/bin"))
-               (mkdir-p (string-append out "/lib")))
-             #t))
+               (mkdir-p (string-append out "/lib")))))
          (add-after 'install 'post-install
            (lambda _
              (let ((out (assoc-ref %outputs "out")))
@@ -4393,8 +4390,7 @@ code, used in @code{libtoxcore}.")
                             (string-append out "/include"))
                (mkdir-p (string-append out "/include/gsm"))
                (copy-recursively "inc"
-                                 (string-append out "/include/gsm")))
-             #t))
+                                 (string-append out "/include/gsm")))))
          (delete 'configure))))         ; no configure script
     (synopsis "GSM 06.10 lossy speech compression library")
     (description "This C library provides an encoder and a decoder for the GSM

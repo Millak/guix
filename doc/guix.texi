@@ -5276,8 +5276,7 @@ but also the package modules from your own repository.  The result in
 modules:
 
 @example
-$ guix pull --list-generations
-@dots{}
+$ guix describe
 Generation 19	Aug 27 2018 16:20:48
   guix d894ab8
     repository URL: https://git.savannah.gnu.org/git/guix.git
@@ -5287,16 +5286,13 @@ Generation 19	Aug 27 2018 16:20:48
     repository URL: https://example.org/variant-packages.git
     branch: master
     commit: dd3df5e2c8818760a8fc0bd699e55d3b69fef2bb
-  11 new packages: variant-gimp, variant-emacs-with-cool-features, @dots{}
-  4 packages upgraded: emacs-racket-mode@@0.0.2-2.1b78827, @dots{}
 @end example
 
 @noindent
-The output of @command{guix pull} above shows that Generation@tie{}19 includes
-both Guix and packages from the @code{variant-personal-packages} channel.  Among
-the new and upgraded packages that are listed, some like @code{variant-gimp} and
-@code{variant-emacs-with-cool-features} might come from
-@code{variant-packages}, while others come from the Guix default channel.
+The output of @command{guix describe} above shows that we're now running
+Generation@tie{}19 and that it includes
+both Guix and packages from the @code{variant-personal-packages} channel
+(@pxref{Invoking guix describe}).
 
 @node Using a Custom Guix Channel
 @section Using a Custom Guix Channel
@@ -5326,10 +5322,11 @@ addressed below (@pxref{Channel Authentication}).
 @cindex pinning, channels
 @cindex replicating Guix
 @cindex reproducibility, of Guix
-The @command{guix pull --list-generations} output above shows precisely which
-commits were used to build this instance of Guix.  We can thus replicate it,
-say, on another machine, by providing a channel specification in
-@file{~/.config/guix/channels.scm} that is ``pinned'' to these commits:
+The @command{guix describe} command shows precisely which commits were
+used to build the instance of Guix we're using (@pxref{Invoking guix
+describe}).  We can replicate this instance on another machine or at a
+different point in time by providing a channel specification ``pinned''
+to these commits that looks like this:
 
 @lisp
 ;; Deploy specific commits of my channels of interest.
@@ -5343,18 +5340,36 @@ say, on another machine, by providing a channel specification in
        (commit "dd3df5e2c8818760a8fc0bd699e55d3b69fef2bb")))
 @end lisp
 
-The @command{guix describe --format=channels} command can even generate this
-list of channels directly (@pxref{Invoking guix describe}).  The resulting
-file can be used with the @option{-C} option of @command{guix pull}
-(@pxref{Invoking guix pull}) or @command{guix time-machine}
-(@pxref{Invoking guix time-machine}).
+To obtain this pinned channel specification, the easiest way is to run
+@command{guix describe} and to save its output in the @code{channels}
+format in a file, like so:
 
-At this point the two machines run the @emph{exact same Guix}, with access to
-the @emph{exact same packages}.  The output of @command{guix build gimp} on
-one machine will be exactly the same, bit for bit, as the output of the same
-command on the other machine.  It also means both machines have access to all
-the source code of Guix and, transitively, to all the source code of every
-package it defines.
+@example
+guix describe -f channels > channels.scm
+@end example
+
+The resulting @file{channels.scm} file can be passed to the @option{-C}
+option of @command{guix pull} (@pxref{Invoking guix pull}) or
+@command{guix time-machine} (@pxref{Invoking guix time-machine}), as in
+this example:
+
+@example
+guix time-machine -C channels.scm -- shell python -- python3
+@end example
+
+Given the @file{channels.scm} file, the command above will always fetch
+the @emph{exact same Guix instance}, then use that instance to run the
+exact same Python (@pxref{Invoking guix shell}).  On any machine, at any
+time, it ends up running the exact same binaries, bit for bit.
+
+@cindex lock files
+Pinned channels address a problem similar to ``lock files'' as
+implemented by some deployment tools---they let you pin and reproduce a
+set of packages.  In the case of Guix though, you are effectively
+pinning the entire package set as defined at the given channel commits;
+in fact, you are pinning all of Guix, including its core modules and
+command-line tools.  You're also getting strong guarantees that you are,
+indeed, obtaining the exact same software.
 
 This gives you super powers, allowing you to track the provenance of binary
 artifacts with very fine grain, and to reproduce software environments at

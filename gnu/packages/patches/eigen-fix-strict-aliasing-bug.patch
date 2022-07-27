@@ -1,0 +1,73 @@
+From f046e326d9e30772725d8fb26dc33328e418d9d3 Mon Sep 17 00:00:00 2001
+From: Antonio Sanchez <cantonios@google.com>
+Date: Fri, 17 Sep 2021 12:49:01 -0700
+Subject: [PATCH] Fix strict aliasing bug causing product_small failure.
+
+Packet loading is skipped due to aliasing violation, leading to nullopt matrix
+multiplication.
+
+Fixes #2327.
+
+
+(cherry picked from commit 3c724c44cff3f9e2e9e35351abff0b5c022b320d)
+---
+ Eigen/src/Core/arch/AVX/Complex.h    |  4 +++-
+ Eigen/src/Core/arch/AVX512/Complex.h |  4 +++-
+ Eigen/src/Core/arch/SSE/Complex.h    | 11 +++--------
+ 3 files changed, 9 insertions(+), 10 deletions(-)
+
+diff --git a/Eigen/src/Core/arch/AVX/Complex.h b/Eigen/src/Core/arch/AVX/Complex.h
+index ab7bd6c65..e9096c0a1 100644
+--- a/Eigen/src/Core/arch/AVX/Complex.h
++++ b/Eigen/src/Core/arch/AVX/Complex.h
+@@ -99,7 +99,9 @@ template<> EIGEN_STRONG_INLINE Packet4cf ploadu<Packet4cf>(const std::complex<fl
+ 
+ template<> EIGEN_STRONG_INLINE Packet4cf pset1<Packet4cf>(const std::complex<float>& from)
+ {
+-  return Packet4cf(_mm256_castpd_ps(_mm256_broadcast_sd((const double*)(const void*)&from)));
++  const float re = std::real(from);
++  const float im = std::imag(from);
++  return Packet4cf(_mm256_set_ps(im, re, im, re, im, re, im, re));
+ }
+ 
+ template<> EIGEN_STRONG_INLINE Packet4cf ploaddup<Packet4cf>(const std::complex<float>* from)
+diff --git a/Eigen/src/Core/arch/AVX512/Complex.h b/Eigen/src/Core/arch/AVX512/Complex.h
+index 49c72b3f1..074253859 100644
+--- a/Eigen/src/Core/arch/AVX512/Complex.h
++++ b/Eigen/src/Core/arch/AVX512/Complex.h
+@@ -97,7 +97,9 @@ template<> EIGEN_STRONG_INLINE Packet8cf ploadu<Packet8cf>(const std::complex<fl
+ 
+ template<> EIGEN_STRONG_INLINE Packet8cf pset1<Packet8cf>(const std::complex<float>& from)
+ {
+-  return Packet8cf(_mm512_castpd_ps(pload1<Packet8d>((const double*)(const void*)&from)));
++  const float re = std::real(from);
++  const float im = std::imag(from);
++  return Packet8cf(_mm512_set_ps(im, re, im, re, im, re, im, re, im, re, im, re, im, re, im, re));
+ }
+ 
+ template<> EIGEN_STRONG_INLINE Packet8cf ploaddup<Packet8cf>(const std::complex<float>* from)
+diff --git a/Eigen/src/Core/arch/SSE/Complex.h b/Eigen/src/Core/arch/SSE/Complex.h
+index 8fe22da46..215bfd7bb 100644
+--- a/Eigen/src/Core/arch/SSE/Complex.h
++++ b/Eigen/src/Core/arch/SSE/Complex.h
+@@ -106,14 +106,9 @@ template<> EIGEN_STRONG_INLINE Packet2cf ploadu<Packet2cf>(const std::complex<fl
+ 
+ template<> EIGEN_STRONG_INLINE Packet2cf pset1<Packet2cf>(const std::complex<float>&  from)
+ {
+-  Packet2cf res;
+-#ifdef EIGEN_VECTORIZE_SSE3
+-  res.v = _mm_castpd_ps(_mm_loaddup_pd(reinterpret_cast<double const*>(&from)));
+-#else
+-  res.v = _mm_castpd_ps(_mm_load_sd(reinterpret_cast<double const*>(&from)));
+-  res.v = _mm_movelh_ps(res.v, res.v);
+-#endif
+-  return res;
++  const float re = std::real(from);
++  const float im = std::imag(from);
++  return Packet2cf(_mm_set_ps(im, re, im, re));
+ }
+ 
+ template<> EIGEN_STRONG_INLINE Packet2cf ploaddup<Packet2cf>(const std::complex<float>* from) { return pset1<Packet2cf>(*from); }
+-- 
+2.37.0
+

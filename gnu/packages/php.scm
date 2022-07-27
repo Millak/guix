@@ -61,7 +61,7 @@
 (define-public php
   (package
     (name "php")
-    (version "7.4.26")
+    (version "7.4.30")
     (home-page "https://secure.php.net/")
     (source (origin
               (method url-fetch)
@@ -69,10 +69,9 @@
                                   "php-" version ".tar.xz"))
               (sha256
                (base32
-                "1y0f1xgfi8cks6npdhrycg8r9g3q0pikqgf5h4xafpy8znmb61g3"))
-              (patches
-               (search-patches "php-bug-74093-test.patch"
-                               "php-openssl_x509_checkpurpose_basic.patch"))
+                "03d7icwys4ikl45q3rgsxv1m3i7kfxhykpx75nn7jzn6697s6wpa"))
+              (patches (search-patches "php-bug-74093-test.patch"
+                                       "php-curl-compat.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"

@@ -76,6 +76,9 @@ Perform the deployment specified by FILE.\n"))
                  (lambda args
                    (show-version-and-exit "guix deploy")))
 
+         (option '(#\n "dry-run") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'dry-run? #t result)))
          (option '(#\x "execute") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'execute-command? #t result)))
@@ -110,14 +113,20 @@ Perform the deployment specified by FILE.\n"))
                                            environment-modules))))
     (load* file module)))
 
-(define (show-what-to-deploy machines)
+(define* (show-what-to-deploy machines #:key (dry-run? #f))
   "Show the list of machines to deploy, MACHINES."
   (let ((count (length machines)))
-    (format (current-error-port)
-            (N_ "The following ~d machine will be deployed:~%"
-                "The following ~d machines will be deployed:~%"
+    (if dry-run?
+        (format (current-error-port)
+                (N_ "The following ~d machine would be deployed:~%"
+                    "The following ~d machines would be deployed:~%"
+                    count)
                 count)
-            count)
+        (format (current-error-port)
+                (N_ "The following ~d machine will be deployed:~%"
+                    "The following ~d machines will be deployed:~%"
+                    count)
+                count))
     (display (indented-string
               (fill-paragraph (string-join (map machine-display-name machines)
                                            ", ")
@@ -241,6 +250,7 @@ otherwise."
                                      #:argument-handler handle-argument))
            (file (assq-ref opts 'file))
            (machines (and file (load-source-file file)))
+           (dry-run? (assoc-ref opts 'dry-run?))
            (execute-command? (assoc-ref opts 'execute-command?)))
       (unless file
         (leave (G_ "missing deployment file argument~%")))
@@ -254,7 +264,8 @@ otherwise."
           (with-build-handler (build-notifier #:use-substitutes?
                                               (assoc-ref opts 'substitutes?)
                                               #:verbosity
-                                              (assoc-ref opts 'verbosity))
+                                              (assoc-ref opts 'verbosity)
+                                              #:dry-run? dry-run?)
             (parameterize ((%graft? (assq-ref opts 'graft?)))
               (if execute-command?
                   (match command
@@ -270,7 +281,8 @@ otherwise."
                     (_
                      (leave (G_ "'-x' specified but no command given~%"))))
                   (begin
-                    (show-what-to-deploy machines)
-                    (map/accumulate-builds store
-                                           (cut deploy-machine* store <>)
-                                           machines))))))))))
+                    (show-what-to-deploy machines #:dry-run? dry-run?)
+                    (unless dry-run?
+                      (map/accumulate-builds store
+                                             (cut deploy-machine* store <>)
+                                             machines)))))))))))

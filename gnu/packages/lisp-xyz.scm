@@ -95,6 +95,7 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -22779,3 +22780,91 @@ binding @code{*debugger-hook*} is not enough -- most notably, for
     (arguments
      ;; Tests fail on ECL: https://github.com/phoe/trivial-custom-debugger/issues/3
      '(#:tests? #f))))
+
+(define-public sbcl-ospm
+  (package
+    (name "sbcl-ospm")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atlas-engineer/ospm")
+             (commit version)))
+       (file-name (git-file-name "cl-ospm" version))
+       (sha256
+        (base32 "1b64ar6x08bcig4brlsim445favjf1zhyj6qz018cildp3xs4miz"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-alexandria
+           sbcl-calispel
+           sbcl-hu.dwim.defclass-star
+           sbcl-local-time
+           sbcl-moptilities
+           sbcl-named-readtables
+           sbcl-serapeum
+           sbcl-trivia))
+    (native-inputs
+     ;; FIXME: Tests have execution errors because of Guix being run in a container.
+     (list sbcl-lisp-unit2 guix))
+    (home-page "https://github.com/atlas-engineer/ospm")
+    (synopsis "System package manager in Common Lisp")
+    (description
+     "This library is a universal interface to the operating system package manager.
+It has extensive support for Guix, among others:
+
+@itemize
+@item package listing and searching;
+@item package installation and uninstallation;
+@item package file listing;
+@item profile listing;
+@item manifest listing and installation;
+@item generation listing, switching and deletion.
+@end itemize\n")
+    (license license:bsd-3)))
+
+(define-public cl-ospm
+  (let ((pkg (sbcl-package->cl-source-package sbcl-ospm)))
+    (package
+      (inherit pkg)
+      (inputs
+       (cons (list "osicat" cl-osicat)
+             (package-inputs pkg))))))
+
+(define-public sbcl-ndebug
+  (package
+    (name "sbcl-ndebug")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atlas-engineer/ndebug")
+             (commit version)))
+       (file-name (git-file-name "ndebug" version))
+       (sha256
+        (base32 "0wdp0wqk6clq3hh9yqmgdm55x50b5m7ly9004j2c8k5zz1rgi4rr"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list
+      sbcl-dissect
+      sbcl-lparallel
+      sbcl-slime-swank
+      sbcl-trivial-custom-debugger))
+    (native-inputs
+     (list sbcl-lisp-unit2))
+    (home-page "https://github.com/atlas-engineer/ndebug/")
+    (synopsis "Toolkit to build UI-aware Common Lisp debugger hooks")
+    (description
+     "NDebug provides a small set of utilities to make graphical (or, rather
+non-REPL-resident) Common Lisp applications easier to integrate with the
+standard Lisp debugger (@code{*debugger-hook*}, namely) and
+implementation-specific debugger hooks (via @code{trivial-custom-debugger}),
+especially in a multi-threaded context.")
+    (license license:bsd-3)))
+
+(define-public cl-ndebug
+  (sbcl-package->cl-source-package sbcl-ndebug))
+
+(define-public ecl-ndebug
+  (sbcl-package->ecl-package sbcl-ndebug))

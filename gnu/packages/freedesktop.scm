@@ -1455,7 +1455,7 @@ these interfaces, based on the useradd, usermod and userdel commands.")
 (define-public libmbim
   (package
     (name "libmbim")
-    (version "1.20.2")
+    (version "1.26.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1463,7 +1463,7 @@ these interfaces, based on the useradd, usermod and userdel commands.")
                     "libmbim-" version ".tar.xz"))
               (sha256
                (base32
-                "16q550sy84izi5ic3sbbhjnnka2fwhj8vvdrirpn9xspbsgbc3sm"))))
+                "1ncaarl4lgc7i52rwz50yq701wk2rr478cjybxbifsjqqk2cx27n"))))
     (build-system gnu-build-system)
     (native-inputs
      (list `(,glib "bin") ; for glib-mkenums
@@ -1485,7 +1485,7 @@ which speak the Mobile Interface Broadband Model (MBIM) protocol.")
 (define-public libqmi
   (package
     (name "libqmi")
-    (version "1.24.14")
+    (version "1.30.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1493,7 +1493,7 @@ which speak the Mobile Interface Broadband Model (MBIM) protocol.")
                     "libqmi-" version ".tar.xz"))
               (sha256
                (base32
-                "0zshxqbm9ldybgrzh7pjmwmfjvvvfd0xh8qhgl8xiqdb9ply73r0"))))
+                "140rmjw436rh6rqmnfw6yaflpffd27ilwcv4s9jvvl1skv784946"))))
     (build-system gnu-build-system)
     (inputs
      (list libgudev))
@@ -1515,7 +1515,7 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
 (define-public modem-manager
   (package
     (name "modem-manager")
-    (version "1.12.10")
+    (version "1.18.10")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1523,19 +1523,23 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
                     "ModemManager-" version ".tar.xz"))
               (sha256
                (base32
-                "1apq9camys2gaw6y6ic1ld20cncfwpmxnzvh4j5zkbbjpf5hbcxj"))))
+                "1sv53lvz9nfbq6jzprl5xhai0vylc01kglcdrgz2vszf5615y98n"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       `(,(string-append "--with-udev-base-dir=" %output "/lib/udev"))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-udev-base-dir=" #$output "/lib/udev"))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-mkenums
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ;; For testing.
-       ("dbus" ,dbus)))
+     (list gettext-minimal
+           `(,glib "bin") ; for glib-mkenums
+           gobject-introspection
+           pkg-config
+           vala
+           ;; For testing.
+           dbus
+           python
+           python-dbus
+           python-pygobject))
     (propagated-inputs
      (list glib)) ; required by mm-glib.pc
     (inputs
@@ -1548,6 +1552,8 @@ broadband (2G/3G/4G) devices and connections.  Whether built-in devices, USB
 dongles, bluetooth-paired telephones, or professional RS232/USB devices with
 external power supplies, ModemManager is able to prepare and configure the
 modems and setup connections with them.")
+    (properties
+     '((upstream-name . "ModemManager")))
     (license license:gpl2+)))
 
 (define-public telepathy-logger
@@ -1870,15 +1876,15 @@ manually by a user.")
 (define-public perl-file-basedir
   (package
     (name "perl-file-basedir")
-    (version "0.08")
+    (version "0.09")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://cpan/authors/id/K/KI/KIMRYAN/"
+       (uri (string-append "mirror://cpan/authors/id/P/PL/PLICEASE/"
                            "File-BaseDir-" version ".tar.gz"))
        (sha256
         (base32
-         "1qq5ag9zffx8zc5i9b4z03ar80pqj4drgk3vjdlyfapjwb9zqrf0"))))
+         "1nb757cyyy80xln147qgns113i2ivfpgcfhsxw8qzb322llgg9kd"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-module-build perl-file-which perl-test-pod
@@ -1922,7 +1928,7 @@ applications define in those files.")
 (define-public perl-file-mimeinfo
   (package
     (name "perl-file-mimeinfo")
-    (version "0.29")
+    (version "0.33")
     (source
      (origin
        (method url-fetch)
@@ -1930,7 +1936,7 @@ applications define in those files.")
                            "File-MimeInfo-" version ".tar.gz"))
        (sha256
         (base32
-         "1sh8r6vczyz08zm8vfsjmkg6a165wch54akjdrd1vbifcmwjg5pi"))))
+         "1i5iw6ri0w9clwpqf40xmsh4isc8xvx2lyf2r5g34886i6rsdgpn"))))
     (build-system perl-build-system)
     ;; If the tests are fixed, add perl-test-pod, perl-test-pod-coverage, and
     ;; perl-test-tiny as native-inputs.

@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -32,7 +32,7 @@
 (define-public imgui
   (package
     (name "imgui")
-    (version "1.87")
+    (version "1.88")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -41,7 +41,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10qil22s5qak3as41787iz273sibpq1bq66bakgn7yvhj5fym6hz"))
+                "13cw4hx55y5z678r558hv7znfz666wh0w849c5padnj4nkpbihdi"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove bundled fonts.

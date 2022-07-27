@@ -1401,7 +1401,7 @@ wrapper for disk usage querying and visualisation.")
 (define-public qdirstat
   (package
     (name "qdirstat")
-    (version "1.8")
+    (version "1.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1410,7 +1410,7 @@ wrapper for disk usage querying and visualisation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "079rmy3j0442y5gjh6la6w1j6jaw83wklamrf19yxi20zsm99xs7"))))
+                "04vpdlwk01kgmc4r5rnrmrgd4sf2kfh1rjzb2rjkfxdd4pbghsy9"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

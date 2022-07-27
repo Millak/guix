@@ -6,7 +6,7 @@
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -460,7 +460,18 @@ implementing the pen protocol for manipulating glyphs.")
      (arguments
       (substitute-keyword-arguments (package-arguments python-fontpens-bootstrap)
         ((#:tests? _ #f)
-         #t)))
+         #t)
+        ((#:phases phases #~%standard-phases)
+         #~(modify-phases #$phases
+             (add-after 'unpack 'drop-flaky-docstring
+               ;; XXX This assertion fails on certain (Intel?) machines, but not
+               ;; others (AMD?), so we can't patch in a ‘correct’ value.  Just
+               ;; drop it until the proper fix lands upstream.  Reported there
+               ;; as <https://github.com/robotools/fontPens/issues/41>.
+               (lambda _
+                 (substitute* "Lib/fontPens/penTools.py"
+                   ((".*\\(\\(0, 0), \\(50, 20), \\(100, 40)).*") "")
+                   ((".*107\\.70329614269009.*") ""))))))))
      (native-inputs
       (modify-inputs (package-native-inputs python-fontpens-bootstrap)
         (append python-fontparts-bootstrap
