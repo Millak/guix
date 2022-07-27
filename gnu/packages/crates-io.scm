@@ -31628,6 +31628,7 @@ library.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-static-assertions"
          ,rust-static-assertions-1))))
+    (inputs (list rust-cfg-if-1 rust-winapi-0.3))
     (home-page "https://github.com/nagisa/rust_libloading/")
     (synopsis "Safer binding to dynamic library loading utilities")
     (description "This package provides a safer binding to dynamic library
