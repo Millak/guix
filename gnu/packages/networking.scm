@@ -3506,8 +3506,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               ;; on, introducing nondeterminism (see:
               ;; https://github.com/savoirfairelinux/opendht/issues/626).
               (substitute* "tests/Makefile.am"
-                (("tests/dhtrunnertester.(h|cpp)$" all)
-                 (string-append "# " all)))))
+                (("\\bdhtrunnertester\\.(h|cpp)\\b")
+                 ""))))
           (add-after 'unpack 'fix-python-installation-prefix
             ;; Specify the installation prefix for the compiled Python module
             ;; that would otherwise attempt to installs itself to Python's own
