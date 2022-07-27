@@ -2762,8 +2762,27 @@ applications.")
     (description "This package provides the glue for the Android JNI.")
     (license license:expat)))
 
+(define-public rust-android-log-sys-0.2
+  (package
+    (name "rust-android-log-sys")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "android_log-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bhhs1cgzp9vzjvkn2q31ppc7w4am5s273hkvl5iac5475kmp5l5"))))
+    (arguments `(#:skip-build? #true))  ;XXX: Android only
+    (build-system cargo-build-system)
+    (home-page "https://github.com/nercury/android_log-sys-rs")
+    (synopsis "FFI bindings to Android log Library")
+    (description "This package provides FFI bindings to Android log Library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-android-log-sys-0.1
   (package
+    (inherit rust-android-log-sys-0.2)
     (name "rust-android-log-sys")
     (version "0.1.2")
     (source
@@ -2773,12 +2792,7 @@ applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0klq7cp4lm74gjf9p12zdjcr159blbicrfvadmaqvfxbi8njw1dq"))))
-    (arguments `(#:skip-build? #true))  ;XXX: Android only
-    (build-system cargo-build-system)
-    (home-page "https://github.com/nercury/android_log-sys-rs")
-    (synopsis "FFI bindings to Android log Library")
-    (description "This package provides FFI bindings to Android log Library.")
-    (license (list license:expat license:asl2.0))))
+    (arguments `(#:skip-build? #true)))) ;XXX: Android only
 
 (define-public rust-android-logger-0.8
   (package
