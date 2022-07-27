@@ -1079,7 +1079,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
 (define-public rust-glutin-egl-sys-0.1
   (package
     (name "rust-glutin-egl-sys")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
@@ -1088,7 +1088,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0k1x1frdp4wp47qkai8zzmgqxzpfcn7780m29qgd92lbnbrxwbkp"))))
+         "04f2ci9kb8q4dv4kviigvgfy54lr4jmbnmjsvi50qj13anjnmfra"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
