@@ -2828,8 +2828,49 @@ wayland-client crate for usable bindings.")
         (base32
          "17mp49v7w0p0x5ry628lj2llljnwkr9aj9g4bqqhfibid32jhf5z"))))))
 
+(define-public rust-wayland-server-0.29
+  (package
+    (name "rust-wayland-server")
+    (version "0.29.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-server" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wj8gf28dbjwb824i29wf3wr5r6wp6ssknjm9b5dnb1fah47mk66"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-downcast-rs" ,rust-downcast-rs-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-nix" ,rust-nix-0.22)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
+        ("rust-scoped-tls" ,rust-scoped-tls-1))))
+    (inputs
+     (list rust-bitflags-1
+           rust-downcast-rs-1
+           rust-lazy-static-1
+           rust-libc-0.2
+           rust-nix-0.22
+           rust-parking-lot-0.11
+           rust-scoped-tls-1
+           rust-wayland-commons-0.29
+           rust-wayland-scanner-0.29
+           rust-wayland-sys-0.29))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis
+     "Bindings to the standard C implementation of the wayland protocol")
+    (description
+     "This package provides Rust bindings to the standard C implementation of
+the wayland protocol, server side.")
+    (license license:expat)))
+
 (define-public rust-wayland-server-0.28
   (package
+    (inherit rust-wayland-server-0.29)
     (name "rust-wayland-server")
     (version "0.28.3")
     (source
@@ -2839,7 +2880,6 @@ wayland-client crate for usable bindings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "09jfdjfqhjfcpiz4csgh60ymfkmz1cl3jmxyzq9hzcp0kyyxix93"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -2859,14 +2899,7 @@ wayland-client crate for usable bindings.")
            rust-scoped-tls-1
            rust-wayland-commons-0.28
            rust-wayland-scanner-0.28
-           rust-wayland-sys-0.28))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis
-     "Bindings to the standard C implementation of the wayland protocol")
-    (description
-     "This package provides Rust bindings to the standard C implementation of
-the wayland protocol, server side.")
-    (license license:expat)))
+           rust-wayland-sys-0.28))))
 
 (define-public rust-wayland-server-0.23
   (package
