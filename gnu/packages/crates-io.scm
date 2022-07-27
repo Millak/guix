@@ -18479,6 +18479,8 @@ Google's diff-match-patch.")
      `(#:tests? #f                      ;FIXME: Several macros are not found.
        #:cargo-inputs
        (("rust-libloading" ,rust-libloading-0.7))))
+    (inputs
+     (list rust-libloading-0.7))
     (home-page "https://github.com/vberger/dlib")
     (synopsis "Helper macros for manually loading optional system libraries")
     (description
