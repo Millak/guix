@@ -345,8 +345,39 @@ alpha channel embedding.")
        (("rust-gleam" ,rust-gleam-0.6)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-cgmath-0.18
+  (package
+    (name "rust-cgmath")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cgmath" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "05sk7c1c1jg5ygqvc3y77kxddp177gwazfibhd864ag3800x760s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-approx" ,rust-approx-0.4)
+        ("rust-mint" ,rust-mint-0.5)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/brendanzab/cgmath")
+    (synopsis "Linear algebra and mathematics library")
+    (description
+     "This package provides a linear algebra and mathematics library
+for computer graphics.")
+    (license license:asl2.0)))
+
 (define-public rust-cgmath-0.17
   (package
+    (inherit rust-cgmath-0.18)
     (name "rust-cgmath")
     (version "0.17.0")
     (source
@@ -358,7 +389,6 @@ alpha channel embedding.")
        (sha256
         (base32
          "1rvgila6ivr0dh1bxza450a4yfwdi2pwj3h1vnwg0jy4xk6l8f98"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Crate won't build without glium.
        #:cargo-inputs
@@ -370,13 +400,7 @@ alpha channel embedding.")
         ("rust-simd" ,rust-simd-0.2))
        #:cargo-development-inputs
        (;("rust-glium" ,rust-glium-0.23)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/brendanzab/cgmath")
-    (synopsis "Linear algebra and mathematics library")
-    (description
-     "This package provides a linear algebra and mathematics library
-for computer graphics.")
-    (license license:asl2.0)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-cgmath-0.16
   (package
