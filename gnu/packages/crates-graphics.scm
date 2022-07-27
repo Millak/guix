@@ -2178,8 +2178,41 @@ implements standard Rust traits to make `RGB`/`RGBA` pixels and slices
 first-class Rust objects.")
     (license license:expat)))
 
+(define-public rust-smithay-client-toolkit-0.15
+  (package
+    (name "rust-smithay-client-toolkit")
+    (version "0.15.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smithay-client-toolkit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18wxla80y6m4l3dwawi7bl1d9m9dfcg4sxxjcgjqq3psjxmg2a4a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-calloop" ,rust-calloop-0.9)
+        ("rust-dlib" ,rust-dlib-0.5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-memmap2" ,rust-memmap2-0.3)
+        ("rust-nix" ,rust-nix-0.22)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-wayland-client" ,rust-wayland-client-0.29)
+        ("rust-wayland-cursor" ,rust-wayland-cursor-0.29)
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))))
+    (home-page "https://github.com/smithay/client-toolkit")
+    (synopsis "Toolkit for making client Wayland applications")
+    (description
+     "This package provides a toolkit for making client Wayland applications.")
+    (license license:expat)))
+
 (define-public rust-smithay-client-toolkit-0.12
   (package
+    (inherit rust-smithay-client-toolkit-0.15)
     (name "rust-smithay-client-toolkit")
     (version "0.12.2")
     (source
@@ -2203,12 +2236,7 @@ first-class Rust objects.")
         ("rust-nix" ,rust-nix-0.18)
         ("rust-wayland-client" ,rust-wayland-client-0.28)
         ("rust-wayland-cursor" ,rust-wayland-cursor-0.28)
-        ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))
-    (home-page "https://github.com/smithay/client-toolkit")
-    (synopsis "Toolkit for making client Wayland applications")
-    (description
-     "This package provides a toolkit for making client Wayland applications.")
-    (license license:expat)))
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))))
 
 (define-public rust-smithay-client-toolkit-0.6
   (package
