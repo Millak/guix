@@ -34308,6 +34308,7 @@ file IO.")
        (("rust-autocfg" ,rust-autocfg-1))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3))))
+    (inputs (list rust-autocfg-1))
     (home-page "https://github.com/Gilnaa/memoffset")
     (synopsis "C-like offset_of functionality for Rust structs")
     (description
@@ -34334,7 +34335,8 @@ for Rust structs.")
        #:cargo-inputs
        (("rust-rustc-version" ,rust-rustc-version-0.2))
        #:cargo-development-inputs
-       (("rust-doc-comment" ,rust-doc-comment-0.3))))))
+       (("rust-doc-comment" ,rust-doc-comment-0.3))))
+    (inputs '())))
 
 (define-public rust-memoffset-0.2
   (package
