@@ -660,26 +660,26 @@ interaction.")
 (define-public podofo
   (package
     (name "podofo")
-    (version "0.9.7")
+    (version "0.9.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/podofo/podofo/" version
                                   "/podofo-" version ".tar.gz"))
               (sha256
                (base32
-                "1f0yvkx6nf99fp741w2y706d8bs9824x1z2gqm3rdy5fv8bfgwkw"))))
+                "0m2icjy35jd0900g0fyfrmf0zsldv1chfc1q0zcqlaqrbzhhgrjx"))))
     (build-system cmake-build-system)
     (native-inputs
      (list cppunit pkg-config))
     (inputs
-     `(("libjpeg" ,libjpeg-turbo)
-       ("libtiff" ,libtiff)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libpng" ,libpng)
-       ("lua" ,lua-5.1)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list fontconfig
+           freetype
+           libjpeg-turbo
+           libpng
+           libtiff
+           lua-5.1
+           openssl
+           zlib))
     (arguments
      `(#:configure-flags
        (list "-DPODOFO_BUILD_SHARED=ON")
@@ -690,8 +690,7 @@ interaction.")
              (let ((freetype (assoc-ref inputs "freetype")))
                ;; Look for freetype include files in the correct place.
                (substitute* "cmake/modules/FindFREETYPE.cmake"
-                 (("/usr/local") freetype)))
-             #t)))))
+                 (("/usr/local") freetype))))))))
     (home-page "http://podofo.sourceforge.net")
     (synopsis "Tools to work with the PDF file format")
     (description

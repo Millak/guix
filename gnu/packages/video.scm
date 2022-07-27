@@ -1559,14 +1559,14 @@ operate properly.")
 (define-public ffmpeg-5
   (package
     (name "ffmpeg")
-    (version "5.0.1")
+    (version "5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0yq0jcdc4qm5znrzylj3dsicrkk2n3n8bv28vr0a506fb7iglbpg"))))
+                "00wbd5skv6ba5yqq4ca505ncckhvpzwflcsall7madg2bsmnmssm"))))
     (build-system gnu-build-system)
     (inputs
      (append
@@ -5384,7 +5384,7 @@ brightness, contrast, and frame rate.")
 (define-public get-iplayer
   (package
     (name "get-iplayer")
-    (version "3.27")
+    (version "3.30")
     (source
       (origin
         (method git-fetch)
@@ -5393,7 +5393,7 @@ brightness, contrast, and frame rate.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "077y31gg020wjpx5pcivqgkqawcjxh5kjnvq97x2gd7i3wwc30qi"))))
+         (base32 "1kzsdq1mhm5h83bbdbhh3jhpfvq4f13ly22mfd6vvmhj8mq084pi"))))
     (build-system perl-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -5408,8 +5408,7 @@ brightness, contrast, and frame rate.")
                     (man (string-append out "/share/man/man1")))
                (install-file "get_iplayer" bin)
                (install-file "get_iplayer.cgi" bin)
-               (install-file "get_iplayer.1" man))
-             #t))
+               (install-file "get_iplayer.1" man))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -5420,8 +5419,7 @@ brightness, contrast, and frame rate.")
                    prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))
                (wrap-program (string-append out "/bin/get_iplayer.cgi")
                  `("PERL5LIB" ":"
-                   prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))
-               #t))))))
+                   prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))))))))
     (inputs
      (list perl-mojolicious perl-lwp-protocol-https perl-xml-libxml))
     (home-page "https://github.com/get-iplayer/get_iplayer")

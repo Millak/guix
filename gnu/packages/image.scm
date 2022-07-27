@@ -11,7 +11,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016, 2017, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016, 2017, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017,2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -55,6 +55,7 @@
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -2380,7 +2381,7 @@ Wacom-style graphics tablets.")
 (define-public phockup
   (package
     (name "phockup")
-    (version "1.7.1")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -2390,7 +2391,7 @@ Wacom-style graphics tablets.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0nqd89g4ppwc96gxyh9npain7ipnzj66p6n3irsvhrpi4k54h388"))))
+         "1xs2h3nj19wsfffl87akinx14drk5nn2svjwyj0csv10apk0q4pp"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan '(("src" "share/phockup/")
@@ -2400,8 +2401,8 @@ Wacom-style graphics tablets.")
          (add-after 'unpack 'configure
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* (list "src/dependency.py" "src/exif.py")
-               (("exiftool")
-                (search-input-file inputs "/bin/exiftool")))))
+               (("'exiftool'")
+                (string-append "'" (search-input-file inputs "/bin/exiftool") "'")))))
          (add-before 'install 'check
            (lambda _
              (invoke "pytest")))
@@ -2419,7 +2420,7 @@ Wacom-style graphics tablets.")
                    ,(search-path-as-string->list
                      (getenv "GUIX_PYTHONPATH"))))))))))
     (inputs
-     (list perl-image-exiftool python python-tqdm))
+     (list bash-minimal perl-image-exiftool python python-tqdm))
     (native-inputs
      (list python-pytest python-pytest-mock))
     (home-page "https://github.com/ivandokov/phockup")

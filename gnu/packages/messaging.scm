@@ -583,7 +583,7 @@ end-to-end encryption.")
 (define-public axc
   (package
     (name "axc")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method git-fetch)
@@ -593,12 +593,13 @@ end-to-end encryption.")
        (modules '((guix build utils)))
        (snippet
         `(begin
-           ;; Submodules
+           ;; Empty directories meant to hold submodules that we provide as
+           ;; proper inputs below.
            (delete-file-recursively "lib")))
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "05sv7l6lk0xk4wb2bspc2sdpygrb1f0szzi82a1kyfm0fjz887b3"))))
+        (base32 "0b02b9flri374f8aw6xfz7mm9s57rb7393r8mdphv7kcsf76i7i5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2080,39 +2081,38 @@ support, and more.")
 (define-public freetalk
   (package
     (name "freetalk")
-    (version "4.1")
+    (version "4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/freetalk/freetalk-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1rmrn7a1bb7vm26yaklrvx008a9qhwc32s57dwrlf40lv9gffwny"))))
+                "105mw7pg2mcp85r82cs4rv77nwvbw8025047364jzbq6lwllynxv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "CFLAGS=-fcommon")
-       #:phases
-       (modify-phases %standard-phases
-         ;; For 'system' commands in Scheme code.
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out       (assoc-ref outputs "out"))
-                    (bash      (assoc-ref inputs "bash"))
-                    (coreutils (assoc-ref inputs "coreutils"))
-                    (less      (assoc-ref inputs "less")))
-               (wrap-program (string-append out "/bin/freetalk")
-                 `("PATH" ":" prefix
-                   ,(map (lambda (dir)
-                           (string-append dir "/bin"))
-                         (list bash coreutils less))))
-               #t))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (wrap-program (string-append out "/bin/freetalk")
+                       `("PATH" ":" suffix
+                         ,(map (lambda (command)
+                                 (dirname
+                                  (search-input-file
+                                   inputs (string-append "bin/" command))))
+                               ;; This list is not exhaustive: we assume that,
+                               ;; e.g., cat is packaged with other coreutils.
+                               (list "bash" ; src/{commands,util}.c et al
+                                     "cat"  ; extensions/first-time-run.sh
+                                     "less")))))))))) ; extensions/history.scm.
     (native-inputs
      (list autoconf automake pkg-config texinfo))
     (inputs
      (list bash
            glib
-           guile-2.0
+           guile-3.0
            less
            loudmouth
            readline))

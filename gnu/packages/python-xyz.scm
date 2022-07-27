@@ -22003,14 +22003,14 @@ package updates.")
 (define-public python-userspacefs
   (package
     (name "python-userspacefs")
-    (version "2.0.4")
+    (version "2.0.5")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "userspacefs" version))
         (sha256
          (base32
-          "06f2gsiypas270nqfjir4wwjlpkjp097pm6zchc7k20ggg32gv1k"))))
+          "0v0qkdwfc61s2yiq7d7amin93x5biypfmi9pfhf8yj1rdpx5yvsx"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-fusepyng))

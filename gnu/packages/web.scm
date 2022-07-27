@@ -2871,7 +2871,7 @@ application classes.")
          "08jvibq4v8xjj0c3cr93h0w8w0c88ajwjn37xjy7ygxl9krlffp6"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-module-install perl-test-www-mechanize-catalyst))
+     (list perl-module-install perl-pod-parser perl-test-www-mechanize-catalyst))
     (propagated-inputs
      (list perl-catalyst-runtime perl-moose perl-namespace-autoclean
            starman))

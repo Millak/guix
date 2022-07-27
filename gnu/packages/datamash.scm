@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2018 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,7 +35,7 @@
 (define-public datamash
   (package
     (name "datamash")
-    (version "1.7")
+    (version "1.8")
     (source
      (origin
       (method url-fetch)
@@ -43,7 +43,7 @@
                           version ".tar.gz"))
       (sha256
        (base32
-        "1cxdlhgz3wzjqlq8bgwad93fgqymk2abbldfzw1ffnhcp4mmjjjp"))))
+        "1zgn55gvf60w2rs5f7vx7vdp50j89ki7mmjvm81xs5pngs67xnbs"))))
     (native-inputs
      (list which ;for tests
            perl))                 ;for help2man

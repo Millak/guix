@@ -986,20 +986,17 @@ extends it by a set of algebraic capabilities.")
 (define-public eigen
   (package
     (name "eigen")
-    (version "3.3.8")
+    (version "3.4.0")
     (source (origin
-              (method url-fetch)
-              (uri (list
-                     (string-append "https://bitbucket.org/eigen/eigen/get/"
-                                    version ".tar.bz2")
-                     (string-append "mirror://debian/pool/main/e/eigen3/eigen3_"
-                                    version ".orig.tar.bz2")))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/libeigen/eigen.git")
+                    (commit version)))
               (sha256
                (base32
-                "1vxrsncfnkyq6gwxpsannpryp12mk7lc8f42ybvz3saf7icwc582"))
-              (file-name (string-append name "-" version ".tar.bz2"))
-              (patches (search-patches "eigen-remove-openmp-error-counting.patch"
-                                       "eigen-stabilise-sparseqr-test.patch"))
+                "0k1c4qnymwwvm68rv6s0cyk08xbw65ixvwqccsh36c2axcqk3znp"))
+              (file-name (git-file-name name version))
+              (patches (search-patches "eigen-fix-strict-aliasing-bug.patch"))
               (modules '((guix build utils)))
               (snippet
                ;; There are 3 test failures in the "unsupported" directory,

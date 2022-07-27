@@ -1018,8 +1018,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ecl-16-libffi.patch			\
   %D%/packages/patches/efibootmgr-remove-extra-decl.patch	\
   %D%/packages/patches/efivar-211.patch			\
-  %D%/packages/patches/eigen-remove-openmp-error-counting.patch	\
-  %D%/packages/patches/eigen-stabilise-sparseqr-test.patch	\
+  %D%/packages/patches/eigen-fix-strict-aliasing-bug.patch	\
   %D%/packages/patches/einstein-build.patch			\
   %D%/packages/patches/elfutils-tests-ptrace.patch		\
   %D%/packages/patches/elixir-path-length.patch			\
@@ -1632,8 +1631,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/perl-www-curl-fix-struct-void.patch	\
   %D%/packages/patches/perl-www-curl-remove-symbol.patch	\
   %D%/packages/patches/phoronix-test-suite-fsdg.patch		\
-  %D%/packages/patches/php-bug-74093-test.patch \
-  %D%/packages/patches/php-openssl_x509_checkpurpose_basic.patch	\
+  %D%/packages/patches/php-bug-74093-test.patch			\
+  %D%/packages/patches/php-curl-compat.patch			\
   %D%/packages/patches/picard-fix-id3-rename-test.patch		\
   %D%/packages/patches/picprog-non-intel-support.patch		\
   %D%/packages/patches/pidgin-add-search-path.patch		\
