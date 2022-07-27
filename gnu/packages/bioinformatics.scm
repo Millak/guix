@@ -11,7 +11,7 @@
 ;;; Copyright © 2017, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
@@ -7524,6 +7524,41 @@ which applies pathway and gene set overdispersion analysis to identify aspects
 of transcriptional heterogeneity among single cells.")
     ;; See https://github.com/hms-dbmi/scde/issues/38
     (license license:gpl2)))
+
+(define-public r-millefy
+  (package
+    (name "r-millefy")
+    (version "0.1.9-beta")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yuifu/millefy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0z2y0x99f761pxvg6n37cmnyrnj699jhjk43pvk05sa86iykgizl"))))
+    (properties `((upstream-name . "millefy")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-data-table
+           r-destiny
+           r-dplyr
+           r-genomicranges
+           r-iranges
+           r-magrittr
+           r-rsamtools
+           r-rtracklayer
+           r-tidyr))
+    (home-page "https://github.com/yuifu/millefy")
+    (synopsis "Make millefy plot with single-cell RNA-seq data")
+    (description "@code{Millefy} is a tool for visualizing read coverage of
+@dfn{scRNA-seq}(single-cell RNA sequencing) datasets in genomic contexts.  By
+dynamically and automatically reorder single cells based on locus-specific
+pseudo time, @code{Millefy} highlights cell-to-cell heterogeneity in read coverage
+of scRNA-seq data.")
+    (license license:expat)))
 
 (define-public r-misha
   (package
