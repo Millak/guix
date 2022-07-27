@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,12 +34,15 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
@@ -58,7 +62,8 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system cmake))
+  #:use-module (guix build-system cmake)
+  #:use-module (guix build-system meson))
 
 (define-public libmad
   (package
@@ -741,3 +746,70 @@ fingerprinting library and the Acoustid API.")
 cross-platform, works with all Python versions, and is very
 simple to use yet fully featured.")
     (license license:gpl3)))
+
+(define-public wavbreaker
+  (package
+    (name "wavbreaker")
+    (version "0.15")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/thp/wavbreaker/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "16h0sfcb8av6a368giizzwv9m0lq5c3bnf4b9vyyh9nkbbsc7c3j"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:modules
+       ((guix build utils)
+        (guix build meson-build-system))
+
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'wrap-program
+           ;; This wrapping is necessary to make wavbreaker find things it
+           ;; needs in pure environments.
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (adwaita-icons (assoc-ref inputs "adwaita-icon-theme"))
+                   (hicolor-icons (assoc-ref inputs "hicolor-icon-theme"))
+                   (shared-mime (assoc-ref inputs "shared-mime-info")))
+               (wrap-program (string-append out "/bin/wavbreaker")
+                 ;; Needed in order for wavbreakere to find the icons it needs
+                 `("XDG_DATA_DIRS" ":" prefix
+                   ,(map (lambda (package)
+                           (string-append package "/share"))
+                         `(,out                   ;for wavbreaker's icon
+                           ,adwaita-icons
+                           ,hicolor-icons
+                           ,shared-mime)))
+                 ;; This is necessary to load some pixbufs like Adwaita's
+                 ;; check-symbolic.svg and wavbreaker's own logo in the
+                 ;; 'about' section.
+                 `("GDK_PIXBUF_MODULE_FILE" =
+                   (,(getenv "GDK_PIXBUF_MODULE_FILE")))
+                 ;; Needed for GTK's file chooser to not crash.
+                 `("GSETTINGS_SCHEMA_DIR" =
+                 (,(string-append (assoc-ref inputs "gtk+")
+                                  "/share/glib-2.0/schemas"))))))))))
+    (native-inputs
+     (list pkg-config cmake))
+    (inputs
+     (list glib
+           gtk+
+           ao
+           bash-minimal
+           adwaita-icon-theme
+           shared-mime-info
+           hicolor-icon-theme
+           gsettings-desktop-schemas))
+    (home-page "https://wavbreaker.sourceforge.io/")
+    (synopsis "WAV and MP3 file splitter with a GUI")
+    (description
+     "Wavbreaker is a WAV and MP3 file splitter.  It can be used to break up a
+WAV or MP3 audio file into multiple WAV files.  Wavbreaker contains a helpful
+waveform display of the audio file being edited, to help the user in splitting
+the file at the right point.  Wavbreaker also supports splitting MP3 files
+without re-encoding them, to preserve their original audio quality.")
+    (license license:gpl2+)))
