@@ -2766,8 +2766,27 @@ applications.")
     (description "This package provides the glue for the Android JNI.")
     (license license:expat)))
 
+(define-public rust-android-log-sys-0.2
+  (package
+    (name "rust-android-log-sys")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "android_log-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bhhs1cgzp9vzjvkn2q31ppc7w4am5s273hkvl5iac5475kmp5l5"))))
+    (arguments `(#:skip-build? #true))  ;XXX: Android only
+    (build-system cargo-build-system)
+    (home-page "https://github.com/nercury/android_log-sys-rs")
+    (synopsis "FFI bindings to Android log Library")
+    (description "This package provides FFI bindings to Android log Library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-android-log-sys-0.1
   (package
+    (inherit rust-android-log-sys-0.2)
     (name "rust-android-log-sys")
     (version "0.1.2")
     (source
@@ -2777,15 +2796,36 @@ applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0klq7cp4lm74gjf9p12zdjcr159blbicrfvadmaqvfxbi8njw1dq"))))
-    (arguments `(#:skip-build? #true))  ;XXX: Android only
+    (arguments `(#:skip-build? #true)))) ;XXX: Android only
+
+(define-public rust-android-logger-0.10
+  (package
+    (name "rust-android-logger")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "android_logger" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rigzgkaik2y7pvsilpjdy19mdq1kkamw2rdf9fjkvb5hfqhkvfr"))))
     (build-system cargo-build-system)
-    (home-page "https://github.com/nercury/android_log-sys-rs")
-    (synopsis "FFI bindings to Android log Library")
-    (description "This package provides FFI bindings to Android log Library.")
+    (arguments
+     `(#:cargo-inputs
+       (("rust-android-log-sys" ,rust-android-log-sys-0.2)
+        ("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/Nercury/android_logger-rs")
+    (synopsis "Logging implementation for @code{log}")
+    (description
+     "This library is a drop-in replacement for @code{env_logger}.  Instead,
+it outputs messages to Android's logcat.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-android-logger-0.8
   (package
+    (inherit rust-android-logger-0.10)
     (name "rust-android-logger")
     (version "0.8.6")
     (source
@@ -2795,19 +2835,12 @@ applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0kj8i03fqqwxd803hrk27j2399v27ajjj9zxi2nnyml0s4nm9gcc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-android-log-sys" ,rust-android-log-sys-0.1)
         ("rust-env-logger" ,rust-env-logger-0.7)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4))))
-    (home-page "https://github.com/Nercury/android_logger-rs")
-    (synopsis "Logging implementation for @code{log}")
-    (description
-     "This library is a drop-in replacement for @code{env_logger}.  Instead,
-it outputs messages to Android's logcat.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-log" ,rust-log-0.4))))))
 
 (define-public rust-ansi-parser-0.6
   (package
@@ -18502,6 +18535,8 @@ Google's diff-match-patch.")
      `(#:tests? #f                      ;FIXME: Several macros are not found.
        #:cargo-inputs
        (("rust-libloading" ,rust-libloading-0.7))))
+    (inputs
+     (list rust-libloading-0.7))
     (home-page "https://github.com/vberger/dlib")
     (synopsis "Helper macros for manually loading optional system libraries")
     (description
@@ -25494,8 +25529,42 @@ graphics.")
 graphics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-glium-0.31
+  (package
+    (name "rust-glium")
+    (version "0.31.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glium" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "06cfsq3mgjlq3bnxv7jh5bb5is7040xyvf8cf1x45vnq8fdz1d0a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #true              ;XXX circular dependencies
+       #:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-glutin" ,rust-glutin-0.28)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-memoffset" ,rust-memoffset-0.6)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-takeable-option" ,rust-takeable-option-0.5))
+       #:cargo-development-inputs
+       (("rust-gl-generator" ,rust-gl-generator-0.14))))
+    (home-page "https://github.com/glium/glium")
+    (synopsis "OpenGL wrapper")
+    (description
+     "Glium is an intermediate layer between OpenGL and your application.  You
+still need to manually handle the graphics pipeline, but without having to use
+OpenGL's old and error-prone API.")
+    (license license:asl2.0)))
+
 (define-public rust-glium-0.25
   (package
+    (inherit rust-glium-0.31)
     (name "rust-glium")
     (version "0.25.1")
     (source
@@ -25507,7 +25576,6 @@ graphics.")
        (sha256
         (base32
          "0mhjly07x10lxg802ppg16wbxddhh4fdnlg10i99qwpfamvqhzbd"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
@@ -25522,15 +25590,7 @@ graphics.")
         ("rust-gl-generator" ,rust-gl-generator-0.11)
         ("rust-image" ,rust-image-0.21)
         ("rust-obj" ,rust-obj-0.9)
-        ("rust-rand" ,rust-rand-0.6))))
-    (home-page "https://github.com/glium/glium")
-    (synopsis
-     "OpenGL wrapper")
-    (description
-     "Glium is an intermediate layer between OpenGL and your application.  You
-still need to manually handle the graphics pipeline, but without having to use
-OpenGL's old and error-prone API.")
-    (license license:asl2.0)))
+        ("rust-rand" ,rust-rand-0.6))))))
 
 (define-public rust-glob-0.3
   (package
@@ -31659,14 +31719,14 @@ library.")
          "0sidr67nsa693mqrqgk2np3bkqni0778yk147xncspy171jdk13g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-static-assertions"
          ,rust-static-assertions-1))))
+    (inputs (list rust-cfg-if-1 rust-winapi-0.3))
     (home-page "https://github.com/nagisa/rust_libloading/")
     (synopsis "Safer binding to dynamic library loading utilities")
     (description "This package provides a safer binding to dynamic library
@@ -34343,9 +34403,11 @@ file IO.")
         (base32 "1yfx2v8kmkhr2d4gwk8ghihdwg73vapn3vvp0im06f0kgx8crb2r"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-autocfg" ,rust-autocfg-1))))
+     `(#:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3))))
+    (inputs (list rust-autocfg-1))
     (home-page "https://github.com/Gilnaa/memoffset")
     (synopsis "C-like offset_of functionality for Rust structs")
     (description
@@ -34372,7 +34434,8 @@ for Rust structs.")
        #:cargo-inputs
        (("rust-rustc-version" ,rust-rustc-version-0.2))
        #:cargo-development-inputs
-       (("rust-doc-comment" ,rust-doc-comment-0.3))))))
+       (("rust-doc-comment" ,rust-doc-comment-0.3))))
+    (inputs '())))
 
 (define-public rust-memoffset-0.2
   (package
@@ -36706,8 +36769,37 @@ general elements and for numerics.")
         ("rust-quickcheck" ,rust-quickcheck-0.7)
         ("rust-rawpointer" ,rust-rawpointer-0.1))))))
 
+(define-public rust-ndk-0.5
+  (package
+    (name "rust-ndk")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ndk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17b9imdmv6cffr12bdpvxw1myxdyvaf6jwkmd3w7abn7akv6in4n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #true              ;XXX: Android only
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-jni" ,rust-jni-0.18)
+        ("rust-jni-glue" ,rust-jni-glue-0.0)
+        ("rust-jni-sys" ,rust-jni-sys-0.3)
+        ("rust-ndk-sys" ,rust-ndk-sys-0.2)
+        ("rust-num-enum" ,rust-num-enum-0.5)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/rust-windowing/android-ndk-rs")
+    (synopsis "Safe Rust bindings to the Android NDK")
+    (description
+     "This package provides safe Rust bindings to the Android NDK.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ndk-0.2
   (package
+    (inherit rust-ndk-0.5)
     (name "rust-ndk")
     (version "0.2.1")
     (source
@@ -36717,7 +36809,6 @@ general elements and for numerics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0wvf4hy18lpfkr4bap846qv2cx1vdg3x0d4hcfba9l5yzv0ngcay"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #true              ;XXX: Android only
        #:cargo-inputs
@@ -36726,15 +36817,60 @@ general elements and for numerics.")
         ("rust-jni-sys" ,rust-jni-sys-0.3)
         ("rust-ndk-sys" ,rust-ndk-sys-0.2)
         ("rust-num-enum" ,rust-num-enum-0.4)
-        ("rust-thiserror" ,rust-thiserror-1))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
+
+(define-public rust-ndk-context-0.1
+  (package
+    (name "rust-ndk-context")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ndk-context" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "12sai3dqsblsvfd1l1zab0z6xsnlha3xsfl7kagdnmj3an3jvc17"))))
+    (build-system cargo-build-system)
+    (arguments
+     '(#:tests? #f))                 ;TODO: requires many dependencies + setup
     (home-page "https://github.com/rust-windowing/android-ndk-rs")
-    (synopsis "Safe Rust bindings to the Android NDK")
+    (synopsis "Handles for accessing Android APIs")
     (description
-     "This package provides safe Rust bindings to the Android NDK.")
+     "This package provides handles for accessing Android APIs.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-ndk-glue-0.5
+  (package
+    (name "rust-ndk-glue")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ndk-glue" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m44jh4f9sirs757ikc8sracg6dzw77h9l4bw9vm8s1dly7fw6y7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #true              ;XXX: Android only
+       #:cargo-inputs
+       (("rust-android-logger" ,rust-android-logger-0.10)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-ndk" ,rust-ndk-0.5)
+        ("rust-ndk-context" ,rust-ndk-context-0.1)
+        ("rust-ndk-macro" ,rust-ndk-macro-0.3)
+        ("rust-ndk-sys" ,rust-ndk-sys-0.2))))
+    (home-page "https://github.com/rust-windowing/android-ndk-rs")
+    (synopsis "Startup code for Android binaries")
+    (description
+     "This package provides startup code for Android binaries.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-ndk-glue-0.2
   (package
+    (inherit rust-ndk-glue-0.5)
     (name "rust-ndk-glue")
     (version "0.2.1")
     (source
@@ -36744,7 +36880,6 @@ general elements and for numerics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0hajn6nsg6i3khi7yr2ayafpiznm5z3k5v64afqnz753nyw9kwxx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #true              ;XXX: Android only
        #:cargo-inputs
@@ -36754,15 +36889,35 @@ general elements and for numerics.")
         ("rust-log" ,rust-log-0.4)
         ("rust-ndk" ,rust-ndk-0.2)
         ("rust-ndk-macro" ,rust-ndk-macro-0.2)
-        ("rust-ndk-sys" ,rust-ndk-sys-0.2))))
+        ("rust-ndk-sys" ,rust-ndk-sys-0.2))))))
+
+(define-public rust-ndk-macro-0.3
+  (package
+    (name "rust-ndk-macro")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ndk-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0v3sxc11kq3d5vdwfml62l7y5dr0flsf6kp5xid9sbv7qh0arxqd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-darling" ,rust-darling-0.13)
+        ("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/rust-windowing/android-ndk-rs")
-    (synopsis "Startup code for Android binaries")
-    (description
-     "This package provides startup code for Android binaries.")
+    (synopsis "Helper macros for android ndk")
+    (description "This package provides helper macros for android ndk.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-ndk-macro-0.2
   (package
+    (inherit rust-ndk-macro-0.3)
     (name "rust-ndk-macro")
     (version "0.2.0")
     (source
@@ -36772,30 +36927,25 @@ general elements and for numerics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07a8vjr4fpksssgp453bf82n73i4i17yj1lvbgvd0964glqcdl85"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-darling" ,rust-darling-0.10)
         ("rust-proc-macro-crate" ,rust-proc-macro-crate-0.1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/rust-windowing/android-ndk-rs")
-    (synopsis "Helper macros for android ndk")
-    (description "This package provides helper macros for android ndk.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-ndk-sys-0.2
   (package
     (name "rust-ndk-sys")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ndk-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13c68a217ag3k18vlffpcj2qjfinchxxchzlwnsp075v7p5j4jf4"))))
+        (base32 "08915adplysmvx0ha12if1v7zxzx82xgj3nnmiddkm8aq9sdvg71"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/rust-windowing/android-ndk-rs")
@@ -37335,7 +37485,10 @@ while still providing platform specific APIs.")
         ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-memoffset" ,rust-memoffset-0.6))))))
+        ("rust-memoffset" ,rust-memoffset-0.6))))
+    (inputs
+     (list rust-bitflags-1.2 rust-cc-1 rust-cfg-if-1 rust-libc-0.2
+           rust-memoffset-0.6))))
 
 (define-public rust-nix-0.21
   (package
