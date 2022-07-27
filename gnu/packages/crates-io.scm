@@ -34304,9 +34304,10 @@ file IO.")
         (base32 "1yfx2v8kmkhr2d4gwk8ghihdwg73vapn3vvp0im06f0kgx8crb2r"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-autocfg" ,rust-autocfg-1))))
+     `(#:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (home-page "https://github.com/Gilnaa/memoffset")
     (synopsis "C-like offset_of functionality for Rust structs")
     (description
