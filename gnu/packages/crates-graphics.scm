@@ -2696,17 +2696,17 @@ extensions.")
         ("rust-wayland-sys" ,rust-wayland-sys-0.21)
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.21))))))
 
-(define-public rust-wayland-scanner-0.28
+(define-public rust-wayland-scanner-0.29
   (package
     (name "rust-wayland-scanner")
-    (version "0.28.3")
+    (version "0.29.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-scanner" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0g8ky63qk27in7zajycj3fyydsxlj19hanfcvr8d7z5kcxbvl43h"))))
+        (base32 "1q7r764z8k922xf51fj56b1xm29ffi9ap8jnf4c478gp8cqyv89r"))))
     (build-system cargo-build-system)
     (inputs
      (list rust-proc-macro2-1 rust-quote-1 rust-xml-rs-0.8))
@@ -2718,6 +2718,21 @@ It is intended for use with wayland-sys.  You should only need this crate if
 you are working on custom Wayland protocol extensions.  Look at the
 wayland-client crate for usable bindings.")
     (license license:expat)))
+
+(define-public rust-wayland-scanner-0.28
+  (package
+    (inherit rust-wayland-scanner-0.29)
+    (name "rust-wayland-scanner")
+    (version "0.28.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-scanner" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g8ky63qk27in7zajycj3fyydsxlj19hanfcvr8d7z5kcxbvl43h"))))
+    (inputs
+     (list rust-proc-macro2-1 rust-quote-1 rust-xml-rs-0.8))))
 
 (define-public rust-wayland-scanner-0.23
   (package
