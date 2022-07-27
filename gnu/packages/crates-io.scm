@@ -36692,6 +36692,26 @@ general elements and for numerics.")
      "This package provides safe Rust bindings to the Android NDK.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ndk-context-0.1
+  (package
+    (name "rust-ndk-context")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ndk-context" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "12sai3dqsblsvfd1l1zab0z6xsnlha3xsfl7kagdnmj3an3jvc17"))))
+    (build-system cargo-build-system)
+    (arguments
+     '(#:tests? #f))                 ;TODO: requires many dependencies + setup
+    (home-page "https://github.com/rust-windowing/android-ndk-rs")
+    (synopsis "Handles for accessing Android APIs")
+    (description
+     "This package provides handles for accessing Android APIs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ndk-glue-0.2
   (package
     (name "rust-ndk-glue")
