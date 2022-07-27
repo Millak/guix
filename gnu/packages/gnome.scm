@@ -4816,7 +4816,7 @@ libxml to ease remote use of the RESTful API.")
 (define-public libsoup-minimal
   (package
     (name "libsoup-minimal")
-    (version "3.0.4")
+    (version "3.0.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libsoup/"
@@ -4824,7 +4824,7 @@ libxml to ease remote use of the RESTful API.")
                                   "libsoup-" version ".tar.xz"))
               (sha256
                (base32
-                "0ysnvvfd2f6w2z6g31spqqb8wgyamixc7mryzbbpyw0z15g8plsv"))))
+                "1j7p3cz6hwi9js9rp0pbas7cdln97yg9v2l1nv5imhcr6p7r1pzb"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dgtk_doc=false")
