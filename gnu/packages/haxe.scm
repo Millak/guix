@@ -105,3 +105,87 @@ You can use the compiler as standalone command line executable separate from
 the VM, or as a Neko library to perform compile-and-run funtions for
 interactive languages.")
     (license license:expat)))
+
+(define haxelib-src
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/HaxeFoundation/haxelib")
+          ;; This should match the haxelib submodule in haxe.
+          (commit "4b27f91d8a4ff279d9903091680fee2c93a0d574")
+          ;; This repo includes some Haxe libs as well.
+          (recursive? #t)))
+    (sha256
+     (base32
+      "0mwrm6gxgclwziiprfiswmjbz6z3dnvdwl8gq3gaym18pvx4p3ny"))))
+
+(define-public haxe
+  (package
+    (name "haxe")
+    (version "4.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/HaxeFoundation/haxe")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pl8vpyb7gl2yqjg85yc4zxq9c3ipvw4yrrpliaxs25ynrj3l51n"))))
+    (build-system dune-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Needs the haxelib sources for haxelib client
+               (add-after 'unpack 'copy-haxelib-src
+                 (lambda _
+                   (copy-recursively #$haxelib-src
+                                     "extra/haxelib_src")))
+               ;; Change the default directory for the haxelib package
+               ;; manager to be something writeable for a user.
+               (add-after 'copy-haxelib-src 'change-default-dir
+                 (lambda _
+                   (substitute* "extra/haxelib_src/src/haxelib/client/Main.hx"
+                     (("'/usr/lib/haxe/\\$REPNAME'")
+                      "Path.addTrailingSlash( getHomePath() ) + '.haxe/$REPNAME'"))))
+               (add-after 'unpack 'prefix
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("/usr/local")
+                      (string-append #$output)))))
+               ;; Haxe uses a straight forward make, dune runtest, and make
+               ;; install process.
+               (replace 'build
+                 (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+                   (invoke "make" "-j" (if parallel-build?
+                                           (number->string (parallel-job-count))
+                                           "1"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "dune" "runtest"))))
+               (replace 'install
+                 (lambda _
+                   (invoke "make" "install"))))))
+    (inputs (list libuv
+                  mbedtls-apache
+                  neko
+                  ocaml-extlib
+                  ocaml-luv
+                  ocaml-ptmap
+                  ocaml-sedlex
+                  ocaml-sha
+                  ocaml-xml-light
+                  pcre
+                  zlib))
+    (native-inputs (list ocaml-findlib camlp5))
+    (home-page "https://haxe.org/")
+    (synopsis "Multi-target universal programming language")
+    (description
+     "Haxe is a toolkit based on a modern, high level, static-typed
+programming language, a cross-compiler, a complete cross-platform standard
+library and ways to access each platform's native capabilities.  This package
+includes the compiler and library manager.")
+    (license (list license:gpl2+     ; the compiler itself
+                   license:expat)))) ; the standard library
+
