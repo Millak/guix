@@ -210,20 +210,49 @@ application which is needed to connect to VNC servers.")
 
 (define %tigervnc-client-source (package-source tigervnc-client))
 
-;; A VNC server is, in fact, an X server so it seems like a good idea
-;; to build on the work already done for xorg-server package.  This is
-;; not entirely compatible with the recommendation in BUILDING.txt
-;; where the client is built first, then the source code of the X
-;; server is copied into a subdir of the build directory, patched with
-;; VNC additions and then build and installed as Xvnc.  The procedure
-;; was turned around, where TigerVNC code is downloaded and built
-;; inside the Guix X server build dir. Also, the VNC patching process
-;; for the X server is automated in a straightforward manner.
+;; A VNC server is, in fact, an X server so it seems like a good idea to build
+;; on the work already done for xorg-server package.  This is not entirely
+;; compatible with the recommendation in BUILDING.txt where the client is
+;; built first, then the source code of the X server is copied into a subdir
+;; of the build directory, patched with VNC additions and then build and
+;; installed as Xvnc.  The procedure was turned around, where TigerVNC code is
+;; downloaded and built inside the Guix X server build dir.  Also, the VNC
+;; patching process for the X server is automated in a straightforward manner.
 (define-public tigervnc-server
   (package
     (inherit xorg-server)
     (name "tigervnc-server")
     (version (package-version tigervnc-client))
+    (source
+     (origin
+       (inherit (package-source xorg-server))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Copy the VNC extension into the xorg-server sources.
+            (copy-recursively #$(file-append %tigervnc-client-source
+                                             "/unix/xserver")
+                              ".")
+            ;; Include a full copy of tigervnc-client sources, so that the
+            ;; complete sources involved are available and can be edited during
+            ;; the build.
+            (copy-recursively #$%tigervnc-client-source "tigervnc-client")
+            ;; Adjust the VNC extension build system files so that it refers
+            ;; to it.
+            (substitute* "hw/vnc/Makefile.am"
+              (("(TIGERVNC_SRCDIR=).*" _ head)
+               (string-append head "$(CURDIR)/../../tigervnc-client\n"))
+              (("(TIGERVNC_BUILDDIR=).*" _ head)
+               (string-append head
+                              "$(CURDIR)/../../tigervnc-client/build\n")))
+            ;; Ensure the Autotools build system gets re-bootstrapped.
+            (delete-file "configure")))
+       ;; Patch the xorg-server build system so that it builds the VNC
+       ;; extension.
+       (patches (cons (file-append %tigervnc-client-source
+                                   "/unix/xserver21.1.1.patch")
+                      (origin-patches (package-source xorg-server))))
+       (file-name (string-append name "-" version ".tar.xz"))))
     (arguments
      (substitute-keyword-arguments
          (package-arguments xorg-server)
@@ -254,28 +283,13 @@ application which is needed to connect to VNC servers.")
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'check)             ;no test suite
-            (add-after 'unpack 'copy-tvnc-xserver
-              (lambda* (#:key inputs #:allow-other-keys)
-                (copy-recursively (search-input-directory inputs "unix/xserver")
-                                  ".")
-                ;; Adjust Makefile variables default values to simplify usage.
-                (substitute* "hw/vnc/Makefile.am"
-                  (("(TIGERVNC_SRCDIR=).*" _ head)
-                   (string-append head #$%tigervnc-client-source "\n"))
-                  (("(TIGERVNC_BUILDDIR=).*" _ head)
-                   (string-append head (getcwd) "/tigervnc-build\n")))))
-            (add-after 'copy-tvnc-xserver 'patch-xserver
-              (lambda* (#:key inputs #:allow-other-keys)
-                (invoke "patch" "-p1" "-i"
-                        (search-input-file inputs "unix/xserver21.1.1.patch"))
-                (invoke "autoreconf" "-fiv")))
             (add-before 'build 'build-tigervnc
               (lambda* (#:key parallel-build? #:allow-other-keys)
-                (mkdir-p "tigervnc-build")
-                (with-directory-excursion "tigervnc-build"
+                (mkdir-p "tigervnc-client/build")
+                (with-directory-excursion "tigervnc-client/build"
                   (invoke "cmake" "-G" "Unix Makefiles"
                           (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
-                          #$%tigervnc-client-source)
+                          "..")
                   (invoke "make" "-j" (number->string (if parallel-build?
                                                           (parallel-job-count)
                                                           1))))))
@@ -286,7 +300,7 @@ application which is needed to connect to VNC servers.")
                                                         1)))))
             (add-before 'install 'install-tigervnc-aux
               (lambda _
-                (invoke "make" "-C" "tigervnc-build/unix" "install")))
+                (invoke "make" "-C" "tigervnc-client/build/unix" "install")))
             (replace 'install
               (lambda _
                 (invoke "make" "install")))))))
