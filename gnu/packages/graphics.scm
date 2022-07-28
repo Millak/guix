@@ -584,6 +584,45 @@ vertices, sorting by primitive type, merging of redundant materials and many
 more.")
     (license license:bsd-3)))
 
+(define-public mikktspace
+  ;; The latest commit is used as there is no release.
+  (let ((commit   "3e895b49d05ea07e4c2133156cfa94369e19e409")
+        (revision "0"))
+    (package
+      (name "mikktspace")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mmikk/MikkTSpace")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rjh9zflx51hdhnfadal87v4hhkrbprkv692hjkg9wkxx0ch39zi"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)
+                 (replace 'build
+                   (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+                     (invoke #$(cc-for-target) "mikktspace.c" "-O2" "-g" "-fPIC"
+                             "-shared" "-o" "libmikktspace.so")))
+                 (replace 'install
+                   (lambda _
+                     (install-file "mikktspace.h"
+                                   (string-append #$output "/include"))
+                     (install-file "libmikktspace.so"
+                                   (string-append #$output "/lib")))))))
+      (home-page "http://www.mikktspace.com/")
+      (synopsis "Library for a common standard for tangent spaces")
+      (description
+       "This package provides a common standard tangent space library used in
+baking tools to produce normal maps.")
+      (license license:zlib))))
+
 (define-public openshadinglanguage
   (package
     (name "openshadinglanguage")
