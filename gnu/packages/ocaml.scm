@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2623,6 +2624,48 @@ make it easy to run normally-blocking I/O operations concurrently in a single
 process.  Also, in many cases, Lwt threads can interact without the need for
 locks or other synchronization primitives.")
     (license license:lgpl2.1)))
+
+(define-public ocaml-luv
+  (package
+    (name "ocaml-luv")
+    (version "0.5.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/aantron/luv/releases/download/"
+                                  version "/luv-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0hrsi8n2l31bcwgj847df4chjgqb9lmwkaky8fvvi15k25rz9v6c"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Remove bundled configure and libuv.
+                  (delete-file-recursively "src/c/vendor")
+                  #t))))
+    (build-system dune-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'use-system-libuv
+                 (lambda _
+                   (setenv "LUV_USE_SYSTEM_LIBUV" "yes")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "dune" "runtest" "--no-buffer" "--force")))))))
+    (inputs (list libuv))
+    (propagated-inputs (list ocaml-ctypes ocaml-result ocaml-odoc))
+    (native-inputs (list ocaml-base ocaml-alcotest))
+    (home-page "https://github.com/aantron/luv")
+    (synopsis "Binding to libuv: cross-platform asynchronous I/O")
+    (description
+     "Luv is a binding to libuv, the cross-platform C library that does
+asynchronous I/O in Node.js and runs its main loop.  Besides asynchronous I/O,
+libuv also supports multiprocessing and multithreading.  Multiple event loops
+can be run in different threads.  libuv also exposes a lot of other
+functionality, amounting to a full OS API, and an alternative to the standard
+module Unix.")
+    (license license:expat)))
 
 (define-public ocaml-lwt-react
   (package
