@@ -5930,6 +5930,28 @@ storage of large amounts of data.")
     (description "Octavius is a library to parse the `ocamldoc` comment syntax.")
     (license license:isc)))
 
+(define-public ocaml-sha
+  (package
+    (name "ocaml-sha")
+    (version "1.15.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/djs55/ocaml-sha/releases/download/"
+                                  version "/sha-" version ".tbz"))
+              (sha256
+               (base32
+                "1dzzhchknnbrpp5s81iqbvmqp4s0l75yrq8snj70ch3wkarmgg9z"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-stdlib-shims ocaml-odoc))
+    (native-inputs (list ocaml-ounit2))
+    (home-page "https://github.com/djs55/ocaml-sha")
+    (synopsis "OCaml binding to the SHA cryptographic functions")
+    (description
+     "This is the binding for SHA interface code in OCaml, offering the same
+interface as the MD5 digest included in the OCaml standard library.  It
+currently provides SHA1, SHA256 and SHA512 hash functions.")
+    (license license:isc)))
+
 (define-public ocaml-ppx-hash
   (package
     (name "ocaml-ppx-hash")
