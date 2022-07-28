@@ -6278,7 +6278,9 @@ subsequent visualization, annotation and storage of results.")
     (arguments
      `(#:make-flags
        ,#~(list "BLASFLAGS=-llapack -lopenblas"
-                "CFLAGS=-Wall -O2 -DDYNAMIC_ZLIB=1"
+                (string-append "CFLAGS=-Wall -O2 -DDYNAMIC_ZLIB=1"
+                               " -I" (search-input-directory
+                                       %build-inputs "include/simde"))
                 "ZLIB=-lz"
                 "BIN=plink prettify"
                 (string-append "CC=" #$(cc-for-target))
@@ -6305,7 +6307,7 @@ subsequent visualization, annotation and storage of results.")
     (inputs
      (list lapack openblas zlib))
     (native-inputs
-     (list diffutils plink python)) ; for tests
+     (list diffutils plink python simde)) ; for tests
     (home-page "https://www.cog-genomics.org/plink/")
     (license license:gpl3+)))
 
