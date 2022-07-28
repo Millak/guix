@@ -198,7 +198,9 @@ markup) can be customized and extended by the user.")
                                         ".src.tar.gz")))
               (sha256
                (base32
-                "0dqzgci82z950pzg6cpxvvqwybi2031flml3pj47hayhq3c9qpm1"))))
+                "0dqzgci82z950pzg6cpxvvqwybi2031flml3pj47hayhq3c9qpm1"))
+              ;; Remove with next release.
+              (patches (search-patches "doxygen-support-gcc-12.patch"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison

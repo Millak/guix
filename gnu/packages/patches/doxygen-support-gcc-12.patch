@@ -1,0 +1,15 @@
+Fix for https://github.com/doxygen/doxygen/issues/9312 made in unreleased upstream commit
+https://github.com/doxygen/doxygen/commit/5198966c8d5fec89116d025c74934ac03ea511fa
+
+diff --git a/src/cache.h b/src/cache.h
+index 0ff3092ed5..e218eb27d2 100644
+--- a/src/cache.h
++++ b/src/cache.h
+@@ -19,6 +19,7 @@
+ #include <list>
+ #include <unordered_map>
+ #include <mutex>
++#include <utility>
+ #include <ctype.h>
+ 
+ /*! Fixed size cache for value type V using keys of type K.
