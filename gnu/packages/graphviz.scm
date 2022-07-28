@@ -104,19 +104,19 @@
                                   (string-append extdir
                                                  "/libgv_guile.so"))))))))
     (inputs
-     `(("libXrender" ,libxrender)
-       ("libX11" ,libx11)
-       ("gts" ,gts)
-       ("gd" ,gd)
-       ("guile" ,guile-3.0)                       ;Guile bindings
-       ("pango" ,pango)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libltdl" ,libltdl)
-       ("libXaw" ,libxaw)
-       ("expat" ,expat)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)))
+     (list libxrender
+           libx11
+           gts
+           gd
+           guile-3.0                    ;Guile bindings
+           pango
+           fontconfig
+           freetype
+           libltdl
+           libxaw
+           expat
+           libjpeg-turbo
+           libpng))
     (native-inputs
      (list bison swig pkg-config))
     (outputs '("out" "doc"))                      ; 5 MiB of html + pdfs
