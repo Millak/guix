@@ -43,7 +43,9 @@
                                  name "-" version ".tar.gz"))
              (sha256
               (base32
-               "1z06m5zv87mha6hvys1iay810ghc1jngilfby1ms2n4d1mryjfym"))))
+               "1z06m5zv87mha6hvys1iay810ghc1jngilfby1ms2n4d1mryjfym"))
+             ;; Remove with next release.
+             (patches (search-patches "swig-support-gcc-12.patch"))))
     (build-system gnu-build-system)
     (native-inputs (list boost
                          `(,pcre "bin") ;for 'pcre-config'
