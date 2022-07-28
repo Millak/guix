@@ -128,6 +128,8 @@ way of representing structural information as diagrams of abstract graphs and
 networks.  It has important applications in networking, bioinformatics,
 software engineering, database and web design, machine learning, and in visual
 interfaces for other technical domains.")
+    (properties
+     '((release-monitoring-url . "https://graphviz.org/download/source/")))
     (license license:epl1.0)))
 
 ;; Older Graphviz needed for pygraphviz.  See
