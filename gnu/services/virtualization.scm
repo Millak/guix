@@ -879,13 +879,11 @@ specified, the QEMU default path is used."))
       (provision '(qemu-guest-agent))
       (documentation "Run the QEMU guest agent.")
       (start #~(make-forkexec-constructor
-                `(,(string-append #$qemu "/bin/qemu-ga") "--daemon"
-                  "--pidfile=/var/run/qemu-ga.pid"
-                  "--statedir=/var/run"
-                  ,@(if #$device
-                        (list (string-append "--path=" #$device))
-                        '()))
-                #:pid-file "/var/run/qemu-ga.pid"
+                `(,(string-append #$qemu "/bin/qemu-ga")
+                  "--statedir" "/var/run"
+                  ,@(if (string-null? #$device)
+                        '()
+                        (list "--path" #$device)))
                 #:log-file "/var/log/qemu-ga.log"))
       (stop #~(make-kill-destructor))))))
 
