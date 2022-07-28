@@ -49,6 +49,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages netpbm)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages statistics)
@@ -2646,6 +2647,65 @@ and evaluate clustering results.")
     (description "This package provides functions to plot data associated with
 arbitrary genomic intervals along chromosomal ideogram.")
     (license license:gpl2)))
+
+(define-public r-infercnv
+  (package
+    (name "r-infercnv")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "infercnv" version))
+       (sha256
+        (base32
+         "01f021fdxm058733rky46dlvqg7dmf5mn5x9lnq0fspp5665w3bl"))))
+    (properties `((upstream-name . "infercnv")))
+    (build-system r-build-system)
+    (inputs (list python))
+    (propagated-inputs
+     (list r-ape
+           r-argparse
+           r-biocgenerics
+           r-catools
+           r-coda
+           r-coin
+           r-digest
+           r-doparallel
+           r-dplyr
+           r-edger
+           r-fastcluster
+           r-fitdistrplus
+           r-foreach
+           r-futile-logger
+           r-future
+           r-ggplot2
+           r-gplots
+           r-gridextra
+           r-hiddenmarkov
+           r-leiden
+           r-matrix
+           r-paralleldist
+           r-phyclust
+           r-rann
+           r-rcolorbrewer
+           r-reshape
+           r-rjags
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/broadinstitute/inferCNV/wiki")
+    (synopsis "Infer copy number variation from single-cell RNA-Seq data")
+    (description
+     "@code{InferCNV} is used to explore tumor single cell RNA-Seq data to identify
+evidence for somatic large-scale chromosomal copy number alterations, such as gains
+or deletions of entire chromosomes or large segments of chromosomes.  This is done
+by exploring expression intensity of genes across positions of a tumor genome in
+comparison to a set of reference \"normal\" cells.  A heatmap is generated
+illustrating the relative expression intensities across each chromosome, and it
+often becomes readily apparent as to which regions of the tumor genome are
+over-abundant or less-abundant as compared to that of normal cells.")
+    (license license:bsd-3)))
 
 (define-public r-iranges
   (package
