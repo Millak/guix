@@ -283,6 +283,11 @@ application which is needed to connect to VNC servers.")
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'check)             ;no test suite
+            (add-after 'unpack 'adjust-pam-config
+              (lambda _
+                (substitute* "tigervnc-client/unix/vncserver/tigervnc.pam"
+                  (("pam_systemd.so")
+                   "pam_elogind.so"))))
             (add-before 'build 'build-tigervnc
               (lambda* (#:key parallel-build? #:allow-other-keys)
                 (mkdir-p "tigervnc-client/build")
