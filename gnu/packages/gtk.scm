@@ -312,7 +312,7 @@ representing trie.  Trie is a kind of digital search tree.")
 (define-public libthai
   (package
     (name "libthai")
-    (version "0.1.28")
+    (version "0.1.29")
     (source
      (origin
        (method url-fetch)
@@ -320,7 +320,7 @@ representing trie.  Trie is a kind of digital search tree.")
         (string-append "https://linux.thai.net/pub/thailinux/software/"
                        "libthai/libthai-" version ".tar.xz"))
        (sha256
-        (base32 "04g93bgxrcnay9fglpq2lj9nr7x1xh06i60m7haip8as9dxs3q7z"))))
+        (base32 "1kab1w6i1fb76807xrwjfac8n2nky8jbvkhpnh117qahrdywr07w"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (arguments
