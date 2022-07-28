@@ -4407,6 +4407,34 @@ sensitive completion, colors, and more.")
         ("ocaml-zed" ,ocaml-zed)))
      (properties '()))))
 
+(define-public ocaml-ptmap
+  (package
+    (name "ocaml-ptmap")
+    (version "2.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "https://github.com/backtracking/ptmap/releases/download/"
+                              version "/ptmap-" version ".tbz"))
+              (sha256
+               (base32
+                "1apk61fc1y1g7x3m3c91fnskvxp6i0vk5nxwvipj56k7x2pzilgb"))))
+    (build-system dune-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "dune" "runtest")))))))
+    (propagated-inputs (list ocaml-stdlib-shims ocaml-seq))
+    (home-page "https://github.com/backtracking/ptmap")
+    (synopsis "Maps of integers implemented as Patricia trees")
+    (description
+     "An implementation inspired by Okasaki & Gill's paper 'Fast Mergeable
+Integer Maps.'")
+    (license license:lgpl2.1))) ; with linking exception
+
 (define-public ocaml-integers
   (package
     (name "ocaml-integers")
