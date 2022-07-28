@@ -189,3 +189,96 @@ includes the compiler and library manager.")
     (license (list license:gpl2+     ; the compiler itself
                    license:expat)))) ; the standard library
 
+(define-public hashlink
+  (package
+    (name "hashlink")
+    (version "1.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/HaxeFoundation/hashlink")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i5f1mxpgjcdirx60kxrw0r0y15qh3j16a6fj8mzkq3k7j2hc982"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Remove bundled libraries (mainly used for Windows build).
+           (delete-file-recursively "include")
+           #t))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; Looks like there are tests with CMake, but there is confusion if this
+     ;; is a supported way to build on Linux.  See, e.g.
+     ;; https://github.com/HaxeFoundation/hashlink/issues/397.  Also, the
+     ;; CMake build requires running the library manager haxelib in the build
+     ;; process for the tests, likely requiring network access.
+     ;; TODO: Use cmake-build-system instead and enable tests?
+     (list #:tests? #f
+           #:make-flags
+           ;; The built hdll libraries need help finding libhl.so.
+           #~(list (string-append "LIBFLAGS=-Wl,-rpath=" #$output "/lib"))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Don't try to build the (removed) bundled libraries pcre,
+               ;; minimp3, and mikktspace.  Provide the approriate paths and
+               ;; linking options.
+               (add-after 'unpack 'use-system-libs
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("\\$\\{PCRE\\}") "")
+                     (("-lpthread") "-lpthread -lpcre16")
+                     (("include/minimp3")
+                      (string-append #$(this-package-input "minimp3") "/include"))
+                     (("include/mikktspace ")
+                      (string-append #$(this-package-input "mikktspace") "/include "))
+                     (("include/mikktspace/mikktspace.o") "")
+                     (("-lpng") "-lpng -lmikktspace"))))
+               (replace 'configure
+                 (lambda* _
+                   (setenv "CC" #$(cc-for-target))
+                   (setenv "PREFIX" #$output)))
+               (replace 'build
+                 (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+                   (apply invoke "make" "-j" (if parallel-build?
+                                                 (number->string (parallel-job-count))
+                                                 "1")
+                          make-flags))))))
+    (inputs (list glu
+                  haxe
+                  libjpeg-turbo
+                  libpng
+                  libuv
+                  libvorbis
+                  mbedtls-apache
+                  mikktspace
+                  minimp3
+                  openal
+                  pcre
+                  sdl2
+                  sqlite
+                  zlib))
+    (native-inputs (list pkg-config))
+    (home-page "https://hashlink.haxe.org/")
+    (synopsis "Virtual machine for the Haxe language")
+    (description
+     "HashLink (HL) is a virtual machine for the Haxe language.  It can run
+bytecode produced by the Haxe compiler, or converted to C by HL.  The HashLink runtime
+includes the following features:
+@itemize
+@item Fully compatible with the Haxe specification
+@item Support file I/O, regular expressions, network, etc.
+@item Unicode strings by default
+@item Mark-and-not-sweep Garbage Collector
+@item x86 and x86-64 HL/C compilation
+@item x86 and x86-64 HL/JIT compilation
+@end itemize
+
+While the standard HL runtime provides support for Haxe standard library,
+HashLink also provides several libraries that can optionally be used to build
+HL-specific applications.  This includes the FMT library for compression and
+image support and SDL for mouse, keyboard, and game controller support,
+OpenGL, and more.")
+    (license license:expat)))
