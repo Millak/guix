@@ -2812,6 +2812,45 @@ environment, parse command line arguments, interact with the file system and
 run command line programs.")
     (license license:isc)))
 
+(define-public ocaml-xml-light
+  (package
+    (name "ocaml-xml-light")
+    (version "2.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ncannasse/xml-light")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "089ywjz84y4p5iln94y54vh03b5fm2zrl2dld1398dyrby96dp6s"))))
+    (build-system ocaml-build-system)
+    (arguments
+     (list #:tests? #f ; There are no tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'prefix
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("`\\$\\(OCAMLC\\) -where`")
+                      (string-append #$output "/lib/ocaml/site-lib/xml-light")))))
+               (delete 'configure) ; no configure
+               (add-before 'install 'mkdir
+                 (lambda _
+                   (mkdir-p (string-append #$output "/lib/ocaml/site-lib/xml-light"))))
+               (replace 'install
+                 (lambda _
+                   (invoke "make" "install_ocamlfind"))))))
+    (home-page "https://github.com/ncannasse/xml-light")
+    (synopsis "Minimal XML parser & printer for OCaml")
+    (description
+     "Xml-Light provides functions to parse an XML document into an OCaml data
+structure, work with it, and print it back to an XML document.  It also
+supports DTD parsing and checking, and is entirely written in OCaml, hence it
+does not require additional C libraries.")
+    (license license:lgpl2.1+))) ; with linking exception
+
 (define-public ocaml-xmlm
   (package
     (name "ocaml-xmlm")
