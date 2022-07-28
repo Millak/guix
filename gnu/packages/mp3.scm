@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,6 +55,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system cmake))
@@ -246,6 +248,35 @@ Speex, WavPack TrueAudio, WAV, AIFF, MP4 and ASF files.")
 
     ;; Dual-licensed: user may choose between LGPLv2.1 or MPLv1.1.
     (license (list license:lgpl2.1 license:mpl1.1))))
+
+(define-public minimp3
+  ;; The latest commit is used as there is no release.
+  (let ((commit   "afb604c06bc8beb145fecd42c0ceb5bda8795144")
+        (revision "0"))
+    (package
+      (name "minimp3")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/lieff/minimp3")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0brgrbij8swhp7lac21xnnrr5l0371lkr5vz6h9x0dbz1qq2xhsj"))))
+      ;; TODO: minimp3 has many more files for at least tests with scripts to
+      ;; run them, although it is unclear how to easily package them.
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan
+         '(("minimp3.h" "include/")
+           ("minimp3_ex.h" "include/"))))
+      (home-page "https://github.com/lieff/minimp3")
+      (synopsis "Minimalistic MP3 decoder header library")
+      (description
+       "Minimp3 is a header-only MP3 decoder library.")
+      (license license:cc0))))
 
 (define-public mp3info
   (package
