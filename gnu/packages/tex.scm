@@ -11266,3 +11266,26 @@ provides its own hooks to fulfill this task.  For newer versions of LaTeX
 compatibility reasons.  See @code{lthooks-doc.pdf} for instructions how to use
 @code{lthooks} instead of @code{everysel}.")
     (license license:lppl1.3c)))
+
+(define-public texlive-everyshi
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-everyshi"
+      (list "doc/latex/everyshi/"
+            "source/latex/everyshi/"
+            "tex/latex/everyshi/")
+      (base32 "11y6xazv1nk0m2hzsainjr8ijn5cff04xfccm6a65hzg7ipggraj")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/everyshi")
+    (synopsis "Take action at every @code{\\shipout}")
+    (description
+     "The @code{everyshi} package provides hooks into @code{\\sshipout} called
+@code{\\EveryShipout} and @code{\\AtNextShipout} analogous to
+@code{\\AtBeginDocument}.  With the introduction of the LaTeX hook management
+this package became obsolete in 2020 and is only provided for backwards
+compatibility.  For current versions of LaTeX it is only mapping the hooks to
+the original @code{everyshi} macros.  In case you use an older LaTeX format,
+@code{everyshi} will automatically fall back to its old implementation by
+loading @code{everyshi-2001-05-15}.")
+    (license license:lppl1.3c)))
