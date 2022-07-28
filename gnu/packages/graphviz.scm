@@ -67,7 +67,7 @@
 (define-public graphviz
   (package
     (name "graphviz")
-    (version "2.49.0")
+    (version "5.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gitlab.com/api/v4/projects/4207231"
@@ -75,21 +75,14 @@
                                   version "/graphviz-" version ".tar.xz"))
               (sha256
                (base32
-                "042s6mbi681pwgffqww2ap780230nrsrfpfiz9a41dcjb5a0m524"))))
+                "0nkc90c3cvhvjy7z08f56l0fagkyaq63g6zszrr02bbsfxb7796s"))))
     (build-system gnu-build-system)
     (arguments
      ;; FIXME: rtest/rtest.sh is a ksh script (!).  Add ksh as an input.
      (list #:tests? #f
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'install 'move-docs
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let ((out (assoc-ref outputs "out"))
-                         (doc (assoc-ref outputs "doc")))
-                     (mkdir-p (string-append doc "/share/graphviz"))
-                     (rename-file (string-append out "/share/graphviz/doc")
-                                  (string-append doc "/share/graphviz/doc")))))
-               (add-after 'move-docs 'move-guile-bindings
+               (add-after 'install 'move-guile-bindings
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let* ((out (assoc-ref outputs "out"))
                           (lib (string-append out "/lib"))
