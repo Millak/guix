@@ -256,6 +256,8 @@ application which is needed to connect to VNC servers.")
     (arguments
      (substitute-keyword-arguments
          (package-arguments xorg-server)
+       ((#:tests? #f #f)
+        #f)
        ((#:configure-flags flags)
         #~(cons* "--with-pic"           ; Taken from BUILDING.txt
                  "--without-dtrace"
@@ -282,7 +284,6 @@ application which is needed to connect to VNC servers.")
                  modules))
        ((#:phases phases)
         #~(modify-phases #$phases
-            (delete 'check)             ;no test suite
             (add-after 'unpack 'adjust-pam-config
               (lambda _
                 (substitute* "tigervnc-client/unix/vncserver/tigervnc.pam"
