@@ -4629,6 +4629,56 @@ TAB-Seq.")
 throughput genetic sequencing data sets using regression methods.")
     (license license:artistic2.0)))
 
+(define-public r-muscat
+  (package
+    (name "r-muscat")
+    (version "1.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "muscat" version))
+       (sha256
+        (base32
+         "1j3zkhqgza92vdykb1yia1jjwsdqra6q9c0jk6p5p2x0778xqgfd"))))
+    (properties `((upstream-name . "muscat")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-blme
+           r-complexheatmap
+           r-data-table
+           r-deseq2
+           r-dplyr
+           r-edger
+           r-ggplot2
+           r-glmmtmb
+           r-limma
+           r-lme4
+           r-lmertest
+           r-matrix
+           r-matrixstats
+           r-progress
+           r-purrr
+           r-s4vectors
+           r-scales
+           r-scater
+           r-sctransform
+           r-scuttle
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-variancepartition
+           r-viridis))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/HelenaLC/muscat")
+    (synopsis "Multi-sample multi-group scRNA-seq data analysis tools")
+    (description
+     "This package @code{muscat} provides various methods and visualization tools
+for @dfn{DS}(differential splicing) analysis in multi-sample, multi-group,
+multi-(cell-)subpopulation scRNA-seq data, including cell-level mixed models and
+methods based on aggregated \"pseudobulk\" data, as well as a flexible simulation
+platform that mimics both single and multi-sample scRNA-seq data.")
+    (license license:gpl3)))
+
 (define-public r-mutationalpatterns
   (package
     (name "r-mutationalpatterns")
