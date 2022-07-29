@@ -29631,6 +29631,38 @@ sorted by priority and queues that are emptied in a round-robin
 fashion.")
     (license license:bsd-3)))
 
+(define-public python-posix-ipc
+  (package
+    (name "python-posix-ipc")
+    (version "1.0.5")
+    (source
+     (origin
+       ;; The source distributed on PyPI is prebuild.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/osvenskan/posix_ipc")
+             (commit (string-append "rel" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17y4d0pmvp199c5hbs602ailhlh9f9zv89kmpbd8jhyl6rgaxsvs"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-cc-path
+                 (lambda _
+                   (substitute* "prober.py"
+                     (("cmd = .cc")
+                      (string-append "cmd = \"" #$(cc-for-target)))))))))
+    (native-inputs
+     (list python-unittest2))
+    (home-page "http://semanchuk.com/philip/posix_ipc/")
+    (synopsis "POSIX IPC primitives for Python")
+    (description
+     "This package provides POSIX IPC primitives - semaphores, shared memory and
+message queues for Python.")
+    (license license:bsd-3))) ; BSD like Copyright (c) 2018, Philip Semanchuk
+
 (define-public python-itemadapter
   (package
     (name "python-itemadapter")
