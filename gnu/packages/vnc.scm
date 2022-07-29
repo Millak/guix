@@ -289,6 +289,31 @@ application which is needed to connect to VNC servers.")
                 (substitute* "tigervnc-client/unix/vncserver/tigervnc.pam"
                   (("pam_systemd.so")
                    "pam_elogind.so"))))
+            (add-after 'unpack 'patch-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "tigervnc-client/unix/vncserver/vncserver.in"
+                  (("`mcookie`")
+                   (format #f "`~a`" (search-input-file inputs "bin/mcookie")))
+                  ;; Adjust the places where the vncserver script looks for
+                  ;; X11 fonts.
+                  (("'/usr/share/X11/fonts'" all)
+                   (format #f "'~a', '~a', ~a"
+                           "/run/current-system/profile/share/fonts/X11"
+                           (string-append #$(this-package-input "font-alias")
+                                          "share/fonts/X11")
+                           all))
+                  ;; Adjust the location used to locate of the .desktop files.
+                  (("/usr/share/xsessions")
+                   "/run/current-system/profile/share/xsessions")
+                  ;; Do not require a system-provided Xsession shell script,
+                  ;; as Guix System has none.  This causes the foreach loop to
+                  ;; iterate an empty list (disabled).
+                  (("\"/etc/X11/xinit/Xsession\", \"/etc/X11/Xsession\"")
+                   "()")
+                  (("if \\(not defined \\$Xsession)")
+                   "if (0)")
+                  (("@cmd, \\$Xsession,")
+                   "@cmd,"))))
             (add-before 'build 'build-tigervnc
               (lambda* (#:key parallel-build? #:allow-other-keys)
                 (mkdir-p "tigervnc-client/build")
@@ -309,7 +334,16 @@ application which is needed to connect to VNC servers.")
                 (invoke "make" "-C" "tigervnc-client/build/unix" "install")))
             (replace 'install
               (lambda _
-                (invoke "make" "install")))))))
+                (invoke "make" "install")))
+            (add-after 'install 'wrap-vncserver
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (wrap-script (search-input-file outputs "libexec/vncserver")
+                  (list "PATH" 'prefix
+                        (map (lambda (p)
+                               (dirname (search-input-file inputs p)))
+                             '("bin/uname"
+                               "bin/xauth"
+                               "bin/xinit"))))))))))
     (native-inputs
      (modify-inputs (append (package-native-inputs xorg-server)
                             (package-native-inputs tigervnc-client))
@@ -324,7 +358,13 @@ application which is needed to connect to VNC servers.")
     (inputs
      (modify-inputs (append (package-inputs xorg-server)
                             (package-inputs tigervnc-client))
-       (prepend perl coreutils xauth)))
+       (prepend coreutils
+                font-alias
+                guile-3.0
+                perl
+                util-linux
+                xauth
+                xinit)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs xorg-server)
        (prepend xauth)))
