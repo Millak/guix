@@ -10099,8 +10099,8 @@ lightweight messaging kernel.")
   (sbcl-package->ecl-package sbcl-pzmq))
 
 (define-public sbcl-clss
-  (let ((revision "1")
-        (commit "2a8e8615ab55870d4ca01928f3ed3bbeb4e75c8d"))
+  (let ((revision "2")
+        (commit "f62b849189c5d1be378f0bd3d403cda8d4fe310b"))
     (package
       (name "sbcl-clss")
       (version (git-version "0.3.1" revision commit))
@@ -10112,7 +10112,7 @@ lightweight messaging kernel.")
            (url "https://github.com/Shinmera/clss")
            (commit commit)))
          (sha256
-          (base32 "0la4dbcda78x29szanylccrsljqrn9d1mhh569sqkyp44ni5fv91"))
+          (base32 "1033dchpanhcgxl5qfhr80aw9adbp9bvllhzvvy5p9mrfnidd1fv"))
          (file-name (git-file-name name version))))
       (inputs
        (list sbcl-array-utils sbcl-plump))
