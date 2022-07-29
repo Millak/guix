@@ -125,6 +125,7 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22653,13 +22654,13 @@ object-oriented library such as @code{scikit-learn}.")
 (define-public python-dill
   (package
     (name "python-dill")
-    (version "0.3.1.1")
+    (version "0.3.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dill" version))
        (sha256
-        (base32 "1704g8z70d210ksgbccs2v545v9w0wc6lx15m296alb7jf0yzn22"))))
+        (base32 "11lc40x37cx2i8qqbc5qklifm65dyjl6prrqsycybvpixzrl2pnp"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
