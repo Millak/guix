@@ -239,6 +239,42 @@ on byte-critical systems.  It supports HTTP, HTTPS, FTP and FTPS
 protocols.")
     (license license:gpl2+)))
 
+(define-public lcrq
+  (package
+    (name "lcrq")
+    (version "0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/librecast/lcrq")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jf7x3zcdbz5b99qz7liw4i90hn9s457zr82n0r8g9qsi81a1d8c"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-tests? #f
+       #:make-flags (let ((target ,(%current-target-system)))
+                      (list ,(string-append "CC="
+                                            (cc-for-target))
+                            (string-append "PREFIX="
+                                           (assoc-ref %outputs "out"))))
+       #:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda _
+                      (invoke "make" "test"))))))
+    (home-page "https://librecast.net/lcrq.html")
+    (synopsis "librecast RaptorQ library")
+    (description
+     "C library implementation of RaptorQ Forward Error Correction for
+Librecast.  RFC6330 (IETF) describes the RaptorQ proposed standard, which LCRQ
+more-or-less follows. The primary focus has been on building a fast, simple
+and dependency-free FEC implementation for use with Librecast, and not on
+strict standards compliance.  The code does, however, fairly closely follow
+the RFC.")
+    (license (list license:gpl2 license:gpl3))))
+
 ;; This package does not have a release yet.
 ;; But this is required to provide a feature in PipeWire.
 (define-public libcamera
