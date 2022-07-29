@@ -1739,6 +1739,75 @@ Astronomical Union (IAU).  All C routines are wrapped as Numpy universal
 functions, so that they can be called with scalar or array inputs.")
     (license license:bsd-3)))
 
+(define-public python-pynbody
+  (package
+    (name "python-pynbody")
+    (version "1.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pynbody" version))
+       (sha256
+        (base32 "1jxwk2s4qz1znvyak2lj7ld01kl1jh87xp81ki7a8dz1gcy93fkx"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-tests-require-testdata
+                 (lambda _
+                   ;; Disable tests which need to download additional 1.0GiB+
+                   ;; of test data archive from
+                   ;; http://star.ucl.ac.uk/~app/testdata.tar.gz
+                   ;;    https://github.com/pynbody/pynbody/blob/ \
+                   ;;    f4bd482dc47532831b3ec115c7cb07149d61bfc5/ \
+                   ;;    .github/workflows/build-test.yaml#L41
+                   (with-directory-excursion "tests"
+                     (for-each delete-file
+                               '("gravity_test.py"
+                                 "adaptahop_test.py"
+                                 "ahf_halos_test.py"
+                                 "array_test.py"
+                                 "bridge_test.py"
+                                 "family_test.py"
+                                 "partial_tipsy_test.py"
+                                 "snapshot_test.py"
+                                 "test_profile.py"
+                                 "gadget_test.py"
+                                 "gadgethdf_test.py"
+                                 "grafic_test.py"
+                                 "halotools_test.py"
+                                 "nchilada_test.py"
+                                 "ramses_new_ptcl_format_test.py"
+                                 "ramses_test.py"
+                                 "rockstar_test.py"
+                                 "sph_image_test.py"
+                                 "sph_smooth_test.py"
+                                 "subfind_test.py"
+                                 "subfindhdf_gadget4_test.py"
+                                 "tipsy_test.py")))))
+               (replace 'check
+                 (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                   (when tests?
+                     (add-installed-pythonpath inputs outputs)
+                     (setenv "HOME" "/tmp")
+                     (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list python-cython
+           python-pandas
+           python-pytest))
+    (propagated-inputs
+     (list python-h5py
+           python-matplotlib
+           python-numpy
+           python-posix-ipc
+           python-scipy))
+    (home-page "https://pynbody.github.io/pynbody/index.html")
+    (synopsis "Light-weight astronomical N-body/SPH analysis for python")
+    (description "@code{Pynbody} is an analysis framework for N-body and hydrodynamic
+astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
+N-Chilada and RAMSES AMR outputs.")
+    (license license:gpl3+)))
+
 (define-public python-sep
   (package
     (inherit libsep)
