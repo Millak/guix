@@ -11327,3 +11327,44 @@ loading @code{everyshi-2001-05-15}.")
 of the abstract environment, and in particular provides for a one column
 abstract in a two column paper.")
       (license license:lppl))))
+
+(define-public texlive-breqn
+  (let ((template (simple-texlive-package
+                   "texlive-breqn"
+                   '("/doc/latex/breqn/"
+                     "/source/latex/breqn/")
+                   (base32
+                    "186cypxiyf30fq6dxvvlbwn5yx7c8d4cd243wvvb3243n5l4rpl3"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #f)
+          "latex/breqn")
+         ((#:build-targets _ #t)
+          #~(list "breqnbundle.ins"))
+         ((#:phases std-phases)
+          #~(modify-phases #$std-phases
+              (add-after 'unpack 'chdir
+                (lambda args
+                  (chdir "source/latex/breqn")))
+              (add-before 'copy-files 'unchdir
+                (lambda args
+                  (chdir "../../..")))
+              (add-after 'copy-files 'remove-extra-files
+                (lambda args
+                  (delete-file-recursively
+                   (string-append #$output
+                                  "/share/texmf-dist"
+                                  "/source/latex/breqn/build"))))))))
+      (home-page "https://wspr.io/breqn/")
+      (synopsis "Automatic line breaking of displayed equations")
+      (description "This package provides solutions to a number of common
+difficulties in writing displayed equations and getting high-quality output.
+The single most ambitious goal of the package is to support automatic
+linebreaking of displayed equations.  Such linebreaking cannot be done without
+substantial changes under the hood in the way formulae are processed; the code
+must be watched carefully, keeping an eye on possible glitches.  The bundle
+also contains the @code{flexisym} and @code{mathstyle} packages, which are
+both designated as support for @code{breqn}.")
+      (license license:lppl1.3+))))
