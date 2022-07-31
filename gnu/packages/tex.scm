@@ -11490,3 +11490,26 @@ use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
 Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
 use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
     (license (list license:lppl1.3+ license:silofl1.1))))
+
+(define-public texlive-sourcecodepro
+  (package
+    (inherit (simple-texlive-package
+              "texlive-sourcecodepro"
+              '("/doc/latex/sourcecodepro/"
+                "/fonts/enc/dvips/sourcecodepro/"
+                "/fonts/map/dvips/sourcecodepro/"
+                "/fonts/opentype/adobe/sourcecodepro/"
+                ;; ^ see comment on texlive-sourcesanspro
+                "/fonts/tfm/adobe/sourcecodepro/"
+                "/fonts/type1/adobe/sourcecodepro/"
+                "/fonts/vf/adobe/sourcecodepro/"
+                "/tex/latex/sourcecodepro/")
+              (base32
+               "009v9y7d3vsljgq9nw5yx4kzyqavxbwrlvwhfjj83s6rmb9xcrmh")
+              #:trivial? #t))
+    (home-page "https://ctan.org/pkg/sourcecodepro")
+    (synopsis "Use Source Code Pro with TeX(-alike) systems")
+    (description "This package provides the Source Code Pro font family from
+Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
+use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
+    (license (list license:lppl1.3+ license:silofl1.1))))
