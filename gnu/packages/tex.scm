@@ -11384,3 +11384,42 @@ both designated as support for @code{breqn}.")
 or excluding pieces of text, allowing the user to define new, separately
 controlled comment versions.")
     (license license:gpl2+)))
+
+(define-public texlive-datatool
+  (let ((template (simple-texlive-package
+                   "texlive-datatool"
+                   '("/bibtex/bst/datatool/"
+                     "/doc/latex/datatool/"
+                     "/source/latex/datatool/")
+                   (base32
+                    "0hh2623zlwgq8zb2lv4d8yfaqwzrz54dqhc1xk0jd1k4fp281kl5"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #f)
+          "latex/datatool")
+         ((#:build-targets _ #t)
+          #~(list "datatool.ins"))
+         ((#:phases std-phases)
+          #~(modify-phases #$std-phases
+              (add-after 'unpack 'chdir
+                (lambda args
+                  (chdir "source/latex/datatool")))
+              (add-before 'copy-files 'unchdir
+                (lambda args
+                  (chdir "../../..")))
+              (add-after 'copy-files 'remove-extra-files
+                (lambda args
+                  (delete-file-recursively
+                   (string-append #$output
+                                  "/share/texmf-dist"
+                                  "/source/latex/datatool/build"))))))))
+      (home-page "https://ctan.org/pkg/datatool")
+      (synopsis "Tools to load and manipulate data")
+      (description "This package provides tools to create databases using LaTeX
+commands or by importing external files.  Databases may be sorted, filtered,
+and visualized using several kinds of configurable plots.  Particular support
+is provided for mail merging, indexing, creating glossaries, manipulating
+bibliographies, and displaying personal pronouns.")
+      (license license:lppl1.3+))))
