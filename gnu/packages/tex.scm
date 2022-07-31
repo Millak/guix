@@ -11368,3 +11368,19 @@ must be watched carefully, keeping an eye on possible glitches.  The bundle
 also contains the @code{flexisym} and @code{mathstyle} packages, which are
 both designated as support for @code{breqn}.")
       (license license:lppl1.3+))))
+
+(define-public texlive-comment
+  (package
+    (inherit (simple-texlive-package
+              "texlive-comment"
+              '("/doc/latex/comment/"
+                "/tex/latex/comment/")
+              (base32
+               "1c1mqziwxyf1bqzpw6ji65n7ypygm3lyknblxmf0c70w0ivw76pa")
+              #:trivial? #t))
+    (home-page "https://ctan.org/pkg/comment")
+    (synopsis "Selectively include/exclude portions of text")
+    (description "This package provides environments for selectively including
+or excluding pieces of text, allowing the user to define new, separately
+controlled comment versions.")
+    (license license:gpl2+)))
