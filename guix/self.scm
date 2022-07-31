@@ -929,6 +929,7 @@ itself."
                            (('guix 'scripts 'deploy) #t)
                            (('guix 'scripts 'home . _) #t)
                            (('guix 'scripts 'import . _) #t)
+                           (('guix 'scripts 'gc) #t) ;autoloads (gnu home)
                            (('guix 'pack) #t)
                            (_ #f))
                          (scheme-modules* source "guix/scripts"))
