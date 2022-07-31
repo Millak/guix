@@ -476,7 +476,7 @@ playing your music.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.3")
+    (version "1.0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -485,7 +485,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14fr2bm51k4n5byc9pwh3ba6v15s9jmqxigl1y9h00l7cvmfpbn1"))
+                "17mfavbbzx7hp7j5n9i7c3rajy16jicarabrl174p4gjv4zpy2sc"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
