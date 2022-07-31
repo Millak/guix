@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Fabio Natali <me@fabionatali.com>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11289,3 +11290,40 @@ the original @code{everyshi} macros.  In case you use an older LaTeX format,
 @code{everyshi} will automatically fall back to its old implementation by
 loading @code{everyshi-2001-05-15}.")
     (license license:lppl1.3c)))
+
+(define-public texlive-abstract
+  (let ((template (simple-texlive-package
+                   "texlive-abstract"
+                   '("doc/latex/abstract/"
+                     "source/latex/abstract/"
+                     "tex/latex/abstract/")
+                   (base32
+                    "1axm78qgrpml09pkh252g1hsjx9c2w7mbdrm9rdl4yqh5ppwq4y9"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #f)
+          "latex/abstract")
+         ((#:build-targets _ #t)
+          #~(list "abstract.ins"))
+         ((#:phases std-phases)
+          #~(modify-phases #$std-phases
+              (add-after 'unpack 'chdir
+                (lambda args
+                  (chdir "source/latex/abstract")))
+              (add-before 'copy-files 'unchdir
+                (lambda args
+                  (chdir "../../..")))
+              (add-after 'copy-files 'remove-extra-files
+                (lambda args
+                  (delete-file-recursively
+                   (string-append #$output
+                                  "/share/texmf-dist"
+                                  "/source/latex/abstract/build"))))))))
+      (home-page "https://ctan.org/pkg/abstract")
+      (synopsis "Control the typesetting of the abstract environment")
+      (description "The abstract package gives you control over the typesetting
+of the abstract environment, and in particular provides for a one column
+abstract in a two column paper.")
+      (license license:lppl))))
