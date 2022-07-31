@@ -11467,3 +11467,26 @@ algebra, using Dirac notation.")
 Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
 use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
     (license (list license:lppl1.3+ license:silofl1.1))))
+
+(define-public texlive-sourceserifpro
+  (package
+    (inherit (simple-texlive-package
+              "texlive-sourceserifpro"
+              '("/doc/latex/sourceserifpro/"
+                "/fonts/enc/dvips/sourceserifpro/"
+                "/fonts/map/dvips/sourceserifpro/"
+                "/fonts/opentype/adobe/sourceserifpro/"
+                ;; ^ see comment on texlive-sourcesanspro
+                "/fonts/tfm/adobe/sourceserifpro/"
+                "/fonts/type1/adobe/sourceserifpro/"
+                "/fonts/vf/adobe/sourceserifpro/"
+                "/tex/latex/sourceserifpro/")
+              (base32
+               "18xxncg8ybv86r46zq5mvgkrfnvlhx93n55fy8nkk8vdmminrh8w")
+              #:trivial? #t))
+    (home-page "https://ctan.org/pkg/sourceserifpro")
+    (synopsis "Use Source Serif Pro with TeX(-alike) systems")
+    (description "This package provides the Source Serif Pro font family from
+Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
+use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
+    (license (list license:lppl1.3+ license:silofl1.1))))
