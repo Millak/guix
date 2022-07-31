@@ -21141,7 +21141,7 @@ Select display server to use for the greeter.  Valid values are
 @item @code{numlock} (default: "on")
 Valid values are @samp{"on"}, @samp{"off"} or @samp{"none"}.
 
-@item @code{halt-command} (default @code{#~(string-apppend #$shepherd "/sbin/halt")})
+@item @code{halt-command} (default @code{#~(string-append #$shepherd "/sbin/halt")})
 Command to run when halting.
 
 @item @code{reboot-command} (default @code{#~(string-append #$shepherd "/sbin/reboot")})
