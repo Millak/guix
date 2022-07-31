@@ -8003,7 +8003,7 @@ open-source FPS of its kind.")
 (define-public frotz
   (package
     (name "frotz")
-    (version "2.44")
+    (version "2.54")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
@@ -8014,28 +8014,25 @@ open-source FPS of its kind.")
                           "frotz/frotz-" version ".tar.gz")))
               (sha256
                (base32
-                "1v735xr3blznac8fnwa27s1vhllx4jpz7kw7qdw1bsfj6kq21v3k"))))
+                "1vsfq9ryyb4nvzxpnnn40k423k9pdy8k67i8390qz5h0vmxw0fds"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'curses
-           (lambda _
-             (substitute* "Makefile"
-               (("lcurses") "lncurses"))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man (string-append out "/share/man/man6")))
-               (install-file "frotz" bin)
-               (mkdir-p man)
-               (install-file "doc/frotz.6" man)
-               #t))))))
-    (inputs (list libmodplug libsamplerate libsndfile libvorbis ncurses))
+     (list #:tests? #f                  ; there are no tests
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure-script
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin"))
+                          (man (string-append out "/share/man/man6")))
+                     (install-file "frotz" bin)
+                     (mkdir-p man)
+                     (install-file "doc/frotz.6" man)))))))
+    (native-inputs (list pkg-config which))
+    (inputs (list ao libmodplug libsamplerate libsndfile libvorbis ncurses))
     (synopsis "Portable Z-machine interpreter (ncurses version) for text adventure games")
     (description "Frotz is an interpreter for Infocom games and other Z-machine
 games in the text adventure/interactive fiction genre.  This version of Frotz
