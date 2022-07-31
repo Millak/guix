@@ -11423,3 +11423,19 @@ and visualized using several kinds of configurable plots.  Particular support
 is provided for mail merging, indexing, creating glossaries, manipulating
 bibliographies, and displaying personal pronouns.")
       (license license:lppl1.3+))))
+
+(define-public texlive-physics
+  (package
+    (inherit (simple-texlive-package
+              "texlive-physics"
+              '("/doc/latex/physics/"
+                "/tex/latex/physics/")
+              (base32
+               "1wy58wwcv1pv18xs1n71abnm73dqnxqijxvhfxk0rcmvbc6wvwrb")
+              #:trivial? #t))
+    (home-page "https://ctan.org/pkg/physics")
+    (synopsis "Macros supporting the Mathematics of Physics")
+    (description "The package defines simple and flexible macros for
+typesetting equations in the languages of vector calculus and linear
+algebra, using Dirac notation.")
+    (license license:lppl)))
