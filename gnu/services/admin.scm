@@ -93,7 +93,10 @@
   (list (log-rotation                             ;syslog files
          (files %rotated-files)
 
-         (options '(;; Run post-rotate once per rotation
+         (frequency 'weekly)
+         (options '(;; These files are worth keeping for a few weeks.
+                    "rotate 16"
+                    ;; Run post-rotate once per rotation
                     "sharedscripts"
                     ;; Append .gz to rotated files
                     "storefile @FILENAME.@COMP_EXT"))
