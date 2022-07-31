@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -305,7 +305,8 @@
          (files (list (cuirass-configuration-log-file config)
                       (cuirass-configuration-web-log-file config)))
          (frequency 'weekly)
-         (options '("rotate 40")))))              ;worth keeping
+         (options `("rotate 40"                   ;worth keeping
+                    ,@%default-log-rotation-options)))))
 
 (define cuirass-service-type
   (service-type
