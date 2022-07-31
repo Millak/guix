@@ -3723,14 +3723,14 @@ the previous session
 (define-public emacs-pabbrev
   (package
     (name "emacs-pabbrev")
-    (version "4.2.1")
+    (version "4.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
-                           "pabbrev-" version ".el"))
+                           "pabbrev-" version ".tar"))
        (sha256
-        (base32 "19v5adk61y8fpigw7k6wz6dj79jwr450hnbi7fj0jvb21cvjmfxh"))))
+        (base32 "0iydz8yz866krxv1qv32k88w4464xpymh0wxgrxv6nvniwvhvd0s"))))
     (build-system emacs-build-system)
     (home-page "http://elpa.gnu.org/packages/pabbrev.html")
     (synopsis "Predictive abbreviation expansion")
