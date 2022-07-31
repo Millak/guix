@@ -6748,7 +6748,9 @@ exceeded.")
      (list #:configure-flags
            (if (%current-target-system) ; When cross-compiling.
              #~(list)
-             #~(list "--enable-unit-tests"))))
+             #~(list "--enable-unit-tests"))
+
+           #:parallel-tests? #f))     ;tests may fail when running in parallel
     (native-inputs
      (list cmocka pkg-config))
     (inputs
