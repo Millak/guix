@@ -1830,18 +1830,15 @@ at once based on a Perl regular expression.")
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "rc/weekly"
                         (("/bin/kill")
-                         (string-append (assoc-ref inputs "coreutils*")
-                                        "/bin/kill"))
+                         (search-input-file inputs "/bin/kill"))
                         (("syslogd\\.pid")
                          ;; The file is called 'syslog.pid' (no 'd').
-                         "syslog.pid"))
-                      #t))
+                         "syslog.pid"))))
                   (add-after 'install 'install-info
                     (lambda _
                       (invoke "make" "install-info"))))))
     (native-inputs (list texinfo automake util-linux)) ; for 'cal'
-    (inputs `(("coreutils*" ,coreutils)
-              ("mailutils" ,mailutils)))
+    (inputs (list coreutils mailutils))
     (home-page "https://www.gnu.org/software/rottlog/")
     (synopsis "Log rotation and management")
     (description
