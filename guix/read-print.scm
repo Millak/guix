@@ -23,10 +23,13 @@
   #:use-module (ice-9 vlist)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:export (pretty-print-with-comments
             read-with-comments
             object->string*
 
+            comment
             comment?
             comment->string
             comment-margin?
@@ -46,10 +49,21 @@
 
 ;; A comment.
 (define-record-type <comment>
-  (comment str margin?)
+  (string->comment str margin?)
   comment?
   (str     comment->string)
   (margin? comment-margin?))
+
+(define* (comment str #:optional margin?)
+  "Return a new comment made from STR.  When MARGIN? is true, return a margin
+comment; otherwise return a line comment.  STR must start with a semicolon and
+end with newline, otherwise an error is raised."
+  (when (or (string-null? str)
+            (not (eqv? #\; (string-ref str 0)))
+            (not (string-suffix? "\n" str)))
+    (raise (condition
+            (&message (message "invalid comment string")))))
+  (string->comment str margin?))
 
 (define (read-with-comments port)
   "Like 'read', but include <comment> objects when they're encountered."
@@ -106,8 +120,8 @@
                     (loop #f return)))
              ((eqv? chr #\;)
               (unread-char chr port)
-              (comment (read-line port 'concat)
-                       (not blank-line?)))
+              (string->comment (read-line port 'concat)
+                               (not blank-line?)))
              (else
               (unread-char chr port)
               (match (read port)
@@ -256,14 +270,14 @@ particular newlines, is left as is."
 semicolons."
   (let ((line (string-trim-both
                (string-trim (comment->string c) (char-set #\;)))))
-    (comment (string-append
-              (if (comment-margin? c)
-                  ";"
-                  (if (string-null? line)
-                      ";;"                        ;no trailing space
-                      ";; "))
-              line "\n")
-             (comment-margin? c))))
+    (string->comment (string-append
+                      (if (comment-margin? c)
+                          ";"
+                          (if (string-null? line)
+                              ";;"                        ;no trailing space
+                              ";; "))
+                      line "\n")
+                     (comment-margin? c))))
 
 (define* (pretty-print-with-comments port obj
                                      #:key
