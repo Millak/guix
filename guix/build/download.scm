@@ -744,6 +744,7 @@ otherwise simply ignore them."
                                          (progress-reporter/file
                                           (uri-abbreviation uri) size)))
               (newline)))
+          (close-port port)
           file)))
       ((ftp)
        (false-if-exception* (ftp-fetch uri file
