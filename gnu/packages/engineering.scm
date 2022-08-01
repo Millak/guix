@@ -945,7 +945,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "6.0.6")
+    (version "6.0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -953,7 +953,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "0cb9zba812dlmn2w27s1q38mjpfdwhv0nnbilwsxchpvwg8j4k2j"))
+                "10bqn99nif9zyi5v0lkic3na2vac5lgacw01ayil359vaw7d0pzy"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1007,17 +1007,17 @@ Emacs).")
             (variable "KICAD") ;to find kicad-doc
             (files '("")))
            (search-path-specification
-            (variable "KICAD_TEMPLATE_DIR")
+            (variable "KICAD6_TEMPLATE_DIR")
             (files '("share/kicad/template")))
            (search-path-specification
-            (variable "KICAD_SYMBOL_DIR") ;symbol path
-            (files '("share/kicad/library")))
+            (variable "KICAD6_SYMBOL_DIR")
+            (files '("share/kicad/symbols")))
            (search-path-specification
-            (variable "KISYSMOD") ;footprint path
-            (files '("share/kicad/modules")))
+            (variable "KICAD6_FOOTPRINT_DIR")
+            (files '("share/kicad/footprints")))
            (search-path-specification
-            (variable "KISYS3DMOD") ;3D model path
-            (files '("share/kicad/modules/packages3d")))))
+            (variable "KICAD6_3DMODEL_DIR")
+            (files '("share/kicad/3dmodels")))))
     (native-inputs (list boost
                          desktop-file-utils
                          gettext-minimal
@@ -1060,7 +1060,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kxv0j3nx6zn45znrhqq6bdqrsd60mgmgvr1gjv5p8g3cbkkslrx"))))
+                "15arkjjbzd4k09crhsrizmj8ljwpv6xjm59k58pfbd5pmqkklh2d"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1094,7 +1094,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02z3vqhz1rlf57zi8vyrlxvvdl1hpsh447p41qdgcpn5dyjycb9d"))))
+                "006ksx8r6cm6q7v701nalggivp21cmysj8p9zc18y3sch8n1mj4g"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1123,7 +1123,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1phynxisha2pq2knbx5l1hkdz1bmjm0qxl3lcb4ab82h8d35r37c"))))
+                "0c5fm4hlkka0ms43j02kbv7s9yrlkffn0jz6649ac3gpx6pk8lbf"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1140,7 +1140,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ci9gxbpfnfqwah95ki4qcwlca78s1z6s7hckisnp58a1cm9siya"))))
+                "0rdhwyhknrc63sc5ykmq097rzrl36zibnkls7q5hf54lrhn0n3k4"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
