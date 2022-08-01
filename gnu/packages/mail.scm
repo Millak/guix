@@ -48,6 +48,7 @@
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1161,57 +1162,42 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.6.11")
+    (version "1.8.7")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/djcb/mu/releases/"
-                                  "download/" version "/"
-                                  "mu-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/djcb/mu")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "13gchks9znyw0axw1wlks7f7h4442rfagmj7kx0jm3qhvi0b5sk0"))))
-    (build-system gnu-build-system)
+                "0yfbw234yqnqfnsn5bj1hqwpy78pkxn05vl18z8nvsqdmpzal4gx"))))
+    (build-system meson-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib" ,glib "bin")             ; for gtester
-       ("emacs" ,emacs-minimal)
-       ("tzdata" ,tzdata-for-tests)))   ; for mu/test/test-mu-query.c
+     (list pkg-config
+           emacs-minimal
+           gnupg                        ; for tests
+           texinfo))
     (inputs
-     (list xapian guile-3.0 glib gmime))
+     (list glib gmime xapian))
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (guix build emacs-utils))
-       #:imported-modules (,@%gnu-build-system-modules
+     `(#:modules ((guix build meson-build-system)
+                  (guix build emacs-utils)
+                  (guix build utils))
+       #:imported-modules (,@%meson-build-system-modules
                            (guix build emacs-utils))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-configure
-           ;; By default, elisp code goes to "share/emacs/site-lisp/mu4e",
-           ;; so our Emacs package can't find it.  Setting "--with-lispdir"
-           ;; configure flag doesn't help because "mu4e" will be added to
-           ;; the lispdir anyway, so we have to modify "configure.ac".
-           (lambda _
-             (substitute* "configure"
-               (("^ +lispdir=\"\\$\\{lispdir\\}/mu4e/\".*") ""))))
-         (add-after 'unpack 'patch-bin-sh-in-tests
+         (add-after 'unpack 'patch-bin-references
            (lambda _
              (substitute* '("guile/tests/test-mu-guile.cc"
-                            "mu/test-mu-cmd.cc"
-                            "mu/test-mu-cmd-cfind.cc"
-                            "mu/test-mu-query.cc")
-               (("/bin/sh") (which "sh")))))
-         (add-before 'install 'fix-ffi
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "guile/mu.scm"
-               (("\"libguile-mu\"")
-                (format #f "\"~a/lib/libguile-mu\""
-                        (assoc-ref outputs "out"))))))
-         (add-before 'check 'check-tz-setup
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; For mu/test/test-mu-query.c
-             (setenv "TZDIR"
-                     (search-input-directory inputs "share/zoneinfo"))))
+                            "mu/tests/test-mu-cmd.cc"
+                            "mu/tests/test-mu-cmd-cfind.cc"
+                            "mu/tests/test-mu-query.cc")
+               (("/bin/sh") (which "sh")))
+             (substitute* '("lib/tests/bench-indexer.cc"
+                            "lib/utils/mu-utils.cc")
+               (("/bin/rm") (which "rm")))))
          (add-after 'install 'install-emacs-autoloads
            (lambda* (#:key outputs #:allow-other-keys)
              (emacs-generate-autoloads
