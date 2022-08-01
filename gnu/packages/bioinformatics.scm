@@ -11857,6 +11857,10 @@ million cells.")
      `(#:tests? #f ; no tests are included
        #:phases
        (modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp")))
          (add-after 'unpack 'do-not-fail-to-find-sklearn
            (lambda _
              ;; XXX: I have no idea why it cannot seem to find sklearn.
