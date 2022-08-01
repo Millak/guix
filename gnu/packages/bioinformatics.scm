@@ -11879,14 +11879,14 @@ million cells.")
 (define-public python-bbknn
   (package
     (name "python-bbknn")
-    (version "1.3.6")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bbknn" version))
        (sha256
         (base32
-         "1jbsh01f57zj4bhvjr3jh4532zznqd6nccmgrl3qi9gnhkf7c4y0"))))
+         "0q11xdmjr2kf6f179a6kjizj3lllfrq743gslgw67qyzimvrrnhn"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; no tests are included
@@ -11905,6 +11905,7 @@ million cells.")
      (list python-annoy
            python-cython
            python-numpy
+           python-pandas
            python-scikit-learn
            python-scipy
            python-umap-learn))
