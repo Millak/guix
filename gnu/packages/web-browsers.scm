@@ -540,13 +540,10 @@ interface.")
                      (string-append out "/share/qutebrowser/userscripts")))))))
          (add-after 'wrap 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/qutebrowser"))
-                    (qt-process-path (string-append
-                                      (assoc-ref inputs "qtwebengine-5")
-                                      "/lib/qt5/libexec/QtWebEngineProcess")))
-               (wrap-program bin
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
+             (wrap-program (search-input-file outputs "bin/qutebrowser")
+               `("QTWEBENGINEPROCESS_PATH" =
+                 (,(search-input-file
+                    inputs "/lib/qt5/libexec/QtWebEngineProcess")))))))))
     (home-page "https://qutebrowser.org/")
     (synopsis "Minimal, keyboard-focused, vim-like web browser")
     (description "qutebrowser is a keyboard-focused browser with a minimal
