@@ -52,4 +52,6 @@ state of each call-frame and to resume execution at any point in the
 call-chain (non-local goto).  The API supports both local (same-process) and
 remote (across-process) operation.  As such, the API is useful in a number of
 applications.")
-    (license x11)))
+    ;; Do not believe <https://savannah.nongnu.org/projects/libunwind/>:
+    ;; see <https://github.com/libunwind/libunwind/issues/372>.
+    (license expat)))
