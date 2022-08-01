@@ -462,47 +462,6 @@ NextCloud, Kolab, Google Contacts, Microsoft Exchange (EWS) or any standard
 CalDAV server.")
     (license (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
 
-(define-public kalarmcal
-  (package
-    (name "kalarmcal")
-    (version "21.12.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/kalarmcal-" version ".tar.xz"))
-       (sha256
-        (base32 "160pmr702b68hys9l02azvrv6pagy1r2whw0zp3jlf6863p9fkqr"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list akonadi
-           boost
-           kcalendarcore
-           kcalutils
-           kcompletion
-           kconfig
-           kconfigwidgets
-           kcoreaddons
-           kdbusaddons
-           kholidays
-           ki18n
-           kidentitymanagement
-           kio
-           kitemmodels
-           kpimtextedit
-           ktextwidgets
-           kxmlgui
-           qtbase-5))
-    (arguments
-     `(#:tests? #f)) ;; TODO: TZ setup
-    (home-page "https://api.kde.org/stable/kdepimlibs-apidocs/")
-    (synopsis "Library for handling kalarm calendar data")
-    (description "This library provides access to and handling of kalarm
-calendar data.")
-    (license  license:lgpl2.0+)))
-
 (define-public kblog
   (package
     (name "kblog")
