@@ -1701,6 +1701,38 @@ native APIs where it makes sense.")))
     (description "The Qt Location module provides an interface for location,
 positioning and geolocation plugins.")))
 
+(define-public qtlottie
+  (package
+    (name "qtlottie")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "1x8wmc6gwmxk92zjcsrbhrbqbfvnk7302ggghld5wk8jk5lsf2vl"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'check)               ;move after install
+          (add-after 'install 'prepare-for-tests
+            (lambda _
+              (setenv "QT_QPA_PLATFORM" "offscreen")
+              (setenv "QML2_IMPORT_PATH"
+                      (string-append #$output "/lib/qt6/qml:"
+                                     (getenv "QML2_IMPORT_PATH"))))))))
+    (native-inputs (list perl))
+    (inputs (list libxkbcommon qtbase qtdeclarative))
+    (home-page (package-home-page qtbase))
+    (synopsis "QML API for rendering Bodymovin graphics and animations")
+    (description "Qt Lottie Animation provides a QML API for rendering
+graphics and animations that are exported in JSON format by the Bodymovin
+plugin for Adobe After Effects.")
+    (license (package-license qtbase))))
+
 (define-public qttools-5
   (package (inherit qtsvg-5)
     (name "qttools")
