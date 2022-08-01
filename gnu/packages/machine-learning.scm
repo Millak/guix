@@ -2750,6 +2750,10 @@ These include a barrier, broadcast, and allreduce.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          ;; Numba needs a writable dir to cache functions.
+          (add-before 'check 'set-numba-cache-dir
+            (lambda _
+              (setenv "NUMBA_CACHE_DIR" "/tmp")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
