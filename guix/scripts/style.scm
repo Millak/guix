@@ -108,7 +108,7 @@ bailing out~%")
                (exp exp)
                (inputs inputs))
       (match exp
-        (((? comment? head) . rest)
+        (((? blank? head) . rest)
          (loop (cons head result) rest inputs))
         ((head . rest)
          (match inputs

@@ -22,12 +22,13 @@
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 vlist)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:export (pretty-print-with-comments
             read-with-comments
             object->string*
+
+            blank?
 
             comment
             comment?
@@ -47,12 +48,26 @@
 ;;; Comment-preserving reader.
 ;;;
 
-;; A comment.
-(define-record-type <comment>
-  (string->comment str margin?)
-  comment?
-  (str     comment->string)
-  (margin? comment-margin?))
+(define <blank>
+  ;; The parent class for "blanks".
+  (make-record-type '<blank> '()
+                    (lambda (obj port)
+                      (format port "#<blank ~a>"
+                              (number->string (object-address obj) 16)))
+                    #:extensible? #t))
+
+(define blank? (record-predicate <blank>))
+
+(define <comment>
+  ;; Comments.
+  (make-record-type '<comment> '(str margin?)
+                    #:parent <blank>
+                    #:extensible? #f))
+
+(define comment?        (record-predicate <comment>))
+(define string->comment (record-type-constructor <comment>))
+(define comment->string (record-accessor <comment> 'str))
+(define comment-margin? (record-accessor <comment> 'margin?))
 
 (define* (comment str #:optional margin?)
   "Return a new comment made from STR.  When MARGIN? is true, return a margin
@@ -66,7 +81,7 @@ end with newline, otherwise an error is raised."
   (string->comment str margin?))
 
 (define (read-with-comments port)
-  "Like 'read', but include <comment> objects when they're encountered."
+  "Like 'read', but include <blank> objects when they're encountered."
   ;; Note: Instead of implementing this functionality in 'read' proper, which
   ;; is the best approach long-term, this code is a layer on top of 'read',
   ;; such that we don't have to rely on a specific Guile version.
@@ -99,7 +114,7 @@ end with newline, otherwise an error is raised."
               (let/ec return
                 (let liip ((lst '()))
                   (liip (cons (loop (match lst
-                                      (((? comment?) . _) #t)
+                                      (((? blank?) . _) #t)
                                       (_ #f))
                                     (lambda ()
                                       (return (reverse/dot lst))))
@@ -327,7 +342,7 @@ FORMAT-COMMENT is 'canonicalize-comment'."
                       (and (keyword? item)
                            (not (eq? item #:allow-other-keys))))
                   (not first?) (not delimited?)
-                  (not (comment? item))))
+                  (not (blank? item))))
 
            (when newline?
              (newline port)
@@ -335,7 +350,7 @@ FORMAT-COMMENT is 'canonicalize-comment'."
            (let ((column (if newline? indent column)))
              (print tail
                     (keyword? item)      ;keep #:key value next to one another
-                    (comment? item)
+                    (blank? item)
                     (loop indent column
                           (or newline? delimited?)
                           context
