@@ -479,7 +479,7 @@ interface.")
         (base32 "1g7dfrnjgifvbmz1523iq9qxhrsciajr8dv3pak6dlacm235i276"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-attrs)) ; for tests
+     (list python-attrs))               ; for tests
     (inputs
      (list bash-minimal
            python-colorama
@@ -506,9 +506,9 @@ interface.")
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "qutebrowser/commands/userscripts.py"
                (("os.path.join.*system=True)")
-               (string-append "os.path.join(\""
-                              (assoc-ref outputs "out")
-                              "\", \"share\", \"qutebrowser\"")))))
+                (string-append "os.path.join(\""
+                               (assoc-ref outputs "out")
+                               "\", \"share\", \"qutebrowser\"")))))
          (add-before 'check 'set-env-offscreen
            (lambda _
              (setenv "QT_QPA_PLATFORM" "offscreen")))
@@ -530,14 +530,14 @@ interface.")
                                          "/site-packages:"
                                          (getenv "GUIX_PYTHONPATH"))))
                (for-each
-                 (lambda (file)
-                   (wrap-program file
-                     `("GUIX_PYTHONPATH" ":" prefix (,path))))
-                 (append
-                   (find-files
-                     (string-append out "/share/qutebrowser/scripts") "\\.py$")
-                   (find-files
-                     (string-append out "/share/qutebrowser/userscripts")))))))
+                (lambda (file)
+                  (wrap-program file
+                    `("GUIX_PYTHONPATH" ":" prefix (,path))))
+                (append
+                 (find-files
+                  (string-append out "/share/qutebrowser/scripts") "\\.py$")
+                 (find-files
+                  (string-append out "/share/qutebrowser/userscripts")))))))
          (add-after 'wrap 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (wrap-program (search-input-file outputs "bin/qutebrowser")
