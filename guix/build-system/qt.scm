@@ -122,7 +122,7 @@
 
 (define* (qt-build name inputs
                    #:key
-                   qtbase
+                   (qtbase (default-qtbase))
                    source (guile #f)
                    (outputs '("out")) (configure-flags ''())
                    (search-paths '())
@@ -161,7 +161,7 @@ provides a 'CMakeLists.txt' file as its build system."
                     #:phases #$(if (pair? phases)
                                    (sexp->gexp phases)
                                    phases)
-                    #:qtbase #$qtbase
+                    #:qtbase #+qtbase
                     #:qt-wrap-excluded-outputs #$qt-wrap-excluded-outputs
                     #:qt-wrap-excluded-inputs #$qt-wrap-excluded-inputs
                     #:configure-flags #$configure-flags
@@ -193,7 +193,7 @@ provides a 'CMakeLists.txt' file as its build system."
                          #:key
                          source target
                          build-inputs target-inputs host-inputs
-                         qtbase
+                         (qtbase (default-qtbase))
                          (guile #f)
                          (outputs '("out"))
                          (configure-flags ''())
@@ -250,7 +250,7 @@ build system."
                                               search-path-specification->sexp
                                               native-search-paths)
                     #:phases #$phases
-                    #:qtbase #$qtbase
+                    #:qtbase #+qtbase
                     #:configure-flags #$configure-flags
                     #:make-flags #$make-flags
                     #:out-of-source? #$out-of-source?
