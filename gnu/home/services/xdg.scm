@@ -110,12 +110,18 @@ services more consistent."))
            ((@ (guix build utils) mkdir-p)
             (getenv
              xdg-base-dir-variable)))
-         '#$(map (lambda (field)
-                   (format
-                    #f "XDG_~a"
-                    (object->snake-case-string
-                     (configuration-field-name field) 'upper)))
-                 home-xdg-base-directories-configuration-fields)))
+         '#$(filter-map
+             (lambda (field)
+               (let ((variable
+                      (string-append
+                       "XDG_"
+                       (object->snake-case-string
+                        (configuration-field-name field) 'upper))))
+                 ;; XDG_RUNTIME_DIR shouldn't be created during activation
+                 ;; and will be provided by elogind or other service.
+                 (and (not (string=? "XDG_RUNTIME_DIR" variable))
+                      variable)))
+             home-xdg-base-directories-configuration-fields)))
 
 (define (last-extension-or-cfg config extensions)
   "Picks configuration value from last provided extension.  If there
