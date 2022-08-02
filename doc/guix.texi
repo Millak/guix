@@ -21033,7 +21033,7 @@ List of GNOME Shell assets needed by GDM: icon theme, fonts, etc.
 @item @code{xorg-configuration} (default: @code{(xorg-configuration)})
 Configuration of the Xorg graphical server.
 
-@item @code{xsession} (default: @code{(xinitrc)})
+@item @code{x-session} (default: @code{(xinitrc)})
 Script to run before starting a X session.
 
 @item @code{dbus-daemon} (default: @code{dbus-daemon-wrapper})
