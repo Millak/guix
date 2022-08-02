@@ -107,7 +107,10 @@ EOF
 
     if container_supported
     then
-	# Run the home in a container.
+	# Run the home in a container.  Always use bash inside container for
+        # reproducibility of the tests.
+        # TODO: Make container independent from external environment variables.
+        SHELL=bash
 	guix home container home.scm -- true
 	! guix home container home.scm -- false
 	test "$(guix home container home.scm -- echo '$HOME')" = "$HOME"
