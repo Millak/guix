@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,9 +21,9 @@
   #:use-module (guix records)
   #:use-module (guix build utils)
   #:use-module (guix i18n)
+  #:use-module (guix read-print)
   #:use-module (gnu installer utils)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 pretty-print)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -244,11 +244,9 @@ found in RESULTS."
 ;; by the graphical installer.\n")
                port)
       (newline port)
-      (for-each (lambda (part)
-                  (if (null? part)
-                      (newline port)
-                      (pretty-print part port)))
-                configuration)
+      (pretty-print-with-comments/splice port configuration
+                                         #:max-width 75)
+
       (flush-output-port port))))
 
 ;;; Local Variables:
