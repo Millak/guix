@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -38,6 +38,7 @@
                 #:select (%base-initrd-modules))
   #:use-module (guix build syscalls)
   #:use-module (guix build utils)
+  #:use-module (guix read-print)
   #:use-module (guix records)
   #:use-module (guix utils)
   #:use-module (guix i18n)
@@ -1443,6 +1444,13 @@ USER-PARTITIONS, or return nothing."
             `((mapped-devices
                (list ,@(map user-partition->mapped-device
                             encrypted-partitions)))))
+
+      ,(vertical-space 1)
+      ,(let-syntax ((G_ (syntax-rules () ((_ str) str))))
+         (comment (G_ "\
+;; The list of file systems that get \"mounted\".  The unique
+;; file system identifiers there (\"UUIDs\") can be obtained
+;; by running 'blkid' in a terminal.\n")))
       (file-systems (cons*
                      ,@(user-partitions->file-systems user-partitions)
                      %base-file-systems)))))

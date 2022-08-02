@@ -224,10 +224,14 @@ found in RESULTS."
                   (conf-formatter result-step)
                   '())))
           steps))
-        (modules '((use-modules (gnu))
+        (modules `(,(vertical-space 1)
+                   ,(comment (G_ "\
+;; Indicate which modules to import to access the variables
+;; used in this configuration.\n"))
+                   (use-modules (gnu))
                    (use-service-modules cups desktop networking ssh xorg))))
     `(,@modules
-      ()
+      ,(vertical-space 1)
       (operating-system ,@configuration))))
 
 (define* (configuration->file configuration
@@ -241,11 +245,21 @@ found in RESULTS."
       ;; length below 60 characters.
       (display (G_ "\
 ;; This is an operating system configuration generated
-;; by the graphical installer.\n")
+;; by the graphical installer.
+;;
+;; Once installation is complete, you can learn and modify
+;; this file to tweak the system configuration, and pass it
+;; to the 'guix system reconfigure' command to effect your
+;; changes.\n")
                port)
       (newline port)
       (pretty-print-with-comments/splice port configuration
-                                         #:max-width 75)
+                                         #:max-width 75
+                                         #:format-comment
+                                         (lambda (c indent)
+                                           ;; Localize C.
+                                           (comment (G_ (comment->string c))
+                                                    (comment-margin? c))))
 
       (flush-output-port port))))
 

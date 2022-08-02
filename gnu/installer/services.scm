@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
@@ -22,6 +22,7 @@
 
 (define-module (gnu installer services)
   #:use-module (guix records)
+  #:use-module (guix read-print)
   #:use-module (srfi srfi-1)
   #:export (system-service?
             system-service-name
@@ -34,6 +35,11 @@
 
             %system-services
             system-services->configuration))
+
+(define-syntax-rule (G_ str)
+  ;; In this file, translatable strings are annotated with 'G_' so xgettext
+  ;; catches them, but translation happens later on at run time.
+  str)
 
 (define-record-type* <system-service>
   system-service make-system-service
@@ -52,9 +58,7 @@
                                       ((_ fields ...)
                                        (system-service
                                         (type 'desktop)
-                                        fields ...))))
-               (G_ (syntax-rules ()               ;for xgettext
-                     ((_ str) str))))
+                                        fields ...)))))
     (list
      ;; This is the list of desktop environments supported as services.
      (desktop-environment
@@ -94,7 +98,12 @@
      (system-service
       (name (G_ "OpenSSH secure shell daemon (sshd)"))
       (type 'networking)
-      (snippet '((service openssh-service-type))))
+      (snippet `(,(vertical-space 1)
+                 ,(comment
+                   (G_ "\
+;; To configure OpenSSH, pass an 'openssh-configuration'
+;; record as a second argument to 'service' below.\n"))
+                 (service openssh-service-type))))
      (system-service
       (name (G_ "Tor anonymous network router"))
       (type 'networking)
@@ -149,24 +158,38 @@
          (desktop? (find desktop-system-service? services))
          (base     (if desktop?
                        '%desktop-services
-                       '%base-services)))
+                       '%base-services))
+         (heading  (list (vertical-space 1)
+                         (comment (G_ "\
+;; Below is the list of system services.  To search for available
+;; services, run 'guix system search KEYWORD' in a terminal.\n")))))
+
     (if (null? snippets)
         `(,@(if (null? packages)
                 '()
                 `((packages (append (list ,@packages)
                                     %base-packages))))
+
+          ,@heading
           (services ,base))
         `(,@(if (null? packages)
                 '()
                 `((packages (append (list ,@packages)
                                     %base-packages))))
+
+          ,@heading
           (services (append (list ,@snippets
 
                                   ,@(if desktop?
                                         ;; XXX: Assume 'keyboard-layout' is in
                                         ;; scope.
-                                        '((set-xorg-configuration
+                                        `((set-xorg-configuration
                                            (xorg-configuration
                                             (keyboard-layout keyboard-layout))))
                                         '()))
-                           ,base))))))
+
+                            ,(vertical-space 1)
+                            ,(comment (G_ "\
+;; This is the default list of services we
+;; are appending to.\n"))
+                            ,base))))))
