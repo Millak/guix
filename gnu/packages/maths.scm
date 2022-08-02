@@ -8,7 +8,7 @@
 ;;; Copyright © 2015–2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
@@ -5448,11 +5448,19 @@ FLANN is written in C++ and contains bindings for C, Octave and Python.")
         (uri (string-append "mirror://sourceforge/w-calc/Wcalc/" version "/"
                             "wcalc-" version ".tar.bz2"))
         (sha256
-          (base32
-            "1vi8dl6rccqiq1apmpwawyg2ywx6a1ic1d3cvkf2hlwk1z11fb0f"))))
+         (base32
+          "1vi8dl6rccqiq1apmpwawyg2ywx6a1ic1d3cvkf2hlwk1z11fb0f"))
+        (snippet
+         #~(begin
+             (for-each delete-file
+                       (list "src/common/scanner.c"
+                             "src/common/parser.c"
+                             "src/common/parser.h"))))))
     (build-system gnu-build-system)
     (inputs
      (list mpfr readline))
+    (native-inputs
+     (list bison flex))
     (home-page "http://w-calc.sourceforge.net/index.php")
     (synopsis "Flexible command-line scientific calculator")
     (description "Wcalc is a very capable calculator.  It has standard functions
