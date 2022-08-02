@@ -3118,7 +3118,7 @@ ASCII text files using Gmsh's own scripting language.")
              (let ((out (assoc-ref outputs "out")))
                (wrap-program (string-append out "/bin/veusz")
                  `("QT_PLUGIN_PATH" prefix
-                   ,(list (string-append (assoc-ref inputs "qtsvg-5")
+                   ,(list (string-append (assoc-ref inputs "qtsvg")
                                          "/lib/qt5/plugins/"))))))))))
     (native-inputs
      (list pkg-config
