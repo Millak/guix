@@ -9086,6 +9086,28 @@ Emacs completion function completing-read, which allows quickly selecting from a
 list of candidates.")
     (license license:gpl3+)))
 
+(define-public emacs-consult-bibtex
+  ;; XXX: Upstream contains a single commit, which matches the version below.
+  (let ((commit "2f870d6eefb54a53216d90a82cff0ff97ba54725"))
+    (package
+      (name "emacs-consult-bibtex")
+      (version "0.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mohkale/consult-bibtex")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0jxjvpg3j8zk77sfhyy27fd1zbj2zz7xayavan3hhj4853q92kwq"))))
+      (build-system emacs-build-system)
+      (inputs (list emacs-consult emacs-embark emacs-org-roam-bibtex))
+      (home-page "https://github.com/mohkale/consult-bibtex")
+      (synopsis "Consulting-read interface for BibTeX completion")
+      (description "This package provides a read interface for BibTeX
+completion using Consult.")
+      (license license:gpl3))))
+
 (define-public emacs-consult-dir
   (package
     (name "emacs-consult-dir")
