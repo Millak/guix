@@ -564,6 +564,29 @@ higher scores.")
 analysis} (PCA), SVD, and eigendecompositions via randomized methods")
     (license license:bsd-3)))
 
+(define-public python-geosketch
+  (package
+    (name "python-geosketch")
+    (version "1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "geosketch" version))
+              (sha256
+               (base32
+                "0knch5h0p8xpm8bi3b5mxyaf1ywwimrsdmbnc1xr5icidcv9gzmv"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #false)) ;there are none
+    (propagated-inputs (list python-fbpca python-numpy python-scikit-learn))
+    (home-page "https://github.com/brianhie/geosketch")
+    (synopsis "Geometry-preserving random sampling")
+    (description "geosketch is a Python package that implements the geometric
+sketching algorithm described by Brian Hie, Hyunghoon Cho, Benjamin DeMeo,
+Bryan Bryson, and Bonnie Berger in \"Geometric sketching compactly summarizes
+the single-cell transcriptomic landscape\", Cell Systems (2019).  This package
+provides an example implementation of the algorithm as well as scripts
+necessary for reproducing the experiments in the paper.")
+    (license license:expat)))
+
 (define-public python-xarray
   (package
     (name "python-xarray")
