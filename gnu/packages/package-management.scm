@@ -887,11 +887,13 @@ features of Stow with some extensions.")
            lua
            nspr
            nss
-           popt
            python
            sqlite
            xz
            zlib))
+    (propagated-inputs
+     ;; popt is listed in the 'Requires' of rpm.pc.
+     (list popt))
     (home-page "https://rpm.org/")
     (synopsis "The RPM Package Manager")
     (description
