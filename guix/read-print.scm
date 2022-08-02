@@ -387,6 +387,27 @@ particular newlines, is left as is."
                           line "\n")
                          (comment-margin? comment)))))
 
+(define %not-newline
+  (char-set-complement (char-set #\newline)))
+
+(define (print-multi-line-comment str indent port)
+  "Print to PORT STR as a multi-line comment, with INDENT spaces preceding
+each line except the first one (they're assumed to be already there)."
+
+  ;; While 'read-with-comments' only returns one-line comments, user-provided
+  ;; comments might span multiple lines, which is why this is necessary.
+  (let loop ((lst (string-tokenize str %not-newline)))
+    (match lst
+      (() #t)
+      ((last)
+       (display last port)
+       (newline port))
+      ((head tail ...)
+       (display head port)
+       (newline port)
+       (display (make-string indent #\space) port)
+       (loop tail)))))
+
 (define* (pretty-print-with-comments port obj
                                      #:key
                                      (format-comment
@@ -486,8 +507,9 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
              (unless (= column indent)
                (newline port)
                (display (make-string indent #\space) port))
-             (display (comment->string (format-comment comment indent))
-                      port)))
+             (print-multi-line-comment (comment->string
+                                        (format-comment comment indent))
+                                       indent port)))
        (display (make-string indent #\space) port)
        indent)
       ((? vertical-space? space)

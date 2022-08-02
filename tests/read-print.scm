@@ -341,4 +341,18 @@ mnopqrstuvwxyz.\")"
                                     #:format-vertical-space
                                     canonicalize-vertical-space)))))
 
+(test-equal "pretty-print-with-comments, multi-line comment"
+  "\
+(list abc
+      ;; This comment spans
+      ;; two lines.
+      def)"
+  (call-with-output-string
+    (lambda (port)
+      (pretty-print-with-comments port
+                                  `(list abc ,(comment "\
+;; This comment spans\n
+;; two lines.\n")
+                                         def)))))
+
 (test-end)
