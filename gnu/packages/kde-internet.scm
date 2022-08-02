@@ -117,14 +117,14 @@ Other notable features include:
 (define-public kget
   (package
     (name "kget")
-    (version "21.12.3")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kget-" version ".tar.xz"))
        (sha256
-        (base32 "1w249gvzz47ac7n1mnxxf20d9l7jmbh18m5dijy55ck61s4zcq4l"))))
+        (base32 "0rqznsyphnq0zi65wvrl9mwqm9268wgihkr104i87pp5kfiah5yp"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
@@ -183,14 +183,14 @@ This package is part of the KDE networking module.")
 (define-public konversation
   (package
     (name "konversation")
-    (version "21.12.3")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konversation-" version ".tar.xz"))
        (sha256
-        (base32 "05dxzkpadz29b5fm6pf225xqq0gaz9w50paz9341kzz4k3rnzq80"))))
+        (base32 "08b4vnm66hbbnvkkh1p0a82pd2aj4zy5a8indfv3fzczsfpx6gp0"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -220,6 +220,7 @@ This package is part of the KDE networking module.")
            phonon
            qtbase-5
            qca
+           qtmultimedia-5
            solid
            sonnet))
     (home-page "https://apps.kde.org/konversation/")
@@ -254,14 +255,14 @@ Features are:
 (define-public kopete
   (package
     (name "kopete")
-    (version "21.12.3")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kopete-" version ".tar.xz"))
        (sha256
-        (base32 "1v519sw2lzlap6xci3j55k8c48755sc9p3mgvj566b6jjq64xi5k"))))
+        (base32 "0fc9m2xgsjmsypqllqb3cp1y2m28dqh48r1qg2xgkfyqa70dnvp9"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
@@ -331,14 +332,14 @@ This package is part of the KDE networking module.")
 (define-public krdc
   (package
     (name "krdc")
-    (version "21.12.3")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krdc-" version ".tar.xz"))
        (sha256
-        (base32 "09np9clvmdll7v2p9aswnlhz4cgsnly82za7k3k9fs66h5c8q20j"))))
+        (base32 "0bs8q3na924lnmra5608jwnn0dqczvh0f72nn43673ib3m1mddlr"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -376,14 +377,14 @@ This package is part of the KDE networking module.")
 (define-public ktorrent
   (package
     (name "ktorrent")
-    (version "21.12.3")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ktorrent-" version ".tar.xz"))
        (sha256
-        (base32 "021x6qcbk4kdh5ay5mqmf92129s42j2rhrs0q350b0wcnpad55zd"))))
+        (base32 "1h95hf4ki2xi2c9bzdg18p6d1757gzqknf6gn1ls6lwqy6p0pr4h"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -431,14 +432,14 @@ a full-featured client for BitTorrent.")
 (define-public libktorrent
   (package
     (name "libktorrent")
-    (version "21.12.3")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0i976al9bsc3gbplqbxkxr03sdhxv3yzjlfkdaghga8fkihzkkl0"))))
+        (base32 "098ac7b5wa7v6svqv4rx1w44j18pr22qgr236fj94r2kpl2nq79q"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
