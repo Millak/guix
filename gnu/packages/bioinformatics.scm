@@ -12102,14 +12102,14 @@ allowing the insertion of arbitrary types into the tree.")
 (define-public python-intervaltree
   (package
     (name "python-intervaltree")
-    (version "3.0.2")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "intervaltree" version))
        (sha256
         (base32
-         "0wz234g6irlm4hivs2qzmnywk0ss06ckagwh15nflkyb3p462kyb"))))
+         "0bcm6c6r4ck9nfj9xwz4rm2swc5lrjvmw3lyl6rgj639jf41nawh"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
