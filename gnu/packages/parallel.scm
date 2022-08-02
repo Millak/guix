@@ -43,6 +43,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freeipmi)
@@ -112,7 +113,7 @@
     (native-inputs
      (list perl))
     (inputs
-     (list perl procps))
+     (list bash-minimal perl procps))
     (home-page "https://www.gnu.org/software/parallel/")
     (synopsis "Build and execute command lines in parallel")
     (description
