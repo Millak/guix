@@ -914,8 +914,7 @@ extensions over the standard utility.")
              (("test_command \"cc -Wall -Wextra -o source.out source.c\"" all)
               "test_command \"gcc -Wall -Wextra -o source.out source.c\"")))))
       (build-system gnu-build-system)
-      (inputs
-       `(("python" ,python-wrapper)))
+      (inputs (list python-wrapper))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
