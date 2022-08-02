@@ -25,7 +25,9 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:export (pretty-print-with-comments
+            pretty-print-with-comments/splice
             read-with-comments
+            read-with-comments/sequence
             object->string*
 
             blank?
@@ -147,8 +149,9 @@ single <vertical-space> record."
       ((? space?) (loop))
       (chr (unread-char chr port)))))
 
-(define (read-with-comments port)
-  "Like 'read', but include <blank> objects when they're encountered."
+(define* (read-with-comments port #:key (blank-line? #t))
+  "Like 'read', but include <blank> objects when they're encountered.  When
+BLANK-LINE? is true, assume PORT is at the beginning of a new line."
   ;; Note: Instead of implementing this functionality in 'read' proper, which
   ;; is the best approach long-term, this code is a layer on top of 'read',
   ;; such that we don't have to rely on a specific Guile version.
@@ -167,7 +170,7 @@ single <vertical-space> record."
            dotted))
         ((x . rest) (loop (cons x result) rest)))))
 
-  (let loop ((blank-line? #t)
+  (let loop ((blank-line? blank-line?)
              (return (const 'unbalanced)))
     (match (read-char port)
       ((? eof-object? eof)
@@ -217,6 +220,20 @@ single <vertical-space> record."
                 ((and token '#{.}#)
                  (if (eq? chr #\.) dot token))
                 (token token))))))))
+
+(define (read-with-comments/sequence port)
+  "Read from PORT until the end-of-file is reached and return the list of
+expressions and blanks that were read."
+  (let loop ((lst '())
+             (blank-line? #t))
+    (match (read-with-comments port #:blank-line? blank-line?)
+      ((? eof-object?)
+       (reverse! lst))
+      ((? blank? blank)
+       (loop (cons blank lst) #t))
+      (exp
+       (loop (cons exp lst) #f)))))
+
 
 ;;;
 ;;; Comment-preserving pretty-printer.
@@ -625,3 +642,12 @@ passed as-is to 'pretty-print-with-comments'."
       (apply pretty-print-with-comments port obj
              #:indent indent
              args))))
+
+(define* (pretty-print-with-comments/splice port lst
+                                            #:rest rest)
+  "Write to PORT the expressions and blanks listed in LST."
+  (for-each (lambda (exp)
+              (apply pretty-print-with-comments port exp rest)
+              (unless (blank? exp)
+                (newline port)))
+            lst))

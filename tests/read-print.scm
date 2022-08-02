@@ -33,6 +33,16 @@
                      read-with-comments)))
          (pretty-print-with-comments port exp args ...))))))
 
+(define-syntax-rule (test-pretty-print/sequence str args ...)
+  "Likewise, but read and print entire sequences rather than individual
+expressions."
+  (test-equal str
+    (call-with-output-string
+      (lambda (port)
+        (let ((lst (call-with-input-string str
+                     read-with-comments/sequence)))
+         (pretty-print-with-comments/splice port lst args ...))))))
+
 
 (test-begin "read-print")
 
@@ -250,6 +260,33 @@ mnopqrstuvwxyz.\")"
 
   ;; page break above
   end)")
+
+(test-pretty-print/sequence "\
+;;; This is a top-level comment.
+
+
+;; Above is a page break.
+(this is an sexp
+      ;; with a comment
+      !!)
+
+;; The end.\n")
+
+(test-pretty-print/sequence "
+;;; Hello!
+
+(define-module (foo bar)
+  #:use-module (guix)
+  #:use-module (gnu))
+
+
+;; And now, the OS.
+(operating-system
+  (host-name \"komputilo\")
+  (locale \"eo_EO.UTF-8\")
+
+  (services
+   (cons (service mcron-service-type) %base-services)))\n")
 
 (test-equal "pretty-print-with-comments, canonicalize-comment"
   "\
