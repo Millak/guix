@@ -35,6 +35,9 @@
             vertical-space-height
             canonicalize-vertical-space
 
+            page-break
+            page-break?
+
             comment
             comment?
             comment->string
@@ -83,6 +86,18 @@
       "Return a vertical space corresponding to a single blank line."
       unit)))
 
+(define <page-break>
+  (make-record-type '<page-break> '()
+                    #:parent <blank>
+                    #:extensible? #f))
+
+(define page-break?           (record-predicate <page-break>))
+(define page-break
+  (let ((break ((record-type-constructor <page-break>))))
+    (lambda ()
+      break)))
+
+
 (define <comment>
   ;; Comments.
   (make-record-type '<comment> '(str margin?)
@@ -105,18 +120,32 @@ end with newline, otherwise an error is raised."
             (&message (message "invalid comment string")))))
   (string->comment str margin?))
 
+(define char-set:whitespace-sans-page-break
+  ;; White space, excluding #\page.
+  (char-set-difference char-set:whitespace (char-set #\page)))
+
+(define (space? chr)
+  "Return true if CHR is white space, except for page breaks."
+  (char-set-contains? char-set:whitespace-sans-page-break chr))
+
 (define (read-vertical-space port)
   "Read from PORT until a non-vertical-space character is met, and return a
 single <vertical-space> record."
-  (define (space? chr)
-    (char-set-contains? char-set:whitespace chr))
-
   (let loop ((height 1))
     (match (read-char port)
       (#\newline (loop (+ 1 height)))
       ((? eof-object?) (vertical-space height))
       ((? space?) (loop height))
       (chr (unread-char chr port) (vertical-space height)))))
+
+(define (read-until-end-of-line port)
+  "Read white space from PORT until the end of line, included."
+  (let loop ()
+    (match (read-char port)
+      (#\newline #t)
+      ((? eof-object?) #t)
+      ((? space?) (loop))
+      (chr (unread-char chr port)))))
 
 (define (read-with-comments port)
   "Like 'read', but include <blank> objects when they're encountered."
@@ -148,6 +177,11 @@ single <vertical-space> record."
               (if blank-line?
                   (read-vertical-space port)
                   (loop #t return)))
+             ((eqv? chr #\page)
+              ;; Assume that a page break is on a line of its own and read
+              ;; subsequent white space and newline.
+              (read-until-end-of-line port)
+              (page-break))
              ((char-set-contains? char-set:whitespace chr)
               (loop blank-line? return))
              ((memv chr '(#\( #\[))
@@ -442,6 +476,12 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
          (unless (zero? i)
            (newline port)
            (loop (- i 1))))
+       (display (make-string indent #\space) port)
+       indent)
+      ((? page-break?)
+       (unless delimited? (newline port))
+       (display #\page port)
+       (newline port)
        (display (make-string indent #\space) port)
        indent)
       (('quote lst)

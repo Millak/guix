@@ -70,6 +70,21 @@
             (read-with-comments port)
             (read-with-comments port)))))
 
+(test-equal "read-with-comments: top-level page break"
+  (list (comment ";; Begin.\n") (vertical-space 1)
+        (page-break)
+        (comment ";; End.\n"))
+  (call-with-input-string "\
+;; Begin.
+
+
+;; End.\n"
+    (lambda (port)
+      (list (read-with-comments port)
+            (read-with-comments port)
+            (read-with-comments port)
+            (read-with-comments port)))))
+
 (test-pretty-print "(list 1 2 3 4)")
 (test-pretty-print "((a . 1) (b . 2))")
 (test-pretty-print "(a b c . boom)")
@@ -228,6 +243,13 @@ mnopqrstuvwxyz.\")"
 
                 ;; Comment after blank line.
                 two)")
+
+(test-pretty-print "\
+(begin
+  break
+
+  ;; page break above
+  end)")
 
 (test-equal "pretty-print-with-comments, canonicalize-comment"
   "\
