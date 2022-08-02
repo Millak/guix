@@ -34,16 +34,15 @@
          (xgcc (cross-gcc triplet #:libc xlibc)))
     (package
       (name (string-append "nsis-" machine))
-      (version "3.05")
+      (version "3.08")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "http://prdownloads.sourceforge.net/nsis/nsis-"
                                     version "-src.tar.bz2"))
                 (sha256
                  (base32
-                  "1sbwx5vzpddharkb7nj4q5z3i5fbg4lan63ng738cw4hmc4v7qdn"))
-                (patches (search-patches "nsis-env-passthru.patch"
-                                         "nsis-source-date-epoch.patch"))))
+                  "11qy1n1qdcqwal9hn8cmzm7gxjdyx7by6w14rfz2l646afnp0lm8"))
+                (patches (search-patches "nsis-env-passthru.patch"))))
       (build-system scons-build-system)
       (native-inputs `(("xgcc" ,xgcc)
                        ("xbinutils" ,xbinutils)
@@ -125,7 +124,7 @@
                       (lambda _
                         ;; NSIS target detection is screwed up, manually change
                         ;; it ourselves
-                        (substitute* "Source/build.cpp" (("m_target_type=TARGET_X86ANSI")
+                        (substitute* "Source/build.cpp" (("m_target_type=TARGET_X86UNICODE")
                                                          (string-append "m_target_type=" ,nsis-target-type))))))))
       (home-page "https://nsis.sourceforge.io/Main_Page")
       (synopsis "System to create Windows installers")
