@@ -2346,7 +2346,7 @@ reading from and writing to ZIP archives.")
 (define-public zchunk
   (package
     (name "zchunk")
-    (version "1.1.16")
+    (version "1.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2355,7 +2355,7 @@ reading from and writing to ZIP archives.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nlzwnv6wh2yjyyv27f81jnvmk7psgpbnw7dsdp7frfkya569hgv"))))
+                "0q0avb0397xkmidl8rxasfywp0r7w3awk6271pa2d9xl9p1n82zy"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
