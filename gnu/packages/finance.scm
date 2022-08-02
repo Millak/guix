@@ -671,7 +671,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.17.3.2")
+    (version "0.18.0.0")
     (source
      (origin
        (method git-fetch)
@@ -687,10 +687,9 @@ blockchain.")
            ;; Delete bundled dependencies.
            (for-each
             delete-file-recursively
-            '("external/miniupnp" "external/rapidjson"
-              "external/unbound"))))
+            '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "19sgcbli7fc1l6ms7ma6hcz1mmpbnd296lc8a19rl410acpv45zy"))))
+        (base32 "1jq2v2dg50gl3cf9s61jssny5rraclxqj4cc4y0sl00ip8icj08v"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -716,57 +715,57 @@ blockchain.")
            xz
            zeromq))
     (arguments
-     `(#:out-of-source? #t
-       #:configure-flags
-       (list "-DARCH=default"
-             "-DBUILD_TESTS=ON"
-             (string-append "-DReadline_ROOT_DIR="
-                            (assoc-ref %build-inputs "readline")))
-       #:phases
-       (modify-phases %standard-phases
-         ;; tests/core_tests need a valid HOME
-         (add-before 'configure 'set-home
-           (lambda _
-             (setenv "HOME" (getcwd))))
-         (add-after 'set-home 'change-log-path
-           (lambda _
-             (substitute* "contrib/epee/src/mlog.cpp"
-               (("epee::string_tools::get_current_module_folder\\(\\)")
-                "\".bitmonero\"")
-               (("return \\(")
-                "return ((std::string(getenv(\"HOME\"))) / "))))
-         (add-after 'change-log-path 'fix-file-permissions-for-tests
-           (lambda _
-             (for-each make-file-writable
-                       (find-files "tests/data/" "wallet_9svHk1.*"))))
-         ;; Only try tests that don't need access to network or system
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             ;; Core tests sometimes fail, at least on i686-linux.
-             ;; Let's disable them for now and just try hash tests
-             ;; and unit tests.
-             ;; (invoke "make" "ARGS=-R 'hash|core_tests' --verbose" "test")))
-             (when tests?
-               (invoke "make" "ARGS=-R 'hash' --verbose" "test"))))
-         (add-after 'check 'unit-tests
-           (lambda _
-             (let ((excluded-unit-tests
-                    (string-join
-                     '("AddressFromURL.Success"
-                       "AddressFromURL.Failure"
-                       "DNSResolver.IPv4Success"
-                       "DNSResolver.DNSSECSuccess"
-                       "DNSResolver.DNSSECFailure"
-                       "DNSResolver.GetTXTRecord"
-                       "is_hdd.linux_os_root")
-                     ":")))
-               (invoke "tests/unit_tests/unit_tests"
-                       (string-append "--gtest_filter=-"
-                                      excluded-unit-tests)))))
-         (add-after 'install 'delete-unused-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (delete-file-recursively (string-append out "/include"))))))))
+     (list #:out-of-source? #t
+           #:configure-flags
+           #~(list "-DARCH=default"
+                   "-DBUILD_TESTS=ON"
+                   (string-append "-DReadline_ROOT_DIR="
+                                  #$(this-package-input "readline")))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; tests/core_tests need a valid HOME
+               (add-before 'configure 'set-home
+                 (lambda _
+                   (setenv "HOME" (getcwd))))
+               (add-after 'set-home 'change-log-path
+                 (lambda _
+                   (substitute* "contrib/epee/src/mlog.cpp"
+                     (("epee::string_tools::get_current_module_folder\\(\\)")
+                      "\".bitmonero\"")
+                     (("return \\(")
+                      "return ((std::string(getenv(\"HOME\"))) / "))))
+               (add-after 'change-log-path 'fix-file-permissions-for-tests
+                 (lambda _
+                   (for-each make-file-writable
+                             (find-files "tests/data/" "wallet_9svHk1.*"))))
+               ;; Only try tests that don't need access to network or system
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   ;; Core tests sometimes fail, at least on i686-linux.
+                   ;; Let's disable them for now and just try hash tests
+                   ;; and unit tests.
+                   ;; (invoke "make" "ARGS=-R 'hash|core_tests' --verbose" "test")))
+                   (when tests?
+                     (invoke "make" "ARGS=-R 'hash' --verbose" "test"))))
+               (add-after 'check 'unit-tests
+                 (lambda _
+                   (let ((excluded-unit-tests
+                          (string-join
+                           '("AddressFromURL.Success"
+                             "AddressFromURL.Failure"
+                             "DNSResolver.IPv4Success"
+                             "DNSResolver.DNSSECSuccess"
+                             "DNSResolver.DNSSECFailure"
+                             "DNSResolver.GetTXTRecord"
+                             "is_hdd.linux_os_root")
+                           ":")))
+                     (invoke "tests/unit_tests/unit_tests"
+                             (string-append "--gtest_filter=-"
+                                            excluded-unit-tests)))))
+               (add-after 'install 'delete-unused-files
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (delete-file-recursively
+                    (string-append #$output "/include")))))))
     (home-page "https://web.getmonero.org/")
     (synopsis "Command-line interface to the Monero currency")
     (description
