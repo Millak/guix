@@ -776,7 +776,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.17.3.2")
+    (version "0.18.0.0")
     (source
      (origin
        (method git-fetch)
@@ -792,60 +792,59 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "12x0d981fkb43inx7zqjr3ny53dih9g8k03cmaflxqwviinb1k4b"))))
+        (base32 "14rbw9803h3g7ld3d24vc3i9n55n09x13frkmd128xx5jw17v5sr"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
        ("monero-source" ,(package-source monero))))
     (inputs
-     `(,@(package-inputs monero)
-       ("libgcrypt" ,libgcrypt)
-       ("monero" ,monero)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtgraphicaleffects" ,qtgraphicaleffects)
-       ("qtquickcontrols-5" ,qtquickcontrols-5)
-       ("qtquickcontrols2-5",qtquickcontrols2-5)
-       ("qtsvg-5" ,qtsvg-5)
-       ("qtxmlpatterns" ,qtxmlpatterns)))
+     (modify-inputs (package-inputs monero)
+       (append libgcrypt
+               monero
+               qtbase-5
+               qtdeclarative-5
+               qtgraphicaleffects
+               qtquickcontrols-5
+               qtquickcontrols2-5
+               qtsvg-5
+               qtxmlpatterns)))
     (arguments
-     `(#:tests? #f ; No tests
-       #:configure-flags
-       ,#~(list "-DARCH=default"
-                "-DENABLE_PASS_STRENGTH_METER=ON"
-                (string-append "-DReadline_ROOT_DIR="
-                               #$(this-package-input "readline")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'extract-monero-sources
-           ;; Some of the monero package source code is required
-           ;; to build the GUI.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir-p "monero")
-             (copy-recursively (assoc-ref inputs "monero-source")
-                               "monero")))
-         (add-after 'extract-monero-sources 'fix-build
-           (lambda _
-             (substitute* "src/version.js.in"
-               (("@VERSION_TAG_GUI@")
-                ,version))
-             (substitute* "external/CMakeLists.txt"
-               (("add_library\\(quirc" all)
-                (string-append
-                 "set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\")\n"
-                 all)))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (mkdir-p bin)
-               (install-file "../build/bin/monero-wallet-gui" bin))))
-         (add-after 'qt-wrap 'install-monerod-link
-           ;; The monerod program must be available so that monero-wallet-gui
-           ;; can start a Monero daemon if necessary.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (symlink (search-input-file inputs "/bin/monerod")
-                      (string-append (assoc-ref outputs "out")
-                                     "/bin/monerod")))))))
+     (list #:tests? #f ; No tests
+           #:configure-flags
+           #~(list "-DARCH=default"
+                   "-DENABLE_PASS_STRENGTH_METER=ON"
+                   (string-append "-DReadline_ROOT_DIR="
+                                  #$(this-package-input "readline")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'extract-monero-sources
+                 ;; Some of the monero package source code is required
+                 ;; to build the GUI.
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (mkdir-p "monero")
+                   (copy-recursively (assoc-ref inputs "monero-source")
+                                     "monero")))
+               (add-after 'extract-monero-sources 'fix-build
+                 (lambda _
+                   (substitute* "src/version.js.in"
+                     (("@VERSION_TAG_GUI@")
+                      #$version))
+                   (substitute* "external/CMakeLists.txt"
+                     (("add_library\\(quirc" all)
+                      (string-append
+                       "set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\")\n"
+                       all)))))
+               (replace 'install
+                 (lambda _
+                   (let ((bin (string-append #$output "/bin")))
+                     (mkdir-p bin)
+                     (install-file "../build/bin/monero-wallet-gui" bin))))
+               (add-after 'qt-wrap 'install-monerod-link
+                 ;; The monerod program must be available so that
+                 ;; monero-wallet-gui can start a Monero daemon if necessary.
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (symlink (search-input-file inputs "/bin/monerod")
+                            (string-append #$output "/bin/monerod")))))))
     (home-page "https://web.getmonero.org/")
     (synopsis "Graphical user interface for the Monero currency")
     (description
