@@ -1319,13 +1319,17 @@ Analysis and Reporting Technology) functionality.")
     (propagated-inputs
      (list glib)) ; required by udisks2.pc
     (inputs
-     (list acl
-           cryptsetup
-           libatasmart
-           libblockdev
-           libgudev
-           polkit
-           util-linux))
+     `(,acl
+       ;; TODO(staging): Make unconditional.
+       ,@(if (%current-target-system)
+             (list bash-minimal) ; for wrap-program
+             '())
+       ,cryptsetup
+       ,libatasmart
+       ,libblockdev
+       ,libgudev
+       ,polkit
+       ,util-linux))
     (outputs '("out"
                "doc"))                            ;5 MiB of gtk-doc HTML
     (arguments
@@ -1932,6 +1936,11 @@ applications define in those files.")
         (base32
          "1sh8r6vczyz08zm8vfsjmkg6a165wch54akjdrd1vbifcmwjg5pi"))))
     (build-system perl-build-system)
+    (inputs
+     ;; TODO(staging): Make unconditional.
+     (if (%current-target-system)
+         (list bash-minimal) ; for wrap-program
+         '()))
     ;; If the tests are fixed, add perl-test-pod, perl-test-pod-coverage, and
     ;; perl-test-tiny as native-inputs.
     (propagated-inputs
@@ -2028,7 +2037,15 @@ Python, that binds to the C library @code{uchardet} to increase performance.")
        ("gettext" ,gettext-minimal)
        ("gobject-introspection" ,gobject-introspection)))
     (inputs
-     (list gobject-introspection gtk+ libappindicator libnotify udisks))
+     ;; TODO(staging): Make unconditional.
+     `(,@(if (%current-target-system)
+             (list bash-minimal)
+             '())
+       ,gobject-introspection
+       ,gtk+
+       ,libappindicator
+       ,libnotify
+       ,udisks))
     (propagated-inputs
      (list python-docopt python-pygobject python-keyutils python-pyxdg
            python-pyyaml))
