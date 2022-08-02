@@ -371,23 +371,26 @@ particular newlines, is left as is."
   "Return the \"width\" of STR--i.e., the width of the longest line of STR."
   (apply max (map string-length (string-split str #\newline))))
 
-(define (canonicalize-comment c)
-  "Canonicalize comment C, ensuring it has the \"right\" number of leading
-semicolons."
-  (let ((line (string-trim-both
-               (string-trim (comment->string c) (char-set #\;)))))
-    (string->comment (string-append
-                      (if (comment-margin? c)
-                          ";"
-                          (if (string-null? line)
-                              ";;"                        ;no trailing space
-                              ";; "))
-                      line "\n")
-                     (comment-margin? c))))
+(define (canonicalize-comment comment indent)
+  "Canonicalize COMMENT, which is to be printed at INDENT, ensuring it has the
+\"right\" number of leading semicolons."
+  (if (zero? indent)
+      comment                              ;leave top-level comments unchanged
+      (let ((line (string-trim-both
+                   (string-trim (comment->string comment) (char-set #\;)))))
+        (string->comment (string-append
+                          (if (comment-margin? comment)
+                              ";"
+                              (if (string-null? line)
+                                  ";;"            ;no trailing space
+                                  ";; "))
+                          line "\n")
+                         (comment-margin? comment)))))
 
 (define* (pretty-print-with-comments port obj
                                      #:key
-                                     (format-comment identity)
+                                     (format-comment
+                                      (lambda (comment indent) comment))
                                      (format-vertical-space identity)
                                      (indent 0)
                                      (max-width 78)
@@ -475,7 +478,7 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
        (if (comment-margin? comment)
            (begin
              (display " " port)
-             (display (comment->string (format-comment comment))
+             (display (comment->string (format-comment comment indent))
                       port))
            (begin
              ;; When already at the beginning of a line, for example because
@@ -483,7 +486,7 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
              (unless (= column indent)
                (newline port)
                (display (make-string indent #\space) port))
-             (display (comment->string (format-comment comment))
+             (display (comment->string (format-comment comment indent))
                       port)))
        (display (make-string indent #\space) port)
        indent)

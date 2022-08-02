@@ -274,6 +274,7 @@ mnopqrstuvwxyz.\")"
 
 (test-pretty-print/sequence "
 ;;; Hello!
+;;; Notice that there are three semicolons here.
 
 (define-module (foo bar)
   #:use-module (guix)
@@ -286,7 +287,8 @@ mnopqrstuvwxyz.\")"
   (locale \"eo_EO.UTF-8\")
 
   (services
-   (cons (service mcron-service-type) %base-services)))\n")
+   (cons (service mcron-service-type) %base-services)))\n"
+                            #:format-comment canonicalize-comment)
 
 (test-equal "pretty-print-with-comments, canonicalize-comment"
   "\
