@@ -355,9 +355,9 @@
 
       (substitute* file
         ((",gmp\\)(.*)$" _ rest)
-         (string-append ",gmp) ;margin comment\n" rest))
+         (string-append ",gmp) ;margin comment" rest))
         ((",acl\\)(.*)$" _ rest)
-         (string-append ",acl) ;another one\n" rest)))
+         (string-append ",acl) ;another one" rest)))
 
       (system* "guix" "style" "-L" directory "-S" "inputs"
                "my-coreutils")
