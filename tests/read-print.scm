@@ -19,7 +19,8 @@
 (define-module (tests-style)
   #:use-module (guix read-print)
   #:use-module (guix gexp)                        ;for the reader extensions
-  #:use-module (srfi srfi-64))
+  #:use-module (srfi srfi-64)
+  #:use-module (ice-9 match))
 
 (define-syntax-rule (test-pretty-print str args ...)
   "Test equality after a round-trip where STR is passed to
@@ -39,6 +40,35 @@
   (cons 'a 'b)
   (call-with-input-string "(a . b)"
     read-with-comments))
+
+(test-equal "read-with-comments: list with blank line"
+  `(list with ,(vertical-space 1) blank line)
+  (call-with-input-string "\
+(list with
+
+      blank line)\n"
+    read-with-comments))
+
+(test-equal "read-with-comments: list with multiple blank lines"
+  `(list with ,(comment ";multiple\n" #t)
+         ,(vertical-space 3) blank lines)
+  (call-with-input-string "\
+(list with ;multiple
+
+
+
+      blank lines)\n"
+    read-with-comments))
+
+(test-equal "read-with-comments: top-level blank lines"
+  (list (vertical-space 2) '(a b c) (vertical-space 2))
+  (call-with-input-string "
+
+(a b c)\n\n"
+    (lambda (port)
+      (list (read-with-comments port)
+            (read-with-comments port)
+            (read-with-comments port)))))
 
 (test-pretty-print "(list 1 2 3 4)")
 (test-pretty-print "((a . 1) (b . 2))")
@@ -181,6 +211,24 @@ mnopqrstuvwxyz.\")"
    `(cons \"--without-any-problem\"
           ,flags)))")
 
+(test-pretty-print "\
+(vertical-space one:
+
+                two:
+
+
+                three:
+
+
+
+                end)")
+
+(test-pretty-print "\
+(vertical-space one
+
+                ;; Comment after blank line.
+                two)")
+
 (test-equal "pretty-print-with-comments, canonicalize-comment"
   "\
 (list abc
@@ -205,5 +253,31 @@ mnopqrstuvwxyz.\")"
         (pretty-print-with-comments port sexp
                                     #:format-comment
                                     canonicalize-comment)))))
+
+(test-equal "pretty-print-with-comments, canonicalize-vertical-space"
+  "\
+(list abc
+
+      def
+
+      ;; last one
+      ghi)"
+  (let ((sexp (call-with-input-string
+                  "\
+(list abc
+
+
+
+  def
+
+
+;; last one
+  ghi)"
+                read-with-comments)))
+    (call-with-output-string
+      (lambda (port)
+        (pretty-print-with-comments port sexp
+                                    #:format-vertical-space
+                                    canonicalize-vertical-space)))))
 
 (test-end)

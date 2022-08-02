@@ -30,6 +30,11 @@
 
             blank?
 
+            vertical-space
+            vertical-space?
+            vertical-space-height
+            canonicalize-vertical-space
+
             comment
             comment?
             comment->string
@@ -58,6 +63,26 @@
 
 (define blank? (record-predicate <blank>))
 
+(define <vertical-space>
+  (make-record-type '<vertical-space> '(height)
+                    #:parent <blank>
+                    #:extensible? #f))
+
+(define vertical-space?       (record-predicate <vertical-space>))
+(define vertical-space        (record-type-constructor <vertical-space>))
+(define vertical-space-height (record-accessor <vertical-space> 'height))
+
+(define (combine-vertical-space x y)
+  "Return vertical space as high as the combination of X and Y."
+  (vertical-space (+ (vertical-space-height x)
+                     (vertical-space-height y))))
+
+(define canonicalize-vertical-space
+  (let ((unit (vertical-space 1)))
+    (lambda (space)
+      "Return a vertical space corresponding to a single blank line."
+      unit)))
+
 (define <comment>
   ;; Comments.
   (make-record-type '<comment> '(str margin?)
@@ -79,6 +104,19 @@ end with newline, otherwise an error is raised."
     (raise (condition
             (&message (message "invalid comment string")))))
   (string->comment str margin?))
+
+(define (read-vertical-space port)
+  "Read from PORT until a non-vertical-space character is met, and return a
+single <vertical-space> record."
+  (define (space? chr)
+    (char-set-contains? char-set:whitespace chr))
+
+  (let loop ((height 1))
+    (match (read-char port)
+      (#\newline (loop (+ 1 height)))
+      ((? eof-object?) (vertical-space height))
+      ((? space?) (loop height))
+      (chr (unread-char chr port) (vertical-space height)))))
 
 (define (read-with-comments port)
   "Like 'read', but include <blank> objects when they're encountered."
@@ -107,7 +145,9 @@ end with newline, otherwise an error is raised."
        eof)                                       ;oops!
       (chr
        (cond ((eqv? chr #\newline)
-              (loop #t return))
+              (if blank-line?
+                  (read-vertical-space port)
+                  (loop #t return)))
              ((char-set-contains? char-set:whitespace chr)
               (loop blank-line? return))
              ((memv chr '(#\( #\[))
@@ -297,6 +337,7 @@ semicolons."
 (define* (pretty-print-with-comments port obj
                                      #:key
                                      (format-comment identity)
+                                     (format-vertical-space identity)
                                      (indent 0)
                                      (max-width 78)
                                      (long-list 5))
@@ -306,7 +347,8 @@ included in the output.
 
 Lists longer than LONG-LIST are written as one element per line.  Comments are
 passed through FORMAT-COMMENT before being emitted; a useful value for
-FORMAT-COMMENT is 'canonicalize-comment'."
+FORMAT-COMMENT is 'canonicalize-comment'.  Vertical space is passed through
+FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
   (define (list-of-lists? head tail)
     ;; Return true if HEAD and TAIL denote a list of lists--e.g., a list of
     ;; 'let' bindings.
@@ -392,6 +434,14 @@ FORMAT-COMMENT is 'canonicalize-comment'."
                (display (make-string indent #\space) port))
              (display (comment->string (format-comment comment))
                       port)))
+       (display (make-string indent #\space) port)
+       indent)
+      ((? vertical-space? space)
+       (unless delimited? (newline port))
+       (let loop ((i (vertical-space-height (format-vertical-space space))))
+         (unless (zero? i)
+           (newline port)
+           (loop (- i 1))))
        (display (make-string indent #\space) port)
        indent)
       (('quote lst)

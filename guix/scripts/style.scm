@@ -316,7 +316,8 @@ PACKAGE."
        (object->string* exp
                         (location-column
                          (package-definition-location package))
-                        #:format-comment canonicalize-comment)))))
+                        #:format-comment canonicalize-comment
+                        #:format-vertical-space canonicalize-vertical-space)))))
 
 (define (package-location<? p1 p2)
   "Return true if P1's location is \"before\" P2's."
