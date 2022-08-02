@@ -368,9 +368,11 @@ activation.")))
 (define (compute-on-first-login-script _ gexps)
   (program-file
    "on-first-login"
-   (with-imported-modules (source-module-closure '((guix i18n)))
+   (with-imported-modules (source-module-closure '((guix i18n)
+                                                   (guix diagnostics)))
      #~(begin
-       (use-modules (guix i18n))
+         (use-modules (guix i18n)
+                      (guix diagnostics))
        #$%initialize-gettext
 
        (let* ((xdg-runtime-dir (or (getenv "XDG_RUNTIME_DIR")
@@ -387,7 +389,7 @@ activation.")))
                (begin #$@gexps (touch flag-file-path)))
              ;; TRANSLATORS: 'on-first-login' is the name of a service and
              ;; shouldn't be translated
-             (display (G_ "XDG_RUNTIME_DIR doesn't exists, on-first-login script
+             (warning (G_ "XDG_RUNTIME_DIR doesn't exists, on-first-login script
 won't execute anything.  You can check if xdg runtime directory exists,
 XDG_RUNTIME_DIR variable is set to appropriate value and manually execute the
 script by running '$HOME/.guix-home/on-first-login'"))))))))
