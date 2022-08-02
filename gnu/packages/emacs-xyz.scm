@@ -9177,6 +9177,31 @@ provides a front-end interface for the workspace/symbols LSP procedure
 call.")
    (license license:gpl3+)))
 
+(define-public emacs-consult-yasnippet
+  (let ((commit "ae0450889484f23dc4ec37518852a2c61b89f184")
+        (revision "0"))
+    (package
+      (name "emacs-consult-yasnippet")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mohkale/consult-yasnippet")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "13hmmsnmh32vafws61sckzzy354rq0nslqpyzhw97iwvn0fpsa35"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-consult emacs-yasnippet))
+      (home-page "https://github.com/mohkale/consult-yasnippet")
+      (synopsis "Consulting-read interface for Yasnippet")
+      (description
+       "This package allows you to expand Yasnippet' snippets through
+a completing-read interface.  It supports previewing the current snippet
+expansion and overwriting the marked region with a new snippet completion.")
+      (license license:gpl3+))))
+
 (define-public emacs-marginalia
   (package
     (name "emacs-marginalia")
