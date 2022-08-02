@@ -14592,6 +14592,27 @@ library which allows parsing of NEXUS, Newick and other phylogenetic tree
 methods, incorporating one or more trees and trait data.")
     (license license:gpl2+)))
 
+(define-public r-phylotools
+  (package
+    (name "r-phylotools")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "phylotools" version))
+              (sha256
+               (base32
+                "1dhk1ncp5zi4zl1xfnjz64v983dm7bq7iimfjin80j0bdcpps44w"))))
+    (properties `((upstream-name . "phylotools")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape))
+    (home-page "https://github.com/helixcn/phylotools")
+    (synopsis "Phylogenetic tools for eco-phylogenetics")
+    (description
+     "This package provides a collection of tools for building RAxML
+supermatrix using PHYLIP or aligned FASTA files.  These functions will be
+useful for building large phylogenies using multiple markers.")
+    (license license:gpl2)))
+
 (define-public r-rnexml
   (package
     (name "r-rnexml")
