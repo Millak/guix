@@ -580,6 +580,7 @@ SH_TESTS =					\
   tests/guix-package.sh				\
   tests/guix-package-aliases.sh			\
   tests/guix-package-net.sh			\
+  tests/guix-style.sh				\
   tests/guix-system.sh				\
   tests/guix-home.sh				\
   tests/guix-archive.sh				\

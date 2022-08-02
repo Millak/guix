@@ -14058,9 +14058,12 @@ otherwise.
 @node Invoking guix style
 @section Invoking @command{guix style}
 
-The @command{guix style} command helps packagers style their package
-definitions according to the latest fashionable trends.  The command
-currently provides the following styling rules:
+The @command{guix style} command helps users and packagers alike style
+their package definitions and configuration files according to the
+latest fashionable trends.  It can either reformat whole files, with the
+@option{--whole-file} option, or apply specific @dfn{styling rules} to
+individual package definitions.  The command currently provides the
+following styling rules:
 
 @itemize
 @item
@@ -14115,12 +14118,31 @@ the packages.  The @option{--styling} or @option{-S} option allows you
 to select the style rule, the default rule being @code{format}---see
 below.
 
+To reformat entire source files, the syntax is:
+
+@example
+guix style --whole-file @var{file}@dots{}
+@end example
+
 The available options are listed below.
 
 @table @code
 @item --dry-run
 @itemx -n
 Show source file locations that would be edited but do not modify them.
+
+@item --whole-file
+@itemx -f
+Reformat the given files in their entirety.  In that case, subsequent
+arguments are interpreted as file names (rather than package names), and
+the @option{--styling} option has no effect.
+
+As an example, here is how you might reformat your operating system
+configuration (you need write permissions for the file):
+
+@example
+guix style -f /etc/config.scm
+@end example
 
 @item --styling=@var{rule}
 @itemx -S @var{rule}

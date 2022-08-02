@@ -330,6 +330,21 @@ PACKAGE."
 
 
 ;;;
+;;; Whole-file formatting.
+;;;
+
+(define* (format-whole-file file #:rest rest)
+  "Reformat all of FILE."
+  (let ((lst (call-with-input-file file read-with-comments/sequence)))
+    (with-atomic-file-output file
+      (lambda (port)
+        (apply pretty-print-with-comments/splice port lst
+               #:format-comment canonicalize-comment
+               #:format-vertical-space canonicalize-vertical-space
+               rest)))))
+
+
+;;;
 ;;; Options.
 ;;;
 
@@ -345,6 +360,9 @@ PACKAGE."
         (option '(#\e "expression") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'expression arg result)))
+        (option '(#\f "whole-file") #f #f
+                (lambda (opt name arg result)
+                  (alist-cons 'whole-file? #t result)))
         (option '(#\S "styling") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'styling-procedure
@@ -400,6 +418,9 @@ Update package definitions to the latest style.\n"))
                          of 'silent', 'safe', or 'always'"))
   (newline)
   (display (G_ "
+  -f, --whole-file       format the entire contents of the given file(s)"))
+  (newline)
+  (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
   -V, --version          display version information and exit"))
@@ -426,27 +447,35 @@ Update package definitions to the latest style.\n"))
                         #:build-options? #f))
 
   (let* ((opts     (parse-options))
-         (packages (filter-map (match-lambda
-                                 (('argument . spec)
-                                  (specification->package spec))
-                                 (('expression . str)
-                                  (read/eval str))
-                                 (_ #f))
-                               opts))
          (edit     (if (assoc-ref opts 'dry-run?)
                        edit-expression/dry-run
                        edit-expression))
          (style    (assoc-ref opts 'styling-procedure))
          (policy   (assoc-ref opts 'input-simplification-policy)))
     (with-error-handling
-      (for-each (lambda (package)
-                  (style package #:policy policy
-                         #:edit-expression edit))
-                ;; Sort package by source code location so that we start editing
-                ;; files from the bottom and going upward.  That way, the
-                ;; 'location' field of <package> records is not invalidated as
-                ;; we modify files.
-                (sort (if (null? packages)
-                          (fold-packages cons '() #:select? (const #t))
-                          packages)
-                      (negate package-location<?))))))
+      (if (assoc-ref opts 'whole-file?)
+          (let ((files (filter-map (match-lambda
+                                     (('argument . file) file)
+                                     (_ #f))
+                                   opts)))
+            (unless (eq? format-package-definition style)
+              (warning (G_ "'--styling' option has no effect in whole-file mode~%")))
+            (for-each format-whole-file files))
+          (let ((packages (filter-map (match-lambda
+                                        (('argument . spec)
+                                         (specification->package spec))
+                                        (('expression . str)
+                                         (read/eval str))
+                                        (_ #f))
+                                      opts)))
+            (for-each (lambda (package)
+                        (style package #:policy policy
+                               #:edit-expression edit))
+                      ;; Sort package by source code location so that we start
+                      ;; editing files from the bottom and going upward.  That
+                      ;; way, the 'location' field of <package> records is not
+                      ;; invalidated as we modify files.
+                      (sort (if (null? packages)
+                                (fold-packages cons '() #:select? (const #t))
+                                packages)
+                            (negate package-location<?))))))))
