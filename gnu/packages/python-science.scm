@@ -544,6 +544,26 @@ region of practical equivalence (rope), or that the second classifier has
 higher scores.")
     (license license:expat)))
 
+(define-public python-fbpca
+  (package
+    (name "python-fbpca")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "fbpca" version))
+              (sha256
+               (base32
+                "1lbjqhqsdmqk86lb86q3ywf7561zmdny1dfvgwqkyrkr4ij7f1hm"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-numpy python-scipy))
+    (home-page "https://fbpca.readthedocs.io/")
+    (synopsis "Functions for principal component analysis and accuracy checks")
+    (description
+     "This package provides fast computations for @dfn{principal component
+analysis} (PCA), SVD, and eigendecompositions via randomized methods")
+    (license license:bsd-3)))
+
 (define-public python-xarray
   (package
     (name "python-xarray")
