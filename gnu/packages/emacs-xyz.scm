@@ -28064,6 +28064,29 @@ It can also be useful on Unix-like platforms to delay having to enter your
 passphrase until the first time you push to a remote.")
     (license license:gpl3+)))
 
+(define-public emacs-super-save
+  (package
+    (name "emacs-super-save")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bbatsov/super-save")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "066fyg4r4pksyandpd7s53hagpvm2rw90q5ks4jlpgy7x00hw09l"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/bbatsov/super-save")
+    (synopsis "Auto-save buffers, based on your activity")
+    (description "Super-save auto-saves your buffers, when certain events
+happen, e.g., when you switch between buffers or when an Emacs frame loses
+focus.  You can think of it as both something that augments and replaces the
+standard Auto-save mode.")
+    (license license:gpl3+)))
+
 (define-public emacs-tao-theme
   (let ((commit "468ee4f6ba7afb9dbfc8855ae2c333cb16ca4408")
         (revision "1"))
