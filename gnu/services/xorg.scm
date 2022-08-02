@@ -63,6 +63,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (xorg-configuration
             xorg-configuration?
@@ -885,6 +886,8 @@ the GNOME desktop environment.")
                       (default (xorg-configuration)))
   (x-session gdm-configuration-x-session
              (default (xinitrc)))
+  (xdmcp? gdm-configuration-xdmcp?
+          (default #f))
   (wayland? gdm-configuration-wayland? (default #f))
   (wayland-session gdm-configuration-wayland-session
                    (default gdm-wayland-session-wrapper)))
@@ -913,18 +916,20 @@ the GNOME desktop environment.")
                    ;; See also
                    ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=39281>.
                    "InitialSetupEnable=false\n"
-                   "WaylandEnable=" (if (gdm-configuration-wayland? config)
-                                        "true"
-                                        "false") "\n"
+                   (format #f "WaylandEnable=~:[false~;true~]~%"
+                           (gdm-configuration-wayland? config))
                    "\n"
                    "[debug]\n"
-                   "Enable=" (if (gdm-configuration-debug? config)
-                                 "true"
-                                 "false") "\n"
+                   (format #f "Enable=~:[false~;true~]~%"
+                           (gdm-configuration-debug? config))
                    "\n"
                    "[security]\n"
                    "#DisallowTCP=true\n"
-                   "#AllowRemoteAutoLogin=false\n"))
+                   "#AllowRemoteAutoLogin=false\n"
+                   "\n"
+                   "[xdmcp]\n"
+                   (format #f "Enable=~:[false~;true~]~%"
+                           (gdm-configuration-xdmcp? config))))
 
 (define (gdm-pam-service config)
   "Return a PAM service for @command{gdm}."
@@ -995,6 +1000,41 @@ the GNOME desktop environment.")
          (stop #~(make-kill-destructor))
          (respawn? #t))))
 
+(define gdm-polkit-rules
+  (lambda (config)
+    (if (gdm-configuration-xdmcp? config)
+        ;; Allow remote (XDMCP) users to use colord; otherwise an
+        ;; authentication dialog would appear on the GDM screen (see the
+        ;; upstream bug:
+        ;; https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/issues/273).
+        (list (computed-file
+               "02-allow-colord.rules"
+               (with-imported-modules '((guix build utils))
+                 #~(begin
+                     (use-modules (guix build utils))
+
+                     (let* ((rules.d
+                             (string-append #$output
+                                            "/share/polkit-1"
+                                            "/rules.d"))
+                            (allow-colord.rules (string-append
+                                                 rules.d
+                                                 "/02-allow-colord.rules")))
+                       (mkdir-p rules.d)
+                       (call-with-output-file allow-colord.rules
+                         (lambda (port)
+                           ;; This workaround enables any local or remote in
+                           ;; the "users" group to use colord (see:
+                           ;; https://c-nergy.be/blog/?p=12073).
+                           (format port "\
+polkit.addRule(function(action, subject) {
+   if (action.id.match(\"org.freedesktop.color-manager\")) {
+      polkit.log(\"POLKIT DEBUG returning YES for action: \" + action);
+      return polkit.Result.YES;
+   }
+});~%"))))))))
+        '())))
+
 (define gdm-service-type
   (handle-xorg-configuration gdm-configuration
     (service-type (name 'gdm)
@@ -1005,6 +1045,8 @@ the GNOME desktop environment.")
                                             (const %gdm-accounts))
                          (service-extension pam-root-service-type
                                             gdm-pam-service)
+                         (service-extension polkit-service-type
+                                            gdm-polkit-rules)
                          (service-extension profile-service-type
                                             gdm-configuration-gnome-shell-assets)
                          (service-extension dbus-root-service-type

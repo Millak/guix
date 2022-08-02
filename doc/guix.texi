@@ -21119,6 +21119,12 @@ Configuration of the Xorg graphical server.
 @item @code{x-session} (default: @code{(xinitrc)})
 Script to run before starting a X session.
 
+@item @code{xdmcp?} (default: @code{#f})
+When true, enable the X Display Manager Control Protocol (XDMCP).  This
+should only be enabled in trusted environments, as the protocol is not
+secure.  When enabled, GDM listens for XDMCP queries on the UDP port
+177.
+
 @item @code{dbus-daemon} (default: @code{dbus-daemon-wrapper})
 File name of the @code{dbus-daemon} executable.
 
