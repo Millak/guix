@@ -1948,19 +1948,31 @@ applications define in those files.")
     (arguments
      ;; Some tests fail due to requiring the mimetype of perl files to be
      ;; text/plain when they are actually application/x-perl.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-programs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (prog)
-                           (wrap-program (string-append out "/bin/" prog)
-                             `("PERL5LIB" ":" prefix
-                               (,(string-append (getenv "PERL5LIB") ":" out
-                                                "/lib/perl5/site_perl")))))
-                         '("mimeopen" "mimetype")))
-             #t)))))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-programs
+                 ;; TODO(staging): Make unconditional.
+                 (lambda* (#:key #$@(if (%current-target-system)
+                                        #~(inputs)
+                                        #~()) outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (for-each
+                      (lambda (prog)
+                        (wrap-program (string-append out "/bin/" prog)
+                          `("PERL5LIB" ":" prefix
+                            ;; PERL5LIB looks in 'native-inputs', not 'inputs',
+                            ;; whereas the latter is required for
+                            ;; cross-compilation.
+                            #$(if (%current-target-system)
+                                  #~,(search-path-as-list
+                                      '("lib/perl5/site_perl")
+                                      (map cdr (append inputs outputs)))
+                                  #~(,(string-append
+                                       (getenv "PERL5LIB")
+                                       ":" out "/lib/perl5/site_perl"))))))
+                      '("mimeopen" "mimetype")))
+                   #t)))))
     (home-page "https://metacpan.org/release/File-MimeInfo")
     (synopsis "Determine file type from the file name")
     (description
