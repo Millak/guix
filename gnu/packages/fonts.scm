@@ -2747,3 +2747,24 @@ and readability.  This package bundles those icons into a font.")
     (synopsis "LXGW WenKai TC / 霞鶩文楷 TC")
     (description "The Traditional Chinese Version of LXGW WenKai.")
     (license license:silofl1.1)))
+
+(define-public font-chiron-sung-hk
+  (package
+    (name "font-chiron-sung-hk")
+    (version "1.005")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/chiron-fonts/chiron-sung-hk")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0iqlnb7825kisg2avhr9hwwvb4jw8f642vvmms5dw6m9czzydpgw"))))
+    (build-system font-build-system)
+    (home-page "https://chiron-fonts.github.io/")
+    (synopsis "昭源宋體")
+    (description
+     "Chiron Sung HK (昭源宋體) is a Traditional Chinese serif
+ typeface based on Adobe’s Source Han Serif (a.k.a. Google’s Noto Sans CJK).")
+    (license license:silofl1.1)))
