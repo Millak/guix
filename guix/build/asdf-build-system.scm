@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
-;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -181,7 +181,7 @@ if it's present in the native-inputs."
     (setenv "XDG_CONFIG_DIRS" (string-append out "/etc")))
   #t)
 
-(define* (build #:key outputs inputs asd-systems
+(define* (build #:key outputs inputs asd-systems asd-operation
                 #:allow-other-keys)
   "Compile the system."
   (let* ((out (library-output outputs))
@@ -193,7 +193,9 @@ if it's present in the native-inputs."
     (setenv "ASDF_OUTPUT_TRANSLATIONS"
             (replace-escaped-macros (format #f "~S" translations)))
     (setenv "HOME" out) ; ecl's asdf sometimes wants to create $HOME/.cache
-    (compile-systems asd-systems (lisp-source-directory out system-name)))
+    (compile-systems asd-systems
+                     (lisp-source-directory out system-name)
+                     asd-operation))
   #t)
 
 (define* (check #:key tests? outputs inputs asd-test-systems

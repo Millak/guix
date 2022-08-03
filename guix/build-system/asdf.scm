@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;;
@@ -203,7 +203,7 @@ set up using CL source package conventions."
       (define base-arguments
         (if target-is-source?
             (strip-keyword-arguments
-             '(#:tests? #:lisp #:asd-systems #:asd-test-systems)
+             '(#:tests? #:lisp #:asd-systems #:asd-test-systems #:asd-operation)
              (package-arguments pkg))
             (package-arguments pkg)))
 
@@ -273,6 +273,7 @@ set up using CL source package conventions."
                  (tests? #t)
                  (asd-systems ''())
                  (asd-test-systems ''())
+                 (asd-operation "load-system")
                  (phases '%standard-phases)
                  (search-paths '())
                  (system (%current-system))
@@ -309,6 +310,7 @@ set up using CL source package conventions."
                           #:source #+source
                           #:asd-systems #$systems
                           #:asd-test-systems #$test-systems
+                          #:asd-operation #$asd-operation
                           #:system #$system
                           #:tests? #$tests?
                           #:phases #$phases

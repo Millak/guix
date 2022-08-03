@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
-;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -108,9 +108,8 @@ with PROGRAM."
              "--eval" "(quit)"))
     (_ (error "The LISP provided is not supported at this time."))))
 
-(define (compile-systems systems directory)
-  "Use a lisp implementation to compile the SYSTEMS using asdf.
-Load ASD-FILES first."
+(define (compile-systems systems directory operation)
+  "Use a lisp implementation to compile the SYSTEMS using asdf."
   (lisp-eval-program
    `((require :asdf)
      (asdf:initialize-source-registry
@@ -119,12 +118,11 @@ Load ASD-FILES first."
                                                                :ensure-directory t))
             :inherit-configuration))
      ,@(map (lambda (system)
-              `(asdf:load-system ,system))
+              (list (string->symbol (string-append "asdf:" operation)) system))
             systems))))
 
 (define (test-system test-systems directory)
-  "Use a lisp implementation to test SYSTEM using asdf.  Load ASD-FILES first.
-Also load TEST-ASD-FILE if necessary."
+  "Use a lisp implementation to test the TEST-SYSTEMS using asdf."
   (lisp-eval-program
    `((require :asdf)
      (asdf:initialize-source-registry
