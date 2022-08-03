@@ -161,10 +161,10 @@
         ;; `pkg-config --variable=host_bins Qt5Core`, which fails to pick
         ;; up executables residing in 'qttools-5', so we specify them here.
         (string-append "ac_cv_path_LRELEASE="
-                       (assoc-ref %build-inputs "qttools-5")
+                       (assoc-ref %build-inputs "qttools")
                        "/bin/lrelease")
         (string-append "ac_cv_path_LUPDATE="
-                       (assoc-ref %build-inputs "qttools-5")
+                       (assoc-ref %build-inputs "qttools")
                        "/bin/lupdate"))
        #:phases
        (modify-phases %standard-phases
