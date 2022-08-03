@@ -313,7 +313,8 @@ experience for your users, your family and yourself")
              libgcrypt
              libxcb))
       (native-inputs
-       (list autoconf
+       (list accountsservice
+             autoconf
              automake
              gobject-introspection
              gtk-doc
