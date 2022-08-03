@@ -14,6 +14,17 @@
      (eval . (setq-local guix-directory
                          (locate-dominating-file default-directory
                                                  ".dir-locals.el")))
+     ;; YASnippet
+     (eval . (with-eval-after-load
+                 'yasnippet
+               (let ((guix-yasnippets
+                      (expand-file-name
+                       "etc/snippets"
+                       (locate-dominating-file default-directory
+                                               ".dir-locals.el"))))
+                 (unless (member guix-yasnippets yas-snippet-dirs)
+                   (add-to-list 'yas-snippet-dirs guix-yasnippets)
+                   (yas-reload-all)))))
 
      ;; Geiser
      ;; This allows automatically setting the `geiser-guile-load-path'
