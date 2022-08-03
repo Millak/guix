@@ -4357,19 +4357,19 @@ passwords in the GNOME keyring.")
           ;; valac: compile into a binary).
           (delete 'glib-or-gtk-wrap))))
     (native-inputs
-     `(("bison" ,bison)
-       ("dbus" ,dbus)                   ; for dbus tests
-       ("docbook-xml" ,docbook-xml-4.4)
-       ("docbook-xsl" ,docbook-xsl)
-       ("flex" ,flex)
-       ("gobject-introspection" ,gobject-introspection) ; for gir tests
-       ("help2man" ,help2man)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)))
+     (list bison
+           dbus                         ; for dbus tests
+           docbook-xml-4.4
+           docbook-xsl
+           flex
+           gobject-introspection        ; for gir tests
+           help2man
+           perl
+           pkg-config
+           libxslt))
     (propagated-inputs
-     `(("glib" ,glib)                   ; required by libvala-0.40.pc
-       ("libgvc" ,graphviz)))
+     (list glib                         ; required by libvala-0.40.pc
+           graphviz))
     (home-page "https://wiki.gnome.org/Projects/Vala/")
     (synopsis "Compiler using the GObject type system")
     (description "Vala is a programming language using modern high level
