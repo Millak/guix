@@ -17828,8 +17828,7 @@ to setup.")
           (base32 "1nm35kvigflfjlmsa8zwdajc61f02fh4sq08jv0wnqylhx8yg2bv"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       (list #:test-asd-file "glop-test.asd"
-             #:phases
+       (list #:phases
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'patch-lib-paths
                    (lambda* (#:key inputs #:allow-other-keys)
