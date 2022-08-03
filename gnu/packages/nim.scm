@@ -77,7 +77,22 @@
                  (invoke "./install.sh" bin)
                  (for-each (lambda (file)
                              (install-file file bin))
-                           (delete "testament" (find-files "bin")))))))))
+                           (delete "testament" (find-files "bin"))))))
+           (add-after 'install 'install-completions
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((share (string-append (assoc-ref outputs "out") "/share"))
+                      (bash  (string-append share "/bash-completion/completions"))
+                      (zsh   (string-append share "/zsh/vendor_completions")))
+                 (mkdir-p bash)
+                 (mkdir-p zsh)
+                 (copy-file "tools/nim.bash-completion"
+                            (string-append bash "/nim"))
+                 (copy-file "dist/nimble/nimble.bash-completion"
+                            (string-append bash "/nimble"))
+                 (copy-file "tools/nim.zsh-completion"
+                            (string-append zsh "/_nim"))
+                 (copy-file "dist/nimble/nimble.bash-completion"
+                            (string-append zsh "/_nimble"))))))))
     (home-page "https://nim-lang.org")
     (synopsis "Statically-typed, imperative programming language")
     (description "Nim (formerly known as Nimrod) is a statically-typed,
