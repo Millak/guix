@@ -4321,60 +4321,6 @@ passwords in the GNOME keyring.")
 (define-public vala
   (package
     (name "vala")
-    (version "0.54.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/vala/"
-                                  (version-major+minor version) "/"
-                                  "vala-" version ".tar.xz"))
-              (sha256
-               (base32
-                "048k5c6c6y7jyb961krnrb7m0kghr0yrkpnfx3j5ckbx652yfkc8"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     '(#:configure-flags '("--enable-coverage")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "doc/manual"
-               (substitute* '("manual.xml" "version.xml.in")
-                 (("http://www.oasis-open.org/docbook/xml/4.4/")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))))
-         (add-before 'check 'pre-check
-           (lambda _
-             (setenv "CC" "gcc")
-             (substitute* "valadoc/tests/libvaladoc\
-/tests-extra-environment.sh"
-               (("export PKG_CONFIG_PATH=" m)
-                (string-append m "$PKG_CONFIG_PATH:"))))))))
-    (native-inputs
-     `(("bison" ,bison)
-       ("dbus" ,dbus)                   ; for dbus tests
-       ("docbook-xml" ,docbook-xml-4.4)
-       ("docbook-xsl" ,docbook-xsl)
-       ("flex" ,flex)
-       ("gobject-introspection" ,gobject-introspection) ; for gir tests
-       ("help2man" ,help2man)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)))
-    (propagated-inputs
-     `(("glib" ,glib)                   ; required by libvala-0.40.pc
-       ("libgvc" ,graphviz)))
-    (home-page "https://wiki.gnome.org/Projects/Vala/")
-    (synopsis "Compiler using the GObject type system")
-    (description "Vala is a programming language using modern high level
-abstractions without imposing additional runtime requirements and without using
-a different ABI compared to applications and libraries written in C.  Vala uses
-the GObject type system and has additional code generation routines that make
-targeting the GNOME stack simple.")
-    (license license:lgpl2.1+)))
-
-(define-public vala-next
-  (package
-    (inherit vala)
     (version "0.56.2")
     (source (origin
               (method url-fetch)
@@ -4384,6 +4330,7 @@ targeting the GNOME stack simple.")
               (sha256
                (base32
                 "0k0jj3xwjq222x0hbqqy5bykhgk1f1wsb85bqcdgsnbqn6dn3jb6"))))
+    (build-system glib-or-gtk-build-system)
     (arguments
      (list
       #:configure-flags #~(list "CC=gcc" "--enable-coverage")
@@ -4408,7 +4355,29 @@ targeting the GNOME stack simple.")
           ;; Wrapping the binaries breaks vala's behavior adaptations based on
           ;; the file name of the program executed (vala: compile and execute,
           ;; valac: compile into a binary).
-          (delete 'glib-or-gtk-wrap))))))
+          (delete 'glib-or-gtk-wrap))))
+    (native-inputs
+     `(("bison" ,bison)
+       ("dbus" ,dbus)                   ; for dbus tests
+       ("docbook-xml" ,docbook-xml-4.4)
+       ("docbook-xsl" ,docbook-xsl)
+       ("flex" ,flex)
+       ("gobject-introspection" ,gobject-introspection) ; for gir tests
+       ("help2man" ,help2man)
+       ("perl" ,perl)
+       ("pkg-config" ,pkg-config)
+       ("xsltproc" ,libxslt)))
+    (propagated-inputs
+     `(("glib" ,glib)                   ; required by libvala-0.40.pc
+       ("libgvc" ,graphviz)))
+    (home-page "https://wiki.gnome.org/Projects/Vala/")
+    (synopsis "Compiler using the GObject type system")
+    (description "Vala is a programming language using modern high level
+abstractions without imposing additional runtime requirements and without using
+a different ABI compared to applications and libraries written in C.  Vala uses
+the GObject type system and has additional code generation routines that make
+targeting the GNOME stack simple.")
+    (license license:lgpl2.1+)))
 
 ;;; An older variant kept to build libsoup-minimal-2.
 (define-public vala-0.52
