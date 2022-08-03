@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014, 2015, 2016 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2013, 2015, 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2015, 2017-2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Alexander I.Grafov <grafov@gmail.com>
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
@@ -1635,7 +1635,15 @@ less if you are working in front of the screen at night.")
         (string-append "https://www.jwz.org/xscreensaver/xscreensaver-"
                        version ".tar.gz"))
        (sha256
-        (base32 "0lmiyvp3qs2gngd53f191jmlizs9l04i2gnrqbn96mqckyr18w3q"))))
+        (base32 "0lmiyvp3qs2gngd53f191jmlizs9l04i2gnrqbn96mqckyr18w3q"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; 'configure.ac' checks for $ac_unrecognized_opts and exits if it's
+        ;; non-empty.  Since the default 'configure' phases passes options
+        ;; that may or may not be recognized, such as '--enable-fast-install',
+        ;; these need to be tolerated, hence this snippet.
+        '(substitute* "configure"
+           (("exit 2") "true")))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
@@ -1646,24 +1654,9 @@ less if you are working in front of the screen at night.")
              (substitute* '("driver/Makefile.in" "po/Makefile.in.in")
                (("@GTK_DATADIR@") "@datadir@")
                (("@PO_DATADIR@") "@datadir@"))
-             #t))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; The tarball uses a very old version of autconf. It does not
-             ;; understand extra flags like `--enable-fast-install', so
-             ;; we need to invoke it with just what it understands.
-             (let ((out (assoc-ref outputs "out")))
-               ;; 'configure' doesn't understand '--host'.
-               ,@(if (%current-target-system)
-                     `((setenv "CHOST" ,(%current-target-system)))
-                     '())
-               (setenv "CONFIG_SHELL" (which "bash"))
-               (setenv "SHELL" (which "bash"))
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       "--with-pam"
-                       "--with-proc-interrupts"
-                       "--without-readdisplay")))))
+             #t)))
+       #:configure-flags '("--with-pam" "--with-proc-interrupts"
+                           "--without-readdisplay")
        #:make-flags (list (string-append "AD_DIR="
                                          (assoc-ref %outputs "out")
                                          "/lib/X11/app-defaults"))))
