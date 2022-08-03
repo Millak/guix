@@ -1,9 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 José Miguel Sánchez García <jmi2k@openmailbox.org>
-;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
+;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,7 +40,7 @@
        (base32 "0lm4450ig8k4l3rzxv6kcqji5l1lzicsw76ckwxm0q9qdz713cb7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; No tests.
+     `(#:tests? #f          ; TODO: Investigate tests failures.
        #:phases
          (modify-phases %standard-phases
            (delete 'configure)          ; no configure script
@@ -47,26 +48,36 @@
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out")))
                  (substitute* "install.sh"
-                   (("1/nim") "1"))
-                 #t)))
+                  (("/usr/local") out)
+                  (("/opt/nimble") (string-append out "/share/nimble"))
+                  (("configdir=/etc/nim")
+                   (string-append "configdir=" out "/etc/nim"))))))
            (add-after 'patch-source-shebangs 'patch-more-shebangs
              (lambda _
                (let ((sh (which "sh")))
                  (substitute* '("tests/stdlib/tosprocterminate.nim"
-                                        "lib/pure/osproc.nim")
+                                "tests/stdlib/tstrscans.nim"
+                                "lib/pure/osproc.nim"
+                                "lib/pure/strscans.nim")
                    (("/bin/sh") sh))
-                 (substitute* (find-files "c_code" "stdlib_osproc.c")
-                   (("\"/bin/sh\", 7") (format #f "~s, ~s" sh (string-length sh)))))
-               #t))
+                 (substitute* (find-files "c_code" "stdlib_osproc\\.nim\\.c")
+                   (("\"/bin/sh\", 7") (format #f "~s, ~s" sh (string-length sh)))))))
            (replace 'build
              (lambda _
+               (setenv "XDG_CACHE_HOME" "./cache-home")
+               (mkdir-p "./cache-home")
                (invoke "sh" "build.sh")
-               #t))
+               (invoke "./bin/nim" "c" "-d:release" "koch")
+               (invoke "./koch" "boot" "-d:release")
+               (invoke "./koch" "tools")))
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (invoke "./install.sh" out)
-                 #t))))))
+               (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+                 (mkdir-p bin)
+                 (invoke "./install.sh" bin)
+                 (for-each (lambda (file)
+                             (install-file file bin))
+                           (delete "testament" (find-files "bin")))))))))
     (home-page "https://nim-lang.org")
     (synopsis "Statically-typed, imperative programming language")
     (description "Nim (formerly known as Nimrod) is a statically-typed,
