@@ -2768,3 +2768,22 @@ and readability.  This package bundles those icons into a font.")
      "Chiron Sung HK (昭源宋體) is a Traditional Chinese serif
  typeface based on Adobe’s Source Han Serif (a.k.a. Google’s Noto Sans CJK).")
     (license license:silofl1.1)))
+
+(define-public font-chiron-hei-hk
+  (package
+    (name "font-chiron-hei-hk")
+    (version "2.502")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/chiron-fonts/chiron-hei-hk")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wk1yladmwflkwrmj374avpml8shyrgd622f7mbvw5ln7fi70d2l"))))
+    (build-system font-build-system)
+    (home-page "https://chiron-fonts.github.io/")
+    (synopsis "昭源黑體")
+    (description "The complementary sans-serif typeface for Chiron Sung HK.")
+    (license license:silofl1.1)))
