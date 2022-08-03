@@ -311,7 +311,8 @@ experience for your users, your family and yourself")
              linux-pam
              shadow                     ;for sbin/nologin
              libgcrypt
-             libxcb))
+             libxcb
+             libxdmcp))
       (native-inputs
        (list accountsservice
              autoconf
