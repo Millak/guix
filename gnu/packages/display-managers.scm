@@ -276,6 +276,7 @@ experience for your users, your family and yourself")
        '(#:parallel-tests? #f           ; fails when run in parallel
          #:configure-flags
          (list "--localstatedir=/var"
+               "--enable-gtk-doc"
                ;; Otherwise the test suite fails on such a warning.
                "CFLAGS=-Wno-error=missing-prototypes")
          #:phases
