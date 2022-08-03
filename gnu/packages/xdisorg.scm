@@ -1655,7 +1655,13 @@ less if you are working in front of the screen at night.")
                (("@GTK_DATADIR@") "@datadir@")
                (("@PO_DATADIR@") "@datadir@"))
              #t)))
-       #:configure-flags '("--with-pam" "--with-proc-interrupts"
+       #:configure-flags '("--with-pam"
+
+                           ;; Don't check /proc/interrupts in the build
+                           ;; environment to avoid non-deterministic failures
+                           ;; of the 'configure' script.
+                           "--without-proc-interrupts"
+
                            "--without-readdisplay")
        #:make-flags (list (string-append "AD_DIR="
                                          (assoc-ref %outputs "out")
