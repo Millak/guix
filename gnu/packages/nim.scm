@@ -26,7 +26,11 @@
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
-  #:use-module (gnu packages certs))
+  #:use-module (gnu packages bdw-gc)
+  #:use-module (gnu packages certs)
+  #:use-module (gnu packages pcre)
+  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tls))
 
 (define-public nim
   (package
@@ -53,6 +57,42 @@
                   (("/opt/nimble") (string-append out "/share/nimble"))
                   (("configdir=/etc/nim")
                    (string-append "configdir=" out "/etc/nim"))))))
+           (add-after 'unpack 'patch-dynamic-libraries
+             (lambda* (#:key inputs native-inputs #:allow-other-keys)
+               ;(substitute* "compiler/nodejs.nim"
+               ;  (("nodejs")
+               ;   (search-input-file (or native-inputs inputs)
+               ;                      "/bin/nodejs"))
+               ;  (("node")
+               ;   (search-input-file (or native-inputs inputs)
+               ;                      "/bin/node")))
+               (substitute* "lib/system.nim"
+                 (("libgc\\.so")
+                  (search-input-file (or native-inputs inputs)
+                                     "/lib/libgc.so")))
+               ;(substitute* "lib/wrappers/mysql.nim"
+               ;  (("\(libmysqlclient|libmariadbclient\)\\.so")
+               ;   (search-input-file (or native-inputs inputs)
+               ;                      "/lib/libmariadbclient.so")))
+               (substitute* "lib/wrappers/openssl.nim"
+                 (("libssl\\.so")
+                  (search-input-file (or native-inputs inputs)
+                                     "/lib/libssl.so"))
+                 (("libcrypto\\.so")
+                  (search-input-file (or native-inputs inputs)
+                                     "/lib/libcrypto.so")))
+               (substitute* "lib/wrappers/pcre.nim"
+                 (("libpcre\\.so")
+                  (search-input-file (or native-inputs inputs)
+                                     "/lib/libpcre.so")))
+               ;(substitute* "lib/wrappers/postgres.nim"
+               ;  (("libpg\\.so")
+               ;   (search-input-file (or native-inputs inputs)
+               ;                      "/lib/libpg.so")))
+               (substitute* "lib/wrappers/sqlite3.nim"
+                 (("libsqlite3\\.so")
+                  (search-input-file (or native-inputs inputs)
+                                     "/lib/libsqlite3.so")))))
            (add-after 'patch-source-shebangs 'patch-more-shebangs
              (lambda _
                (let ((sh (which "sh")))
@@ -98,6 +138,7 @@
                             (string-append zsh "/_nim"))
                  (copy-file "dist/nimble/nimble.bash-completion"
                             (string-append zsh "/_nimble"))))))))
+    (inputs (list libgc openssl pcre sqlite))
     (native-inputs (list nss-certs))
     (home-page "https://nim-lang.org")
     (synopsis "Statically-typed, imperative programming language")
