@@ -28,6 +28,7 @@
   #:use-module (guix packages)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages certs)
+  #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls))
@@ -104,10 +105,16 @@
                  (substitute* (find-files "c_code" "stdlib_osproc\\.nim\\.c")
                    (("\"/bin/sh\", 7") (format #f "~s, ~s" sh (string-length sh)))))))
            (replace 'build
-             (lambda _
+             (lambda* (#:key (parallel-build? #t) #:allow-other-keys)
                (setenv "XDG_CACHE_HOME" "./cache-home")
+               (setenv "HOME" "./cache-home")
                (mkdir-p "./cache-home")
-               (invoke "sh" "build.sh")
+               (invoke "sh" "build.sh"
+                       "--parallel"
+                       (if parallel-build?
+                         (number->string (parallel-job-count))
+                         "1"))
+               (sleep 5)        ; Wait for the parallel builds to finish.
                (invoke "./bin/nim" "c" "-d:release" "koch")
                (invoke "./koch" "boot" "-d:release")
                (invoke "./koch" "tools")))
@@ -139,7 +146,7 @@
                  (copy-file "dist/nimble/nimble.bash-completion"
                             (string-append zsh "/_nimble"))))))))
     (inputs (list libgc openssl pcre sqlite))
-    (native-inputs (list nss-certs))
+    (native-inputs (list nss-certs parallel))
     (home-page "https://nim-lang.org")
     (synopsis "Statically-typed, imperative programming language")
     (description "Nim (formerly known as Nimrod) is a statically-typed,
