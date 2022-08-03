@@ -4798,7 +4798,11 @@ streams (though primarily the former, while wrapping the latter).")
   (sbcl-package->cl-source-package sbcl-legion))
 
 (define-public ecl-legion
-  (sbcl-package->ecl-package sbcl-legion))
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-legion))
+    (arguments
+     ;; Tests get stuck forever
+     (list #:tests? #f))))
 
 (define-public sbcl-jonathan
   (let ((commit "1f448b4f7ac8265e56e1c02b32ce383e65316300")
