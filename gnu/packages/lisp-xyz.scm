@@ -4507,12 +4507,6 @@ addition, removal, and random selection.")
        (sha256
         (base32 "1wrrhbj3r4lph5y3hhfbv4g2pvg24hbgl06irq9lyiycy3bgai4w"))))
     (build-system asdf-build-system/sbcl)
-    (arguments
-     ;; Test system must be loaded before, otherwise tests fail with:
-     ;; Component QURI-ASD::QURI-TEST not found, required by #<SYSTEM
-     ;; "quri">.
-     '(#:asd-systems '("quri-test"
-                       "quri")))
     (native-inputs (list sbcl-prove))
     (inputs (list sbcl-babel sbcl-split-sequence sbcl-cl-utilities
                   sbcl-alexandria))
