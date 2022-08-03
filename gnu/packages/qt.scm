@@ -159,37 +159,22 @@
         (string-append "mirror://sourceforge/qt5ct/qt5ct-" version ".tar.bz2"))
        (sha256
         (base32 "14742vs32m98nbfb5mad0i8ciff5f45gfcb5v03p4hh2dvhhqgfn"))))
-    (build-system gnu-build-system)
+    (build-system qt-build-system)
     (arguments
-     `(#:tests? #f                      ; No target
-       #:imported-modules
-       (,@%qt-build-system-modules)
-       #:modules
-       ((guix build gnu-build-system)
-        ((guix build qt-build-system)
-         #:prefix qt:)
-        (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "qt5ct.pro"
-               (("\\$\\$\\[QT_INSTALL_BINS\\]/lrelease")
-                (search-input-file inputs "/bin/lrelease")))))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (invoke "qmake"
-                       (string-append "PREFIX=" out)
-                       (string-append "BINDIR=" out "/bin")
-                       (string-append "DATADIR=" out "/share")
-                       (string-append "PLUGINDIR=" out "/lib/qt5/plugins")))))
-         (add-after 'install 'qt-wrap
-           (assoc-ref qt:%standard-phases 'qt-wrap)))))
+     (list
+      #:tests? #f                      ; No target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* '("src/qt5ct-qtplugin/CMakeLists.txt"
+                             "src/qt5ct-style/CMakeLists.txt")
+                (("\\$\\{PLUGINDIR\\}")
+                 (string-append #$output "/lib/qt5/plugins"))))))))
     (native-inputs
      (list qttools-5))
     (inputs
-     (list qtbase-5 qtsvg-5))
+     (list qtsvg-5))
     (synopsis "Qt5 Configuration Tool")
     (description "Qt5CT is a program that allows users to configure Qt5
 settings (such as icons, themes, and fonts) in desktop environments or
