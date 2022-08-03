@@ -1670,27 +1670,27 @@ less if you are working in front of the screen at night.")
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     `(("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxi" ,libxi)
-       ("libxt" ,libxt)
-       ("libxft" ,libxft)
-       ("libxmu" ,libxmu)
-       ("libxpm" ,libxpm)
-       ("libglade" ,libglade)
-       ("libxml2" ,libxml2)
-       ("libsm" ,libsm)
-       ("libjpeg" ,libjpeg-turbo)
-       ("linux-pam" ,linux-pam)
-       ("pango" ,pango)
-       ("gdk-pixbuf-xlib", gdk-pixbuf-xlib)
-       ("gtk+" ,gtk+)
-       ("perl" ,perl)
-       ("cairo" ,cairo)
-       ("bc" ,bc)
-       ("libxrandr" ,libxrandr)
-       ("glu" ,glu)
-       ("glib" ,glib)))
+     (list libx11
+           libxext
+           libxi
+           libxt
+           libxft
+           libxmu
+           libxpm
+           libglade
+           libxml2
+           libsm
+           libjpeg-turbo
+           linux-pam
+           pango
+           gdk-pixbuf-xlib
+           gtk+
+           perl
+           cairo
+           bc
+           libxrandr
+           glu
+           glib))
     (home-page "https://www.jwz.org/xscreensaver/")
     (synopsis "Classic screen saver suite supporting screen locking")
     (description
