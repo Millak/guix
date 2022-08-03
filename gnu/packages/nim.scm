@@ -25,7 +25,8 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages))
+  #:use-module (guix packages)
+  #:use-module (gnu packages certs))
 
 (define-public nim
   (package
@@ -70,6 +71,10 @@
                (invoke "./bin/nim" "c" "-d:release" "koch")
                (invoke "./koch" "boot" "-d:release")
                (invoke "./koch" "tools")))
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "./koch" "tests"))))
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
@@ -93,6 +98,7 @@
                             (string-append zsh "/_nim"))
                  (copy-file "dist/nimble/nimble.bash-completion"
                             (string-append zsh "/_nimble"))))))))
+    (native-inputs (list nss-certs))
     (home-page "https://nim-lang.org")
     (synopsis "Statically-typed, imperative programming language")
     (description "Nim (formerly known as Nimrod) is a statically-typed,
