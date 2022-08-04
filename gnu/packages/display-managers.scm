@@ -348,43 +348,48 @@ display manager which supports different greeters.")
                 "04q62mvr97l9gv8h37hfarygqc7p0498ig7xclcg4kxkqw0b7yxy"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--enable-at-spi-command="
-                            (assoc-ref %build-inputs "at-spi2-core")
-                            "/libexec/at-spi-bus-launcher"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'fix-.desktop-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* (string-append
-                             out "/share/xgreeters/lightdm-gtk-greeter.desktop")
-                 (("Exec=lightdm-gtk-greeter")
-                  (string-append "Exec=" out "/sbin/lightdm-gtk-greeter")))
-               #t)))
-         (add-after 'fix-.desktop-file 'wrap-program
-           ;; Mimic glib-or-gtk build system
-           ;; which doesn't wrap files in /sbin
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((gtk (assoc-ref inputs "gtk+")))
-               (wrap-program (string-append (assoc-ref outputs "out")
-                                            "/sbin/lightdm-gtk-greeter")
-                 `("XDG_DATA_DIRS" ":" prefix
-                   ,(cons "/run/current-system/profile/share"
-                          (map (lambda (pkg)
-                                 (string-append (assoc-ref inputs pkg) "/share"))
-                               '("gtk+" "shared-mime-info" "glib"))))
-                 `("GTK_PATH" ":" prefix (,gtk))
-                 `("GIO_EXTRA_MODULES" ":" prefix (,gtk))))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--enable-at-spi-command="
+                             (search-input-file
+                              %build-inputs "libexec/at-spi-bus-launcher")))
+
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'fix-.desktop-file
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* (search-input-file
+                            outputs
+                            "share/xgreeters/lightdm-gtk-greeter.desktop")
+                (("Exec=lightdm-gtk-greeter")
+                 (string-append "Exec="
+                                (search-input-file
+                                 outputs "sbin/lightdm-gtk-greeter"))))))
+          (add-after 'fix-.desktop-file 'wrap-program
+            ;; Mimic glib-or-gtk build system which doesn't wrap files in
+            ;; /sbin.
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (let ((gtk #$(this-package-input "gtk+"))
+                    (shared-mime-info #$(this-package-input "shared-mime-info"))
+                    (glib #$(this-package-input "glib")))
+                (wrap-program (search-input-file
+                               outputs "sbin/lightdm-gtk-greeter")
+                  `("XDG_DATA_DIRS" ":" prefix
+                    ,(cons "/run/current-system/profile/share"
+                           (map (lambda (pkg)
+                                  (string-append pkg "/share"))
+                                (list gtk shared-mime-info glib))))
+                  `("GTK_PATH" ":" prefix (,gtk))
+                  `("GIO_EXTRA_MODULES" ":" prefix (,gtk)))))))))
     (native-inputs
      (list exo intltool pkg-config xfce4-dev-tools))
     (inputs
-     `(("bash" ,bash-minimal) ; for wrap-program
-       ("lightdm" ,lightdm)
-       ("shared-mime-info" ,shared-mime-info)
-       ("at-spi2-core" ,at-spi2-core)
-       ("gtk+" ,gtk+)))
+     (list bash-minimal                 ;for wrap-program
+           lightdm
+           shared-mime-info
+           at-spi2-core
+           glib
+           gtk+))
     (synopsis "GTK+ greeter for LightDM")
     (home-page "https://github.com/xubuntu/lightdm-gtk-greeter")
     (description "This package provides a LightDM greeter implementation using
