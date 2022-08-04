@@ -1,4 +1,5 @@
 ;;; Copyright © 2021 Blake Shaw <blake@nonconstructivism.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,7 +21,7 @@
   #:use-module (gnu packages)
   #:use-module (guix packages)
   #:use-module (guix build utils)
-  #:use-module (guix git-download)
+  #:use-module (guix download)
   #:use-module (guix build-system cmake)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages check)
@@ -37,13 +38,17 @@
    (version "3.0.8")
    (source
     (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/dankamongmen/notcurses")
-           (commit (string-append "v" version))))
-     (file-name (git-file-name name version))
-         (sha256
-          (base32 "05dxv0745kzna2zylvsb3rlwcrlpyc5xsdcflbrdc34ab29mc8z5"))))
+     (method url-fetch)
+     ;; Note: the upstream git repository contains non-free media (see the
+     ;; documentation for DFSG_BUILD; but the project provides a sanitized
+     ;; tarball for distributions.  If switching to a git source, we need
+     ;; to find a way to elide the non-free demos with a source 'snippet'.
+     (uri (string-append "https://github.com/dankamongmen/notcurses/releases"
+                         "/download/v" version "/notcurses_" version
+                         "+dfsg.1.orig.tar.xz"))
+     (file-name (string-append name "-" version ".tar.xz"))
+     (sha256
+      (base32 "1nz32nqh7fn4i06hvl8ndkm0z4g08a6wzhilvv8ggx2hc5axsz89"))))
       (build-system cmake-build-system)
       (arguments
        `(#:make-flags
