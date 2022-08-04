@@ -144,9 +144,13 @@ QT-WRAP-EXCLUDED-OUTPUTS.  This is useful when an output is known not
 to contain any Qt binaries, and where wrapping would gratuitously
 add a dependency of that output on Qt."
   (define qt-major-version
-    (let ((_ version (package-name->name+version
-                      (strip-store-file-name qtbase))))
-      (first (string-split version #\.))))
+    (if qtbase
+        (let ((_ version (package-name->name+version
+                          (strip-store-file-name qtbase))))
+          (first (string-split version #\.)))
+        ;; Provide a fall-back for build systems not having a #:qtbase
+        ;; argument.
+        %default-qt-major-version))
 
   (define (find-files-to-wrap output-dir)
     (append-map
