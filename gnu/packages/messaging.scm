@@ -2385,7 +2385,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.9.3")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -2394,7 +2394,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1941jvk72qy9g41cs2p3d6fphkg8ccjlsiclwymvzdyi7s3ilml7"))
+        (base32 "1n7czmv8mamaphpr2cnppddpgmb914pjd7msxng0fim6w7bhil14"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2413,13 +2413,15 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'unbundle-dependencies
-            (lambda _
-              (let ((single-app #$(this-package-input "single-application-qt5")))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((libSingleApplication.a
+                     (search-input-file inputs "lib/libSingleApplication.a"))
+                    (httplib.h (search-input-file inputs "include/httplib.h")))
                 (substitute* "CMakeLists.txt"
                   ;; Remove include and source dirs,replace with the correct one
-                  (("third_party/blurhash/blurhash.cpp") "")
-                  (("third_party/cpp-httplib-0.5.12")
-                   (string-append "\"" single-app "/include\""))
+                  (("third_party/blurhash/blurhash\\.[ch]pp") "")
+                  (("third_party/cpp-httplib-0\\.5\\.12")
+                   (dirname httplib.h))
                   (("add_subdirectory.*third_party/SingleApplication.*") "")
                   ;; Link using the correct static/shared libs
                   (("SingleApplication::SingleApplication")
@@ -2427,7 +2429,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
                     ;; Dynamic libraries
                     "httplib" "\n" "blurhash" "\n"
                     ;; Static library
-                    single-app "/lib/libSingleApplication.a"))))))
+                    libSingleApplication.a))))))
           (add-after 'unpack 'fix-determinism
             (lambda _
               ;; Make Qt deterministic.
