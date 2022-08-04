@@ -849,6 +849,20 @@ basic geometries.")
     ;; https://gitlab.com/inkscape/inkscape/issues/784).
     (license license:gpl3+)))
 
+(define-public lib2geom-1.2
+  (package
+    (inherit lib2geom)
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/inkscape/lib2geom")
+                    (commit version)))
+              (file-name (git-file-name "lib2geom" version))
+              (sha256
+               (base32
+                "0dq981g894hmvhd6rmfl1w32mksg9hpvpjs1qvfxrnz87rhkknj8"))))))
+
 (define-public python-booleanoperations
   (package
     (name "python-booleanoperations")
