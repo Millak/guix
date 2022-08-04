@@ -350,7 +350,8 @@ display manager which supports different greeters.")
     (arguments
      (list
       #:configure-flags
-      #~(list (string-append "--enable-at-spi-command="
+      #~(list "--disable-indicator-services-command" ;requires upstart
+              (string-append "--enable-at-spi-command="
                              (search-input-file
                               %build-inputs "libexec/at-spi-bus-launcher")))
 
