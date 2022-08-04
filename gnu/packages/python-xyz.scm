@@ -59,7 +59,7 @@
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Jacob MacDonald <jaccarmac@gmail.com>
@@ -1184,20 +1184,13 @@ iotop, uptime, pidof, tty, taskset, pmap.")
 (define-public python-shapely
   (package
     (name "python-shapely")
-    (version "1.7.1")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Shapely" version))
        (sha256
-        (base32
-         "0adiz4jwmwxk7k1awqifb1a9bj5x4nx4gglb5dz9liam21674h8n"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (delete-file "shapely/speedups/_speedups.c")
-           (delete-file "shapely/vectorized/_vectorized.c")
-           #t))))
+        (base32 "1dpbjw0w2l1r9s5drmi4cyr1yd5h2a4m9vip7qhy7mbg03azjajp"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython python-matplotlib python-pytest
