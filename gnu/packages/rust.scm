@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 (unmatched parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -548,10 +549,18 @@ safety and thread safety guarantees.")
                  (generate-all-checksums "vendor"))))))))))
 
 (define rust-1.57
-  (let ((base-rust
-         (rust-bootstrapped-package
-          rust-1.56 "1.57.0"
-          "06jw8ka2p3kls8p0gd4p0chhhb1ia1mlvj96zn78n7qvp71zjiim")))
+  (rust-bootstrapped-package
+   rust-1.56 "1.57.0" "06jw8ka2p3kls8p0gd4p0chhhb1ia1mlvj96zn78n7qvp71zjiim"))
+
+;;; Note: Only the latest versions of Rust are supported and tested.  The
+;;; intermediate rusts are built for bootstrapping purposes and should not
+;;; be relied upon.  This is to ease maintenance and reduce the time
+;;; required to build the full Rust bootstrap chain.
+;;;
+;;; Here we take the latest included Rust, make it public, and re-enable tests
+;;; and extra components such as rustfmt.
+(define-public rust
+  (let ((base-rust rust-1.57))
     (package
       (inherit base-rust)
       (outputs (cons "rustfmt" (package-outputs base-rust)))
@@ -689,12 +698,6 @@ safety and thread safety guarantees.")
       (native-inputs (cons* `("gdb" ,gdb)
                             `("procps" ,procps)
                             (package-native-inputs base-rust))))))
-
-;;; Note: Only the latest versions of Rust are supported and tested.  The
-;;; intermediate rusts are built for bootstrapping purposes and should not
-;;; be relied upon.  This is to ease maintenance and reduce the time
-;;; required to build the full Rust bootstrap chain.
-(define-public rust rust-1.57)
 
 (define-public rust-src
   (hidden-package
