@@ -11805,7 +11805,7 @@ ack, ag, helm and pt.")
 (define-public emacs-helm
   (package
     (name "emacs-helm")
-    (version "3.8.6")
+    (version "3.8.7")
     (source
      (origin
        (method git-fetch)
@@ -11814,7 +11814,7 @@ ack, ag, helm and pt.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02z5jxjkqspj6f6j2a87l9bzl2b4mh1560bzl8ia72w2vxg15m8z"))))
+        (base32 "1a8zkp00ahb84ww5072naxwllzbjhi7ccarkk2d7xsykn5lig54c"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-async emacs-popup))
