@@ -244,7 +244,7 @@ as the native format.")
   (package
     (inherit inkscape/stable)
     (name "inkscape")
-    (version "1.2")
+    (version "1.2.1")
     (source
      (origin
        (inherit (package-source inkscape/stable))
@@ -253,7 +253,7 @@ as the native format.")
                            "resources/file/"
                            "inkscape-" version ".tar.xz"))
        (sha256
-        (base32 "1bg6rlflzhq726kpcwazfscm02liammjvzpyxmj5d52l4la336wd"))))
+        (base32 "06scilds4p4bw337ss22nfdxy2kynv5yjw6vq6nlpjm7xfh7vkj6"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments inkscape/stable)
