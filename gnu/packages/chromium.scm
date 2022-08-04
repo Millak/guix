@@ -316,7 +316,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "103.0.5060.134")
+(define %chromium-version "104.0.5112.81")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/102.0.5005.61-1")
 
@@ -328,7 +328,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "00mpmyaa8bqxf1f4vhk1waxhjbhcwab8m1x1vf341al64f6bmr1r"))))
+      "0dvwh470h06x5a4p8kw22pi4lvch16knh90i2kh10y0wfggqz78w"))))
 
 (define %debian-origin
   (origin
@@ -477,7 +477,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0wdmy15602qxrb403p8yyx69k7py85fbawdsgap1l6z4h4j2g2p4"))
+                "0x17jzzvn2aqx3ahqyi6ijyn70sn79kg648r0ks9m5gib1bbgf0y"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -509,7 +509,6 @@
               "disable_fieldtrial_testing_config=true"
               "safe_browsing_mode=0"
               "enable_mdns=false"
-              "enable_one_click_signin=false"
               "enable_reading_list=false"
               "enable_remoting=false"
               "enable_reporting=false"
@@ -595,6 +594,12 @@
                 (substitute* "third_party/pdfium/BUILD.gn"
                   ;; This include path is added by Debians openjpeg patch.
                   (("/usr/include/openjpeg-2.4") openjpeg))
+
+                ;; Remove contrib/ prefix from minizip header inclusions.
+                (substitute* (find-files "third_party/tflite_support\
+/src/tensorflow_lite_support/metadata/cc")
+                  (("contrib/minizip/")
+                   "minizip/"))
 
                 (substitute*
                     '("base/process/launch_posix.cc"
