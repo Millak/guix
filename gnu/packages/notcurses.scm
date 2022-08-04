@@ -34,7 +34,7 @@
 (define-public notcurses
   (package
    (name "notcurses")
-   (version "3.0.0")
+   (version "3.0.8")
    (source
     (origin
      (method git-fetch)
@@ -43,7 +43,7 @@
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
          (sha256
-          (base32 "1y9s77m1pp6syfml559d8dvif61y6zjldrdx1zri18q9sr0zqm9m"))))
+          (base32 "05dxv0745kzna2zylvsb3rlwcrlpyc5xsdcflbrdc34ab29mc8z5"))))
       (build-system cmake-build-system)
       (arguments
        `(#:make-flags
@@ -59,7 +59,7 @@
            ;; Use FFmpeg for multimedia support
            "-DUSE_MULTIMEDIA=ffmpeg"
            ;; Follow the Debian Free Software Guidelines, omitting nonfree content.
-           "-DFSG_BUILD=ON")))
+           "-DDFSG_BUILD=ON")))
       (native-inputs
        (list pkg-config
              pandoc
