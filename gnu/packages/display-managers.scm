@@ -381,7 +381,9 @@ display manager which supports different greeters.")
                                   (string-append pkg "/share"))
                                 (list gtk shared-mime-info glib))))
                   `("GTK_PATH" ":" prefix (,gtk))
-                  `("GIO_EXTRA_MODULES" ":" prefix (,gtk)))))))))
+                  `("GIO_EXTRA_MODULES" ":" prefix (,gtk))
+                  '("XCURSOR_PATH" ":" prefix
+                    ("/run/current-system/profile/share/icons")))))))))
     (native-inputs
      (list exo intltool pkg-config xfce4-dev-tools))
     (inputs
