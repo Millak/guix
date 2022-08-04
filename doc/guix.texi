@@ -21278,6 +21278,208 @@ Relogin after logout.
 @end table
 @end deftp
 
+@cindex lightdm, graphical login manager
+@cindex display manager, lightdm
+@defvr {Scheme Variable} lightdm-service-type
+This is the type of the service to run the
+@url{https://github.com/canonical/lightdm,LightDM display manager}.  Its
+value must be a @code{lightdm-configuration} record, which is documented
+below.  Among its distinguishing features are TigerVNC integration for
+easily remoting your desktop as well as support for the XDMCP protocol,
+which can be used by remote clients to start a session from the login
+manager.
+
+In its most basic form, it can be used simply as:
+
+@lisp
+(service lightdm-service-type)
+@end lisp
+
+A more elaborate example making use of the VNC capabilities and enabling
+more features and verbose logs could look like:
+
+@lisp
+(service lightdm-service-type
+         (lightdm-configuration
+          (allow-empty-passwords? #t)
+          (xdmcp? #t)
+          (vnc-server? #t)
+          (vnc-server-command
+           (file-append tigervnc-server "/bin/Xvnc"
+                        "  -SecurityTypes None"))
+          (seats
+           (list (lightdm-seat-configuration
+                  (name "*")
+                  (user-session "ratpoison"))))))
+@end lisp
+@end defvr
+
+@c The LightDM service documentation can be auto-generated via the
+@c 'generate-doc' procedure at the bottom of the (gnu services lightdm)
+@c module.
+@c %start of fragment
+@deftp {Data Type} lightdm-configuration
+Available @code{lightdm-configuration} fields are:
+
+@table @asis
+@item @code{lightdm} (default: @code{lightdm}) (type: file-like)
+The lightdm package to use.
+
+@item @code{allow-empty-passwords?} (default: @code{#f}) (type: boolean)
+Whether users not having a password set can login.
+
+@item @code{debug?} (default: @code{#f}) (type: boolean)
+Enable verbose output.
+
+@item @code{xorg-configuration} (type: xorg-configuration)
+The default Xorg server configuration to use to generate the Xorg server
+start script.  It can be refined per seat via the @code{xserver-command}
+of the @code{<lightdm-seat-configuration>} record, if desired.
+
+@item @code{greeters} (type: list-of-greeter-configurations)
+The LightDM greeter configurations specifying the greeters to use.
+
+@item @code{seats} (type: list-of-seat-configurations)
+The seat configurations to use.  A LightDM seat is akin to a user.
+
+@item @code{xdmcp?} (default: @code{#f}) (type: boolean)
+Whether a XDMCP server should listen on port UDP 177.
+
+@item @code{xdmcp-listen-address} (type: maybe-string)
+The host or IP address the XDMCP server listens for incoming
+connections.  When unspecified, listen on for any hosts/IP addresses.
+
+@item @code{vnc-server?} (default: @code{#f}) (type: boolean)
+Whether a VNC server is started.
+
+@item @code{vnc-server-command} (type: file-like)
+The Xvnc command to use for the VNC server, it's possible to provide
+extra options not otherwise exposed along the command, for example to
+disable security:
+
+@lisp
+(vnc-server-command (file-append tigervnc-server "/bin/Xvnc"
+                                 " -SecurityTypes None" ))
+@end lisp
+
+Or to set a PasswordFile for the classic (unsecure) VncAuth
+mecanism:
+
+@lisp
+(vnc-server-command (file-append tigervnc-server "/bin/Xvnc"
+                                 " -PasswordFile /var/lib/lightdm/.vnc/passwd"))
+@end lisp
+
+The password file should be manually created using the
+@command{vncpasswd} command.  Note that LightDM will create new sessions
+for VNC users, which means they need to authenticate in the same way as
+local users would.
+
+@item @code{vnc-server-listen-address} (type: maybe-string)
+The host or IP address the VNC server listens for incoming connections.
+When unspecified, listen for any hosts/IP addresses.
+
+@item @code{vnc-server-port} (default: @code{5900}) (type: number)
+The TCP port the VNC server should listen to.
+
+@item @code{extra-config} (default: @code{()}) (type: list-of-strings)
+Extra configuration values to append to the LightDM configuration file.
+
+@end table
+@end deftp
+
+
+@c %end of fragment
+@c %start of fragment
+
+@deftp {Data Type} lightdm-gtk-greeter-configuration
+Available @code{lightdm-gtk-greeter-configuration} fields are:
+
+@table @asis
+@item @code{lightdm-gtk-greeter} (default: @code{lightdm-gtk-greeter}) (type: file-like)
+The lightdm-gtk-greeter package to use.
+
+@item @code{assets} @
+(default: @code{(adwaita-icon-theme gnome-themes-extrahicolor-icon-theme)}) @
+(type: list-of-file-likes)
+The list of packages complementing the greeter, such as package
+providing icon themes.
+
+@item @code{theme-name} (default: @code{"Adwaita"}) (type: string)
+The name of the theme to use.
+
+@item @code{icon-theme-name} (default: @code{"Adwaita"}) (type: string)
+The name of the icon theme to use.
+
+@item @code{cursor-theme-name} (default: @code{"Adwaita"}) (type: string)
+The name of the cursor theme to use.
+
+@item @code{cursor-theme-size} (default: @code{16}) (type: number)
+The size to use for the the cursor theme.
+
+@item @code{allow-debugging?} (type: maybe-boolean)
+Set to #t to enable debug log level.
+
+@item @code{background} (type: file-like)
+The background image to use.
+
+@item @code{at-spi-enabled?} (default: @code{#f}) (type: boolean)
+Enable accessibility support through the Assistive Technology Service
+Provider Interface (AT-SPI).
+
+@item @code{a11y-states} @
+(default: @code{(contrast font keyboard reader)}) (type: list-of-a11y-states)
+The accessibility features to enable, given as list of symbols.
+
+@item @code{reader} (type: maybe-file-like)
+The command to use to launch a screen reader.
+
+@item @code{extra-config} (default: @code{()}) (type: list-of-strings)
+Extra configuration values to append to the LightDM GTK Greeter
+configuration file.
+
+@end table
+@end deftp
+
+@c %end of fragment
+@c %start of fragment
+
+@deftp {Data Type} lightdm-seat-configuration
+Available @code{lightdm-seat-configuration} fields are:
+
+@table @asis
+@item @code{name} (type: seat-name)
+The name of the seat.  An asterisk (*) can be used in the name to apply
+the seat configuration to all the seat names it matches.
+
+@item @code{user-session} (type: maybe-string)
+The session to use by default.  The session name must be provided as a
+lowercase string, such as @code{"gnome"}, @code{"ratpoison"}, etc.
+
+@item @code{type} (default: @code{local}) (type: seat-type)
+The type of the seat, either the @code{local} or @code{xremote} symbol.
+
+@item @code{autologin-user} (type: maybe-string)
+The username to automatically log in with by default.
+
+@item @code{greeter-session} @
+(default: @code{lightdm-gtk-greeter}) (type: greeter-session)
+The greeter session to use, specified as a symbol.  Currently, only
+@code{lightdm-gtk-greeter} is supported.
+
+@item @code{xserver-command} (type: maybe-file-like)
+The Xorg server command to run.
+
+@item @code{session-wrapper} (type: file-like)
+The xinitrc session wrapper to use.
+
+@item @code{extra-config} (default: @code{()}) (type: list-of-strings)
+Extra configuration values to append to the seat configuration section.
+
+@end table
+@end deftp
+@c %end of fragment
+
 
 @cindex Xorg, configuration
 @deftp {Data Type} xorg-configuration

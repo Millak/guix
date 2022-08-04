@@ -661,6 +661,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/guix.scm			\
   %D%/services/hurd.scm				\
   %D%/services/kerberos.scm			\
+  %D%/services/lightdm.scm      		\
   %D%/services/linux.scm			\
   %D%/services/lirc.scm				\
   %D%/services/virtualization.scm		\
