@@ -53,6 +53,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3735,7 +3736,7 @@ language understood by many solvers.")
 (define-public mumps
   (package
     (name "mumps")
-    (version "5.2.1")
+    (version "5.5.1")
     (source
      (origin
        (method url-fetch)
@@ -3743,11 +3744,7 @@ language understood by many solvers.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0jklh54x4y3ik1zkw6db7766kakjm5910diyaghfxxf8vwsgr26r"))
-       (patches (search-patches "mumps-build-parallelism.patch"
-                                "mumps-shared-libseq.patch"
-                                "mumps-shared-mumps.patch"
-                                "mumps-shared-pord.patch"))))
+         "05gs2i8b76m9flm1826fxpyfnwibjjawbmfza3ylrvj7zaag5gqs"))))
     (build-system gnu-build-system)
     (inputs
      (list gfortran
@@ -3764,58 +3761,71 @@ language understood by many solvers.")
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
-          (lambda* (#:key inputs #:allow-other-keys)
+          (lambda* (#:key inputs outputs #:allow-other-keys)
             (call-with-output-file "Makefile.inc"
               (lambda (port)
                 (format port "
-PLAT         =
-LIBEXT       = .a
-OUTC         = -o
-OUTF         = -o
-RM           = rm -f~:[
-CC           = gcc
-FC           = gfortran
-FL           = gfortran
-INCSEQ       = -I$(topdir)/libseq
-LIBSEQ       = $(topdir)/libseq/libmpiseq.a
-LIBSEQNEEDED = libseqneeded~;
-CC           = mpicc
-FC           = mpifort
-FL           = mpifort~]
-AR           = ar vr # rules require trailing space, ugh...
-RANLIB       = ranlib
-BLASDIR      = ~a
-LIBBLAS      = -Wl,-rpath=$(BLASDIR) -Wl,-rpath='$$ORIGIN' -L$(BLASDIR) -lopenblas~@[
-SCALAPDIR    = ~a
-SCALAP       = -Wl,-rpath=$(SCALAPDIR) -Wl,-rpath='$$ORIGIN' -L$(SCALAPDIR) -lscalapack~]
-LIBOTHERS    = -pthread
-CDEFS        = -DAdd_
-PIC          = -fPIC
-OPTF         = -O2 -DALLOW_NON_INIT -fallow-argument-mismatch $(PIC)
-OPTL         = -O2 $(PIC)
-OPTC         = -O2 $(PIC)
-INCS         = $(INCSEQ)
-LIBS         = $(SCALAP) $(LIBSEQ)
-LPORDDIR     = $(topdir)/PORD/lib
-IPORD        = -I$(topdir)/PORD/include
-LPORD        = $(LPORDDIR)/libpord.a
-ORDERINGSF   = -Dpord~@[
-METISDIR     = ~a
-IMETIS       = -I$(METISDIR)/include
-LMETIS       = -Wl,-rpath $(METISDIR)/lib -L$(METISDIR)/lib -lmetis
-ORDERINGSF  += -Dmetis~]~@[~:{
-SCOTCHDIR    = ~a
-ISCOTCH      = -I$(SCOTCHDIR)/include
-LSCOTCH      = -Wl,-rpath $(SCOTCHDIR)/lib -L$(SCOTCHDIR)/lib ~a-lesmumps -lscotch -lscotcherr
-ORDERINGSF  += ~a~}~]
-ORDERINGSC   = $(ORDERINGSF)
-LORDERINGS   = $(LPORD) $(LMETIS) $(LSCOTCH) $(LIBSEQ)
-IORDERINGSF  = $(ISCOTCH)
-IORDERINGSC  = $(IPORD) $(IMETIS) $(ISCOTCH)"
-                        (->bool (which "mpicc"))  ;MPI support enabled?
-                        (dirname
-                         (dirname (search-input-file inputs "/include/cblas.h")))
+PLAT          =
+LIBEXT        = .a
+LIBEXT_SHARED = .so
+OUTC          = -o
+OUTF          = -o
+BLASDIR       = ~a
+LIBBLAS       = -Wl,-rpath=$(BLASDIR)/lib -Wl,-rpath='$$ORIGIN'
+LIBBLAS      += -L$(BLASDIR)/lib
+LIBBLAS      += -lopenblas~@[
+SCALAPDIR     = ~a
+SCALAP        = -Wl,-rpath=$(SCALAPDIR)/lib -Wl,-rpath='$$ORIGIN'
+SCALAP       += -L$(SCALAPDIR)/lib -lscalapack~]
+RM            = rm -f~:[
+CC            = gcc
+FC            = gfortran
+FL            = gfortran
+INCSEQ        = -I$(topdir)/libseq
+LIBSEQ        = $(LAPACK) -L$(topdir)/libseq -lmpiseq
+LIBSEQNEEDED  = libseqneeded
+INCS          = $(INCSEQ)
+LIBS          = $(LIBSEQ)~;
+CC            = mpicc
+FC            = mpifort
+FL            = mpifort
+INCPAR        =
+LIBPAR        = $(SCALAP) $(LAPACK)
+LIBSEQNEEDED  = 
+INCS          = $(INCPAR)
+LIBS          = $(LIBPAR)~]
+AR            = ar vr # rules require trailing space, ugh...
+RANLIB        = ranlib
+LIBOTHERS     = -pthread
+CDEFS         = -DAdd_
+PIC           = -fPIC
+FPIC_OPT      = $(PIC)
+RPATH_OPT     = -Wl,-rpath,~a/lib
+OPTF          = -O2 -fopenmp -DALLOW_NON_INIT -DBLR_MT
+OPTF         += -fallow-argument-mismatch $(PIC)
+OPTL          = -O2 -fopenmp $(PIC)
+OPTC          = -O2 -fopenmp $(PIC)
+LPORDDIR      = $(topdir)/PORD/lib
+IPORD         = -I$(topdir)/PORD/include
+LPORD         = $(LPORDDIR)/libpord.a
+ORDERINGSF    = -Dpord~@[
+METISDIR      = ~a
+IMETIS        = -I$(METISDIR)/include
+LMETIS        = -Wl,-rpath $(METISDIR)/lib -L$(METISDIR)/lib -lmetis
+ORDERINGSF   += -Dmetis~]~@[~:{
+SCOTCHDIR     = ~a
+ISCOTCH       = -I$(SCOTCHDIR)/include
+LSCOTCH       = -Wl,-rpath $(SCOTCHDIR)/lib -L$(SCOTCHDIR)/lib ~a -lesmumps
+LSCOTCH      += -lscotch -lscotcherr
+ORDERINGSF   += ~a~}~]
+ORDERINGSC    = $(ORDERINGSF)
+LORDERINGS    = $(LPORD) $(LMETIS) $(LSCOTCH)
+IORDERINGSF   = $(ISCOTCH)
+IORDERINGSC   = $(IPORD) $(IMETIS) $(ISCOTCH)"
+                        (assoc-ref inputs "openblas")
                         (assoc-ref inputs "scalapack")
+                        (->bool (which "mpicc"))  ;; MPI support enabled?
+                        (assoc-ref outputs "out")
                         (assoc-ref inputs "metis")
                         (match (list (assoc-ref inputs "pt-scotch")
                                      (assoc-ref inputs "scotch"))
@@ -3828,11 +3838,14 @@ IORDERINGSC  = $(IPORD) $(IMETIS) $(ISCOTCH)"
                               "-lesmumps -lptscotch -lptscotcherr "
                               "-Dptscotch")))))))))
          (replace 'build
-          ;; By default only the d-precision library is built.  Make with "all"
-          ;; target so that all precision libraries and examples are built.
-          (lambda _
-            (invoke "make" "all"
-                    (format #f "-j~a" (parallel-job-count)))))
+           ;; By default only the d-precision library is built. Make with "all"
+           ;; target so that all precision libraries and examples are built.
+           ;; Then, "make allshared" builts equivalent shared libraries as well.
+           (lambda _
+             (invoke "make" "all"
+                     (format #f "-j~a" (parallel-job-count)))
+             (invoke "make" "allshared"
+                     (format #f "-j~a" (parallel-job-count)))))
          (replace 'check
           ;; Run the simple test drivers, which read test input from stdin:
           ;; from the "real" input for the single- and double-precision
