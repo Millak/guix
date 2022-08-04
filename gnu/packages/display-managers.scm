@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Joshua Grant <tadni@riseup.net>
-;;; Copyright © 2014, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2018, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Sou Bunnbu <iyzsong@gmail.com>
@@ -301,7 +301,8 @@ experience for your users, your family and yourself")
              (unsetenv "LC_ALL"))))))
     (inputs
      (list audit
-           coreutils                    ;for cross-compilation
+           bash-minimal                           ;for cross-compilation
+           coreutils-minimal                      ;ditto
            linux-pam
            shadow                       ;for sbin/nologin
            libgcrypt
