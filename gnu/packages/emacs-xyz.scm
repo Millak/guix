@@ -29557,6 +29557,27 @@ text, such a marking style might be used to show externally included text or
 example code.")
     (license license:gpl3+)))
 
+(define-public emacs-buffer-env
+  (package
+    (name "emacs-buffer-env")
+    (version "0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/buffer-env-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "0y8ik87dqldhn6q631zp2ln9z5byqgm9icrvr4xrdx6g8mr9c56z"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/astoff/buffer-env")
+    (synopsis "Create buffer-local process environments")
+    (description "This package creates buffer-local environments using scripts
+similar to Direnv.  This allows Emacs to call the correct version of external
+programs such as linters, compilers, and language servers on a per-project
+basis.")
+    (license license:gpl3+)))
+
 (define-public emacs-buffer-move
   (package
     (name "emacs-buffer-move")
