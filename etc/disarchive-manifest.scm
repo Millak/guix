@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,11 +30,12 @@
   (match (origin-actual-file-name origin)
     (#f #f)
     ((? string? file)
-     ;; As of version 0.2.1, Disarchive can only deal with raw tarballs and
-     ;; gzip-compressed tarballs.
+     ;; As of version 0.4.0, Disarchive can only deal with raw tarballs,
+     ;; gzip-compressed tarballs, and xz-compressed tarballs.
      (and (origin-hash origin)
           (or (string-suffix? ".tar.gz" file)
               (string-suffix? ".tgz" file)
+              (string-suffix? ".tar.xz" file)
               (string-suffix? ".tar" file))))))
 
 (define (origin->disarchive origin)
