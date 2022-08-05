@@ -1201,7 +1201,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
              (emacs-generate-autoloads
               "mu4e"
               (string-append (assoc-ref outputs "out")
-                             "/share/emacs/site-lisp")))))))
+                             "/share/emacs/site-lisp/mu4e")))))))
     (home-page "https://www.djcbsoftware.nl/code/mu/")
     (synopsis "Quickly find emails")
     (description
