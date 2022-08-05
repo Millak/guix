@@ -42928,29 +42928,6 @@ function data structures.")
      "Support code shared by PHF libraries.")
     (license license:expat)))
 
-(define-public rust-pico-sys-0.0
-  (package
-    (name "rust-pico-sys")
-    (version "0.0.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pico-sys" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1q5pg0ms6szz6b5h26h4k40zb76zbwwjgyigac4wly9qngdj4yl5"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-gcc" ,rust-gcc-0.3))))
-    (home-page "https://github.com/reem/rust-pico-sys")
-    (synopsis "Bindings to the PicoHTTPParser")
-    (description
-     "This package provides bindings to the PicoHTTPParser.")
-    (license license:expat)))
-
 (define-public rust-pin-project-1
   (package
     (name "rust-pin-project")
