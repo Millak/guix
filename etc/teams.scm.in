@@ -181,6 +181,7 @@ and the maven-build-system."))
 (define-team mozilla
   (team 'mozilla
         #:name "Mozilla"
+        #:description
         "Taking care about Icecat and Icedove, built from Mozilla Firefox
 and Thunderbird."))
 
@@ -188,6 +189,10 @@ and Thunderbird."))
 (define-member (person "Thiago Jung Bauermann"
                        "bauermann@kolabnow.com")
   embedded-bootstrap translations)
+
+(define-member (person "Eric Bavier"
+                       "bavier@posteo.net")
+  science)
 
 (define-member (person "Lars-Dominik Braun"
                        "lars@6xq.net")
