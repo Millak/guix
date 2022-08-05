@@ -828,6 +828,7 @@ cause them to cross."
          (installer-log-line "~/type: ~a" partition-type)
          (installer-log-line "~/filesystem-type: ~a"
                              (filesystem-type-name filesystem-type))
+         (installer-log-line "~/flags: ~a" flags)
          (installer-log-line "~/start: ~a" start-sector*)
          (installer-log-line "~/end: ~a" end-sector)
          (installer-log-line "~/start-range: [~a, ~a]"
