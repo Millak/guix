@@ -3417,6 +3417,53 @@ users direct access to a diverse set of data and enable a wide range of
 powerful online queries from gene annotation to database mining.")
     (license license:artistic2.0)))
 
+;; This is a CRAN package, but it depends on a Bioconductor package:
+;; r-biomart
+(define-public r-biomartr
+  (package
+    (name "r-biomartr")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "biomartr" version))
+              (sha256
+               (base32
+                "0hr7wks88lbfcqzjzm4x265dk4lpmc3i2ndp7xcrx8ssj76wrmkz"))))
+    (properties `((upstream-name . "biomartr")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biomart
+           r-biostrings
+           r-curl
+           r-data-table
+           r-downloader
+           r-dplyr
+           r-fs
+           r-httr
+           r-jsonlite
+           r-philentropy
+           r-purrr
+           r-r-utils
+           r-rcurl
+           r-readr
+           r-stringr
+           r-tibble
+           r-withr
+           r-xml))
+    (native-inputs (list r-knitr))
+    (home-page "https://docs.ropensci.org/biomartr/")
+    (synopsis "Genomic data retrieval")
+    (description
+     "Perform large scale genomic data retrieval and functional annotation
+retrieval.  This package aims to provide users with a standardized way to
+automate genome, proteome, RNA, coding sequence (CDS), GFF, and metagenome
+retrieval from NCBI RefSeq, NCBI Genbank, ENSEMBL, and UniProt databases.
+Furthermore, an interface to the BioMart database allows users to retrieve
+functional annotation for genomic loci.  In addition, users can download
+entire databases such as NCBI RefSeq, NCBI nr, NCBI nt, NCBI Genbank, etc with
+only one command.")
+    (license license:gpl2)))
+
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
