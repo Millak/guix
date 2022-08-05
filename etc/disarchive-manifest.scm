@@ -99,6 +99,12 @@ an empty directory if ORIGIN could not be disassembled."
   (directory-union "disarchive-collection"
                    (filter-map (lambda (origin)
                                  (and (tarball-origin? origin)
+
+                                      ;; Dismiss origins with (sha256 #f) such
+                                      ;; as that of IceCat.
+                                      (and=> (origin-hash origin)
+                                             content-hash-value)
+
                                       (origin->disarchive origin)))
                                origins)
                    #:copy? #t))
