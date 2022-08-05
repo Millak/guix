@@ -1448,6 +1448,26 @@ qualitative palettes with many (20-30 or more) colors.  See Coombes and
 colleagues (2019) @url{https://doi:10.18637/jss.v090.c01}.")
     (license license:asl2.0)))
 
+(define-public r-poorman
+  (package
+    (name "r-poorman")
+    (version "0.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "poorman" version))
+              (sha256
+               (base32
+                "05h7rjgri0b5a1jd0388p7lqvvg0y8z6g42f9bxc80jg1z730axr"))))
+    (properties `((upstream-name . "poorman")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://nathaneastwood.github.io/poorman/")
+    (synopsis "Dependency-free recreation of dplyr")
+    (description
+     "This package provides a replication of key functionality from
+@code{dplyr} and the wider @code{tidyverse} using only @code{base}.")
+    (license license:expat)))
+
 (define-public r-ecp
   (package
     (name "r-ecp")
