@@ -110,6 +110,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages version-control)
+  #:autoload   (guix build-system channel) (channel-build-system)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system guile)
@@ -488,6 +489,21 @@ upgrades and roll-backs, per-user profiles, and much more.  It is based on
 the Nix package manager.")
       (license license:gpl3+)
       (properties '((ftp-server . "alpha.gnu.org"))))))
+
+(define* (channel-source->package source #:key commit)
+  "Return a package for the given channel SOURCE, a lowerable object."
+  (package
+    (inherit guix)
+    (version (string-append (package-version guix) "."
+                            (if commit (string-take commit 7) "")))
+    (build-system channel-build-system)
+    (arguments `(#:source ,source
+                 #:commit ,commit))
+    (inputs '())
+    (native-inputs '())
+    (propagated-inputs '())))
+
+(export channel-source->package)
 
 (define-public guix-for-cuirass
   ;; Known-good revision before commit

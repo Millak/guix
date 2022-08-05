@@ -21,9 +21,9 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu ci)
-  #:use-module (guix channels)
+  #:use-module (guix build-system channel)
   #:use-module (guix config)
-  #:use-module (guix describe)
+  #:autoload   (guix describe) (package-channels)
   #:use-module (guix store)
   #:use-module (guix grafts)
   #:use-module (guix profiles)
@@ -32,7 +32,6 @@
   #:use-module (guix channels)
   #:use-module (guix config)
   #:use-module (guix derivations)
-  #:use-module (guix build-system)
   #:use-module (guix monads)
   #:use-module (guix gexp)
   #:use-module (guix ui)
@@ -71,7 +70,6 @@
             image->job
 
             %core-packages
-            channel-source->package
 
             arguments->systems
             cuirass-jobs))
@@ -287,42 +285,6 @@ otherwise use the IMAGE name."
                    %guix-system-images)
               '()))
       '()))
-
-(define channel-build-system
-  ;; Build system used to "convert" a channel instance to a package.
-  (let* ((build (lambda* (name inputs
-                               #:key source commit system
-                               #:allow-other-keys)
-                  (mlet* %store-monad ((source (if (string? source)
-                                                   (return source)
-                                                   (lower-object source)))
-                                       (instance
-                                        -> (checkout->channel-instance
-                                            source #:commit commit)))
-                    (channel-instances->derivation (list instance)))))
-         (lower (lambda* (name #:key system source commit
-                               #:allow-other-keys)
-                  (bag
-                    (name name)
-                    (system system)
-                    (build build)
-                    (arguments `(#:source ,source
-                                 #:commit ,commit))))))
-    (build-system (name 'channel)
-                  (description "Turn a channel instance into a package.")
-                  (lower lower))))
-
-(define* (channel-source->package source #:key commit)
-  "Return a package for the given channel SOURCE, a lowerable object."
-  (package
-    (inherit guix)
-    (version (string-append (package-version guix) "+"))
-    (build-system channel-build-system)
-    (arguments `(#:source ,source
-                 #:commit ,commit))
-    (inputs '())
-    (native-inputs '())
-    (propagated-inputs '())))
 
 (define* (system-test-jobs store system
                            #:key source commit)
