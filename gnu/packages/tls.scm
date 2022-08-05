@@ -507,7 +507,13 @@ OpenSSL for TARGET."
                (for-each (lambda (file)
                            (install-file file slib)
                            (delete-file file))
-                         (find-files lib "\\.a$")))))
+                         (find-files
+                          lib
+                          #$(if (target-mingw?)
+                                '(lambda (filename _)
+                                   (and (string-suffix? ".a" filename)
+                                        (not (string-suffix? ".dll.a" filename))))
+                                "\\.a$"))))))
          (add-after 'install 'move-extra-documentation
            (lambda _
              ;; Move man pages and full HTML documentation to "doc".
