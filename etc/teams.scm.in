@@ -230,6 +230,10 @@ and Thunderbird."))
                        "julien@lepiller.eu")
   java ocaml translations)
 
+(define-member (person "Mathieu Othacehe"
+                       "othacehe@gnu.org")
+  core installer)
+
 (define-member (person "Florian Pelz"
                        "pelzflorian@pelzflorian.de")
   translations)
