@@ -9068,6 +9068,91 @@ remove biased methylation positions for RRBS sequence files.")
 programs for inferring phylogenies (evolutionary trees).")
     (license license:bsd-2)))
 
+(define-public phyml
+  (package
+    (name "phyml")
+    (version "3.3.20220408")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stephaneguindon/phyml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03hdqmnsgnzkcrp9r9ajdfkj33jgq4b86kra8ssjlrph65y344sa"))
+              (snippet
+               '(delete-file "doc/phyml-manual.pdf"))))
+    (build-system gnu-build-system)
+    (supported-systems '("x86_64-linux"))
+    (arguments
+     (let ((default-flags (list "--disable-native")))
+       `(#:phases
+         (let ((build (lambda (what)
+                         (lambda args
+                           (apply (assoc-ref %standard-phases 'configure)
+                                  (append args
+                                          (list #:configure-flags
+                                                (cons (format #false "--enable-~a" what)
+                                                      '() #;,default-flags))))
+                           (apply (assoc-ref %standard-phases 'build) args)
+                           (apply (assoc-ref %standard-phases 'install) args)))))
+           (modify-phases %standard-phases
+             ;; We cannot use --disable-native; see
+             ;; https://github.com/stephaneguindon/phyml/issues/173 Instead we
+             ;; patch the code to at least get rid of -march=native.
+             (add-after 'unpack 'remove-march-native
+               (lambda _
+                 (substitute* "configure.ac"
+                   (("DEFAULT_VECTOR_FLAG=\"-march=native\"")
+                    "DEFAULT_VECTOR_FLAG=\"-march=athlon64-sse3\"\n"))))
+             (add-after 'build 'build-manual
+               (lambda _
+                 (with-directory-excursion "doc"
+                   (invoke "make" "phyml-manual.pdf"))))
+             (add-after 'build-manual 'install-manual
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (with-directory-excursion "doc"
+                   (install-file "phyml-manual.pdf"
+                                 (string-append (assoc-ref outputs "out")
+                                                "/share/doc/phyml")))))
+             (add-after 'install 'build-phyml-mpi
+               (build "phyml-mpi"))
+             (add-after 'build-phyml-mpi 'build-rf
+               (build "rf"))
+             (add-after 'build-rf 'build-phyrex
+               (build "phyrex")))))))
+    (native-inputs
+     (list automake
+           autoconf
+           openmpi
+           (texlive-updmap.cfg (list texlive-amsfonts
+                                     texlive-caption
+                                     texlive-cite
+                                     texlive-fonts-ec
+                                     texlive-grfext
+                                     texlive-hyperref
+                                     texlive-latex-fancyvrb
+                                     texlive-latex-graphics
+                                     texlive-latex-psfrag
+                                     texlive-xcolor))))
+    (home-page "https://github.com/stephaneguindon/phyml")
+    (synopsis "Programs for working on SAM/BAM files")
+    (description
+     "@code{PhyML} is a software package that uses modern statistical
+approaches to analyse alignments of nucleotide or amino acid sequences in a
+phylogenetic framework.  The main tool in this package builds phylogenies
+under the maximum likelihood criterion.  It implements a large number of
+substitution models coupled with efficient options to search the space of
+phylogenetic tree topologies.  code{PhyREX} fits the
+spatial-Lambda-Fleming-Viot model to geo-referenced genetic data.  This model
+is similar to the structured coalescent but assumes that individuals are
+distributed along a spatial continuum rather than discrete demes.
+@code{PhyREX} can be used to estimate population densities and rates of
+dispersal.  Its output can be processed by treeannotator (from the
+@code{BEAST} package) as well as @code{SPREAD}.")
+    (license license:gpl3)))
+
 (define-public imp
   (package
     (name "imp")
