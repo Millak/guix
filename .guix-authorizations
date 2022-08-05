@@ -4,12 +4,14 @@
 (authorizations
  (version 0)
 
- (("AD17 A21E F8AE D8F1 CC02  DBD9 F7D5 C9BF 765C 61E3"
-   (name "andreas"))
+ (("D963 A5A3 8A80 3D52 4461  F914 7483 0A27 6C32 8EC2"
+   (name "abcdw"))
   ("4FB9 9F49 2B12 A365 7997  E664 8246 0C08 2A0E E98F"
    (name "alezost"))
   ("50F3 3E2E 5B0C 3D90 0424  ABE8 9BDC F497 A4BB CC7F"
    (name "ambrevar"))
+  ("AD17 A21E F8AE D8F1 CC02  DBD9 F7D5 C9BF 765C 61E3"
+   (name "andreas"))
   ("27D5 86A4 F890 0854 329F  F09F 1260 E464 82E6 3562"
    (name "apteryx"))
   ("7F73 0343 F2F0 9F3C 77BF  79D3 2E25 EE8B 6180 2BB3"
