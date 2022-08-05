@@ -1376,6 +1376,34 @@ naming conventions as distance methods of existing R packages.")
 control over dimensions and appearance.")
     (license license:gpl2+)))
 
+(define-public r-philentropy
+  (package
+    (name "r-philentropy")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "philentropy" version))
+              (sha256
+               (base32
+                "1dpf4hfflp4mcql4na46wzcq1flabkipiwyycz9wj5xbxlmcz2hk"))))
+    (properties `((upstream-name . "philentropy")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-kernsmooth r-poorman r-rcpp))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/drostlab/philentropy")
+    (synopsis
+     "Similarity and distance quantification between probability functions")
+    (description
+     "This package computes optimized distance and similarity measures for
+comparing probability functions (Drost (2018) <doi:10.21105/joss.00765>).
+These comparisons between probability functions have their foundations in a
+broad range of scientific disciplines from mathematics to ecology.  The aim of
+this package is to provide a core framework for clustering, classification,
+statistical inference, goodness-of-fit, non-parametric statistics, information
+theory, and machine learning tasks that are based on comparing univariate or
+multivariate probability functions.")
+    (license license:gpl2)))
+
 (define-public r-pnwcolors
   (package
     (name "r-pnwcolors")
