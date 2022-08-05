@@ -3740,8 +3740,11 @@ language understood by many solvers.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://mumps.enseeiht.fr/MUMPS_"
-                           version ".tar.gz"))
+       (uri (list (string-append "http://mumps.enseeiht.fr/MUMPS_"
+                                 version ".tar.gz")
+                  (string-append
+                   "https://ftp.mcs.anl.gov/pub/petsc/externalpackages"
+                   "/MUMPS_" version ".tar.gz")))
        (sha256
         (base32
          "05gs2i8b76m9flm1826fxpyfnwibjjawbmfza3ylrvj7zaag5gqs"))))
