@@ -983,7 +983,13 @@ as the 'native-search-paths' field."
           (srfi srfi-1)
           (srfi srfi-26)))
        ((#:configure-flags flags)
-        #~(cons* "--enable-host-shared"
+        #~(cons* "--disable-bootstrap"
+                 "--disable-libatomic"
+                 "--disable-libgomp"
+                 "--disable-libquadmath"
+                 "--disable-libssp"
+                 "--enable-host-shared"
+                 "--enable-checking=release"
                  "--enable-languages=jit"
                  (remove (cut string-match "--enable-languages.*" <>)
                          #$flags)))
@@ -995,6 +1001,10 @@ as the 'native-search-paths' field."
                           (find-files
                            (string-append (assoc-ref outputs "out") "/bin")
                            ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|gcc-.*)"))))))))
+    (inputs (modify-inputs (package-inputs gcc)
+              (delete "libstdc++")))
+    (native-inputs (modify-inputs (package-native-inputs gcc)
+                     (prepend gcc)))
     (synopsis "GCC library generating machine code on-the-fly at runtime")
     (description
      "This package is part of the GNU Compiler Collection and provides an
