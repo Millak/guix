@@ -1015,7 +1015,12 @@ It can also be used for ahead-of-time code generation for building standalone
 compilers.  The just-in-time (jit) part of the name is now something of a
 misnomer.")))
 
-(define-public libgccjit (make-libgccjit gcc-9))
+(define-public libgccjit-9 (make-libgccjit gcc-9))
+(define-public libgccjit-10 (make-libgccjit gcc-10))
+(define-public libgccjit-11 (make-libgccjit gcc-11))
+(define-public libgccjit-12 (make-libgccjit gcc-12))
+
+(define-public libgccjit libgccjit-10)
 
 (define (make-gccgo gcc)
   "Return a gccgo package based on GCC."
