@@ -3939,7 +3939,7 @@ post-processing of video formats like MPEG2, H.264/AVC, and VC-1.")
 (define-public openh264
   (package
     (name "openh264")
-    (version "2.1.1")
+    (version "2.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3948,17 +3948,20 @@ post-processing of video formats like MPEG2, H.264/AVC, and VC-1.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ffav46pz3sbj92nipd62z03fibyqgclfq9w8lgr80s6za6zdk5s"))))
+                "1yr6nsjpnazq4z6dvjfyanljwgwnyjh3ddxa0sq6hl9qc59yq91r"))))
     (build-system gnu-build-system)
     (native-inputs
      (list nasm python))
     (arguments
-     '(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                          "CC=gcc")
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  ;; no configure script
-                  (delete 'configure))))
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+                             "CC=gcc")
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; no configure script
+          (delete 'configure))))
     (home-page "https://www.openh264.org/")
     (synopsis "H264 decoder library")
     (description
