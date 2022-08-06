@@ -733,7 +733,7 @@ Guile's foreign function interface.")
 (define-public guile-sqlite3
   (package
     (name "guile-sqlite3")
-    (version "0.1.2")
+    (version "0.1.3")
     (home-page "https://notabug.org/guile-sqlite3/guile-sqlite3.git")
     (source (origin
               (method git-fetch)
@@ -742,7 +742,7 @@ Guile's foreign function interface.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1nryy9j3bk34i0alkmc9bmqsm0ayz92k1cdf752mvhyjjn8nr928"))
+                "0qqygvlpz63phdi2p5p8ncp80dci230qfa3pwds8yfxqqaablmhb"))
               (file-name (string-append name "-" version "-checkout"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake guile-3.0 pkg-config))
