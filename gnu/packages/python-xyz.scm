@@ -14658,7 +14658,7 @@ with a new public API, and RPython support.")
 (define-public python-hy
   (package
     (name "python-hy")
-    (version "0.20.0")
+    (version "0.24.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -14667,7 +14667,7 @@ with a new public API, and RPython support.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g7djra9z7b0wyqyfrk2n4z3zamp2xkahv00jwdv35xmwwn09hq4"))))
+        (base32 "1s458ymd9g3s8k2ccc300jr4w66c7q3vhmhs9z3d3a4qg0xdhs9y"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -14677,13 +14677,14 @@ with a new public API, and RPython support.")
              (when tests?
                (invoke "python" "-m" "pytest" "-k"
                        (string-append   ; skip some failed tests
-                        "not test_bin_hy_sys_executable"
-                        " and not test_bin_hy_circular_macro_require"
-                        " and not test_macro_from_module"))))))))
+                        "not test_sys_executable"
+                        " and not test_circular_macro_require"
+                        " and not test_macro_require"
+                        " and not test_requires_pollutes_core"))))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest-7.1 python-wheel))
     (propagated-inputs
-     (list python-astor python-colorama python-funcparserlib python-rply))
+     (list python-colorama python-funcparserlib))
     (home-page "https://docs.hylang.org/en/stable/")
     (synopsis "Lisp frontend to Python")
     (description
