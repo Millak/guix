@@ -683,11 +683,13 @@ bibliographic data and simple document and bibtex retrieval.")
                (base32 "03b3lahc3zzsznaqnrk47f1cnd5jwakvwrkz0r4m2crk09cpfv57"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
-              (snippet #~(begin
-                           (delete-file-recursively "bin") ; pre-built executables
-                           (for-each delete-file (find-files "tests" "^archive\\..*"))
-                           (for-each delete-file (find-files "tests" "^.*\\.pdf$"))
-                           (for-each delete-file (find-files "tests" "^.*\\.class$"))))))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "bin") ; pre-built executables
+                   (for-each (lambda (regexp)
+                               (for-each delete-file
+                                         (find-files "tests" regexp)))
+                             '("^archive" "\\.pdf$" "\\.class$"))))))
     (build-system gnu-build-system)
     (inputs
      (list bzip2
