@@ -696,7 +696,8 @@ bibliographic data and simple document and bibtex retrieval.")
            lz4
            lzip ;; lzma
            pcre2
-           zlib))
+           zlib
+           `(,zstd "lib")))
     (arguments
      `(#:tests? #f                  ; no way to rebuild the binary input files
        #:test-target "test"
