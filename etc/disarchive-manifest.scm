@@ -105,6 +105,14 @@ an empty directory if ORIGIN could not be disassembled."
                                       (and=> (origin-hash origin)
                                              content-hash-value)
 
+                                      ;; FIXME: Exclude the Chromium tarball
+                                      ;; because it's huge and "disarchive
+                                      ;; disassemble" exceeds the max-silent
+                                      ;; timeout.
+                                      (not (string-prefix?
+                                            "chromium-"
+                                            (origin-actual-file-name origin)))
+
                                       (origin->disarchive origin)))
                                origins)
                    #:copy? #t))
