@@ -328,7 +328,7 @@ e.g. emacs-geiser-guile for Guile.")
                 (("\\(geiser-activate-implementation .*\\)" all)
                  (string-append
                   "(eval-after-load 'geiser-impl '" all ")"))))))))
-    (inputs (list guile-3.0))
+    (inputs (list guile-3.0-latest))
     (propagated-inputs (list emacs-geiser))
     (home-page "https://www.nongnu.org/geiser/")
     (synopsis "Guile Scheme support for Geiser")
