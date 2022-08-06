@@ -9791,56 +9791,51 @@ Skorl.  Maybe it would be an idea to try and escape...")
                            file-prefix release ".zip"))
        (sha256
         (base32 hash))))
-    (build-system trivial-build-system)
+    (build-system copy-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((out (assoc-ref %outputs "out"))
-                (share (string-append out "/share"))
-                (data (string-append share "/" ,name))
-                (apps (string-append share "/applications"))
-                (bin (string-append out "/bin"))
-                (executable (string-append bin "/" ,name))
-                (scummvm (assoc-ref %build-inputs "scummvm")))
-           (let ((unzip (search-input-file %build-inputs "/bin/unzip")))
-             (invoke unzip "-j" (assoc-ref %build-inputs "source")))
-           (let ((doc (string-append share "/doc/" ,name "-" ,version)))
-             (for-each (lambda (file)
-                         (when (file-exists? file) (install-file file doc)))
-                       '("readme.txt" "README" "README.md")))
-           (install-file "queen.1c" data)
-           (mkdir-p bin)
-           (let ((bash (assoc-ref %build-inputs "bash")))
-             (with-output-to-file executable
-               (lambda ()
-                 (format #t "#!~a/bin/bash~%" bash)
-                 (format #t "exec ~a/bin/scummvm -q fr -p ~a queen~%"
-                         scummvm data))))
-           (chmod executable #o755)
-           ;; Create desktop file.  There is no dedicated
-           ;; icon for the game, so we borrow SCUMMVM's.
-           (mkdir-p apps)
-           (with-output-to-file (string-append apps "/" ,name ".desktop")
-             (lambda _
-               (format #t
-                       "[Desktop Entry]~@
-                       Name=Flight of the Amazon Queen~@
-                       GenericName=Queen~@
-                       Comment=Embark on a quest to rescue a kidnapped princess and in the process, discover the true sinister intentions of a suspiciously located Lederhosen company~@
-                       Comment[de]=Begib dich auf ein Abenteuer, um eine entführte Prinzessin zu retten und entdecke die wahren, finsteren Absichten eines verdächtig erscheinenden Lederhosen-Unternehmens~@
-                       Type=Application~@
-                       Exec=~a~@
-                       Icon=~a/share/icons/hicolor/scalable/apps/scummvm.svg~@
-                       Categories=AdventureGame;Game;RolePlaying;~@
-                       Keywords=adventure;game;roleplaying;fantasy;~%"
-                       executable scummvm))))
-         #t)))
-    (native-inputs
-     (list unzip))
-    (inputs
-     (list bash scummvm))
+     (list
+      #:install-plan
+      #~'(("queen.1c" #$(string-append "share/" name "/"))
+          (#$name "bin/")
+          (#$(string-append name ".desktop") "share/applications/")
+          ("." #$(string-append "share/doc/" name "-" version)
+           #:include-regexp ("README" "readme")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'build
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-output-to-file #$name
+                (lambda ()
+                  (format #t "#!~a~%" (search-input-file inputs "bin/sh"))
+                  (format #t "exec ~a -q ~a -p ~a queen~%"
+                          (search-input-file inputs "bin/scummvm")
+                          #$language
+                          (string-append (assoc-ref outputs "out")
+                                         "/share/" #$name))))
+              (chmod #$name #o755)
+              (with-output-to-file #$(string-append name ".desktop")
+                (lambda ()
+                  (format
+                   #t
+                   "[Desktop Entry]~@
+                    Name=Flight of the Amazon Queen~@
+                    GenericName=Queen~@
+                    Comment=Embark on a quest to rescue a kidnapped princess~
+                    and in the process, discover the true sinister intentions~
+                    of a suspiciously located Lederhosen company~@
+                    Comment[de]=Begib dich auf ein Abenteuer, um eine entführte~
+                    Prinzessin zu retten und entdecke die wahren, finsteren~
+                    Absichten eines verdächtig erscheinenden~
+                    Lederhosen-Unternehmens~@
+                    Type=Application~@
+                    Exec=~a~@
+                    Icon=~a/share/icons/hicolor/scalable/apps/scummvm.svg~@
+                    Categories=AdventureGame;Game;RolePlaying;~@
+                    Keywords=adventure;game;roleplaying;fantasy;~%"
+                   (string-append (assoc-ref outputs "out") "/bin/" #$name)
+                   (search-input-file inputs "bin/scummvm")))))))))
+    (native-inputs (list unzip))
+    (inputs (list bash scummvm))
     (home-page "https://www.scummvm.org/")
     (synopsis "Classic 2D point and click adventure game")
     (description "Flight of the Amazon Queen is a 2D point-and-click
