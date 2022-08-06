@@ -32,6 +32,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
@@ -682,13 +683,11 @@ bibliographic data and simple document and bibtex retrieval.")
                (base32 "03b3lahc3zzsznaqnrk47f1cnd5jwakvwrkz0r4m2crk09cpfv57"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (delete-file-recursively "bin") ; pre-built executables
-                  (for-each delete-file (find-files "tests" "^archive\\..*"))
-                  (for-each delete-file (find-files "tests" "^.*\\.pdf$"))
-                  (for-each delete-file (find-files "tests" "^.*\\.class$"))
-                  #t))))
+              (snippet #~(begin
+                           (delete-file-recursively "bin") ; pre-built executables
+                           (for-each delete-file (find-files "tests" "^archive\\..*"))
+                           (for-each delete-file (find-files "tests" "^.*\\.pdf$"))
+                           (for-each delete-file (find-files "tests" "^.*\\.class$"))))))
     (build-system gnu-build-system)
     (inputs
      (list bzip2
@@ -699,16 +698,17 @@ bibliographic data and simple document and bibtex retrieval.")
            zlib
            `(,zstd "lib")))
     (arguments
-     `(#:tests? #f                  ; no way to rebuild the binary input files
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             ;; Unpatch shebangs in tests.
-             (substitute* '("tests/Hello.bat"
-                            "tests/Hello.sh")
-               (("#!/gnu/store/.*/bin/sh") "#!/bin/sh")))))))
+     (list
+      #:tests? #f                  ; no way to rebuild the binary input files
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda _
+              ;; Unpatch shebangs in tests.
+              (substitute* '("tests/Hello.bat"
+                             "tests/Hello.sh")
+                (("#!/gnu/store/.*/bin/sh") "#!/bin/sh")))))))
     (home-page "https://github.com/Genivia/ugrep/")
     (synopsis "Faster grep with an interactive query UI")
     (description "Ugrep is a ultra fast searcher of file systems, text
