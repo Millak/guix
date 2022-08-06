@@ -7876,8 +7876,8 @@ upstream version, with different dependencies, different compilation
 options, and so on.  Some of these custom packages can be defined
 straight from the command line (@pxref{Package Transformation Options}).
 This section describes how to define package variants in code.  This can
-be useful in ``manifests'' (@pxref{profile-manifest,
-@option{--manifest}}) and in your own package collection
+be useful in ``manifests'' (@pxref{Writing Manifests})
+and in your own package collection
 (@pxref{Creating a Channel}), among others!
 
 @cindex inherit, for package definitions
