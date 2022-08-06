@@ -2474,7 +2474,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2022.06.22.1")
+    (version "2022.07.18")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/yt-dlp/yt-dlp/"
@@ -2482,7 +2482,7 @@ YouTube.com and many more sites.")
                                   version "/yt-dlp.tar.gz"))
               (sha256
                (base32
-                "1nr6g3dhvjc10jzhyvgjrrxqhsgi3hiw8bswp8bi6bscimd9vhps"))
+                "1wmzfqhysx1mqdba4ikvm6nbahasihi4xgqwqad20y3vs701slyj"))
               (snippet
                '(begin
                   ;; Delete the pre-generated files, except for the man page
