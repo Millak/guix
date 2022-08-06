@@ -2665,19 +2665,20 @@ replacement.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DCMAKE_BUILD_TYPE=Release"
-             "-DTD_ENABLE_LTO=OFF")     ; FIXME: Get LTO to work.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-tests
-           (lambda _
-             (substitute* "test/CMakeLists.txt"
-               ;; The test cases are compiled into a distinct binary
-               ;; which uses mtproto.cpp to attempt to connect to
-               ;; a remote server. Removing this file from the sources
-               ;; list disables those specific test cases.
-               (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") "")))))))
+     (list
+      #:configure-flags
+      #~(list "-DCMAKE_BUILD_TYPE=Release"
+              "-DTD_ENABLE_LTO=OFF")      ; FIXME: Get LTO to work.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            (lambda _
+              (substitute* "test/CMakeLists.txt"
+                ;; The test cases are compiled into a distinct binary
+                ;; which uses mtproto.cpp to attempt to connect to
+                ;; a remote server. Removing this file from the sources
+                ;; list disables those specific test cases.
+                (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") "")))))))
     (native-inputs
      (list gperf openssl zlib php doxygen))
     (synopsis "Cross-platform library for building Telegram clients")
