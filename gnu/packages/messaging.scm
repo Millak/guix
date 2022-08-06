@@ -2653,22 +2653,20 @@ replacement.")
 (define-public tdlib
   (package
     (name "tdlib")
-    (version "1.8.0")
+    (version "1.8.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/tdlib/td")
-             (commit (string-append "v" version))))
+             (commit "7eabd8ca60de025e45e99d4e5edd39f4ebd9467e")))
        (sha256
-        (base32 "19psqpyh9a2kzfdhgqkirpif4x8pzy89phvi59dq155y30a3661q"))
+        (base32 "1chs0ibghjj275v9arsn3k68ppblpm7ysqk0za9kya5vdnldlld5"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:configure-flags
-      #~(list "-DCMAKE_BUILD_TYPE=Release"
-              "-DTD_ENABLE_LTO=OFF")      ; FIXME: Get LTO to work.
+      #:build-type "Release"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-failing-tests
