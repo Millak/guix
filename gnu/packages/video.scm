@@ -2484,53 +2484,52 @@ YouTube.com and many more sites.")
                (base32
                 "1wmzfqhysx1mqdba4ikvm6nbahasihi4xgqwqad20y3vs701slyj"))
               (snippet
-               '(begin
-                  ;; Delete the pre-generated files, except for the man page
-                  ;; which requires 'pandoc' to build.
-                  (for-each delete-file '("yt-dlp"
-                                          ;;pandoc is needed to generate
-                                          ;;"yt-dlp.1"
-                                          "completions/bash/yt-dlp"
-                                          "completions/fish/yt-dlp.fish"
-                                          "completions/zsh/_yt-dlp"))))))
+               #~(begin
+                   ;; Delete the pre-generated files, except for the man page
+                   ;; which requires 'pandoc' to build.
+                   (for-each delete-file
+                             (list "yt-dlp"
+                                   ;;pandoc is needed to generate
+                                   ;;"yt-dlp.1"
+                                   "completions/bash/yt-dlp"
+                                   "completions/fish/yt-dlp.fish"
+                                   "completions/zsh/_yt-dlp"))))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) #t)
        ((#:phases phases)
-        `(modify-phases ,phases
-           ;; See the comment for the corresponding phase in youtube-dl.
-           (replace 'default-to-the-ffmpeg-input
-             (lambda _
-               (substitute* "yt_dlp/postprocessor/ffmpeg.py"
-                 (("\\.get_param\\('ffmpeg_location'\\)" match)
-                  (format #f "~a or '~a'" match (which "ffmpeg"))))))
-           (replace 'build-generated-files
-             (lambda _
-               ;; Avoid the yt-dlp.1 target, which requires pandoc.
-               (invoke "make" "PYTHON=python" "yt-dlp" "completions")))
-           (replace 'fix-the-data-directories
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((prefix (assoc-ref outputs "out")))
-                 (substitute* "setup.py"
-                   (("'etc/")
-                    (string-append "'" prefix "/etc/"))
-                   (("'share/")
-                    (string-append "'" prefix "/share/"))))))
-           (delete 'install-completion)
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "pytest" "-k" "not download"))))))))
-    (inputs
-     `(("python-brotli" ,python-brotli)
-       ("python-certifi" ,python-certifi)
-       ("python-mutagen" ,python-mutagen)
-       ("python-pycryptodomex" ,python-pycryptodomex)
-       ("python-websockets" ,python-websockets)
-       ,@(package-inputs youtube-dl)))
-    (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ,@(package-native-inputs youtube-dl)))
+        #~(modify-phases #$phases
+            ;; See the comment for the corresponding phase in youtube-dl.
+            (replace 'default-to-the-ffmpeg-input
+              (lambda _
+                (substitute* "yt_dlp/postprocessor/ffmpeg.py"
+                  (("\\.get_param\\('ffmpeg_location'\\)" match)
+                   (format #f "~a or '~a'" match (which "ffmpeg"))))))
+            (replace 'build-generated-files
+              (lambda _
+                ;; Avoid the yt-dlp.1 target, which requires pandoc.
+                (invoke "make" "PYTHON=python" "yt-dlp" "completions")))
+            (replace 'fix-the-data-directories
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((prefix (assoc-ref outputs "out")))
+                  (substitute* "setup.py"
+                    (("'etc/")
+                     (string-append "'" prefix "/etc/"))
+                    (("'share/")
+                     (string-append "'" prefix "/share/"))))))
+            (delete 'install-completion)
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "pytest" "-k" "not download"))))))))
+    (inputs (modify-inputs (package-inputs youtube-dl)
+              (append python-brotli
+                      python-certifi
+                      python-mutagen
+                      python-pycryptodomex
+                      python-websockets)))
+    (native-inputs (modify-inputs (package-native-inputs youtube-dl)
+                     (append python-pytest)))
     (description
      "yt-dlp is a small command-line program to download videos from
 YouTube.com and many more sites.  It is a fork of youtube-dl with a
