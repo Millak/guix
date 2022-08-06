@@ -564,14 +564,14 @@ code for interfacing Caml with C from an IDL description of the C functions.")
 (define-public ocaml-extlib
   (package
     (name "ocaml-extlib")
-    (version "1.7.8")
+    (version "1.7.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ygrek.org/p/release/ocaml-extlib/"
                                   "extlib-" version ".tar.gz"))
               (sha256
                (base32
-                "0npq4hq3zym8nmlyji7l5cqk6drx2rkcx73d60rxqh5g8dla8p4k"))))
+                "1jydzw2n84cfiz9y6lk4gih4wbr8jybanmiryfs01svd07g4vpjq"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:phases
