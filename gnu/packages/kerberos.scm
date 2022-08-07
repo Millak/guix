@@ -132,17 +132,18 @@ cryptography.")
         "14kyj7rdki2g1sj5k42y9v5ya9jar81yw483ivwa80fx2byqyycm"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       '("--disable-static"
-         "--with-key-dir=/etc/shishi"
-         "--with-db-dir=/var/shishi")
+     (list
+       #:configure-flags
+       #~(list "--disable-static"
+               "--with-key-dir=/etc/shishi"
+               "--with-db-dir=/var/shishi")
        #:phases
-       (modify-phases %standard-phases
-        (add-after 'configure 'disable-automatic-key-generation
-          (lambda* (#:key outputs #:allow-other-keys)
-            (substitute* "Makefile"
-             (("^install-data-hook:")
-              "install-data-hook:\nx:\n")))))))
+       #~(modify-phases %standard-phases
+           (add-after 'configure 'disable-automatic-key-generation
+             (lambda _
+               (substitute* "Makefile"
+                (("^install-data-hook:")
+                 "install-data-hook:\nx:\n")))))))
     (native-inputs (list pkg-config))
     (inputs
      (list gnutls
