@@ -408,14 +408,14 @@ or @command{xorrisofs} to create ISO 9660 images.")
 (define-public dvdisaster
   (package
     (name "dvdisaster")
-    (version "0.79.9")
+    (version "0.79.10")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dvdisaster.jcea.es/downloads/dvdisaster-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "1hz3fvqfdrwb7dn6ggqkpcgyjag37ivm1layw27ncjz9glklxjbr"))))
+        (base32 "1s3z4098ixdjr3gjs36fg7rykqs0zz1rnvz2v9rvyj0s5zv9y2nx"))))
     (build-system gnu-build-system)
     (inputs
      (list gtk+-2))
