@@ -7812,34 +7812,25 @@ quotation from a collection of quotes.")
                    "--disable-rijndael")
            #:phases
            #~(modify-phases %standard-phases
-               (add-before 'configure 'make-darkplaces
-                 (lambda* (#:key outputs #:allow-other-keys)
+               (add-before 'configure 'build-darkplaces
+                 (lambda* (#:key make-flags parallel-build? outputs
+                           #:allow-other-keys)
                    (let* ((out (assoc-ref outputs "out"))
                           (share (string-append out "/share/xonotic/")))
-                     (invoke "make" "-C" "source/darkplaces"
-                             (string-append "DP_FS_BASEDIR="
-                                            share)
-                             "DP_LINK_TO_LIBJPEG=1"
-                             "DP_SOUND_API=ALSA"
-                             "CC=gcc"
-                             "-f" "makefile"
-                             "cl-release")
-                     (invoke "make" "-C" "source/darkplaces"
-                             (string-append "DP_FS_BASEDIR="
-                                            share)
-                             "DP_LINK_TO_LIBJPEG=1"
-                             "DP_SOUND_API=ALSA"
-                             "CC=gcc"
-                             "-f" "makefile"
-                             "sdl-release")
-                     (invoke "make" "-C" "source/darkplaces"
-                             (string-append "DP_FS_BASEDIR="
-                                            share)
-                             "DP_LINK_TO_LIBJPEG=1"
-                             "DP_SOUND_API=ALSA"
-                             "CC=gcc"
-                             "-f" "makefile"
-                             "sv-release"))))
+                     (apply invoke "make"
+                            "-C" "source/darkplaces"
+                            "-f" "makefile"
+                            "-j" (if parallel-build?
+                                     (number->string (parallel-job-count))
+                                     "1")
+                            (string-append "CC=" #$(cc-for-target))
+                            (string-append "DP_FS_BASEDIR=" share)
+                            "DP_LINK_TO_LIBJPEG=1"
+                            "DP_SOUND_API=ALSA"
+                            "cl-release"
+                            "sdl-release"
+                            "sv-release"
+                            make-flags))))
                (add-before 'configure 'bootstrap
                  (lambda _
                    (chdir "source/d0_blind_id")
