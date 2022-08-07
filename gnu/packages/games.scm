@@ -7759,16 +7759,15 @@ quotation from a collection of quotes.")
 (define xonotic-data
   (package
     (name "xonotic-data")
-    (version "0.8.2")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://dl.xonotic.org/xonotic-"
+       (uri (string-append "https://dl.xonotic.org/xonotic-"
                            version ".zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32
-         "1mcs6l4clvn7ibfq3q69k2p0z6ww75rxvnngamdq5ic6yhq74bx2"))))
+        (base32 "1r9pdrrki7mkdw99zh9m7911fqldsfdnl0nrp5cv1bk2hcism4hg"))))
     (build-system trivial-build-system)
     (native-inputs
      `(("unzip" ,unzip)))
