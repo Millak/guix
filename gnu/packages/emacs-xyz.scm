@@ -32136,3 +32136,27 @@ projects.")
 tree to go back to previous buffer states.  To use vundo, type @kbd{M-x vundo RET} in
 the buffer you want to undo.  An undo tree buffer should pop up.")
     (license license:gpl3+)))
+
+(define-public emacs-vertico-posframe
+  (package
+    (name "emacs-vertico-posframe")
+    (version "0.5.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://elpa.gnu.org/packages/vertico-posframe-" version
+                    ".tar"))
+              (sha256
+               (base32
+                "19lx6p06wkwfivxgswdljdsh9bgcd1b9zkzx426w3pwicdk0cvgg"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-posframe emacs-vertico))
+    (home-page "https://github.com/tumashu/vertico-posframe")
+    (synopsis "Pop up a frame at point to show vertical completion UI")
+    (description
+     "Vertico is an Emacs package that provides a vertical completion UI based
+on the default completion system.  Posframe is an Emacs package that provides
+a way to pop up a frame at point.  Vertico-posframe is an Emacs package and
+a Vertico extension which provides a way to pop up a frame at point to show
+a vertical completion UI.")
+    (license license:gpl3+)))
