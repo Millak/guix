@@ -1721,14 +1721,14 @@ addons which can add many functionalities to the base client.")
 (define-public msmtp
   (package
     (name "msmtp")
-    (version "1.8.20")
+    (version "1.8.22")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/msmtp/releases"
                            "/msmtp-" version ".tar.xz"))
        (sha256
-        (base32 "04di9qs2bwiwidnhk3afif5mh05q3ggr9cyhr5ysyj0gzjmf4fnr"))))
+        (base32 "1rx3ksvwdfrwahsd2lwf52vnhhq72ygb0kjy6ci2df55hri2010v"))))
     (build-system gnu-build-system)
     (inputs
      (list libsecret gnutls zlib gsasl))
