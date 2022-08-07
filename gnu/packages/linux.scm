@@ -7372,7 +7372,7 @@ used by nftables.")
 (define-public nftables
   (package
     (name "nftables")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
@@ -7381,7 +7381,7 @@ used by nftables.")
                   (string-append "https://www.nftables.org/projects/nftables"
                                  "/files/nftables-" version ".tar.bz2")))
        (sha256
-        (base32 "0ddsdj6zs78hndffl3iikpa1wzjxcpmr3xqcq4la71gnl7zb2zwj"))))
+        (base32 "02p59m773l2xqcb7ib7cprlpjfdnp792bahbs6c3dx1s74c4n6wd"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
                  '("--disable-static"
