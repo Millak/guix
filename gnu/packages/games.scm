@@ -7801,16 +7801,15 @@ quotation from a collection of quotes.")
 (define-public xonotic
   (package
     (name "xonotic")
-    (version "0.8.2")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://dl.xonotic.org/xonotic-"
+       (uri (string-append "https://dl.xonotic.org/xonotic-"
                            version "-source.zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32
-         "0axxw04fyz6jlfqd0kp7hdrqa0li31sx1pbipf2j5qp9wvqicsay"))))
+        (base32 "0pgahai0gk8bjmvkwx948bl50l9f9dhmjzwffl4vyldibajipa51"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "--prefix="
@@ -7894,8 +7893,7 @@ quotation from a collection of quotes.")
                      Icon=xonotic~@
                      Categories=Game~@
                      Type=Application~%"
-                           output)))
-               #t)))
+                           output))))))
          (add-after 'install-desktop-entry 'install-icons
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -7926,15 +7924,13 @@ quotation from a collection of quotes.")
                         "/bin/xonotic-sdl")
                ;; Provide a default xonotic executable, defaulting to SDL.
                (symlink (string-append out "/bin/xonotic-sdl")
-                        (string-append out "/bin/xonotic"))
-               #t)))
+                        (string-append out "/bin/xonotic")))))
          (add-after 'install-binaries 'install-data
            (lambda* (#:key outputs inputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (data (assoc-ref inputs "xonotic-data")))
                (symlink (string-append data "/share/xonotic")
-                        (string-append out "/share/xonotic"))
-               #t)))
+                        (string-append out "/share/xonotic")))))
          (add-after 'install-binaries 'wrap-binaries
            (lambda* (#:key outputs inputs #:allow-other-keys)
              ;; Curl and libvorbis need to be wrapped so that we get
@@ -7957,8 +7953,7 @@ quotation from a collection of quotes.")
                    (,(string-append curl "/lib:" vorbis "/lib"))))
                (wrap-program bin-dedicated
                  `("LD_LIBRARY_PATH" ":" prefix
-                   (,(string-append curl "/lib:" vorbis "/lib"))))
-               #t))))))
+                   (,(string-append curl "/lib:" vorbis "/lib"))))))))))
     (inputs
      `(("xonotic-data" ,xonotic-data)
        ("alsa-lib" ,alsa-lib)
