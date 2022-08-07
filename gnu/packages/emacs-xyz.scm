@@ -13668,7 +13668,7 @@ you to deal with multiple log levels.")
 (define-public emacs-logos
   (package
     (name "emacs-logos")
-    (version "0.3.1")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13677,7 +13677,7 @@ you to deal with multiple log levels.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xhnhaxmjqdv0bbh22gj9ak83hha8d59q64b6aa4rynrgcyajk45"))))
+                "1f40h8kbmza2rgmz84rgwbb4bwqkbfxnc3sc7gqshvxdkz3flbb7"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
