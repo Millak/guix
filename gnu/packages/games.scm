@@ -7952,34 +7952,34 @@ quotation from a collection of quotes.")
                (wrap-program bin-dedicated
                  `("LD_LIBRARY_PATH" ":" prefix
                    (,(string-append curl "/lib:" vorbis "/lib"))))))))))
-    (inputs
-     `(("xonotic-data" ,xonotic-data)
-       ("alsa-lib" ,alsa-lib)
-       ("curl" ,curl)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libmodplug" ,libmodplug)
-       ("libvorbis" ,libvorbis)
-       ("libogg" ,libogg)
-       ("libxpm" ,libxpm)
-       ("libxxf86dga" ,libxxf86dga)
-       ("libxxf86vm" ,libxxf86vm)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxau" ,libxau)
-       ("libxdmcp" ,libxdmcp)
-       ("mesa" ,mesa)
-       ("glu" ,glu)
-       ("freetype" ,freetype)
-       ("sdl2" ,sdl2)
-       ("libpng" ,libpng)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)))
     (native-inputs
-     (list unzip
-           autoconf
+     (list autoconf
            automake
-           pkg-config
+           gmp
            libtool
-           gmp))
+           pkg-config
+           unzip))
+    (inputs
+     (list alsa-lib
+           curl
+           libjpeg-turbo
+           libmodplug
+           libvorbis
+           libogg
+           libpng
+           libx11
+           libxpm
+           libxxf86dga
+           libxxf86vm
+           libxext
+           libxau
+           libxdmcp
+           mesa
+           glu
+           freetype
+           sdl2
+           hicolor-icon-theme
+           xonotic-data))
     (home-page "https://xonotic.org")
     (synopsis "Fast-paced first-person shooter game")
     (description
