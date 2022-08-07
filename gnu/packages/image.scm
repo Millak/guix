@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2446,3 +2447,28 @@ month and day.  All files which are not images or videos or those which do not
 have creation date information will be placed in a folder called
 @file{unknown}.")
     (license license:expat)))
+
+(define-public spng
+  (package
+   (name "spng")
+   (version "0.7.2")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/randy408/libspng")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0src9ii9w9afz2vgridn9r38pa6888myk28x2bjw0ynw5xcd62hs"))))
+   (build-system meson-build-system)
+   (inputs (list zlib))
+   (native-inputs (list libpng))
+   (home-page "https://libspng.org")
+   (synopsis "Simple PNG loading library")
+   (description
+    "@code{libspng} is a simple C library for loading Portable Network
+Graphics (PNGs), intended as an easy-to-use replacement for @code{libpng}.")
+   (license license:bsd-2)
+   ;; Supports SSE on x86-64 and NEON on AArch64.
+   (properties '((tunable? . #t)))))
