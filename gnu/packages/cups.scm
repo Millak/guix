@@ -477,9 +477,20 @@ device-specific programs to convert and print many types of files.")
     (build-system meson-build-system)
     (arguments
      ;; XXX The tests require a running D-Bus and CUPS daemon, of course.
-     (list #:tests? #f))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-compatibility-symlink
+                 ;; XXX Upstream (and, presumably, the world) has moved to
+                 ;; /share/dbus-1 over /etc/dbus-1, but Guix System's
+                 ;; dbus-configuration-directory has yet to catch up.
+                 ;; TODO It should be properly fixed and this phase removed.
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (with-directory-excursion (assoc-ref outputs "out")
+                     (mkdir-p "etc")
+                     (symlink "../share/dbus-1" "etc/dbus-1")))))))
     (native-inputs
-     (list pkg-config `(,glib "bin")))
+     (list intltool pkg-config `(,glib "bin")))
     (inputs
      (list glib polkit cups-minimal))
     (home-page "https://www.freedesktop.org/wiki/Software/cups-pk-helper/")
