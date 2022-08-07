@@ -4,13 +4,14 @@ up by the dynamic completion loader from there---whether they are
 part of bash-completion or installed by another package.
 
 On Guix systems, we want not only to search within bash-completion's own
-directory, but also in the user's profile and in the system profile.
+directory, but also in the user's profile and guix home profile, as well
+as in the system profile.
 This is what this patch does.
 
 
 --- a/bash_completion
 +++ b/bash_completion
-@@ -2173,7 +2173,13 @@ complete -F _minimal ''
+@@ -2173,7 +2173,15 @@ complete -F _minimal ''
  
  __load_completion()
  {
@@ -19,6 +20,8 @@ This is what this patch does.
 +        ${BASH_COMPLETION_USER_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/bash-completion}/completions
 +        "$HOME/.guix-profile/share/bash-completion/completions/$base"
 +        "$HOME/.guix-profile/etc/bash_completion.d/$base"
++        "$HOME/.guix-home/profile/share/bash-completion/completions/$base"
++        "$HOME/.guix-home/profile/etc/bash_completion.d/$base"
 +        "/run/current-system/profile/share/bash-completion/completions/$base"
 +        "/run/current-system/profile/etc/bash_completion.d/$base" )
 +
