@@ -422,42 +422,45 @@ or @command{xorrisofs} to create ISO 9660 images.")
     (native-inputs
      (list gettext-minimal pkg-config which))
     (arguments
-     `(;; Parallel builds appear to be unsafe, see
-       ;; <http://hydra.gnu.org/build/49331/nixlog/1/raw>.
-       #:parallel-build? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "regtest"
-               (substitute* "common.bash"
-                 (("ISODIR=/var/tmp/regtest") "ISODIR=/tmp"))
-               (for-each invoke (find-files "." "rs.*\\.bash")))))
-         (add-after 'install 'install-desktop
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((datadir (string-append (assoc-ref outputs "out") "/share")))
-               (substitute* "contrib/dvdisaster.desktop"
-                 (("dvdisaster48.png") "dvdisaster.png"))
-               (install-file "contrib/dvdisaster.desktop"
-                             (string-append datadir "/applications"))
-               (for-each
-                (lambda (png)
-                  (let* ((size (substring png
-                                          (string-index png char-set:digit)
-                                          (string-rindex png #\.)))
-                         (icondir (string-append datadir "/icons/"
-                                                 size "x" size "/apps")))
-                    (mkdir-p icondir)
-                    (copy-file png (string-append icondir "/dvdisaster.png"))))
-                (find-files "contrib" "dvdisaster[0-9]*\\.png"))
-               (mkdir-p (string-append datadir "/pixmaps"))
-               (copy-file "contrib/dvdisaster48.xpm"
-                          (string-append datadir "/pixmaps/dvdisaster.xpm")))))
-         (add-after 'install 'remove-uninstall-script
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (delete-file
-                (string-append out "/bin/dvdisaster-uninstall.sh"))))))))
+     (list #:parallel-build? #f ; http://hydra.gnu.org/build/49331/nixlog/1/raw
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda _
+                   (with-directory-excursion "regtest"
+                     (substitute* "common.bash"
+                       (("ISODIR=/var/tmp/regtest") "ISODIR=/tmp"))
+                     (for-each invoke (find-files "." "rs.*\\.bash")))))
+               (add-after 'install 'install-desktop
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((datadir (string-append (assoc-ref outputs "out")
+                                                  "/share")))
+                     (substitute* "contrib/dvdisaster.desktop"
+                       (("dvdisaster48.png") "dvdisaster.png"))
+                     (install-file "contrib/dvdisaster.desktop"
+                                   (string-append datadir "/applications"))
+                     (for-each
+                      (lambda (png)
+                        (let* ((size (substring
+                                      png
+                                      (string-index png char-set:digit)
+                                      (string-rindex png #\.)))
+                               (icondir (string-append datadir "/icons/"
+                                                       size "x" size "/apps")))
+                          (mkdir-p icondir)
+                          (copy-file png
+                                     (string-append icondir
+                                                    "/dvdisaster.png"))))
+                      (find-files "contrib" "dvdisaster[0-9]*\\.png"))
+                     (mkdir-p (string-append datadir "/pixmaps"))
+                     (copy-file "contrib/dvdisaster48.xpm"
+                                (string-append datadir
+                                               "/pixmaps/dvdisaster.xpm")))))
+               (add-after 'install 'remove-uninstall-script
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out")))
+                     (delete-file
+                      (string-append out "/bin/dvdisaster-uninstall.sh"))))))))
     (home-page "https://dvdisaster.jcea.es/")
     (synopsis "Error correcting codes for optical media images")
     (description "Optical media (CD,DVD,BD) keep their data only for a
