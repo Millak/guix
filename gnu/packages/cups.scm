@@ -479,7 +479,9 @@ device-specific programs to convert and print many types of files.")
      ;; XXX The tests require a running D-Bus and CUPS daemon, of course.
      (list #:tests? #f))
     (native-inputs
-     (list pkg-config `(,glib "bin") polkit cups))
+     (list pkg-config `(,glib "bin")))
+    (inputs
+     (list glib polkit cups-minimal))
     (home-page "https://www.freedesktop.org/wiki/Software/cups-pk-helper/")
     (synopsis "PolicyKit helper to configure CUPS with fine-grained privileges")
     (description
