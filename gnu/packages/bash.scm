@@ -310,35 +310,8 @@ variant logs the history to syslog.")))
               (patches
                (search-patches "bash-completion-directories.patch"))))
     (build-system gnu-build-system)
-    (native-inputs (list util-linux))
     (arguments
-     `(#:tests? #f      ; Unclear how to make tests pass.
-       #:phases (modify-phases %standard-phases
-                  (add-after
-                   'install 'remove-redundant-completions
-                   (lambda* (#:key
-                             inputs native-inputs
-                             outputs #:allow-other-keys)
-                     ;; Util-linux comes with a bunch of completion files for
-                     ;; its own commands which are more sophisticated and
-                     ;; up-to-date than those of bash-completion.  Remove those
-                     ;; from bash-completion.
-                     (let* ((out         (assoc-ref outputs "out"))
-                            (util-linux  (assoc-ref (or native-inputs inputs)
-                                                    "util-linux"))
-                            (completions (string-append out
-                                                        "/share/bash-completion"
-                                                        "/completions"))
-                            (already     (find-files
-                                          (string-append
-                                           util-linux
-                                           "/etc/bash_completion.d"))))
-                       (with-directory-excursion completions
-                         (for-each (lambda (file)
-                                     (when (file-exists? file)
-                                       (delete-file file)))
-                                   (map basename already)))
-                       #t))))))
+     `(#:tests? #f))    ; Unclear how to make tests pass.
     (synopsis "Bash completions for common commands")
     (description
      "This package provides extensions that allow Bash to provide adapted
