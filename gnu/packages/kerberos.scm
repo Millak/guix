@@ -147,7 +147,7 @@ cryptography.")
     (inputs
      (list gnutls
            libidn
-           linux-pam-1.2
+           linux-pam
            zlib
            libgcrypt
            libtasn1))

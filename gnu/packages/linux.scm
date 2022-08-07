@@ -1660,21 +1660,6 @@ be used through the PAM API to perform tasks, like authenticating a user
 at login.  Local and dynamic reconfiguration are its key features.")
     (license license:bsd-3)))
 
-(define-public linux-pam-1.2
-  (package
-    (inherit linux-pam)
-    (version "1.2.1")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append
-            "http://www.linux-pam.org/library/"
-            "Linux-PAM-" version ".tar.bz2"))
-      (sha256
-       (base32
-        "1n9lnf9gjs72kbj1g354v1xhi2j27aqaah15vykh7cnkq08i4arl"))
-      (patches (search-patches "linux-pam-no-setfsuid.patch"))))))
-
 (define-public python-pamela
   (package
     (name "python-pamela")
