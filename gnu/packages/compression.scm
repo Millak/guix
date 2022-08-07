@@ -1838,9 +1838,13 @@ Compression ratios of 2:1 to 3:1 are common for text files.")
            #:make-flags
            ;; Fix cross-compilation without affecting native builds, as doing so
            ;; would trigger too many rebuilds: https://issues.guix.gnu.org/57127
-           #~(list "-f" "unix/Makefile"
-                   (string-append "prefix=" %output)
-                   (string-append "MANDIR=" %output "/share/man/man1"))))
+           (if (%current-target-system)
+               #~(list "-f" "unix/Makefile"
+                       (string-append "prefix=" #$output)
+                       (string-append "MANDIR=" #$output "/share/man/man1"))
+               #~(list "-f" "unix/Makefile"
+                       (string-append "prefix=" %output)
+                       (string-append "MANDIR=" %output "/share/man/man1")))))
     (home-page "http://www.info-zip.org/UnZip.html")
     (synopsis "Decompression and file extraction utility")
     (description
