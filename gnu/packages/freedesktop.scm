@@ -27,7 +27,7 @@
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2021, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;;
@@ -1435,7 +1435,7 @@ message bus.")
 (define-public accountsservice
   (package
     (name "accountsservice")
-    (version "0.6.55")
+    (version "22.08.8")
     (source
      (origin
        (method url-fetch)
@@ -1443,45 +1443,62 @@ message bus.")
                            "accountsservice/accountsservice-"
                            version ".tar.xz"))
        (sha256
-        (base32 "16wwd633jak9ajyr1f1h047rmd09fhf3kzjz6g5xjsz0lwcj8azz"))))
+        (base32 "14d3lwik048h62qrzg1djdd2sqmxf3m1r859730pvzhrd6krg6ch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f ; XXX: tests require DocBook 4.1.2
-       #:configure-flags
+     `(#:configure-flags
        '("--localstatedir=/var"
-         "-Dsystemdsystemunitdir=/tmp/empty"
-         "-Dsystemd=false"
-         "-Delogind=true")
+         "-Delogind=true"
+         "-Ddocbook=true"
+         "-Dgtk_doc=true"
+         "-Dsystemdsystemunitdir=/tmp/empty")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-/bin/cat
-           (lambda _
-             (substitute* "src/user.c"
-               (("/bin/cat") (which "cat")))))
-         (add-before
-          'configure 'pre-configure
-          (lambda* (#:key inputs #:allow-other-keys)
-            (substitute* "meson_post_install.py"
-              (("in dst_dirs") "in []"))
-            (let ((shadow (assoc-ref inputs "shadow")))
-              (substitute* '("src/user.c" "src/daemon.c")
-                (("/usr/sbin/usermod")
-                 (string-append shadow "/sbin/usermod"))
-                (("/usr/sbin/useradd")
-                 (string-append shadow "/sbin/useradd"))
-                (("/usr/sbin/userdel")
-                 (string-append shadow "/sbin/userdel"))
-                (("/usr/bin/passwd")
-                 (string-append shadow "/bin/passwd"))
-                (("/usr/bin/chage")
-                 (string-append shadow "/bin/chage")))))))))
+         (add-after 'unpack 'patch-docbook-references
+           ;; Having XML_CATALOG_FILES set is not enough; xmlto does not seem
+           ;; to honor it.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* (find-files "." "\\.xml(\\.in)?$")
+               (("http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd")
+                (search-input-file inputs "share/xml/dbus-1/introspect.dtd"))
+               (("http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd")
+                (search-input-file inputs "xml/dtd/docbook/docbookx.dtd")))))
+         (add-after 'unpack 'patch-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "meson_post_install.py"
+               (("in dst_dirs") "in []"))
+             (substitute* '("src/user.c" "src/daemon.c")
+               (("/bin/cat")
+                (search-input-file inputs "bin/cat"))
+               (("/usr/sbin/usermod")
+                (search-input-file inputs "sbin/usermod"))
+               (("/usr/sbin/useradd")
+                (search-input-file inputs "sbin/useradd"))
+               (("/usr/sbin/userdel")
+                (search-input-file inputs "sbin/userdel"))
+               (("/usr/bin/passwd")
+                (search-input-file inputs "bin/passwd"))
+               (("/usr/bin/chage")
+                (search-input-file inputs "bin/chage"))))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for gdbus-codegen, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list docbook-xml-4.1.2
+           docbook-xsl
+           `(,glib "bin")               ; for gdbus-codegen, etc.
+           gobject-introspection
+           gtk-doc
+           intltool
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt
+           pkg-config
+           python-dbusmock
+           python-pygobject
+           vala
+           xmlto))
     (inputs
-     (list dbus elogind polkit shadow))
+     (list dbus
+           elogind
+           polkit
+           shadow))
     (home-page "https://www.freedesktop.org/wiki/Software/AccountsService/")
     (synopsis "D-Bus interface for user account query and manipulation")
     (description
