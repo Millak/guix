@@ -450,9 +450,9 @@ only configure local servers, and requires that a special module
 module-gsettings is loaded in the sound server.")
     (license l:gpl2)))
 
-(define-public rnnoise
+(define-public noise-suppression-for-voice
   (package
-    (name "rnnoise")
+    (name "noise-suppression-for-voice")
     (version "0.91")
     (source
      (origin
@@ -472,14 +472,15 @@ module-gsettings is loaded in the sound server.")
            pulseaudio))
     (home-page "https://github.com/werman/noise-suppression-for-voice")
     (synopsis "Real-time Noise suppression plugin based on Xiph's RNNoise")
-    (description "The plugin is meant to suppress a wide range of noise
-origins: computer fans, office, crowd, airplane, car, train, construction.
+    (description "This plug-in is meant to suppress a wide range of noise
+origins: computer fans, offices, crowds, airplanes, cars, trains,
+construction, and more.
 
 Mild background noise is always suppressed, loud sounds, like
 clicking of mechanical keyboard, are suppressed while there is no voice
 however they are only reduced in volume when voice is present.
 
-The plugin is made to work with 1 or 2 channels (ladspa plugin),
+The plug-in is made to work with 1 or 2 channels (LADSPA plugin),
 16 bit, 48000 Hz audio input.")
     (license l:gpl3)))
 
@@ -521,7 +522,7 @@ The plugin is made to work with 1 or 2 channels (ladspa plugin),
              (with-directory-excursion "src/github.com/noisetorch/NoiseTorch"
                (invoke "go" "generate")))))))
     (inputs
-     (list rnnoise))
+     (list noise-suppression-for-voice))
     (home-page "https://github.com/noisetorch/NoiseTorch")
     (synopsis "Real-time microphone noise suppression")
     (description "NoiseTorch creates a virtual PulseAudio microphone that
