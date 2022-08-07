@@ -572,7 +572,7 @@ Telegram project, for its use in telegram desktop client.")
        ("qtwayland" ,qtwayland)
        ("range-v3" ,range-v3)
        ("rlottie" ,rlottie-for-telegram-desktop)
-       ("rnnoise" ,xiph-rnnoise)
+       ("rnnoise" ,rnnoise)
        ("tgcalls-source"
         ,(origin
            (method git-fetch)

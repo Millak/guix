@@ -499,7 +499,7 @@ icecast server.  It handles the socket connection, the timing of the data,
 and prevents bad data from getting to the icecast server.")
     (license license:gpl2+)))
 
-(define-public xiph-rnnoise
+(define-public rnnoise
   ;; No upstream release
   (let ((commit "7f449bf8bd3b933891d12c30112268c4090e4d59")
         (revision "0"))
@@ -526,8 +526,4 @@ and prevents bad data from getting to the icecast server.")
 neural network.  The algorithm is described in Jean-Marc Valin's paper
 @cite{A Hybrid DSP/Deep Learning Approach to Real-Time Full-Band Speech
 Enhancement}.")
-     (license license:bsd-3)
-     (properties
-      ;; There's no public release and a conflicting package, so hide it for
-      ;; now.
-      `((hidden? . #t))))))
+     (license license:bsd-3))))
