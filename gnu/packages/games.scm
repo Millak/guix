@@ -7831,7 +7831,7 @@ quotation from a collection of quotes.")
                             "sdl-release"
                             "sv-release"
                             make-flags))))
-               (add-before 'configure 'bootstrap
+               (add-before 'configure 'preconfigure
                  (lambda _
                    (chdir "source/d0_blind_id")
                    (invoke "sh" "autogen.sh")))
