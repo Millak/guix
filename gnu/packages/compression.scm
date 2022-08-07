@@ -1818,25 +1818,29 @@ Compression ratios of 2:1 to 3:1 are common for text files.")
     (build-system gnu-build-system)
     ;; no inputs; bzip2 is not supported, since not compiled with BZ_NO_STDIO
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-after 'unpack 'fortify
-                    (lambda _
-                      ;; Mitigate CVE-2018-1000035, an exploitable buffer overflow.
-                      ;; This environment variable is recommended in 'unix/Makefile'
-                      ;; for passing flags to the C compiler.
-                      (setenv "LOCAL_UNZIP" "-D_FORTIFY_SOURCE=1")
-                      #t))
-                  (replace 'build
-                    (lambda* (#:key make-flags #:allow-other-keys)
-                      (apply invoke "make"
-                             `("-j" ,(number->string
-                                      (parallel-job-count))
-                               ,@make-flags
-                               "generic_gcc")))))
-       #:make-flags (list "-f" "unix/Makefile"
-                          (string-append "prefix=" %output)
-                          (string-append "MANDIR=" %output "/share/man/man1"))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'fortify
+                 (lambda _
+                   ;; Mitigate CVE-2018-1000035, an exploitable buffer overflow.
+                   ;; This environment variable is recommended in 'unix/Makefile'
+                   ;; for passing flags to the C compiler.
+                   (setenv "LOCAL_UNZIP" "-D_FORTIFY_SOURCE=1")
+                   #t))
+               (replace 'build
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make"
+                          `("-j" ,(number->string
+                                   (parallel-job-count))
+                            ,@make-flags
+                            "generic_gcc")))))
+           #:make-flags
+           ;; Fix cross-compilation without affecting native builds, as doing so
+           ;; would trigger too many rebuilds: https://issues.guix.gnu.org/57127
+           #~(list "-f" "unix/Makefile"
+                   (string-append "prefix=" %output)
+                   (string-append "MANDIR=" %output "/share/man/man1"))))
     (home-page "http://www.info-zip.org/UnZip.html")
     (synopsis "Decompression and file extraction utility")
     (description
