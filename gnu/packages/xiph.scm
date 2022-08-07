@@ -517,9 +517,7 @@ and prevents bad data from getting to the icecast server.")
                  "0y8jdvxd9namw4f9hcmcmm2q0f32mnhfyjap8906hl308cws3rkj"))))
      (build-system gnu-build-system)
      (native-inputs
-      `(("autoconf" ,autoconf)
-        ("automake" ,automake)
-        ("libtool" ,libtool)))
+      (list autoconf automake libtool))
      (home-page "https://gitlab.xiph.org/xiph/rnnoise")
      (synopsis "Real-time noise suppression")
      (description "RNNoise is a noise suppression library based on a recurrent
