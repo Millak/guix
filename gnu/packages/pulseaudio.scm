@@ -486,53 +486,43 @@ The plugin is made to work with 1 or 2 channels (ladspa plugin),
 (define-public noisetorch
   (package
     (name "noisetorch")
-    (version "0.8.3")
+    (version "0.12.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/lawl/NoiseTorch")
-             (commit version)))
+             (url "https://github.com/noisetorch/NoiseTorch")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "115sq4waq048bv82lnq5sblf62m50yvyakx7x06qq359v7qf5ji1"))))
+        (base32 "1qwzqv4rww9xywkfnjr79489d35cypa1zm9rgm966g51zzwhxrck"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/lawl/NoiseTorch"
+     `(#:import-path "github.com/noisetorch/NoiseTorch"
        #:install-source? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'symlink-rnnoise
+         (add-after 'unpack 'copy-rnnoise-library
            (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "src/github.com/lawl/NoiseTorch"
-               (let ((dir "librnnoise_ladspa/bin/ladspa")
-                     (rnnoise (assoc-ref inputs "rnnoise")))
+             (with-directory-excursion "src/github.com/noisetorch/NoiseTorch"
+               (let ((lib (search-input-file inputs
+                                             "lib/ladspa/librnnoise_ladspa.so"))
+                     (dir "c/ladspa"))
                  (mkdir-p dir)
-                 (symlink (string-append rnnoise "/lib/ladspa/librnnoise_ladspa.so")
-                          (string-append dir "/librnnoise_ladspa.so"))))
-             #t))
-         (add-after 'unpack 'gen-version.go
-           (lambda _
-             (with-directory-excursion "src/github.com/lawl/NoiseTorch"
-               (substitute* "main.go"
-                 (("//go:generate go run scripts/embedversion\\.go") ""))
-               (with-output-to-file "version.go"
-                 (lambda ()
-                   (format #t "package main~%~%var version=~s~&" ,version))))
-             #t))
+                 ;; Symlinking won't work: ‘cannot embed irregular file’!
+                 (copy-file lib (string-append dir "/rnnoise_ladspa.so"))))))
          (add-after 'unpack 'disable-update-check.go
            (lambda _
-             (with-directory-excursion "src/github.com/lawl/NoiseTorch"
+             (with-directory-excursion "src/github.com/noisetorch/NoiseTorch"
                (substitute* "main.go"
-                 ((".*updateCheck.*") "")))
-             #t))
+                 ((".*updateCheck.*") "")))))
          (add-before 'build 'go-generate
            (lambda _
-             (with-directory-excursion "src/github.com/lawl/NoiseTorch"
+             (with-directory-excursion "src/github.com/noisetorch/NoiseTorch"
                (invoke "go" "generate")))))))
     (inputs
      (list rnnoise))
-    (home-page "https://github.com/lawl/NoiseTorch")
+    (home-page "https://github.com/noisetorch/NoiseTorch")
     (synopsis "Real-time microphone noise suppression")
     (description "NoiseTorch creates a virtual PulseAudio microphone that
 suppresses noise, in any application.  Use whichever conferencing or VOIP
