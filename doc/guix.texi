@@ -14359,6 +14359,16 @@ names returned by @option{--list-checkers}.
 Only disable the checkers specified in a comma-separated list using the
 names returned by @option{--list-checkers}.
 
+@item --expression=@var{expr}
+@itemx -e @var{expr}
+Consider the package @var{expr} evaluates to.
+
+This is useful to unambiguously designate packages, as in this example:
+
+@example
+guix lint -c archival -e '(@@ (gnu packages guile) guile-3.0)'
+@end example
+
 @item --no-network
 @itemx -n
 Only enable the checkers that do not depend on Internet access.

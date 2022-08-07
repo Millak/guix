@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -108,6 +108,8 @@ run the checkers on all packages.\n"))
                          exclude the specified checkers"))
   (display (G_ "
   -n, --no-network       only run checkers that do not access the network"))
+  (display (G_ "
+  -e, --expression=EXPR  consider the package EXPR evaluates to"))
 
   (display (G_ "
   -L, --load-path=DIR    prepend DIR to the package module search path"))
@@ -161,9 +163,11 @@ run the checkers on all packages.\n"))
                   (exit 0)))
         (option '(#\l "list-checkers") #f #f
                 (lambda (opt name arg result)
-                  (alist-cons 'list?
-                              #t
-                              result)))
+                  (alist-cons 'list? #t result)))
+        (option '(#\e "expression") #t #f
+                (lambda (opt name arg result)
+                  (alist-cons 'expression arg result)))
+
         (option '(#\V "version") #f #f
                 (lambda args
                   (show-version-and-exit "guix lint")))))
@@ -184,8 +188,10 @@ run the checkers on all packages.\n"))
 
   (let* ((opts (parse-options))
          (args (filter-map (match-lambda
-                             (('argument . value)
-                              value)
+                             (('argument . spec)
+                              (specification->package spec))
+                             (('expression . exp)
+                              (read/eval-package-expression exp))
                              (_ #f))
                            (reverse opts)))
          (no-checkers (or (assoc-ref opts 'exclude) '()))
@@ -219,7 +225,7 @@ run the checkers on all packages.\n"))
              (fold-packages (lambda (p r) (run-checkers p checkers
                                                         #:store store)) '()))
             (else
-             (for-each (lambda (spec)
-                         (run-checkers (specification->package spec) checkers
+             (for-each (lambda (package)
+                         (run-checkers package checkers
                                        #:store store))
                        args)))))))))
