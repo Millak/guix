@@ -420,9 +420,7 @@ or @command{xorrisofs} to create ISO 9660 images.")
     (inputs
      (list gtk+-2))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list gettext-minimal pkg-config which))
     (arguments
      `(;; Parallel builds appear to be unsafe, see
        ;; <http://hydra.gnu.org/build/49331/nixlog/1/raw>.
