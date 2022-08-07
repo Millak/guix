@@ -1751,11 +1751,7 @@ addons which can add many functionalities to the base client.")
                (install-file (string-append msmtpq "/msmtpq") bin)
                (install-file (string-append msmtpq "/msmtp-queue") bin)
                (install-file (string-append msmtpq "/README.msmtpq") doc)
-               (install-file "scripts/vim/msmtp.vim" vimfiles)
-               ;; Don't rely on netcat being in the PATH to test for a
-               ;; connection, instead look up and ping debian.org.
-               (substitute* (string-append bin "/msmtpq")
-                 (("EMAIL_CONN_TEST=n") "EMAIL_CONN_TEST=p"))))))))
+               (install-file "scripts/vim/msmtp.vim" vimfiles)))))))
     (properties
      '((release-monitoring-url . "https://marlam.de/msmtp/download/")))
     (synopsis
