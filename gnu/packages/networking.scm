@@ -4149,11 +4149,11 @@ cables.")
      (list lua openssl pcre2 zlib))
     (home-page "https://www.haproxy.org/")
     (synopsis "Reliable, high performance TCP/HTTP load balancer")
-    (description "HAProxy is a free, very fast and reliable solution offering
-high availability, load balancing, and proxying for TCP and HTTP-based
-applications.  It is particularly suited for web sites crawling under very
-high loads while needing persistence or Layer7 processing.  Supporting tens of
-thousands of connections is clearly realistic with today's hardware.")
+    (description "HAProxy offers @acronym{HA, high availability}, load
+balancing, and proxying for TCP and HTTP-based applications.  It is particularly
+suited to Web sites crawling under very high loads while needing persistence or
+Layer 7 processing.  Supporting tens of thousands of connections is clearly
+realistic with today's hardware.")
     (license (list license:gpl2+
                    license:lgpl2.1
                    license:lgpl2.1+))))
