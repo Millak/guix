@@ -7769,8 +7769,7 @@ quotation from a collection of quotes.")
        (sha256
         (base32 "1r9pdrrki7mkdw99zh9m7911fqldsfdnl0nrp5cv1bk2hcism4hg"))))
     (build-system trivial-build-system)
-    (native-inputs
-     `(("unzip" ,unzip)))
+    (native-inputs (list unzip))
     (arguments
      `(#:modules ((guix build utils))
        #:builder
