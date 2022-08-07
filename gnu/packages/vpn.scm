@@ -4,7 +4,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
 ;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Meiyo Peng <meiyo.peng@gmail.com>
@@ -794,7 +794,7 @@ this process.  It is compatible with Fortinet VPNs.")
 (define-public openvpn
   (package
     (name "openvpn")
-    (version "2.5.6")
+    (version "2.5.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -802,7 +802,7 @@ this process.  It is compatible with Fortinet VPNs.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0gdd88rcan9vfiwkzsqn6fxxdim7kb1bsxrcra59c5xksprpwfik"))))
+                "0s1yq530j4i4kicgvsxgl532vyn03gfhlxfdnsb43j05k4w0ld08"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-iproute2=yes")))
