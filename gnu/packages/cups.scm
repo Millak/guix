@@ -50,6 +50,7 @@
   #:use-module (gnu packages tls)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -465,17 +466,20 @@ device-specific programs to convert and print many types of files.")
 (define-public cups-pk-helper
   (package
     (name "cups-pk-helper")
-    (version "0.2.6")
+    (version "0.2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://freedesktop.org/software/"
                                   name "/releases/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0a52jw6rm7lr5nbyksiia0rn7sasyb5cjqcb95z1wxm2yprgi6lm"))))
-    (build-system gnu-build-system)
+                "0cg8wbxpkz9bkpasz973cdazi02svqpbw9mafvpgrscg8kdhs1v6"))))
+    (build-system meson-build-system)
+    (arguments
+     ;; XXX The tests require a running D-Bus and CUPS daemon, of course.
+     (list #:tests? #f))
     (native-inputs
-     (list intltool pkg-config glib polkit cups))
+     (list pkg-config `(,glib "bin") polkit cups))
     (home-page "https://www.freedesktop.org/wiki/Software/cups-pk-helper/")
     (synopsis "PolicyKit helper to configure CUPS with fine-grained privileges")
     (description
