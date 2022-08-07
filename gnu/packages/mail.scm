@@ -1160,7 +1160,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.8.7")
+    (version "1.8.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1169,7 +1169,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yfbw234yqnqfnsn5bj1hqwpy78pkxn05vl18z8nvsqdmpzal4gx"))))
+                "1wfvssfd3fqgncs9jrysr4gsflb6l5m819imijj49k1s0dwj82wj"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
