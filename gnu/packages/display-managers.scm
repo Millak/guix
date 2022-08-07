@@ -37,6 +37,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system trivial)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -347,7 +348,7 @@ display manager which supports different greeters.")
               (sha256
                (base32
                 "04q62mvr97l9gv8h37hfarygqc7p0498ig7xclcg4kxkqw0b7yxy"))))
-    (build-system gnu-build-system)
+    (build-system glib-or-gtk-build-system)
     (arguments
      (list
       #:configure-flags
@@ -376,6 +377,14 @@ display manager which supports different greeters.")
                     (glib #$(this-package-input "glib")))
                 (wrap-program (search-input-file
                                outputs "sbin/lightdm-gtk-greeter")
+                  ;; Wrap GDK_PIXBUF_MODULE_FILE, so that the SVG loader is
+                  ;; available at all times even outside of profiles, such as
+                  ;; when used in the lightdm-service-type.  Otherwise, it
+                  ;; wouldn't be able to display its own icons.
+                  `("GDK_PIXBUF_MODULE_FILE" =
+                    (,(search-input-file
+                       inputs
+                       "lib/gdk-pixbuf-2.0/2.10.0/loaders.cache")))
                   `("XDG_DATA_DIRS" ":" prefix
                     ,(cons "/run/current-system/profile/share"
                            (map (lambda (pkg)
@@ -388,12 +397,13 @@ display manager which supports different greeters.")
     (native-inputs
      (list exo intltool pkg-config xfce4-dev-tools))
     (inputs
-     (list bash-minimal                 ;for wrap-program
+     (list at-spi2-core
+           bash-minimal                 ;for wrap-program
+           gtk+
+           guile-3.0
+           librsvg
            lightdm
-           shared-mime-info
-           at-spi2-core
-           glib
-           gtk+))
+           shared-mime-info))
     (synopsis "GTK+ greeter for LightDM")
     (home-page "https://github.com/xubuntu/lightdm-gtk-greeter")
     (description "This package provides a LightDM greeter implementation using
