@@ -7771,24 +7771,22 @@ quotation from a collection of quotes.")
     (build-system trivial-build-system)
     (native-inputs (list unzip))
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((out (assoc-ref %outputs "out"))
-                (xonotic (string-append out "/share/xonotic"))
-                (source (assoc-ref %build-inputs "source"))
-                (unzip (search-input-file %build-inputs "/bin/unzip")))
-           (copy-file source (string-append ,name "-" ,version ".zip"))
-           (invoke unzip (string-append ,name "-" ,version ".zip"))
-           (mkdir-p out)
-           (mkdir-p xonotic)
-           (chdir "Xonotic")
-           (copy-recursively "data"
-                             (string-append xonotic "/data"))
-           (copy-recursively "server"
-                             (string-append xonotic "/server"))
-           (install-file "key_0.d0pk" xonotic)))))
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules (guix build utils))
+               (let* ((out (assoc-ref %outputs "out"))
+                      (xonotic (string-append out "/share/xonotic"))
+                      (source (assoc-ref %build-inputs "source"))
+                      (unzip (search-input-file %build-inputs "/bin/unzip")))
+                 (copy-file source (string-append #$name "-" #$version ".zip"))
+                 (invoke unzip (string-append #$name "-" #$version ".zip"))
+                 (chdir "Xonotic")
+                 (install-file "key_0.d0pk" xonotic)
+                 (copy-recursively "data"
+                                   (string-append xonotic "/data"))
+                 (copy-recursively "server"
+                                   (string-append xonotic "/server"))))))
     (home-page "http://xonotic.org")
     (synopsis "Data files for Xonotic")
     (description
