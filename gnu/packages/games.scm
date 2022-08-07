@@ -7810,6 +7810,9 @@ quotation from a collection of quotes.")
      (list #:configure-flags
            #~(list (string-append "--prefix=" #$output)
                    "--disable-rijndael")
+           #:modules '((guix build gnu-build-system)
+                       (guix build utils)
+                       (srfi srfi-26))
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'configure 'build-darkplaces
@@ -7841,105 +7844,66 @@ quotation from a collection of quotes.")
                           (data (assoc-ref inputs "xonotic-data")))
                      (symlink (string-append data "/share/xonotic")
                               (string-append out "/share/xonotic")))))
-               (add-after 'install 'install-desktop-entry
+               (add-after 'install 'install-desktop-entries
                  (lambda* (#:key outputs #:allow-other-keys)
-                   ;; Add .desktop files for the 2 variants and the symlink.
-                   (let* ((output (assoc-ref outputs "out"))
-                          (apps (string-append output "/share/applications")))
-                     (mkdir-p apps)
-                     (with-output-to-file
-                         (string-append apps "/xonotic-glx.desktop")
-                       (lambda _
-                         (format #t
-                                 "[Desktop Entry]~@
-                                 Name=xonotic-glx~@
-                                 Comment=Xonotic glx~@
-                                 Exec=~a/bin/xonotic-glx~@
-                                 TryExec=~@*~a/bin/xonotic-glx~@
-                                 Icon=xonotic~@
-                                 Categories=Game~@
-                                 Type=Application~%"
-                                 output)))
-                     (with-output-to-file
-                         (string-append apps "/xonotic-sdl.desktop")
-                       (lambda _
-                         (format #t
-                                 "[Desktop Entry]~@
-                                 Name=xonotic-sdl~@
-                                 Comment=Xonotic sdl~@
-                                 Exec=~a/bin/xonotic-sdl~@
-                                 TryExec=~@*~a/bin/xonotic-sdl~@
-                                 Icon=xonotic~@
-                                 Categories=Game~@
-                                 Type=Application~%"
-                                 output)))
-                     (with-output-to-file
-                         (string-append apps "/xonotic.desktop")
-                       (lambda _
-                         (format #t
-                                 "[Desktop Entry]~@
-                                 Name=xonotic~@
-                                 Comment=Xonotic~@
-                                 Exec=~a/bin/xonotic-glx~@
-                                 TryExec=~@*~a/bin/xonotic~@
-                                 Icon=xonotic~@
-                                 Categories=Game~@
-                                 Type=Application~%"
-                                 output))))))
+                   (let* ((out (assoc-ref outputs "out"))
+                          (app (string-append out "/share/applications")))
+                     ;; Add .desktop files for the 2 variants and the symlink.
+                     (for-each
+                      (lambda (variant)
+                        (let* ((file (if variant
+                                         (format #f "xonotic-~(~a~)" variant)
+                                         "xonotic"))
+                               (name (if variant
+                                         (format #f "Xonotic (~a)" variant)
+                                         "Xonotic"))
+                               (exec (string-append out "/bin/" file)))
+                          (make-desktop-entry-file
+                           (string-append app "/" file ".desktop")
+                           #:name name
+                           #:comment `((#f #$(package-synopsis this-package)))
+                           #:exec exec
+                           #:try-exec exec
+                           #:icon "xonotic"
+                           #:categories '("Game"))))
+                      (list #f "GLX" "SDL")))))
                (add-after 'install 'install-icons
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let ((out (assoc-ref outputs "out")))
-                     (with-directory-excursion "../../misc/logos/icons_png/"
-                       (for-each
-                        (lambda (file)
-                          (let* ((size (string-filter char-numeric? file))
-                                 (icons (string-append out "/share/icons/hicolor/"
-                                                       size "x" size "/apps")))
-                            (mkdir-p icons)
-                            (copy-file file (string-append icons "/xonotic.png"))))
-                        '("xonotic_16.png" "xonotic_22.png" "xonotic_24.png"
-                          "xonotic_32.png" "xonotic_48.png" "xonotic_64.png"
-                          "xonotic_128.png" "xonotic_256.png" "xonotic_512.png"))))))
+                     (for-each
+                      (lambda (file)
+                        (let* ((size (string-filter char-numeric? file))
+                               (icons (string-append out "/share/icons/hicolor/"
+                                                     size "x" size "/apps")))
+                          (mkdir-p icons)
+                          (copy-file file (string-append icons "/xonotic.png"))))
+                      (find-files "../../misc/logos/icons_png"
+                                  "^xonotic_[0-9]+\\.png$")))))
                (add-after 'install 'install-binaries
                  (lambda* (#:key outputs #:allow-other-keys)
-                   (let ((out (assoc-ref outputs "out")))
-                     (define (install src dst)
-                       (let ((dst (string-append out dst)))
-                         (mkdir-p (dirname dst))
-                         (copy-file src dst)))
-                     (mkdir-p (string-append out "/bin"))
-                     (install "../darkplaces/darkplaces-dedicated"
-                              "/bin/xonotic-dedicated")
-                     (install "../darkplaces/darkplaces-glx"
-                              "/bin/xonotic-glx")
-                     (install "../darkplaces/darkplaces-sdl"
-                              "/bin/xonotic-sdl")
-                     ;; Provide a default xonotic executable, defaulting to SDL.
-                     (symlink (string-append out "/bin/xonotic-sdl")
-                              (string-append out "/bin/xonotic")))))
-               (add-after 'install-binaries 'wrap
-                 (lambda* (#:key outputs inputs #:allow-other-keys)
-                   ;; Curl and libvorbis need to be wrapped so that we get
-                   ;; sound and networking.
                    (let* ((out (assoc-ref outputs "out"))
-                          (bin (string-append out "/bin/xonotic"))
-                          (bin-sdl (string-append out "/bin/xonotic-sdl"))
-                          (bin-glx (string-append out "/bin/xonotic-glx"))
-                          (bin-dedicated (string-append out "/bin/xonotic-dedicated"))
+                          (bin (string-append out "/bin")))
+                     (for-each
+                      (lambda (variant)
+                        (copy-file
+                         (string-append "../darkplaces/darkplaces-" variant)
+                         (string-append bin "/xonotic-" variant)))
+                      (list "dedicated" "glx" "sdl")))))
+               (add-after 'install-binaries 'wrap-binaries
+                 (lambda* (#:key outputs inputs #:allow-other-keys)
+                   ;; All games must be wrapped to get sound and networking.
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin"))
                           (curl (assoc-ref inputs "curl"))
                           (vorbis (assoc-ref inputs "libvorbis")))
-                     (wrap-program bin
-                       `("LD_LIBRARY_PATH" ":" prefix
-                         (,(string-append curl "/lib:" vorbis "/lib"))))
-                     (wrap-program bin-sdl
-                       `("LD_LIBRARY_PATH" ":" prefix
-                         (,(string-append curl "/lib:" vorbis "/lib"))))
-                     (wrap-program bin-glx
-                       `("LD_LIBRARY_PATH" ":" prefix
-                         (,(string-append curl "/lib:" vorbis "/lib"))))
-                     (wrap-program bin-dedicated
-                       `("LD_LIBRARY_PATH" ":" prefix
-                         (,(string-append curl "/lib:" vorbis "/lib"))))))))))
+                     (for-each (cut wrap-program <>
+                                    `("LD_LIBRARY_PATH" ":" prefix
+                                      (,(string-append curl "/lib:"
+                                                       vorbis "/lib"))))
+                               (find-files bin "^xonotic"))
+
+                     ;; Provide a default xonotic executable, defaulting to SDL.
+                     (symlink "xonotic-sdl" (string-append bin "/xonotic"))))))))
     (native-inputs
      (list autoconf
            automake
