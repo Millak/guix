@@ -333,7 +333,8 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                  (("=\\$\\{bindir\\}/")
                   "="))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
+     `(("dbus" ,dbus)
+       ("gettext" ,gettext-minimal)
        ("m4" ,m4)                       ; for installing m4 macros
        ("perl" ,perl)                   ; needed by GIO tests
        ("pkg-config" ,pkg-config)
@@ -341,16 +342,13 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
        ("python-wrapper" ,python-wrapper)
        ("tzdata" ,tzdata-for-tests)))   ; for tests/gdatetime.c
     (inputs
-     (list bash-completion
-           ;; "python", "python-wrapper" and "bash-minimal"
+     (list ;; "python", "python-wrapper" and "bash-minimal"
            ;; are for the 'patch-shebangs' phase, to make
            ;; sure the installed scripts end up with a correct shebang
            ;; when cross-compiling.
-           python
-           python-wrapper
            bash-minimal
-           dbus
-           elfutils))
+           python
+           python-wrapper))
     (propagated-inputs
      (list libffi ; in the Requires.private field of gobject-2.0.pc
            pcre ; in the Requires.private field of glib-2.0.pc
