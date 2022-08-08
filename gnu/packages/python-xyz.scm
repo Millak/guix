@@ -9957,13 +9957,13 @@ function signatures.")
 (define-public python-sympy
   (package
     (name "python-sympy")
-    (version "1.7.1")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sympy" version))
        (sha256
-        (base32 "0bkb4jf24yv5i4kjpsmg1xjjccfhqyi0syv0p0xvhdbmx5hr5pm3"))))
+        (base32 "0yvqb2fhrm81skl8s9znbkkjfb1a09n64qqlc1r225cyvzzywfar"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
