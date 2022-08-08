@@ -1381,10 +1381,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/kodi-set-libcurl-ssl-parameters.patch		\
   %D%/packages/patches/kodi-skip-test-449.patch		\
   %D%/packages/patches/laby-make-install.patch			\
-  %D%/packages/patches/lcalc-default-parameters-1.patch		\
-  %D%/packages/patches/lcalc-default-parameters-2.patch		\
-  %D%/packages/patches/lcalc-lcommon-h.patch    		\
-  %D%/packages/patches/lcalc-using-namespace-std.patch 		\
   %D%/packages/patches/ldns-drill-examples.patch		\
   %D%/packages/patches/leela-zero-gtest.patch			\
   %D%/packages/patches/less-hurd-path-max.patch			\
