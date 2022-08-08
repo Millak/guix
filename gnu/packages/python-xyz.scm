@@ -14575,13 +14575,13 @@ document.")
 (define-public python-symengine
   (package
     (name "python-symengine")
-    (version "0.6.1")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "symengine" version))
        (sha256
-        (base32 "1kn1w4dp9mrsq6kzmhf4pjmx3wicxc3dw1mwa924q8g48g77lr4c"))))
+        (base32 "0qjgdbnb10kfk7jdhxnzfl8cpaps81k8vap7gm7q9ym3pgslazhg"))))
     (build-system python-build-system)
     (native-inputs
      (list cmake python-cython))
