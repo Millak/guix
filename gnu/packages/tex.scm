@@ -978,6 +978,26 @@ LaTeX user is requesting.
 Tip: installing @code{texlive-cbfonts} will automatically propagate this one.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-cite
+  (package
+    (inherit (simple-texlive-package
+              "texlive-cite"
+              (list "doc/latex/cite/" "tex/latex/cite/")
+              (base32
+               "0b1amznayxj80dmqbzcysmj7q8aksbyz98k6djsqi0mhwp1cd0fd")
+              #:trivial? #t))
+    (version (number->string %texlive-revision))
+    (home-page "https://ctan.org/pkg/cite")
+    (synopsis "Improved citation handling in LaTeX")
+    (description
+     "The package supports compressed, sorted lists of numerical citations,
+and also deals with various punctuation and other issues of representation,
+including comprehensive management of break points.  The package is compatible
+with both hyperref and backref.  The package is (unsurprisingly) part of the
+cite bundle of the author's citation-related packages.")
+    (license (license:fsf-free
+              "/share/texmf-dist/doc/latex/cite/README"))))
+
 (define-public texlive-cm
   (let ((template (simple-texlive-package
                    "texlive-cm"
