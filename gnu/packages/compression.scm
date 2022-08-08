@@ -1846,6 +1846,7 @@ UnZip lists, tests, or extracts files from a .zip archive.  The default
 behaviour (with no options) is to extract into the current directory, and
 subdirectories below it, all files from the specified zipfile.  UnZip
 recreates the stored directory structure by default.")
+    (properties `((lint-hidden-cve . ("CVE-2019-13232"))))
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
 
