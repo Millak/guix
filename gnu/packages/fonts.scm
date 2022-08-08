@@ -2767,10 +2767,12 @@ dialects in Hong Kong and Taiwan.")))
                 "0iqlnb7825kisg2avhr9hwwvb4jw8f642vvmms5dw6m9czzydpgw"))))
     (build-system font-build-system)
     (home-page "https://chiron-fonts.github.io/")
-    (synopsis "昭源宋體")
+    (synopsis "Traditional Chinese Song typeface")
     (description
-     "Chiron Sung HK (昭源宋體) is a Traditional Chinese serif
- typeface based on Adobe’s Source Han Serif (a.k.a. Google’s Noto Sans CJK).")
+     "Chiron Sung HK is a Traditional Chinese Song typeface based on the Hong
+Kong variant of Adobe’s Source Han Serif.  The font aims at providing a modern,
+region-agnostic glyph set adopting the “modern” glyph style that is similar to
+prevalent typefaces in Traditional Chinese regions.")
     (license license:silofl1.1)))
 
 (define-public font-chiron-hei-hk
