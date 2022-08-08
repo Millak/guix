@@ -54,6 +54,7 @@
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
+;;; Copyright © 2022 vicvbcun <guix@ikherbers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,6 +76,7 @@
   #:use-module (ice-9 match)
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -724,18 +726,31 @@ integer programming problems and computes Markov bases for statistics.")
 (define-public cddlib
   (package
     (name "cddlib")
-    (version "0.94i")
+    (version "0.94m")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "ftp://ftp.math.ethz.ch/users/fukudak/cdd/cddlib-"
-                          (string-delete #\. version) ".tar.gz"))
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/cddlib/cddlib")
+            (commit version)))
       (sha256
        (base32
-        "00zdgiqb91vx6gd2103h3ijij0llspsxc6zz3iw2bll39fvkl4xq"))))
+        "09s8323h5w9j6mpl1yc6lm770dkskfxd2ayyafkcjllmnncxzfa0"))))
     (build-system gnu-build-system)
     (inputs
      (list gmp))
+    (native-inputs (list autoconf
+                         automake
+                         libtool
+                         texlive-amsfonts
+                         texlive-dvips-l3backend
+                         texlive-latex-graphics
+                         texlive-latex-l3backend
+                         texlive-tiny))
+    (arguments
+     (list #:configure-flags
+             #~(list (string-append "--docdir=" #$output
+                                    "/share/doc/" #$name "-" #$version))))
     (home-page "https://www.inf.ethz.ch/personal/fukudak/cdd_home/index.html")
     (synopsis "Library for convex hulls and extreme rays of polyhedra")
     (description
