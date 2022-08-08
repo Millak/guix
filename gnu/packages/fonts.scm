@@ -2725,9 +2725,11 @@ and readability.  This package bundles those icons into a font.")
                 "17li3xry4j4ccdnwz2pcnf0gv7c5mwq0h5fwvl7ar28brn2qgdbk"))))
     (build-system font-build-system)
     (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
-    (synopsis "LXGW Wenkai / 霞鹜文楷")
+    (synopsis "Simplified Chinese Imitation Song typeface")
     (description
-     "An open-source Chinese font derived from Fontworks' Klee One.")
+     "LXGW Wenkai is a Simplified Chinese Imitation Song typeface covering the
+CJK Unified Ideographs (base block) and commonly used Hangul.  For characters
+within GB 2312, standard glyphs for Mainland China is used.")
     (license license:silofl1.1)))
 
 (define-public font-lxgw-wenkai-tc
