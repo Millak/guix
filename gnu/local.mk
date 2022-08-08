@@ -1469,7 +1469,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/llvm-roc-4.0.0-remove-isystem-usr-include.patch \
   %D%/packages/patches/llvm-roc-5.0.0-linkdl.patch \
   %D%/packages/patches/lm-sensors-hwmon-attrs.patch		\
-  %D%/packages/patches/lrcalc-includes.patch    		\
   %D%/packages/patches/lsh-fix-x11-forwarding.patch		\
   %D%/packages/patches/lsof-fatal-test-failures.patch		\
   %D%/packages/patches/lua-CVE-2014-5461.patch                      \
