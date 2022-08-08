@@ -25,6 +25,26 @@
 (channel-news
  (version 0)
 
+ (entry (commit "a15542d26df42dabdb5e2f76d150ae200230c3b0")
+        (title
+         (en "New @option{--whole-file} option for @command{guix style}")
+         (fr "Nouvelle option @option{--whole-file} pour @command{guix style}"))
+        (body
+         (en "The @command{guix style} command has a new @option{--whole-file}
+option: instead of formatting individual package definitions, this option lets
+you reformat entire Scheme files.  You might want to use it to format your
+operating system configuration file, for instance.
+
+Run @command{info \"(guix) Invoking guix style\"} for more info.")
+         (fr "La commande @command{guix style} a désormais une nouvelle option
+@option{--whole-file} : au lieu de mettre en forme des définitions de paquets,
+cette option permet de mettre en forme des fichiers Scheme entiers.  Ça peut
+s'avérer utile par exemple pour mettre en forme son fichier de configuration
+du système d'exploitation.
+
+Lancer @command{info \"(guix.fr) Invoquer guix style\"} pour plus
+d'informations.")))
+
  (entry (commit "2ec7ab2610eb67e26dab52b671eb29e46f64ea0f")
         (title
           (en "Linux-libre kernel updated to 5.18")
