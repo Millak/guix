@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,7 +17,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix build-system channel)
-  #:use-module ((guix store) #:select (%store-monad))
+  #:use-module ((guix store) #:select (%store-monad store-lift))
   #:use-module ((guix gexp) #:select (lower-object))
   #:use-module (guix monads)
   #:use-module (guix channels)
@@ -32,26 +32,39 @@
 ;;;
 ;;; Code:
 
+(define latest-channel-instances*
+  (store-lift latest-channel-instances))
+
+(define* (build-channels name inputs
+                         #:key source system commit
+                         (authenticate? #t)
+                         #:allow-other-keys)
+  (mlet* %store-monad ((instances
+                        (cond ((channel-instance? source)
+                               (return (list source)))
+                              ((channel? source)
+                               (latest-channel-instances*
+                                (list source)
+                                #:authenticate? authenticate?))
+                              (else
+                               (mlet %store-monad ((source
+                                                    (lower-object source)))
+                                 (return
+                                  (list (checkout->channel-instance
+                                         source #:commit commit))))))))
+    (channel-instances->derivation instances)))
+
 (define channel-build-system
   ;; Build system used to "convert" a channel instance to a package.
-  (let* ((build (lambda* (name inputs
-                               #:key source commit system
-                               #:allow-other-keys)
-                  (mlet* %store-monad ((source (if (string? source)
-                                                   (return source)
-                                                   (lower-object source)))
-                                       (instance
-                                        -> (checkout->channel-instance
-                                            source #:commit commit)))
-                    (channel-instances->derivation (list instance)))))
-         (lower (lambda* (name #:key system source commit
-                               #:allow-other-keys)
-                  (bag
-                    (name name)
-                    (system system)
-                    (build build)
-                    (arguments `(#:source ,source
-                                 #:commit ,commit))))))
+  (let ((lower (lambda* (name #:key system source commit (authenticate? #t)
+                              #:allow-other-keys)
+                 (bag
+                   (name name)
+                   (system system)
+                   (build build-channels)
+                   (arguments `(#:source ,source
+                                #:authenticate? ,authenticate?
+                                #:commit ,commit))))))
     (build-system (name 'channel)
                   (description "Turn a channel instance into a package.")
                   (lower lower))))

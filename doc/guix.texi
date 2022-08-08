@@ -9571,10 +9571,14 @@ with @code{build-expression->derivation} (@pxref{Derivations,
 @defvr {Scheme Variable} channel-build-system
 This variable is exported by @code{(guix build-system channel)}.
 
-This build system is meant primarily for internal use.  It requires two
-arguments, @code{#:commit} and @code{#:source}, and builds a Guix
-instance from that channel, in the same way @command{guix time-machine}
-would do it (@pxref{Channels}).
+This build system is meant primarily for internal use.  A package using
+this build system must have a channel specification as its @code{source}
+field (@pxref{Channels}); alternatively, its source can be a directory
+name, in which case an additional @code{#:commit} argument must be
+supplied to specify the commit being built (a hexadecimal string).
+
+The resulting package is a Guix instance of the given channel, similar
+to how @command{guix time-machine} would build it.
 @end defvr
 
 @node Build Phases
