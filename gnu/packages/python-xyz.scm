@@ -30521,3 +30521,26 @@ both.")
 package.  It can be used by type-checking tools like mypy, PyCharm, pytype
 etc. to check code that uses @code{orjson}.")
     (license license:asl2.0)))
+
+(define-public python-misskey
+  (package
+    (name "python-misskey")
+    (version "4.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/YuzuRyo61/Misskey.py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rma8pdsjsy00cg76q6q4qki4xpldykmz1m6dl3w2bjjxfhlbaz5"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;needs network
+    (propagated-inputs (list python-requests))
+    (home-page "https://misskeypy.readthedocs.io")
+    (synopsis "Python bindings for Misskey's API")
+    (description
+     "This package provides access to Misskey's API.  Misskey is a SNS
+platform using the ActivityPub protocol.")
+    (license license:expat)))
