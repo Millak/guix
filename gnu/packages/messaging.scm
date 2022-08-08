@@ -20,7 +20,7 @@
 ;;; Copyright © 2019, 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mason Hock <chaosmonk@riseup.net>
@@ -2810,16 +2810,22 @@ validating international phone numbers.")
 (define-public chatty
  (package
    (name "chatty")
-   (version "0.4.0")
+   (version "0.6.7")
    (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://source.puri.sm/Librem5/chatty.git")
-                    (commit (string-append "v" version))))
+                    (commit (string-append "v" version))
+                    ;; Fetch the required subprojects, notably libcmatrix
+                    ;; which has no releases and is developed in tandem.
+                    ;; Note: this also pulls in libgd, and embeds functionality
+                    ;; from it that is not part of the public API, making
+                    ;; unbundling difficult.
+                    (recursive? #true)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12k1a5xrwd6zk4x0m53hbzggk695z3bpbzy1wcikzy0jvch7h13d"))))
+                "11q07vjrrjf3k00kk41vm79brpq0qigz7l328br3g0li979kz32v"))))
    (build-system meson-build-system)
    (arguments
     '(#:phases
@@ -2827,12 +2833,25 @@ validating international phone numbers.")
         (add-after 'unpack 'skip-updating-desktop-database
           (lambda _
             (substitute* "meson.build"
-              (("meson.add_install_script.*") "")))))))
+              (("meson.add_install_script.*") ""))))
+        (add-before 'check 'pre-check
+          (lambda* (#:key tests? #:allow-other-keys)
+            (when tests?
+              ;; One test requires a running Xorg server.  Start one.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")
+              ;; HOME must be writable for writing configuration files.
+              (setenv "HOME" "/tmp")))))))
    (native-inputs
-    (list gettext-minimal `(,glib "bin") pkg-config protobuf))
+    (list gettext-minimal
+          `(,glib "bin")
+          pkg-config
+          protobuf
+          xorg-server-for-tests))
    (inputs
     (list feedbackd
           folks
+          gnome-desktop
           gsettings-desktop-schemas
           gspell
           json-glib
