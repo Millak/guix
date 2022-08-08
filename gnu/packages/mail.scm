@@ -3541,14 +3541,14 @@ some configuration.")
 (define-public postorius
   (package
     (name "postorius")
-    (version "1.3.3")
+    (version "1.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "postorius" version))
        (sha256
         (base32
-         "08jn23gblbkfl09qlykbpsmp39mmach3sl69h1j5cd5kkx839rwa"))))
+         "0s0sv97nmszl5pl9rnnyzp3sxpmdhpxqrdwv7nc0ww8zs99w831b"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -3563,7 +3563,7 @@ some configuration.")
        #:tests? #f)) ; Tests try to run a mailman instance to test against.
     (inputs
      (list python-readme-renderer python-mailmanclient
-           python-django-2.2 python-django-mailman3))
+           python-django python-django-mailman3))
     (native-inputs
      (list python-beautifulsoup4 python-isort python-mock python-vcrpy))
     (home-page "https://gitlab.com/mailman/postorius")
