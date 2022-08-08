@@ -197,8 +197,9 @@ standard.")
                    (substitute* (list "cc/ccom/scan.l" "cc/cxxcom/scan.l")
                      (("lineno, ") ""))))
                (replace 'check
-                 (lambda _
-                   (invoke "make" "-C" "cc/cpp" "test"))))))
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "make" "-C" "cc/cpp" "test")))))))
     (native-inputs (list bison flex))
     (synopsis "Portable C compiler")
     (description
