@@ -297,20 +297,20 @@ applications that want audio visualisation and audio visualisation plugins.")
              (chdir "libvisual-plugins")
              #t)))))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("gettext" ,gettext-minimal)
-       ("libintl" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list bison
+           flex
+           gettext-minimal
+           intltool
+           libtool
+           pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("esound" ,esound)
-       ("librsvg" ,librsvg)
-       ("gtk+" ,gtk+-2)
-       ("jack" ,jack-2)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)))
+     (list alsa-lib
+           esound
+           librsvg
+           gtk+-2
+           jack-2
+           libx11
+           libxext))
     (propagated-inputs
      (list libvisual))
     (synopsis "Audio visualisation library")
