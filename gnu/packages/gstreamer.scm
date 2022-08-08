@@ -245,10 +245,7 @@ and very fast.")
              (chdir "libvisual")
              #t)))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("libintl" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal intltool libtool pkg-config))
     (inputs
      (list sdl))
     (native-search-paths
