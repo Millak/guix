@@ -531,8 +531,8 @@ formats such as PNG.")
              (substitute* "translations/translations.pro"
                (("LRELEASE =.*")
                 (string-append "LRELEASE = "
-                               (assoc-ref inputs "qttools-5")
-                               "/bin/lrelease\n")))
+                               (search-input-file inputs "/bin/lrelease")
+                               "\n")))
              (let ((out (assoc-ref outputs "out")))
                (invoke "qmake"
                        (string-append "PREFIX=" out))))))))
