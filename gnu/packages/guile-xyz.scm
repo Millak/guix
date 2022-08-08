@@ -1330,7 +1330,7 @@ format.")
 (define-public guile-newt
   (package
     (name "guile-newt")
-    (version "0.0.2")
+    (version "0.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1339,7 +1339,7 @@ format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gksd1lzgjjh1p9vczghg8jw995d22hm34kbsiv8rcryirv2xy09"))))
+                "0hbznqigdkyh0kdkpnkp7sz2qd0g5dvmibcdi1rki02zg78mzypv"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags
@@ -1347,7 +1347,7 @@ format.")
     (inputs
      (list guile-3.0 newt))
     (native-inputs
-     (list autoconf automake pkg-config))
+     (list autoconf automake pkg-config guile-3.0))
     (synopsis "Guile bindings to Newt")
     (description
      "This package provides bindings for Newt, a programming library for
