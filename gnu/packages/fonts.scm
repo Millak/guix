@@ -2777,6 +2777,7 @@ prevalent typefaces in Traditional Chinese regions.")
 
 (define-public font-chiron-hei-hk
   (package
+    (inherit font-chiron-sung-hk)
     (name "font-chiron-hei-hk")
     (version "2.502")
     (source (origin
@@ -2788,8 +2789,10 @@ prevalent typefaces in Traditional Chinese regions.")
               (sha256
                (base32
                 "0wk1yladmwflkwrmj374avpml8shyrgd622f7mbvw5ln7fi70d2l"))))
-    (build-system font-build-system)
-    (home-page "https://chiron-fonts.github.io/")
-    (synopsis "昭源黑體")
-    (description "The complementary sans-serif typeface for Chiron Sung HK.")
-    (license license:silofl1.1)))
+                "00av598lcsvbwfxabs8m1bfvlk3zq98nziynsrg5p2s5mhz2pkvk"))))
+    (synopsis "Traditional Chinese Gothic typeface")
+    (description
+     "Chiron Hei HK is a Traditional Chinese Gothic typeface based on the Hong
+Kong variant of Adobe’s Source Han Sans.  The font aims at providing a modern,
+region-agnostic glyph set adopting the “modern” glyph style that is similar to
+prevalent typefaces in Traditional Chinese regions.")))
