@@ -2387,7 +2387,7 @@ GNOME Desktop.")
 (define-public gdl
   (package
     (name "gdl")
-    (version "3.34.0")
+    (version "3.40.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2399,7 +2399,7 @@ GNOME Desktop.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "154qcr0x6f68f4q526y87imv0rscmp34n47nk1pp82rsq52h2zna"))))
+                "11hp93gqk7m64h84q5hndzlwj4w6hl0cbmzrk2pkdn04ikm2zj4v"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
