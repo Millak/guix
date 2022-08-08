@@ -537,7 +537,7 @@ of the Louvain algorithm, for a number of different methods.")
 (define-public edge-addition-planarity-suite
   (package
     (name "edge-addition-planarity-suite")
-    (version "3.0.0.5")
+    (version "3.0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -548,7 +548,7 @@ of the Louvain algorithm, for a number of different methods.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01cm7ay1njkfsdnmnvh5zwc7wg7x189hq1vbfhh9p3ihrbnmqzh8"))))
+         "1c7bnxgiz28mqsq3a3msznmjq629w0qqjynm2rqnnjn2qpc22h3i"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
