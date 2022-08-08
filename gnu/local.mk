@@ -1900,6 +1900,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/unzip-CVE-2014-9636.patch		\
   %D%/packages/patches/unzip-CVE-2015-7696.patch		\
   %D%/packages/patches/unzip-CVE-2015-7697.patch		\
+  %D%/packages/patches/unzip-CVE-2022-0529+CVE-2022-0530.patch	\
   %D%/packages/patches/unzip-allow-greater-hostver-values.patch	\
   %D%/packages/patches/unzip-attribs-overflow.patch		\
   %D%/packages/patches/unzip-overflow-on-invalid-input.patch	\
