@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages avahi)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
@@ -242,6 +244,7 @@ external dependencies.")
       #:tests? #f))
     (inputs
      (list acl
+           avahi
            cmocka
            cups
            gamin
