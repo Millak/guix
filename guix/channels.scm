@@ -77,6 +77,7 @@
             %default-guix-channel
             %default-channels
             guix-channel?
+            repository->guix-channel
 
             channel-instance?
             channel-instance-channel
@@ -201,6 +202,26 @@ introduction, add it."
       (channel (inherit chan)
                (introduction %guix-channel-introduction))
       chan))
+
+(define* (repository->guix-channel directory
+                                   #:key
+                                   (introduction %guix-channel-introduction))
+  "Look for a Git repository in DIRECTORY or its ancestors and return a
+channel that uses that repository and the commit HEAD currently points to; use
+INTRODUCTION as the channel's introduction.  Return #f if no Git repository
+could be found at DIRECTORY or one of its ancestors."
+  (catch 'git-error
+    (lambda ()
+      (with-repository (repository-discover directory) repository
+        (let* ((head   (repository-head repository))
+               (commit (oid->string (reference-target head))))
+          (channel
+           (inherit %default-guix-channel)
+           (url (repository-working-directory repository))
+           (commit commit)
+           (branch (reference-shorthand head))
+           (introduction introduction)))))
+    (const #f)))
 
 (define-record-type <channel-instance>
   (channel-instance channel commit checkout)
