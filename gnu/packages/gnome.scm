@@ -4552,16 +4552,16 @@ and RDP protocols.")
     (inputs
      (list gtk+ dbus))
     (native-inputs
-     `(("bash-completion" ,bash-completion)
-       ("libxslt" ,libxslt)                     ;for xsltproc
-       ("libxml2" ,libxml2)                     ;for XML_CATALOG_FILES
-       ("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("glib:bin" ,glib "bin")
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("vala" ,vala)))
+     (list bash-completion
+           libxslt                      ;for xsltproc
+           libxml2                      ;for XML_CATALOG_FILES
+           docbook-xml-4.2
+           docbook-xsl
+           `(,glib "bin")
+           gtk-doc/stable
+           pkg-config
+           python
+           vala))
     (arguments
      `(#:glib-or-gtk? #t
        #:configure-flags '("-Dgtk_doc=true")
