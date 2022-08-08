@@ -2734,6 +2734,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
 
 (define-public font-lxgw-wenkai-tc
   (package
+    (inherit font-lxgw-wenkai)
     (name "font-lxgw-wenkai-tc")
     (version "0.920")
     (source (origin
@@ -2744,11 +2745,12 @@ within GB 2312, standard glyphs for Mainland China is used.")
               (sha256
                (base32
                 "1kysqzi19ldd1a3pd9axmggcbm1719myq6i6q6fdb1afscn272cp"))))
-    (build-system font-build-system)
     (home-page "https://github.com/lxgw/LxgwWenKaitc")
-    (synopsis "LXGW WenKai TC / 霞鶩文楷 TC")
-    (description "The Traditional Chinese Version of LXGW WenKai.")
-    (license license:silofl1.1)))
+    (synopsis "Traditional Chinese Imitation Song typeface")
+    (description
+     "LXGW Wenkai TC is a Traditional Chinese inherited glyphs form Imitation
+Song typeface covering commonly used characters as well as written form of
+dialects in Hong Kong and Taiwan.")))
 
 (define-public font-chiron-sung-hk
   (package
