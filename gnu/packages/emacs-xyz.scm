@@ -642,6 +642,25 @@ outlines, manage all your contacts, your windows and frames, and search across
 buffers, directory trees, or the web.")
     (license license:gpl3+)))
 
+(define-public emacs-vlf
+  (package
+    (name "emacs-vlf")
+    (version "1.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/"
+                           "vlf-" version ".tar"))
+       (sha256
+        (base32 "0hpri19z6b7dqmrj5ckp8sf0m0l72lkgahqzvfmwhgpgv2p81bny"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/m00natic/vlfi/")
+    (synopsis "View large files in Emacs")
+    (description
+"Vlf is an Emacs minor mode that allows viewing, editing, searching and
+comparing large files in batches.")
+    (license license:gpl2+)))
+
 (define-public emacs-hg-histedit
   ;; From 2021-03-02.
   ;; No releases available.
