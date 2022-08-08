@@ -1443,7 +1443,8 @@ message bus.")
                            "accountsservice/accountsservice-"
                            version ".tar.xz"))
        (sha256
-        (base32 "14d3lwik048h62qrzg1djdd2sqmxf3m1r859730pvzhrd6krg6ch"))))
+        (base32 "14d3lwik048h62qrzg1djdd2sqmxf3m1r859730pvzhrd6krg6ch"))
+       (patches (search-patches "accountsservice-extensions.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -1479,7 +1480,14 @@ message bus.")
                (("/usr/bin/passwd")
                 (search-input-file inputs "bin/passwd"))
                (("/usr/bin/chage")
-                (search-input-file inputs "bin/chage"))))))))
+                (search-input-file inputs "bin/chage")))))
+         (add-after 'install 'wrap-with-xdg-data-dirs
+           ;; This is to allow accountsservice finding extensions, which
+           ;; should be installed to the system profile.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (wrap-program (search-input-file outputs "libexec/accounts-daemon")
+               '("XDG_DATA_DIRS" prefix
+                 ("/run/current-system/profile/share"))))))))
     (native-inputs
      (list docbook-xml-4.1.2
            docbook-xsl
