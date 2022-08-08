@@ -255,6 +255,8 @@ expressions and blanks that were read."
   ;; symbol must appear within a (modify-phases ...) expression.
   (vhashq
    ('begin 1)
+   ('case 2)
+   ('cond 1)
    ('lambda 2)
    ('lambda* 2)
    ('match-lambda 1)

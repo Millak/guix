@@ -142,6 +142,21 @@ expressions."
     (* z z)))")
 
 (test-pretty-print "\
+(case x
+  ((1)
+   'one)
+  ((2)
+   'two))")
+
+(test-pretty-print "\
+(cond
+  ((zero? x)
+   'zero)
+  ((odd? x)
+   'odd)
+  (else #f))")
+
+(test-pretty-print "\
 #~(string-append #$coreutils \"/bin/uname\")")
 
 (test-pretty-print "\
