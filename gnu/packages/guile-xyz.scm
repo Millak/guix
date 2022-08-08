@@ -1393,7 +1393,7 @@ microblogging service.")
 (define-public guile-parted
   (package
     (name "guile-parted")
-    (version "0.0.5")
+    (version "0.0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1402,18 +1402,18 @@ microblogging service.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ar6n38br3h1jm54yy6d54rpqdgsy7pmnj3nqdzqrfk8z0kx0rm9"))
+                "12ygz0dw8zjr8g3z4g3sh4d1yw3fiphh0ssyqd4nllqa3sfwv21f"))
               (modules '((guix build utils)))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags
        '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
+    (native-inputs
+     (list autoconf automake guile-3.0 guile-bytestructures pkg-config))
     (inputs
      (list guile-3.0 parted))
     (propagated-inputs
      (list guile-bytestructures))
-    (native-inputs
-     (list autoconf automake pkg-config))
     (synopsis "Guile bindings to GNU Parted")
     (description
      "This package provides bindings for GNU Parted library, a C library
