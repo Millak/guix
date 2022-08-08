@@ -41,7 +41,10 @@
 
   #:export (samba-service-type
             samba-configuration
-            samba-smb-conf))
+            samba-smb-conf
+
+            wsdd-service-type
+            wsdd-configuration))
 
 (define %smb-conf
   (plain-file "smb.conf" "[global]
@@ -180,3 +183,104 @@ controller or as a regular domain member.")
           (service-extension profile-service-type
                              (compose list samba-configuration-package))))
    (default-value (samba-configuration))))
+
+
+;;;
+;;; WSDD
+;;;
+
+(define-record-type* <wsdd-configuration>
+  wsdd-configuration
+  make-wsdd-configuration
+  wsdd-configuration?
+  (package        wsdd-configuration-package
+                  (default wsdd))
+  (ipv4only?      wsdd-configuration-ipv4only?
+                  (default #f))
+  (ipv6only?      wsdd-configuration-ipv6only?
+                  (default #f))
+  (chroot         wsdd-configuration-chroot
+                  (default #f))
+  (hop-limit      wsdd-configuration-hop-limit
+                  (default 1))
+  (interfaces     wsdd-configuration-interfaces
+                  (default '()))
+  (uuid-device    wsdd-configuration-uuid-device
+                  (default #f))
+  (domain         wsdd-configuration-domain
+                  (default #f))
+  (host-name      wsdd-configuration-host-name
+                  (default #f))
+  (preserve-case? wsdd-configuration-preserve-case?
+                  (default #f))
+  (workgroup      wsdd-configuration-workgroup
+                  (default "WORKGROUP")))
+
+(define wsdd-accounts
+  (list
+   (user-group (name "wsdd"))
+   (user-account (name "wsdd")
+                 (group "wsdd")
+                 (comment "Web Service Discovery user")
+                 (home-directory "/var/empty")
+                 (shell (file-append shadow "/sbin/nologin")))))
+
+(define (wsdd-shepherd-service config)
+  (match-record config <wsdd-configuration>
+    (package ipv4only? ipv6only? chroot hop-limit interfaces uuid-device
+     domain host-name preserve-case? workgroup)
+     (list (shepherd-service
+            (documentation "The Web Service Discovery daemon enables (Samba) hosts,
+like your local NAS device, to be found by Web Service Discovery Clients
+like Windows.")
+            (provision '(wsdd))
+            (requirement '(networking))
+            (start #~(make-forkexec-constructor
+                      (list #$(file-append package "/bin/wsdd")
+                            #$@(if ipv4only?
+                                   #~("--ipv4only")
+                                   '())
+                            #$@(if ipv6only?
+                                   #~("--ipv6only")
+                                   '())
+                            #$@(if chroot
+                                   #~("--chroot" #$chroot)
+                                   '())
+                            #$@(if hop-limit
+                                   #~("--hoplimit" #$(number->string hop-limit))
+                                   '())
+                            #$@(map (lambda (interfaces)
+                                      (string-append "--interface=" interfaces))
+                                    interfaces)
+                            #$@(if uuid-device
+                                   #~("--uuid" #$uuid-device)
+                                   '())
+                            #$@(if domain
+                                   #~("--domain" #$domain)
+                                   '())
+                            #$@(if host-name
+                                   #~("--hostname" #$host-name)
+                                   '())
+                            #$@(if preserve-case?
+                                   #~("--preserve-case")
+                                   '())
+                            #$@(if workgroup
+                                   #~("--workgroup" #$workgroup)
+                                   '()))
+                      #:user "wsdd"
+                      #:group "wsdd"
+                      #:log-file "/var/log/wsdd.log"))
+            (stop #~(make-kill-destructor))))))
+
+(define wsdd-service-type
+  (service-type
+   (name 'wsdd)
+   (description "Web Service Discovery Daemon")
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             wsdd-shepherd-service)
+          (service-extension account-service-type
+                             (const wsdd-accounts))
+          (service-extension profile-service-type
+                             (compose list wsdd-configuration-package))))
+   (default-value (wsdd-configuration))))

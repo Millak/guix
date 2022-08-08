@@ -31350,6 +31350,75 @@ Manually enable the @code{winbindd} daemon.
 @end table
 @end deftp
 
+@cindex wsdd
+@subsubheading Web Service Discovery Daemon
+
+Web Service Discovery Daemon implements
+@uref{http://docs.oasis-open.org/ws-dd/discovery/1.1/os/wsdd-discovery-1.1-spec-os.html,
+Web Services Dynamic Discovery} protocol that enables host discovery --
+similar to Avahi -- over Multicast DNS.  It is a drop-in replacement for
+SMB hosts that have had SMBv1 disabled for security reasons.
+
+@defvr {Scheme Variable} wsdd-service-type
+
+Service type for the WSD host daemon.  The value for
+this service type is a @code{wsdd-configuration} record.  The details
+for the @code{wsdd-configuration} record type are given below.
+@end defvr
+
+@deftp{Data Type} wsdd-configuration This data type represents the
+configuration for the wsdd service.
+
+@table @asis
+
+@item @code{package} (default: @code{wsdd})
+The wsdd package to use.
+
+@item @code{ipv4only?} (default: @code{#f})
+Only listen to IPv4 addresses.
+
+@item @code{ipv6only} (default: @code{#f})
+Only listen to IPv6 addresses.  Please note: Activating both options is
+not possible, since there would be no IP versions to listen to.
+
+@item @code{chroot} (default: @code{#f})
+Chroot into a separate directory to prevent access to other directories.
+This is to increase security in case there is a vulnerability in
+@command{wsdd}.
+
+@item @code{hop-limit} (default: @code{1})
+Limit to the level of hops for multicast packets.  The default is
+@var{1} which should prevent packets from leaving the local network.
+
+@item @code{interface} (default: @code{'()})
+Limit to the given list of interfaces to listen to.  By default wsdd
+will listen to all interfaces.  Except the loopback interface is never
+used.
+
+@item @code{uuid-device} (default: @code{#f})
+The WSD protocol requires a device to have a UUID.  Set this to manually
+assign the service a UUID.
+
+@item @code{domain} (default: @code{#f})
+Notify this host is a member of an Active Directory.
+
+@item @code{host-name} (default: @code{#f})
+Manually set the hostname rather than letting @command{wsdd} inherit
+this host's hostname.  Only the host name part of a possible FQDN will
+be used in the default case.
+
+@item @code{preserve-case?} (default: @code{#f})
+By default @command{wsdd} will convert the hostname in workgroup to all
+uppercase.  The opposite is true for hostnames in domains.  Setting this
+parameter will preserve case.
+
+@item @code{workgroup} (default: @var{"WORKGROUP"})
+Change the name of the workgroup.  By default @command{wsdd} reports
+this host being member of a workgroup.
+
+@end table
+@end deftp
+
 @node Continuous Integration
 @subsection Continuous Integration
 

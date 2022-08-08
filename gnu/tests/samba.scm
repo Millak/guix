@@ -26,7 +26,8 @@
   #:use-module (gnu packages samba)
   #:use-module (guix gexp)
   #:use-module (guix store)
-  #:export (%test-samba))
+  #:export (%test-samba
+            %test-wsdd))
 
 
 ;;;
@@ -156,3 +157,59 @@
    (name "samba")
    (description "Connect to a running Samba daemon.")
    (value (run-samba-test))))
+
+
+;;;
+;;; The wsdd service.
+;;;
+
+(define %wsdd-os
+  (let ((base-os (simple-operating-system
+                  (service dhcp-client-service-type)
+                  (service wsdd-service-type))))
+    (operating-system
+      (inherit base-os)
+      (packages (cons wsdd (operating-system-packages base-os))))))
+
+(define* (run-wsdd-test)
+  "Return a test of an OS running wsdd service."
+
+  (define vm
+    (virtual-machine
+     (operating-system (marionette-operating-system
+                        %wsdd-os
+                        #:imported-modules '((gnu services herd))))
+     (port-forwardings '((3702 . 3702)
+                         (5357 . 5357)))))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (srfi srfi-26)
+                       (srfi srfi-64))
+
+          (define marionette
+            (make-marionette '(#$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "wsdd")
+
+          ;; Here shall be more tests to begin with.
+
+          (test-assert "wsdd running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (start-service 'wsdd))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "wsdd-test" test))
+
+(define %test-wsdd
+  (system-test
+   (name "wsdd")
+   (description "Connect to a running wsdd daemon.")
+   (value (run-wsdd-test))))
