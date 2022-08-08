@@ -120,6 +120,10 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:autoload   (guix describe) (current-channels)
+  #:autoload   (guix channels) (channel?
+                                guix-channel?
+                                repository->guix-channel)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -600,45 +604,37 @@ the Nix package manager.")
       (modify-inputs (package-propagated-inputs guix)
         (delete "guile-ssh"))))))
 
-(define (source-file? file stat)
-  "Return true if FILE is likely a source file, false if it is a typical
-generated file."
-  (define (wrong-extension? file)
-    (or (string-suffix? "~" file)
-        (member (file-extension file)
-                '("o" "a" "lo" "so" "go"))))
-
-  (match (basename file)
-    ((or ".git" "autom4te.cache" "configure" "Makefile" "Makefile.in" ".libs")
-     #f)
-    ((? wrong-extension?)
-     #f)
-    (_
-     #t)))
-
 (define-public current-guix-package
   ;; This parameter allows callers to override the package that 'current-guix'
   ;; returns.  This is useful when 'current-guix' cannot compute it by itself,
   ;; for instance because it's not running from a source code checkout.
-  (make-parameter #f))
+  ;;
+  ;; The default value is obtained by creating a package from the 'guix'
+  ;; channel returned by 'current-channels' or, if that's the empty list, that
+  ;; returned by 'repository->guix-channel' for the current directory (which
+  ;; assumes that we're running from a Git checkout).  Delay computation so
+  ;; that the relevant modules can be loaded lazily.
+  (make-parameter
+   (delay (match (or (find guix-channel? (current-channels))
+                     (repository->guix-channel
+                      (current-source-directory)))
+            ((? channel? source)
+             (package
+               (inherit guix)
+               (source source)
+               (build-system channel-build-system)
+               (inputs '())
+               (native-inputs '())
+               (propagated-inputs '())))
+            (#f #f)))))
 
 (define-public current-guix
-  (let* ((repository-root (delay (canonicalize-path
-                                  (string-append (current-source-directory)
-                                                 "/../.."))))
-         (select? (delay (or (git-predicate (force repository-root))
-                             source-file?))))
-    (lambda ()
-      "Return a package representing Guix built from the current source tree.
-This works by adding the current source tree to the store (after filtering it
-out) and returning a package that uses that as its 'source'."
-      (or (current-guix-package)
-          (package
-            (inherit guix)
-            (version (string-append (package-version guix) "+"))
-            (source (local-file (force repository-root) "guix-current"
-                                #:recursive? #t
-                                #:select? (force select?))))))))
+  (lambda ()
+    "Return a package representing the currently-used Guix.  It can be
+overridden by setting the 'current-guix-package' parameter."
+    (match (current-guix-package)
+      ((? promise? package) (force package))
+      (package package))))
 
 (define-public guix-icons
   (package
