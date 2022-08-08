@@ -682,6 +682,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/herd.scm				\
   %D%/services/pm.scm				\
   %D%/services/rsync.scm			\
+  %D%/services/samba.scm			\
   %D%/services/sddm.scm				\
   %D%/services/spice.scm				\
   %D%/services/ssh.scm				\
@@ -761,6 +762,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/package-management.scm		\
   %D%/tests/reconfigure.scm			\
   %D%/tests/rsync.scm				\
+  %D%/tests/samba.scm				\
   %D%/tests/security.scm			\
   %D%/tests/security-token.scm			\
   %D%/tests/singularity.scm			\
