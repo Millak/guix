@@ -1153,7 +1153,11 @@ NEW.  When OLD is omitted or is #f, return all the news entries of CHANNEL."
         (if (and news-file (file-exists? news-file))
             (with-repository checkout repository
               (let* ((news    (call-with-input-file news-file
-                                read-channel-news))
+                                (lambda (port)
+                                  (set-port-encoding! port
+                                                      (or (file-encoding port)
+                                                          "UTF-8"))
+                                  (read-channel-news port))))
                      (entries (map (lambda (entry)
                                      (resolve-channel-news-entry-tag repository
                                                                      entry))
