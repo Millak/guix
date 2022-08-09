@@ -15931,6 +15931,71 @@ putative directions).")
 library.")
     (license license:artistic2.0)))
 
+(define-public r-profvis
+  (package
+    (name "r-profvis")
+    (version "0.3.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "profvis" version))
+              (sha256
+               (base32
+                "1f86m426pcf90l29hf4hkirzf8f38dihk52bxbdq2gvrrdili5s3"))
+              (modules '((guix build utils)))
+              (snippet
+               '(with-directory-excursion "inst/htmlwidgets/lib"
+                  (for-each delete-file
+                            (list "highlight/highlight.js" ;from rmarkdown
+                                  "jquery/jquery.min.js" ;version 1.12.4
+                                  "d3/d3.min.js")))))) ;version 3.5.6
+    (properties `((upstream-name . "profvis")))
+    (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/htmlwidgets/lib/"
+               (copy-file
+                (search-input-file
+                 inputs "/site-library/rmarkdown/rmd/h/highlightjs/highlight.js")
+                "highlight/highlight.js")
+               (let ((mapping
+                      `((,(assoc-ref inputs "js-jquery")
+                         . "jquery/jquery.min.js")
+                        (,(assoc-ref inputs "js-d3")
+                         . "d3/d3.min.js"))))
+                 (for-each (lambda (source target)
+                             (format #true "Processing ~a --> ~a~%"
+                                     source target)
+                             (invoke "esbuild" source "--minify"
+                                     (string-append "--outfile=" target)))
+                           (map car mapping)
+                           (map cdr mapping)))))))))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("r-rmarkdown" ,r-rmarkdown)
+       ("js-d3"
+        ,(origin
+           (method url-fetch)
+           (uri "https://raw.githubusercontent.com/d3/d3/v3.5.6/d3.js")
+           (sha256
+            (base32
+             "17qlbwn7vgx335gciq6zp2ib6zg1r9lfa6p1bd9g0ds0xbcsbvgd"))))
+       ("js-jquery"
+        ,(origin
+           (method url-fetch)
+           (uri "https://code.jquery.com/jquery-1.12.4.js")
+           (sha256
+            (base32
+             "0x9mrc1668icvhpwzvgafm8xm11x9lfai9nwr66aw6pjnpwkc3s3"))))))
+    (propagated-inputs (list r-htmlwidgets r-stringr))
+    (home-page "https://rstudio.github.io/profvis/")
+    (synopsis "Interactive visualizations for profiling R code")
+    (description "This package provides interactive visualizations for
+profiling R code.")
+    (license license:gpl3)))
+
 (define-public r-protviz
   (package
     (name "r-protviz")
