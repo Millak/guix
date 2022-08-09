@@ -795,6 +795,7 @@
                                        "chrome_200_percent.pak"
                                        "resources.pak"
                                        "v8_context_snapshot.bin"
+                                       "chrome_crashpad_handler"
 
                                        ;; Swiftshader ICD.
                                        "libvk_swiftshader.so"
