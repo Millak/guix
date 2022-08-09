@@ -4435,7 +4435,11 @@ to BMP, JPEG or PNG image formats.")
                ;; components at runtime.
                (wrap-program (string-append out "/bin/maxima")
                  `("PATH" prefix (,binutils))))
-             #t)))))
+             #t))
+         ;; The Maxima command ‘describe’ allows to pick the relevant portions
+         ;; from Maxima’s Texinfo docs.  However it does not support reading
+         ;; gzipped info files.
+         (delete 'compress-documentation))))
     (home-page "https://maxima.sourceforge.io")
     (synopsis "Numeric and symbolic expression manipulation")
     (description "Maxima is a system for the manipulation of symbolic and
