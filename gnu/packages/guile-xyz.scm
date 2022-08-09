@@ -32,7 +32,7 @@
 ;;; Copyright © 2020 Jesse Gibbons <jgibbons2357@gmail.com>
 ;;; Copyright © 2020 Mike Rosset <mike.rosset@gmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
-;;; Copyright © 2020, 2021 pukkamustard <pukkamustard@posteo.net>
+;;; Copyright © 2020, 2021, 2022 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
@@ -3116,32 +3116,33 @@ denote the invalidity of certain code paths in a Scheme program.")
     (license license:gpl3+)))
 
 (define-public guile-srfi-158
-  (package
-    (name "guile-srfi-158")
-    (version "0.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/mjbecze/guile-srfi-158.git")
-             (commit version)))
-       (sha256
-        (base32
-         "0b8hlv1bldbcwkcxi9y8mm6xp5gbgpg7b15bwqxv70iynl9d9a7c"))
-       (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake pkg-config))
-    (inputs
-     (list guile-3.0))
-    (home-page "https://gitlab.com/samplet/guile-srfi-158")
-    (synopsis "SRFI 158 (Generators and Accumulators) for Guile")
-    (description "This package provides an implementation of SRFI 158
+  (let ((commit "13126d1ed37892c864337a600a43d6876625fb99")
+        (revision "0"))
+    (package
+      (name "guile-srfi-158")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/mjbecze/guile-srfi-158.git")
+               (commit commit)))
+         (sha256
+          (base32
+           "0hg57l3w5qamip1clkab0q01np5nqln9y054q39smm4ki0svdl8w"))
+         (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list guile-3.0 autoconf automake pkg-config))
+      (inputs (list guile-3.0))
+      (home-page "https://gitlab.com/samplet/guile-srfi-158")
+      (synopsis "SRFI 158 (Generators and Accumulators) for Guile")
+      (description "This package provides an implementation of SRFI 158
 for Guile.  SRFI 158 defines utility procedures that create,
 transform, and consume generators.  It also defines procedures that
 return accumulators.  It is implemented by wrapping the sample
 implementation in a thin Guile compatibility layer.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public guile-srfi-159
   (let ((commit "1bd98abda2ae4ef8f36761a167903e55c6bda7bb")
