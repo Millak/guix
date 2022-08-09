@@ -1360,6 +1360,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/librime-fix-build-with-gcc10.patch	\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\
   %D%/packages/patches/libziparchive-add-includes.patch		\
+  %D%/packages/patches/lightdm-arguments-ordering.patch		\
   %D%/packages/patches/lightdm-vncserver-check.patch		\
   %D%/packages/patches/localed-xorg-keyboard.patch		\
   %D%/packages/patches/kdiagram-Fix-missing-link-libraries.patch \
