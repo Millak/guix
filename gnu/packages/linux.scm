@@ -5223,75 +5223,69 @@ arrays when needed.")
                   #t))))
     (build-system gnu-build-system)
     (arguments
-     '(#:test-target "test"
-       #:parallel-build? #f             ;XXX: broken in 0.8.4
-       #:make-flags (list "CC=gcc"
-                          (string-append "DESTDIR="
-                                         (assoc-ref %outputs "out"))
-                          ;; Install Udev rules below this directory, relative
-                          ;; to the prefix.
-                          "SYSTEMDPATH=lib"
-                          (string-append "LDFLAGS=-Wl,-rpath="
-                                         (assoc-ref %outputs "out")
-                                         "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((lvm2 (assoc-ref inputs "lvm2"))
-                   (udev (assoc-ref inputs "udev")))
-               (substitute* "Makefile.inc"
-                 (("\\$\\(prefix\\)/usr") "$(prefix)")
-                 ;; Do not save timestamp to avoid gzip "timestamp
-                 ;; out-of-range" warnings.
-                 (("gzip -9") "gzip -9n"))
-               (substitute* '("kpartx/Makefile" "libmultipath/Makefile")
-                 (("/usr/include/libdevmapper.h")
-                  (string-append lvm2 "/include/libdevmapper.h"))
-                 (("/usr/include/libudev.h")
-                  (string-append udev "/include/libudev.h")))
-               #t)))
-         (add-after 'unpack 'fix-maybe-uninitialized-variable
-           (lambda _
-             ;; This variable gets initialized later if needed, but GCC 7
-             ;; fails to notice.  Should be fixed for > 0.8.4.
-             ;; https://www.redhat.com/archives/dm-devel/2020-March/msg00137.html
-             (substitute* "libmultipath/structs_vec.c"
-               (("bool is_queueing;")
-                "bool is_queueing = false;"))
-             #t))
-         (add-after 'unpack 'fix-linking-tests
-           (lambda _
-             ;; Add missing linker flag for -lmpathcmd.  This should be fixed
-             ;; for versions > 0.8.4.
-             (substitute* "tests/Makefile"
-               (("-lmultipath -lcmocka")
-                "-lmultipath -L$(mpathcmddir) -lmpathcmd -lcmocka"))
-             #t))
-         (add-after 'unpack 'skip-failing-tests
-           (lambda _
-             ;; This test and the module's setup() test an arbitrary block
-             ;; device node name, but the build environment has none.
-             (substitute* "tests/devt.c"
-               (("return get_one_devt.*") "return 0;\n")
-               (("cmocka_unit_test\\(test_devt2devname_devt_good\\),") ""))
-             ;; The above triggers -Werror=unused-function.  Ignore it.
-             (substitute* "tests/Makefile"
-               (("CFLAGS \\+= " match)
-                (string-append match "-Wno-error=unused-function ")))
-             #t))
-         (delete 'configure))))         ; no configure script
+     (list
+      #:test-target "test"
+      #:parallel-build? #f              ;XXX: broken since 0.8.4
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "DESTDIR=" #$output)
+                           ;; Install Udev rules below this directory, relative
+                           ;; to the prefix.
+                           "SYSTEMDPATH=lib"
+                           (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((libdevmapper.h
+                     (search-input-file inputs "include/libdevmapper.h"))
+                    (libudev.h
+                     (search-input-file inputs "include/libudev.h")))
+                (substitute* "Makefile.inc"
+                  (("\\$\\(prefix\\)/usr") "$(prefix)")
+                  ;; Do not save timestamp to avoid gzip "timestamp
+                  ;; out-of-range" warnings.
+                  (("gzip -9") "gzip -9n"))
+                (substitute* '("kpartx/Makefile" "libmultipath/Makefile")
+                  (("/usr/include/libdevmapper.h") libdevmapper.h)
+                  (("/usr/include/libudev.h") libudev.h)))))
+          (add-after 'unpack 'fix-maybe-uninitialized-variable
+            (lambda _
+              ;; This variable gets initialized later if needed, but GCC 7
+              ;; fails to notice.  Should be fixed for > 0.8.4.
+              ;; https://www.redhat.com/archives/dm-devel/2020-March/msg00137.html
+              (substitute* "libmultipath/structs_vec.c"
+                (("bool is_queueing;")
+                 "bool is_queueing = false;"))))
+          (add-after 'unpack 'fix-linking-tests
+            (lambda _
+              ;; Add missing linker flag for -lmpathcmd.  This should be fixed
+              ;; for versions > 0.8.4.
+              (substitute* "tests/Makefile"
+                (("-lmultipath -lcmocka")
+                 "-lmultipath -L$(mpathcmddir) -lmpathcmd -lcmocka"))))
+          (add-after 'unpack 'skip-failing-tests
+            (lambda _
+              ;; This test and the module's setup() test an arbitrary block
+              ;; device node name, but the build environment has none.
+              (substitute* "tests/devt.c"
+                (("return get_one_devt.*") "return 0;\n")
+                (("cmocka_unit_test\\(test_devt2devname_devt_good\\),") ""))
+              ;; The above triggers -Werror=unused-function.  Ignore it.
+              (substitute* "tests/Makefile"
+                (("CFLAGS \\+= " match)
+                 (string-append match "-Wno-error=unused-function ")))))
+          (delete 'configure))))        ;no configure script
     (native-inputs
      (list perl pkg-config valgrind
            ;; For tests.
            cmocka))
     (inputs
-     `(("json-c" ,json-c)
-       ("libaio" ,libaio)
-       ("liburcu" ,liburcu)
-       ("lvm2" ,lvm2)
-       ("readline" ,readline)
-       ("udev" ,eudev)))
+     (list json-c
+           libaio
+           liburcu
+           lvm2
+           readline
+           eudev))
     (home-page "http://christophe.varoqui.free.fr/")
     (synopsis "Access block devices through multiple paths")
     (description
@@ -5304,8 +5298,8 @@ Linux Device Mapper multipathing driver:
 @code{dm} multipath devices.
 @item @command{kpartx} - Create device maps from partition tables.
 @end enumerate")
-    (license (list license:gpl2+             ; main distribution
-                   license:lgpl2.0+))))      ; libmpathcmd/mpath_cmd.h
+    (license (list license:gpl2+        ;main distribution
+                   license:lgpl2.0+)))) ;libmpathcmd/mpath_cmd.h
 
 (define-public libaio
   (package
