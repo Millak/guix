@@ -270,7 +270,8 @@ experience for your users, your family and yourself")
                (base32
                 "1wr60c946p8jz9kb8zi4cd8d4mkcy7infbvlfzwajiglc22nblxn"))
               (patches (search-patches "lightdm-arguments-ordering.patch"
-                                       "lightdm-vncserver-check.patch"))))
+                                       "lightdm-vncserver-check.patch"
+                                       "lightdm-vnc-color-depth.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:parallel-tests? #f             ; fails when run in parallel

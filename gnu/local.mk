@@ -1362,6 +1362,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libziparchive-add-includes.patch		\
   %D%/packages/patches/lightdm-arguments-ordering.patch		\
   %D%/packages/patches/lightdm-vncserver-check.patch		\
+  %D%/packages/patches/lightdm-vnc-color-depth.patch		\
   %D%/packages/patches/localed-xorg-keyboard.patch		\
   %D%/packages/patches/kdiagram-Fix-missing-link-libraries.patch \
   %D%/packages/patches/kiki-level-selection-crash.patch		\
