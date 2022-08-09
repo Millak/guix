@@ -41,6 +41,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
@@ -625,3 +626,32 @@ KDE Frameworks components.")
     (description
      "This package provides a daemon that listens to system notifications.")
     (license license:gpl2+)))
+
+(define-public plasmatube
+  (package
+    (name "plasmatube")
+    (version "22.09")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma-mobile/"
+                                  version "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "00w9p5fcpv4s406lmcdcbrxf19sgkvf9yy8pfjmf1asvvvi8bpnk"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs
+     (list kconfig
+           kirigami
+           ki18n
+           qtbase-5
+           qtdeclarative-5
+           qtmultimedia-5
+           qtquickcontrols2-5
+           qtsvg-5
+           youtube-dl))
+    (home-page "https://apps.kde.org/plasmatube/")
+    (synopsis "Kirigami YouTube video player")
+    (description "This package provides YouTube video player based
+on QtMultimedia and @command{yt-dlp}.")
+    (license license:gpl3+)))
