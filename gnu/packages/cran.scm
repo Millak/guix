@@ -19479,14 +19479,14 @@ etc.).  Text boxes with automatic word wrap are also supported.")
 (define-public r-flexdashboard
   (package
     (name "r-flexdashboard")
-    (version "0.5.2")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexdashboard" version))
        (sha256
         (base32
-         "1bh759llp15fxrx2rwvxd8p3w84vjmkid32ism7zg49a127fjib4"))
+         "0bvw2ca6xxscia4hvq505qvjf6zkgpsqv86f1s78aknzwr9jsikm"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -19495,7 +19495,7 @@ etc.).  Text boxes with automatic word wrap are also supported.")
            (delete-file "inst/www/sly/sly.min.js")
            (delete-file "inst/www/stickytableheaders/jquery.stickytableheaders.min.js")
            (delete-file "inst/www/prism/prism.js")
-           #t))))
+           (delete-file "inst/www/featherlight/featherlight.min.js")))))
     (build-system r-build-system)
     (arguments
      `(#:modules ((guix build utils)
@@ -19542,14 +19542,16 @@ etc.).  Text boxes with automatic word wrap are also supported.")
                                  (call-with-output-file target
                                    (lambda (port)
                                      (dump-port minified port)))))
-                             sources targets))))
-             #t)))))
+                             sources targets)))))))))
     (propagated-inputs
-     (list r-htmltools
+     (list r-bslib
+           r-htmltools
            r-htmlwidgets
            r-jsonlite
            r-knitr
            r-rmarkdown
+           r-sass
+           r-scales
            r-shiny))
     (native-inputs
      `(("uglifyjs" ,node-uglify-js)
