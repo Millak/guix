@@ -1153,7 +1153,7 @@ supplies a generic doubly-linked list and some string functions.")
     "FreeImage is a library for developers who would like to support popular
 graphics image formats like PNG, BMP, JPEG, TIFF and others.")
    (license license:gpl2+)
-   (home-page "http://freeimage.sourceforge.net")))
+   (home-page "https://freeimage.sourceforge.io/")))
 
 (define-public vigra
     (let ((commit "9b514fa00a136f5fd81bb57ee9f6293c333ffc1f")
