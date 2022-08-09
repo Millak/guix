@@ -8919,7 +8919,7 @@ persistent over reboots.")
 (define-public libbpf
   (package
     (name "libbpf")
-    (version "0.1.1")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -8929,28 +8929,26 @@ persistent over reboots.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ilnnm4q22f8fagwp8kb37licy4ks861i2iqh2djsypqhnxvx3fv"))))
+         "1zzpkk4x3f20483dzw43b3ml03d63vvkmqf4j8y3b61b67wm59bm"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (propagated-inputs
      ;; In Requires.private of libbpf.pc.
-     (list libelf zlib))
+     (list elfutils zlib))
     (arguments
      `(#:tests? #f                      ; no tests
        #:make-flags
        (list
         (string-append "PREFIX=" (assoc-ref %outputs "out"))
         (string-append "LIBDIR=$(PREFIX)/lib")
-        (string-append
-         "CC=" (assoc-ref %build-inputs "gcc") "/bin/gcc"))
+        (string-append "CC=" ,(cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
          (add-before 'build 'pre-build
            (lambda _
-             (chdir "src")
-             #t)))))
+             (chdir "src"))))))
     (home-page "https://github.com/libbpf/libbpf")
     (synopsis "BPF CO-RE (Compile Once – Run Everywhere)")
     (description
