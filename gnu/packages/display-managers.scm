@@ -364,6 +364,14 @@ display manager which supports different greeters.")
 
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'customize-default-config-path
+            (lambda _
+              (substitute* "src/Makefile.in"
+                ;; Have the default config directory sourced from
+                ;; /etc/lightdm/lightdm-gtk-greeter.conf, which is where the
+                ;; lightdm service writes it.
+                (("\\$\\(sysconfdir)/lightdm/lightdm-gtk-greeter.conf")
+                 "/etc/lightdm/lightdm-gtk-greeter.conf"))))
           (add-after 'install 'fix-.desktop-file
             (lambda* (#:key outputs #:allow-other-keys)
               (substitute* (search-input-file
