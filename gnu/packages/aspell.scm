@@ -55,7 +55,8 @@
       (sha256
        (base32
         "1wi60ankalmh8ds7nplz434jd7j94gdvbahdwsr539rlad8pxdzr"))
-      (patches (search-patches "aspell-default-dict-dir.patch"))))
+      (patches (search-patches "aspell-default-dict-dir.patch"
+                               "aspell-CVE-2019-25051.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
