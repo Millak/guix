@@ -9040,7 +9040,7 @@ and above.")
 (define-public bpftrace
   (package
     (name "bpftrace")
-    (version "0.11.4")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -9049,13 +9049,13 @@ and above.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y4qgm2cpccrsm20rnh92hqplddqsc5q5zhw9nqn2igm3h9i0z7h"))
+        (base32 "022fg0kiz0liahj82wvlxmivkwyp86shs5fwr2v4blx7lh05k9zm"))
        (patches (search-patches "bpftrace-disable-bfd-disasm.patch"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison flex))
     (inputs
-     (list bcc clang-toolchain-9 elfutils libbpf))
+     (list bcc clang-toolchain-9 elfutils libbpf cereal))
     (arguments
      `(#:tests? #f ;Tests require googletest sources.
        #:configure-flags
