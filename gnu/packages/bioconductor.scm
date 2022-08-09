@@ -11989,6 +11989,30 @@ genes in the gene-set that are ranked above the leading edge).")
      "This package provides a pipeline for analysing Capture Hi-C data.")
     (license license:artistic2.0)))
 
+;; This is a CRAN package, but it depends on Bioconductor packages, so we put
+;; it here.
+(define-public r-ciara
+  (package
+    (name "r-ciara")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "CIARA" version))
+              (sha256
+               (base32
+                "0nr7wks9231326x0lhpbh824c6vcb5hr5jn89s9bmg9mci907bsf"))))
+    (properties `((upstream-name . "CIARA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-ggplot2 r-ggraph r-magrittr))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=CIARA")
+    (synopsis "Cluster-independent algorithm for rare cell types identification")
+    (description
+     "This is a package to support identification of markers of rare cell
+types by looking at genes whose expression is confined in small regions of the
+expression space.")
+    (license license:artistic2.0)))
+
 (define-public r-cicero
   (package
     (name "r-cicero")
