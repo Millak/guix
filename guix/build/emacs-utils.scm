@@ -38,6 +38,7 @@
 
             emacs-generate-autoloads
             emacs-byte-compile-directory
+            emacs-compile-directory
             emacs-header-parse
 
             as-display
@@ -114,6 +115,35 @@ true, evaluate using dynamic scoping."
                 (setq byte-compile-debug t) ; for proper exit status
                 (byte-recompile-directory (file-name-as-directory ,dir) 0 1))))
     (emacs-batch-eval expr)))
+
+(define* (emacs-compile-directory dir)
+  "Compile all files in DIR to native code.
+
+If native code is not supported, compile to bytecode instead."
+  (emacs-batch-eval
+    `(let ((byte-compile-debug t)       ; for proper exit status
+           (byte+native-compile (native-comp-available-p))
+           (files (directory-files-recursively ,dir "\\.el$")))
+       (mapc
+        (lambda (file)
+          (let (byte-to-native-output-file
+                ;; First entry is the eln-cache of the homeless shelter,
+                ;; second entry is the install directory.
+                (eln-dir (and (native-comp-available-p)
+                              (cadr native-comp-eln-load-path))))
+            (if byte+native-compile
+                (native-compile file
+                                (comp-el-to-eln-filename file eln-dir))
+                (byte-compile-file file))
+            ;; Sadly, we can't use pcase because quasiquote works different in
+            ;; Emacs.  See `batch-byte+native-compile' in comp.el for the
+            ;; actual shape of byte-to-native-output-file.
+            (unless (null byte-to-native-output-file)
+              (rename-file (car byte-to-native-output-file)
+                           (cdr byte-to-native-output-file)
+                           t))))
+       files))
+    #:dynamic? #t))
 
 (define (emacs-header-parse section file)
   "Parse the header SECTION in FILE and return it as a string."
