@@ -26,7 +26,7 @@
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Nadya Voronova <voronovank@gmail.com>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
-;;; Copyright © 2018, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Eric Brown <brown@fastmail.com>
 ;;; Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018 Amin Bandali <bandali@gnu.org>
@@ -5111,6 +5111,13 @@ with C89.")
     (build-system cmake-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
+                  (add-before 'configure 'set-environment
+                    (lambda _
+                      ;; Pass "-fno-ipa-modref" flag to the compiler to work
+                      ;; around a test failure with GCC 11.  This is a
+                      ;; header-only library so these flags only affect tests.
+                      ;; See <https://github.com/g-truc/glm/pull/1087>.
+                      (setenv "CXXFLAGS" "-O2 -g -fno-ipa-modref")))
                   (replace 'install
                     (lambda* (#:key outputs #:allow-other-keys)
                       ;; Since version 0.9.9.6, 'make install' is not supported
