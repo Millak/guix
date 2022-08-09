@@ -290,6 +290,48 @@ directly, you need to tell @code{ssh-add} about it.  @code{ssh-add} will then
 call it if it is not associated to a terminal.")
     (license license:gpl2+)))
 
+(define-public latte-dock
+  (package
+    (name "latte-dock")
+    (version "0.10.8")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/latte-dock/"
+                                  "latte-dock-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0ali9i0y0y1c5mdaps5ybhk4nqvzzs5jq27wj8rg8xxqjyfvbah0"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list qtbase-5
+                  qtdeclarative-5
+                  knotifications
+                  kwindowsystem
+                  kio
+                  plasma-framework
+                  kwayland
+                  kactivities
+                  kcrash
+                  kiconthemes
+                  knewstuff
+                  karchive
+                  kguiaddons
+                  kdbusaddons
+                  kglobalaccel
+                  kirigami
+                  ki18n
+                  kdeclarative
+                  kcoreaddons
+                  xcb-util
+                  qtx11extras
+                  libsm))
+    (synopsis "Latte is a dock based on plasma frameworks")
+    (description
+     "Latte is a dock based on plasma frameworks that provides
+an elegant and intuitive experience for your tasks and plasmoids.")
+    (home-page "https://github.com/KDE/latte-dock")
+    (license license:gpl2+)))
+
 (define-public layer-shell-qt
   (package
     (name "layer-shell-qt")
