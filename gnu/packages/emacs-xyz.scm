@@ -49,7 +49,7 @@
 ;;; Copyright © 2019, 2020, 2021 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2019 Todor Kondić <tk.code@protonmail.com>15669
 ;;; Copyright © 2019 Amar Singh <nly@disroot.org>
-;;; Copyright © 2019 Baptiste Strazzulla <bstrazzull@hotmail.fr>
+;;; Copyright © 2019, 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Jens Mølgaard <jens@zete.tk>
 ;;; Copyright © 2019, 2020 Amin Bandali <bandali@gnu.org>
@@ -4318,6 +4318,34 @@ which is restored where possible when the file is loaded again.")
     (description "This package provides an Emacs library for manipulating
 strings.")
     (license license:gpl3+)))
+
+(define-public emacs-blight
+  (let ((commit "6bf9c6192d2bf979eebbfae1963401ef3ff4ef5d")
+        (revision "0"))
+    (package
+      (name "emacs-blight")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/blight")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1x7s1fcva5kkl9iyb5grd6crf38rrz3zb0c6wb85khi9far10vgq"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/blight")
+      (synopsis "Control display brightness")
+      (description
+       "Blight allows you to control display brightness from Emacs.  It
+features object-oriented code using EIEIO, a base class implementing
+a reasonable API which focuses on the @emph{set the back light to this
+percentage} functionality, it includes a concrete implementation that uses
+SysFS to control brightness.  Other systems (D-Bus, xbacklight, XELB using
+XRandR) are easily supportable, giving the same experience across
+environments.")
+      (license license:gpl3+))))
 
 (define-public emacs-symon
   (package
