@@ -22,6 +22,7 @@
 
 (define-module (gnu packages kde-pim)
   #:use-module (guix build-system qt)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
@@ -29,6 +30,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
@@ -38,10 +40,12 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages openldap)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages search)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages xml))
 
 (define-public akonadi
@@ -889,6 +893,51 @@ protocol.  This library does not implement an IMAP client; it merely makes it
 easier to do so.")
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0+))))
+
+(define-public kitinerary
+  (package
+    (name "kitinerary")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://invent.kde.org/pim/kitinerary/-/archive/v"
+                    version "/kitinerary-v" version ".tar.gz"))
+              (sha256
+               (base32
+                "1gpy5siaw9k4332ii6a87rq162dbmyfkqp1l1k8bmldg1755v3jz"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "dbus-launch" "ctest" "-E"
+                               "(jsonlddocumenttest|mergeutiltest|locationutiltest|knowledgedbtest|airportdbtest|extractorscriptenginetest|pkpassextractortest|postprocessortest|calendarhandlertest|extractortest)")))))))
+    (native-inputs (list dbus extra-cmake-modules))
+    (inputs (list kpkpass
+                  kcalendarcore
+                  karchive
+                  ki18n
+                  kcoreaddons
+                  kcontacts
+                  kmime
+                  knotifications
+                  shared-mime-info
+                  openssl
+                  poppler
+                  qtbase-5
+                  qtdeclarative-5
+                  qtlocation
+                  qtquickcontrols2-5
+                  libxml2
+                  zlib))
+    (home-page "https://apps.kde.org/itinerary/")
+    (synopsis
+     "Data Model and Extraction System for Travel Reservation information")
+    (description "This package provides a library containing itinerary data
+model and itinerary extraction code.")
+    (license license:lgpl2.0)))
 
 (define-public kldap
   (package
