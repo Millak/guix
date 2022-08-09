@@ -18936,6 +18936,27 @@ Minkowski Sum of general polygons.  There is a function for removing
 self-intersections from polygon data.")
     (license license:boost1.0)))
 
+(define-public r-urlchecker
+  (package
+    (name "r-urlchecker")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "urlchecker" version))
+              (sha256
+               (base32
+                "06034lb94krbzawqg5xklwcksvyyzl3qy355f66baj5pw7dms5k2"))))
+    (properties `((upstream-name . "urlchecker")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli r-curl r-xml2))
+    (home-page "https://github.com/r-lib/urlchecker")
+    (synopsis "Run CRAN URL checks from older R versions")
+    (description
+     "This package provides the URL checking tools available in R 4.1+ as a
+package for earlier versions of R.  It also uses concurrent requests so can be
+much faster than the serial versions.")
+    (license license:gpl3)))
+
 (define-public r-urltools
   (package
     (name "r-urltools")
