@@ -4367,6 +4367,35 @@ environments.")
      "Tiny graphical system monitor for the Emacs minibuffer when idle.")
     (license license:gpl2+)))
 
+(define-public emacs-lemon
+  (let ((commit "37a6e6d6ef0900ca19c820a2dbc122c7fe6d86cf")
+        (revision "0"))
+    (package
+      (name "emacs-lemon")
+      (version (git-version "2.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/lemon")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bc77vzi4p6mlzmhgybbldlpcsiiv4xqrd5lnc7wzvmxv8byhqpm"))))
+      (build-system emacs-build-system)
+      (native-inputs
+       (list emacs-blight emacs-emms))
+      (propagated-inputs
+       (list emacs-s))
+      (home-page "https://codeberg.org/emacs-weirdware/lemon")
+      (synopsis "System monitors in the echo area")
+      (description
+       "Lemon is a tiny system monitor which displays system information in
+the echo area when Emacs is has been idle for a few seconds.  This is a fork
+of zk_phi’s Symon, which has been largely rewritten.  It works nicely with
+EXWM.")
+      (license license:gpl3+))))
+
 (define-public emacs-sx
   (let ((version "20191229")
         (revision "0")
