@@ -10855,6 +10855,29 @@ supported classes are those defined in packages @code{network} and
 @code{igraph}.")
     (license license:gpl3)))
 
+(define-public r-interp
+  (package
+    (name "r-interp")
+    (version "1.1-3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "interp" version))
+              (sha256
+               (base32
+                "0gzsnlg8f7knb100n6vv6307c3v2jd8f9qzrq62jkc6g71mn0kmp"))))
+    (properties `((upstream-name . "interp")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-deldir r-rcpp r-rcppeigen))
+    (native-inputs (list gfortran))
+    (home-page "https://cran.r-project.org/package=interp")
+    (synopsis "Interpolation methods")
+    (description
+     "Bivariate data interpolation on regular and irregular grids, either
+linear or using splines are the main part of this package.  It is intended to
+provide replacement functions for the ACM licensed @code{akima::interp} and
+@code{tripack::tri.mesh} functions.")
+    (license license:gpl2+)))
+
 (define-public r-abcoptim
   (package
     (name "r-abcoptim")
