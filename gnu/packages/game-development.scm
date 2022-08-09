@@ -13,7 +13,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017, 2019 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 Jethro Cao <jethrocao@gmail.com>
@@ -2467,13 +2467,23 @@ rigid body physics library written in C.")
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Bundled code only used for the testbed.
-           (delete-file-recursively "extern")))))
+           ;; Remove bundled code only used for the testbed.
+           (delete-file-recursively "extern")
+           ;; Remove bundled copy of doctest, and adjust tests accordingly.
+           (delete-file "unit-test/doctest.h")
+           (substitute* "unit-test/CMakeLists.txt"
+             (("doctest\\.h")
+              ""))
+           (substitute* (find-files "unit-test" "\\.cpp$")
+             (("include \"doctest\\.h\"")
+              "include <doctest/doctest.h>"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:test-target "unit_test"
        #:configure-flags '("-DBUILD_SHARED_LIBS=ON"
                            "-DBOX2D_BUILD_TESTBED=OFF")))
+    (native-inputs
+     (list doctest))                    ;for tests
     (inputs
      (list libx11))
     (home-page "https://box2d.org/")
