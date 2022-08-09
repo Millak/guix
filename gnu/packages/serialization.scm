@@ -167,7 +167,17 @@ implement RPC protocols.")
      "Cereal is a header-only C++11 serialization library.  Cereal takes
 arbitrary data types and reversibly turns them into different representations,
 such as compact binary encodings, XML, or JSON.")
-    (license license:bsd-3)))
+    ;; Note: Cereal bundles forked versions of rapidxml and rapidjson
+    ;; (see include/cereal/external/), so list their licenses too.
+    (license (list license:bsd-3        ;Cereal itself
+                   ;; The bundled RapidXML is dual Boost/Expat (users choice).
+                   ;; RapidJSON is Expat licensed, and further bundles a
+                   ;; stdint.h with BSD-3.
+                   license:boost1.0 license:expat
+                   ;; Finally, include/cereal/external/base64.hpp has a
+                   ;; home-grown BSD-like license.
+                   (license:non-copyleft
+                    "file://include/cereal/external/LICENSE")))))
 
 ;; Some packages fail with the latest version.  Remove this variable
 ;; when unused.
