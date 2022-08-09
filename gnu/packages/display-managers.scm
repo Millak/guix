@@ -360,8 +360,8 @@ display manager which supports different greeters.")
               (string-append "--with-libxklavier")
               (string-append "--enable-at-spi-command="
                              (search-input-file
-                              %build-inputs "libexec/at-spi-bus-launcher")))
-
+                              %build-inputs "libexec/at-spi-bus-launcher")
+                             " --launch-immediately"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'customize-default-config-path
