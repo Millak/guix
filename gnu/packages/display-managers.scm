@@ -54,6 +54,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
@@ -353,6 +354,9 @@ display manager which supports different greeters.")
      (list
       #:configure-flags
       #~(list "--disable-indicator-services-command" ;requires upstart
+              ;; Put the binary under /bin rather than /sbin, so that it gets
+              ;; wrapped by the glib-or-gtk-wrap phase.
+              (string-append "--sbindir=" #$output "/bin")
               (string-append "--enable-at-spi-command="
                              (search-input-file
                               %build-inputs "libexec/at-spi-bus-launcher")))
@@ -367,35 +371,29 @@ display manager which supports different greeters.")
                 (("Exec=lightdm-gtk-greeter")
                  (string-append "Exec="
                                 (search-input-file
-                                 outputs "sbin/lightdm-gtk-greeter"))))))
-          (add-after 'fix-.desktop-file 'wrap-program
-            ;; Mimic glib-or-gtk build system which doesn't wrap files in
-            ;; /sbin.
-            (lambda* (#:key outputs inputs #:allow-other-keys)
-              (let ((gtk #$(this-package-input "gtk+"))
-                    (shared-mime-info #$(this-package-input "shared-mime-info"))
-                    (glib #$(this-package-input "glib")))
-                (wrap-program (search-input-file
-                               outputs "sbin/lightdm-gtk-greeter")
-                  ;; Wrap GDK_PIXBUF_MODULE_FILE, so that the SVG loader is
-                  ;; available at all times even outside of profiles, such as
-                  ;; when used in the lightdm-service-type.  Otherwise, it
-                  ;; wouldn't be able to display its own icons.
-                  `("GDK_PIXBUF_MODULE_FILE" =
-                    (,(search-input-file
-                       inputs
-                       "lib/gdk-pixbuf-2.0/2.10.0/loaders.cache")))
-                  `("XDG_DATA_DIRS" ":" prefix
-                    ,(cons "/run/current-system/profile/share"
-                           (map (lambda (pkg)
-                                  (string-append pkg "/share"))
-                                (list gtk shared-mime-info glib))))
-                  `("GTK_PATH" ":" prefix (,gtk))
-                  `("GIO_EXTRA_MODULES" ":" prefix (,gtk))
-                  '("XCURSOR_PATH" ":" prefix
-                    ("/run/current-system/profile/share/icons")))))))))
+                                 outputs "bin/lightdm-gtk-greeter"))))))
+          (add-after 'glib-or-gtk-wrap 'custom-wrap
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-script (search-input-file
+                            outputs "bin/lightdm-gtk-greeter")
+                ;; Wrap GDK_PIXBUF_MODULE_FILE, so that the SVG loader is
+                ;; available at all times even outside of profiles, such as
+                ;; when used in the lightdm-service-type.  Otherwise, it
+                ;; wouldn't be able to display its own icons.
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(search-input-file
+                     outputs
+                     "lib/gdk-pixbuf-2.0/2.10.0/loaders.cache")))
+                `("XDG_DATA_DIRS" ":" prefix
+                  (,(string-append "/run/current-system/profile/share:"
+                                   (getenv "XDG_DATA_DIRS"))))
+                '("XCURSOR_PATH" ":" prefix
+                  ("/run/current-system/profile/share/icons"))))))))
     (native-inputs
-     (list exo intltool pkg-config xfce4-dev-tools))
+     (list exo
+           intltool
+           pkg-config
+           xfce4-dev-tools))
     (inputs
      (list at-spi2-core
            bash-minimal                 ;for wrap-program
