@@ -469,7 +469,8 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
                  (bootloader grub-bootloader)
                  (targets '("/dev/sda"))))
     (label (string-append "GNU Guix installation "
-                          (package-version guix)))
+                          (or (getenv "GUIX_DISPLAYED_VERSION")
+                              (package-version guix))))
 
     ;; XXX: The AMD Radeon driver is reportedly broken, which makes kmscon
     ;; non-functional:

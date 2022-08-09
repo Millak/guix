@@ -43,7 +43,9 @@ accounts.\x1b[0m
   (keyboard-layout (keyboard-layout "us" "altgr-intl"))
 
   ;; Label for the GRUB boot menu.
-  (label (string-append "GNU Guix " (package-version guix)))
+  (label (string-append "GNU Guix "
+                        (or (getenv "GUIX_DISPLAYED_VERSION")
+                            (package-version guix))))
 
   (firmware '())
 
