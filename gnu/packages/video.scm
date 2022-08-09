@@ -3287,12 +3287,12 @@ tools, XML authoring components, and an extensible plug-in based API.")
     (native-inputs
      (list perl pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("glu" ,glu)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libx11" ,libx11)
-       ("qtbase" ,qtbase-5)
-       ("eudev" ,eudev)))
+     (list alsa-lib
+           glu
+           libjpeg-turbo
+           libx11
+           qtbase-5
+           eudev))
     (synopsis "Realtime video capture utilities for Linux")
     (description "The v4l-utils provide a series of libraries and utilities to
 be used for realtime video capture via Linux-specific APIs.")
