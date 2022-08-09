@@ -5201,16 +5201,15 @@ arrays when needed.")
 (define-public multipath-tools
   (package
     (name "multipath-tools")
-    (version "0.8.5")
+    (version "0.9.0")
+    (home-page "https://github.com/opensvc/multipath-tools")
     (source (origin
               (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.opensvc.com/multipath-tools/.git")
-                    (commit version)))
+              (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gipg0z79h76j0f449cx4wcrfsv69ravjlpphsac11h302g3nrvg"))
+                "09m3vs798qb3xk0v7s3hy0nhw0dznkxjb56671kqj961h7zhg47b"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -5219,8 +5218,7 @@ arrays when needed.")
                   (substitute* '("multipathd/main.c"
                                  "libmultipath/debug.c")
                     (("#include \"../third-party/")
-                     "#include \""))
-                  #t))))
+                     "#include \""))))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5230,8 +5228,7 @@ arrays when needed.")
                            (string-append "DESTDIR=" #$output)
                            ;; Install Udev rules below this directory, relative
                            ;; to the prefix.
-                           "SYSTEMDPATH=lib"
-                           (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+                           "SYSTEMDPATH=lib")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
@@ -5241,6 +5238,7 @@ arrays when needed.")
                     (libudev.h
                      (search-input-file inputs "include/libudev.h")))
                 (substitute* "Makefile.inc"
+                  (("/bin/echo") "echo")
                   (("\\$\\(prefix\\)/usr") "$(prefix)")
                   ;; Do not save timestamp to avoid gzip "timestamp
                   ;; out-of-range" warnings.
@@ -5248,21 +5246,6 @@ arrays when needed.")
                 (substitute* '("kpartx/Makefile" "libmultipath/Makefile")
                   (("/usr/include/libdevmapper.h") libdevmapper.h)
                   (("/usr/include/libudev.h") libudev.h)))))
-          (add-after 'unpack 'fix-maybe-uninitialized-variable
-            (lambda _
-              ;; This variable gets initialized later if needed, but GCC 7
-              ;; fails to notice.  Should be fixed for > 0.8.4.
-              ;; https://www.redhat.com/archives/dm-devel/2020-March/msg00137.html
-              (substitute* "libmultipath/structs_vec.c"
-                (("bool is_queueing;")
-                 "bool is_queueing = false;"))))
-          (add-after 'unpack 'fix-linking-tests
-            (lambda _
-              ;; Add missing linker flag for -lmpathcmd.  This should be fixed
-              ;; for versions > 0.8.4.
-              (substitute* "tests/Makefile"
-                (("-lmultipath -lcmocka")
-                 "-lmultipath -L$(mpathcmddir) -lmpathcmd -lcmocka"))))
           (add-after 'unpack 'skip-failing-tests
             (lambda _
               ;; This test and the module's setup() test an arbitrary block
@@ -5274,7 +5257,14 @@ arrays when needed.")
               (substitute* "tests/Makefile"
                 (("CFLAGS \\+= " match)
                  (string-append match "-Wno-error=unused-function ")))))
-          (delete 'configure))))        ;no configure script
+          (delete 'configure)           ;no configure script
+          (add-before 'build 'set-LDFLAGS
+            (lambda _
+              ;; Note: this cannot be passed as a make flag because that will
+              ;; override the build system LDFLAGS.
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
+
     (native-inputs
      (list perl pkg-config valgrind
            ;; For tests.
@@ -5286,7 +5276,6 @@ arrays when needed.")
            lvm2
            readline
            eudev))
-    (home-page "http://christophe.varoqui.free.fr/")
     (synopsis "Access block devices through multiple paths")
     (description
      "This package provides the following binaries to drive the
