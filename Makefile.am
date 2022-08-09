@@ -977,14 +977,9 @@ release: dist-with-updated-version all
 	  mv "guix-binary.$$system.tar.xz"					\
 	      "$(releasedir)/guix-binary-$(PACKAGE_VERSION).$$system.tar.xz" ;	\
 	done
-# Bump the Guix package version and build it (again).
-	GUIX_ALLOW_ME_TO_USE_PRIVATE_COMMIT=yes \
-	$(top_builddir)/pre-inst-env "$(GUILE)"	\
-		$(top_srcdir)/build-aux/update-guix-package.scm	\
-		"`git rev-parse HEAD`"
-	git add $(top_srcdir)/gnu/packages/package-management.scm
-	git commit -m "gnu: guix: Update to `git rev-parse HEAD | cut -c1-7`."
-	$(top_builddir)/pre-inst-env guix build guix			\
+# Build 'current-guix' to speed things up for the next step.
+	$(top_builddir)/pre-inst-env guix build				\
+	      -e '((@ (gnu packages package-management) current-guix))'	\
 	      $(call system_flags,$(GUIX_SYSTEM_SUPPORTED_SYSTEMS))	\
 	      -v1 --no-grafts --fallback
 # Generate the ISO installation images.
