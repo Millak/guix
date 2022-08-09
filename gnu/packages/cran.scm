@@ -31577,31 +31577,32 @@ supply the workflow to create thematic maps.  This package also facilitates
 (define-public r-rtweet
   (package
     (name "r-rtweet")
-    (version "0.7.0")
+    (version "1.0.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "rtweet" version))
-        (sha256
-          (base32
-            "05pbvxm2vmf6935b9s6663k3aifnkr3m52wh2jvnplmrwyrfpn9n"))))
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rtweet" version))
+       (sha256
+        (base32
+         "1dhdq2c2zl88h29caqpm7zh2i5970q7rfg98zf2xb7x4zak7bq9x"))))
     (properties `((upstream-name . "rtweet")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-httpuv
-            r-httr
-            r-jsonlite
-            r-magrittr
-            r-progress
-            r-rcpp
-            r-tibble))
+     (list r-bit64
+           r-curl
+           r-httr
+           r-jsonlite
+           r-lifecycle
+           r-progress
+           r-rlang
+           r-tibble
+           r-withr))
     (native-inputs (list r-knitr))
-    (home-page
-      "https://docs.ropensci.org/rtweet/")
-    (synopsis "Collecting Twitter Data")
+    (home-page "https://docs.ropensci.org/rtweet/")
+    (synopsis "Collect Twitter data")
     (description
-      "An implementation of calls designed to collect and organize Twitter data
-via @url{https://developer.twitter.com/en/docs,Twitter's REST and stream
+     "This package implements tools designed to collect and organize Twitter
+data via @url{https://developer.twitter.com/en/docs,Twitter's REST and stream
 Application Program Interfaces (API)}.")
     (license license:expat)))
 
