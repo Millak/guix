@@ -357,6 +357,7 @@ display manager which supports different greeters.")
               ;; Put the binary under /bin rather than /sbin, so that it gets
               ;; wrapped by the glib-or-gtk-wrap phase.
               (string-append "--sbindir=" #$output "/bin")
+              (string-append "--with-libxklavier")
               (string-append "--enable-at-spi-command="
                              (search-input-file
                               %build-inputs "libexec/at-spi-bus-launcher")))
@@ -400,6 +401,7 @@ display manager which supports different greeters.")
            gtk+
            guile-3.0
            librsvg
+           libxklavier
            lightdm
            shared-mime-info))
     (synopsis "GTK+ greeter for LightDM")
