@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2017, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Corentin Bocquillon <corentin@nybble.fr>
 ;;; Copyright © 2017 Gregor Giesen <giesen@zaehlwerk.net>
@@ -31,6 +31,7 @@
 (define-module (gnu packages serialization)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix hg-download)
   #:use-module (guix git-download)
@@ -132,7 +133,7 @@ implement RPC protocols.")
 (define-public cereal
   (package
     (name "cereal")
-    (version "1.3.0")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -142,22 +143,22 @@ implement RPC protocols.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hc8wh9dwpc1w1zf5lfss4vg5hmgpblqxbrpp1rggicpx9ar831p"))))
+         "02sd90ynya7wg013zwzjr79fsv4bzqgfg9l2mapd4j38rv06gahx"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DSKIP_PORTABILITY_TEST=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'skip-sandbox
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("add_subdirectory\\(sandbox\\)") ""))))
-         (add-after 'install 'install-doc
-           (lambda _
-             (let ((doc (string-append %output "/share/doc/html")))
-               (invoke "make" "doc")
-               (mkdir-p doc)
-               (copy-recursively "doc/html" doc)))))))
+     (list
+      #:configure-flags #~'("-DSKIP_PORTABILITY_TEST=ON"
+                            ;; Don't bother building the sandbox examples.
+                            "-DSKIP_PERFORMANCE_COMPARISON=ON"
+                            "-DBUILD_SANDBOX=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda _
+              (let ((doc (string-append #$output "/share/doc/html")))
+                (invoke "make" "doc")
+                (mkdir-p doc)
+                (copy-recursively "doc/html" doc)))))))
     (native-inputs
      (list doxygen))
     (home-page "https://uscilab.github.io/cereal/")
@@ -167,6 +168,33 @@ implement RPC protocols.")
 arbitrary data types and reversibly turns them into different representations,
 such as compact binary encodings, XML, or JSON.")
     (license license:bsd-3)))
+
+;; Some packages fail with the latest version.  Remove this variable
+;; when unused.
+(define-public cereal-1.3.0
+  (package
+    (inherit cereal)
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/USCiLab/cereal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cereal" version))
+       (sha256
+        (base32
+         "0hc8wh9dwpc1w1zf5lfss4vg5hmgpblqxbrpp1rggicpx9ar831p"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments cereal)
+       ((#:configure-flags flags #~'())
+        #~'("-DSKIP_PORTABILITY_TEST=ON"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'configure 'skip-sandbox
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("add_subdirectory\\(sandbox\\)") ""))))))))))
 
 (define-public msgpack
   (package

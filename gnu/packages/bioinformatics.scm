@@ -10017,7 +10017,7 @@ The following file formats are supported:
     (inputs
      `(("boost" ,boost)
        ("bzip2" ,bzip2)
-       ("cereal" ,cereal)
+       ("cereal" ,cereal-1.3.0)
        ("curl" ,curl)
        ("eigen" ,eigen)
        ("jemalloc" ,jemalloc)

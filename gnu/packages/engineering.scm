@@ -3222,7 +3222,7 @@ visualization, matrix manipulation.")
      (list pkg-config))
     (inputs
      (list boost
-           cereal
+           cereal-1.3.0
            cgal
            curl
            dbus
