@@ -3390,15 +3390,22 @@ used by @code{hyperref} and @code{bookmark}.")
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/xcolor") #t))
-              (add-after 'install 'move-files
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (let ((share (string-append (assoc-ref outputs "out")
-                                              "/share/texmf-dist")))
-                    (mkdir-p (string-append share "/dvips/xcolor"))
-                    (rename-file (string-append share "/tex/latex/xcolor/xcolor.pro")
-                                 (string-append share "/dvips/xcolor/xcolor.pro"))
-                    #t)))))))
+                (lambda _ (chdir "source/latex/xcolor")))
+              (replace 'copy-files
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc)
+                    (let ((share (string-append #$output
+                                                "/share/texmf-dist")))
+                      (mkdir-p (string-append share "/dvips/xcolor"))
+                      (rename-file
+                       (string-append share "/tex/latex/xcolor/xcolor.pro")
+                       (string-append share "/dvips/xcolor/xcolor.pro"))))))))))
       ;; TODO: Propagate texlive-hyperref and many others in the next rebuild
       ;; cycle.  Grep for '\usepackage' to see what packages it requires.
       ;; (propagated-inputs (list texlive-hyperref ...))
