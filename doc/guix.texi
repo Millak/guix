@@ -37500,6 +37500,10 @@ guix system container my-config.scm \
    --expose=$HOME --share=$HOME/tmp=/exchange
 @end example
 
+The @option{--share} and @option{--expose} options can also be passed to
+the generated script to bind-mount additional directories into the
+container.
+
 @quotation Note
 This option requires Linux-libre 3.19 or newer.
 @end quotation
