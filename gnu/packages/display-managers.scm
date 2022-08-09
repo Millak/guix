@@ -268,7 +268,8 @@ experience for your users, your family and yourself")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wr60c946p8jz9kb8zi4cd8d4mkcy7infbvlfzwajiglc22nblxn"))))
+                "1wr60c946p8jz9kb8zi4cd8d4mkcy7infbvlfzwajiglc22nblxn"))
+              (patches (search-patches "lightdm-vncserver-check.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:parallel-tests? #f             ; fails when run in parallel
@@ -303,8 +304,8 @@ experience for your users, your family and yourself")
              (unsetenv "LC_ALL"))))))
     (inputs
      (list audit
-           bash-minimal                           ;for cross-compilation
-           coreutils-minimal                      ;ditto
+           bash-minimal                 ;for cross-compilation
+           coreutils-minimal            ;ditto
            linux-pam
            shadow                       ;for sbin/nologin
            libgcrypt
