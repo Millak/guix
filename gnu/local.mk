@@ -1092,7 +1092,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/freedink-engine-fix-sdl-hints.patch	\
   %D%/packages/patches/freeglut-gcc-compat.patch		\
   %D%/packages/patches/freeimage-unbundle.patch		\
-  %D%/packages/patches/fuse-overlapping-headers.patch				\
+  %D%/packages/patches/fuse-glibc-2.34.patch			\
+  %D%/packages/patches/fuse-overlapping-headers.patch		\
   %D%/packages/patches/fxdiv-system-libraries.patch		\
   %D%/packages/patches/gajim-honour-GAJIM_PLUGIN_PATH.patch	\
   %D%/packages/patches/ganeti-disable-version-symlinks.patch	\

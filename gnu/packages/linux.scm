@@ -3291,8 +3291,11 @@ or kill them altogether.")
               (sha256
                (base32
                 "1ddlq6kzxilccgbvxjfx80jx6kamgw4sv49phks2zhlcc1frvrnh"))
-              (patches (search-patches "fuse-overlapping-headers.patch"))))
+              (patches (search-patches "fuse-overlapping-headers.patch"
+                                       "fuse-glibc-2.34.patch"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake gettext-minimal libtool))
     (inputs
      (list bash-minimal util-linux))
     (arguments
@@ -3309,6 +3312,10 @@ or kill them altogether.")
                                               "/lib/udev/rules.d"))
        #:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'force-bootstrap
+           (lambda _
+             ;; Force a bootstrap to make the patch changes effective.
+             (delete-file "configure")))
          (add-before 'build 'set-file-names
            (lambda* (#:key inputs #:allow-other-keys)
              ;; libfuse calls out to mount(8) and umount(8).  Make sure
