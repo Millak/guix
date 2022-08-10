@@ -1483,18 +1483,18 @@ set of plugins for interacting with pulseaudio and GStreamer.")
     (native-inputs
      (list glib perl pkg-config qtdeclarative-5))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libx11" ,libx11)
-       ("libxcomposite" ,libxcomposite)
-       ("libxext" ,libxext)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxrender" ,libxrender)
-       ("mesa" ,mesa)
-       ("mtdev" ,mtdev)
-       ("qtbase" ,qtbase-5)
-       ("vulkan-headers" ,vulkan-headers)
-       ("wayland" ,wayland)))
+     (list fontconfig
+           freetype
+           libx11
+           libxcomposite
+           libxext
+           libxkbcommon
+           libxrender
+           mesa
+           mtdev
+           qtbase-5
+           vulkan-headers
+           wayland))
     (synopsis "Qt Wayland module")
     (description "The Qt Wayland module provides the QtWayland client and
 compositor libraries.")))
