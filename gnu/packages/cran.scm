@@ -17841,16 +17841,27 @@ high-performance functions are provided here.")
 (define-public r-s2
   (package
     (name "r-s2")
-    (version "1.0.7")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "s2" version))
        (sha256
         (base32
-         "0gwydn6wdl675ydkcckrci6ylcx30qn8nfhmrp4qx4r9mv3c2410"))))
+         "05n459rp5b1wk826sq3c5d2z1xwgkpfp8m1jnfshvs4gadlfkap3"))))
     (properties `((upstream-name . "s2")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      `(modify-phases %standard-phases
+         ;; We don't want to convert -lssl to -l:libssl.so.1.1; there is only
+         ;; one libssl.so anyway and the -l:* thing breaks linking.
+         (add-after 'unpack 'undo-library-versioning
+           (lambda _
+             (substitute* "configure"
+               (("PKG_LIBS_VERSIONED=.*")
+                "PKG_LIBS_VERSIONED=\"${PKG_LIBS}\"\n")))))))
     (propagated-inputs
      (list r-rcpp r-wk))
     (inputs
