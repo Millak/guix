@@ -19454,7 +19454,7 @@ navigate and display hierarchy structures.")
 (define-public emacs-pulsar
   (package
     (name "emacs-pulsar")
-    (version "0.3.0")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -19463,7 +19463,7 @@ navigate and display hierarchy structures.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09s1r9zqc28g75jjxajdm34ni4m7gynh0xsffy5d60c50igiqa94"))))
+                "05ig8p3y5k20w4xy0ahaml9z0i0xyw6fkypzvz0mjpldhxl7dbxd"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
