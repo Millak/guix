@@ -8471,8 +8471,7 @@ storage.")
           "15cbh9jbcfcbbi863dlmamjka2f8l55ld915vr0b0xlf0l16mlzi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-generic-array" ,rust-generic-array-0.14))))
     (home-page "https://github.com/RustCrypto/utils")
     (synopsis "Fixed size buffer for block processing of data")
