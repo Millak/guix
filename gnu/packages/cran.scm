@@ -5431,14 +5431,14 @@ the RMariaDB package.")
 (define-public r-rpostgresql
   (package
     (name "r-rpostgresql")
-    (version "0.7-3")
+    (version "0.7-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RPostgreSQL" version))
        (sha256
         (base32
-         "1fbixmnjp1kh6yiv8zhg8zi5ryvdf5j2jxv4agq5gcxf541s3g5x"))))
+         "1ijnsly8wgy6cfib4xvdaz2g9hk1gzg7q52r37zkvc7jjh0gdbdn"))))
     (properties `((upstream-name . "RPostgreSQL")))
     (build-system r-build-system)
     (inputs
