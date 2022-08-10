@@ -28,6 +28,7 @@
  (entry (commit "a15542d26df42dabdb5e2f76d150ae200230c3b0")
         (title
          (en "New @option{--whole-file} option for @command{guix style}")
+         (de "Neue Option @option{--whole-file} für @command{guix style}")
          (fr "Nouvelle option @option{--whole-file} pour @command{guix style}"))
         (body
          (en "The @command{guix style} command has a new @option{--whole-file}
@@ -36,6 +37,14 @@ you reformat entire Scheme files.  You might want to use it to format your
 operating system configuration file, for instance.
 
 Run @command{info \"(guix) Invoking guix style\"} for more info.")
+         (de "Der Befehl @command{guix style} verfügt über eine neue
+Befehlszeilenoption @option{--whole-file}: Mit ihr werden keine einzelnen
+Paketdefinitionen umformatiert, sondern ganze Scheme-Dateien werden in die
+richtige Darstellungsform gebracht.  Sie können damit zum Beispiel die
+Konfigurationsdatei für Ihr Betriebssystem formatieren lassen.
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix style\"} aus, um mehr
+Informationen zu erhalten.")
          (fr "La commande @command{guix style} a désormais une nouvelle option
 @option{--whole-file} : au lieu de mettre en forme des définitions de paquets,
 cette option permet de mettre en forme des fichiers Scheme entiers.  Ça peut
@@ -405,7 +414,7 @@ Bezeichnungen aus Paketeingaben entfernt werden. Wenn Sie {--styling}
 weglassen, passiert das Gleiche wie wenn Sie @samp{--styling=format} angeben;
 früher war es das Gleiche wie @samp{--styling=inputs}.
 
-Führen Sie @command{info \"(guix) Invoking guix style\"} aus, um mehr
+Führen Sie @command{info \"(guix.de) Aufruf von guix style\"} aus, um mehr
 Informationen zu erhalten.")
          (fr "La commande @command{guix style}, récemment introduite, peut
 désormais être utilisée pour mettre en forme des définitions de paquets
@@ -892,7 +901,7 @@ das Löschen, Ersetzen, Hinzufügen von Eingaben.
 
 Um den Übergang zum „neuen Stil“ zu erleichtern, steht ein neuer
 Befehl @command{guix style} zur Verfügung.  Führen Sie @command{info
-\"(guix) Invoking guix style\"} aus, um mehr Informationen zu
+\"(guix.de) Aufruf von guix style\"} aus, um mehr Informationen zu
 erhalten.")))
 
  (entry (commit "82daab42811a2e3c7684ebdf12af75ff0fa67b99")
