@@ -1,30 +1,27 @@
-# GNU Guix package manager.
-# Copyright (C) 2013-2021 the authors of Guix (msgids) and the following authors (msgstr)
-# This file is distributed under the same license as the guix package.
-# Daniel Koć <daniel@xn--ko-wla.pl>, 2015-2016.
-# Marcin Stanclik <mstanclik@yahoo.com>, 2021.
-# Silicius <silicius@schwi.pl>, 2021.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
+# This file is distributed under the same license as the GNU guix package.
+# Akib Azmain Turja <akib@disroot.org>, 2022.
 #: guix/diagnostics.scm:158
 msgid ""
 msgstr ""
-"Project-Id-Version: guix 0.11.0\n"
+"Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-08-10 03:18+0000\n"
-"PO-Revision-Date: 2021-11-14 02:05+0000\n"
-"Last-Translator: Silicius <silicius@schwi.pl>\n"
-"Language-Team: Polish <https://translate.fedoraproject.org/projects/guix/guix/pl/>\n"
-"Language: pl\n"
+"PO-Revision-Date: 2022-08-09 06:10+0000\n"
+"Last-Translator: Akib Azmain Turja <akib@disroot.org>\n"
+"Language-Team: Bengali <https://translate.fedoraproject.org/projects/guix/guix/bn/>\n"
+"Language: bn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.8.1\n"
-"X-Bugs: Report translation errors to the Language-Team address.\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.13\n"
 
 #: gnu.scm:81
 #, scheme-format
 msgid "module ~a not found"
-msgstr "moduł ~a nie znaleziony"
+msgstr ""
 
 #: gnu.scm:99
 msgid ""
@@ -33,11 +30,15 @@ msgid ""
 "If you get the line @code{location: gnu/packages/bar.scm:174:2},\n"
 "add @code{bar} to the @code{use-package-modules} form."
 msgstr ""
+"@code{foo} গাঁটরির অবস্থান খুঁজে বের করতে আপনি\n"
+"@command{guix package --show=foo | grep location} ব্যবহার করতে পারেন।\n"
+"যদি আপনি @code{location: gnu/packages/bar.scm:174:2} লাইনটি পান,\n"
+"তবে @code{use-package-modules} ফরমে @code{bar} যোগ করে দিন।"
 
 #: gnu.scm:107
 #, scheme-format
 msgid "Try adding @code{(use-package-modules ~a)}."
-msgstr "Spróbuj dodać @code{(use-package-modules ~a)}."
+msgstr "@code{(use-package-modules ~a)} যোগ করার চেষ্টা করে দেখুন।"
 
 #: gnu.scm:122
 #, scheme-format
@@ -47,26 +48,30 @@ msgid ""
 "If you get the line @code{location: gnu/services/foo.scm:188:2},\n"
 "add @code{foo} to the @code{use-service-modules} form."
 msgstr ""
+"@code{~a} এর সাথে মিল রয়েছে এমন একটি পরিসেবা খুঁজতে আপনি\n"
+"@command{guix system search ~a} ব্যবহার করতে পারেন।\n"
+"যদি আপনি @code{location: gnu/services/foo.scm:188:2} লাইনটি পান,\n"
+"তবে @code{use-service-modules} ফরমে @code{foo} যোগ করে দিন।"
 
 #: gnu.scm:131
 #, scheme-format
 msgid "Try adding @code{(use-service-modules ~a)}."
-msgstr "Spróbuj dodać @code{(use-service-modules ~a)}."
+msgstr "@code{(use-service-modules ~a)} যোগ করার চেষ্টা করে দেখুন।"
 
 #: gnu/packages.scm:101
 #, scheme-format
 msgid "~a: patch not found"
-msgstr "~a: nie znaleziono łatki"
+msgstr ""
 
 #: gnu/packages.scm:482 gnu/packages.scm:523
 #, scheme-format
 msgid "ambiguous package specification `~a'~%"
-msgstr "niejasna specyfikacja pakietu `~a'~%"
+msgstr "দ্ব্যর্থক গাঁটরি বিবরণ `~a'~%"
 
 #: gnu/packages.scm:483 gnu/packages.scm:524
 #, scheme-format
 msgid "choosing ~a@~a from ~a~%"
-msgstr "wybieranie ~a@~a z ~a~%"
+msgstr "~a থেকে ~a@~a নির্বাচন করা হচ্ছে~%"
 
 #: gnu/packages.scm:488 guix/scripts/package.scm:225
 #, scheme-format
@@ -76,17 +81,17 @@ msgstr ""
 #: gnu/packages.scm:495 gnu/packages.scm:512
 #, scheme-format
 msgid "~A: package not found for version ~a~%"
-msgstr "~A: nie znalezino pakietu w wersji ~a~%"
+msgstr ""
 
 #: gnu/packages.scm:496 gnu/packages.scm:513
 #, scheme-format
 msgid "~A: unknown package~%"
-msgstr "~A: nieznany pakiet~%"
+msgstr ""
 
 #: gnu/packages.scm:552
 #, scheme-format
 msgid "package `~a' lacks output `~a'~%"
-msgstr "pakiet `~a' nie posiada wyjścia `~a'~%"
+msgstr ""
 
 #: gnu/services.scm:265
 #, scheme-format
@@ -194,32 +199,32 @@ msgstr ""
 #: gnu/services.scm:1032
 #, scheme-format
 msgid "no target of type '~a' for service '~a'"
-msgstr "brak celu o typie '~a' dla serwisu '~a'"
+msgstr ""
 
 #: gnu/services.scm:1058 gnu/services.scm:1177
 #, scheme-format
 msgid "more than one target service of type '~a'"
-msgstr "więcej niż jeden celowy serwis o typie '~a'"
+msgstr ""
 
 #: gnu/services.scm:1167
 #, scheme-format
 msgid "service of type '~a' not found"
-msgstr "nie znaleziono serwisu o typie '~a'"
+msgstr ""
 
 #: gnu/system.scm:383
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "unrecognized uuid ~a at '~a'~%"
-msgstr "nieznana opcja: ~a~%"
+msgstr ""
 
 #: gnu/system.scm:471
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "unrecognized crypto-devices ~S at '~a'~%"
-msgstr "nieznana opcja: ~a~%"
+msgstr ""
 
 #: gnu/system.scm:491
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "unrecognized boot parameters at '~a'~%"
-msgstr "nieznana opcja: ~a~%"
+msgstr ""
 
 #: gnu/system.scm:494
 #, scheme-format
@@ -234,10 +239,9 @@ msgid ""
 msgstr ""
 
 #: gnu/system.scm:623
-#, fuzzy, scheme-format
-#| msgid "mapped-device '~a' may not be mounted by the bootloader.~%"
+#, scheme-format
 msgid "mapped device '~a' may be ignored by bootloader~%"
-msgstr "mapped-device '~a' może nie być zamontowane przez program rozruchowy.~%"
+msgstr ""
 
 #: gnu/system.scm:643
 #, scheme-format
@@ -269,10 +273,9 @@ msgid "~a: invalid locale name"
 msgstr ""
 
 #: gnu/services/configuration.scm:93
-#, fuzzy, scheme-format
-#| msgid "invalid value for home page"
+#, scheme-format
 msgid "invalid value ~s for field '~a'"
-msgstr "nieprawidłowa wartość dla strony domowej"
+msgstr ""
 
 #: gnu/services/configuration.scm:392
 #, scheme-format
@@ -432,15 +435,15 @@ msgid ""
 msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:106
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Backing up ~a..."
-msgstr "rozpakowywanie '~a'...~%"
+msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:109
 #: gnu/home/services/symlink-manager.scm:138
 #: gnu/home/services/symlink-manager.scm:195
 msgid " done\n"
-msgstr ""
+msgstr " সম্পন্ন।\n"
 
 #: gnu/home/services/symlink-manager.scm:122
 #, scheme-format
@@ -448,9 +451,9 @@ msgid "Cleaning up symlinks from previous home at ~a.~%"
 msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:136
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Removing ~a..."
-msgstr "usuwanie ~a~%"
+msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:141
 #, scheme-format
@@ -458,9 +461,9 @@ msgid "Skipping ~a (not a symlink to store)... done\n"
 msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:151
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Removed ~a.\n"
-msgstr "usuwanie ~a~%"
+msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:158
 #, scheme-format
@@ -479,9 +482,9 @@ msgid "Symlinking ~a -> ~a..."
 msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:209
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to create directory ~a: ~s~%"
-msgstr "błąd: podczas tworzenia katalogu `~a': ~a~%"
+msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:232
 msgid ""
@@ -499,13 +502,11 @@ msgid ""
 msgstr ""
 
 #: gnu/system/file-systems.scm:136
-#, fuzzy, scheme-format
-#| msgid "invalid syntax: ~a~%"
+#, scheme-format
 msgid "invalid file system mount flag:~{ ~s~}~%"
 msgid_plural "invalid file system mount flags:~{ ~s~}~%"
-msgstr[0] "nieprawidłowa składnia: ~a~%"
-msgstr[1] "nieprawidłowa składnia: ~a~%"
-msgstr[2] "nieprawidłowa składnia: ~a~%"
+msgstr[0] ""
+msgstr[1] ""
 
 #: gnu/system/file-systems.scm:723
 msgid "The store is on a Btrfs subvolume, but the subvolume name is unknown."
@@ -530,9 +531,9 @@ msgid "unsupported partition type: ~a"
 msgstr ""
 
 #: gnu/system/image.scm:851
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unsupported image format"
-msgstr "~A: nieznany pakiet~%"
+msgstr ""
 
 #: gnu/system/image.scm:881
 #, scheme-format
@@ -600,7 +601,7 @@ msgstr ""
 #: guix/scripts/import/minetest.scm:92
 #, scheme-format
 msgid "~A: unrecognized option~%"
-msgstr "~A: nieznana opcja~%"
+msgstr ""
 
 #: gnu/system/linux-container.scm:256
 #, scheme-format
@@ -667,7 +668,7 @@ msgstr ""
 #: gnu/system/shadow.scm:289
 #, scheme-format
 msgid "primary group '~a' of user '~a' is undeclared"
-msgstr "podstawowa grupa '~a' użytkownika '~a' nie została określona"
+msgstr ""
 
 #: gnu/system/shadow.scm:431
 msgid ""
@@ -689,20 +690,19 @@ msgid "Updater for CPAN packages"
 msgstr ""
 
 #: guix/import/cran.scm:177
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to retrieve list of packages from ~a: ~a (~a)~%"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/import/cran.scm:212
-#, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
+#, scheme-format
 msgid "~A: hg download failed~%"
-msgstr "~a: pobieranie nie powiodło się~%"
+msgstr ""
 
 #: guix/import/cran.scm:256
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to retrieve package information from ~a: ~a (~a)~%"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/import/cran.scm:724
 msgid "Updater for CRAN packages"
@@ -718,10 +718,9 @@ msgid "~A: currently not supported~%"
 msgstr ""
 
 #: guix/import/elpa.scm:116
-#, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
+#, scheme-format
 msgid "~A: download failed~%"
-msgstr "~a: pobieranie nie powiodło się~%"
+msgstr ""
 
 #: guix/import/elpa.scm:271
 #, scheme-format
@@ -770,25 +769,23 @@ msgid "no tags were found"
 msgstr ""
 
 #: guix/import/git.scm:182
-#, fuzzy, scheme-format
-#| msgid "~a: ~a~%"
+#, scheme-format
 msgid "~a for ~a~%"
-msgstr "~a: ~a~%"
+msgstr ""
 
 #: guix/import/git.scm:189
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to fetch Git repository for ~a~%"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/import/git.scm:227
 msgid "Updater for packages hosted on Git repositories"
 msgstr ""
 
 #: guix/import/gnu.scm:118
-#, fuzzy, scheme-format
-#| msgid "~A: package not found for version ~a~%"
+#, scheme-format
 msgid "no GNU package found for ~a"
-msgstr "~A: nie znalezino pakietu w wersji ~a~%"
+msgstr ""
 
 #: guix/import/gnu.scm:126
 #, scheme-format
@@ -801,10 +798,9 @@ msgid "unsupported vcs type '~a' for package '~a'"
 msgstr ""
 
 #: guix/import/go.scm:594
-#, fuzzy, scheme-format
-#| msgid "  ~50a: unavailable~%"
+#, scheme-format
 msgid "version ~a of ~a is not available~%"
-msgstr "  ~50a: niedostępne~%"
+msgstr ""
 
 #: guix/import/go.scm:597
 #, scheme-format
@@ -899,14 +895,14 @@ msgid "Updater for Minetest packages on ContentDB"
 msgstr ""
 
 #: guix/import/opam.scm:148
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "'~a' is not a valid URI~%"
-msgstr "~a: nieprawidłowa liczba~%"
+msgstr ""
 
 #: guix/import/opam.scm:325
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "opam: package '~a' not found~%"
-msgstr "użytkownik '~a' nie znaleziony: ~a~%"
+msgstr ""
 
 #: guix/import/opam.scm:436
 msgid "Updater for OPAM packages"
@@ -922,9 +918,9 @@ msgid "parse-requires.txt reached an unexpected condition on line ~a~%"
 msgstr ""
 
 #: guix/import/pypi.scm:362
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Failed to extract file: ~a from wheel.~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/import/pypi.scm:391
 #, scheme-format
@@ -981,7 +977,7 @@ msgstr ""
 
 #: gnu/installer.scm:260 gnu/installer/newt/hostname.scm:26
 msgid "Hostname"
-msgstr ""
+msgstr "হোস্টনেম"
 
 #: gnu/installer.scm:269
 msgid "Network selection"
@@ -998,7 +994,7 @@ msgstr ""
 
 #: gnu/installer.scm:291
 msgid "Services"
-msgstr ""
+msgstr "পরিসেবাসমূহ"
 
 #: gnu/installer.scm:302
 msgid "Partitioning"
@@ -1006,7 +1002,7 @@ msgstr ""
 
 #: gnu/installer.scm:309 gnu/installer/newt/final.scm:53
 msgid "Configuration file"
-msgstr "Plik konfiguracji"
+msgstr "কনফিগারেশন ফাইল"
 
 #: gnu/installer/connman.scm:196
 msgid "Could not determine the state of connman."
@@ -1045,7 +1041,7 @@ msgstr ""
 #: gnu/installer/newt/timezone.scm:63 gnu/installer/newt/user.scm:216
 #: gnu/installer/newt/wifi.scm:206
 msgid "Exit"
-msgstr ""
+msgstr "প্রস্থান"
 
 #: gnu/installer/newt.scm:82
 #, scheme-format
@@ -1111,12 +1107,12 @@ msgstr ""
 
 #: gnu/installer/newt/final.scm:68
 msgid "Installation complete"
-msgstr "Ukończono instalację"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:69 gnu/installer/newt/parameters.scm:45
 #: gnu/installer/newt/welcome.scm:145
 msgid "Reboot"
-msgstr ""
+msgstr "পুনরায় চালু করুন"
 
 #: gnu/installer/newt/final.scm:70
 msgid "Congratulations!  Installation is now complete.  You may remove the device containing the installation image and press the button to reboot."
@@ -1124,11 +1120,11 @@ msgstr ""
 
 #: gnu/installer/newt/final.scm:84
 msgid "Installation failed"
-msgstr "instalacja się nie powiodła"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:85
 msgid "Resume"
-msgstr "Wznów"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:86
 msgid "Restart the installer"
@@ -1167,7 +1163,7 @@ msgstr ""
 #: gnu/installer/newt/locale.scm:88 gnu/installer/newt/partition.scm:594
 #: gnu/installer/newt/timezone.scm:64
 msgid "Back"
-msgstr "Wstecz"
+msgstr "পিছনে"
 
 #: gnu/installer/newt/hostname.scm:25
 msgid "Please enter the system hostname."
@@ -1188,7 +1184,7 @@ msgstr ""
 #: gnu/installer/newt/keymap.scm:55 gnu/installer/newt/network.scm:64
 #: gnu/installer/newt/page.scm:314
 msgid "Continue"
-msgstr "Kontynuuj"
+msgstr "এগিয়ে চলুন"
 
 #: gnu/installer/newt/keymap.scm:65
 msgid "Variant"
@@ -1207,9 +1203,8 @@ msgid "Choose the language to use for the installation process and for the insta
 msgstr ""
 
 #: gnu/installer/newt/locale.scm:55
-#, fuzzy
 msgid "Locale location"
-msgstr "<nieznane położenie>"
+msgstr ""
 
 #: gnu/installer/newt/locale.scm:58
 msgid "Choose a territory for this language."
@@ -1232,9 +1227,8 @@ msgid "Choose your locale's modifier. The most frequent modifier is euro. It ind
 msgstr ""
 
 #: gnu/installer/newt/locale.scm:181
-#, fuzzy
 msgid "No location"
-msgstr "<nieznane położenie>"
+msgstr ""
 
 #: gnu/installer/newt/locale.scm:208
 msgid "No modifier"
@@ -1287,7 +1281,7 @@ msgstr ""
 
 #: gnu/installer/newt/network.scm:152 gnu/installer/newt/wifi.scm:108
 msgid "Connection error"
-msgstr "Błąd połączenia"
+msgstr ""
 
 #: gnu/installer/newt/page.scm:204
 #, scheme-format
@@ -1300,7 +1294,7 @@ msgstr ""
 
 #: gnu/installer/newt/page.scm:224 gnu/installer/newt/user.scm:62
 msgid "Show"
-msgstr ""
+msgstr "দেখান"
 
 #: gnu/installer/newt/page.scm:231 gnu/installer/newt/page.scm:678
 #: gnu/installer/newt/page.scm:762 gnu/installer/newt/partition.scm:457
@@ -1308,7 +1302,7 @@ msgstr ""
 #: gnu/installer/newt/partition.scm:698 gnu/installer/newt/user.scm:68
 #: gnu/installer/newt/user.scm:215
 msgid "OK"
-msgstr "OK"
+msgstr "ঠিক আছে"
 
 #: gnu/installer/newt/page.scm:257
 msgid "Please enter a non empty input."
@@ -1320,11 +1314,11 @@ msgstr ""
 
 #: gnu/installer/newt/page.scm:765
 msgid "Edit"
-msgstr "Modyfikuj"
+msgstr ""
 
 #: gnu/installer/newt/page.scm:825
 msgid "Ok"
-msgstr ""
+msgstr "ঠিক আছে"
 
 #: gnu/installer/newt/partition.scm:45
 msgid "Everything is one partition"
@@ -1367,7 +1361,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:86
 msgid "Disk"
-msgstr "Dysk"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:101
 msgid "Select a new partition table type. Be careful, all data on the disk will be lost."
@@ -1375,7 +1369,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:103
 msgid "Partition table"
-msgstr "Tablica partycji"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:120
 msgid "Please select a partition type."
@@ -1383,7 +1377,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:121
 msgid "Partition type"
-msgstr "Typ partycji:"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:131
 msgid "Please select the file-system type for this partition."
@@ -1616,9 +1610,8 @@ msgid "Select miscellaneous services to run on your non-graphical system."
 msgstr ""
 
 #: gnu/installer/newt/services.scm:109
-#, fuzzy
 msgid "Network management"
-msgstr "za dużo argumentów~%"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:112
 msgid ""
@@ -1633,11 +1626,11 @@ msgstr ""
 
 #: gnu/installer/newt/substitutes.scm:32
 msgid "Enable"
-msgstr ""
+msgstr "সক্রিয় করুন"
 
 #: gnu/installer/newt/substitutes.scm:32
 msgid "Disable"
-msgstr ""
+msgstr "নিষ্ক্রিয় করুন"
 
 #: gnu/installer/newt/substitutes.scm:33
 msgid ""
@@ -1652,7 +1645,7 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:47
 msgid "Name"
-msgstr ""
+msgstr "নাম"
 
 #: gnu/installer/newt/user.scm:49
 msgid "Real name"
@@ -1664,7 +1657,7 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:53
 msgid "Password"
-msgstr ""
+msgstr "পাসওয়ার্ড"
 
 #: gnu/installer/newt/user.scm:124
 msgid "Empty inputs are not allowed."
@@ -1698,15 +1691,15 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:206
 msgid "Add"
-msgstr ""
+msgstr "যোগ করুন"
 
 #: gnu/installer/newt/user.scm:207
 msgid "Delete"
-msgstr ""
+msgstr "মুছে ফেলুন"
 
 #: gnu/installer/newt/user.scm:267
 msgid "Please create at least one user."
-msgstr ""
+msgstr "দয়া করে অন্তত একটি ব্যবহারকারী তৈরি করুন।"
 
 #: gnu/installer/newt/user.scm:268
 msgid "No user"
@@ -1784,13 +1777,13 @@ msgid "Free space"
 msgstr ""
 
 #: gnu/installer/parted.scm:582
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Name: ~a"
-msgstr "~a: ~a~%"
+msgstr ""
 
 #: gnu/installer/parted.scm:583 gnu/installer/parted.scm:629
 msgid "None"
-msgstr ""
+msgstr "একটিও নয়"
 
 #: gnu/installer/parted.scm:588
 #, scheme-format
@@ -1962,9 +1955,9 @@ msgid "<machine-ssh-configuration> without a 'host-key' is deprecated~%"
 msgstr ""
 
 #: gnu/machine/ssh.scm:208
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "device '~a' not found: ~a"
-msgstr "użytkownik '~a' nie znaleziony: ~a~%"
+msgstr ""
 
 #: gnu/machine/ssh.scm:223
 #, scheme-format
@@ -2002,10 +1995,9 @@ msgid "an error occurred while upgrading services on '~a':~%~{~s ~}~%"
 msgstr ""
 
 #: gnu/machine/ssh.scm:508
-#, fuzzy, scheme-format
-#| msgid "failed to install locale: ~a~%"
+#, scheme-format
 msgid "failed to install bootloader on '~a':~%~{~s ~}~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: gnu/machine/ssh.scm:541
 msgid "could not roll-back machine"
@@ -2070,7 +2062,7 @@ msgstr ""
 #: guix/scripts.scm:137
 #, scheme-format
 msgid "invalid argument: ~a~%"
-msgstr "nieprawidłowy argument: ~a~%"
+msgstr ""
 
 #: guix/scripts.scm:169 guix/scripts/import.scm:108
 #: guix/scripts/system.scm:1411 guix/scripts/system/edit.scm:42
@@ -2085,7 +2077,6 @@ msgid "Your Guix installation is ~a day old.\n"
 msgid_plural "Your Guix installation is ~a days old.\n"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts.scm:259
 #, scheme-format
@@ -2110,9 +2101,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/build.scm:93
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "cannot access build log at '~a':~%"
-msgstr "brak dostępu do `~a': ~a~%"
+msgstr ""
 
 #: guix/scripts/build.scm:147
 #, scheme-format
@@ -2262,10 +2253,9 @@ msgid "The available targets are:\n"
 msgstr ""
 
 #: guix/scripts/build.scm:379
-#, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
+#, scheme-format
 msgid "'~a' is not a supported cross-compilation target~%"
-msgstr "profil '~a' nie istnieje~%"
+msgstr ""
 
 #: guix/scripts/build.scm:383
 #, scheme-format
@@ -2280,10 +2270,9 @@ msgid "Try @option{--list-targets} to view available targets.~%"
 msgstr ""
 
 #: guix/scripts/build.scm:405
-#, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
+#, scheme-format
 msgid "'~a' is not a supported system~%"
-msgstr "profil '~a' nie istnieje~%"
+msgstr ""
 
 #: guix/scripts/build.scm:409
 #, scheme-format
@@ -2452,10 +2441,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/build.scm:662
-#, fuzzy, scheme-format
-#| msgid "package `~a' lacks output `~a'~%"
+#, scheme-format
 msgid "package ~a does not support ~a~%"
-msgstr "pakiet `~a' nie posiada wyjścia `~a'~%"
+msgstr ""
 
 #: guix/scripts/build.scm:681
 #, scheme-format
@@ -2475,21 +2463,16 @@ msgstr ""
 #. TRANSLATORS: The goal is to emit "warning:" followed by a short phrase;
 #. "~a" is a placeholder for that phrase.
 #: guix/diagnostics.scm:157
-#, fuzzy
-#| msgid "~a: warning: ~a~%"
 msgid "warning: "
-msgstr "~a: ostrzeżenie: ~a~%"
+msgstr ""
 
 #: guix/diagnostics.scm:159
-#, fuzzy
-#| msgid "error: %s\n"
 msgid "error: "
-msgstr "błąd: %s\n"
+msgstr ""
 
 #: guix/diagnostics.scm:262
-#, fuzzy
 msgid "<unknown location>"
-msgstr "<nieznane położenie>"
+msgstr ""
 
 #: guix/diagnostics.scm:324
 #, scheme-format
@@ -2499,18 +2482,16 @@ msgstr ""
 #: guix/discovery.scm:96
 #, scheme-format
 msgid "cannot access `~a': ~a~%"
-msgstr "brak dostępu do `~a': ~a~%"
+msgstr ""
 
 #: guix/ci.scm:311
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "could not find available substitutes at ~a~%"
-msgstr "nieprawidłowy podpis dla '~a'~%"
+msgstr ""
 
 #: guix/cve.scm:200
-#, fuzzy
-#| msgid "invalid license field"
 msgid "invalid CVE feed"
-msgstr "nieprawidłowe pole licencji"
+msgstr ""
 
 #: guix/cve.scm:202
 #, scheme-format
@@ -2533,9 +2514,9 @@ msgid "commit ~a has a ~a signature, which is not permitted"
 msgstr ""
 
 #: guix/git-authenticate.scm:139
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "signature verification failed for commit ~a"
-msgstr "wersja podpisu musi być liczbą: ~s~%"
+msgstr ""
 
 #: guix/git-authenticate.scm:146
 #, scheme-format
@@ -2568,9 +2549,9 @@ msgid "Would you like to add this key to keyring '~a'?~%"
 msgstr ""
 
 #: guix/graph.scm:348
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unknown graph backend"
-msgstr "~A: nieznany pakiet~%"
+msgstr ""
 
 #. TRANSLATORS: 'modify-phases' is a Scheme syntax
 #. and should not be translated.
@@ -2580,10 +2561,8 @@ msgstr ""
 
 #. TRANSLATORS: See ‘modify-phases’ in the manual.
 #: guix/lint.scm:219
-#, fuzzy
-#| msgid "invalid signature"
 msgid "invalid phase clause"
-msgstr "nieprawidłowy podpis"
+msgstr ""
 
 #: guix/lint.scm:266
 msgid "name should be longer than a single character"
@@ -2601,18 +2580,18 @@ msgstr ""
 
 #: guix/lint.scm:322
 msgid "description should not be empty"
-msgstr "opis nie powinien być pusty"
+msgstr ""
 
 #: guix/lint.scm:333
 msgid "Texinfo markup in description is invalid"
 msgstr ""
 
 #: guix/lint.scm:358
-#, fuzzy, scheme-format
+#, scheme-format
 msgid ""
 "description should not contain ~\n"
 "trademark sign '~a' at ~d"
-msgstr "opis nie powinien być pusty"
+msgstr ""
 
 #. TRANSLATORS: '@code' is Texinfo markup and must be kept
 #. as is.
@@ -2642,7 +2621,7 @@ msgstr ""
 #: guix/lint.scm:446
 #, scheme-format
 msgid "invalid description: ~s"
-msgstr "nieprawidłowy opis: ~s"
+msgstr ""
 
 #: guix/lint.scm:517
 #, scheme-format
@@ -2707,9 +2686,9 @@ msgid "~a: HTTP GET error for ~a: ~a (~s)~%"
 msgstr ""
 
 #: guix/lint.scm:822
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: host lookup failure: ~a~%"
-msgstr "~a: pobieranie nie powiodło się~%"
+msgstr ""
 
 #: guix/lint.scm:827
 #, scheme-format
@@ -2724,7 +2703,7 @@ msgstr ""
 #: guix/lint.scm:843 guix/ui.scm:816 guix/scripts/offload.scm:194
 #, scheme-format
 msgid "~a: ~a~%"
-msgstr "~a: ~a~%"
+msgstr ""
 
 #: guix/lint.scm:875
 #, scheme-format
@@ -2763,12 +2742,12 @@ msgstr ""
 
 #: guix/lint.scm:953
 msgid "invalid value for home page"
-msgstr "nieprawidłowa wartość dla strony domowej"
+msgstr ""
 
 #: guix/lint.scm:958
 #, scheme-format
 msgid "invalid home page URL: ~s"
-msgstr "nieprawidłowy adres strony domowej: ~s"
+msgstr ""
 
 #: guix/lint.scm:995
 msgid "file names of patches should start with the package name"
@@ -2817,9 +2796,9 @@ msgid "URL should be 'mirror://~a/~a'"
 msgstr ""
 
 #: guix/lint.scm:1276
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "while accessing '~a'"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/lint.scm:1283
 #, scheme-format
@@ -2850,7 +2829,7 @@ msgstr ""
 
 #: guix/lint.scm:1414
 msgid "invalid license field"
-msgstr "nieprawidłowe pole licencji"
+msgstr ""
 
 #: guix/lint.scm:1421
 msgid "while retrieving CVE vulnerabilities"
@@ -2882,9 +2861,9 @@ msgid "updater '~a' failed to find upstream releases"
 msgstr ""
 
 #: guix/lint.scm:1519
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to access Disarchive database at ~a"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/lint.scm:1546
 msgid "Software Heritage rate limit reached; try again later"
@@ -3101,9 +3080,9 @@ msgid "unsupported hash format: ~a~%"
 msgstr ""
 
 #: guix/scripts/download.scm:134 guix/scripts/hash.scm:114
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unknown hash algorithm~%"
-msgstr "~A: nieznany pakiet~%"
+msgstr ""
 
 #: guix/scripts/download.scm:171 guix/scripts/package.scm:1074
 #: guix/scripts/pull.scm:824 guix/scripts/publish.scm:1225
@@ -3125,7 +3104,7 @@ msgstr ""
 #: guix/scripts/download.scm:192
 #, scheme-format
 msgid "~a: download failed~%"
-msgstr "~a: pobieranie nie powiodło się~%"
+msgstr ""
 
 #: guix/scripts/package.scm:133
 #, scheme-format
@@ -3140,12 +3119,12 @@ msgstr ""
 #: guix/scripts/package.scm:164
 #, scheme-format
 msgid "nothing to be done~%"
-msgstr "nie ma nic do zrobienia~%"
+msgstr ""
 
 #: guix/scripts/package.scm:269
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "package '~a' no longer exists~%"
-msgstr "profil '~a' nie istnieje~%"
+msgstr ""
 
 #: guix/scripts/package.scm:324
 #, scheme-format
@@ -3359,9 +3338,9 @@ msgid "cannot install non-package object: ~s~%"
 msgstr ""
 
 #: guix/scripts/package.scm:918
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a~@[@~a~]: package not found~%"
-msgstr "~a: nie znaleziono łatki"
+msgstr ""
 
 #: guix/scripts/package.scm:965 guix/scripts/pull.scm:724
 #, scheme-format
@@ -3369,10 +3348,9 @@ msgid "cannot switch to generation '~a'~%"
 msgstr ""
 
 #: guix/scripts/package.scm:1046
-#, fuzzy, scheme-format
-#| msgid "nothing to be done~%"
+#, scheme-format
 msgid "nothing to do~%"
-msgstr "nie ma nic do zrobienia~%"
+msgstr ""
 
 #: guix/scripts/install.scm:31
 msgid ""
@@ -3536,9 +3514,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/gc.scm:100
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid '--verify' option~%"
-msgstr "nieprawidłowy opis: ~s"
+msgstr ""
 
 #: guix/scripts/gc.scm:143
 #, scheme-format
@@ -3560,9 +3538,8 @@ msgid "already ~h MiBs available on ~a, nothing to do~%"
 msgstr ""
 
 #: guix/scripts/gc.scm:255
-#, fuzzy
 msgid "freeing ~h MiBs~%"
-msgstr "zwalnianie ~h bajtów~%"
+msgstr ""
 
 #: guix/scripts/gc.scm:295
 #, scheme-format
@@ -3570,18 +3547,14 @@ msgid "extraneous arguments: ~{~a ~}~%"
 msgstr ""
 
 #: guix/scripts/gc.scm:319 guix/scripts/gc.scm:322
-#, fuzzy
 msgid "freed ~h MiBs~%"
-msgstr "zwolniono ~h bajtów~%"
+msgstr ""
 
 #: guix/scripts/git.scm:26
-#, fuzzy
 msgid ""
 "Usage: guix git COMMAND ARGS...\n"
 "Operate on Git repositories.\n"
 msgstr ""
-"Użycie: guix POLECENIE ARGUMENTY...\n"
-"Podaj POLECENIE i jego ARGUMENTY.\n"
 
 #: guix/scripts/git.scm:29 guix/scripts/system.scm:953
 #: guix/scripts/container.scm:30 guix/scripts/home.scm:94
@@ -3593,14 +3566,14 @@ msgid "   authenticate    verify commit signatures and authorizations\n"
 msgstr ""
 
 #: guix/scripts/git.scm:57
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "guix git: missing sub-command~%"
-msgstr "guix: brakująca nazwa polecenia~%"
+msgstr ""
 
 #: guix/scripts/git.scm:67
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "guix git: invalid sub-command~%"
-msgstr "guix: brakująca nazwa polecenia~%"
+msgstr ""
 
 #: guix/scripts/git/authenticate.scm:81
 #, scheme-format
@@ -3651,9 +3624,9 @@ msgid "Authenticating commits ~a to ~a (~h new commits)...~%"
 msgstr ""
 
 #: guix/scripts/git/authenticate.scm:178
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "wrong number of arguments; expected COMMIT and SIGNER~%"
-msgstr "nieprawidłowa liczba argumentów~%"
+msgstr ""
 
 #: guix/scripts/hash.scm:83
 msgid ""
@@ -3684,16 +3657,14 @@ msgid "unsupported serializer type: ~a~%"
 msgstr ""
 
 #: guix/scripts/hash.scm:202
-#, fuzzy, scheme-format
-#| msgid "~a: ~a~%"
+#, scheme-format
 msgid "~a ~a~%"
-msgstr "~a: ~a~%"
+msgstr ""
 
 #: guix/scripts/hash.scm:211
-#, fuzzy, scheme-format
-#| msgid "no command specified~%"
+#, scheme-format
 msgid "no arguments specified~%"
-msgstr "nie podano polecenia~%"
+msgstr ""
 
 #: guix/scripts/import.scm:62
 msgid ""
@@ -3713,7 +3684,7 @@ msgstr ""
 #: guix/scripts/import.scm:103
 #, scheme-format
 msgid "'~a' import failed~%"
-msgstr "'~a' importowanie nie powiodło się~%"
+msgstr ""
 
 #: guix/scripts/import.scm:105
 #, scheme-format
@@ -3743,9 +3714,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/minetest.scm:62
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: not a valid key to sort by~%"
-msgstr "~a: nieprawidłowa liczba~%"
+msgstr ""
 
 #: guix/scripts/import/minetest.scm:115 guix/scripts/import/cran.scm:120
 #: guix/scripts/import/elpa.scm:110 guix/scripts/import/cpan.scm:87
@@ -3756,7 +3727,7 @@ msgstr "~a: nieprawidłowa liczba~%"
 #: guix/scripts/import/stackage.scm:130 guix/scripts/import/texlive.scm:101
 #, scheme-format
 msgid "too few arguments~%"
-msgstr "za mało argumentów~%"
+msgstr ""
 
 #: guix/scripts/import/minetest.scm:117 guix/scripts/import/cran.scm:122
 #: guix/scripts/import/elpa.scm:112 guix/scripts/import/cpan.scm:89
@@ -3768,7 +3739,7 @@ msgstr "za mało argumentów~%"
 #: guix/scripts/import/texlive.scm:103
 #, scheme-format
 msgid "too many arguments~%"
-msgstr "za dużo argumentów~%"
+msgstr ""
 
 #: guix/scripts/import/cran.scm:45
 msgid ""
@@ -3791,7 +3762,7 @@ msgstr ""
 #: guix/scripts/import/cran.scm:116 guix/scripts/import/texlive.scm:97
 #, scheme-format
 msgid "failed to download description for package '~a'~%"
-msgstr "nie udało się pobrać opisu dla pakietu '~a'~%"
+msgstr ""
 
 #: guix/scripts/import/elpa.scm:45
 msgid ""
@@ -3810,8 +3781,6 @@ msgid ""
 "\n"
 "  -h, --help                     display this help and exit"
 msgstr ""
-"\n"
-"  -h, --help pokaż pomoc i wyjdź"
 
 #: guix/scripts/import/elpa.scm:51
 msgid ""
@@ -3824,13 +3793,11 @@ msgid ""
 "\n"
 "  -V, --version                  display version information and exit"
 msgstr ""
-"\n"
-"  -V, --version pokaż informacje o wersji i wyjdź"
 
 #: guix/scripts/import/elpa.scm:107
 #, scheme-format
 msgid "failed to download package '~a'~%"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/scripts/pull.scm:86
 msgid ""
@@ -3918,9 +3885,9 @@ msgstr ""
 #. the channel name (e.g., "guix") and the second placeholder is its
 #. URL.
 #: guix/scripts/pull.scm:258
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "    ~a at ~a~%"
-msgstr "  ~50a: ~a~%"
+msgstr ""
 
 #: guix/scripts/pull.scm:297
 #, scheme-format
@@ -3938,7 +3905,6 @@ msgid "  ~a new channel:~%"
 msgid_plural "  ~a new channels:~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/pull.scm:372
 #, scheme-format
@@ -3946,7 +3912,6 @@ msgid "  ~a channel removed:~%"
 msgid_plural "  ~a channels removed:~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/pull.scm:436
 #, scheme-format
@@ -3960,10 +3925,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/pull.scm:439
-#, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
+#, scheme-format
 msgid "profile ~a does not have a previous generation~%"
-msgstr "profil '~a' nie istnieje~%"
+msgstr ""
 
 #: guix/scripts/pull.scm:462
 msgid "Run @command{guix pull --news} to read all the news."
@@ -3982,25 +3946,21 @@ msgid "Migrating profile generations to '~a'...~%"
 msgstr ""
 
 #: guix/scripts/pull.scm:549
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "while creating symlink '~a': ~a~%"
-msgstr "podczas pobierania '~a': ~a (~s)~%"
+msgstr ""
 
 #: guix/scripts/pull.scm:638
-#, fuzzy
 msgid "  ~h new package: ~a~%"
 msgid_plural "  ~h new packages: ~a~%"
-msgstr[0] "~A: nieznany pakiet~%"
-msgstr[1] "~A: nieznany pakiet~%"
-msgstr[2] "~A: nieznany pakiet~%"
+msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/pull.scm:646
-#, fuzzy
 msgid "  ~h package upgraded: ~a~%"
 msgid_plural "  ~h packages upgraded: ~a~%"
-msgstr[0] "~a pakiet w profilu~%"
-msgstr[1] "~a pakiety w profilu~%"
-msgstr[2] "~a pakietów w profilu~%"
+msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/pull.scm:748
 #, scheme-format
@@ -4015,9 +3975,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/pull.scm:810
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "directory '~a' is not owned by user ~a"
-msgstr "błąd: katalog `~a' nie należy do ciebie~%"
+msgstr ""
 
 #: guix/scripts/pull.scm:815
 #, scheme-format
@@ -4030,7 +3990,6 @@ msgid "Building from this channel:~%"
 msgid_plural "Building from these channels:~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/substitute.scm:87
 #, scheme-format
@@ -4069,19 +4028,19 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/substitute.scm:325
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "updating substitutes from '~a'... ~5,1f%"
-msgstr "rozpakowywanie '~a'...~%"
+msgstr ""
 
 #: guix/scripts/substitute.scm:471
 #, scheme-format
 msgid "download from '~a' failed: ~a, ~s~%"
-msgstr "pobieranie z '~a' nie powiodło się: ~a, ~s~%"
+msgstr ""
 
 #: guix/scripts/substitute.scm:481
 #, scheme-format
 msgid "while fetching ~a: server is somewhat slow~%"
-msgstr "podczas pobierania ~a: serwer jest nieco wolny~%"
+msgstr ""
 
 #: guix/scripts/substitute.scm:483
 #, scheme-format
@@ -4094,48 +4053,48 @@ msgid "unsupported substitute URI scheme: ~a~%"
 msgstr ""
 
 #: guix/scripts/substitute.scm:494
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "no valid substitute for '~a'~%"
-msgstr "nieprawidłowy podpis dla '~a'~%"
+msgstr ""
 
 #: guix/scripts/substitute.scm:503
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Downloading ~a...~%"
-msgstr "rozpakowywanie '~a'...~%"
+msgstr ""
 
 #: guix/scripts/substitute.scm:608
 msgid "ACL for archive imports seems to be uninitialized, substitutes may be unavailable\n"
 msgstr ""
 
 #: guix/scripts/substitute.scm:694
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid URI~%"
-msgstr "~a: nieprawidłowa liczba~%"
+msgstr ""
 
 #: guix/scripts/substitute.scm:785
 #, scheme-format
 msgid "~a: unrecognized options~%"
-msgstr "~a: nieznana opcja~%"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:64
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to load key pair at '~a': ~a~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:86
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid signature: ~a"
-msgstr "nieprawidłowy podpis"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:89
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "unauthorized public key: ~a"
-msgstr "nieuwierzytelniony klucz publiczny"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:92
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "corrupt signature data: ~a"
-msgstr "uszkodzone dane podpisu"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:184
 msgid ""
@@ -4150,14 +4109,14 @@ msgid "~s: invalid command; ignoring~%"
 msgstr ""
 
 #: guix/scripts/authenticate.scm:223
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "wrong arguments~%"
-msgstr "nieprawidłowe argumenty"
+msgstr ""
 
 #: guix/scripts/system.scm:179
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "copying to '~a'..."
-msgstr "rozpakowywanie '~a'...~%"
+msgstr ""
 
 #: guix/scripts/system.scm:215
 #, scheme-format
@@ -4197,7 +4156,7 @@ msgstr ""
 #: guix/scripts/system.scm:305
 #, scheme-format
 msgid "something went wrong: ~s~%"
-msgstr "coś poszło nie tak: ~s~%"
+msgstr ""
 
 #: guix/scripts/system.scm:308
 #, scheme-format
@@ -4234,9 +4193,9 @@ msgid "      repository URL: ~a~%"
 msgstr ""
 
 #: guix/scripts/system.scm:487 guix/scripts/home.scm:772
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "      branch: ~a~%"
-msgstr "  jądro: ~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:488 guix/scripts/home.scm:773
 #, scheme-format
@@ -4246,23 +4205,23 @@ msgstr ""
 #: guix/scripts/system.scm:508 guix/scripts/home.scm:786
 #, scheme-format
 msgid "  file name: ~a~%"
-msgstr "  nazwa pliku: ~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:509 guix/scripts/home.scm:787
 #, scheme-format
 msgid "  canonical file name: ~a~%"
-msgstr "  kanoniczna nazwa pliku: ~a~%"
+msgstr ""
 
 #. TRANSLATORS: Please preserve the two-space indentation.
 #: guix/scripts/system.scm:511
 #, scheme-format
 msgid "  label: ~a~%"
-msgstr "  etykieta: ~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:512
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  bootloader: ~a~%"
-msgstr "  etykieta: ~a~%"
+msgstr ""
 
 #. TRANSLATORS: The '~[', '~;', and '~]' sequences in this string must
 #. be preserved.  They denote conditionals, such that the result will
@@ -4280,33 +4239,33 @@ msgstr ""
 #: guix/scripts/system.scm:528
 #, scheme-format
 msgid "  kernel: ~a~%"
-msgstr "  jądro: ~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:533
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  multiboot: ~a~%"
-msgstr "  etykieta: ~a~%"
+msgstr ""
 
 #. TRANSLATORS: Here "channel" is the same terminology as used in
 #. "guix describe" and "guix pull --channels".
 #: guix/scripts/system.scm:539 guix/scripts/home.scm:793
 #, scheme-format
 msgid "  channels:~%"
-msgstr "  kanały:~%"
+msgstr ""
 
 #: guix/scripts/system.scm:542 guix/scripts/home.scm:796
 #, scheme-format
 msgid "  configuration file: ~a~%"
-msgstr "  plik konfiguracji: ~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:547 guix/scripts/home.scm:801
 msgid "  packages:\n"
 msgstr ""
 
 #: guix/scripts/system.scm:627
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "device '~a' not found: ~a~%"
-msgstr "użytkownik '~a' nie znaleziony: ~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:630
 #, scheme-format
@@ -4321,9 +4280,9 @@ msgid "file system with label '~a' not found~%"
 msgstr ""
 
 #: guix/scripts/system.scm:645
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "file system with UUID '~a' not found~%"
-msgstr "użytkownik '~a' nie znaleziony: ~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:733
 #, scheme-format
@@ -4358,7 +4317,7 @@ msgstr ""
 #: guix/scripts/system.scm:871
 #, scheme-format
 msgid "activating system...~%"
-msgstr "uruchamianie systemu...~%"
+msgstr ""
 
 #: guix/scripts/system.scm:882
 msgid ""
@@ -4604,9 +4563,9 @@ msgid "both file and expression cannot be specified~%"
 msgstr ""
 
 #: guix/scripts/system.scm:1236 guix/scripts/home.scm:506
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "no configuration specified~%"
-msgstr "nie podano pliku konfiguracji~%"
+msgstr ""
 
 #: guix/scripts/system.scm:1347 guix/scripts/system.scm:1376
 #: guix/scripts/system.scm:1383 guix/scripts/system.scm:1389
@@ -4616,7 +4575,7 @@ msgstr "nie podano pliku konfiguracji~%"
 #: guix/scripts/offload.scm:836 guix/scripts/offload.scm:848
 #, scheme-format
 msgid "wrong number of arguments~%"
-msgstr "nieprawidłowa liczba argumentów~%"
+msgstr ""
 
 #: guix/scripts/system.scm:1359
 #, scheme-format
@@ -4641,13 +4600,12 @@ msgstr ""
 #: guix/scripts/system.scm:1435
 #, scheme-format
 msgid "Try 'guix system --help' for more information.~%"
-msgstr "Wpisz 'guix system --help' aby uzyskać więcej informacji.~%"
+msgstr ""
 
 #: guix/scripts/system/edit.scm:32 guix/scripts/home/edit.scm:33
-#, fuzzy, scheme-format
-#| msgid "no such process ~d~%"
+#, scheme-format
 msgid "~a: no such service type~%"
-msgstr "nie ma takiego procesu ~d~%"
+msgstr ""
 
 #: guix/scripts/system/edit.scm:50 guix/scripts/home/edit.scm:51
 #, scheme-format
@@ -4660,16 +4618,15 @@ msgid "~a: ~a matching service type~%"
 msgid_plural "~a: ~a matching service types~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/system/search.scm:107 guix/ui.scm:1536 guix/ui.scm:1554
 msgid "unknown"
-msgstr "nieznane"
+msgstr "অজানা"
 
 #: guix/scripts/lint.scm:58
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a@~a: ~a~%"
-msgstr "~a: ~a~%"
+msgstr ""
 
 #: guix/scripts/lint.scm:82
 #, scheme-format
@@ -4818,12 +4775,12 @@ msgstr ""
 #: guix/scripts/publish.scm:131
 #, scheme-format
 msgid "lookup of host '~a' failed: ~a~%"
-msgstr "wyszukiwanie serwera '~a' nie powiodło się: ~a~%"
+msgstr ""
 
 #: guix/scripts/publish.scm:188
 #, scheme-format
 msgid "lookup of host '~a' returned nothing"
-msgstr "wyszukiwanie serwera '~a' nie dało wyniku"
+msgstr ""
 
 #: guix/scripts/publish.scm:211
 #, scheme-format
@@ -4836,9 +4793,9 @@ msgid "~a: invalid duration~%"
 msgstr ""
 
 #: guix/scripts/publish.scm:1159
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Advertising ~a~%."
-msgstr "usuwanie ~a~%"
+msgstr ""
 
 #: guix/scripts/publish.scm:1194
 #, scheme-format
@@ -4848,7 +4805,7 @@ msgstr ""
 #: guix/scripts/publish.scm:1208
 #, scheme-format
 msgid "user '~a' not found: ~a~%"
-msgstr "użytkownik '~a' nie znaleziony: ~a~%"
+msgstr ""
 
 #: guix/scripts/publish.scm:1266
 #, scheme-format
@@ -4882,9 +4839,9 @@ msgid "file '~a' not found in search path ~s~%"
 msgstr ""
 
 #: guix/scripts/edit.scm:93
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to launch '~a': ~a~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/edit.scm:111
 #, scheme-format
@@ -4902,7 +4859,7 @@ msgstr ""
 
 #: guix/scripts/size.scm:93
 msgid "total"
-msgstr "razem"
+msgstr ""
 
 #: guix/scripts/size.scm:93
 msgid "self"
@@ -4940,9 +4897,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/size.scm:273
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid sorting key~%"
-msgstr "~a: nieprawidłowa liczba~%"
+msgstr ""
 
 #: guix/scripts/size.scm:315
 msgid "missing store item argument\n"
@@ -5020,9 +4977,9 @@ msgid "The available backend types are:\n"
 msgstr ""
 
 #: guix/scripts/graph.scm:473
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "no path from '~a' to '~a'~%"
-msgstr "pobieranie z '~a' nie powiodło się: ~a, ~s~%"
+msgstr ""
 
 #. TRANSLATORS: Here 'dot' is the name of a program; it must not be
 #. translated.
@@ -5084,12 +5041,11 @@ msgid "  differing file:~%"
 msgid_plural "  differing files:~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/challenge.scm:327
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to delete '~a': ~a~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/challenge.scm:408
 #, scheme-format
@@ -5104,7 +5060,7 @@ msgstr ""
 #: guix/scripts/challenge.scm:411
 #, scheme-format
 msgid "  ~50a: ~a~%"
-msgstr "  ~50a: ~a~%"
+msgstr ""
 
 #: guix/scripts/challenge.scm:419
 #, scheme-format
@@ -5168,14 +5124,14 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/challenge.scm:488
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unknown diff mode~%"
-msgstr "~A: nieznany pakiet~%"
+msgstr ""
 
 #: guix/scripts/copy.scm:61
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid TCP port number~%"
-msgstr "~a: nieprawidłowa liczba~%"
+msgstr ""
 
 #: guix/scripts/copy.scm:63
 #, scheme-format
@@ -5211,9 +5167,9 @@ msgid "use '--to' or '--from'~%"
 msgstr ""
 
 #: guix/scripts/pack.scm:120
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: compressor not found~%"
-msgstr "guix: ~a: nie znaleziono polecenia~%"
+msgstr ""
 
 #: guix/scripts/pack.scm:328 guix/scripts/pack.scm:683
 #, scheme-format
@@ -5382,15 +5338,14 @@ msgid "both a manifest and a package list were given~%"
 msgstr ""
 
 #: guix/scripts/pack.scm:1428
-#, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
+#, scheme-format
 msgid "file provided with option ~a does not exist: ~a~%"
-msgstr "profil '~a' nie istnieje~%"
+msgstr ""
 
 #: guix/scripts/pack.scm:1489
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unknown pack format~%"
-msgstr "~A: nieznany pakiet~%"
+msgstr ""
 
 #: guix/scripts/pack.scm:1516
 #, scheme-format
@@ -5421,9 +5376,9 @@ msgid "  ~,1f% substitutes available (~h out of ~h)~%"
 msgstr ""
 
 #: guix/scripts/weather.scm:234
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  unknown substitute sizes~%"
-msgstr "nieznana jednostka: ~a~%"
+msgstr ""
 
 #: guix/scripts/weather.scm:237
 msgid "  ~,1h MiB of nars (compressed)~%"
@@ -5451,9 +5406,9 @@ msgid "  (continuous integration information unavailable)~%"
 msgstr ""
 
 #: guix/scripts/weather.scm:254
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  '~a' returned ~a (~s)~%"
-msgstr "użytkownik '~a' nie znaleziony: ~a~%"
+msgstr ""
 
 #: guix/scripts/weather.scm:271
 msgid "  ~,1f% (~h out of ~h) of the missing items are queued~%"
@@ -5488,9 +5443,8 @@ msgid "Substitutes are missing for the following items:~%"
 msgstr ""
 
 #: guix/scripts/weather.scm:314
-#, fuzzy
 msgid "unknown system"
-msgstr "nieznane"
+msgstr ""
 
 #: guix/scripts/weather.scm:329
 msgid ""
@@ -5527,9 +5481,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/weather.scm:367
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid URL~%"
-msgstr "~a: nieprawidłowa liczba~%"
+msgstr ""
 
 #: guix/scripts/weather.scm:498
 #, scheme-format
@@ -5537,7 +5491,6 @@ msgid "The following ~a package is missing from '~a' for '~a':~%"
 msgid_plural "The following ~a packages are missing from '~a' for '~a':~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/weather.scm:504
 #, scheme-format
@@ -5545,7 +5498,6 @@ msgid "~a package is missing from '~a' for '~a':~%"
 msgid_plural "~a packages are missing from '~a' for '~a', among which:~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/describe.scm:53 guix/scripts/processes.scm:291
 msgid "The available formats are:\n"
@@ -5609,19 +5561,19 @@ msgid "Git checkout:~%"
 msgstr ""
 
 #: guix/scripts/describe.scm:163
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  repository: ~a~%"
-msgstr "  jądro: ~a~%"
+msgstr ""
 
 #: guix/scripts/describe.scm:164
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  branch: ~a~%"
-msgstr "  jądro: ~a~%"
+msgstr ""
 
 #: guix/scripts/describe.scm:165
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  commit: ~a~%"
-msgstr "  ~50a: ~a~%"
+msgstr ""
 
 #: guix/scripts/describe.scm:225
 #, scheme-format
@@ -5629,14 +5581,14 @@ msgid "    repository URL: ~a~%"
 msgstr ""
 
 #: guix/scripts/describe.scm:228
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "    branch: ~a~%"
-msgstr "  jądro: ~a~%"
+msgstr ""
 
 #: guix/scripts/describe.scm:230
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "    commit: ~a~%"
-msgstr "  nazwa pliku: ~a~%"
+msgstr ""
 
 #: guix/scripts/processes.scm:298
 msgid ""
@@ -5668,7 +5620,6 @@ msgid "The following ~d machine would be deployed:~%"
 msgid_plural "The following ~d machines would be deployed:~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/deploy.scm:126
 #, scheme-format
@@ -5676,22 +5627,21 @@ msgid "The following ~d machine will be deployed:~%"
 msgid_plural "The following ~d machines will be deployed:~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/deploy.scm:140
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "deploying to ~a...~%"
-msgstr "usuwanie ~a~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:152 guix/scripts/deploy.scm:156
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to deploy ~a: ~a~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:164
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "rolling back ~a...~%"
-msgstr "rozpakowywanie '~a'...~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:170
 #, scheme-format
@@ -5699,34 +5649,29 @@ msgid "successfully deployed ~a~%"
 msgstr ""
 
 #: guix/scripts/deploy.scm:221
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "~a: command succeeded~%"
-msgstr "guix: ~a: nie znaleziono polecenia~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:224
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "~a: command exited with code ~a~%"
-msgstr "guix: ~a: nie znaleziono polecenia~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:227
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "~a: command stopped with signal ~a~%"
-msgstr "guix: ~a: nie znaleziono polecenia~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:230
-#, fuzzy, scheme-format
-#| msgid "~a: consider adding this input: ~a~%"
+#, scheme-format
 msgid "~a: command terminated with signal ~a~%"
-msgstr "~a: rozważ dodanie tego elementu: ~a~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:234
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "command output on ~a:~%"
-msgstr "guix: ~a: nie znaleziono polecenia~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:256
 #, scheme-format
@@ -5754,7 +5699,6 @@ msgid "importing module~{ ~a~} from the host~%"
 msgid_plural "importing modules~{ ~a~} from the host~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/gnu-maintenance.scm:831
 msgid "Updater for GNU packages"
@@ -5795,9 +5739,9 @@ msgid "   exec            execute a command inside of an existing container\n"
 msgstr ""
 
 #: guix/scripts/container.scm:58
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "guix container: missing action~%"
-msgstr "guix: brakująca nazwa polecenia~%"
+msgstr ""
 
 #: guix/scripts/container.scm:68
 #, scheme-format
@@ -5805,13 +5749,10 @@ msgid "guix container: invalid action~%"
 msgstr ""
 
 #: guix/scripts/container/exec.scm:40
-#, fuzzy
 msgid ""
 "Usage: guix container exec PID COMMAND [ARGS...]\n"
 "Execute COMMAND within the container process PID.\n"
 msgstr ""
-"Użycie: guix POLECENIE ARGUMENTY...\n"
-"Podaj POLECENIE i jego ARGUMENTY.\n"
 
 #: guix/scripts/container/exec.scm:69
 #, scheme-format
@@ -5821,17 +5762,17 @@ msgstr ""
 #: guix/scripts/container/exec.scm:87
 #, scheme-format
 msgid "no pid specified~%"
-msgstr "nie podano PID~%"
+msgstr ""
 
 #: guix/scripts/container/exec.scm:90
 #, scheme-format
 msgid "no command specified~%"
-msgstr "nie podano polecenia~%"
+msgstr ""
 
 #: guix/scripts/container/exec.scm:93
 #, scheme-format
 msgid "no such process ~d~%"
-msgstr "nie ma takiego procesu ~d~%"
+msgstr ""
 
 #: guix/scripts/container/exec.scm:105
 #, scheme-format
@@ -5839,9 +5780,9 @@ msgid "exec failed with status ~d~%"
 msgstr ""
 
 #: guix/transformations.scm:187 guix/transformations.scm:255
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid replacement specification: ~s"
-msgstr "nieprawidłowy opis: ~s"
+msgstr ""
 
 #: guix/transformations.scm:236
 #, scheme-format
@@ -5859,14 +5800,13 @@ msgid "~a: invalid toolchain replacement specification"
 msgstr ""
 
 #: guix/transformations.scm:519
-#, fuzzy
 msgid "failed to determine which compiler is used"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/transformations.scm:525
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to determine whether ~a supports ~a"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/transformations.scm:533
 #, scheme-format
@@ -5892,15 +5832,14 @@ msgid ""
 msgstr ""
 
 #: guix/transformations.scm:602
-#, fuzzy, scheme-format
-#| msgid "~a: ~a~%"
+#, scheme-format
 msgid "tuning ~a for CPU ~a~%"
-msgstr "~a: ~a~%"
+msgstr ""
 
 #: guix/transformations.scm:742
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid package patch specification"
-msgstr "nieprawidłowy opis: ~s"
+msgstr ""
 
 #: guix/transformations.scm:765
 #, scheme-format
@@ -6011,14 +5950,14 @@ msgid "transformation '~a' had no effect on ~a~%"
 msgstr ""
 
 #: guix/upstream.scm:363
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to download detached signature from ~a~%"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/upstream.scm:367
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "signature verification failed for '~a' (key: ~a)~%"
-msgstr "wersja podpisu musi być liczbą: ~s~%"
+msgstr ""
 
 #: guix/upstream.scm:371
 #, scheme-format
@@ -6026,9 +5965,9 @@ msgid "missing public key ~a for '~a'~%"
 msgstr ""
 
 #: guix/upstream.scm:384
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to fetch source from '~a'"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/upstream.scm:511
 #, scheme-format
@@ -6036,9 +5975,9 @@ msgid "cannot download for this method: ~s"
 msgstr ""
 
 #: guix/upstream.scm:523
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "updater failed to determine available releases for ~a~%"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/upstream.scm:596
 #, scheme-format
@@ -6103,20 +6042,20 @@ msgid "~amissing closing parenthesis~%"
 msgstr ""
 
 #: guix/ui.scm:376
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "read error while loading '~a': ~a~%"
-msgstr "podczas pobierania '~a': ~a (~s)~%"
+msgstr ""
 
 #: guix/ui.scm:380
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~s: ~a~%"
-msgstr "~a: ~a~%"
+msgstr ""
 
 #: guix/ui.scm:388 guix/ui.scm:419 guix/ui.scm:773 guix/ui.scm:823
 #: guix/ui.scm:874
 #, scheme-format
 msgid "~a~%"
-msgstr "~a~%"
+msgstr ""
 
 #: guix/ui.scm:396 guix/ui.scm:883
 #, scheme-format
@@ -6174,10 +6113,6 @@ msgid ""
 "\n"
 "Report bugs to: ~a."
 msgstr ""
-"\n"
-"Zgłaszanie błędów: ~a.\n"
-"\n"
-"Zgłaszanie błędów w tłumaczeniu: translation-team-pl@lists.sourceforge.net"
 
 #: guix/ui.scm:540
 #, scheme-format
@@ -6185,17 +6120,13 @@ msgid ""
 "\n"
 "~a home page: <~a>"
 msgstr ""
-"\n"
-"~a strona domowa: <~a>"
 
 #: guix/ui.scm:542
-#, fuzzy, scheme-format
+#, scheme-format
 msgid ""
 "\n"
 "General help using Guix and GNU software: <~a>"
 msgstr ""
-"\n"
-"Ogólna pomoc na temat oprogramowania GNU: <http://www.gnu.org/gethelp/>"
 
 #. TRANSLATORS: Change the "/en" bit of this URL appropriately if
 #. the web site is translated in your language.
@@ -6211,17 +6142,17 @@ msgstr ""
 #: guix/ui.scm:606
 #, scheme-format
 msgid "~a: invalid number~%"
-msgstr "~a: nieprawidłowa liczba~%"
+msgstr ""
 
 #: guix/ui.scm:624
 #, scheme-format
 msgid "invalid number: ~a~%"
-msgstr "nieprawidłowa liczba: ~a~%"
+msgstr ""
 
 #: guix/ui.scm:647
 #, scheme-format
 msgid "unknown unit: ~a~%"
-msgstr "nieznana jednostka: ~a~%"
+msgstr ""
 
 #: guix/ui.scm:662
 #, scheme-format
@@ -6255,7 +6186,7 @@ msgstr ""
 #: guix/ui.scm:712
 #, scheme-format
 msgid "profile '~a' does not exist~%"
-msgstr "profil '~a' nie istnieje~%"
+msgstr ""
 
 #: guix/ui.scm:715
 #, scheme-format
@@ -6330,7 +6261,7 @@ msgstr ""
 #: guix/ui.scm:871
 #, scheme-format
 msgid "syntax error: ~a~%"
-msgstr "błąd składni: ~a~%"
+msgstr ""
 
 #: guix/ui.scm:895
 #, scheme-format
@@ -6347,7 +6278,6 @@ msgid "The following derivation would be built:~%"
 msgid_plural "The following derivations would be built:~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
@@ -6362,7 +6292,6 @@ msgid "~:[The following file would be downloaded:~%~;~]"
 msgid_plural "~:[The following files would be downloaded:~%~;~]"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1062
 #, scheme-format
@@ -6370,7 +6299,6 @@ msgid "~:[The following graft would be made:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following grafts would be made:~%~{   ~a~%~}~;~]"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1067
 #, scheme-format
@@ -6378,7 +6306,6 @@ msgid "~:[The following profile hook would be built:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following profile hooks would be built:~%~{   ~a~%~}~;~]"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #. TRANSLATORS: "MB" is for "megabyte"; it should be
 #. translated to the corresponding abbreviation.
@@ -6391,7 +6318,6 @@ msgid "~:[~h item would be downloaded~%~;~]"
 msgid_plural "~:[~h items would be downloaded~%~;~]"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1092
 #, scheme-format
@@ -6399,7 +6325,6 @@ msgid "The following derivation will be built:~%"
 msgid_plural "The following derivations will be built:~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
@@ -6414,7 +6339,6 @@ msgid "~:[The following file will be downloaded:~%~;~]"
 msgid_plural "~:[The following files will be downloaded:~%~;~]"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1122
 #, scheme-format
@@ -6422,7 +6346,6 @@ msgid "~:[The following graft will be made:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following grafts will be made:~%~{   ~a~%~}~;~]"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1127
 #, scheme-format
@@ -6430,7 +6353,6 @@ msgid "~:[The following profile hook will be built:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following profile hooks will be built:~%~{   ~a~%~}~;~]"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #. TRANSLATORS: "MB" is for "megabyte"; it should be
 #. translated to the corresponding abbreviation.
@@ -6443,7 +6365,6 @@ msgid "~:[~h item will be downloaded~%~;~]"
 msgid_plural "~:[~h items will be downloaded~%~;~]"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1262
 msgid "(dependencies or package changed)"
@@ -6455,7 +6376,6 @@ msgid "The following package would be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages would be removed:~%~{~a~%~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1286
 #, scheme-format
@@ -6463,7 +6383,6 @@ msgid "The following package will be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be removed:~%~{~a~%~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1299
 #, scheme-format
@@ -6471,7 +6390,6 @@ msgid "The following package would be downgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages would be downgraded:~%~{~a~%~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1304
 #, scheme-format
@@ -6479,7 +6397,6 @@ msgid "The following package will be downgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages will be downgraded:~%~{~a~%~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1317
 #, scheme-format
@@ -6487,7 +6404,6 @@ msgid "The following package would be upgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages would be upgraded:~%~{~a~%~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1322
 #, scheme-format
@@ -6495,7 +6411,6 @@ msgid "The following package will be upgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages will be upgraded:~%~{~a~%~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1333
 #, scheme-format
@@ -6503,7 +6418,6 @@ msgid "The following package would be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages would be installed:~%~{~a~%~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1338
 #, scheme-format
@@ -6511,18 +6425,16 @@ msgid "The following package will be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be installed:~%~{~a~%~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ui.scm:1456
-#, fuzzy, scheme-format
-#| msgid "~a: invalid number~%"
+#, scheme-format
 msgid "~a: invalid Texinfo markup~%"
-msgstr "~a: nieprawidłowa liczba~%"
+msgstr ""
 
 #: guix/ui.scm:1903
 #, scheme-format
 msgid "invalid syntax: ~a~%"
-msgstr "nieprawidłowa składnia: ~a~%"
+msgstr ""
 
 #: guix/ui.scm:1912
 #, scheme-format
@@ -6548,14 +6460,14 @@ msgid "~a\t(current)~%"
 msgstr ""
 
 #: guix/ui.scm:1964
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "cannot lock profile ~a: ~a~%"
-msgstr "brak dostępu do `~a': ~a~%"
+msgstr ""
 
 #: guix/ui.scm:1966
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "profile ~a is locked by another process~%"
-msgstr "profil '~a' nie istnieje~%"
+msgstr ""
 
 #: guix/ui.scm:1995
 #, scheme-format
@@ -6565,57 +6477,39 @@ msgstr ""
 #: guix/ui.scm:2011
 #, scheme-format
 msgid "deleting ~a~%"
-msgstr "usuwanie ~a~%"
+msgstr ""
 
 #: guix/ui.scm:2042
 #, scheme-format
 msgid "Try `guix --help' for more information.~%"
-msgstr "Wpisz `guix --help' aby dowiedzieć się więcej.~%"
+msgstr ""
 
 #: guix/ui.scm:2134
-#, fuzzy
-#| msgid ""
-#| "Usage: guix COMMAND ARGS...\n"
-#| "Run COMMAND with ARGS.\n"
 msgid ""
 "Usage: guix OPTION | COMMAND ARGS...\n"
 "Run COMMAND with ARGS, if given.\n"
 msgstr ""
-"Użycie: guix POLECENIE ARGUMENTY...\n"
-"Podaj POLECENIE i jego ARGUMENTY.\n"
 
 #: guix/ui.scm:2137
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -h, --help                     display this help and exit"
 msgid ""
 "\n"
 "  -h, --help             display this helpful text again and exit"
 msgstr ""
-"\n"
-"  -h, --help pokaż pomoc i wyjdź"
 
 #: guix/ui.scm:2139
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -V, --version                  display version information and exit"
 msgid ""
 "\n"
 "  -V, --version          display version and copyright information and exit"
 msgstr ""
-"\n"
-"  -V, --version pokaż informacje o wersji i wyjdź"
 
 #: guix/ui.scm:2144
 msgid "COMMAND must be one of the sub-commands listed below:\n"
-msgstr "POLECENIE musi być jednym z poniżej podanych:\n"
+msgstr ""
 
 #: guix/ui.scm:2186
 #, scheme-format
 msgid "guix: ~a: command not found~%"
-msgstr "guix: ~a: nie znaleziono polecenia~%"
+msgstr ""
 
 #: guix/ui.scm:2188
 #, scheme-format
@@ -6625,12 +6519,12 @@ msgstr ""
 #: guix/ui.scm:2222
 #, scheme-format
 msgid "guix: missing command name~%"
-msgstr "guix: brakująca nazwa polecenia~%"
+msgstr ""
 
 #: guix/ui.scm:2230
 #, scheme-format
 msgid "guix: unrecognized option '~a'~%"
-msgstr "guix: nieznana opcja '~a'~%"
+msgstr ""
 
 #. TRANSLATORS: The word "phase" here denotes a "build phase";
 #. "~a" is a placeholder for the untranslated name of the current
@@ -6702,7 +6596,6 @@ msgid "applying ~a graft for ~a ..."
 msgid_plural "applying ~a grafts for ~a ..."
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/status.scm:498
 #, scheme-format
@@ -6710,7 +6603,6 @@ msgid "building profile with ~a package..."
 msgid_plural "building profile with ~a packages..."
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/status.scm:507
 #, scheme-format
@@ -6718,9 +6610,9 @@ msgid "running profile hook of type '~a'..."
 msgstr ""
 
 #: guix/status.scm:510
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "building ~a..."
-msgstr "rozpakowywanie '~a'...~%"
+msgstr ""
 
 #: guix/status.scm:515
 #, scheme-format
@@ -6733,12 +6625,11 @@ msgid "The following build is still in progress:~%~{  ~a~%~}~%"
 msgid_plural "The following builds are still in progress:~%~{  ~a~%~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/status.scm:527
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "build of ~a failed"
-msgstr "budowanie nie powiodło się: ~a~%"
+msgstr ""
 
 #: guix/status.scm:531
 #, scheme-format
@@ -6795,9 +6686,9 @@ msgid "following redirection to `~a'...~%"
 msgstr ""
 
 #: guix/http-client.scm:162
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: HTTP download failed: ~a (~s)"
-msgstr "~a: pobieranie nie powiodło się~%"
+msgstr ""
 
 #: guix/nar.scm:173
 msgid "signature is not a valid s-expression"
@@ -6805,7 +6696,7 @@ msgstr ""
 
 #: guix/nar.scm:182
 msgid "invalid signature"
-msgstr "nieprawidłowy podpis"
+msgstr ""
 
 #: guix/nar.scm:186
 msgid "invalid hash"
@@ -6813,11 +6704,11 @@ msgstr ""
 
 #: guix/nar.scm:194
 msgid "unauthorized public key"
-msgstr "nieuwierzytelniony klucz publiczny"
+msgstr ""
 
 #: guix/nar.scm:199
 msgid "corrupt signature data"
-msgstr "uszkodzone dane podpisu"
+msgstr ""
 
 #: guix/nar.scm:220
 msgid "corrupt file set archive"
@@ -6831,7 +6722,7 @@ msgstr ""
 #: guix/nar.scm:241
 #, scheme-format
 msgid "found valid signature for '~a'~%"
-msgstr "znaleziono prawidłowy podpis dla '~a'~%"
+msgstr ""
 
 #: guix/nar.scm:248
 msgid "imported file lacks a signature"
@@ -6842,14 +6733,14 @@ msgid "invalid inter-file archive mark"
 msgstr ""
 
 #: guix/narinfo.scm:102
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid narinfo hash: ~s"
-msgstr "nieprawidłowy opis: ~s"
+msgstr ""
 
 #: guix/narinfo.scm:116
 #, scheme-format
 msgid "signature version must be a number: ~s~%"
-msgstr "wersja podpisu musi być liczbą: ~s~%"
+msgstr ""
 
 #: guix/narinfo.scm:120
 #, scheme-format
@@ -6864,16 +6755,15 @@ msgstr ""
 #: guix/narinfo.scm:132
 #, scheme-format
 msgid "invalid format of the signature field: ~a~%"
-msgstr "nieprawidłowy format pola podpisu: ~a~%"
+msgstr ""
 
 #: guix/channels.scm:297
 msgid "unsupported '.guix-channel' version"
 msgstr ""
 
 #: guix/channels.scm:303
-#, fuzzy
 msgid "invalid '.guix-channel' file"
-msgstr "nieprawidłowe pole licencji"
+msgstr ""
 
 #: guix/channels.scm:362
 msgid "Authenticating channel '~a', commits ~a to ~a (~h new commits)...~%"
@@ -6945,9 +6835,8 @@ msgid "syntactically invalid channel news file"
 msgstr ""
 
 #: guix/channels.scm:1118
-#, fuzzy
 msgid "invalid channel news file"
-msgstr "nieprawidłowe pole licencji"
+msgstr ""
 
 #: guix/packages.scm:346
 msgid "no SHA256 hash for origin"
@@ -6959,24 +6848,23 @@ msgid "cannot emit manifests formatted as version ~a"
 msgstr ""
 
 #: guix/profiles.scm:585
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid repeated entry in profile: ~s"
-msgstr "nieprawidłowy opis: ~s"
+msgstr ""
 
 #: guix/profiles.scm:653
 msgid "unsupported manifest format"
 msgstr ""
 
 #: guix/profiles.scm:1930
-#, fuzzy, scheme-format
-#| msgid "package `~a' lacks output `~a'~%"
+#, scheme-format
 msgid "package ~a does not support ~a"
-msgstr "pakiet `~a' nie posiada wyjścia `~a'~%"
+msgstr ""
 
 #: guix/profiles.scm:2310
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "while creating directory `~a': ~a"
-msgstr "błąd: podczas tworzenia katalogu `~a': ~a~%"
+msgstr ""
 
 #: guix/profiles.scm:2315
 #, scheme-format
@@ -6984,9 +6872,9 @@ msgid "Please create the @file{~a} directory, with you as the owner."
 msgstr ""
 
 #: guix/profiles.scm:2324
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "directory `~a' is not owned by you"
-msgstr "błąd: katalog `~a' nie należy do ciebie~%"
+msgstr ""
 
 #: guix/profiles.scm:2328
 #, scheme-format
@@ -7004,46 +6892,44 @@ msgid "server at '~a' returned host key '~a' of type '~a' instead of '~a' of typ
 msgstr ""
 
 #: guix/ssh.scm:155
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to authenticate server at '~a': ~a"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/ssh.scm:174
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "SSH authentication failed for '~a': ~a~%"
-msgstr "wersja podpisu musi być liczbą: ~s~%"
+msgstr ""
 
 #: guix/ssh.scm:178
-#, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
+#, scheme-format
 msgid "SSH connection to '~a' failed: ~a~%"
-msgstr "~a: pobieranie nie powiodło się~%"
+msgstr ""
 
 #: guix/ssh.scm:227
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to start 'guix repl' on '~a'"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/ssh.scm:323
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to connect over SSH to daemon at '~a', socket ~a"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/ssh.scm:462
 msgid "sending ~a store item (~h MiB) to '~a'...~%"
 msgid_plural "sending ~a store items (~h MiB) to '~a'...~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ssh.scm:558
 msgid "unknown error while sending files over SSH"
 msgstr ""
 
 #: guix/ssh.scm:603
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to connect to '~A' on remote host '~A': ~a"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/ssh.scm:606
 #, scheme-format
@@ -7051,7 +6937,6 @@ msgid "no such item on remote host '~A':~{ ~a~}"
 msgid_plural "no such items on remote host '~A':~{ ~a~}"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/ssh.scm:611
 #, scheme-format
@@ -7059,23 +6944,21 @@ msgid "protocol error on remote host '~A': ~a"
 msgstr ""
 
 #: guix/ssh.scm:614
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to retrieve store items from '~a'"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/ssh.scm:627
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "retrieving ~a store item from '~a'...~%"
 msgid_plural "retrieving ~a store items from '~a'...~%"
-msgstr[0] "rozpakowywanie '~a'...~%"
-msgstr[1] "rozpakowywanie '~a'...~%"
-msgstr[2] "rozpakowywanie '~a'...~%"
+msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ssh.scm:657
-#, fuzzy, scheme-format
-#| msgid "failed to install GRUB on device '~a'~%"
+#, scheme-format
 msgid "failed to start Guile on remote host '~A'"
-msgstr "nie udało się zainstalować GRUB na urządzeniu '~a'~%"
+msgstr ""
 
 #: guix/ssh.scm:658
 #, scheme-format
@@ -7099,19 +6982,19 @@ msgid "indexing objects"
 msgstr ""
 
 #: guix/git.scm:306
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Git error ~a~%"
-msgstr "~a: bład: ~a~%"
+msgstr ""
 
 #: guix/git.scm:308 guix/git.scm:568
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Git error: ~a~%"
-msgstr "~a: bład: ~a~%"
+msgstr ""
 
 #: guix/git.scm:323
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "updating submodule '~a'...~%"
-msgstr "rozpakowywanie '~a'...~%"
+msgstr ""
 
 #: guix/git.scm:392
 #, scheme-format
@@ -7129,27 +7012,24 @@ msgid "cannot fetch branch '~a' from ~a: ~a"
 msgstr ""
 
 #: guix/git.scm:734
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Git failure while fetching ~a: ~a"
-msgstr "podczas pobierania '~a': ~a (~s)~%"
+msgstr ""
 
 #: guix/substitutes.scm:100
-#, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
+#, scheme-format
 msgid "'~a' does not name a store item~%"
-msgstr "profil '~a' nie istnieje~%"
+msgstr ""
 
 #: guix/substitutes.scm:144
-#, fuzzy, scheme-format
-#| msgid "user '~a' not found: ~a~%"
+#, scheme-format
 msgid "~a: host not found: ~a~%"
-msgstr "użytkownik '~a' nie znaleziony: ~a~%"
+msgstr ""
 
 #: guix/substitutes.scm:150
-#, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
+#, scheme-format
 msgid "~a: connection failed: ~a~%"
-msgstr "~a: pobieranie nie powiodło się~%"
+msgstr ""
 
 #: guix/substitutes.scm:262
 #, scheme-format
@@ -7274,9 +7154,9 @@ msgid "key generation failed: ~a: ~a~%"
 msgstr ""
 
 #: guix/scripts/archive.scm:308
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to read public key: ~a: ~a~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/archive.scm:315
 #, scheme-format
@@ -7312,28 +7192,16 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/discover.scm:41
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -h, --help                     display this help and exit"
 msgid ""
 "\n"
 "  -h, --help                display this help and exit"
 msgstr ""
-"\n"
-"  -h, --help pokaż pomoc i wyjdź"
 
 #: guix/scripts/discover.scm:43
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -V, --version                  display version information and exit"
 msgid ""
 "\n"
 "  -V, --version             display version information and exit"
 msgstr ""
-"\n"
-"  -V, --version pokaż informacje o wersji i wyjdź"
 
 #: guix/scripts/discover.scm:149
 #, scheme-format
@@ -7474,10 +7342,9 @@ msgid "'--inherit' is deprecated, use '--preserve' instead~%"
 msgstr ""
 
 #: guix/scripts/environment.scm:414
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "~a: command not found~%"
-msgstr "guix: ~a: nie znaleziono polecenia~%"
+msgstr ""
 
 #: guix/scripts/environment.scm:487
 #, scheme-format
@@ -7485,9 +7352,9 @@ msgid "checking the environment variables visible from shell '~a'...~%"
 msgstr ""
 
 #: guix/scripts/environment.scm:491
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to determine environment of shell '~a'~%"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/scripts/environment.scm:498
 #, scheme-format
@@ -7721,16 +7588,14 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/home.scm:463
-#, fuzzy, scheme-format
-#| msgid "~a: consider adding this input: ~a~%"
+#, scheme-format
 msgid "process terminated with signal ~a~%"
-msgstr "~a: rozważ dodanie tego elementu: ~a~%"
+msgstr ""
 
 #: guix/scripts/home.scm:465
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "process stopped with signal ~a~%"
-msgstr "guix: ~a: nie znaleziono polecenia~%"
+msgstr ""
 
 #: guix/scripts/home.scm:479
 #, scheme-format
@@ -7755,16 +7620,14 @@ msgid "no home environment generation, nothing to describe~%"
 msgstr ""
 
 #: guix/scripts/home.scm:655
-#, fuzzy, scheme-format
-#| msgid "guix: missing command name~%"
+#, scheme-format
 msgid "guix home: missing command name~%"
-msgstr "guix: brakująca nazwa polecenia~%"
+msgstr ""
 
 #: guix/scripts/home.scm:657
-#, fuzzy, scheme-format
-#| msgid "Try `guix --help' for more information.~%"
+#, scheme-format
 msgid "Try 'guix home --help' for more information.~%"
-msgstr "Wpisz `guix --help' aby dowiedzieć się więcej.~%"
+msgstr ""
 
 #: guix/scripts/home.scm:687
 #, scheme-format
@@ -7809,9 +7672,9 @@ msgstr ""
 #: guix/scripts/import/cpan.scm:83 guix/scripts/import/crate.scm:97
 #: guix/scripts/import/egg.scm:100 guix/scripts/import/gem.scm:101
 #: guix/scripts/import/opam.scm:107 guix/scripts/import/pypi.scm:101
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to download meta-data for package '~a'~%"
-msgstr "nie udało się pobrać opisu dla pakietu '~a'~%"
+msgstr ""
 
 #: guix/scripts/import/crate.scm:45
 msgid ""
@@ -7884,9 +7747,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/go.scm:118
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to download meta-data for module '~a'.~%"
-msgstr "nie udało się pobrać opisu dla pakietu '~a'~%"
+msgstr ""
 
 #: guix/scripts/import/hackage.scm:49
 msgid ""
@@ -7942,9 +7805,9 @@ msgid "failed to import cabal file from standard input~%"
 msgstr ""
 
 #: guix/scripts/import/hackage.scm:154 guix/scripts/import/stackage.scm:126
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to download cabal file for package '~a'~%"
-msgstr "nie udało się pobrać opisu dla pakietu '~a'~%"
+msgstr ""
 
 #: guix/scripts/import/json.scm:50
 msgid ""
@@ -7953,14 +7816,14 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/json.scm:92
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid JSON in file '~a'~%"
-msgstr "nieprawidłowy podpis dla '~a'~%"
+msgstr ""
 
 #: guix/scripts/import/json.scm:94
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to access '~a': ~a~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/import/opam.scm:43
 msgid ""
@@ -8017,19 +7880,19 @@ msgid "'~a' did not return a list of build machines; ignoring it~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:190
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to open machine file '~a': ~a~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:197
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to load machine file '~a': ~s~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:207
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to load SSH private key from '~a': ~a"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:251
 #, scheme-format
@@ -8037,14 +7900,14 @@ msgid "SSH public key authentication failed for '~a': ~a~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:262
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to connect to '~a': ~a~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:371
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "derivation '~a' offloaded to '~a' failed: ~a~%"
-msgstr "pobieranie z '~a' nie powiodło się: ~a, ~s~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:387
 #, scheme-format
@@ -8070,9 +7933,9 @@ msgid "'~a' is running GNU Guile ~a~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:647
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to run 'guix repl' on '~a'~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:654
 #, scheme-format
@@ -8105,9 +7968,9 @@ msgid "successfully imported '~a' from '~a'~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:701
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to import '~a' from '~a'~%"
-msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:716
 #, scheme-format
@@ -8120,9 +7983,9 @@ msgid "getting status of ~a build machines defined in '~a'...~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:748
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to run 'guix repl' on machine '~a'~%"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:759
 #, scheme-format
@@ -8130,9 +7993,9 @@ msgid "machine '~a' is ~a seconds behind~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:824
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid request line: ~s~%"
-msgstr "nieprawidłowy argument: ~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:853
 #, scheme-format
@@ -8149,9 +8012,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/offload.scm:862
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid arguments: ~{~s ~}~%"
-msgstr "nieprawidłowy argument: ~a~%"
+msgstr ""
 
 #: guix/scripts/perform-download.scm:60
 #, scheme-format
@@ -8283,22 +8146,22 @@ msgstr ""
 #: guix/scripts/refresh.scm:298
 #, scheme-format
 msgid "no updater for ~a~%"
-msgstr "brak aktualizatorów dla ~a~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:317
 #, scheme-format
 msgid "~a: updating from version ~a to version ~a...~%"
-msgstr "~a: aktualizowanie z wersji ~a do wersji ~a...~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:338
 #, scheme-format
 msgid "~a: consider adding this input: ~a~%"
-msgstr "~a: rozważ dodanie tego elementu: ~a~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:341
 #, scheme-format
 msgid "~a: consider adding this native input: ~a~%"
-msgstr "~a: rozważ dodanie tego negatywnego elementu: ~a~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:344
 #, scheme-format
@@ -8323,22 +8186,22 @@ msgstr ""
 #: guix/scripts/refresh.scm:358
 #, scheme-format
 msgid "~a: version ~a could not be downloaded and authenticated; not updating~%"
-msgstr "~a: wersja ~a nie może być pobrana i uwierzytelniona; nie aktualizuję~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:375
 #, scheme-format
 msgid "~a would be upgraded from ~a to ~a~%"
-msgstr "~a będzie zaktualizowane z ~a do ~a~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:381
 #, scheme-format
 msgid "~a is already the latest version of ~a~%"
-msgstr "~a jest już w najnowszej wersji ~a~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:387
 #, scheme-format
 msgid "~a is greater than the latest known version of ~a (~a)~%"
-msgstr "~a jest lepsza niż ostatnia znana wersja ~a (~a)~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:398
 #, scheme-format
@@ -8351,12 +8214,11 @@ msgid "No dependents other than itself: ~{~a~}~%"
 msgid_plural "No dependents other than themselves: ~{~a~^ ~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/refresh.scm:444
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "A single dependent package: ~a~%"
-msgstr "nie udało się pobrać pakietu '~a'~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:448
 #, scheme-format
@@ -8364,7 +8226,6 @@ msgid "Building the following ~d package would ensure ~d dependent packages are 
 msgid_plural "Building the following ~d packages would ensure ~d dependent packages are rebuilt: ~{~a~^ ~}~%"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 #: guix/scripts/refresh.scm:472
 #, scheme-format
@@ -8415,22 +8276,22 @@ msgstr ""
 #: guix/scripts/repl.scm:125
 #, scheme-format
 msgid "accepted connection~%"
-msgstr "zaakceptowano połączenie~%"
+msgstr ""
 
 #: guix/scripts/repl.scm:126
 #, scheme-format
 msgid "accepted connection from ~a~%"
-msgstr "zaakceptowano połączenie z~a~%"
+msgstr ""
 
 #: guix/scripts/repl.scm:137
 #, scheme-format
 msgid "connection closed~%"
-msgstr "zamknięto połączenie~%"
+msgstr ""
 
 #: guix/scripts/repl.scm:210
 #, scheme-format
 msgid "~a: unknown type of REPL~%"
-msgstr "~a: nieznany rodzaj REPL~%"
+msgstr ""
 
 #: guix/scripts/shell.scm:54
 msgid ""
@@ -8470,15 +8331,14 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/shell.scm:214
-#, fuzzy, scheme-format
-#| msgid "  canonical file name: ~a~%"
+#, scheme-format
 msgid "ignoring invalid file name: '~a'~%"
-msgstr "  kanoniczna nazwa pliku: ~a~%"
+msgstr ""
 
 #: guix/scripts/shell.scm:280
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "loading environment from '~a'...~%"
-msgstr "rozpakowywanie '~a'...~%"
+msgstr ""
 
 #: guix/scripts/shell.scm:286
 #, scheme-format
@@ -8511,9 +8371,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/style.scm:76
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: complex expression, bailing out~%"
-msgstr "guix: ~a: nie znaleziono polecenia~%"
+msgstr ""
 
 #: guix/scripts/style.scm:94
 #, scheme-format
@@ -8541,25 +8401,24 @@ msgid "would be edited~%"
 msgstr ""
 
 #: guix/scripts/style.scm:241
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "file '~a' not found on load path"
-msgstr "użytkownik '~a' nie znaleziony: ~a~%"
+msgstr ""
 
 #: guix/scripts/style.scm:307
-#, fuzzy, scheme-format
-#| msgid "failed to download description for package '~a'~%"
+#, scheme-format
 msgid "no definition location for package ~a~%"
-msgstr "nie udało się pobrać opisu dla pakietu '~a'~%"
+msgstr ""
 
 #: guix/scripts/style.scm:372
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unknown styling~%"
-msgstr "~A: nieznany pakiet~%"
+msgstr ""
 
 #: guix/scripts/style.scm:379
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid input simplification policy~%"
-msgstr "nieprawidłowy opis: ~s"
+msgstr ""
 
 #: guix/scripts/style.scm:397
 msgid "Available styling rules:\n"
@@ -8641,7 +8500,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:96
 msgid "SYSTEM"
-msgstr "SYSTEM"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:97
 msgid "assume SYSTEM as the current system type"
@@ -8649,7 +8508,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:98 nix/nix-daemon/guix-daemon.cc:101
 msgid "N"
-msgstr "N"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:99
 msgid "use N CPU cores to build each derivation; 0 means as many as available"
@@ -8661,7 +8520,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:103 nix/nix-daemon/guix-daemon.cc:105
 msgid "SECONDS"
-msgstr "SEKUNDY"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:104
 msgid "mark builds as failed after SECONDS of activity"
@@ -8685,7 +8544,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:111
 msgid "GROUP"
-msgstr "GRUPA"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:112
 msgid "perform builds as a user of GROUP"
@@ -8764,71 +8623,3 @@ msgid "socket-activated with %1% socket"
 msgid_plural "socket-activated with %1% sockets"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-
-#, fuzzy
-#~| msgid "failed to download package '~a'~%"
-#~ msgid "failed to import package '~a'~%"
-#~ msgstr "nie udało się pobrać pakietu '~a'~%"
-
-#, fuzzy
-#~ msgid "Creating   ~a..."
-#~ msgstr "usuwanie ~a~%"
-
-#, fuzzy
-#~ msgid "couldn't find meta-data for R package"
-#~ msgstr "nie udało się pobrać opisu dla pakietu '~a'~%"
-
-#~ msgid "Please select a disk."
-#~ msgstr "Proszę wybrać plik."
-
-#, fuzzy
-#~ msgid ""
-#~ "Failed to import package ~s.\n"
-#~ "reason: ~s.~%"
-#~ msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
-
-#, fuzzy
-#~ msgid "Package not found in opam repository: ~a~%"
-#~ msgstr "~A: nie znalezino pakietu w wersji ~a~%"
-
-#~ msgid "Try \"info '(guix) Invoking guix package'\" for more information.~%"
-#~ msgstr "Wpisz \"info '(guix) Invoking guix package'\" aby dowiedzieć się więcej.~%"
-
-#~ msgid "failed to unpack source code"
-#~ msgstr "nie udało się rozpakowywać kodu źródłowego"
-
-#~ msgid "Guix already up to date\n"
-#~ msgstr "Guix jest już aktualny\n"
-
-#~ msgid "~A: unexpected argument~%"
-#~ msgstr "~A: nieoczekiwany argument~%"
-
-#~ msgid "failed to download up-to-date source, exiting\n"
-#~ msgstr "nie udało się pobrać aktualnego kodu źródłowego, zakończenie pracy\n"
-
-#~ msgid "signature on '~a' is corrupt~%"
-#~ msgstr "podpis dla '~a' jest uszkodzony~%"
-
-#~ msgid "~%Found valid signature for ~a~%"
-#~ msgstr "~%Znaleziono prawidłowy podpis dla ~a~%"
-
-#~ msgid "From ~a~%"
-#~ msgstr "Z adresu ~a~%"
-
-#~ msgid "Downloading ~a~:[~*~; (~a installed)~]...~%"
-#~ msgstr "Pobieranie ~a~:[~*~; (zainstalowano ~a)~]...~%"
-
-#, fuzzy
-#~| msgid "failed to install locale: ~a~%"
-#~ msgid "failed to lookup NIST host: ~a~%"
-#~ msgstr "instalacja tłumaczeń nie powiodła się: ~a~%"
-
-#~ msgid "zlib support is missing; compression disabled~%"
-#~ msgstr "zlib jest niedostępne; wyłączono kompresję~%"
-
-#~ msgid "gz"
-#~ msgstr "gz"
-
-#~ msgid "download failed"
-#~ msgstr "pobieranie nie powiodło się"
