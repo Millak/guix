@@ -10630,8 +10630,7 @@ brightness between monitors.")
         (base32 "0z3jlsv3g28097dhsmi2l8nzkd3p937jhb4pg52njhb0wxkn20qb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4)
         ("rust-nix" ,rust-nix-0.18))))))
 
