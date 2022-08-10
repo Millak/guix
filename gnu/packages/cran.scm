@@ -29482,16 +29482,22 @@ expressive statistical grammar that coheres with the Tidy design framework.")
 (define-public r-modeldata
   (package
     (name "r-modeldata")
-    (version "0.1.1")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "modeldata" version))
        (sha256
         (base32
-         "0jgrwf9k8p9j3ywg3yv2wzwsx3snlwm3dd9vfqwhlr7j63jg3cm4"))))
+         "16ad8g86alahirgmp8bhb6v1ghayw965bdz5mrpnq7nnncazaqcm"))))
     (properties `((upstream-name . "modeldata")))
     (build-system r-build-system)
+    (propagated-inputs
+     (list r-dplyr
+           r-mass
+           r-purrr
+           r-rlang
+           r-tibble))
     (home-page "https://modeldata.tidymodels.org")
     (synopsis "Data sets useful for modeling packages")
     (description
