@@ -9324,8 +9324,7 @@ UTF-8.")
         (base32 "0zy0p4vd2kjk7z5m4m8kdwhs5cmx1z02n7v36njhgfs8fs4aclxr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-memchr" ,rust-memchr-2)
         ("rust-safemem" ,rust-safemem-0.3)
         ("rust-slice-deque" ,rust-slice-deque-0.2))))
