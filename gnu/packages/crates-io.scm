@@ -9796,7 +9796,6 @@ of built-in fundamental numeric types.")
         (base32
          "1mqi29wsm8njpl51pfwr31wmpzs5ahlcb40wsjyd92l90ixcmdg3"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/RustCrypto/utils")
     (synopsis "Bytes related utility functions")
     (description "Bytes related utility functions.")
