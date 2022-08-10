@@ -3001,8 +3001,7 @@ ArrayVec and ArrayString.")
         (base32
          "1fdiv5m627gh6flp4mpmi1mh647imm9x423licsr11psz97d97yd"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-nodrop" ,rust-nodrop-0.1)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
