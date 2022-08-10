@@ -5361,14 +5361,14 @@ methods.")
 (define-public r-timedate
   (package
     (name "r-timedate")
-    (version "3043.102")
+    (version "4021.104")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "timeDate" version))
        (sha256
         (base32
-         "0wvl5pq261rvbgly7vilk3x3m9xk3ly6il1i5scwdf6srl1vlz1p"))))
+         "03ncgbc9igiwl4s8pa94nj2v7aw3gw8ay51pwvv9gkv2f7l7dvh3"))))
     (properties `((upstream-name . "timeDate")))
     (build-system r-build-system)
     (home-page "https://www.rmetrics.org")
