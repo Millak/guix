@@ -8049,14 +8049,14 @@ systems.")
 (define-public r-radiant-data
   (package
     (name "r-radiant-data")
-    (version "1.4.2")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "radiant.data" version))
        (sha256
         (base32
-         "0c5c99q13pwv6k0b07x3r2bxmh0h2w15h02xb1pincgs61qwi15k"))
+         "1lj8zz9zg7kys9rkjxn9p5z6l944dk2bx6idlxal59yhy4ql2i4p"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -8068,6 +8068,7 @@ systems.")
     (propagated-inputs
      (list r-base64enc
            r-broom
+           r-bslib
            r-car
            r-curl
            r-dplyr
@@ -8083,6 +8084,7 @@ systems.")
            r-mass
            r-patchwork
            r-plotly
+           r-png
            r-psych
            r-randomizr
            r-readr
