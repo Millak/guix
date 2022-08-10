@@ -5373,13 +5373,13 @@ groupings.")
 (define-public r-vgam
   (package
     (name "r-vgam")
-    (version "1.1-6")
+    (version "1.1-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "VGAM" version))
        (sha256
-        (base32 "05yl1lbpambwg3i3rqn6aanaym7c3s8g7hi0bph98iyxqnx62sj4"))))
+        (base32 "0zkmj7crkkvi7ki88f6vfn7x8gf0ycrbg13wann7wirj4cwjvid4"))))
     (properties `((upstream-name . "VGAM")))
     (build-system r-build-system)
     (native-inputs
