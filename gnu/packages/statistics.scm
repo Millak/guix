@@ -5508,13 +5508,13 @@ using modular prediction and response module classes.")
 (define-public r-quantreg
   (package
     (name "r-quantreg")
-    (version "5.93")
+    (version "5.94")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quantreg" version))
        (sha256
-        (base32 "0fg5x6sa8mz2hh9nak0wajh4l6h03x216462vs94rgq0ln24kafl"))))
+        (base32 "1h8p3gzaas8gdvyh13ir8xc92hiybmizb0yhnwk7gvbjp768bmaj"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
