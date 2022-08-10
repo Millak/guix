@@ -21513,15 +21513,16 @@ based on the CPython 2.7 and 3.7 parsers.")
 (define-public python-typer
   (package
     (name "python-typer")
-    (version "0.3.2")
+    (version "0.6.1")
     (source
      (origin
-       ;; Building `python-typer` from the git repository requires the `flit-core`
-       ;; Python package that is not installed by `python-flit`.
-       (method url-fetch)
-       (uri (pypi-uri "typer" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tiangolo/typer")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "00v3h63dq8yxahp9vg3yb9r27l2niwv8gv0dbds9dzrc298dfmal"))))
+        (base32 "1knv353qhkl2imav3jfp6bgq47m8wkkqhq1dzmqg2sv8rsy7zgl7"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -21533,6 +21534,18 @@ based on the CPython 2.7 and 3.7 parsers.")
              (substitute* "tests/test_completion/test_completion.py"
                (("\"bash\"") (string-append "\"" (which "bash") "\""))
                (("\"/bin/bash\"") (string-append "\"" (which "bash") "\"")))))
+         (replace 'build
+           (lambda _
+             (invoke "flit" "build")))
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (add-installed-pythonpath inputs outputs)
+             (let ((out (assoc-ref outputs "out")))
+               (for-each (lambda (wheel)
+                           (format #true wheel)
+                           (invoke "python" "-m" "pip" "install"
+                                   wheel (string-append "--prefix=" out)))
+                         (find-files "dist" "\\.whl$")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -21554,7 +21567,8 @@ based on the CPython 2.7 and 3.7 parsers.")
     (propagated-inputs
      (list python-click))
     (native-inputs
-     (list python-coverage python-pytest python-shellingham))
+     (list python-coverage python-flit python-pytest python-rich
+           python-shellingham))
     (home-page "https://github.com/tiangolo/typer")
     (synopsis
       "Typer builds CLI based on Python type hints")
