@@ -1808,14 +1808,14 @@ data types as well.")
 (define-public r-tidyverse
   (package
     (name "r-tidyverse")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidyverse" version))
        (sha256
         (base32
-         "0ck6xmsw5p168jmw2fqv79fzfnw5jckfra7mfii261j6kl89bkw3"))))
+         "0qfgq4p2aq95j39xd5kcing2cacy7rzy7f6zf0bnpsa95svziyrp"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
