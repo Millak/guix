@@ -1044,6 +1044,13 @@ and to return information on pronunciations, meanings and synonyms.")
 converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
     (license license:mpl2.0)))
 
+(define dtoa
+  (origin
+    (method url-fetch)
+    (uri "https://dev-www.libreoffice.org/src/dtoa-20180411.tgz")
+    (sha256
+     (base32 "1d0iwy0q5sjznv23d3nbwmy0r7m1mdzlnv5pc4izddkx9xld10h0"))))
+
 ;; When updating libreoffice, also make sure to update the
 ;; hunspell dictionaries! They use the libreoffice version.
 (define-public libreoffice
@@ -1061,189 +1068,181 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
         (base32 "14g9873x8m5yakpq7v9f7lhc5fkxh6yhjhgh0pm30cqmxsqhsglv"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
-     `(("bison" ,bison)
-       ("cppunit" ,cppunit)
-       ("flex" ,flex)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("which" ,which)
-       ("ziptime" ,ziptime)))
+     (list bison
+           cppunit
+           flex
+           pkg-config
+           python-wrapper
+           which
+           ziptime))
     (inputs
-     `(("bluez" ,bluez)
-       ("boost" ,boost)
-       ("box2d" ,box2d)
-       ("clucene" ,clucene)
-       ("cups" ,cups)
-       ("dbus-glib" ,dbus-glib)
-       ("firebird" ,firebird)
-       ("fontconfig" ,fontconfig)
-       ("fontforge" ,fontforge)
-       ("gconf" ,gconf)
-       ("glew" ,glew)
-       ("glm" ,glm)
-       ("gnupg" ,gnupg)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gperf" ,gperf)
-       ("gpgme" ,gpgme)
-       ("graphite2" ,graphite2)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gtk+" ,gtk+)
-       ("harfbuzz" ,harfbuzz)
-       ("hunspell" ,hunspell)
-       ("hyphen" ,hyphen)
-       ("libabw" ,libabw)
-       ("libcdr" ,libcdr)
-       ("libcmis" ,libcmis)
-       ("libcuckoo" ,libcuckoo)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libe-book" ,libe-book)
-       ("libepubgen" ,libepubgen)
-       ("libetonyek" ,libetonyek)
-       ("libexttextcat" ,libexttextcat)
-       ("libfreehand" ,libfreehand)
-       ("liblangtag" ,liblangtag)
-       ;; XXX: Perhaps this should be propagated from xmlsec.
-       ("libltdl" ,libltdl)
-       ("libmspub" ,libmspub)
-       ("libmwaw" ,libmwaw)
-       ("libnumbertext" ,libnumbertext)
-       ("libodfgen" ,libodfgen)
-       ("libpagemaker" ,libpagemaker)
-       ("libqxp" ,libqxp)
-       ("libstaroffice" ,libstaroffice)
-       ("libvisio" ,libvisio)
-       ("libwpg" ,libwpg)
-       ("libwps" ,libwps)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxslt" ,libxslt)
-       ("libxt" ,libxt)
-       ("libzmf" ,libzmf)
-       ("lpsolve" ,lpsolve)
-       ("mariadb" ,mariadb "dev")
-       ("mdds" ,mdds)
-       ("mythes" ,mythes)
-       ("neon" ,neon)
-       ("nspr" ,nspr)
-       ("nss" ,nss)
-       ("openldap" ,openldap)
-       ("openssl" ,openssl)
-       ("orcus" ,orcus)
-       ("perl" ,perl)
-       ("perl-archive-zip" ,perl-archive-zip)
-       ("poppler" ,poppler)
-       ("postgresql" ,postgresql)
-       ("python" ,python)
-       ("python-lxml" ,python-lxml)
-       ("qrcodegen-cpp" ,qrcodegen-cpp)
-       ("redland" ,redland)
-       ("sane-backends" ,sane-backends)
-       ("unixodbc" ,unixodbc)
-       ("unzip" ,unzip)
-       ("vigra" ,vigra)
-       ("xdg-utils" ,xdg-utils)
-       ("xmlsec" ,xmlsec-nss)
-       ("zip" ,zip)
-       ("zxing-cpp" ,zxing-cpp)
-       ("dtoa"              ; needed after version 6.4.7.2.
-        ,(origin
-           (method url-fetch)
-           (uri "https://dev-www.libreoffice.org/src/dtoa-20180411.tgz")
-           (sha256
-            (base32 "1d0iwy0q5sjznv23d3nbwmy0r7m1mdzlnv5pc4izddkx9xld10h0"))))))
+     (list bluez
+           boost
+           box2d
+           clucene
+           cups
+           dbus-glib
+           firebird
+           fontconfig
+           fontforge
+           gconf
+           glew
+           glm
+           gnupg
+           gobject-introspection
+           gperf
+           gpgme
+           graphite2
+           gst-plugins-base
+           gtk+
+           harfbuzz
+           hunspell
+           hyphen
+           libabw
+           libcdr
+           libcmis
+           libcuckoo
+           libjpeg-turbo
+           libe-book
+           libepubgen
+           libetonyek
+           libexttextcat
+           libfreehand
+           liblangtag
+           ;; XXX: Perhaps this should be propagated from xmlsec.
+           libltdl
+           libmspub
+           libmwaw
+           libnumbertext
+           libodfgen
+           libpagemaker
+           libqxp
+           libstaroffice
+           libvisio
+           libwpg
+           libwps
+           libxrandr
+           libxrender
+           libxslt
+           libxt
+           libzmf
+           lpsolve
+           `(,mariadb "dev")
+           mdds
+           mythes
+           neon
+           nspr
+           nss
+           openldap
+           openssl
+           orcus
+           perl
+           perl-archive-zip
+           poppler
+           postgresql
+           python
+           python-lxml
+           qrcodegen-cpp
+           redland
+           sane-backends
+           unixodbc
+           unzip
+           vigra
+           xdg-utils
+           xmlsec-nss
+           zip
+           zxing-cpp))
     (arguments
-     `(#:tests? #f                     ; Building the tests already fails.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'insert-external-tarballs
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir-p "external/tarballs")
-             (copy-file (assoc-ref inputs "dtoa")
-                        "external/tarballs/dtoa-20180411.tgz")
-             #t))
-         (add-before 'configure 'prepare-src
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute*
-                 (list "sysui/CustomTarget_share.mk"
-                       "solenv/gbuild/gbuild.mk"
-                       "solenv/gbuild/platform/unxgcc.mk")
-               (("/bin/sh") (which "sh")))
+     (list
+      #:tests? #f                       ; Building the tests already fails.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'insert-external-tarballs
+            (lambda _
+              (mkdir-p "external/tarballs")
+              (copy-file #$dtoa "external/tarballs/dtoa-20180411.tgz")))
+          (add-before 'configure 'prepare-src
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute*
+                  (list "sysui/CustomTarget_share.mk"
+                        "solenv/gbuild/gbuild.mk"
+                        "solenv/gbuild/platform/unxgcc.mk")
+                (("/bin/sh") (which "sh")))
 
-             ;; Use store references for strictly necessary commands,
-             ;; but not for optional tools like ‘gdb’ and ‘valgrind’.
-             (for-each (lambda (command)
-                         (substitute* "desktop/scripts/soffice.sh"
-                           (((format #f"~a " command))
-                            (format #f "~a " (which command)))))
-                       (list "dirname" "grep" "uname"))
+              ;; Use store references for strictly necessary commands,
+              ;; but not for optional tools like ‘gdb’ and ‘valgrind’.
+              (for-each (lambda (command)
+                          (substitute* "desktop/scripts/soffice.sh"
+                            (((format #f "~a " command))
+                             (format #f "~a " (which command)))))
+                        (list "dirname" "grep" "uname"))
 
-             ;; GPGME++ headers are installed in a gpgme++ subdirectory, but
-             ;; configure is hardcoded to use FHS directories.
-             (substitute* "configure"
-               (("GPGMEPP_CFLAGS=-I/usr")
-                (string-append "GPGMEPP_CFLAGS=-I"
-                               (assoc-ref inputs "gpgme"))))
+              ;; GPGME++ headers are installed in a gpgme++ subdirectory, but
+              ;; configure is hardcoded to use FHS directories.
+              (substitute* "configure"
+                (("GPGMEPP_CFLAGS=-I/usr/include/gpgme\\+\\+")
+                 (string-append "GPGMEPP_CFLAGS=-I"
+                                (search-input-directory inputs
+                                                        "include/gpgme++"))))
 
-             ;; /usr/bin/xdg-open doesn't exist on Guix System.
-             (substitute* '("shell/source/unix/exec/shellexec.cxx"
-                            "shell/source/unix/misc/senddoc.sh")
-               (("/usr/bin/xdg-open")
-                (search-input-file inputs "/bin/xdg-open")))))
-         (add-after 'install 'reset-zip-timestamps
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (file)
-                           (invoke "ziptime" file))
-                         ;; So many different extensions for .zip files.
-                         (find-files out "\\.(bau|dat|otp|ott|zip)$")))))
-         (add-after 'install 'bin-and-desktop-install
-           ;; Create 'soffice' and 'libreoffice' symlinks to the executable
-           ;; script.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (define (symlink-output src dst)
-                 (mkdir-p (dirname (string-append out dst)))
-                 (symlink (string-append out src) (string-append out dst)))
-               (define (install src dst)
-                 (let ((dst (string-append out dst)))
-                   (mkdir-p (dirname dst))
-                   (copy-file src dst)))
-               (define (install-desktop-file app)
-                 (let ((src (string-append "/lib/libreoffice/share/xdg/"
-                                           app ".desktop"))
-                       (dst (string-append "/share/applications/libreoffice-"
-                                           app ".desktop")))
-                   (substitute* (string-append out src)
-                     (("Exec=libreoffice[0-9]+\\.[0-9]+ ")
-                      (string-append "Exec=" out "/bin/libreoffice "))
-                     (("Icon=libreoffice.*")
-                      (string-append "Icon=" app "\n"))
-                     (("LibreOffice [0-9]+\\.[0-9]+")
-                      "LibreOffice"))
-                   (symlink-output src dst)))
-               (define (install-appdata app)
-                 (install-file (string-append
-                                "sysui/desktop/appstream-appdata/"
-                                "libreoffice-" app ".appdata.xml")
-                               (string-append out "/share/appdata")))
-               (symlink-output "/lib/libreoffice/program/soffice"
-                               "/bin/soffice")
-               (symlink-output "/lib/libreoffice/program/soffice"
-                               "/bin/libreoffice")
-               (install
-                "workdir/CustomTarget/sysui/share/libreoffice/openoffice.org.xml"
-                "/share/mime/packages/libreoffice.xml")
-               (for-each install-desktop-file
-                         '("base" "calc" "draw" "impress" "writer"
-                           "math" "startcenter"))
-               (for-each install-appdata
-                         '("base" "calc" "draw" "impress" "writer"))
-               (mkdir-p (string-append out "/share/icons/hicolor"))
-               (copy-recursively "sysui/desktop/icons/hicolor"
-                                 (string-append out "/share/icons/hicolor")))
-             #t)))
-       #:configure-flags
-       (list
+              ;; /usr/bin/xdg-open doesn't exist on Guix System.
+              (substitute* '("shell/source/unix/exec/shellexec.cxx"
+                             "shell/source/unix/misc/senddoc.sh")
+                (("/usr/bin/xdg-open")
+                 (search-input-file inputs "/bin/xdg-open")))))
+          (add-after 'install 'reset-zip-timestamps
+            (lambda _
+              (for-each (lambda (file)
+                          (invoke "ziptime" file))
+                        ;; So many different extensions for .zip files.
+                        (find-files #$output "\\.(bau|dat|otp|ott|zip)$"))))
+      (add-after 'install 'bin-and-desktop-install
+        ;; Create 'soffice' and 'libreoffice' symlinks to the executable
+        ;; script.
+        (lambda _
+          (let ((out #$output))
+            (define (symlink-output src dst)
+              (mkdir-p (dirname (string-append out dst)))
+              (symlink (string-append out src) (string-append out dst)))
+            (define (install src dst)
+              (let ((dst (string-append out dst)))
+                (mkdir-p (dirname dst))
+                (copy-file src dst)))
+            (define (install-desktop-file app)
+              (let ((src (string-append "/lib/libreoffice/share/xdg/"
+                                        app ".desktop"))
+                    (dst (string-append "/share/applications/libreoffice-"
+                                        app ".desktop")))
+                (substitute* (string-append out src)
+                  (("Exec=libreoffice[0-9]+\\.[0-9]+ ")
+                   (string-append "Exec=" out "/bin/libreoffice "))
+                  (("Icon=libreoffice.*")
+                   (string-append "Icon=" app "\n"))
+                  (("LibreOffice [0-9]+\\.[0-9]+")
+                   "LibreOffice"))
+                (symlink-output src dst)))
+            (define (install-appdata app)
+              (install-file (string-append
+                             "sysui/desktop/appstream-appdata/"
+                             "libreoffice-" app ".appdata.xml")
+                            (string-append out "/share/appdata")))
+            (symlink-output "/lib/libreoffice/program/soffice"
+                            "/bin/soffice")
+            (symlink-output "/lib/libreoffice/program/soffice"
+                            "/bin/libreoffice")
+            (install
+             "workdir/CustomTarget/sysui/share/libreoffice/openoffice.org.xml"
+             "/share/mime/packages/libreoffice.xml")
+            (for-each install-desktop-file
+                      '("base" "calc" "draw" "impress" "writer"
+                        "math" "startcenter"))
+            (for-each install-appdata
+                      '("base" "calc" "draw" "impress" "writer"))
+            (mkdir-p (string-append out "/share/icons/hicolor"))
+            (copy-recursively "sysui/desktop/icons/hicolor"
+                              (string-append out "/share/icons/hicolor"))))))
+     #:configure-flags
+     #~(list
         "--enable-release-build"
         "--with-vendor=GNU Guix"
         ;; Avoid using all cpu cores by default
@@ -1251,7 +1250,9 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
         "--disable-fetch-external"      ; disable downloads
         "--with-system-libs"            ; enable all --with-system-* flags
         (string-append "--with-boost-libdir="
-                       (assoc-ref %build-inputs "boost") "/lib")
+                       (dirname
+                        (search-input-file %build-inputs
+                                           "lib/libboost_system.so")))
         ;; Avoid undefined symbols required by boost::spirit
         "LDFLAGS=-lboost_system"
         ;; Avoid a dependency on ucpp.
@@ -1273,11 +1274,11 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
         "--disable-pdfium"
         "--without-doxygen"
         "--enable-build-opensymbol")))
-    (home-page "https://www.libreoffice.org/")
-    (synopsis "Office suite")
-    (description "LibreOffice is a comprehensive office suite.  It contains
+  (home-page "https://www.libreoffice.org/")
+  (synopsis "Office suite")
+  (description "LibreOffice is a comprehensive office suite.  It contains
 a number of components: Writer, a word processor; Calc, a spreadsheet
 application; Impress, a presentation engine; Draw, a drawing and
 flowcharting application; Base, a database and database frontend;
 Math for editing mathematics.")
-    (license license:mpl2.0)))
+  (license license:mpl2.0)))
