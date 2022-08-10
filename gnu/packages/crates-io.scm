@@ -8450,8 +8450,7 @@ storage.")
          "1xicpf3s2mi5xqnx8ps5mdych4ib5nh2nfsbrsg8ar8bjk1girbg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1))
        #:cargo-development-inputs
        (("rust-byteorder" ,rust-byteorder-1)
