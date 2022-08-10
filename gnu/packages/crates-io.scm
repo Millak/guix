@@ -2882,7 +2882,6 @@ array.")
        (sha256
         (base32 "19mdx2xlppnqwl6rhsbzylx61a0kkp2ql8q16195b7iga977ps86"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://gitlab.com/KonradBorowski/array-macro")
     (synopsis "Array multiple elements constructor syntax")
     (description "This package implements constructor syntax for arrays with
