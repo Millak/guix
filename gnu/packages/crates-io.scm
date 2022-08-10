@@ -2374,8 +2374,7 @@ last place (ULPs) comparisons.")
         (base32
          "1hx580xjdxl3766js9b49rnbnmr8gw8c060809l43k9f0xshprph"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-num-complex" ,rust-num-complex-0.2)
         ("rust-num-traits" ,rust-num-traits-0.2))))))
 
