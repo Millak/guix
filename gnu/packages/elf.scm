@@ -133,14 +133,14 @@ object or archive file), @command{eu-strip} (for discarding symbols),
   (package
     (name "libabigail")
     (home-page "https://sourceware.org/libabigail/")
-    (version "1.8")
+    (version "2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://sourceware.org/pub/libabigail/"
                                   "libabigail-" version ".tar.gz"))
               (sha256
                (base32
-                "0p363mkgypcklgf8iylxpbdnfgqc086a6fv7n9hzrjjci45jdgqw"))))
+                "1nkg7fsqvdr453hrskscy6xqz6fv45mylpgv1357dw3blnbsw11p"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static"
