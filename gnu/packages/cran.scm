@@ -18821,14 +18821,14 @@ consists of @code{grid} grobs and viewports that can then be manipulated with
 (define-public r-farver
   (package
     (name "r-farver")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "farver" version))
        (sha256
         (base32
-         "1x6ffwxqbrwlylnk995jz2a6nz2y9z59jaq0ncpni7q40w367j75"))))
+         "1klnr73fhm7n46q85in1v9gi99y6rcdzzg4h4wvnbx23lxndmkqd"))))
     (build-system r-build-system)
     (home-page "https://github.com/thomasp85/farver")
     (synopsis "Vectorized color conversion and comparison")
