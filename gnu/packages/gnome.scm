@@ -4321,42 +4321,6 @@ engineering.")
      "Drawing is a basic image editor aiming at the GNOME desktop.")
     (license license:gpl3+)))
 
-(define-public gnome-themes-standard
-  (package
-    (name "gnome-themes-standard")
-    (version "3.22.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnome/sources/" name "/"
-                           (version-major+minor version) "/" name "-"
-                           version ".tar.xz"))
-       (sha256
-        (base32
-         "0smmiamrgcgf5sa88bsn8hwmvsyx4gczzs359nwxbkv14b2qgp31"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags
-       ;; Don't create 'icon-theme.cache'.
-       (let* ((coreutils (assoc-ref %build-inputs "coreutils"))
-              (true      (string-append coreutils "/bin/true")))
-         (list (string-append "GTK_UPDATE_ICON_CACHE=" true)))))
-    (inputs
-     `(("gtk+" ,gtk+)
-       ("gtk+-2" ,gtk+-2)
-       ("librsvg" ,librsvg)
-       ("libxml2" ,libxml2)
-       ("glib" ,glib)))
-    (native-inputs
-     `(("intltool" ,intltool)
-       ("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
-    (home-page "https://launchpad.net/gnome-themes-standard")
-    (synopsis "Default GNOME 3 themes")
-    (description
-     "The default GNOME 3 themes (Adwaita and some accessibility themes).")
-    (license license:lgpl2.1+)))
-
 (define-public seahorse
   (package
     (name "seahorse")
@@ -9565,7 +9529,6 @@ world.")
        ("dconf"                     ,dconf)
        ("desktop-file-utils"        ,desktop-file-utils)
        ("gnome-default-applications" ,gnome-default-applications)
-       ("gnome-themes-standard"     ,gnome-themes-standard)
        ("gst-plugins-base"          ,gst-plugins-base)
        ("gst-plugins-good"          ,gst-plugins-good)
        ("gucharmap"                 ,gucharmap)
@@ -11578,6 +11541,9 @@ really fit in other upstream packages.  It offers legacy support for GTK+ 2
 versions of Adwaita, Adwaita-dark and HighContrast themes.  It also provides
 index files needed for Adwaita to be used outside of GNOME.")
     (license license:lgpl2.1+)))
+
+(define-public gnome-themes-standard
+  (deprecated-package "gnome-themes-standard" gnome-themes-extra))
 
 (define-public gnote
   (package
