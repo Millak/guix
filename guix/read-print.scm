@@ -82,11 +82,6 @@
 (define vertical-space        (record-type-constructor <vertical-space>))
 (define vertical-space-height (record-accessor <vertical-space> 'height))
 
-(define (combine-vertical-space x y)
-  "Return vertical space as high as the combination of X and Y."
-  (vertical-space (+ (vertical-space-height x)
-                     (vertical-space-height y))))
-
 (define canonicalize-vertical-space
   (let ((unit (vertical-space 1)))
     (lambda (space)
