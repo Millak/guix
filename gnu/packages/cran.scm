@@ -10356,14 +10356,14 @@ matches version and feature constraints.")
 (define-public r-argparse
   (package
     (name "r-argparse")
-    (version "2.1.5")
+    (version "2.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "argparse" version))
        (sha256
         (base32
-         "13b5halfxc7nr57vkz3qmkkcpw1hr4xdk1mjh2cq8cvpnjz15qc3"))))
+         "14p57nm0w3siqd473snzhpmnvsgl72x92pdcd64vhy2qg6nzmmra"))))
     (build-system r-build-system)
     (inputs (list python))
     (propagated-inputs
