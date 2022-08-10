@@ -4312,7 +4312,6 @@ standard library.")
        (sha256
         (base32 "1hnph97yz3hpf71s4rdzcrgd492d1m7rj0k48ymxl1w5d2g8v450"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/stainless-steel/assert")
     (synopsis "Assertions for testing")
     (description "This package provides assertions for testing.")
