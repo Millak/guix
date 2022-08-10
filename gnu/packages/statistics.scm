@@ -2693,18 +2693,23 @@ scaling functions for R.")
 (define-public r-latticeextra
   (package
     (name "r-latticeextra")
-    (version "0.6-29")
+    (version "0.6-30")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "latticeExtra" version))
        (sha256
         (base32
-         "04fzwcqs594rk5qp98yilh3kdh3sw4xf8wld5rp94ggpaqfw7bbc"))))
+         "1vcy4xr6c53nbvnxikjnlf5kd3n5hf4d8dzj5d41hj322dlsfl65"))))
     (properties `((upstream-name . "latticeExtra")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-jpeg r-lattice r-png r-rcolorbrewer))
+     (list r-interp
+           r-jpeg
+           r-lattice
+           r-mass
+           r-png
+           r-rcolorbrewer))
     (home-page "http://latticeextra.r-forge.r-project.org/")
     (synopsis "Extra graphical utilities based on lattice")
     (description
