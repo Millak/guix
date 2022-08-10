@@ -106,7 +106,14 @@ true, evaluate using dynamic scoping."
   (let* ((file (string-append directory "/" name "-autoloads.el"))
          (expr `(let ((backup-inhibited t)
                       (generated-autoload-file ,file))
-                  (update-directory-autoloads ,directory))))
+                  (cond
+                   ((require 'loaddefs-gen nil t)
+                    ;; Emacs >= 29
+                    (loaddefs-generate ,directory ,file))
+                   ((fboundp 'make-directory-autoloads)
+                    ;; Emacs 28
+                    (make-directory-autoloads ,directory ,file))
+                   (t (update-directory-autoloads ,directory))))))
     (emacs-batch-eval expr #:dynamic? #t)))
 
 (define* (emacs-byte-compile-directory dir)
