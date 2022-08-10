@@ -1252,6 +1252,10 @@ on the Invidious instances only as a fallback method.")
                  ,@(if (target-aarch64?)
                      '("-DENABLE_ASSEMBLY=OFF")
                      '())
+                 ;; Altivec code produces many build errors.
+                 ,@(if (target-ppc64le?)
+                       '("-DENABLE_ALTIVEC=OFF")
+                       '())
                  "-DHIGH_BIT_DEPTH=ON"
                  "-DEXPORT_C_API=OFF"
                  "-DENABLE_CLI=OFF"
@@ -1272,6 +1276,10 @@ on the Invidious instances only as a fallback method.")
                  ,@(if (target-aarch64?)
                      '("-DENABLE_ASSEMBLY=OFF")
                      '())
+                 ;; Altivec code produces many build errors.
+                 ,@(if (target-ppc64le?)
+                       '("-DENABLE_ALTIVEC=OFF")
+                       '())
                  "-DHIGH_BIT_DEPTH=ON"
                  "-DEXPORT_C_API=OFF"
                  "-DENABLE_CLI=OFF"
