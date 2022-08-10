@@ -54,6 +54,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
@@ -1048,7 +1049,7 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.1.4.2")
+    (version "7.3.5.2")
     (source
      (origin
        (method url-fetch)
@@ -1057,7 +1058,7 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "1jsskhnlyra7q6d12kkc8dxq5fgrnd8grl32bdck7j9hkwv6d13m"))))
+        (base32 "14g9873x8m5yakpq7v9f7lhc5fkxh6yhjhgh0pm30cqmxsqhsglv"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("bison" ,bison)
@@ -1093,6 +1094,7 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
        ("libabw" ,libabw)
        ("libcdr" ,libcdr)
        ("libcmis" ,libcmis)
+       ("libcuckoo" ,libcuckoo)
        ("libjpeg-turbo" ,libjpeg-turbo)
        ("libe-book" ,libe-book)
        ("libepubgen" ,libepubgen)
@@ -1142,6 +1144,7 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
        ("xdg-utils" ,xdg-utils)
        ("xmlsec" ,xmlsec-nss)
        ("zip" ,zip)
+       ("zxing-cpp" ,zxing-cpp)
        ("dtoa"              ; needed after version 6.4.7.2.
         ,(origin
            (method url-fetch)
