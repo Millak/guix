@@ -29534,14 +29534,14 @@ use.")
 (define-public r-tidymodels
   (package
     (name "r-tidymodels")
-    (version "0.2.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidymodels" version))
        (sha256
         (base32
-         "1xkv4s4kn7k9137svb39zrm5302gxpxyp1jv5bb6z0xrvj5wwa4i"))))
+         "1zqdq7zwmhc19zs77x27l5ja01rhj01v8dw182j8jhy49h0alyz3"))))
     (properties `((upstream-name . "tidymodels")))
     (build-system r-build-system)
     (propagated-inputs
