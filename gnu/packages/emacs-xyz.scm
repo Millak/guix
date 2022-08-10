@@ -13777,6 +13777,40 @@ structure, or any other pattern.")
     (license (list license:gpl3+
                    license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
+(define-public emacs-tmr
+  (package
+    (name "emacs-tmr")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~protesilaos/tmr")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vz9zfqap221baiy41wpxph33g6h2plnanzgpjs0wk8dz1fpwfky"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-ffplay
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((ffplay (search-input-file inputs "/bin/ffplay")))
+                (make-file-writable "tmr.el")
+                (substitute* "tmr.el"
+                  (("\"ffplay")
+                   (string-append "\"" ffplay)))))))))
+    (native-inputs (list texinfo))
+    (inputs (list ffmpeg))
+    (home-page "https://protesilaos.com/emacs/tmr/")
+    (synopsis "Set timers using a convenient notation")
+    (description
+     "TMR is an Emacs package that provides facilities for setting timers
+using a convenient notation.")
+    (license license:gpl3+)))
+
 (define-public emacs-gn-mode
   (package
     (name "emacs-gn-mode")
