@@ -1,0 +1,18 @@
+Add missing import for newer libstdc++.
+
+Taken from upstream:
+
+  https://github.com/qt/qtwayland/commit/1aa6ec2c778504d96543f6cdc2b9199a7b066fc1
+
+diff --git a/tests/auto/client/shared/corecompositor.cpp b/tests/auto/client/shared/corecompositor.cpp
+index 5c6c83baa..fa9b7662a 100644
+--- a/tests/auto/client/shared/corecompositor.cpp
++++ b/tests/auto/client/shared/corecompositor.cpp
+@@ -27,6 +27,7 @@
+ ****************************************************************************/
+ 
+ #include "corecompositor.h"
++#include <thread>
+ 
+ namespace MockCompositor {
+ 
