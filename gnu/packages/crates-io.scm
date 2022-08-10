@@ -1141,8 +1141,7 @@ address that is aliasable when coerced to a raw pointer")
           (base32 "1z8548zdjlm4ps1k0d7x68lfdyji02crwcc9rw3q3bb106f643r5"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
+      `(#:cargo-inputs
         (("rust-aliasable-deref-trait" ,rust-aliasable-deref-trait-0.2)
          ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
     (home-page "https://github.com/avitex/rust-aliasable")
