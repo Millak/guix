@@ -1452,16 +1452,16 @@ libebml is a C++ library to read and write EBML files.")
 (define-public libplacebo
   (package
     (name "libplacebo")
-    (version "4.157.0")
+    (version "4.208.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://code.videolan.org/videolan/libplacebo")
+             (url "https://code.videolan.org/videolan/libplacebo.git")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08kqsd29h8wm0vz7698wh2mdgpwv6anqc5n7d1spnnamwyfwc64h"))))
+        (base32 "161dp5781s74ca3gglaxlmchx7glyshf0wg43w98pl22n1jcm5qk"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -1470,7 +1470,7 @@ libebml is a C++ library to read and write EBML files.")
                          (assoc-ref %build-inputs "vulkan-headers")
                          "/share/vulkan/registry/vk.xml"))))
     (native-inputs
-     (list python-mako pkg-config))
+     (list python python-mako pkg-config))
     (inputs
      (list lcms
            libepoxy
