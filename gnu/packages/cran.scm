@@ -29083,14 +29083,14 @@ for creating, simulating, or validating values for such parameters.")
 (define-public r-tune
   (package
     (name "r-tune")
-    (version "0.2.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tune" version))
        (sha256
         (base32
-         "05gxlsaqv6sjk11r5g4nkdd6hlb3bnfmc29cx4vln1blha37jx4i"))))
+         "0jh29dy4gwa1fyi01fp1305hkxw1mpkx704j6kydplh8h09rv80p"))))
     (properties `((upstream-name . "tune")))
     (build-system r-build-system)
     (propagated-inputs
@@ -29111,6 +29111,7 @@ for creating, simulating, or validating values for such parameters.")
            r-rsample
            r-tibble
            r-tidyr
+           r-tidyselect
            r-vctrs
            r-withr
            r-workflows
