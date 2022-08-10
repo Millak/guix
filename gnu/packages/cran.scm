@@ -15719,13 +15719,13 @@ Differences with other sparse matrix packages are:
 (define-public r-fields
   (package
     (name "r-fields")
-    (version "13.3")
+    (version "14.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fields" version))
        (sha256
-        (base32 "1hs4k5a9hh0r5fsrnpnvs6wvf78xpjzj8a2j6643dsz73a5q6ln6"))))
+        (base32 "0rjg2yx52f5s1fhg6jbk9lfv92qmjqwd6bwpz9rx1fkml9vy8zch"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-maps r-spam r-viridis))
