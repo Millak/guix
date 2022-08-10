@@ -3171,13 +3171,13 @@ in a ggplot2 plot.")
 (define-public r-mbess
   (package
     (name "r-mbess")
-    (version "4.9.0")
+    (version "4.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MBESS" version))
        (sha256
-        (base32 "0qmyvjx2zn5hlzdbz8c94g8l4707swhn7sq9mxkdqiydmflzv0b5"))))
+        (base32 "18klyyjvmwggv4ma2x77jac3640yxbsbinl3s2rp1ik4n9phnjd0"))))
     (properties `((upstream-name . "MBESS")))
     (build-system r-build-system)
     (propagated-inputs
