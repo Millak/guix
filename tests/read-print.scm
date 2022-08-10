@@ -19,6 +19,8 @@
 (define-module (tests-style)
   #:use-module (guix read-print)
   #:use-module (guix gexp)                        ;for the reader extensions
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-64)
   #:use-module (ice-9 match))
 
@@ -45,6 +47,11 @@ expressions."
 
 
 (test-begin "read-print")
+
+(test-assert "read-with-comments: missing closing paren"
+  (guard (c ((error? c) #t))
+    (call-with-input-string "(what is going on?"
+      read-with-comments)))
 
 (test-equal "read-with-comments: dot notation"
   (cons 'a 'b)
