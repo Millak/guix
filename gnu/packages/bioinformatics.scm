@@ -11600,6 +11600,58 @@ activity prediction from transcriptomics data, and its R implementation
 @code{nichenetr}.")
       (license license:expat))))
 
+(define-public r-liana
+  (let ((commit "efb1249af46f576d1d620956053cfa93b2cee961")
+        (revision "1"))
+    (package
+      (name "r-liana")
+      (version (git-version "0.1.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/saezlab/liana/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0z645k26kqrfj5f1s412vwclw1q47h1zfxxrh9ijr30pxhpv6cv0"))))
+      (properties `((upstream-name . "liana")))
+      (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        `(modify-phases %standard-phases
+           ;; This is needed to find ~/.config/OmnipathR/omnipathr.yml
+           (add-after 'unpack 'set-HOME
+             (lambda _ (setenv "HOME" "/tmp"))))))
+      (propagated-inputs
+       (list r-complexheatmap
+             r-dplyr
+             r-ggplot2
+             r-magrittr
+             r-omnipathr/devel
+             r-purrr
+             r-rcolorbrewer
+             r-readr
+             r-reticulate
+             r-rlang
+             r-scater
+             r-scran
+             r-scuttle
+             r-seuratobject
+             r-singlecellexperiment
+             r-stringr
+             r-tibble
+             r-tidyr
+             r-tidyselect))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/saezlab/liana/")
+      (synopsis "LIANA: a LIgand-receptor ANalysis frAmework")
+      (description
+       "LIANA provides a number of methods and resource for ligand-receptor
+interaction inference from scRNA-seq data.")
+      (license license:gpl3))))
+
 (define-public r-circus
   (package
     (name "r-circus")
