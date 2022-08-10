@@ -177,10 +177,7 @@ object or archive file), @command{eu-strip} (for discarding symbols),
                                 (find-files "bash-completion" ".*abi.*"))
                       #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("makeinfo" ,texinfo)
-       ("python-sphinx" ,python-sphinx)
-       ("python" ,python)))             ;for tests
+     (list pkg-config texinfo python-sphinx python))
     (propagated-inputs
      (list elfutils ;libabigail.la says -lelf
            libxml2))           ;in Requires.private of libabigail.pc
