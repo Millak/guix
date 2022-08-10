@@ -12754,13 +12754,13 @@ conversion of indices such as Cohen's d, r, odds, etc.")
 (define-public r-sjplot
   (package
     (name "r-sjplot")
-    (version "2.8.10")
+    (version "2.8.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sjPlot" version))
        (sha256
-        (base32 "1rnwhh271xj8xgvvlpqw9ain56mfz37fvl7f6jq9nzx9jxx95bjd"))))
+        (base32 "05iimcf1if1cx9bmsjb6f5gcq58hjiw10vx7kqd4nqnyhzcvy8yr"))))
     (properties `((upstream-name . "sjPlot")))
     (build-system r-build-system)
     (propagated-inputs
