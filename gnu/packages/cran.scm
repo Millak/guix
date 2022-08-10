@@ -5336,14 +5336,14 @@ the Kaplan-Meier and Aalen-Johansen methods.")
 (define-public r-dimred
   (package
     (name "r-dimred")
-    (version "0.2.5")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dimRed" version))
        (sha256
         (base32
-         "1z8fqdc8mslvfix8ngxs1y2yrvlanp5581hwp2nzldj6mk5kn15b"))))
+         "05zlkf6hjdqqr1sgw7ww9f17vjnsiqfaj9kvdvi146phh53v2zls"))))
     (properties `((upstream-name . "dimRed")))
     (build-system r-build-system)
     (propagated-inputs
