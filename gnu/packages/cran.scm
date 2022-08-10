@@ -7531,14 +7531,14 @@ University Press, 2000.")
 (define-public r-tsa
   (package
     (name "r-tsa")
-    (version "1.3")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "TSA" version))
        (sha256
         (base32
-         "1bv5q609lhmrcxnjnvcj497fbjlv89zwa8q918hw4iki5nkvwwdb"))))
+         "14g58s2w7wma1fgcg3b51267b3676zrv0w8v4hpypxygz023d9bx"))))
     (properties `((upstream-name . "TSA")))
     (build-system r-build-system)
     (propagated-inputs
