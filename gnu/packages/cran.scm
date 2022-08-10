@@ -21384,13 +21384,13 @@ to ODEs by numerical differencing.")
 (define-public r-pmcmrplus
   (package
     (name "r-pmcmrplus")
-    (version "1.9.4")
+    (version "1.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PMCMRplus" version))
        (sha256
-        (base32 "16m1pdrzjq9vnx5v7zv56mz9r1205rkw92883cxaqbvdpds6dhqy"))))
+        (base32 "15xhwq231vgq9q7pk1r4z11wijn4hgdwcly1n9nxxa05w15x9q33"))))
     (properties `((upstream-name . "PMCMRplus")))
     (build-system r-build-system)
     (inputs (list gmp))
