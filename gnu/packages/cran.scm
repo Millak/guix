@@ -860,13 +860,13 @@ series of numeric vectors/matrices and factors.")
 (define-public r-fontawesome
   (package
     (name "r-fontawesome")
-    (version "0.2.2")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fontawesome" version))
        (sha256
-        (base32 "0r6zb5175cr4ybqj6bl0mbhadwv9xjxaf32yjc0y76rw3d6vcbap"))))
+        (base32 "0c8sb8isiyn2gr3xfql75yyssf9wlb152cw67whq83aqsksgrvjd"))))
     (properties `((upstream-name . "fontawesome")))
     (build-system r-build-system)
     (propagated-inputs
