@@ -6678,14 +6678,14 @@ Markdown documents.")
 (define-public r-seriation
   (package
     (name "r-seriation")
-    (version "1.3.5")
+    (version "1.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "seriation" version))
        (sha256
         (base32
-         "0dlj0mqpg585m6i7yn0h878i8ag6pyqph98xkk42i2nvghpy01gr"))))
+         "1i0bbfxbvzy2lwprliqrn97ww8lqr2s9klg0g3qqjyr8cdxs5fyc"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cluster
