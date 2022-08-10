@@ -4294,7 +4294,6 @@ standard library.")
        (sha256
         (base32 "0jpp550pwi38msflpy7lnqm2r153kn9k19bss6k9ak9yacq8z4vi"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/tredoe/ascii_utils")
     (synopsis "Utilities to handle ASCII characters")
     (description
