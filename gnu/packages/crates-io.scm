@@ -4275,7 +4275,10 @@ standard library.")
         (base32 "051gh2bgjq90s0f0i0hd9p4z4fpg5k82b570d1223jj7rhd8kglp"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=src/ascii_char.rs - ascii_char::AsciiChar::from (line 296)"
+         "--skip=src/ascii_string.rs - ascii_string::AsciiString::pop (line 259)")
        #:cargo-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.4))))))
 
