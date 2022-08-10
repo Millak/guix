@@ -18,10 +18,12 @@
 ;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022 Kiran Shila <me@kiranshila.com>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1833,6 +1835,44 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
 techniques commonly used in datasets showing strong between-class imbalance.
 It is compatible with @code{scikit-learn}.")
     (license license:expat)))
+
+(define-public python-hdbscan
+  (package
+    (name "python-hdbscan")
+    (version "0.8.33")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hdbscan" version))
+       (sha256
+        (base32 "03gr70ys1zrnp15pxzhichvrdj5bj88p6p5k0wj8vx251rgvryjp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-joblib
+                             python-numpy
+                             python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-cython
+                         python-nose
+                         python-pytest
+                         python-pandas
+                         python-networkx))
+    (home-page "https://github.com/scikit-learn-contrib/hdbscan")
+    (synopsis "High performance implementation of HDBSCAN clustering")
+    (description "HDBSCAN - Hierarchical Density-Based Spatial Clustering of
+Applications with Noise.  Performs DBSCAN over varying epsilon values and
+integrates the result to find a clustering that gives the best stability over
+epsilon.  This allows HDBSCAN to find clusters of varying densities (unlike
+DBSCAN), and be more robust to parameter selection.  HDBSCAN is ideal for
+exploratory data analysis; it's a fast and robust algorithm that you can trust
+to return meaningful clusters (if there are any).")
+    (license license:bsd-3)))
 
 (define-public python-pynndescent
   (package
