@@ -2417,6 +2417,8 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
     (description
      "strace is a system call tracer, i.e. a debugging tool which prints out a
 trace of all the system calls made by a another process/program.")
+    (properties
+     '((release-monitoring-url . "https://github.com/strace/strace/releases")))
     (license license:lgpl2.1+)))
 
 (define-public ltrace
