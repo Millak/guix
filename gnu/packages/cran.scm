@@ -2605,14 +2605,14 @@ expression estimates for all genes.")
 (define-public r-bslib
   (package
     (name "r-bslib")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bslib" version))
        (sha256
         (base32
-         "0jcqklry1nkibz0sydsz5xdsnb4wnrrhvmyr9ji3k45bbipbap2z"))
+         "1hkmaj0mpygbf6qr1955biv9z4q3khflyqi5x0c3dwi6qz74xspv"))
        (snippet
         '(for-each delete-file
                    '("inst/lib/bs-a11y-p/plugins/js/bootstrap-accessibility.min.js"
@@ -2652,7 +2652,13 @@ expression estimates for all genes.")
                                        (string-append "--outfile=" target)))
                              sources targets)))))))))
     (propagated-inputs
-     (list r-htmltools r-jquerylib r-jsonlite r-rlang r-sass))
+     (list r-cachem
+           r-htmltools
+           r-jquerylib
+           r-jsonlite
+           r-memoise
+           r-rlang
+           r-sass))
     (native-inputs
      `(("esbuild" ,esbuild)
        ("js-bootstrap4-bundle"
@@ -2665,10 +2671,10 @@ expression estimates for all genes.")
        ("js-bootstrap5-bundle"
         ,(origin
            (method url-fetch)
-           (uri "https://raw.githubusercontent.com/twbs/bootstrap/v5.0.2/dist/js/bootstrap.bundle.js")
+           (uri "https://raw.githubusercontent.com/twbs/bootstrap/v5.1.3/dist/js/bootstrap.bundle.js")
            (sha256
             (base32
-             "06vin94nqw1vzs4zrqcms8z9js9fckbj8gwyx07awm8jkjhnqfhl"))))))
+             "116979i2vr1y9i6g7n5iir19p85xwr642scbl9jcqdr0w9801nw6"))))))
     (home-page "https://rstudio.github.io/bslib/")
     (synopsis "Custom Bootstrap Sass themes for shiny and rmarkdown")
     (description
