@@ -6637,14 +6637,14 @@ interface).  The recommended routine @code{logspline()} uses an algorithm from
 (define-public r-effects
   (package
     (name "r-effects")
-    (version "4.2-1")
+    (version "4.2-2")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "effects" version))
         (sha256
           (base32
-            "0h3n2kd43fddy29hlv1nckw3wglykwrgk1hp8khb0pnm2i12b5sk"))))
+            "0nlj79am9a1yg737dhfa8dj1kj2hly9pfknmphsbcvlgxqn35vig"))))
     (properties `((upstream-name . "effects")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6657,7 +6657,7 @@ interface).  The recommended routine @code{logspline()} uses an algorithm from
             r-nnet
             r-survey))
     (native-inputs
-      (list r-knitr r-car))
+      (list r-knitr))
     (home-page "https://www.r-project.org")
     (synopsis
       "Effect Displays for Linear, Generalized Linear, and Other Models")
