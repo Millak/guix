@@ -22442,7 +22442,7 @@ their default values are:
 @item handle-lid-switch-docked
 @code{ignore}
 @item handle-lid-switch-external-power
-@code{ignore}
+@code{*unspecified*}
 @item power-key-ignore-inhibited?
 @code{#f}
 @item suspend-key-ignore-inhibited?

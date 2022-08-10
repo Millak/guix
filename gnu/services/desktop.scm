@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2017, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
@@ -971,7 +971,7 @@ include the @command{udisksctl} command, part of UDisks, and GNOME Disks."
   (handle-lid-switch-docked         elogind-handle-lid-switch-docked
                                     (default 'ignore))
   (handle-lid-switch-external-power elogind-handle-lid-switch-external-power
-                                    (default 'ignore))
+                                    (default *unspecified*))
   (power-key-ignore-inhibited?      elogind-power-key-ignore-inhibited?
                                     (default #f))
   (suspend-key-ignore-inhibited?    elogind-suspend-key-ignore-inhibited?
@@ -1032,7 +1032,9 @@ include the @command{udisksctl} command, part of UDisks, and GNOME Disks."
   (define handle-actions
     '(ignore poweroff reboot halt kexec suspend hibernate hybrid-sleep lock))
   (define (handle-action x)
-    (enum x handle-actions))
+    (if (unspecified? x)
+        ""                              ;empty serializer
+        (enum x handle-actions)))
   (define (sleep-list tokens)
     (unless (valid-list? tokens char-set:user-name)
       (error "invalid sleep list" tokens))
