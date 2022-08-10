@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
@@ -140,6 +140,24 @@
   (config-with-maybe-number->string
    (config-with-maybe-number
     (port 42))))
+
+(define (serialize-symbol name value)
+  (format #f "~a=~a~%" name value))
+
+(define-maybe symbol)
+
+(define-configuration config-with-maybe-symbol
+  (protocol maybe-symbol ""))
+
+;;; Maybe symbol values are currently seen as serializable, because the
+;;; unspecified value is 'unset, which is a symbol itself.
+;;; TODO: Remove expected fail marker after resolution.
+(test-expect-fail 1)
+(test-equal "symbol maybe value serialization, unspecified"
+  ""
+  (gexp->approximate-sexp
+   (serialize-configuration (config-with-maybe-symbol)
+                            config-with-maybe-symbol-fields)))
 
 (define-maybe/no-serialization string)
 
