@@ -6376,14 +6376,14 @@ VCF data and familiar R software.")
 (define-public r-ica
   (package
     (name "r-ica")
-    (version "1.0-2")
+    (version "1.0-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ica" version))
        (sha256
         (base32
-         "0ya1nph1zwhad0bfz4yxs27kl45yk1dhnphdlrq34p8pqrpmj8g7"))))
+         "0rdqd3kz2cv3xvf6yz55bwhsg3k7j90d450i3azs2xkbn4q3aka7"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/ica/")
     (synopsis "Independent component analysis")
