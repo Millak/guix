@@ -1121,7 +1121,6 @@ code that is generic with regard to the algebraic entity types.")
        (sha256
         (base32 "0abzqsxd09jxl01brzjnwk8zg7k8zma76gzq87385q8fqm710jxb"))))
     (build-system cargo-build-system)
-    (arguments '(#:skip-build? #t))
     (home-page "https://github.com/avitex/rust-aliasable-deref-trait")
     (synopsis "Marker trait for aliasable pointers")
     (description
