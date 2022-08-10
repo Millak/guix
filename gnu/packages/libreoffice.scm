@@ -348,35 +348,48 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
 (define-public libcmis
   (package
     (name "libcmis")
-    (version "0.5.2")
+    ;; Note: Use an unreleased version because libreoffice requires it and
+    ;; is the only user (see <https://github.com/tdf/libcmis/pull/43>).
+    (version "0.5.2-46-gf264a61")
+    (home-page "https://github.com/tdf/libcmis")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://github.com/tdf/libcmis/releases/download/v"
-                          version "/libcmis-" version ".tar.xz"))
-      (sha256
-       (base32
-        "18h0a2gsfxvlv03nlcfvw9bzsflq5sin9agq6za103hr0ab8vcfp"))))
+       (method git-fetch)
+       (uri (git-reference (url home-page)
+                           (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "06ff5vw0xrymvvna18wlaayyk20755sk2541i1gh7zpbmncs2ni6"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list cppunit pkg-config))
-    (propagated-inputs ; in Requires field of .pkg
+     (list autoconf automake libtool cppunit pkg-config))
+    (propagated-inputs                  ;in Requires field of .pkg
      (list curl libxml2))
     (inputs
      (list boost cyrus-sasl openssl))
     (arguments
-     `(#:configure-flags
-        (list
-          ;; FIXME: Man pages generation requires docbook-to-man; reenable
-          ;; it once this is available.
-          "--without-man"
-          ;; XXX: A configure test fails with GCC7 when including Boost headers.
-          "--disable-werror"
-          ;; During configure, the boost headers are found, but linking
-          ;; fails without the following flag.
-          (string-append "--with-boost="
-                         (assoc-ref %build-inputs "boost")))))
-    (home-page "https://github.com/tdf/libcmis")
+     (list
+      #:configure-flags
+      #~(list
+         ;; FIXME: Man pages generation requires docbook-to-man; reenable
+         ;; it once this is available.
+         "--without-man"
+         ;; XXX: A configure test fails with GCC7 when including Boost headers.
+         "--disable-werror"
+         ;; During configure, the boost headers are found, but linking
+         ;; fails without the following flag.
+         (string-append "--with-boost="
+                        (dirname (dirname
+                                  (search-input-directory %build-inputs
+                                                          "include/boost")))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda _
+              ;; Override the bootstrap phase as the ancient autogen.sh
+              ;; script exits with a non-zero code when NOCONFIGURE=1.
+              (invoke "autoreconf" "-vif"))))))
     (synopsis "CMIS client library")
     (description "LibCMIS is a C++ client library for the CMIS interface.  It
 allows C++ applications to connect to any ECM behaving as a CMIS server such
