@@ -17895,14 +17895,14 @@ information about geometries.")
 (define-public r-sf
   (package
     (name "r-sf")
-    (version "1.0-7")
+    (version "1.0-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sf" version))
        (sha256
         (base32
-         "0lsl4rh4lbv386hxlsnnwsjb5x1n9d3z0ckjmxakmmrqjjmiywyh"))))
+         "0cl7m47ar3iw95rpwpmjl23frdbscxa15q39mlzmwswxwy871p1x"))))
     (build-system r-build-system)
     (inputs
      (list gdal geos proj sqlite zlib))
