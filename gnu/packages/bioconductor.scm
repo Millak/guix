@@ -12925,14 +12925,14 @@ using whole genome sequencing data.")
 (define-public r-activepathways
   (package
     (name "r-activepathways")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ActivePathways" version))
        (sha256
         (base32
-         "0zbrgz91mlik7j8j11wsdswqqqfsijj8jkgd5fx1ar3mc6rqsmbg"))))
+         "1crq164vyqhdq5y3q09k3m5zljqrhcd5ak0jrc0xqvzf0pasml2m"))))
     (properties
      `((upstream-name . "ActivePathways")))
     (build-system r-build-system)
