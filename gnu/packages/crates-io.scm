@@ -8803,7 +8803,6 @@ comes with a strict specification.")
        (sha256
         (base32 "09ilf4zyx92hyhkxlsxksfyprzr9iwq5gqqb22aaqr32c8fwp22r"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/stbuehler/rust-boxfnonce")
     (synopsis "Safe FnOnce boxing for Rust")
     (description "This package provides a safe FnOnce boxing for Rust.")
