@@ -7,7 +7,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2017, 2018, 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -89,7 +89,7 @@
 (define-public ixion
   (package
     (name "ixion")
-    (version "0.16.1")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
@@ -97,7 +97,7 @@
                            version ".tar.xz"))
        (sha256
         (base32
-         "17q84mhy4rb3masvjw24x549irdjmccnc8n04xh58v9l7hxn8v22"))))
+         "07hhqkvns4da8xv990gr1smqz1zf40m531lg95nphfrz48wp3jak"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
