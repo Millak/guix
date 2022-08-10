@@ -8793,12 +8793,12 @@ compression with the LZ4 and ZSTD compressors.")
 (define-public r-snowfall
   (package
    (name "r-snowfall")
-   (version "1.84-6.1")
+   (version "1.84-6.2")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "snowfall" version))
             (sha256
-             (base32 "13941rlw1jsdjsndp1plzj1cq5aqravizkrqn6l25r9im7rnsi2w"))))
+             (base32 "0frmasv04wd47h04zbwaryhiyxllarf3ggpa39p5qicjp6r7lilv"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-snow))
