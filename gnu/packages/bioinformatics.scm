@@ -11535,6 +11535,71 @@ including:
 dynamic cellular processes at single-cell resolution.")
       (license license:expat))))
 
+;; Needed for r-liana
+(define-public r-omnipathr/devel
+  (let ((commit "679bb79e319af246a16968d27d64d8d6937a331a")
+        (revision "1"))
+    (package
+      (name "r-omnipathr")
+      (version (git-version "3.5.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/saezlab/omnipathr")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "10h6lyapyx4ik8r4kx5z2dly46jlf2v57caq4g6i0hzifyz2vgjq"))))
+      (properties `((upstream-name . "OmnipathR")))
+      (build-system r-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'set-HOME
+             (lambda _ (setenv "HOME" "/tmp"))))))
+      (propagated-inputs
+       (list r-checkmate
+             r-crayon
+             r-curl
+             r-digest
+             r-dplyr
+             r-httr
+             r-igraph
+             r-jsonlite
+             r-later
+             r-logger
+             r-magrittr
+             r-progress
+             r-purrr
+             r-rappdirs
+             r-readr
+             r-readxl
+             r-rlang
+             r-rvest
+             r-stringr
+             r-tibble
+             r-tidyr
+             r-tidyselect
+             r-withr
+             r-xml2
+             r-yaml))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/saezlab/omnipathr")
+      (synopsis "OmniPath web service client and more")
+      (description
+       "This package provides a client for the OmniPath web service and many
+other resources.  It also includes functions to transform and pretty print
+some of the downloaded data, functions to access a number of other resources
+such as BioPlex, ConsensusPathDB, EVEX, Gene Ontology, Guide to
+Pharmacology (IUPHAR/BPS), Harmonizome, HTRIdb, Human Phenotype Ontology,
+InWeb InBioMap, KEGG Pathway, Pathway Commons, Ramilowski et al. 2015,
+RegNetwork, ReMap, TF census, TRRUST and Vinayagam et al. 2011.  Furthermore,
+OmnipathR features a close integration with the NicheNet method for ligand
+activity prediction from transcriptomics data, and its R implementation
+@code{nichenetr}.")
+      (license license:expat))))
+
 (define-public r-circus
   (package
     (name "r-circus")
