@@ -11848,7 +11848,6 @@ that need to represent UTF-16 data as 8-bit characters.")
        (sha256
         (base32 "17p821nc6jm830vzl2lmwz60g3a30hcm33nk6l257i1rjdqw85px"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/katharostech/cfg_aliases")
     (synopsis "Utility to help you with long winded @code{#[cfg()]} checks")
     (description
