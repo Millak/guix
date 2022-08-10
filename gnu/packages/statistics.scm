@@ -2543,33 +2543,34 @@ informative error messages when it's not available.")
 (define-public r-devtools
   (package
     (name "r-devtools")
-    (version "2.4.3")
+    (version "2.4.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "devtools" version))
               (sha256
                (base32
-                "0kvbw218jp8pd2lgdjyn94v2iji75s385hkn1qbikcm0pjlmj8g4"))))
+                "0kckjr12qi8nw498x3iw648pllz63j5p6fhpv8z8jc4z4sfpbmmc"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-callr
-           r-cli
+     (list r-cli
            r-desc
            r-ellipsis
            r-fs
-           r-httr
            r-lifecycle
            r-memoise
+           r-miniui
            r-pkgbuild
+           r-pkgdown
            r-pkgload
+           r-profvis
            r-rcmdcheck
            r-remotes
            r-rlang
            r-roxygen2
-           r-rstudioapi
            r-rversions
            r-sessioninfo
            r-testthat
+           r-urlchecker
            r-usethis
            r-withr))
     (native-inputs
