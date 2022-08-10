@@ -4892,7 +4892,6 @@ and Rust's modern asynchronous IO types.")
        (sha256
         (base32 "0k4kiy67d24ay8l7xrfjpsa4zkmhxv97ddj0f16rcv61qkky3i4f"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/rustasync/async-datagram")
     (synopsis "Async datagram traits")
     (description "This package provides asynchronous datagram traits.")
