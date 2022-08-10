@@ -123,3 +123,44 @@ the same author.")
         (file-name (git-file-name "bqn-sources" commit))
         (sha256
          (base32 "0r6pa9lscl2395g4xlvmg90vpdsjzhin4f1r0s7brymmpvmns2yc")))))
+
+(define cbqn-bootstrap
+  (let* ((revision "1")
+         (commit "9c1cbdc99863b1da0116df61cd832137b196dc5c"))
+    (package
+      (name "cbqn-bootstrap")
+      (version (git-version "0" "1" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/dzaima/CBQN")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0w38fhwf20drkyijy6nfnhmc5g5gw0zmzgmy1q605x57znlj85a2"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f                         ;skipping tests for bootstrap
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure)
+                          (add-before 'build 'generate-bytecode
+                            (lambda* (#:key inputs #:allow-other-keys)
+                              (system (string-append #+dbqn
+                                                     "/bin/dbqn ./genRuntime "
+                                                     #+bqn-sources))))
+                          (replace 'install
+                            (lambda* (#:key outputs #:allow-other-keys)
+                              (mkdir-p (string-append #$output "/bin"))
+                              (chmod "BQN" #o755)
+                              (copy-recursively "BQN"
+                                                (string-append #$output
+                                                               "/bin/bqn")))))))
+      (native-inputs (list dbqn clang-toolchain bqn-sources))
+      (inputs (list icedtea-8 libffi))
+      (synopsis "BQN implementation in C")
+      (description "This package provides the reference implementation of
+@uref{https://mlochbaum.github.io/BQN/, BQN}, a programming language inspired
+by APL.")
+      (home-page "https://mlochbaum.github.io/BQN/")
+      (license license:gpl3))))
