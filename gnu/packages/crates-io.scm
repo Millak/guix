@@ -11629,7 +11629,6 @@ parsing with Serde.")
        (sha256
         (base32 "0lvanj0gsk6pc1chqrh4k5k0vi1rfbgzmsk46dwy3nmrqyw711nz"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
     (home-page "https://github.com/dylanede/cassowary-rs")
     (synopsis
      "Implementation of the Cassowary linear constraint solving algorithm")
