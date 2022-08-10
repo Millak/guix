@@ -5646,14 +5646,14 @@ created using basic graphics.")
 (define-public r-generics
   (package
     (name "r-generics")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "generics" version))
        (sha256
         (base32
-         "162q9hdsnfcwjj255ahbi6v9vnyynvda7gb75p721y28j5xb7sk3"))))
+         "0lyhhwik0w7m5h3fbwl2f52gc1v2g6g6h6sc47sa9f58pxin213m"))))
     (build-system r-build-system)
     (home-page "https://github.com/r-lib/generics")
     (synopsis "Common S3 generics not provided by base R methods")
