@@ -2979,8 +2979,7 @@ ArrayVec and ArrayString.")
         (base32
          "12q6hn01x5435bprwlb7w9m7817dyfq55yrl4psygr78bp32zdi3"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
