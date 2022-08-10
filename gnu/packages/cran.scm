@@ -7385,14 +7385,14 @@ provides some missing S-PLUS functionality in R.")
 (define-public r-ifultools
   (package
     (name "r-ifultools")
-    (version "2.0-23")
+    (version "2.0-26")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ifultools" version))
        (sha256
         (base32
-         "16a7rbvlym3bnfm93ikr5kl0l86ppk0s41fva6idvcx765g3fqkk"))))
+         "1lkmzrh65j6vdb8523axxk9gig5q4zxy08wiqsp16w482d2q2sl1"))))
     (build-system r-build-system)
     (arguments
      (list
