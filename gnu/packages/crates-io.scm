@@ -4329,7 +4329,6 @@ standard library.")
        (sha256
         (base32 "1zagfwfad5wssmr830gk3489f97ppczv6xs627jxniwm6ssdl1rw"))))
     (build-system cargo-build-system)
-    (arguments '(#:skip-build? #t))
     (home-page "https://github.com/ashleygwilliams/assert_approx_eq")
     (synopsis "Assert approximately equal")
     (description
