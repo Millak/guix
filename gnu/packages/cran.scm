@@ -13955,6 +13955,30 @@ circular variables).")
 for evolution along a phylogenetic tree.")
     (license license:gpl2+)))
 
+(define-public r-fmri
+  (package
+    (name "r-fmri")
+    (version "1.9.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "fmri" version))
+              (sha256
+               (base32
+                "1wh77xwpm8f9d9vky3r7vfmkik3hls008ifk8hkm2rq6i06jj53n"))))
+    (properties `((upstream-name . "fmri")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-aws r-metafor r-nlme))
+    (native-inputs (list gfortran))
+    (home-page "http://www.wias-berlin.de/software/imaging/")
+    (synopsis "Analysis of fMRI experiments")
+    (description
+     "This package contains R-functions to perform an fMRI analysis as
+described in Polzehl and Tabelow (2019) <DOI:10.1007/978-3-030-29184-6>,
+Tabelow et al. (2006) <DOI:10.1016/j.neuroimage.2006.06.029>, Polzehl et
+al. (2010) <DOI:10.1016/j.neuroimage.2010.04.241>, Tabelow and Polzehl (2011)
+<DOI:10.18637/jss.v044.i11>.")
+    (license license:gpl2+)))
+
 (define-public r-fmsb
   (package
     (name "r-fmsb")
