@@ -258,8 +258,8 @@ accept connections in MARIONETTE.  Raise an error on failure."
 
 (define (marionette-control command marionette)
   "Run COMMAND in the QEMU monitor of MARIONETTE.  COMMAND is a string such as
-\"sendkey ctrl-alt-f1\" or \"screendump foo.ppm\" (info \"(qemu-doc)
-pcsys_monitor\")."
+\"sendkey ctrl-alt-f1\" or \"screendump foo.ppm\" (info \"(QEMU) QEMU
+Monitor\")."
   (match marionette
     (($ <marionette> _ _ monitor)
      (display command monitor)
