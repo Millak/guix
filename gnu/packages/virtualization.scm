@@ -1273,14 +1273,14 @@ pretty simple, REST API.")
 (define-public libvirt
   (package
     (name "libvirt")
-    (version "7.9.0")
+    (version "8.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/libvirt-"
                            version ".tar.xz"))
        (sha256
-        (base32 "131fyxb05rrcr9ih4mhhjyw3cgsxh5l12vj4y109q9vlynsz5742"))
+        (base32 "1qisvbshbcd5305mrb4vni559k52id7c8iw4dwdydbf97b24f658"))
        (patches (search-patches "libvirt-add-install-prefix.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -1400,27 +1400,15 @@ three libraries:
 (define-public python-libvirt
   (package
     (name "python-libvirt")
-    (version "7.9.0")
+    (version "8.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/python/libvirt-python-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0nakisj2ady5a41k4zc95k0kp749f4ppmxgr91b1h1dzbzxcydc5"))))
+        (base32 "0wa86jliq71x60dd4vyzsj4lcrb82i5qsgxz9azvwgsgi9j9mx41"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               ;; No reason to explicity invoke Python on a wrapped pytest.
-               (substitute* "setup.py"
-                 (("sys\\.executable, pytest") "pytest"))
-               (add-installed-pythonpath inputs outputs)
-               (setenv "LIBVIRT_API_COVERAGE" "whynot")
-               (invoke "python" "setup.py" "test")))))))
     (inputs
      (list libvirt))
     (propagated-inputs
