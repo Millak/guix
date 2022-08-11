@@ -225,7 +225,7 @@ endif()~%~%"
             gtkspell3
             gsl
             poppler
-            lib2geom-1.2
+            lib2geom
             libjpeg-turbo
             libpng
             libxml2
