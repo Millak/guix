@@ -77,6 +77,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system ruby)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -2145,34 +2146,30 @@ command.")
      ;; For icons.
      (modify-inputs (package-native-inputs wpa-supplicant)
        (prepend imagemagick inkscape/stable)))
+    (build-system qt-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'chdir
-                    (lambda _
-                      (chdir "wpa_supplicant/wpa_gui-qt4")
-                      #t))
-                  (delete 'configure)
-                  (replace 'build
-                    (lambda _
-                      (invoke "qmake" "wpa_gui.pro")
-                      (invoke "make" "-j" (number->string (parallel-job-count)))
-                      (invoke "make" "-C" "icons")))
-                  (replace 'install
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out"))
-                            (qt '("qtbase" "qtsvg-5")))
-                        (install-file "wpa_gui" (string-append out "/bin"))
-                        (install-file "wpa_gui.desktop"
-                                      (string-append out "/share/applications"))
-                        (copy-recursively "icons/hicolor"
-                                          (string-append out "/share/icons/hicolor"))
-                        (wrap-program (string-append out "/bin/wpa_gui")
-                          `("QT_PLUGIN_PATH" ":" prefix
-                            ,(map (lambda (label)
-                                    (string-append (assoc-ref inputs label)
-                                                   "/lib/qt5/plugins/"))
-                                  qt)))
-                        #t))))))
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "wpa_supplicant/wpa_gui-qt4")))
+          (replace 'configure
+            (lambda _ (invoke "qmake" "wpa_gui.pro")))
+          (add-after 'build 'build-icons
+            (lambda _
+              ;; Inkscape complains (but works) without a writable $HOME.
+              (setenv "HOME" "/tmp")
+              (invoke "make" "-C" "icons")))
+          (replace 'install
+            (lambda _
+              (install-file "wpa_gui" (string-append #$output "/bin"))
+              (install-file "wpa_gui.desktop"
+                            (string-append #$output
+                                           "/share/applications"))
+              (copy-recursively "icons/hicolor"
+                                (string-append #$output
+                                               "/share/icons/hicolor")))))))
     (synopsis "Graphical user interface for WPA supplicant")))
 
 (define-public hostapd
