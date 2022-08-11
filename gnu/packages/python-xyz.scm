@@ -2807,14 +2807,14 @@ Python 3.3+.")
 (define-public python-pyicu
   (package
     (name "python-pyicu")
-    (version "2.7.4")
+    (version "2.9")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "PyICU" version))
       (sha256
        (base32
-        "0mkz1673qxldxs4mrqg9882xgmz5fhpia17yrsd6z8dfw8156rf0"))))
+        "0y2qhh443vydi3y7kmhyb6kz3z6d7qq7ld0sg88mfqalcp7dca9w"))))
     (build-system python-build-system)
     (inputs
      (list icu4c))
