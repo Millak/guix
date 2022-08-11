@@ -67,6 +67,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
@@ -88,6 +89,7 @@
   #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fpga)
@@ -142,6 +144,7 @@
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages version-control)
@@ -3757,3 +3760,57 @@ form, numpad.
 @item Visualizing G-code files.
 @end itemize")
       (license license:gpl3+))))
+
+(define-public rizin
+  (package
+    (name "rizin")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/rizinorg/rizin/releases/download/v"
+                    version "/rizin-src-v" version ".tar.xz"))
+              (sha256
+               (base32
+                "0nkb6v9lks25w5sv5s6p2ghgqnnnsf39md8nlx1cy4z89xlaisq9"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-Dpackager=guix"
+              (string-append "-Dpackager_version=" #$version)
+              "-Duse_sys_capstone=enabled"
+              "-Duse_sys_magic=enabled"
+              "-Duse_sys_libzip=enabled"
+              "-Duse_sys_zlib=enabled"
+              "-Duse_sys_lz4=enabled"
+              "-Duse_sys_xxhash=enabled"
+              "-Duse_sys_openssl=enabled"
+              "-Duse_sys_tree_sitter=enabled"
+              "-Duse_sys_libuv=enabled"
+              "-Duse_gpl=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'skip-integration-tests
+            (lambda _
+              ;; Skip integration tests, which require prebuilt binaries at:
+              ;; <https://github.com/rizinorg/rizin-testbins>.
+              ;; And 2 of them are failing, reported upstream:
+              ;; <https://github.com/rizinorg/rizin/issues/2905>.
+              (substitute* "test/meson.build"
+                (("subdir\\('integration'\\)") "")))))))
+    (native-inputs (list pkg-config))
+    (inputs
+     (list capstone file libuv libzip lz4 openssl tree-sitter xxhash zlib))
+    (home-page "https://rizin.re")
+    (synopsis "Disasm, debug, analyze and manipulate binary files")
+    (description
+     "Rizin is a reverse engineering framework and a set of small command-line
+utilities, providing a complete binary analysis experience with features like
+disassembler, hexadecimal editor, emulation, binary inspection, debugger, and
+more.")
+    ;; Most files are under LGPL-3.0-only, other are under: Apache-2.0,
+    ;; BSD-2-Clause, BSD-3-Clause, CC0-1.0, CC-BY-SA-4.0, GPL-1.0-or-later,
+    ;; GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-or-later, LGPL-2.0-or-later,
+    ;; LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, MIT, NCSA.
+    (license license:gpl3+)))
