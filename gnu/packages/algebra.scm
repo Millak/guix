@@ -1242,24 +1242,41 @@ xtensor provides:
                    "SmallGrp-"   ; artistic2.0
                    "transgrp"    ; artistic2.0 for data,
                                  ; gpl2 or gpl3 for code
-                   ;; Recommended package.
-                   "io-"         ; gpl3+
-                   ;; Optional packages, searched for at start,
-                   ;; and their depedencies.
+                   ;; Optional packages.
                    "alnuth-"
+                   "AutoDoc-"
+                   "automata-"
                    "autpgrp-"
+                   "crime-"
                    "crisp-"      ; bsd-2
                    "ctbllib"     ; gpl3+
+                   "datastructures"
                    "FactInt-"
                    "fga"
+                   "format"
+                   "groupoids-"
+                   "guarana"
+                   "idrel-"
+                   "images-"     ; mpl2.0
+                   "IntPic-"
+                   "io-"         ; gpl3+
                    "irredsol-"   ; bsd-2
                    "laguna-"
+                   "liering-"
+                   "MapClass-"
+                   "nilmat-"
+                   "NumericalSgps-"
+                   "OpenMath-"
+                   "orb-"        ; gpl3+
                    "polenta-"
                    "polycyclic-"
                    "radiroot-"
+                   "repsn-"
                    "resclasses-"
+                   "simpcomp"
                    "sophus-"
                    "tomlib-"
+                   "unipot-"
                    "utils-"))))))))
     (build-system gnu-build-system)
     (inputs
