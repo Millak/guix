@@ -61,14 +61,14 @@
 (define-public sqlite
   (package
    (name "sqlite")
-   (version "3.39.1")
+   (version "3.39.2")
    (source (origin
             (method url-fetch)
             (uri (sqlite-uri version 2022))
             (patches (search-patches "sqlite-hurd.patch"))
             (sha256
              (base32
-              "1i0wjd1mig720q1gk9jkpw6h0mialbrlkfh8w8lans0czakygj47"))))
+              "1pirla4d1z1lzkp3pgw3sbzmmamp01sgzfz0rr3vl5rs32kfhaw5"))))
    (build-system gnu-build-system)
    (inputs (list readline))
    (outputs '("out" "static"))
