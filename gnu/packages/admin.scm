@@ -826,14 +826,14 @@ re-executing them as necessary.")
 (define-public inetutils
   (package
     (name "inetutils")
-    (version "2.0")
+    (version "2.3")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/inetutils/inetutils-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32
-               "0j1nb69bhg29cm4xkqqjh2ln1zqcj2lnpm92v638lpwrs11dypxl"))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/inetutils/inetutils-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1dj4ilxy1wrfxhxc85iya3x28h1mhjpqc5nv862xcq3ww2gqkv8w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--localstatedir=/var"
