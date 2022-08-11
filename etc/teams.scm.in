@@ -232,7 +232,7 @@ and Thunderbird."))
 
 (define-member (person "Mathieu Othacehe"
                        "othacehe@gnu.org")
-  core installer)
+  core installer mentors)
 
 (define-member (person "Florian Pelz"
                        "pelzflorian@pelzflorian.de")
