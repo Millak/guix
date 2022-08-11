@@ -1,0 +1,21 @@
+Fix a regression in 6.8 where the 'single' headings option was not recognized.
+
+Taken from upstream:
+
+  https://git.savannah.gnu.org/cgit/texinfo.git/commit/?id=13a8894fe2faa45b04033d7122a8fe7939ce6aa2
+
+diff --git a/tp/Texinfo/XS/parsetexi/end_line.c b/tp/Texinfo/XS/parsetexi/end_line.c
+index 4556780052..3fc2065616 100644
+--- a/tp/Texinfo/XS/parsetexi/end_line.c
++++ b/tp/Texinfo/XS/parsetexi/end_line.c
+@@ -778,8 +778,8 @@ kdbinputstyle_invalid:
+     case CM_headings:
+       {
+         if (!strcmp (line, "off") || !strcmp (line, "on")
+-            || !strcmp (line, "double") || !strcmp (line, "singleafter")
+-            || !strcmp (line, "doubleafter"))
++            || !strcmp (line, "single") || !strcmp (line, "double")
++            || !strcmp (line, "singleafter") || !strcmp (line, "doubleafter"))
+           {
+             ADD_ARG(line);
+           }
