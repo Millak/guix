@@ -55,16 +55,16 @@
 (define-public ocrad
   (package
     (name "ocrad")
-    (version "0.27")
+    (version "0.28")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/ocrad/ocrad-"
                                  version ".tar.lz"))
              (sha256
               (base32
-               "0divffvcaim89g4pvqs8kslbcxi475bcl3b4ynphf284k9zfdgx9"))))
+               "0bmzpcv7sjf8f5pvd9wwh9yp6s7zqd226876g5csmbdxdmbymk1l"))))
     (build-system gnu-build-system)
-    (native-inputs (list lzip))
+    (native-inputs (list libpng lzip))
     (home-page "https://www.gnu.org/software/ocrad/")
     (synopsis "Optical character recognition based on feature extraction")
     (description
