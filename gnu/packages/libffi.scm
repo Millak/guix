@@ -28,8 +28,10 @@
   #:use-module (gnu packages)
   #:use-module (guix licenses)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (gnu packages check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -77,6 +79,17 @@ conversions for values passed between the two languages.")
 
     ;; See <https://github.com/atgreen/libffi/blob/master/LICENSE>.
     (license expat)))
+
+;; Provide a variant without static trampolines as some packages
+;; (particularly GHC < 9) cannot handle them.  See
+;; <https://github.com/libffi/libffi/pull/647> for a discussion.
+(define-public libffi-sans-static-trampolines
+  (hidden-package
+   (package/inherit libffi
+     (arguments
+      (substitute-keyword-arguments (package-arguments libffi)
+        ((#:configure-flags flags #~'())
+         #~(append #$flags '("--disable-exec-static-tramp"))))))))
 
 (define-public python-cffi
   (package

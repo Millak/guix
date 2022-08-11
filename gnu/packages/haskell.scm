@@ -423,7 +423,11 @@ libraries are included in this package.")
     (inputs
      `(("gmp" ,gmp)
        ("ncurses" ,ncurses)
-       ("libffi" ,libffi)
+
+       ;; Use a LibFFI variant without static trampolines to work around
+       ;; <https://gitlab.haskell.org/ghc/ghc/-/issues/20051>.
+       ("libffi" ,libffi-sans-static-trampolines)
+
        ("ghc-testsuite"
         ,(origin
            (method url-fetch)
@@ -597,7 +601,11 @@ interactive environment for the functional language Haskell.")
     (inputs
      `(("gmp" ,gmp)
        ("ncurses" ,ncurses)
-       ("libffi" ,libffi)
+
+       ;; Use a LibFFI variant without static trampolines to work around
+       ;; <https://gitlab.haskell.org/ghc/ghc/-/issues/20051>.
+       ("libffi" ,libffi-sans-static-trampolines)
+
        ("ghc-testsuite"
         ,(origin
            (method url-fetch)
@@ -696,7 +704,9 @@ interactive environment for the functional language Haskell.")
        (sha256
         (base32 "1ch4j2asg7pr52ai1hwzykxyj553wndg7wq93i47ql4fllspf48i"))))
     (inputs
-     (list gmp ncurses libffi))
+     ;; Note: GHC < 9 requires LibFFI < 3.4, or a variant without static
+     ;; trampolines.
+     (list gmp ncurses libffi-sans-static-trampolines))
     (native-inputs
      `(("perl" ,perl)
        ("python" ,python)               ; for tests
