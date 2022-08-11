@@ -857,19 +857,21 @@ re-executing them as necessary.")
        ;; Make sure that canonical "coreutils" package is not referred.
        #:make-flags
        (list (string-append "CPPFLAGS=-DPATHDEF_CP=\\\""
-                            (assoc-ref %build-inputs "coreutils*")
-                            "/bin/cp\\\""))
+                            (search-input-file %build-inputs "bin/cp")
+                            "\\\""))
        ;; On some systems, 'libls.sh' may fail with an error such as:
        ;; "Failed to tell switch -a apart from -A".
        #:parallel-tests? #f))
-    (inputs `(("coreutils*" ,coreutils)
-              ("shadow" ,shadow)    ;for login (used in telnetd and rlogind)
-              ("ncurses" ,ncurses)
-              ("readline" ,readline)))        ;for 'ftp'
-    (native-inputs (if (member (%current-system)
-                               (package-supported-systems net-tools))
-                       `(("netstat" ,net-tools))  ;for tests
-                       '()))
+    (inputs
+     (list coreutils
+           shadow                     ;for login (used in telnetd and rlogind)
+           ncurses
+           readline))                   ;for 'ftp'
+    (native-inputs
+     (if (member (%current-system)
+                 (package-supported-systems net-tools))
+         (list net-tools)               ;for tests
+         '()))
     (home-page "https://www.gnu.org/software/inetutils/")
     (synopsis "Basic networking utilities")
     (description
