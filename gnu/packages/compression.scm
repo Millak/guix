@@ -1749,7 +1749,6 @@ Compression ratios of 2:1 to 3:1 are common for text files.")
   (package (inherit zip)
     (name "unzip")
     (version "6.0")
-    (replacement unzip/fixed)
     (source
      (origin
        (method url-fetch)
@@ -1795,7 +1794,9 @@ Compression ratios of 2:1 to 3:1 are common for text files.")
                                 "unzip-zipbomb-part3.patch"
 
                                 ;; https://github.com/madler/unzip/issues/2
-                                "unzip-32bit-zipbomb-fix.patch"))))
+                                "unzip-32bit-zipbomb-fix.patch"
+
+                                "unzip-CVE-2022-0529+CVE-2022-0530.patch"))))
     (build-system gnu-build-system)
     ;; no inputs; bzip2 is not supported, since not compiled with BZ_NO_STDIO
     (arguments
@@ -1839,15 +1840,6 @@ recreates the stored directory structure by default.")
     (properties `((lint-hidden-cve . ("CVE-2019-13232"))))
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
-
-(define unzip/fixed
-  (package (inherit unzip)
-    (source
-     (origin
-       (inherit (package-source unzip))
-       (patches (append
-                  (origin-patches (package-source unzip))
-                  (search-patches "unzip-CVE-2022-0529+CVE-2022-0530.patch")))))))
 
 (define-public ziptime
   (let ((commit "2a5bc9dfbf7c6a80e5f7cb4dd05b4036741478bc")
