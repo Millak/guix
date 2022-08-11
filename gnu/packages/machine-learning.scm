@@ -3191,21 +3191,21 @@ of Hidden Markov Models.")
               (setenv "LIBRARY_PATH"
                       (string-append
                        (search-input-directory
-                        inputs "/lib/python3.9/site-packages/torch/lib")
+                        inputs "/lib/python3.10/site-packages/torch/lib")
                        ":" (or (getenv "LIBRARY_PATH") "")))
               (setenv "CPLUS_INCLUDE_PATH"
                       (string-append
                        (search-input-directory
-                        inputs "lib/python3.9/site-packages/torch/include/torch/csrc/api/include/")
+                        inputs "lib/python3.10/site-packages/torch/include/torch/csrc/api/include/")
                        ":"
                        (search-input-directory
-                        inputs "lib/python3.9/site-packages/torch/include/")
+                        inputs "lib/python3.10/site-packages/torch/include/")
                        ":"
                        (or (getenv "CPLUS_INCLUDE_PATH") "")))
               (setenv "C_INCLUDE_PATH"
                       (string-append
                        (search-input-directory
-                        inputs "lib/python3.9/site-packages/torch/include/")
+                        inputs "lib/python3.10/site-packages/torch/include/")
                        ":"
                        (or (getenv "C_INCLUDE_PATH") "")))))
           (replace 'install

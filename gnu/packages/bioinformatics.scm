@@ -15846,7 +15846,7 @@ aligner.")
                ;; /tmp/guix-build-*.
                (with-directory-excursion
                    (string-append (assoc-ref outputs "out")
-                                  "/lib/python3.9/site-packages/scvelo/core/tests/")
+                                  "/lib/python3.10/site-packages/scvelo/core/tests/")
                  (invoke "pytest" "-v"))))))))
     (propagated-inputs
      (list python-anndata

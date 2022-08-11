@@ -421,11 +421,11 @@ data types.")
 ;; Current 2.x version.
 (define-public python-2 python-2.7)
 
-(define-public python-3.9
+(define-public python-3.10
   (package
     (inherit python-2)
     (name "python")
-    (version "3.9.13")
+    (version "3.10.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.python.org/ftp/python/"
@@ -435,11 +435,10 @@ data types.")
                         "python-3-deterministic-build-info.patch"
                         "python-3-fix-tests.patch"
                         "python-3-hurd-configure.patch"
-                        "python-3-search-paths.patch"
-                        "python-3-no-static-lib.patch"))
+                        "python-3-search-paths.patch"))
               (sha256
                (base32
-                "03q8lcb476a9n41nih9qvwf1fzfzjbvq6vj0cnmd458yixchqnqj"))
+                "0j6wvh2ad5jjq5n7sjmj1k66mh6lipabavchc3rb4vsinwaq9vbf"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -453,6 +452,8 @@ data types.")
                             (find-files "Lib/distutils/command" "\\.exe$"))))))
     (arguments
      (substitute-keyword-arguments (package-arguments python-2)
+       ((#:configure-flags flags)
+        `(append ,flags '("--without-static-libpython")))
        ((#:make-flags _)
         `(list (string-append
                 (format #f "TESTOPTS=-j~d" (parallel-job-count))
@@ -577,7 +578,7 @@ data types.")
             (files (list "share/zoneinfo")))))))
 
 ;; Current 3.x version.
-(define-public python-3 python-3.9)
+(define-public python-3 python-3.10)
 
 ;; Current major version.
 (define-public python python-3)

@@ -24542,7 +24542,7 @@ Visualizations are also available for most of these settings.")
                 (mkdir-p deps)
                 (symlink
                  (search-input-file
-                  inputs "/lib/python3.9/site-packages/torch/lib/libtorch.so")
+                  inputs "/lib/python3.10/site-packages/torch/lib/libtorch.so")
                  (string-append deps "/libtorch.so"))
                 (symlink
                  (search-input-file

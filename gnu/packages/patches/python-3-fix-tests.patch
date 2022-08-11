@@ -6,34 +6,12 @@ Subject: [PATCH] Skip problematic Python 3 tests in Guix.
 A subset of the hunks in this patch is tracked upstream at
 https://bugs.python.org/issue38845, which was contributed by Tanguy Le
 Carrour <tanguy@bioneland.org>.
----
- Lib/ctypes/test/test_callbacks.py         | 3 +++
- Lib/ctypes/test/test_find.py              | 1 +
- Lib/ctypes/test/test_libc.py              | 3 +++
- Lib/distutils/tests/test_archive_util.py  | 2 ++
- Lib/distutils/tests/test_sdist.py         | 1 +
- Lib/test/_test_multiprocessing.py         | 2 ++
- Lib/test/test_asyncio/test_base_events.py | 2 ++
- Lib/test/test_generators.py               | 1 +
- Lib/test/test_pathlib.py                  | 3 +--
- Lib/test/test_pdb.py                      | 4 ++--
- Lib/test/test_regrtest.py                 | 2 ++
- Lib/test/test_resource.py                 | 1 +
- Lib/test/test_shutil.py                   | 2 ++
- Lib/test/test_signal.py                   | 4 ++++
- Lib/test/test_socket.py                   | 8 ++++++++
- Lib/test/test_spwd.py                     | 6 ++----
- Lib/test/test_tarfile.py                  | 9 ++++++---
- Lib/test/test_threading.py                | 3 +++
- Lib/test/test_unicodedata.py              | 1 +
- Tools/scripts/run_tests.py                | 2 +-
- 20 files changed, 48 insertions(+), 12 deletions(-)
 
 diff --git a/Lib/ctypes/test/test_callbacks.py b/Lib/ctypes/test/test_callbacks.py
 index d8e9c5a760..94fc5929c9 100644
 --- a/Lib/ctypes/test/test_callbacks.py
 +++ b/Lib/ctypes/test/test_callbacks.py
-@@ -5,6 +5,7 @@ from test import support
+@@ -5,6 +5,7 @@
  from ctypes import *
  from ctypes.test import need_symbol
  import _ctypes_test
@@ -41,7 +19,7 @@ index d8e9c5a760..94fc5929c9 100644
  
  class Callbacks(unittest.TestCase):
      functype = CFUNCTYPE
-@@ -178,6 +179,8 @@ class SampleCallbacksTestCase(unittest.TestCase):
+@@ -178,6 +179,8 @@ def func(x):
  
          self.assertLess(diff, 0.01, "%s not less than 0.01" % diff)
  
@@ -51,10 +29,10 @@ index d8e9c5a760..94fc5929c9 100644
          from ctypes.util import find_library
          libc_path = find_library("c")
 diff --git a/Lib/ctypes/test/test_find.py b/Lib/ctypes/test/test_find.py
-index 92ac1840ad..c8eb75dedd 100644
+index 1ff9d019b1..5194954914 100644
 --- a/Lib/ctypes/test/test_find.py
 +++ b/Lib/ctypes/test/test_find.py
-@@ -116,6 +116,7 @@ class FindLibraryLinux(unittest.TestCase):
+@@ -117,6 +117,7 @@ def test_find_library_with_gcc(self):
          with unittest.mock.patch("ctypes.util._findSoname_ldconfig", lambda *args: None):
              self.assertNotEqual(find_library('c'), None)
  
@@ -66,7 +44,7 @@ diff --git a/Lib/ctypes/test/test_libc.py b/Lib/ctypes/test/test_libc.py
 index 56285b5ff8..c088ab3db8 100644
 --- a/Lib/ctypes/test/test_libc.py
 +++ b/Lib/ctypes/test/test_libc.py
-@@ -2,6 +2,7 @@ import unittest
+@@ -2,6 +2,7 @@
  
  from ctypes import *
  import _ctypes_test
@@ -74,7 +52,7 @@ index 56285b5ff8..c088ab3db8 100644
  
  lib = CDLL(_ctypes_test.__file__)
  
-@@ -17,6 +18,8 @@ class LibTest(unittest.TestCase):
+@@ -17,6 +18,8 @@ def test_sqrt(self):
          import math
          self.assertEqual(lib.my_sqrt(2.0), math.sqrt(2.0))
  
@@ -84,10 +62,10 @@ index 56285b5ff8..c088ab3db8 100644
          comparefunc = CFUNCTYPE(c_int, POINTER(c_char), POINTER(c_char))
          lib.my_qsort.argtypes = c_void_p, c_size_t, c_size_t, comparefunc
 diff --git a/Lib/distutils/tests/test_archive_util.py b/Lib/distutils/tests/test_archive_util.py
-index e9aad0e40f..8bbaa51ee5 100644
+index edcec2513e..a716150763 100644
 --- a/Lib/distutils/tests/test_archive_util.py
 +++ b/Lib/distutils/tests/test_archive_util.py
-@@ -333,6 +333,7 @@ class ArchiveUtilTestCase(support.TempdirManager,
+@@ -335,6 +335,7 @@ def test_make_archive_xztar(self):
          self.assertEqual(os.path.basename(res), 'archive.tar.xz')
          self.assertEqual(self._tarinfo(res), self._created_files)
  
@@ -95,7 +73,7 @@ index e9aad0e40f..8bbaa51ee5 100644
      def test_make_archive_owner_group(self):
          # testing make_archive with owner and group, with various combinations
          # this works even if there's not gid/uid support
-@@ -362,6 +363,7 @@ class ArchiveUtilTestCase(support.TempdirManager,
+@@ -364,6 +365,7 @@ def test_make_archive_owner_group(self):
  
      @unittest.skipUnless(ZLIB_SUPPORT, "Requires zlib")
      @unittest.skipUnless(UID_GID_SUPPORT, "Requires grp and pwd support")
@@ -104,10 +82,10 @@ index e9aad0e40f..8bbaa51ee5 100644
          tmpdir =  self._create_files()
          base_name = os.path.join(self.mkdtemp(), 'archive')
 diff --git a/Lib/distutils/tests/test_sdist.py b/Lib/distutils/tests/test_sdist.py
-index 23db126959..6e2329df7d 100644
+index 752e9db5ba..c66b6323e4 100644
 --- a/Lib/distutils/tests/test_sdist.py
 +++ b/Lib/distutils/tests/test_sdist.py
-@@ -443,6 +443,7 @@ class SDistTestCase(BasePyPIRCCommandTestCase):
+@@ -444,6 +444,7 @@ def test_manual_manifest(self):
                       "The tar command is not found")
      @unittest.skipIf(find_executable('gzip') is None,
                       "The gzip command is not found")
@@ -116,10 +94,10 @@ index 23db126959..6e2329df7d 100644
          # now building a sdist
          dist, cmd = self.get_cmd()
 diff --git a/Lib/test/_test_multiprocessing.py b/Lib/test/_test_multiprocessing.py
-index e47905c863..31a5a9c308 100644
+index 8dced90c53..59947e3023 100644
 --- a/Lib/test/_test_multiprocessing.py
 +++ b/Lib/test/_test_multiprocessing.py
-@@ -1577,6 +1577,7 @@ class _TestCondition(BaseTestCase):
+@@ -1589,6 +1589,7 @@ def _test_wait_result(cls, c, pid):
          if pid is not None:
              os.kill(pid, signal.SIGINT)
  
@@ -127,7 +105,7 @@ index e47905c863..31a5a9c308 100644
      def test_wait_result(self):
          if isinstance(self, ProcessesMixin) and sys.platform != 'win32':
              pid = os.getpid()
-@@ -3905,6 +3906,7 @@ class _TestSharedMemory(BaseTestCase):
+@@ -4008,6 +4009,7 @@ def test_shared_memory_across_processes(self):
          sms.close()
  
      @unittest.skipIf(os.name != "posix", "not feasible in non-posix platforms")
@@ -136,10 +114,10 @@ index e47905c863..31a5a9c308 100644
          # bpo-36368: protect SharedMemoryManager server process from
          # KeyboardInterrupt signals.
 diff --git a/Lib/test/test_asyncio/test_base_events.py b/Lib/test/test_asyncio/test_base_events.py
-index 533d5cc7f5..c4f860cc3b 100644
+index d77bf95a7b..79912c8230 100644
 --- a/Lib/test/test_asyncio/test_base_events.py
 +++ b/Lib/test/test_asyncio/test_base_events.py
-@@ -1341,6 +1341,8 @@ class BaseEventLoopWithSelectorTests(test_utils.TestCase):
+@@ -1359,6 +1359,8 @@ def test_create_connection_no_inet_pton(self, m_socket):
          self._test_create_connection_ip_addr(m_socket, False)
  
      @patch_socket
@@ -149,10 +127,10 @@ index 533d5cc7f5..c4f860cc3b 100644
          m_socket.getaddrinfo = socket.getaddrinfo
          sock = m_socket.socket.return_value
 diff --git a/Lib/test/test_generators.py b/Lib/test/test_generators.py
-index 3bf1522808..04bac8a7db 100644
+index 3bf5f3b743..23368c8d8b 100644
 --- a/Lib/test/test_generators.py
 +++ b/Lib/test/test_generators.py
-@@ -33,6 +33,7 @@ class SignalAndYieldFromTest(unittest.TestCase):
+@@ -33,6 +33,7 @@ def generator2(self):
          else:
              return "FAILED"
  
@@ -161,42 +139,40 @@ index 3bf1522808..04bac8a7db 100644
          gen = self.generator1()
          gen.send(None)
 diff --git a/Lib/test/test_pathlib.py b/Lib/test/test_pathlib.py
-index 3da35710b9..5404f9193d 100644
+index bf3fc5fb24..21015403f3 100644
 --- a/Lib/test/test_pathlib.py
 +++ b/Lib/test/test_pathlib.py
-@@ -2408,8 +2408,7 @@ class PosixPathTest(_BasePathTest, unittest.TestCase):
-         self.assertEqual(given, expect)
-         self.assertEqual(set(p.rglob("FILEd*")), set())
- 
--    @unittest.skipUnless(hasattr(pwd, 'getpwall'),
--                         'pwd module does not expose getpwall()')
+@@ -2546,6 +2546,7 @@ def test_rglob(self):
+                          'pwd module does not expose getpwall()')
+     @unittest.skipIf(sys.platform == "vxworks",
+                      "no home directory on VxWorks")
 +    @unittest.skipIf(True, "Guix builder home is '/' which causes trouble for these tests")
      def test_expanduser(self):
          P = self.cls
-         support.import_module('pwd')
+         import_helper.import_module('pwd')
 diff --git a/Lib/test/test_pdb.py b/Lib/test/test_pdb.py
-index 8016f81e5a..10190486b4 100644
+index 6ac1a4a3c3..4f58cf9b40 100644
 --- a/Lib/test/test_pdb.py
 +++ b/Lib/test/test_pdb.py
-@@ -1219,11 +1219,11 @@ def test_pdb_issue_20766():
+@@ -1315,11 +1315,11 @@ def test_pdb_issue_20766():
      > <doctest test.test_pdb.test_pdb_issue_20766[0]>(6)test_function()
      -> print('pdb %d: %s' % (i, sess._previous_sigint_handler))
      (Pdb) continue
 -    pdb 1: <built-in function default_int_handler>
 +    pdb 1: Handlers.SIG_IGN
-     > <doctest test.test_pdb.test_pdb_issue_20766[0]>(5)test_function()
-     -> sess.set_trace(sys._getframe())
+     > <doctest test.test_pdb.test_pdb_issue_20766[0]>(6)test_function()
+     -> print('pdb %d: %s' % (i, sess._previous_sigint_handler))
      (Pdb) continue
 -    pdb 2: <built-in function default_int_handler>
 +    pdb 2: Handlers.SIG_IGN
      """
  
- 
+ def test_pdb_issue_43318():
 diff --git a/Lib/test/test_regrtest.py b/Lib/test/test_regrtest.py
-index a77638b10a..2069b349a8 100644
+index 62e6c28280..7ffee56635 100644
 --- a/Lib/test/test_regrtest.py
 +++ b/Lib/test/test_regrtest.py
-@@ -811,6 +811,7 @@ class ArgsTestCase(BaseTestCase):
+@@ -810,6 +810,7 @@ def test_fromfile(self):
          output = self.run_tests('--fromfile', filename)
          self.check_executed_tests(output, tests)
  
@@ -204,7 +180,7 @@ index a77638b10a..2069b349a8 100644
      def test_interrupted(self):
          code = TEST_INTERRUPTED
          test = self.create_test('sigint', code=code)
-@@ -828,6 +829,7 @@ class ArgsTestCase(BaseTestCase):
+@@ -827,6 +828,7 @@ def test_slowest(self):
                   % (self.TESTNAME_REGEX, len(tests)))
          self.check_line(output, regex)
  
@@ -213,10 +189,10 @@ index a77638b10a..2069b349a8 100644
          # Issue #25373: test --slowest with an interrupted test
          code = TEST_INTERRUPTED
 diff --git a/Lib/test/test_resource.py b/Lib/test/test_resource.py
-index e5ece5284c..5299e54507 100644
+index f2642c6ba1..4358a20dae 100644
 --- a/Lib/test/test_resource.py
 +++ b/Lib/test/test_resource.py
-@@ -148,6 +148,7 @@ class ResourceTest(unittest.TestCase):
+@@ -150,6 +150,7 @@ def test_freebsd_contants(self):
  
      @unittest.skipUnless(hasattr(resource, 'prlimit'), 'no prlimit')
      @support.requires_linux_version(2, 6, 36)
@@ -225,10 +201,10 @@ index e5ece5284c..5299e54507 100644
          self.assertRaises(TypeError, resource.prlimit)
          self.assertRaises(ProcessLookupError, resource.prlimit,
 diff --git a/Lib/test/test_shutil.py b/Lib/test/test_shutil.py
-index e19af64be0..1b893df6fa 100644
+index 62e9180375..3eda176fa3 100644
 --- a/Lib/test/test_shutil.py
 +++ b/Lib/test/test_shutil.py
-@@ -1427,6 +1427,7 @@ class TestArchives(BaseTest, unittest.TestCase):
+@@ -1497,6 +1497,7 @@ def test_make_archive(self):
          base_name = os.path.join(tmpdir, 'archive')
          self.assertRaises(ValueError, make_archive, base_name, 'xxx')
  
@@ -236,7 +212,7 @@ index e19af64be0..1b893df6fa 100644
      @support.requires_zlib()
      def test_make_archive_owner_group(self):
          # testing make_archive with owner and group, with various combinations
-@@ -1455,6 +1456,7 @@ class TestArchives(BaseTest, unittest.TestCase):
+@@ -1525,6 +1526,7 @@ def test_make_archive_owner_group(self):
          self.assertTrue(os.path.isfile(res))
  
  
@@ -245,10 +221,10 @@ index e19af64be0..1b893df6fa 100644
      @unittest.skipUnless(UID_GID_SUPPORT, "Requires grp and pwd support")
      def test_tarfile_root_owner(self):
 diff --git a/Lib/test/test_signal.py b/Lib/test/test_signal.py
-index 45553a6a42..55623f01a3 100644
+index c2b5861fc3..3c7a9c42cb 100644
 --- a/Lib/test/test_signal.py
 +++ b/Lib/test/test_signal.py
-@@ -78,6 +78,7 @@ class PosixTests(unittest.TestCase):
+@@ -89,6 +89,7 @@ def test_valid_signals(self):
          self.assertLess(len(s), signal.NSIG)
  
      @unittest.skipUnless(sys.executable, "sys.executable required.")
@@ -256,7 +232,7 @@ index 45553a6a42..55623f01a3 100644
      def test_keyboard_interrupt_exit_code(self):
          """KeyboardInterrupt triggers exit via SIGINT."""
          process = subprocess.run(
-@@ -128,6 +129,7 @@ class WindowsSignalTests(unittest.TestCase):
+@@ -139,6 +140,7 @@ def test_issue9324(self):
              signal.signal(7, handler)
  
      @unittest.skipUnless(sys.executable, "sys.executable required.")
@@ -264,7 +240,7 @@ index 45553a6a42..55623f01a3 100644
      def test_keyboard_interrupt_exit_code(self):
          """KeyboardInterrupt triggers an exit using STATUS_CONTROL_C_EXIT."""
          # We don't test via os.kill(os.getpid(), signal.CTRL_C_EVENT) here
-@@ -1245,6 +1247,7 @@ class StressTest(unittest.TestCase):
+@@ -1322,6 +1324,7 @@ def cycle_handlers():
  
  class RaiseSignalTest(unittest.TestCase):
  
@@ -272,7 +248,7 @@ index 45553a6a42..55623f01a3 100644
      def test_sigint(self):
          with self.assertRaises(KeyboardInterrupt):
              signal.raise_signal(signal.SIGINT)
-@@ -1275,6 +1278,7 @@ class RaiseSignalTest(unittest.TestCase):
+@@ -1352,6 +1355,7 @@ def handler(a, b):
  
  class PidfdSignalTest(unittest.TestCase):
  
@@ -281,10 +257,10 @@ index 45553a6a42..55623f01a3 100644
          hasattr(signal, "pidfd_send_signal"),
          "pidfd support not built in",
 diff --git a/Lib/test/test_socket.py b/Lib/test/test_socket.py
-index aefba4f397..6c89f558d5 100755
+index 9c5f6d3dc9..ef74fc5694 100644
 --- a/Lib/test/test_socket.py
 +++ b/Lib/test/test_socket.py
-@@ -1009,6 +1009,8 @@ class GeneralModuleTests(unittest.TestCase):
+@@ -1006,6 +1006,8 @@ def testHostnameRes(self):
          if not fqhn in all_host_names:
              self.fail("Error testing host resolution mechanisms. (fqdn: %s, all: %s)" % (fqhn, repr(all_host_names)))
  
@@ -293,16 +269,16 @@ index aefba4f397..6c89f558d5 100755
      def test_host_resolution(self):
          for addr in [socket_helper.HOSTv4, '10.0.0.1', '255.255.255.255']:
              self.assertEqual(socket.gethostbyname(addr), addr)
-@@ -1140,6 +1142,8 @@ class GeneralModuleTests(unittest.TestCase):
-             self.assertWarns(DeprecationWarning, socket.ntohs, k)
-             self.assertWarns(DeprecationWarning, socket.htons, k)
+@@ -1136,6 +1138,8 @@ def testNtoHErrors(self):
+             self.assertRaises(OverflowError, socket.ntohl, k)
+             self.assertRaises(OverflowError, socket.htonl, k)
  
 +    @unittest.skipUnless(os.path.exists("/etc/services"),
 +                         "getservbyname uses /etc/services, which is not in the chroot")
      def testGetServBy(self):
          eq = self.assertEqual
          # Find one service that exists, then check all the related interfaces.
-@@ -1489,6 +1493,8 @@ class GeneralModuleTests(unittest.TestCase):
+@@ -1485,6 +1489,8 @@ def test_sio_loopback_fast_path(self):
              raise
          self.assertRaises(TypeError, s.ioctl, socket.SIO_LOOPBACK_FAST_PATH, None)
  
@@ -311,7 +287,7 @@ index aefba4f397..6c89f558d5 100755
      def testGetaddrinfo(self):
          try:
              socket.getaddrinfo('localhost', 80)
-@@ -1571,6 +1577,8 @@ class GeneralModuleTests(unittest.TestCase):
+@@ -1567,6 +1573,8 @@ def test_getnameinfo(self):
          # only IP addresses are allowed
          self.assertRaises(OSError, socket.getnameinfo, ('mail.python.org',0), 0)
  
@@ -321,11 +297,11 @@ index aefba4f397..6c89f558d5 100755
                           'network is not enabled')
      def test_idna(self):
 diff --git a/Lib/test/test_spwd.py b/Lib/test/test_spwd.py
-index 07793c84c8..fec672bcbe 100644
+index a143acc659..f7207887c0 100644
 --- a/Lib/test/test_spwd.py
 +++ b/Lib/test/test_spwd.py
-@@ -5,8 +5,7 @@ from test import support
- spwd = support.import_module('spwd')
+@@ -6,8 +6,7 @@
+ spwd = import_helper.import_module('spwd')
  
  
 -@unittest.skipUnless(hasattr(os, 'geteuid') and os.geteuid() == 0,
@@ -334,7 +310,7 @@ index 07793c84c8..fec672bcbe 100644
  class TestSpwdRoot(unittest.TestCase):
  
      def test_getspall(self):
-@@ -56,8 +55,7 @@ class TestSpwdRoot(unittest.TestCase):
+@@ -57,8 +56,7 @@ def test_getspnam(self):
              self.assertRaises(TypeError, spwd.getspnam, bytes_name)
  
  
@@ -345,10 +321,10 @@ index 07793c84c8..fec672bcbe 100644
  
      def test_getspnam_exception(self):
 diff --git a/Lib/test/test_tarfile.py b/Lib/test/test_tarfile.py
-index 29cde91bf7..8d0f20e8bf 100644
+index c658cca7a7..b7188e411e 100644
 --- a/Lib/test/test_tarfile.py
 +++ b/Lib/test/test_tarfile.py
-@@ -2607,9 +2607,12 @@ def root_is_uid_gid_0():
+@@ -2737,9 +2737,12 @@ def root_is_uid_gid_0():
          import pwd, grp
      except ImportError:
          return False
@@ -365,18 +341,18 @@ index 29cde91bf7..8d0f20e8bf 100644
      return True
  
 diff --git a/Lib/test/test_threading.py b/Lib/test/test_threading.py
-index c21cdf8eb7..6c9d575032 100644
+index c54806e594..d9bbca4e6a 100644
 --- a/Lib/test/test_threading.py
 +++ b/Lib/test/test_threading.py
-@@ -1398,6 +1398,7 @@ class MiscTestCase(unittest.TestCase):
+@@ -1620,6 +1620,7 @@ def check_interrupt_main_noerror(self, signum):
+             # Restore original handler
+             signal.signal(signum, handler)
  
- 
- class InterruptMainTests(unittest.TestCase):
 +    @unittest.skipIf(True, 'Keyboard interrupts do not work in the Guix build container.')
      def test_interrupt_main_subthread(self):
          # Calling start_new_thread with a function that executes interrupt_main
          # should raise KeyboardInterrupt upon completion.
-@@ -1409,6 +1410,8 @@ class InterruptMainTests(unittest.TestCase):
+@@ -1631,6 +1632,8 @@ def call_interrupt():
              t.join()
          t.join()
  
@@ -386,10 +362,10 @@ index c21cdf8eb7..6c9d575032 100644
          # Make sure that if interrupt_main is called in main thread that
          # KeyboardInterrupt is raised instantly.
 diff --git a/Lib/test/test_unicodedata.py b/Lib/test/test_unicodedata.py
-index b552d2bd17..28b1144e15 100644
+index 213b3cf252..a5edd4a119 100644
 --- a/Lib/test/test_unicodedata.py
 +++ b/Lib/test/test_unicodedata.py
-@@ -309,6 +309,7 @@ class UnicodeMiscTest(UnicodeDatabaseTest):
+@@ -315,6 +315,7 @@ def test_linebreak_7643(self):
                  self.assertEqual(len(lines), 1,
                                   r"\u%.4x should not be a linebreak" % i)
  
@@ -398,10 +374,10 @@ index b552d2bd17..28b1144e15 100644
      @staticmethod
      def check_version(testfile):
 diff --git a/Tools/scripts/run_tests.py b/Tools/scripts/run_tests.py
-index bcfa5e943b..1f2484971b 100644
+index 48feb3f778..e82cafc88a 100644
 --- a/Tools/scripts/run_tests.py
 +++ b/Tools/scripts/run_tests.py
-@@ -41,7 +41,7 @@ def main(regrtest_args):
+@@ -40,7 +40,7 @@ def main(regrtest_args):
      if not any(is_multiprocess_flag(arg) for arg in regrtest_args):
          args.extend(['-j', '0'])  # Use all CPU cores
      if not any(is_resource_use_flag(arg) for arg in regrtest_args):
@@ -410,6 +386,3 @@ index bcfa5e943b..1f2484971b 100644
      args.extend(regrtest_args)
      print(' '.join(args))
      if sys.platform == 'win32':
--- 
-2.29.2
-
