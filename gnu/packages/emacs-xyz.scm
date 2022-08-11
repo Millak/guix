@@ -13741,6 +13741,31 @@ provides functions to convert hash tables from and to alists and plists.")
 you to deal with multiple log levels.")
     (license license:gpl3+)))
 
+(define-public emacs-denote
+  (package
+    (name "emacs-denote")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~protesilaos/denote")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00f50dhw0x1hn87rc6vkrdwpybnbphg5z0g2c6c4r4cbgaiia8bi"))))
+    (build-system emacs-build-system)
+    (native-inputs (list texinfo))
+    (home-page "https://protesilaos.com/emacs/denote/")
+    (synopsis "Simple notes for Emacs")
+    (description
+"Denote is a simple note-taking tool for Emacs.  It is based on the idea that
+notes should follow a predictable and descriptive file-naming scheme.  The
+file name must offer a clear indication of what the note is about, without
+reference to any other metadata.  Denote basically streamlines the creation of
+such files while providing facilities to link between them.")
+    (license license:gpl3+)))
+
 (define-public emacs-logos
   (package
     (name "emacs-logos")
