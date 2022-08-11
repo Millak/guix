@@ -6137,14 +6137,14 @@ invocations of itself.")
 (define-public ntfs-3g
   (package
     (name "ntfs-3g")
-    (version "2021.8.22")
+    (version "2022.5.17")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://tuxera.com/opensource/"
                                   "ntfs-3g_ntfsprogs-" version ".tgz"))
               (sha256
                (base32
-                "1yrf42xr92qv3pads8lzp5nyssz6875ncfgg8v3jwjyr0nm87f2m"))
+                "14zbsl7m32f796dkr334zbkj5rba7xa8smxb2ysf3095jyvgp284"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Install under $prefix.
