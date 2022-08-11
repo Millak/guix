@@ -39,12 +39,12 @@
   (package
     (name "libtirpc")
     (version "1.3.1")
-    (replacement libtirpc/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/libtirpc/libtirpc/"
                                   version "/libtirpc-"
                                   version ".tar.bz2"))
+              (patches (search-patches "libtirpc-CVE-2021-46828.patch"))
               (sha256
                (base32
                 "05zf16ilwwkzv4cccaac32nssrj3rg444n9pskiwbgk6y359an14"))))
@@ -85,13 +85,6 @@ IPv4 and IPv6.  ONC RPC is notably used by the network file system (NFS).")
         `(list (string-append "ac_cv_prog_KRB5_CONFIG="
                               (assoc-ref %build-inputs "mit-krb5")
                               "/bin/krb5-config")))))))
-
-(define libtirpc/fixed
-  (package
-    (inherit libtirpc)
-    (source (origin
-              (inherit (package-source libtirpc))
-              (patches (search-patches "libtirpc-CVE-2021-46828.patch"))))))
 
 (define-public rpcbind
   (package
