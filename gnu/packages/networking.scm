@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2020, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -260,10 +260,7 @@ protocols.")
                                             (cc-for-target))
                             (string-append "PREFIX="
                                            (assoc-ref %outputs "out"))))
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "make" "test"))))))
+       #:test-target "test"))
     (home-page "https://librecast.net/lcrq.html")
     (synopsis "librecast RaptorQ library")
     (description
