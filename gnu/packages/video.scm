@@ -364,14 +364,9 @@ efficiency.")
         (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
                        (assoc-ref %outputs "out") "/lib"))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list pkg-config python-wrapper))
     (inputs
-     `(("libdrm" ,libdrm)
-       ("libva" ,libva)
-       ("pciaccess" ,libpciaccess)
-       ("wayland" ,wayland)
-       ("x11" ,libx11)))
+     (list libdrm libva libpciaccess wayland libx11))
     (synopsis "Intel Media SDK")
     (description "MediaSDK provides a plain C API to access hardware-accelerated
 video decode, encode and filtering on Intel's Gen graphics hardware platforms.")
