@@ -339,7 +339,7 @@ efficiency.")
 (define-public mediasdk
   (package
     (name "mediasdk")
-    (version "20.1.1")
+    (version "22.4.4")
     (source
      (origin
        (method git-fetch)
@@ -349,7 +349,7 @@ efficiency.")
          (commit (string-append "intel-" name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0blwcxr5j8762nylx2cxrq0h53bpgnk859dbs6crq4wr9fcxlx9z"))))
+        (base32 "18mrqringyv1drswm4m8ppw7sks6x4jzp6s0ag0h9hrpd15kn5rx"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
