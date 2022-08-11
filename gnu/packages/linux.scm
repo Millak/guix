@@ -6183,6 +6183,9 @@ invocations of itself.")
      "NTFS-3G provides read-write access to NTFS file systems, which are
 commonly found on Microsoft Windows.  It is implemented as a FUSE file system.
 The package provides additional NTFS tools.")
+    (properties
+     '((release-monitoring-url . "https://github.com/tuxera/ntfs-3g/releases")
+       (upstream-name . "ntfs-3g_ntfsprogs")))
     (license license:gpl2+)))
 
 (define-public ntfs-3g/static
