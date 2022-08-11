@@ -14558,6 +14558,33 @@ while other are highly specific for the special data format used for
 @dfn{quantitative language comparison} (QLC).")
     (license license:gpl3)))
 
+(define-public r-qmri
+  (package
+    (name "r-qmri")
+    (version "1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "qMRI" version))
+              (sha256
+               (base32
+                "10x59g8awxjib5j5mc1yd5wsibk3z6ki6zifxsg8azl0zblxbscf"))))
+    (properties `((upstream-name . "qMRI")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-adimpro r-aws r-awsmethods r-oro-nifti
+                             r-stringr))
+    (native-inputs (list gfortran r-knitr))
+    (home-page "http://www.wias-berlin.de/research/ats/imaging/")
+    (synopsis "Methods for quantitative magnetic resonance imaging (qMRI)")
+    (description
+     "This package provides implementation of methods for estimation of
+quantitative maps from @dfn{Multi-Parameter Mapping} (MPM) acquisitions
+including adaptive smoothing methods in the framework of the ESTATICS model.
+The smoothing method is described in Mohammadi et
+al. (2017). <doi:10.20347/WIAS.PREPRINT.2432>.  Usage of the package is also
+described in Polzehl and Tabelow (2019), Magnetic Resonance Brain Imaging,
+Chapter 6, Springer, Use R! Series. <doi:10.1007/978-3-030-29184-6_6>.")
+    (license license:gpl2+)))
+
 (define-public r-ddrtree
   (package
     (name "r-ddrtree")
