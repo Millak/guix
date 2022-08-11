@@ -14063,6 +14063,31 @@ Anderson-Darling Distribution\".")
     ;; Any version of the GPL.
     (license license:gpl3+)))
 
+(define-public r-adimpro
+  (package
+    (name "r-adimpro")
+    (version "0.9.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "adimpro" version))
+              (sha256
+               (base32
+                "0njw38vcdm02sni193nj10mpv7hiklpamrkjlz5bnhjxx9mvf4cl"))))
+    (properties `((upstream-name . "adimpro")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-awsmethods
+           imagemagick))
+    (native-inputs (list gfortran))
+    (home-page "https://www.wias-berlin.de/software/imaging/")
+    (synopsis "Adaptive smoothing of digital images")
+    (description
+     "This package implements tools for manipulation of digital images and the
+Propagation Separation approach by Polzehl and Spokoiny (2006)
+<DOI:10.1007/s00440-005-0464-1> for smoothing digital images, see Polzehl and
+Tabelow (2007) <DOI:10.18637/jss.v019.i01>.")
+    (license license:gpl2+)))
+
 (define-public r-admisc
   (package
     (name "r-admisc")
