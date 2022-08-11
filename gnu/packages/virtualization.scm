@@ -1311,49 +1311,49 @@ pretty simple, REST API.")
                 "destdir = '/tmp'"))))
          (add-before 'configure 'disable-broken-tests
            (lambda _
-             (let ((tests (list "commandtest"           ; hangs idly
-                                "qemuxml2argvtest"      ; fails
-                                "virnetsockettest")))   ; tries to network
+             (let ((tests (list "commandtest"         ; hangs idly
+                                "qemuxml2argvtest"    ; fails
+                                "virnetsockettest"))) ; tries to network
                (substitute* "tests/meson.build"
                  (((format #f ".*'name': '(~a)'.*" (string-join tests "|")))
                   ""))))))))
     (inputs
-     `(("acl" ,acl)
-       ("attr" ,attr)
-       ("fuse" ,fuse)
-       ("libxml2" ,libxml2)
-       ("eudev" ,eudev)
-       ("libpciaccess" ,libpciaccess)
-       ("gnutls" ,gnutls)
-       ("dbus" ,dbus)
-       ("libpcap" ,libpcap)
-       ("libnl" ,libnl)
-       ("libssh2" ,libssh2)             ;optional
-       ("libtirpc" ,libtirpc)           ;for <rpc/rpc.h>
-       ("libuuid" ,util-linux "lib")
-       ("lvm2" ,lvm2)                   ;for libdevmapper
-       ("curl" ,curl)
-       ("openssl" ,openssl)
-       ("readline" ,readline)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("libyajl" ,libyajl)
-       ("audit" ,audit)
-       ("dmidecode" ,dmidecode)
-       ("dnsmasq" ,dnsmasq)
-       ("ebtables" ,ebtables)
-       ("parted" ,parted)
-       ("iproute" ,iproute)
-       ("iptables" ,iptables)))
+     (list acl
+           attr
+           fuse
+           libxml2
+           eudev
+           libpciaccess
+           gnutls
+           dbus
+           libpcap
+           libnl
+           libssh2                      ;optional
+           libtirpc                     ;for <rpc/rpc.h>
+           `(,util-linux "lib")
+           lvm2                         ;for libdevmapper
+           curl
+           openssl
+           readline
+           cyrus-sasl
+           libyajl
+           audit
+           dmidecode
+           dnsmasq
+           ebtables
+           parted
+           iproute
+           iptables))
     (native-inputs
-     `(("bash-completion" ,bash-completion)
-       ("gettext" ,gettext-minimal)
-       ("xsltproc" ,libxslt)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("polkit" ,polkit)
-       ("python" ,python-wrapper)
-       ("python-docutils" ,python-docutils) ;for rst2html
-       ("rpcsvc-proto" ,rpcsvc-proto)))     ;for rpcgen
+     (list bash-completion
+           gettext-minimal
+           libxslt
+           perl
+           pkg-config
+           polkit
+           python-wrapper
+           python-docutils              ;for rst2html
+           rpcsvc-proto))               ;for rpcgen
     (home-page "https://libvirt.org")
     (synopsis "Simple API for virtualization")
     (description "Libvirt is a C toolkit to interact with the virtualization
