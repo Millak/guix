@@ -1284,39 +1284,41 @@ pretty simple, REST API.")
        (patches (search-patches "libvirt-add-install-prefix.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-Ddriver_qemu=enabled"
-             "-Dqemu_user=nobody"
-             "-Dqemu_group=kvm"
-             "-Dstorage_disk=enabled"
-             "-Dstorage_dir=enabled"
-             "-Dpolkit=enabled"
-             ;; XXX The default, but required to make -Dsasl ‘stick’.
-             ;; See <https://gitlab.com/libvirt/libvirt/-/issues/185>
-             "-Ddriver_remote=enabled"
-             "-Dnls=enabled"            ;translations
-             (string-append "-Ddocdir=" (assoc-ref %outputs "out") "/share/doc/"
-                            ,name "-" ,version)
-             "-Dbash_completion=enabled"
-             (string-append "-Dinstall_prefix=" (assoc-ref %outputs "out"))
-             "--sysconfdir=/etc"
-             "--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-directory-confusion
-           (lambda _
-             ;; Don't try to install an (unused) /var outside of the store.
-             (substitute* "scripts/meson-install-dirs.py"
-               (("destdir = .*")
-                "destdir = '/tmp'"))))
-         (add-before 'configure 'disable-broken-tests
-           (lambda _
-             (let ((tests (list "commandtest"         ; hangs idly
-                                "qemuxml2argvtest"    ; fails
-                                "virnetsockettest"))) ; tries to network
-               (substitute* "tests/meson.build"
-                 (((format #f ".*'name': '(~a)'.*" (string-join tests "|")))
-                  ""))))))))
+     (list
+      #:configure-flags
+      #~(list "-Ddriver_qemu=enabled"
+              "-Dqemu_user=nobody"
+              "-Dqemu_group=kvm"
+              "-Dstorage_disk=enabled"
+              "-Dstorage_dir=enabled"
+              "-Dpolkit=enabled"
+              ;; XXX The default, but required to make -Dsasl ‘stick’.
+              ;; See <https://gitlab.com/libvirt/libvirt/-/issues/185>
+              "-Ddriver_remote=enabled"
+              "-Dnls=enabled"           ;translations
+              (string-append "-Ddocdir=" #$output "/share/doc/"
+                             #$(package-name this-package) "-"
+                             #$(package-version this-package))
+              "-Dbash_completion=enabled"
+              (string-append "-Dinstall_prefix=" #$output)
+              "--sysconfdir=/etc"
+              "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-directory-confusion
+            (lambda _
+              ;; Don't try to install an (unused) /var outside of the store.
+              (substitute* "scripts/meson-install-dirs.py"
+                (("destdir = .*")
+                 "destdir = '/tmp'"))))
+          (add-before 'configure 'disable-broken-tests
+            (lambda _
+              (let ((tests (list "commandtest"         ; hangs idly
+                                 "qemuxml2argvtest"    ; fails
+                                 "virnetsockettest"))) ; tries to network
+                (substitute* "tests/meson.build"
+                  (((format #f ".*'name': '(~a)'.*" (string-join tests "|")))
+                   ""))))))))
     (inputs
      (list acl
            attr
