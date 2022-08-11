@@ -1976,14 +1976,14 @@ behavior-driven development (TDD and BDD).")
 (define-public python-stestr
   (package
     (name "python-stestr")
-    (version "3.0.1")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stestr" version))
        (sha256
         (base32
-         "0adhqp9c9338wlvlq776k57k04lyxp38bv591afdm9gjsn2qn1zm"))))
+         "1kg9gfdr4bj2m7s1r44z530a0ba4p17j4jlhcn1xha0j8jmyfgn2"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                    ;to avoid circular dependencies

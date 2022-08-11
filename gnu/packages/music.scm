@@ -253,7 +253,7 @@
     (inputs
      (list dbus
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            ;; Plugin dependencies
            alsa-lib
            curl
@@ -435,7 +435,7 @@ score, keyboard, guitar, drum and controller views.")
      `(("gettext" ,gettext-minimal)
        ("googletest" ,googletest)
        ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools)))
+       ("qtlinguist" ,qttools-5)))
     (inputs
      (list boost
            chromaprint
@@ -476,7 +476,7 @@ playing your music.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.3")
+    (version "1.0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -485,7 +485,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14fr2bm51k4n5byc9pwh3ba6v15s9jmqxigl1y9h00l7cvmfpbn1"))
+                "17mfavbbzx7hp7j5n9i7c3rajy16jicarabrl174p4gjv4zpy2sc"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -529,7 +529,7 @@ playing your music.")
      `(("gettext" ,gettext-minimal)
        ("googletest" ,googletest)
        ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools)
+       ("qtlinguist" ,qttools-5)
        ("xorg-server" ,xorg-server-for-tests)))
     (inputs
      (list alsa-lib
@@ -768,7 +768,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
     (native-inputs
      `(("cppunit" ,cppunit)
        ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools)))
+       ("qtlinguist" ,qttools-5)))
     (inputs
      (list alsa-lib
            jack-1
@@ -2226,7 +2226,7 @@ users to select LV2 plugins and run them with jalv.")
      (list benchmark
            googletest
            python-wrapper
-           qttools
+           qttools-5
            xorg-server-for-tests))
     (inputs
      (list bash-minimal
@@ -2261,10 +2261,10 @@ users to select LV2 plugins and run them with jalv.")
            portmidi
            protobuf
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtkeychain
            qtscript
-           qtsvg
+           qtsvg-5
            qtx11extras
            rubberband
            soundtouch
@@ -2301,9 +2301,9 @@ perform creative live mixes with digital music files.")
            new-session-manager
            liblo
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "https://synthv1.sourceforge.io")
     (synopsis "Polyphonic subtractive synthesizer")
     (description
@@ -2334,9 +2334,9 @@ oscillators and stereo effects.")
            new-session-manager
            liblo
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "https://drumkv1.sourceforge.io")
     (synopsis "Drum-kit sampler synthesizer with stereo effects")
     (description
@@ -2367,9 +2367,9 @@ effects.")
            new-session-manager
            liblo
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "https://samplv1.sourceforge.io")
     (synopsis "Polyphonic sampler synthesizer with stereo effects")
     (description
@@ -2400,9 +2400,9 @@ effects.")
            liblo
            fftwf
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "https://padthv1.sourceforge.io")
     (synopsis "Polyphonic additive synthesizer")
     (description
@@ -2928,7 +2928,7 @@ browser.")
                                "/manpages/docbook.xsl")))
              #t)))))
     (inputs
-     (list qtbase-5 qtsvg qttools alsa-lib))
+     (list qtbase-5 qtsvg-5 qttools-5 alsa-lib))
     (native-inputs
      (list pkg-config
            libxslt ; for xsltproc
@@ -2972,10 +2972,10 @@ backends, including ALSA, OSS, Network and FluidSynth.")
                                "/manpages/docbook.xsl")))
              #t)))))
     (inputs
-     (list drumstick qtbase-5 qtsvg qtx11extras))
+     (list drumstick qtbase-5 qtsvg-5 qtx11extras))
     (native-inputs
      (list libxslt ;for xsltproc
-           docbook-xsl qttools pkg-config))
+           docbook-xsl qttools-5 pkg-config))
     (home-page "https://vmpk.sourceforge.io/")
     (synopsis "Virtual MIDI piano keyboard")
     (description
@@ -3316,7 +3316,7 @@ from the command line.")
            suil
            zlib))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "https://qtractor.org/")
     (synopsis "Audio/MIDI multi-track sequencer")
     (description
@@ -4423,7 +4423,7 @@ plugins, a switch trigger, a toggle switch, and a peakmeter.")
     (inputs
      (list qtbase-5 alsa-lib jack-1 liblo lv2))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "http://qmidiarp.sourceforge.net/")
     (synopsis "MIDI arpeggiator")
     (description "QMidiArp is an advanced MIDI arpeggiator, programmable step
@@ -4449,7 +4449,7 @@ modules running in parallel.")
     (inputs
      (list qtbase-5 alsa-lib))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "http://alsamodular.sourceforge.net/")
     (synopsis "MIDI event router and filter")
     (description "QMidiRoute is a MIDI event router and filter.  MIDI note,
@@ -4592,7 +4592,7 @@ are a C compiler and glib.  Full API documentation and examples are included.")
                       "\"")))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ;; rpmalloc is a public domain memory allocator. This version specified
        ;; below is the version required by LMMS.
        ;; To get the new commit of rpmalloc to use here, run
@@ -4757,14 +4757,14 @@ includes LV2 plugins and a JACK standalone client.")
            portmidi
            pulseaudio
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtscript
-           qtsvg
+           qtsvg-5
            qtxmlpatterns))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (synopsis "Music composition and notation software")
     (description
      "MuseScore is a music score typesetter.  Its main purpose is the creation
@@ -4828,7 +4828,7 @@ sample library.")
            pcre
            pulseaudio                   ; required by rtaudio
            qtbase-5
-           qtsvg
+           qtsvg-5
            rtaudio
            rubberband
            sord))
@@ -4836,7 +4836,7 @@ sample library.")
      `(("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
-       ("qttools" ,qttools)))
+       ("qttools-5" ,qttools-5)))
     (home-page "https://muse-sequencer.github.io/")
     (synopsis "MIDI/Audio sequencer")
     (description "MusE is a MIDI/Audio sequencer with recording and editing
@@ -5021,7 +5021,7 @@ specification and header.")
            wavpack
            zlib))
     (native-inputs
-     (list pkg-config qttools))           ;for qtlinguist
+     (list pkg-config qttools-5))           ;for qtlinguist
     (synopsis "Music composition and editing environment based around a MIDI
 sequencer")
     (description "Rosegarden is a music composition and editing environment
@@ -5550,12 +5550,12 @@ discard bad quality ones.
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins"))
-                         '("qtbase" "qtmultimedia" "qtsvg")))
+                         '("qtbase" "qtmultimedia-5" "qtsvg-5")))
                  `("QML2_IMPORT_PATH" ":" prefix
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/qml"))
-                         '("qtmultimedia"))))
+                         '("qtmultimedia-5"))))
                #t))))))
     (inputs
      (list alsa-lib
@@ -5563,13 +5563,13 @@ discard bad quality ones.
            jack-1
            portaudio
            qtbase-5
-           qtmultimedia
-           qtsvg))
+           qtmultimedia-5
+           qtsvg-5))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("hicolor-icon-theme" ,hicolor-icon-theme)
        ("itstool" ,itstool)
-       ("qttools" ,qttools)))
+       ("qttools-5" ,qttools-5)))
     (synopsis "Musical instrument tuner")
     (description "FMIT is a graphical utility for tuning musical instruments,
 with error and volume history, and advanced features.")

@@ -143,7 +143,7 @@
            pkg-config
            python ; for the tests
            util-linux ; provides the hexdump command for tests
-           qttools))
+           qttools-5))
     (inputs
      (list bdb-4.8 ; 4.8 required for compatibility
            boost
@@ -159,7 +159,7 @@
                        (assoc-ref %build-inputs "boost"))
         ;; XXX: The configure script looks up Qt paths by
         ;; `pkg-config --variable=host_bins Qt5Core`, which fails to pick
-        ;; up executables residing in 'qttools', so we specify them here.
+        ;; up executables residing in 'qttools-5', so we specify them here.
         (string-append "ac_cv_path_LRELEASE="
                        (assoc-ref %build-inputs "qttools")
                        "/bin/lrelease")
@@ -651,7 +651,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
            python-requests
            python-stem
            python-trezor
-           qtsvg
+           qtsvg-5
            zlib))
     (home-page "https://electroncash.org/")
     (synopsis "Bitcoin Cash wallet")
@@ -671,7 +671,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.17.3.2")
+    (version "0.18.0.0")
     (source
      (origin
        (method git-fetch)
@@ -687,10 +687,9 @@ blockchain.")
            ;; Delete bundled dependencies.
            (for-each
             delete-file-recursively
-            '("external/miniupnp" "external/rapidjson"
-              "external/unbound"))))
+            '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "19sgcbli7fc1l6ms7ma6hcz1mmpbnd296lc8a19rl410acpv45zy"))))
+        (base32 "1jq2v2dg50gl3cf9s61jssny5rraclxqj4cc4y0sl00ip8icj08v"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -698,7 +697,7 @@ blockchain.")
            pkg-config
            protobuf
            python
-           qttools))
+           qttools-5))
     (inputs
      (list boost
            cppzmq
@@ -716,57 +715,57 @@ blockchain.")
            xz
            zeromq))
     (arguments
-     `(#:out-of-source? #t
-       #:configure-flags
-       (list "-DARCH=default"
-             "-DBUILD_TESTS=ON"
-             (string-append "-DReadline_ROOT_DIR="
-                            (assoc-ref %build-inputs "readline")))
-       #:phases
-       (modify-phases %standard-phases
-         ;; tests/core_tests need a valid HOME
-         (add-before 'configure 'set-home
-           (lambda _
-             (setenv "HOME" (getcwd))))
-         (add-after 'set-home 'change-log-path
-           (lambda _
-             (substitute* "contrib/epee/src/mlog.cpp"
-               (("epee::string_tools::get_current_module_folder\\(\\)")
-                "\".bitmonero\"")
-               (("return \\(")
-                "return ((std::string(getenv(\"HOME\"))) / "))))
-         (add-after 'change-log-path 'fix-file-permissions-for-tests
-           (lambda _
-             (for-each make-file-writable
-                       (find-files "tests/data/" "wallet_9svHk1.*"))))
-         ;; Only try tests that don't need access to network or system
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             ;; Core tests sometimes fail, at least on i686-linux.
-             ;; Let's disable them for now and just try hash tests
-             ;; and unit tests.
-             ;; (invoke "make" "ARGS=-R 'hash|core_tests' --verbose" "test")))
-             (when tests?
-               (invoke "make" "ARGS=-R 'hash' --verbose" "test"))))
-         (add-after 'check 'unit-tests
-           (lambda _
-             (let ((excluded-unit-tests
-                    (string-join
-                     '("AddressFromURL.Success"
-                       "AddressFromURL.Failure"
-                       "DNSResolver.IPv4Success"
-                       "DNSResolver.DNSSECSuccess"
-                       "DNSResolver.DNSSECFailure"
-                       "DNSResolver.GetTXTRecord"
-                       "is_hdd.linux_os_root")
-                     ":")))
-               (invoke "tests/unit_tests/unit_tests"
-                       (string-append "--gtest_filter=-"
-                                      excluded-unit-tests)))))
-         (add-after 'install 'delete-unused-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (delete-file-recursively (string-append out "/include"))))))))
+     (list #:out-of-source? #t
+           #:configure-flags
+           #~(list "-DARCH=default"
+                   "-DBUILD_TESTS=ON"
+                   (string-append "-DReadline_ROOT_DIR="
+                                  #$(this-package-input "readline")))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; tests/core_tests need a valid HOME
+               (add-before 'configure 'set-home
+                 (lambda _
+                   (setenv "HOME" (getcwd))))
+               (add-after 'set-home 'change-log-path
+                 (lambda _
+                   (substitute* "contrib/epee/src/mlog.cpp"
+                     (("epee::string_tools::get_current_module_folder\\(\\)")
+                      "\".bitmonero\"")
+                     (("return \\(")
+                      "return ((std::string(getenv(\"HOME\"))) / "))))
+               (add-after 'change-log-path 'fix-file-permissions-for-tests
+                 (lambda _
+                   (for-each make-file-writable
+                             (find-files "tests/data/" "wallet_9svHk1.*"))))
+               ;; Only try tests that don't need access to network or system
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   ;; Core tests sometimes fail, at least on i686-linux.
+                   ;; Let's disable them for now and just try hash tests
+                   ;; and unit tests.
+                   ;; (invoke "make" "ARGS=-R 'hash|core_tests' --verbose" "test")))
+                   (when tests?
+                     (invoke "make" "ARGS=-R 'hash' --verbose" "test"))))
+               (add-after 'check 'unit-tests
+                 (lambda _
+                   (let ((excluded-unit-tests
+                          (string-join
+                           '("AddressFromURL.Success"
+                             "AddressFromURL.Failure"
+                             "DNSResolver.IPv4Success"
+                             "DNSResolver.DNSSECSuccess"
+                             "DNSResolver.DNSSECFailure"
+                             "DNSResolver.GetTXTRecord"
+                             "is_hdd.linux_os_root")
+                           ":")))
+                     (invoke "tests/unit_tests/unit_tests"
+                             (string-append "--gtest_filter=-"
+                                            excluded-unit-tests)))))
+               (add-after 'install 'delete-unused-files
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (delete-file-recursively
+                    (string-append #$output "/include")))))))
     (home-page "https://web.getmonero.org/")
     (synopsis "Command-line interface to the Monero currency")
     (description
@@ -777,7 +776,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.17.3.2")
+    (version "0.18.0.0")
     (source
      (origin
        (method git-fetch)
@@ -793,60 +792,59 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "12x0d981fkb43inx7zqjr3ny53dih9g8k03cmaflxqwviinb1k4b"))))
+        (base32 "14rbw9803h3g7ld3d24vc3i9n55n09x13frkmd128xx5jw17v5sr"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
        ("monero-source" ,(package-source monero))))
     (inputs
-     `(,@(package-inputs monero)
-       ("libgcrypt" ,libgcrypt)
-       ("monero" ,monero)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtgraphicaleffects" ,qtgraphicaleffects)
-       ("qtquickcontrols" ,qtquickcontrols)
-       ("qtquickcontrols2",qtquickcontrols2)
-       ("qtsvg" ,qtsvg)
-       ("qtxmlpatterns" ,qtxmlpatterns)))
+     (modify-inputs (package-inputs monero)
+       (append libgcrypt
+               monero
+               qtbase-5
+               qtdeclarative-5
+               qtgraphicaleffects
+               qtquickcontrols-5
+               qtquickcontrols2-5
+               qtsvg-5
+               qtxmlpatterns)))
     (arguments
-     `(#:tests? #f ; No tests
-       #:configure-flags
-       ,#~(list "-DARCH=default"
-                "-DENABLE_PASS_STRENGTH_METER=ON"
-                (string-append "-DReadline_ROOT_DIR="
-                               #$(this-package-input "readline")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'extract-monero-sources
-           ;; Some of the monero package source code is required
-           ;; to build the GUI.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir-p "monero")
-             (copy-recursively (assoc-ref inputs "monero-source")
-                               "monero")))
-         (add-after 'extract-monero-sources 'fix-build
-           (lambda _
-             (substitute* "src/version.js.in"
-               (("@VERSION_TAG_GUI@")
-                ,version))
-             (substitute* "external/CMakeLists.txt"
-               (("add_library\\(quirc" all)
-                (string-append
-                 "set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\")\n"
-                 all)))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (mkdir-p bin)
-               (install-file "../build/bin/monero-wallet-gui" bin))))
-         (add-after 'qt-wrap 'install-monerod-link
-           ;; The monerod program must be available so that monero-wallet-gui
-           ;; can start a Monero daemon if necessary.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (symlink (search-input-file inputs "/bin/monerod")
-                      (string-append (assoc-ref outputs "out")
-                                     "/bin/monerod")))))))
+     (list #:tests? #f ; No tests
+           #:configure-flags
+           #~(list "-DARCH=default"
+                   "-DENABLE_PASS_STRENGTH_METER=ON"
+                   (string-append "-DReadline_ROOT_DIR="
+                                  #$(this-package-input "readline")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'extract-monero-sources
+                 ;; Some of the monero package source code is required
+                 ;; to build the GUI.
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (mkdir-p "monero")
+                   (copy-recursively (assoc-ref inputs "monero-source")
+                                     "monero")))
+               (add-after 'extract-monero-sources 'fix-build
+                 (lambda _
+                   (substitute* "src/version.js.in"
+                     (("@VERSION_TAG_GUI@")
+                      #$version))
+                   (substitute* "external/CMakeLists.txt"
+                     (("add_library\\(quirc" all)
+                      (string-append
+                       "set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\")\n"
+                       all)))))
+               (replace 'install
+                 (lambda _
+                   (let ((bin (string-append #$output "/bin")))
+                     (mkdir-p bin)
+                     (install-file "../build/bin/monero-wallet-gui" bin))))
+               (add-after 'qt-wrap 'install-monerod-link
+                 ;; The monerod program must be available so that
+                 ;; monero-wallet-gui can start a Monero daemon if necessary.
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (symlink (search-input-file inputs "/bin/monerod")
+                            (string-append #$output "/bin/monerod")))))))
     (home-page "https://web.getmonero.org/")
     (synopsis "Graphical user interface for the Monero currency")
     (description
@@ -1543,7 +1541,7 @@ Trezor wallet.")
      (list pkg-config
            python ; for the tests
            util-linux ; provides the hexdump command for tests
-           qttools))
+           qttools-5))
     (inputs
      (list bdb-5.3
            boost
@@ -1657,7 +1655,7 @@ following three utilities are included with the library:
            pkg-config
            python ; for the tests
            util-linux ; provides the hexdump command for tests
-           qttools))
+           qttools-5))
     (inputs
      (list bdb-4.8
            boost
@@ -1677,7 +1675,7 @@ following three utilities are included with the library:
                        (assoc-ref %build-inputs "boost"))
         ;; XXX: The configure script looks up Qt paths by
         ;; `pkg-config --variable=host_bins Qt5Core`, which fails to pick
-        ;; up executables residing in 'qttools', so we specify them here.
+        ;; up executables residing in 'qttools-5', so we specify them here.
         (string-append "ac_cv_path_LRELEASE="
                        (assoc-ref %build-inputs "qttools")
                        "/bin/lrelease")
@@ -1731,7 +1729,7 @@ a Qt GUI.")
               (string-append "PREFIX=" %output)
               "features="))))))
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list python qtbase-5 rocksdb zlib))
     (home-page "https://gitlab.com/FloweeTheHub/fulcrum/")
@@ -1798,7 +1796,7 @@ like Flowee the Hub, which Fulcrum connects to over RPC.")
            openssl
            qtbase-5))
     (native-inputs
-     (list pkg-config qttools util-linux))       ; provides the hexdump command for tests
+     (list pkg-config qttools-5 util-linux))       ; provides the hexdump command for tests
     (home-page "https://flowee.org")
     (synopsis "Flowee infrastructure tools and services")
     (description

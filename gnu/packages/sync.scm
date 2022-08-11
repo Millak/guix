@@ -174,7 +174,7 @@
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ("ruby" ,ruby)))
     (inputs
      (list appstream
@@ -189,19 +189,19 @@
            libzip
            openssl
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
            qtkeychain
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtsolutions
-           qtsvg
-           qtwebchannel
-           qtwebsockets
+           qtsvg-5
+           qtwebchannel-5
+           qtwebsockets-5
            sqlite
            xdg-utils
            zlib))
     (propagated-inputs
-     (list qtwebengine))
+     (list qtwebengine-5))
     (synopsis "Desktop sync client for Nextcloud")
     (description "Nextcloud-Desktop is a tool to synchronize files from
 Nextcloud Server with your computer.")
@@ -347,7 +347,7 @@ See also: megacmd, the official tool set by MEGA.")
        ("extra-cmake-modules" ,extra-cmake-modules)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools)))
+       ("qtlinguist" ,qttools-5)))
     (inputs
      (list qtbase-5 qtkeychain sqlite zlib))
     (home-page "https://owncloud.org")

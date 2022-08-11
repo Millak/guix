@@ -3204,6 +3204,98 @@ the GNOME desktop environment.")
                                 (variable "GLADE_MODULE_SEARCH_PATH")
                                 (files '("lib/glade/modules")))))))
 
+(define-public cambalache
+  (package
+   (name "cambalache")
+   (version "0.10.2")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://gitlab.gnome.org/jpu/cambalache")
+                  (commit version)))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32 "1mw5gk98zx03yal3p8slaqwhwkc9p2vnh0cssnmg6ivxsjscqhgz"))))
+   (build-system meson-build-system)
+   (arguments
+    (list
+     #:glib-or-gtk? #t
+     #:imported-modules `((guix build python-build-system)
+                          ,@%meson-build-system-modules)
+     #:modules '((guix build meson-build-system)
+                 ((guix build python-build-system) #:prefix python:)
+                 (guix build utils))
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'patch-source
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "cambalache/cmb_view.py"
+               (("GLib\\.find_program_in_path\\('(.*)'\\)" all cmd)
+                (string-append "'"
+                               (search-input-file inputs
+                                                  (string-append "/bin/" cmd))
+                               "'")))))
+         (add-after 'unpack 'patch-build
+           (lambda _
+             (substitute* "postinstall.py"
+               (("update-desktop-database") "true"))))
+         (add-after 'wrap 'python-wrap (assoc-ref python:%standard-phases 'wrap))
+         (delete 'check)
+         (add-after 'install 'add-install-to-pythonpath
+           (assoc-ref python:%standard-phases 'add-install-to-pythonpath))
+         (add-after 'add-install-to-pythonpath 'pre-check
+           (lambda _
+             (system "Xvfb :1 &")
+             (setenv "DISPLAY" ":1")))
+         (add-after 'pre-check 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion ".."
+                 (invoke "python3" "-m" "pytest")))))
+         (add-after 'glib-or-gtk-wrap 'wrap-typelib
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (for-each
+                (lambda (prog)
+                  (unless (wrapped-program? prog)
+                    (wrap-program prog
+                      `("GI_TYPELIB_PATH" suffix
+                        (,(string-append out "/lib/girepository-1.0")
+                         ,(getenv "GI_TYPELIB_PATH")))
+                      ;; icons and schemas
+                      `("XDG_DATA_DIRS" suffix
+                        #$(map
+                           (lambda (input)
+                             (file-append (this-package-input input) "/share"))
+                           '("adwaita-icon-theme" "hicolor-icon-theme"
+                             "gsettings-desktop-schemas")))
+                      ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Cambalache to
+                      ;; load its own icons in pure environments.
+                      `("GDK_PIXBUF_MODULE_FILE" =
+                        (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))
+                (find-files (string-append out "/bin")))))))))
+   (inputs (list bash-minimal
+                 adwaita-icon-theme hicolor-icon-theme
+                 gsettings-desktop-schemas
+                 gtk
+                 `(,gtk+ "bin")         ; broadwayd
+                 `(,gtk "bin")
+                 libadwaita
+                 libhandy
+                 (librsvg-for-system)
+                 python python-pygobject python-lxml
+                 webkitgtk-with-libsoup2))
+   (native-inputs (list `(,glib "bin") gobject-introspection
+                        gettext-minimal pkg-config
+                        python-pytest xorg-server-for-tests))
+   (home-page "https://gitlab.gnome.org/jpu/cambalache")
+   (synopsis "Rapid application development tool")
+   (description "Cambalache is a rapid application development (RAD) tool for
+Gtk 4 and 3 with a clear model-view-controller (MVC) design and
+data model first philosophy.")
+   (license (list license:lgpl2.1
+                  license:gpl2)))) ; tools
+
 (define-public libcroco
   (package
     (name "libcroco")
@@ -4228,42 +4320,6 @@ engineering.")
     (description
      "Drawing is a basic image editor aiming at the GNOME desktop.")
     (license license:gpl3+)))
-
-(define-public gnome-themes-standard
-  (package
-    (name "gnome-themes-standard")
-    (version "3.22.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnome/sources/" name "/"
-                           (version-major+minor version) "/" name "-"
-                           version ".tar.xz"))
-       (sha256
-        (base32
-         "0smmiamrgcgf5sa88bsn8hwmvsyx4gczzs359nwxbkv14b2qgp31"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags
-       ;; Don't create 'icon-theme.cache'.
-       (let* ((coreutils (assoc-ref %build-inputs "coreutils"))
-              (true      (string-append coreutils "/bin/true")))
-         (list (string-append "GTK_UPDATE_ICON_CACHE=" true)))))
-    (inputs
-     `(("gtk+" ,gtk+)
-       ("gtk+-2" ,gtk+-2)
-       ("librsvg" ,librsvg)
-       ("libxml2" ,libxml2)
-       ("glib" ,glib)))
-    (native-inputs
-     `(("intltool" ,intltool)
-       ("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
-    (home-page "https://launchpad.net/gnome-themes-standard")
-    (synopsis "Default GNOME 3 themes")
-    (description
-     "The default GNOME 3 themes (Adwaita and some accessibility themes).")
-    (license license:lgpl2.1+)))
 
 (define-public seahorse
   (package
@@ -8823,7 +8879,7 @@ easy, safe, and automatic.")
 (define-public tracker
   (package
     (name "tracker")
-    (version "3.3.1")
+    (version "3.3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/tracker/"
@@ -8831,7 +8887,7 @@ easy, safe, and automatic.")
                                   "tracker-" version ".tar.xz"))
               (sha256
                (base32
-                "1lkf353xvwc0hfyi03aq2qjikx3zmva7r56nxiavy7kqjyygbmjs"))))
+                "0r144kdqxdzs51qn495vablzf1zxkhkk6imrlrzj9wiqwc2gg520"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -8862,7 +8918,8 @@ easy, safe, and automatic.")
                (invoke "dbus-run-session" "--" "meson" "test"
                        "--print-errorlogs")))))))
     (native-inputs
-     (list `(,glib "bin")
+     (list gettext-minimal
+           `(,glib "bin")
            gobject-introspection
            docbook-xsl
            docbook-xml
@@ -8872,7 +8929,6 @@ easy, safe, and automatic.")
            cmake-minimal
            python-pygobject
            gtk-doc/stable
-           intltool
            dbus
            pkg-config
            python
@@ -9464,7 +9520,6 @@ world.")
        ("dconf"                     ,dconf)
        ("desktop-file-utils"        ,desktop-file-utils)
        ("gnome-default-applications" ,gnome-default-applications)
-       ("gnome-themes-standard"     ,gnome-themes-standard)
        ("gst-plugins-base"          ,gst-plugins-base)
        ("gst-plugins-good"          ,gst-plugins-good)
        ("gucharmap"                 ,gucharmap)
@@ -9935,7 +9990,7 @@ functionality and behavior.")
 (define-public folks
   (package
     (name "folks")
-    (version "0.15.3")
+    (version "0.15.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -9944,7 +9999,7 @@ functionality and behavior.")
                     "folks-" version ".tar.xz"))
               (sha256
                (base32
-                "19a4qp9ry8y24jx1v5456qn9lnw843571vkkah3bxx4ky3x3gmr1"))))
+                "11lhfn6b7gml4ckj2dkm6g889j21wpvj90srwjp85k9hcf4qmzqg"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
@@ -9963,10 +10018,10 @@ functionality and behavior.")
            readline
            telepathy-glib))
     (native-inputs
-     (list `(,glib "bin")
+     (list gettext-minimal
+           `(,glib "bin")
            gobject-introspection
            python-dbusmock
-           intltool
            pkg-config
            python
            vala))
@@ -10287,7 +10342,7 @@ Bluefish supports many programming and markup languages.")
 (define-public gnome-system-monitor
   (package
     (name "gnome-system-monitor")
-    (version "41.0")
+    (version "42.0")
     (source
      (origin
        (method url-fetch)
@@ -10296,7 +10351,7 @@ Bluefish supports many programming and markup languages.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0pwy2c95rm0ym3x5pr6rqg7zh58crjxyns4r52q99ds937349z67"))))
+         "1p3mq32pfd9260aql5nys806g0c4nrswacwqs8ms40920ci9s8qk"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -10842,7 +10897,7 @@ configurable file renaming.")
 (define-public workrave
   (package
     (name "workrave")
-    (version "1.10.48")
+    (version "1.10.50")
     (source
      (origin
        (method git-fetch)
@@ -10853,7 +10908,7 @@ configurable file renaming.")
                                          version)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qcknxylk9mr0xzszsd1rkgh2zpnix20m998dfclkm9x8zh9pvyr"))))
+        (base32 "0fj3fqmdn4nsjgvbbvzpxw2mgiihcr1zpb08amg2p6hg9n11y9bx"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      ;; The only tests are maintainer tests (in po/), which fail.
@@ -11477,6 +11532,9 @@ really fit in other upstream packages.  It offers legacy support for GTK+ 2
 versions of Adwaita, Adwaita-dark and HighContrast themes.  It also provides
 index files needed for Adwaita to be used outside of GNOME.")
     (license license:lgpl2.1+)))
+
+(define-public gnome-themes-standard
+  (deprecated-package "gnome-themes-standard" gnome-themes-extra))
 
 (define-public gnote
   (package
@@ -12336,7 +12394,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "0.39.0")
+    (version "0.40.0")
     (source
      (origin
        (method git-fetch)
@@ -12346,7 +12404,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1g765kbgimfpvma67j1gscj046n2q9a9nr2pczlw65qwlm0418c5"))))
+         "12l6qks4kwi75ss61yx1f515nb30d987qw3yhi4a36w5xz721p5z"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t

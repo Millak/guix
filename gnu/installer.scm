@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;;
@@ -63,6 +63,7 @@
     (('gnu 'installer _ ...) #t)
     (('gnu 'build _ ...) #t)
     (('guix 'build _ ...) #t)
+    (('guix 'read-print) #t)
     (_ #f)))
 
 (define not-config?

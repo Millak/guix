@@ -54,13 +54,13 @@
 (define-public python-django-4.0
   (package
     (name "python-django")
-    (version "4.0.6")
+    (version "4.0.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "1bn3lg68r2bz6rzwnd7y2sin6fi9vahdqdsmamrx6zw2yqzpjym6"))))
+                "0qblhh7s7fcznqr79919yp2d7wiz3ixv39navmifb677dg9mlvcw"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -141,13 +141,13 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 (define-public python-django-3.2
   (package
     (inherit python-django-4.0)
-    (version "3.2.14")
+    (version "3.2.15")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "1krg0bfd78mnqly1gzbprssz3bz6xryc2fig0x75la2vifx84wb7"))))
+                "0asqhsw73555wjnvd7769b89q9w96q2k95mcr634mw92m2qk86gp"))))
     (native-search-paths '())           ;no need for TZDIR
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-django-4.0)

@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
-;;; Copyright © 2021 Danial Behzadi <dani.behzi@ubuntu.com>
+;;; Copyright © 2021-2022 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -60,14 +60,14 @@
 (define-public tor
   (package
     (name "tor")
-    (version "0.4.7.8")
+    (version "0.4.7.9")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://dist.torproject.org/tor-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "15g1dyk0y2lrcr039y5b10bnn1zd3xcys55yz3qdbk9ammkmr6ly"))))
+               "08lva4jrash1fhq8vim56alria5kfganmp3y3lhddx08h9cki7fk"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -427,14 +427,14 @@ Potential client and exit connections are scrubbed of sensitive information.")
 (define-public tractor
   (package
     (name "tractor")
-    (version "3.13")
+    (version "3.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "traxtor" version))
        (sha256
         (base32
-         "0r8zzaia1s678d39cpqjfpb72fwc46lfwnz1rb043hi6grd39jl7"))))
+         "06jhsg179rfckagrpk9r8wqp44anf1bchm3ins2saf5806f0n5lw"))))
     (build-system python-build-system)
     (native-inputs
      `(("glib:bin" ,glib "bin")))       ; for glib-compile-schemas.

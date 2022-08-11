@@ -202,7 +202,7 @@ with Microsoft Compiled HTML (CHM) files")
            python-regex
            speech-dispatcher
            python-zeroconf
-           qtwebengine
+           qtwebengine-5
            sqlite))
     (arguments
      (list
@@ -293,7 +293,7 @@ sip-include-dirs = [\""
               (setenv "CI" "true")
               ;; The Qt test complains about being unable to load all image
               ;; plugins, and I notice the available plugins list it shows
-              ;; lacks 'svg'. Adding qtsvg doesn't fix it, so I'm not sure how
+              ;; lacks 'svg'. Adding qtsvg-5 doesn't fix it, so I'm not sure how
               ;; to fix it.  TODO: Fix test and remove this.
               (setenv "SKIP_QT_BUILD_TEST" "true")))
           (add-after 'install 'install-rapydscript

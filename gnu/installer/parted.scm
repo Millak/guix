@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -38,6 +38,7 @@
                 #:select (%base-initrd-modules))
   #:use-module (guix build syscalls)
   #:use-module (guix build utils)
+  #:use-module (guix read-print)
   #:use-module (guix records)
   #:use-module (guix utils)
   #:use-module (guix i18n)
@@ -828,6 +829,7 @@ cause them to cross."
          (installer-log-line "~/type: ~a" partition-type)
          (installer-log-line "~/filesystem-type: ~a"
                              (filesystem-type-name filesystem-type))
+         (installer-log-line "~/flags: ~a" flags)
          (installer-log-line "~/start: ~a" start-sector*)
          (installer-log-line "~/end: ~a" end-sector)
          (installer-log-line "~/start-range: [~a, ~a]"
@@ -844,15 +846,18 @@ cause them to cross."
          (when (and partition-ok? has-name? name)
            (partition-set-name partition name))
 
-         ;; Set flags is required.
+         ;; Both partition-set-system and partition-set-flag calls can affect
+         ;; the partition type.  Their order is important, see:
+         ;; https://issues.guix.gnu.org/55549.
+         (partition-set-system partition filesystem-type)
+
+         ;; Set flags if required.
          (for-each (lambda (flag)
                      (and (partition-is-flag-available? partition flag)
                           (partition-set-flag partition flag 1)))
                    flags)
 
-         (and partition-ok?
-              (partition-set-system partition filesystem-type)
-              partition))))))
+         (and partition-ok? partition))))))
 
 
 ;;
@@ -1439,6 +1444,13 @@ USER-PARTITIONS, or return nothing."
             `((mapped-devices
                (list ,@(map user-partition->mapped-device
                             encrypted-partitions)))))
+
+      ,(vertical-space 1)
+      ,(let-syntax ((G_ (syntax-rules () ((_ str) str))))
+         (comment (G_ "\
+;; The list of file systems that get \"mounted\".  The unique
+;; file system identifiers there (\"UUIDs\") can be obtained
+;; by running 'blkid' in a terminal.\n")))
       (file-systems (cons*
                      ,@(user-partitions->file-systems user-partitions)
                      %base-file-systems)))))

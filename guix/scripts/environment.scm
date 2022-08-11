@@ -408,7 +408,14 @@ regexps in WHITE-LIST."
        (lambda ()
          (apply execlp program program args))
        (lambda _
-         ;; Following established convention, exit with 127 upon ENOENT.
+         ;; Report the error from here because the parent process cannot
+         ;; distinguish between the conventional 127 exit code and a process
+         ;; that exited with 127 for other reasons (e.g., "sh -c xyz").
+         (report-error (G_ "~a: command not found~%") program)
+         (suggest-command-name profile command)
+
+         ;; Following established convention, exit with 127 (aka. EX_NOTFOUND)
+         ;; upon ENOENT.
          (primitive-_exit 127))))))
 
 (define (child-shell-environment shell profile manifest)
@@ -581,17 +588,6 @@ command name."
             (display-hint (format #f (G_ "Did you mean '~a'?~%")
                                   closest)))))))))
 
-(define (validate-exit-status profile command status)
-  "When STATUS, an integer as returned by 'waitpid', is 127, raise a \"command
-not found\" error.  Otherwise return STATUS."
-  ;; Most likely, exit value 127 means ENOENT.
-  (when (eqv? (status:exit-val status) 127)
-    (report-error (G_ "~a: command not found~%")
-                  (first command))
-    (suggest-command-name profile command)
-    (exit 1))
-  status)
-
 (define* (launch-environment/fork command profile manifest
                                   #:key pure? (white-list '()))
   "Run COMMAND in a new process with an environment containing PROFILE, with
@@ -604,7 +600,7 @@ regexps in WHITE-LIST."
                            #:white-list white-list))
     (pid (match (waitpid pid)
            ((_ . status)
-            (validate-exit-status profile command status))))))
+            status)))))
 
 (define* (launch-environment/container #:key command bash user user-mappings
                                        profile manifest link-profile? network?
@@ -624,9 +620,6 @@ WHILE-LIST."
   (define (optional-mapping->fs mapping)
     (and (file-exists? (file-system-mapping-source mapping))
          (file-system-mapping->bind-mount mapping)))
-
-  (define (exit/status* status)
-    (exit/status (validate-exit-status profile command status)))
 
   (mlet %store-monad ((reqs (inputs->requisites
                              (list (direct-store-path bash) profile))))
@@ -684,7 +677,7 @@ WHILE-LIST."
                                       '())
                                   (map file-system-mapping->bind-mount
                                        mappings))))
-       (exit/status*
+       (exit/status
         (call-with-container file-systems
           (lambda ()
             ;; Setup global shell.

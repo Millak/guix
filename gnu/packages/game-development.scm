@@ -13,7 +13,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017, 2019 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 Jethro Cao <jethrocao@gmail.com>
@@ -520,9 +520,9 @@ formats such as PNG.")
                 "05gczsywkk45bh0z1vv8l6cmrlncc2qj8agavj5ryxpnxkzy69r1"))))
     (build-system gnu-build-system)
     (inputs
-     (list qtbase-5 qtdeclarative qtsvg zlib))
+     (list qtbase-5 qtdeclarative-5 qtsvg-5 zlib))
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -531,8 +531,8 @@ formats such as PNG.")
              (substitute* "translations/translations.pro"
                (("LRELEASE =.*")
                 (string-append "LRELEASE = "
-                               (assoc-ref inputs "qttools")
-                               "/bin/lrelease\n")))
+                               (search-input-file inputs "/bin/lrelease")
+                               "\n")))
              (let ((out (assoc-ref outputs "out")))
                (invoke "qmake"
                        (string-append "PREFIX=" out))))))))
@@ -2467,13 +2467,23 @@ rigid body physics library written in C.")
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Bundled code only used for the testbed.
-           (delete-file-recursively "extern")))))
+           ;; Remove bundled code only used for the testbed.
+           (delete-file-recursively "extern")
+           ;; Remove bundled copy of doctest, and adjust tests accordingly.
+           (delete-file "unit-test/doctest.h")
+           (substitute* "unit-test/CMakeLists.txt"
+             (("doctest\\.h")
+              ""))
+           (substitute* (find-files "unit-test" "\\.cpp$")
+             (("include \"doctest\\.h\"")
+              "include <doctest/doctest.h>"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:test-target "unit_test"
        #:configure-flags '("-DBUILD_SHARED_LIBS=ON"
                            "-DBOX2D_BUILD_TESTBED=OFF")))
+    (native-inputs
+     (list doctest))                    ;for tests
     (inputs
      (list libx11))
     (home-page "https://box2d.org/")
@@ -2623,7 +2633,7 @@ utilities frequently used in roguelikes.")
          ("openal" ,openal)
          ("pulseaudio" ,pulseaudio)
          ("qtbase" ,qtbase-5)
-         ("qtdeclarative" ,qtdeclarative)
+         ("qtdeclarative-5" ,qtdeclarative-5)
          ("sdl2" ,sdl2)
          ("uuid.h" ,util-linux "lib")
          ("zlib" ,zlib)))

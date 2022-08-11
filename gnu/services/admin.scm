@@ -40,6 +40,7 @@
             log-rotation-files
             log-rotation-options
             log-rotation-post-rotate
+            %default-log-rotation-options
 
             rottlog-configuration
             rottlog-configuration?
@@ -82,7 +83,12 @@
   (post-rotate log-rotation-post-rotate           ;#f | gexp
                (default #f))
   (options     log-rotation-options               ;list of strings
-               (default '())))
+               (default %default-log-rotation-options)))
+
+(define %default-log-rotation-options
+  ;; Default log rotation options: append ".gz" to file names.
+  '("storefile @FILENAME.@COMP_EXT"
+    "notifempty"))
 
 (define %rotated-files
   ;; Syslog files subject to rotation.
@@ -93,18 +99,21 @@
   (list (log-rotation                             ;syslog files
          (files %rotated-files)
 
-         (options '(;; Run post-rotate once per rotation
+         (frequency 'weekly)
+         (options `(;; These files are worth keeping for a few weeks.
+                    "rotate 16"
+                    ;; Run post-rotate once per rotation
                     "sharedscripts"
-                    ;; Append .gz to rotated files
-                    "storefile @FILENAME.@COMP_EXT"))
+
+                    ,@%default-log-rotation-options))
          ;; Restart syslogd after rotation.
          (post-rotate #~(let ((pid (call-with-input-file "/var/run/syslog.pid"
                                      read)))
                           (kill pid SIGHUP))))
         (log-rotation
          (files '("/var/log/guix-daemon.log"))
-         (options '("rotate 4"                    ;don't keep too many of them
-                    "storefile @FILENAME.@COMP_EXT")))))
+         (options `("rotate 4"                    ;don't keep too many of them
+                    ,@%default-log-rotation-options)))))
 
 (define (log-rotation->config rotation)
   "Return a string-valued gexp representing the rottlog configuration snippet

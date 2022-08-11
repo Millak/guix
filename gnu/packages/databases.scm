@@ -8,7 +8,7 @@
 ;;; Copyright © 2015, 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
-;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2016, 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -122,6 +122,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages openstack)
   #:use-module (gnu packages pantheon)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
@@ -2295,7 +2296,7 @@ Driver.")
 (define-public nanodbc
   (package
     (name "nanodbc")
-    (version "2.13.0")
+    (version "2.14.0")
     (source (origin
               (method git-fetch)
               (uri
@@ -2305,7 +2306,7 @@ Driver.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q80p7yv9mcl4hyvnvcjdr70y8nc940ypf368lp97vpqn5yckkgm"))))
+                "1253bnrmchga3ra99jqkd2p29bc5h2ip79xd8afblz6b1v00wmbm"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -4754,7 +4755,7 @@ a Gtk.Grid Widget.")
            qscintilla
            qtbase-5
            sqlite))
-    (native-inputs (list qttools))
+    (native-inputs (list qttools-5))
     (home-page "https://sqlitebrowser.org/")
     (synopsis "Database browser for SQLite")
     (description "Sqlitebrowser is a high quaility, visual, open source tool to
@@ -4794,4 +4795,32 @@ create design, and edit database file compatible with SQLite.")
     (synopsis "SQL language server written in Go")
     (description
      "This package implements the @acronym{LSP, Language Server Protocol} for SQL.")
+    (license license:expat)))
+
+(define-public python-dogpile.cache
+  (package
+    (name "python-dogpile.cache")
+    (version "1.1.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dogpile.cache" version))
+              (sha256
+               (base32
+                "0kpx42vxzss4sz5ic6mp01a97zinzm6q76n8li2gbi4ccfxyhi6q"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (native-inputs (list python-mako python-pytest))
+    (propagated-inputs (list python-decorator python-stevedore))
+    (home-page "https://github.com/sqlalchemy/dogpile.cache")
+    (synopsis "Caching front-end based on the Dogpile lock")
+    (description "@code{dogpile.cache} is a caching API which provides a
+generic interface to caching backends of any variety, and additionally
+provides API hooks which integrate these cache backends with the locking
+mechanism of @code{dogpile}.")
     (license license:expat)))

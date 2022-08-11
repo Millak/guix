@@ -37,6 +37,7 @@
   #:use-module (guix records)
   #:use-module (guix store)
   #:export (%test-libvirt
+            %test-qemu-guest-agent
             %test-childhurd))
 
 
@@ -114,6 +115,89 @@
    (name "libvirt")
    (description "Connect to the running LIBVIRT service.")
    (value (run-libvirt-test))))
+
+
+;;;
+;;; QEMU Guest Agent service.
+;;;
+
+(define %qemu-guest-agent-os
+  (simple-operating-system
+   (service qemu-guest-agent-service-type)))
+
+(define (run-qemu-guest-agent-test)
+  "Run tests in %QEMU-GUEST-AGENT-OS."
+  (define os
+    (marionette-operating-system
+     %qemu-guest-agent-os
+     #:imported-modules '((gnu services herd))))
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     (port-forwardings '())))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (ice-9 rdelim)
+                       (srfi srfi-64))
+
+          (define marionette
+            ;; Ensure we look for the socket in the correct place below.
+            (make-marionette (list #$vm) #:socket-directory "/tmp"))
+
+          (define* (try-read port #:optional (attempts 10))
+            ;; Try reading from a port several times before giving up.
+            (cond ((char-ready? port)
+                   (let ((response (read-line port)))
+                     (close-port port)
+                     response))
+                  ((> attempts 1)
+                   (sleep 1)
+                   (try-read port (- attempts 1)))
+                  (else "")))
+
+          (define (run command)
+            ;; Run a QEMU guest agent command and return the response.
+            (let ((s (socket PF_UNIX SOCK_STREAM 0)))
+              (connect s AF_UNIX "/tmp/qemu-ga")
+              (display command s)
+              (try-read s)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "qemu-guest-agent")
+
+          (test-assert "service running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service 'qemu-guest-agent)
+                  (#f #f)
+                  (('service response-parts ...)
+                   (match (assq-ref response-parts 'running)
+                     ((pid) (number? pid))))))
+             marionette))
+
+          (test-equal "ping guest"
+            "{\"return\": {}}"
+            (run "{\"execute\": \"guest-ping\"}"))
+
+          (test-assert "get network interfaces"
+            (string-contains
+             (run "{\"execute\": \"guest-network-get-interfaces\"}")
+             "127.0.0.1"))
+
+          (test-end))))
+
+  (gexp->derivation "qemu-guest-agent-test" test))
+
+(define %test-qemu-guest-agent
+  (system-test
+   (name "qemu-guest-agent")
+   (description "Run commands in a virtual machine using QEMU guest agent.")
+   (value (run-qemu-guest-agent-test))))
 
 
 ;;;

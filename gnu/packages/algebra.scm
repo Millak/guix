@@ -413,13 +413,13 @@ or text interfaces) or as a C++ library.")
 (define-public flint
   (package
    (name "flint")
-   (version "2.8.4")
+   (version "2.9.0")
    (source
     (origin
       (method url-fetch)
       (uri (string-append "http://flintlib.org/flint-" version ".tar.gz"))
       (sha256
-       (base32 "1gp4wm2s8c27g2hh53d09cys62da1bsxfwbcsj9cd7cfikm95pv1"))))
+       (base32 "0sp79ixaawjzna79afrlwlx9hg55jxil03f1wq435j9k23ar1h1g"))))
    (build-system gnu-build-system)
    (inputs
     (list ntl))
@@ -466,7 +466,7 @@ fast arithmetic.")
 (define-public arb
   (package
     (name "arb")
-    (version "2.22.1")
+    (version "2.23.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -475,7 +475,7 @@ fast arithmetic.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qcyf8a7w95yxap0r3sb7xibk53nbs5kkidja3ljvqpbpk5xvpax"))))
+                "1m9vskyf857gbm0cbh3z8c8m6cqkqa765wb9hqmsv7yzfmklzpvn"))))
     (build-system gnu-build-system)
     (propagated-inputs
      (list flint))               ; flint.h is included by arf.h
@@ -540,14 +540,14 @@ these types and other mathematical functions.")
 (define-public ntl
   (package
    (name "ntl")
-   (version "11.4.4")
+   (version "11.5.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://shoup.net/ntl/ntl-"
                                 version ".tar.gz"))
             (sha256
              (base32
-              "1nr1h27j2gdz6badzz9lk2pknxhdijqdxqhd3haryh0sw616wzwx"))
+              "12ka3hym4skg63mp8vgkin79svbpdk2m6i41yvmcdjq62g1hc391"))
             (modules '((guix build utils)))
             (snippet
              '(begin
@@ -923,7 +923,7 @@ algorithms from the FORTRAN library MINPACK.")
 (define-public symengine
   (package
     (name "symengine")
-    (version "0.6.0")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -932,7 +932,7 @@ algorithms from the FORTRAN library MINPACK.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "129iv9maabmb42ylfdv0l0g94mcbf3y4q3np175008rcqdr8z6h1"))))
+        (base32 "17b6byrhk0bgvarqmg92nrrqhzll9as6x1smghmyq2h9xc373ap4"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -1206,17 +1206,17 @@ xtensor provides:
 (define-public gap
   (package
     (name "gap")
-    (version "4.11.0")
+    (version "4.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://files.gap-system.org/gap-"
                            (version-major+minor version)
-                           "/tar.bz2/gap-"
+                           "/tar.gz/gap-"
                            version
-                           ".tar.bz2"))
+                           ".tar.gz"))
        (sha256
-        (base32 "00l6hvy4iggnlrib4vp805sxdm3j7n3hzpv5zs9hbiiavh80l1xz"))
+        (base32 "01535s81h254zcs84zi95xqmhvvn6fn9qss8761myxc2gpdcadb6"))
        (modules '((guix build utils) (ice-9 ftw) (srfi srfi-1)))
        (snippet
         '(begin
@@ -1242,28 +1242,42 @@ xtensor provides:
                    "SmallGrp-"   ; artistic2.0
                    "transgrp"    ; artistic2.0 for data,
                                  ; gpl2 or gpl3 for code
-                   ;; Recommended package.
-                   "io-"         ; gpl3+
-                   ;; Optional packages, searched for at start,
-                   ;; and their depedencies.
+                   ;; Optional packages.
                    "alnuth-"
+                   "AutoDoc-"
+                   "automata-"
                    "autpgrp-"
+                   "crime-"
                    "crisp-"      ; bsd-2
-                   "ctbllib"     ; gpl3+, clarified in the next release;
-                                 ; see
-                                 ; http://www.math.rwth-aachen.de/~Thomas.Breuer/ctbllib/README.md
+                   "ctbllib"     ; gpl3+
+                   "datastructures"
                    "FactInt-"
                    "fga"
+                   "format"
+                   "groupoids-"
+                   "guarana"
+                   "idrel-"
+                   "images-"     ; mpl2.0
+                   "IntPic-"
+                   "io-"         ; gpl3+
                    "irredsol-"   ; bsd-2
                    "laguna-"
+                   "liering-"
+                   "MapClass-"
+                   "nilmat-"
+                   "NumericalSgps-"
+                   "OpenMath-"
+                   "orb-"        ; gpl3+
                    "polenta-"
                    "polycyclic-"
                    "radiroot-"
+                   "repsn-"
                    "resclasses-"
+                   "simpcomp"
                    "sophus-"
                    "tomlib-"
-                   "utils-"))))
-           #t))))
+                   "unipot-"
+                   "utils-"))))))))
     (build-system gnu-build-system)
     (inputs
      (list gmp readline zlib))
@@ -1280,14 +1294,12 @@ xtensor provides:
            (lambda _
              (setenv "CONFIG_SHELL" (which "bash"))
              (with-directory-excursion "pkg"
-               (invoke "../bin/BuildPackages.sh")
-             #t)))
+               (invoke "../bin/BuildPackages.sh"))))
          (add-after 'build-packages 'build-doc
            ;; The documentation is bundled, but we create it from source.
            (lambda _
              (with-directory-excursion "doc"
-               (invoke "./make_doc"))
-             #t))
+               (invoke "./make_doc"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1312,6 +1324,8 @@ xtensor provides:
                (chmod prog #o755)
                ;; Install the headers and library, which are needed by Sage.
                (invoke "make" "install-headers")
+               (install-file "gen/config.h"
+                             (string-append out "/include/gap"))
                (invoke "make" "install-libgap")
                ;; Remove information on the build directory from sysinfo.gap.
                (substitute* "sysinfo.gap"
@@ -1321,8 +1335,7 @@ xtensor provides:
                (invoke "make" "install-gaproot")
                ;; Copy the directory of compiled packages; the make target
                ;; install-pkg is currently empty.
-               (copy-recursively "pkg" (string-append share "/pkg")))
-             #t)))))
+               (copy-recursively "pkg" (string-append share "/pkg"))))))))
     (home-page "https://www.gap-system.org/")
     (synopsis
      "System for computational group theory")
@@ -1589,16 +1602,16 @@ of M4RI from F_2 to F_{2^e}.")
 (define-public eclib
   (package
     (name "eclib")
-    (version "20190909")
+    (version "20220621")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/JohnCremona/eclib/")
-                    (commit (string-append "v" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gw27lqc3f525n8qdcmr2nyn16y9g10z9f6dnmckyyxcdzvhq35n"))))
+                "07wbkzmn6w0hrv2vim7f0il7k59ccc66x5vnn623xkmhfw32b3nz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))

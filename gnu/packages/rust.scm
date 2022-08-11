@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 (unmatched parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -540,10 +541,45 @@ safety and thread safety guarantees.")
                  (generate-all-checksums "vendor"))))))))))
 
 (define rust-1.57
-  (let ((base-rust
-         (rust-bootstrapped-package
-          rust-1.56 "1.57.0"
-          "06jw8ka2p3kls8p0gd4p0chhhb1ia1mlvj96zn78n7qvp71zjiim")))
+  (rust-bootstrapped-package
+   ;; Verified that it *doesn't* build with 1.55. e.g.:
+   ;; * feature `edition2021` is required
+   rust-1.56 "1.57.0" "06jw8ka2p3kls8p0gd4p0chhhb1ia1mlvj96zn78n7qvp71zjiim"))
+
+(define rust-1.58
+  (rust-bootstrapped-package
+   ;; Verified that it *doesn't* build with 1.56. e.g.:
+   ;; * error: attributes starting with `rustc` are reserved for use by the
+   ;;   `rustc` compiler
+   ;; * error: cannot find attribute `rustc_do_not_const_check` in this scope
+   ;; * error[E0522]: definition of an unknown language item:
+   ;;   `const_eval_select_ct`
+   rust-1.57 "1.58.1" "1iq7kj16qfpkx8gvw50d8rf7glbm6s0pj2y1qkrz7mi56vfsyfd8"))
+
+(define rust-1.59
+  (rust-bootstrapped-package
+   ;; Verified that it *doesn't* build with 1.57. e.g.:
+   ;; * error: `doc(primitive)` should never have been stable
+   ;; * error[E0522]: definition of an unknown language item:
+   ;;   `generator_return`
+   ;; * error[E0206]: the trait `Copy` may not be implemented for this type
+   rust-1.58 "1.59.0" "1yc5bwcbmbwyvpfq7zvra78l0r8y3lbv60kbr62fzz2vx2pfxj57"))
+
+(define rust-1.60
+  (rust-bootstrapped-package
+   ;; Verified that it *doesn't* build with 1.58. e.g.:
+   ;; * error: unknown codegen option: `symbol-mangling-version`
+   rust-1.59 "1.60.0" "1drqr0a26x1rb2w3kj0i6abhgbs3jx5qqkrcwbwdlx7n3inq5ji0"))
+
+;;; Note: Only the latest versions of Rust are supported and tested.  The
+;;; intermediate rusts are built for bootstrapping purposes and should not
+;;; be relied upon.  This is to ease maintenance and reduce the time
+;;; required to build the full Rust bootstrap chain.
+;;;
+;;; Here we take the latest included Rust, make it public, and re-enable tests
+;;; and extra components such as rustfmt.
+(define-public rust
+  (let ((base-rust rust-1.60))
     (package
       (inherit base-rust)
       (outputs (cons "rustfmt" (package-outputs base-rust)))
@@ -681,12 +717,6 @@ safety and thread safety guarantees.")
       (native-inputs (cons* `("gdb" ,gdb)
                             `("procps" ,procps)
                             (package-native-inputs base-rust))))))
-
-;;; Note: Only the latest versions of Rust are supported and tested.  The
-;;; intermediate rusts are built for bootstrapping purposes and should not
-;;; be relied upon.  This is to ease maintenance and reduce the time
-;;; required to build the full Rust bootstrap chain.
-(define-public rust rust-1.57)
 
 (define-public rust-src
   (hidden-package

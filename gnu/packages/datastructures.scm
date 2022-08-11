@@ -4,7 +4,7 @@
 ;;; Copyright © 2018 Meiyo Peng <meiyo.peng@gmail.com>
 ;;; Copyright © 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +28,7 @@
   #:use-module (gnu packages perl)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -133,6 +134,29 @@ hashes (CTPH), also called fuzzy checksums.  It can identify similar files
 that have sequences of identical bytes in the same order, even though bytes
 in between these sequences may be different in both content and length.")
     (license license:gpl2+)))
+
+(define-public libcuckoo
+  (package
+    (name "libcuckoo")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/efficient/libcuckoo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h9yhpkhk813dk66y6bs2csybw3pbpfnp3cakr2xism02vjwy19l"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~'("-DBUILD_TESTS=1")))
+    (home-page "https://efficient.github.io/libcuckoo/")
+    (synopsis "Concurrent hash table")
+    (description
+     "@code{libcuckoo} provides a high-performance, compact hash table that
+allows multiple concurrent reader and writer threads.")
+    (license license:asl2.0)))
 
 (define-public liburcu
   (package

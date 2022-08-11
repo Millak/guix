@@ -162,6 +162,10 @@ server at '~a': ~a")
          ('success
           (session-set! session 'timeout timeout)
           session)
+         ('again
+          (raise (formatted-message (G_ "timeout while connecting \
+to SSH server at '~a'")
+                                    (session-get session 'host))))
          (x
           (match (userauth-gssapi! session)
             ('success

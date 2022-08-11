@@ -1295,15 +1295,15 @@ Trusted comments are signed, thus verified, before being displayed.")
 (define-public libolm
   (package
     (name "libolm")
-    (version "3.2.3")
+    (version "3.2.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.matrix.org/git/olm")
+                    (url "https://gitlab.matrix.org/matrix-org/olm")
                     (commit version)))
               (sha256
                (base32
-                "0bixly6jqpwfx3p37c1qp1j685yg6m429r1nazwh43w4n527bs3y"))
+                "1k8v9ig32vmjm58rbris621d7mvp4q91qa5p79vc51p41sz91yhj"))
               (file-name (git-file-name name version))
               ;; Delete the bundled blob.  It's free, but unauditable,
               ;; and apparently only required for android.

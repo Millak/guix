@@ -19,7 +19,7 @@
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Rutger Helling <rhelling@mykolab.com>
@@ -1058,89 +1058,89 @@ supplies a generic doubly-linked list and some string functions.")
 
 (define-public freeimage
   (package
-   (name "freeimage")
-   (version "3.18.0")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "mirror://sourceforge/freeimage/Source%20Distribution/"
-                  version "/FreeImage"
-                  (string-concatenate (string-split version #\.))
-                  ".zip"))
-            (sha256
-             (base32
-              "1z9qwi9mlq69d5jipr3v2jika2g0kszqdzilggm99nls5xl7j4zl"))
-            (modules '((guix build utils)))
-            (snippet
-             '(begin
-                (for-each
-                  (lambda (dir)
-                    (delete-file-recursively (string-append "Source/" dir)))
-                  '("LibJPEG" "LibOpenJPEG" "LibPNG" "LibRawLite"
-                    "LibJXR" "LibWebP" "OpenEXR" "ZLib"))))
-            (patches
-             (append
-              (search-patches "freeimage-unbundle.patch")
-              ;; Take one patch from Arch Linux that adds LibRaw 0.20 compatibility.
-              (list (origin
-                      (method url-fetch)
-                      (uri "https://raw.githubusercontent.com/archlinux\
+    (name "freeimage")
+    (version "3.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://sourceforge/freeimage/Source%20Distribution/"
+                    version "/FreeImage"
+                    (string-concatenate (string-split version #\.))
+                    ".zip"))
+              (sha256
+               (base32
+                "1z9qwi9mlq69d5jipr3v2jika2g0kszqdzilggm99nls5xl7j4zl"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each
+                   (lambda (dir)
+                     (delete-file-recursively (string-append "Source/" dir)))
+                   '("LibJPEG" "LibOpenJPEG" "LibPNG" "LibRawLite"
+                     "LibJXR" "LibWebP" "OpenEXR" "ZLib"))))
+              (patches
+               (append
+                (search-patches "freeimage-unbundle.patch")
+                ;; Take one patch from Arch Linux that adds LibRaw 0.20 compatibility.
+                (list (origin
+                        (method url-fetch)
+                        (uri "https://raw.githubusercontent.com/archlinux\
 /svntogit-community/ca3e6a52f5a46dec87cbf85e9d84fe370e282c8c/trunk\
 /freeimage-libraw-0.20.patch")
-                      (file-name "freeimage-libraw-compat.patch")
-                      (sha256
-                       (base32
-                        "0cwjxjz0f4gs6igvwqg0p99mnrsrwzkal1l2n08yvz2xq9s5khki"))))))))
-   (build-system gnu-build-system)
-   (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        ;; According to Fedora these files depend on private headers, but their
-        ;; presence is required for building, so we replace them with empty files.
-        (add-after 'unpack 'delete-unbuildable-files
-          (lambda _
-            (for-each (lambda (file)
-                        (delete-file file)
-                        (close (open file O_CREAT)))
-                      '("Source/FreeImage/PluginG3.cpp"
-                        "Source/FreeImageToolkit/JPEGTransform.cpp"))
-            #t))
-        ;; These scripts generate the Makefiles.
-        (replace 'configure
-          (lambda _
-            (invoke "sh" "gensrclist.sh")
-            (invoke "sh" "genfipsrclist.sh")))
-        (add-before 'build 'patch-makefile
-          (lambda* (#:key outputs #:allow-other-keys)
-            (substitute* "Makefile.gnu"
-              (("/usr") (assoc-ref outputs "out"))
-              (("-o root -g root") ""))
-            #t)))
+                        (file-name "freeimage-libraw-compat.patch")
+                        (sha256
+                         (base32
+                          "0cwjxjz0f4gs6igvwqg0p99mnrsrwzkal1l2n08yvz2xq9s5khki"))))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; According to Fedora these files depend on private headers, but their
+          ;; presence is required for building, so we replace them with empty files.
+          (add-after 'unpack 'delete-unbuildable-files
+            (lambda _
+              (for-each (lambda (file)
+                          (delete-file file)
+                          (close (open file O_CREAT)))
+                        '("Source/FreeImage/PluginG3.cpp"
+                          "Source/FreeImageToolkit/JPEGTransform.cpp"))))
+          ;; These scripts generate the Makefiles.
+          (replace 'configure
+            (lambda _
+              (invoke "sh" "gensrclist.sh")
+              (invoke "sh" "genfipsrclist.sh")))
+          (add-before 'build 'patch-makefile
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "Makefile.gnu"
+                (("/usr") (assoc-ref outputs "out"))
+                (("-o root -g root") "")))))
       #:make-flags
-      (list ,(string-append "CC=" (cc-for-target))
-            ;; We need '-fpermissive' for Source/FreeImage.h.
-            ;; libjxr doesn't have a pkg-config file.
-            (string-append "CFLAGS+=-O2 -fPIC -fvisibility=hidden -fpermissive "
-                           "-I" (assoc-ref %build-inputs "libjxr") "/include/jxrlib"))
-      #:tests? #f)) ; no check target
-   (native-inputs
-    (list pkg-config unzip))
-   (inputs
-    `(("libjpeg" ,libjpeg-turbo)
-      ("libjxr" ,libjxr)
-      ("libpng" ,libpng)
-      ("libraw" ,libraw)
-      ("libtiff" ,libtiff)
-      ("libwebp" ,libwebp)
-      ("openexr" ,openexr-2)
-      ("openjpeg" ,openjpeg)
-      ("zlib" ,zlib)))
-   (synopsis "Library for handling popular graphics image formats")
-   (description
-    "FreeImage is a library for developers who would like to support popular
+      #~(let ((jxrlib (search-input-directory %build-inputs "include/jxrlib")))
+          (list (string-append "CC=" #$(cc-for-target))
+                ;; We need '-fpermissive' for Source/FreeImage.h.
+                ;; libjxr doesn't have a pkg-config file.
+                (string-append "CFLAGS+=-O2 -fPIC -fvisibility=hidden "
+                               "-fpermissive -I" jxrlib)))
+      #:tests? #f))                     ; no check target
+    (native-inputs
+     (list pkg-config unzip))
+    (inputs
+     (list libjpeg-turbo
+           libjxr
+           libpng
+           libraw
+           libtiff
+           libwebp
+           openexr-2
+           openjpeg
+           zlib))
+    (synopsis "Library for handling popular graphics image formats")
+    (description
+     "FreeImage is a library for developers who would like to support popular
 graphics image formats like PNG, BMP, JPEG, TIFF and others.")
-   (license license:gpl2+)
-   (home-page "http://freeimage.sourceforge.net")))
+    (license license:gpl2+)
+    (home-page "https://freeimage.sourceforge.io/")))
 
 (define-public vigra
     (let ((commit "9b514fa00a136f5fd81bb57ee9f6293c333ffc1f")
@@ -1331,7 +1331,7 @@ channels.")
         (base32 "1qm6bvj28l42km009nc60gffn1qhngc0m2wjlhf90si3mcc8d99m"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:test-target "tests"
+     `(#:test-target "tests"
        #:configure-flags (list "-DEXIV2_BUILD_UNIT_TESTS=ON"
                                ;; darktable needs BMFF to support
                                ;; CR3 files.
@@ -1342,7 +1342,19 @@ channels.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (lib (string-append out "/lib")))
-               (for-each delete-file (find-files lib "\\.a$"))))))))
+               (for-each delete-file (find-files lib "\\.a$")))))
+
+         ,@(if (or (target-ppc64le?) (target-aarch64?))
+               '((add-after 'unpack 'adjust-tests
+                   (lambda _
+                     ;; Adjust test on ppc64 and aarch64, where no exception
+                     ;; is raised and thus the return value is different.  See
+                     ;; <https://github.com/Exiv2/exiv2/issues/365> and
+                     ;; <https://github.com/Exiv2/exiv2/issues/933>.
+                     (substitute* "tests/bugfixes/github/test_CVE_2018_12265.py"
+                       (("\\$uncaught_exception \\$addition_overflow_message\n") "")
+                       (("retval = \\[1\\]") "retval = [0]")))))
+               '()))))
     (propagated-inputs
      (list expat zlib))
     (native-inputs
@@ -1808,9 +1820,9 @@ parsing, viewing, modifying, and saving this metadata.")
          "1p7gqs5vqzbddlgl38lbanchwb14m6lx8f2cn2c5p0vyqwvqqv52"))))
     (build-system qt-build-system)
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (arguments
      `(#:tests? #f))                    ;no tests
     (home-page "https://github.com/flameshot-org/flameshot")

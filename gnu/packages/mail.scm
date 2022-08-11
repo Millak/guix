@@ -48,6 +48,7 @@
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -403,34 +404,32 @@ software.  GNU Mailutils provides the following commands:
      (list license:gpl3+ license:lgpl3+))))
 
 (define-public go-gitlab.com-shackra-goimapnotify
-  (let ((commit "832bc7112db9b28e28d69e90b91ea6c005244c9b")
-        (revision "0"))
-    (package
-      (name "go-gitlab.com-shackra-goimapnotify")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/shackra/goimapnotify")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1h27kshx4vwl5k6vc2szsq3d701fzs4gczjypz907f8hj0lrnjmy"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "gitlab.com/shackra/goimapnotify"))
-      (propagated-inputs
-       (list go-github-com-emersion-go-imap
-             go-github-com-emersion-go-imap-idle
-             go-github-com-emersion-go-sasl go-github-com-sirupsen-logrus
-             go-golang-org-x-text))
-      (synopsis "Execute scripts on IMAP mailbox changes")
-      (description
-       "Script to execute scripts on IMAP mailbox changes (new/deleted/updated
+  (package
+    (name "go-gitlab.com-shackra-goimapnotify")
+    (version "2.3.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/shackra/goimapnotify")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06jhxvhdvdv049qpvp8ahnhvswvbpakpw7aq2lw790f3x89px2ss"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "gitlab.com/shackra/goimapnotify"))
+    (propagated-inputs
+     (list go-github-com-emersion-go-imap
+           go-github-com-emersion-go-imap-idle
+           go-github-com-emersion-go-sasl go-github-com-sirupsen-logrus
+           go-golang-org-x-text))
+    (synopsis "Execute scripts on IMAP mailbox changes")
+    (description
+     "Script to execute scripts on IMAP mailbox changes (new/deleted/updated
 messages) using IDLE.  Implemented in Go.")
-      (home-page "https://gitlab.com/shackra/goimapnotify")
-      (license license:gpl3+))))
+    (home-page "https://gitlab.com/shackra/goimapnotify")
+    (license license:gpl3+)))
 
 (define-public guile2.2-mailutils
   (package
@@ -1161,57 +1160,42 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.6.11")
+    (version "1.8.7")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/djcb/mu/releases/"
-                                  "download/" version "/"
-                                  "mu-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/djcb/mu")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "13gchks9znyw0axw1wlks7f7h4442rfagmj7kx0jm3qhvi0b5sk0"))))
-    (build-system gnu-build-system)
+                "0yfbw234yqnqfnsn5bj1hqwpy78pkxn05vl18z8nvsqdmpzal4gx"))))
+    (build-system meson-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib" ,glib "bin")             ; for gtester
-       ("emacs" ,emacs-minimal)
-       ("tzdata" ,tzdata-for-tests)))   ; for mu/test/test-mu-query.c
+     (list pkg-config
+           emacs-minimal
+           gnupg                        ; for tests
+           texinfo))
     (inputs
-     (list xapian guile-3.0 glib gmime))
+     (list glib gmime xapian))
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (guix build emacs-utils))
-       #:imported-modules (,@%gnu-build-system-modules
+     `(#:modules ((guix build meson-build-system)
+                  (guix build emacs-utils)
+                  (guix build utils))
+       #:imported-modules (,@%meson-build-system-modules
                            (guix build emacs-utils))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-configure
-           ;; By default, elisp code goes to "share/emacs/site-lisp/mu4e",
-           ;; so our Emacs package can't find it.  Setting "--with-lispdir"
-           ;; configure flag doesn't help because "mu4e" will be added to
-           ;; the lispdir anyway, so we have to modify "configure.ac".
-           (lambda _
-             (substitute* "configure"
-               (("^ +lispdir=\"\\$\\{lispdir\\}/mu4e/\".*") ""))))
-         (add-after 'unpack 'patch-bin-sh-in-tests
+         (add-after 'unpack 'patch-bin-references
            (lambda _
              (substitute* '("guile/tests/test-mu-guile.cc"
-                            "mu/test-mu-cmd.cc"
-                            "mu/test-mu-cmd-cfind.cc"
-                            "mu/test-mu-query.cc")
-               (("/bin/sh") (which "sh")))))
-         (add-before 'install 'fix-ffi
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "guile/mu.scm"
-               (("\"libguile-mu\"")
-                (format #f "\"~a/lib/libguile-mu\""
-                        (assoc-ref outputs "out"))))))
-         (add-before 'check 'check-tz-setup
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; For mu/test/test-mu-query.c
-             (setenv "TZDIR"
-                     (search-input-directory inputs "share/zoneinfo"))))
+                            "mu/tests/test-mu-cmd.cc"
+                            "mu/tests/test-mu-cmd-cfind.cc"
+                            "mu/tests/test-mu-query.cc")
+               (("/bin/sh") (which "sh")))
+             (substitute* '("lib/tests/bench-indexer.cc"
+                            "lib/utils/mu-utils.cc")
+               (("/bin/rm") (which "rm")))))
          (add-after 'install 'install-emacs-autoloads
            (lambda* (#:key outputs #:allow-other-keys)
              (emacs-generate-autoloads
@@ -1735,14 +1719,14 @@ addons which can add many functionalities to the base client.")
 (define-public msmtp
   (package
     (name "msmtp")
-    (version "1.8.20")
+    (version "1.8.22")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/msmtp/releases"
                            "/msmtp-" version ".tar.xz"))
        (sha256
-        (base32 "04di9qs2bwiwidnhk3afif5mh05q3ggr9cyhr5ysyj0gzjmf4fnr"))))
+        (base32 "1rx3ksvwdfrwahsd2lwf52vnhhq72ygb0kjy6ci2df55hri2010v"))))
     (build-system gnu-build-system)
     (inputs
      (list libsecret gnutls zlib gsasl))
@@ -1750,26 +1734,24 @@ addons which can add many functionalities to the base client.")
      (list pkg-config))
     (home-page "https://marlam.de/msmtp/")
     (arguments
-     `(#:configure-flags (list "--with-libgsasl"
-                               "--with-libidn"
-                               "--with-tls=gnutls")
+     (list
+       #:configure-flags
+       #~(list "--with-libgsasl"
+               "--with-libidn"
+               "--with-tls=gnutls")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-additional-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/msmtp"))
-                    (msmtpq "scripts/msmtpq")
-                    (vimfiles (string-append out "/share/vim/vimfiles/syntax")))
-               (install-file (string-append msmtpq "/msmtpq") bin)
-               (install-file (string-append msmtpq "/msmtp-queue") bin)
-               (install-file (string-append msmtpq "/README.msmtpq") doc)
-               (install-file "scripts/vim/msmtp.vim" vimfiles)
-               ;; Don't rely on netcat being in the PATH to test for a
-               ;; connection, instead look up and ping debian.org.
-               (substitute* (string-append bin "/msmtpq")
-                 (("EMAIL_CONN_TEST=n") "EMAIL_CONN_TEST=p"))))))))
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-additional-files
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out #$output)
+                      (bin (string-append out "/bin"))
+                      (doc (string-append out "/share/doc/msmtp"))
+                      (msmtpq "scripts/msmtpq")
+                      (vimfiles (string-append out "/share/vim/vimfiles/syntax")))
+                 (install-file (string-append msmtpq "/msmtpq") bin)
+                 (install-file (string-append msmtpq "/msmtp-queue") bin)
+                 (install-file (string-append msmtpq "/README.msmtpq") doc)
+                 (install-file "scripts/vim/msmtp.vim" vimfiles)))))))
     (properties
      '((release-monitoring-url . "https://marlam.de/msmtp/download/")))
     (synopsis
@@ -3557,14 +3539,14 @@ some configuration.")
 (define-public postorius
   (package
     (name "postorius")
-    (version "1.3.3")
+    (version "1.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "postorius" version))
        (sha256
         (base32
-         "08jn23gblbkfl09qlykbpsmp39mmach3sl69h1j5cd5kkx839rwa"))))
+         "0s0sv97nmszl5pl9rnnyzp3sxpmdhpxqrdwv7nc0ww8zs99w831b"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -3579,7 +3561,7 @@ some configuration.")
        #:tests? #f)) ; Tests try to run a mailman instance to test against.
     (inputs
      (list python-readme-renderer python-mailmanclient
-           python-django-2.2 python-django-mailman3))
+           python-django python-django-mailman3))
     (native-inputs
      (list python-beautifulsoup4 python-isort python-mock python-vcrpy))
     (home-page "https://gitlab.com/mailman/postorius")
@@ -3912,13 +3894,13 @@ servers.  The 4rev1 and 4 versions of IMAP are supported.")
 (define-public urlscan
   (package
     (name "urlscan")
-    (version "0.9.9")
+    (version "0.9.10")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "urlscan" version))
         (sha256
-         (base32 "1lc06i4r29s7qsfds4w3ip85n5fxjn65n47wxh8pvyb46fdvjrns"))))
+         (base32 "1ir6dxifkd8hv048p65jyz4wyg6ll002fzvbmajpdnvs6mvkj1md"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-urwid))

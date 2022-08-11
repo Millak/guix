@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -563,14 +564,14 @@ code for interfacing Caml with C from an IDL description of the C functions.")
 (define-public ocaml-extlib
   (package
     (name "ocaml-extlib")
-    (version "1.7.8")
+    (version "1.7.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ygrek.org/p/release/ocaml-extlib/"
                                   "extlib-" version ".tar.gz"))
               (sha256
                (base32
-                "0npq4hq3zym8nmlyji7l5cqk6drx2rkcx73d60rxqh5g8dla8p4k"))))
+                "1jydzw2n84cfiz9y6lk4gih4wbr8jybanmiryfs01svd07g4vpjq"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:phases
@@ -2624,6 +2625,48 @@ process.  Also, in many cases, Lwt threads can interact without the need for
 locks or other synchronization primitives.")
     (license license:lgpl2.1)))
 
+(define-public ocaml-luv
+  (package
+    (name "ocaml-luv")
+    (version "0.5.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/aantron/luv/releases/download/"
+                                  version "/luv-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0hrsi8n2l31bcwgj847df4chjgqb9lmwkaky8fvvi15k25rz9v6c"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Remove bundled configure and libuv.
+                  (delete-file-recursively "src/c/vendor")
+                  #t))))
+    (build-system dune-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'use-system-libuv
+                 (lambda _
+                   (setenv "LUV_USE_SYSTEM_LIBUV" "yes")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "dune" "runtest" "--no-buffer" "--force")))))))
+    (inputs (list libuv))
+    (propagated-inputs (list ocaml-ctypes ocaml-result ocaml-odoc))
+    (native-inputs (list ocaml-base ocaml-alcotest))
+    (home-page "https://github.com/aantron/luv")
+    (synopsis "Binding to libuv: cross-platform asynchronous I/O")
+    (description
+     "Luv is a binding to libuv, the cross-platform C library that does
+asynchronous I/O in Node.js and runs its main loop.  Besides asynchronous I/O,
+libuv also supports multiprocessing and multithreading.  Multiple event loops
+can be run in different threads.  libuv also exposes a lot of other
+functionality, amounting to a full OS API, and an alternative to the standard
+module Unix.")
+    (license license:expat)))
+
 (define-public ocaml-lwt-react
   (package
     (inherit ocaml-lwt)
@@ -2768,6 +2811,45 @@ the operating system in OCaml.  It has functions to access the process
 environment, parse command line arguments, interact with the file system and
 run command line programs.")
     (license license:isc)))
+
+(define-public ocaml-xml-light
+  (package
+    (name "ocaml-xml-light")
+    (version "2.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ncannasse/xml-light")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "089ywjz84y4p5iln94y54vh03b5fm2zrl2dld1398dyrby96dp6s"))))
+    (build-system ocaml-build-system)
+    (arguments
+     (list #:tests? #f ; There are no tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'prefix
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("`\\$\\(OCAMLC\\) -where`")
+                      (string-append #$output "/lib/ocaml/site-lib/xml-light")))))
+               (delete 'configure) ; no configure
+               (add-before 'install 'mkdir
+                 (lambda _
+                   (mkdir-p (string-append #$output "/lib/ocaml/site-lib/xml-light"))))
+               (replace 'install
+                 (lambda _
+                   (invoke "make" "install_ocamlfind"))))))
+    (home-page "https://github.com/ncannasse/xml-light")
+    (synopsis "Minimal XML parser & printer for OCaml")
+    (description
+     "Xml-Light provides functions to parse an XML document into an OCaml data
+structure, work with it, and print it back to an XML document.  It also
+supports DTD parsing and checking, and is entirely written in OCaml, hence it
+does not require additional C libraries.")
+    (license license:lgpl2.1+))) ; with linking exception
 
 (define-public ocaml-xmlm
   (package
@@ -4364,6 +4446,34 @@ sensitive completion, colors, and more.")
         ("ocaml-zed" ,ocaml-zed)))
      (properties '()))))
 
+(define-public ocaml-ptmap
+  (package
+    (name "ocaml-ptmap")
+    (version "2.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "https://github.com/backtracking/ptmap/releases/download/"
+                              version "/ptmap-" version ".tbz"))
+              (sha256
+               (base32
+                "1apk61fc1y1g7x3m3c91fnskvxp6i0vk5nxwvipj56k7x2pzilgb"))))
+    (build-system dune-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "dune" "runtest")))))))
+    (propagated-inputs (list ocaml-stdlib-shims ocaml-seq))
+    (home-page "https://github.com/backtracking/ptmap")
+    (synopsis "Maps of integers implemented as Patricia trees")
+    (description
+     "An implementation inspired by Okasaki & Gill's paper 'Fast Mergeable
+Integer Maps.'")
+    (license license:lgpl2.1))) ; with linking exception
+
 (define-public ocaml-integers
   (package
     (name "ocaml-integers")
@@ -5857,6 +5967,28 @@ storage of large amounts of data.")
     (home-page "https://github.com/ocaml-doc/octavius")
     (synopsis "Ocamldoc comment syntax parser")
     (description "Octavius is a library to parse the `ocamldoc` comment syntax.")
+    (license license:isc)))
+
+(define-public ocaml-sha
+  (package
+    (name "ocaml-sha")
+    (version "1.15.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/djs55/ocaml-sha/releases/download/"
+                                  version "/sha-" version ".tbz"))
+              (sha256
+               (base32
+                "1dzzhchknnbrpp5s81iqbvmqp4s0l75yrq8snj70ch3wkarmgg9z"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-stdlib-shims ocaml-odoc))
+    (native-inputs (list ocaml-ounit2))
+    (home-page "https://github.com/djs55/ocaml-sha")
+    (synopsis "OCaml binding to the SHA cryptographic functions")
+    (description
+     "This is the binding for SHA interface code in OCaml, offering the same
+interface as the MD5 digest included in the OCaml standard library.  It
+currently provides SHA1, SHA256 and SHA512 hash functions.")
     (license license:isc)))
 
 (define-public ocaml-ppx-hash

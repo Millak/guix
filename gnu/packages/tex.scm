@@ -22,6 +22,8 @@
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2022 Fabio Natali <me@fabionatali.com>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -158,6 +160,7 @@ copied to their outputs; otherwise the TEXLIVE-BUILD-SYSTEM is used."
     (file-name (string-append "hyph-utf8-scripts-"
                               (number->string %texlive-revision)
                               "-checkout"))
+    (patches (search-patches "texlive-hyph-utf8-no-byebug.patch"))
     (sha256
      (base32
       "04xzf5gr3ylyh3ls09imrx4mwq3qp1k97r9njzlan6hlff875rx2"))))
@@ -187,7 +190,8 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                          (string-append root "/tex/generic/hyph-utf8/patterns/quote")))
                    (mkdir "scripts")
                    (copy-recursively
-                    (assoc-ref inputs "hyph-utf8-scripts") "scripts")
+                    (dirname (search-input-file inputs "hyph-utf8.rb"))
+                    "scripts")
 
                    ;; Prepare target directories
                    (mkdir-p patterns)
@@ -225,9 +229,7 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                         (string-append "File.join(\"" ptex "\"")))
                      (invoke "ruby" "generate-ptex-patterns.rb")))))))))
       (native-inputs
-       `(("ruby" ,ruby)
-         ("ruby-hydra" ,ruby-hydra)
-         ("hyph-utf8-scripts" ,hyph-utf8-scripts)))
+       (list ruby ruby-hydra-minimal hyph-utf8-scripts))
       (home-page "https://ctan.org/pkg/hyph-utf8"))))
 
 (define texlive-extra-src
@@ -984,6 +986,26 @@ LaTeX user is requesting.
 
 Tip: installing @code{texlive-cbfonts} will automatically propagate this one.")
     (license license:lppl1.3c+)))
+
+(define-public texlive-cite
+  (package
+    (inherit (simple-texlive-package
+              "texlive-cite"
+              (list "doc/latex/cite/" "tex/latex/cite/")
+              (base32
+               "0b1amznayxj80dmqbzcysmj7q8aksbyz98k6djsqi0mhwp1cd0fd")
+              #:trivial? #t))
+    (version (number->string %texlive-revision))
+    (home-page "https://ctan.org/pkg/cite")
+    (synopsis "Improved citation handling in LaTeX")
+    (description
+     "The package supports compressed, sorted lists of numerical citations,
+and also deals with various punctuation and other issues of representation,
+including comprehensive management of break points.  The package is compatible
+with both hyperref and backref.  The package is (unsurprisingly) part of the
+cite bundle of the author's citation-related packages.")
+    (license (license:fsf-free
+              "/share/texmf-dist/doc/latex/cite/README"))))
 
 (define-public texlive-cm
   (let ((template (simple-texlive-package
@@ -8500,7 +8522,7 @@ and Karl Berry.")
            mythes
            python
            qtbase-5
-           qtsvg
+           qtsvg-5
            zlib))
     (propagated-inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-fonts-ec)))))
@@ -11769,3 +11791,432 @@ to Norsk of standard “LaTeX names”.")
 Danish in @code{babel}.  It provides all the necessary macros, definitions and
 settings to typeset Danish documents.")
       (license license:lppl1.3c+))))
+
+(define-public texlive-mdframed
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-mdframed"
+      (list
+       "doc/latex/mdframed/"
+       "source/latex/mdframed/"
+       "tex/latex/mdframed/")
+      (base32 "1i5rm946wg43rjckxlfhx79zfx5cgd3bxk71206hd1dqkrgpdpa8")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/mdframed")
+    (synopsis "Framed environments that can split at page boundaries")
+    (description
+     "The @code{mdframed} package develops the facilities of @code{framed} in
+providing breakable framed and coloured boxes.  The user may instruct the
+package to perform its operations using default LaTeX commands, PStricks or
+TikZ.")
+    (license license:lppl)))
+
+(define-public texlive-setspace
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-setspace"
+      (list "doc/latex/setspace/" "tex/latex/setspace/")
+      (base32 "00ik8qgkw3ivh3z827zjf7gbwkbsmdcmv22c6ap543mpgaqqjcfm")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/setspace")
+    (synopsis "Set space between lines")
+    (description
+     "The @code{setspace} package provides support for setting the spacing between
+lines in a document.  Package options include @code{singlespacing},
+@code{onehalfspacing}, and @code{doublespacing}.  Alternatively the spacing
+can be changed as required with the @code{\\singlespacing},
+@code{\\onehalfspacing}, and @code{\\doublespacing} commands.  Other size
+spacings also available.")))
+
+(define-public texlive-pgfgantt
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-pgfgantt"
+      (list
+       "doc/latex/pgfgantt/"
+       "source/latex/pgfgantt/"
+       "tex/latex/pgfgantt/")
+      (base32 "0bm034iizk4sd7p5x7vkj7v57dc0bf2lswpsb32s4qlg4s7h6jqz")
+      #:trivial? #t))
+    (propagated-inputs (list texlive-pgf))
+    (home-page "https://ctan.org/graphics/pgf/contrib/pgfgantt")
+    (synopsis "Draw Gantt charts with TikZ")
+    (description
+     "The @code{pgfgantt} package provides an environment for drawing Gantt charts
+that contain various elements (titles, bars, milestones, groups and links).
+Several keys customize the appearance of the chart elements.")
+    (license license:lppl1.3+)))
+
+(define-public texlive-pdflscape
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-pdflscape"
+      (list "doc/latex/pdflscape/"
+            "source/latex/pdflscape/"
+            "tex/latex/pdflscape/")
+      (base32 "05vvmwd8vlzs2x2rm6pfzlvrrihqf924d7krlrkvc6giiwyfsic4")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/pdflscape")
+    (synopsis "Make landscape pages display as landscape")
+    (description
+     "The @code{pdflscape} package adds PDF support to the @code{landscape}
+environment of package @code{lscape}, by setting the PDF @code{/Rotate} page
+attribute.  Pages with this attribute will be displayed in landscape
+orientation by conforming PDF viewers.")
+    (license license:lppl1.3+)))
+
+(define-public texlive-datetime2
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-datetime2"
+      (list "doc/latex/datetime2/"
+            "source/latex/datetime2/"
+            "tex/latex/datetime2/")
+      (base32 "0yjkpfic1ni4j2g61rrjj5hjyd43shc9c0sg1aivbbsmqh30dn33")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/datetime2")
+    (synopsis "Formats for dates, times and time zones")
+    (description
+     "The @code{datetime2} package provides commands for formatting dates, times
+and time zones and redefines @code{\\today} to use the same formatting style.
+In addition to @code{\\today}, you can also use
+@code{\\DTMcurrenttime} (current time) or @code{\\DTMnow} (current date and
+time).  Dates and times can be saved for later use.  The accompanying
+@code{datetime2-calc} package can be used to convert date-times to UTC+00:00.
+Language and regional support is provided by independently maintained and
+installed modules.  The @code{datetime2-calc} package uses the
+@code{pgfcalendar} package (part of the PGF/TikZ bundle).  This package
+replaces @code{datetime.sty} which is now obsolete.")
+    (license license:lppl1.3+)))
+
+(define-public texlive-tracklang
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-tracklang"
+      (list "doc/generic/tracklang/"
+            "source/latex/tracklang/"
+            "tex/generic/tracklang/"
+            "tex/latex/tracklang/")
+      (base32 "1386sg25y6zb4ixvrbdv6n1gp54h18mjd984bnwwqda6jafxx4zr")
+      #:trivial? #t))
+    (home-page "https://ctan.org/macros/generic/tracklang")
+    (synopsis "Language and dialect tracker")
+    (description
+     "The @code{tracklang} package is provided for package developers who want a
+simple interface to find out which languages the user has requested through
+packages such as @code{babel} or @code{polyglossia}.  This package does not
+provide any translations!  Its purpose is simply to track which languages have
+been requested by the user.  Generic TeX code is in @code{tracklang.tex} for
+non-LaTeX users.")
+    (license license:lppl1.3+)))
+
+(define-public texlive-ltablex
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-ltablex"
+      (list "doc/latex/ltablex/" "tex/latex/ltablex/")
+      (base32 "14lmgj820j6zwj1xnd6ad38kzb9w132kp7sp55cv5bk9vhx3621w")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/ltablex")
+    (synopsis "Table package extensions")
+    (description
+     "The @code{ltablex} package modifies the @code{tabularx} environment to
+combine the features of the @code{tabularx} package (auto-sized columns in a
+fixed-width table) with those of the @code{longtable} package (multi-page
+tables).")
+    (license license:lppl)))
+
+(define-public texlive-ragged2e
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-ragged2e"
+      (list "doc/latex/ragged2e/"
+            "source/latex/ragged2e/"
+            "tex/latex/ragged2e/")
+      (base32 "1cxj5jdgvr3xk1inrb3yzpm3l386jjawgpqiwsz53k6yshb6yfml")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/ragged2e")
+    (synopsis "Alternative versions of \"ragged\"-type commands")
+    (description
+     "The @code{ragged2e} package defines new commands @code{\\Centering}, @code{\\RaggedLeft},
+and @code{\\RaggedRight} and new environments @code{Center}, @code{FlushLeft},
+and @code{FlushRight}, which set ragged text and are easily configurable to
+allow hyphenation (the corresponding commands in LaTeX, all of whose names are
+lower-case, prevent hyphenation altogether).")
+    (license license:lppl1.3c)))
+
+(define-public texlive-everysel
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-everysel"
+      (list "doc/latex/everysel/"
+            "source/latex/everysel/"
+            "tex/latex/everysel/")
+      (base32 "0skzm2qsk5vpjxgslclp4pvbbcrrnm1w3df8xfvfq252dyd7w8s5")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/everysel")
+    (synopsis "Provides hooks into @code{\\selectfont}")
+    (description
+     "The @code{everysel} package provided hooks whose arguments are executed just
+after LaTeX has loaded a new font by means of @code{\\selectfont}.  It has
+become obsolete with LaTeX versions 2021/01/05 or newer, since LaTeX now
+provides its own hooks to fulfill this task.  For newer versions of LaTeX
+@code{everysel} only provides macros using LaTeX's hook management due to
+compatibility reasons.  See @code{lthooks-doc.pdf} for instructions how to use
+@code{lthooks} instead of @code{everysel}.")
+    (license license:lppl1.3c)))
+
+(define-public texlive-everyshi
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-everyshi"
+      (list "doc/latex/everyshi/"
+            "source/latex/everyshi/"
+            "tex/latex/everyshi/")
+      (base32 "11y6xazv1nk0m2hzsainjr8ijn5cff04xfccm6a65hzg7ipggraj")
+      #:trivial? #t))
+    (home-page "https://ctan.org/pkg/everyshi")
+    (synopsis "Take action at every @code{\\shipout}")
+    (description
+     "The @code{everyshi} package provides hooks into @code{\\sshipout} called
+@code{\\EveryShipout} and @code{\\AtNextShipout} analogous to
+@code{\\AtBeginDocument}.  With the introduction of the LaTeX hook management
+this package became obsolete in 2020 and is only provided for backwards
+compatibility.  For current versions of LaTeX it is only mapping the hooks to
+the original @code{everyshi} macros.  In case you use an older LaTeX format,
+@code{everyshi} will automatically fall back to its old implementation by
+loading @code{everyshi-2001-05-15}.")
+    (license license:lppl1.3c)))
+
+(define-public texlive-abstract
+  (let ((template (simple-texlive-package
+                   "texlive-abstract"
+                   '("doc/latex/abstract/"
+                     "source/latex/abstract/"
+                     "tex/latex/abstract/")
+                   (base32
+                    "1axm78qgrpml09pkh252g1hsjx9c2w7mbdrm9rdl4yqh5ppwq4y9"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #f)
+          "latex/abstract")
+         ((#:build-targets _ #t)
+          #~(list "abstract.ins"))
+         ((#:phases std-phases)
+          #~(modify-phases #$std-phases
+              (add-after 'unpack 'chdir
+                (lambda args
+                  (chdir "source/latex/abstract")))
+              (add-before 'copy-files 'unchdir
+                (lambda args
+                  (chdir "../../..")))
+              (add-after 'copy-files 'remove-extra-files
+                (lambda args
+                  (delete-file-recursively
+                   (string-append #$output
+                                  "/share/texmf-dist"
+                                  "/source/latex/abstract/build"))))))))
+      (home-page "https://ctan.org/pkg/abstract")
+      (synopsis "Control the typesetting of the abstract environment")
+      (description "The abstract package gives you control over the typesetting
+of the abstract environment, and in particular provides for a one column
+abstract in a two column paper.")
+      (license license:lppl))))
+
+(define-public texlive-breqn
+  (let ((template (simple-texlive-package
+                   "texlive-breqn"
+                   '("/doc/latex/breqn/"
+                     "/source/latex/breqn/")
+                   (base32
+                    "186cypxiyf30fq6dxvvlbwn5yx7c8d4cd243wvvb3243n5l4rpl3"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #f)
+          "latex/breqn")
+         ((#:build-targets _ #t)
+          #~(list "breqnbundle.ins"))
+         ((#:phases std-phases)
+          #~(modify-phases #$std-phases
+              (add-after 'unpack 'chdir
+                (lambda args
+                  (chdir "source/latex/breqn")))
+              (add-before 'copy-files 'unchdir
+                (lambda args
+                  (chdir "../../..")))
+              (add-after 'copy-files 'remove-extra-files
+                (lambda args
+                  (delete-file-recursively
+                   (string-append #$output
+                                  "/share/texmf-dist"
+                                  "/source/latex/breqn/build"))))))))
+      (home-page "https://wspr.io/breqn/")
+      (synopsis "Automatic line breaking of displayed equations")
+      (description "This package provides solutions to a number of common
+difficulties in writing displayed equations and getting high-quality output.
+The single most ambitious goal of the package is to support automatic
+linebreaking of displayed equations.  Such linebreaking cannot be done without
+substantial changes under the hood in the way formulae are processed; the code
+must be watched carefully, keeping an eye on possible glitches.  The bundle
+also contains the @code{flexisym} and @code{mathstyle} packages, which are
+both designated as support for @code{breqn}.")
+      (license license:lppl1.3+))))
+
+(define-public texlive-comment
+  (package
+    (inherit (simple-texlive-package
+              "texlive-comment"
+              '("/doc/latex/comment/"
+                "/tex/latex/comment/")
+              (base32
+               "1c1mqziwxyf1bqzpw6ji65n7ypygm3lyknblxmf0c70w0ivw76pa")
+              #:trivial? #t))
+    (home-page "https://ctan.org/pkg/comment")
+    (synopsis "Selectively include/exclude portions of text")
+    (description "This package provides environments for selectively including
+or excluding pieces of text, allowing the user to define new, separately
+controlled comment versions.")
+    (license license:gpl2+)))
+
+(define-public texlive-datatool
+  (let ((template (simple-texlive-package
+                   "texlive-datatool"
+                   '("/bibtex/bst/datatool/"
+                     "/doc/latex/datatool/"
+                     "/source/latex/datatool/")
+                   (base32
+                    "0hh2623zlwgq8zb2lv4d8yfaqwzrz54dqhc1xk0jd1k4fp281kl5"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #f)
+          "latex/datatool")
+         ((#:build-targets _ #t)
+          #~(list "datatool.ins"))
+         ((#:phases std-phases)
+          #~(modify-phases #$std-phases
+              (add-after 'unpack 'chdir
+                (lambda args
+                  (chdir "source/latex/datatool")))
+              (add-before 'copy-files 'unchdir
+                (lambda args
+                  (chdir "../../..")))
+              (add-after 'copy-files 'remove-extra-files
+                (lambda args
+                  (delete-file-recursively
+                   (string-append #$output
+                                  "/share/texmf-dist"
+                                  "/source/latex/datatool/build"))))))))
+      (home-page "https://ctan.org/pkg/datatool")
+      (synopsis "Tools to load and manipulate data")
+      (description "This package provides tools to create databases using LaTeX
+commands or by importing external files.  Databases may be sorted, filtered,
+and visualized using several kinds of configurable plots.  Particular support
+is provided for mail merging, indexing, creating glossaries, manipulating
+bibliographies, and displaying personal pronouns.")
+      (license license:lppl1.3+))))
+
+(define-public texlive-physics
+  (package
+    (inherit (simple-texlive-package
+              "texlive-physics"
+              '("/doc/latex/physics/"
+                "/tex/latex/physics/")
+              (base32
+               "1wy58wwcv1pv18xs1n71abnm73dqnxqijxvhfxk0rcmvbc6wvwrb")
+              #:trivial? #t))
+    (home-page "https://ctan.org/pkg/physics")
+    (synopsis "Macros supporting the Mathematics of Physics")
+    (description "The package defines simple and flexible macros for
+typesetting equations in the languages of vector calculus and linear
+algebra, using Dirac notation.")
+    (license license:lppl)))
+
+(define-public texlive-sourcesanspro
+  (package
+    (inherit (simple-texlive-package
+              "texlive-sourcesanspro"
+              '("/doc/latex/sourcesanspro/"
+                "/fonts/enc/dvips/sourcesanspro/"
+                "/fonts/map/dvips/sourcesanspro/"
+                "/fonts/opentype/adobe/sourcesanspro/"
+                ;; ^ It would be tempting to use our
+                ;; font-adobe-source-sans-pro for these, but the version in
+                ;; texlive could differ from our version: probably the
+                ;; difference would be small, but debugging would not be fun.
+                ;; If the files are really identical, Guix will hard-link them
+                ;; anyway.
+                "/fonts/tfm/adobe/sourcesanspro/"
+                "/fonts/type1/adobe/sourcesanspro/"
+                "/fonts/vf/adobe/sourcesanspro/"
+                "/tex/latex/sourcesanspro/")
+              (base32
+               "18z7ln8dyh0sp6v0vdvc6qqxnpg3h3ix0f5magjcjbpay54kl0i3")
+              #:trivial? #t))
+    (home-page "https://ctan.org/pkg/sourcesanspro")
+    (synopsis "Use Source Sans Pro with TeX(-alike) systems")
+    (description "This package provides the Source Sans Pro font family from
+Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
+use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
+    (license (list license:lppl1.3+ license:silofl1.1))))
+
+(define-public texlive-sourceserifpro
+  (package
+    (inherit (simple-texlive-package
+              "texlive-sourceserifpro"
+              '("/doc/latex/sourceserifpro/"
+                "/fonts/enc/dvips/sourceserifpro/"
+                "/fonts/map/dvips/sourceserifpro/"
+                "/fonts/opentype/adobe/sourceserifpro/"
+                ;; ^ see comment on texlive-sourcesanspro
+                "/fonts/tfm/adobe/sourceserifpro/"
+                "/fonts/type1/adobe/sourceserifpro/"
+                "/fonts/vf/adobe/sourceserifpro/"
+                "/tex/latex/sourceserifpro/")
+              (base32
+               "18xxncg8ybv86r46zq5mvgkrfnvlhx93n55fy8nkk8vdmminrh8w")
+              #:trivial? #t))
+    (home-page "https://ctan.org/pkg/sourceserifpro")
+    (synopsis "Use Source Serif Pro with TeX(-alike) systems")
+    (description "This package provides the Source Serif Pro font family from
+Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
+use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
+    (license (list license:lppl1.3+ license:silofl1.1))))
+
+(define-public texlive-sourcecodepro
+  (package
+    (inherit (simple-texlive-package
+              "texlive-sourcecodepro"
+              '("/doc/latex/sourcecodepro/"
+                "/fonts/enc/dvips/sourcecodepro/"
+                "/fonts/map/dvips/sourcecodepro/"
+                "/fonts/opentype/adobe/sourcecodepro/"
+                ;; ^ see comment on texlive-sourcesanspro
+                "/fonts/tfm/adobe/sourcecodepro/"
+                "/fonts/type1/adobe/sourcecodepro/"
+                "/fonts/vf/adobe/sourcecodepro/"
+                "/tex/latex/sourcecodepro/")
+              (base32
+               "009v9y7d3vsljgq9nw5yx4kzyqavxbwrlvwhfjj83s6rmb9xcrmh")
+              #:trivial? #t))
+    (home-page "https://ctan.org/pkg/sourcecodepro")
+    (synopsis "Use Source Code Pro with TeX(-alike) systems")
+    (description "This package provides the Source Code Pro font family from
+Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
+use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
+    (license (list license:lppl1.3+ license:silofl1.1))))

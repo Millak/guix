@@ -88,7 +88,7 @@
            qca
            qoauth
            qtbase-5
-           qtnetworkauth
+           qtnetworkauth-5
            sonnet))
     (home-page "https://kde.org/applications/internet/org.kde.choqok")
     (synopsis "Micro-Blogging Client")

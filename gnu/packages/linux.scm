@@ -60,7 +60,7 @@
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2021 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
-;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 
@@ -352,7 +352,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.18-version "5.18.14")
+(define-public linux-libre-5.18-version "5.18.16")
 (define-public linux-libre-5.18-gnu-revision "gnu")
 (define deblob-scripts-5.18
   (linux-libre-deblob-scripts
@@ -362,7 +362,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0vjpn8iw9yg39sr6jfhzyvivf159h9zfgnjamwa283zfll0h0a53")))
 (define-public linux-libre-5.18-pristine-source
   (let ((version linux-libre-5.18-version)
-        (hash (base32 "1bsnk2rskdkimciij5q3hjs00lc7ks1h1qh9kc4s7lrk252lczg1")))
+        (hash (base32 "1khi1npn8d8jimwdy8bf3r7l780mxdmvk5azdv419pk33qjqdxgi")))
    (make-linux-libre-source version
 
                             (%upstream-linux-source version hash)
@@ -371,7 +371,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.57")
+(define-public linux-libre-5.15-version "5.15.59")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -381,12 +381,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "129qlhwdv2mfb85gbvq03kkbdfp73b444rryr4rrbvi0jmq4cp24")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1zgh43pgn8fsyxzksfw6llxqw6fc8qassfn9a18k2xn83xd0kqv2")))
+        (hash (base32 "1jxw6fnc7yaw7r6193wy6l8wdlpy3frw48drnc3dnh3k0m1cdpg6")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.133")
+(define-public linux-libre-5.10-version "5.10.135")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -396,12 +396,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1981axxswghza3iadp94q54y8w30h9w9vyq4cbjiiv9alvbv0pb8")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "03i84g3pfh24f10zsdyyqyv9fhy01ah9lk02y48hqwnabdylqp1v")))
+        (hash (base32 "0i1kahv739qpyyml7d7sx306nv7gp55i5d97vlb0fryfx4dsd6g4")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.207")
+(define-public linux-libre-5.4-version "5.4.209")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -411,12 +411,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1vnjbdyssa7dwyjl9kg35alwvf7yh597cl74yr1wy2gk5bc9paw6")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "1wwpd26qhv6i00p0yxjisns6qiz9bfrxvn1xb4ylwr8ls7zyx78v")))
+        (hash (base32 "1kdnz99k7zspzaxqaxahbf6hncigy4cvjlb79jsy7a95qxxr31qf")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.253")
+(define-public linux-libre-4.19-version "4.19.254")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -426,12 +426,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "1jc2j0wskgr1bdzpz6sn2bvafpviiin6mwr93yykcczzfjijr8yz")))
+        (hash (base32 "1rd40wmdaymbly2zvf60mjqsflkd4n1y232qz0ixn1rfl28yz62i")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.289")
+(define-public linux-libre-4.14-version "4.14.290")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -441,12 +441,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "1v24mv49skgijcbafgai0glrzwiv2j1hndkz7v6ygc18jxh5fqg6")))
+        (hash (base32 "0zyxb99a7fa2l85vnzmvg2nry99clj20d4j38piqm921iqxak2j4")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.324")
+(define-public linux-libre-4.9-version "4.9.325")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
@@ -456,7 +456,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0bib3641dbcqdkx3anna3caxnsg3nw9cnmhcklq0s93g3m57041h")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "0g51vfp0g3py82l3q66p7nvl03h6l1nlny18gangji75a3c39yh4")))
+        (hash (base32 "04msx0x0d8v93zjr3jj0qqkgg7m4hb7rj6hk5vzrzasmgbjmb3dl")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -1342,6 +1342,37 @@ battery charging thresholds, keyboard backlight, fans and thermal monitors,
 and the notification, WiFi, and Bluetooth LED.")
     (license license:gpl2)))
 
+(define-public lkrg
+  (package
+    (name "lkrg")
+    (version "0.9.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lkrg-org/lkrg")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yirb7n4mqv8cn0gziz1m7ymq00dhhy79j59jdgrx00b8rj57cfw"))))
+    (build-system linux-module-build-system)
+    (arguments
+     (list #:linux linux-libre
+           #:tests? #f
+           #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target))
+                                (string-append "SYSSRC="
+                                               (assoc-ref %build-inputs
+                                                "linux-module-builder")
+                                               "/lib/modules/build"))))
+    (inputs (list bash-minimal))
+    (home-page "https://lkrg.org/")
+    (synopsis "Linux Kernel Runtime Guard")
+    (description
+     "This package performs runtime integrity checking of the Linux kernel and
+detection of security vulnerability exploits against the kernel.")
+    (license license:gpl2)))
+
 (define-public rtl8821ce-linux-module
   (let ((commit "be733dc86781c68571650b395dd0fa6b53c0a039")
         (revision "6"))
@@ -1629,21 +1660,6 @@ Pluggable authentication modules are small shared object files that can
 be used through the PAM API to perform tasks, like authenticating a user
 at login.  Local and dynamic reconfiguration are its key features.")
     (license license:bsd-3)))
-
-(define-public linux-pam-1.2
-  (package
-    (inherit linux-pam)
-    (version "1.2.1")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append
-            "http://www.linux-pam.org/library/"
-            "Linux-PAM-" version ".tar.bz2"))
-      (sha256
-       (base32
-        "1n9lnf9gjs72kbj1g354v1xhi2j27aqaah15vykh7cnkq08i4arl"))
-      (patches (search-patches "linux-pam-no-setfsuid.patch"))))))
 
 (define-public python-pamela
   (package
@@ -2344,7 +2360,7 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
 (define-public strace
   (package
     (name "strace")
-    (version "5.15")
+    (version "5.18")
     (home-page "https://strace.io")
     (source (origin
              (method url-fetch)
@@ -2352,7 +2368,7 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
                                  "/strace-" version ".tar.xz"))
              (sha256
               (base32
-               "1p3jipp6mj5fwfcjdnp6xhxk84z07jy5qhjlqr6jjdbk54pw5jpb"))
+               "11qi7pdm0ldycsg9qhsa50icm219mmvy16yw1ih3s9f9kakkwab0"))
              (patches (search-patches "strace-readlink-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -2382,6 +2398,8 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
     (description
      "strace is a system call tracer, i.e. a debugging tool which prints out a
 trace of all the system calls made by a another process/program.")
+    (properties
+     '((release-monitoring-url . "https://github.com/strace/strace/releases")))
     (license license:lgpl2.1+)))
 
 (define-public ltrace
@@ -3254,8 +3272,11 @@ or kill them altogether.")
               (sha256
                (base32
                 "1ddlq6kzxilccgbvxjfx80jx6kamgw4sv49phks2zhlcc1frvrnh"))
-              (patches (search-patches "fuse-overlapping-headers.patch"))))
+              (patches (search-patches "fuse-overlapping-headers.patch"
+                                       "fuse-glibc-2.34.patch"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake gettext-minimal libtool))
     (inputs
      (list bash-minimal util-linux))
     (arguments
@@ -3272,6 +3293,10 @@ or kill them altogether.")
                                               "/lib/udev/rules.d"))
        #:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'force-bootstrap
+           (lambda _
+             ;; Force a bootstrap to make the patch changes effective.
+             (delete-file "configure")))
          (add-before 'build 'set-file-names
            (lambda* (#:key inputs #:allow-other-keys)
              ;; libfuse calls out to mount(8) and umount(8).  Make sure
@@ -3451,20 +3476,25 @@ UnionFS-FUSE additionally supports copy-on-write.")
 (define-public sshfs
   (package
     (name "sshfs")
-    (version "2.10")
+    (version "3.7.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/libfuse/sshfs/releases/"
                                   "download/sshfs-" version "/sshfs-" version
-                                  ".tar.gz"))
+                                  ".tar.xz"))
               (sha256
                (base32
-                "00fir2iykdx11g8nv5gijg0zjrp2g3ldypnv0yi6lq3h5pg5v13h"))))
-    (build-system gnu-build-system)
+                "169fkilv060afgp9h7hvsbkg02bd1y77kmx06x0s7q1cvmxww62j"))))
+    (build-system meson-build-system)
+    (arguments
+     ;; XXX: tests are skipped: FUSE kernel module does not seem to be loaded
+     '(#:tests? #f))
     (inputs
-     (list fuse glib))
+     (list fuse-3 glib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           ;; man page
+           python-docutils))
     (home-page "https://github.com/libfuse/sshfs")
     (synopsis "Mount remote file systems over SSH")
     (description
@@ -5159,16 +5189,15 @@ arrays when needed.")
 (define-public multipath-tools
   (package
     (name "multipath-tools")
-    (version "0.8.5")
+    (version "0.9.0")
+    (home-page "https://github.com/opensvc/multipath-tools")
     (source (origin
               (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.opensvc.com/multipath-tools/.git")
-                    (commit version)))
+              (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gipg0z79h76j0f449cx4wcrfsv69ravjlpphsac11h302g3nrvg"))
+                "09m3vs798qb3xk0v7s3hy0nhw0dznkxjb56671kqj961h7zhg47b"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -5177,80 +5206,64 @@ arrays when needed.")
                   (substitute* '("multipathd/main.c"
                                  "libmultipath/debug.c")
                     (("#include \"../third-party/")
-                     "#include \""))
-                  #t))))
+                     "#include \""))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:test-target "test"
-       #:parallel-build? #f             ;XXX: broken in 0.8.4
-       #:make-flags (list "CC=gcc"
-                          (string-append "DESTDIR="
-                                         (assoc-ref %outputs "out"))
-                          ;; Install Udev rules below this directory, relative
-                          ;; to the prefix.
-                          "SYSTEMDPATH=lib"
-                          (string-append "LDFLAGS=-Wl,-rpath="
-                                         (assoc-ref %outputs "out")
-                                         "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((lvm2 (assoc-ref inputs "lvm2"))
-                   (udev (assoc-ref inputs "udev")))
-               (substitute* "Makefile.inc"
-                 (("\\$\\(prefix\\)/usr") "$(prefix)")
-                 ;; Do not save timestamp to avoid gzip "timestamp
-                 ;; out-of-range" warnings.
-                 (("gzip -9") "gzip -9n"))
-               (substitute* '("kpartx/Makefile" "libmultipath/Makefile")
-                 (("/usr/include/libdevmapper.h")
-                  (string-append lvm2 "/include/libdevmapper.h"))
-                 (("/usr/include/libudev.h")
-                  (string-append udev "/include/libudev.h")))
-               #t)))
-         (add-after 'unpack 'fix-maybe-uninitialized-variable
-           (lambda _
-             ;; This variable gets initialized later if needed, but GCC 7
-             ;; fails to notice.  Should be fixed for > 0.8.4.
-             ;; https://www.redhat.com/archives/dm-devel/2020-March/msg00137.html
-             (substitute* "libmultipath/structs_vec.c"
-               (("bool is_queueing;")
-                "bool is_queueing = false;"))
-             #t))
-         (add-after 'unpack 'fix-linking-tests
-           (lambda _
-             ;; Add missing linker flag for -lmpathcmd.  This should be fixed
-             ;; for versions > 0.8.4.
-             (substitute* "tests/Makefile"
-               (("-lmultipath -lcmocka")
-                "-lmultipath -L$(mpathcmddir) -lmpathcmd -lcmocka"))
-             #t))
-         (add-after 'unpack 'skip-failing-tests
-           (lambda _
-             ;; This test and the module's setup() test an arbitrary block
-             ;; device node name, but the build environment has none.
-             (substitute* "tests/devt.c"
-               (("return get_one_devt.*") "return 0;\n")
-               (("cmocka_unit_test\\(test_devt2devname_devt_good\\),") ""))
-             ;; The above triggers -Werror=unused-function.  Ignore it.
-             (substitute* "tests/Makefile"
-               (("CFLAGS \\+= " match)
-                (string-append match "-Wno-error=unused-function ")))
-             #t))
-         (delete 'configure))))         ; no configure script
+     (list
+      #:test-target "test"
+      #:parallel-build? #f              ;XXX: broken since 0.8.4
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "DESTDIR=" #$output)
+                           ;; Install Udev rules below this directory, relative
+                           ;; to the prefix.
+                           "SYSTEMDPATH=lib")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((libdevmapper.h
+                     (search-input-file inputs "include/libdevmapper.h"))
+                    (libudev.h
+                     (search-input-file inputs "include/libudev.h")))
+                (substitute* "Makefile.inc"
+                  (("/bin/echo") "echo")
+                  (("\\$\\(prefix\\)/usr") "$(prefix)")
+                  ;; Do not save timestamp to avoid gzip "timestamp
+                  ;; out-of-range" warnings.
+                  (("gzip -9") "gzip -9n"))
+                (substitute* '("kpartx/Makefile" "libmultipath/Makefile")
+                  (("/usr/include/libdevmapper.h") libdevmapper.h)
+                  (("/usr/include/libudev.h") libudev.h)))))
+          (add-after 'unpack 'skip-failing-tests
+            (lambda _
+              ;; This test and the module's setup() test an arbitrary block
+              ;; device node name, but the build environment has none.
+              (substitute* "tests/devt.c"
+                (("return get_one_devt.*") "return 0;\n")
+                (("cmocka_unit_test\\(test_devt2devname_devt_good\\),") ""))
+              ;; The above triggers -Werror=unused-function.  Ignore it.
+              (substitute* "tests/Makefile"
+                (("CFLAGS \\+= " match)
+                 (string-append match "-Wno-error=unused-function ")))))
+          (delete 'configure)           ;no configure script
+          (add-before 'build 'set-LDFLAGS
+            (lambda _
+              ;; Note: this cannot be passed as a make flag because that will
+              ;; override the build system LDFLAGS.
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
+
     (native-inputs
      (list perl pkg-config valgrind
            ;; For tests.
            cmocka))
     (inputs
-     `(("json-c" ,json-c)
-       ("libaio" ,libaio)
-       ("liburcu" ,liburcu)
-       ("lvm2" ,lvm2)
-       ("readline" ,readline)
-       ("udev" ,eudev)))
-    (home-page "http://christophe.varoqui.free.fr/")
+     (list json-c
+           libaio
+           liburcu
+           lvm2
+           readline
+           eudev))
     (synopsis "Access block devices through multiple paths")
     (description
      "This package provides the following binaries to drive the
@@ -5262,8 +5275,8 @@ Linux Device Mapper multipathing driver:
 @code{dm} multipath devices.
 @item @command{kpartx} - Create device maps from partition tables.
 @end enumerate")
-    (license (list license:gpl2+             ; main distribution
-                   license:lgpl2.0+))))      ; libmpathcmd/mpath_cmd.h
+    (license (list license:gpl2+        ;main distribution
+                   license:lgpl2.0+)))) ;libmpathcmd/mpath_cmd.h
 
 (define-public libaio
   (package
@@ -6078,14 +6091,14 @@ invocations of itself.")
 (define-public ntfs-3g
   (package
     (name "ntfs-3g")
-    (version "2021.8.22")
+    (version "2022.5.17")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://tuxera.com/opensource/"
                                   "ntfs-3g_ntfsprogs-" version ".tgz"))
               (sha256
                (base32
-                "1yrf42xr92qv3pads8lzp5nyssz6875ncfgg8v3jwjyr0nm87f2m"))
+                "14zbsl7m32f796dkr334zbkj5rba7xa8smxb2ysf3095jyvgp284"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Install under $prefix.
@@ -6124,6 +6137,9 @@ invocations of itself.")
      "NTFS-3G provides read-write access to NTFS file systems, which are
 commonly found on Microsoft Windows.  It is implemented as a FUSE file system.
 The package provides additional NTFS tools.")
+    (properties
+     '((release-monitoring-url . "https://github.com/tuxera/ntfs-3g/releases")
+       (upstream-name . "ntfs-3g_ntfsprogs")))
     (license license:gpl2+)))
 
 (define-public ntfs-3g/static
@@ -6584,6 +6600,65 @@ the default @code{nsswitch} and the experimental @code{umich_ldap}.")
 @code{modprobe}, @code{insmod}, @code{lsmod}, and more.")
     (license license:gpl2+)))
 
+(define-public mce-inject
+  (let ((revision "0")                  ; no git tags :-/
+        (commit "4cbe46321b4a81365ff3aafafe63967264dbfec5"))
+    (package
+      (name "mce-inject")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.kernel.org/pub/scm/utils/cpu/mce/mce-inject.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0gjapg2hrlxp8ssrnhvc19i3r1xpcnql7xv0zjgbv09zyha08g6z"))))
+      (build-system gnu-build-system)
+      (arguments
+       ;; There is no test suite.  There's a test/ directory, but it just holds
+       ;; example text files you could feed to the programme to crash something.
+       (list #:tests? #f
+             #:make-flags
+             #~(list (string-append "prefix=" #$output)
+                     (string-append "CC=" #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)    ; no configure script
+                 (add-after 'install 'install-examples
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let* ((out (assoc-ref outputs "out"))
+                            (doc (string-append out "/share/doc/" #$name))
+                            (dir (string-append doc "/examples")))
+                       (copy-recursively "test" dir )))))))
+      (native-inputs
+       (list bison flex))
+      (supported-systems (list "i686-linux" "x86_64-linux"))
+      (home-page
+       "https://git.kernel.org/pub/scm/utils/cpu/mce/mce-inject.git/about/")
+      (synopsis
+       "Inject x86 @acronym{MCEs, machine-check exceptions} into Linux")
+      (description
+       "This simple tool injects fake @acronym{MCEs, machine-check exceptions}
+into a running Linux kernel, to debug or test the kernel's @acronym{EDAC, error
+detection and correction}-handling code specific to x86 and x86_64 platforms.
+
+Real MCEs are internal CPU errors.  Handling them correctly can be important to
+system stability and even prevent physical damage.  In contrast, simulated MCEs
+produced by @command{mce-inject} are purely synthetic: injection happens only at
+the software level, inside the kernel, and is not visible to the platform
+hardware or firmware.
+
+A convenient feature of @command{mce-inject} is that the input language used to
+describe MCEs is similar to the format used in Linux panic messages, with a few
+extensions.  In general, you should be able to pipe in any logged MCE panic to
+simulate that same MCE.
+
+The target kernel must have the @code{CONFIG_X86_MCE_INJECT} option enabled and
+the @code{mce-inject} module loaded if it exists.")
+      (license license:gpl2))))
+
 (define-public mcelog
   (package
     (name "mcelog")
@@ -6630,7 +6705,7 @@ exceeded.")
 (define-public mtd-utils
   (package
     (name "mtd-utils")
-    (version "2.1.2")
+    (version "2.1.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6638,12 +6713,14 @@ exceeded.")
                     "mtd-utils-" version ".tar.bz2"))
               (sha256
                (base32
-                "1mp9fqgnz5r69s8ly98ry6k2blqnaqpllwi8m930dm0n8zrwbm4a"))))
+                "168vyzpfa0n66i8lcf626b9jczjr81rqbdk7735lfb18bp8i2rrc"))))
     (arguments
      (list #:configure-flags
            (if (%current-target-system) ; When cross-compiling.
              #~(list)
-             #~(list "--enable-unit-tests"))))
+             #~(list "--enable-unit-tests"))
+
+           #:parallel-tests? #f))     ;tests may fail when running in parallel
     (native-inputs
      (list cmocka pkg-config))
     (inputs
@@ -8249,7 +8326,7 @@ IP addresses and routes, and configure IPsec.")
 (define-public libinih
   (package
     (name "libinih")
-    (version "55")
+    (version "56")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8258,7 +8335,7 @@ IP addresses and routes, and configure IPsec.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0g6dkcphlzgxvh9zyf6rj82gigccca6x5acjxn01gz6rykfg0lnn"))))
+                "1fjqvf56yij15lgwj58dcmxlq5n98gzpbss0nnn1d2i5j7gf4kgf"))))
     (build-system meson-build-system)
     ;; Install static libraries for use by the initrd's xfsprogs/static.
     (outputs (list "out" "static"))
@@ -8793,7 +8870,7 @@ persistent over reboots.")
 (define-public libbpf
   (package
     (name "libbpf")
-    (version "0.1.1")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -8803,28 +8880,26 @@ persistent over reboots.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ilnnm4q22f8fagwp8kb37licy4ks861i2iqh2djsypqhnxvx3fv"))))
+         "1zzpkk4x3f20483dzw43b3ml03d63vvkmqf4j8y3b61b67wm59bm"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (propagated-inputs
      ;; In Requires.private of libbpf.pc.
-     (list libelf zlib))
+     (list elfutils zlib))
     (arguments
      `(#:tests? #f                      ; no tests
        #:make-flags
        (list
         (string-append "PREFIX=" (assoc-ref %outputs "out"))
         (string-append "LIBDIR=$(PREFIX)/lib")
-        (string-append
-         "CC=" (assoc-ref %build-inputs "gcc") "/bin/gcc"))
+        (string-append "CC=" ,(cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
          (add-before 'build 'pre-build
            (lambda _
-             (chdir "src")
-             #t)))))
+             (chdir "src"))))))
     (home-page "https://github.com/libbpf/libbpf")
     (synopsis "BPF CO-RE (Compile Once – Run Everywhere)")
     (description
@@ -8836,7 +8911,7 @@ headers.")
 (define-public bcc
   (package
     (name "bcc")
-    (version "0.16.0")
+    (version "0.24.0")
     (source
      (origin
        (method git-fetch)
@@ -8846,7 +8921,7 @@ headers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1367c0bzrpclvjvmk0sxgi49rh7j2f9izqk5a7g3yvawh1fmvvjh"))))
+         "1i6xikkxf2nasfkqa91hjzdq0a88mgyzrvia4fi2i2v1d8pbmnp4"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison flex))
@@ -8916,7 +8991,7 @@ and above.")
 (define-public bpftrace
   (package
     (name "bpftrace")
-    (version "0.11.4")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -8925,13 +9000,13 @@ and above.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y4qgm2cpccrsm20rnh92hqplddqsc5q5zhw9nqn2igm3h9i0z7h"))
+        (base32 "022fg0kiz0liahj82wvlxmivkwyp86shs5fwr2v4blx7lh05k9zm"))
        (patches (search-patches "bpftrace-disable-bfd-disasm.patch"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison flex))
     (inputs
-     (list bcc clang-toolchain-9 elfutils libbpf))
+     (list bcc clang-toolchain-9 elfutils libbpf cereal))
     (arguments
      `(#:tests? #f ;Tests require googletest sources.
        #:configure-flags
@@ -9021,7 +9096,7 @@ then IP sets may be the proper tool for you.")
 (define-public liburing
   (package
     (name "liburing")
-    (version "0.7")
+    (version "2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9030,7 +9105,7 @@ then IP sets may be the proper tool for you.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15z44l7y4c6s6dlf7v8lq4znlsjbja2r4ifbni0l8cdcnq0w3zh3"))))
+                "1677zqqbd9nw9hrdaxqbd1zwy54cxfsv2z0bjipn23mrkz2xzy1k"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Tests are dependent on kernel version and features
@@ -9237,3 +9312,57 @@ libraries are found or why they cannot be located.")
 gestures you make on your touchpad or touchscreen into visible actions in your
 desktop.")
     (license license:gpl3+)))
+
+(define-public evtest
+  (package
+    (name "evtest")
+    (version "1.35")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/libevdev/evtest")
+                    (commit (string-append "evtest-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "164prnw35kda6jfykl7h52lfzy99ma2lk029zscyqk766k19spf4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;No tests exist
+           #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target))
+                                (string-append "PREFIX="
+                                               #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'generate-doc
+                          (lambda _
+                            (invoke "asciidoc" "-d" "manpage"
+                                    "-b" "docbook"
+                                    "-o" "evtest.1.xml"
+                                    "evtest.txt")
+                            (invoke "xsltproc" "--nonet"
+                                    (string-append
+                                     #$(this-package-native-input "docbook-xsl")
+                                     "/xml/xsl/docbook-xsl-"
+                                     #$(package-version
+                                        (this-package-native-input "docbook-xsl"))
+                                     "/manpages/docbook.xsl")
+                                    "evtest.1.xml")))
+                        (replace 'bootstrap
+                          (lambda _
+                            (setenv "CONFIG_SHELL" (which "sh"))
+                            (invoke "autoreconf" "-fi"))))))
+    (native-inputs (list autoconf
+                         automake
+                         bash-minimal
+                         xmlto
+                         docbook-xsl
+                         libxslt
+                         asciidoc))
+    (home-page "https://gitlab.freedesktop.org/libevdev/evtest")
+    (synopsis "Kernel evdev device information and monitor")
+    (description
+     "@code{evtest} is a tool to print @code{evdev} kernel events.  It reads
+directly from the kernel device and prints a device description and the events
+with the value and the symbolic name.")
+    (license license:gpl2+)))

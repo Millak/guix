@@ -126,7 +126,7 @@
              (let ((inxi (search-input-file inputs "/bin/inxi")))
                (symlink inxi "data/scripts/inxi")))))))
     (native-inputs
-     (list extra-cmake-modules pkg-config qttools))
+     (list extra-cmake-modules pkg-config qttools-5))
     (inputs
      (list boost
            inxi-minimal
@@ -134,9 +134,9 @@
            perl
            qca
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            qtscript
-           qtsvg
+           qtsvg-5
            snorenotify
            sonnet
            zlib))

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2014, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -25,7 +25,7 @@
 (define-module (guix scripts import)
   #:use-module (guix ui)
   #:use-module (guix scripts)
-  #:use-module (guix scripts style)
+  #:use-module (guix read-print)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)

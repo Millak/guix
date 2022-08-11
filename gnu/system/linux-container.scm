@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Google LLC
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -202,16 +203,49 @@ that will be shared with the host system."
                          (guix build utils)
                          (guix i18n)
                          (guix diagnostics)
-                         (srfi srfi-1))
+                         (srfi srfi-1)
+                         (srfi srfi-37)
+                         (ice-9 match))
 
-            (define file-systems
-              (filter-map (lambda (spec)
-                            (let* ((fs    (spec->file-system spec))
-                                   (flags (file-system-flags fs)))
-                              (and (or (not (memq 'bind-mount flags))
-                                       (file-exists? (file-system-device fs)))
-                                   fs)))
-                          '#$specs))
+            (define (show-help)
+              (display (G_ "Usage: run-container [OPTION ...]
+Run the container with the given options."))
+              (newline)
+              (display (G_ "
+      --share=SPEC       share host file system with read/write access
+                         according to SPEC"))
+              (display (G_ "
+      --expose=SPEC      expose host file system directory as read-only
+                         according to SPEC"))
+              (newline)
+              (display (G_ "
+  -h, --help             display this help and exit"))
+              (newline))
+
+            (define %options
+              ;; Specifications of the command-line options.
+              (list (option '(#\h "help") #f #f
+                            (lambda args
+                              (show-help)
+                              (exit 0)))
+                    (option '("share") #t #f
+                            (lambda (opt name arg result)
+                              (alist-cons 'file-system-mapping
+                                          (specification->file-system-mapping arg #t)
+                                          result)))
+                    (option '("expose") #t #f
+                            (lambda (opt name arg result)
+                              (alist-cons 'file-system-mapping
+                                          (specification->file-system-mapping arg #f)
+                                          result)))))
+
+            (define (parse-options args options)
+              (args-fold args options
+                         (lambda (opt name arg . rest)
+                           (report-error (G_ "~A: unrecognized option~%") name)
+                           (exit 1))
+                         (lambda (op res) (cons op res))
+                         '()))
 
             (define (explain pid)
               ;; XXX: We can't quite call 'bindtextdomain' so there's actually
@@ -225,22 +259,35 @@ that will be shared with the host system."
               (info (G_ "or run 'sudo nsenter -a -t ~a' to get a shell into it.~%") pid)
               (newline (guix-warning-port)))
 
-            (call-with-container file-systems
-              (lambda ()
-                (setenv "HOME" "/root")
-                (setenv "TMPDIR" "/tmp")
-                (setenv "GUIX_NEW_SYSTEM" #$os)
-                (for-each mkdir-p '("/run" "/bin" "/etc" "/home" "/var"))
-                (primitive-load (string-append #$os "/boot")))
-              ;; A range of 65536 uid/gids is used to cover 16 bits worth of
-              ;; users and groups, which is sufficient for most cases.
-              ;;
-              ;; See: http://www.freedesktop.org/software/systemd/man/systemd-nspawn.html#--private-users=
-              #:host-uids 65536
-              #:namespaces (if #$shared-network?
-                               (delq 'net %namespaces)
-                               %namespaces)
-              #:process-spawned-hook explain))))
+            (let* ((opts (parse-options (cdr (command-line)) %options))
+                   (mappings (filter-map (match-lambda
+                                           (('file-system-mapping . mapping) mapping)
+                                           (_ #f))
+                                         opts))
+                   (file-systems
+                    (filter-map (lambda (fs)
+                                  (let ((flags (file-system-flags fs)))
+                                    (and (or (not (memq 'bind-mount flags))
+                                             (file-exists? (file-system-device fs)))
+                                         fs)))
+                                (append (map file-system-mapping->bind-mount mappings)
+                                        (map spec->file-system '#$specs)))))
+              (call-with-container file-systems
+                (lambda ()
+                  (setenv "HOME" "/root")
+                  (setenv "TMPDIR" "/tmp")
+                  (setenv "GUIX_NEW_SYSTEM" #$os)
+                  (for-each mkdir-p '("/run" "/bin" "/etc" "/home" "/var"))
+                  (primitive-load (string-append #$os "/boot")))
+                ;; A range of 65536 uid/gids is used to cover 16 bits worth of
+                ;; users and groups, which is sufficient for most cases.
+                ;;
+                ;; See: http://www.freedesktop.org/software/systemd/man/systemd-nspawn.html#--private-users=
+                #:host-uids 65536
+                #:namespaces (if #$shared-network?
+                                 (delq 'net %namespaces)
+                                 %namespaces)
+                #:process-spawned-hook explain)))))
 
     (gexp->script "run-container" script)))
 

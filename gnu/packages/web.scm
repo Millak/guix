@@ -381,14 +381,14 @@ the same, being completely separated from the Internet.")
     ;; Track the ‘mainline’ branch.  Upstream considers it more reliable than
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
-    (version "1.23.0")
+    (version "1.23.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1lacv4gb72n7f93smy098y122aaz9bxdxxkjksgbwwljbfiwl2l2"))))
+                "1qpibmnz5kjkd5z61abism1qn5z6dbrz2cjmlivr8fryqb8ipvjy"))))
     (build-system gnu-build-system)
     (inputs (list libxml2 libxslt openssl pcre zlib))
     (arguments
@@ -476,9 +476,9 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((version "1.23.0")
-        (revision 2862)
-        (changeset "cf7551842617"))
+  (let ((version "1.23.1")
+        (revision 2869)
+        (changeset "9383e934e546"))
     (package
       (name "nginx-documentation")
       (version (simple-format #f "~A-~A-~A" version revision changeset))
@@ -490,7 +490,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                (file-name (string-append name "-" version))
                (sha256
                 (base32
-                 "1qfrcakj6dzdypn01dngjqvsi4b4fsbpxziy5m2x1rs1z6gv7ia3"))))
+                 "0zq89cjj8vpxaanx378yaypvmcxk0my8c773acx545c5p75ghvbk"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f                    ; no test suite
@@ -8102,7 +8102,7 @@ It contains the code shared by all Kiwix ports.")
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/kiwix-desktop"))
                     (qt-process-path (string-append
-                                      (assoc-ref inputs "qtwebengine")
+                                      (assoc-ref inputs "qtwebengine-5")
                                       "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
                  `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
@@ -8115,9 +8115,9 @@ It contains the code shared by all Kiwix ports.")
            libzim
            pugixml
            qtbase-5
-           qtdeclarative
-           qtwebchannel
-           qtwebengine
+           qtdeclarative-5
+           qtwebchannel-5
+           qtwebengine-5
            xapian
            zlib
            `(,zstd "lib")))

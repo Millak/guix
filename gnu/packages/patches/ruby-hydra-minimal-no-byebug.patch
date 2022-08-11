@@ -1,0 +1,11 @@
+Description: Avoid dependency on byebug to reduce package closure
+  significantly, see https://issues.guix.gnu.org/55997
+diff --git a/lib/hydra.rb b/lib/hydra.rb
+index 29fbad2..6b5058a 100644
+--- a/lib/hydra.rb
++++ b/lib/hydra.rb
+@@ -1,4 +1,3 @@
+-require 'byebug' unless ENV['RACK_ENV'] == "production"
+ require 'pp'
+ 
+ module CoreExt

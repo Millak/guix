@@ -73,6 +73,7 @@ Return DIRECTORY on success."
          (mkdir-p (dirname file))
          (call-with-output-file file
            (lambda (port)
+             (set-port-encoding! port "UTF-8")
              (display (if (string? contents)
                           contents
                           (with-repository directory repository

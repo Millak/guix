@@ -772,11 +772,11 @@ logging is disabled.")
 network.  A specific port value can be provided by appending the @code{:PORT}
 suffix.  By default, it uses the Jami bootstrap nodes, but any host can be
 specified here.  It's also possible to disable bootstrapping by explicitly
-setting this field to the @code{*unspecified*} value.")
+setting this field to the @code{'unset} value.")
   (port
    (maybe-number 4222)
-   "The UDP port to bind to.  When set to @code{*unspecified*}, an available
-port is automatically selected.")
+   "The UDP port to bind to.  When left unspecified, an available port is
+automatically selected.")
   (proxy-server-port
    maybe-number
    "Spawn a proxy server listening on the specified port.")
@@ -997,14 +997,9 @@ HiddenServicePort ~a ~a~%"
                 ;; 'sd_notify' though), so we're stuck with that.
                 (start #~(make-forkexec-constructor
                           (list #$tor "-f" #$torrc)
-                          #:user "tor" #:group "tor"
-                          #:log-file "/var/log/tor.log"))
+                          #:user "tor" #:group "tor"))
                 (stop #~(make-kill-destructor))
                 (documentation "Run the Tor anonymous network overlay."))))))))
-
-(define %tor-log-rotation
-  (list (log-rotation
-         (files '("/var/log/tor.log")))))
 
 (define (tor-activation config)
   "Set up directories for Tor and its hidden services, if any."
@@ -1051,9 +1046,7 @@ HiddenServicePort ~a ~a~%"
                        (service-extension account-service-type
                                           (const %tor-accounts))
                        (service-extension activation-service-type
-                                          tor-activation)
-                       (service-extension rottlog-service-type
-                                          (const %tor-log-rotation))))
+                                          tor-activation)))
 
                 ;; This can be extended with hidden services.
                 (compose concatenate)

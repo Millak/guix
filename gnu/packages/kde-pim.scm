@@ -58,7 +58,7 @@
                  "akonadi-not-relocatable.patch"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools shared-mime-info))
+     (list extra-cmake-modules qttools-5 shared-mime-info))
     (inputs
      (list boost
            kconfig
@@ -537,7 +537,7 @@ one of the APIs mentioned above.")
     (properties `((upstream-name . "calendarsupport")))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools))
+     (list extra-cmake-modules qttools-5))
     (inputs
      (list akonadi
            akonadi-calendar
@@ -724,11 +724,11 @@ for KDE PIM.")
            ;; TODO: libkolab
            qca
            qtbase-5
-           qtdeclarative
-           qtnetworkauth
+           qtdeclarative-5
+           qtnetworkauth-5
            qtspeech
-           qtwebchannel
-           qtwebengine
+           qtwebchannel-5
+           qtwebengine-5
            qtxmlpatterns))
     (arguments
       ;; TODO: 5/45 tests fail for quite different reasons, even with
@@ -769,7 +769,7 @@ package.")
     (properties `((upstream-name . "eventviews")))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools))
+     (list extra-cmake-modules qttools-5))
     (inputs
      (list akonadi
            akonadi-calendar
@@ -1070,9 +1070,9 @@ and retrieving certificates from LDAP servers.")
            oxygen-icons ; default icon set, required for tests
            qgpgme
            qtbase-5
-           qtdeclarative
-           qtwebchannel
-           qtwebengine
+           qtdeclarative-5
+           qtwebchannel-5
+           qtwebengine-5
            sonnet))
     (arguments
      `(#:phases
@@ -1108,7 +1108,7 @@ manager from KDE.")
     (properties `((upstream-name . "mailcommon")))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules dbus gnupg qttools))
+     (list extra-cmake-modules dbus gnupg qttools-5))
     (inputs
      (list akonadi
            akonadi-contacts
@@ -1322,9 +1322,9 @@ using a Qt/KMime C++ API.")
            qca
            qgpgme
            qtbase-5
-           qtdeclarative
-           qtwebchannel
-           qtwebengine
+           qtdeclarative-5
+           qtwebchannel-5
+           qtwebengine-5
            qtwebkit
            sonnet))
     (arguments
@@ -1496,7 +1496,7 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
         (base32 "04lz3ldrr0lpy9zpsg9ja1i9gxzlcjpqcwn3g7l4jjdky4frcr2r"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules dbus qttools kdoctools))
+     (list extra-cmake-modules dbus qttools-5 kdoctools))
     (inputs
      (list akonadi
            akonadi-calendar
@@ -1620,7 +1620,7 @@ Virtual Contact File}) files to the KPeople contact management library.")
     (properties `((upstream-name . "pimcommon")))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools))
+     (list extra-cmake-modules qttools-5))
     (inputs
      (list karchive
            akonadi
@@ -1656,7 +1656,7 @@ Virtual Contact File}) files to the KPeople contact management library.")
            libxslt
            purpose
            qtbase-5
-           qtwebengine))
+           qtwebengine-5))
     (arguments
      `(#:tests? #f)) ;; TODO tests hang
     (home-page "https://invent.kde.org/pim/pimcommon")
@@ -1678,7 +1678,7 @@ Virtual Contact File}) files to the KPeople contact management library.")
         (base32 "0j6d4sv405c3x0ww75qsww94apidsb8aaqf59akhv96zmv0vx5wy"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools))
+     (list extra-cmake-modules qttools-5))
     (inputs
      (list grantlee
            kcodecs
@@ -1791,7 +1791,7 @@ and allows one to view/extract message formatted text in Rich Text Format.")
         (base32 "0bask561laxgkgm3rxfpyxqs6jx1l9xjk058lhycq0pik6vwhdha"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools))
+     (list extra-cmake-modules qttools-5))
     (inputs
      (list akonadi
            akonadi-contacts
@@ -1838,7 +1838,7 @@ and allows one to view/extract message formatted text in Rich Text Format.")
         (base32 "0nvd5fqrvyb7c3g7rf1lxbbv38q9sqnhd6irgx7awwgw92inxky4"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools))
+     (list extra-cmake-modules qttools-5))
     (inputs
      (list cyrus-sasl
            ki18n
@@ -1848,9 +1848,9 @@ and allows one to view/extract message formatted text in Rich Text Format.")
            kwallet
            kwindowsystem
            qtbase-5
-           qtdeclarative
-           qtwebchannel
-           qtwebengine))
+           qtdeclarative-5
+           qtwebchannel-5
+           qtwebengine-5))
     (arguments
      `(#:tests? #f)) ;; TODO 6/48 tests fail
     (home-page "https://invent.kde.org/pim/libkgapi")
@@ -1873,7 +1873,7 @@ various Google services.")
         (base32 "0rijpmqyx4mrr7csik3vkfcra7kfywk6yz548fmq3ha8wa9ax8fv"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools qttools))
+     (list extra-cmake-modules kdoctools qttools-5))
     (inputs
      (list boost
            gpgme
@@ -1931,9 +1931,9 @@ KDE using certificate-based crypto.")
            kwindowsystem
            libkdepim
            qtbase-5
-           qtdeclarative
-           qtwebchannel
-           qtwebengine))
+           qtdeclarative-5
+           qtwebchannel-5
+           qtwebengine-5))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

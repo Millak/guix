@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,11 +30,12 @@
   (match (origin-actual-file-name origin)
     (#f #f)
     ((? string? file)
-     ;; As of version 0.2.1, Disarchive can only deal with raw tarballs and
-     ;; gzip-compressed tarballs.
+     ;; As of version 0.4.0, Disarchive can only deal with raw tarballs,
+     ;; gzip-compressed tarballs, and xz-compressed tarballs.
      (and (origin-hash origin)
           (or (string-suffix? ".tar.gz" file)
               (string-suffix? ".tgz" file)
+              (string-suffix? ".tar.xz" file)
               (string-suffix? ".tar" file))))))
 
 (define (origin->disarchive origin)
@@ -98,6 +99,20 @@ an empty directory if ORIGIN could not be disassembled."
   (directory-union "disarchive-collection"
                    (filter-map (lambda (origin)
                                  (and (tarball-origin? origin)
+
+                                      ;; Dismiss origins with (sha256 #f) such
+                                      ;; as that of IceCat.
+                                      (and=> (origin-hash origin)
+                                             content-hash-value)
+
+                                      ;; FIXME: Exclude the Chromium tarball
+                                      ;; because it's huge and "disarchive
+                                      ;; disassemble" exceeds the max-silent
+                                      ;; timeout.
+                                      (not (string-prefix?
+                                            "chromium-"
+                                            (origin-actual-file-name origin)))
+
                                       (origin->disarchive origin)))
                                origins)
                    #:copy? #t))

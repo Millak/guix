@@ -117,6 +117,15 @@
     (outputs '("out" "static"))
     (arguments
      (list
+      #:make-flags
+      (if (target-mingw?)
+          #~(list #$(string-append "PREFIX=" (%current-target-system) "-")
+                  "BINARY_PATH = $(prefix)/bin"
+                  "INCLUDE_PATH = $(prefix)/include"
+                  "LIBRARY_PATH = $(prefix)/lib"
+                  "SHARED_MODE = 1"
+                  (string-append "prefix = " #$output))
+          #~'())
       #:phases
       #~(modify-phases %standard-phases
           (replace 'configure
@@ -129,8 +138,11 @@
               #$@(if (%current-target-system)
                      #~((setenv "CHOST" #$(%current-target-system)))
                      #~())
-              (invoke "./configure"
-                      (string-append "--prefix=" #$output))))
+
+              #$@(if (target-mingw?)
+                     #~((rename-file "win32/Makefile.gcc" "Makefile"))
+                     #~((invoke "./configure"
+                                (string-append "--prefix=" #$output))))))
           (add-after 'install 'move-static-library
             (lambda _
               (with-directory-excursion (string-append #$output "/lib")
@@ -1737,6 +1749,7 @@ Compression ratios of 2:1 to 3:1 are common for text files.")
   (package (inherit zip)
     (name "unzip")
     (version "6.0")
+    (replacement unzip/fixed)
     (source
      (origin
        (method url-fetch)
@@ -1786,25 +1799,33 @@ Compression ratios of 2:1 to 3:1 are common for text files.")
     (build-system gnu-build-system)
     ;; no inputs; bzip2 is not supported, since not compiled with BZ_NO_STDIO
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-after 'unpack 'fortify
-                    (lambda _
-                      ;; Mitigate CVE-2018-1000035, an exploitable buffer overflow.
-                      ;; This environment variable is recommended in 'unix/Makefile'
-                      ;; for passing flags to the C compiler.
-                      (setenv "LOCAL_UNZIP" "-D_FORTIFY_SOURCE=1")
-                      #t))
-                  (replace 'build
-                    (lambda* (#:key make-flags #:allow-other-keys)
-                      (apply invoke "make"
-                             `("-j" ,(number->string
-                                      (parallel-job-count))
-                               ,@make-flags
-                               "generic_gcc")))))
-       #:make-flags (list "-f" "unix/Makefile"
-                          (string-append "prefix=" %output)
-                          (string-append "MANDIR=" %output "/share/man/man1"))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'fortify
+                 (lambda _
+                   ;; Mitigate CVE-2018-1000035, an exploitable buffer overflow.
+                   ;; This environment variable is recommended in 'unix/Makefile'
+                   ;; for passing flags to the C compiler.
+                   (setenv "LOCAL_UNZIP" "-D_FORTIFY_SOURCE=1")
+                   #t))
+               (replace 'build
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make"
+                          `("-j" ,(number->string
+                                   (parallel-job-count))
+                            ,@make-flags
+                            "generic_gcc")))))
+           #:make-flags
+           ;; Fix cross-compilation without affecting native builds, as doing so
+           ;; would trigger too many rebuilds: https://issues.guix.gnu.org/57127
+           (if (%current-target-system)
+               #~(list "-f" "unix/Makefile"
+                       (string-append "prefix=" #$output)
+                       (string-append "MANDIR=" #$output "/share/man/man1"))
+               #~(list "-f" "unix/Makefile"
+                       (string-append "prefix=" %output)
+                       (string-append "MANDIR=" %output "/share/man/man1")))))
     (home-page "http://www.info-zip.org/UnZip.html")
     (synopsis "Decompression and file extraction utility")
     (description
@@ -1815,8 +1836,18 @@ UnZip lists, tests, or extracts files from a .zip archive.  The default
 behaviour (with no options) is to extract into the current directory, and
 subdirectories below it, all files from the specified zipfile.  UnZip
 recreates the stored directory structure by default.")
+    (properties `((lint-hidden-cve . ("CVE-2019-13232"))))
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
+
+(define unzip/fixed
+  (package (inherit unzip)
+    (source
+     (origin
+       (inherit (package-source unzip))
+       (patches (append
+                  (origin-patches (package-source unzip))
+                  (search-patches "unzip-CVE-2022-0529+CVE-2022-0530.patch")))))))
 
 (define-public ziptime
   (let ((commit "2a5bc9dfbf7c6a80e5f7cb4dd05b4036741478bc")
@@ -2315,7 +2346,7 @@ reading from and writing to ZIP archives.")
 (define-public zchunk
   (package
     (name "zchunk")
-    (version "1.1.16")
+    (version "1.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2324,7 +2355,7 @@ reading from and writing to ZIP archives.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nlzwnv6wh2yjyyv27f81jnvmk7psgpbnw7dsdp7frfkya569hgv"))))
+                "0q0avb0397xkmidl8rxasfywp0r7w3awk6271pa2d9xl9p1n82zy"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases

@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018, 2019, 2020, 2021 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
@@ -116,8 +116,7 @@ designed to embed randomized tests in whatever framework you like.")
        ;; Error while trying to load definition for system checkl-test from
        ;; pathname [...]/checkl-test.asd: The function CHECKL:DEFINE-TEST-OP
        ;; is undefined.
-       '(#:asd-files '("checkl.asd")
-         #:tests? #f))
+       '(#:tests? #f))
       (native-inputs
        (list sbcl-fiveam))
       (inputs
@@ -881,8 +880,7 @@ interactive development.")
              sbcl-mgl-pax
              sbcl-trivial-gray-streams))
       (arguments
-       `(#:asd-files '("try.asdf.asd" "try.asd")
-         ;; FIXME: Get tests to work
+       `(;; FIXME: Get tests to work
          #:tests? #f))
       (home-page "https://github.com/melisgl/try")
       (synopsis "Common Lisp test framework")

@@ -1,7 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -202,7 +203,7 @@ set up using CL source package conventions."
       (define base-arguments
         (if target-is-source?
             (strip-keyword-arguments
-             '(#:tests? #:asd-files #:lisp #:asd-systems #:test-asd-file)
+             '(#:tests? #:lisp #:asd-systems #:asd-test-systems #:asd-operation)
              (package-arguments pkg))
             (package-arguments pkg)))
 
@@ -270,9 +271,9 @@ set up using CL source package conventions."
   (lambda* (name inputs
                  #:key source outputs
                  (tests? #t)
-                 (asd-files ''())
                  (asd-systems ''())
-                 (test-asd-file #f)
+                 (asd-test-systems ''())
+                 (asd-operation "load-system")
                  (phases '%standard-phases)
                  (search-paths '())
                  (system (%current-system))
@@ -292,6 +293,11 @@ set up using CL source package conventions."
             `(quote ,(list package-name)))
           asd-systems))
 
+    (define test-systems
+      (if (null? (cadr asd-test-systems))
+          systems
+          asd-test-systems))
+
     (define builder
       (with-imported-modules imported-modules
         #~(begin
@@ -302,9 +308,9 @@ set up using CL source package conventions."
                            (%lisp-type #$lisp-type))
               (asdf-build #:name #$name
                           #:source #+source
-                          #:asd-files #$asd-files
                           #:asd-systems #$systems
-                          #:test-asd-file #$test-asd-file
+                          #:asd-test-systems #$test-systems
+                          #:asd-operation #$asd-operation
                           #:system #$system
                           #:tests? #$tests?
                           #:phases #$phases

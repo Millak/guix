@@ -27945,7 +27945,7 @@ HTTP request or response body.")
 (define-public rust-httparse-1
   (package
     (name "rust-httparse")
-    (version "1.5.1")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
@@ -27953,11 +27953,11 @@ HTTP request or response body.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00smbrgb9vyzbbj3j5d66iarjl5x2wpfwkmhcy5nizylw7dlzndc"))))
+        (base32 "0k60q1hx96cvmjn6k3yjkff87fz0ga2a4z0g9ss8a9x5nndy4v29"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
-       (("rust-pico-sys" ,rust-pico-sys-0.0))))
+       (("rust-criterion" ,rust-criterion-0.3))))
     (home-page "https://github.com/seanmonstar/httparse")
     (synopsis "Zero-copy HTTP/1.x parser")
     (description
@@ -42993,29 +42993,6 @@ function data structures.")
     (synopsis "Support code shared by PHF libraries")
     (description
      "Support code shared by PHF libraries.")
-    (license license:expat)))
-
-(define-public rust-pico-sys-0.0
-  (package
-    (name "rust-pico-sys")
-    (version "0.0.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pico-sys" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1q5pg0ms6szz6b5h26h4k40zb76zbwwjgyigac4wly9qngdj4yl5"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-gcc" ,rust-gcc-0.3))))
-    (home-page "https://github.com/reem/rust-pico-sys")
-    (synopsis "Bindings to the PicoHTTPParser")
-    (description
-     "This package provides bindings to the PicoHTTPParser.")
     (license license:expat)))
 
 (define-public rust-pin-project-1
@@ -72751,6 +72728,23 @@ library.")
      "This package provides a wrapper around the @code{Fontconfig} library,
 for locating fonts.")
     (license license:expat)))
+
+(define-public rust-yeslogic-fontconfig-sys-2
+  (package
+    (inherit rust-yeslogic-fontconfig-sys-3)
+    (name "rust-yeslogic-fontconfig-sys")
+    (version "2.11.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "yeslogic-fontconfig-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "13bzwn12dmxnc8iqd6za6q3j2ililnqjcplnlrfblbca4ia73r1q"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-const-cstr" ,rust-const-cstr-0.3)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-zbase32-0.1
   (package

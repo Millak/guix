@@ -147,34 +147,41 @@ to inspect different parts of the same file, at the same time.")
     (inputs
      (list slang popt python fribidi))
     (arguments
-     `(#:tests? #f    ; no test suite
+     (list
+       #:tests? #f    ; no test suite
        #:configure-flags
        ;; Set the correct RUNPATH in binaries.
-       (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
+       #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
        #:make-flags
        ;; configure uses a hard-coded search of /usr/include/python* to set
        ;; this variable, and does not allow us to override it from the
        ;; command line.  Fortunately, the Makefile does, so provide it here.
-       (list (string-append "PYTHONVERS=python"
-                            ,(version-major+minor (package-version python))))
+       #~(list
+          (string-append "PYTHONVERS=python"
+                         #$(version-major+minor (package-version python))))
        #:phases
-       (modify-phases %standard-phases
-         (add-after
-          'unpack 'patch-/usr/bin/install
-          (lambda _
-            (substitute* "po/Makefile"
-              (("/usr/bin/install") "install"))
-            #t))
-         (add-after
-          'install 'move-python
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out  (assoc-ref outputs "out"))
-                  (py   (assoc-ref outputs "python"))
-                  (ver ,(version-major+minor (package-version python))))
-              (mkdir-p (string-append py "/lib"))
-              (rename-file (string-append out "/lib/python" ver)
-                           (string-append py  "/lib/python" ver))
-              #t))))))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-/usr/bin/install
+             (lambda _
+               (substitute* "po/Makefile"
+                 (("/usr/bin/install") "install"))))
+           (add-before 'build 'add-python-config-to-path
+             (lambda* (#:key target #:allow-other-keys)
+               ;; When cross-compiling python-config is not present in $PATH.
+               ;;
+               ;; It is a shell script without dependencies on target binaries
+               ;; so it can be run on the host to allow cross-compilation.
+               (when target
+                 (let ((path (getenv "PATH"))
+                       (py (string-append #$python "/bin")))
+                   (setenv "PATH" (string-append path ":" py))))))
+           (add-after 'install 'move-python
+             (lambda* _
+               (let ((ver #$(version-major+minor (package-version python))))
+                 (mkdir-p (string-append #$output:python "/lib"))
+                 (rename-file
+                   (string-append #$output "/lib/python" ver)
+                   (string-append #$output:python  "/lib/python" ver))))))))
     (home-page "https://pagure.io/newt")
     (synopsis "Not Erik's Windowing Toolkit - text mode windowing with slang")
     (description

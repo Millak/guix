@@ -1,12 +1,11 @@
---- nsis-3.04-src/SConstruct	2019-05-30 14:53:30.276775332 -0400
-+++ nsis-3.04-src/SConstruct	2019-05-30 14:54:17.901232914 -0400
-@@ -77,6 +77,9 @@
- if not toolset and not path:
- 	defenv = Environment(TARGET_ARCH = arch)
+--- nsis-3.08-src/SConstruct	2021-01-15 17:31:10.000000000 +0100
++++ nsis-3.08-src/SConstruct-passthru	2022-08-02 17:11:12.414702282 +0200
+@@ -71,7 +71,7 @@
  
-+import os;
-+defenv['ENV'] = os.environ
-+
- Export('defenv')
+ defenv = {
+ 	'TARGET_ARCH': ARGUMENTS.get('TARGET_ARCH', 'x86'),
+-	'ENV': {}
++	'ENV': os.environ.copy()
+ }
  
  ######################################################################

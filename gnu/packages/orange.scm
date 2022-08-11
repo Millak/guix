@@ -137,7 +137,7 @@ GUI based workflow.  It is primarily used in the Orange framework.")
              (let ((out (assoc-ref outputs "out")))
                (wrap-program (string-append out "/bin/orange-canvas")
                  `("QT_PLUGIN_PATH" prefix
-                   ,(list (string-append (assoc-ref inputs "qtsvg")
+                   ,(list (string-append (assoc-ref inputs "qtsvg-5")
                                          "/lib/qt5/plugins/"))))))))))
     (native-inputs
      (list python-cython))
@@ -172,7 +172,7 @@ GUI based workflow.  It is primarily used in the Orange framework.")
            python-xlrd
            python-xlsxwriter
            qtbase-5
-           qtsvg
+           qtsvg-5
            xdg-utils))
     (home-page "https://orangedatamining.com/")
     (synopsis "Component-based data mining framework")

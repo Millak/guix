@@ -77,6 +77,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system ruby)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -100,6 +101,7 @@
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages elf)
@@ -134,6 +136,7 @@
   #:use-module (gnu packages mcrypt)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pciutils)
@@ -152,6 +155,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages tcl)
@@ -1830,18 +1834,15 @@ at once based on a Perl regular expression.")
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "rc/weekly"
                         (("/bin/kill")
-                         (string-append (assoc-ref inputs "coreutils*")
-                                        "/bin/kill"))
+                         (search-input-file inputs "/bin/kill"))
                         (("syslogd\\.pid")
                          ;; The file is called 'syslog.pid' (no 'd').
-                         "syslog.pid"))
-                      #t))
+                         "syslog.pid"))))
                   (add-after 'install 'install-info
                     (lambda _
                       (invoke "make" "install-info"))))))
     (native-inputs (list texinfo automake util-linux)) ; for 'cal'
-    (inputs `(("coreutils*" ,coreutils)
-              ("mailutils" ,mailutils)))
+    (inputs (list coreutils mailutils))
     (home-page "https://www.gnu.org/software/rottlog/")
     (synopsis "Log rotation and management")
     (description
@@ -2140,39 +2141,35 @@ command.")
     (inherit wpa-supplicant)
     (name "wpa-supplicant-gui")
     (inputs (modify-inputs (package-inputs wpa-supplicant)
-              (prepend qtbase-5 qtsvg)))
+              (prepend qtbase-5 qtsvg-5)))
     (native-inputs
      ;; For icons.
      (modify-inputs (package-native-inputs wpa-supplicant)
        (prepend imagemagick inkscape/stable)))
+    (build-system qt-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'chdir
-                    (lambda _
-                      (chdir "wpa_supplicant/wpa_gui-qt4")
-                      #t))
-                  (delete 'configure)
-                  (replace 'build
-                    (lambda _
-                      (invoke "qmake" "wpa_gui.pro")
-                      (invoke "make" "-j" (number->string (parallel-job-count)))
-                      (invoke "make" "-C" "icons")))
-                  (replace 'install
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out"))
-                            (qt '("qtbase" "qtsvg")))
-                        (install-file "wpa_gui" (string-append out "/bin"))
-                        (install-file "wpa_gui.desktop"
-                                      (string-append out "/share/applications"))
-                        (copy-recursively "icons/hicolor"
-                                          (string-append out "/share/icons/hicolor"))
-                        (wrap-program (string-append out "/bin/wpa_gui")
-                          `("QT_PLUGIN_PATH" ":" prefix
-                            ,(map (lambda (label)
-                                    (string-append (assoc-ref inputs label)
-                                                   "/lib/qt5/plugins/"))
-                                  qt)))
-                        #t))))))
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "wpa_supplicant/wpa_gui-qt4")))
+          (replace 'configure
+            (lambda _ (invoke "qmake" "wpa_gui.pro")))
+          (add-after 'build 'build-icons
+            (lambda _
+              ;; Inkscape complains (but works) without a writable $HOME.
+              (setenv "HOME" "/tmp")
+              (invoke "make" "-C" "icons")))
+          (replace 'install
+            (lambda _
+              (install-file "wpa_gui" (string-append #$output "/bin"))
+              (install-file "wpa_gui.desktop"
+                            (string-append #$output
+                                           "/share/applications"))
+              (copy-recursively "icons/hicolor"
+                                (string-append #$output
+                                               "/share/icons/hicolor")))))))
     (synopsis "Graphical user interface for WPA supplicant")))
 
 (define-public hostapd
@@ -3972,14 +3969,14 @@ information tool.")
 (define-public nnn
   (package
     (name "nnn")
-    (version "4.5")
+    (version "4.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/jarun/nnn/releases/download/v"
                            version "/nnn-v" version ".tar.gz"))
        (sha256
-        (base32 "1aj9hzhpwxl2v1dlf3jpd3rp81z689dq8iycbipc0024dnyibp7s"))))
+        (base32 "0gvyvynw957yirvc1aj65flzni7niaj5bvyk82ka5dfgi2dazb0m"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses readline))
@@ -5233,3 +5230,217 @@ allows applications to use whatever seat management is available.")
 mediate access to shared devices, such as graphics and input, for applications
 that require it.")
     (license license:expat)))
+
+(define-public fail2ban
+  (package
+    (name "fail2ban")
+    (version "0.11.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fail2ban/fail2ban")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00d9q8m284q2wy6q462nipzszplfbvrs9fhgn0y3imwsc24kv1db"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Get rid of absolute file names.
+                  (substitute* "setup.py"
+                    (("/etc/fail2ban")
+                     "etc/fail2ban")
+                    (("/var/lib/fail2ban")
+                     "var/lib/fail2ban")
+                    (("\"/usr/bin/\"")
+                     "\"usr/bin/\"")
+                    (("\"/usr/lib/fail2ban/\"")
+                     "\"usr/lib/fail2ban/\"")
+                    (("'/usr/share/doc/fail2ban'")
+                     "'usr/share/doc/fail2ban'"))
+                  ;; disable tests performing unacceptable side-effects
+                  (let ((make-suite (lambda (t)
+                                      (string-append
+                                       "tests.addTest.unittest.makeSuite."
+                                       t ".."))))
+                    (substitute* "fail2ban/tests/utils.py"
+                      (((make-suite "actiontestcase.CommandActionTest"))
+                       "")
+                      (((make-suite "misctestcase.SetupTest"))
+                       "")
+                      (((make-suite
+                         "filtertestcase.DNSUtilsNetworkTests"))
+                       "")
+                      (((make-suite "filtertestcase.IgnoreIPDNS"))
+                       "")
+                      (((make-suite "filtertestcase.GetFailures"))
+                       "")
+                      (((make-suite
+                         "fail2banclienttestcase.Fail2banServerTest"))
+                       "")
+                      (((make-suite
+                         "servertestcase.ServerConfigReaderTests"))
+                       "")))))
+              (patches (search-patches
+                        "fail2ban-0.11.2_fix-setuptools-drop-2to3.patch"
+                        "fail2ban-python310-server-action.patch"
+                        "fail2ban-python310-server-actions.patch"
+                        "fail2ban-python310-server-jails.patch"
+                        "fail2ban-0.11.2_fix-test-suite.patch"
+                        "fail2ban-0.11.2_CVE-2021-32749.patch"
+                        "fail2ban-paths-guix-conf.patch"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'build 'invoke-2to3
+                    (lambda _
+                      (invoke "./fail2ban-2to3")))
+                  (add-before 'install 'fix-default-config
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (substitute* '("config/paths-common.conf"
+                                     "fail2ban/tests/utils.py"
+                                     "fail2ban/client/configreader.py"
+                                     "fail2ban/client/fail2bancmdline.py"
+                                     "fail2ban/client/fail2banregex.py")
+                        (("/etc/fail2ban")
+                         (string-append (assoc-ref outputs "out")
+                                        "/etc/fail2ban")))))
+                  (add-after 'fix-default-config 'set-action-dependencies
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      ;; deleting things that are not feasible to fix
+                      ;; or won't be used any way
+                      (with-directory-excursion "config"
+                        (for-each delete-file
+                                  '("paths-arch.conf"
+                                    "paths-debian.conf"
+                                    "paths-fedora.conf"
+                                    "paths-freebsd.conf"
+                                    "paths-opensuse.conf"
+                                    "paths-osx.conf")))
+                      (with-directory-excursion "config/action.d"
+                        (for-each delete-file
+                                  '("apf.conf"
+                                    "bsd-ipfw.conf"
+                                    "dshield.conf"
+                                    "ipfilter.conf"
+                                    "ipfw.conf"
+                                    "firewallcmd-allports.conf"
+                                    "firewallcmd-common.conf"
+                                    "firewallcmd-ipset.conf"
+                                    "firewallcmd-multiport.conf"
+                                    "firewallcmd-new.conf"
+                                    "firewallcmd-rich-logging.conf"
+                                    "firewallcmd-rich-rules.conf"
+                                    "osx-afctl.conf"
+                                    "osx-ipfw.conf"
+                                    "pf.conf"
+                                    "nginx-block-map.conf"
+                                    "npf.conf"
+                                    "shorewall.conf"
+                                    "shorewall-ipset-proto6.conf"
+                                    "ufw.conf")))
+                      (let* ((lookup-cmd (lambda (i)
+                                           (search-input-file inputs i)))
+                             (bin (lambda (i)
+                                    (lookup-cmd (string-append "/bin/" i))))
+                             (sbin (lambda (i)
+                                     (lookup-cmd (string-append "/sbin/" i))))
+                             (ip (sbin "ip"))
+                             (sendmail (sbin "sendmail")))
+                        (substitute* (find-files "config/action.d" "\\.conf$")
+                          ;; TODO: deal with geoiplookup ..
+                          (("(awk|curl|dig|jq)" all cmd)
+                           (bin cmd))
+                          (("(cat|echo|grep|head|printf|wc) " all
+                            cmd)
+                           (string-append (bin cmd) " "))
+                          ((" (date|rm|sed|tail|touch|tr) " all
+                            cmd)
+                           (string-append " "
+                                          (bin cmd) " "))
+                          (("cut -d")
+                           (string-append (bin "cut") " -d"))
+                          (("`date`")
+                           (string-append "`"
+                                          (bin "date") "`"))
+                          (("id -")
+                           (string-append (bin "id") " -"))
+                          (("ip -([46]) addr" all ver)
+                           (string-append ip " -" ver " addr"))
+                          (("ip route")
+                           (string-append ip " route"))
+                          (("ipset ")
+                           (string-append (sbin "ipset") " "))
+                          (("(iptables|ip6tables) <" all cmd)
+                           (string-append (sbin cmd) " <"))
+                          (("/usr/bin/nsupdate")
+                           (bin "nsupdate"))
+                          (("mail -E")
+                           (string-append sendmail " -E"))
+                          (("nftables = nft")
+                           (string-append "nftables = " (sbin "nft")))
+                          (("perl -e")
+                           (string-append (bin "perl") " -e"))
+                          (("/usr/sbin/sendmail")
+                           sendmail)
+                          (("test -e")
+                           (string-append (bin "test") " -e"))
+                          (("_whois = whois")
+                           (string-append "_whois = " (bin "whois")))))
+                      (substitute* "config/jail.conf"
+                        (("before = paths-debian.conf")
+                         "before = paths-guix.conf"))))
+                  (add-after 'install 'copy-man-pages
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((man (string-append (assoc-ref outputs "out")
+                                                 "/man"))
+                             (install-man (lambda (m)
+                                            (lambda (f)
+                                              (install-file (string-append f
+                                                             "." m)
+                                                            (string-append man
+                                                             "/man" m)))))
+                             (install-man1 (install-man "1"))
+                             (install-man5 (install-man "5")))
+                        (with-directory-excursion "man"
+                          (for-each install-man1
+                                    '("fail2ban"
+                                      "fail2ban-client"
+                                      "fail2ban-python"
+                                      "fail2ban-regex"
+                                      "fail2ban-server"
+                                      "fail2ban-testcases"))
+                          (for-each install-man5
+                                    '("jail.conf")))))))))
+    (inputs (list gawk
+                  coreutils-minimal
+                  curl
+                  grep
+                  jq
+                  iproute
+                  ipset
+                  iptables
+                  `(,isc-bind "utils")
+                  nftables
+                  perl
+                  python-pyinotify
+                  sed
+                  sendmail
+                  sqlite
+                  whois))
+    (home-page "http://www.fail2ban.org")
+    (synopsis "Daemon to ban hosts that cause multiple authentication errors")
+    (description
+     "Fail2Ban scans log files like @file{/var/log/auth.log} and bans IP
+addresses conducting too many failed login attempts.  It does this by updating
+system firewall rules to reject new connections from those IP addresses, for a
+configurable amount of time.  Fail2Ban comes out-of-the-box ready to read many
+standard log files, such as those for sshd and Apache, and is easily
+configured to read any log file of your choosing, for any error you wish.
+
+Though Fail2Ban is able to reduce the rate of incorrect authentication
+attempts, it cannot eliminate the risk presented by weak authentication.  Set
+up services to use only two factor, or public/private authentication
+mechanisms if you really want to protect services.")
+    (license license:gpl2+)))

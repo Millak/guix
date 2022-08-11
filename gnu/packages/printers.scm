@@ -58,7 +58,7 @@
     (inputs
      `(("libusb" ,libusb)
        ("qt" ,qtbase-5)
-       ("qtsvg" ,qtsvg)))
+       ("qtsvg-5" ,qtsvg-5)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("qmake" ,qtbase-5)))

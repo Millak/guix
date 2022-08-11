@@ -117,6 +117,7 @@ guix/narinfo.scm
 guix/channels.scm
 guix/packages.scm
 guix/profiles.scm
+guix/read-print.scm
 guix/remote.scm
 guix/ssh.scm
 guix/git.scm

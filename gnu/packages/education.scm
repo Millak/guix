@@ -174,18 +174,18 @@ of categories with some of the activities available in that category.
            gettext-minimal
            kdoctools
            perl
-           qttools
+           qttools-5
            xorg-server-for-tests))
     (inputs
      (list openssl
            python-wrapper
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
-           qtmultimedia
-           qtquickcontrols
+           qtmultimedia-5
+           qtquickcontrols-5
            qtsensors
-           qtsvg
+           qtsvg-5
            qtxmlpatterns))
     (home-page "https://gcompris.net/index-en.html")
     (synopsis "Educational games for small children")
@@ -302,7 +302,7 @@ frequently used words in American English.")
                ;; Recreate Makefile
                (invoke "qmake")))))))
     (inputs
-     (list qtbase-5 qtmultimedia))
+     (list qtbase-5 qtmultimedia-5))
     (home-page "https://www.tipp10.com/")
     (synopsis "Touch typing tutor")
     (description "Tipp10 is a touch typing tutor.  The ingenious thing about
@@ -448,7 +448,7 @@ specialized device.")
 (define-public openboard
   ;; The last release builds from qtwebkit, which is planned for removal in
   ;; Guix, so use the latest commit of the 1.7-dev branch, which builds with
-  ;; qtwebengine.
+  ;; qtwebengine-5.
   (let ((commit "39e914f600d26565706f0e5b6ea2482b8b4038c7") ;1.6.2-rc0311
         (revision "1"))
     (package
@@ -540,7 +540,7 @@ specialized device.")
                     (symlink (string-append openboard "/OpenBoard")
                              (string-append bin "/openboard")))))))))
       (native-inputs
-       (list qttools))
+       (list qttools-5))
       (inputs
        (list alsa-lib
              coreutils-minimal          ;for patched 'env' shebang
@@ -558,11 +558,11 @@ specialized device.")
              opus
              poppler
              qtbase-5
-             qtdeclarative
-             qtmultimedia
-             qtsvg
-             qtwebchannel
-             qtwebengine
+             qtdeclarative-5
+             qtmultimedia-5
+             qtsvg-5
+             qtwebchannel-5
+             qtwebengine-5
              qtxmlpatterns
              quazip-0
              sdl
@@ -672,9 +672,9 @@ language and very flexible regarding to new or unknown keyboard layouts.")
            libxcb
            libxkbfile
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
-           qtquickcontrols2
+           qtquickcontrols2-5
            qtx11extras
            qtxmlpatterns))
     (home-page "https://edu.kde.org/ktouch/")
@@ -807,9 +807,9 @@ stored and user can review his performance in any time.")
        ("python-requests" ,python-requests)
        ("python-send2trash" ,python-send2trash)
        ("python-sip" ,python-sip)
-       ;; `qtwebengine' is included in `pyqtwebengine', included here for easy
+       ;; `qtwebengine-5' is included in `pyqtwebengine', included here for easy
        ;; wrapping.
-       ("qtwebengine" ,qtwebengine)))
+       ("qtwebengine-5" ,qtwebengine-5)))
     (home-page "https://apps.ankiweb.net/")
     (synopsis "Powerful, intelligent flash cards")
     (description "Anki is a program which makes remembering things
@@ -991,15 +991,15 @@ formats.")
     (arguments
      '(#:tests? #f)) ; no test target
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list libeb
            qtbase-5
-           qtmultimedia
-           qtquickcontrols2
-           qtdeclarative
-           qtwebchannel
-           qtwebengine
+           qtmultimedia-5
+           qtquickcontrols2-5
+           qtdeclarative-5
+           qtwebchannel-5
+           qtwebengine-5
            zlib))
     (synopsis "EPWING dictionary reader")
     (description "qolibri is a dictionary viewer for the EPWING dictionary

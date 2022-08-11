@@ -31,7 +31,8 @@
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:export (%test-jami
-            %test-jami-provisioning))
+            %test-jami-provisioning
+            %test-jami-provisioning-partial))
 
 ;;;
 ;;; Jami daemon.
@@ -67,7 +68,18 @@
                                                     "fallback.another.host"))
                              (name-server-uri "https://my.name.server")))
 
-(define* (make-jami-os #:key provisioning?)
+;;; Like %dummy-jami-account, but with allowed-contacts and moderators left
+;;; unset (thus taking the value *unspecified*).
+(define %dummy-jami-account-partial
+  (jami-account
+   (archive %dummy-jami-account-archive)
+   (rendezvous-point? #t)
+   (peer-discovery? #f)
+   (bootstrap-hostnames '("bootstrap.me"
+                          "fallback.another.host"))
+   (name-server-uri "https://my.name.server")))
+
+(define* (make-jami-os #:key provisioning? partial?)
   (operating-system
     (host-name "jami")
     (timezone "America/Montreal")
@@ -87,7 +99,10 @@
                               (if provisioning?
                                   (jami-configuration
                                    (debug? #t)
-                                   (accounts (list %dummy-jami-account)))
+                                   (accounts
+                                    (list (if partial?
+                                              %dummy-jami-account-partial
+                                              %dummy-jami-account))))
                                   (jami-configuration
                                    (debug? #t))))
                      (service dbus-root-service-type)
@@ -109,12 +124,18 @@
 (define %jami-os-provisioning
   (make-jami-os #:provisioning? #t))
 
-(define* (run-jami-test #:key provisioning?)
-  "Run tests in %JAMI-OS.  When PROVISIONING? is true, test the
-accounts provisioning feature of the service."
+(define %jami-os-provisioning-partial
+  (make-jami-os #:provisioning? #t #:partial? #t))
+
+(define* (run-jami-test #:key provisioning? partial?)
+  "Run tests in %JAMI-OS.  When PROVISIONING? is true, test the accounts
+provisioning feature of the service.  When PARTIAL? is #t, some fields of the
+jami account used as part of the jami configuration are left *unspecified*."
   (define os (marionette-operating-system
               (if provisioning?
-                  %jami-os-provisioning
+                  (if partial?
+                      %jami-os-provisioning-partial
+                      %jami-os-provisioning)
                   %jami-os)
               #:imported-modules '((gnu services herd)
                                    (guix combinators))))
@@ -202,7 +223,7 @@ accounts provisioning feature of the service."
                                                      "Account.username")))))))
                marionette))
 
-            (unless #$provisioning? (test-skip 1))
+            (unless #$(and provisioning? (not partial?)) (test-skip 1))
             (test-assert "jami accounts provisioning, allowed-contacts"
               (marionette-eval
                '(begin
@@ -224,7 +245,7 @@ accounts provisioning feature of the service."
                       (assert (lset= string-ci=? contacts '#$%allowed-contacts)))))
                marionette))
 
-            (unless #$provisioning? (test-skip 1))
+            (unless #$(and provisioning? (not partial?)) (test-skip 1))
             (test-assert "jami accounts provisioning, moderators"
               (marionette-eval
                '(begin
@@ -326,7 +347,9 @@ accounts provisioning feature of the service."
             (test-end)))))
 
   (gexp->derivation (if provisioning?
-                        "jami-provisioning-test"
+                        (if partial?
+                            "jami-provisioning-partial-test"
+                            "jami-provisioning-partial")
                         "jami-test")
     test))
 
@@ -341,3 +364,13 @@ accounts provisioning feature of the service."
    (name "jami-provisioning")
    (description "Provisioning test for the jami service.")
    (value (run-jami-test #:provisioning? #t))))
+
+;;; Thi test verifies that <jami-account> values can be left unspecified
+;;; without causing any issue (see: https://issues.guix.gnu.org/56799).
+(define %test-jami-provisioning-partial
+  (system-test
+   (name "jami-provisioning-partial")
+   (description "Provisioning test for the jami service, when some of the
+'maybe' fields aren't provided (such that their value end up being
+*unspecified*.")
+   (value (run-jami-test #:provisioning? #t #:partial? #t))))

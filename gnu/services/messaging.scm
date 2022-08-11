@@ -90,7 +90,7 @@
                      ((new-def ...)
                       (map (lambda (def target)
                              (if (eq? 'common (syntax->datum target))
-                                 #'*unspecified* def))
+                                 #''unset def))
                            #'(def ...) #'(target ...)))
                      ((new-doc ...)
                       (map (lambda (doc target)
@@ -200,7 +200,7 @@
 (define-maybe file-object-list)
 
 (define (raw-content? val)
-  (not (unspecified? val)))
+  (not (eq? val 'unset)))
 (define (serialize-raw-content field-name val)
   val)
 (define-maybe raw-content)
@@ -474,12 +474,12 @@ by the Prosody service.  See @url{https://prosody.im/doc/logging}."
      global)
 
     (http-max-content-size
-     (maybe-non-negative-integer *unspecified*)
+     (maybe-non-negative-integer 'unset)
      "Maximum allowed size of the HTTP body (in bytes)."
      common)
 
     (http-external-url
-     (maybe-string *unspecified*)
+     (maybe-string 'unset)
      "Some modules expose their own URL in various ways.  This URL is built
 from the protocol, host and port used.  If Prosody sits behind a proxy, the
 public URL will be @code{http-external-url} instead.  See
@@ -556,7 +556,7 @@ support.  To add an external component, you simply fill the hostname field.  See
      int-component)
 
     (mod-muc
-     (maybe-mod-muc-configuration *unspecified*)
+     (maybe-mod-muc-configuration 'unset)
      "Multi-user chat (MUC) is Prosody's module for allowing you to create
 hosted chatrooms/conferences for XMPP users.
 
@@ -573,7 +573,7 @@ See also @url{https://prosody.im/doc/modules/mod_muc}."
      ext-component)
 
     (raw-content
-     (maybe-raw-content *unspecified*)
+     (maybe-raw-content 'unset)
      "Raw content that will be added to the configuration file."
      common)))
 

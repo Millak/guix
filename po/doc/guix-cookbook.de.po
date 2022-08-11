@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: guix 1.0.1.4876-09145-dirty\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-07-09 07:59+0000\n"
-"PO-Revision-Date: 2022-07-02 06:18+0000\n"
+"PO-Revision-Date: 2022-08-04 21:19+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: German <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/de/>\n"
 "Language: de\n"
@@ -265,10 +265,8 @@ msgstr "Die von Guix benutzte Scheme-Implementierung nennt sich Guile. Um mit de
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:127
-#, fuzzy
-#| msgid "Alternatively you can also run @code{guix environment --ad-hoc guile -- guile} if you'd rather not have Guile installed in your user profile."
 msgid "Alternatively you can also run @code{guix shell guile -- guile} if you'd rather not have Guile installed in your user profile."
-msgstr "Alternativ können Sie auch den Befehl @code{guix environment --ad-hoc guile -- guile} ausführen, wenn Sie Guile lieber @emph{nicht} in Ihr Nutzerprofil installieren wollen."
+msgstr "Alternativ können Sie auch den Befehl @code{guix shell -- guile} ausführen, wenn Sie Guile lieber @emph{nicht} in Ihr Nutzerprofil installieren wollen."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:133
@@ -550,34 +548,32 @@ msgstr "das Modul @code{guix build-system ruby}, das sich unter dem Pfad @file{g
 #: guix-git/doc/guix-cookbook.texi:287
 #, no-wrap
 msgid "Going further"
-msgstr ""
+msgstr "Vertiefung"
 
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:291
 msgid "Scheme is a language that has been widely used to teach programming and you'll find plenty of material using it as a vehicle.  Here's a selection of documents to learn more about Scheme:"
-msgstr ""
+msgstr "Die Sprache Scheme wurde oft eingesetzt, um Programmieren beizubringen, daher gibt es ein breites Angebot an Lehrmaterialien, die sie als Transportmittel einsetzen. Hier sehen Sie eine Auswahl solcher Dokumente, mit denen Sie mehr über Scheme erfahren können:"
 
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:296
 msgid "@uref{https://spritely.institute/static/papers/scheme-primer.html, @i{A Scheme Primer}}, by Christine Lemmer-Webber and the Spritely Institute."
-msgstr ""
+msgstr "@uref{https://spritely.institute/news/ein-scheme-primer.html, @i{Ein Scheme-Primer}}, von Christine Lemmer-Webber und dem Spritely Institute, auf Deutsch übersetzt von Florian Pelz."
 
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:300
-#, fuzzy
-#| msgid "For a more detailed introduction, check out @uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, Scheme at a Glance}, by Steve Litt."
 msgid "@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, @i{Scheme at a Glance}}, by Steve Litt."
-msgstr "Für eine detailliertere Einführung können Sie einen Blick auf Steve Litts @uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, Scheme at a Glance} werfen."
+msgstr "@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, @i{Scheme at a Glance}} von Steve Litt."
 
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:306
 msgid "@uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html, @i{Structure and Interpretation of Computer Programs}}, by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  Colloquially known as ``SICP'', this book is a reference."
-msgstr ""
+msgstr "Eines der Referenzbücher zu Scheme ist das einflussreiche „Structure and Interpretation of Computer Programs“, von Harold Abelson und Gerald Jay Sussman, mit Julie Sussman. Eine deutsche Übersetzung „Struktur und Interpretation von Computerprogrammen“ hat Susanne Daniels-Herold verfasst. Vom englischen Original finden Sie eine @uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html, kostenlose Ausgabe online}.  Viele kennen es unter dem Akronym SICP."
 
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:308
 msgid "You can also install it and read it from your computer:"
-msgstr ""
+msgstr "Das Buch können Sie auch installieren und von Ihrem Rechner aus lesen:"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:312
@@ -586,11 +582,13 @@ msgid ""
 "guix install sicp info-reader\n"
 "info sicp\n"
 msgstr ""
+"guix install sicp info-reader\n"
+"info sicp\n"
 
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:316
 msgid "An @uref{https://sarabander.github.io/sicp/, unofficial ebook} is also available."
-msgstr ""
+msgstr "Es gibt auch ein @uref{https://sarabander.github.io/sicp/, inoffizielles E-Book}."
 
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:321
@@ -2906,7 +2904,7 @@ msgid ""
 msgstr ""
 "(define-public linux-libre-macbook41\n"
 "  ;; XXX: Auf die interne 'make-linux-libre*'-Prozedur zugreifen, welche privat\n"
-"  ;; ist und nicht exportiert, desweiteren kann sie sich in Zukunft ändern.\n"
+"  ;; ist und nicht exportiert, des Weiteren kann sie sich in Zukunft ändern.\n"
 "  ((@@@@ (gnu packages linux) make-linux-libre*)\n"
 "   (@@@@ (gnu packages linux) linux-libre-version)\n"
 "   (@@@@ (gnu packages linux) linux-libre-gnu-revision)\n"
@@ -2943,10 +2941,9 @@ msgstr "Sobald wir im Verzeichnis mit dem Quellcode sind, führen Sie @code{touc
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1621
-#, fuzzy, no-wrap
-#| msgid "guix environment linux-libre -- make localmodconfig\n"
+#, no-wrap
 msgid "guix shell -D linux-libre -- make localmodconfig\n"
-msgstr "guix environment linux-libre -- make localmodconfig\n"
+msgstr "guix shell -D linux-libre -- make localmodconfig\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1626
@@ -4500,7 +4497,7 @@ msgstr "Ob Sie ein Entwickler sind oder nicht, Sie dürften feststellen, dass me
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:2491
 msgid "If you are familiar with Python's @samp{virtualenv}, you can think of a profile as a kind of universal @samp{virtualenv} that can hold any kind of software whatsoever, not just Python software.  Furthermore, profiles are self-sufficient: they capture all the runtime dependencies which guarantees that all programs within a profile will always work at any point in time."
-msgstr "Wenn Ihnen Pythons @samp{virtualenv} vertraut ist, können Sie sich ein Profil als eine Art universelles @samp{virtualenv} vorstellen, das jede Art von Software enthalten kann und nicht nur Python-Software. Desweiteren sind Profile selbstversorgend: Sie schließen alle Laufzeitabhängigkeiten ein und garantieren somit, dass alle Programme innerhalb eines Profils stets zu jeder Zeit funktionieren werden."
+msgstr "Wenn Ihnen Pythons @samp{virtualenv} vertraut ist, können Sie sich ein Profil als eine Art universelles @samp{virtualenv} vorstellen, das jede Art von Software enthalten kann und nicht nur Python-Software. Des Weiteren sind Profile selbstversorgend: Sie schließen alle Laufzeitabhängigkeiten ein und garantieren somit, dass alle Programme innerhalb eines Profils stets zu jeder Zeit funktionieren werden."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:2493
@@ -4965,10 +4962,8 @@ msgstr "Nach vielen Wochen haben wir in der Zwischenzeit schon ein paarmal @code
 
 #. type: enumerate
 #: guix-git/doc/guix-cookbook.texi:2810
-#, fuzzy
-#| msgid "Eventually, we set to work on that project again, so we run @code{guix environment -m manifest.scm}.  But now we have to wait for Guix to build and install stuff!"
 msgid "Eventually, we set to work on that project again, so we run @code{guix shell -m manifest.scm}.  But now we have to wait for Guix to build and install stuff!"
-msgstr "Schließlich fangen wir wieder an, an dem Projekt zu arbeiten, also fÜhren wir @code{guix environment -m manifest.scm} aus. Aber jetzt müssen wir warten, bis Guix lauter Dinge erstellt und installiert hat!"
+msgstr "Schließlich fangen wir wieder an, an dem Projekt zu arbeiten, also fÜhren wir @code{guix shell -m manifest.scm} aus. Aber jetzt müssen wir warten, bis Guix lauter Dinge erstellt und installiert hat!"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:2816

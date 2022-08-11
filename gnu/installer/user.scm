@@ -18,6 +18,7 @@
 
 (define-module (gnu installer user)
   #:use-module (guix records)
+  #:use-module (guix read-print)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)
@@ -69,7 +70,11 @@
       (supplementary-groups '("wheel" "netdev"
                               "audio" "video"))))
 
-  `((users (cons*
+  (define-syntax-rule (G_ str) str)
+
+  `(,(vertical-space 1)
+    ,(comment (G_ ";; The list of user accounts ('root' is implicit).\n"))
+    (users (cons*
             ,@(filter-map (lambda (user)
                             ;; Do not emit a 'user-account' form for "root".
                             (and (not (string=? (user-name user) "root"))

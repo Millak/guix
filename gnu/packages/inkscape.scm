@@ -244,7 +244,7 @@ as the native format.")
   (package
     (inherit inkscape/stable)
     (name "inkscape")
-    (version "1.2")
+    (version "1.2.1")
     (source
      (origin
        (inherit (package-source inkscape/stable))
@@ -253,22 +253,12 @@ as the native format.")
                            "resources/file/"
                            "inkscape-" version ".tar.xz"))
        (sha256
-        (base32 "1bg6rlflzhq726kpcwazfscm02liammjvzpyxmj5d52l4la336wd"))))
+        (base32 "06scilds4p4bw337ss22nfdxy2kynv5yjw6vq6nlpjm7xfh7vkj6"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments inkscape/stable)
        ((#:phases phases)
         `(modify-phases ,phases
-           (add-after 'unpack 'disable-problematic-tests
-             ;; The UnionOutside and UnionOutsideSwap tests fail, comparing
-             ;; e.g. the result "M 0 1.5 V 0 H 2 V 2 H 0.5 V 2.5 H 0 V 2 V 1.5 H
-             ;; 0.5 V 2 z" to the expected string "M 0 0 V 1.5 V 2 V 2.5 H 0.5 V
-             ;; 2 H 2 V 0 z" (see:
-             ;; https://gitlab.com/inkscape/inkscape/-/issues/3689).
-             (lambda _
-               (substitute* "testfiles/src/path-boolop-test.cpp"
-                 (("PathBoolopTest, UnionOutside(Swap)?.*" all)
-                  (string-append all "    GTEST_SKIP();\n")))))
            (replace 'wrap-program
              ;; Ensure Python is available at runtime.
              (lambda* (#:key outputs #:allow-other-keys)
@@ -281,6 +271,7 @@ as the native format.")
                    `("GDK_PIXBUF_MODULE_FILE" =
                      (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))))
     (inputs (modify-inputs (package-inputs inkscape/stable)
+              (replace "lib2geom" lib2geom-1.2)
               (append bash-minimal
                       librsvg)))        ;for the pixbuf loader
     (properties (alist-delete 'hidden? (package-properties inkscape/stable)))))

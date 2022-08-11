@@ -11,7 +11,7 @@
 ;;; Copyright © 2017, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
@@ -6264,7 +6264,7 @@ subsequent visualization, annotation and storage of results.")
 (define-public plink-ng
   (package (inherit plink)
     (name "plink-ng")
-    (version "2.00a3-20220315")
+    (version "2.00a3.3")
     (source
      (origin
        (method git-fetch)
@@ -6273,12 +6273,14 @@ subsequent visualization, annotation and storage of results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19inr47jwddkjb9kfb14yxc7xb16c73lkhgxj9sncb0fsiskb4x8"))))
+        (base32 "0m8wkyvbgvcr5kzc284w8fbhpxwglh2c1xq0yc3yv00a53gs7rv0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
        ,#~(list "BLASFLAGS=-llapack -lopenblas"
-                "CFLAGS=-Wall -O2 -DDYNAMIC_ZLIB=1"
+                (string-append "CFLAGS=-Wall -O2 -DDYNAMIC_ZLIB=1"
+                               " -I" (search-input-directory
+                                       %build-inputs "include/simde"))
                 "ZLIB=-lz"
                 "BIN=plink prettify"
                 (string-append "CC=" #$(cc-for-target))
@@ -6305,7 +6307,7 @@ subsequent visualization, annotation and storage of results.")
     (inputs
      (list lapack openblas zlib))
     (native-inputs
-     (list diffutils plink python)) ; for tests
+     (list diffutils plink python simde)) ; for tests
     (home-page "https://www.cog-genomics.org/plink/")
     (license license:gpl3+)))
 
@@ -7522,6 +7524,41 @@ which applies pathway and gene set overdispersion analysis to identify aspects
 of transcriptional heterogeneity among single cells.")
     ;; See https://github.com/hms-dbmi/scde/issues/38
     (license license:gpl2)))
+
+(define-public r-millefy
+  (package
+    (name "r-millefy")
+    (version "0.1.9-beta")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yuifu/millefy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0z2y0x99f761pxvg6n37cmnyrnj699jhjk43pvk05sa86iykgizl"))))
+    (properties `((upstream-name . "millefy")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-data-table
+           r-destiny
+           r-dplyr
+           r-genomicranges
+           r-iranges
+           r-magrittr
+           r-rsamtools
+           r-rtracklayer
+           r-tidyr))
+    (home-page "https://github.com/yuifu/millefy")
+    (synopsis "Make millefy plot with single-cell RNA-seq data")
+    (description "@code{Millefy} is a tool for visualizing read coverage of
+@dfn{scRNA-seq}(single-cell RNA sequencing) datasets in genomic contexts.  By
+dynamically and automatically reorder single cells based on locus-specific
+pseudo time, @code{Millefy} highlights cell-to-cell heterogeneity in read coverage
+of scRNA-seq data.")
+    (license license:expat)))
 
 (define-public r-misha
   (package
@@ -9031,6 +9068,91 @@ remove biased methylation positions for RRBS sequence files.")
 programs for inferring phylogenies (evolutionary trees).")
     (license license:bsd-2)))
 
+(define-public phyml
+  (package
+    (name "phyml")
+    (version "3.3.20220408")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stephaneguindon/phyml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03hdqmnsgnzkcrp9r9ajdfkj33jgq4b86kra8ssjlrph65y344sa"))
+              (snippet
+               '(delete-file "doc/phyml-manual.pdf"))))
+    (build-system gnu-build-system)
+    (supported-systems '("x86_64-linux"))
+    (arguments
+     (let ((default-flags (list "--disable-native")))
+       `(#:phases
+         (let ((build (lambda (what)
+                         (lambda args
+                           (apply (assoc-ref %standard-phases 'configure)
+                                  (append args
+                                          (list #:configure-flags
+                                                (cons (format #false "--enable-~a" what)
+                                                      '() #;,default-flags))))
+                           (apply (assoc-ref %standard-phases 'build) args)
+                           (apply (assoc-ref %standard-phases 'install) args)))))
+           (modify-phases %standard-phases
+             ;; We cannot use --disable-native; see
+             ;; https://github.com/stephaneguindon/phyml/issues/173 Instead we
+             ;; patch the code to at least get rid of -march=native.
+             (add-after 'unpack 'remove-march-native
+               (lambda _
+                 (substitute* "configure.ac"
+                   (("DEFAULT_VECTOR_FLAG=\"-march=native\"")
+                    "DEFAULT_VECTOR_FLAG=\"-march=athlon64-sse3\"\n"))))
+             (add-after 'build 'build-manual
+               (lambda _
+                 (with-directory-excursion "doc"
+                   (invoke "make" "phyml-manual.pdf"))))
+             (add-after 'build-manual 'install-manual
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (with-directory-excursion "doc"
+                   (install-file "phyml-manual.pdf"
+                                 (string-append (assoc-ref outputs "out")
+                                                "/share/doc/phyml")))))
+             (add-after 'install 'build-phyml-mpi
+               (build "phyml-mpi"))
+             (add-after 'build-phyml-mpi 'build-rf
+               (build "rf"))
+             (add-after 'build-rf 'build-phyrex
+               (build "phyrex")))))))
+    (native-inputs
+     (list automake
+           autoconf
+           openmpi
+           (texlive-updmap.cfg (list texlive-amsfonts
+                                     texlive-caption
+                                     texlive-cite
+                                     texlive-fonts-ec
+                                     texlive-grfext
+                                     texlive-hyperref
+                                     texlive-latex-fancyvrb
+                                     texlive-latex-graphics
+                                     texlive-latex-psfrag
+                                     texlive-xcolor))))
+    (home-page "https://github.com/stephaneguindon/phyml")
+    (synopsis "Programs for working on SAM/BAM files")
+    (description
+     "@code{PhyML} is a software package that uses modern statistical
+approaches to analyse alignments of nucleotide or amino acid sequences in a
+phylogenetic framework.  The main tool in this package builds phylogenies
+under the maximum likelihood criterion.  It implements a large number of
+substitution models coupled with efficient options to search the space of
+phylogenetic tree topologies.  code{PhyREX} fits the
+spatial-Lambda-Fleming-Viot model to geo-referenced genetic data.  This model
+is similar to the structured coalescent but assumes that individuals are
+distributed along a spatial continuum rather than discrete demes.
+@code{PhyREX} can be used to estimate population densities and rates of
+dispersal.  Its output can be processed by treeannotator (from the
+@code{BEAST} package) as well as @code{SPREAD}.")
+    (license license:gpl3)))
+
 (define-public imp
   (package
     (name "imp")
@@ -9895,7 +10017,7 @@ The following file formats are supported:
     (inputs
      `(("boost" ,boost)
        ("bzip2" ,bzip2)
-       ("cereal" ,cereal)
+       ("cereal" ,cereal-1.3.0)
        ("curl" ,curl)
        ("eigen" ,eigen)
        ("jemalloc" ,jemalloc)
@@ -11262,7 +11384,7 @@ Thus the per-base error rate is similar to the raw input reads.")
                (install-file "Bandage" (string-append out "/bin"))
                #t))))))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (native-inputs
      (list imagemagick))
     (home-page "https://rrwick.github.io/Bandage/")
@@ -11412,6 +11534,123 @@ including:
        "This package provides a multi-modal simulation engine for studying
 dynamic cellular processes at single-cell resolution.")
       (license license:expat))))
+
+;; Needed for r-liana
+(define-public r-omnipathr/devel
+  (let ((commit "679bb79e319af246a16968d27d64d8d6937a331a")
+        (revision "1"))
+    (package
+      (name "r-omnipathr")
+      (version (git-version "3.5.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/saezlab/omnipathr")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "10h6lyapyx4ik8r4kx5z2dly46jlf2v57caq4g6i0hzifyz2vgjq"))))
+      (properties `((upstream-name . "OmnipathR")))
+      (build-system r-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'set-HOME
+             (lambda _ (setenv "HOME" "/tmp"))))))
+      (propagated-inputs
+       (list r-checkmate
+             r-crayon
+             r-curl
+             r-digest
+             r-dplyr
+             r-httr
+             r-igraph
+             r-jsonlite
+             r-later
+             r-logger
+             r-magrittr
+             r-progress
+             r-purrr
+             r-rappdirs
+             r-readr
+             r-readxl
+             r-rlang
+             r-rvest
+             r-stringr
+             r-tibble
+             r-tidyr
+             r-tidyselect
+             r-withr
+             r-xml2
+             r-yaml))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/saezlab/omnipathr")
+      (synopsis "OmniPath web service client and more")
+      (description
+       "This package provides a client for the OmniPath web service and many
+other resources.  It also includes functions to transform and pretty print
+some of the downloaded data, functions to access a number of other resources
+such as BioPlex, ConsensusPathDB, EVEX, Gene Ontology, Guide to
+Pharmacology (IUPHAR/BPS), Harmonizome, HTRIdb, Human Phenotype Ontology,
+InWeb InBioMap, KEGG Pathway, Pathway Commons, Ramilowski et al. 2015,
+RegNetwork, ReMap, TF census, TRRUST and Vinayagam et al. 2011.  Furthermore,
+OmnipathR features a close integration with the NicheNet method for ligand
+activity prediction from transcriptomics data, and its R implementation
+@code{nichenetr}.")
+      (license license:expat))))
+
+(define-public r-liana
+  (let ((commit "efb1249af46f576d1d620956053cfa93b2cee961")
+        (revision "1"))
+    (package
+      (name "r-liana")
+      (version (git-version "0.1.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/saezlab/liana/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0z645k26kqrfj5f1s412vwclw1q47h1zfxxrh9ijr30pxhpv6cv0"))))
+      (properties `((upstream-name . "liana")))
+      (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        `(modify-phases %standard-phases
+           ;; This is needed to find ~/.config/OmnipathR/omnipathr.yml
+           (add-after 'unpack 'set-HOME
+             (lambda _ (setenv "HOME" "/tmp"))))))
+      (propagated-inputs
+       (list r-complexheatmap
+             r-dplyr
+             r-ggplot2
+             r-magrittr
+             r-omnipathr/devel
+             r-purrr
+             r-rcolorbrewer
+             r-readr
+             r-reticulate
+             r-rlang
+             r-scater
+             r-scran
+             r-scuttle
+             r-seuratobject
+             r-singlecellexperiment
+             r-stringr
+             r-tibble
+             r-tidyr
+             r-tidyselect))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/saezlab/liana/")
+      (synopsis "LIANA: a LIgand-receptor ANalysis frAmework")
+      (description
+       "LIANA provides a number of methods and resource for ligand-receptor
+interaction inference from scRNA-seq data.")
+      (license license:gpl3))))
 
 (define-public r-circus
   (package
@@ -11842,19 +12081,23 @@ million cells.")
 (define-public python-bbknn
   (package
     (name "python-bbknn")
-    (version "1.3.6")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bbknn" version))
        (sha256
         (base32
-         "1jbsh01f57zj4bhvjr3jh4532zznqd6nccmgrl3qi9gnhkf7c4y0"))))
+         "0q11xdmjr2kf6f179a6kjizj3lllfrq743gslgw67qyzimvrrnhn"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; no tests are included
        #:phases
        (modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp")))
          (add-after 'unpack 'do-not-fail-to-find-sklearn
            (lambda _
              ;; XXX: I have no idea why it cannot seem to find sklearn.
@@ -11864,6 +12107,7 @@ million cells.")
      (list python-annoy
            python-cython
            python-numpy
+           python-pandas
            python-scikit-learn
            python-scipy
            python-umap-learn))
@@ -12060,14 +12304,14 @@ allowing the insertion of arbitrary types into the tree.")
 (define-public python-intervaltree
   (package
     (name "python-intervaltree")
-    (version "3.0.2")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "intervaltree" version))
        (sha256
         (base32
-         "0wz234g6irlm4hivs2qzmnywk0ss06ckagwh15nflkyb3p462kyb"))))
+         "0bcm6c6r4ck9nfj9xwz4rm2swc5lrjvmw3lyl6rgj639jf41nawh"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -12431,6 +12675,35 @@ efficiently.")
 juicer) and single-resolution or multi-resolution @code{.cool} files (for
 cooler).  Both @code{hic} and @code{cool} files describe Hi-C contact
 matrices.")
+    (license license:expat)))
+
+(define-public python-scanorama
+  (package
+    (name "python-scanorama")
+    (version "1.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "scanorama" version))
+              (sha256
+               (base32
+                "0il7bf4c7vli2dm2jx7dskh3ymgv8nmk0y90jzgfrnqjzh250x5w"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-annoy
+           python-fbpca
+           python-geosketch
+           python-intervaltree
+           python-matplotlib
+           python-numpy
+           python-scikit-learn
+           python-scipy))
+    (home-page "https://github.com/brianhie/scanorama")
+    (synopsis "Panoramic stitching of heterogeneous single cell transcriptomic data")
+    (description
+     "Scanorama enables batch-correction and integration of heterogeneous
+scRNA-seq datasets, which is described in the paper \"Efficient integration of
+heterogeneous single-cell transcriptomes using Scanorama\" by Brian Hie, Bryan
+Bryson, and Bonnie Berger.")
     (license license:expat)))
 
 (define-public r-pore

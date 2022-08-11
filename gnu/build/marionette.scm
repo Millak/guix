@@ -105,11 +105,14 @@ QEMU monitor and to the guest's backdoor REPL."
           "-monitor" (string-append "unix:" socket-directory "/monitor")
           "-chardev" (string-append "socket,id=repl,path=" socket-directory
                                     "/repl")
+          "-chardev" (string-append "socket,id=qga,server=on,wait=off,path="
+                                    socket-directory "/qemu-ga")
 
           ;; See
           ;; <http://www.linux-kvm.org/page/VMchannel_Requirements#Invocation>.
           "-device" "virtio-serial"
-          "-device" "virtserialport,chardev=repl,name=org.gnu.guix.port.0"))
+          "-device" "virtserialport,chardev=repl,name=org.gnu.guix.port.0"
+          "-device" "virtserialport,chardev=qga,name=org.qemu.guest_agent.0"))
 
   (define (accept* port)
     (match (select (list port) '() (list port) timeout)
@@ -255,8 +258,8 @@ accept connections in MARIONETTE.  Raise an error on failure."
 
 (define (marionette-control command marionette)
   "Run COMMAND in the QEMU monitor of MARIONETTE.  COMMAND is a string such as
-\"sendkey ctrl-alt-f1\" or \"screendump foo.ppm\" (info \"(qemu-doc)
-pcsys_monitor\")."
+\"sendkey ctrl-alt-f1\" or \"screendump foo.ppm\" (info \"(QEMU) QEMU
+Monitor\")."
   (match marionette
     (($ <marionette> _ _ monitor)
      (display command monitor)

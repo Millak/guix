@@ -84,7 +84,7 @@
     (inputs
      (list expat libusb qtbase-5 zlib))
     (native-inputs
-     (list which qttools libxml2))              ;'xmllint' needed for the KML tests
+     (list which qttools-5 libxml2))              ;'xmllint' needed for the KML tests
     (home-page "https://www.gpsbabel.org/")
     (synopsis "Convert and exchange data with GPS and map programs")
     (description
@@ -194,9 +194,9 @@ coordinates as well as partial support for adjustments in global coordinate syst
                      (string-append "PREFIX="
                                     (assoc-ref outputs "out"))))))))
     (inputs
-     (list qtbase-5 qtlocation qtsvg))
+     (list qtbase-5 qtlocation qtsvg-5))
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (home-page "https://www.gpxsee.org")
     (synopsis "GPS log file viewer and analyzer")
     (description

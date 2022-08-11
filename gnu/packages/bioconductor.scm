@@ -49,6 +49,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages netpbm)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages statistics)
@@ -2647,6 +2648,65 @@ and evaluate clustering results.")
 arbitrary genomic intervals along chromosomal ideogram.")
     (license license:gpl2)))
 
+(define-public r-infercnv
+  (package
+    (name "r-infercnv")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "infercnv" version))
+       (sha256
+        (base32
+         "01f021fdxm058733rky46dlvqg7dmf5mn5x9lnq0fspp5665w3bl"))))
+    (properties `((upstream-name . "infercnv")))
+    (build-system r-build-system)
+    (inputs (list python))
+    (propagated-inputs
+     (list r-ape
+           r-argparse
+           r-biocgenerics
+           r-catools
+           r-coda
+           r-coin
+           r-digest
+           r-doparallel
+           r-dplyr
+           r-edger
+           r-fastcluster
+           r-fitdistrplus
+           r-foreach
+           r-futile-logger
+           r-future
+           r-ggplot2
+           r-gplots
+           r-gridextra
+           r-hiddenmarkov
+           r-leiden
+           r-matrix
+           r-paralleldist
+           r-phyclust
+           r-rann
+           r-rcolorbrewer
+           r-reshape
+           r-rjags
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/broadinstitute/inferCNV/wiki")
+    (synopsis "Infer copy number variation from single-cell RNA-Seq data")
+    (description
+     "@code{InferCNV} is used to explore tumor single cell RNA-Seq data to identify
+evidence for somatic large-scale chromosomal copy number alterations, such as gains
+or deletions of entire chromosomes or large segments of chromosomes.  This is done
+by exploring expression intensity of genes across positions of a tumor genome in
+comparison to a set of reference \"normal\" cells.  A heatmap is generated
+illustrating the relative expression intensities across each chromosome, and it
+often becomes readily apparent as to which regions of the tumor genome are
+over-abundant or less-abundant as compared to that of normal cells.")
+    (license license:bsd-3)))
+
 (define-public r-iranges
   (package
     (name "r-iranges")
@@ -3356,6 +3416,53 @@ Wormbase and dbSNP mapped to Ensembl.  These major databases give biomaRt
 users direct access to a diverse set of data and enable a wide range of
 powerful online queries from gene annotation to database mining.")
     (license license:artistic2.0)))
+
+;; This is a CRAN package, but it depends on a Bioconductor package:
+;; r-biomart
+(define-public r-biomartr
+  (package
+    (name "r-biomartr")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "biomartr" version))
+              (sha256
+               (base32
+                "0hr7wks88lbfcqzjzm4x265dk4lpmc3i2ndp7xcrx8ssj76wrmkz"))))
+    (properties `((upstream-name . "biomartr")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biomart
+           r-biostrings
+           r-curl
+           r-data-table
+           r-downloader
+           r-dplyr
+           r-fs
+           r-httr
+           r-jsonlite
+           r-philentropy
+           r-purrr
+           r-r-utils
+           r-rcurl
+           r-readr
+           r-stringr
+           r-tibble
+           r-withr
+           r-xml))
+    (native-inputs (list r-knitr))
+    (home-page "https://docs.ropensci.org/biomartr/")
+    (synopsis "Genomic data retrieval")
+    (description
+     "Perform large scale genomic data retrieval and functional annotation
+retrieval.  This package aims to provide users with a standardized way to
+automate genome, proteome, RNA, coding sequence (CDS), GFF, and metagenome
+retrieval from NCBI RefSeq, NCBI Genbank, ENSEMBL, and UniProt databases.
+Furthermore, an interface to the BioMart database allows users to retrieve
+functional annotation for genomic loci.  In addition, users can download
+entire databases such as NCBI RefSeq, NCBI nr, NCBI nt, NCBI Genbank, etc with
+only one command.")
+    (license license:gpl2)))
 
 (define-public r-biocparallel
   (package
@@ -4628,6 +4735,56 @@ TAB-Seq.")
      "This package provides tools for discriminative motif discovery in high
 throughput genetic sequencing data sets using regression methods.")
     (license license:artistic2.0)))
+
+(define-public r-muscat
+  (package
+    (name "r-muscat")
+    (version "1.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "muscat" version))
+       (sha256
+        (base32
+         "1j3zkhqgza92vdykb1yia1jjwsdqra6q9c0jk6p5p2x0778xqgfd"))))
+    (properties `((upstream-name . "muscat")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-blme
+           r-complexheatmap
+           r-data-table
+           r-deseq2
+           r-dplyr
+           r-edger
+           r-ggplot2
+           r-glmmtmb
+           r-limma
+           r-lme4
+           r-lmertest
+           r-matrix
+           r-matrixstats
+           r-progress
+           r-purrr
+           r-s4vectors
+           r-scales
+           r-scater
+           r-sctransform
+           r-scuttle
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-variancepartition
+           r-viridis))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/HelenaLC/muscat")
+    (synopsis "Multi-sample multi-group scRNA-seq data analysis tools")
+    (description
+     "This package @code{muscat} provides various methods and visualization tools
+for @dfn{DS}(differential splicing) analysis in multi-sample, multi-group,
+multi-(cell-)subpopulation scRNA-seq data, including cell-level mixed models and
+methods based on aggregated \"pseudobulk\" data, as well as a flexible simulation
+platform that mimics both single and multi-sample scRNA-seq data.")
+    (license license:gpl3)))
 
 (define-public r-mutationalpatterns
   (package
@@ -8834,7 +8991,7 @@ study various biological conditions.  The output from such analysis is both
 the mRNA level (e.g. cytosolic mRNA level) and the level of mRNA actively
 involved in translation (the actively translating mRNA level) for each mRNA.
 The standard analysis of such data strives towards identifying differential
-translational between two or more sample classes - i.e.  differences in
+translational between two or more sample classes - i.e., differences in
 actively translated mRNA levels that are independent of underlying differences
 in cytosolic mRNA levels.  This package allows for such analysis using partial
 variances and the random variance model.  As 10s of thousands of mRNAs are
@@ -11832,6 +11989,30 @@ genes in the gene-set that are ranked above the leading edge).")
      "This package provides a pipeline for analysing Capture Hi-C data.")
     (license license:artistic2.0)))
 
+;; This is a CRAN package, but it depends on Bioconductor packages, so we put
+;; it here.
+(define-public r-ciara
+  (package
+    (name "r-ciara")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "CIARA" version))
+              (sha256
+               (base32
+                "0nr7wks9231326x0lhpbh824c6vcb5hr5jn89s9bmg9mci907bsf"))))
+    (properties `((upstream-name . "CIARA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-ggplot2 r-ggraph r-magrittr))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=CIARA")
+    (synopsis "Cluster-independent algorithm for rare cell types identification")
+    (description
+     "This is a package to support identification of markers of rare cell
+types by looking at genes whose expression is confined in small regions of the
+expression space.")
+    (license license:artistic2.0)))
+
 (define-public r-cicero
   (package
     (name "r-cicero")
@@ -12744,14 +12925,14 @@ using whole genome sequencing data.")
 (define-public r-activepathways
   (package
     (name "r-activepathways")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ActivePathways" version))
        (sha256
         (base32
-         "0zbrgz91mlik7j8j11wsdswqqqfsijj8jkgd5fx1ar3mc6rqsmbg"))))
+         "1crq164vyqhdq5y3q09k3m5zljqrhcd5ak0jrc0xqvzf0pasml2m"))))
     (properties
      `((upstream-name . "ActivePathways")))
     (build-system r-build-system)

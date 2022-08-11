@@ -130,6 +130,7 @@ MODULES =					\
   guix/cve.scm					\
   guix/workers.scm				\
   guix/least-authority.scm			\
+  guix/read-print.scm				\
   guix/ipfs.scm					\
   guix/platform.scm                             \
   guix/platforms/arm.scm                        \
@@ -141,6 +142,7 @@ MODULES =					\
   guix/build-system/android-ndk.scm		\
   guix/build-system/ant.scm			\
   guix/build-system/cargo.scm			\
+  guix/build-system/channel.scm			\
   guix/build-system/chicken.scm			\
   guix/build-system/clojure.scm			\
   guix/build-system/cmake.scm			\
@@ -525,6 +527,7 @@ SCM_TESTS =					\
   tests/profiles.scm				\
   tests/publish.scm				\
   tests/pypi.scm				\
+  tests/read-print.scm				\
   tests/records.scm				\
   tests/scripts.scm				\
   tests/search-paths.scm			\
@@ -579,6 +582,7 @@ SH_TESTS =					\
   tests/guix-package.sh				\
   tests/guix-package-aliases.sh			\
   tests/guix-package-net.sh			\
+  tests/guix-style.sh				\
   tests/guix-system.sh				\
   tests/guix-home.sh				\
   tests/guix-archive.sh				\
@@ -974,25 +978,21 @@ release: dist-with-updated-version all
 	  mv "guix-binary.$$system.tar.xz"					\
 	      "$(releasedir)/guix-binary-$(PACKAGE_VERSION).$$system.tar.xz" ;	\
 	done
-# Bump the Guix package version and build it (again).
-	GUIX_ALLOW_ME_TO_USE_PRIVATE_COMMIT=yes \
-	$(top_builddir)/pre-inst-env "$(GUILE)"	\
-		$(top_srcdir)/build-aux/update-guix-package.scm	\
-		"`git rev-parse HEAD`"
-	git add $(top_srcdir)/gnu/packages/package-management.scm
-	git commit -m "gnu: guix: Update to `git rev-parse HEAD | cut -c1-7`."
-	$(top_builddir)/pre-inst-env guix build guix			\
+# Build 'current-guix' to speed things up for the next step.
+	$(top_builddir)/pre-inst-env guix build				\
+	      -e '((@ (gnu packages package-management) current-guix))'	\
 	      $(call system_flags,$(GUIX_SYSTEM_SUPPORTED_SYSTEMS))	\
 	      -v1 --no-grafts --fallback
 # Generate the ISO installation images.
 	for system in $(GUIX_SYSTEM_SUPPORTED_SYSTEMS) ; do				\
+	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//v'`" ;	\
 	  image=`$(top_builddir)/pre-inst-env						\
-	    guix system image -t iso9660                                           	\
+	    guix system image -t iso9660						\
 	    --label="GUIX_$${system}_$(VERSION)"					\
             --system=$$system --fallback						\
 	    gnu/system/install.scm` ;							\
 	  if [ ! -f "$$image" ] ; then							\
-	    echo "failed to produce Guix installation image for $$system" >&2 ;	\
+	    echo "failed to produce Guix installation image for $$system" >&2 ;		\
 	    exit 1 ;									\
 	  fi ;										\
 	  cp "$$image" "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso.tmp" ;	\
@@ -1001,6 +1001,7 @@ release: dist-with-updated-version all
 	done
 # Generate the VM images.
 	for system in $(GUIX_SYSTEM_VM_SYSTEMS) ; do					\
+	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//v'`" ;	\
 	  image=`$(top_builddir)/pre-inst-env						\
 	    guix system image -t qcow2 $(GUIX_SYSTEM_VM_IMAGE_FLAGS)			\
 	    --save-provenance								\

@@ -4,6 +4,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,11 +68,19 @@
   (let ((module (resolve-interface '(gnu packages cmake))))
     (module-ref module 'cmake-minimal)))
 
+(define (default-qtbase)
+  "Return the default qtbase package."
+
+  ;; Do not use `@' to avoid introducing circular dependencies.
+  (let ((module (resolve-interface '(gnu packages qt))))
+    (module-ref module 'qtbase-5)))
+
 ;; This barely is a copy from (guix build-system cmake), only adjusted to use
 ;; the variables defined here.
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
                 (cmake (default-cmake))
+                (qtbase (default-qtbase))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
@@ -87,6 +96,7 @@
                           `(("source" ,source))
                           '())
                     ,@`(("cmake" ,cmake))
+                    ,@`(("qtbase" ,qtbase))
                     ,@native-inputs
                     ,@(if target
                           ;; Use the standard cross inputs of
@@ -112,6 +122,7 @@
 
 (define* (qt-build name inputs
                    #:key
+                   (qtbase (default-qtbase))
                    source (guile #f)
                    (outputs '("out")) (configure-flags ''())
                    (search-paths '())
@@ -150,6 +161,7 @@ provides a 'CMakeLists.txt' file as its build system."
                     #:phases #$(if (pair? phases)
                                    (sexp->gexp phases)
                                    phases)
+                    #:qtbase #+qtbase
                     #:qt-wrap-excluded-outputs #$qt-wrap-excluded-outputs
                     #:qt-wrap-excluded-inputs #$qt-wrap-excluded-inputs
                     #:configure-flags #$configure-flags
@@ -181,6 +193,7 @@ provides a 'CMakeLists.txt' file as its build system."
                          #:key
                          source target
                          build-inputs target-inputs host-inputs
+                         (qtbase (default-qtbase))
                          (guile #f)
                          (outputs '("out"))
                          (configure-flags ''())
@@ -237,6 +250,7 @@ build system."
                                               search-path-specification->sexp
                                               native-search-paths)
                     #:phases #$phases
+                    #:qtbase #+qtbase
                     #:configure-flags #$configure-flags
                     #:make-flags #$make-flags
                     #:out-of-source? #$out-of-source?

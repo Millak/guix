@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014, 2015, 2016 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2013, 2015, 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2015, 2017-2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Alexander I.Grafov <grafov@gmail.com>
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
@@ -55,6 +55,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
+;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -370,7 +371,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
    `(#:configure-flags '("-DCMAKE_BUILD_TYPE=Release")
      #:tests? #f)) ; Test suite is a rather manual process.
   (inputs
-   (list qtbase-5 qtscript qtsvg qtx11extras))
+   (list qtbase-5 qtscript qtsvg-5 qtx11extras))
   (synopsis "Clipboard manager with advanced features")
   (description "CopyQ is clipboard manager with editing and scripting
 features.  CopyQ monitors system clipboard and saves its content in customized
@@ -1627,7 +1628,7 @@ less if you are working in front of the screen at night.")
 (define-public xscreensaver
   (package
     (name "xscreensaver")
-    (version "5.45")
+    (version "6.04")
     (source
      (origin
        (method url-fetch)
@@ -1635,7 +1636,15 @@ less if you are working in front of the screen at night.")
         (string-append "https://www.jwz.org/xscreensaver/xscreensaver-"
                        version ".tar.gz"))
        (sha256
-        (base32 "03fmyjlwjinzv7mih6n07glmys8s877snd8zijk2c0ds6rkxy5kh"))))
+        (base32 "0lmiyvp3qs2gngd53f191jmlizs9l04i2gnrqbn96mqckyr18w3q"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; 'configure.ac' checks for $ac_unrecognized_opts and exits if it's
+        ;; non-empty.  Since the default 'configure' phases passes options
+        ;; that may or may not be recognized, such as '--enable-fast-install',
+        ;; these need to be tolerated, hence this snippet.
+        '(substitute* "configure"
+           (("exit 2") "true")))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
@@ -1647,7 +1656,13 @@ less if you are working in front of the screen at night.")
                (("@GTK_DATADIR@") "@datadir@")
                (("@PO_DATADIR@") "@datadir@"))
              #t)))
-       #:configure-flags '("--with-pam" "--with-proc-interrupts"
+       #:configure-flags '("--with-pam"
+
+                           ;; Don't check /proc/interrupts in the build
+                           ;; environment to avoid non-deterministic failures
+                           ;; of the 'configure' script.
+                           "--without-proc-interrupts"
+
                            "--without-readdisplay")
        #:make-flags (list (string-append "AD_DIR="
                                          (assoc-ref %outputs "out")
@@ -1655,26 +1670,27 @@ less if you are working in front of the screen at night.")
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     `(("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxi" ,libxi)
-       ("libxt" ,libxt)
-       ("libxft" ,libxft)
-       ("libxmu" ,libxmu)
-       ("libxpm" ,libxpm)
-       ("libglade" ,libglade)
-       ("libxml2" ,libxml2)
-       ("libsm" ,libsm)
-       ("libjpeg" ,libjpeg-turbo)
-       ("linux-pam" ,linux-pam)
-       ("pango" ,pango)
-       ("gtk+" ,gtk+)
-       ("perl" ,perl)
-       ("cairo" ,cairo)
-       ("bc" ,bc)
-       ("libxrandr" ,libxrandr)
-       ("glu" ,glu)
-       ("glib" ,glib)))
+     (list libx11
+           libxext
+           libxi
+           libxt
+           libxft
+           libxmu
+           libxpm
+           libglade
+           libxml2
+           libsm
+           libjpeg-turbo
+           linux-pam
+           pango
+           gdk-pixbuf-xlib
+           gtk+
+           perl
+           cairo
+           bc
+           libxrandr
+           glu
+           glib))
     (home-page "https://www.jwz.org/xscreensaver/")
     (synopsis "Classic screen saver suite supporting screen locking")
     (description
@@ -1886,27 +1902,20 @@ natural language input and provide results.")
 (define-public tint2
   (package
     (name "tint2")
-    (version "0.14.6")
+    (version "17.0.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://gitlab.com/o9000/" name
-                                  "/repository/archive.tar.gz?ref=" version))
-              (file-name (string-append name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://gitlab.com/o9000/" name "/"))
+                    (commit version)))
               (sha256
                (base32
-                "1kwzwxy4myagybm3rc7dgynfgp75742n348qibn1p2an9ggyivda"))))
+                "123apmgs6x2zfv1q57dyl4mwqf0vsw5ndh5jsg6p3fvhr66l1aja"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f                      ;no test target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-installation-prefix
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("/etc") "${CMAKE_INSTALL_PREFIX}/etc"))
-             #t)))))
+     '(#:tests? #f))                      ;no test target
     (inputs
-     (list gtk+-2
+     (list gtk+
            imlib2
            librsvg
            libxcomposite
