@@ -486,6 +486,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
                                             (cc-for-target))
                             (string-append "PREFIX="
                                            (assoc-ref %outputs "out"))))
+       #:test-target "test"
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'remove-network-tests
                     (lambda _
@@ -504,10 +505,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
                       (delete-file "./test/0000-0037.c")
                       (delete-file "./test/0000-0038.c")
                       (delete-file "./test/0000-0039.c")
-                      (delete-file "./test/0000-0040.c")))
-                  (replace 'check
-                    (lambda _
-                      (invoke "make" "test"))))))
+                      (delete-file "./test/0000-0040.c"))))))
     (inputs (list libsodium lcrq))
     (synopsis "librecast IPv6 multicast library")
     (description "Librecast is a C library which supports IPv6 multicast
