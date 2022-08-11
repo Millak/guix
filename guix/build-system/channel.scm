@@ -46,6 +46,13 @@
                                (latest-channel-instances*
                                 (list source)
                                 #:authenticate? authenticate?))
+                              ((string? source)
+                               ;; If SOURCE is a store file name, as is the
+                               ;; case when called from (gnu ci), return it as
+                               ;; is.
+                               (return
+                                (list (checkout->channel-instance
+                                       source #:commit commit))))
                               (else
                                (mlet %store-monad ((source
                                                     (lower-object source)))
