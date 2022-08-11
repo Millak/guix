@@ -295,6 +295,7 @@ the RFC.")
                             "SETCAP_PROGRAM=true"
                             (string-append "prefix="
                                            (assoc-ref %outputs "out"))))
+       #:test-target "test"
        #:phases (modify-phases %standard-phases
                   (delete 'configure) ;no configure script
                   (add-before 'check 'remove-network-tests
@@ -303,9 +304,6 @@ the RFC.")
                       (delete-file "./test/0000-0027.c")
                       (delete-file "./test/0000-0049.c")
                       (delete-file "./test/0000-0074.c")))
-                  (replace 'check
-                    (lambda _
-                      (invoke "make" "test" "CC=gcc")))
                   (add-before 'build 'add-library-paths
                     (lambda* (#:key inputs #:allow-other-keys)
                       (let* ((librecast (assoc-ref inputs "librecast")))
