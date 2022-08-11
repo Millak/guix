@@ -9999,7 +9999,7 @@ functionality and behavior.")
 (define-public folks
   (package
     (name "folks")
-    (version "0.15.3")
+    (version "0.15.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -10008,7 +10008,7 @@ functionality and behavior.")
                     "folks-" version ".tar.xz"))
               (sha256
                (base32
-                "19a4qp9ry8y24jx1v5456qn9lnw843571vkkah3bxx4ky3x3gmr1"))))
+                "11lhfn6b7gml4ckj2dkm6g889j21wpvj90srwjp85k9hcf4qmzqg"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
@@ -10027,10 +10027,10 @@ functionality and behavior.")
            readline
            telepathy-glib))
     (native-inputs
-     (list `(,glib "bin")
+     (list gettext-minimal
+           `(,glib "bin")
            gobject-introspection
            python-dbusmock
-           intltool
            pkg-config
            python
            vala))
