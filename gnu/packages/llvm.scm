@@ -866,6 +866,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
      (origin
       (method url-fetch)
       (uri (llvm-uri "llvm" version))
+      (patches (search-patches "llvm-8-missing-include.patch"))
       (sha256
        (base32
         "0s94lwil98w7zb7cjrbnxli0z7gklb312pkw74xs1d6zk346hgwi"))))))
@@ -899,6 +900,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
      (origin
       (method url-fetch)
       (uri (llvm-uri "llvm" version))
+      (patches (search-patches "llvm-8-missing-include.patch"))
       (sha256
        (base32
         "1wydhbp9kyjp5y0rc627imxgkgqiv3dfirbqil9dgpnbaw5y7n65"))))
@@ -943,6 +945,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
         (base32
          "16hwp3qa54c3a3v7h8nlw0fh5criqh0hlr1skybyk0cz70gyx880"))
        (patches (search-patches
+                 "llvm-8-missing-include.patch"
                  "llvm-9-fix-bitcast-miscompilation.patch"
                  "llvm-9-fix-scev-miscompilation.patch"
                  "llvm-9-fix-lpad-miscompilation.patch"))))
@@ -986,7 +989,8 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
               (sha256
                (base32
                 "1rvm5gqp5v8hfn17kqws3zhk94w4kxndal12bqa0y57p09nply24"))
-              (patches (search-patches "llvm-8-fix-build-with-gcc-10.patch"))))
+              (patches (search-patches "llvm-8-fix-build-with-gcc-10.patch"
+                                       "llvm-8-missing-include.patch"))))
     (license license:ncsa)))
 
 (define-public clang-runtime-8
