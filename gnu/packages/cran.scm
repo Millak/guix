@@ -14134,6 +14134,26 @@ of medical imaging data that follow either the ANALYZE, NIfTI or AFNI formats.
 This package is part of the Rigorous Analytics bundle.")
     (license license:bsd-3)))
 
+(define-public r-mritc
+  (package
+    (name "r-mritc")
+    (version "0.5-2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "mritc" version))
+              (sha256
+               (base32
+                "07b1b2k1ka43ikj2mhwnazw3ig7w10bf759fimxpksvk5k6wanx2"))))
+    (properties `((upstream-name . "mritc")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lattice r-misc3d r-oro-nifti))
+    (home-page "https://cran.r-project.org/package=mritc")
+    (synopsis "MRI tissue classification")
+    (description "This package provides various methods for MRI tissue
+classification.")
+    ;; Any version of the GPL.
+    (license license:gpl3+)))
+
 (define-public r-sodium
   (package
     (name "r-sodium")
