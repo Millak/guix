@@ -3446,4 +3446,35 @@ Discord.")
     (home-page "https://github.com/taylordotfish/harmony")
     (license license:gpl3+)))
 
+(define-public pn
+  (package
+    (name "pn")
+    (version "0.9.0")
+    (home-page "https://github.com/Orange-OpenSource/pn")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lvzb0yixj7wmmqzsri20k9nn3gf06j0yjvmg2mi1zihywq7s4dx"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'set-lib-destination
+                          (lambda _
+                            (substitute* "CMakeLists.txt"
+                              (("DESTINATION \\$\\{AWKLIBPATH\\}")
+                               "DESTINATION lib")))))))
+    (inputs (list icu4c libphonenumber protobuf))
+    (synopsis "Command-line validation tool for phone numbers")
+    (description
+     "@code{pn} provides a command line tool that allows users to operate on
+phone numbers (get validity information, reformat them, or extract numbers from
+a text snippet), using @code{libphonenumber}.")
+    (license license:asl2.0)))
+
 ;;; messaging.scm ends here
