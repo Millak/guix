@@ -663,17 +663,17 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
                 "19cf55b86yj2b5hdazbyw4iyp6xq155243aiyg4m0vhwh0h79nwh"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config qttools))           ; for lrelease
+     (list pkg-config qttools-5))       ; for lrelease
     (inputs
      (list hunspell
            qtbase-5
-           qtdeclarative
-           qtmultimedia
-           qtquickcontrols
-           qtsvg
-           qtwebchannel))
+           qtdeclarative-5
+           qtmultimedia-5
+           qtquickcontrols-5
+           qtsvg-5
+           qtwebchannel-5))
     (propagated-inputs                  ; To get native-search-path
-     (list qtwebengine))
+     (list qtwebengine-5))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -695,7 +695,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins/"))
-                         '("qtsvg" "qtmultimedia"))))))))))
+                         '("qtsvg-5" "qtmultimedia-5"))))))))))
     (home-page "https://wereturtle.github.io/ghostwriter/")
     (synopsis "Write without distractions")
     (description
@@ -770,7 +770,7 @@ environment with Markdown markup.")
                    #:icon "manuskript"
                    #:categories "Office;WordProcessor;"))))))))
     (inputs
-     (list pandoc python-lxml python-markdown python-pyqt qtsvg))
+     (list pandoc python-lxml python-markdown python-pyqt qtsvg-5))
     (home-page "http://www.theologeek.ch/manuskript/")
     (synopsis "Tool for writers")
     (description "Manuskript provides a rich environment to help
@@ -870,7 +870,7 @@ editors.")
            perl
            python-wrapper
            qtbase-5
-           qtsvg
+           qtsvg-5
            sqlite))
     (arguments
      `(#:tests? #f                      ; no check target

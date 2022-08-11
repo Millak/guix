@@ -504,6 +504,60 @@ regret their insolence.")
     ;; BY-SA 4.0, and fonts to OFL1.1.
     (license (list license:gpl3+ license:cc-by-sa4.0 license:silofl1.1))))
 
+(define-public barony
+  (package
+    (name "barony")
+    (version "3.3.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TurningWheel/Barony")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y72k6zrqqhib3p05zkdklays2d218v51n87k7k68m0s7nnxa4vy"))
+       ;; Fix textures for SDL 2.0.14.
+       ;; See <https://github.com/TurningWheel/Barony/pull/582>.
+       (patches (search-patches "barony-fix-textures.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags
+       (list "-DOPENAL_ENABLED=ON" ; enable sound
+             "-DEDITOR_EXE_NAME=barony-editor") ; instead of generic "editor"
+       #:tests? #f ; there are no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-installation
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("\\$\\{CMAKE_CURRENT_BINARY_DIR\\}/lang")
+                "${CMAKE_SOURCE_DIR}/lang")))))))
+    (inputs
+     (list glu
+           libpng
+           libvorbis
+           openal
+           physfs
+           rapidjson
+           sdl2
+           sdl2-image
+           sdl2-net
+           sdl2-ttf
+           zlib))
+    (native-inputs
+     (list pkg-config))
+    (home-page "http://baronygame.com")
+    (synopsis "3D first-person roguelike game")
+    (description
+     "Barony is a first-person roguelike role-playing game with cooperative
+play.  The player must descend a dark dungeon and destroy an undead lich while
+avoiding traps and fighting monsters.  The game features randomly generated
+dungeons, 13 character classes, hundreds of items and artifacts, and
+cooperative multiplayer for up to four players.  This package does @emph{not}
+provide the game assets.")
+    (license license:bsd-2)))
+
 (define-public bastet
   (package
     (name "bastet")
@@ -993,10 +1047,10 @@ want what you have.")
       (inputs
        (list protobuf
              qtbase-5
-             qtmultimedia
-             qtsvg
-             qttools
-             qtwebsockets
+             qtmultimedia-5
+             qtsvg-5
+             qttools-5
+             qtwebsockets-5
              xz
              zlib))
       (home-page "https://cockatrice.github.io")
@@ -2504,7 +2558,7 @@ and defeat them with your bubbles!")
              (setenv "XDG_RUNTIME_DIR" (getcwd))
              #t)))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      `(("glm" ,glm)
        ("libmodplug" ,libmodplug)
@@ -7199,11 +7253,11 @@ making Yamagi Quake II one of the most solid Quake II implementations available.
        ;; with multiple "QPainter:: ... Painter not active" warnings.
        #:tests? #f))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (native-inputs
      `(("cmake" ,cmake-minimal)
        ("gettext-minimal" ,gettext-minimal)
-       ("qttools" ,qttools)))
+       ("qttools-5" ,qttools-5)))
     (synopsis "Realistic physics puzzle game")
     (description "The Butterfly Effect (tbe) is a game that uses
 realistic physics simulations to combine lots of simple mechanical
@@ -7949,7 +8003,7 @@ open-source FPS of its kind.")
 (define-public frotz
   (package
     (name "frotz")
-    (version "2.44")
+    (version "2.54")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
@@ -7960,28 +8014,25 @@ open-source FPS of its kind.")
                           "frotz/frotz-" version ".tar.gz")))
               (sha256
                (base32
-                "1v735xr3blznac8fnwa27s1vhllx4jpz7kw7qdw1bsfj6kq21v3k"))))
+                "1vsfq9ryyb4nvzxpnnn40k423k9pdy8k67i8390qz5h0vmxw0fds"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'curses
-           (lambda _
-             (substitute* "Makefile"
-               (("lcurses") "lncurses"))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man (string-append out "/share/man/man6")))
-               (install-file "frotz" bin)
-               (mkdir-p man)
-               (install-file "doc/frotz.6" man)
-               #t))))))
-    (inputs (list libmodplug libsamplerate libsndfile libvorbis ncurses))
+     (list #:tests? #f                  ; there are no tests
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure-script
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin"))
+                          (man (string-append out "/share/man/man6")))
+                     (install-file "frotz" bin)
+                     (mkdir-p man)
+                     (install-file "doc/frotz.6" man)))))))
+    (native-inputs (list pkg-config which))
+    (inputs (list ao libmodplug libsamplerate libsndfile libvorbis ncurses))
     (synopsis "Portable Z-machine interpreter (ncurses version) for text adventure games")
     (description "Frotz is an interpreter for Infocom games and other Z-machine
 games in the text adventure/interactive fiction genre.  This version of Frotz
@@ -7994,7 +8045,7 @@ ncurses for text display.")
 (define-public naev
   (package
     (name "naev")
-    (version "0.9.3")
+    (version "0.9.4")
     (source
      (origin
        (method git-fetch)
@@ -8004,7 +8055,7 @@ ncurses for text display.")
              (recursive? #t))) ; for game data
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hvgxzvph9s5gdzlj5kjnz2d2j7bi8s11k7i6540837mnppah18j"))))
+        (base32 "0isswidhxhs2q5c4cxryjr8y8ibfxckpfyccly3b4lg1nxvm5gjv"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: Do not add debugging symbols, which cause the build to fail.
@@ -9270,8 +9321,8 @@ and also provides the base for the FlightGear Flight Simulator.")
            openscenegraph
            plib
            qtbase-5
-           qtdeclarative
-           qtsvg
+           qtdeclarative-5
+           qtsvg-5
            simgear
            speexdsp
            sqlite
@@ -9279,7 +9330,7 @@ and also provides the base for the FlightGear Flight Simulator.")
     (native-inputs
      `(("cppunit" ,cppunit)
        ("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ("flightgear-data"
         ,(origin
            (method url-fetch)
@@ -9407,7 +9458,7 @@ play with up to four players simultaneously.  It has network support.")
        ("sdl" ,(sdl-union
                 (list sdl2 sdl2-mixer sdl2-net sdl2-ttf sdl2-image)))))
     (native-inputs
-     (list clang-9 ghc pkg-config qttools))
+     (list clang-9 ghc pkg-config qttools-5))
     (home-page "https://hedgewars.org/")
     (synopsis "Turn-based artillery game featuring fighting hedgehogs")
     (description
@@ -9740,54 +9791,51 @@ Skorl.  Maybe it would be an idea to try and escape...")
                            file-prefix release ".zip"))
        (sha256
         (base32 hash))))
-    (build-system trivial-build-system)
+    (build-system copy-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((out (assoc-ref %outputs "out"))
-                (share (string-append out "/share"))
-                (data (string-append share "/" ,name))
-                (apps (string-append share "/applications"))
-                (bin (string-append out "/bin"))
-                (executable (string-append bin "/" ,name))
-                (scummvm (assoc-ref %build-inputs "scummvm")))
-           (let ((unzip (search-input-file %build-inputs "/bin/unzip")))
-             (invoke unzip "-j" (assoc-ref %build-inputs "source")))
-           (let ((doc (string-append share "/doc/" ,name "-" ,version)))
-             (install-file "readme.txt" doc))
-           (install-file "queen.1c" data)
-           (mkdir-p bin)
-           (let ((bash (assoc-ref %build-inputs "bash")))
-             (with-output-to-file executable
-               (lambda ()
-                 (format #t "#!~a/bin/bash~%" bash)
-                 (format #t "exec ~a/bin/scummvm -q fr -p ~a queen~%"
-                         scummvm data))))
-           (chmod executable #o755)
-           ;; Create desktop file.  There is no dedicated
-           ;; icon for the game, so we borrow SCUMMVM's.
-           (mkdir-p apps)
-           (with-output-to-file (string-append apps "/" ,name ".desktop")
-             (lambda _
-               (format #t
-                       "[Desktop Entry]~@
-                       Name=Flight of the Amazon Queen~@
-                       GenericName=Queen~@
-                       Comment=Embark on a quest to rescue a kidnapped princess and in the process, discover the true sinister intentions of a suspiciously located Lederhosen company~@
-                       Comment[de]=Begib dich auf ein Abenteuer, um eine entführte Prinzessin zu retten und entdecke die wahren, finsteren Absichten eines verdächtig erscheinenden Lederhosen-Unternehmens~@
-                       Type=Application~@
-                       Exec=~a~@
-                       Icon=~a/share/icons/hicolor/scalable/apps/scummvm.svg~@
-                       Categories=AdventureGame;Game;RolePlaying;~@
-                       Keywords=adventure;game;roleplaying;fantasy;~%"
-                       executable scummvm))))
-         #t)))
-    (native-inputs
-     (list unzip))
-    (inputs
-     (list bash scummvm))
+     (list
+      #:install-plan
+      #~'(("queen.1c" #$(string-append "share/" name "/"))
+          (#$name "bin/")
+          (#$(string-append name ".desktop") "share/applications/")
+          ("." #$(string-append "share/doc/" name "-" version)
+           #:include-regexp ("README" "readme")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'build
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-output-to-file #$name
+                (lambda ()
+                  (format #t "#!~a~%" (search-input-file inputs "bin/sh"))
+                  (format #t "exec ~a -q ~a -p ~a queen~%"
+                          (search-input-file inputs "bin/scummvm")
+                          #$language
+                          (string-append (assoc-ref outputs "out")
+                                         "/share/" #$name))))
+              (chmod #$name #o755)
+              (with-output-to-file #$(string-append name ".desktop")
+                (lambda ()
+                  (format
+                   #t
+                   "[Desktop Entry]~@
+                    Name=Flight of the Amazon Queen~@
+                    GenericName=Queen~@
+                    Comment=Embark on a quest to rescue a kidnapped princess~
+                    and in the process, discover the true sinister intentions~
+                    of a suspiciously located Lederhosen company~@
+                    Comment[de]=Begib dich auf ein Abenteuer, um eine entführte~
+                    Prinzessin zu retten und entdecke die wahren, finsteren~
+                    Absichten eines verdächtig erscheinenden~
+                    Lederhosen-Unternehmens~@
+                    Type=Application~@
+                    Exec=~a~@
+                    Icon=~a/share/icons/hicolor/scalable/apps/scummvm.svg~@
+                    Categories=AdventureGame;Game;RolePlaying;~@
+                    Keywords=adventure;game;roleplaying;fantasy;~%"
+                   (string-append (assoc-ref outputs "out") "/bin/" #$name)
+                   (search-input-file inputs "bin/scummvm")))))))))
+    (native-inputs (list unzip))
+    (inputs (list bash scummvm))
     (home-page "https://www.scummvm.org/")
     (synopsis "Classic 2D point and click adventure game")
     (description "Flight of the Amazon Queen is a 2D point-and-click
@@ -10153,7 +10201,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
    (native-inputs
     (list pkg-config))
    (inputs
-    (list qtbase-5 qtmultimedia qtsvg))
+    (list qtbase-5 qtmultimedia-5 qtsvg-5))
    (arguments
     '(#:phases
       (modify-phases %standard-phases
@@ -10247,9 +10295,9 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
            libkdegames
            python-wrapper
            qtbase-5
-           qtmultimedia
-           qtdeclarative
-           qtsvg))
+           qtmultimedia-5
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Stamp drawing toy")
     (description "KTuberling is a drawing toy intended for small children and
@@ -10294,8 +10342,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Number logic game")
     (description "Picmi is a number logic game in which cells in a grid have
@@ -10332,7 +10380,7 @@ This package is part of the KDE games module.")
            ktextwidgets
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Miniature golf game")
     (description "Kolf is a miniature golf game for one to ten players.  The
@@ -10376,7 +10424,7 @@ This package is part of the KDE games module.")
            ki18n
            kwidgetsaddons
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Shared library for kmahjongg and kshisen")
     (description "Shared library and common files for kmahjongg, kshisen and
@@ -10408,8 +10456,8 @@ other Mah Jongg like games.")
            libkdegames
            libkmahjongg
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Tile laying patience")
     (description "In KMahjongg the tiles are scrambled and staked on top of
@@ -10451,7 +10499,7 @@ This package is part of the KDE games module.")
            libkdegames
            libkmahjongg
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Shisen-Sho solitaire game")
     (description "KShisen is a solitaire-like game played using the standard
@@ -10506,7 +10554,7 @@ This package is part of the KDE games module.")
            python-pyqt
            python-zope-interface
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Classical Mah Jongg game for 4 players")
     (description "Kajongg is the ancient Chinese board game for 4 players.
@@ -10548,7 +10596,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Breakout like game")
     (description "KBreakout is similar to the classics breakout and xboing,
@@ -10586,7 +10634,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Classical mine sweeper game")
     (description "KMines is a classic Minesweeper game.  The idea is to
@@ -10622,8 +10670,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Simple turn-based strategy game")
     (description "Konquest is the KDE version of Gnu-Lactic Konquest.  Players
@@ -10661,8 +10709,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Jezzball arcade game")
     (description "KBounce is a single player arcade game with the elements of
@@ -10699,8 +10747,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Single player falling blocks puzzle game")
     (description "KBlocks is the classic Tetris-like falling blocks game.
@@ -10742,8 +10790,8 @@ This package is part of the KDE games module.")
            libkdegames
            glu
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Sudoku puzzle game and solver")
     (description "KSudoku is a Sudoku game and solver, supporting a range of
@@ -10798,7 +10846,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Place 5 equal pieces together, but wait, there are 3 new ones")
     (description "KLines is a simple but highly addictive one player game.
@@ -10841,7 +10889,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Action and puzzle solving game")
     (description "KGoldrunner is an action game where the hero runs through a
@@ -10884,7 +10932,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Three-in-a-row game")
     (description "KDiamond is a three-in-a-row game like Bejeweled.  It
@@ -10919,8 +10967,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Place 4 pieces in a row")
     (description "KFourInLine is a board game for two players based on the
@@ -10958,8 +11006,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Find atoms in a grid by shooting electrons")
     (description "KBlackbox is a game of hide and seek played on a grid of
@@ -10999,7 +11047,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Turn the board pieces to get all computers connected")
     (description "KNetWalk is a small game where you have to build up a
@@ -11037,7 +11085,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Arcade bombing game")
     (description "Bomber is a single player arcade game.
@@ -11081,8 +11129,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Bomberman clone")
     (description "Granatier is a clone of the classic Bomberman game,
@@ -11117,8 +11165,8 @@ This package is part of the KDE games module.")
            phonon
            qca
            qtbase-5
-           qtdeclarative
-           qtsvg
+           qtdeclarative-5
+           qtsvg-5
            zlib))
     (home-page "https://games.kde.org/")
     (synopsis "Computerized version of the well known strategy board game
@@ -11178,8 +11226,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg
+           qtdeclarative-5
+           qtsvg-5
            shared-mime-info))
     (home-page "https://games.kde.org/")
     (synopsis "Jigsaw puzzle game")
@@ -11219,7 +11267,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Yahtzee dice game")
     (description "Kiriki is an addictive and fun dice game, designed to be
@@ -11258,8 +11306,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Go board game")
     (description "Kigo is an open-source implementation of the popular Go
@@ -11303,8 +11351,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Game based on Rubik's Cube")
     (description "Kubrick is a game based on the Rubik's Cube puzzle.
@@ -11343,8 +11391,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Lieutnant Skat card game")
     (description "Lieutnant Skat (from German \"Offiziersskat\") is a fun and
@@ -11381,8 +11429,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Pac-Man clone")
     (description "Kapman is a clone of the well known game Pac-Man.
@@ -11420,8 +11468,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Two player game with shooting spaceships flying around a sun")
     (description "KSpaceduel is a space battle game for one or two players,
@@ -11453,8 +11501,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Classic pen and paper game: five in a line")
     (description "Bovo is a Gomoku (from Japanese 五目並べ - lit.  \"five
@@ -11492,7 +11540,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Port of the classic BSD console game robots")
     (description "Killbots is a simple game of evading killer robots.
@@ -11533,8 +11581,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Snake race played against the computer")
     (description "KSnakeDuel is a fast action game where you steer a snake
@@ -11570,7 +11618,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Simple ball dodging game")
     (description "In Kollision you use mouse to control a small blue ball in a
@@ -11610,7 +11658,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Battleship board game with built-in game server")
     (description "KBattleship is a Battle Ship game for KDE.
@@ -11649,8 +11697,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Old reversi board game, also known as othello")
     (description "KReversi is a simple one player strategy game played
@@ -11690,7 +11738,7 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative))
+           qtdeclarative-5))
     (home-page "https://games.kde.org/")
     (synopsis "Dots and Boxes game")
     (description "KSquares is an implementation of the popular paper based
@@ -11726,8 +11774,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase-5
-           qtdeclarative
-           qtsvg))
+           qtdeclarative-5
+           qtsvg-5))
     (home-page "https://games.kde.org/")
     (synopsis "Simple tactical game for number-crunchers")
     (description "KJumpingcube is a simple tactical game for one or two
@@ -11883,9 +11931,9 @@ and chess engines.")
         (base32 "01fjchil2h6ry2ywr0dwjw2g7zd29580cr4c74d5z74h999lp6nh"))))
     (build-system qt-build-system)
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
-     (list qtbase-5 qtmultimedia qtspeech qtsvg zlib))
+     (list qtbase-5 qtmultimedia-5 qtspeech qtsvg-5 zlib))
     (arguments
      `(#:tests? #f
        #:phases

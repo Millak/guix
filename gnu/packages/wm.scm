@@ -1776,7 +1776,7 @@ Wlroots based compositors.")
 (define-public mako
   (package
     (name "mako")
-    (version "1.6")
+    (version "1.7.1")
     (source
      (origin
        (method git-fetch)
@@ -1785,9 +1785,9 @@ Wlroots based compositors.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vbx2r01rq3r9zc6kflah44ms1fzf4z857zmq3qxnfsyjdkz1hs5"))))
+        (base32 "0vpar1a7zafkd2plmyaackgba6fyg35s9zzyxmj8j7v2q5zxirgz"))))
     (build-system meson-build-system)
-    (inputs (list cairo elogind gdk-pixbuf pango wayland))
+    (inputs (list basu cairo gdk-pixbuf pango wayland))
     (native-inputs (list pkg-config scdoc wayland-protocols))
     (home-page "https://wayland.emersion.fr/mako")
     (synopsis "Lightweight Wayland notification daemon")
@@ -2115,6 +2115,7 @@ between windows.")
     (name "sbcl-stumpwm-kbd-layouts")
     (arguments
      '(#:asd-systems '("kbd-layouts")
+       #:asd-operation "compile-system"
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
@@ -2799,3 +2800,46 @@ Type=Application~%"
      "Avizo is a simple notification daemon for Sway, mainly intended to be
 used for multimedia keys.")
     (license license:gpl3+)))
+
+(define-public grimshot
+  (package
+    (inherit sway)
+    (name "grimshot")
+    (source (origin
+              (inherit (package-source sway))
+              (snippet #~(delete-file "contrib/grimshot.1"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan #~`(("grimshot" "bin/")
+                              ("grimshot.1" "usr/share/man/man1/"))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "contrib")))
+                        (add-after 'chdir 'patch-script-dependencies
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (substitute* "grimshot"
+                              (("\\b(date|grim|jq|notify-send|slurp|swaymsg|wl-copy)\\b"
+                                _ binary)
+                               (search-input-file
+                                inputs (string-append "bin/" binary))))))
+                        (add-after 'patch-script-dependencies 'build-man-page
+                          (lambda _
+                            (with-input-from-file "grimshot.1.scd"
+                              (lambda _
+                                (with-output-to-file "grimshot.1"
+                                  (lambda _
+                                    (invoke "scdoc"))))))))))
+    (native-inputs (list scdoc))
+    (inputs (list coreutils
+                  grim
+                  jq
+                  libnotify
+                  slurp
+                  sway
+                  wl-clipboard))
+    (synopsis "Screenshot utility for the Sway window manager")
+    (description "Grimshot is a screenshot utility for @code{sway}.  It provides
+an interface over @code{grim}, @code{slurp} and @code{jq}, and supports storing
+the screenshot either directly to the clipboard using @code{wl-copy} or to a
+file.")))

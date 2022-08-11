@@ -1,10 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@suse.cz>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020 Hamzeh Nasajpour <h.nasajpour@pantherx.org>
 ;;; Copyright © 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
+;;; Copyright © 2021 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +35,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages libreoffice)  ;for hunspell
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages ncurses)
@@ -39,6 +43,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (guix download)
@@ -49,7 +54,8 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
-  #:use-module (guix build-system python))
+  #:use-module (guix build-system python)
+  #:use-module (guix build-system qt))
 
 (define-public clikan
   (let ((commit "55ab29e68263c6fed2844aef96fbebacda3eba9b")
@@ -279,6 +285,33 @@ a task.")
      "Blanket provides different ambient sounds and types of noise to listen
 to with the goal of improving your focus and enhancing your productivity.
 You can also use it to fall asleep in a noisy environment.")
+    (license license:gpl3+)))
+
+(define-public feathernotes
+  (package
+    (name "feathernotes")
+    (version "0.10.0")
+    (home-page "https://github.com/tsujan/FeatherNotes")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "V" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "122pbbxvi0mmhbz8m8far71vm72090r5cafss4hvrsjmq52a0y4k"))))
+    (build-system qt-build-system)
+    (arguments (list #:tests? #f))           ; no upstream tests
+    (native-inputs (list pkg-config qttools-5))           ; for lrelease
+    (inputs (list hunspell qtsvg-5 qtx11extras qtbase-5))
+    (synopsis "GUI hierarchical notes-manager")
+    (description
+     "FeatherNotes is a GUI hierarchical notes-manager for Linux.
+It is independent of any desktop environment and has rich text formatting,
+image embedding and inserting editable tables, spell checking, searchable
+tags, drag and drop support, tray icon, node icons, hyperlinks, pdf and html
+export, password protection and auto-saving.")
     (license license:gpl3+)))
 
 (define-public wtime

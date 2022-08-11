@@ -51,7 +51,9 @@
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
@@ -64,7 +66,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
-(define %jami-version "20211223.2.37be4c3")
+(define %jami-version "20220726.1515.da8d1da")
 
 (define %jami-sources
   ;; Return an origin object of the tarball release sources archive of the
@@ -85,14 +87,11 @@
         (for-each delete-file-recursively '("client-android"
                                             "client-ios"
                                             "client-macosx"
-                                            "client-uwp"))))
-    (patches (search-patches "jami-libclient-audio-managers.patch"
-                             "jami-fix-crash-on-quit.patch"
-                             "jami-images-loading.patch"
-                             "jami-memory-usage.patch"))
+                                            "plugins"))))
     (sha256
      (base32
-      "12h4a0nj3gh05w64gkywrrb64agrhn6y3q4b9cqnhvr1vdkzlj0h"))))
+      "1zx0i9aw8jsba3bjc5r4pkkybm8c0lyz420ciq89vsswd48gfdhg"))
+    (patches (search-patches "jami-fix-esc-bug.patch"))))
 
 ;; Jami maintains a set of patches for some key dependencies (currently
 ;; pjproject and ffmpeg) of Jami that haven't yet been integrated upstream.
@@ -104,7 +103,7 @@
         (invoke "tar" "-xvf" #$%jami-sources
                 "-C" patches-directory
                 "--strip-components=5"
-                (string-append "ring-project/daemon/contrib/src/"
+                (string-append "jami-project/daemon/contrib/src/"
                                dep-name))
         (for-each
          (lambda (file)
@@ -178,6 +177,8 @@
     "--disable-muxers"
     "--enable-muxer=rtp"
     "--enable-muxer=g722"
+    "--enable-muxer=g726"
+    "--enable-muxer=g726le"
     "--enable-muxer=h263"
     "--enable-muxer=h264"
     "--enable-muxer=hevc"
@@ -202,6 +203,9 @@
     "--enable-demuxer=wav"
     "--enable-demuxer=ac3"
     "--enable-demuxer=g722"
+    "--enable-demuxer=g723_1"
+    "--enable-demuxer=g726"
+    "--enable-demuxer=g726le"
     "--enable-demuxer=pcm_mulaw"
     "--enable-demuxer=pcm_alaw"
     "--enable-demuxer=pcm_s16be"
@@ -222,6 +226,13 @@
     ;; Encoders/decoders.
     "--enable-encoder=adpcm_g722"
     "--enable-decoder=adpcm_g722"
+    "--enable-encoder=adpcm_g726"
+    "--enable-decoder=adpcm_g726"
+    "--enable-encoder=adpcm_g726le"
+    "--enable-decoder=adpcm_g726le"
+    "--enable-decoder=g729"
+    "--enable-encoder=g723_1"
+    "--enable-decoder=g723_1"
     "--enable-encoder=rawvideo"
     "--enable-decoder=rawvideo"
     "--enable-encoder=libx264"
@@ -387,7 +398,7 @@
                              "change-RTCP-ratio"
                              "rtp_ext_abs_send_time"
                              "libopusdec-enable-FEC"
-                             "libopusenc-enable-FEC"
+                             "libopusenc-reload-packet-loss-at-encode"
                              "screen-sharing-x11-fix"))))))))))
 
 (define-public libjami
@@ -399,18 +410,21 @@
     (build-system gnu-build-system)
     (arguments
      (list
-      ;; The test suite fails to link when building libjami as a shared library:
-      ;; "testAccount_factory.cpp:(.text+0xc52): undefined reference to
-      ;; `jami::AccountFactory::AccountFactory()'.
+      ;; The test suite fails to link when building libjami as a shared
+      ;; library: "sip_account/sip_empty_offer.cpp:228:1: error: no
+      ;; declaration matches ‘void
+      ;; jami::test::SipEmptyOfferTest::onCallStateChange(const string&, const
+      ;; string&, jami::test::CallData&)’".
       #:tests? #f
       ;; The agent links the daemon binary with libguile, which enables the
       ;; execution of test plans described in Scheme.  It may be useful in
-      ;; user scripts too, until more generalized Scheme bindings are made
-      ;; (see: test/agent/README.md).
-      ;; FIXME: Fails to link when building libjami as a shared library:
-      ;; bindings.cpp:(.text+0x24): undefined reference to `jami::Logger::log
-      ;; [...].
-      #:configure-flags #~(list "--disable-agent" "--enable-debug")
+      ;; user scripts too, until more general purpose Scheme bindings are made
+      ;; available (see: test/agent/README.md).
+      #:configure-flags #~(list "--enable-agent"
+                                "--enable-debug"
+                                ;; Disable static libraries to avoid
+                                ;; installing a 98 MiB archive.
+                                "--disable-static")
       #:make-flags #~(list "V=1")       ;build verbosely
       #:phases
       #~(modify-phases %standard-phases
@@ -461,111 +475,6 @@ protocols, as well as decentralized calling using P2P-DHT.")
 (define-public libring
   (deprecated-package "libring" libjami))
 
-;;; Note: this package will eventually be absorbed into jami itself (the Qt
-;;; client).
-(define-public jami-libclient
-  (package
-    (name "jami-libclient")
-    (version %jami-version)
-    (source %jami-sources)
-    (build-system cmake-build-system)
-    (outputs '("out" "debug"))
-    (arguments
-     (list
-      #:tests? #f                       ;no test suite
-      #:configure-flags
-      #~(list (string-append "-DRING_XML_INTERFACES_DIR="
-                             #$(this-package-input "libjami")
-                             "/share/dbus-1/interfaces")
-              (string-append "-DRING_BUILD_DIR="
-                             #$(this-package-input "libjami")
-                             "/include")
-              ;; Call to the libraries directly instead of going through DBus
-              ;; to avoid issues (see: https://issues.guix.gnu.org/48538).
-              "-DENABLE_LIBWRAP=true")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory/maybe
-            (lambda _
-              ;; Allow building from the tarball or a git checkout.
-              (false-if-exception (chdir "lrc")))))))
-    (inputs
-     (list libjami network-manager))
-    (propagated-inputs
-     (list qtbase-5))             ;Qt is included in several installed headers
-    (synopsis "Jami client library")
-    (description "This package provides a library common to all Jami clients.
-Jami is a secure and distributed voice, video and chat communication platform
-that requires no centralized server and leaves the power of privacy in the
-hands of the user.  It supports the SIP and IAX protocols, as well as
-decentralized calling using P2P-DHT.")
-    (home-page "https://jami.net")
-    (license license:gpl3+)))
-
-;;; Remove when 2023 comes.
-(define-public libringclient
-  (deprecated-package "libringclient" jami-libclient))
-
-(define-public jami-gnome
-  (package
-    (name "jami-gnome")
-    (version %jami-version)
-    (source %jami-sources)
-    (outputs '("out" "debug"))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f                      ;no test suite
-       #:imported-modules (,@%cmake-build-system-modules
-                           (guix build glib-or-gtk-build-system))
-       #:modules ((guix build cmake-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix gtk:)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'change-directory/maybe
-           (lambda _
-             ;; Allow building from the tarball or a git checkout.
-             (false-if-exception (chdir "client-gnome"))))
-         (add-after 'change-directory/maybe 'fix-webkit-detection
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("WEBKIT webkit2gtk-4.0")
-                "WEBKIT webkit2gtk-4.1"))))
-         (add-after 'change-directory/maybe 'fix-version-string
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("^# Set VERSION.*" anchor)
-                (string-append anchor
-                               "set(PROJECT_VERSION \"" ,version "\")\n")))))
-         (add-after 'install 'glib-or-gtk-compile-schemas
-           (assoc-ref gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
-           (assoc-ref gtk:%standard-phases 'glib-or-gtk-wrap)))))
-    (inputs
-     (list clutter
-           clutter-gtk
-           gtk+
-           jami-libclient
-           libcanberra
-           libappindicator
-           libnotify
-           network-manager
-           qrencode
-           sqlite
-           webkitgtk))
-    (native-inputs
-     (list pkg-config
-           gettext-minimal
-           `(,glib "bin")))             ;for glib-compile-resources
-    (synopsis "Jami client for GNOME")
-    (description "This package provides a Jami client for the GNOME desktop.
-Jami is a secure and distributed voice, video and chat communication platform
-that requires no centralized server and leaves the power of privacy in the
-hands of the user.  It supports the SIP and IAX protocols, as well as
-decentralized calling using P2P-DHT.")
-    (home-page "https://jami.net")
-    (license license:gpl3+)))
-
 (define-public jami
   (package
     (name "jami")
@@ -574,44 +483,68 @@ decentralized calling using P2P-DHT.")
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments
-     `(#:tests? #f                      ;no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'change-directory/maybe
-           (lambda _
-             ;; Allow building from the tarball or a git checkout.
-             (false-if-exception (chdir "client-qt"))))
-         (add-after 'change-directory/maybe 'fix-version-string
-           (lambda _
-             (substitute* "src/version.h"
-               (("VERSION_STRING")
-                "BUILD_DATE")           ;to avoid a redefinition error
-               (("// clang-format on.*" anchor)
-                (string-append "const char VERSION_STRING[] = \""
-                               ,version "\";\n"
-                               anchor)))))
-         (add-after 'change-directory/maybe 'use-desktop-opengl
-           ;; TODO: Remove after next release; this is no longer specified in
-           ;; the source following the update to Qt 6.
-           (lambda _
-             (substitute* "src/main.cpp"
-               (("Qt::AA_UseOpenGLES")
-                "Qt::AA_UseDesktopOpenGL")))))))
+     (list
+      #:qtbase qtbase
+      #:tests? #f                       ;see comment below
+      #:configure-flags
+      ;; The test suite fails to build with:
+      ;; "../../../client-qt/src/app/utils.h:29:10: fatal error: QLabel: No
+      ;; such file or directory".
+      #~(list "-DENABLE_TESTS=OFF"
+              "-DWITH_WEBENGINE=OFF" ;reduce transitive closure size by 450 MiB
+              ;; Use libwrap to link directly to libjami instead of
+              ;; communicating via D-Bus to jamid, the Jami daemon.
+              "-DENABLE_LIBWRAP=ON"
+              (string-append "-DLIBJAMI_XML_INTERFACES_DIR="
+                             #$(this-package-input "libjami")
+                             "/share/dbus-1/interfaces")
+              (string-append "-DLIBJAMI_INCLUDE_DIR="
+                             #$(this-package-input "libjami") "/include/jami"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory/maybe
+            (lambda _
+              ;; Allow building from the tarball or a git checkout.
+              (false-if-exception (chdir "client-qt"))))
+          (add-after 'change-directory/maybe 'fix-version-string
+            (lambda _
+              (substitute* "src/app/version.h"
+                (("VERSION_STRING")
+                 "BUILD_DATE")          ;to avoid a redefinition error
+                (("// clang-format on.*" anchor)
+                 (string-append "const char VERSION_STRING[] = \""
+                                #$version "\";\n"
+                                anchor)))))
+          (add-after 'change-directory/maybe 'patch-source
+            (lambda _
+              (substitute* "src/libclient/CMakeLists.txt"
+                ;; Fix submitted upstream (see:
+                ;; https://review.jami.net/c/jami-client-qt/+/21830).
+                (("target_link_libraries\\(\\$\\{LIBCLIENT_NAME} qtwrapper.*" all)
+                 (string-append
+                  all "  target_link_libraries(${LIBCLIENT_NAME} avutil)\n"))))))))
     (native-inputs
-     (list pkg-config python qttools doxygen graphviz))
+     (list googletest
+           pkg-config
+           python
+           qttools
+           doxygen
+           graphviz
+           vulkan-headers))
     (inputs
-     (list jami-libclient
+     (list ffmpeg-jami
+           libjami
            libnotify
+           libxkbcommon
            network-manager
            qrencode
-           qtsvg
-           qtwebengine
-           qtwebchannel
-           qtmultimedia
+           qt5compat
            qtdeclarative
-           qtgraphicaleffects
-           qtquickcontrols
-           qtquickcontrols2))
+           qtmultimedia
+           qtnetworkauth
+           qtpositioning
+           qtsvg
+           vulkan-loader))
     (home-page "https://jami.net")
     (synopsis "Qt Jami client")
     (description "This package provides the Jami Qt client.  Jami is a secure
@@ -620,6 +553,10 @@ centralized server and leaves the power of privacy in the hands of the user.
 It supports the SIP and IAX protocols, as well as decentralized calling using
 P2P-DHT.")
     (license license:gpl3+)))
+
+;;; Remove when 2023 comes.
+(define-public jami-gnome
+  (deprecated-package "jami-gnome" jami))
 
 ;;; Remove when 2023 comes.
 (define-public jami-qt

@@ -125,6 +125,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -586,7 +587,7 @@ implementation of Adaptive Multi Rate Narrowband and Wideband
            liblo
            qtbase-5))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "http://alsamodular.sourceforge.net/")
     (synopsis "Realtime modular synthesizer and effect processor")
     (description
@@ -3096,7 +3097,7 @@ different audio devices such as ALSA or PulseAudio.")
     (inputs
      (list jack-1 alsa-lib portaudio qtbase-5 qtx11extras))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (home-page "https://qjackctl.sourceforge.io/")
     (synopsis "Jack server control application")
     (description "Control a Jack server.  Allows you to plug various sources
@@ -3217,7 +3218,7 @@ link REQUIRED)"))))))
                              (string-append ide "/bin"))
                (delete-file scide)))))))
     (native-inputs
-     (list ableton-link pkg-config qttools xorg-server-for-tests))
+     (list ableton-link pkg-config qttools-5 xorg-server-for-tests))
     (inputs (list jack-1
                   libsndfile
                   fftw
@@ -3231,12 +3232,12 @@ link REQUIRED)"))))))
                   boost-sync
                   yaml-cpp
                   qtbase-5
-                  qtdeclarative
-                  qtsvg
-                  qtwebchannel
-                  qtwebsockets))
+                  qtdeclarative-5
+                  qtsvg-5
+                  qtwebchannel-5
+                  qtwebsockets-5))
     (propagated-inputs                  ;to get native-search-path
-     (list qtwebengine))
+     (list qtwebengine-5))
     (home-page "https://github.com/supercollider/supercollider")
     (synopsis "Synthesis engine and programming language")
     (description "SuperCollider is a synthesis engine (@code{scsynth} or
@@ -3597,16 +3598,16 @@ stretching and pitch scaling of audio.  This package contains the library.")
 (define-public libkeyfinder
   (package
     (name "libkeyfinder")
-    (version "2.2.6")
+    (version "2.2.7")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/mixxxdj/libkeyfinder")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s7nqjmv44q5qjynfcs0j6h4a6qcz4mxzandkkdjjbnwv5rxc3zg"))))
+        (base32 "0nvhdzy0m3bchk3dpnspv2f518p2v9fjcrv36z1sva1pv9a2g35w"))))
     (build-system cmake-build-system)
     (native-inputs
      (list catch-framework2))
@@ -3902,7 +3903,7 @@ interface.")
     (arguments
      `(#:tests? #f))                    ; no "check" phase
     (native-inputs
-     (list qttools pkg-config))
+     (list qttools-5 pkg-config))
     (inputs
      (list fluidsynth qtbase-5 qtx11extras))
     (home-page "https://qsynth.sourceforge.io")
@@ -5454,11 +5455,11 @@ Rate} 3600x2250 bit/s vocoder used in various radio systems.")
            python ;for running tests
            portaudio ;for portaudio examples
            qtbase-5 ;for Qt examples
-           qtdeclarative
-           qttools))
+           qtdeclarative-5
+           qttools-5))
     (inputs
      (list jack-1 ;for JACK examples
-           qtquickcontrols)) ;for Qt examples
+           qtquickcontrols-5)) ;for Qt examples
     (propagated-inputs
      ;; This is because include/ableton/platforms/asio/AsioWrapper.hpp
      ;; contains '#include <asio.hpp>'.
@@ -5848,12 +5849,11 @@ and DSD streams.")
                (base32
                 "1xqmlbqj6ny4cpclzr8xyy6d6i392h9f1vmlbasp6xfy5b0yya94"))))
     (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f))    ;; no tests
+    (arguments (list #:tests? #f)) ;; no tests
     (inputs (list alsa-lib
+                  libxkbcommon
                   pipewire-0.3
-                  ;; qtsvg is still on version 5; use qtbase-5 to match
-                  qtbase-5
+                  qtbase
                   qtsvg))
     (native-inputs (list pkg-config))
     (synopsis "PipeWire graph manager")

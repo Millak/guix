@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -185,12 +186,21 @@ standard.")
                 "1p34w496095mi0473f815w6wbi57zxil106mg7pj6sg6gzpjcgww"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "make" "-C" "cc/cpp" "test") #t)))))
-    (native-inputs
-     (list bison flex))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-multiple-definitions
+                 (lambda _
+                   ;; Certain variables are defined multiple times. This
+                   ;; upsets the linker and causes a build failure.
+                   (substitute* "cc/ccom/pass1.h"
+                     (("FLT flt_zero;") "extern FLT flt_zero;"))
+                   (substitute* (list "cc/ccom/scan.l" "cc/cxxcom/scan.l")
+                     (("lineno, ") ""))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "make" "-C" "cc/cpp" "test")))))))
+    (native-inputs (list bison flex))
     (synopsis "Portable C compiler")
     (description
      "PCC is a portable C compiler.  The project goal is to write a C99

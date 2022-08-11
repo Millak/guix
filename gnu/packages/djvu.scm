@@ -107,7 +107,7 @@ utilities.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake libtool pkg-config qttools))
+     (list autoconf automake libtool pkg-config qttools-5))
     (inputs
      (list djvulibre glib libxt libtiff qtbase-5))
     (arguments

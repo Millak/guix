@@ -23,6 +23,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu home services utils)
   #:use-module (guix gexp)
+  #:use-module (guix modules)
   #:use-module (guix records)
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
@@ -106,15 +107,21 @@ services more consistent."))
 
 (define (ensure-xdg-base-dirs-on-activation config)
   #~(map (lambda (xdg-base-dir-variable)
-           ((@@ (guix build utils) mkdir-p)
+           ((@ (guix build utils) mkdir-p)
             (getenv
              xdg-base-dir-variable)))
-         '#$(map (lambda (field)
-                   (format
-                    #f "XDG_~a"
-                    (object->snake-case-string
-                     (configuration-field-name field) 'upper)))
-                 home-xdg-base-directories-configuration-fields)))
+         '#$(filter-map
+             (lambda (field)
+               (let ((variable
+                      (string-append
+                       "XDG_"
+                       (object->snake-case-string
+                        (configuration-field-name field) 'upper))))
+                 ;; XDG_RUNTIME_DIR shouldn't be created during activation
+                 ;; and will be provided by elogind or other service.
+                 (and (not (string=? "XDG_RUNTIME_DIR" variable))
+                      variable)))
+             home-xdg-base-directories-configuration-fields)))
 
 (define (last-extension-or-cfg config extensions)
   "Picks configuration value from last provided extension.  If there
@@ -207,8 +214,8 @@ pre-populated content.")
                    home-xdg-user-directories-configuration-fields)))
     #~(let ((ensure-dir
              (lambda (path)
-               (mkdir-p
-                ((@@ (ice-9 string-fun) string-replace-substring)
+               ((@ (guix build utils) mkdir-p)
+                ((@ (ice-9 string-fun) string-replace-substring)
                  path "$HOME" (getenv "HOME"))))))
         (display "Creating XDG user directories...")
         (map ensure-dir '#$dirs)

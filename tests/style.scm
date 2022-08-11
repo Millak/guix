@@ -113,17 +113,6 @@
       (lambda (port)
         (read-lines port line count)))))
 
-(define-syntax-rule (test-pretty-print str args ...)
-  "Test equality after a round-trip where STR is passed to
-'read-with-comments' and the resulting sexp is then passed to
-'pretty-print-with-comments'."
-  (test-equal str
-    (call-with-output-string
-      (lambda (port)
-        (let ((exp (call-with-input-string str
-                     read-with-comments)))
-         (pretty-print-with-comments port exp args ...))))))
-
 
 (test-begin "style")
 
@@ -366,9 +355,9 @@
 
       (substitute* file
         ((",gmp\\)(.*)$" _ rest)
-         (string-append ",gmp) ;margin comment\n" rest))
+         (string-append ",gmp) ;margin comment" rest))
         ((",acl\\)(.*)$" _ rest)
-         (string-append ",acl) ;another one\n" rest)))
+         (string-append ",acl) ;another one" rest)))
 
       (system* "guix" "style" "-L" directory "-S" "inputs"
                "my-coreutils")
@@ -377,176 +366,6 @@
       (list (package-inputs (@ (my-packages) my-coreutils))
             (read-package-field (@ (my-packages) my-coreutils) 'inputs 4)))))
 
-(test-equal "read-with-comments: dot notation"
-  (cons 'a 'b)
-  (call-with-input-string "(a . b)"
-    read-with-comments))
-
-(test-pretty-print "(list 1 2 3 4)")
-(test-pretty-print "((a . 1) (b . 2))")
-(test-pretty-print "(a b c . boom)")
-(test-pretty-print "(list 1
-                          2
-                          3
-                          4)"
-                   #:long-list 3
-                   #:indent 20)
-(test-pretty-print "\
-(list abc
-      def)"
-                   #:max-width 11)
-(test-pretty-print "\
-(#:foo
- #:bar)"
-                   #:max-width 10)
-
-(test-pretty-print "\
-(#:first 1
- #:second 2
- #:third 3)")
-
-(test-pretty-print "\
-((x
-  1)
- (y
-  2)
- (z
-  3))"
-                   #:max-width 3)
-
-(test-pretty-print "\
-(let ((x 1)
-      (y 2)
-      (z 3)
-      (p 4))
-  (+ x y))"
-                   #:max-width 11)
-
-(test-pretty-print "\
-(lambda (x y)
-  ;; This is a procedure.
-  (let ((z (+ x y)))
-    (* z z)))")
-
-(test-pretty-print "\
-#~(string-append #$coreutils \"/bin/uname\")")
-
-(test-pretty-print "\
-(package
-  (inherit coreutils)
-  (version \"42\"))")
-
-(test-pretty-print "\
-(modify-phases %standard-phases
-  (add-after 'unpack 'post-unpack
-    (lambda _
-      #t))
-  (add-before 'check 'pre-check
-    (lambda* (#:key inputs #:allow-other-keys)
-      do things ...)))")
-
-(test-pretty-print "\
-(#:phases (modify-phases sdfsdf
-            (add-before 'x 'y
-              (lambda _
-                xyz))))")
-
-(test-pretty-print "\
-(description \"abcdefghijkl
-mnopqrstuvwxyz.\")"
-                   #:max-width 30)
-
-(test-pretty-print "\
-(description
- \"abcdefghijkl
-mnopqrstuvwxyz.\")"
-                   #:max-width 12)
-
-(test-pretty-print "\
-(description
- \"abcdefghijklmnopqrstuvwxyz\")"
-                   #:max-width 33)
-
-(test-pretty-print "\
-(modify-phases %standard-phases
-  (replace 'build
-    ;; Nicely indented in 'modify-phases' context.
-    (lambda _
-      #t)))")
-
-(test-pretty-print "\
-(modify-inputs inputs
-  ;; Regular indentation for 'replace' here.
-  (replace \"gmp\" gmp))")
-
-(test-pretty-print "\
-(package
-  ;; Here 'sha256', 'base32', and 'arguments' must be
-  ;; immediately followed by a newline.
-  (source (origin
-            (method url-fetch)
-            (sha256
-             (base32
-              \"not a real base32 string\"))))
-  (arguments
-   '(#:phases %standard-phases
-     #:tests? #f)))")
-
-;; '#:key value' is kept on the same line.
-(test-pretty-print "\
-(package
-  (name \"keyword-value-same-line\")
-  (arguments
-   (list #:phases #~(modify-phases %standard-phases
-                      (add-before 'x 'y
-                        (lambda* (#:key inputs #:allow-other-keys)
-                          (foo bar baz))))
-         #:make-flags #~'(\"ANSWER=42\")
-         #:tests? #f)))")
-
-(test-pretty-print "\
-(let ((x 1)
-      (y 2)
-      (z (let* ((a 3)
-                (b 4))
-           (+ a b))))
-  (list x y z))")
-
-(test-pretty-print "\
-(substitute-keyword-arguments (package-arguments x)
-  ((#:phases phases)
-   `(modify-phases ,phases
-      (add-before 'build 'do-things
-        (lambda _
-          #t))))
-  ((#:configure-flags flags)
-   `(cons \"--without-any-problem\"
-          ,flags)))")
-
-(test-equal "pretty-print-with-comments, canonicalize-comment"
-  "\
-(list abc
-      ;; Not a margin comment.
-      ;; Ditto.
-      ;;
-      ;; There's a blank line above.
-      def ;margin comment
-      ghi)"
-  (let ((sexp (call-with-input-string
-                  "\
-(list abc
-  ;Not a margin comment.
-  ;;;  Ditto.
-  ;;;;;
-  ; There's a blank line above.
-  def  ;; margin comment
-  ghi)"
-                read-with-comments)))
-    (call-with-output-string
-      (lambda (port)
-        (pretty-print-with-comments port sexp
-                                    #:format-comment
-                                    canonicalize-comment)))))
 
 (test-end)
 

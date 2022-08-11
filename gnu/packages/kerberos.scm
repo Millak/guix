@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2012, 2017 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -121,37 +121,34 @@ cryptography.")
 (define-public shishi
   (package
     (name "shishi")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/shishi/shishi-"
                           version ".tar.gz"))
-      (patches (search-patches "shishi-fix-libgcrypt-detection.patch"))
       (sha256
        (base32
-        "032qf72cpjdfffq1yq54gz3ahgqf2ijca4vl31sfabmjzq9q370d"))))
+        "14kyj7rdki2g1sj5k42y9v5ya9jar81yw483ivwa80fx2byqyycm"))))
     (build-system gnu-build-system)
     (arguments
-     '(;; This is required since we patch some of the build scripts.
-       ;; Remove first two items for the next Shishi release after 1.0.2 or
-       ;; when removing 'shishi-fix-libgcrypt-detection.patch'.
+     (list
        #:configure-flags
-       '("ac_cv_libgcrypt=yes" "--disable-static"
-         "--with-key-dir=/etc/shishi" "--with-db-dir=/var/shishi")
+       #~(list "--disable-static"
+               "--with-key-dir=/etc/shishi"
+               "--with-db-dir=/var/shishi")
        #:phases
-       (modify-phases %standard-phases
-        (add-after 'configure 'disable-automatic-key-generation
-          (lambda* (#:key outputs #:allow-other-keys)
-            (substitute* "Makefile"
-             (("^install-data-hook:")
-              "install-data-hook:\nx:\n"))
-            #t)))))
+       #~(modify-phases %standard-phases
+           (add-after 'configure 'disable-automatic-key-generation
+             (lambda _
+               (substitute* "Makefile"
+                (("^install-data-hook:")
+                 "install-data-hook:\nx:\n")))))))
     (native-inputs (list pkg-config))
     (inputs
      (list gnutls
            libidn
-           linux-pam-1.2
+           linux-pam
            zlib
            libgcrypt
            libtasn1))

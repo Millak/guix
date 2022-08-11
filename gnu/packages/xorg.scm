@@ -66,6 +66,7 @@
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages anthy)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
@@ -6206,14 +6207,14 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "4.3.1")
+    (version "4.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1adp790v9lq3v9pnkyf4skv69n2pd7fjqikzw145swhq9aginh5z"))
+        (base32 "1rh4wx4af27xjcxdxrw950wkydgkvm5p3aaiqfmdij6sh6i14xcl"))
        (patches (search-patches "xpra-4.2-systemd-run.patch"
                                 "xpra-4.2-install_libs.patch"))))
     (build-system python-build-system)
@@ -6572,7 +6573,7 @@ output.")
 (define-public console-setup
   (package
     (name "console-setup")
-    (version "1.207")
+    (version "1.209")
     (source
      (origin
        (method git-fetch)
@@ -6580,51 +6581,44 @@ output.")
              (url "https://salsa.debian.org/installer-team/console-setup.git")
              (commit version)))
        (sha256
-        (base32 "0fj93apsknx3lzbi2025pzr19q1gwnim8g4007aqqkhidc1msgx5"))
+        (base32 "0f1xac4wxkqdrqspmk803vr3z8flmjw5qiw3q31fmacp7nsjfc3x"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
-       (let ((bash (assoc-ref %build-inputs "bash"))
-             (out (assoc-ref %outputs "out")))
-         (list (string-append "SHELL=" bash "/bin/bash")))
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'patch-file-names
-           (lambda _
-             ;; 'ckbcomp' calls out to 'cat' (!).  Give it the right file
-             ;; name.
-             (substitute* '("Keyboard/ckbcomp")
-               (("\"cat ")
-                (string-append "\"" (which "cat")
-                               " ")))))
-         (add-before 'build 'make-doubled-bdfs
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (invoke "make" "-C" "Fonts"
-                     "doubled_bdfs"
-                     (string-append "SHELL="
-                                    (assoc-ref (or native-inputs inputs)
-                                               "bash")
-                                    "/bin/bash"))))
-         (replace 'install
-           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref %outputs "out")))
-               (invoke "make" "install-linux"
-                       (string-append "prefix=" out)
-                       (string-append "SHELL="
-                                      (assoc-ref (or native-inputs inputs)
-                                                 "bash")
-                                      "/bin/bash"))))))))
+     (list #:make-flags
+           #~(list (string-append "SHELL=" (assoc-ref %build-inputs "bash")
+                                  "/bin/bash")
+                   (string-append "prefix=" #$output))
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'patch-file-names
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; 'ckbcomp' calls out to 'cat' (!).  Give it the right file
+                   ;; name.
+                   (substitute* '("Keyboard/ckbcomp")
+                     (("\"cat ")
+                      (format #f "\"~a "
+                              (search-input-file inputs "bin/cat"))))))
+               (add-before 'build 'make-doubled-bdfs
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "-C" "Fonts" "doubled_bdfs"
+                          make-flags)))
+               (replace 'install
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "install-linux"
+                          make-flags))))))
     (native-inputs
      (list pkg-config
            bdftopcf
            bdfresize
-           sharutils ; for 'uuencode'
+           sharutils                    ; for 'uuencode'
            perl))
     (inputs
-     (list perl))                 ; used by 'ckbcomp'
+     (list bash-minimal
+           coreutils
+           perl))                       ; used by 'ckbcomp'
     (synopsis "Set up the Linux console font and keyboard")
     (description
      "console-setup provides the console with the same keyboard

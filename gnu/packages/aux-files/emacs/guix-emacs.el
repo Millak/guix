@@ -56,7 +56,7 @@ The files in the list do not have extensions (.el, .elc)."
   (let ((autoloads (mapcan #'guix-emacs-find-autoloads
                            (guix-emacs--non-core-load-path))))
     (mapc (lambda (f)
-            (load f 'noerror))
+            (load f 'noerror t))
           autoloads)))
 
 ;;;###autoload

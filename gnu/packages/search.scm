@@ -32,6 +32,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
@@ -672,23 +673,23 @@ bibliographic data and simple document and bibtex retrieval.")
 (define-public ugrep
   (package
     (name "ugrep")
-    (version "3.7.9")
+    (version "3.8.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/Genivia/ugrep")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "0mj4da91r81drfl2nbgzl1krka6ksk7srjjvwgp55r6l265fk3b5"))
+               (base32 "03b3lahc3zzsznaqnrk47f1cnd5jwakvwrkz0r4m2crk09cpfv57"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (delete-file-recursively "bin") ; pre-built executables
-                  (for-each delete-file (find-files "tests" "^archive\\..*"))
-                  (for-each delete-file (find-files "tests" "^.*\\.pdf$"))
-                  (for-each delete-file (find-files "tests" "^.*\\.class$"))
-                  #t))))
+               #~(begin
+                   (delete-file-recursively "bin") ; pre-built executables
+                   (for-each (lambda (regexp)
+                               (for-each delete-file
+                                         (find-files "tests" regexp)))
+                             '("^archive" "\\.pdf$" "\\.class$"))))))
     (build-system gnu-build-system)
     (inputs
      (list bzip2
@@ -696,18 +697,20 @@ bibliographic data and simple document and bibtex retrieval.")
            lz4
            lzip ;; lzma
            pcre2
-           zlib))
+           zlib
+           `(,zstd "lib")))
     (arguments
-     `(#:tests? #f                  ; no way to rebuild the binary input files
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             ;; Unpatch shebangs in tests.
-             (substitute* '("tests/Hello.bat"
-                            "tests/Hello.sh")
-               (("#!/gnu/store/.*/bin/sh") "#!/bin/sh")))))))
+     (list
+      #:tests? #f                  ; no way to rebuild the binary input files
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda _
+              ;; Unpatch shebangs in tests.
+              (substitute* '("tests/Hello.bat"
+                             "tests/Hello.sh")
+                (("#!/gnu/store/.*/bin/sh") "#!/bin/sh")))))))
     (home-page "https://github.com/Genivia/ugrep/")
     (synopsis "Faster grep with an interactive query UI")
     (description "Ugrep is a ultra fast searcher of file systems, text

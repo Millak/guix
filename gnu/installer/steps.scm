@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,9 +21,9 @@
   #:use-module (guix records)
   #:use-module (guix build utils)
   #:use-module (guix i18n)
+  #:use-module (guix read-print)
   #:use-module (gnu installer utils)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 pretty-print)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -224,10 +224,14 @@ found in RESULTS."
                   (conf-formatter result-step)
                   '())))
           steps))
-        (modules '((use-modules (gnu))
+        (modules `(,(vertical-space 1)
+                   ,(comment (G_ "\
+;; Indicate which modules to import to access the variables
+;; used in this configuration.\n"))
+                   (use-modules (gnu))
                    (use-service-modules cups desktop networking ssh xorg))))
     `(,@modules
-      ()
+      ,(vertical-space 1)
       (operating-system ,@configuration))))
 
 (define* (configuration->file configuration
@@ -241,14 +245,22 @@ found in RESULTS."
       ;; length below 60 characters.
       (display (G_ "\
 ;; This is an operating system configuration generated
-;; by the graphical installer.\n")
+;; by the graphical installer.
+;;
+;; Once installation is complete, you can learn and modify
+;; this file to tweak the system configuration, and pass it
+;; to the 'guix system reconfigure' command to effect your
+;; changes.\n")
                port)
       (newline port)
-      (for-each (lambda (part)
-                  (if (null? part)
-                      (newline port)
-                      (pretty-print part port)))
-                configuration)
+      (pretty-print-with-comments/splice port configuration
+                                         #:max-width 75
+                                         #:format-comment
+                                         (lambda (c indent)
+                                           ;; Localize C.
+                                           (comment (G_ (comment->string c))
+                                                    (comment-margin? c))))
+
       (flush-output-port port))))
 
 ;;; Local Variables:

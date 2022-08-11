@@ -172,12 +172,12 @@ This package is part of the KDE multimedia module.")
            oxygen-icons ; default icon set
            phonon
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects ; not listed as dependency
-           qtmultimedia
-           qtquickcontrols
-           qtquickcontrols2
-           qtsvg
+           qtmultimedia-5
+           qtquickcontrols-5
+           qtquickcontrols2-5
+           qtsvg-5
            qtx11extras
            ;; TODO: upnpqt https://gitlab.com/homeautomationqt/upnp-player-qt
            vlc))
@@ -269,7 +269,7 @@ This package is part of the KDE multimedia module.")
            phonon
            phonon-backend-gstreamer
            qtbase-5
-           qtsvg
+           qtsvg-5
            taglib))
     (home-page "https://kde.org/applications/multimedia/org.kde.juk")
     (synopsis "Music jukebox / music player")
@@ -322,7 +322,7 @@ This package is part of the KDE multimedia module.")
            kdoctools
            libxslt
            python-wrapper
-           qttools))
+           qttools-5))
     (inputs
      (list chromaprint
            flac
@@ -335,8 +335,8 @@ This package is part of the KDE multimedia module.")
            kxmlgui
            libvorbis
            qtbase-5
-           qtdeclarative
-           qtmultimedia
+           qtdeclarative-5
+           qtmultimedia-5
            readline
            taglib
            zlib))
@@ -529,10 +529,10 @@ autoloading of subtitle files for use while playing video.")
            oxygen-icons ; default icon set
            purpose
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
-           qtquickcontrols
-           qtquickcontrols2 ; not listed as dependency
+           qtquickcontrols-5
+           qtquickcontrols2-5 ; not listed as dependency
            qtx11extras))
     (arguments
      (list #:tests? #f ; test program gets built, but is not found
@@ -625,7 +625,7 @@ This package is part of the KDE multimedia module.")
            phonon
            qtbase-5
            cairo
-           qtsvg
+           qtsvg-5
            qtx11extras
            xcb-util
            xcb-util-cursor
@@ -698,7 +698,7 @@ Some features:
            oxygen-icons ; default icon set
            pulseaudio
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            zlib))
     (home-page "https://kde.org/applications/multimedia/org.kde.kwave")
     (synopsis "Sound editor for KDE")

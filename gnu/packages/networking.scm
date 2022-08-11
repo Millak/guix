@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2020, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -89,6 +89,7 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -239,6 +240,98 @@ on byte-critical systems.  It supports HTTP, HTTPS, FTP and FTPS
 protocols.")
     (license license:gpl2+)))
 
+(define-public lcrq
+  (package
+    (name "lcrq")
+    (version "0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/librecast/lcrq")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jf7x3zcdbz5b99qz7liw4i90hn9s457zr82n0r8g9qsi81a1d8c"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-tests? #f
+       #:make-flags (let ((target ,(%current-target-system)))
+                      (list ,(string-append "CC="
+                                            (cc-for-target))
+                            (string-append "PREFIX="
+                                           (assoc-ref %outputs "out"))))
+       #:test-target "test"))
+    (home-page "https://librecast.net/lcrq.html")
+    (synopsis "librecast RaptorQ library")
+    (description
+     "C library implementation of RaptorQ Forward Error Correction for
+Librecast.  RFC6330 (IETF) describes the RaptorQ proposed standard, which LCRQ
+more-or-less follows. The primary focus has been on building a fast, simple
+and dependency-free FEC implementation for use with Librecast, and not on
+strict standards compliance.  The code does, however, fairly closely follow
+the RFC.")
+    (license (list license:gpl2 license:gpl3))))
+
+(define-public lcsync
+  (package
+    (name "lcsync")
+    (version "0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/librecast/lcsync")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s038b4xg9nlzhrganzjyfvc6n6cgd6kilnpik4axp62j2n5q11q"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-tests? #f
+       #:make-flags (let ((target ,(%current-target-system)))
+                      (list ,(string-append "CC="
+                                            (cc-for-target))
+                            ;; avoid running setcap in the install process
+                            "SETCAP_PROGRAM=true"
+                            (string-append "prefix="
+                                           (assoc-ref %outputs "out"))))
+       #:test-target "test"
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure) ;no configure script
+                  (add-before 'check 'remove-network-tests
+                    (lambda _
+                      ;; these tests require networking
+                      (delete-file "./test/0000-0027.c")
+                      (delete-file "./test/0000-0049.c")
+                      (delete-file "./test/0000-0074.c")))
+                  (add-after 'unpack 'remove-immintrin.h
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "Makefile"
+                        (("CFLAGS :=")
+                         (string-append "CFLAGS := -I" (search-input-directory
+                                                         inputs "include/simde"))))
+                      (substitute* (find-files "src")
+                        ((".*immintrin\\.h.*")
+                         (string-append "#include <simde-features.h>\n"
+                                        "#include <x86/ssse3.h>\n"))
+                        (("__m128i") "simde__m128i"))))
+                  (add-before 'build 'add-library-paths
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (let* ((librecast (assoc-ref inputs "librecast")))
+                        (substitute* (list "./src/Makefile" "./test/Makefile")
+                          (("-llibrecast")
+                           (string-append "-L" librecast "/lib -llibrecast")))))))))
+    (inputs (list librecast libsodium))
+    (native-inputs (list simde))
+    (home-page "https://librecast.net/lcsync.html")
+    (synopsis "librecast file and data syncing tool")
+    (description
+     "lcsync is a tool to sync files over IPv6 multicast or the
+local filesystem.  It splits the file into blocks, hashes them, and compares
+them in order to efficiently transfer a minimal amount of data.")
+    (license (list license:gpl2 license:gpl3))))
+
 ;; This package does not have a release yet.
 ;; But this is required to provide a feature in PipeWire.
 (define-public libcamera
@@ -382,6 +475,54 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
        (list
         license:lgpl2.1+
         license:mpl1.1)))))
+
+(define-public librecast
+  (package
+    (name "librecast")
+    (version "0.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/librecast/librecast")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zzdxawzsj0lxyxm8c2wdqx3b633f8ybvlg6szs4v0y42xg4a829"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-tests? #f
+       #:make-flags (let ((target ,(%current-target-system)))
+                      (list ,(string-append "CC="
+                                            (cc-for-target))
+                            (string-append "PREFIX="
+                                           (assoc-ref %outputs "out"))))
+       #:test-target "test"
+       #:phases (modify-phases %standard-phases
+                  (add-before 'check 'remove-network-tests
+                    (lambda _
+                      ;; these tests require networking
+                      (delete-file "./test/0000-0010.c")
+                      (delete-file "./test/0000-0012.c")
+                      (delete-file "./test/0000-0013.c")
+                      (delete-file "./test/0000-0014.c")
+                      (delete-file "./test/0000-0015.c")
+                      (delete-file "./test/0000-0016.c")
+                      (delete-file "./test/0000-0018.c")
+                      (delete-file "./test/0000-0019.c")
+                      (delete-file "./test/0000-0021.c")
+                      (delete-file "./test/0000-0028.c")
+                      (delete-file "./test/0000-0036.c")
+                      (delete-file "./test/0000-0037.c")
+                      (delete-file "./test/0000-0038.c")
+                      (delete-file "./test/0000-0039.c")
+                      (delete-file "./test/0000-0040.c"))))))
+    (inputs (list libsodium lcrq))
+    (synopsis "librecast IPv6 multicast library")
+    (description "Librecast is a C library which supports IPv6 multicast
+networking.")
+    (home-page "https://librecast.net/librecast.html")
+    (license (list license:gpl2 license:gpl3))))
 
 (define-public rtmpdump
   ;; There are no tags in the repository, and the project is unlikely to
@@ -1636,8 +1777,8 @@ of the same name.")
            `(,nghttp2 "lib")
            minizip
            qtbase-5
-           qtmultimedia
-           qtsvg
+           qtmultimedia-5
+           qtsvg-5
            sbc
            snappy
            zlib
@@ -1650,7 +1791,7 @@ of the same name.")
            perl
            pkg-config
            python-wrapper
-           qttools))
+           qttools-5))
     (synopsis "Network traffic analyzer")
     (description "Wireshark is a network protocol analyzer, or @dfn{packet
 sniffer}, that lets you capture and interactively browse the contents of
@@ -3044,7 +3185,7 @@ networks using zeromq.  It has these key characteristics:
 (define-public libsocketcan
   (package
     (name "libsocketcan")
-    (version "0.0.11")
+    (version "0.0.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3053,8 +3194,13 @@ networks using zeromq.  It has these key characteristics:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17z2y2r9xkixhr9bxr50m77fh710afl30s7jdhbxrvf56vmal2jr"))))
+                "0nrav2yqxgb7jwnhrwirnxs9ycqqh90sqgv5a8lns837jf385jvq"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Upstream already puts (more) files in share/doc/libsocketcan.
+               (delete 'install-license-files))))
     (native-inputs
      (list autoconf automake libtool))
     (home-page "https://git.pengutronix.de/cgit/tools/libsocketcan")
@@ -3174,20 +3320,19 @@ Features:
 (define-public net-snmp
   (package
     (name "net-snmp")
-    (version "5.9.1")
+    (version "5.9.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/net-snmp/net-snmp/"
                                   version "/net-snmp-" version ".tar.gz"))
               (sha256
                (base32
-                "0gwcyi9qk707jgfsgmdr9w2w3r892fnqaam9v7zxpkg69njd8zzb"))
+                "02pgl89s8qll5zhdp61rbn6vpl084gx55bjb1cqg3wqvgsdz55r0"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   ;; Drop bundled libraries.
-                  (delete-file-recursively "snmplib/openssl")
-                  #t))))
+                  (delete-file-recursively "snmplib/openssl")))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -3217,8 +3362,7 @@ Features:
              ;; These tests require network access.
              (for-each delete-file
                        '("testing/fulltests/default/T070com2sec_simple"
-                         "testing/fulltests/default/T071com2sec6_simple"))
-             #t))
+                         "testing/fulltests/default/T071com2sec6_simple"))))
          (add-after 'unpack 'patch-Makefile.PL
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "Makefile.in"
@@ -3226,8 +3370,7 @@ Features:
                 (string-append "Makefile.PL PREFIX="
                                (assoc-ref outputs "out")
                                " INSTALLDIRS=site" " NO_PERLLOCAL=1"
-                               " -NET")))
-             #t)))))
+                               " -NET"))))))))
     (inputs
      (list libnl ncurses ; for the ‘apps’
            openssl perl))
@@ -3802,18 +3945,19 @@ service is available at @url{https://pagekite.net/}, or you can run your own.")
 (define-public ipcalc
   (package
     (name "ipcalc")
-    (version "0.41")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://jodies.de/ipcalc-archive/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "12if9sm8h2ac0pgwkw835cgyqjxm6h27k4kfn2vfas9krrqwbafx"))))
-    (inputs `(("perl" ,perl)
-              ("tar" ,tar)
-              ("gzip" ,gzip)
-              ("tarball" ,source)))
+    (version "0.51")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             ;; This is the IPv6-capable continuation of the unmaintained
+             ;; <https://jodies.de/ipcalc-archive/>.
+             (url "https://github.com/kjokjo/ipcalc")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cnygb69vjmp3by75jcd2z4y3ybp1s7x4nl3d32xa49h8lkhdbfv"))))
+    (inputs `(("perl" ,perl)))
     (build-system trivial-build-system) ;no Makefile.PL
     (arguments
      `(#:modules ((guix build utils))
@@ -3824,25 +3968,21 @@ service is available at @url{https://pagekite.net/}, or you can run your own.")
          (let* ((source (assoc-ref %build-inputs "source"))
                 (perl (string-append (assoc-ref %build-inputs "perl")
                                      "/bin"))
-                (tar (assoc-ref %build-inputs "tar"))
-                (gz  (assoc-ref %build-inputs "gzip"))
                 (out (assoc-ref %outputs "out"))
                 (bin (string-append out "/bin"))
                 (doc (string-append out "/share/doc/ipcalc")))
-           (setenv "PATH" (string-append gz "/bin"))
-           (invoke (string-append tar "/bin/tar") "xvf" source)
-           (chdir (string-append ,name "-" ,version))
+           (copy-recursively source "source")
+           (chdir "source")
 
            (install-file "ipcalc" bin)
-           (patch-shebang (string-append bin "/ipcalc") (list perl))
-           #t))))
+           (patch-shebang (string-append bin "/ipcalc") (list perl))))))
     (synopsis "Simple IP network calculator")
     (description "ipcalc takes an IP address and netmask and calculates the
 resulting broadcast, network, Cisco wildcard mask, and host range.  By giving
 a second netmask, you can design subnets and supernets.  It is also intended
 to be a teaching tool and presents the subnetting results as
 easy-to-understand binary values.")
-    (home-page "http://jodies.de/ipcalc")
+    (home-page "https://github.com/kjokjo/ipcalc")
     (license license:gpl2+)))
 
 (define-public tunctl
@@ -4021,32 +4161,30 @@ thousands of connections is clearly realistic with today's hardware.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.13")
+    (version "1.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "00a7v24qhxw80yk2v79wrkfn7br4r8pcajyrpz8j0xx2v1zq4ffn"))
+        (base32 "1s0j5p0mjh1pda1aq5wm4hd41fh1m864jgbs82y5sshi9whijj57"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Drop bundled library.
-           (delete-file-recursively "libevent")
-           #t))))
+           (delete-file-recursively "libevent")))))
     (arguments
-     `(#:configure-flags
-       (list
-        "--with-privsep-user=nobody"
-        "--with-privsep-group=nogroup"
-        "--localstatedir=/var"
-        "--enable-pie"
-        "--disable-static"
-        "--without-embedded-libevent"
-        (string-append "--with-systemdsystemunitdir="
-                       (assoc-ref %outputs "out")
-                       "/lib/systemd/system"))))
+     (list #:configure-flags
+           #~(list
+              "--with-privsep-user=nobody"
+              "--with-privsep-group=nogroup"
+              "--localstatedir=/var"
+              "--enable-pie"
+              "--disable-static"
+              "--without-embedded-libevent"
+              (string-append "--with-systemdsystemunitdir="
+                             #$output "/lib/systemd/system"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent libxml2 openssl readline))

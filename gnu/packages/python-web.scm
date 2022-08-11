@@ -13,7 +13,7 @@
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2016, 2019, 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
@@ -2804,6 +2804,25 @@ APIs.")
      "Requests is a Python HTTP client library.  It aims to be easier to use
 than Python’s urllib2 library.")
     (license license:asl2.0)))
+
+(define-public python-requests-kerberos
+  (package
+    (name "python-requests-kerberos")
+    (version "0.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "requests-kerberos" version))
+              (sha256
+               (base32
+                "1lbgjs779cjxhz07lfl9dbyp3qfh8a3ir2393042wfg518jd3afd"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-cryptography python-pyspnego
+                             python-requests))
+    (home-page "https://github.com/requests/requests-kerberos")
+    (synopsis "Kerberos authentication handler for python-requests")
+    (description "This package provides a Kerberos authentication handler for
+python-requests.")
+    (license license:isc)))
 
 (define-public python-requests-unixsocket
   (package
@@ -7665,4 +7684,80 @@ resources using Web Application Description Language (WADL) files as guides.")
      "The @code{sendgrid} Python library allows access to the
 SendGrid Web API v3.  Version 3+ of the library provides full support for all
 SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
+    (license license:expat)))
+
+(define-public python-starlette
+  (package
+    (name "python-starlette")
+    (version "0.20.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "starlette" version))
+              (sha256
+               (base32
+                "112hmwk4fh4dl21nlr2xd37h43xzxpjxfnic7v7fz3wr5w9g7z22"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-anyio
+                             python-typing-extensions
+                             ;; [all] extra dependencies:
+                             python-itsdangerous
+                             python-jinja2
+                             python-multipart
+                             python-pyyaml
+                             python-requests))
+    (home-page "https://github.com/encode/starlette")
+    (synopsis "Little ASGI library")
+    (description
+     "Starlette is a lightweight ASGI (Asynchronous Server Gateway
+Interface) framework/toolkit for building async web services in Python.")
+    (license license:bsd-3)))
+
+(define-public python-pyactiveresource
+  (package
+    (name "python-pyactiveresource")
+    (version "2.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyactiveresource" version))
+              (sha256
+               (base32
+                "1n7xvzh1j8fxal0gx9bgg1ayrp3q9mb1a2vb12d6s86wa93880rg"))))
+    (build-system python-build-system)
+    (native-inputs (list python-dateutil python-pyyaml))
+    (propagated-inputs (list python-six))
+    (home-page "https://github.com/Shopify/pyactiveresource/")
+    (synopsis "ActiveResource for Python")
+    (description "This package provides a Python port of the ActiveResource
+project.
+
+Active Resource attempts to provide a coherent wrapper object-relational
+mapping for REST web services.  It follows the same philosophy as Active
+Record, in that one of its prime aims is to reduce the amount of code needed
+to map to these resources.  This is made possible by relying on a number of
+code- and protocol-based conventions that make it easy for Active Resource to
+infer complex relations and structures.")
+    (license license:expat)))
+
+(define-public python-shopifyapi
+  (package
+    (name "python-shopifyapi")
+    (version "12.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ShopifyAPI" version))
+              (sha256
+               (base32
+                "03np9mkycqbw5l5vk0srmq353q3vmbycbbarzv0cg3z703p81gnb"))))
+    (build-system python-build-system)
+    (native-inputs (list python-mock))
+    (propagated-inputs (list python-pyactiveresource python-pyjwt
+                             python-pyyaml python-six))
+    (home-page "https://github.com/Shopify/shopify_python_api")
+    (synopsis "Shopify API for Python")
+    (description "This package provides the Shopify API for Python.
+
+The ShopifyAPI library allows Python developers to programmatically access the
+admin section of stores using an ActiveResource-like interface similar the
+ruby Shopify API gem.  The library makes HTTP requests to Shopify in order to
+list, create, update, or delete resources (e.g. Order, Product, Collection).")
     (license license:expat)))

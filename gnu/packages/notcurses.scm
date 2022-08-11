@@ -1,4 +1,5 @@
 ;;; Copyright © 2021 Blake Shaw <blake@nonconstructivism.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,7 +21,7 @@
   #:use-module (gnu packages)
   #:use-module (guix packages)
   #:use-module (guix build utils)
-  #:use-module (guix git-download)
+  #:use-module (guix download)
   #:use-module (guix build-system cmake)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages check)
@@ -33,45 +34,49 @@
 
 (define-public notcurses
   (package
-   (name "notcurses")
-   (version "3.0.0")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/dankamongmen/notcurses")
-           (commit (string-append "v" version))))
-     (file-name (git-file-name name version))
-         (sha256
-          (base32 "1y9s77m1pp6syfml559d8dvif61y6zjldrdx1zri18q9sr0zqm9m"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:make-flags
-         (list (string-append "CC=" ,(cc-for-target)))
-         ;; These flags are documented in 'INSTALL.md' in the source distribution.
-         #:configure-flags
-         '(;; Do not build "coverage"
-           "-DUSE_COVERAGE=off"
-           ;; Do not build HTML documentation
-           "-DUSE_DOXYGEN=off"
-           ;; Don't include mouse support
-           "-DUSE_GPM=off"
-           ;; Use FFmpeg for multimedia support
-           "-DUSE_MULTIMEDIA=ffmpeg"
-           ;; Follow the Debian Free Software Guidelines, omitting nonfree content.
-           "-DFSG_BUILD=ON")))
-      (native-inputs
-       (list pkg-config
-             pandoc
-             doctest))
-      (inputs
-       (list ffmpeg
-             libdeflate
-             libunistring
-             ncurses
-             zlib))
-      (synopsis "Textual user interfaces")
-      (description "Notcurses is a library for building complex textual user
+    (name "notcurses")
+    (version "3.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       ;; Note: the upstream git repository contains non-free media (see the
+       ;; documentation for DFSG_BUILD; but the project provides a sanitized
+       ;; tarball for distributions.  If switching to a git source, we need
+       ;; to find a way to elide the non-free demos with a source 'snippet'.
+       (uri (string-append "https://github.com/dankamongmen/notcurses/releases"
+                           "/download/v" version "/notcurses_" version
+                           "+dfsg.1.orig.tar.xz"))
+       (file-name (string-append name "-" version ".tar.xz"))
+       (sha256
+        (base32 "1nz32nqh7fn4i06hvl8ndkm0z4g08a6wzhilvv8ggx2hc5axsz89"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:make-flags
+       (list (string-append "CC=" ,(cc-for-target)))
+       ;; These flags are documented in 'INSTALL.md' in the source distribution.
+       #:configure-flags
+       '( ;; Do not build "coverage"
+         "-DUSE_COVERAGE=off"
+         ;; Do not build HTML documentation
+         "-DUSE_DOXYGEN=off"
+         ;; Don't include mouse support
+         "-DUSE_GPM=off"
+         ;; Use FFmpeg for multimedia support
+         "-DUSE_MULTIMEDIA=ffmpeg"
+         ;; Follow the Debian Free Software Guidelines, omitting nonfree content.
+         "-DDFSG_BUILD=ON")))
+    (native-inputs
+     (list pkg-config
+           pandoc
+           doctest))
+    (inputs
+     (list ffmpeg
+           libdeflate
+           libunistring
+           ncurses
+           zlib))
+    (synopsis "Textual user interfaces")
+    (description "Notcurses is a library for building complex textual user
 interfaces on modern terminals.")
-      (home-page "https://notcurses.com")
-      (license license:asl2.0)))
+    (home-page "https://notcurses.com")
+    (license license:asl2.0)))

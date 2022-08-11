@@ -926,7 +926,7 @@ satellites.")
            portaudio
            pulseaudio
            qtbase-5
-           qtsvg
+           qtsvg-5
            spdlog
            volk))
     (arguments
@@ -1290,7 +1290,7 @@ instances over the network, and general QSO and DXpedition logging.")
         (base32 "0nciw9smrfcsirlwyny5r9h7sk2zvm40m56y1hxpgpmbnh6mqikh"))))
     (build-system qt-build-system)
     (native-inputs
-     (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
+     (list asciidoc gfortran pkg-config qttools-5 ruby-asciidoctor))
     (inputs
      `(("boost" ,boost)
        ("fftw" ,fftw)
@@ -1298,7 +1298,7 @@ instances over the network, and general QSO and DXpedition logging.")
        ("hamlib" ,wsjtx-hamlib)
        ("libusb" ,libusb)
        ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)
+       ("qtmultimedia-5" ,qtmultimedia-5)
        ("qtserialport" ,qtserialport)))
     (arguments
      `(#:tests? #f)) ; No test suite
@@ -1327,7 +1327,7 @@ weak-signal conditions.")
         (base32 "1lw9q7ggh2jlasipl3v5pkbabysjr6baw15lnmg664ah3fwdrvnx"))))
     (build-system qt-build-system)
     (native-inputs
-     (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
+     (list asciidoc gfortran pkg-config qttools-5 ruby-asciidoctor))
     (inputs
      (list
       boost
@@ -1336,8 +1336,8 @@ weak-signal conditions.")
       jtdx-hamlib
       libusb
       qtbase-5
-      qtwebsockets
-      qtmultimedia
+      qtwebsockets-5
+      qtmultimedia-5
       qtserialport))
     (arguments
      `(#:tests? #f)) ; No test suite
@@ -1373,7 +1373,7 @@ focused on DXing and being shaped by community of DXers.JTDX")
            #t))))
     (build-system qt-build-system)
     (native-inputs
-     (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
+     (list asciidoc gfortran pkg-config qttools-5 ruby-asciidoctor))
     (inputs
      `(("boost" ,boost)
        ("fftw" ,fftw)
@@ -1381,7 +1381,7 @@ focused on DXing and being shaped by community of DXers.JTDX")
        ("hamlib" ,wsjtx-hamlib)
        ("libusb" ,libusb)
        ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)
+       ("qtmultimedia-5" ,qtmultimedia-5)
        ("qtserialport" ,qtserialport)))
     (arguments
      `(#:tests? #f ; No test suite
@@ -1745,9 +1745,9 @@ intended for people who want to learn receiving and sending morse code.")
         (base32 "1s1aj223n57rpc95rih98z08xnyhq2zp02byzrc3f7s01fv3nj0l"))))
     (build-system qt-build-system)
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
-     (list qtbase-5 qtmultimedia))
+     (list qtbase-5 qtmultimedia-5))
     (arguments
      `(#:tests? #f)) ; No test suite
     (home-page "https://dm3mat.darc.de/kochmorse/")
@@ -1861,7 +1861,7 @@ Compatible hardware/software:
            opus
            pulseaudio
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtwebkit
            qwt
            speexdsp
@@ -1928,10 +1928,10 @@ receiver.")
            rtl-sdr
            qtbase-5
            qtcharts
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
-           qtmultimedia
-           qtquickcontrols2
+           qtmultimedia-5
+           qtquickcontrols2-5
            soapysdr))
     (arguments
      `(#:configure-flags '("-DRTLSDR=ON"
@@ -2159,13 +2159,13 @@ voice formats.")
            pulseaudio
            qtbase-5
            qtcharts
-           qtdeclarative
+           qtdeclarative-5
            qtlocation
-           qtmultimedia
-           qtquickcontrols2
+           qtmultimedia-5
+           qtquickcontrols2-5
            qtserialport
            qtspeech
-           qtwebsockets
+           qtwebsockets-5
            rtl-sdr
            serialdv
            soapysdr
@@ -2293,7 +2293,7 @@ software-defined radio receivers.")
         (base32 "1kpkwxhcacgmprbr8xz840rj9a22513vxrh2q7d3js5i1dva8j2z"))))
     (build-system qt-build-system)
     (inputs
-     (list opus qcustomplot qtbase-5 qtmultimedia qtserialport))
+     (list opus qcustomplot qtbase-5 qtmultimedia-5 qtserialport))
     (arguments
      `(#:tests? #f  ; No test suite.
        #:phases

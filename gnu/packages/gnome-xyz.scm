@@ -305,7 +305,7 @@ takes advantage of modern hardware using OpenGL.")
 (define-public gnome-shell-extension-appindicator
   (package
     (name "gnome-shell-extension-appindicator")
-    (version "33")
+    (version "42")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -314,13 +314,11 @@ takes advantage of modern hardware using OpenGL.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0qm77s080nbf4gqnfzpwp8a7jf7lliz6fxbsd3lasvrr11pgsk87"))
+                "1lf3aqb924nzhj87rhy2zvm5pcfqcklhfw21m6ic3i7wzd9r7cnc"))
               (file-name (git-file-name name version))))
-    (build-system copy-build-system)
-    (arguments
-     `(#:install-plan
-       '(("." ,(string-append "share/gnome-shell/extensions/"
-                              "appindicatorsupport@rgcjonas.gmail.com")))))
+    (build-system meson-build-system)
+    (native-inputs (list jq gnu-gettext
+                         `(,glib "bin")))
     (synopsis "Adds KStatusNotifierItem support to GNOME Shell")
     (description "This extension integrates Ubuntu AppIndicators
 and KStatusNotifierItems (KDE's successor of the systray) into

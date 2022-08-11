@@ -124,7 +124,7 @@ index 2c9d3ab4da03..1190cc780182 100644
 +- GEN_TRANSLATION (DEFAULT: ON)
 +```
 +Create targets to generate translation files.
-+Turning this off removes the need for qt-linguist, part of qttools qt5 submodule, during build.
++Turning this off removes the need for qt-linguist, part of qttools-5 qt5 submodule, during build.
 +```
  ### macOS
  

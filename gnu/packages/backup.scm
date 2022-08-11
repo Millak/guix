@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2015, 2016, 2017, 2021, 2022 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
@@ -1091,14 +1091,14 @@ interactive mode.")
 (define-public btrbk
   (package
     (name "btrbk")
-    (version "0.31.3")
+    (version "0.32.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://digint.ch/download/btrbk/releases/"
-                                  name "-" version ".tar.xz"))
+                                  "btrbk-" version ".tar.xz"))
               (sha256
                (base32
-                "1lx7vnf386nsik8mxrrfyx1h7mkqk5zs26sy0s0lynfxcm4lkxb2"))))
+                "0gi0j09fm4pgw3dq0z27lkpyvrs3ssyqg9b46v5ba794z63w753z"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1121,19 +1121,23 @@ interactive mode.")
                           (string-append "program_name = "
                                          "$ENV{'BTRBK_PROGRAM_NAME'}")))
                        ;; Wrap the script, so that it works with SSH URI and
-                       ;; finds mbuffer out of the box.
+                       ;; finds mbuffer and other tools out of the box.
                        (wrap-program btrbk
                          #:sh (search-input-file inputs "bin/bash")
                          '("BTRBK_PROGRAM_NAME" = ("$0"))
                          `("PATH" prefix
-                           ,(list (string-append #$btrfs-progs "/bin")
-                                  (string-append #$coreutils "/bin")
-                                  (string-append #$mbuffer "/bin")
-                                  (string-append #$openssh "/bin")))))))))
+                           ,(map (lambda (command)
+                                   (dirname (search-input-file inputs command)))
+                                 (list "bin/btrfs"
+                                       "bin/cat"
+                                       "bin/find"
+                                       "bin/mbuffer"
+                                       "bin/ssh")))))))))
     (native-inputs (list ruby-asciidoctor))
     (inputs (list bash-minimal
                   btrfs-progs
                   coreutils
+                  findutils
                   mbuffer
                   openssh
                   perl))
@@ -1287,13 +1291,13 @@ borgmatic is powered by borg.")
 (define-public vorta
   (package
     (name "vorta")
-    (version "0.8.3")
+    (version "0.8.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "vorta" version))
               (sha256
                (base32
-                "0674crxsmf1gwiacpi9ixypgz685fyzr5y3f9sd768b0bmh7ilsn"))))
+                "0yv2z2djbl7aq3fa9m3ihzv9i99a5ahsxz7dlzwvvf4a7pmhc6b2"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -1335,7 +1339,7 @@ borgmatic is powered by borg.")
            python-pyqt-without-qtwebkit
            python-secretstorage
            ;; This is included so that the qt-wrap phase picks it up.
-           qtsvg))
+           qtsvg-5))
     (home-page "https://github.com/borgbase/vorta")
     (synopsis "Graphical backup client based on BorgBackup")
     (description "Vorta is a graphical backup client based on the Borg backup

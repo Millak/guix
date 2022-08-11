@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Joshua Grant <tadni@riseup.net>
-;;; Copyright © 2014, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2018, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Sou Bunnbu <iyzsong@gmail.com>
@@ -78,7 +78,7 @@
                 "0hcdysw8ibr66vk8i7v56l0v5ijvhlq67v4460mc2xf2910g2m72"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules pkg-config qttools))
+     (list extra-cmake-modules pkg-config qttools-5))
     (inputs
      (list elogind
            glib
@@ -86,14 +86,14 @@
            libxkbcommon
            linux-pam
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            ;; Some user-defined themes use QtQuick components internally.  Adding
            ;; QtQuick & co. here; they end up in QML2_IMPORT_PATH thanks to
            ;; 'wrap-qt-program'.
            qtgraphicaleffects
-           qtquickcontrols
-           qtquickcontrols2
-           qtsvg
+           qtquickcontrols-5
+           qtquickcontrols2-5
+           qtsvg-5
            shadow
            wayland))
     (arguments
@@ -255,86 +255,84 @@ experience for your users, your family and yourself")
     (license license:gpl3+)))
 
 (define-public lightdm
-  ;; Use the latest commit, as the current official release doesn't build with
-  ;; glib >= 2.33.
-  (let ((revision "0")
-        (commit "b7fc3214cbaed09c73e963847443a0d648dfd896"))
-    (package
-      (name "lightdm")
-      (version (git-version "1.30.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/canonical/lightdm")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0378jacazpmdgdjkiilk3mbikz3iysb4s9q40hg9zv4yngwsix1m"))))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:parallel-tests? #f           ; fails when run in parallel
-         #:configure-flags
-         (list "--localstatedir=/var"
-               ;; Otherwise the test suite fails on such a warning.
-               "CFLAGS=-Wno-error=missing-prototypes")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "src/shared-data-manager.c"
-                 (("/bin/rm")
-                  (search-input-file inputs "bin/rm")))
-               (substitute* '("data/users.conf"
-                              "common/user-list.c")
-                 (("/bin/false")
-                  (search-input-file inputs "bin/false"))
-                 (("/usr/sbin/nologin")
-                  (search-input-file inputs "sbin/nologin")))
-               (substitute* "src/seat.c"
-                 (("/bin/sh")
-                  (search-input-file inputs "bin/sh")))))
-           (add-before 'check 'pre-check
-             ;; Run test-suite under a dbus session.
-             (lambda _
-               (wrap-program "tests/src/test-python-greeter"
-                 `("GUIX_PYTHONPATH"      ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))
-
-               ;; Avoid printing locale warnings, which trip up the text
-               ;; matching tests.
-               (unsetenv "LC_ALL"))))))
-      (inputs
-       (list audit
-             coreutils                  ;for cross-compilation
-             linux-pam
-             shadow                     ;for sbin/nologin
-             libgcrypt
-             libxcb))
-      (native-inputs
-       (list autoconf
-             automake
-             gobject-introspection
-             gtk-doc
-             pkg-config
-             itstool
-             intltool
-             libtool
-             vala                       ;for Vala bindings
-             ;; For tests
-             dbus
-             python-wrapper
-             python-pygobject
-             which
-             yelp-tools))
-      ;; Required by liblightdm-gobject-1.pc.
-      (propagated-inputs
-       (list glib libx11 libxklavier))
-      (home-page "https://www.freedesktop.org/wiki/Software/LightDM/")
-      (synopsis "Lightweight display manager")
-      (description "The Light Display Manager (LightDM) is a cross-desktop
+  (package
+    (name "lightdm")
+    (version "1.32.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/canonical/lightdm")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wr60c946p8jz9kb8zi4cd8d4mkcy7infbvlfzwajiglc22nblxn"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:parallel-tests? #f             ; fails when run in parallel
+       #:configure-flags
+       (list "--localstatedir=/var"
+             "--enable-gtk-doc"
+             ;; Otherwise the test suite fails on such a warning.
+             "CFLAGS=-Wno-error=missing-prototypes")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/shared-data-manager.c"
+               (("/bin/rm")
+                (search-input-file inputs "bin/rm")))
+             (substitute* '("data/users.conf"
+                            "common/user-list.c")
+               (("/bin/false")
+                (search-input-file inputs "bin/false"))
+               (("/usr/sbin/nologin")
+                (search-input-file inputs "sbin/nologin")))
+             (substitute* "src/seat.c"
+               (("/bin/sh")
+                (search-input-file inputs "bin/sh")))))
+         (add-before 'check 'pre-check
+           (lambda _
+             (wrap-program "tests/src/test-python-greeter"
+               `("GUIX_PYTHONPATH"      ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+               `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))
+             ;; Avoid printing locale warnings, which trip up the text
+             ;; matching tests.
+             (unsetenv "LC_ALL"))))))
+    (inputs
+     (list audit
+           bash-minimal                           ;for cross-compilation
+           coreutils-minimal                      ;ditto
+           linux-pam
+           shadow                       ;for sbin/nologin
+           libgcrypt
+           libxcb
+           libxdmcp))
+    (native-inputs
+     (list accountsservice
+           autoconf
+           automake
+           gobject-introspection
+           gtk-doc
+           pkg-config
+           itstool
+           intltool
+           libtool
+           vala                         ;for Vala bindings
+           ;; For tests
+           dbus
+           python-wrapper
+           python-pygobject
+           which
+           yelp-tools))
+    ;; Required by liblightdm-gobject-1.pc.
+    (propagated-inputs
+     (list glib libx11 libxklavier))
+    (home-page "https://www.freedesktop.org/wiki/Software/LightDM/")
+    (synopsis "Lightweight display manager")
+    (description "The Light Display Manager (LightDM) is a cross-desktop
 display manager which supports different greeters.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public lightdm-gtk-greeter
   (package
@@ -351,43 +349,51 @@ display manager which supports different greeters.")
                 "04q62mvr97l9gv8h37hfarygqc7p0498ig7xclcg4kxkqw0b7yxy"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--enable-at-spi-command="
-                            (assoc-ref %build-inputs "at-spi2-core")
-                            "/libexec/at-spi-bus-launcher"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'fix-.desktop-file
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* (string-append
-                             out "/share/xgreeters/lightdm-gtk-greeter.desktop")
-                 (("Exec=lightdm-gtk-greeter")
-                  (string-append "Exec=" out "/sbin/lightdm-gtk-greeter")))
-               #t)))
-         (add-after 'fix-.desktop-file 'wrap-program
-           ;; Mimic glib-or-gtk build system
-           ;; which doesn't wrap files in /sbin
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((gtk (assoc-ref inputs "gtk+")))
-               (wrap-program (string-append (assoc-ref outputs "out")
-                                            "/sbin/lightdm-gtk-greeter")
-                 `("XDG_DATA_DIRS" ":" prefix
-                   ,(cons "/run/current-system/profile/share"
-                          (map (lambda (pkg)
-                                 (string-append (assoc-ref inputs pkg) "/share"))
-                               '("gtk+" "shared-mime-info" "glib"))))
-                 `("GTK_PATH" ":" prefix (,gtk))
-                 `("GIO_EXTRA_MODULES" ":" prefix (,gtk))))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "--disable-indicator-services-command" ;requires upstart
+              (string-append "--enable-at-spi-command="
+                             (search-input-file
+                              %build-inputs "libexec/at-spi-bus-launcher")))
+
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'fix-.desktop-file
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* (search-input-file
+                            outputs
+                            "share/xgreeters/lightdm-gtk-greeter.desktop")
+                (("Exec=lightdm-gtk-greeter")
+                 (string-append "Exec="
+                                (search-input-file
+                                 outputs "sbin/lightdm-gtk-greeter"))))))
+          (add-after 'fix-.desktop-file 'wrap-program
+            ;; Mimic glib-or-gtk build system which doesn't wrap files in
+            ;; /sbin.
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (let ((gtk #$(this-package-input "gtk+"))
+                    (shared-mime-info #$(this-package-input "shared-mime-info"))
+                    (glib #$(this-package-input "glib")))
+                (wrap-program (search-input-file
+                               outputs "sbin/lightdm-gtk-greeter")
+                  `("XDG_DATA_DIRS" ":" prefix
+                    ,(cons "/run/current-system/profile/share"
+                           (map (lambda (pkg)
+                                  (string-append pkg "/share"))
+                                (list gtk shared-mime-info glib))))
+                  `("GTK_PATH" ":" prefix (,gtk))
+                  `("GIO_EXTRA_MODULES" ":" prefix (,gtk))
+                  '("XCURSOR_PATH" ":" prefix
+                    ("/run/current-system/profile/share/icons")))))))))
     (native-inputs
      (list exo intltool pkg-config xfce4-dev-tools))
     (inputs
-     `(("bash" ,bash-minimal) ; for wrap-program
-       ("lightdm" ,lightdm)
-       ("shared-mime-info" ,shared-mime-info)
-       ("at-spi2-core" ,at-spi2-core)
-       ("gtk+" ,gtk+)))
+     (list bash-minimal                 ;for wrap-program
+           lightdm
+           shared-mime-info
+           at-spi2-core
+           glib
+           gtk+))
     (synopsis "GTK+ greeter for LightDM")
     (home-page "https://github.com/xubuntu/lightdm-gtk-greeter")
     (description "This package provides a LightDM greeter implementation using

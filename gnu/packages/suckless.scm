@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -122,7 +123,7 @@ terminal like @code{st}.")
     (synopsis "Tab interface for application supporting Xembed")
     (description "Tabbed is a generic tabbed frontend to xembed-aware
 applications.  It was originally designed for surf but also usable with many
-other applications, i.e. st, uzbl, urxvt and xterm.")
+other applications, i.e., st, uzbl, urxvt and xterm.")
     (license
      ;; Dual-licensed.
      (list
@@ -1180,3 +1181,39 @@ import and export OPML and to fetch, filter, merge and order feed items.")
 pipe and compress.")
       (home-page "https://git.suckless.org/farbfeld/")
       (license license:isc))))
+
+(define-public svkbd
+  (package
+    (name "svkbd")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://dl.suckless.org/tools/svkbd-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0nhgmr38pk1a8zrcrxd1ygh0m843a3bdchkv8phl508x7vy63hpv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (substitute* "config.mk"
+                     (("/usr/local") #$output)
+                     (("/usr/X11R6") #$libx11)
+                     (("/usr/include/freetype2") (string-append #$freetype
+                                                  "/include/freetype2")))))
+               (delete 'configure)))) ;no configure script
+    (native-inputs (list pkg-config))
+    (inputs (list freetype libx11 libxft libxtst libxinerama))
+    (propagated-inputs (list glibc-utf8-locales))
+    (home-page "https://tools.suckless.org/x/svkbd/")
+    (synopsis "Virtual on-screen keyboard")
+    (description "svkbd is a simple virtual keyboard, intended to be used in
+environments, where no keyboard is available.")
+    (license license:expat)))

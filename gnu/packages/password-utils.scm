@@ -165,7 +165,7 @@ human.")
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-qt-program "keepassxc" #:output #$output #:inputs inputs))))))
     (native-inputs
-     (list qttools ruby-asciidoctor))
+     (list qttools-5 ruby-asciidoctor))
     (inputs
      (list argon2
            botan
@@ -179,7 +179,7 @@ human.")
            pcsc-lite
            qrencode
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            quazip-0                     ; XC_KEESHARE
            readline
@@ -697,9 +697,9 @@ key URIs using the standard otpauth:// scheme.")
              (setenv "QT_QPA_PLATFORM" "offscreen")
              #t)))))
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
-     (list qtbase-5 qtsvg))
+     (list qtbase-5 qtsvg-5))
     (home-page "https://qtpass.org")
     (synopsis "GUI for password manager password-store")
     (description

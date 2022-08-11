@@ -152,15 +152,6 @@
                                                   (guix combinators)))))
                     %base-services))))
 
-(define (operating-system-with-current-guix os)
-  "Return a variant of OS that uses the current Guix."
-  (operating-system
-    (inherit os)
-    (services (modify-services (operating-system-user-services os)
-                (guix-service-type config =>
-                                   (guix-configuration
-                                    (inherit config)
-                                    (guix (current-guix))))))))
 
 
 (define MiB (expt 2 20))
@@ -232,8 +223,7 @@ reboot\n")
                              ;; Since the image has no network access, use the
                              ;; current Guix so the store items we need are in
                              ;; the image and add packages provided.
-                             (inherit (operating-system-with-current-guix
-                                       installation-os))
+                             (inherit installation-os)
                              (kernel-arguments '("console=ttyS0")))
                            #:imported-modules '((gnu services herd)
                                                 (gnu installer tests)
@@ -1865,8 +1855,7 @@ build (current-guix) and then store a couple of full system images.")
    (operating-system
      (inherit (operating-system-with-console-syslog
                (operating-system-add-packages
-                (operating-system-with-current-guix
-                 installation-os)
+                installation-os
                 %extra-packages)))
      (kernel-arguments '("console=ttyS0")))
    #:imported-modules '((gnu services herd)

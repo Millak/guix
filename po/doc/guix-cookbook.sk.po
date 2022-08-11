@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-07-09 07:59+0000\n"
-"PO-Revision-Date: 2022-04-04 15:17+0000\n"
+"PO-Revision-Date: 2022-07-25 16:19+0000\n"
 "Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/sk/>\n"
 "Language: sk\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -1990,7 +1990,7 @@ msgstr "@code{(delete @var{krok})}."
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1106
 msgid "The @var{procedure} supports the keyword arguments @code{inputs} and @code{outputs}.  Each input (whether @emph{native}, @emph{propagated} or not) and output directory is referenced by their name in those variables.  Thus @code{(assoc-ref outputs \"out\")} is the store directory of the main output of the package.  A phase procedure may look like this:"
-msgstr "@var{Funkcia} podporuje parametre @code{inputs} a @code{outputs} v tvare kľúčových slov.  Každý vstup (či už @emph{pôvodný}, @emph{rozšírený} alebo nie) a výstupný priečinok je označený svojim názvom v týchto premenných.  Takže @code{(assoc-ref outputs \"out\")} predstavuje priečinok úložiska hlavného výstupu balíka.  Funkcia kroku vyzerá nasledovne:"
+msgstr "@var{Funkcia} prijíma parametre @code{inputs} a @code{outputs} v tvare kľúčových slov.  Každý vstup (či už @emph{pôvodný}, @emph{rozšírený} alebo nie) a výstupný priečinok je označený svojim názvom v týchto premenných.  Takže @code{(assoc-ref outputs \"out\")} predstavuje priečinok úložiska hlavného výstupu balíka.  Funkcia kroku vyzerá nasledovne:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1114

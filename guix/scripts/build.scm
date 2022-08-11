@@ -373,8 +373,19 @@ use '--no-offload' instead~%")))
                        (first (member arg (targets))))))
                (if t
                    (apply values (alist-cons 'target t result) rest)
-                   (leave (G_ "'~a' is not a supported target~%")
-                          arg)))))))
+                   (let ((closest (string-closest arg (targets)
+                                                  #:threshold 5)))
+                     (report-error
+                      (G_ "'~a' is not a supported cross-compilation target~%")
+                      arg)
+                     (if closest
+                         (display-hint
+                          (format #f (G_ "Did you mean @code{~a}?
+Try @option{--list-targets} to view available targets.~%")
+                                  closest))
+                         (display-hint (G_ "\
+Try @option{--list-targets} to view available targets.~%")))
+                     (exit 1))))))))
 
 (define %standard-native-build-options
   ;; Build options related to native builds.
@@ -389,8 +400,18 @@ use '--no-offload' instead~%")))
                        (first (member arg (systems))))))
                (if s
                    (apply values (alist-cons 'system s result) rest)
-                   (leave (G_ "'~a' is not a supported system~%")
-                          arg)))))))
+                   (let ((closest (string-closest arg (systems)
+                                                  #:threshold 5)))
+                     (report-error (G_ "'~a' is not a supported system~%")
+                                   arg)
+                     (if closest
+                         (display-hint
+                          (format #f (G_ "Did you mean @code{~a}?
+Try @option{--list-systems} to view available system types.~%")
+                                  closest))
+                         (display-hint (G_ "\
+Try @option{--list-systems} to view available system types.~%")))
+                     (exit 1))))))))
 
 
 ;;;

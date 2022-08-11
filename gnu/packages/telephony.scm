@@ -120,7 +120,7 @@
     (native-inputs
      (list automake autoconf pkg-config))
     (inputs
-     (list qtbase-5 qtdeclarative))
+     (list qtbase-5 qtdeclarative-5))
     (synopsis "Phone Simulator for modem testing")
     (description
      "Phonesim is a modem emulator that oFono uses for development and
@@ -646,14 +646,14 @@ address of one of the participants.")
            protobuf
            pulseaudio
            qtbase-5
-           qtsvg
+           qtsvg-5
            speech-dispatcher
            speex ; avoid bundled
            speexdsp ; avoid bundled
            ;; xiph-rnnoise ; TODO: unbundle rnnoise
            ))
     (native-inputs
-     (list pkg-config python qttools))
+     (list pkg-config python qttools-5))
     (synopsis "Low-latency, high quality voice chat software")
     (description
      "Mumble is an low-latency, high quality voice chat
@@ -695,7 +695,7 @@ Mumble consists of two applications for separate usage:
         "-DWITH_G729=On"                ; For G729 Codec Support
         "-DWITH_SPEEX=On")))            ; For Speex Codec Support
     (native-inputs
-     (list bison flex qttools))
+     (list bison flex qttools-5))
     (inputs
      (list alsa-lib
            bcg729
@@ -706,8 +706,8 @@ Mumble consists of two applications for separate usage:
            libsndfile
            libxml2
            qtbase-5
-           qtdeclarative
-           qtquickcontrols
+           qtdeclarative-5
+           qtquickcontrols-5
            readline
            speex
            speexdsp

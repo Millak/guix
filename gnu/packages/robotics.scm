@@ -118,8 +118,8 @@ hundred times faster than real-time.")
              enki
              protobuf-3.5 ;for logging
              qtbase-5
-             qtsvg
-             qttools ;for libQt5Help, needed by "studio"
+             qtsvg-5
+             qttools-5 ;for libQt5Help, needed by "studio"
              qtwebkit
              qtx11extras
              eudev

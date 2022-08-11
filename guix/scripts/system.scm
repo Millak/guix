@@ -91,7 +91,6 @@
   #:use-module (ice-9 match)
   #:use-module (rnrs bytevectors)
   #:export (guix-system
-            read-operating-system
 
             service-node-type
             shepherd-service-node-type))
@@ -106,10 +105,6 @@
   (make-user-module '((gnu system)
                       (gnu services)
                       (gnu system shadow))))
-
-(define (read-operating-system file)
-  "Read the operating-system declaration from FILE and return it."
-  (load* file %user-module))
 
 
 ;;;

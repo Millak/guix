@@ -843,7 +843,7 @@ and video calls or instant messaging capabilities to an application.")
                (symlink (string-append liblinphone "/share/belr/grammars")
                         grammar-dest)))))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list bctoolbox
            belcard
@@ -852,11 +852,11 @@ and video calls or instant messaging capabilities to an application.")
            mediastreamer2
            ortp
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
-           qtquickcontrols
-           qtquickcontrols2
-           qtsvg))
+           qtquickcontrols-5
+           qtquickcontrols2-5
+           qtsvg-5))
     (synopsis "Desktop client for the Linphone SIP softphone")
     (description "Linphone is a SIP softphone for voice and video over IP calling
 (VoIP) and instant messaging.  Amongst its features are:

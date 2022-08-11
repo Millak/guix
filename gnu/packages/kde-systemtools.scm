@@ -346,7 +346,7 @@ This package is part of the KDE administration module.")
            kwidgetsaddons
            kwindowsystem
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras))
     (home-page "https://www.kde.org/applications/system/yakuake/")
     (synopsis "Quad-style terminal emulator for KDE")

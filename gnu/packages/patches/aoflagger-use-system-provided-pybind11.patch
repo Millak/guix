@@ -1,0 +1,38 @@
+This patch was borrowed from Debian's package:
+https://salsa.debian.org/debian-astro-team/aoflagger/-/blob/0484ef75a663e3e07738550cdade46f433a53dac/debian/patches/Use-system-provided-pybind11.patch
+Description: Use system provided pybind11
+Author: Ole Streicher <olebole@debian.org>
+Origin: Debian
+Last-Update: Mon, 30 Aug 2021 11:05:37 +0200
+---
+ CMakeLists.txt | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 655ea5e..824ee2a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -62,11 +62,6 @@ foreach(ExternalSubmodule IN LISTS ExternalSubmoduleDirectories)
+   endif()
+ endforeach()
+ 
+-# Include aocommon/pybind11 headers
+-include_directories("${CMAKE_SOURCE_DIR}/external/aocommon/include")
+-add_subdirectory("${CMAKE_SOURCE_DIR}/external/pybind11")
+-include_directories(SYSTEM ${pybind11_INCLUDE_DIR})
+-
+ find_package(
+   HDF5
+   COMPONENTS C CXX
+@@ -101,6 +96,11 @@ find_package(PythonInterp REQUIRED)
+ message(STATUS "Using python version ${PYTHON_VERSION_STRING}")
+ include_directories(SYSTEM ${PYTHON_INCLUDE_DIRS})
+ 
++# Include pybind11 headers
++find_package(pybind11 REQUIRED)
++include_directories("${CMAKE_SOURCE_DIR}/external/aocommon/include")
++include_directories(${pybind11_INCLUDE_DIR})
++
+ # boost::alignment requires Boost 1.56
+ find_package(Boost 1.56.0 REQUIRED COMPONENTS date_time filesystem system
+                                               unit_test_framework)

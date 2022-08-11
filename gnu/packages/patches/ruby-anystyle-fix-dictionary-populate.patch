@@ -1,0 +1,94 @@
+From fae622c8b77feebac66a538d76e4211de8bd8eb3 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Sun, 24 Jul 2022 21:50:44 -0400
+Subject: [PATCH] fix saving `AnyStyle::Dictionary` after `populate!`
+
+Some of these fixes are more generally applicable.
+
+A more robust solution might find data files using
+e.g. `Gem.find_files()`.
+---
+ lib/anystyle/dictionary/gdbm.rb    |  6 ++++++
+ lib/anystyle/dictionary/marshal.rb | 31 ++++++++++++++++++++++++------
+ 2 files changed, 31 insertions(+), 6 deletions(-)
+
+diff --git a/lib/anystyle/dictionary/gdbm.rb b/lib/anystyle/dictionary/gdbm.rb
+index 754903c..c814df2 100644
+--- a/lib/anystyle/dictionary/gdbm.rb
++++ b/lib/anystyle/dictionary/gdbm.rb
+@@ -1,5 +1,6 @@
+ module AnyStyle
+   require 'gdbm'
++  require 'fileutils'
+ 
+   class Dictionary
+     class GDBM < Dictionary
+@@ -17,8 +18,13 @@ module AnyStyle
+ 
+       def open
+         close
++        FileUtils.mkdir_p(File.dirname(options[:path]))
+         @db = ::GDBM.new(*options.values_at(:path, :mode, :flags))
+         self
++      rescue Errno::EACCES
++        # GDBM.new tries this if :flags is nil, but not necessarily otherwise
++        @db = ::GDBM.new(options[:path],options[:mode],::GDBM::READER)
++        self
+       ensure
+         populate! if empty?
+       end
+diff --git a/lib/anystyle/dictionary/marshal.rb b/lib/anystyle/dictionary/marshal.rb
+index 761ca36..b9529d0 100644
+--- a/lib/anystyle/dictionary/marshal.rb
++++ b/lib/anystyle/dictionary/marshal.rb
+@@ -1,4 +1,6 @@
+ module AnyStyle
++  require 'fileutils'
++  require 'tempfile'
+   class Dictionary
+     class Marshal < Dictionary
+       @defaults = {
+@@ -10,17 +12,34 @@ module AnyStyle
+       end
+ 
+       def open
+-        if File.exists?(options[:path])
+-          @db = ::Marshal.load(File.open(options[:path]))
+-        else
+-          @db = {}
++        File.open(options[:path]) do |file|
++          @db = ::Marshal.load(file)
+         end
+         self
++      rescue Errno::ENOENT
++        @db = {}
++        self
+       ensure
+         if empty?
+           populate!
+-          if File.writable?(options[:path])
+-            ::Marshal.dump(db, File.open(options[:path], 'wb'))
++          tmp = nil
++          begin
++            FileUtils.mkdir_p(File.dirname(options[:path]))
++            tmp = Tempfile.create(File.basename(options[:path]),
++                                  File.dirname(options[:path]),
++                                  mode: File::Constants::BINARY)
++            pth = tmp.path()
++            ::Marshal.dump(db, tmp)
++            tmp.close()
++            File.rename(tmp.path, options[:path]) # will overwrite if exists
++            tmp = nil
++          rescue SystemCallError => e
++            warn(e.message)
++          ensure
++            if tmp then
++              tmp.close()
++              tmp.unlink()
++            end
+           end
+         end
+       end
+-- 
+2.32.0
+

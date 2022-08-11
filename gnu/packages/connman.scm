@@ -165,7 +165,7 @@ sharing) to clients via USB, ethernet, WiFi, cellular and Bluetooth.")
     (inputs
      (list qtbase-5))
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (build-system gnu-build-system)
     (arguments
      '(#:phases

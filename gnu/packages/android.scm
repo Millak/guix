@@ -34,6 +34,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system android-ndk)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
@@ -54,6 +55,8 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
@@ -1268,3 +1271,30 @@ Dalvik VM.  Their bytecode differs from the bytecode of normal Java
 applications.  Enjarify can translate the Dalvik bytecode back to equivalent
 Java bytecode, which simplifies the analysis of Android applications.")
     (license license:asl2.0)))
+
+(define-public android-file-transfer
+  (package
+    (name "android-file-transfer")
+    (version "4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/whoozle/android-file-transfer-linux/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "125rq8ji83nw6chfw43i0h9c38hjqh1qjibb0gnf9wrigar9zc8b"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ;there are no tests
+    (inputs (list qtbase-5 fuse-3 libxkbcommon))
+    (native-inputs (list qttools-5 openssl readline))
+    (home-page "https://whoozle.github.io/android-file-transfer-linux/")
+    (synopsis "MTP client for Android devices")
+    (description
+     "This package provides a Qt graphical interface for transferring files
+with Android devices using MTP.  It also allows the Android device to be
+mounted via FUSE.")
+    (license license:lgpl2.1+)))

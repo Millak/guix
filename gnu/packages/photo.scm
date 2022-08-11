@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2017 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -347,7 +347,7 @@ and a wide variety of other metadata.")
 (define-public libpano13
   (package
     (name "libpano13")
-    (version "2.9.20_rc3")
+    (version "2.9.21")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/panotools/libpano13/"
@@ -356,8 +356,10 @@ and a wide variety of other metadata.")
                                   "/libpano13-" version ".tar.gz"))
               (sha256
                (base32
-                "12cv4886l1czfjwy7k6ipgf3zjksgwhdjzr2s9fdg33vqcv2hlrv"))))
+                "141mccp4klj0qdpvki97q5wjf5a1b7pj09s6c4lmwc4r452s3rbr"))))
     (build-system cmake-build-system)
+    (native-inputs
+     (list perl))                       ; for pod2man
     (inputs
      (list libjpeg-turbo libpng libtiff zlib))
     (home-page "http://panotools.sourceforge.net/")
@@ -607,7 +609,7 @@ and enhance them.")
                        (string-append "PREFIX=" out)
                        "Photoflare.pro")))))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list graphicsmagick libomp qtbase-5))
     (home-page "https://photoflare.io")
@@ -688,7 +690,7 @@ off' shooting directly from the controlling computer.")
 (define-public hugin
   (package
     (name "hugin")
-    (version "2020.0.0")
+    (version "2021.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hugin/hugin/hugin-"
@@ -696,32 +698,31 @@ off' shooting directly from the controlling computer.")
                                   "/hugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1jyazc0mbr9g7vrichpqqnfl72lj21244csk0z5i8ycs4l0pcgi8"))))
+                "1ngadsv22ii05kmvpzdivhwlks4pnv9ijz7j9srl8y54gy5flyh4"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
-     `(("boost" ,boost)
-       ("enblend-enfuse" ,enblend-enfuse)
-       ("exiv2" ,exiv2)
-       ("fftw" ,fftw)
-       ("flann" ,flann)
-       ("freeglut" ,freeglut)
-       ("glew" ,glew)
-       ("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpano13" ,libpano13)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libxi" ,libxi)
-       ("libxmu" ,libxmu)
-       ("mesa" ,mesa)
-       ("openexr" ,openexr-2)
-       ("sqlite" ,sqlite)
-       ("vigra" ,vigra)
-       ("wxwidgets" ,wxwidgets)
-       ("zlib" ,zlib)))
+     (list boost
+           enblend-enfuse
+           exiv2
+           fftw
+           flann
+           freeglut
+           glew
+           lcms
+           libjpeg-turbo
+           libpano13
+           libpng
+           libtiff
+           libxi
+           libxmu
+           mesa
+           openexr-2
+           sqlite
+           vigra
+           wxwidgets
+           zlib))
     (arguments
      `(#:tests? #f                      ; no check target
        #:configure-flags
@@ -745,8 +746,7 @@ off' shooting directly from the controlling computer.")
                (("wxT\\(\"enblend\"\\)")
                 (string-append "wxT(\"" (which "enblend") "\")"))
                (("wxT\\(\"enfuse\"\\)")
-                (string-append "wxT(\"" (which "enfuse") "\")")))
-             #t)))))
+                (string-append "wxT(\"" (which "enfuse") "\")"))))))))
     (home-page "http://hugin.sourceforge.net/")
     (synopsis "Panorama photo stitcher")
     (description

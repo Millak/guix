@@ -1273,87 +1273,89 @@ pretty simple, REST API.")
 (define-public libvirt
   (package
     (name "libvirt")
-    (version "7.9.0")
+    (version "8.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/libvirt-"
                            version ".tar.xz"))
        (sha256
-        (base32 "131fyxb05rrcr9ih4mhhjyw3cgsxh5l12vj4y109q9vlynsz5742"))
+        (base32 "1qisvbshbcd5305mrb4vni559k52id7c8iw4dwdydbf97b24f658"))
        (patches (search-patches "libvirt-add-install-prefix.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-Ddriver_qemu=enabled"
-             "-Dqemu_user=nobody"
-             "-Dqemu_group=kvm"
-             "-Dstorage_disk=enabled"
-             "-Dstorage_dir=enabled"
-             "-Dpolkit=enabled"
-             ;; XXX The default, but required to make -Dsasl ‘stick’.
-             ;; See <https://gitlab.com/libvirt/libvirt/-/issues/185>
-             "-Ddriver_remote=enabled"
-             "-Dnls=enabled"            ;translations
-             (string-append "-Ddocdir=" (assoc-ref %outputs "out") "/share/doc/"
-                            ,name "-" ,version)
-             "-Dbash_completion=enabled"
-             (string-append "-Dinstall_prefix=" (assoc-ref %outputs "out"))
-             "--sysconfdir=/etc"
-             "--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-directory-confusion
-           (lambda _
-             ;; Don't try to install an (unused) /var outside of the store.
-             (substitute* "scripts/meson-install-dirs.py"
-               (("destdir = .*")
-                "destdir = '/tmp'"))))
-         (add-before 'configure 'disable-broken-tests
-           (lambda _
-             (let ((tests (list "commandtest"           ; hangs idly
-                                "qemuxml2argvtest"      ; fails
-                                "virnetsockettest")))   ; tries to network
-               (substitute* "tests/meson.build"
-                 (((format #f ".*'name': '(~a)'.*" (string-join tests "|")))
-                  ""))))))))
+     (list
+      #:configure-flags
+      #~(list "-Ddriver_qemu=enabled"
+              "-Dqemu_user=nobody"
+              "-Dqemu_group=kvm"
+              "-Dstorage_disk=enabled"
+              "-Dstorage_dir=enabled"
+              "-Dpolkit=enabled"
+              ;; XXX The default, but required to make -Dsasl ‘stick’.
+              ;; See <https://gitlab.com/libvirt/libvirt/-/issues/185>
+              "-Ddriver_remote=enabled"
+              "-Dnls=enabled"           ;translations
+              (string-append "-Ddocdir=" #$output "/share/doc/"
+                             #$(package-name this-package) "-"
+                             #$(package-version this-package))
+              "-Dbash_completion=enabled"
+              (string-append "-Dinstall_prefix=" #$output)
+              "--sysconfdir=/etc"
+              "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-directory-confusion
+            (lambda _
+              ;; Don't try to install an (unused) /var outside of the store.
+              (substitute* "scripts/meson-install-dirs.py"
+                (("destdir = .*")
+                 "destdir = '/tmp'"))))
+          (add-before 'configure 'disable-broken-tests
+            (lambda _
+              (let ((tests (list "commandtest"         ; hangs idly
+                                 "qemuxml2argvtest"    ; fails
+                                 "virnetsockettest"))) ; tries to network
+                (substitute* "tests/meson.build"
+                  (((format #f ".*'name': '(~a)'.*" (string-join tests "|")))
+                   ""))))))))
     (inputs
-     `(("acl" ,acl)
-       ("attr" ,attr)
-       ("fuse" ,fuse)
-       ("libxml2" ,libxml2)
-       ("eudev" ,eudev)
-       ("libpciaccess" ,libpciaccess)
-       ("gnutls" ,gnutls)
-       ("dbus" ,dbus)
-       ("libpcap" ,libpcap)
-       ("libnl" ,libnl)
-       ("libssh2" ,libssh2)             ;optional
-       ("libtirpc" ,libtirpc)           ;for <rpc/rpc.h>
-       ("libuuid" ,util-linux "lib")
-       ("lvm2" ,lvm2)                   ;for libdevmapper
-       ("curl" ,curl)
-       ("openssl" ,openssl)
-       ("readline" ,readline)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("libyajl" ,libyajl)
-       ("audit" ,audit)
-       ("dmidecode" ,dmidecode)
-       ("dnsmasq" ,dnsmasq)
-       ("ebtables" ,ebtables)
-       ("parted" ,parted)
-       ("iproute" ,iproute)
-       ("iptables" ,iptables)))
+     (list acl
+           attr
+           fuse
+           libxml2
+           eudev
+           libpciaccess
+           gnutls
+           dbus
+           libpcap
+           libnl
+           libssh2                      ;optional
+           libtirpc                     ;for <rpc/rpc.h>
+           `(,util-linux "lib")
+           lvm2                         ;for libdevmapper
+           curl
+           openssl
+           readline
+           cyrus-sasl
+           libyajl
+           audit
+           dmidecode
+           dnsmasq
+           ebtables
+           parted
+           iproute
+           iptables))
     (native-inputs
-     `(("bash-completion" ,bash-completion)
-       ("gettext" ,gettext-minimal)
-       ("xsltproc" ,libxslt)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("polkit" ,polkit)
-       ("python" ,python-wrapper)
-       ("python-docutils" ,python-docutils) ;for rst2html
-       ("rpcsvc-proto" ,rpcsvc-proto)))     ;for rpcgen
+     (list bash-completion
+           gettext-minimal
+           libxslt
+           perl
+           pkg-config
+           polkit
+           python-wrapper
+           python-docutils              ;for rst2html
+           rpcsvc-proto))               ;for rpcgen
     (home-page "https://libvirt.org")
     (synopsis "Simple API for virtualization")
     (description "Libvirt is a C toolkit to interact with the virtualization
@@ -1400,27 +1402,15 @@ three libraries:
 (define-public python-libvirt
   (package
     (name "python-libvirt")
-    (version "7.9.0")
+    (version "8.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/python/libvirt-python-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0nakisj2ady5a41k4zc95k0kp749f4ppmxgr91b1h1dzbzxcydc5"))))
+        (base32 "0wa86jliq71x60dd4vyzsj4lcrb82i5qsgxz9azvwgsgi9j9mx41"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               ;; No reason to explicity invoke Python on a wrapped pytest.
-               (substitute* "setup.py"
-                 (("sys\\.executable, pytest") "pytest"))
-               (add-installed-pythonpath inputs outputs)
-               (setenv "LIBVIRT_API_COVERAGE" "whynot")
-               (invoke "python" "setup.py" "test")))))))
     (inputs
      (list libvirt))
     (propagated-inputs
@@ -1431,6 +1421,8 @@ three libraries:
     (synopsis "Python bindings to libvirt")
     (description "This package provides Python bindings to the libvirt
 virtualization library.")
+    (properties
+     '((upstream-name . "libvirt-python")))
     (license license:lgpl2.1+)))
 
 (define-public virt-manager

@@ -75,7 +75,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "219")
+    (version "220")
     (source
      (origin
        (method git-fetch)
@@ -84,7 +84,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n6dn53paxi1316fnv5abw5rlvpfd2kpfn3b08wfzrcb6chsx7br"))
+        (base32 "0lkwbyf1z93skgqp1w4p0d7y8wwqf0bs53i43micwaq8p8xjs1ph"))
        (patches
         (search-patches "diffoscope-fix-llvm-test.patch"))))
     (build-system python-build-system)
@@ -246,7 +246,7 @@ install.")
 (define-public reprotest
   (package
     (name "reprotest")
-    (version "0.7.20")
+    (version "0.7.21")
     (source
      (origin
        (method git-fetch)
@@ -256,7 +256,7 @@ install.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0c3nyiha9gh1xzl0dn9ji2yqa8y06d83v84pz0dqanihm40ljjsm"))))
+         "1jmnp6dwd91w00vfvph89cvgxwk0nvij8his9az5b72265jf9bxz"))))
     (inputs
      (list python-debian python-distro python-libarchive-c python-rstr))
     (native-inputs

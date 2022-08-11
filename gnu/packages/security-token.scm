@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,13 +56,14 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
-  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages cyrus-sasl)
@@ -119,8 +121,7 @@ readers and is needed to communicate with such devices through the
 (define-public eid-mw
   (package
     (name "eid-mw")
-    ;; When updating, remove the short-lived libbsd input and module import!
-    (version "5.0.28")
+    (version "5.1.6")
     (source
      (origin
        (method git-fetch)
@@ -129,20 +130,19 @@ readers and is needed to communicate with such devices through the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fmpdx09a60ndbsvy3m6w77naqy3j6k2ydq6jdcmdvxnr31z7fmf"))))
+        (base32 "19sq9bs1580zrjw0cxykdvrm1rwfw8n0vbvy9kdjnykjjnb7g6g1"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("autoconf-archive" ,autoconf-archive)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("libassuan" ,libassuan)
-       ("pkg-config" ,pkg-config)
-       ("perl" ,perl)))
+     (list autoconf
+           autoconf-archive
+           automake
+           gettext-minimal
+           libassuan
+           libtool
+           perl
+           pkg-config))
     (inputs
      (list curl
-           libbsd
            openssl
            gtk+
            pcsc-lite
@@ -762,7 +762,7 @@ an unprivileged user.")
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags (list "-DBUILD_TESTING=on")))
-    (native-inputs (list pkg-config qttools))
+    (native-inputs (list pkg-config qttools-5))
     (inputs (list catch-framework2))
     (home-page "https://github.com/tplgy/cppcodec")
     (synopsis "Header library to encode/decode base64, base64url, etc.")
@@ -786,13 +786,13 @@ base64url, base32, base32hex and hex.")
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ;no test suite
-    (native-inputs (list pkg-config qttools))
+    (native-inputs (list pkg-config qttools-5))
     (inputs (list cppcodec
                   hidapi
                   libnitrokey
                   libusb
                   qtbase-5
-                  qtsvg))
+                  qtsvg-5))
     (home-page "https://github.com/Nitrokey/nitrokey-app")
     (synopsis "GUI tool for Nitrokey devices")
     (description
@@ -856,14 +856,14 @@ devices.")
 
     (build-system cmake-build-system)
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list qtbase-5
-           qtsvg
-           qtdeclarative
-           qtwebsockets
+           qtsvg-5
+           qtdeclarative-5
+           qtwebsockets-5
            qtgraphicaleffects
-           qtquickcontrols2
+           qtquickcontrols2-5
            pcsc-lite
            openssl))
     (arguments
@@ -922,3 +922,48 @@ and assertion signatures.
 libfido2 supports the FIDO U2F (CTAP 1) and FIDO 2.0 (CTAP 2) protocols.")
     (license license:bsd-2)
     (home-page "https://github.com/Yubico/libfido2")))
+
+(define-public cardpeek
+  (package
+    (name "cardpeek")
+    (version "0.8.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/L1L1/cardpeek")
+                    (commit (string-append "cardpeek-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ighpl7nvcvwnsd6r5h5n9p95kclwrq99hq7bry7s53yr57l6588"))))
+    (inputs (list curl
+                  gtk+
+                  lua-5.2
+                  openssl
+                  pcsc-lite
+                  readline))
+    (native-inputs (list autoconf
+                         automake
+                         `(,glib "bin") ;for glib-compile-resources
+                         libtool
+                         pkg-config))
+    (build-system gnu-build-system)
+    (synopsis "Tool to read the contents of various smart cards")
+    (description
+     "Cardpeek is a graphical tool to read the contents of ISO7816 smart cards.
+It is extensible with the LUA scripting language.
+
+It supports the following type of cards:
+@itemize
+@item Bank cards (VISA, MasterCard, CB and UK Post Office Account cards)
+@item Passports and the Belgian identity card
+@item Transport cards (Navigo, MOBIB, RavKav and VIVA cards)
+@item Older GSM SIM cards without USIM data
+@item Vitale 2 Health card
+@item Moneo Electronic purse card
+@item Driver Tachograph cards
+@item OpenPGP Cards (beta)
+@end itemize
+It also has limited support for Mifare Classic compatible cards (Thalys card)")
+    (license license:gpl3+)
+    (home-page "http://pannetrat.com/Cardpeek")))

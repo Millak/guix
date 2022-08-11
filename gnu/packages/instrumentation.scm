@@ -18,13 +18,17 @@
 
 (define-module (gnu packages instrumentation)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages commencement)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages engineering)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages libunwind)
@@ -289,6 +293,60 @@ daemon @code{lttng-sessiond} that acts as a tracing registry, the @command{lttng
 line for tracing control, a @code{lttng-ctl} library for tracing control and a
 @code{lttng-relayd} for network streaming.")
     (license (list  license:gpl2 license:lgpl2.1))))
+
+(define-public perf-tools
+  (package
+    (name "perf-tools")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/brendangregg/perf-tools")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1ab735idi0h62yvhzd7822jj3555vygixv4xjrfrdvi8d2hhz6qn"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       ',(append
+          (map (cut list <> "bin/")
+               '("disk/bitesize"
+                 "fs/cachestat"
+                 "execsnoop"
+                 "kernel/funccount"
+                 "kernel/funcgraph"
+                 "kernel/funcslower"
+                 "kernel/functrace"
+                 "iolatency"
+                 "iosnoop"
+                 "killsnoop"
+                 "kernel/kprobe"
+                 "opensnoop"
+                 "misc/perf-stat-hist"
+                 "tools/reset-ftrace"
+                 "syscount"
+                 "net/tcpretrans"
+                 "system/tpoint"
+                 "user/uprobe"))
+          '(("man/man8/" "share/man/man8")))))
+    (propagated-inputs
+     (list
+      bash
+      coreutils                         ; cat + rm
+      gawk
+      gcc-toolchain                     ; objdump + ldconfig
+      file
+      perf
+      perl
+      procps                            ; sysctl
+      which))
+    (home-page "https://github.com/brendangregg/perf-tools")
+    (synopsis "Performance analysis tools")
+    (description "Perf-tools is a collection of scripts for performance
+analysis and instrumentation based on Linux perf_events (aka perf) and
+ftrace.")
+    (license (list license:gpl2))))
 
 (define-public uftrace
   (package

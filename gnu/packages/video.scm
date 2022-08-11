@@ -339,7 +339,7 @@ efficiency.")
 (define-public mediasdk
   (package
     (name "mediasdk")
-    (version "20.1.1")
+    (version "22.4.4")
     (source
      (origin
        (method git-fetch)
@@ -349,29 +349,33 @@ efficiency.")
          (commit (string-append "intel-" name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0blwcxr5j8762nylx2cxrq0h53bpgnk859dbs6crq4wr9fcxlx9z"))))
+        (base32 "18mrqringyv1drswm4m8ppw7sks6x4jzp6s0ag0h9hrpd15kn5rx"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        "-DENABLE_X11=ON"
-        "-DENABLE_X11_DRI3=ON"
-        "-DENABLE_WAYLAND=ON"
-        "-DENABLE_TEXTLOG=ON"
-        "-DENABLE_STAT=ON"
-        "-DBUILD_TESTS=ON"
-        "-DBUILD_TOOLS=ON"
-        (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
-                       (assoc-ref %outputs "out") "/lib"))))
+     (list
+      #:configure-flags
+      #~(list
+         "-DENABLE_X11=ON"
+         "-DENABLE_X11_DRI3=ON"
+         "-DENABLE_WAYLAND=ON"
+         "-DENABLE_TEXTLOG=ON"
+         "-DENABLE_STAT=ON"
+         "-DBUILD_TESTS=ON"
+         "-DBUILD_TOOLS=ON"
+         (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
+                        #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-embed-kernel-version
+            (lambda _
+              (substitute* "builder/FindGlobals.cmake"
+                (("set\\([[:blank:]]+?BUILD_INFO \"\\$\\{CMAKE_SYSTEM\\}\
+ \\$\\{CMAKE_SYSTEM_VERSION\\}")
+                 "set( BUILD_INFO \"Linux")))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list pkg-config python-wrapper))
     (inputs
-     `(("libdrm" ,libdrm)
-       ("libva" ,libva)
-       ("pciaccess" ,libpciaccess)
-       ("wayland" ,wayland)
-       ("x11" ,libx11)))
+     (list libdrm libva libpciaccess wayland libx11))
     (synopsis "Intel Media SDK")
     (description "MediaSDK provides a plain C API to access hardware-accelerated
 video decode, encode and filtering on Intel's Gen graphics hardware platforms.")
@@ -1000,7 +1004,7 @@ H.264 (MPEG-4 AVC) video streams.")
            pcre2
            pugixml
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            utfcpp
            zlib))
     (native-inputs
@@ -1012,7 +1016,7 @@ H.264 (MPEG-4 AVC) video streams.")
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("po4a" ,po4a)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ("ruby" ,ruby)))
     (arguments
      `(#:configure-flags
@@ -1252,6 +1256,10 @@ on the Invidious instances only as a fallback method.")
                  ,@(if (target-aarch64?)
                      '("-DENABLE_ASSEMBLY=OFF")
                      '())
+                 ;; Altivec code produces many build errors.
+                 ,@(if (target-ppc64le?)
+                       '("-DENABLE_ALTIVEC=OFF")
+                       '())
                  "-DHIGH_BIT_DEPTH=ON"
                  "-DEXPORT_C_API=OFF"
                  "-DENABLE_CLI=OFF"
@@ -1272,6 +1280,10 @@ on the Invidious instances only as a fallback method.")
                  ,@(if (target-aarch64?)
                      '("-DENABLE_ASSEMBLY=OFF")
                      '())
+                 ;; Altivec code produces many build errors.
+                 ,@(if (target-ppc64le?)
+                       '("-DENABLE_ALTIVEC=OFF")
+                       '())
                  "-DHIGH_BIT_DEPTH=ON"
                  "-DEXPORT_C_API=OFF"
                  "-DENABLE_CLI=OFF"
@@ -1444,16 +1456,16 @@ libebml is a C++ library to read and write EBML files.")
 (define-public libplacebo
   (package
     (name "libplacebo")
-    (version "4.157.0")
+    (version "4.208.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://code.videolan.org/videolan/libplacebo")
+             (url "https://code.videolan.org/videolan/libplacebo.git")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08kqsd29h8wm0vz7698wh2mdgpwv6anqc5n7d1spnnamwyfwc64h"))))
+        (base32 "161dp5781s74ca3gglaxlmchx7glyshf0wg43w98pl22n1jcm5qk"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -1462,7 +1474,7 @@ libebml is a C++ library to read and write EBML files.")
                          (assoc-ref %build-inputs "vulkan-headers")
                          "/share/vulkan/registry/vk.xml"))))
     (native-inputs
-     (list python-mako pkg-config))
+     (list python python-mako pkg-config))
     (inputs
      (list lcms
            libepoxy
@@ -1968,7 +1980,7 @@ videoformats depend on the configuration flags of ffmpeg.")
            pulseaudio
            python-wrapper
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            samba
            sdl
@@ -2239,7 +2251,7 @@ projects while introducing many more.")
                 "12nvcl0cfix1xay9hfi7856vg4lpv8y5b0a22212bsjbvl5g22rc"))))
     (build-system qt-build-system)
     (native-inputs
-     (list qttools))
+     (list qttools-5))
     (inputs
      (list bash-minimal qtbase-5 zlib mpv))
     (arguments
@@ -2471,7 +2483,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2022.06.22.1")
+    (version "2022.07.18")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/yt-dlp/yt-dlp/"
@@ -2479,55 +2491,54 @@ YouTube.com and many more sites.")
                                   version "/yt-dlp.tar.gz"))
               (sha256
                (base32
-                "1nr6g3dhvjc10jzhyvgjrrxqhsgi3hiw8bswp8bi6bscimd9vhps"))
+                "1wmzfqhysx1mqdba4ikvm6nbahasihi4xgqwqad20y3vs701slyj"))
               (snippet
-               '(begin
-                  ;; Delete the pre-generated files, except for the man page
-                  ;; which requires 'pandoc' to build.
-                  (for-each delete-file '("yt-dlp"
-                                          ;;pandoc is needed to generate
-                                          ;;"yt-dlp.1"
-                                          "completions/bash/yt-dlp"
-                                          "completions/fish/yt-dlp.fish"
-                                          "completions/zsh/_yt-dlp"))))))
+               #~(begin
+                   ;; Delete the pre-generated files, except for the man page
+                   ;; which requires 'pandoc' to build.
+                   (for-each delete-file
+                             (list "yt-dlp"
+                                   ;;pandoc is needed to generate
+                                   ;;"yt-dlp.1"
+                                   "completions/bash/yt-dlp"
+                                   "completions/fish/yt-dlp.fish"
+                                   "completions/zsh/_yt-dlp"))))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) #t)
        ((#:phases phases)
-        `(modify-phases ,phases
-           ;; See the comment for the corresponding phase in youtube-dl.
-           (replace 'default-to-the-ffmpeg-input
-             (lambda _
-               (substitute* "yt_dlp/postprocessor/ffmpeg.py"
-                 (("\\.get_param\\('ffmpeg_location'\\)" match)
-                  (format #f "~a or '~a'" match (which "ffmpeg"))))))
-           (replace 'build-generated-files
-             (lambda _
-               ;; Avoid the yt-dlp.1 target, which requires pandoc.
-               (invoke "make" "PYTHON=python" "yt-dlp" "completions")))
-           (replace 'fix-the-data-directories
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((prefix (assoc-ref outputs "out")))
-                 (substitute* "setup.py"
-                   (("'etc/")
-                    (string-append "'" prefix "/etc/"))
-                   (("'share/")
-                    (string-append "'" prefix "/share/"))))))
-           (delete 'install-completion)
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "pytest" "-k" "not download"))))))))
-    (inputs
-     `(("python-brotli" ,python-brotli)
-       ("python-certifi" ,python-certifi)
-       ("python-mutagen" ,python-mutagen)
-       ("python-pycryptodomex" ,python-pycryptodomex)
-       ("python-websockets" ,python-websockets)
-       ,@(package-inputs youtube-dl)))
-    (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ,@(package-native-inputs youtube-dl)))
+        #~(modify-phases #$phases
+            ;; See the comment for the corresponding phase in youtube-dl.
+            (replace 'default-to-the-ffmpeg-input
+              (lambda _
+                (substitute* "yt_dlp/postprocessor/ffmpeg.py"
+                  (("\\.get_param\\('ffmpeg_location'\\)" match)
+                   (format #f "~a or '~a'" match (which "ffmpeg"))))))
+            (replace 'build-generated-files
+              (lambda _
+                ;; Avoid the yt-dlp.1 target, which requires pandoc.
+                (invoke "make" "PYTHON=python" "yt-dlp" "completions")))
+            (replace 'fix-the-data-directories
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((prefix (assoc-ref outputs "out")))
+                  (substitute* "setup.py"
+                    (("'etc/")
+                     (string-append "'" prefix "/etc/"))
+                    (("'share/")
+                     (string-append "'" prefix "/share/"))))))
+            (delete 'install-completion)
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "pytest" "-k" "not download"))))))))
+    (inputs (modify-inputs (package-inputs youtube-dl)
+              (append python-brotli
+                      python-certifi
+                      python-mutagen
+                      python-pycryptodomex
+                      python-websockets)))
+    (native-inputs (modify-inputs (package-native-inputs youtube-dl)
+                     (append python-pytest)))
     (description
      "yt-dlp is a small command-line program to download videos from
 YouTube.com and many more sites.  It is a fork of youtube-dl with a
@@ -2872,7 +2883,7 @@ for use with HTML5 video.")
      `(("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
-       ("qttools" ,qttools)
+       ("qttools-5" ,qttools-5)
        ("yasm" ,yasm)))
     ;; FIXME: Once packaged, add libraries not found during the build.
     (inputs
@@ -3191,7 +3202,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
            libsamplerate
            pulseaudio
            qtbase-5
-           qtsvg
+           qtsvg-5
            rtaudio
            sdl2
            sdl2-image
@@ -3239,14 +3250,14 @@ tools, XML authoring components, and an extensible plug-in based API.")
 (define-public v4l-utils
   (package
     (name "v4l-utils")
-    (version "1.20.0")
+    (version "1.22.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://linuxtv.org/downloads/v4l-utils"
                                   "/v4l-utils-" version ".tar.bz2"))
               (sha256
                (base32
-                "1xr66y6w422hil6s7n8d61a2vhwh4im8l267amf41jvw7xqihqcm"))))
+                "0cafp64b7ylxhjnp47hxm59r0b0v5hc2gc23qh2s2k5463lgpik5"))))
     (build-system gnu-build-system)
     ;; Separate graphical tools in order to save almost 1 GiB on the closure
     ;; for the common case.
@@ -3285,12 +3296,12 @@ tools, XML authoring components, and an extensible plug-in based API.")
     (native-inputs
      (list perl pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("glu" ,glu)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libx11" ,libx11)
-       ("qtbase" ,qtbase-5)
-       ("eudev" ,eudev)))
+     (list alsa-lib
+           glu
+           libjpeg-turbo
+           libx11
+           qtbase-5
+           eudev))
     (synopsis "Realtime video capture utilities for Linux")
     (description "The v4l-utils provide a series of libraries and utilities to
 be used for realtime video capture via Linux-specific APIs.")
@@ -3359,7 +3370,7 @@ be used for realtime video capture via Linux-specific APIs.")
       pipewire-0.3
       pulseaudio
       qtbase-5
-      qtsvg
+      qtsvg-5
       qtx11extras
       qtwayland
       speexdsp
@@ -3937,7 +3948,7 @@ post-processing of video formats like MPEG2, H.264/AVC, and VC-1.")
 (define-public openh264
   (package
     (name "openh264")
-    (version "2.1.1")
+    (version "2.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3946,17 +3957,20 @@ post-processing of video formats like MPEG2, H.264/AVC, and VC-1.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ffav46pz3sbj92nipd62z03fibyqgclfq9w8lgr80s6za6zdk5s"))))
+                "1yr6nsjpnazq4z6dvjfyanljwgwnyjh3ddxa0sq6hl9qc59yq91r"))))
     (build-system gnu-build-system)
     (native-inputs
      (list nasm python))
     (arguments
-     '(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                          "CC=gcc")
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  ;; no configure script
-                  (delete 'configure))))
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+                             "CC=gcc")
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; no configure script
+          (delete 'configure))))
     (home-page "https://www.openh264.org/")
     (synopsis "H264 decoder library")
     (description
@@ -4684,7 +4698,7 @@ create smoother and stable videos.")
            jsoncpp
            libopenshot-audio
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            zeromq))
     (arguments
      `(#:configure-flags
@@ -4737,7 +4751,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
            python-pyqt
            python-pyzmq
            python-requests
-           qtsvg))
+           qtsvg-5))
     (arguments
      `(#:modules ((guix build python-build-system)
                   (guix build qt-utils)
@@ -4841,7 +4855,7 @@ transitions, and effects and then export your film to many common formats.")
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("python-wrapper" ,python-wrapper)
-       ("qttools" ,qttools)))
+       ("qttools-5" ,qttools-5)))
     (inputs
      (list bash-minimal
            ffmpeg
@@ -4854,14 +4868,14 @@ transitions, and effects and then export your film to many common formats.")
            mlt
            pulseaudio
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
-           qtmultimedia
-           qtquickcontrols
-           qtquickcontrols2
-           qtsvg
+           qtmultimedia-5
+           qtquickcontrols-5
+           qtquickcontrols2-5
+           qtsvg-5
            qtwebkit
-           qtwebsockets
+           qtwebsockets-5
            qtx11extras
            sdl2))
     (home-page "https://www.shotcut.org/")

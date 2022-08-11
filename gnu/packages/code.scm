@@ -914,8 +914,7 @@ extensions over the standard utility.")
              (("test_command \"cc -Wall -Wextra -o source.out source.c\"" all)
               "test_command \"gcc -Wall -Wextra -o source.out source.c\"")))))
       (build-system gnu-build-system)
-      (inputs
-       `(("python" ,python-wrapper)))
+      (inputs (list python-wrapper))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
@@ -1067,7 +1066,7 @@ Using cscope, you can easily search for where symbols are used and defined.")
      "Xenon is a monitoring tool based on Radon.  It monitors code complexity.
 Ideally, @code{xenon} is run every time code is committed.  Through command
 line options, various thresholds can be set for the complexity of code.  It
-will fail (i.e.  it will exit with a non-zero exit code) when any of these
+will fail (i.e., it will exit with a non-zero exit code) when any of these
 requirements is not met.")
     (license license:expat)))
 

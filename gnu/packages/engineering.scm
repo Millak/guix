@@ -213,7 +213,7 @@
                (copy-recursively "unix/resources" share))
              #t)))))
     (inputs
-     (list boost muparser freetype qtbase-5 qtsvg))
+     (list boost muparser freetype qtbase-5 qtsvg-5))
     (native-inputs
      (list pkg-config which))
     (home-page "https://librecad.org/")
@@ -710,7 +710,7 @@ multipole-accelerated algorithm.")
     (inputs
      `(("qtbase" ,qtbase-5)
        ("qtserialport" ,qtserialport)
-       ("qtsvg" ,qtsvg)
+       ("qtsvg-5" ,qtsvg-5)
        ("libgit2" ,libgit2)
        ("boost" ,boost)
        ("zlib" ,zlib)
@@ -762,9 +762,9 @@ ready for production.")
                (substitute* "qelectrotech.pro" (("\\/usr\\/local") out))
                (invoke "qmake")))))))
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
-     (list kcoreaddons kwidgetsaddons qtbase-5 qtsvg sqlite))
+     (list kcoreaddons kwidgetsaddons qtbase-5 qtsvg-5 sqlite))
     (home-page "https://qelectrotech.org/")
     (synopsis "CAD/CAE editor focusing on schematics drawing features")
     (description "QElectroTech, or QET in short, is a desktop application to
@@ -945,7 +945,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "6.0.6")
+    (version "6.0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -953,7 +953,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "0cb9zba812dlmn2w27s1q38mjpfdwhv0nnbilwsxchpvwg8j4k2j"))
+                "10bqn99nif9zyi5v0lkic3na2vac5lgacw01ayil359vaw7d0pzy"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1007,17 +1007,17 @@ Emacs).")
             (variable "KICAD") ;to find kicad-doc
             (files '("")))
            (search-path-specification
-            (variable "KICAD_TEMPLATE_DIR")
+            (variable "KICAD6_TEMPLATE_DIR")
             (files '("share/kicad/template")))
            (search-path-specification
-            (variable "KICAD_SYMBOL_DIR") ;symbol path
-            (files '("share/kicad/library")))
+            (variable "KICAD6_SYMBOL_DIR")
+            (files '("share/kicad/symbols")))
            (search-path-specification
-            (variable "KISYSMOD") ;footprint path
-            (files '("share/kicad/modules")))
+            (variable "KICAD6_FOOTPRINT_DIR")
+            (files '("share/kicad/footprints")))
            (search-path-specification
-            (variable "KISYS3DMOD") ;3D model path
-            (files '("share/kicad/modules/packages3d")))))
+            (variable "KICAD6_3DMODEL_DIR")
+            (files '("share/kicad/3dmodels")))))
     (native-inputs (list boost
                          desktop-file-utils
                          gettext-minimal
@@ -1060,7 +1060,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kxv0j3nx6zn45znrhqq6bdqrsd60mgmgvr1gjv5p8g3cbkkslrx"))))
+                "15arkjjbzd4k09crhsrizmj8ljwpv6xjm59k58pfbd5pmqkklh2d"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1094,7 +1094,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02z3vqhz1rlf57zi8vyrlxvvdl1hpsh447p41qdgcpn5dyjycb9d"))))
+                "006ksx8r6cm6q7v701nalggivp21cmysj8p9zc18y3sch8n1mj4g"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1123,7 +1123,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1phynxisha2pq2knbx5l1hkdz1bmjm0qxl3lcb4ab82h8d35r37c"))))
+                "0c5fm4hlkka0ms43j02kbv7s9yrlkffn0jz6649ac3gpx6pk8lbf"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1140,7 +1140,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ci9gxbpfnfqwah95ki4qcwlca78s1z6s7hckisnp58a1cm9siya"))))
+                "0rdhwyhknrc63sc5ykmq097rzrl36zibnkls7q5hf54lrhn0n3k4"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -1246,7 +1246,7 @@ the 'showing the effect of'-style of operation.")
          mpfr
          openssl
          qtbase-5
-         qtsvg))
+         qtsvg-5))
   (home-page "https://github.com/ccoors/Valeronoi")
   (synopsis "WiFi mapping companion application for Valetudo")
   (description
@@ -2118,9 +2118,9 @@ parallel computing platforms.  It also supports serial execution.")
         (base32 "0smp1p7wnrj0vh4rmz1cr2krfawc2lzx0pbzmgyay7xdp6jxympr"))))
     (build-system gnu-build-system)
     (inputs
-     (list qtbase-5 qtsvg zlib))
+     (list qtbase-5 qtsvg-5 zlib))
     (native-inputs
-     (list qttools ; for lrelease
+     (list qttools-5 ; for lrelease
            unzip))
     (arguments
      `(#:phases
@@ -2278,7 +2278,7 @@ simulation.")
      (list pkg-config))
     (inputs
      (list qtbase-5
-           qtsvg
+           qtsvg-5
            openssl
            ;; Depends on radare2 4.5.1 officially, builds and works fine with
            ;; radare2 5.0.0 but fails to build with radare2 5.1.1.
@@ -2356,7 +2356,7 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
        ("opencsg" ,opencsg)
        ("qscintilla" ,qscintilla)
        ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)))
+       ("qtmultimedia-5" ,qtmultimedia-5)))
     (native-inputs
      `(("bison" ,bison)
        ("flex" ,flex)
@@ -2452,7 +2452,7 @@ comments.")))
     (native-inputs
      (list doxygen
            graphviz
-           qttools
+           qttools-5
            pkg-config
            python-pyside-2-tools
            swig))
@@ -2490,10 +2490,10 @@ comments.")))
            python-shiboken-2
            python-wrapper
            qtbase-5
-           qtdeclarative
-           qtsvg
-           qtwebchannel
-           qtwebengine
+           qtdeclarative-5
+           qtsvg-5
+           qtwebchannel-5
+           qtwebengine-5
            qtx11extras
            qtxmlpatterns
            sqlite
@@ -3222,7 +3222,7 @@ visualization, matrix manipulation.")
      (list pkg-config))
     (inputs
      (list boost
-           cereal
+           cereal-1.3.0
            cgal
            curl
            dbus
@@ -3422,11 +3422,11 @@ compiled translations.  Prebuilt Firmware files are removed.")
            python-trimesh
            python-zeroconf
            qtbase
-           qtdeclarative
+           qtdeclarative-5
            qtgraphicaleffects
-           qtquickcontrols
-           qtquickcontrols2
-           qtsvg))
+           qtquickcontrols-5
+           qtquickcontrols2-5
+           qtsvg-5))
     (arguments
      `(;; FIXME: tests are disabled, because they cause an infinite loop.
        #:tests? #f
@@ -3715,7 +3715,7 @@ netlists from the drawn schematic, allowing the simulation of the circuit.")
                  (base32
                   "08rqhl6a5a8s67a8yl16944zgcsnnb08xfv4klzyqwlvaqgfp783"))))
       (build-system gnu-build-system)
-      (native-inputs (list qttools))
+      (native-inputs (list qttools-5))
       (inputs (list qtbase-5 qtserialport))
       (arguments
        (list #:tests? #f                      ; no tests.

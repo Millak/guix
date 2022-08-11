@@ -25,7 +25,7 @@
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2021, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
@@ -76,6 +76,7 @@
   #:use-module (gnu packages disk)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
@@ -414,7 +415,15 @@ inappropriate content.")
      (list docbook-xsl docbook-xml-4.1.2 libxslt w3m xmlto))
     (inputs
      `(("awk" ,gawk)
+       ;; TODO(staging): Make this unconditional, to avoid canonical packages,
+       ;; see <https://lists.gnu.org/archive/html/guix-devel/2020-02/msg00148.html>.
+       ,@(if (%current-target-system)
+             `(("bash-minimal" ,bash-minimal)) ; for 'wrap-program'
+             '())
        ("coreutils" ,coreutils)
+       ,@(if (%current-target-system)
+             `(("file" ,file))
+             '())
        ("grep" ,grep)
        ("inetutils" ,inetutils) ; xdg-screensaver uses `hostname'
        ("perl-file-mimeinfo" ,perl-file-mimeinfo) ; for mimeopen fallback
@@ -428,19 +437,44 @@ inappropriate content.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-hardcoded-paths
-           (lambda _
-             (substitute* "scripts/xdg-mime.in"
-               (("/usr/bin/file") (which "file")))
-             (substitute* "scripts/xdg-open.in"
-               (("/usr/bin/printf") (which "printf")))
-             #t))
+           ;; TODO(staging): make unconditional
+           (,@(if (%current-target-system)
+                 '(lambda* (#:key inputs #:allow-other-keys))
+                 '(lambda _))
+            (substitute* "scripts/xdg-mime.in"
+              (("/usr/bin/file")
+               (,@(if (%current-target-system)
+                      '(search-input-file inputs "bin/file")
+                      '(which "file")))))
+            (substitute* "scripts/xdg-open.in"
+              (("/usr/bin/printf")
+               (,@(if (%current-target-system)
+                      '(search-input-file inputs "bin/printf")
+                      '(which "printf")))))
+            #t))
          (add-before 'build 'locate-catalog-files
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
-                                          "/xml/dtd/docbook"))
-                   (xsldoc (string-append (assoc-ref inputs "docbook-xsl")
-                                          "/xml/xsl/docbook-xsl-"
-                                          ,(package-version docbook-xsl))))
+           ;; TODO(staging): Make unconditional for simplicity.
+           (lambda* (#:key inputs ,@(if (%current-target-system)
+                                        '(native-inputs)
+                                        '()) #:allow-other-keys)
+             ;; TODO(staging): Make unconditional for simplicity and
+             ;; to avoid depending on input labels.
+             (let ,(if (%current-target-system)
+                       `((native-inputs (or native-inputs inputs))
+                         (xmldoc (search-input-directory native-inputs
+                                                         "xml/dtd/docbook"))
+                         (xsldoc
+                          (search-input-directory
+                           native-inputs
+                           (string-append "xml/xsl/docbook-xsl-"
+                                          ,(package-version docbook-xsl)))))
+                       `((xmldoc
+                          (string-append (assoc-ref inputs "docbook-xml")
+                                         "/xml/dtd/docbook"))
+                         (xsldoc
+                          (string-append (assoc-ref inputs "docbook-xsl")
+                                         "/xml/xsl/docbook-xsl-"
+                                         ,(package-version docbook-xsl)))))
                (for-each (lambda (file)
                            (substitute* file
                              (("http://.*/docbookx\\.dtd")
@@ -456,6 +490,8 @@ inappropriate content.")
                                  "/manpages/docbook.xsl man")))
                (setenv "STYLESHEET"
                        (string-append xsldoc "/html/docbook.xsl"))
+               ;; TODO(staging): Might as well remove the #t while we are at
+               ;; it.
                #t)))
          (add-after 'install 'wrap-executables
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -1319,13 +1355,17 @@ Analysis and Reporting Technology) functionality.")
     (propagated-inputs
      (list glib)) ; required by udisks2.pc
     (inputs
-     (list acl
-           cryptsetup
-           libatasmart
-           libblockdev
-           libgudev
-           polkit
-           util-linux))
+     `(,acl
+       ;; TODO(staging): Make unconditional.
+       ,@(if (%current-target-system)
+             (list bash-minimal) ; for wrap-program
+             '())
+       ,cryptsetup
+       ,libatasmart
+       ,libblockdev
+       ,libgudev
+       ,polkit
+       ,util-linux))
     (outputs '("out"
                "doc"))                            ;5 MiB of gtk-doc HTML
     (arguments
@@ -1936,6 +1976,11 @@ applications define in those files.")
         (base32
          "1i5iw6ri0w9clwpqf40xmsh4isc8xvx2lyf2r5g34886i6rsdgpn"))))
     (build-system perl-build-system)
+    (inputs
+     ;; TODO(staging): Make unconditional.
+     (if (%current-target-system)
+         (list bash-minimal) ; for wrap-program
+         '()))
     ;; If the tests are fixed, add perl-test-pod, perl-test-pod-coverage, and
     ;; perl-test-tiny as native-inputs.
     (propagated-inputs
@@ -1943,19 +1988,31 @@ applications define in those files.")
     (arguments
      ;; Some tests fail due to requiring the mimetype of perl files to be
      ;; text/plain when they are actually application/x-perl.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-programs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (prog)
-                           (wrap-program (string-append out "/bin/" prog)
-                             `("PERL5LIB" ":" prefix
-                               (,(string-append (getenv "PERL5LIB") ":" out
-                                                "/lib/perl5/site_perl")))))
-                         '("mimeopen" "mimetype")))
-             #t)))))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-programs
+                 ;; TODO(staging): Make unconditional.
+                 (lambda* (#:key #$@(if (%current-target-system)
+                                        #~(inputs)
+                                        #~()) outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (for-each
+                      (lambda (prog)
+                        (wrap-program (string-append out "/bin/" prog)
+                          `("PERL5LIB" ":" prefix
+                            ;; PERL5LIB looks in 'native-inputs', not 'inputs',
+                            ;; whereas the latter is required for
+                            ;; cross-compilation.
+                            #$(if (%current-target-system)
+                                  #~,(search-path-as-list
+                                      '("lib/perl5/site_perl")
+                                      (map cdr (append inputs outputs)))
+                                  #~(,(string-append
+                                       (getenv "PERL5LIB")
+                                       ":" out "/lib/perl5/site_perl"))))))
+                      '("mimeopen" "mimetype")))
+                   #t)))))
     (home-page "https://metacpan.org/release/File-MimeInfo")
     (synopsis "Determine file type from the file name")
     (description
@@ -2032,7 +2089,15 @@ Python, that binds to the C library @code{uchardet} to increase performance.")
        ("gettext" ,gettext-minimal)
        ("gobject-introspection" ,gobject-introspection)))
     (inputs
-     (list gobject-introspection gtk+ libappindicator libnotify udisks))
+     ;; TODO(staging): Make unconditional.
+     `(,@(if (%current-target-system)
+             (list bash-minimal)
+             '())
+       ,gobject-introspection
+       ,gtk+
+       ,libappindicator
+       ,libnotify
+       ,udisks))
     (propagated-inputs
      (list python-docopt python-pygobject python-keyutils python-pyxdg
            python-pyyaml))

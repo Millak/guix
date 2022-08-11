@@ -256,11 +256,11 @@
        ("procps" ,procps)
        ("python" ,python)
        ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
+       ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtgraphicaleffects" ,qtgraphicaleffects)
-       ("qtquickcontrols" ,qtquickcontrols)
-       ("qtquickcontrols2" ,qtquickcontrols2)
-       ("qtsvg" ,qtsvg)))
+       ("qtquickcontrols-5" ,qtquickcontrols-5)
+       ("qtquickcontrols2-5" ,qtquickcontrols2-5)
+       ("qtsvg-5" ,qtsvg-5)))
     (propagated-inputs
      (list go-0xacab-org-leap-shapeshifter
            go-github-com-apparentlymart-go-openvpn-mgmt
@@ -722,27 +722,26 @@ and probably others.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-openconnect
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "openconnect_sso/app.py"
                (("\"openconnect\"")
-                (string-append "\"" (which "openconnect") "\"")))
-             #t))
+                (string-append "\""
+                               (search-input-file inputs "/sbin/openconnect")
+                               "\"")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "-v"))
-             #t))
+               (invoke "pytest" "-v"))))
          (add-after 'install 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/openconnect-sso"))
-                    (qt-process-path (string-append
-                                       (assoc-ref inputs "qtwebengine")
-                                       "/lib/qt5/libexec/QtWebEngineProcess")))
+                    (qt-process-path
+                     (search-input-file inputs
+                                        "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
                  #:sh (search-input-file inputs "bin/bash")
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
-               #t))))))
+                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (inputs
      (list openconnect
            python-attrs
@@ -757,7 +756,7 @@ and probably others.")
            python-pyxdg
            python-structlog
            python-toml
-           qtwebengine))
+           qtwebengine-5))
     (native-inputs
      (list python-pytest python-setuptools-scm))
     (home-page "https://github.com/vlaci/openconnect-sso")

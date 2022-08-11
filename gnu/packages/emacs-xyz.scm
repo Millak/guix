@@ -115,6 +115,7 @@
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Haider Mirza <haider@haider.gq>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
+;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3723,14 +3724,14 @@ the previous session
 (define-public emacs-pabbrev
   (package
     (name "emacs-pabbrev")
-    (version "4.2.1")
+    (version "4.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
-                           "pabbrev-" version ".el"))
+                           "pabbrev-" version ".tar"))
        (sha256
-        (base32 "19v5adk61y8fpigw7k6wz6dj79jwr450hnbi7fj0jvb21cvjmfxh"))))
+        (base32 "0iydz8yz866krxv1qv32k88w4464xpymh0wxgrxv6nvniwvhvd0s"))))
     (build-system emacs-build-system)
     (home-page "http://elpa.gnu.org/packages/pabbrev.html")
     (synopsis "Predictive abbreviation expansion")
@@ -8707,7 +8708,7 @@ built-in custom themes.")
 (define-public emacs-gruvbox-theme
   (package
     (name "emacs-gruvbox-theme")
-    (version "1.28.0")
+    (version "1.29.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8716,7 +8717,7 @@ built-in custom themes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00qq92gp1g55pzm97rh7k0dgxy44pxziridl8kqm4rbpi31r7k9p"))))
+                "0ydwr2l3jhqbs3gk5qajirl54vfb8i65qrlzrs04jnsj1pkzq5xa"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-autothemer))
@@ -10178,7 +10179,7 @@ allowing unprefixed keys to insert their respective characters as expected.")
 (define-public emacs-clojure-mode
   (package
     (name "emacs-clojure-mode")
-    (version "5.14.0")
+    (version "5.15.1")
     (source
      (origin
        (method git-fetch)
@@ -10187,7 +10188,7 @@ allowing unprefixed keys to insert their respective characters as expected.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n7v6hx21f8x37gj388wnff38aqpzxxv5g8vxavp74vr3cbagsnn"))))
+        (base32 "12m3yjhy4q0x3ri4xxb9raqg9lmw4hk4jgn436d9zvsk4fr3h1nd"))))
     (build-system emacs-build-system)
     (native-inputs
      (list emacs-buttercup emacs-dash emacs-paredit emacs-s))
@@ -11011,7 +11012,7 @@ much easier.")
 (define-public emacs-elfeed-protocol
   (package
     (name "emacs-elfeed-protocol")
-    (version "0.8.0")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -11020,7 +11021,7 @@ much easier.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07r1qlldgd0kfikd0y737y5n42ab3nkw2s5jx7frimj41yandbdp"))))
+        (base32 "0k9rkghp9rg7aidmx7q0n4wpb9z5cwr7j8z167yzaqgf9s3y4jj2"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-elfeed))
@@ -11805,7 +11806,7 @@ ack, ag, helm and pt.")
 (define-public emacs-helm
   (package
     (name "emacs-helm")
-    (version "3.8.6")
+    (version "3.8.7")
     (source
      (origin
        (method git-fetch)
@@ -11814,7 +11815,7 @@ ack, ag, helm and pt.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02z5jxjkqspj6f6j2a87l9bzl2b4mh1560bzl8ia72w2vxg15m8z"))))
+        (base32 "1a8zkp00ahb84ww5072naxwllzbjhi7ccarkk2d7xsykn5lig54c"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-async emacs-popup))
@@ -13111,7 +13112,7 @@ programming and reproducible research.")
        (sha256
         (base32 "17aca4mc3gbdh6nhlcaa5ymh1yy76nwysrvy9sfcqkzvd5lgagzc"))
        ;; XXX: ob-sclang.el is packaged separately to avoid the dependency on
-       ;; SuperCollider and qtwebengine.  This will be unnecessary in 0.4+
+       ;; SuperCollider and qtwebengine-5.  This will be unnecessary in 0.4+
        ;; release as the file is going to be removed from the repository.
 
        ;; XXX: org-contacts.el is now maintained in a separate repository and
@@ -16613,7 +16614,7 @@ an elisp expression.")
 (define-public emacs-taxy
   (package
     (name "emacs-taxy")
-    (version "0.9")
+    (version "0.10")
     (source
      (origin
        (method url-fetch)
@@ -16621,7 +16622,7 @@ an elisp expression.")
              "https://elpa.gnu.org/packages/taxy-" version ".tar"))
        (sha256
         (base32
-         "1nzafs3yvcnmg07zi345n2yvjsw9wixlybzibnhf5k6jnd0vvpjh"))))
+         "1jamry2p3qhswq8prd2g7ljh4yqk0wwblyd9fhnaclakahrn5vi3"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-magit))
@@ -18865,7 +18866,7 @@ files to be expanded upon opening them.")
 (define-public emacs-parsebib
   (package
     (name "emacs-parsebib")
-    (version "4.1")
+    (version "4.2")
     (source
      (origin
        (method git-fetch)
@@ -18874,7 +18875,7 @@ files to be expanded upon opening them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bsxhizwhri8ayryfq59ghkybrql611q2bnjd45hpj7armwq3s8m"))))
+        (base32 "0da4b6d65bq9xhyhq7h9g315zg6g5q9435vz870la966rgav5szd"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/joostkremers/parsebib")
     (synopsis "Library for parsing @file{.bib} files")
@@ -24780,7 +24781,7 @@ well as providing an interface to attach and interact with the processes.")
 (define-public emacs-dtrt-indent
   (package
     (name "emacs-dtrt-indent")
-    (version "1.7")
+    (version "1.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -24789,7 +24790,7 @@ well as providing an interface to attach and interact with the processes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ihwmkxgbd0mgfvzisjiwvyypa9z21ckyxdnkf9y5lxywjyr39zh"))))
+                "16g4bv2py423l19n0kaz18a41wk5fsrpnqzifdss6amqh0dqyvmf"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/jscheid/dtrt-indent")
     (synopsis "Minor mode that guesses the indentation offset")
@@ -26589,7 +26590,7 @@ through Dash docsets.")
 (define-public emacs-devdocs
   (package
     (name "emacs-devdocs")
-    (version "0.4")
+    (version "0.5")
     (source
      (origin
        (method url-fetch)
@@ -26597,7 +26598,7 @@ through Dash docsets.")
              "https://elpa.gnu.org/packages/"
              "devdocs-" version ".tar"))
        (sha256
-        (base32 "05xmxqpp1cpf03y7idpqdsmbj30cissscy80ng5hqc3028kr2jqm"))))
+        (base32 "0qyp8lhf76yv2ym7cryvygvf2m9jah5nsl1g79gqjrsin6vlhqka"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/astoff/devdocs.el")
     (synopsis "Emacs viewer for DevDocs")
@@ -26776,14 +26777,14 @@ well as an option for visually flashing evaluated s-expressions.")
 (define-public emacs-tramp
   (package
     (name "emacs-tramp")
-    (version "2.5.3")
+    (version "2.5.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "tramp-" version ".tar"))
        (sha256
-        (base32 "16bs90h7b1d188v6glhfp0y4wgxvwn3dl6l4sbswlf1zq3y61zy7"))))
+        (base32 "0dqc5gmp20isrlanccvj6nhalmmsfg7bmm690gxfgrbqcc2vj69a"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -27839,7 +27840,7 @@ contains a track position, playback will start at the specified position.")
 (define-public emacs-org-jira
   (package
    (name "emacs-org-jira")
-   (version "4.3.3")
+   (version "4.4.0")
    (source
     (origin
      (method git-fetch)
@@ -27849,7 +27850,7 @@ contains a track position, playback will start at the specified position.")
      (file-name (git-file-name name version))
      (sha256
       (base32
-       "0awfz4c70pxfj401p4h4j1lxic4pqpgigkldy9wvdkcyhqbphswj"))))
+       "1s91l4ibjvvc7rfvd8gldxqrcgjq00q83fdww217ck2ps5yrzyjl"))))
    (build-system emacs-build-system)
    (propagated-inputs
     (list emacs-request emacs-s emacs-dash emacs-org))
@@ -28080,7 +28081,7 @@ Emacs that integrate with major modes like Org-mode.")
 (define-public emacs-modus-themes
   (package
     (name "emacs-modus-themes")
-    (version "2.4.1")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -28089,7 +28090,7 @@ Emacs that integrate with major modes like Org-mode.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b4y8dzyc9qwwaf2ngqiwyfcnhwlr49kxhc96laqk20lvjlfsrnx"))))
+        (base32 "0ng85240zabw87ac53xnrlrafp10ns5wn6dgv9d1jxvnq40p7zqz"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
@@ -31946,3 +31947,23 @@ can bind a popon to a specific buffer to only show on that buffer.")
 be useful when working with the bitbake files in Yocto and OpenEmbedded
 projects.")
    (license license:gpl3+)))
+
+(define-public emacs-vundo
+  (package
+    (name "emacs-vundo")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/vundo-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "032aqcqq2xhh12qcpp8p3qldv0r9cnqr2y11jk1m5cvgal1cbb68"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/casouri/vundo")
+    (synopsis "Visualize the undo tree")
+    (description
+     "Vundo (visual undo) displays the undo history as a tree and lets you move in the
+tree to go back to previous buffer states.  To use vundo, type @kbd{M-x vundo RET} in
+the buffer you want to undo.  An undo tree buffer should pop up.")
+    (license license:gpl3+)))

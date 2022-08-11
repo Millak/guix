@@ -69,10 +69,10 @@
                  " " value "\n"))
 
 (define (address-family? obj)
-  (memv obj (list *unspecified* AF_INET AF_INET6)))
+  (memv obj (list 'unset AF_INET AF_INET6)))
 
 (define (serialize-address-family field family)
-  (if (unspecified? family)
+  (if (eq? 'unset family)
       ""
       (string-append "  " (serialize-field-name field) " "
                      (cond ((= family AF_INET) "inet")
@@ -117,8 +117,8 @@
   (address-family
    address-family
    "Address family to use when connecting to this host: one of
-@code{AF_INET} (for IPv4 only), @code{AF_INET6} (for IPv6 only), or
-@code{*unspecified*} (allowing any address family).")
+@code{AF_INET} (for IPv4 only), @code{AF_INET6} (for IPv6 only).
+Additionally, the field can be left unset to allow any address family.")
   (identity-file
    maybe-string
    "The identity file to use---e.g.,

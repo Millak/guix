@@ -3,7 +3,7 @@
 ;;; Copyright © 2019, 2020, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -26,9 +26,12 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-71)
   #:export (wrap-qt-program
             wrap-all-qt-programs
             %qt-wrap-excluded-inputs))
+
+(define %default-qt-major-version "5")
 
 (define %qt-wrap-excluded-inputs
   '(list "cmake" "extra-cmake-modules" "qttools"))
@@ -37,7 +40,9 @@
 ;; facilities for per-application data directories, such as
 ;; /share/quassel. Thus, we include the output directory even if it doesn't
 ;; contain any of the standard subdirectories.
-(define (variables-for-wrapping base-directories output-directory)
+(define* (variables-for-wrapping base-directories output-directory
+                                 #:key
+                                 (qt-major-version %default-qt-major-version))
 
   (define (collect-sub-dirs base-directories file-type subdirectory selectors)
     ;; Append SUBDIRECTORY and each of BASE-DIRECTORIES, and return the subset
@@ -82,17 +87,20 @@
       "/applications" "/cursors" "/fonts" "/icons" "/glib-2.0/schemas"
       "/mime" "/sounds" "/themes" "/wallpapers")
     '("XDG_CONFIG_DIRS" suffix directory "/etc/xdg")
-    ;; The following variables can be extended by the user, but not
-    ;; overridden, to ensure proper operation.
-    '("QT_PLUGIN_PATH" prefix directory "/lib/qt5/plugins")
-    '("QML2_IMPORT_PATH" prefix directory "/lib/qt5/qml")
+    ;; We wrap exactly to avoid potentially mixing Qt5/Qt6 components, which
+    ;; would cause warnings, perhaps problems.
+    `("QT_PLUGIN_PATH" = directory
+      ,(format #f "/lib/qt~a/plugins" qt-major-version))
+    `("QML2_IMPORT_PATH" = directory
+      ,(format #f "/lib/qt~a/qml" qt-major-version))
     ;; QTWEBENGINEPROCESS_PATH accepts a single value, which makes 'exact the
     ;; most suitable environment variable type for it.
-    '("QTWEBENGINEPROCESS_PATH" = regular
-      "/lib/qt5/libexec/QtWebEngineProcess"))))
+    `("QTWEBENGINEPROCESS_PATH" = regular
+      ,(format #f "/lib/qt~a/libexec/QtWebEngineProcess" qt-major-version)))))
 
 (define* (wrap-qt-program* program #:key inputs output-dir
-                           qt-wrap-excluded-inputs)
+                           qt-wrap-excluded-inputs
+                           (qt-major-version %default-qt-major-version))
 
   (define input-directories
     (filter-map
@@ -104,12 +112,14 @@
 
   (let ((vars-to-wrap (variables-for-wrapping
                        (cons output-dir input-directories)
-                       output-dir)))
+                       output-dir
+                       #:qt-major-version qt-major-version)))
     (when (not (null? vars-to-wrap))
       (apply wrap-program program vars-to-wrap))))
 
 (define* (wrap-qt-program program-name #:key inputs output
-                          (qt-wrap-excluded-inputs %qt-wrap-excluded-inputs))
+                          (qt-wrap-excluded-inputs %qt-wrap-excluded-inputs)
+                          (qt-major-version %default-qt-major-version))
   "Wrap the specified program (which must reside in the OUTPUT's \"/bin\"
 directory) with suitably set environment variables.
 
@@ -117,9 +127,11 @@ This is like qt-build-systems's phase \"qt-wrap\", but only the named program
 is wrapped."
   (wrap-qt-program* (string-append output "/bin/" program-name)
                     #:output-dir output #:inputs inputs
-                    #:qt-wrap-excluded-inputs qt-wrap-excluded-inputs))
+                    #:qt-wrap-excluded-inputs qt-wrap-excluded-inputs
+                    #:qt-major-version qt-major-version))
 
 (define* (wrap-all-qt-programs #:key inputs outputs
+                               qtbase
                                (qt-wrap-excluded-outputs '())
                                (qt-wrap-excluded-inputs %qt-wrap-excluded-inputs)
                                #:allow-other-keys)
@@ -131,6 +143,15 @@ Wrapping is not applied to outputs whose name is listed in
 QT-WRAP-EXCLUDED-OUTPUTS.  This is useful when an output is known not
 to contain any Qt binaries, and where wrapping would gratuitously
 add a dependency of that output on Qt."
+  (define qt-major-version
+    (if qtbase
+        (let ((_ version (package-name->name+version
+                          (strip-store-file-name qtbase))))
+          (first (string-split version #\.)))
+        ;; Provide a fall-back for build systems not having a #:qtbase
+        ;; argument.
+        %default-qt-major-version))
+
   (define (find-files-to-wrap output-dir)
     (append-map
      (lambda (dir)
@@ -149,7 +170,8 @@ add a dependency of that output on Qt."
       (unless (member output qt-wrap-excluded-outputs)
         (for-each (cut wrap-qt-program* <>
                        #:output-dir output-dir #:inputs inputs
-                       #:qt-wrap-excluded-inputs qt-wrap-excluded-inputs)
+                       #:qt-wrap-excluded-inputs qt-wrap-excluded-inputs
+                       #:qt-major-version qt-major-version)
                   (find-files-to-wrap output-dir))))))
 
   (for-each handle-output outputs))

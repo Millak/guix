@@ -69,22 +69,17 @@ PARI/GP.  It has been spun off from the SageMath mathematics software system,
 but it can be used independently.")
     (license license:gpl2+)))
 
-;; The stable version of the following package is not young enough to be
-;; used with Sage, since it does not support cython; so we use a beta
-;; release.
 (define-public python-gmpy2
   (package
     (name "python-gmpy2")
-    (version "2.1.0b1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/aleaxit/gmpy")
-                    (commit (string-append "gmpy2-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ljvnmhxqdfsp0yy4c2hynhk5sggm63kkqsq4iwq4k9vsnx2xm97"))))
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gmpy2" version))
+       (sha256
+        (base32
+         "1lc29g3s4z5f1qbsc2x9i9sf6wrpni9pwiwmb1wwx3hjr85i8xfs"))))
     (build-system python-build-system)
     (native-inputs
      (list unzip))

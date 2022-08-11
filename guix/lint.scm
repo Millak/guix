@@ -492,7 +492,7 @@ of a package, and INPUT-NAMES, a list of package specifications such as
             "kdoctools"
             "libtool"
             "m4"
-            "qttools"
+            "qttools-5"
             "yasm" "nasm" "fasm"
             "python-coverage"
             "python-cython"
@@ -507,7 +507,7 @@ of a package, and INPUT-NAMES, a list of package specifications such as
             "scdoc"
             "swig"
             "qmake"
-            "qttools"
+            "qttools-5"
             "texinfo"
             "xorg-server-for-tests"
             "yelp-tools")))

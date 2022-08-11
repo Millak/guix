@@ -357,11 +357,17 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
            ;; network.  It can be faster than fetching from remote servers.
            (service avahi-service-type)
 
-           ;; The build daemon.  Register the default substitute server key(s)
-           ;; as trusted to allow the installation process to use substitutes by
-           ;; default.
+           ;; The build daemon.
            (service guix-service-type
-                    (guix-configuration (authorize-key? #t)))
+                    (guix-configuration
+                     ;; Register the default substitute server key(s) as
+                     ;; trusted to allow the installation process to use
+                     ;; substitutes by default.
+                     (authorize-key? #t)
+
+                     ;; Install and run the current Guix rather than an older
+                     ;; snapshot.
+                     (guix (current-guix))))
 
            ;; Start udev so that useful device nodes are available.
            ;; Use device-mapper rules for cryptsetup & co; enable the CRDA for
@@ -463,7 +469,8 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
                  (bootloader grub-bootloader)
                  (targets '("/dev/sda"))))
     (label (string-append "GNU Guix installation "
-                          (package-version guix)))
+                          (or (getenv "GUIX_DISPLAYED_VERSION")
+                              (package-version guix))))
 
     ;; XXX: The AMD Radeon driver is reportedly broken, which makes kmscon
     ;; non-functional:

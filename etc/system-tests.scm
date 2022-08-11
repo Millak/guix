@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2018-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,7 +20,6 @@
              (gnu packages package-management)
              (guix monads)
              (guix store)
-             ((gnu ci) #:select (channel-source->package))
              ((guix git-download) #:select (git-predicate))
              ((guix utils) #:select (current-source-directory))
              (git)

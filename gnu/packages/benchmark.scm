@@ -499,7 +499,7 @@ and options.  With careful benchmarking, different hardware can be compared.")
               (substitute* "src/benchmark.cpp"
                 (("\"fio\"")
                  (format #f "~s" (search-input-file inputs "bin/fio")))))))))
-    (native-inputs (list extra-cmake-modules qttools))
+    (native-inputs (list extra-cmake-modules qttools-5))
     (inputs (list fio qtbase-5))
     (home-page "https://github.com/JonMagon/KDiskMark")
     (synopsis "Simple disk benchmark tool")

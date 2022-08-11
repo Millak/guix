@@ -43,7 +43,9 @@ accounts.\x1b[0m
   (keyboard-layout (keyboard-layout "us" "altgr-intl"))
 
   ;; Label for the GRUB boot menu.
-  (label (string-append "GNU Guix " (package-version guix)))
+  (label (string-append "GNU Guix "
+                        (or (getenv "GUIX_DISPLAYED_VERSION")
+                            (package-version guix))))
 
   (firmware '())
 
@@ -123,7 +125,14 @@ root ALL=(ALL) ALL
                      (login-service-type config =>
                                          (login-configuration
                                           (inherit config)
-                                          (motd vm-image-motd)))))))
+                                          (motd vm-image-motd)))
+
+                     ;; Install and run the current Guix rather than an older
+                     ;; snapshot.
+                     (guix-service-type config =>
+                                        (guix-configuration
+                                         (inherit config)
+                                         (guix (current-guix))))))))
 
   ;; Allow resolution of '.local' host names with mDNS.
   (name-service-switch %mdns-host-lookup-nss))

@@ -220,7 +220,14 @@ output in multiple windows in a terminal.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02xz017ba9fssm1rp1fcfld7h79awbr6fqai9dxaqp02akp3davk"))))
+        (base32 "02xz017ba9fssm1rp1fcfld7h79awbr6fqai9dxaqp02akp3davk"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Prevent race on busy hardware.  Remove snippet for versions
+        ;; > 1.10.0; see <https://github.com/gabime/spdlog/issues/2363>.
+        '(substitute* "tests/test_misc.cpp"
+           (("spdlog::details::os::sleep_for_millis\\(10\\)")
+            "spdlog::details::os::sleep_for_millis(100)")))))
     (build-system cmake-build-system)
     ;; TODO run benchmark. Currently not possible, as adding
     ;; (gnu packages benchmark) forms a dependency cycle

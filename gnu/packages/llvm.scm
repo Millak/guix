@@ -485,7 +485,7 @@ code analysis tools.")
               "znver3")
             '())))))
 
-(define* (make-clang-toolchain clang #:optional (libomp libomp-13))
+(define (make-clang-toolchain clang libomp)
   (package
     (name (string-append (package-name clang) "-toolchain"))
     (version (package-version clang))
@@ -663,7 +663,7 @@ of programming tools as well as libraries with equivalent functionality.")
 (define-public libomp-14
   (package
     (name "libomp")
-    (version "14.0.6")
+    (version (package-version llvm-14))
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "openmp" version))
@@ -744,7 +744,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
 (define-public libomp-13
   (package
     (inherit libomp-14)
-    (version "13.0.1")
+    (version (package-version llvm-13))
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "openmp" version))
@@ -767,7 +767,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
        (replace "llvm" llvm-13)))))
 
 (define-public clang-toolchain-13
-  (make-clang-toolchain clang-13))
+  (make-clang-toolchain clang-13 libomp-13))
 
 (define-public llvm-12
   (package
@@ -855,8 +855,29 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                       (base32
                        "1r9a4fdz9ci58b5z2inwvm4z4cdp6scrivnaw05dggkxz7yrwrb5")))))
 
+(define-public libomp-12
+  (package
+    (inherit libomp-13)
+    (version (package-version llvm-12))
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "14dh0r6h2xh747ffgnsl4z08h0ri04azi9vf79cbz7ma1r27kzk0"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (arguments
+     '(#:configure-flags '("-DLIBOMP_USE_HWLOC=ON"
+                           "-DOPENMP_TEST_C_COMPILER=clang"
+                           "-DOPENMP_TEST_CXX_COMPILER=clang++")
+       #:test-target "check-libomp"))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-13)
+       (replace "clang" clang-12)
+       (replace "llvm" llvm-12)))))
+
 (define-public clang-toolchain-12
-  (make-clang-toolchain clang-12))
+  (make-clang-toolchain clang-12 libomp-12))
 
 (define-public llvm-11
   (package
@@ -888,8 +909,24 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                       (base32
                        "02bcwwn54661madhq4nxc069s7p7pj5gpqi8ww50w3anbpviilzy")))))
 
+(define-public libomp-11
+  (package
+    (inherit libomp-12)
+    (version (package-version llvm-11))
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "0k389d0g9zlfyzh1kpb3i5jdawzpn0hrdxzbjinpvdv7rbw4sw1d"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-12)
+       (replace "clang" clang-11)
+       (replace "llvm" llvm-11)))))
+
 (define-public clang-toolchain-11
-  (make-clang-toolchain clang-11))
+  (make-clang-toolchain clang-11 libomp-11))
 
 (define-public llvm-10
   (package
@@ -928,8 +965,24 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                       (base32
                        "06n1yp638rh24xdxv9v2df0qajxbjz4w59b7dd4ky36drwmpi4yh")))))
 
+(define-public libomp-10
+  (package
+    (inherit libomp-11)
+    (version (package-version llvm-10))
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "0i4bn84lkpm5w3qkpvwm5z6jdj8fynp7d3bcasa1xyq4is6757yi"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-11)
+       (replace "clang" clang-10)
+       (replace "llvm" llvm-10)))))
+
 (define-public clang-toolchain-10
-  (make-clang-toolchain clang-10))
+  (make-clang-toolchain clang-10 libomp-10))
 
 (define-public llvm-9
   (package
@@ -973,8 +1026,24 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                    "0ls2h3iv4finqyflyhry21qhc9cm9ga7g1zq21020p065qmm2y2p"
                    #:patches '("clang-9.0-libc-search-path.patch")))
 
+(define-public libomp-9
+  (package
+    (inherit libomp-10)
+    (version (package-version llvm-9))
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "1knafnpp0f7hylx8q20lkd6g1sf0flly572dayc5d5kghh7hd52w"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-10)
+       (replace "clang" clang-9)
+       (replace "llvm" llvm-9)))))
+
 (define-public clang-toolchain-9
-  (make-clang-toolchain clang-9))
+  (make-clang-toolchain clang-9 libomp-9))
 
 (define-public llvm-8
   (package
@@ -1000,8 +1069,25 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                    "0ihnbdl058gvl2wdy45p5am55bq8ifx8m9mhcsgj9ax8yxlzvvvh"
                    #:patches '("clang-8.0-libc-search-path.patch")))
 
+(define-public libomp-8
+  (package
+    (inherit libomp-9)
+    (version (package-version llvm-8))
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "0b3jlxhqbpyd1nqkpxjfggm5d9va5qpyf7d4i5y7n4a1mlydv19y"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-9)
+       (replace "clang" clang-8)
+       (replace "llvm" llvm-8)))
+    (license license:ncsa)))
+
 (define-public clang-toolchain-8
-  (make-clang-toolchain clang-8))
+  (make-clang-toolchain clang-8 libomp-8))
 
 (define-public llvm-7
   (package
@@ -1025,8 +1111,24 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                    "0vc4i87qwxnw9lci4ayws9spakg0z6w5w670snj9f8g5m9rc8zg9"
                    #:patches '("clang-7.0-libc-search-path.patch")))
 
+(define-public libomp-7
+  (package
+    (inherit libomp-8)
+    (version (package-version llvm-7))
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "openmp" version))
+              (sha256
+               (base32
+                "1dg53wzsci2kra8lh1y0chh60h2l8h1by93br5spzvzlxshkmrqy"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-8)
+       (replace "clang" clang-7)
+       (replace "llvm" llvm-7)))))
+
 (define-public clang-toolchain-7
-  (make-clang-toolchain clang-7))
+  (make-clang-toolchain clang-7 libomp-7))
 
 (define-public llvm-6
   (package
@@ -1050,8 +1152,26 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                    "0rxn4rh7rrnsqbdgp4gzc8ishbkryhpl1kd3mpnxzpxxhla3y93w"
                    #:patches '("clang-6.0-libc-search-path.patch")))
 
+(define-public libomp-6
+  (package
+    (inherit libomp-7)
+    (version (package-version llvm-6))
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://releases.llvm.org/"
+                                  version  "/openmp-" version
+                                  ".src.tar.xz"))
+              (sha256
+               (base32
+                "0nhwfba9c351r16zgyjyfwdayr98nairky3c2f0b2lc360mwmbv6"))
+              (file-name (string-append "libomp-" version ".tar.xz"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-7)
+       (replace "clang" clang-6)
+       (replace "llvm" llvm-6)))))
+
 (define-public clang-toolchain-6
-  (make-clang-toolchain clang-6))
+  (make-clang-toolchain clang-6 libomp-6))
 
 (define-public llvm-3.9.1
   (package (inherit llvm-6)
@@ -1205,6 +1325,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                    #:patches '("clang-3.5-libc-search-path.patch")))
 
 ;; Default LLVM and Clang version.
+(define-public libomp libomp-13)
 (define-public llvm llvm-13)
 (define-public clang-runtime clang-runtime-13)
 (define-public clang clang-13)
@@ -1374,21 +1495,22 @@ misuse of libraries outside of the store.")
 (define-public lldb
   (package
     (name "lldb")
-    (version "13.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (llvm-uri "lldb" version))
-              (sha256
-               (base32
-                "05nvcbgb4rx860r3jzsbpvcbzpd0i7nsm5qrpkyfhg5vrh5mj32a"))))
+    (version "14.0.6")
+    (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DCMAKE_CXX_COMPILER=clang++")))
+     (list
+       #:configure-flags #~(list "-DOPENMP_TEST_CXX_COMPILER=clang++")
+       #:phases
+       #~(modify-phases %standard-phases
+         (add-after 'unpack 'chdir-to-source
+           (lambda _
+             (chdir "lldb"))))))
     (native-inputs
      (list pkg-config swig))
     (inputs
-     (list clang-13
-           llvm-13
+     (list clang-14
+           llvm-14
            ;; Optional (but recommended) inputs.
            ncurses
            libedit
@@ -1581,8 +1703,6 @@ standard C++ library.")
 requirements according to version 1.1 of the OpenCL specification.")
     ;; Apache license 2.0 with LLVM exception
     (license license:asl2.0)))
-
-(define-public libomp libomp-13)
 
 (define-public python-llvmlite
   (package

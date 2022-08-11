@@ -285,6 +285,7 @@ compatible to GNU Pth.")
     ;; Note2: 2.2.33 currently suffers from regressions, so do not update to it
     ;; (see: https://dev.gnupg.org/T5742).
     (version "2.2.32")
+    (replacement gnupg/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-" version
@@ -351,6 +352,15 @@ libskba (working with X.509 certificates and CMS data).")
     (license license:gpl3+)
     (properties '((ftp-server . "ftp.gnupg.org")
                   (ftp-directory . "/gcrypt/gnupg")))))
+
+(define gnupg/fixed
+  (package
+    (inherit gnupg)
+    (source (origin
+              (inherit (package-source gnupg))
+              (patches
+                (append (origin-patches (package-source gnupg))
+                        (search-patches "gnupg-CVE-2022-34903.patch")))))))
 
 (define-public gnupg-1
   (package (inherit gnupg)

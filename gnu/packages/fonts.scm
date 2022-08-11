@@ -50,6 +50,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
+;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1578,7 +1579,7 @@ programming.  Iosevka is completely generated from its source code.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.36.0")
+    (version "0.36.8")
     (source
      (origin
        (method url-fetch)
@@ -1586,7 +1587,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/sarasa-gothic-ttc-" version ".7z"))
        (sha256
-        (base32 "0rr6qrf49zx3cl1pv7063l12nnj2nm9p4di3frp0p4ci9l7b4xmw"))))
+        (base32 "01fn5mzr1rcz0c8nbhabwbv1pq1c3ylf2msxldc9adks1pi45fmh"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -1598,7 +1599,7 @@ programming.  Iosevka is completely generated from its source code.")
     (native-inputs (list p7zip))
     (home-page "https://github.com/be5invis/Sarasa-Gothic")
     (license license:silofl1.1)
-    (synopsis "Sarasa Gothic / 更纱黑体 / 更紗黑體 / 更紗ゴシック / 사라사 고딕")
+    (synopsis "CJK programming font based on Iosevka and Source Han Sans")
     (description
      "Sarasa Gothic is a programming font based on Iosevka and Source Han Sans,
 most CJK characters are same height, and double width as ASCII characters.")))
@@ -2709,3 +2710,88 @@ This package contains the following outputs:
 icon is designed on a 24x24 grid with an emphasis on simplicity, consistency,
 and readability.  This package bundles those icons into a font.")
       (license license:expat))))
+
+(define-public font-lxgw-wenkai
+  (package
+    (name "font-lxgw-wenkai")
+    (version "1.235.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/lxgw/LxgwWenKai/releases/download/v"
+                    version "/lxgw-wenkai-v" version ".tar.gz"))
+              (sha256
+               (base32
+                "17li3xry4j4ccdnwz2pcnf0gv7c5mwq0h5fwvl7ar28brn2qgdbk"))))
+    (build-system font-build-system)
+    (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
+    (synopsis "Simplified Chinese Imitation Song typeface")
+    (description
+     "LXGW Wenkai is a Simplified Chinese Imitation Song typeface covering the
+CJK Unified Ideographs (base block) and commonly used Hangul.  For characters
+within GB 2312, standard glyphs for Mainland China is used.")
+    (license license:silofl1.1)))
+
+(define-public font-lxgw-wenkai-tc
+  (package
+    (inherit font-lxgw-wenkai)
+    (name "font-lxgw-wenkai-tc")
+    (version "0.920")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/lxgw/LxgwWenKaiTC/releases/download/v"
+                    version "/lxgw-wenkai-tc-v" version ".tar.gz"))
+              (sha256
+               (base32
+                "1kysqzi19ldd1a3pd9axmggcbm1719myq6i6q6fdb1afscn272cp"))))
+    (home-page "https://github.com/lxgw/LxgwWenKaitc")
+    (synopsis "Traditional Chinese Imitation Song typeface")
+    (description
+     "LXGW Wenkai TC is a Traditional Chinese inherited glyphs form Imitation
+Song typeface covering commonly used characters as well as written form of
+dialects in Hong Kong and Taiwan.")))
+
+(define-public font-chiron-sung-hk
+  (package
+    (name "font-chiron-sung-hk")
+    (version "1.005")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/chiron-fonts/chiron-sung-hk")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0iqlnb7825kisg2avhr9hwwvb4jw8f642vvmms5dw6m9czzydpgw"))))
+    (build-system font-build-system)
+    (home-page "https://chiron-fonts.github.io/")
+    (synopsis "Traditional Chinese Song typeface")
+    (description
+     "Chiron Sung HK is a Traditional Chinese Song typeface based on the Hong
+Kong variant of Adobe’s Source Han Serif.  The font aims at providing a modern,
+region-agnostic glyph set adopting the “modern” glyph style that is similar to
+prevalent typefaces in Traditional Chinese regions.")
+    (license license:silofl1.1)))
+
+(define-public font-chiron-hei-hk
+  (package
+    (inherit font-chiron-sung-hk)
+    (name "font-chiron-hei-hk")
+    (version "2.503")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/chiron-fonts/chiron-hei-hk")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00av598lcsvbwfxabs8m1bfvlk3zq98nziynsrg5p2s5mhz2pkvk"))))
+    (synopsis "Traditional Chinese Gothic typeface")
+    (description
+     "Chiron Hei HK is a Traditional Chinese Gothic typeface based on the Hong
+Kong variant of Adobe’s Source Han Sans.  The font aims at providing a modern,
+region-agnostic glyph set adopting the “modern” glyph style that is similar to
+prevalent typefaces in Traditional Chinese regions.")))

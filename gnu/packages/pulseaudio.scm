@@ -48,8 +48,8 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
-  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages freedesktop)
@@ -370,7 +370,7 @@ curses-style interfaces.")
 (define-public pamixer
   (package
     (name "pamixer")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method git-fetch)
@@ -379,20 +379,12 @@ curses-style interfaces.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d5arjbsh3q9z693pi2rq553ai9b18iz36ss7q8ff29m0hf62lzd"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'install 'mkdir-bin
-           (lambda _
-             (mkdir-p (string-append (assoc-ref %outputs "out") "/bin")))))))
+        (base32 "0d0fcqv9fri1y2701lasscgmvljxzpyg95vy90b3d2ccdnqn3d1d"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config))
     (inputs
-     (list boost pulseaudio))
+     (list cxxopts pulseaudio))
     (home-page "https://github.com/cdemoulins/pamixer")
     (synopsis "PulseAudio command line mixer")
     (description
@@ -436,15 +428,14 @@ README.md for a detailed list of features.")
 (define-public paprefs
   (package
     (name "paprefs")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.freedesktop.org/software/pulseaudio/"
-                           name "/" name "-" version ".tar.xz"))
+                           "paprefs/paprefs-" version ".tar.xz"))
        (sha256
-        (base32
-         "189z5p20hk0xv9vwvym293503j4pwl03xqk9hl7cl6dwgv0l7wkf"))))
+        (base32 "0czn71vc2j59ass1axr8ij7bh53wq2q0z4gw7xgd2dirvi01xwmk"))))
     (build-system meson-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))

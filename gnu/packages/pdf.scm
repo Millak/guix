@@ -869,7 +869,7 @@ program capable of converting PDF into other formats.")
            libspectre
            poppler-qt5
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (arguments
      `(#:tests? #f ; no tests
        #:phases

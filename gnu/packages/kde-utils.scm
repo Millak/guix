@@ -407,7 +407,7 @@ either be created or generated from a image.")
         (base32 "03wsv83l1cay2dpcsksad124wzan7kh8zxdw1h0yicn398kdbck4"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools qttools shared-mime-info))
+     (list extra-cmake-modules kdoctools qttools-5 shared-mime-info))
     (inputs
      (list kbookmarks
            kcmutils
@@ -531,7 +531,7 @@ remind you to take a break now and then.")
            oxygen-icons ;; default icon set
            plasma-framework
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            solid))
     (home-page "https://kde.org/applications/utilities/org.kde.smb4k")
     (synopsis "Samba (SMB) share advanced browser")

@@ -47,6 +47,7 @@
   (package
     (name "aspell")
     (version "0.60.8")
+    (replacement aspell/replacement)
     (source
      (origin
       (method url-fetch)
@@ -91,6 +92,16 @@ a standalone program.  Notable features of Aspell include its full support of
 documents written in the UTF-8 encoding and its ability to use multiple
 dictionaries, including personal ones.")
     (license lgpl2.1+)))
+
+;; Replacement package with security fixes.
+(define aspell/replacement
+  (package
+    (inherit aspell)
+    (source
+     (origin
+       (inherit (package-source aspell))
+       (patches (append (origin-patches (package-source aspell))
+                        (search-patches "aspell-CVE-2019-25051.patch")))))))
 
 ;;;
 ;;; Dictionaries.

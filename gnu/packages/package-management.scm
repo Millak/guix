@@ -110,6 +110,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages version-control)
+  #:autoload   (guix build-system channel) (channel-build-system)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system guile)
@@ -119,6 +120,10 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:autoload   (guix describe) (current-channels)
+  #:autoload   (guix channels) (channel?
+                                guix-channel?
+                                repository->guix-channel)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -489,6 +494,21 @@ the Nix package manager.")
       (license license:gpl3+)
       (properties '((ftp-server . "alpha.gnu.org"))))))
 
+(define* (channel-source->package source #:key commit)
+  "Return a package for the given channel SOURCE, a lowerable object."
+  (package
+    (inherit guix)
+    (version (string-append (package-version guix) "."
+                            (if commit (string-take commit 7) "")))
+    (build-system channel-build-system)
+    (arguments `(#:source ,source
+                 #:commit ,commit))
+    (inputs '())
+    (native-inputs '())
+    (propagated-inputs '())))
+
+(export channel-source->package)
+
 (define-public guix-for-cuirass
   ;; Known-good revision before commit
   ;; bd86bbd300474204878e927f6cd3f0defa1662a5, which introduced
@@ -584,45 +604,37 @@ the Nix package manager.")
       (modify-inputs (package-propagated-inputs guix)
         (delete "guile-ssh"))))))
 
-(define (source-file? file stat)
-  "Return true if FILE is likely a source file, false if it is a typical
-generated file."
-  (define (wrong-extension? file)
-    (or (string-suffix? "~" file)
-        (member (file-extension file)
-                '("o" "a" "lo" "so" "go"))))
-
-  (match (basename file)
-    ((or ".git" "autom4te.cache" "configure" "Makefile" "Makefile.in" ".libs")
-     #f)
-    ((? wrong-extension?)
-     #f)
-    (_
-     #t)))
-
 (define-public current-guix-package
   ;; This parameter allows callers to override the package that 'current-guix'
   ;; returns.  This is useful when 'current-guix' cannot compute it by itself,
   ;; for instance because it's not running from a source code checkout.
-  (make-parameter #f))
+  ;;
+  ;; The default value is obtained by creating a package from the 'guix'
+  ;; channel returned by 'current-channels' or, if that's the empty list, that
+  ;; returned by 'repository->guix-channel' for the current directory (which
+  ;; assumes that we're running from a Git checkout).  Delay computation so
+  ;; that the relevant modules can be loaded lazily.
+  (make-parameter
+   (delay (match (or (find guix-channel? (current-channels))
+                     (repository->guix-channel
+                      (current-source-directory)))
+            ((? channel? source)
+             (package
+               (inherit guix)
+               (source source)
+               (build-system channel-build-system)
+               (inputs '())
+               (native-inputs '())
+               (propagated-inputs '())))
+            (#f #f)))))
 
 (define-public current-guix
-  (let* ((repository-root (delay (canonicalize-path
-                                  (string-append (current-source-directory)
-                                                 "/../.."))))
-         (select? (delay (or (git-predicate (force repository-root))
-                             source-file?))))
-    (lambda ()
-      "Return a package representing Guix built from the current source tree.
-This works by adding the current source tree to the store (after filtering it
-out) and returning a package that uses that as its 'source'."
-      (or (current-guix-package)
-          (package
-            (inherit guix)
-            (version (string-append (package-version guix) "+"))
-            (source (local-file (force repository-root) "guix-current"
-                                #:recursive? #t
-                                #:select? (force select?))))))))
+  (lambda ()
+    "Return a package representing the currently-used Guix.  It can be
+overridden by setting the 'current-guix-package' parameter."
+    (match (current-guix-package)
+      ((? promise? package) (force package))
+      (package package))))
 
 (define-public guix-icons
   (package
@@ -850,7 +862,7 @@ features of Stow with some extensions.")
 (define-public rpm
   (package
     (name "rpm")
-    (version "4.17.0")
+    (version "4.17.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ftp.rpm.org/releases/rpm-"
@@ -858,7 +870,7 @@ features of Stow with some extensions.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0sjyqs6hc57k46f45b68dfxnp985s0gar0fi1s0ig6vl4h5j439f"))))
+                "0pbfj94ha59lbnd8dk0aqyxjv37xixfdcazq3y2mhwkf8s9vf48c"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--with-external-db" ;use the system's bdb
@@ -887,11 +899,13 @@ features of Stow with some extensions.")
            lua
            nspr
            nss
-           popt
            python
            sqlite
            xz
            zlib))
+    (propagated-inputs
+     ;; popt is listed in the 'Requires' of rpm.pc.
+     (list popt))
     (home-page "https://rpm.org/")
     (synopsis "The RPM Package Manager")
     (description
@@ -1138,7 +1152,7 @@ written entirely in Python.")
 (define-public conan
   (package
     (name "conan")
-    (version "1.47.0")
+    (version "1.50.0")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -1148,7 +1162,7 @@ written entirely in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zs2xb22rsy5fsc0fd7c95vrx1mfz7vasyg1lqkzyfimvn5zah6n"))))
+         "1jjrinz5wkcxfvwdpldrv4h7vacdyz88cc4af5vi3sdnjra0i0m5"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1217,8 +1231,9 @@ written entirely in Python.")
                         ;; This one fails for unknown reasons (see:
                         ;; https://github.com/conan-io/conan/issues/9671).
                         "and not test_build "
-                        ;; This test expects the 'apt' command to be available.
+                        ;; These tests expect the 'apt' command to be available.
                         "and not test_apt_check "
+                        "and not test_apt_install_substitutes "
                         (if (not (string-prefix? "x86_64" system))
                             ;; These tests either assume the machine is
                             ;; x86_64, or require a cross-compiler to target
@@ -1823,7 +1838,7 @@ for packaging and deployment of cross-compiled Windows applications.")
 (define-public libostree
   (package
     (name "libostree")
-    (version "2022.3")
+    (version "2022.5")
     (source
      (origin
        (method url-fetch)
@@ -1831,7 +1846,7 @@ for packaging and deployment of cross-compiled Windows applications.")
              "https://github.com/ostreedev/ostree/releases/download/v"
              (version-major+minor version) "/libostree-" version ".tar.xz"))
        (sha256
-        (base32 "04pn4ibak8k7qlm0722im5ng8gyn1r5y5ggyz75ca0smrnfzs8xq"))))
+        (base32 "0gq53g601x09gc4ips6n3zmmdaz8zyv235xf63fxf4f17fclsk4i"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases

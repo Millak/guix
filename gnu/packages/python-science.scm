@@ -544,6 +544,49 @@ region of practical equivalence (rope), or that the second classifier has
 higher scores.")
     (license license:expat)))
 
+(define-public python-fbpca
+  (package
+    (name "python-fbpca")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "fbpca" version))
+              (sha256
+               (base32
+                "1lbjqhqsdmqk86lb86q3ywf7561zmdny1dfvgwqkyrkr4ij7f1hm"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-numpy python-scipy))
+    (home-page "https://fbpca.readthedocs.io/")
+    (synopsis "Functions for principal component analysis and accuracy checks")
+    (description
+     "This package provides fast computations for @dfn{principal component
+analysis} (PCA), SVD, and eigendecompositions via randomized methods")
+    (license license:bsd-3)))
+
+(define-public python-geosketch
+  (package
+    (name "python-geosketch")
+    (version "1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "geosketch" version))
+              (sha256
+               (base32
+                "0knch5h0p8xpm8bi3b5mxyaf1ywwimrsdmbnc1xr5icidcv9gzmv"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #false)) ;there are none
+    (propagated-inputs (list python-fbpca python-numpy python-scikit-learn))
+    (home-page "https://github.com/brianhie/geosketch")
+    (synopsis "Geometry-preserving random sampling")
+    (description "geosketch is a Python package that implements the geometric
+sketching algorithm described by Brian Hie, Hyunghoon Cho, Benjamin DeMeo,
+Bryan Bryson, and Bonnie Berger in \"Geometric sketching compactly summarizes
+the single-cell transcriptomic landscape\", Cell Systems (2019).  This package
+provides an example implementation of the algorithm as well as scripts
+necessary for reproducing the experiments in the paper.")
+    (license license:expat)))
+
 (define-public python-xarray
   (package
     (name "python-xarray")
@@ -1183,7 +1226,7 @@ aggregated sum and more.")
 (define-public python-pyvista
   (package
     (name "python-pyvista")
-    (version "0.35.1")
+    (version "0.35.2")
     (source
      ;; The PyPI tarball does not contain the tests.
      ;; (However, we don't yet actually run the tests.)
@@ -1194,7 +1237,7 @@ aggregated sum and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rwwn8a4j3i22il6dxr2qzrnnz3n1gjbpa2p8gfzrjmzp5lzzk81"))))
+        (base32 "1qmxrhqm3ag736yb761jy1himwlr3p676xyqbry61h97dj11n6sq"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-appdirs

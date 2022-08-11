@@ -453,8 +453,8 @@ access.")
              font-openmoji
              openssl
              qtbase-5
-             qtmultimedia
-             qtsvg))
+             qtmultimedia-5
+             qtsvg-5))
       (home-page "https://kristall.random-projects.net")
       (synopsis "Small-internet graphical client")
       (description "Graphical small-internet client with with many features
@@ -479,7 +479,7 @@ interface.")
         (base32 "1g7dfrnjgifvbmz1523iq9qxhrsciajr8dv3pak6dlacm235i276"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-attrs)) ; for tests
+     (list python-attrs))               ; for tests
     (inputs
      (list bash-minimal
            python-colorama
@@ -492,11 +492,11 @@ interface.")
            ;; that it's __init__.py is used first.
            python-pyqtwebengine
            python-pyqt-without-qtwebkit
-           ;; While qtwebengine is provided by python-pyqtwebengine, it's
+           ;; While qtwebengine-5 is provided by python-pyqtwebengine, it's
            ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
-           qtwebengine))
+           qtwebengine-5))
     (arguments
-     `(;; FIXME: With the existance of qtwebengine, tests can now run.  But
+     `(;; FIXME: With the existance of qtwebengine-5, tests can now run.  But
        ;; they are still disabled because test phase hangs.  It's not readily
        ;; apparent as to why.
        #:tests? #f
@@ -506,9 +506,9 @@ interface.")
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "qutebrowser/commands/userscripts.py"
                (("os.path.join.*system=True)")
-               (string-append "os.path.join(\""
-                              (assoc-ref outputs "out")
-                              "\", \"share\", \"qutebrowser\"")))))
+                (string-append "os.path.join(\""
+                               (assoc-ref outputs "out")
+                               "\", \"share\", \"qutebrowser\"")))))
          (add-before 'check 'set-env-offscreen
            (lambda _
              (setenv "QT_QPA_PLATFORM" "offscreen")))
@@ -530,23 +530,20 @@ interface.")
                                          "/site-packages:"
                                          (getenv "GUIX_PYTHONPATH"))))
                (for-each
-                 (lambda (file)
-                   (wrap-program file
-                     `("GUIX_PYTHONPATH" ":" prefix (,path))))
-                 (append
-                   (find-files
-                     (string-append out "/share/qutebrowser/scripts") "\\.py$")
-                   (find-files
-                     (string-append out "/share/qutebrowser/userscripts")))))))
+                (lambda (file)
+                  (wrap-program file
+                    `("GUIX_PYTHONPATH" ":" prefix (,path))))
+                (append
+                 (find-files
+                  (string-append out "/share/qutebrowser/scripts") "\\.py$")
+                 (find-files
+                  (string-append out "/share/qutebrowser/userscripts")))))))
          (add-after 'wrap 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/qutebrowser"))
-                    (qt-process-path (string-append
-                                      (assoc-ref inputs "qtwebengine")
-                                      "/lib/qt5/libexec/QtWebEngineProcess")))
-               (wrap-program bin
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
+             (wrap-program (search-input-file outputs "bin/qutebrowser")
+               `("QTWEBENGINEPROCESS_PATH" =
+                 (,(search-input-file
+                    inputs "/lib/qt5/libexec/QtWebEngineProcess")))))))))
     (home-page "https://qutebrowser.org/")
     (synopsis "Minimal, keyboard-focused, vim-like web browser")
     (description "qutebrowser is a keyboard-focused browser with a minimal
@@ -708,7 +705,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.13.6")
+    (version "1.13.7")
     (source
      (origin
        (method url-fetch)
@@ -716,7 +713,7 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "19xaw6lspl4mjx1wls0s15l97dzfkv20gph652yzwk6ia3ly92bs"))
+        (base32 "051f7ym1z1hjsxnlvk7gx7b4v12x42i3g9gi49qwy3x8rw30vrvz"))
        (modules '((guix build utils)))
        (snippet
         '(begin

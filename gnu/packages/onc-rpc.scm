@@ -5,6 +5,7 @@
 ;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   (package
     (name "libtirpc")
     (version "1.3.1")
+    (replacement libtirpc/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/libtirpc/libtirpc/"
@@ -74,7 +76,8 @@ IPv4 and IPv6.  ONC RPC is notably used by the network file system (NFS).")
   (package/inherit libtirpc
     (name "libtirpc-hurd")
     (source (origin (inherit (package-source libtirpc))
-                    (patches (search-patches "libtirpc-hurd.patch"))))
+                    (patches (search-patches "libtirpc-hurd.patch"
+                                             "libtirpc-CVE-2021-46828.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments libtirpc)
        ((#:configure-flags flags ''())
@@ -82,6 +85,13 @@ IPv4 and IPv6.  ONC RPC is notably used by the network file system (NFS).")
         `(list (string-append "ac_cv_prog_KRB5_CONFIG="
                               (assoc-ref %build-inputs "mit-krb5")
                               "/bin/krb5-config")))))))
+
+(define libtirpc/fixed
+  (package
+    (inherit libtirpc)
+    (source (origin
+              (inherit (package-source libtirpc))
+              (patches (search-patches "libtirpc-CVE-2021-46828.patch"))))))
 
 (define-public rpcbind
   (package

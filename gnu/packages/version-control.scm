@@ -590,7 +590,14 @@ everything from small to very large projects with speed and efficiency.")
    (properties '((lint-hidden-cve . ("CVE-2018-1000182"
                                      "CVE-2018-1000110"
                                      "CVE-2019-1003010"
-                                     "CVE-2020-2136"))))
+                                     "CVE-2020-2136"
+                                     "CVE-2021-21684"
+                                     "CVE-2022-30947"
+                                     "CVE-2022-30948"
+                                     "CVE-2022-30949"
+                                     "CVE-2022-36882"
+                                     "CVE-2022-36883"
+                                     "CVE-2022-36884"))))
    (license license:gpl2)
    (home-page "https://git-scm.com/")))
 

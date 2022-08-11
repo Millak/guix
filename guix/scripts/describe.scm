@@ -29,7 +29,6 @@
   #:use-module (guix profiles)
   #:autoload   (guix colors) (supports-hyperlinks? hyperlink)
   #:autoload   (guix openpgp) (openpgp-format-fingerprint)
-  #:use-module (git)
   #:autoload   (json builder) (scm->json-string)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -148,40 +147,29 @@ Display information about the channels currently in use.\n"))
   "Display information about the current checkout according to FMT, a symbol
 denoting the requested format.  Exit if the current directory does not lie
 within a Git checkout."
-  (let* ((program    (car (command-line)))
-         (directory  (catch 'git-error
-                       (lambda ()
-                         (repository-discover (dirname program)))
-                       (lambda (key err)
-                         (report-error (G_ "failed to determine origin~%"))
-                         (display-hint (format #f (G_ "Perhaps this
+  (let* ((program (car (command-line)))
+         (channel (repository->guix-channel (dirname program))))
+    (unless channel
+      (report-error (G_ "failed to determine origin~%"))
+      (display-hint (format #f (G_ "Perhaps this
 @command{guix} command was not obtained with @command{guix pull}?  Its version
 string is ~a.~%")
-                                               %guix-version))
-                         (exit 1))))
-         (repository (repository-open directory))
-         (head       (repository-head repository))
-         (commit     (oid->string (reference-target head))))
+                            %guix-version))
+      (exit 1))
+
     (match fmt
       ('human
        (format #t (G_ "Git checkout:~%"))
-       (format #t (G_ "  repository: ~a~%") (dirname directory))
-       (format #t (G_ "  branch: ~a~%") (reference-shorthand head))
-       (format #t (G_ "  commit: ~a~%") commit))
+       (format #t (G_ "  repository: ~a~%") (channel-url channel))
+       (format #t (G_ "  branch: ~a~%") (channel-branch channel))
+       (format #t (G_ "  commit: ~a~%") (channel-commit channel)))
       ('channels
-       (pretty-print `(list ,(channel->code (channel (name 'guix)
-                                                     (url (dirname directory))
-                                                     (commit commit))))))
+       (pretty-print `(list ,(channel->code channel))))
       ('json
-       (display (channel->json (channel (name 'guix)
-                                        (url (dirname directory))
-                                        (commit commit))))
+       (display (channel->json channel))
        (newline))
       ('recutils
-       (channel->recutils (channel (name 'guix)
-                                   (url (dirname directory))
-                                   (commit commit))
-                          (current-output-port))))
+       (channel->recutils channel (current-output-port))))
     (display-package-search-path fmt)))
 
 (define* (display-profile-info profile fmt

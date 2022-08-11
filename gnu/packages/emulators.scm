@@ -744,7 +744,7 @@ The following systems are supported:
        (list "-DUSE_LZMA=OFF"           ;do not use bundled LZMA
              "-DUSE_LIBZIP=OFF")))      ;use "zlib" instead
     (native-inputs
-     (list pkg-config qttools))
+     (list pkg-config qttools-5))
     (inputs
      (list ffmpeg
            libedit
@@ -755,7 +755,7 @@ The following systems are supported:
            minizip
            ncurses
            qtbase-5
-           qtmultimedia
+           qtmultimedia-5
            sdl2
            sqlite
            zlib))
@@ -1505,14 +1505,14 @@ multi-system game/emulator system.")
 (define-public scummvm
   (package
     (name "scummvm")
-    (version "2.5.1")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://downloads.scummvm.org/frs/scummvm/" version
                            "/scummvm-" version ".tar.xz"))
        (sha256
-        (base32 "00az0dm85kh8rq0yqj74x0c5zrq4ybvwvnilijzl8qa5whwdpn4z"))))
+        (base32 "05zw9xqdix88f8p3py2rfnyiaxr2sbifkqi9s5gy3nf9s3l3h50w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                                 ;require "git"

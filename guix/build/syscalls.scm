@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,6 +50,7 @@
             MS_RELATIME
             MS_BIND
             MS_MOVE
+            MS_SHARED
             MS_LAZYTIME
             MNT_FORCE
             MNT_DETACH
@@ -537,6 +539,7 @@ the last argument of `mknod'."
 (define MS_NOATIME         1024)
 (define MS_BIND            4096)
 (define MS_MOVE            8192)
+(define MS_SHARED       1048576)
 (define MS_RELATIME     2097152)
 (define MS_STRICTATIME 16777216)
 (define MS_LAZYTIME    33554432)

@@ -20,6 +20,7 @@
 (define-module (gnu home services)
   #:use-module (gnu services)
   #:use-module ((gnu packages package-management) #:select (guix))
+  #:use-module ((gnu packages base) #:select (coreutils))
   #:use-module (guix channels)
   #:use-module (guix monads)
   #:use-module (guix store)
@@ -367,9 +368,11 @@ activation.")))
 (define (compute-on-first-login-script _ gexps)
   (program-file
    "on-first-login"
-   (with-imported-modules (source-module-closure '((guix i18n)))
+   (with-imported-modules (source-module-closure '((guix i18n)
+                                                   (guix diagnostics)))
      #~(begin
-       (use-modules (guix i18n))
+         (use-modules (guix i18n)
+                      (guix diagnostics))
        #$%initialize-gettext
 
        (let* ((xdg-runtime-dir (or (getenv "XDG_RUNTIME_DIR")
@@ -386,7 +389,7 @@ activation.")))
                (begin #$@gexps (touch flag-file-path)))
              ;; TRANSLATORS: 'on-first-login' is the name of a service and
              ;; shouldn't be translated
-             (display (G_ "XDG_RUNTIME_DIR doesn't exists, on-first-login script
+             (warning (G_ "XDG_RUNTIME_DIR doesn't exists, on-first-login script
 won't execute anything.  You can check if xdg runtime directory exists,
 XDG_RUNTIME_DIR variable is set to appropriate value and manually execute the
 script by running '$HOME/.guix-home/on-first-login'"))))))))
@@ -426,8 +429,9 @@ extended with one gexp.")))
                               #f))))
        (if (file-exists? (he-init-file new-home))
            (let* ((port   ((@ (ice-9 popen) open-input-pipe)
-                           (format #f "source ~a && env -0"
-                                   (he-init-file new-home))))
+                           (format #f "source ~a && ~a -0"
+                                   (he-init-file new-home)
+                                   #$(file-append coreutils "/bin/env"))))
                   (result ((@ (ice-9 rdelim) read-delimited) "" port))
                   (vars (map (lambda (x)
                                (let ((si (string-index x #\=)))

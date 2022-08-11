@@ -15,6 +15,7 @@
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -101,8 +102,10 @@
             target-ppc64le?
             target-powerpc?
             target-riscv64?
+            target-mips64el?
             target-64bit?
             ar-for-target
+            as-for-target
             cc-for-target
             cxx-for-target
             ld-for-target
@@ -732,6 +735,10 @@ architecture (x86_64)?"
   "Is the architecture of TARGET a 'riscv64' machine?"
   (string-prefix? "riscv64" target))
 
+(define* (target-mips64el? #:optional (target (or (%current-target-system)
+                                                  (%current-system))))
+  (string-prefix? "mips64el-" target))
+
 (define* (target-64bit? #:optional (system (or (%current-target-system)
                                                (%current-system))))
   (any (cut string-prefix? <> system) '("x86_64" "aarch64" "mips64"
@@ -741,6 +748,11 @@ architecture (x86_64)?"
   (if target
       (string-append target "-ar")
       "ar"))
+
+(define* (as-for-target #:optional (target (%current-target-system)))
+  (if target
+      (string-append target "-as")
+      "as"))
 
 (define* (cc-for-target #:optional (target (%current-target-system)))
   (if target

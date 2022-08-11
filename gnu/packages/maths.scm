@@ -8,7 +8,7 @@
 ;;; Copyright © 2015–2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
@@ -52,6 +52,9 @@
 ;;; Copyright © 2021 Pierre-Antoine Bouttier <pierre-antoine.bouttier@univ-grenoble-alpes.fr>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
+;;; Copyright © 2022 vicvbcun <guix@ikherbers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +76,7 @@
   #:use-module (ice-9 match)
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -722,18 +726,31 @@ integer programming problems and computes Markov bases for statistics.")
 (define-public cddlib
   (package
     (name "cddlib")
-    (version "0.94i")
+    (version "0.94m")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "ftp://ftp.math.ethz.ch/users/fukudak/cdd/cddlib-"
-                          (string-delete #\. version) ".tar.gz"))
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/cddlib/cddlib")
+            (commit version)))
       (sha256
        (base32
-        "00zdgiqb91vx6gd2103h3ijij0llspsxc6zz3iw2bll39fvkl4xq"))))
+        "09s8323h5w9j6mpl1yc6lm770dkskfxd2ayyafkcjllmnncxzfa0"))))
     (build-system gnu-build-system)
     (inputs
      (list gmp))
+    (native-inputs (list autoconf
+                         automake
+                         libtool
+                         texlive-amsfonts
+                         texlive-dvips-l3backend
+                         texlive-latex-graphics
+                         texlive-latex-l3backend
+                         texlive-tiny))
+    (arguments
+     (list #:configure-flags
+             #~(list (string-append "--docdir=" #$output
+                                    "/share/doc/" #$name "-" #$version))))
     (home-page "https://www.inf.ethz.ch/personal/fukudak/cdd_home/index.html")
     (synopsis "Library for convex hulls and extreme rays of polyhedra")
     (description
@@ -1121,24 +1138,25 @@ in the terminal or with an external viewer.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "5.4.3")
+    (version "5.4.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "112dplskbkdbaqi935m2xlk1xsw8s5l568wm7xad75hgp6x9py2i"))))
+        (base32 "00h97y8njhvfjbdvc0njw0znxbrlfynd1iazn8w3anvzhsvh08rp"))))
     (build-system gnu-build-system)
-    (inputs (list readline cairo pango gd lua))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("texlive" ,texlive-tiny)))
-    (arguments `(#:configure-flags (list (string-append
-                                          "--with-texdir=" %output
-                                          "/texmf-local/tex/latex/gnuplot"))
-                 ;; Plot on a dumb terminal during tests.
-                 #:make-flags '("GNUTERM=dumb")))
+     (list pkg-config texlive-tiny))
+    (inputs
+     (list cairo gd lua pango readline))
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-texdir=" #$output
+                                  "/texmf-local/tex/latex/gnuplot"))
+           ;; Plot on a dumb terminal during tests.
+           #:make-flags #~'("GNUTERM=dumb")))
     (home-page "http://www.gnuplot.info")
     (synopsis "Command-line driven graphing utility")
     (description "Gnuplot is a portable command-line driven graphing
@@ -1324,7 +1342,7 @@ incompatible with HDF5.")
                (("/bin/mv") "mv"))
              (substitute* "fortran/src/Makefile.in"
                (("libhdf5_fortran_la_LDFLAGS =")
-                (string-append "libhdf5_fortran_la_LDFLAGS = -Wl-rpath="
+                (string-append "libhdf5_fortran_la_LDFLAGS = -Wl,-rpath="
                                (assoc-ref outputs "fortran") "/lib")))
              (substitute* "hl/fortran/src/Makefile.in"
                (("libhdf5hl_fortran_la_LDFLAGS =")
@@ -1737,6 +1755,58 @@ Blosc-compressed datasets.")
     (description "@code{h5check} is a validation tool for verifying that an
 HDF5 file is encoded according to the HDF File Format Specification.")
     (license (license:x11-style "file://COPYING"))))
+
+(define-public itex2mml
+  (package
+    (name "itex2mml")
+    (version "1.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://golem.ph.utexas.edu"
+                                  "/~distler/blog/files/itexToMML-"
+                                  version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0pz51c0hfh2mg8xli0wj7hf92s3b7yf5r4114g8z8722lcm5gwiy"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "itex-binaries")))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list bison
+           flex))
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "BINDIR=" #$output "/bin/")
+                           (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f ;; there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'chdir
+            (lambda args
+              (chdir "itex-src")))
+          (add-before 'install 'make-bindir
+            (lambda args
+              (mkdir-p (string-append #$output "/bin"))))
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((doc-prefix (or (assoc-ref outputs "doc")
+                                     #$output))
+                     (itex2mml+version (strip-store-file-name #$output))
+                     (doc-dir (string-append doc-prefix
+                                             "/share/doc/"
+                                             itex2mml+version)))
+                (install-file "../README" doc-dir)))))))
+    (home-page "https://golem.ph.utexas.edu/~distler/blog/itex2MML.html")
+    (synopsis "LaTeX to XHTML/MathML converter")
+    (description
+     "The @command{itex2MML} utility is a stream filter.  It takes text with
+embedded itex equations, converts the itex equations to MathML, and outputs
+the resulting text.")
+    (license (list license:lgpl2.0+ license:gpl2+ license:mpl1.1))))
 
 (define-public itpp
   (package
@@ -2783,7 +2853,7 @@ script files.")
        ("qt" ,qtbase-5)
        ,@(package-inputs octave-cli)))
     (native-inputs
-     `(("qttools" , qttools) ;for lrelease
+     `(("qttools-5" , qttools-5) ;for lrelease
        ("texlive" ,(texlive-updmap.cfg (list texlive-epsf))) ; for texi2dvi
        ,@(package-native-inputs octave-cli)))
     (arguments
@@ -3069,14 +3139,14 @@ ASCII text files using Gmsh's own scripting language.")
     (native-inputs
      (list pkg-config
            ;;("python-astropy" ,python-astropy) ;; FIXME: Package this.
-           qttools python-sip-4))
+           qttools-5 python-sip-4))
     (inputs
      (list ghostscript ;optional, for EPS/PS output
            python-dbus
            python-h5py ;optional, for HDF5 data
            python-pyqt
            qtbase-5
-           qtsvg))
+           qtsvg-5))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://veusz.github.io/")
@@ -3681,19 +3751,18 @@ language understood by many solvers.")
 (define-public mumps
   (package
     (name "mumps")
-    (version "5.2.1")
+    (version "5.5.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://mumps.enseeiht.fr/MUMPS_"
-                           version ".tar.gz"))
+       (uri (list (string-append "http://mumps.enseeiht.fr/MUMPS_"
+                                 version ".tar.gz")
+                  (string-append
+                   "https://ftp.mcs.anl.gov/pub/petsc/externalpackages"
+                   "/MUMPS_" version ".tar.gz")))
        (sha256
         (base32
-         "0jklh54x4y3ik1zkw6db7766kakjm5910diyaghfxxf8vwsgr26r"))
-       (patches (search-patches "mumps-build-parallelism.patch"
-                                "mumps-shared-libseq.patch"
-                                "mumps-shared-mumps.patch"
-                                "mumps-shared-pord.patch"))))
+         "05gs2i8b76m9flm1826fxpyfnwibjjawbmfza3ylrvj7zaag5gqs"))))
     (build-system gnu-build-system)
     (inputs
      (list gfortran
@@ -3710,58 +3779,71 @@ language understood by many solvers.")
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
-          (lambda* (#:key inputs #:allow-other-keys)
+          (lambda* (#:key inputs outputs #:allow-other-keys)
             (call-with-output-file "Makefile.inc"
               (lambda (port)
                 (format port "
-PLAT         =
-LIBEXT       = .a
-OUTC         = -o
-OUTF         = -o
-RM           = rm -f~:[
-CC           = gcc
-FC           = gfortran
-FL           = gfortran
-INCSEQ       = -I$(topdir)/libseq
-LIBSEQ       = $(topdir)/libseq/libmpiseq.a
-LIBSEQNEEDED = libseqneeded~;
-CC           = mpicc
-FC           = mpifort
-FL           = mpifort~]
-AR           = ar vr # rules require trailing space, ugh...
-RANLIB       = ranlib
-BLASDIR      = ~a
-LIBBLAS      = -Wl,-rpath=$(BLASDIR) -Wl,-rpath='$$ORIGIN' -L$(BLASDIR) -lopenblas~@[
-SCALAPDIR    = ~a
-SCALAP       = -Wl,-rpath=$(SCALAPDIR) -Wl,-rpath='$$ORIGIN' -L$(SCALAPDIR) -lscalapack~]
-LIBOTHERS    = -pthread
-CDEFS        = -DAdd_
-PIC          = -fPIC
-OPTF         = -O2 -DALLOW_NON_INIT -fallow-argument-mismatch $(PIC)
-OPTL         = -O2 $(PIC)
-OPTC         = -O2 $(PIC)
-INCS         = $(INCSEQ)
-LIBS         = $(SCALAP) $(LIBSEQ)
-LPORDDIR     = $(topdir)/PORD/lib
-IPORD        = -I$(topdir)/PORD/include
-LPORD        = $(LPORDDIR)/libpord.a
-ORDERINGSF   = -Dpord~@[
-METISDIR     = ~a
-IMETIS       = -I$(METISDIR)/include
-LMETIS       = -Wl,-rpath $(METISDIR)/lib -L$(METISDIR)/lib -lmetis
-ORDERINGSF  += -Dmetis~]~@[~:{
-SCOTCHDIR    = ~a
-ISCOTCH      = -I$(SCOTCHDIR)/include
-LSCOTCH      = -Wl,-rpath $(SCOTCHDIR)/lib -L$(SCOTCHDIR)/lib ~a-lesmumps -lscotch -lscotcherr
-ORDERINGSF  += ~a~}~]
-ORDERINGSC   = $(ORDERINGSF)
-LORDERINGS   = $(LPORD) $(LMETIS) $(LSCOTCH) $(LIBSEQ)
-IORDERINGSF  = $(ISCOTCH)
-IORDERINGSC  = $(IPORD) $(IMETIS) $(ISCOTCH)"
-                        (->bool (which "mpicc"))  ;MPI support enabled?
-                        (dirname
-                         (dirname (search-input-file inputs "/include/cblas.h")))
+PLAT          =
+LIBEXT        = .a
+LIBEXT_SHARED = .so
+OUTC          = -o
+OUTF          = -o
+BLASDIR       = ~a
+LIBBLAS       = -Wl,-rpath=$(BLASDIR)/lib -Wl,-rpath='$$ORIGIN'
+LIBBLAS      += -L$(BLASDIR)/lib
+LIBBLAS      += -lopenblas~@[
+SCALAPDIR     = ~a
+SCALAP        = -Wl,-rpath=$(SCALAPDIR)/lib -Wl,-rpath='$$ORIGIN'
+SCALAP       += -L$(SCALAPDIR)/lib -lscalapack~]
+RM            = rm -f~:[
+CC            = gcc
+FC            = gfortran
+FL            = gfortran
+INCSEQ        = -I$(topdir)/libseq
+LIBSEQ        = $(LAPACK) -L$(topdir)/libseq -lmpiseq
+LIBSEQNEEDED  = libseqneeded
+INCS          = $(INCSEQ)
+LIBS          = $(LIBSEQ)~;
+CC            = mpicc
+FC            = mpifort
+FL            = mpifort
+INCPAR        =
+LIBPAR        = $(SCALAP) $(LAPACK)
+LIBSEQNEEDED  = 
+INCS          = $(INCPAR)
+LIBS          = $(LIBPAR)~]
+AR            = ar vr # rules require trailing space, ugh...
+RANLIB        = ranlib
+LIBOTHERS     = -pthread
+CDEFS         = -DAdd_
+PIC           = -fPIC
+FPIC_OPT      = $(PIC)
+RPATH_OPT     = -Wl,-rpath,~a/lib
+OPTF          = -O2 -fopenmp -DALLOW_NON_INIT -DBLR_MT
+OPTF         += -fallow-argument-mismatch $(PIC)
+OPTL          = -O2 -fopenmp $(PIC)
+OPTC          = -O2 -fopenmp $(PIC)
+LPORDDIR      = $(topdir)/PORD/lib
+IPORD         = -I$(topdir)/PORD/include
+LPORD         = $(LPORDDIR)/libpord.a
+ORDERINGSF    = -Dpord~@[
+METISDIR      = ~a
+IMETIS        = -I$(METISDIR)/include
+LMETIS        = -Wl,-rpath $(METISDIR)/lib -L$(METISDIR)/lib -lmetis
+ORDERINGSF   += -Dmetis~]~@[~:{
+SCOTCHDIR     = ~a
+ISCOTCH       = -I$(SCOTCHDIR)/include
+LSCOTCH       = -Wl,-rpath $(SCOTCHDIR)/lib -L$(SCOTCHDIR)/lib ~a -lesmumps
+LSCOTCH      += -lscotch -lscotcherr
+ORDERINGSF   += ~a~}~]
+ORDERINGSC    = $(ORDERINGSF)
+LORDERINGS    = $(LPORD) $(LMETIS) $(LSCOTCH)
+IORDERINGSF   = $(ISCOTCH)
+IORDERINGSC   = $(IPORD) $(IMETIS) $(ISCOTCH)"
+                        (assoc-ref inputs "openblas")
                         (assoc-ref inputs "scalapack")
+                        (->bool (which "mpicc"))  ;; MPI support enabled?
+                        (assoc-ref outputs "out")
                         (assoc-ref inputs "metis")
                         (match (list (assoc-ref inputs "pt-scotch")
                                      (assoc-ref inputs "scotch"))
@@ -3774,11 +3856,14 @@ IORDERINGSC  = $(IPORD) $(IMETIS) $(ISCOTCH)"
                               "-lesmumps -lptscotch -lptscotcherr "
                               "-Dptscotch")))))))))
          (replace 'build
-          ;; By default only the d-precision library is built.  Make with "all"
-          ;; target so that all precision libraries and examples are built.
-          (lambda _
-            (invoke "make" "all"
-                    (format #f "-j~a" (parallel-job-count)))))
+           ;; By default only the d-precision library is built. Make with "all"
+           ;; target so that all precision libraries and examples are built.
+           ;; Then, "make allshared" builts equivalent shared libraries as well.
+           (lambda _
+             (invoke "make" "all"
+                     (format #f "-j~a" (parallel-job-count)))
+             (invoke "make" "allshared"
+                     (format #f "-j~a" (parallel-job-count)))))
          (replace 'check
           ;; Run the simple test drivers, which read test input from stdin:
           ;; from the "real" input for the single- and double-precision
@@ -4259,7 +4344,7 @@ to BMP, JPEG or PNG image formats.")
 (define-public maxima
   (package
     (name "maxima")
-    (version "5.45.1")
+    (version "5.46.0")
     (source
      (origin
        (method url-fetch)
@@ -4267,7 +4352,7 @@ to BMP, JPEG or PNG image formats.")
                            version "-source/" name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1p77nk5sz1qfkn5zr97szpbi8ib4b22k8i52l4ag5gkhd4kid47y"))
+         "01wbm8jj43p7gpdj4h55aij0b44bjydn4bwb7q1wjrfs91mz143k"))
        (patches (search-patches "maxima-defsystem-mkdir.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -4350,7 +4435,11 @@ to BMP, JPEG or PNG image formats.")
                ;; components at runtime.
                (wrap-program (string-append out "/bin/maxima")
                  `("PATH" prefix (,binutils))))
-             #t)))))
+             #t))
+         ;; The Maxima command ‘describe’ allows to pick the relevant portions
+         ;; from Maxima’s Texinfo docs.  However it does not support reading
+         ;; gzipped info files.
+         (delete 'compress-documentation))))
     (home-page "https://maxima.sourceforge.io")
     (synopsis "Numeric and symbolic expression manipulation")
     (description "Maxima is a system for the manipulation of symbolic and
@@ -4367,7 +4456,7 @@ point numbers.")
 (define-public wxmaxima
   (package
     (name "wxmaxima")
-    (version "21.05.2")
+    (version "22.05.0")
     (source
      (origin
        (method git-fetch)
@@ -4376,7 +4465,7 @@ point numbers.")
              (commit (string-append "Version-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h7ryykh2dapcyvpp4f1j1b3vrrz80x9k8nkci2yxifgdb29vyhw"))))
+        (base32 "1va56v9dys97yln4m1z3fz3k90lpy8i3kvcq0v1cbg36689aghm5"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)))
@@ -5152,111 +5241,119 @@ revised simplex and the branch-and-bound methods.")
         (base32 "0fnwlhzsh85qj38cq3igbs8nm1b2jdgr2z734sapmyyzsy21mkgp"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("gfortran" ,gfortran)
-       ;; Trilinos's repository contains several C-shell scripts, but adding
-       ;; tcsh to the native inputs does not result in the check phase running
-       ;; any more tests than without it (nor is tcsh required to build
-       ;; Trilinos).
-       ;; It seems that Trilinos has replaced its use of C-shell test scripts
-       ;; with CMake's testing facilities.
-       ;; For example,
-       ;; packages/zoltan/doc/Zoltan_html/dev_html/dev_test_script.html [1]
-       ;; states that Zoltan's C-shell test script
-       ;; packages/zoltan/test/test_zoltan has been obsoleted by the tests now
-       ;; performed through CMake.
-       ;;
-       ;; Perl is required for some Zoltan tests and Python 2 for one ML test.
-       ;;
-       ;; [1]: https://cs.sandia.gov/zoltan/dev_html/dev_test_script.html
-       ("perl" ,perl)
-       ("python" ,python-2)))
+     (list
+      ;; The build fails with the current gcc.
+      ;; Use the version from when Trilinos was added.
+      gcc-7
+      gfortran
+      ;; Trilinos's repository contains several C-shell scripts, but adding
+      ;; tcsh to the native inputs does not result in the check phase running
+      ;; any more tests than without it (nor is tcsh required to build
+      ;; Trilinos).
+      ;; It seems that Trilinos has replaced its use of C-shell test scripts
+      ;; with CMake's testing facilities.
+      ;; For example,
+      ;; packages/zoltan/doc/Zoltan_html/dev_html/dev_test_script.html [1]
+      ;; states that Zoltan's C-shell test script
+      ;; packages/zoltan/test/test_zoltan has been obsoleted by the tests now
+      ;; performed through CMake.
+      ;;
+      ;; Perl is required for some Zoltan tests and Python 2 for one ML test.
+      ;;
+      ;; [1]: https://cs.sandia.gov/zoltan/dev_html/dev_test_script.html
+      perl
+      python-2))
     (inputs
-     `(("blas" ,openblas)
-       ("lapack" ,lapack)
-       ("mumps" ,mumps-openmpi)
-       ("scalapack" ,scalapack)))
+     (list openblas
+           lapack
+           mumps-openmpi
+           scalapack))
     (propagated-inputs
-     `(("mpi" ,openmpi)))
+     (list openmpi))
     (arguments
-     `(#:build-type "Release"
-       #:configure-flags
-       `("-DBUILD_SHARED_LIBS=ON"
-         ;; Obtain the equivalent of RelWithDebInfo but with -O3 (the Release
-         ;; default) rather than -O2 (the RelWithDebInfo default), to conform
-         ;; to candi's trilinos.package's compilation flags, which are -g -O3.
-         "-DCMAKE_C_FLAGS=-g"
-         "-DCMAKE_CXX_FLAGS=-g"
-         "-DCMAKE_Fortran_FLAGS=-g"
+     (list #:build-type "Release"
+           #:configure-flags
+           #~(list "-DBUILD_SHARED_LIBS=ON"
+                   ;; Obtain the equivalent of RelWithDebInfo but with -O3
+                   ;; (the Release default) rather than -O2 (the
+                   ;; RelWithDebInfo default), to conform to candi's
+                   ;; trilinos.package's compilation flags, which are -g -O3.
+                   "-DCMAKE_C_FLAGS=-g"
+                   "-DCMAKE_CXX_FLAGS=-g"
+                   "-DCMAKE_Fortran_FLAGS=-g"
 
-         ;; Trilinos libraries that deal.II can interface with.
-         "-DTrilinos_ENABLE_Amesos=ON"
-         "-DTrilinos_ENABLE_AztecOO=ON"
-         "-DTrilinos_ENABLE_Epetra=ON"
-         "-DTrilinos_ENABLE_EpetraExt=ON"
-         "-DTrilinos_ENABLE_Ifpack=ON"
-         "-DTrilinos_ENABLE_ML=ON"
-         "-DTrilinos_ENABLE_MueLu=ON"
-         "-DTrilinos_ENABLE_ROL=ON"
-         ;; Optional; required for deal.II's GridIn::read_exodusii, but
-         ;; depends on netcdf.
-         ;; Enable if and when someone needs it.
-         ;;"-DTrilinos_ENABLE_SEACAS=ON"
-         "-DTrilinos_ENABLE_Sacado=ON"
-         "-DTrilinos_ENABLE_Teuchos=ON"
-         "-DTrilinos_ENABLE_Tpetra=ON"
-         "-DTrilinos_ENABLE_Zoltan=ON"
+                   ;; Trilinos libraries that deal.II can interface with.
+                   "-DTrilinos_ENABLE_Amesos=ON"
+                   "-DTrilinos_ENABLE_AztecOO=ON"
+                   "-DTrilinos_ENABLE_Epetra=ON"
+                   "-DTrilinos_ENABLE_EpetraExt=ON"
+                   "-DTrilinos_ENABLE_Ifpack=ON"
+                   "-DTrilinos_ENABLE_ML=ON"
+                   "-DTrilinos_ENABLE_MueLu=ON"
+                   "-DTrilinos_ENABLE_ROL=ON"
+                   ;; Optional; required for deal.II's GridIn::read_exodusii,
+                   ;; but depends on netcdf.
+                   ;; Enable if and when someone needs it.
+                   ;;"-DTrilinos_ENABLE_SEACAS=ON"
+                   "-DTrilinos_ENABLE_Sacado=ON"
+                   "-DTrilinos_ENABLE_Teuchos=ON"
+                   "-DTrilinos_ENABLE_Tpetra=ON"
+                   "-DTrilinos_ENABLE_Zoltan=ON"
 
-         ;; Third-party libraries (TPLs) that Trilinos can interface with.
-         "-DBLAS_LIBRARY_NAMES=openblas"
-         "-DTPL_ENABLE_MPI=ON"
-         "-DTPL_ENABLE_MUMPS=ON"
-         "-DTPL_ENABLE_SCALAPACK=ON"
+                   ;; Third-party libraries (TPLs) that Trilinos can interface
+                   ;; with.
+                   "-DBLAS_LIBRARY_NAMES=openblas"
+                   "-DTPL_ENABLE_MPI=ON"
+                   "-DTPL_ENABLE_MUMPS=ON"
+                   "-DTPL_ENABLE_SCALAPACK=ON"
 
-         ;; Enable the tests but not the examples (which are enabled by
-         ;; default when enabling tests).
-         ;; Although some examples are run as tests, they are otherwise
-         ;; unnecessary since this is a private package meant for
-         ;; dealii-openmpi.
-         ;; Besides, some MueLu and ROL examples require a lot of memory to
-         ;; compile.
-         ;;
-         ;; (For future reference, note that some ROL and SEACAS examples
-         ;; require removing gfortran from CPLUS_INCLUDE_PATH as in the
-         ;; dune-istl, dune-localfunctions and dune-alugrid packages.)
-         "-DTrilinos_ENABLE_TESTS=ON"
-         "-DTrilinos_ENABLE_EXAMPLES=OFF"
-         ;; MueLu tests require considerably more time and memory to compile
-         ;; than the rest of the tests.
-         "-DMueLu_ENABLE_TESTS=OFF"
+                   ;; Enable the tests but not the examples (which are enabled
+                   ;; by default when enabling tests).
+                   ;; Although some examples are run as tests, they are
+                   ;; otherwise unnecessary since this is a private package
+                   ;; meant for dealii-openmpi.
+                   ;; Besides, some MueLu and ROL examples require a lot of
+                   ;; memory to compile.
+                   ;;
+                   ;; (For future reference, note that some ROL and SEACAS
+                   ;; examples require removing gfortran from
+                   ;; CPLUS_INCLUDE_PATH as in the dune-istl,
+                   ;; dune-localfunctions and dune-alugrid packages.)
+                   "-DTrilinos_ENABLE_TESTS=ON"
+                   "-DTrilinos_ENABLE_EXAMPLES=OFF"
+                   ;; MueLu tests require considerably more time and memory to
+                   ;; compile than the rest of the tests.
+                   "-DMueLu_ENABLE_TESTS=OFF"
 
-         ;; The following options were gleaned from candi's trilinos.package.
-         ;; (We do not enable the complex instantiations, which are anyway
-         ;; provided only as an option in trilinos.package, because they are
-         ;; costly in compilation time and memory usage, and disk space [1].)
-         ;;
-         ;; [1]: https://www.docs.trilinos.org/files/TrilinosBuildReference.html#enabling-float-and-complex-scalar-types
-         "-DTrilinos_ENABLE_Ifpack2=OFF"
-         "-DTeuchos_ENABLE_FLOAT=ON"
-         "-DTpetra_INST_INT_LONG=ON"
-         "-DTPL_ENABLE_Boost=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'fix-kokkos-config
-           (lambda _
-             ;; GNU Make 4.3 accidentally leaves the backslash preceding the
-             ;; number sign in strings containing a literal backslash–number
-             ;; sign (\#) [1, 2].
-             ;; This is still an issue in Trilinos 13.0.1, but should be fixed
-             ;; in the following version.
-             ;; (The latest versions of Kokkos incorporate the fix [2].)
-             ;;
-             ;; [1]: https://github.com/GEOSX/thirdPartyLibs/issues/136
-             ;; [2]: https://github.com/kokkos/kokkos/blob/3.4.00/Makefile.kokkos#L441
-             (substitute* "KokkosCore_config.h"
-               (("\\\\#") "#"))
-             #t))
-         (add-before 'check 'mpi-setup
-           ,%openmpi-setup))))
+                   ;; The following options were gleaned from candi's
+                   ;; trilinos.package.
+                   ;; (We do not enable the complex instantiations, which are
+                   ;; anyway provided only as an option in trilinos.package,
+                   ;; because they are costly in compilation time and memory
+                   ;; usage, and disk space [1].)
+                   ;;
+                   ;; [1]: https://www.docs.trilinos.org/files/TrilinosBuildReference.html#enabling-float-and-complex-scalar-types
+                   "-DTrilinos_ENABLE_Ifpack2=OFF"
+                   "-DTeuchos_ENABLE_FLOAT=ON"
+                   "-DTpetra_INST_INT_LONG=ON"
+                   "-DTPL_ENABLE_Boost=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'configure 'fix-kokkos-config
+                 (lambda _
+                   ;; GNU Make 4.3 accidentally leaves the backslash preceding
+                   ;; the number sign in strings containing a literal
+                   ;; backslash–number sign (\#) [1, 2].
+                   ;; This is still an issue in Trilinos 13.0.1, but should be
+                   ;; fixed in the following version.
+                   ;; (The latest versions of Kokkos incorporate the fix [2].)
+                   ;;
+                   ;; [1]: https://github.com/GEOSX/thirdPartyLibs/issues/136
+                   ;; [2]: https://github.com/kokkos/kokkos/blob/3.4.00/Makefile.kokkos#L441
+                   (substitute* "KokkosCore_config.h"
+                     (("\\\\#") "#"))))
+               (add-before 'check 'mpi-setup
+                 #$%openmpi-setup))))
     (home-page "https://trilinos.github.io/")
     (synopsis "Algorithms for engineering and scientific problems")
     (description
@@ -5272,18 +5369,18 @@ A unique design feature of Trilinos is its focus on packages.")
 (define-public dealii
   (package
     (name "dealii")
-    (version "9.3.3")
+    (version "9.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/dealii/dealii/releases/"
                            "download/v" version "/dealii-" version ".tar.gz"))
        (sha256
-        (base32 "0a8s4yxcbvzmfgv5qcg27h2ss4fcnyhrhhs35glqj59l9cbmkysx"))
+        (base32 "0v73q6f35f2yrjihaq6vh9lma07qc4cdv75nwmc3c5yrdh07g1i3"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled boost, muparser, TBB and UMFPACK.
-        '(delete-file-recursively "bundled"))))
+        #~(delete-file-recursively "bundled"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -5307,36 +5404,39 @@ A unique design feature of Trilinos is its focus on packages.")
      (list boost
            hdf5
            suitesparse                  ; For UMFPACK.
-           ;; SUNDIALS 6.0.0 and later will be supported in deal.II 9.4.0.
-           sundials-5
+           sundials
            tbb))
     (arguments
-     `(#:build-type "DebugRelease" ; Supports only Debug, Release and DebugRelease.
-       ;; The tests take too long and must be explicitly enabled with "make
-       ;; setup_tests".
-       ;; See https://www.dealii.org/developer/developers/testsuite.html.
-       ;; (They can also be run for an already installed deal.II.)
-       #:tests? #f
-       #:configure-flags
-       (let ((doc (string-append (assoc-ref %outputs "doc")
-                                 "/share/doc/" ,name "-" ,version)))
-         `("-DDEAL_II_COMPONENT_DOCUMENTATION=ON"
-           ,(string-append "-DDEAL_II_DOCREADME_RELDIR=" doc)
-           ,(string-append "-DDEAL_II_DOCHTML_RELDIR=" doc "/html")
-           ;; Don't compile the examples because the source and CMakeLists.txt
-           ;; are installed anyway, allowing users to do so for themselves.
-           "-DDEAL_II_COMPILE_EXAMPLES=OFF"
-           ,(string-append "-DDEAL_II_EXAMPLES_RELDIR=" doc "/examples")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'remove-build-logs
-           ;; These build logs leak the name of the build directory by storing
-           ;; the values of CMAKE_SOURCE_DIR and CMAKE_BINARY_DIR.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((doc (string-append (assoc-ref outputs "doc")
-                                       "/share/doc/" ,name "-" ,version)))
-               (for-each delete-file (map (lambda (f) (string-append doc "/" f))
-                                          '("detailed.log" "summary.log")))))))))
+     (list #:build-type "DebugRelease"  ; Only Debug, Release or DebugRelease.
+           ;; The tests take too long and must be explicitly enabled with
+           ;; "make setup_tests".
+           ;; See https://www.dealii.org/developer/developers/testsuite.html.
+           ;; (They can also be run for an already installed deal.II.)
+           #:tests? #f
+           #:configure-flags
+           #~(let ((doc (string-append #$output:doc "/share/doc/"
+                                       #$name "-" #$version)))
+               (list "-DDEAL_II_COMPONENT_DOCUMENTATION=ON"
+                     (string-append "-DDEAL_II_DOCREADME_RELDIR=" doc)
+                     (string-append "-DDEAL_II_DOCHTML_RELDIR=" doc "/html")
+                     ;; Don't compile the examples because the source and
+                     ;; CMakeLists.txt are installed anyway, allowing users to
+                     ;; do so for themselves.
+                     "-DDEAL_II_COMPILE_EXAMPLES=OFF"
+                     (string-append "-DDEAL_II_EXAMPLES_RELDIR=" doc
+                                    "/examples")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'remove-build-logs
+                 ;; These build logs leak the name of the build directory by
+                 ;; storing the values of CMAKE_SOURCE_DIR and
+                 ;; CMAKE_BINARY_DIR.
+                 (lambda _
+                   (let ((doc (string-append #$output:doc "/share/doc/"
+                                             #$name "-" #$version)))
+                     (for-each delete-file
+                               (map (lambda (f) (string-append doc "/" f))
+                                    '("detailed.log" "summary.log")))))))))
     (home-page "https://www.dealii.org/")
     (synopsis "Finite element library")
     (description
@@ -5364,12 +5464,12 @@ in finite element programs.")
                 p4est-openmpi
                 petsc-openmpi
                 slepc-openmpi
-                sundials-openmpi-5
+                sundials-openmpi
                 trilinos-for-dealii-openmpi)))
     (arguments
      (substitute-keyword-arguments (package-arguments dealii)
        ((#:configure-flags flags)
-        `(cons "-DDEAL_II_WITH_MPI=ON" ,flags))))
+        #~(cons "-DDEAL_II_WITH_MPI=ON" #$flags))))
     (synopsis "Finite element library (with MPI support)")))
 
 (define-public flann
@@ -5437,11 +5537,19 @@ FLANN is written in C++ and contains bindings for C, Octave and Python.")
         (uri (string-append "mirror://sourceforge/w-calc/Wcalc/" version "/"
                             "wcalc-" version ".tar.bz2"))
         (sha256
-          (base32
-            "1vi8dl6rccqiq1apmpwawyg2ywx6a1ic1d3cvkf2hlwk1z11fb0f"))))
+         (base32
+          "1vi8dl6rccqiq1apmpwawyg2ywx6a1ic1d3cvkf2hlwk1z11fb0f"))
+        (snippet
+         #~(begin
+             (for-each delete-file
+                       (list "src/common/scanner.c"
+                             "src/common/parser.c"
+                             "src/common/parser.h"))))))
     (build-system gnu-build-system)
     (inputs
      (list mpfr readline))
+    (native-inputs
+     (list bison flex))
     (home-page "http://w-calc.sourceforge.net/index.php")
     (synopsis "Flexible command-line scientific calculator")
     (description "Wcalc is a very capable calculator.  It has standard functions
@@ -5468,7 +5576,7 @@ evaluates expressions using the standard order of operations.")
     (build-system gnu-build-system)
     (native-inputs `(("gettext" ,gettext-minimal)
                      ("qtbase" ,qtbase-5)
-                     ("qttools" ,qttools)))
+                     ("qttools-5" ,qttools-5)))
     (inputs (list libx11 zlib libpng gsl))
     ;; The upstream project file ("XaoS.pro") and the Makefile it generates are
     ;; not enough for this package to install properly.  These phases fix that.
@@ -7147,7 +7255,7 @@ functions.")
         "0vh7cd1915bjqzkdp3sk25ngy8cq624mkh8c53c5bnzk357kb0fk"))))
     (build-system cmake-build-system)
     (inputs (list qtbase-5))
-    (native-inputs (list qttools))
+    (native-inputs (list qttools-5))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -7418,6 +7526,7 @@ of C, Java, or Ada programs.")
            ocaml-graph
            ocaml-yojson
            ocaml-zarith
+           lablgtk3
            why3))
     (native-search-paths
      (list (search-path-specification

@@ -28,6 +28,7 @@
 ;;; Copyright © 2021 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +66,7 @@
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lsof)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
@@ -12959,3 +12961,754 @@ using Nokogiri.")
     (description "Blather is a XMPP DSL for Ruby written on top of EventMachine
 and Nokogiri.")
     (license license:expat)))
+
+(define-public ruby-wapiti
+  (package
+    (name "ruby-wapiti")
+    (version "2.0.0")
+    ;; the gem archive lacks tests
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/wapiti-ruby")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1kawqw45j7mqk5zmwbn67x1vxiapdgm2ypqqz2bs9l5s7nglzr5b"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-builder
+           ruby-rexml))
+    (native-inputs
+     (list ruby-byebug
+           ruby-pry
+           ruby-rake-compiler
+           ruby-rspec
+           ruby-simplecov))
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'replace-git-ls-files 'replace-another-git-ls-files
+            (lambda args
+              (substitute* "wapiti.gemspec"
+                (("`git ls-files spec`")
+                 "`find spec -type f | sort`"))))
+          (add-before 'build 'compile
+            (lambda args
+              (invoke "rake" "compile"))))))
+    (home-page "https://github.com/inukshuk/wapiti-ruby")
+    (synopsis "Wicked fast Conditional Random Fields for Ruby")
+    (description
+     "The Wapiti-Ruby gem provides a wicked fast linear-chain @acronym{CRF,
+Conditional Random Fields} API for sequence segmentation and labelling.  It is
+based on the codebase of @url{https://wapiti.limsi.fr, Wapiti}.")
+    (license license:bsd-2)))
+
+(define-public ruby-namae
+  (package
+    (name "ruby-namae")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "namae" version))
+              (sha256
+               (base32
+                "1j3nl1klkx3gymrdxfc1hlq4a8qlvhhl9aj5v1v08b9fz27sky0l"))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list ruby-cucumber
+           ruby-rspec
+           ruby-simplecov))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'allow-newer-cucumber
+            (lambda args
+              (substitute* "Gemfile"
+                (("'cucumber', '[^']*'")
+                 "'cucumber'"))))
+          (replace 'check
+            ;; Avoid 'rake' so we don't need jeweler.
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (apply invoke
+                       "rspec"
+                       (find-files "spec" "_spec\\.rb$"))))))))
+    (home-page "https://github.com/berkmancenter/namae")
+    (synopsis "Parser for human names")
+    (description
+     "Namae (名前) is a parser for human names.  It recognizes personal names
+of various cultural backgrounds and tries to split them into their component
+parts (e.g., given and family names, honorifics etc.).")
+    (license (list license:bsd-2 license:agpl3+))))
+
+(define-public ruby-ritex
+  (package
+    (name "ruby-ritex")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "ritex" version))
+              (sha256
+               (base32
+                "07rlm3nyz9sxzy1srxs6a31hw81r6w7swrb85fiwi393z8npwc3a"))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list itex2mml))
+    (arguments
+     ;; thanks to the Gentoo packagers for figuring this out
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'fix-tests
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (substitute* "test/mathml.rb"
+                (("\\./itex2MML")
+                 ;; don't use the absolute path to avoid keeping a reference
+                 "itex2MML")
+                (("cmp ',\\\\,\\\\,,,\\\\,'" orig)
+                 (string-append "# " orig " # patched for Guix")))
+              (substitute* "test/answer-key.yaml"
+                (("- ,\\\\,\\\\,,,\\\\," orig)
+                 (string-append "# " orig " # patched for Guix")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ruby" "-Ilib:." "test/all.rb")))))))
+    (home-page "https://rubygems.org/gems/ritex")
+    (synopsis "Convert expressions from WebTeX into MathML")
+    (description
+     "Ritex converts expressions from WebTeX into MathML.  WebTeX is an
+adaptation of TeX math syntax for web display.  Ritex makes inserting math
+into HTML pages easy.  It supports most TeX math syntax as well as macros.")
+    ;; doesn't clearly state -only vs -or-later
+    (license license:gpl2)))
+
+(define-public ruby-latex-decode
+  (package
+    (name "ruby-latex-decode")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/latex-decode")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1f5j67ayd04pjkmzvn0hk7cr8yqvn0gyg9ns6a0vhzj2gwna9ihy"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list ruby-cucumber
+           ruby-ritex
+           ruby-rspec))
+    (arguments
+     (list
+      #:test-target "cucumber"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'avoid-bundler
+            (lambda args
+              (substitute* "Rakefile"
+                (("require 'bundler" orig)
+                 (string-append "# " orig " # patched for Guix"))
+                (("Cucumber::Rake::Task\\.new[(]:cucumber[)]" orig)
+                 (string-append orig " do |c|\n"
+                                "  c.bundler = false # patched for Guix\n"
+                                "end"))
+                (("Bundler\\.setup" orig)
+                 (string-append "true # " orig " # patched for Guix")))
+              (substitute* "cucumber.yml"
+                ;; thanks to avoiding bundler, we can't use this option
+                ((" --publish-quiet")
+                 ""))))
+          (add-after 'replace-git-ls-files 'replace-another-git-ls-files
+            (lambda args
+              (substitute* "latex-decode.gemspec"
+                (("`git ls-files -- [{]test,spec,features[}]/\\*`")
+                 "`find {test,spec,features} -type f | sort`")))))))
+    (home-page "https://github.com/inukshuk/latex-decode")
+    (synopsis "Convert LaTeX to Unicode")
+    (description
+     "This package provides a gem to convert LaTeX input to Unicode.  Its
+original use was as an input filter for BibTeX-Ruby, but it can be used
+independently to decode LaTeX.  Many of the patterns used by this Ruby gem are
+based on François Charette's equivalent Perl module @code{LaTeX::Decode}.")
+    (license license:gpl3+)))
+
+(define-public ruby-link-header
+  (package
+    (name "ruby-link-header")
+    (version "0.0.8")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "link_header" version))
+              (sha256
+               (base32
+                "1yamrdq4rywmnpdhbygnkkl9fdy249fg5r851nrkkxr97gj5rihm"))))
+    (build-system ruby-build-system)
+    (home-page "https://github.com/asplake/link_header")
+    (synopsis "Parse and format HTTP @code{Link} headers")
+    (description
+     "This gem provides the classes @code{LinkHeader} and
+@code{LinkHeader::Link}, which represent HTTP @code{Link} headers conforming
+to RFC 5988.  Objects can be constructed from and converted to text or a
+JSON-friendly @code{Array} representation.  They can also be used to generate
+corresponding HTML @code{link} elements.")
+    (license license:expat)))
+
+(define-public ruby-rdf
+  (package
+    (name "ruby-rdf")
+    (version "3.2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "rdf" version))
+              (sha256
+               (base32
+                "1cj0k8ryd8hgbkgqb5swvy6fiygxny3y5bln0my5gv6dbfv3gm20"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-link-header))
+    (arguments
+     (list #:tests? #f)) ;; tests have many cyclic dependencies
+    (home-page "https://ruby-rdf.github.io/")
+    (synopsis "Linked Data for Ruby")
+    (description
+     "This gem contains the core algorithms and classes used for doing basic
+programming with @acronym{RDF, Resource Description Framework} data,
+implemented in pure Ruby.")
+    (license license:unlicense)))
+
+(define-public ruby-rdf-vocab
+  (package
+    (name "ruby-rdf-vocab")
+    (version "3.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "rdf-vocab" version))
+              (sha256
+               (base32
+                "1bqmp9rfjvd56ajjz68ij6jla1wjf1fqg7bi4dpnjrsmn4pwaq7l"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-rdf))
+    (arguments
+     (list #:tests? #f)) ;; tests have many cyclic dependencies
+    (home-page "https://github.com/ruby-rdf/rdf-vocab")
+    (synopsis "Common RDF vocabularies")
+    (description
+     "This gem extends @code{ruby-rdf} with several common @acronym{RDF,
+Resource Description Framework} vocabularies.")
+    (license license:unlicense)))
+
+(define-public ruby-bibtex-ruby
+  (package
+    (name "ruby-bibtex-ruby")
+    (version "6.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "bibtex-ruby" version))
+              (sha256
+               (base32
+                "0vynqa8q9hwghw6sdljr304b5gh11nqzy5nwqqwxmgy7pqyf7qw5"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-latex-decode
+           ruby-rdf
+           ruby-rdf-vocab))
+    (native-inputs
+     (list ruby-byebug
+           ruby-cucumber
+           ruby-minitest
+           ruby-yard))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'avoid-bundler
+            (lambda args
+              (substitute* "Rakefile"
+                (("require 'bundler" orig)
+                 (string-append "# " orig " # patched for Guix"))
+                (("Bundler\\.setup" orig)
+                 (string-append "true # " orig " # patched for Guix"))))))))
+    (home-page "https://github.com/inukshuk/bibtex-ruby")
+    (synopsis "Rubyist's Swiss Army knife for all things BibTeX")
+    (description
+     "BibTeX-Ruby is the Rubyist's Swiss Army knife for all things BibTeX.
+It includes a parser for all common BibTeX objects and a sophisticated name
+parser that tokenizes correctly formatted names.  BibTeX-Ruby recognizes
+BibTeX string replacements, joins values containing multiple strings or
+variables, supports cross-references, and decodes common LaTeX formatting
+instructions to unicode.  If you are in a hurry, it also allows for easy
+export/conversion to formats such as YAML, JSON, CSL, and XML (BibTeXML).")
+    (license license:gpl3+)))
+
+(define-public ruby-unicode-scripts
+  (package
+    (name "ruby-unicode-scripts")
+    (version "1.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "unicode-scripts" version))
+              (sha256
+               (base32
+                "1k7kbfk806zam129bp7pdiqkfb5hn51x149irzvjhs4xf22m4yvi"))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list ruby-minitest))
+    (arguments
+     (list #:test-target "spec"))
+    (home-page "https://github.com/janlelis/unicode-scripts")
+    (synopsis "Unicode script classification library")
+    (description
+     "This gem provides a simple interface for classifying Ruby strings using
+the Unicode @code{Script} and @code{Script_Extensions} properties.")
+    (license license:expat)))
+
+(define-public ruby-citeproc
+  (package
+    (name "ruby-citeproc")
+    (version "1.0.10")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "citeproc" version))
+              (sha256
+               (base32
+                "13vl5sjmksk5a8kjcqnjxh7kn9gn1n4f9p1rvqfgsfhs54p0m6l2"))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-namae))
+    (arguments
+     (list #:tests? #f)) ;; tests have a cyclic dependency
+    (home-page "https://github.com/inukshuk/citeproc")
+    (synopsis "Interface for Ruby citation processors")
+    (description
+     "CiteProc is a citation processor interface and citation data API based
+on the @acronym{CSL, Citation Style Language} specifications.  To actually
+process citations, a dedicated processor engine is required: a pure Ruby
+engine is available in the @code{citeproc-ruby} gem.")
+    (license (list license:agpl3+ license:bsd-2))))
+
+(define-public ruby-edtf
+  (package
+    (name "ruby-edtf")
+    (version "3.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/edtf-ruby")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "18j8xq8zmrn41cs2gpd1i87agi9905asvnjqndky2cqb5zg3q14g"))
+              (snippet
+               ;; remove generated file
+               #~(delete-file "lib/edtf/parser.rb"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-activesupport))
+    (native-inputs
+     (list ruby-cucumber
+           ruby-rspec))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'avoid-bundler
+            (lambda args
+              (substitute* "Rakefile"
+                (("require 'bundler" orig)
+                 (string-append "# " orig " # patched for Guix"))
+                (("bundle exec racc")
+                 "racc")
+                (("Cucumber::Rake::Task\\.new[(]:cucumber[)]" orig)
+                 (string-append orig " do |c|\n"
+                                "  c.bundler = false # patched for Guix\n"
+                                "end"))
+                (("Bundler\\.setup" orig)
+                 (string-append "true # " orig " # patched for Guix")))))
+          (add-after 'avoid-bundler 'patch-cucumber-options
+            (lambda args
+              (substitute* "cucumber.yml"
+                ;; this option is not supported, at least in our configuration
+                ((" --publish-quiet")
+                 ""))))
+          (add-before 'build 'compile
+            (lambda args
+              (invoke "rake" "racc")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "rake")))))))
+    (home-page "https://github.com/inukshuk/edtf-ruby")
+    (synopsis "Ruby implementation of Extended Date/Time Format")
+    (description
+     "EDTF-Ruby provides a parser and an API for the @acronym{EDTF, Extended
+Date/Time Format} standard, implemented as an extension to Ruby's @code{Date}
+class.")
+    (license license:bsd-2)))
+
+(define-public ruby-gli
+  (package
+    (name "ruby-gli")
+    (version "2.21.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/davetron5000/gli")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "09b1r9hlx4dy2yq036nk7hc2nbswhia6q3na9v11z94yibc8mgja"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list ruby-minitest
+           ruby-rainbow
+           ruby-rdoc
+           ruby-sdoc))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'patch-gemspec-version
+            (lambda args
+              (substitute* "gli.gemspec"
+                ;; this trick fails in our build environment
+                (("require File\\.join[(]\\[" orig)
+                 (string-append "# patched for Guix # " orig))
+                (("s\\.version = GLI::VERSION")
+                 #$(string-append "s.version = '"
+                                  (package-version this-package)
+                                  "' # patched for Guix")))))
+          (add-after 'replace-git-ls-files 'replace-another-git-ls-files
+            (lambda args
+              (substitute* "gli.gemspec"
+                (("`git ls-files -- [{]test,spec,features[}]/\\*`")
+                 "`find {test,spec,features} -type f | sort`"))))
+          (add-after 'replace-another-git-ls-files 'fix-rubyopt
+            (lambda args
+              (substitute* "Rakefile"
+                (("ENV\\[\"RUBYOPT\"]")
+                 "(ENV['RUBYOPT'] || '')")))))))
+    (home-page "https://davetron5000.github.io/gli/")
+    (synopsis "Git-Like Interface command-line parser")
+    (description
+     "GLI allows you to create command-line applications in Ruby with Git-Like
+Interfaces: that is, they take subcommands in the style of @command{git} and
+@command{gem}.  GLI uses a simple domain-specific language, but retains all
+the power of the built-in @code{OptionParser}.")
+    (license license:asl2.0)))
+
+(define-public ruby-anystyle-data
+  (package
+    (name "ruby-anystyle-data")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/anystyle-data")
+                    (commit version)))
+              (sha256
+               (base32
+                "025mxa7r9d7izqn6bc1wr40ijp64da0jh211prlpjl6svilgd6rm"))
+              (snippet
+               ;; remove pre-built file
+               #~(delete-file "lib/anystyle/data/dict.txt.gz"))
+              (patches
+               (search-patches "ruby-anystyle-data-immutable-install.patch"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f ;; there are none
+      #:modules
+      `((guix build ruby-build-system)
+        (guix build utils)
+        (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'replace-git-ls-files 'replace-another-git-ls-files
+            (lambda args
+              (substitute* "anystyle-data.gemspec"
+                (("`git ls-files lib README\\.md LICENSE`\\.split[(][^)]*[)]")
+                 (string-append
+                  "["
+                  (string-join
+                   (map (cut string-append "\"" <> "\"")
+                        `("README.md"
+                          "LICENSE"
+                          "lib/anystyle/data.rb"
+                          "lib/anystyle/data/dict.txt.gz"
+                          "lib/anystyle/data/setup.rb"
+                          "lib/anystyle/data/version.rb"))
+                   ", ")
+                  "]")))))
+          (add-before 'build 'compile-dict
+            (lambda args
+              (invoke "rake" "compile"))))))
+    (home-page "https://anystyle.io")
+    (synopsis "AnyStyle parser dictionary data")
+    (description
+     "This gem provides parser dictionary data for AnyStyle.")
+    (license license:bsd-2)))
+
+(define-public ruby-anystyle
+  (let ((commit "50f1dd547d28ab4b830e45d70e840cb1898a37b0")
+        (revision "1"))
+    ;; Releases point to specific commits, but recent releases haven't been
+    ;; tagged in Git.  Meanwhile, the rubygems archive lacks tests.
+    (package
+      (name "ruby-anystyle")
+      (version (git-version "1.3.14" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/inukshuk/anystyle")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0f4qcrywl1kl6qysn24lj3yp85ln4i7za7b7ld2fglyzwcggxwb0"))
+                (snippet
+                 ;; There is an optional dependency on
+                 ;; <https://github.com/feedbackmine/language_detector>, which
+                 ;; seems like it was intended to be free software, but
+                 ;; doesn't have a clear license statement.  Maybe someone can
+                 ;; do more sleuthing, or else find a replacement?  See also
+                 ;; <https://github.com/inukshuk/anystyle/issues/186>.  For
+                 ;; now, patch it out, but leave a pointer to follow up.
+                 #~(begin
+                     (use-modules (guix build utils))
+                     (substitute* "Gemfile"
+                       (("gem 'language_detector', github: '[^']*'" orig)
+                        (string-append "# " orig " # unclear license")))
+                     (substitute* "spec/anystyle/parser_spec.rb"
+                       (("language: 'en'," orig)
+                        (string-append "# " orig " # no lanugage_detector")))))
+                (patches
+                 (search-patches
+                  "ruby-anystyle-fix-dictionary-populate.patch"))
+                (file-name (git-file-name name version))))
+      (build-system ruby-build-system)
+      (propagated-inputs
+       (list ruby-anystyle-data
+             ruby-bibtex-ruby
+             ruby-namae
+             ruby-wapiti))
+      (native-inputs
+       (list ruby-byebug
+             ruby-citeproc
+             ruby-edtf
+             ruby-rspec
+             ruby-unicode-scripts))
+      (arguments
+       (list
+        #:test-target "spec"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'extract-gemspec 'avoid-bundler
+              (lambda args
+                (substitute* "Rakefile"
+                  (("require 'bundler" orig)
+                   (string-append "# " orig " # patched for Guix"))
+                  (("Bundler\\.setup" orig)
+                   (string-append "true # " orig " # patched for Guix")))))
+            (add-after 'replace-git-ls-files 'replace-another-git-ls-files
+              (lambda args
+                (substitute* "anystyle.gemspec"
+                  (("`git ls-files spec`")
+                   "`find spec -type f | sort`"))))
+            (add-after 'wrap 'populate-dictionaries
+              (lambda args
+                ;; We must initiallize these files here, or they will never be
+                ;; usable with the default settings. A more flexible approach
+                ;; might use something like `Gem.find_files()` or
+                ;; XDG_DATA_DIRS.
+                (with-output-to-file "initialize-dictionaries.rb"
+                  (lambda ()
+                    (display "
+require 'anystyle/dictionary' # must come before 'anystyle/data'
+require 'anystyle/data'
+[:marshal, :gdbm].each do |adapter|
+  AnyStyle::Dictionary.create({adapter: adapter}).open().close()
+end
+")))
+                (let* ((old-gems (getenv "GEM_PATH"))
+                       (new-gems (string-append #$output
+                                                "/lib/ruby/vendor_ruby:"
+                                                old-gems)))
+                  (dynamic-wind
+                    (lambda ()
+                      (setenv "GEM_PATH" new-gems))
+                    (lambda ()
+                      (invoke "ruby" "initialize-dictionaries.rb"))
+                    (lambda ()
+                      (setenv "GEM_PATH" old-gems)))))))))
+      (home-page "https://anystyle.io")
+      (synopsis "Fast and smart citation reference parsing (Ruby library)")
+      (description
+       "AnyStyle is a very fast and smart parser for academic reference lists
+and bibliographies.  AnyStyle uses powerful machine learning heuristics based
+on Conditional Random Fields and aims to make it easy to train the model with
+data that is relevant to your parsing needs.
+
+This package provides the Ruby module @code{AnyStyle}.  AnyStyle can also be
+used via the @command{anystyle} command-line utility or a web application,
+though the later has not yet been packaged for Guix.")
+      (license license:bsd-2))))
+
+(define-public anystyle
+  (package
+    (name "anystyle")
+    (version "1.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/inukshuk/anystyle-cli")
+                    (commit version)))
+              (sha256
+               (base32
+                "1bazzms04cra8516q7vydmcm31yd0a7si1pxk4waffqy7lh0pksg"))
+              (file-name (git-file-name name version))))
+    (build-system ruby-build-system)
+    (propagated-inputs
+     (list ruby-anystyle
+           ruby-bibtex-ruby
+           ruby-gli))
+    (native-inputs
+     (list txt2man))
+    (arguments
+     (list
+      #:modules
+      `((guix build ruby-build-system)
+        (ice-9 popen)
+        (srfi srfi-1)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'less-strict-dependencies
+            (lambda args
+              (substitute* "anystyle-cli.gemspec"
+                (("'bibtex-ruby', '[^']*'")
+                 "'bibtex-ruby'"))))
+          (add-before 'build 'change-default-dictionary-adapter
+            (lambda args
+              ;; Since we always have gdbm available, using it will give a
+              ;; faster startup time, which is particularly worth-while for
+              ;; a command-line tool.
+              (substitute* "bin/anystyle"
+                (("default_value: 'ruby',")
+                 "default_value: 'gdbm', # patched for Guix"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              ;; There are no tests, but let's use this opportunity to do a
+              ;; basic test of our own that things run ok. It works especially
+              ;; well to test this here since we know the 'ruby-anystile'
+              ;; package is in its final, immutable installed form.
+              (when tests?
+                (let ((common
+                       `("require 'anystyle'"
+                         ,(string-append
+                           "pp AnyStyle.parse 'Derrida, J. (1967). L’écriture"
+                           " et la différence (1 éd.). Paris: Éditions du"
+                           " Seuil.'"))))
+                  (for-each
+                   (lambda (lines)
+                     (apply invoke "ruby"
+                            (fold-right (lambda (line lst)
+                                          (cons* "-e" line lst))
+                                        '()
+                                        lines)))
+                   `(,common
+                     ("require 'anystyle/dictionary'"
+                      "AnyStyle::Dictionary.defaults[:adapter] = :gdbm"
+                      ,@common)))))))
+          (add-after 'wrap 'check-cli
+            (lambda* (#:key tests? outputs #:allow-other-keys)
+              (when tests?
+                (with-output-to-file "check-cli.in"
+                  (lambda ()
+                    (for-each
+                     display
+                     '("Derrida, J. (1967). L’écriture et la différence "
+                       "(1 éd.). Paris: Éditions du Seuil.\n"))))
+                (invoke (search-input-file outputs "/bin/anystyle")
+                        "parse"
+                        "check-cli.in"))))
+          (add-after 'wrap 'generate-man-page
+            ;; generating a man page also tests that the command actually runs
+            (lambda args
+              (define (run-with-output-file file command . args)
+                (format (current-output-port)
+                        "running: ~s\nwith output to: ~s\n"
+                        (cons command args)
+                        file)
+                (unless (zero?
+                         (with-output-to-file file
+                           (lambda ()
+                             (status:exit-val
+                              (close-pipe
+                               (apply open-pipe* OPEN_WRITE command args))))))
+                  (error "command failed")))
+              (let ((anystyle (string-append #$output "/bin/anystyle")))
+                (run-with-output-file "intro.txt"
+                                      anystyle "--help")
+                (for-each (lambda (cmd)
+                            (let ((file (string-append cmd ".txt")))
+                              (run-with-output-file file
+                                                    anystyle cmd "--help")
+                              ;; indent headings to create subsections
+                              (substitute* file
+                                (("^[A-Z]" orig)
+                                 (string-append " " orig)))
+                              ;; generate a section heading
+                              (call-with-output-file
+                                  (string-append "section-" file)
+                                (lambda (out)
+                                  (format out "\n\n~a COMMAND\n\n"
+                                          (string-upcase cmd))))))
+                          '("check" "find" "parse" "train"))
+                (substitute* `("intro.txt"
+                               "check.txt" "find.txt" "parse.txt" "train.txt")
+                  ;; format "tag list" for txt2man"
+                  ((" - ")
+                   "    ")
+                  ;; restore formatting of the "name" sections
+                  (("(anystyle|check|find|parse|train)    ([A-Z])" _ cmd post)
+                   (string-append cmd " - " post)))
+                (run-with-output-file "anystyle.txt"
+                                      "cat"
+                                      "intro.txt"
+                                      "section-check.txt" "check.txt"
+                                      "section-find.txt" "find.txt"
+                                      "section-parse.txt" "parse.txt"
+                                      "section-train.txt" "train.txt")
+                (run-with-output-file
+                 "anystyle.1"
+                 "txt2man"
+                 "-v" "General Commands Manual" "-t" "anystyle" "-s" "1"
+                 "-r" #$(string-append "anystyle-cli "
+                                       (package-version this-package))
+                 "-B" "check" "-B" "find" "-B" "parse" "-B" "train"
+                 "anystyle.txt")
+                (install-file "anystyle.1"
+                              (string-append #$output "/share/man/man1"))))))))
+    (home-page "https://anystyle.io")
+    (synopsis "Fast and smart citation reference parsing")
+    (description
+     "AnyStyle is a very fast and smart parser for academic reference lists
+and bibliographies.  AnyStyle uses powerful machine learning heuristics based
+on Conditional Random Fields and aims to make it easy to train the model with
+data that is relevant to your parsing needs.
+
+This package provides the @command{anystyle} command-line utility.  AnyStyle
+can also be used as a Ruby library or as a web application, though the later
+has not yet been packaged for Guix.")
+    (license license:bsd-2)
+    (properties `((upstream-name . "anystyle-cli")))))

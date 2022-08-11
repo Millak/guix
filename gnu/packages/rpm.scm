@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,6 +19,7 @@
 (define-module (gnu packages rpm)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix build-system cmake)
@@ -43,7 +44,7 @@
 (define-public drpm
   (package
     (name "drpm")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -52,7 +53,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m269nl8s31yjyz7kknv4jl9mx12xjpx2ly6wf66zs5613m4rj1z"))))
+                "0czg69crs2idnd8zsr7p01cd02f981gb5hq15m3qkwd25zxxd1l0"))))
     (build-system cmake-build-system)
     (native-inputs
      (list cmocka pkg-config))
@@ -86,52 +87,50 @@ applying deltarpms, compatible with the original deltarpm packages.")
     (build-system meson-build-system)
     (outputs '("out" "doc"))            ;2.6 MiB of HTML documentation
     (arguments
-     `(#:configure-flags
-       (list (string-append "-Dgobject_overrides_dir_py3="
-                            (python:site-packages %build-inputs %outputs)))
-       #:imported-modules (,@%meson-build-system-modules
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dgobject_overrides_dir_py3="
+                             (python:site-packages %build-inputs %outputs)))
+      #:imported-modules `(,@%meson-build-system-modules
                            (guix build python-build-system))
-       #:modules ((guix build meson-build-system)
+      #:modules '((guix build meson-build-system)
                   ((guix build python-build-system) #:prefix python:)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-glib-doc-prefix
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((glib:doc (assoc-ref inputs "glib:doc")))
-               (substitute* "meson.build"
-                 (("glib_docpath = .*")
-                  (format #f "glib_docpath = '~a'~%"
-                          (string-append glib:doc
-                                         "/share/gtk-doc/html")))))))
-         (add-after 'unpack 'fix-docbook-references
-           ;; gtk-doc doesn't seem to honor DocBook 4.1.2's docbook.cat's
-           ;; catalog file, even when adding it to XML_CATALOG_FILES.  Work
-           ;; around it by adjusting the DocBook references directly.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "modulemd/modulemd-docs.xml"
-               (("http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd")
-                (string-append (assoc-ref inputs "docbook-xml")
-                               "/xml/dtd/docbook/docbookx.dtd")))))
-         (add-after 'install 'move-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc"))
-                    (src (string-append out "/share/gtk-doc"))
-                    (dst (string-append doc "/share/gtk-doc")))
-               (mkdir-p (dirname dst))
-               (rename-file src dst)))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-glib-doc-prefix
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (substitute* "meson.build"
+                (("glib_docpath = .*")
+                 (format #f "glib_docpath = '~a'~%"
+                         (search-input-directory (or native-inputs inputs)
+                                                 "share/gtk-doc/html"))))))
+          (add-after 'unpack 'fix-docbook-references
+            ;; gtk-doc doesn't seem to honor DocBook 4.1.2's docbook.cat's
+            ;; catalog file, even when adding it to XML_CATALOG_FILES.  Work
+            ;; around it by adjusting the DocBook references directly.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "modulemd/modulemd-docs.xml"
+                (("http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd")
+                 (search-input-file inputs "xml/dtd/docbook/docbookx.dtd")))))
+          (add-after 'install 'move-documentation
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((dst (string-append #$output:doc "/share/gtk-doc")))
+                (mkdir-p (dirname dst))
+                (rename-file (search-input-directory outputs "share/gtk-doc")
+                             dst)))))))
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.1.2)
-       ("glib:bin" ,glib "bin")
-       ("glib:doc" ,glib-with-documentation "doc")
-       ("gobject-introspection" ,gobject-introspection) ;for g-ir-scanner
-       ("gtk-doc" ,gtk-doc)
-       ("help2man" ,help2man)
-       ("pkg-config" ,pkg-config)))
+     (list docbook-xml-4.1.2
+           `(,glib "bin")
+           `(,glib-with-documentation "doc")
+           gobject-introspection        ;for g-ir-scanner
+           gtk-doc
+           help2man
+           pkg-config
+           python))                     ;for 'site-packages' call
     (inputs
-     `(("gtk" ,gtk+)
-       ("python-pygobject" ,python-pygobject)))
+     (list gtk+
+           python-pygobject))
     (propagated-inputs
      ;; glib and gobject are listed as 'Requires' in modulemd-2.0.pc.
      (list glib
@@ -147,7 +146,7 @@ information on multiple streams, default data and translations).")
 (define-public createrepo-c
   (package
     (name "createrepo-c")
-    (version "0.17.6")
+    (version "0.20.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -156,28 +155,29 @@ information on multiple streams, default data and translations).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "175na06mjyr8ws5pkknaicpziayj6p0xaanv62d54c6zxl4w484w"))))
+                "07d89s6kknf79phzan3d2vy1rq64ih49qk2w51hsmfn73qins9wy"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:imported-modules (,@%cmake-build-system-modules
+     (list
+      #:imported-modules `(,@%cmake-build-system-modules
                            (guix build python-build-system))
-       #:modules ((guix build cmake-build-system)
+      #:modules '((guix build cmake-build-system)
                   ((guix build python-build-system) #:prefix python:)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-python-site-prefix
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "src/python/CMakeLists.txt"
-               (("EXECUTE_PROCESS.*OUTPUT_VARIABLE PYTHON_INSTALL_DIR.*")
-                (format #f "set (PYTHON_INSTALL_DIR ~a)~%"
-                        (python:site-packages inputs outputs))))))
-         (add-after 'unpack 'fix-bash-completion-prefix
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("execute_process.*OUTPUT_VARIABLE BASHCOMP_DIR.*")
-                (format #f "set (BASHCOMP_DIR ~a\
-/share/bash-completion/completions)~%" (assoc-ref outputs "out")))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-site-prefix
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "src/python/CMakeLists.txt"
+                (("EXECUTE_PROCESS.*OUTPUT_VARIABLE PYTHON_INSTALL_DIR.*")
+                 (format #f "set (PYTHON_INSTALL_DIR ~a)~%"
+                         (python:site-packages inputs outputs))))))
+          (add-after 'unpack 'fix-bash-completion-prefix
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("execute_process.*OUTPUT_VARIABLE BASHCOMP_DIR.*")
+                 (format #f "set (BASHCOMP_DIR ~a\
+/share/bash-completion/completions)~%" #$output))))))))
     (native-inputs
      (list bash-completion pkg-config python))
     (inputs

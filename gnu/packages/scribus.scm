@@ -88,10 +88,10 @@
            poppler
            python                       ;need Python library
            qtbase-5
-           qtdeclarative
+           qtdeclarative-5
            zlib))
     (native-inputs
-     (list pkg-config qttools util-linux))
+     (list pkg-config qttools-5 util-linux))
     (home-page "https://www.scribus.net")
     (synopsis "Desktop publishing and page layout program")
     (description

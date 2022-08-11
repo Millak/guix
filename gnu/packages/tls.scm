@@ -329,6 +329,23 @@ required structures.")
     (properties '((ftp-server . "ftp.gnutls.org")
                   (ftp-directory . "/gcrypt/gnutls")))))
 
+(define-public gnutls-latest
+  ;; Version 3.7.7 introduces 'set-session-record-port-close!', which allows
+  ;; us to get rid of the wrapper port in 'tls-wrap'.
+  (package
+    (inherit gnutls)
+    (version "3.7.7")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnupg/gnutls/v"
+                                  (version-major+minor version)
+                                  "/gnutls-" version ".tar.xz"))
+              (patches (search-patches "gnutls-skip-trust-store-test.patch"
+                                       "gnutls-cross.patch"))
+              (sha256
+               (base32
+                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))))
+
 (define-public gnutls/guile-2.0
   ;; GnuTLS for Guile 2.0.
   (package/inherit gnutls
@@ -359,27 +376,44 @@ OpenSSL for TARGET."
   ;; Keep this code outside the build code,
   ;; such that new targets can be added
   ;; without causing rebuilds for other targets.
-  (cond ((string-prefix? "i586" target)
-         "hurd-x86")
-        ((string-prefix? "i686" target)
-         "linux-x86")
-        ((string-prefix? "x86_64" target)
-         "linux-x86_64")
-        ((string-prefix? "mips64el" target)
-         "linux-mips64")
-        ((string-prefix? "arm" target)
-         "linux-armv4")
-        ((string-prefix? "aarch64" target)
-         "linux-aarch64")
-        ((string-prefix? "powerpc64le" target)
-         "linux-ppc64le")
-        ((string-prefix? "powerpc64" target)
-         "linux-ppc64")
-        ((string-prefix? "powerpc" target)
-         "linux-ppc")
-        ((string-prefix? "riscv64" target)
-         ;; linux64-riscv64 isn't recognized until 3.0.0.
-         "linux-generic64")))
+  (if (target-mingw? target)
+      (string-append
+       "mingw"
+       (if (target-x86-64? target)
+           "64"
+           ""))
+      (let ((kernel
+             (cond ((target-hurd? target)
+                    "hurd")
+                   ((target-linux? target)
+                    "linux")
+                   (else
+                    (error "unsupported openssl target kernel"))))
+            (arch
+             (cond
+              ((target-x86-32? target)
+               "x86")
+              ((target-x86-64? target)
+               "x86_64")
+              ((target-mips64el? target)
+               "mips64")
+              ((target-arm32? target)
+               "armv4")
+              ((target-aarch64? target)
+               "aarch64")
+              ((target-ppc64le? target)
+               "ppc64le")
+              ((target-ppc32? target)
+               "ppc")
+              ((and (target-powerpc? target)
+                    (target-64bit? target))
+               "ppc64")
+              ((target-64bit? target)
+               ;; linux64-riscv64 isn't recognized until 3.0.0.
+               "generic64")
+              (else
+               (error "unsupported openssl target architecture")))))
+        (string-append kernel "-" arch))))
 
 (define-public openssl
   (package
@@ -473,7 +507,13 @@ OpenSSL for TARGET."
                (for-each (lambda (file)
                            (install-file file slib)
                            (delete-file file))
-                         (find-files lib "\\.a$")))))
+                         (find-files
+                          lib
+                          #$(if (target-mingw?)
+                                '(lambda (filename _)
+                                   (and (string-suffix? ".a" filename)
+                                        (not (string-suffix? ".dll.a" filename))))
+                                "\\.a$"))))))
          (add-after 'install 'move-extra-documentation
            (lambda _
              ;; Move man pages and full HTML documentation to "doc".

@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
-;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -107,38 +108,31 @@ with PROGRAM."
              "--eval" "(quit)"))
     (_ (error "The LISP provided is not supported at this time."))))
 
-(define (compile-systems systems asd-files)
-  "Use a lisp implementation to compile the SYSTEMS using asdf.
-Load ASD-FILES first."
+(define (compile-systems systems directory operation)
+  "Use a lisp implementation to compile the SYSTEMS using asdf."
   (lisp-eval-program
    `((require :asdf)
-     ,@(map (lambda (asd-file)
-              `(asdf:load-asd (truename ,asd-file)))
-            asd-files)
+     (asdf:initialize-source-registry
+      (list :source-registry (list :tree (uiop:ensure-pathname ,directory
+                                                               :truenamize t
+                                                               :ensure-directory t))
+            :inherit-configuration))
      ,@(map (lambda (system)
-              `(asdf:compile-system ,system))
+              (list (string->symbol (string-append "asdf:" operation)) system))
             systems))))
 
-(define (test-system system asd-files test-asd-file)
-  "Use a lisp implementation to test SYSTEM using asdf.  Load ASD-FILES first.
-Also load TEST-ASD-FILE if necessary."
+(define (test-system test-systems directory)
+  "Use a lisp implementation to test the TEST-SYSTEMS using asdf."
   (lisp-eval-program
    `((require :asdf)
-     ,@(map (lambda (asd-file)
-              `(asdf:load-asd (truename ,asd-file)))
-            asd-files)
-     ,@(if test-asd-file
-           `((asdf:load-asd (truename ,test-asd-file)))
-           ;; Try some likely files.
-           (map (lambda (file)
-                  `(when (uiop:file-exists-p ,file)
-                     (asdf:load-asd (truename ,file))))
-                (list
-                 (string-append system "-tests.asd")
-                 (string-append system "-test.asd")
-                 "tests.asd"
-                 "test.asd")))
-     (asdf:test-system ,system))))
+     (asdf:initialize-source-registry
+      (list :source-registry (list :tree (uiop:ensure-pathname ,directory
+                                                               :truenamize t
+                                                               :ensure-directory t))
+            :inherit-configuration))
+     ,@(map (lambda (system)
+              `(asdf:test-system ,system))
+            test-systems))))
 
 (define (string->lisp-keyword . strings)
   "Return a lisp keyword for the concatenation of STRINGS."

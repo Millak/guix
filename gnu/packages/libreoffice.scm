@@ -7,7 +7,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2017, 2018, 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -34,6 +34,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -53,6 +54,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
@@ -89,7 +91,7 @@
 (define-public ixion
   (package
     (name "ixion")
-    (version "0.16.1")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
@@ -97,7 +99,7 @@
                            version ".tar.xz"))
        (sha256
         (base32
-         "17q84mhy4rb3masvjw24x549irdjmccnc8n04xh58v9l7hxn8v22"))))
+         "07hhqkvns4da8xv990gr1smqz1zf40m531lg95nphfrz48wp3jak"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -114,7 +116,7 @@ their dependencies automatically upon calculation.")
 (define-public orcus
   (package
     (name "orcus")
-    (version "0.16.1")
+    (version "0.17.2")
     (source
      (origin
        (method url-fetch)
@@ -122,7 +124,7 @@ their dependencies automatically upon calculation.")
                            "orcus-" version ".tar.xz"))
        (sha256
         (base32
-         "1bps34sqz7wlrl01ssywjd5fbmssplifs0rskivgrg801lr6pcm4"))))
+         "1as04qb74jnlnwy4wh5jwaw2nnzgn2s3230ymvh3kx1w9r0rsl1h"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")))
@@ -347,35 +349,48 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
 (define-public libcmis
   (package
     (name "libcmis")
-    (version "0.5.2")
+    ;; Note: Use an unreleased version because libreoffice requires it and
+    ;; is the only user (see <https://github.com/tdf/libcmis/pull/43>).
+    (version "0.5.2-46-gf264a61")
+    (home-page "https://github.com/tdf/libcmis")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://github.com/tdf/libcmis/releases/download/v"
-                          version "/libcmis-" version ".tar.xz"))
-      (sha256
-       (base32
-        "18h0a2gsfxvlv03nlcfvw9bzsflq5sin9agq6za103hr0ab8vcfp"))))
+       (method git-fetch)
+       (uri (git-reference (url home-page)
+                           (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "06ff5vw0xrymvvna18wlaayyk20755sk2541i1gh7zpbmncs2ni6"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list cppunit pkg-config))
-    (propagated-inputs ; in Requires field of .pkg
+     (list autoconf automake libtool cppunit pkg-config))
+    (propagated-inputs                  ;in Requires field of .pkg
      (list curl libxml2))
     (inputs
      (list boost cyrus-sasl openssl))
     (arguments
-     `(#:configure-flags
-        (list
-          ;; FIXME: Man pages generation requires docbook-to-man; reenable
-          ;; it once this is available.
-          "--without-man"
-          ;; XXX: A configure test fails with GCC7 when including Boost headers.
-          "--disable-werror"
-          ;; During configure, the boost headers are found, but linking
-          ;; fails without the following flag.
-          (string-append "--with-boost="
-                         (assoc-ref %build-inputs "boost")))))
-    (home-page "https://github.com/tdf/libcmis")
+     (list
+      #:configure-flags
+      #~(list
+         ;; FIXME: Man pages generation requires docbook-to-man; reenable
+         ;; it once this is available.
+         "--without-man"
+         ;; XXX: A configure test fails with GCC7 when including Boost headers.
+         "--disable-werror"
+         ;; During configure, the boost headers are found, but linking
+         ;; fails without the following flag.
+         (string-append "--with-boost="
+                        (dirname (dirname
+                                  (search-input-directory %build-inputs
+                                                          "include/boost")))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda _
+              ;; Override the bootstrap phase as the ancient autogen.sh
+              ;; script exits with a non-zero code when NOCONFIGURE=1.
+              (invoke "autoreconf" "-vif"))))))
     (synopsis "CMIS client library")
     (description "LibCMIS is a C++ client library for the CMIS interface.  It
 allows C++ applications to connect to any ECM behaving as a CMIS server such
@@ -444,7 +459,11 @@ CorelDRAW documents of all versions.")
                "16hy60ws29pb4pz3z5l4920yn9hnk2vlij0xfs5qi1w4drd46c5l"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--with-mdds=1.5")))
+     (list #:configure-flags
+           #~(list (string-append "--with-mdds="
+                                  #$(version-major+minor
+                                     (package-version
+                                      (this-package-input "mdds")))))))
     (native-inputs
      (list cppunit doxygen gperf pkg-config))
     (propagated-inputs ; in Requires or Requires.private field of .pkg
@@ -1025,12 +1044,19 @@ and to return information on pronunciations, meanings and synonyms.")
 converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
     (license license:mpl2.0)))
 
+(define dtoa
+  (origin
+    (method url-fetch)
+    (uri "https://dev-www.libreoffice.org/src/dtoa-20180411.tgz")
+    (sha256
+     (base32 "1d0iwy0q5sjznv23d3nbwmy0r7m1mdzlnv5pc4izddkx9xld10h0"))))
+
 ;; When updating libreoffice, also make sure to update the
 ;; hunspell dictionaries! They use the libreoffice version.
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.1.4.2")
+    (version "7.3.5.2")
     (source
      (origin
        (method url-fetch)
@@ -1039,190 +1065,184 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "1jsskhnlyra7q6d12kkc8dxq5fgrnd8grl32bdck7j9hkwv6d13m"))))
+        (base32 "14g9873x8m5yakpq7v9f7lhc5fkxh6yhjhgh0pm30cqmxsqhsglv"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
-     `(("bison" ,bison)
-       ("cppunit" ,cppunit)
-       ("flex" ,flex)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("which" ,which)
-       ("ziptime" ,ziptime)))
+     (list bison
+           cppunit
+           flex
+           pkg-config
+           python-wrapper
+           which
+           ziptime))
     (inputs
-     `(("bluez" ,bluez)
-       ("boost" ,boost)
-       ("box2d" ,box2d)
-       ("clucene" ,clucene)
-       ("cups" ,cups)
-       ("dbus-glib" ,dbus-glib)
-       ("firebird" ,firebird)
-       ("fontconfig" ,fontconfig)
-       ("fontforge" ,fontforge)
-       ("gconf" ,gconf)
-       ("glew" ,glew)
-       ("glm" ,glm)
-       ("gnupg" ,gnupg)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gperf" ,gperf)
-       ("gpgme" ,gpgme)
-       ("graphite2" ,graphite2)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gtk+" ,gtk+)
-       ("harfbuzz" ,harfbuzz)
-       ("hunspell" ,hunspell)
-       ("hyphen" ,hyphen)
-       ("libabw" ,libabw)
-       ("libcdr" ,libcdr)
-       ("libcmis" ,libcmis)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libe-book" ,libe-book)
-       ("libepubgen" ,libepubgen)
-       ("libetonyek" ,libetonyek)
-       ("libexttextcat" ,libexttextcat)
-       ("libfreehand" ,libfreehand)
-       ("liblangtag" ,liblangtag)
-       ;; XXX: Perhaps this should be propagated from xmlsec.
-       ("libltdl" ,libltdl)
-       ("libmspub" ,libmspub)
-       ("libmwaw" ,libmwaw)
-       ("libnumbertext" ,libnumbertext)
-       ("libodfgen" ,libodfgen)
-       ("libpagemaker" ,libpagemaker)
-       ("libqxp" ,libqxp)
-       ("libstaroffice" ,libstaroffice)
-       ("libvisio" ,libvisio)
-       ("libwpg" ,libwpg)
-       ("libwps" ,libwps)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxslt" ,libxslt)
-       ("libxt" ,libxt)
-       ("libzmf" ,libzmf)
-       ("lpsolve" ,lpsolve)
-       ("mariadb" ,mariadb "dev")
-       ("mdds" ,mdds)
-       ("mythes" ,mythes)
-       ("neon" ,neon)
-       ("nspr" ,nspr)
-       ("nss" ,nss)
-       ("openldap" ,openldap)
-       ("openssl" ,openssl)
-       ("orcus" ,orcus)
-       ("perl" ,perl)
-       ("perl-archive-zip" ,perl-archive-zip)
-       ("poppler" ,poppler)
-       ("postgresql" ,postgresql)
-       ("python" ,python)
-       ("python-lxml" ,python-lxml)
-       ("qrcodegen-cpp" ,qrcodegen-cpp)
-       ("redland" ,redland)
-       ("sane-backends" ,sane-backends)
-       ("unixodbc" ,unixodbc)
-       ("unzip" ,unzip)
-       ("vigra" ,vigra)
-       ("xdg-utils" ,xdg-utils)
-       ("xmlsec" ,xmlsec-nss)
-       ("zip" ,zip)
-       ("dtoa"              ; needed after version 6.4.7.2.
-        ,(origin
-           (method url-fetch)
-           (uri "https://dev-www.libreoffice.org/src/dtoa-20180411.tgz")
-           (sha256
-            (base32 "1d0iwy0q5sjznv23d3nbwmy0r7m1mdzlnv5pc4izddkx9xld10h0"))))))
+     (list bluez
+           boost
+           box2d
+           clucene
+           cups
+           dbus-glib
+           firebird
+           fontconfig
+           fontforge
+           gconf
+           glew
+           glm
+           gnupg
+           gobject-introspection
+           gperf
+           gpgme
+           graphite2
+           gst-plugins-base
+           gtk+
+           harfbuzz
+           hunspell
+           hyphen
+           libabw
+           libcdr
+           libcmis
+           libcuckoo
+           libjpeg-turbo
+           libe-book
+           libepubgen
+           libetonyek
+           libexttextcat
+           libfreehand
+           liblangtag
+           ;; XXX: Perhaps this should be propagated from xmlsec.
+           libltdl
+           libmspub
+           libmwaw
+           libnumbertext
+           libodfgen
+           libpagemaker
+           libqxp
+           libstaroffice
+           libvisio
+           libwpg
+           libwps
+           libxrandr
+           libxrender
+           libxslt
+           libxt
+           libzmf
+           lpsolve
+           `(,mariadb "dev")
+           mdds
+           mythes
+           neon
+           nspr
+           nss
+           openldap
+           openssl
+           orcus
+           perl
+           perl-archive-zip
+           poppler
+           postgresql
+           python
+           python-lxml
+           qrcodegen-cpp
+           redland
+           sane-backends
+           unixodbc
+           unzip
+           vigra
+           xdg-utils
+           xmlsec-nss
+           zip
+           zxing-cpp))
     (arguments
-     `(#:tests? #f                     ; Building the tests already fails.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'insert-external-tarballs
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir-p "external/tarballs")
-             (copy-file (assoc-ref inputs "dtoa")
-                        "external/tarballs/dtoa-20180411.tgz")
-             #t))
-         (add-before 'configure 'prepare-src
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute*
-                 (list "sysui/CustomTarget_share.mk"
-                       "solenv/gbuild/gbuild.mk"
-                       "solenv/gbuild/platform/unxgcc.mk")
-               (("/bin/sh") (which "sh")))
+     (list
+      #:tests? #f                       ; Building the tests already fails.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'insert-external-tarballs
+            (lambda _
+              (mkdir-p "external/tarballs")
+              (copy-file #$dtoa "external/tarballs/dtoa-20180411.tgz")))
+          (add-before 'configure 'prepare-src
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute*
+                  (list "sysui/CustomTarget_share.mk"
+                        "solenv/gbuild/gbuild.mk"
+                        "solenv/gbuild/platform/unxgcc.mk")
+                (("/bin/sh") (which "sh")))
 
-             ;; Use store references for strictly necessary commands,
-             ;; but not for optional tools like ‘gdb’ and ‘valgrind’.
-             (for-each (lambda (command)
-                         (substitute* "desktop/scripts/soffice.sh"
-                           (((format #f"~a " command))
-                            (format #f "~a " (which command)))))
-                       (list "dirname" "grep" "uname"))
+              ;; Use store references for strictly necessary commands,
+              ;; but not for optional tools like ‘gdb’ and ‘valgrind’.
+              (for-each (lambda (command)
+                          (substitute* "desktop/scripts/soffice.sh"
+                            (((format #f "~a " command))
+                             (format #f "~a " (which command)))))
+                        (list "dirname" "grep" "uname"))
 
-             ;; GPGME++ headers are installed in a gpgme++ subdirectory, but
-             ;; configure is hardcoded to use FHS directories.
-             (substitute* "configure"
-               (("GPGMEPP_CFLAGS=-I/usr")
-                (string-append "GPGMEPP_CFLAGS=-I"
-                               (assoc-ref inputs "gpgme"))))
+              ;; GPGME++ headers are installed in a gpgme++ subdirectory, but
+              ;; configure is hardcoded to use FHS directories.
+              (substitute* "configure"
+                (("GPGMEPP_CFLAGS=-I/usr/include/gpgme\\+\\+")
+                 (string-append "GPGMEPP_CFLAGS=-I"
+                                (search-input-directory inputs
+                                                        "include/gpgme++"))))
 
-             ;; /usr/bin/xdg-open doesn't exist on Guix System.
-             (substitute* '("shell/source/unix/exec/shellexec.cxx"
-                            "shell/source/unix/misc/senddoc.sh")
-               (("/usr/bin/xdg-open")
-                (search-input-file inputs "/bin/xdg-open")))))
-         (add-after 'install 'reset-zip-timestamps
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (file)
-                           (invoke "ziptime" file))
-                         ;; So many different extensions for .zip files.
-                         (find-files out "\\.(bau|dat|otp|ott|zip)$")))))
-         (add-after 'install 'bin-and-desktop-install
-           ;; Create 'soffice' and 'libreoffice' symlinks to the executable
-           ;; script.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (define (symlink-output src dst)
-                 (mkdir-p (dirname (string-append out dst)))
-                 (symlink (string-append out src) (string-append out dst)))
-               (define (install src dst)
-                 (let ((dst (string-append out dst)))
-                   (mkdir-p (dirname dst))
-                   (copy-file src dst)))
-               (define (install-desktop-file app)
-                 (let ((src (string-append "/lib/libreoffice/share/xdg/"
-                                           app ".desktop"))
-                       (dst (string-append "/share/applications/libreoffice-"
-                                           app ".desktop")))
-                   (substitute* (string-append out src)
-                     (("Exec=libreoffice[0-9]+\\.[0-9]+ ")
-                      (string-append "Exec=" out "/bin/libreoffice "))
-                     (("Icon=libreoffice.*")
-                      (string-append "Icon=" app "\n"))
-                     (("LibreOffice [0-9]+\\.[0-9]+")
-                      "LibreOffice"))
-                   (symlink-output src dst)))
-               (define (install-appdata app)
-                 (install-file (string-append
-                                "sysui/desktop/appstream-appdata/"
-                                "libreoffice-" app ".appdata.xml")
-                               (string-append out "/share/appdata")))
-               (symlink-output "/lib/libreoffice/program/soffice"
-                               "/bin/soffice")
-               (symlink-output "/lib/libreoffice/program/soffice"
-                               "/bin/libreoffice")
-               (install
-                "workdir/CustomTarget/sysui/share/libreoffice/openoffice.org.xml"
-                "/share/mime/packages/libreoffice.xml")
-               (for-each install-desktop-file
-                         '("base" "calc" "draw" "impress" "writer"
-                           "math" "startcenter"))
-               (for-each install-appdata
-                         '("base" "calc" "draw" "impress" "writer"))
-               (mkdir-p (string-append out "/share/icons/hicolor"))
-               (copy-recursively "sysui/desktop/icons/hicolor"
-                                 (string-append out "/share/icons/hicolor")))
-             #t)))
-       #:configure-flags
-       (list
+              ;; /usr/bin/xdg-open doesn't exist on Guix System.
+              (substitute* '("shell/source/unix/exec/shellexec.cxx"
+                             "shell/source/unix/misc/senddoc.sh")
+                (("/usr/bin/xdg-open")
+                 (search-input-file inputs "/bin/xdg-open")))))
+          (add-after 'install 'reset-zip-timestamps
+            (lambda _
+              (for-each (lambda (file)
+                          (invoke "ziptime" file))
+                        ;; So many different extensions for .zip files.
+                        (find-files #$output "\\.(bau|dat|otp|ott|zip)$"))))
+      (add-after 'install 'bin-and-desktop-install
+        ;; Create 'soffice' and 'libreoffice' symlinks to the executable
+        ;; script.
+        (lambda _
+          (let ((out #$output))
+            (define (symlink-output src dst)
+              (mkdir-p (dirname (string-append out dst)))
+              (symlink (string-append out src) (string-append out dst)))
+            (define (install src dst)
+              (let ((dst (string-append out dst)))
+                (mkdir-p (dirname dst))
+                (copy-file src dst)))
+            (define (install-desktop-file app)
+              (let ((src (string-append "/lib/libreoffice/share/xdg/"
+                                        app ".desktop"))
+                    (dst (string-append "/share/applications/libreoffice-"
+                                        app ".desktop")))
+                (substitute* (string-append out src)
+                  (("Exec=libreoffice[0-9]+\\.[0-9]+ ")
+                   (string-append "Exec=" out "/bin/libreoffice "))
+                  (("Icon=libreoffice.*")
+                   (string-append "Icon=" app "\n"))
+                  (("LibreOffice [0-9]+\\.[0-9]+")
+                   "LibreOffice"))
+                (symlink-output src dst)))
+            (define (install-appdata app)
+              (install-file (string-append
+                             "sysui/desktop/appstream-appdata/"
+                             "libreoffice-" app ".appdata.xml")
+                            (string-append out "/share/appdata")))
+            (symlink-output "/lib/libreoffice/program/soffice"
+                            "/bin/soffice")
+            (symlink-output "/lib/libreoffice/program/soffice"
+                            "/bin/libreoffice")
+            (install
+             "workdir/CustomTarget/sysui/share/libreoffice/openoffice.org.xml"
+             "/share/mime/packages/libreoffice.xml")
+            (for-each install-desktop-file
+                      '("base" "calc" "draw" "impress" "writer"
+                        "math" "startcenter"))
+            (for-each install-appdata
+                      '("base" "calc" "draw" "impress" "writer"))
+            (mkdir-p (string-append out "/share/icons/hicolor"))
+            (copy-recursively "sysui/desktop/icons/hicolor"
+                              (string-append out "/share/icons/hicolor"))))))
+     #:configure-flags
+     #~(list
         "--enable-release-build"
         "--with-vendor=GNU Guix"
         ;; Avoid using all cpu cores by default
@@ -1230,7 +1250,9 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
         "--disable-fetch-external"      ; disable downloads
         "--with-system-libs"            ; enable all --with-system-* flags
         (string-append "--with-boost-libdir="
-                       (assoc-ref %build-inputs "boost") "/lib")
+                       (dirname
+                        (search-input-file %build-inputs
+                                           "lib/libboost_system.so")))
         ;; Avoid undefined symbols required by boost::spirit
         "LDFLAGS=-lboost_system"
         ;; Avoid a dependency on ucpp.
@@ -1252,11 +1274,11 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
         "--disable-pdfium"
         "--without-doxygen"
         "--enable-build-opensymbol")))
-    (home-page "https://www.libreoffice.org/")
-    (synopsis "Office suite")
-    (description "LibreOffice is a comprehensive office suite.  It contains
+  (home-page "https://www.libreoffice.org/")
+  (synopsis "Office suite")
+  (description "LibreOffice is a comprehensive office suite.  It contains
 a number of components: Writer, a word processor; Calc, a spreadsheet
 application; Impress, a presentation engine; Draw, a drawing and
 flowcharting application; Base, a database and database frontend;
 Math for editing mathematics.")
-    (license license:mpl2.0)))
+  (license license:mpl2.0)))

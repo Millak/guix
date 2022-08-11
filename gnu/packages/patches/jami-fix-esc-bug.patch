@@ -1,0 +1,24 @@
+This fixes the issue where pressing the ESC key would hide the Jami
+GUI on systems lacking a notification tray.
+
+From 47fd4c38ddd8bd350319ce9bb750ca496826e655 Mon Sep 17 00:00:00 2001
+From: Sébastien Blin <sebastien.blin@savoirfairelinux.com>
+Date: Fri, 29 Jul 2022 21:24:01 -0400
+Subject: [PATCH] layoutmanager: fix popFullScreenItem
+
+Change-Id: I79780d4ad570846e6f3c52734dd627bcd0e11327
+---
+
+diff --git a/src/app/LayoutManager.qml b/src/app/LayoutManager.qml
+index 98516ce..87f13ac 100644
+--- a/client-qt/src/app/LayoutManager.qml
++++ b/client-qt/src/app/LayoutManager.qml
+@@ -176,7 +176,7 @@
+
+         // Only leave fullscreen mode if our window isn't in fullscreen
+         // mode already.
+-        if (priv.fullScreenItems.length === 0) {
++        if (priv.fullScreenItems.length === 0 && priv.windowedVisibility !== Window.Hidden) {
+             // Simply recall the last visibility state.
+             visibility = priv.windowedVisibility
+         }
