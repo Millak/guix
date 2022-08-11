@@ -2820,7 +2820,7 @@ Python 3.3+.")
      (list icu4c))
     (native-inputs
      (list python-pytest python-six))
-    (home-page "https://github.com/ovalhub/pyicu")
+    (home-page "https://gitlab.pyicu.org/main/pyicu")
     (synopsis "Python extension wrapping the ICU C++ API")
     (description
      "PyICU is a python extension wrapping the ICU C++ API.")
