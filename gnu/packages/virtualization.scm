@@ -1421,6 +1421,8 @@ three libraries:
     (synopsis "Python bindings to libvirt")
     (description "This package provides Python bindings to the libvirt
 virtualization library.")
+    (properties
+     '((upstream-name . "libvirt-python")))
     (license license:lgpl2.1+)))
 
 (define-public virt-manager
