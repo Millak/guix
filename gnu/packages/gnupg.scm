@@ -362,15 +362,6 @@ libskba (working with X.509 certificates and CMS data).")
     (properties '((ftp-server . "ftp.gnupg.org")
                   (ftp-directory . "/gcrypt/gnupg")))))
 
-(define gnupg/fixed
-  (package
-    (inherit gnupg)
-    (source (origin
-              (inherit (package-source gnupg))
-              (patches
-                (append (origin-patches (package-source gnupg))
-                        (search-patches "gnupg-CVE-2022-34903.patch")))))))
-
 (define-public gnupg-1
   (package (inherit gnupg)
     (version "1.4.23")
