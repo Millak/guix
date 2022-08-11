@@ -526,14 +526,14 @@ precision floating point numbers.")
 (define-public gsl
   (package
     (name "gsl")
-    (version "2.7")
+    (version "2.7.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gsl/gsl-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0av04cpblphvvs3kl5rwphniarml503501vrpqw31rd0bmwg7fzg"))))
+                "0jxkxrnpys2j3rh8bzx0bmnh4w6xm28jd57rgxsjp0s863agpc6w"))))
     (build-system gnu-build-system)
     (arguments
      (let ((system (%current-system)))
