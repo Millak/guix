@@ -352,17 +352,26 @@ efficiency.")
         (base32 "18mrqringyv1drswm4m8ppw7sks6x4jzp6s0ag0h9hrpd15kn5rx"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        "-DENABLE_X11=ON"
-        "-DENABLE_X11_DRI3=ON"
-        "-DENABLE_WAYLAND=ON"
-        "-DENABLE_TEXTLOG=ON"
-        "-DENABLE_STAT=ON"
-        "-DBUILD_TESTS=ON"
-        "-DBUILD_TOOLS=ON"
-        (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
-                       (assoc-ref %outputs "out") "/lib"))))
+     (list
+      #:configure-flags
+      #~(list
+         "-DENABLE_X11=ON"
+         "-DENABLE_X11_DRI3=ON"
+         "-DENABLE_WAYLAND=ON"
+         "-DENABLE_TEXTLOG=ON"
+         "-DENABLE_STAT=ON"
+         "-DBUILD_TESTS=ON"
+         "-DBUILD_TOOLS=ON"
+         (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
+                        #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-embed-kernel-version
+            (lambda _
+              (substitute* "builder/FindGlobals.cmake"
+                (("set\\([[:blank:]]+?BUILD_INFO \"\\$\\{CMAKE_SYSTEM\\}\
+ \\$\\{CMAKE_SYSTEM_VERSION\\}")
+                 "set( BUILD_INFO \"Linux")))))))
     (native-inputs
      (list pkg-config python-wrapper))
     (inputs
