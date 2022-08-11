@@ -14113,6 +14113,27 @@ others, a highly flexible recoding routine and a more flexible alternative to
 the base function @code{with()}.")
     (license license:gpl3+)))
 
+(define-public r-oro-nifti
+  (package
+    (name "r-oro-nifti")
+    (version "0.11.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "oro.nifti" version))
+              (sha256
+               (base32
+                "01mn90qxb7i15zr83xrl2cn4akayfzpm83r5x71zczz3qb9gbr7g"))))
+    (properties `((upstream-name . "oro.nifti")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-abind r-bitops r-rnifti))
+    (home-page "https://rigorousanalytics.blogspot.com")
+    (synopsis "Vizualization of medical imaging data")
+    (description
+     "This package provides functions for the input/output and visualization
+of medical imaging data that follow either the ANALYZE, NIfTI or AFNI formats.
+This package is part of the Rigorous Analytics bundle.")
+    (license license:bsd-3)))
+
 (define-public r-sodium
   (package
     (name "r-sodium")
