@@ -14645,8 +14645,19 @@ document.")
        (sha256
         (base32 "0qjgdbnb10kfk7jdhxnzfl8cpaps81k8vap7gm7q9ym3pgslazhg"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  ;; Run tests against installed package.
+                  (with-directory-excursion "/tmp"
+                    (invoke "nosetests" "-v" "symengine.tests"))
+                  (format #t "test suite not run~%")))))))
     (native-inputs
-     (list cmake python-cython))
+     (list cmake python-cython python-nose))
     (inputs
      (list symengine))
     (home-page "https://github.com/symengine/symengine.py")
