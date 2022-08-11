@@ -452,7 +452,16 @@ multi-paradigm automated test framework for C++ and Objective-C.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gdp5wm8khn02g2miz381llw3191k7309qj8s3jd6sasj01rhf23"))))
+                "1gdp5wm8khn02g2miz381llw3191k7309qj8s3jd6sasj01rhf23"))
+              (modules '((guix build utils)))
+              (snippet
+               '(substitute* '("include/internal/catch_fatal_condition.hpp"
+                               "single_include/catch.hpp")
+                  ;; In glibc 2.34 and later, SIGSTKSZ is no longer a
+                  ;; compile-time constant.  Hard code a reasonably large
+                  ;; value.
+                  (("SIGSTKSZ")
+                   "32768")))))
     (build-system cmake-build-system)
     (synopsis "Automated test framework for C++ and Objective-C")
     (description "Catch2 stands for C++ Automated Test Cases in Headers and is
