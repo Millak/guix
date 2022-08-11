@@ -872,7 +872,7 @@ is part of the GNOME accessibility project.")
     (propagated-inputs
      (list atk cairo
            (if (target-x86-64?)
-             librsvg-bootstrap
+             librsvg
              librsvg-2.40)
            glib pango))
     (inputs
@@ -971,7 +971,7 @@ application suites.")
            fontconfig
            freetype
            (if (target-x86-64?)
-             librsvg-bootstrap
+             librsvg
              librsvg-2.40)
            glib
            libcloudproviders-minimal

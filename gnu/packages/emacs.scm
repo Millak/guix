@@ -289,7 +289,7 @@
            libpng
            zlib
            (if (target-x86-64?)
-               librsvg-bootstrap
+               librsvg
                librsvg-2.40)
            libxpm
            libxml2

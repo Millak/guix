@@ -3532,27 +3532,6 @@ diagrams.")
     (home-page "https://wiki.gnome.org/LibRsvg")
     (license license:lgpl2.1+)))
 
-;; This copy of librsvg uses the bundled rust libraries. It is useful for
-;; packages which have too many dependencies to be rebuilt as frequently
-;; as the rust inputs are updated.
-;; TODO: Remove this package and use packaged rust libraries!
-(define-public librsvg-bootstrap
-  (package
-    (inherit librsvg)
-    (name "librsvg-bootstrap")
-    (source (origin
-              (inherit (package-source librsvg))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (for-each delete-file (find-files "vendor" "\\.a$"))))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments librsvg)
-       ((#:vendor-dir _ "vendor") "vendor")
-       ((#:cargo-inputs _) '())
-       ((#:cargo-development-inputs _) '())))
-    (properties '((hidden? . #t)))))
-
 (define-public librsvg-2.40
   ;; This is the last version implemented in C.
   (package

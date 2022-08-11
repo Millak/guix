@@ -525,7 +525,7 @@ features.")
     (native-inputs
      (list intltool python-wheel
            (if (string-prefix? "x86_64-" (%current-system))
-               librsvg-bootstrap
+               librsvg
                librsvg-2.40)))
     ;; TODO: Enable tests.
     ;; After "pytest-twisted" is packaged, HOME is set, and an X server is
