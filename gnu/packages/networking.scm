@@ -89,6 +89,7 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -304,6 +305,17 @@ the RFC.")
                       (delete-file "./test/0000-0027.c")
                       (delete-file "./test/0000-0049.c")
                       (delete-file "./test/0000-0074.c")))
+                  (add-after 'unpack 'remove-immintrin.h
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "Makefile"
+                        (("CFLAGS :=")
+                         (string-append "CFLAGS := -I" (search-input-directory
+                                                         inputs "include/simde"))))
+                      (substitute* (find-files "src")
+                        ((".*immintrin\\.h.*")
+                         (string-append "#include <simde-features.h>\n"
+                                        "#include <x86/ssse3.h>\n"))
+                        (("__m128i") "simde__m128i"))))
                   (add-before 'build 'add-library-paths
                     (lambda* (#:key inputs #:allow-other-keys)
                       (let* ((librecast (assoc-ref inputs "librecast")))
@@ -311,6 +323,7 @@ the RFC.")
                           (("-llibrecast")
                            (string-append "-L" librecast "/lib -llibrecast")))))))))
     (inputs (list librecast libsodium))
+    (native-inputs (list simde))
     (home-page "https://librecast.net/lcsync.html")
     (synopsis "librecast file and data syncing tool")
     (description
