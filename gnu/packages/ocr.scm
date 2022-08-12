@@ -29,6 +29,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
@@ -73,6 +74,32 @@
 feature extraction method.  It can read images in PBM, PGM or PPM formats and
 it produces text in 8-bit or UTF-8 formats.")
     (license license:gpl3+)))
+
+(define-public tesseract-ocr-tessdata-fast
+  (package
+    (name "tesseract-ocr-tessdata-fast")
+    (version "4.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tesseract-ocr/tessdata_fast")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1m310cpb87xx8l8q7jy9fvzf6a0m8rm0dmjpbiwhc2mi6w4gn084"))))
+    (build-system copy-build-system)
+    (arguments (list #:install-plan #~'(("." "share/tesseract-ocr/tessdata"))
+                     #:phases #~(modify-phases %standard-phases
+                                  (add-after 'unpack 'delete-broken-links
+                                    (lambda _
+                                      (delete-file "configs")
+                                      (delete-file "pdf.ttf"))))))
+    (home-page "https://github.com/tesseract-ocr/tessdata_fast")
+    (synopsis "Fast integer versions of trained LSTM models")
+    (description "This repository contains fast integer versions of trained
+models for the Tesseract OCR Engine.")
+    (license license:asl2.0)))
 
 (define-public tesseract-ocr
   (package
