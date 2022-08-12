@@ -1887,7 +1887,7 @@ and mobile applications targeting TV-like form factors.")))
                  (substitute* "tests/auto/auto.pro"
                    (("scion") "#"))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg)
+     (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
      (list qtbase-5 qtdeclarative-5))
