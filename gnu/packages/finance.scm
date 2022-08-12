@@ -31,6 +31,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
+;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -100,6 +101,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
@@ -2114,3 +2116,59 @@ analysis of financial market data.")
 format used by SWIFT.  It returns smart Python collections for statistics
 and manipulation.")
     (license license:bsd-3)))
+
+(define-public xmrig
+  (package
+    (name "xmrig")
+    (version "6.18.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xmrig/xmrig")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "1ncnfjpjwjdv29plyiam2nh01bfni49sgfi3qkijygi1450w71dx"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; TODO: Try to use system libraries instead of bundled ones in
+        ;; "src/3rdparty/". It requires changes to some "cmake/..." scripts
+        ;; and to some source files.
+        #~(substitute* "src/donate.h"
+            (("constexpr const int kDefaultDonateLevel = 1;")
+             "constexpr const int kDefaultDonateLevel = 0;")
+            (("constexpr const int kMinimumDonateLevel = 1;")
+             "constexpr const int kMinimumDonateLevel = 0;")))))
+    (build-system cmake-build-system)
+    (inputs
+     (list
+      `(,hwloc "lib")
+      libuv
+      openssl))
+    (arguments
+     (list
+      ;; There are no tests.
+      #:tests? #f
+      #:phases
+      #~(modify-phases
+         %standard-phases
+         (replace 'install
+           ;; There is no 'install' target, we must install xmrig manually
+           (lambda* (#:key #:allow-other-keys)
+             (install-file "xmrig"
+                           (string-append #$output "/bin")))))))
+    (home-page "https://xmrig.com/")
+    (synopsis "Monero miner")
+    (description
+     "XMRig is a high performance, cross platform RandomX, KawPow,
+CryptoNight, AstroBWT and GhostRider unified CPU/GPU miner and RandomX
+benchmark.
+
+Warning: upstream, by default, receives a percentage of the mining time.  This
+anti-functionality has been neutralised in Guix, but possibly not in all other
+distributions.
+
+Warning: this software, because of it's nature, has high energy consumption.
+Also, the energy expenses might be higher that the cryptocurrency gained by
+mining.")
+    (license license:gpl3+)))
