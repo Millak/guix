@@ -3271,14 +3271,14 @@ port forwards using @acronym{UPnP, Universal Plug and Play}.")
 (define-public python-py
   (package
     (name "python-py")
-    (version "1.10.0")
+    (version "1.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "py" version))
        (sha256
         (base32
-         "1lqvkqk3b440g9z82gqbzlzas84wrm6ir8kplzhzavmn2pd1pf11"))))
+         "06c7m7sfcn7587xd4s2bng8m6q1gsfd3j93afhplfjq74r0mrisi"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: "ImportError: 'test' module incorrectly imported from
