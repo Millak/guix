@@ -2264,7 +2264,6 @@ information.")
            python-lxml
            python-parameterized
            python-pygments
-           python-unittest2
            source-highlight
            yelp-tools))
     (home-page "https://wiki.gnome.org/DocumentationProject/GtkDoc")
