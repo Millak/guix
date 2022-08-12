@@ -1005,25 +1005,25 @@ standard library.")
                           " and not test_color_yes"))
                  (format #t "test suite not run~%")))))))
     (propagated-inputs
-     `(("python-attrs" ,python-attrs-bootstrap)
-       ("python-iniconfig" ,python-iniconfig)
-       ("python-more-itertools" ,python-more-itertools)
-       ("python-packaging" ,python-packaging-bootstrap)
-       ("python-pluggy" ,python-pluggy)
-       ("python-py" ,python-py)
-       ("python-six" ,python-six-bootstrap)
-       ("python-toml" ,python-toml)
-       ("python-wcwidth" ,python-wcwidth)))
+     (list python-attrs-bootstrap
+           python-iniconfig
+           python-more-itertools
+           python-packaging-bootstrap
+           python-pluggy
+           python-py
+           python-six-bootstrap
+           python-toml
+           python-wcwidth))
     (native-inputs
-     `(;; Tests need the "regular" bash since 'bash-final' lacks `compgen`.
-       ("bash" ,bash)
-       ("python-hypothesis" ,python-hypothesis)
-       ("python-nose" ,python-nose)
-       ("python-mock" ,python-mock)
-       ("python-pytest" ,python-pytest-bootstrap)
-       ("python-setuptools-scm" ,python-setuptools-scm)
-       ("python-toml" ,python-toml)
-       ("python-xmlschema" ,python-xmlschema)))
+     (list ;; Tests need the "regular" bash since 'bash-final' lacks `compgen`.
+           bash
+           python-hypothesis
+           python-nose
+           python-mock
+           python-pytest-bootstrap
+           python-setuptools-scm
+           python-toml
+           python-xmlschema))
     (home-page "https://docs.pytest.org/en/latest/")
     (synopsis "Python testing library")
     (description
