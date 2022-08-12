@@ -5643,6 +5643,8 @@ with Python.  It contains among other things: a powerful N-dimensional array
 object, sophisticated (broadcasting) functions, tools for integrating C/C++
 and Fortran code, useful linear algebra, Fourier transform, and random number
 capabilities.")
+    (properties
+     '((upstream-name . "numpy")))
     (license license:bsd-3)))
 
 (define-public python-numpy-next
