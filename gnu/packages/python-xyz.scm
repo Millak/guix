@@ -19093,7 +19093,15 @@ from the header, as well as section details and data available.")
               (uri (pypi-uri "m2r" version))
               (sha256
                (base32
-                "16gdm8i06jjmlpvckpfmlkr4693dh0vs192vgsqn84fsdkbbm45z"))))
+                "16gdm8i06jjmlpvckpfmlkr4693dh0vs192vgsqn84fsdkbbm45z"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Adjust test regex for Python 3.10 compatibility.
+               ;; Taken from upstream pull request:
+               ;; https://github.com/miyakogi/m2r/pull/62
+               '(substitute* "tests/test_cli.py"
+                  (("self.assertIn\\('optional arguments:', message\\)")
+                   "self.assertRegex(message, r'option(s|al arguments):')")))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-docutils python-mistune))
