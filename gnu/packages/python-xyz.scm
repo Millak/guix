@@ -3850,21 +3850,14 @@ JavaScript-like message boxes.  Types of dialog boxes include:
   (package
     (name "python-pympler")
     (home-page "https://pythonhosted.org/Pympler/")
-    (version "0.9")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pympler" version))
               (sha256
                (base32
-                "0ivfw2k86nbw9ck9swidl4422w7bhjldxwj90a4sy5r1cbgygjzj"))))
+                "1ynkqpv2akldmvkll5vh5zhwj433s1d59iv0f76lygyak4silgwr"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'check)
-                  (add-after 'install 'check
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (add-installed-pythonpath inputs outputs)
-                      (invoke "python" "setup.py" "test"))))))
     (synopsis "Measure, monitor and analyze memory behavior")
     (description
      "Pympler is a development tool to measure, monitor and analyze
