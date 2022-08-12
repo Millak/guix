@@ -2244,13 +2244,13 @@ information.")
                              `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
                          (find-files (string-append out "/bin")))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("itstool" ,itstool)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           itstool
+           perl
+           pkg-config
+           python-wrapper))
     (inputs
      (list bc
            dblatex
