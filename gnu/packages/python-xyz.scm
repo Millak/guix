@@ -23373,7 +23373,6 @@ Features:
      (list python-cfgv
            python-identify
            python-importlib-metadata
-           python-importlib-resources
            python-nodeenv
            python-pyyaml
            python-toml
