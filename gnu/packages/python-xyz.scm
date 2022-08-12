@@ -21526,44 +21526,46 @@ based on the CPython 2.7 and 3.7 parsers.")
     (build-system python-build-system)
     (arguments
      `(#:phases
-       (modify-phases %standard-phases
-         ;; Unfortunately, this doesn't seem to be enough to fix these two
-         ;; tests, but we'll patch this anyway.
-         (add-after 'unpack 'patch-shell-reference
-           (lambda _
-             (substitute* "tests/test_completion/test_completion.py"
-               (("\"bash\"") (string-append "\"" (which "bash") "\""))
-               (("\"/bin/bash\"") (string-append "\"" (which "bash") "\"")))))
-         (replace 'build
-           (lambda _
-             (invoke "flit" "build")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (wheel)
-                           (format #true wheel)
-                           (invoke "python" "-m" "pip" "install"
-                                   wheel (string-append "--prefix=" out)))
-                         (find-files "dist" "\\.whl$")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp") ; some tests need it
+       ,#~(modify-phases %standard-phases
+            ;; Unfortunately, this doesn't seem to be enough to fix these two
+            ;; tests, but we'll patch this anyway.
+            (add-after 'unpack 'patch-shell-reference
+              (lambda _
+                (substitute* "tests/test_completion/test_completion.py"
+                  (("\"bash\"") (string-append "\"" (which "bash") "\""))
+                  (("\"/bin/bash\"")
+                   (string-append "\"" (which "bash") "\"")))))
+            (replace 'build
+              (lambda _
+                (invoke "flit" "build")))
+            (replace 'install
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (add-installed-pythonpath inputs outputs)
+                (for-each
+                 (lambda (wheel)
+                   (format #true wheel)
+                   (invoke "python" "-m" "pip" "install"
+                           wheel (string-append "--prefix=" #$output)))
+                 (find-files "dist" "\\.whl$"))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "HOME" "/tmp") ; some tests need it
 
-               ;; This is for completion tests
-               (with-output-to-file "/tmp/.bashrc" (lambda _ (display "# dummy")))
+                  ;; This is for completion tests
+                  (with-output-to-file "/tmp/.bashrc"
+                    (lambda _ (display "# dummy")))
 
-               (setenv "GUIX_PYTHONPATH"
-                       (string-append (getcwd) ":"
-                                      (getenv "GUIX_PYTHONPATH")))
-               (let ((disabled-tests (list "test_show_completion"
-                                           "test_install_completion")))
-                 (invoke "python" "-m" "pytest" "tests/"
-                         "-k"
-                         (string-append "not "
-                                        (string-join disabled-tests
-                                                     " and not "))))))))))
+                  (setenv "GUIX_PYTHONPATH"
+                          (string-append (getcwd) ":"
+                                         (getenv "GUIX_PYTHONPATH")))
+                  (let ((disabled-tests (list "test_show_completion"
+                                              "test_install_completion")))
+                    (invoke "python" "-m" "pytest" "tests/"
+                            "-k"
+                            (string-append "not "
+                                           (string-join disabled-tests
+                                                        " and not "))))))))))
     (propagated-inputs
      (list python-click))
     (native-inputs
@@ -21571,9 +21573,9 @@ based on the CPython 2.7 and 3.7 parsers.")
            python-shellingham))
     (home-page "https://github.com/tiangolo/typer")
     (synopsis
-      "Typer builds CLI based on Python type hints")
+     "Typer builds CLI based on Python type hints")
     (description
-      "Typer is a library for building CLI applications.  It's based on
+     "Typer is a library for building CLI applications.  It's based on
 Python 3.6+ type hints.")
     ;; MIT license
     (license license:expat)))
