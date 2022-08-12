@@ -516,32 +516,32 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
          (package
            `(package
               (name ,(cran-guix-name name))
-              (version ,(case repository
-                          ((git)
-                           `(git-version ,version revision commit))
-                          ((hg)
-                           `(string-append ,version "-" revision "." changeset))
-                          (else version)))
+              (version ,(cond
+                         (git?
+                          `(git-version ,version revision commit))
+                         (hg?
+                          `(string-append ,version "-" revision "." changeset))
+                         (else version)))
               (source (origin
                         (method ,(cond
                                   (git? 'git-fetch)
                                   (hg?  'hg-fetch)
                                   (else 'url-fetch)))
-                        (uri ,(case repository
-                                ((git)
-                                 `(git-reference
-                                   (url ,(assoc-ref meta 'git))
-                                   (commit commit)))
-                                ((hg)
-                                 `(hg-reference
-                                   (url ,(assoc-ref meta 'hg))
-                                   (changeset changeset)))
-                                (else
-                                 `(,(procedure-name uri-helper) ,name version
-                                   ,@(or (and=> (assoc-ref meta 'bioconductor-type)
-                                                (lambda (type)
-                                                  (list (list 'quote type))))
-                                         '())))))
+                        (uri ,(cond
+                               (git?
+                                `(git-reference
+                                  (url ,(assoc-ref meta 'git))
+                                  (commit commit)))
+                               (hg?
+                                `(hg-reference
+                                  (url ,(assoc-ref meta 'hg))
+                                  (changeset changeset)))
+                               (else
+                                `(,(procedure-name uri-helper) ,name version
+                                  ,@(or (and=> (assoc-ref meta 'bioconductor-type)
+                                               (lambda (type)
+                                                 (list (list 'quote type))))
+                                        '())))))
                         ,@(cond
                            (git?
                             '((file-name (git-file-name name version))))
@@ -576,16 +576,16 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                                                       "")))
               (license ,license))))
     (values
-     (case repository
-       ((git)
-        `(let ((commit ,(assoc-ref meta 'git-commit))
-               (revision "1"))
-           ,package))
-       ((hg)
-        `(let ((changeset ,(assoc-ref meta 'hg-changeset))
-               (revision "1"))
-           ,package))
-       (else package))
+     (cond
+      (git?
+       `(let ((commit ,(assoc-ref meta 'git-commit))
+              (revision "1"))
+          ,package))
+      (hg?
+       `(let ((changeset ,(assoc-ref meta 'hg-changeset))
+              (revision "1"))
+          ,package))
+      (else package))
      propagate)))
 
 (define cran->guix-package
