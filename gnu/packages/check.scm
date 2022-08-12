@@ -2717,7 +2717,18 @@ create data based on random numbers and yet remain repeatable.")
        (method url-fetch)
        (uri (pypi-uri "freezegun" version))
        (sha256
-        (base32 "0ijlq32qvpm5zprfzbyzawpl9qjsknlxhryr1i0q84wl0sxd28nd"))))
+        (base32 "0ijlq32qvpm5zprfzbyzawpl9qjsknlxhryr1i0q84wl0sxd28nd"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Add an explicit case for static methods as they are callable
+        ;; in Python 3.10, breaking this conditional.
+        ;; XXX Taken from upstream pull request:
+        ;; https://github.com/spulec/freezegun/pull/397
+        '(substitute* "freezegun/api.py"
+           (("if not callable\\(attr_value\\) or \
+inspect\\.isclass\\(attr_value\\):")
+            "if (not callable(attr_value) or inspect.isclass(attr_value)\
+or isinstance(attr_value, staticmethod)):")))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
