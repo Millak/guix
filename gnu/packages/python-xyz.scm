@@ -18315,40 +18315,40 @@ JSON) codec.")
 (define-public python-setproctitle
   (package
     (name "python-setproctitle")
-    (version "1.1.10")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "setproctitle" version))
        (sha256
         (base32
-         "163kplw9dcrw0lffq1bvli5yws3rngpnvrxrzdw89pbphjjvg0v2"))))
+         "1zbp6kyzfbrmbh9j3idai0mnpa28zn5db3k5l07jc3c3gj89gyxr"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
+           (lambda* (#:key tests? #:allow-other-keys)
              (setenv "PYTHON" (or (which "python3") (which "python")))
              (setenv "PYCONFIG" (if (which "python3-config")
                                     "python3-config --embed"
                                     "python-config"))
-             (setenv "CC" "gcc")
-             ;; No need to extend PYTHONPATH to find the built package, since
-             ;; the Makefile will build anyway
-             (invoke "make" "check"))))))
+             (substitute* "tests/conftest.py"
+               (("cc") "gcc"))
+             (when tests?
+               (invoke "pytest" "tests/")))))))
     (native-inputs
-     (list procps))             ; required for tests
+     (list procps python-pytest))   ; required for tests
     (home-page "https://github.com/dvarrazzo/py-setproctitle")
     (synopsis
      "Setproctitle implementation for Python to customize the process title")
     (description "The library allows a process to change its title (as displayed
-                                                                       by system tools such as ps and top).
+by system tools such as @code{ps} and @code{top}).
 
-     Changing the title is mostly useful in multi-process systems, for
-     example when a master process is forked: changing the children's title
-     allows identifying the task each process is busy with.  The technique
-     is used by PostgreSQL and the OpenSSH Server for example.")
+Changing the title is mostly useful in multi-process systems, for example when a
+master process is forked: changing the children's title allows identifying the
+task each process is busy with.  The technique is used by PostgreSQL and the
+OpenSSH Server for example.")
     (license license:bsd-3)))
 
 (define-public python-validictory
