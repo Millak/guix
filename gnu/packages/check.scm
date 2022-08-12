@@ -1331,9 +1331,8 @@ same arguments.")
              (when tests?
                (invoke "pytest" "-vv"
                        "-n" (number->string (parallel-job-count)))))))))
-    (native-inputs (list python-setuptools-scm))
-    (propagated-inputs (list python-execnet python-pytest python-py
-                             python-pytest-forked))
+    (native-inputs (list python-setuptools-scm python-filelock python-pytest))
+    (propagated-inputs (list python-execnet python-pytest-forked))
     (home-page "https://github.com/pytest-dev/pytest-xdist")
     (synopsis
      "Plugin for py.test with distributed testing and loop-on-failing modes")
