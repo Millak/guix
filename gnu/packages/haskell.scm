@@ -766,7 +766,13 @@ interactive environment for the functional language Haskell.")
            (patches (search-patches "ghc-testsuite-dlopen-pie.patch"))
            (sha256
             (base32
-             "0pw9r91g2np3i806g2f4f8z4jfdd7mx226cmdizk4swa7av1qf91"))))
+             "0pw9r91g2np3i806g2f4f8z4jfdd7mx226cmdizk4swa7av1qf91"))
+           (modules '((guix build utils)))
+           (snippet
+            ;; collections.Iterable was moved to collections.abc in Python 3.10.
+            '(substitute* "testsuite/driver/testlib.py"
+               (("collections\\.Iterable")
+                "collections.abc.Iterable")))))
        ,@(filter (match-lambda
                    (("ghc-bootstrap" . _) #f)
                    (("ghc-testsuite" . _) #f)
@@ -841,7 +847,13 @@ interactive environment for the functional language Haskell.")
            (patches (search-patches "ghc-testsuite-dlopen-pie.patch"))
            (sha256
             (base32
-             "0c55pj2820q26rikhpf636sn4mjgqsxjrl94vsywrh79dxp3k14z"))))
+             "0c55pj2820q26rikhpf636sn4mjgqsxjrl94vsywrh79dxp3k14z"))
+           (modules '((guix build utils)))
+           (snippet
+            ;; collections.Iterable was moved to collections.abc in Python 3.10.
+            '(substitute* "testsuite/driver/testlib.py"
+               (("collections\\.Iterable")
+                "collections.abc.Iterable")))))
        ("git" ,git-minimal/fixed)                 ; invoked during tests
        ,@(filter (match-lambda
                    (("ghc-bootstrap" . _) #f)
@@ -893,7 +905,13 @@ interactive environment for the functional language Haskell.")
            (patches (search-patches "ghc-testsuite-dlopen-pie.patch"))
            (sha256
             (base32
-             "1zl25gg6bpx5601k8h3cqnns1xfc0nqgwnh8jvn2s65ra3f2g1nz"))))
+             "1zl25gg6bpx5601k8h3cqnns1xfc0nqgwnh8jvn2s65ra3f2g1nz"))
+           (modules '((guix build utils)))
+           (snippet
+            ;; collections.Iterable was moved to collections.abc in Python 3.10.
+            '(substitute* "testsuite/driver/testlib.py"
+               (("collections\\.Iterable")
+                "collections.abc.Iterable")))))
        ("git" ,git-minimal/fixed)                 ; invoked during tests
        ,@(filter (match-lambda
                    (("ghc-bootstrap" . _) #f)
