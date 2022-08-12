@@ -1997,6 +1997,8 @@ communication asynchronously.  Memory copies and transformations are kept to a
 minimum to provide high performance operation.")
     ;; Most of the code is covered by the Apache License, Version 2.0, but the
     ;; bundled CuTest framework uses a different non-copyleft license.
+    (properties
+     '((release-monitoring-url . "https://serf.apache.org/download")))
     (license (list license:asl2.0 (license:non-copyleft "file://test/CuTest-README.txt")))))
 
 (define-public libsass
