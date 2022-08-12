@@ -3435,7 +3435,7 @@ jar in conformance with RFC 6265 <http://tools.ietf.org/html/rfc6265>.")
 (define-public perl-http-cookies
   (package
     (name "perl-http-cookies")
-    (version "6.06")
+    (version "6.10")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -3443,7 +3443,7 @@ jar in conformance with RFC 6265 <http://tools.ietf.org/html/rfc6265>.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "13rnz3233vbsfariya4njiyfaj6k94j6bvlyh3dmfmh24hpqgx77"))))
+               "01vhppq18g6ppn3z9mvdfghfzibwg1sczzvnp3jbbrjw7iikcvz3"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-http-message))
