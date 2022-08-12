@@ -1592,7 +1592,7 @@ integrated it into your application's other widgets.")
                ;;Expected (result)                                               :
                ;;"Jim Knopf\nLummerlandstr. 1\n12345 Lummerstadt\n\nGERMANIA"
                (invoke "ctest" "-E"
-			   "(kcontacts-addresstest|kcontacts-emailtest|kcontacts-phonenumbertest|kcontacts-secrecytest|kcontacts-geotest|kcontacts-keytest|kcontacts-testroundtrip|kcontacts-impptest|kcontacts-birthdaytest|kcontacts-addresseetest)")))))))
+			   "(kcontacts-addresstest|kcontacts-emailtest|kcontacts-phonenumbertest|kcontacts-soundtest|kcontacts-secrecytest|kcontacts-geotest|kcontacts-keytest|kcontacts-testroundtrip|kcontacts-impptest|kcontacts-birthdaytest|kcontacts-addresseetest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "API for contacts/address book data following the vCard standard")
     (description "This library provides a vCard data model, vCard
