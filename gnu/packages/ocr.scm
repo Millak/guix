@@ -132,6 +132,15 @@ models for the Tesseract OCR Engine.")
               (substitute* "configure.ac"
                 (("AC_SUBST\\(\\[XML_CATALOG_FILES])")
                  ""))))
+          (add-after 'unpack 'adjust-TESSDATA_PREFIX-macro
+            (lambda _
+              ;; Use a deeper TESSDATA_PREFIX hierarchy so that a more
+              ;; specific search-path than '/share' can be specified.  The
+              ;; build system uses CPPFLAGS for itself, so we can't simply set
+              ;; a make flag.
+              (substitute* "Makefile.am"
+                (("-DTESSDATA_PREFIX='\"@datadir@\"'")
+                 "-DTESSDATA_PREFIX='\"@datadir@/tesseract-ocr\"'"))))
           (add-after 'build 'build-training
             (lambda* (#:key parallel-build? #:allow-other-keys)
               (define n (if parallel-build? (number->string
@@ -140,7 +149,18 @@ models for the Tesseract OCR Engine.")
               (invoke "make" "-j" n "training")))
           (add-after 'install 'install-training
             (lambda _
-              (invoke "make" "training-install"))))))
+              (invoke "make" "training-install")))
+          (add-after 'install 'install-minimal-tessdata
+            ;; tesseract-ocr cannot be used without its trained models data;
+            ;; install the English language as a minimal base which can be
+            ;; extended via TESSDATA_PREFIX.
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (define eng.traineddata
+                "/share/tesseract-ocr/tessdata/eng.traineddata")
+              (install-file (search-input-file (or native-inputs inputs)
+                                               eng.traineddata)
+                            (dirname (string-append #$output
+                                                    eng.traineddata))))))))
     (native-inputs
      (list asciidoc
            autoconf
@@ -152,13 +172,18 @@ models for the Tesseract OCR Engine.")
            libtool
            libxml2                      ;for XML_CATALOG_FILES
            libxslt
-           pkg-config))
+           pkg-config
+           tesseract-ocr-tessdata-fast))
     (inputs
      (list cairo
            icu4c
            leptonica
            pango
            python-wrapper))
+    (native-search-paths (list (search-path-specification
+                                (variable "TESSDATA_PREFIX")
+                                (files (list "share/tesseract-ocr/tessdata"))
+                                (separator #f)))) ;single value
     (home-page "https://github.com/tesseract-ocr/tesseract")
     (synopsis "Optical character recognition engine")
     (description
@@ -166,7 +191,9 @@ models for the Tesseract OCR Engine.")
 high accuracy.  It supports many languages, output text formatting, hOCR
 positional information and page layout analysis.  Several image formats are
 supported through the Leptonica library.  It can also detect whether text is
-monospaced or proportional.")
+monospaced or proportional.  Support for the English language is included by
+default.  To add support for more languages, the
+@code{tesseract-ocr-tessdata-fast} package should be installed.")
     (license license:asl2.0)))
 
 (define-public gimagereader
