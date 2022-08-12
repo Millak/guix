@@ -291,7 +291,7 @@ runtime")
 (define-public rgbds
   (package
     (name "rgbds")
-    (version "0.4.2")
+    (version "0.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -300,7 +300,7 @@ runtime")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lygj7jzjlq4w0mkiir7ycysrd1p1akyvzrppjcchja05mi8wy9p"))))
+                "13zy05xzh2yxyvzf78a5h59pabwrfr6qs5m453pfbdyd3msg2s7w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -312,8 +312,7 @@ runtime")
                (("pkg-config")
                 (or (which "pkg-config")
                     (string-append ,(%current-target-system)
-                                   "-pkg-config"))))
-             #t))
+                                   "-pkg-config"))))))
          (replace 'check
            (lambda _
              (with-directory-excursion "test/asm"
