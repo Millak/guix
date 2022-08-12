@@ -234,7 +234,7 @@ many probes which instrument numerous interesting parts of Linux.")
 (define-public lttng-ust
   (package
     (name "lttng-ust")
-    (version "2.13.1")
+    (version "2.13.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-ust/"
