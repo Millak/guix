@@ -2288,8 +2288,8 @@ with some extra work.")
 (define-public gtk-doc/stable
   (hidden-package
    (package/inherit gtk-doc
-     (inputs (alist-replace "dblatex" `(,dblatex/stable)
-                            (package-inputs gtk-doc))))))
+     (inputs (modify-inputs (package-inputs gtk-doc)
+               (replace "dblatex" dblatex/stable))))))
 
 (define-public gtk-engines
   (package
