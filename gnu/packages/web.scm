@@ -3101,7 +3101,7 @@ RSS 0.91, RSS 1.0, RSS 2.0, Atom.")
 (define-public perl-file-listing
   (package
     (name "perl-file-listing")
-    (version "6.11")
+    (version "6.15")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -3109,7 +3109,7 @@ RSS 0.91, RSS 1.0, RSS 2.0, Atom.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "0vmzw1mhv580flzkla80gvwfpficnhlbqr1dnlf9x50bw7n18k62"))))
+               "033p2ckkjbxrl390x8aq4wq4fpj5aidsazkbw82mhqxrksgzpi26"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-http-date))
