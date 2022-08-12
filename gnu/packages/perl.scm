@@ -6,7 +6,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Jochem Raat <jchmrt@riseup.net>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2016, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
@@ -2687,7 +2687,7 @@ point values at a low level.")
 (define-public perl-data-optlist
   (package
     (name "perl-data-optlist")
-    (version "0.110")
+    (version "0.112")
     (source
      (origin
        (method url-fetch)
@@ -2696,7 +2696,7 @@ point values at a low level.")
              version ".tar.gz"))
        (sha256
         (base32
-         "1hzmgr2imdg1fc3hmwx0d56fhsdfyrgmgx7jb4jkyiv6575ifq9n"))))
+         "1arv203h6c4b3y5q49xzmn2cz21kn108kk3bwfd37mc8mv50rik2"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-sub-install perl-params-util))
