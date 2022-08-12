@@ -973,14 +973,14 @@ standard library.")
 (define-public python-pytest
   (package
     (name "python-pytest")
-    (version "6.2.5")
+    (version "7.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest" version))
        (sha256
         (base32
-         "12cyi0lnyaq8sdqfnqlppd76gkw6zcg10gyih5knx9v611l3c6qk"))))
+         "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1007,22 +1007,17 @@ standard library.")
     (propagated-inputs
      (list python-attrs-bootstrap
            python-iniconfig
-           python-more-itertools
            python-packaging-bootstrap
            python-pluggy
            python-py
-           python-six-bootstrap
-           python-toml
-           python-wcwidth))
+           python-tomli))
     (native-inputs
      (list ;; Tests need the "regular" bash since 'bash-final' lacks `compgen`.
            bash
            python-hypothesis
            python-nose
-           python-mock
            python-pytest-bootstrap
            python-setuptools-scm
-           python-toml
            python-xmlschema))
     (home-page "https://docs.pytest.org/en/latest/")
     (synopsis "Python testing library")
@@ -1039,7 +1034,7 @@ and many external plugins.")
     (inherit python-pytest)
     (name "python-pytest-bootstrap")
     (native-inputs (list python-iniconfig python-setuptools-scm
-                         python-toml))
+                         python-tomli))
     (arguments `(#:tests? #f))))
 
 (define-public python-pytest-assume
