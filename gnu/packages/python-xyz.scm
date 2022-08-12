@@ -23059,25 +23059,19 @@ that is accessible to other projects developed in Cython.")
 (define-public python-sortedcontainers
   (package
     (name "python-sortedcontainers")
-    (version "2.1.0")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sortedcontainers" version))
        (sha256
         (base32
-         "0fm0w5id2yhqld95hg2m636vjgkz377rvgdfqaxc25vbylr9lklp"))))
+         "126vpywl7aly6zir033a9indgyficlzl68qls61nn2y3djhabji5"))))
     (build-system python-build-system)
     (arguments
-     ;; FIXME: Tests require many extra dependencies, and would introduce
-     ;; a circular dependency on hypothesis, which uses this package.
+     ;; TODO: Circular dependency on pytest.
      '(#:tests? #f))
-    (propagated-inputs
-     `(("python-appdirs" ,python-appdirs)
-       ("python-distlib" ,python-distlib)
-       ("python-filelock" ,python-filelock)
-       ("python-six" ,python-six-bootstrap)))
-    (home-page "http://www.grantjenks.com/docs/sortedcontainers/")
+    (home-page "https://grantjenks.com/docs/sortedcontainers/")
     (synopsis "Sorted List, Sorted Dict, Sorted Set")
     (description
      "This package provides a sorted collections library, written in
