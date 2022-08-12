@@ -1092,7 +1092,7 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public pipe-viewer
   (package
     (name "pipe-viewer")
-    (version "0.2.0")
+    (version "0.2.3")
     (source
      (origin
        (method git-fetch)
@@ -1102,7 +1102,7 @@ H.264 (MPEG-4 AVC) video streams.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19qfs0nv7l01468f14a5zbvaiff5hrsk3a4zqknh15014xnvw08s"))))
+        (base32 "0c2v4pj86442sp71ndjmvd2bl1grp6g9ya2ywdaihq1f2djk6jxl"))))
     (build-system perl-build-system)
     (arguments
      `(#:imported-modules
@@ -1122,9 +1122,6 @@ H.264 (MPEG-4 AVC) video streams.")
          (add-after 'unpack 'patch-source
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* (find-files "lib" "\\.pm$")
-               (("\"youtube-dl\"")
-                (format #f "\"~a/bin/youtube-dl\""
-                        (assoc-ref inputs "youtube-dl")))
                (("\"yt-dlp\"")
                 (format #f "\"~a/bin/yt-dlp\""
                         (assoc-ref inputs "yt-dlp"))))
@@ -1138,9 +1135,6 @@ H.264 (MPEG-4 AVC) video streams.")
                (("'xdg-open'")
                 (format #f "'~a/bin/xdg-open'"
                         (assoc-ref inputs "xdg-utils")))
-               (("'youtube-dl'")
-                (format #f "'~a/bin/youtube-dl'"
-                        (assoc-ref inputs "youtube-dl")))
                (("'yt-dlp'")
                 (format #f "'~a/bin/yt-dlp'"
                         (assoc-ref inputs "yt-dlp"))))))
@@ -1194,7 +1188,6 @@ H.264 (MPEG-4 AVC) video streams.")
            perl-uri-escape
            wget
            xdg-utils
-           youtube-dl
            yt-dlp))
     (propagated-inputs
      (list dconf))
