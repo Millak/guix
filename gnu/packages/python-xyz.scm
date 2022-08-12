@@ -17229,13 +17229,13 @@ addresses, and phone numbers.")
 (define-public python-pyaml
   (package
     (name "python-pyaml")
-    (version "18.11.0")
+    (version "21.10.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyaml" version))
               (sha256
                (base32
-                "0fi604ix8lbpj1266q7js6szm771saprdzzcdwmj43wy83694qmr"))))
+                "10w3frzqir5sbpglc9bwb8w414dsivmcvji07yxy61mz2gp9ylf6"))))
     (build-system python-build-system)
     (native-inputs
      (list python-unidecode))
