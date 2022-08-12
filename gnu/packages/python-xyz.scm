@@ -6955,31 +6955,43 @@ by pycodestyle.")
 (define-public python-distlib
   (package
     (name "python-distlib")
-    (version "0.3.1")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "distlib" version ".zip"))
+       (uri (pypi-uri "distlib" version))
        (sha256
         (base32
-         "1wdzv7fsjhrkhh1wfkarlhcwa8m00mgcpdsvknmf2qy8f9l13xpd"))))
+         "1zmjraasgqkz0gfv4mc4w4fj4k2fxj62h1pf5dgb5qqbqwvmgxx7"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'no-/bin/sh
-           (lambda _
-             (substitute* '("distlib/scripts.py" "tests/test_scripts.py")
-               (("/bin/sh") (which "sh")))
-             #t))
-         (add-before 'check 'prepare-test-env
-           (lambda _
-             (setenv "HOME" "/tmp")
-             ;; NOTE: Any value works, the variable just has to be present.
-             (setenv "SKIP_ONLINE" "1")
-             #t)))))
-    (native-inputs (list unzip))
-    (home-page "https://bitbucket.org/pypa/distlib")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (add-before 'build 'no-/bin/sh
+            (lambda _
+              (substitute* '("distlib/scripts.py" "tests/test_scripts.py")
+                (("/bin/sh") (which "sh")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (setenv "HOME" "/tmp")
+              ;; NOTE: Any value works, the variable just has to be present.
+              (setenv "SKIP_ONLINE" "1")
+              (when tests?
+                (invoke "pytest" "-vv"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-pypa-build python-pytest))
+    (home-page "https://github.com/pypa/distlib")
     (synopsis "Distribution utilities")
     (description "Distlib is a library which implements low-level functions that
 relate to packaging and distribution of Python software.  It is intended to be
