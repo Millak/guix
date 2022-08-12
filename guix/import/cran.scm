@@ -200,11 +200,11 @@ bioconductor package NAME, or #F if the package is unknown."
 ;; Little helper to download URLs only once.
 (define download
   (memoize
-   (lambda* (url #:key method)
+   (lambda* (url #:key method (ref '()))
      (with-store store
        (cond
         ((eq? method 'git)
-         (latest-repository-commit store url))
+         (latest-repository-commit store url #:ref ref))
         ((eq? method 'hg)
          (call-with-temporary-directory
           (lambda (dir)
