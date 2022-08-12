@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Olivier Dion <olivier.dion@polymtl.ca>
+;;; Copyright © 2021, 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +50,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system linux-module)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -205,6 +206,30 @@ with a handful of C++ libraries.")
 interactive SVGs out of traces genated from various tracing tools.  It comes
 with the script @command{flamegraph.pl} and many stackcollapse scripts.")
       (license license:cddl1.0))))
+
+(define-public lttng-modules
+  (package
+    (name "lttng-modules")
+    (version "2.13.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://lttng.org/files/lttng-modules/"
+                                  "lttng-modules-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1vm9nnjvid7acsvgwnjyxd60ih9rmbhnfjldxip58n8x9q7d0nb1"))))
+    (build-system linux-module-build-system)
+    (arguments
+     `(#:tests? #f ; no tests
+       #:make-flags (list "CONFIG_LTTNG=m"
+                          "CONFIG_LTTNG_CLOCK_PLUGIN_TEST=m")))
+    (home-page "https://lttng.org/")
+    (synopsis "LTTng kernel modules for the LTTng tracer toolset")
+    (description
+     "LTTng kernel modules are Linux kernel modules which make
+LTTng kernel tracing possible.  They include essential control modules and
+many probes which instrument numerous interesting parts of Linux.")
+    (license (list license:lgpl2.1 license:gpl2 license:expat))))
 
 (define-public lttng-ust
   (package
