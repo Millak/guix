@@ -78,3 +78,12 @@ scheme-mode
  "(bzr-reference"
  n> "(url \"" p "\")"
  n> "(revision \"" p "\"))")
+
+(:phases\ "#:phases (modify-phases %standard-phases"
+          n> p ")")
+
+(add-before\ "(add-before '" p " '" p
+             n > p ")")
+(add-after\ "(add-after '" p " '" p
+            n > p ")")
+(replace\ "(replace '" p " " p")")
