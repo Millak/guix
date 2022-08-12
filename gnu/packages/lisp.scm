@@ -984,7 +984,7 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "278")
+    (version "280")
     (source
      (origin
        (method git-fetch)
@@ -993,7 +993,7 @@ the HTML documentation of TXR.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08jmqv245vnvl4xx6x5a5hxlnhdcipfdbja54dvsi6wkiks2fif7"))))
+        (base32 "1ni2yb9dggldgizfp13mvrw5vzk13pg74dpk2lyn9dijqvs293s4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
