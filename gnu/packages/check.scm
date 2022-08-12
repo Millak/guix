@@ -2972,7 +2972,7 @@ grew out of the @dfn{Vc} project.")
 (define-public python-pyfakefs
   (package
     (name "python-pyfakefs")
-    (version "3.7.1")
+    (version "4.6.3")
     (source (origin
               (method url-fetch)
               ;; We use the PyPI URL because there is no proper release
@@ -2981,22 +2981,13 @@ grew out of the @dfn{Vc} project.")
               (uri (pypi-uri "pyfakefs" version))
               (sha256
                (base32
-                "1cp2yw96fa2qkgi39xa3nlr3inf8wb5rgh9kdq53256ca2r8pdhy"))
+                "18bcv8yalg80zgigx40fk692yr3wf9ch1hkb0cdplqspyry2mwbd"))
               (patches (search-patches
                         "python-pyfakefs-remove-bad-test.patch"))
               (file-name (string-append name "-" version ".tar.gz"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-testsuite
-           (lambda _
-             ;; Time difference is larger than expected.
-             (substitute* "pyfakefs/tests/fake_filesystem_unittest_test.py"
-               (("(\\s+)def test_copy_real_file" all indent)
-                (string-append
-                  indent
-                  "@unittest.skip('disabled by guix')\n"
-                  all)))))
          ;; The default test suite does not run these extra tests.
          (add-after 'check 'check-pytest-plugin
            (lambda _
