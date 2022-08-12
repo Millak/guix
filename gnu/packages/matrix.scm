@@ -185,7 +185,7 @@ homeserver and generally help bootstrap the ecosystem.")
                         "not test_upload_binary_file_object "
                         "and not test_connect_wrapper"))))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest-6)
+     `(("python-pytest" ,python-pytest)
        ("python-hyperframe" ,python-hyperframe)
        ("python-hypothesis" ,python-hypothesis)
        ("python-hpack" ,python-hpack)

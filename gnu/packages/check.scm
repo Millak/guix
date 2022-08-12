@@ -1028,7 +1028,8 @@ and functions, detailed info on failing assert statements, modular fixtures,
 and many external plugins.")
     (license license:expat)))
 
-(define-public python-pytest-6 python-pytest)
+(define-deprecated python-pytest-6 python-pytest)
+(export python-pytest-6)
 
 (define-public python-pytest-bootstrap
   (package

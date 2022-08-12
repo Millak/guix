@@ -15629,7 +15629,7 @@ way.")
                (base32
                 "00yvj8bxmhhhhd74v7j0x673is7vizmxwgb3dd5xmnkr74ybyi7w"))))
     (build-system python-build-system)
-    (native-inputs (list python-pytest-6))
+    (native-inputs (list python-pytest))
     (home-page "https://software.clapper.org/munkres/")
     (synopsis "Implementation of the Munkres algorithm")
     (description "The Munkres module provides an implementation of the Munkres
@@ -28232,7 +28232,7 @@ symbolic expressions in pure Python using the technique of logical unification."
          "0w9giq196wps7mbm47c4shdzs5yvwvqajqzkim2p92i51sm5qgvm"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest-6 python-toml))
+     (list python-pytest python-toml))
     (propagated-inputs
      (list python-logical-unification))
     (home-page "https://github.com/pythological/python-cons")

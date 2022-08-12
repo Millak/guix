@@ -3762,7 +3762,7 @@ websites such as Libre.fm.")
            python-flask
            python-mock
            python-py7zr
-           python-pytest-6
+           python-pytest
            python-responses))
     (inputs
      (list bash-minimal
