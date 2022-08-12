@@ -13858,6 +13858,27 @@ files in Emacs.  Files of this type (e.g., @file{BUILD.gn} or @file{*.gni})
 are common in Chromium-derived projects.")
     (license license:bsd-3)))
 
+(define-public emacs-drag-stuff
+  (package
+    (name "emacs-drag-stuff")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rejeep/drag-stuff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jrr59iazih3imkl9ja1lbni9v3xv6b8gmqs015g2mxhlql35jka"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/rejeep/drag-stuff")
+    (synopsis "Drag stuff around in Emacs")
+    (description
+"Drag Stuff is a minor mode for Emacs that makes it possible to drag
+stuff (words, region, lines) around in Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-bazel
   ;; From 2021-11-21.
   ;; No releases available.
