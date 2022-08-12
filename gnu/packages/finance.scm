@@ -83,12 +83,13 @@
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gettext)
-  #:use-module (gnu packages gnome)
-  #:use-module (gnu packages golang)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
+  #:use-module (gnu packages gsasl)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
@@ -2172,3 +2173,44 @@ Warning: this software, because of it's nature, has high energy consumption.
 Also, the energy expenses might be higher that the cryptocurrency gained by
 mining.")
     (license license:gpl3+)))
+
+(define-public p2pool
+  (package
+    (name "p2pool")
+    (version "2.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SChernykh/p2pool")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "19pn7axj96yvza2x7678rs79c2vgmhl8d7f9ki72v2n6l2630fw8"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(for-each delete-file-recursively
+                    '("external/lib"
+                      "external/src/cppzmq"
+                      "external/src/curl"
+                      "external/src/libuv"
+                      "external/src/libzmq"
+                      "external/src/rapidjson")))))
+    (build-system cmake-build-system)
+    (inputs
+     (list cppzmq curl gss libuv rapidjson zeromq))
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (install-file "p2pool" (string-append #$output "/bin")))))))
+    (home-page "https://p2pool.io/")
+    (synopsis "Decentralized Monero mining pool")
+    (description "Monero P2Pool is a peer-to-peer Monero mining pool.  P2Pool
+combines the advantages of pool and solo mining; you still fully control your
+Monero node and what it mines, but you get frequent payouts like on a regular
+pool.")
+    (license license:gpl3)))
