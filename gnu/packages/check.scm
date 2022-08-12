@@ -2711,18 +2711,18 @@ create data based on random numbers and yet remain repeatable.")
 (define-public python-freezegun
   (package
     (name "python-freezegun")
-    (version "0.3.14")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "freezegun" version))
        (sha256
-        (base32 "0al75mk829j1izxi760b7yjnknjihyfhp2mvi5qiyrxb9cpxwqk2"))))
+        (base32 "0ijlq32qvpm5zprfzbyzawpl9qjsknlxhryr1i0q84wl0sxd28nd"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-pytest))
     (propagated-inputs
-     (list python-six python-dateutil))
+     (list python-dateutil))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
