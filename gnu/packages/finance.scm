@@ -837,6 +837,7 @@ the Monero command line client and daemon.")
      (modify-inputs (package-inputs monero)
        (append libgcrypt
                monero
+               p2pool
                qtbase-5
                qtdeclarative-5
                qtgraphicaleffects
@@ -870,6 +871,17 @@ the Monero command line client and daemon.")
                       (string-append
                        "set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\")\n"
                        all)))))
+               (add-after 'unpack 'fix-p2pool-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/p2pool/P2PoolManager.cpp"
+                     ;; Location for files created by P2Pool
+                     (("m_p2poolPath = QApplication::applicationDirPath\\(\\);")
+                      "m_p2poolPath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);")
+                     ;; Location of p2pool program
+                     (("m_p2pool = m_p2poolPath \\+ \"/p2pool\";")
+                      (string-append "m_p2pool = \""
+                                     (search-input-file inputs "/bin/p2pool")
+                                     "\";")))))
                (replace 'install
                  (lambda _
                    (let ((bin (string-append #$output "/bin")))
