@@ -3310,7 +3310,7 @@ from the command line.")
            lilv
            lv2
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            rubberband
            suil
