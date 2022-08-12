@@ -260,7 +260,7 @@ to ring buffers shared with a consumer daemon.")
 (define-public lttng-tools
   (package
     (name "lttng-tools")
-    (version "2.13.2")
+    (version "2.13.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-tools/"
