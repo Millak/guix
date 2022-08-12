@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -308,13 +309,14 @@ PREDICATE, whichever comes first.  Raise an error when TIMEOUT is exceeded."
   (define end
     (+ start timeout))
 
-  (let loop ()
+  (let loop ((last-text #f))
     (if (> (car (gettimeofday)) end)
-        (error "'wait-for-screen-text' timeout" predicate)
-        (or (predicate (marionette-screen-text marionette #:ocrad ocrad))
-            (begin
-              (sleep 1)
-              (loop))))))
+        (error "'wait-for-screen-text' timeout" 'ocr-text: last-text)
+        (let ((text (marionette-screen-text marionette #:ocrad ocrad)))
+          (or (predicate text)
+              (begin
+                (sleep 1)
+                (loop text)))))))
 
 (define %qwerty-us-keystrokes
   ;; Maps "special" characters to their keystrokes.
