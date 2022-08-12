@@ -1345,20 +1345,6 @@ program code to a remote location, executes there, and then syncs the
 result back.")
     (license license:expat)))
 
-(define-public python-pytest-xdist-next
-  (package/inherit python-pytest-xdist
-    (name "python-pytest-xdist")
-    (version "2.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-xdist" version))
-       (sha256
-        (base32
-         "1psf5dqxvc38qzxvc305mkg5xpdmdkbkkfiyqlmdnkgh7z5dx025"))))
-    (propagated-inputs (list python-execnet python-pytest
-                             python-pytest-forked-next))))
-
 (define-public python-pytest-timeout
   (package
     (name "python-pytest-timeout")
