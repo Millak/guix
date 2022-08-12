@@ -3088,6 +3088,7 @@ and is not compatible with JSON.")
     (build-system python-build-system)
     (arguments
      (list
+      #:tests? #f                       ;TODO: Circular dependency on pytest
       #:phases
       #~(modify-phases %standard-phases
           ;; XXX: PEP 517 manual build/install procedures copied from
@@ -3107,7 +3108,7 @@ and is not compatible with JSON.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "pytest" "-vv" "tests")))))))
-    (native-inputs (list python-flit-scm python-pypa-build python-pytest))
+    (native-inputs (list python-flit-scm python-pypa-build))
     (home-page "https://github.com/agronholm/exceptiongroup")
     (synopsis "PEP 654 backport from Python 3.11")
     (description "This is a backport of the @code{BaseExceptionGroup} and
