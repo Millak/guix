@@ -7589,7 +7589,20 @@ compressed JSON header blocks.
                                    "nghttp2-" version ".tar.xz"))
                (sha256
                 (base32
-                 "0p9wvva4g8hwj55x19rbyvnq2dbsnf65rphhxnpqs7ll54xlg6an")))))))
+                 "0p9wvva4g8hwj55x19rbyvnq2dbsnf65rphhxnpqs7ll54xlg6an"))))
+     (arguments
+      (substitute-keyword-arguments (package-arguments nghttp2)
+        ((#:phases phases #~%standard-phases)
+         #~(modify-phases #$phases
+             (add-after 'unpack 'workaround-broken-python-version-check
+               (lambda _
+                 (substitute* "configure"
+                   ;; The configure script uses a string comparison to
+                   ;; determine whether the Python interpreter is recent
+                   ;; enough, which fails when comparing 3.8 to 3.10.
+                   ;; Convert to tuples for a more reliable check.
+                   (("print \\(ver >= '3\\.8'\\)")
+                    "print (tuple(map(int, ver.split('.'))) >= (3,8))")))))))))))
 
 (define-public hpcguix-web
   (package
