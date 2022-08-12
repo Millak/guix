@@ -5686,7 +5686,7 @@ include_dirs = ~:*~a/include~%"
                                    '())))))))))
     (native-inputs
      (list python-cython
-           python-hypothesis-next
+           python-hypothesis
            python-pytest
            python-pytest-xdist
            python-typing-extensions
@@ -16855,7 +16855,7 @@ strings require only one extra byte in addition to the strings themselves.")
                         ;; build system and new Rust dependencies.
                         "--ignore" "tests/test_preconf.py")))))))
     (native-inputs
-     (list python-hypothesis-next
+     (list python-hypothesis
            python-immutables
            python-msgpack
            python-poetry-core

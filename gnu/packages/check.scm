@@ -89,6 +89,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
+  #:use-module (guix deprecation)
   #:use-module (srfi srfi-1))
 
 (define-public pict
@@ -1997,20 +1998,24 @@ instantly.")
 (define-public python-hypothesis
   (package
     (name "python-hypothesis")
-    (version "6.0.2")
+    (version "6.54.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "hypothesis" version))
               (sha256
                (base32
-                "0wj7ip779naf2n076nylf2gi0sjz68z1ir9d9r2rgs7br18naqdf"))))
+                "1ivyrjpnahvj359pfndnk8x3h0gw37kqm02fmnzibx4mas15d44a"))))
     (build-system python-build-system)
     (arguments
      ;; XXX: Tests are not distributed with the PyPI archive.
-     '(#:tests? #f))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; XXX: hypothesis requires pytest at runtime, but we can
+               ;; not propagate it due to a circular dependency.
+               (delete 'sanity-check))))
     (propagated-inputs
-     `(("python-attrs" ,python-attrs-bootstrap)
-       ("python-sortedcontainers" ,python-sortedcontainers)))
+     (list python-attrs-bootstrap python-exceptiongroup python-sortedcontainers))
     (synopsis "Library for property based testing")
     (description "Hypothesis is a library for testing your Python code against a
 much larger range of examples than you would ever want to write by hand.  It’s
@@ -2019,20 +2024,8 @@ seamlessly into your existing Python unit testing work flow.")
     (home-page "https://github.com/HypothesisWorks/hypothesis")
     (license license:mpl2.0)))
 
-;;; TODO: Make the default python-hypothesis in the next rebuild cycle.
-(define-public python-hypothesis-next
-  (package
-    (inherit python-hypothesis)
-    (version "6.43.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "hypothesis" version))
-              (sha256
-               (base32
-                "0d67dlc5a47i48fxzmji2mnybzby0h1wdscmj54555fghcyp1045"))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-hypothesis)
-       (append python-pytest)))))       ;to satisfy the sanity-check phase
+(define-deprecated python-hypothesis-next python-hypothesis)
+(export python-hypothesis-next)
 
 (define-public python-hypothesmith
   (package

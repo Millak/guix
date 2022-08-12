@@ -1203,7 +1203,7 @@ and that could be anything you want.")
                (add-installed-pythonpath inputs outputs)
                (invoke "python" "-m" "pytest" "-vv" "test")))))))
     (native-inputs
-     (list python-hypothesis-next python-pytest))
+     (list python-hypothesis python-pytest))
     (propagated-inputs
      (list python-hpack python-hyperframe))
     (home-page "https://github.com/python-hyper/h2")
