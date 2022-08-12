@@ -1718,18 +1718,20 @@ have failed since the last commit or what tests are currently failing.")))
 (define-public python-coverage
   (package
     (name "python-coverage")
-    (version "5.2.1")
+    (version "6.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "coverage" version))
        (sha256
         (base32
-         "16z8i18msgs8k74n73dj9x49wzkl0vk4vq8k5pl1bsj70y7b4k53"))))
+         "157vndwrzyv9ypn2w3b6g8gv7vw07v994hq8nxasdb75k3ry2apc"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: 95 tests failed, 539 passed, 6 skipped, 2 errors.
      '(#:tests? #f))
+    (propagated-inputs
+     (list python-tomli))
     (home-page "https://coverage.readthedocs.io")
     (synopsis "Code coverage measurement for Python")
     (description
