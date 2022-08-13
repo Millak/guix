@@ -4220,7 +4220,7 @@ similar to struct in Python or pack and unpack in Perl.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/weinholt/machine-code")
+             (url "https://gitlab.com/weinholt/machine-code")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -4251,7 +4251,7 @@ similar to struct in Python or pack and unpack in Perl.")
      (list guile-3.0))
     (propagated-inputs
      (list guile-struct-pack))
-    (home-page "https://github.com/weinholt/machine-code")
+    (home-page "https://gitlab.com/weinholt/machine-code")
     (synopsis "Tools that relate to machine code and object formats")
     (description
      "This project is about the development of tools that relate to machine
