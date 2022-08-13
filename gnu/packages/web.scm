@@ -8032,7 +8032,7 @@ It contains the code shared by all Kiwix ports.")
 (define-public kiwix-desktop
   (package
     (name "kiwix-desktop")
-    (version "2.0.5")
+    (version "2.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8041,7 +8041,7 @@ It contains the code shared by all Kiwix ports.")
                     ".tar.gz"))
               (sha256
                (base32
-                "1a9h4qmh6fkfscyp6lax0ri07dvvzw2wp4kr1sm86n0bdk3cwwha"))))
+                "0ani12d91azcwwys499848ws7rx0m7c23nalcm5fanjak76bg6n6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -8051,28 +8051,14 @@ It contains the code shared by all Kiwix ports.")
              (invoke "qmake"
                      (string-append "PREFIX="
                                     (assoc-ref outputs "out")))))
-         (add-before 'configure 'enable-print-support
-           (lambda _
-             (substitute* "kiwix-desktop.pro"
-               (("webenginewidgets") "webenginewidgets printsupport"))
-             #t))
-         (add-before 'configure 'substitute-source
-           ;; Looks like .pro file is missing a feature.
-           ;; See https://github.com/kiwix/kiwix-desktop/issues/556.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "kiwix-desktop.pro"
-               (("webenginewidgets" all) (string-append all " printsupport")))
-             #t))
          (add-after 'install 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/kiwix-desktop"))
-                    (qt-process-path (string-append
-                                      (assoc-ref inputs "qtwebengine-5")
-                                      "/lib/qt5/libexec/QtWebEngineProcess")))
+                    (qt-process-path (search-input-file
+                                      inputs "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
-               #t))))))
+                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (inputs
      (list curl
            icu4c
@@ -8088,8 +8074,8 @@ It contains the code shared by all Kiwix ports.")
            zlib
            `(,zstd "lib")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qmake" ,qtbase-5)))
+     (list pkg-config
+           qtbase-5))
     (home-page "https://wiki.kiwix.org/wiki/Software")
     (synopsis "Viewer and manager of ZIM files")
     (description "Kiwix Desktop allows you to enjoy a lot of different content
