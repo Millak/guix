@@ -4176,8 +4176,8 @@ more objects or strings, represented by a Json object or an IRI.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/weinholt/struct-pack")
-             (commit (string-append "v" version))))
+             (url "https://gitlab.com/weinholt/struct-pack")
+             (commit "11b71963793ed4a3bf761efdd83cf2fe123239ee")))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0hd72m821pahjphzyjn26i55542v8makr55xzjll2cycja4wsbc1"))))
@@ -4205,7 +4205,7 @@ more objects or strings, represented by a Json object or an IRI.")
                       #t)))))
     (native-inputs
      (list guile-3.0))
-    (home-page "https://github.com/weinholt/struct-pack")
+    (home-page "https://gitlab.com/weinholt/struct-pack")
     (synopsis "R6RS library for working with packed byte structures")
     (description
      "This is an R6RS library for working with packed byte structures.  It is
