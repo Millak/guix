@@ -3703,12 +3703,12 @@ the style of the Node Package Manager (NPM).")
   (package
     (name "guile-hashing")
     (version "1.2.0")
-    (home-page "https://github.com/weinholt/hashing")
+    (home-page "https://gitlab.com/weinholt/hashing")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit (string-append "v" version))))
+                    (commit "f138deaec38d54ddb621c082764ece276deebe7f")))
               (file-name (git-file-name name version))
               (sha256
                (base32
