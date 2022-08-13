@@ -187,41 +187,33 @@ the core SELinux management utilities.")
     (arguments
      (substitute-keyword-arguments (package-arguments libsepol)
        ((#:make-flags flags)
-        `(cons* "PYTHON=python3"
-                (string-append "PYTHONLIBDIR="
-                               (assoc-ref %outputs "out")
-                               "/lib/python"
-                               ,(version-major+minor (package-version python))
-                               "/site-packages/")
-                ,flags))
+        #~(cons* "PYTHON=python3"
+                 (string-append "PYTHONLIBDIR="
+                                #$output
+                                "/lib/python"
+                                #$(version-major+minor (package-version python))
+                                "/site-packages/")
+                 #$flags))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'portability)
-           (replace 'enter-dir
-             (lambda _ (chdir ,name)))
-           (add-before 'install 'adjust-semanage-conf-location
-             (lambda _
-               (substitute* "src/Makefile"
-                 (("DEFAULT_SEMANAGE_CONF_LOCATION=/etc")
-                  "DEFAULT_SEMANAGE_CONF_LOCATION=$(PREFIX)/etc"))))
-           (add-after 'build 'pywrap
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (apply invoke "make" "pywrap" make-flags)))
-           (add-after 'install 'install-pywrap
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (apply invoke "make" "install-pywrap" make-flags)))))))
+        #~(modify-phases #$phases
+            (delete 'portability)
+            (replace 'enter-dir
+              (lambda _ (chdir #$name)))
+            (add-before 'install 'adjust-semanage-conf-location
+              (lambda _
+                (substitute* "src/Makefile"
+                  (("DEFAULT_SEMANAGE_CONF_LOCATION=/etc")
+                   "DEFAULT_SEMANAGE_CONF_LOCATION=$(PREFIX)/etc"))))
+            (add-after 'build 'pywrap
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "pywrap" make-flags)))
+            (add-after 'install 'install-pywrap
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "install-pywrap" make-flags)))))))
     (inputs
-     `(("libsepol" ,libsepol)
-       ("libselinux" ,libselinux)
-       ("audit" ,audit)
-       ;; For pywrap phase
-       ("python" ,python-wrapper)))
+     (list audit libsepol libselinux python-wrapper))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ;; For pywrap phase
-       ("swig" ,swig)
-       ("pkg-config" ,pkg-config)))
+     (list bison flex pkg-config swig))
     (synopsis "SELinux policy management libraries")
     (description
      "The libsemanage library provides an API for the manipulation of SELinux
