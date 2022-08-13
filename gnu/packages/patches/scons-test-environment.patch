@@ -1,0 +1,57 @@
+Inherit essential environment variables in tests.
+
+Note: it could be better to generalize this in SCons/Platform/posix.py
+instead of just patching the tests.
+
+diff --git a/SCons/ActionTests.py b/SCons/ActionTests.py
+--- a/SCons/ActionTests.py
++++ b/SCons/ActionTests.py
+@@ -98,6 +98,7 @@ outfile2 = test.workpath('outfile2')
+ pipe_file = test.workpath('pipe.out')
+ 
+ scons_env = SCons.Environment.Environment()
++scons_env['ENV']['PATH'] += os.environ['PATH']
+ 
+ # Capture all the stuff the Actions will print,
+ # so it doesn't clutter the output.
+@@ -1090,6 +1091,8 @@ class CommandActionTestCase(unittest.TestCase):
+         except AttributeError:
+             env = Environment()
+ 
++        env = Environment(ENV={'PATH': os.environ['PATH']})
++
+         cmd1 = r'%s %s %s xyzzy' % (_python_, act_py, outfile)
+ 
+         act = SCons.Action.CommandAction(cmd1)
+@@ -1884,7 +1887,7 @@ class ListActionTestCase(unittest.TestCase):
+                     f.write("class2b\n")
+ 
+         act = SCons.Action.ListAction([cmd2, function2, class2a(), class2b])
+-        r = act([], [], Environment(out=outfile))
++        r = act([], [], Environment(out=outfile, ENV={'PATH' : os.getenv('PATH')}))
+         assert isinstance(r.status, class2b), r.status
+         c = test.read(outfile, 'r')
+         assert c == "act.py: 'syzygy'\nfunction2\nclass2a\nclass2b\n", c
+@@ -1948,7 +1951,7 @@ class LazyActionTestCase(unittest.TestCase):
+         a([], [], env=Environment(BAR=f, s=self))
+         assert self.test == 1, self.test
+         cmd = r'%s %s %s lazy' % (_python_, act_py, outfile)
+-        a([], [], env=Environment(BAR=cmd, s=self))
++        a([], [], env=Environment(BAR=cmd, s=self, ENV={'PATH' : os.getenv('PATH')}))
+         c = test.read(outfile, 'r')
+         assert c == "act.py: 'lazy'\n", c
+ 
+diff --git a/SCons/SConfTests.py b/SCons/SConfTests.py
+--- a/SCons/SConfTests.py
++++ b/SCons/SConfTests.py
+@@ -71,7 +71,9 @@ class SConfTestCase(unittest.TestCase):
+         # and we need a new environment, cause references may point to
+         # old modules (well, at least this is safe ...)
+         self.scons_env = self.Environment.Environment()
+-        self.scons_env.AppendENVPath('PATH', os.environ['PATH'])
++        # Inherit the OS environment to get essential variables.
++        inherited_env = os.environ.copy()
++        self.scons_env['ENV'] = inherited_env
+ 
+         # we want to do some autodetection here
+         # this stuff works with
