@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
@@ -49,7 +49,7 @@
 (define-public libsepol
   (package
     (name "libsepol")
-    (version "3.2")
+    (version "3.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -58,7 +58,7 @@
               (file-name (git-file-name "selinux" version))
               (sha256
                (base32
-                "03p3lmvrvkcvsmiczsjzhyfgxlxdkdyq0p8igv3s3hdak5n92jjn"))))
+                "1lcmgmfr0q7g5cwg6b7jm6ncw8cw6c1jblkm93v1g37bfhcgrqc0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; tests require checkpolicy, which requires libsepol
@@ -161,12 +161,11 @@ module into a binary representation.")
                (substitute* "src/Makefile"
                  (("--prefix=\\$\\(PREFIX\\)")
                   (string-append "--prefix=" (assoc-ref outputs "python"))))
-
                (apply invoke "make" "install-pywrap" make-flags)))))))
     ;; These libraries are in "Requires.private" in libselinux.pc.
     (propagated-inputs
      `(("libsepol" ,libsepol)
-       ("pcre" ,pcre)))
+       ("pcre2" ,pcre2)))
     ;; For pywrap phase
     (inputs
      `(("python" ,python-wrapper)))
