@@ -4215,7 +4215,7 @@ similar to struct in Python or pack and unpack in Perl.")
 (define-public guile-machine-code
   (package
     (name "guile-machine-code")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -4224,7 +4224,7 @@ similar to struct in Python or pack and unpack in Perl.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wzj3caj2jypzyjqfkfqkvr3kkbjabsnhldv9kvnx9w9qnria5yd"))))
+        (base32 "1yjzpg5p082kg4vaqlwbwddrrhxyxar6gsx9ql72hpwah4ka82h5"))))
     (build-system guile-build-system)
     (arguments
      `(#:compile-flags '("--r6rs" "-Wunbound-variable" "-Warity-mismatch")
