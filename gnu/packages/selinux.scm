@@ -54,37 +54,38 @@
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/SELinuxProject/selinux")
-                     (commit version)))
+                    (url "https://github.com/SELinuxProject/selinux")
+                    (commit version)))
               (file-name (git-file-name "selinux" version))
               (sha256
                (base32
                 "1lcmgmfr0q7g5cwg6b7jm6ncw8cw6c1jblkm93v1g37bfhcgrqc0"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; tests require checkpolicy, which requires libsepol
-       #:test-target "test"
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "PREFIX=" out)
-               (string-append "SHLIBDIR=" out "/lib")
-               (string-append "MAN3DIR=" out "/share/man/man3")
-               (string-append "MAN5DIR=" out "/share/man/man5")
-               (string-append "MAN8DIR=" out "/share/man/man8")
-               (string-append "CFLAGS=-Wno-error")
-               (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
-               (string-append "CC=" ,(cc-for-target))))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir ,name)))
-         (add-after 'enter-dir 'portability
-           (lambda _
-             (substitute* "src/ibpkeys.c"
-               (("#include \"ibpkey_internal.h\"" line)
-                (string-append line "\n#include <inttypes.h>\n"))
-               (("%#lx") "%#\" PRIx64 \"")))))))
+     (list
+      #:tests? #f         ; tests require checkpolicy, which requires libsepol
+      #:test-target "test"
+      #:make-flags
+      #~(let ((out #$output))
+          (list (string-append "PREFIX=" out)
+                (string-append "SHLIBDIR=" out "/lib")
+                (string-append "MAN3DIR=" out "/share/man/man3")
+                (string-append "MAN5DIR=" out "/share/man/man5")
+                (string-append "MAN8DIR=" out "/share/man/man8")
+                (string-append "CFLAGS=-Wno-error")
+                (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
+                (string-append "CC=" #$(cc-for-target))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'enter-dir
+            (lambda _ (chdir #$name)))
+          (add-after 'enter-dir 'portability
+            (lambda _
+              (substitute* "src/ibpkeys.c"
+                (("#include \"ibpkey_internal.h\"" line)
+                 (string-append line "\n#include <inttypes.h>\n"))
+                (("%#lx") "%#\" PRIx64 \"")))))))
     (native-inputs
      (list flex))
     (home-page "https://selinuxproject.org/")
