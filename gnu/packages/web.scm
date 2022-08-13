@@ -8060,7 +8060,8 @@ It contains the code shared by all Kiwix ports.")
                (wrap-program bin
                  `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (inputs
-     (list curl
+     (list bash-minimal
+           curl
            icu4c
            kiwix-lib
            libmicrohttpd
