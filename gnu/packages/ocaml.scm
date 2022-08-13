@@ -2550,21 +2550,21 @@ lets the client choose the concrete timeline.")
 (define-public ocaml-ssl
   (package
     (name "ocaml-ssl")
-    (version "0.5.10")
+    (version "0.5.12")
     (source
       (origin
         (method git-fetch)
         (uri (git-reference
               (url "https://github.com/savonet/ocaml-ssl")
-              (commit (string-append "v" version))))
+              (commit version)))
         (file-name (git-file-name name version))
         (sha256 (base32
-                  "1rszqiqayh67xlwd5411k8vib47x9kapdr037z1majd2c14z3kcb"))))
+                  "1dr7yghbv0wncvggd2105bj097msgrdzxd9wjkw1xxf2vvp0j1bi"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
     (native-inputs
-     (list autoconf automake which))
+     (list autoconf automake ocaml-alcotest which))
     (propagated-inputs (list openssl))
     (home-page "https://github.com/savonet/ocaml-ssl/")
     (synopsis "OCaml bindings for OpenSSL")
