@@ -377,14 +377,16 @@ Blog, News or Announcements section to a Sphinx website.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest")))))))
-    (propagated-inputs (list python-docutils python-sphinx))
+    (propagated-inputs (list python-docutils python-sphinx-4))
     (native-inputs
      (list python-pytest
            python-pytest-regressions))
     (home-page "https://github.com/executablebooks/sphinx-panels")
     (synopsis "Sphinx extension for creating panels in a grid layout")
     (description
-     "This package provides a sphinx extension for creating panels in a grid layout.")
+     "This package provides a sphinx extension for creating panels in a
+grid layout.  It is no longer maintained and users are encouraged to use
+@code{sphinx-design} instead.")
     (license license:expat)))
 
 (define-public python-sphinxcontrib-programoutput

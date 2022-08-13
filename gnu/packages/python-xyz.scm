@@ -5731,7 +5731,7 @@ capabilities.")
            python-pandas
            python-pydata-sphinx-theme
            python-scipy                 ;used by matplotlib
-           python-sphinx
+           python-sphinx-4
            python-sphinx-panels
            texinfo
            texlive-bin
