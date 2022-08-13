@@ -148,6 +148,18 @@ for Python projects or other documents consisting of multiple reStructuredText
 sources.")
     (license license:bsd-2)))
 
+;; Some packages do not support Sphinx 5 yet.  Remove when unused.
+(define-public python-sphinx-4
+  (package
+    (inherit python-sphinx)
+    (version "4.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Sphinx" version))
+              (sha256
+               (base32
+                "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))))
+
 (define-public python-sphinxcontrib-apidoc
   (package
     (name "python-sphinxcontrib-apidoc")
