@@ -3946,7 +3946,7 @@ Format module of the OCaml standard library.")
 (define-public ocaml-piqilib
   (package
     (name "ocaml-piqilib")
-    (version "0.6.15")
+    (version "0.6.16")
     (source
      (origin
        (method git-fetch)
@@ -3955,7 +3955,7 @@ Format module of the OCaml standard library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v04hs85xv6d4ysqxyv1dik34dx49yab9shpi4x7iv19qlzl7csb"))))
+        (base32 "0mbhfrfrik3jlzx9zz680g0qdvv0b7cbjz28cgdlryp7nk4v4kx8"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:phases
