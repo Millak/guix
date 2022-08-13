@@ -7698,7 +7698,7 @@ complexity of the OCaml module system.")
 (define-public ocaml-odoc-parser
   (package
     (name "ocaml-odoc-parser")
-    (version "1.0.0")
+    (version "2.0.0")
     (source
       (origin
         (method git-fetch)
@@ -7708,10 +7708,10 @@ complexity of the OCaml module system.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-           "0mvwbnla0wd29bc7ckwpb494qv7p616cx8hnm0zg36np7v3zwy4w"))))
+           "1x48kf051xs98rd6cri591bk1ccp9hyp93n1rlf6qnxic55jw683"))))
     (build-system dune-build-system)
     (propagated-inputs
-      (list ocaml-astring ocaml-result))
+      (list ocaml-astring ocaml-camlp-streams ocaml-result))
     (native-inputs
       (list ocaml-ppx-expect))
     (home-page "https://github.com/ocaml-doc/odoc-parser")
@@ -8227,7 +8227,7 @@ defined in OCaml 4.12.0.")
 (define-public ocamlformat
   (package
     (name "ocamlformat")
-    (version "0.22.4")
+    (version "0.24.1")
     (source
       (origin
         (method git-fetch)
@@ -8237,7 +8237,7 @@ defined in OCaml 4.12.0.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "171lq3vx4y8xj4by5zy93isx8nhg6ysxg1hxmkqkq16fdaiz8mnc"))))
+            "0y1j5mwwrliy6a78cmpi6j8gw425shghqg9ylyl3qw5fx4b088pp"))))
     (build-system dune-build-system)
     (arguments
      '(#:package "ocamlformat"
