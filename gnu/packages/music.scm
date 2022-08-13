@@ -4849,7 +4849,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "3.18.2")
+    (version "4.3.4")
     (source
      (origin
        (method git-fetch)
@@ -4858,7 +4858,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lkn7rfrjvmds62i69igcgmic2snscgb9f6gdg5nzyfkis1fq5iz"))))
+        (base32 "10rf9li9kr6qdzkqv66wlg7gw2il18n7kd4fhk848hh5dcmg1icv"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
@@ -4884,18 +4884,18 @@ studio.")
            fftw
            gst-plugins-base
            gstreamer
-           gtk+
+           gtk
            jack-1
            ladspa
            libinstpatch
            libsamplerate
            libsndfile
-           libsoup-minimal-2
+           libsoup
            libxml2
            lv2
            pulseaudio
            `(,util-linux "lib")
-           webkitgtk-with-libsoup2))
+           webkitgtk))
     (home-page "https://nongnu.org/gsequencer/")
     (synopsis "Advanced Gtk+ Sequencer")
     (description
