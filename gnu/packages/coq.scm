@@ -101,7 +101,18 @@ It is developed using Objective Caml and Camlp5.")
     (name "coq-stdlib")
     (arguments
      `(#:package "coq-stdlib"
-       #:test-target "."))
+       #:test-target "."
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'fix-dune
+           (lambda _
+             (substitute* "user-contrib/Ltac2/dune"
+               (("coq-core.plugins.ltac2")
+                (string-join
+                  (map (lambda (plugin) (string-append "coq-core.plugins." plugin))
+                       '("ltac2" "number_string_notation" "tauto" "cc"
+                         "firstorder"))
+                  " "))))))))
     (inputs
      (list coq-core gmp ocaml-zarith))
     (native-inputs '())))
