@@ -23,6 +23,7 @@
 (define-module (gnu packages selinux)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -100,25 +101,24 @@ boolean settings).")
   (package/inherit libsepol
     (name "checkpolicy")
     (arguments
-     `(#:tests? #f ; there is no check target
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "PREFIX=" out)
-               (string-append "LIBSEPOLA="
-                              (assoc-ref %build-inputs "libsepol")
-                              "/lib/libsepol.a")
-               (string-append "CC=" ,(cc-for-target))))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'portability)
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir ,name))))))
+     (list
+      #:tests? #f                       ; there is no check target
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "LIBSEPOLA="
+                             (search-input-file %build-inputs
+                                                "/lib/libsepol.a"))
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'portability)
+          (add-after 'unpack 'enter-dir
+            (lambda _ (chdir #$name))))))
     (inputs
-     `(("libsepol" ,libsepol)))
+     (list libsepol))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)))
+     (list bison flex))
     (synopsis "Check SELinux security policy configurations and modules")
     (description
      "This package provides the tools \"checkpolicy\" and \"checkmodule\".
