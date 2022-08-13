@@ -1823,6 +1823,27 @@ N-Chilada and RAMSES AMR outputs.")
      (modify-inputs (package-inputs libsep)
        (prepend python-numpy)))))
 
+(define-public python-suntime
+  (package
+    (name "python-suntime")
+    (version "1.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "suntime" version))
+              (sha256
+               (base32
+                "0ja64w293wjx76q3z18ikx4rdihwkbj6pnjpbs82ycyyzhfnbpz4"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-dateutil))
+    (home-page "https://github.com/SatAgro/suntime")
+    (synopsis "Sunset and sunrise time calculation python library")
+    (description
+     "Python library doing sunrise and sunset time calculation.
+
+Takes a WGS84 (GPS) latitude/longitude as input as well as an UTC or local
+datetime object.")
+    (license license:lgpl3+)))
+
 (define-public python-asdf
   (package
     (name "python-asdf")
