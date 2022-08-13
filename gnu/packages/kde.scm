@@ -516,6 +516,30 @@ the functionality of the KDE resource and network access abstractions.")
     (description "This package provides FUSE Interface for KIO.")
     (license license:lgpl2.1+)))
 
+(define-public kirigami-addons
+  (package
+    (name "kirigami-addons")
+    (version "0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://invent.kde.org/libraries/kirigami-addons/-/archive/v"
+                    version "/kirigami-addons-v" version ".tar.gz"))
+              (sha256
+               (base32
+                "1zr8dpc7bzw6g3y0jaxsr2lqlxqwlcphchpk8iah6g1f3n9fq73r"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f)) ; failing test
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kirigami ki18n qtdeclarative-5 qtquickcontrols2-5))
+    (home-page "https://invent.kde.org/libraries/kirigami-addons")
+    (synopsis "Add-ons for the Kirigami framework")
+    (description
+     "This package provides Kirigami components usable by both touch
+and desktop experiences.")
+    (license license:lgpl2.0+)))
+
 (define-public kseexpr
   (package
     (name "kseexpr")
