@@ -70,7 +70,7 @@
 ;;; Copyright © 2020 Jérémy Korwin-Zmijowski <jeremy@korwin-zmijowski.fr>
 ;;; Copyright © 2020 Alberto Eleuterio Flores Guerrero <barbanegra+guix@posteo.mx>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020 pinoaffe <pinoaffe@airmail.cc>
+;;; Copyright © 2020, 2022 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Ryan Desfosses <rdes@protonmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
@@ -4040,6 +4040,42 @@ place (e.g., the current page and zoom) of PDF buffers under PDFView mode or
 DocView mode, and revisiting those PDF files later using the same mode will
 restore the saved place.")
     (license license:gpl3+)))
+
+(define-public emacs-pdfgrep
+  ;; XXX: Upstream does not tag releases.  The commit below matches latest
+  ;; version bump.
+  (let ((commit "e250376d97fc5240e07d81108bbca9b5a9ab50f4"))
+    (package
+      (name "emacs-pdfgrep")
+      (version "1.4")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jeremy-compostella/pdfgrep")
+               (commit commit)))
+         (sha256
+          (base32 "17yqvvgkgxmcl8nc0mb9yaz884zcdnz7dwvfi4mxjzp1l05fvwjk"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-pdfgrep-path
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (make-file-writable "pdfgrep.el")
+                     (emacs-substitute-variables "pdfgrep.el"
+                       ("pdfgrep-program"
+                        (search-input-file inputs "bin/pdfgrep"))))))))
+      (inputs (list pdfgrep))
+      (home-page "https://github.com/jeremy-compostella/pdfgrep")
+      (synopsis "Emacs module providing @code{grep} comparable facilities but
+for PDF files")
+      (description
+       "pdfgrep is a GNU/Emacs module providing @code{grep} comparable
+facilities but for PDF files.  Its usage is similar to the @code{grep}
+function.  For example, using the @code{next-error} function gets you to the
+next matching page.")
+      (license license:gpl3+))))
 
 (define-public emacs-dash
   (package
