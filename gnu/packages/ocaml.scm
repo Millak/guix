@@ -4074,7 +4074,7 @@ and 4 (random based) according to RFC 4122.")
 (define-public ocaml-piqi
   (package
     (name "ocaml-piqi")
-    (version "0.7.7")
+    (version "0.7.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4083,7 +4083,7 @@ and 4 (random based) according to RFC 4122.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1913jpsb8mvqi8609j4g4sm5jhg50dq0xqxgy8nmvknfryyc89nm"))))
+                "12m9vxir0cs2155nxs0a3m3npf3w79kyxf9a5lmf18qvvgismfz8"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:make-flags
