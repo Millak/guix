@@ -2428,7 +2428,7 @@ immutability.")
 (define-public ocaml-alcotest
   (package
     (name "ocaml-alcotest")
-    (version "1.5.0")
+    (version "1.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2437,7 +2437,7 @@ immutability.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lgadc7p56677fi5gwl7r9bml4z87rzh50khhqaij7bwp37zrmpi"))))
+                "195612n7p8y5ba6n19glql7qffl8n3aqkl9nrlln5lb9739gpv4w"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "alcotest"
@@ -2449,7 +2449,6 @@ immutability.")
              ;; cmdliner changed the format and the tests fail
              (substitute* "test/e2e/alcotest/failing/unknown_option.expected"
                (("`") "'")
-               (("COMMAND") "[COMMAND]")
                (("\\.\\.\\.") "…")))))))
     (native-inputs
      (list ocamlbuild))
