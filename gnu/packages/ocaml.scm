@@ -3752,7 +3752,7 @@ big- and little-endian, with their unsafe counter-parts.")
 (define-public ocaml-cstruct
   (package
     (name "ocaml-cstruct")
-    (version "6.1.0")
+    (version "6.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3761,7 +3761,7 @@ big- and little-endian, with their unsafe counter-parts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pwfkfs8zzr88slnvl5b28lx6w2k149ybgvrs6diay3qvwcmkhx5"))))
+                "0dpbirs6lzp0bclr3wcw407jjspll7iy66z18zks3mjccvlxd21w"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "cstruct"
