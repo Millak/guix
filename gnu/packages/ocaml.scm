@@ -591,26 +591,21 @@ for day to day programming.")
 (define-public ocaml-cudf
   (package
     (name "ocaml-cudf")
-    (version "0.9")
-    (source
-      (origin
-        (method url-fetch)
-        (uri "https://gforge.inria.fr/frs/download.php/36602/cudf-0.9.tar.gz")
-        (sha256
-          (base32
-            "0771lwljqwwn3cryl0plny5a5dyyrj4z6bw66ha5n8yfbpcy8clr"))))
-    (build-system ocaml-build-system)
-    (propagated-inputs (list ocaml-extlib))
-    (native-inputs
-      (list perl ocamlbuild ocaml-ounit))
+    (version "0.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.com/irill/cudf")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lvrmpscbk1kjv5ag5bzlzv520xk5zw2haf6q7chvz98gcm9g0hk"))))
+    (build-system dune-build-system)
     (arguments
-     `(#:make-flags
-       ,#~(list
-           "all" "opt"
-           (string-append "BINDIR=" #$output "/bin"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     '(#:test-target "."))
+    (propagated-inputs (list ocaml-extlib))
+    (native-inputs (list ocaml-ounit2))
     (home-page "https://www.mancoosi.org/cudf/")
     (synopsis "CUDF library (part of the Mancoosi tools)")
     (description "CUDF (for Common Upgradeability Description Format) is a
