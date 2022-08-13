@@ -4952,7 +4952,7 @@ than the first one.")
 (define-public ocaml-biniou
  (package
    (name "ocaml-biniou")
-   (version "1.2.1")
+   (version "1.2.2")
    (home-page "https://github.com/mjambon/biniou")
     (source
      (origin
@@ -4963,7 +4963,7 @@ than the first one.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0x2kiy809n1j0yf32l7hj102y628jp5jdrkbi3z7ld8jq04h1790"))))
+         "1gd4nqffm9h7dzxyvpfpww24l61fqgazyh3p5f7k9jvgyv9y4vcn"))))
    (build-system dune-build-system)
    (arguments
     `(#:phases
@@ -4971,7 +4971,7 @@ than the first one.")
         (add-before 'build 'make-writable
           (lambda _ (for-each make-file-writable (find-files "." ".")))))))
    (inputs
-    (list ocaml-easy-format))
+    (list ocaml-easy-format ocaml-camlp-streams))
    (native-inputs
     (list which))
    (synopsis "Data format designed for speed, safety, ease of use and backward
