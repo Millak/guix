@@ -17,6 +17,7 @@
 ;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;; Copyright © 2021 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -29,7 +30,8 @@
         (title
          (en "New @option{--whole-file} option for @command{guix style}")
          (de "Neue Option @option{--whole-file} für @command{guix style}")
-         (fr "Nouvelle option @option{--whole-file} pour @command{guix style}"))
+         (fr "Nouvelle option @option{--whole-file} pour @command{guix style}")
+         (pt "Nova opção @option{--whole-file} para @command{guix style}"))
         (body
          (en "The @command{guix style} command has a new @option{--whole-file}
 option: instead of formatting individual package definitions, this option lets
@@ -52,7 +54,14 @@ s'avérer utile par exemple pour mettre en forme son fichier de configuration
 du système d'exploitation.
 
 Lancer @command{info \"(guix.fr) Invoquer guix style\"} pour plus
-d'informations.")))
+d'informations.")
+         (pt "O comando @command{guix style} tem uma nova opção
+@option{--whole-file}: ao invés de formatar definições de pacote
+individualmente, esta opção permite a reformatação de arquivos Scheme por
+inteiro.  Você pode querer usá-la para formatar seu arquivo de configuração do
+sistema operacional, por exemplo.
+
+Execute @command{info \"(guix) Invoking guix style\"} para mais informações.")))
 
  (entry (commit "2ec7ab2610eb67e26dab52b671eb29e46f64ea0f")
         (title
