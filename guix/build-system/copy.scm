@@ -84,6 +84,7 @@
                      (install-plan ''(("." "./")))
                      (search-paths '())
                      (out-of-source? #t)
+                     (tests? #t)
                      (validate-runpath? #t)
                      (patch-shebangs? #t)
                      (strip-binaries? #t)
@@ -118,6 +119,7 @@
                                            (sexp->gexp phases)
                                            phases)
                             #:out-of-source? #$out-of-source?
+                            #:tests? #$tests?
                             #:validate-runpath? #$validate-runpath?
                             #:patch-shebangs? #$patch-shebangs?
                             #:strip-binaries? #$strip-binaries?
