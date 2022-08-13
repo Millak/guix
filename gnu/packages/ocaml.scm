@@ -4911,31 +4911,20 @@ is also support for writing OCaml syntax extensions in a camlp4 style.")
 (define-public ocaml-timed
   (package
     (name "ocaml-timed")
-    (version "1.0")
+    (version "1.1")
     (home-page "https://github.com/rlepigre/ocaml-timed")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url (string-append home-page ".git"))
-                    (commit (string-append name "_" version))))
+                    (commit version)))
               (sha256
                (base32
-                "0hfxz710faxy5yk97bkfnw87r732jcxxhmjppwrbfdb6pd0wks96"))
+                "1aqmkpjv5jk95lc2m3qyyrhw8ra7n9wj8pv3bfc83l737zv0hjn1"))
               (file-name (git-file-name name version))))
-    (build-system ocaml-build-system)
+    (build-system dune-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-           (lambda _
-             (invoke "make")))
-         (replace 'install
-           (lambda _
-             (invoke "make" "install")))
-         (replace 'check
-           (lambda _
-             (invoke "make" "tests"))))))
+     '(#:test-target "."))
     (synopsis "Timed references for imperative state")
     (description "Timed references for imperative state.  This module provides
 an alternative type for references (or mutable cells) supporting undo/redo
