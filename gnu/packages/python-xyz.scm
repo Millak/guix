@@ -3047,51 +3047,6 @@ user configuration files.  It does not have support for serializing into YAML
 and is not compatible with JSON.")
     (license license:expat)))
 
-(define-public scons
-  (package
-    (name "scons")
-    (version "3.0.4")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/SCons/scons")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1xy8jrwz87y589ihcld4hv7wn122sjbz914xn8h50ww77wbhk8hn"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:use-setuptools? #f                ; still relies on distutils
-       #:tests? #f                         ; no 'python setup.py test' command
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'bootstrap
-           (lambda _
-             (substitute* "src/engine/SCons/compat/__init__.py"
-               (("sys.modules\\[new\\] = imp.load_module\\(old, \\*imp.find_module\\(old\\)\\)")
-                "sys.modules[new] = __import__(old)"))
-             (substitute* "src/engine/SCons/Platform/__init__.py"
-               (("mod = imp.load_module\\(full_name, file, path, desc\\)")
-                "mod = __import__(full_name)"))
-             (invoke "python" "bootstrap.py" "build/scons" "DEVELOPER=guix")
-             (chdir "build/scons")
-             #t)))))
-    (home-page "https://scons.org/")
-    (synopsis "Software construction tool written in Python")
-    (description
-     "SCons is a software construction tool.  Think of SCons as an improved,
-cross-platform substitute for the classic Make utility with integrated
-functionality similar to autoconf/automake and compiler caches such as ccache.
-In short, SCons is an easier, more reliable and faster way to build
-software.")
-    (license license:x11)))
-
-(define-public scons-python2
-  (package
-    (inherit (package-with-python2 scons))
-    (name "scons-python2")))
-
 (define-public python-exceptiongroup
   (package
     (name "python-exceptiongroup")

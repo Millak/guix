@@ -45,8 +45,8 @@
 (define (default-scons)
   "Return the default SCons package."
   ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((python (resolve-interface '(gnu packages python-xyz))))
-    (module-ref python 'scons)))
+  (let ((build-tools (resolve-interface '(gnu packages build-tools))))
+    (module-ref build-tools 'scons)))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
