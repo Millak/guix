@@ -674,6 +674,37 @@ cards.")
     (description "Library for managing partitions.")
     (license license:gpl3+)))
 
+(define-public kpublictransport
+  (package
+    (name "kpublictransport")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/release-service/" version
+                    "/src/kpublictransport-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0z7zyyiq4815m74s6p841k1c4pxbrss7hnkag8kr5qa3q4264kg9"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases '(modify-phases %standard-phases
+                       (replace 'check
+                         (lambda* (#:key tests? #:allow-other-keys)
+                           (when tests?
+                             (setenv "QT_QPA_PLATFORM" "offscreen")
+                             (invoke "ctest" "-E"
+                              "(mergeutiltest|departuretest|journeytest|networkconfigtest|locationhistorymodeltest|navitiaparsertest|otpparsertest|ivvassparsertest|cachetest)")))))))
+    (native-inputs (list extra-cmake-modules pkg-config))
+    ;; TODO: clipper and osmctools are not detected
+    (inputs (list clipper osmctools protobuf qtdeclarative-5 zlib))
+    (home-page "https://api.kde.org/kdepim/kpublictransport/html/index.html")
+    (synopsis "Library for accessing realtime public transport data")
+    (description
+     "This package provides a library for accessing realtime public
+transport data and for performing public transport journey queries.")
+    (license (list license:lgpl2.0+))))
+
 (define-public snorenotify
   (package
     (name "snorenotify")
