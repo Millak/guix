@@ -1871,3 +1871,37 @@ std::filesystem compatible helper library, based on the C++17 and C++20 specs,
 but implemented for C++11, C++14, C++17 or C++20.")
     (home-page "https://github.com/gulrak/filesystem")
     (license license:expat)))
+
+(define-public cpp-mustache
+  (package
+    (name "cpp-mustache")
+    (version "4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kainjow/Mustache")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0r9rbk6v1wpld2ismfsk2lkhbyv3dkf0p03hkjivbj05qkfhvlbb"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "./mustache"))))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (install-file "../source/mustache.hpp"
+                                 (string-append (assoc-ref outputs "out")
+                                                "/include")))))))
+    (home-page "https://github.com/kainjow/Mustache")
+    (synopsis "Mustache text templates for modern C++")
+    (description "@code{cpp-mustache} is a Mustache implementation for C++ 11
+and above.  It is header only and has zero dependencies.  It provides a
+templated string type for compatibility with any STL-like string (std::string,
+std::wstring, etc).")
+    (license license:boost1.0)))
