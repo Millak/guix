@@ -4268,7 +4268,7 @@ object formats and related areas.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/weinholt/laesare")
+             (url "https://gitlab.com/weinholt/laesare")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -4297,7 +4297,7 @@ object formats and related areas.")
                       #t)))))
     (native-inputs
      (list guile-3.0))
-    (home-page "https://github.com/weinholt/laesare")
+    (home-page "https://gitlab.com/weinholt/laesare")
     (synopsis "R6RS Scheme library that provides a reader")
     (description
      "This is an R6RS Scheme library that provides a reader with some extra
