@@ -8085,14 +8085,14 @@ offline (such as Wikipedia), without any access to Internet.")
 (define-public kiwix-tools
   (package
     (name "kiwix-tools")
-    (version "3.1.2")
+    (version "3.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.kiwix.org/release/"
                                   "kiwix-tools/kiwix-tools-" version ".tar.xz"))
               (sha256
                (base32
-                "1npf9ddhpkmx97gxmvmwmi8a69md8kh2szimd9rpg6ggd4big03a"))))
+                "07mj0lrznydhdbirybdyxswypr7hy290mjdv7lkjr6gxgdp29d37"))))
     (build-system meson-build-system)
     (inputs
      (list curl
