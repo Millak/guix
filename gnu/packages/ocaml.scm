@@ -4293,7 +4293,7 @@ function that follows the prototype of POSIX's wcwidth.")
 (define-public ocaml-zed
   (package
     (name "ocaml-zed")
-    (version "3.1.0")
+    (version "3.2.0")
     (home-page "https://github.com/ocaml-community/zed")
     (source
      (origin
@@ -4303,14 +4303,18 @@ function that follows the prototype of POSIX's wcwidth.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04vr1a94imsghm98iigc35rhifsz0rh3qz2qm0wam2wvp6vmrx0p"))))
+        (base32 "1g171kk5wxnk66d4vwz2crh5i19vhqghp78iybl5am17gl9qf8pb"))))
     (build-system dune-build-system)
+    (propagated-inputs
+     (list ocaml-react
+           ocaml-result
+           ocaml-uchar
+           ocaml-uutf
+           ocaml-uucp
+           ocaml-uuseg
+           ocaml-odoc))
     (arguments
      `(#:test-target "."))
-    (propagated-inputs
-     `(("ocaml-charInfo-width" ,ocaml-charinfo-width)
-       ("ocaml-camomile" ,ocaml-camomile)
-       ("ocaml-react" ,ocaml-react)))
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-zed))))
     (synopsis "Abstract engine for text edition in OCaml")
     (description
@@ -4337,12 +4341,16 @@ capabilities, Zed provides macro recording and cursor management facilities.")
                (sha256
                 (base32
                  "0pa9awinqr0plp4b2az78dwpvh01pwaljnn5ydg8mc6hi7rmir55"))))
+    (propagated-inputs
+     `(("ocaml-charInfo-width" ,ocaml-charinfo-width)
+       ("ocaml-camomile" ,ocaml-camomile)
+       ("ocaml-react" ,ocaml-react)))
      (properties '()))))
 
 (define-public ocaml-lambda-term
   (package
     (name "ocaml-lambda-term")
-    (version "3.2.0")
+    (version "3.3.1")
     (home-page "https://github.com/ocaml-community/lambda-term")
     (source (origin
               (method git-fetch)
@@ -4352,18 +4360,18 @@ capabilities, Zed provides macro recording and cursor management facilities.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "048k26644wq5wlwk0j179dxrxyz9nxqqq4vvhyh6pqpgxdajd44i"))))
+                "1pkamblc6h0rsbk901cqn3xr9gqa3g8wrwyx5zryaqvb2xpbhp8b"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
     (propagated-inputs
-     (list ocaml-lwt
-           ocaml-lwt-log
-           ocaml-react
-           ocaml-zed
-           ocaml-camomile
+     (list ocaml-logs
+           ocaml-lwt
            ocaml-lwt-react
-           ocaml-mew-vi))
+           ocaml-mew-vi
+           ocaml-odoc
+           ocaml-react
+           ocaml-zed))
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-lambda-term))))
     (synopsis "Terminal manipulation library for OCaml")
     (description "Lambda-Term is a cross-platform library for manipulating the
@@ -4398,7 +4406,7 @@ instead of bindings to a C library.")
 (define-public ocaml-utop
   (package
     (name "ocaml-utop")
-    (version "2.9.2")
+    (version "2.10.0")
     (source
      (origin
        (method git-fetch)
@@ -4407,15 +4415,19 @@ instead of bindings to a C library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z5anakgbndhyzbi570pfs2fy69bnmgq9jflgfbly2rhbhwa7wgj"))))
+        (base32 "1pcix3h9f7is06581iax4i08zkd6sv8y5hy1vvxhqhcsd9z0qfl3"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
     (native-inputs
      (list ocaml-cppo))
     (propagated-inputs
-     (list ocaml-lambda-term ocaml-lwt ocaml-lwt-react ocaml-camomile
-           ocaml-react))
+     (list ocaml-lambda-term
+           ocaml-logs
+           ocaml-lwt
+           ocaml-lwt-react
+           ocaml-react
+           ocaml-zed))
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-utop))))
     (home-page "https://github.com/ocaml-community/utop")
     (synopsis "Improved interface to the OCaml toplevel")
