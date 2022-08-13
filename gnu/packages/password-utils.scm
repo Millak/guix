@@ -1112,27 +1112,25 @@ your online accounts makes it necessary.")
 (define-public hashcat
   (package
     (name "hashcat")
-    (version "6.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://hashcat.net/files/hashcat-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "104z63m7lqbb0sdrxhf9yi15l4a9zwf9m6zs9dbb3gf0nfxl1h9r"))))
-    (native-inputs
-     (list opencl-headers))
+    (version "6.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://hashcat.net/files/hashcat-" version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0sc96xcsc20xd4fyby3i45nm9as3hl4nhk9snkvmk5l9mpbrjs3g"))))
+    (native-inputs (list opencl-headers))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ;no tests
+     '(#:tests? #f ;no tests
        #:make-flags (list (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
     (home-page "https://hashcat.net/hashcat/")
     (synopsis "Advanced password recovery utility")
-    (description "Hashcat is an password recovery utility, supporting five
+    (description
+     "Hashcat is an password recovery utility, supporting five
 unique modes of attack for over 200 highly-optimized hashing algorithms.
 Hashcat currently supports CPUs, GPUs, and other hardware accelerators on
 Linux, Windows, and macOS, and has facilities to help enable distributed
