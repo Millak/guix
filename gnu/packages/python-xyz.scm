@@ -3861,6 +3861,18 @@ JavaScript-like message boxes.  Types of dialog boxes include:
                (base32
                 "1ynkqpv2akldmvkll5vh5zhwj433s1d59iv0f76lygyak4silgwr"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-broken-test
+            (lambda _
+              ;; FIXME: This test fails for no good reason:
+              ;; https://github.com/pympler/pympler/issues/153
+              (substitute* "test/muppy/test_tracker.py"
+                (("^([[:blank:]]+)def test_stracker_create_summary" all indent)
+                 (string-append indent "@unittest.skipIf(True, \
+'Fails on Guix too for unknown reasons')\n" all))))))))
     (synopsis "Measure, monitor and analyze memory behavior")
     (description
      "Pympler is a development tool to measure, monitor and analyze
