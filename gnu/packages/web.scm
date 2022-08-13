@@ -7952,7 +7952,7 @@ concurrency, and return status.")
 (define-public libzim
   (package
     (name "libzim")
-    (version "6.3.2")
+    (version "8.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7960,19 +7960,19 @@ concurrency, and return status.")
                     (commit version)))
               (sha256
                (base32
-                "00kc4qc0a69jh1jwk5xhi567b7ffpc3p38ffrf2xaax4hvpjwmn6"))
+                "1a7wj8kmpx5aqx0wsfcnaqlfsf1gr66iqxyn24cgjnk4d1rjsahm"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
      ;; TODO: Find out why tests fail.
      '(#:tests? #f))
     (inputs
-     `(("icu4c" ,icu4c)
-       ("liblzma" ,xz)
-       ("libuuid" ,util-linux "lib")
-       ("python" ,python-wrapper)       ;for libzim-compile-resources
-       ("xapian" ,xapian)
-       ("zstd" ,zstd "lib")))
+     (list icu4c
+           python-wrapper ; for libzim-compile-resources
+           xapian
+           xz
+           (list util-linux "lib")
+           (list zstd "lib")))
     (native-inputs
      (list pkg-config googletest))
     (home-page "https://wiki.openzim.org/wiki/Main_Page")
