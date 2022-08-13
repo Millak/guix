@@ -391,13 +391,13 @@ tools, and libraries designed to facilitate SELinux policy analysis.")
                (("/usr(/include/libaudit.h)" _ file)
                 (search-input-file inputs file))))))))
     (inputs
-     `(("audit" ,audit)
-       ("pam" ,linux-pam)
-       ("libsepol" ,libsepol)
-       ("libselinux" ,libselinux)
-       ("libsemanage" ,libsemanage)))
+     (list audit
+           linux-pam
+           libsepol
+           libselinux
+           libsemanage))
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
+     (list gettext-minimal))
     (synopsis "SELinux core utilities")
     (description "The policycoreutils package contains the core utilities that
 are required for the basic operation of an SELinux-enabled GNU system and its
