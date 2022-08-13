@@ -4987,7 +4987,7 @@ than yojson), with 25-35% space savings.")
 (define-public ocaml-yojson
   (package
     (name "ocaml-yojson")
-    (version "1.7.0")
+    (version "2.0.2")
     (home-page "https://github.com/ocaml-community/yojson")
     (source
      (origin
@@ -4998,14 +4998,13 @@ than yojson), with 25-35% space savings.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0zncsw8bgbkh1pfvfc7nh628hfj84lgx6jwhp9ashj3z1z0w3xjn"))))
+         "1habsh00ihjhk1g1csxqg3hj8izk5zvgc7wm579wyjw35vzcmwr1"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."))
-    (propagated-inputs
-     (list ocaml-biniou ocaml-easy-format))
-    (native-inputs
-     (list ocaml-alcotest ocaml-cppo))
+     `(#:test-target "."
+       #:package "yojson"))
+    (propagated-inputs (list ocaml-seq))
+    (native-inputs (list ocaml-alcotest ocaml-cppo))
     (synopsis "Low-level JSON library for OCaml")
     (description "Yojson is an optimized parsing and printing library for the
 JSON format.  It addresses a few shortcomings of json-wheel including 2x
@@ -5048,10 +5047,10 @@ Mercurial's @code{https://www.selenic.com/blog/?p=663, unified test
 format}.  @code{craml} is released as a single binary (called @code{craml}).")
     (license license:isc)))
 
-(define-public ocaml-dot-merlin-reader
+(define-public ocaml-merlin-lib
   (package
-    (name "ocaml-dot-merlin-reader")
-    (version "4.5-414")
+    (name "ocaml-merlin-lib")
+    (version "4.6-414")
     (source
      (origin
        (method git-fetch)
@@ -5061,17 +5060,27 @@ format}.  @code{craml} is released as a single binary (called @code{craml}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "125gyk63fg9plqkyrkl3wvpr3czjxgvshf4496fc4swldl7z587c"))))
+         "1cpa9x45w54l4mqqmc8z3s5gscggw37gb6z9i7wwss86fj1wgclh"))))
     (build-system dune-build-system)
+    (arguments '(#:package "merlin-lib"
+                 #:tests? #f))          ; no tests
+    (propagated-inputs (list ocaml-csexp ocaml-menhir))
+    (home-page "https://ocaml.github.io/merlin/")
+    (synopsis "Merlin libraries")
+    (description "These libraries provides access to low-level compiler
+interfaces and the standard higher-level merlin protocol.")
+    (license license:expat)))
+
+(define-public ocaml-dot-merlin-reader
+  (package
+    (inherit ocaml-merlin-lib)
+    (name "ocaml-dot-merlin-reader")
     (arguments '(#:package "dot-merlin-reader"
                  #:tests? #f))          ; no tests
-    (inputs
-     (list ocaml-yojson ocaml-csexp ocaml-result))
-    (home-page "https://ocaml.github.io/merlin/")
+    (propagated-inputs (list ocaml-merlin-lib))
     (synopsis "Reads config files for @code{ocaml-merlin}")
     (description "@code{ocaml-dot-merlin-reader} is an external reader for
-@code{ocaml-merlin} configurations.")
-    (license license:expat)))
+@code{ocaml-merlin} configurations.")))
 
 (define-public ocaml-merlin
   (package
@@ -5085,8 +5094,7 @@ format}.  @code{craml} is released as a single binary (called @code{craml}).")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "dune" "runtest" "-p" "merlin,dot-merlin-reader")))))))
-    (inputs
-     (list ocaml-yojson ocaml-csexp ocaml-result))
+    (propagated-inputs (list ocaml-merlin-lib ocaml-yojson))
     (native-inputs
      (list ocaml-dot-merlin-reader ; required for tests
            ocaml-mdx jq))
@@ -7644,7 +7652,8 @@ then run the Bisect_ppx report tool on the generated visitation files.")
         (base32 "07zjkk455l51i29lcayzrc1q8j5bvbv97sscv8yhcj7x6h6q2nag"))))
     (build-system dune-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f; not compatible with current version of ocaml-yojson
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-test
            (lambda _
