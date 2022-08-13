@@ -354,43 +354,44 @@ tools, and libraries designed to facilitate SELinux policy analysis.")
   (package/inherit libsepol
     (name "policycoreutils")
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "CC=" ,(cc-for-target))
-               (string-append "PREFIX=" out)
-               (string-append "LOCALEDIR=" out "/share/locale")
-               (string-append "BASHCOMPLETIONDIR=" out
-                              "/share/bash-completion/completions")
-               "INSTALL=install -c -p"
-               "INSTALL_DIR=install -d"
-               ;; These ones are needed because some Makefiles define the
-               ;; directories relative to DESTDIR, not relative to PREFIX.
-               (string-append "SBINDIR=" out "/sbin")
-               (string-append "ETCDIR=" out "/etc")
-               (string-append "SYSCONFDIR=" out "/etc/sysconfig")
-               (string-append "MAN5DIR=" out "/share/man/man5")
-               (string-append "INSTALL_NLS_DIR=" out "/share/locale")
-               (string-append "AUTOSTARTDIR=" out "/etc/xdg/autostart")
-               (string-append "DBUSSERVICEDIR=" out "/share/dbus-1/services")
-               (string-append "SYSTEMDDIR=" out "/lib/systemd")
-               (string-append "INITDIR=" out "/etc/rc.d/init.d")
-               (string-append "SELINUXDIR=" out "/etc/selinux")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir ,name)))
-         (add-after 'enter-dir 'ignore-/usr-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Rewrite lookup paths for header files.
-             (substitute* '("newrole/Makefile"
-                            "setfiles/Makefile"
-                            "run_init/Makefile")
-               (("/usr(/include/security/pam_appl.h)" _ file)
-                (search-input-file inputs file))
-               (("/usr(/include/libaudit.h)" _ file)
-                (search-input-file inputs file))))))))
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(let ((out #$output))
+          (list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" out)
+                (string-append "LOCALEDIR=" out "/share/locale")
+                (string-append "BASHCOMPLETIONDIR=" out
+                               "/share/bash-completion/completions")
+                "INSTALL=install -c -p"
+                "INSTALL_DIR=install -d"
+                ;; These ones are needed because some Makefiles define the
+                ;; directories relative to DESTDIR, not relative to PREFIX.
+                (string-append "SBINDIR=" out "/sbin")
+                (string-append "ETCDIR=" out "/etc")
+                (string-append "SYSCONFDIR=" out "/etc/sysconfig")
+                (string-append "MAN5DIR=" out "/share/man/man5")
+                (string-append "INSTALL_NLS_DIR=" out "/share/locale")
+                (string-append "AUTOSTARTDIR=" out "/etc/xdg/autostart")
+                (string-append "DBUSSERVICEDIR=" out "/share/dbus-1/services")
+                (string-append "SYSTEMDDIR=" out "/lib/systemd")
+                (string-append "INITDIR=" out "/etc/rc.d/init.d")
+                (string-append "SELINUXDIR=" out "/etc/selinux")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'enter-dir
+            (lambda _ (chdir #$name)))
+          (add-after 'enter-dir 'ignore-/usr-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Rewrite lookup paths for header files.
+              (substitute* '("newrole/Makefile"
+                             "setfiles/Makefile"
+                             "run_init/Makefile")
+                (("/usr(/include/security/pam_appl.h)" _ file)
+                 (search-input-file inputs file))
+                (("/usr(/include/libaudit.h)" _ file)
+                 (search-input-file inputs file))))))))
     (inputs
      (list audit
            linux-pam
