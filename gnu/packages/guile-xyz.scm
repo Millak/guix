@@ -3761,12 +3761,12 @@ SHA-512).")
   (package
     (name "guile-packrat")
     (version "0.1.1")
-    (home-page "https://github.com/weinholt/packrat")
+    (home-page "https://gitlab.com/weinholt/packrat")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit (string-append "v" version))))
+                    (commit "4201ebe741b605db58a21d70195cfb7db3c38eae")))
               (file-name (git-file-name name version))
               (sha256
                (base32
