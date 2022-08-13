@@ -251,39 +251,41 @@ binary policies.")
   (package/inherit libsepol
     (name "python-sepolgen")
     (arguments
-     `(#:modules ((srfi srfi-1)
-                  (guix build gnu-build-system)
-                  (guix build utils))
-       ,@(substitute-keyword-arguments (package-arguments libsepol)
-           ((#:phases phases)
-            `(modify-phases ,phases
-               (delete 'portability)
-               (replace 'enter-dir
-                 (lambda _ (chdir "python/sepolgen")))
-               ;; By default all Python files would be installed to
-               ;; $out/gnu/store/...-python-.../, so we override the
-               ;; PACKAGEDIR to fix this.
-               (add-after 'enter-dir 'fix-target-path
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let ((get-python-version
-                          ;; FIXME: copied from python-build-system
-                          (lambda (python)
-                            (let* ((version     (last (string-split python #\-)))
-                                   (components  (string-split version #\.))
-                                   (major+minor (take components 2)))
-                              (string-join major+minor ".")))))
-                     (substitute* "src/sepolgen/Makefile"
-                       (("^PACKAGEDIR.*")
-                        (string-append "PACKAGEDIR="
-                                       (assoc-ref outputs "out")
-                                       "/lib/python"
-                                       (get-python-version
-                                        (assoc-ref inputs "python"))
-                                       "/site-packages/sepolgen")))
-                     (substitute* "src/share/Makefile"
-                       (("\\$\\(DESTDIR\\)") (assoc-ref outputs "out")))))))))))
+     (substitute-keyword-arguments (package-arguments libsepol)
+       ((#:modules _ #~%gnu-build-system-modules)
+        '((srfi srfi-1)
+          (guix build gnu-build-system)
+          (guix build utils)))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'portability)
+            (replace 'enter-dir
+              (lambda _ (chdir "python/sepolgen")))
+            ;; By default all Python files would be installed to
+            ;; $out/gnu/store/...-python-.../, so we override the
+            ;; PACKAGEDIR to fix this.
+            (add-after 'enter-dir 'fix-target-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((get-python-version
+                       ;; FIXME: copied from python-build-system
+                       (lambda (python)
+                         (let* ((version     (last (string-split python #\-)))
+                                (components  (string-split version #\.))
+                                (major+minor (take components 2)))
+                           (string-join major+minor "."))))
+                      (python (dirname (dirname (search-input-file
+                                                 inputs "bin/python3")))))
+                  (substitute* "src/sepolgen/Makefile"
+                    (("^PACKAGEDIR.*")
+                     (string-append "PACKAGEDIR="
+                                    #$output
+                                    "/lib/python"
+                                    (get-python-version python)
+                                    "/site-packages/sepolgen")))
+                  (substitute* "src/share/Makefile"
+                    (("\\$\\(DESTDIR\\)") #$output)))))))))
     (inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (native-inputs '())
     (synopsis "Python module for generating SELinux policies")
     (description
