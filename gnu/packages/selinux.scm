@@ -136,43 +136,42 @@ module into a binary representation.")
     (arguments
      (substitute-keyword-arguments (package-arguments libsepol)
        ((#:make-flags flags)
-        `(cons* "PYTHON=python3"
-                (string-append "LIBSEPOLA="
-                              (assoc-ref %build-inputs "libsepol")
-                              "/lib/libsepol.a")
-                (string-append "PYTHONLIBDIR="
-                               (assoc-ref %outputs "python")
-                               "/lib/python"
-                               ,(version-major+minor (package-version python))
-                               "/site-packages/")
-                ,flags))
+        #~(cons* "PYTHON=python3"
+                 (string-append "LIBSEPOLA="
+                                (search-input-file %build-inputs
+                                                   "/lib/libsepol.a"))
+                 (string-append "PYTHONLIBDIR="
+                                #$output:python
+                                "/lib/python"
+                                #$(version-major+minor (package-version python))
+                                "/site-packages/")
+                 #$flags))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'portability)
-           (replace 'enter-dir
-             (lambda _ (chdir ,name)))
-           (add-after 'build 'pywrap
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (apply invoke "make" "pywrap" make-flags)))
-           (add-after 'install 'install-pywrap
-             (lambda* (#:key make-flags outputs #:allow-other-keys)
-               ;; The build system uses "python setup.py install" to install
-               ;; Python bindings.  Instruct it to use the correct output.
-               (substitute* "src/Makefile"
-                 (("--prefix=\\$\\(PREFIX\\)")
-                  (string-append "--prefix=" (assoc-ref outputs "python"))))
-               (apply invoke "make" "install-pywrap" make-flags)))))))
+        #~(modify-phases #$phases
+            (delete 'portability)
+            (replace 'enter-dir
+              (lambda _ (chdir #$name)))
+            (add-after 'build 'pywrap
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "pywrap" make-flags)))
+            (add-after 'install 'install-pywrap
+              (lambda* (#:key make-flags #:allow-other-keys)
+                ;; The build system uses "python setup.py install" to install
+                ;; Python bindings.  Instruct it to use the correct output.
+                (substitute* "src/Makefile"
+                  (("--prefix=\\$\\(PREFIX\\)")
+                   (string-append "--prefix=" #$output:python)))
+
+                (apply invoke "make" "install-pywrap" make-flags)))))))
     ;; These libraries are in "Requires.private" in libselinux.pc.
     (propagated-inputs
-     `(("libsepol" ,libsepol)
-       ("pcre2" ,pcre2)))
+     (list libsepol pcre2))
     ;; For pywrap phase
     (inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     ;; These inputs are only needed for the pywrap phase.
     (native-inputs
-     `(("swig" ,swig)
-       ("pkg-config" ,pkg-config)))
+     (list pkg-config swig))
     (synopsis "SELinux core libraries and utilities")
     (description
      "The libselinux library provides an API for SELinux applications to get
