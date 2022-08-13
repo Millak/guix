@@ -111,10 +111,6 @@
            texlive-etoolbox
            texlive-generic-ltxcmds
            texlive-hyperref
-           ;; TODO: Remove texlive-stringenc and texlive-zapfding after
-           ;; propagating them in texlive-hyperref in next rebuild cycle.
-           texlive-stringenc
-           texlive-zapfding
            texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
            texlive-latex-cmap
            texlive-latex-fancyhdr

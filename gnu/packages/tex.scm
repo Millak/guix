@@ -3429,12 +3429,10 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-latex-refcount
              texlive-latex-rerunfilecheck
              texlive-url
-             ;; TODO: Add this in next rebuild cycle.
-             ;;texlive-cm
-             ;;texlive-latex-graphics    ;for keyval
-             ;;texlive-stringenc
-             ;;texlive-zapfding
-             ))
+             texlive-cm
+             texlive-latex-graphics     ;for keyval
+             texlive-stringenc
+             texlive-zapfding))
       (home-page "https://www.ctan.org/pkg/hyperref")
       (synopsis "Extensive support for hypertext in LaTeX")
       (description
