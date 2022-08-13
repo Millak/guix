@@ -143,6 +143,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
@@ -2487,25 +2488,15 @@ YouTube.com and many more sites.")
   (package/inherit youtube-dl
     (name "yt-dlp")
     (version "2022.08.08")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/yt-dlp/yt-dlp/"
-                                  "releases/download/"
-                                  version "/yt-dlp.tar.gz"))
-              (sha256
-               (base32
-                "0vrmdk3znncph3a4b1y83pxnzhkv1b210b0ncb5daghgsz0jwv1k"))
-              (snippet
-               #~(begin
-                   ;; Delete the pre-generated files, except for the man page
-                   ;; which requires 'pandoc' to build.
-                   (for-each delete-file
-                             (list "yt-dlp"
-                                   ;;pandoc is needed to generate
-                                   ;;"yt-dlp.1"
-                                   "completions/bash/yt-dlp"
-                                   "completions/fish/yt-dlp.fish"
-                                   "completions/zsh/_yt-dlp"))))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yt-dlp/yt-dlp/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07qz1zdndlpki0asw35zk5hdjcwpl3n1g54nxg4yb1iykbyv7rll"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) #t)
@@ -2519,8 +2510,11 @@ YouTube.com and many more sites.")
                    (format #f "~a or '~a'" match (which "ffmpeg"))))))
             (replace 'build-generated-files
               (lambda _
-                ;; Avoid the yt-dlp.1 target, which requires pandoc.
-                (invoke "make" "PYTHON=python" "yt-dlp" "completions")))
+                (invoke "make"
+			"PYTHON=python"
+			"yt-dlp"
+			"yt-dlp.1"
+			"completions")))
             (replace 'fix-the-data-directories
               (lambda* (#:key outputs #:allow-other-keys)
                 (let ((prefix (assoc-ref outputs "out")))
@@ -2541,7 +2535,7 @@ YouTube.com and many more sites.")
                       python-pycryptodomex
                       python-websockets)))
     (native-inputs (modify-inputs (package-native-inputs youtube-dl)
-                     (append python-pytest)))
+                     (append pandoc python-pytest)))
     (description
      "yt-dlp is a small command-line program to download videos from
 YouTube.com and many more sites.  It is a fork of youtube-dl with a
