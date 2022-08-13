@@ -226,22 +226,22 @@ binary policies.")
     (arguments
      (substitute-keyword-arguments (package-arguments libsepol)
        ((#:make-flags flags)
-        `(let ((docbook (assoc-ref %build-inputs "docbook-xsl")))
-           (cons (string-append "XMLTO=xmlto --skip-validation -x "
-                                docbook "/xml/xsl/docbook-xsl-"
-                                ,(package-version docbook-xsl)
-                                "/manpages/docbook.xsl")
-                 ,flags)))
+        #~(let ((xsl (search-input-directory %build-inputs "xml/xsl")))
+            (cons (string-append "XMLTO=xmlto --skip-validation -x "
+                                 xsl "/docbook-xsl-"
+                                 #$(package-version
+                                    (this-package-native-input "docbook-xsl"))
+                                 "/manpages/docbook.xsl")
+                  #$flags)))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'portability)
-           (replace 'enter-dir
-             (lambda _ (chdir ,name)))))))
+        #~(modify-phases #$phases
+            (delete 'portability)
+            (replace 'enter-dir
+              (lambda _ (chdir #$name)))))))
     (inputs
-     `(("libsepol" ,libsepol)))
+     (list libsepol))
     (native-inputs
-     `(("xmlto" ,xmlto)
-       ("docbook-xsl" ,docbook-xsl)))
+     (list xmlto docbook-xsl))
     (synopsis "SELinux common intermediate language (CIL) compiler")
     (description "The SELinux CIL compiler is a compiler that converts the
 @dfn{common intermediate language} (CIL) into a kernel binary policy file.")
