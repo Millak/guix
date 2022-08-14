@@ -2165,23 +2165,25 @@ of the others")
        (list which ; Else SDL_version.h won't be found.
              pkg-config))
       (arguments
-       '(#:tests? #f                    ; No tests.
-         #:make-flags '("CC=gcc"
+       (list
+        #:tests? #f                     ; no tests
+        #:make-flags
+        #~(list "CC=gcc"
+                "USE_INTERNAL_LIBS=0"
+                "USE_FREETYPE=1"
+                "USE_RENDERER_DLOPEN=0"
+                "USE_OPENAL_DLOPEN=0"
+                "USE_CURL_DLOPEN=0")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ; no configure-script
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (invoke "make" "copyfiles" "CC=gcc"
                         "USE_INTERNAL_LIBS=0"
-                        "USE_FREETYPE=1"
-                        "USE_RENDERER_DLOPEN=0"
-                        "USE_OPENAL_DLOPEN=0"
-                        "USE_CURL_DLOPEN=0")
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (invoke "make" "copyfiles" "CC=gcc"
-                        "USE_INTERNAL_LIBS=0"
-                       (string-append "COPYDIR="
-                                      (assoc-ref outputs "out")
-                                      "/bin")))))))
+                        (string-append "COPYDIR="
+                                       (assoc-ref outputs "out")
+                                       "/bin")))))))
       (home-page "https://ioquake3.org/")
       (synopsis "FPS game engine based on Quake 3")
       (description "ioquake3 is a free software first person shooter engine
