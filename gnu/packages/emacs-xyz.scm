@@ -14944,7 +14944,7 @@ letter of Pinyin to Simplified/Traditional Chinese characters.")
 (define-public emacs-reverse-im
   (package
     (name "emacs-reverse-im")
-    (version "0.0.7")
+    (version "0.0.8")
     (source
      (origin
        (method git-fetch)
@@ -14953,7 +14953,7 @@ letter of Pinyin to Simplified/Traditional Chinese characters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05k2zp2hldzq5h6nl8gx79dd8lvfn507ad4x3naichdqgn2013nn"))))
+        (base32 "1h4gpyqir0kqf6a7ni8dbqwd4mr33imay0fmprrpfpfqxj0lj7c1"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/a13/reverse-im.el")
     (synopsis "Reverse mapping for non-default system layouts")
