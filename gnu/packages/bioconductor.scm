@@ -7917,6 +7917,16 @@ coordinates.")
         (base32
          "0kc708ss5byzw8qh439mb4nq6hsfmz73gfamiznw3lv352brd33g"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'make-build-order-reproducible
+           (lambda _
+             (substitute* '("src/SYMPHONY/Cgl/configure.ac"
+                            "src/SYMPHONY/Cgl/configure")
+               (("for file in `ls \\*/Makefile.in`")
+                "for file in `ls */Makefile.in | sort`")))))))
     (inputs
      (list zlib))
     (native-inputs
