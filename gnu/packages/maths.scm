@@ -7317,6 +7317,64 @@ researchers and developers alike to get started on SAT.")
        "http://minisat.se/MiniSat.html")
       (license license:expat))))
 
+(define-public kissat
+  (package
+    (name "kissat")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arminbiere/kissat")
+             (commit (string-append "rel-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "04x4w760srbdi4zci0s747qxk717x5d2x59ixraxh5104s9nyn8b"))))
+    (build-system gnu-build-system)
+    (inputs (list xz gzip lzip bzip2 p7zip))
+    (arguments
+     (list
+      #:test-target "test"
+      #:configure-flags #~(list "-shared")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/file.c"
+                (("(bzip2|gzip|lzma|xz) -c" all cmd)
+                 (string-append (search-input-file inputs
+                                                   (string-append "bin/" cmd))
+                                " -c"))
+                (("7z ([ax])" all mode)
+                 (string-append (search-input-file inputs "bin/7z")
+                                " " mode))
+                ;; Since we hard-coded the paths, we no longer need to find
+                ;; them.
+                (("bool found = kissat_find_executable \\(name\\);")
+                 "bool found = true;"))
+              (substitute* "test/testmain.c"
+                ;; SIGINT is ignored inside invoke.
+                (("^SIGNAL\\(SIGINT\\)") ""))))
+          (replace 'configure
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              ;; The configure script does not support standard GNU options.
+              (apply invoke "./configure" configure-flags)))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (install-file "build/kissat" (string-append out "/bin"))
+                (install-file "build/libkissat.so" (string-append out "/lib"))
+                (install-file "src/kissat.h"
+                              (string-append out "/include"))))))))
+    (home-page "https://github.com/arminbiere/kissat")
+    (synopsis "Bare-metal SAT solver")
+    (description
+     "Kissat is a bare-metal SAT-solver written in C.  It is a port of CaDiCaL
+back to C with improved data structures, better scheduling of inprocessing and
+optimized algorithms and implementation.")
+    (license license:expat)))
+
 (define-public libqalculate
   (package
     (name "libqalculate")
