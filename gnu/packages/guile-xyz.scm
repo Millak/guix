@@ -428,18 +428,15 @@ dictionary and suggesting spelling corrections.")
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
-       '(#:configure-flags
-         ;; Add -I to match 'bash.pc' of Bash 4.4.
-         (list (string-append "CPPFLAGS=-I"
-                              (assoc-ref %build-inputs "bash:include")
-                              "/include/bash/include")
-
-               ;; The '.a' file is useless.
-               "--disable-static"
-
-               ;; Install 'lib/bash' as Bash 4.4 expects.
-               (string-append "--libdir=" (assoc-ref %outputs "out")
-                              "/lib/bash"))))
+       (list
+        #:configure-flags
+        #~(list (string-append "CPPFLAGS=-I" ; match bash.pc
+                               (assoc-ref %build-inputs "bash:include")
+                               "/include/bash/include")
+                ;; The '.a' file is useless.
+                "--disable-static"
+                ;; Install 'lib/bash' as Bash 4.4 expects.
+                (string-append "--libdir=" #$output "/lib/bash"))))
       (native-inputs
        (list autoconf
              automake
