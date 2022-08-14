@@ -2168,7 +2168,7 @@ of the others")
        (list
         #:tests? #f                     ; no tests
         #:make-flags
-        #~(list "CC=gcc"
+        #~(list (string-append "CC=" #$(cc-for-target))
                 "USE_INTERNAL_LIBS=0"
                 "USE_FREETYPE=1"
                 "USE_RENDERER_DLOPEN=0"
