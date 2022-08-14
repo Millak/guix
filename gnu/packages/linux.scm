@@ -6683,16 +6683,18 @@ the @code{mce-inject} module loaded if it exists.")
              (("\"unknown\"") (string-append "\"v" ,version "\"")))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'configure))  ; no configure script
-       #:make-flags (let ((out (assoc-ref %outputs "out")))
-                      (list (string-append "CC=" ,(cc-for-target))
-                            (string-append "prefix=" out)
-                            (string-append "DOCDIR=" out "/share/doc/"
-                                           ,name "-" ,version)
-                            "etcprefix=$(DOCDIR)/examples"))
-       ;; The tests will only run as root on certain supported CPU models.
-       #:tests? #f))
+     (list
+      ;; The tests will only run as root on certain supported CPU models.
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "prefix=" #$output)
+              (string-append "DOCDIR=" #$output "/share/doc/"
+                             #$name "-" #$version)
+              "etcprefix=$(DOCDIR)/examples")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))        ; no configure script
     (native-inputs
      (list python-wrapper))             ; to generate example mcelog.conf
     (supported-systems (list "i686-linux" "x86_64-linux"))
