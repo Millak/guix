@@ -1824,6 +1824,12 @@ the resulting text.")
     (arguments `(#:tests? #f ; Tests require googletest *sources*
                  #:phases
                  (modify-phases %standard-phases
+                   (add-after 'install 'delete-formulas-log
+                     ;; Contains date and timing information which is unreproducible,
+                     ;; and should not be needed when using the package
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((out (assoc-ref outputs "out")))
+                         (delete-file (string-append out "/share/doc/itpp/html/_formulas.log")))))
                    (add-after 'unpack 'set-man-page-date
                      (lambda _
                        (substitute* "itpp-config.1.cmake.in"
