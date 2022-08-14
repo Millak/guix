@@ -35,6 +35,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system r)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
@@ -12995,8 +12996,22 @@ gene expression.")
          "0q2y4n6bcc9pvz5sgfkw1lrb00rrp7q29i1vh7srdfmfhgpyz6bk"))))
     (properties `((upstream-name . "bgx")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'do-not-tune-cflags-for-reproducibility
+           (lambda _
+             (substitute* "configure.ac"
+               (("AX_GCC_ARCHFLAG.*") ""))
+             (delete-file "configure")
+             (invoke "autoreconf" "-vif"))))))
+    (inputs
+     (list boost))
     (propagated-inputs
      (list r-affy r-biobase r-gcrma r-rcpp))
+    (native-inputs
+     (list autoconf automake))
     (home-page "https://bioconductor.org/packages/bgx/")
     (synopsis "Bayesian gene expression")
     (description
