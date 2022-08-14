@@ -1160,48 +1160,48 @@ applications.")
                (base32 "0rc0213qsfap3sgx9m3m1kppxbjl2fdwmzlbn5rbmn1i33125dfi"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-bootstrap-script
-           (lambda _
-             ;; Don't attempt to fetch git submodules.
-             (substitute* "autogen.sh"
-               (("^git submodule.*")
-                ""))))
-         (add-after 'bootstrap 'patch-build-scripts
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "configure"
-               (("/usr/include/catch")
-                (dirname (search-input-file inputs "include/catch.hpp"))))
-             ;; Do not create log directory.
-             (substitute* "Makefile.in" ((".*/log/usbguard.*") ""))
-             ;; Disable LDAP tests: they use 'sudo'.
-             (substitute* "src/Tests/Makefile.in"
-               (("\\$\\(am__append_2\\)") ""))))
-         (add-after 'install 'delete-static-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; It can't be direclty disabled since it's needed for the tests.
-             (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/libusbguard.a"))))
-         (add-after 'install 'install-zsh-completion
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (site-functions
-                     (string-append out "/share/zsh/site-functions")))
-               (mkdir-p site-functions)
-               (copy-file "scripts/usbguard-zsh-completion"
-                          (string-append site-functions "/_usbguard"))))))
-       #:make-flags
-       (list (string-append "BASH_COMPLETION_DIR="
-                            (assoc-ref %outputs "out")
-                            "/etc/bash_completion.d"))
-       #:configure-flags
-       (list
-        "--localstatedir=/var"
-        "--enable-systemd=no"
-        "--with-ldap"
-        "--with-dbus"
-        "--with-polkit")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-bootstrap-script
+            (lambda _
+              ;; Don't attempt to fetch git submodules.
+              (substitute* "autogen.sh"
+                (("^git submodule.*")
+                 ""))))
+          (add-after 'bootstrap 'patch-build-scripts
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "configure"
+                (("/usr/include/catch")
+                 (dirname (search-input-file inputs "include/catch.hpp"))))
+              ;; Do not create log directory.
+              (substitute* "Makefile.in" ((".*/log/usbguard.*") ""))
+              ;; Disable LDAP tests: they use 'sudo'.
+              (substitute* "src/Tests/Makefile.in"
+                (("\\$\\(am__append_2\\)") ""))))
+          (add-after 'install 'delete-static-library
+            (lambda args
+              ;; It can't be directly disabled since it's needed for the tests.
+              (delete-file (string-append #$output
+                                          "/lib/libusbguard.a"))))
+          (add-after 'install 'install-zsh-completion
+            (lambda args
+              (let ((site-functions
+                     (string-append #$output "/share/zsh/site-functions")))
+                (mkdir-p site-functions)
+                (copy-file "scripts/usbguard-zsh-completion"
+                           (string-append site-functions "/_usbguard"))))))
+      #:make-flags
+      #~(list (string-append "BASH_COMPLETION_DIR="
+                             #$output
+                             "/etc/bash_completion.d"))
+      #:configure-flags
+      #~(list
+         "--localstatedir=/var"
+         "--enable-systemd=no"
+         "--with-ldap"
+         "--with-dbus"
+         "--with-polkit")))
     (inputs
      (list audit
            catch-framework
