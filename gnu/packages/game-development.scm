@@ -2178,12 +2178,12 @@ of the others")
         #~(modify-phases %standard-phases
             (delete 'configure)         ; no configure-script
             (replace 'install
-              (lambda* (#:key outputs #:allow-other-keys)
-                (invoke "make" "copyfiles" "CC=gcc"
-                        "USE_INTERNAL_LIBS=0"
-                        (string-append "COPYDIR="
-                                       (assoc-ref outputs "out")
-                                       "/bin")))))))
+              (lambda* (#:key make-flags outputs #:allow-other-keys)
+                (apply invoke "make" "copyfiles"
+                       (string-append "COPYDIR="
+                                      (assoc-ref outputs "out")
+                                      "/bin")
+                       make-flags))))))
       (home-page "https://ioquake3.org/")
       (synopsis "FPS game engine based on Quake 3")
       (description "ioquake3 is a free software first person shooter engine
