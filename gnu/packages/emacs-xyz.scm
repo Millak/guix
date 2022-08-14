@@ -2961,7 +2961,7 @@ or XEmacs.")
 (define-public emacs-autothemer
   (package
     (name "emacs-autothemer")
-    (version "0.2.2")
+    (version "0.2.5")
     (source
      (origin
        (method git-fetch)
@@ -2971,7 +2971,7 @@ or XEmacs.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0cd2pqh6k32sjidkcd8682y4l6mx52xw4a05f38kk8nsrk28m74k"))))
+         "1rwz8hdmycmvak1w5sriwf1pwahham77vyab6jngdw8x9ngxabnx"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash))
