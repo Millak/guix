@@ -2669,11 +2669,11 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
            (lambda _
              (chdir "neo"))))))
     (inputs
-     `(("curl" ,curl)
-       ("libx11" ,libx11)
-       ("openal" ,openal)
-       ("sdl2" ,sdl2)
-       ("zlib" ,zlib)))
+     (list curl
+           libx11
+           openal
+           sdl2
+           zlib))
     (home-page "https://dhewm3.org/")
     (synopsis "Port of the original Doom 3 engine")
     (description
