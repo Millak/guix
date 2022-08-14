@@ -1160,7 +1160,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.8.8")
+    (version "1.8.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1169,7 +1169,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wfvssfd3fqgncs9jrysr4gsflb6l5m819imijj49k1s0dwj82wj"))))
+                "1anpv49242qpayziz111rzznkmfgkd2a9y5xda6xhmzhqdhx79h2"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1194,7 +1194,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                             "mu/tests/test-mu-query.cc")
                (("/bin/sh") (which "sh")))
              (substitute* '("lib/tests/bench-indexer.cc"
-                            "lib/utils/mu-utils.cc")
+                            "lib/utils/mu-test-utils.cc")
                (("/bin/rm") (which "rm")))))
          (add-after 'install 'install-emacs-autoloads
            (lambda* (#:key outputs #:allow-other-keys)
