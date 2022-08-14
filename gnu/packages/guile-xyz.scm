@@ -440,16 +440,13 @@ dictionary and suggesting spelling corrections.")
                ;; Install 'lib/bash' as Bash 4.4 expects.
                (string-append "--libdir=" (assoc-ref %outputs "out")
                               "/lib/bash"))))
-      (native-inputs `(("pkg-config" ,pkg-config)
-                       ("autoconf" ,autoconf)
-                       ("automake" ,automake)
-                       ("libtool" ,libtool)
-                       ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
-                       ("gettext" ,gettext-minimal)
-
-                       ;; Bash with loadable module support, for the test
-                       ;; suite.
-                       ("bash-full" ,bash)))
+      (native-inputs
+       (list autoconf
+             automake
+             bash                    ; with loadable module support, for tests
+             gettext-minimal         ; for AC_LIB_LINKFLAGS_FROM_LIBS
+             libtool
+             pkg-config))
       (inputs `(("guile" ,guile-2.0)
                 ("bash:include" ,bash "include")))
       (home-page "https://git.sr.ht/~kaction/guile-bash")
