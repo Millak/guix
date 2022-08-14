@@ -2651,7 +2651,7 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
 (define-public dhewm3
   (package
     (name "dhewm3")
-    (version "1.5.1")
+    (version "1.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2659,7 +2659,7 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
                     version "/dhewm3-" version "-src.tar.xz"))
               (sha256
                (base32
-                "0s2brx6wyljhjbpli97iy4lc4fqqsvdc09raz8njg0vgzcsiyrri"))))
+                "10p0w1x5wx9b7d8mzvb6yqjia9prhkjwz04vbvphy8p383r33am6"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; No tests.
@@ -2667,13 +2667,9 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
        (modify-phases %standard-phases
          (add-after 'unpack 'change-to-build-dir
            (lambda _
-             (chdir "neo")
-             #t)))))
+             (chdir "neo"))))))
     (inputs
      `(("curl" ,curl)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libogg" ,libogg)
-       ("libvorbis" ,libvorbis)
        ("libx11" ,libx11)
        ("openal" ,openal)
        ("sdl2" ,sdl2)
