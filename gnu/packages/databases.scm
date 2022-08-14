@@ -4815,9 +4815,9 @@ a Gtk.Grid Widget.")
            sqlite))
     (native-inputs (list qttools-5))
     (home-page "https://sqlitebrowser.org/")
-    (synopsis "Database browser for SQLite")
-    (description "Sqlitebrowser is a high quaility, visual, open source tool to
-create design, and edit database file compatible with SQLite.")
+    (synopsis "Visual database browser and editor for SQLite")
+    (description "Sqlitebrowser lets you create, design, and edit database files
+compatible with SQLite using a graphical user interface.")
     (license
      ;; dual license
      (list license:gpl3+
