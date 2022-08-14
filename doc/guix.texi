@@ -16430,8 +16430,11 @@ Manual}, for more information on these flags.
 @item @code{options} (default: @code{#f})
 This is either @code{#f}, or a string denoting mount options passed to
 the file system driver.  @xref{Mount-Unmount-Remount,,, libc, The GNU C
-Library Reference Manual}, for details and run @command{man 8 mount} for
-options for various file systems.
+Library Reference Manual}, for details.
+
+Run @command{man 8 mount} for options for various file systems, but
+beware that what it lists as file-system-independent ``mount options'' are
+in fact flags, and belong in the @code{flags} field described above.
 
 The @code{file-system-options->alist} and @code{alist->file-system-options}
 procedures from @code{(gnu system file-systems)} can be used to convert
