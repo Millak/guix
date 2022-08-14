@@ -54,6 +54,7 @@
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6270,17 +6271,16 @@ Encoding for HTTP.")
 (define-public python-cloudscraper
   (package
     (name "python-cloudscraper")
-    (version "1.2.58")
+    (version "1.2.60")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/VeNoMouS/cloudscraper")
-             ;; Corresponds to 1.2.58
-             (commit "f3a3d067ea8b5238e9a0948aed0c3fa0d9c29b96")))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18fbp086imabjxly04rrchbf6n6m05bpd150zxbw7z2w3mjnpsqd"))
+        (base32 "00cmxgwdm0x1j4a4ipwvpzih735hdzidljbijk1b3laj3dgvnvsm"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "cloudscraper"
@@ -6320,7 +6320,7 @@ Encoding for HTTP.")
            python-requests
            python-requests-toolbelt
            python-responses
-           python-pyparsing-2.4.7))
+           python-pyparsing))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/venomous/cloudscraper")
