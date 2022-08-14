@@ -3162,7 +3162,7 @@ Its features are:
 (define-public emacs-citeproc-el
   (package
     (name "emacs-citeproc-el")
-    (version "0.9")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -3171,7 +3171,7 @@ Its features are:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m5j1abyk68f3d1v781yrx2xkg42vyfgfckbj2yk2lgk6d7rz0p1"))))
+        (base32 "0rkwqn9pcimfcyq19wlrcij0kcjyhbwisla7vwbhjj8ang0bq9rm"))))
     (build-system emacs-build-system)
     (arguments
      `(#:emacs ,emacs))                 ;need libxml support
