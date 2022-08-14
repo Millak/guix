@@ -1147,9 +1147,7 @@ applications.")
 (define-public usbguard
   (package
     (name "usbguard")
-    ;; Note: Use a recent snapshot to get compatibility with newer system
-    ;; libraries.
-    (version "1.0.0-55-g466f1f0")
+    (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1157,7 +1155,7 @@ applications.")
                     (commit (string-append "usbguard-" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0rc0213qsfap3sgx9m3m1kppxbjl2fdwmzlbn5rbmn1i33125dfi"))))
+               (base32 "0lpyhkz5nr0c9mq57mgcvam5c8qfqqwjc4xd46n2ldqc9vhfsask"))))
     (build-system gnu-build-system)
     (arguments
      (list
