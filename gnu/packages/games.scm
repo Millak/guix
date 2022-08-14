@@ -8717,15 +8717,14 @@ game field is extended to 4D space, which has to filled up by the gamer with
 (define-public arx-libertatis
   (package
     (name "arx-libertatis")
-    (version "1.2")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://arx-libertatis.org/files/arx-libertatis-"
                            version ".tar.xz"))
        (sha256
-        (base32
-         "035dflxffa98bxmxkrqfizmhvnr09wyhhmzaqxk92772qil7gkxs"))))
+        (base32 "1pxf86sgwvy3785sq2wb4jvz6bdxm81ilrxd8xv7s61dxqqqizda"))))
     (build-system cmake-build-system)
     (outputs '("out" "installer"))
     (arguments
