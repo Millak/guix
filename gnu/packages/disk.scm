@@ -573,18 +573,18 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
 (define-public gparted
   (package
     (name "gparted")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gparted/gparted/gparted-"
                            version "/gparted-" version ".tar.gz"))
        (sha256
-        (base32 "02g1s6hrhnias7kj241l0f72kllfhq6338mk2dmzjpmifinjxvjy"))))
+        (base32 "1gl7g1lg72s63a9xlc4kcc6ksq6r7h8k9a6456xbxzak5rwklag5"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-      ;; Tests require access to paths outside the build container, such
-      ;; as '/dev/disk/by-id'
+      ;; Tests require access to files outside the build container, such
+      ;; as ‘/dev/disk/by-id/’.
      `(#:tests? #f))
     (inputs
      (list `(,util-linux "lib") parted glib gtkmm-3 libxml2))
