@@ -1948,8 +1948,9 @@ Cflags: -I${includedir}~%" #$output #$version))))))))
       (inputs (list expat fontconfig freetype harfbuzz mesa libwebp zlib))
       (home-page "https://skia.org/")
       (synopsis "2D graphics library")
-      (description "Skia is an open source 2D graphics library.  It can be
-used for drawing text, geometries, and images and has support for:
+      (description
+       "Skia is a 2D graphics library for drawing text, geometries, and images.
+It supports:
 @itemize
 @item 3x3 matrices with perspective
 @item antialiasing, transparency, filters

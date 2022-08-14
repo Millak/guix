@@ -2187,9 +2187,8 @@ of the others")
       (description "ioquake3 is a free software first person shooter engine
 based on the Quake 3: Arena and Quake 3: Team Arena source code.  Compared to
 the original, ioquake3 has been cleaned up, bugs have been fixed and features
-added.  The permanent goal is to create the open source Quake 3 distribution
-upon which people base their games, ports to new platforms, and other
-projects.")
+added.  The permanent goal is to create a Quake 3 distribution upon which
+people base their games, ports to new platforms, and other projects.")
       (license license:gpl2))))
 
 (define-public instead
@@ -2806,8 +2805,6 @@ construction toolset for games.
 @item It is automatic, which means that you can throw any level geometry
       at it and you will get robust mesh out.
 @item It is fast which means swift turnaround times for level designers.
-@item It is open source so it comes with full source and you can
-      customize it to your heart's content.
 @end itemize
 
 The Recast process starts with constructing a voxel mold from a level

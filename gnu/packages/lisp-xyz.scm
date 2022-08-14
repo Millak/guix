@@ -6831,7 +6831,7 @@ extension-points via the concept of hooks.")
       (synopsis "Common Lisp abstraction layer over platform dependent functionality")
       (description "@code{s-sysdeps} is an abstraction layer over platform
 dependent functionality.  This simple package is used as a building block in a
-number of other open source projects.
+number of other projects.
 
 @code{s-sysdeps} abstracts:
 

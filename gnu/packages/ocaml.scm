@@ -608,9 +608,9 @@ for day to day programming.")
     (native-inputs (list ocaml-ounit2))
     (home-page "https://www.mancoosi.org/cudf/")
     (synopsis "CUDF library (part of the Mancoosi tools)")
-    (description "CUDF (for Common Upgradeability Description Format) is a
-format for describing upgrade scenarios in package-based Free and Open Source
-Software distribution.")
+    (description
+     "@acronym{CUDF, Common Upgradeability Description Format} is a format for
+describing upgrade scenarios in package-based software distributions.")
     ;; With static-linking exception
     (license license:lgpl2.1+)))
 

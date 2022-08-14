@@ -2091,8 +2091,8 @@ canonical cancer pathways.")
     (description
      "The project is intended to support the use of @dfn{sequins}(synthetic
 sequencing spike-in controls) owned and made available by the Garvan Institute
-of Medical Research.  The goal is to provide a standard open source library for
-quantitative analysis, modelling and visualization of spike-in controls.")
+of Medical Research.  The goal is to provide a standard library for quantitative
+analysis, modelling, and visualization of spike-in controls.")
     (license license:bsd-3)))
 
 (define-public r-aneufinder
@@ -6542,9 +6542,10 @@ problems in genomics, brain imaging, astrophysics, and data mining.")
     `(("r-knitr" ,r-knitr)))
    (home-page "https://github.com/yixuan/RcppNumerical")
    (synopsis "Rcpp integration for numerical computing libraries")
-   (description "This package provides a collection of open source libraries
-for numerical computing (numerical integration, optimization, etc.) and their
-integration with @code{Rcpp}.")
+   (description
+    "This package provides a collection of libraries for numerical computing
+(numerical integration, optimization, etc.) and their integration with
+@code{Rcpp}.")
    (license license:gpl2+)))
 
 (define-public r-apeglm

@@ -2527,12 +2527,11 @@ comments.")))
     (home-page "https://www.freecadweb.org/")
     (synopsis "Your Own 3D Parametric Modeler")
     (description
-     "FreeCAD is a general purpose feature-based, parametric 3D modeler for
-CAD, MCAD, CAx, CAE and PLM, aimed directly at mechanical engineering and
-product design but also fits a wider range of uses in engineering, such as
-architecture or other engineering specialties.  It is 100% Open Source (LGPL2+
-license) and extremely modular, allowing for very advanced extension and
-customization.")
+     "FreeCAD is a general-purpose, feature-based, parametric 3D modeler for
+CAD, MCAD, CAx, CAE, and PLM.  It is aimed directly at mechanical engineering
+and product design but also fits a wider range of uses in engineering, such as
+architecture or other engineering specialties.  It is modular, allowing for
+extension and customization.")
     (license
      (list
       license:lgpl2.1+
@@ -3355,10 +3354,10 @@ facilitate the communication between Cura and its backend and similar code.")
                 "stb_image.h")))))))
     (home-page "https://github.com/Ultimaker/CuraEngine")
     (synopsis "Cura slicing engine")
-    (description "CuraEngine is a powerful, fast and robust engine for
-processing 3D models into 3D printing instruction for Ultimaker and other
-GCode based 3D printers.  It is part of the larger open source project called
-Cura.")
+    (description
+     "CuraEngine is an engine for processing 3D models into 3D printing
+instructions for Ultimaker and other GCode-based 3D printers.  It is part of a
+larger project called Cura.")
     (license license:agpl3+)))
 
 (define-public cura-binary-data
