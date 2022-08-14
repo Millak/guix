@@ -2136,10 +2136,11 @@ of the others")
 
 (define-public ioquake3
   ;; We follow master since it seems that there won't be releases after 1.3.6.
-  (let ((commit "95b9cab4d644fa3bf757cfff821cc4f7d76e38b0"))
+  (let ((revision "2")
+        (commit "29b0cc3a4d037046eb3247fc04f4b703f6a33452"))
     (package
       (name "ioquake3")
-      (version (git-version "1.3.6" "1" commit))
+      (version (git-version "1.3.6" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -2148,8 +2149,7 @@ of the others")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "1vflk028z9gccg5yfi5451y1k5wxjdh3qbhjf4x6r7w2pzlxh16z"))))
+          (base32 "0fqq2qpnrgpgf3gs71wvxlkcihxcrvhvllh88ii4ip134c1qbs9q"))))
       (build-system gnu-build-system)
       (inputs
        (list curl
@@ -2162,7 +2162,7 @@ of the others")
              opusfile
              sdl2))
       (native-inputs
-       (list which ; Else SDL_version.h won't be found.
+       (list which                      ; else SDL_version.h won't be found.
              pkg-config))
       (arguments
        (list
