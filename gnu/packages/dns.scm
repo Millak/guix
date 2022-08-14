@@ -140,7 +140,7 @@ protocol.")
 (define-public ldns
   (package
     (name "ldns")
-    (version "1.8.1")
+    (version "1.8.3")
     (source
      (origin
        (method url-fetch)
@@ -148,7 +148,7 @@ protocol.")
         (string-append "https://www.nlnetlabs.nl/downloads/"
                        "ldns/ldns-" version ".tar.gz"))
        (sha256
-        (base32 "18vzdmyg9bm45janw602d4hifjsncrv143awlwcslfjdrsmjk0lm"))
+        (base32 "0q3q1svyxpj2g5wdkfy1ndb14m9fzffwyskflpihfabb0g8jvxy3"))
        (patches
         (search-patches
          ;; To create make-flag variables,
