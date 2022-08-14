@@ -41,7 +41,7 @@
 (define-public dunst
   (package
     (name "dunst")
-    (version "1.8.1")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,7 +50,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19bh5789whlc0n5wbyx3yx8px93hccn42f1p6i1dz96hdkk5mjb8"))))
+                "1nfxf2rahngxpy606yrizrz16d0pswl5sa9jfzpv7h19x6xy24vx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
