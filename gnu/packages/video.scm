@@ -2509,12 +2509,17 @@ YouTube.com and many more sites.")
                   (("\\.get_param\\('ffmpeg_location'\\)" match)
                    (format #f "~a or '~a'" match (which "ffmpeg"))))))
             (replace 'build-generated-files
-              (lambda _
-                (invoke "make"
-			"PYTHON=python"
-			"yt-dlp"
-			"yt-dlp.1"
-			"completions")))
+              (lambda* (#:key inputs #:allow-other-keys)
+                (if (assoc-ref inputs "pandoc")
+                  (invoke "make"
+                          "PYTHON=python"
+                          "yt-dlp"
+                          "yt-dlp.1"
+                          "completions")
+                  (invoke "make"
+                          "PYTHON=python"
+                          "yt-dlp"
+                          "completions"))))
             (replace 'fix-the-data-directories
               (lambda* (#:key outputs #:allow-other-keys)
                 (let ((prefix (assoc-ref outputs "out")))
@@ -2534,8 +2539,14 @@ YouTube.com and many more sites.")
                       python-mutagen
                       python-pycryptodomex
                       python-websockets)))
-    (native-inputs (modify-inputs (package-native-inputs youtube-dl)
-                     (append pandoc python-pytest)))
+    (native-inputs
+     (append
+       ;; To generate the manpage.
+       (if (member (%current-system)
+                   (package-transitive-supported-systems pandoc))
+         (list pandoc)
+         '())
+       (list python-pytest zip)))
     (description
      "yt-dlp is a small command-line program to download videos from
 YouTube.com and many more sites.  It is a fork of youtube-dl with a
