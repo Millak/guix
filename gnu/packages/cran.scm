@@ -9216,6 +9216,14 @@ always locate the files relative to your project root.")
         (base32
          "0b1szzsqyc8wcfpkn5517bb1ds064vs2hky71my3p74kfngay991"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'build-reproducibly
+           (lambda _
+             (setenv "PYTHONHASHSEED" "0")
+             (setenv "PYTHONDONTWRITEBYTECODE" "1"))))))
     (inputs (list python))
     (propagated-inputs
      (list r-here
