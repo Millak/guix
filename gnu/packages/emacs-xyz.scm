@@ -18820,7 +18820,7 @@ Chinese to English.")
 (define-public emacs-org-auto-tangle
   (package
     (name "emacs-org-auto-tangle")
-    (version "0.4.1")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -18829,7 +18829,7 @@ Chinese to English.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zb7vcmhmjiqpbbhqrqci689rnpn10p985cs5jk9sgg66xsbrgs3"))))
+                "1kn1jsbv97ps280lcdx19d6hs7pvz7q9ng67xlb1kwjb680pa7rl"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-async))
     (home-page "https://github.com/yilkalargaw/org-auto-tangle")
