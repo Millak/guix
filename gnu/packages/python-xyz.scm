@@ -5273,30 +5273,19 @@ Server (PLS).")
 (define-public python-lsp-server
   (package
     (name "python-lsp-server")
-    (version "1.3.3")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-lsp-server" version))
        (sha256
         (base32
-         "0h6wxzmm6qjfwkkn3mnzn1fpmcp23fpbk74bi8p540q1nzccqj0v"))))
+         "039qi5x9sa1mjzinimxhiwzj8lxn5d5l33q6qhkjl0i5k70r9h75"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp")))
-         (replace 'check
-           (lambda _
-             ;; Disable failing test.
-             (invoke "python" "-m" "pytest" "-k"
-                     "not test_pyqt_completion"))))))
     (propagated-inputs
      (list python-autopep8
            python-pydocstyle
            python-flake8
-           python-future
            python-jedi
            python-lsp-jsonrpc
            python-pluggy
@@ -5309,13 +5298,12 @@ Server (PLS).")
      (list python-coverage
            python-flaky
            python-matplotlib
-           python-mock
            python-numpy
            python-pandas
            python-pylint
            python-pytest
            python-pytest-cov
-           python-versioneer))
+           python-whatthepatch))
     (home-page "https://github.com/python-lsp/python-lsp-server")
     (synopsis "Python implementation of the Language Server Protocol")
     (description
