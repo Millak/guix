@@ -2152,15 +2152,15 @@ of the others")
            "1vflk028z9gccg5yfi5451y1k5wxjdh3qbhjf4x6r7w2pzlxh16z"))))
       (build-system gnu-build-system)
       (inputs
-       `(("sdl2" ,sdl2)
-         ("libjpeg" ,libjpeg-turbo)
-         ("openal" ,openal)
-         ("curl" ,curl)
-         ("opusfile" ,opusfile)
-         ("opus" ,opus)
-         ("libvorbis" ,libvorbis)
-         ("freetype" ,freetype)
-         ("libogg" ,libogg)))
+       (list curl
+             freetype
+             libjpeg-turbo
+             libogg
+             libvorbis
+             openal
+             opus
+             opusfile
+             sdl2))
       (native-inputs
        (list which ; Else SDL_version.h won't be found.
              pkg-config))
