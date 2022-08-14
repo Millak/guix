@@ -127,6 +127,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30429,6 +30430,68 @@ versa.  Extended WKB/WKT are also supported.")
 binary diff utility.  It also provides two command-line tools, @code{bsdiff4}
 and @code{bspatch4}.")
     (license license:bsd-2)))
+
+(define-public python-mpv
+  (package
+    (name "python-mpv")
+    (version "1.0.1")
+    (source
+     (origin
+       ;; python-mpv from pypi does not include the tests directory.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jaseg/python-mpv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "10w6j3n62ap45sf6q487kz8z6g58sha37i14fa2hhng794z7a8jh"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; One of the tests never completes, so neutering it using
+            ;; early return allows other test to run without issue.
+            (substitute* "tests/test_mpv.py"
+              ;; Note the typo in "prooperty" - this was fixed later in
+              ;; upstream but has no effect on whether the tests hangs or not.
+              (("test_wait_for_prooperty_event_overflow.*" line)
+               ;; The long whitespace between \n and return is to match the
+               ;; identation level, which is significant in python.
+               (string-append line "\n        return\n")))))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'patch-reference-to-mpv
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Without an absolute path it is not able find and
+                   ;; load the libmpv library.
+                   (substitute* "mpv.py"
+                     (("sofile = .*")
+                      (string-append "sofile = \""
+                                     (search-input-file inputs "/lib/libmpv.so")
+                                     "\"\n")))))
+               (add-before 'check 'prepare-for-tests
+                 (lambda _
+                   ;; Fontconfig throws errors when it has no cache dir to use.
+                   (setenv "XDG_CACHE_HOME" (getcwd))
+                   ;; Some tests fail without a writable and readable HOME.
+                   (setenv "HOME" (getcwd)))))))
+    (native-inputs
+     (list python-xvfbwrapper)) ; needed for tests only
+    (inputs (list mpv))
+    (propagated-inputs (list python-pillow)) ; for raw screenshots
+    (home-page "https://github.com/jaseg/python-mpv")
+    (synopsis "Python interface to the mpv media player")
+    (description
+     "python-mpv is a ctypes-based python interface to the mpv media player.
+It gives you more or less full control of all features of the player, just
+as the lua interface does.")
+    ;; From the project's README:
+    ;;  python-mpv inherits the underlying libmpv's license, which can be either
+    ;;  GPLv2 or later (default) or LGPLv2.1 or later.  For details, see the mpv
+    ;;  copyright page.
+    (license license:gpl2+)))
 
 (define-public python-biblib
   (let ((upstream-version "0.1.0")
