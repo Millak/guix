@@ -30531,6 +30531,39 @@ package.  It can be used by type-checking tools like mypy, PyCharm, pytype
 etc. to check code that uses @code{orjson}.")
     (license license:asl2.0)))
 
+(define-public python-nanoid
+  ;; There are no tests on PyPi.
+  (let ((commit "061f9a598f310b0e2e91b9ed6ce725a22770da64")
+        (revision "0"))
+  (package
+    (name "python-nanoid")
+    (version "2.0.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/puyuan/py-nanoid")
+           (commit commit)))
+         (file-name (git-file-name name commit))
+         (sha256
+          (base32 "0y1bcw0h27g8rkqq7cp33ywn0i0lp0q3rjixzkh4191y1dp9yf8s"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (home-page "https://github.com/puyuan/py-nanoid")
+    (synopsis "Unique string ID generator")
+    (description
+     "This package provides a tiny, secure, URL-friendly, unique string ID
+generator for Python.")
+    (license license:expat))))
+
 (define-public python-misskey
   (package
     (name "python-misskey")
