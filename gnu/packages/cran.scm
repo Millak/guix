@@ -19060,6 +19060,15 @@ packages with Rcpp.")
         (base32
          "17znizh4yabh2zs9mzyr0sl6p0pw49961i61br7cl1b7v9sza18q"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'build-reproducibly
+           (lambda _
+             (substitute* "R/aaa.R"
+               (("BASEDATETIME <- Sys.time.*")
+                "BASEDATETIME <- structure(0, class = c(\"POSIXct\", \"POSIXt\"))\n")))))))
     (propagated-inputs
      (list r-farver r-magrittr r-rcpp r-rlang))
     (home-page "https://github.com/thomasp85/tweenr")
