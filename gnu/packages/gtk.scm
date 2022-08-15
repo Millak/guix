@@ -91,6 +91,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
@@ -565,9 +566,61 @@ printing and other features typical of a source code editor.")
     (license license:lgpl2.0+)
     (home-page "https://developer.gnome.org/gtksourceview/")))
 
-(define-public gtksourceview
+(define-public gtksourceview-5
  (package
    (name "gtksourceview")
+   (version "5.4.2")
+   (source (origin
+             (method url-fetch)
+             (uri (string-append "mirror://gnome/sources/gtksourceview/"
+                                 (version-major+minor version) "/"
+                                 "gtksourceview-" version ".tar.xz"))
+             (sha256
+              (base32
+               "1rwxnzq2vvck5ni5zsfnmnx2kgasi3a2n29w93g106c4xc3hw55d"))))
+   (build-system meson-build-system)
+   (arguments
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build
+           (lambda _
+             (substitute* "meson.build"
+               (("gnome.post_install" all)
+                (string-append "# " all)))))
+         (add-before 'check 'pre-check
+           (lambda* (#:key inputs native-inputs #:allow-other-kgeys)
+             (let ((Xvfb (search-input-file (or native-inputs inputs)
+                                            "/bin/Xvfb")))
+               ;; Tests require a running X server.
+               (system (format #f "~a :1 &" Xvfb))
+               (setenv "DISPLAY" ":1")
+               ;; For the missing /etc/machine-id.
+               (setenv "DBUS_FATAL_WARNINGS" "0")
+               #t))))))
+   (native-inputs
+    (list `(,glib "bin") ; for glib-genmarshal, etc.
+          intltool
+          itstool
+          gobject-introspection
+          pkg-config
+          vala
+          ;; For testing.
+          xorg-server-for-tests
+          shared-mime-info))
+   (propagated-inputs
+    ;; gtksourceview-5.0.pc refers to all these.
+    (list glib gtk libxml2 pcre2))
+   (home-page "https://wiki.gnome.org/Projects/GtkSourceView")
+   (synopsis "GNOME source code widget")
+   (description "GtkSourceView is a text widget that extends the standard
+GTK+ text widget GtkTextView.  It improves GtkTextView by implementing syntax
+highlighting and other features typical of a source code editor.")
+   (license license:lgpl2.1+)))
+
+(define-public gtksourceview
+ (package
+   (inherit gtksourceview-5)
    (version "4.2.0")
    (source (origin
              (method url-fetch)
@@ -603,13 +656,7 @@ printing and other features typical of a source code editor.")
       ("shared-mime-info" ,shared-mime-info)))
    (propagated-inputs
     ;; gtksourceview-3.0.pc refers to all these.
-    (list glib gtk+ libxml2))
-   (home-page "https://wiki.gnome.org/Projects/GtkSourceView")
-   (synopsis "GNOME source code widget")
-   (description "GtkSourceView is a text widget that extends the standard
-GTK+ text widget GtkTextView.  It improves GtkTextView by implementing syntax
-highlighting and other features typical of a source code editor.")
-   (license license:lgpl2.1+)))
+    (list glib gtk+ libxml2))))
 
 (define-public gtksourceview-3
  (package (inherit gtksourceview)
