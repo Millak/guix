@@ -734,7 +734,7 @@ paths (intersection, union, difference, xor).")
            python-fontparts
            python-fonttools
            python-mutatormath))
-    (native-inputs (list unzip))
+    (native-inputs (list python-setuptools-scm unzip))
     (home-page "https://github.com/LettError/ufoProcessor")
     (synopsis "Process and generate @acronym{UFO, Unified Font Object} files")
     (description "This Python package processes and generates instances for
