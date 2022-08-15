@@ -1610,11 +1610,6 @@ can also encrypt and decrypt messages using RSA and ECDH.")
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ;none included
     (propagated-inputs (list python-six))
-    (native-inputs
-     (list python-mock
-           python-pyfakefs
-           python-pytest
-           python-unittest2))
     (home-page "https://github.com/google/pyu2f/")
     (synopsis "U2F host library for interacting with a U2F device over USB")
     (description
