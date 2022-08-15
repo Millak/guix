@@ -2500,13 +2500,13 @@ because lxml.etree already has its own implementation of XPath 1.0.")
 (define-public python-lxml
   (package
     (name "python-lxml")
-    (version "4.6.3")
+    (version "4.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lxml" version))
        (sha256
-        (base32 "0s14r1w2x9sdlcsw8mxiqgw4rz5zs5lpqpxrfyn4a1mkndqqbdrr"))
+        (base32 "1jn4gbd1qxrbdli6x0bihi5rkm1h4qmfxqny9pa90bx8qgnfv13f"))
        ;; Adapt a test to libxml2 2.9.12, taken from this commit:
        ;; https://github.com/lxml/lxml/commit/852ed1092bd80b6b9a51db24371047e
        (modules '((guix build utils)))
