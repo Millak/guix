@@ -2414,7 +2414,7 @@ for additional processing.")
          "1cagg06vfph864s6l5jb0zqliwxh647bki8j6lf4a4qrv40jnhs8"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-mock python-nose python-six python-unittest2))
+     (list python-mock python-nose python-six))
     (native-inputs
      (list python-coverage))
     (home-page "https://github.com/celery/case")
