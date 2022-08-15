@@ -4232,7 +4232,6 @@ logging and tracing of the execution.")
      (list python-lockfile))
     (native-inputs
      (list python-coverage
-           python-unittest2
            python-testtools
            python-testscenarios
            python-twine
