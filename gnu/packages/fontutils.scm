@@ -390,7 +390,8 @@ converts any cubic curves to quadratic.  The most useful function is probably
        (sha256
         (base32 "0a6iq5g6qdxj7nvip8nnf0mf8y5wmpd3wwq0dv7d4nm9bjrh0r6m"))))
     (build-system python-build-system)
-    (native-inputs (list python-pytest python-pytest-runner))
+    (native-inputs
+     (list python-pytest python-pytest-runner python-setuptools-scm))
     (propagated-inputs
      (list python-booleanoperations
            python-cffsubr
