@@ -586,7 +586,7 @@ great time to try it and get involved!
 
 @item riscv64-linux
 little-endian 64-bit RISC-V processors, specifically RV64GC, and
-Linux-Libre kernel. This playform is available as a "technology preview":
+Linux-Libre kernel. This platform is available as a "technology preview":
 although it is supported, substitutes are not yet available from the
 build farm (@pxref{Substitutes}), and some packages may fail to build
 (@pxref{Tracking Bugs and Patches}).  That said, the Guix community is
@@ -7615,7 +7615,7 @@ procedure returns.
 Return the list of inputs required by @var{package} for development
 purposes on @var{system}.  When @var{target} is true, return the inputs
 needed to cross-compile @var{package} from @var{system} to
-@var{triplet}, where @var{triplet} is a triplet such as
+@var{target}, where @var{target} is a triplet such as
 @code{"aarch64-linux-gnu"}.
 
 Note that the result includes both explicit inputs and implicit
@@ -15809,8 +15809,8 @@ cross-compilation, because every instruction needs to be emulated.
 
 The availability of substitutes for the architecture targeted by the
 @code{--system} option can mitigate this problem.  An other way to work
-around it is to install GNU Guix on a machine which CPU is supporting
-the targeted instruction set, an set it up as an offload machine
+around it is to install GNU Guix on a machine whose CPU supports
+the targeted instruction set, and set it up as an offload machine
 (@pxref{Daemon Offload Setup}).
 
 @node System Configuration
@@ -23339,7 +23339,7 @@ Script file to use as @file{default.pa}.  In case the
 directive pointing to @file{/etc/pulse/default.pa.d} is appended to the
 provided script.
 
-@item @code{extra-script-files} (default: @code{'())})
+@item @code{extra-script-files} (default: @code{'()})
 A list of file-like objects defining extra PulseAudio scripts to run at
 the initialization of the @command{pulseaudio} daemon, after the main
 @code{script-file}.  The scripts are deployed to the
@@ -36666,9 +36666,9 @@ Set the mount @emph{options} of the root file system.  It overrides the
 @item fsck.mode=@var{mode}
 Whether to check the @var{root} file system for errors before mounting
 it.  @var{mode} is one of @code{skip} (never check), @code{force} (always
-check), or @code{auto} to respect the root file-system object's 'check?'
-setting (@pxref{File Systems}) and run a full scan only if the file system
-was not cleanly shut down.
+check), or @code{auto} to respect the root @code{<file-system>} object's
+@code{check?} setting (@pxref{File Systems}) and run a full scan only if
+the file system was not cleanly shut down.
 
 @code{auto} is the default if this option is not present or if @var{mode}
 is not one of the above.
@@ -38932,7 +38932,7 @@ In some cases multiple different configuration records might be defined
 in the same file, but their serializers for the same type might have to
 be different, because they have different configuration formats.  For
 example, the @code{serialize-boolean} procedure for the Getmail service
-would have to be different for the one for the Transmission service.  To
+would have to be different from the one for the Transmission service.  To
 make it easier to deal with this situation, one can specify a serializer
 prefix by using the @code{prefix} literal in the
 @code{define-configuration} form.  This means that one doesn't have to
@@ -39014,7 +39014,7 @@ serializer name by using the @code{prefix} literal.
 (define-maybe integer
   (prefix baz-))
 
-(define (baz-serialize-interger field-name value)
+(define (baz-serialize-integer field-name value)
   @dots{})
 @end lisp
 
@@ -39241,7 +39241,7 @@ software, configuration, and state.  Software in mainstream distros are
 usually installed system-wide, but with GNU Guix most software packages
 can be installed on a per-user basis without needing root privileges,
 and are thus considered part of the user’s @dfn{home environment}.
-Packages on their own not very useful in many cases, because often they
+Packages on their own are not very useful in many cases, because often they
 require some additional configuration, usually config files that reside
 in @env{XDG_CONFIG_HOME} (@file{~/.config} by default) or other
 directories.  Everything else can be considered state, like media files,
@@ -39401,12 +39401,12 @@ specified) will ignore @file{~/.profile}, even if @file{~/.zprofile}
 doesn't exist.
 
 To make your shell respect @file{~/.profile}, add @code{. ~/.profile} or
-@code{source ~/profile} to the startup file for the login shell.  In
+@code{source ~/.profile} to the startup file for the login shell.  In
 case of Bash, it is @file{~/.bash_profile}, and in case of Zsh, it is
 @file{~/.zprofile}.
 
 @quotation Note
-This step is only required if your shell is NOT managed by Guix Home.
+This step is only required if your shell is @emph{not} managed by Guix Home.
 Otherwise, everything will be done automatically.
 @end quotation
 
@@ -39498,7 +39498,7 @@ export _JAVA_AWT_WM_NONREPARENTING
 @quotation Note
 Make sure that module @code{(gnu packages shells)} is imported with
 @code{use-modules} or any other way, this namespace contains the
-definition of the @code{zsh} packages, which is used in the example
+definition of the @code{zsh} package, which is used in the example
 above.
 @end quotation
 
@@ -39720,7 +39720,7 @@ added after the contents of the @code{bash-profile} field.
 Association list of aliases to set for the Bash session.  The aliases
 will be defined after the contents of the @code{bashrc} field has been
 put in the @file{.bashrc} file.  The alias will automatically be quoted,
-so something line this:
+so something like this:
 
 @lisp
 '(("ls" . "ls -alF"))
@@ -39754,7 +39754,7 @@ process for example).
 @end deftp
 
 You can extend the Bash service by using the @code{home-bash-extension}
-configuration record, whose fields most mirror that of
+configuration record, whose fields must mirror that of
 @code{home-bash-configuration} (@pxref{home-bash-configuration}).  The
 contents of the extensions will be added to the end of the corresponding
 Bash configuration files (@pxref{Bash Startup Files,,, bash, The GNU
