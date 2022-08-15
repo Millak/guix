@@ -879,6 +879,7 @@ basic geometries.")
     (native-inputs
      (list python-defcon-bootstrap
            python-fontpens-bootstrap
+           python-setuptools-scm
            python-pytest
            python-wheel
            unzip))
