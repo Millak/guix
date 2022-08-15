@@ -195,7 +195,8 @@ them as it goes.")
                               `("PATH" prefix (,bindir))))
                           commands)))))))
     (native-inputs
-     (list ninja python-pytest python-scikit-build python-wheel))
+     (list ninja python-pytest python-scikit-build python-setuptools-scm
+           python-wheel))
     (inputs (list java-antlr4-runtime-cpp `(,util-linux "lib")))
     (propagated-inputs
      (list psautohint
