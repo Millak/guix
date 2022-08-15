@@ -6276,36 +6276,37 @@ subsequent visualization, annotation and storage of results.")
         (base32 "0m8wkyvbgvcr5kzc284w8fbhpxwglh2c1xq0yc3yv00a53gs7rv0"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       ,#~(list "BLASFLAGS=-llapack -lopenblas"
-                (string-append "CFLAGS=-Wall -O2 -DDYNAMIC_ZLIB=1"
-                               " -I" (search-input-directory
-                                       %build-inputs "include/simde"))
-                "ZLIB=-lz"
-                "BIN=plink prettify"
-                (string-append "CC=" #$(cc-for-target))
-                (string-append "PREFIX=" #$output)
-                "DESTDIR=")
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #false ;TEST_EXTRACT_CHR doesn't produce expected files
+      #:make-flags
+      #~(list "BLASFLAGS=-llapack -lopenblas"
+              "NO_SSE42=1"
+              "NO_AVX2=1"
+              "STATIC_ZSTD="
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              "DESTDIR=")
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'chdir
-           (lambda _ (chdir "1.9")))
-         (delete 'configure)  ; no "configure" script
+           (lambda _ (chdir "2.0/build_dynamic")))
+         (delete 'configure)            ; no "configure" script
          (replace 'check
            (lambda* (#:key tests? inputs #:allow-other-keys)
              (when tests?
-               (symlink "plink" "plink19")
-               (symlink (search-input-file inputs "/bin/plink") "plink107")
                (setenv "PATH" (string-append (getcwd) ":" (getenv "PATH")))
-               (with-directory-excursion "tests"
-                 ;; The model test fails because of a 0.0001 difference.
-                 (substitute* "tests.py"
-                   (("diff -q test1.model test2.model")
-                    "echo yes"))
-                 (invoke "bash" "test_setup.sh")
-                 (invoke "python3" "tests.py"))))))))
+               (with-directory-excursion "../Tests"
+                 (substitute* "run_tests.sh"
+                   (("^./run_tests" m)
+                    (string-append (which "bash") " " m)))
+                 (invoke "bash" "run_tests.sh")))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "plink2"
+                           (string-append
+                            (assoc-ref outputs "out") "/bin")))))))
     (inputs
-     (list lapack openblas zlib))
+     (list lapack openblas zlib `(,zstd "lib")))
     (native-inputs
      (list diffutils plink python simde)) ; for tests
     (home-page "https://www.cog-genomics.org/plink/")
