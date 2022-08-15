@@ -497,7 +497,7 @@ implementing the pen protocol for manipulating glyphs.")
             python-defcon-bootstrap
             python-fontmath
             python-fonttools))
-     (native-inputs (list unzip))
+     (native-inputs (list python-setuptools-scm unzip))
      (home-page "https://github.com/robotools/fontParts")
      (synopsis "Library for interacting with font parts")
      (description "FontParts is an @acronym{API, Application Programming
