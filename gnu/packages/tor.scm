@@ -162,26 +162,28 @@ This package only provides a client to the Tor Network.")))
   (package
     (name "torsocks")
     (version "2.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://gitlab.torproject.org/tpo/core/torsocks/-/archive/v"
-                                   version "/torsocks-v" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1a7k3njdhp7dz603knhisna1zvxw35j3g213p6dvczv9bcjy7cjl"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://gitlab.torproject.org/tpo/core/torsocks/-/archive/v"
+             version "/torsocks-v" version ".tar.bz2"))
+       (sha256
+        (base32
+         "1a7k3njdhp7dz603knhisna1zvxw35j3g213p6dvczv9bcjy7cjl"))))
     (build-system gnu-build-system)
     (inputs
      (list libcap))
     (native-inputs
      (list autoconf automake libtool))
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'build 'absolutize
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "src/bin/torsocks"
-                        (("getcap=.*")
-                         (string-append "getcap=" (which "getcap") "\n")))
-                      #t)))))
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'absolutize
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/bin/torsocks"
+               (("getcap=.*")
+                (string-append "getcap=" (which "getcap") "\n"))))))))
     (home-page "https://www.torproject.org/")
     (synopsis "Transparently route an application's traffic through Tor.")
     (description
