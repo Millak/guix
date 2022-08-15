@@ -984,27 +984,29 @@ standard library.")
          "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'pretend-version
-           ;; The version string is usually derived via setuptools-scm, but
-           ;; without the git metadata available, the version string is set to
-           ;; '0.0.0'.
-           (lambda _
-             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)))
-         (replace 'check
-           (lambda* (#:key (tests? #t) #:allow-other-keys)
-             (setenv "TERM" "dumb")     ;attempt disabling markup tests
-             (if tests?
-                 (invoke "pytest" "-vv" "-k"
-                         (string-append
-                          ;; This test involves the /usr directory, and fails.
-                          " not test_argcomplete"
-                          ;; These test do not honor the isatty detection and
-                          ;; fail.
-                          " and not test_code_highlight"
-                          " and not test_color_yes"))
-                 (format #t "test suite not run~%")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; without the git metadata available, the version string is set to
+            ;; '0.0.0'.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(package-version this-package))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (setenv "TERM" "dumb")    ;attempt disabling markup tests
+              (if tests?
+                  (invoke "pytest" "-vv" "-k"
+                          (string-append
+                           ;; This test involves the /usr directory, and fails.
+                           " not test_argcomplete"
+                           ;; These test do not honor the isatty detection and
+                           ;; fail.
+                           " and not test_code_highlight"
+                           " and not test_color_yes"))
+                  (format #t "test suite not run~%")))))))
     (propagated-inputs
      (list python-attrs-bootstrap
            python-iniconfig
@@ -1013,8 +1015,8 @@ standard library.")
            python-py
            python-tomli))
     (native-inputs
-     (list ;; Tests need the "regular" bash since 'bash-final' lacks `compgen`.
-           bash
+     ;; Tests need the "regular" bash since 'bash-final' lacks `compgen`.
+     (list bash
            python-hypothesis
            python-nose
            python-pytest-bootstrap
