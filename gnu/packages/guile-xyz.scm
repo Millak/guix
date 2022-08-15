@@ -3523,7 +3523,7 @@ perform geometrical transforms on JPEG images.")
        ("gtk+" ,gtk+)
        ("gtk+:bin" ,gtk+ "bin")
        ("webkitgtk" ,webkitgtk)
-       ("gtksourceview" ,gtksourceview)
+       ("gtksourceview" ,gtksourceview-4)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("vte" ,vte)
        ;; Gstreamer

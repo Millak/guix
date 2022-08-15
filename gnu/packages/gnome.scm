@@ -1055,7 +1055,7 @@ between different kinds of computer systems.")
      (list amtk
            glib
            gtk+
-           gtksourceview
+           gtksourceview-4
            libxml2
            uchardet))
     (synopsis "Text editor product line")
@@ -1624,7 +1624,7 @@ sharing to the masses.")
            gjs
            gst-plugins-base
            gstreamer
-           gtksourceview
+           gtksourceview-4
            harfbuzz
            libepoxy
            libmusicbrainz
@@ -7312,7 +7312,7 @@ javascript engine and the GObject introspection framework.")
            glib
            gspell
            gtk+
-           gtksourceview
+           gtksourceview-4
            libpeas
            libxml2
            iso-codes
@@ -10139,7 +10139,7 @@ handling the startup notification side.")
            python))
     (inputs
      (list `(,glib "bin")
-           gtksourceview
+           gtksourceview-4
            libgee
            libhandy
            libsoup-minimal-2
@@ -10171,7 +10171,7 @@ is suitable as a default application in a Desktop environment.")
      (list autoconf automake
            `(,gtk+ "bin") intltool pkg-config))
     (inputs
-     (list gtksourceview libsm))
+     (list gtksourceview-4 libsm))
     (home-page "https://wiki.gnome.org/Apps/Xpad")
     (synopsis "Virtual sticky note")
     (description
@@ -11323,7 +11323,7 @@ higher level porcelain stuff.")
            gsettings-desktop-schemas
            gspell
            gtk+
-           gtksourceview
+           gtksourceview-4
            json-glib
            libdazzle
            libgee
@@ -11635,7 +11635,7 @@ integrate seamlessly with the GNOME desktop.")
            gsettings-desktop-schemas
            gtk+
            gtk-vnc
-           gtksourceview
+           gtksourceview-4
            json-glib
            libhandy
            libosinfo
@@ -11832,7 +11832,7 @@ card sheets that you’ll find at most office supply stores.")
            gsettings-desktop-schemas
            gspell
            gtk+
-           gtksourceview
+           gtksourceview-4
            libgee
            tepl-5
            uchardet))
@@ -11887,7 +11887,7 @@ and toolbars.")
      `(("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("gspell" ,gspell)
        ("gtk+" ,gtk+)
-       ("gtksourceview" ,gtksourceview)
+       ("gtksourceview" ,gtksourceview-4)
        ("pango" ,pango)
        ("poppler" ,poppler)
        ("python-pdfminer" ,python-pdfminer-six)
@@ -12333,7 +12333,7 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
                   template-glib
                   vte
                   webkitgtk-with-libsoup2))
-    (propagated-inputs (list gtksourceview)) ; needed for settings
+    (propagated-inputs (list gtksourceview-4)) ; needed for settings
     (native-inputs (list desktop-file-utils  ; for desktop-file-validate
                          `(,glib "bin")
                          gettext-minimal
@@ -12538,7 +12538,7 @@ your data.")
        ("itstool" ,itstool)
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
-     (list gtksourceview)) ; required for source view
+     (list gtksourceview-4)) ; required for source view
     (arguments
      `(#:build-type "release"
        #:glib-or-gtk? #t

@@ -196,7 +196,7 @@ cards.")
     (inputs
      `(("glib" ,glib)
        ("gtk+" ,gtk+)
-       ("gtksourceview" ,gtksourceview)
+       ("gtksourceview" ,gtksourceview-4)
        ("libhandy" ,libhandy)
        ("python" ,python)
        ("python-beautifulsoup" ,python-beautifulsoup4)

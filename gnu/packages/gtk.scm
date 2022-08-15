@@ -566,7 +566,7 @@ printing and other features typical of a source code editor.")
     (license license:lgpl2.0+)
     (home-page "https://developer.gnome.org/gtksourceview/")))
 
-(define-public gtksourceview-5
+(define-public gtksourceview
  (package
    (name "gtksourceview")
    (version "5.4.2")
@@ -618,9 +618,9 @@ GTK+ text widget GtkTextView.  It improves GtkTextView by implementing syntax
 highlighting and other features typical of a source code editor.")
    (license license:lgpl2.1+)))
 
-(define-public gtksourceview
+(define-public gtksourceview-4
  (package
-   (inherit gtksourceview-5)
+   (inherit gtksourceview)
    (version "4.2.0")
    (source (origin
              (method url-fetch)
@@ -659,7 +659,7 @@ highlighting and other features typical of a source code editor.")
     (list glib gtk+ libxml2))))
 
 (define-public gtksourceview-3
- (package (inherit gtksourceview)
+ (package (inherit gtksourceview-4)
    (name "gtksourceview")
    (version "3.24.10")
    (source (origin

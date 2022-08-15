@@ -6194,7 +6194,7 @@ and as an LV2 plugin.")
       ("glibc" ,glibc)
       ("graphviz" ,graphviz)
       ("gtk+" ,gtk+)
-      ("gtksourceview" ,gtksourceview)
+      ("gtksourceview" ,gtksourceview-4)
       ("guile" ,guile-2.2)
       ("libaudec" ,libaudec)
       ("libcyaml" ,libcyaml)
@@ -6809,7 +6809,7 @@ streaming audio server.")
            gst-plugins-ugly
            gstreamer
            gtk+
-           gtksourceview ; undo, redo, multiline text fields
+           gtksourceview-4 ; undo, redo, multiline text fields
            hicolor-icon-theme
            keybinder-3.0 ; keybindings outside of GNOME
            librsvg

@@ -3767,7 +3767,7 @@ tools and applications:
            gnutls
            gpgme
            gtk+
-           gtksourceview
+           gtksourceview-4
            gtkspell3
            libassuan ; in gpgme.pc Requires
            libcanberra
