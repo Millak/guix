@@ -19503,14 +19503,21 @@ builds partial trees by inspecting living objects.")
 (define-public python-mando
   (package
     (name "python-mando")
-    (version "0.6.4")
+    (version "0.7.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "mando" version))
               (sha256
                (base32
-                "0q6rl085q1hw1wic52pqfndr0x3nirbxnhqj9akdm5zhq2fv3zkr"))))
+                "001mikga36i811pbc95rb45m2kzivkx4xb0fn3pzl4xnnjcskfhq"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (propagated-inputs
      (list python-rst2ansi python-six))
     (native-inputs
