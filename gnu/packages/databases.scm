@@ -1517,8 +1517,6 @@ CSV, DB3, iXF, SQLite, MS-SQL or MySQL to PostgreSQL.")
        (sha256
         (base32 "1ry8lxgdc1p3k7gbw20r405jqi5lvhi5wk83kxdbiv8xv3f5kh6q"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-unittest2))
     (inputs
      (list python-cryptography))
     (arguments
