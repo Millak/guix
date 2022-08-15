@@ -19837,6 +19837,8 @@ while only declaring the test-specific fields.")
                       (substitute* "setup.py"
                         ((".*'future'.*")
                          "")
+                        (("mando>=0\\.6,<0\\.7")
+                         "mando>=0.6")
                         (("colorama==0.4.1")
                          "colorama>=0.4.1"))))
                   (replace 'check
