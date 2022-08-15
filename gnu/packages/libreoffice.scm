@@ -1253,8 +1253,6 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
                        (dirname
                         (search-input-file %build-inputs
                                            "lib/libboost_system.so")))
-        ;; Avoid undefined symbols required by boost::spirit
-        "LDFLAGS=-lboost_system"
         ;; Avoid a dependency on ucpp.
         "--with-idlc-cpp=cpp"
         ;; The fonts require an external tarball (crosextrafonts).
