@@ -1204,6 +1204,7 @@ application suites.")
            iso-codes
            json-glib
            libcloudproviders            ;for cloud-providers support
+           libgudev                     ;for gstreamer-gl
            libjpeg-turbo
            libpng
            librsvg
