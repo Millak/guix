@@ -16541,3 +16541,15 @@ useful for bioinformatic analysis.")
     (synopsis "HTS BAM module for biogo")
     (description "This package provides tools for handling BAM files.")
     (license license:bsd-3)))
+
+(define-public go-github-com-biogo-hts-sam
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-sam")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/sam"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (synopsis "HTS SAM module for biogo")
+    (description "This package provides tools for handling SAM files.")))
