@@ -363,6 +363,13 @@ for adding, removing and dropping callbacks.")
                        ;; This test probably requires to be run with the
                        ;; library loaded from the the build directory.
                        "not test_c_parser_loaded and "
+                       ;; TODO: These tests fail with recent versions of Pytest
+                       ;; and the fix is difficult to backport:
+                       ;; https://github.com/aio-libs/aiohttp/pull/6872
+                       ;; Re-enable after 3.9.
+                       "not test_session_close_awaitable and "
+                       "not test_async_with_session and "
+                       "not test_close_run_until_complete_not_deprecated and "
                        ;; Disable the following tests as they require
                        ;; networking.
                        "not TestDeflateBuffer and "
