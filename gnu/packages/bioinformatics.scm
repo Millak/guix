@@ -16592,3 +16592,16 @@ useful for bioinformatic analysis.")
            go-github-com-kortschak-utter))
     (synopsis "HTS CRAM module for biogo")
     (description "This package provides tools for handling CRAM files.")))
+
+(define-public go-github-com-biogo-hts-csi
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-csi")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/csi"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (synopsis "Coordinate sorted indexing for biogo")
+    (description "This package implements CSIv1 and CSIv2 coordinate sorted
+indexing.")))
