@@ -16605,3 +16605,16 @@ useful for bioinformatic analysis.")
     (synopsis "Coordinate sorted indexing for biogo")
     (description "This package implements CSIv1 and CSIv2 coordinate sorted
 indexing.")))
+
+(define-public go-github-com-biogo-hts-fai
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-fai")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/fai"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (synopsis "Fasta sequence file index handling for biogo")
+    (description "This package implements FAI fasta sequence file index
+handling.")))
