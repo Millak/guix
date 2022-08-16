@@ -5454,3 +5454,40 @@ attempts, it cannot eliminate the risk presented by weak authentication.  Set
 up services to use only two factor, or public/private authentication
 mechanisms if you really want to protect services.")
     (license license:gpl2+)))
+
+(define-public rex
+  (package
+    (name "rex")
+    (version "4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://download.gnu.org.ua/pub/releases/rex/rex-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1arb8z602invwavskq36nhwy42a3v14iyhi06iqlngfai2k93fai"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; No configure script and Makefile.
+          (delete 'configure)
+          (delete 'build)
+          (add-before 'install 'patch-exec-expect
+            (lambda _
+              (substitute* "rex"
+                (("exec expect") (string-append "exec " (which "expect"))))))
+          (replace 'install
+            (lambda _
+              (invoke "./install"
+                      (string-append "--prefix=" #$output)))))))
+    (inputs (list expect))
+    (home-page "https://www.gnu.org.ua/software/rex/")
+    (synopsis "Remote execution utility")
+    (description "@command{rex} runs a supplied command or shell script on
+several hosts in succession or in parallel.  It can also be used to copy a
+file or files to several hosts.")
+    (license license:gpl3+)))
