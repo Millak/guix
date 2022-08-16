@@ -16505,3 +16505,15 @@ useful for bioinformatic analysis.")
      (list go-gopkg-in-check-v1
            go-github-com-kr-pretty))
     (synopsis "LLRB store for biogo")))
+
+(define-public go-github-com-biogo-store-step
+  (package
+    (inherit go-github-com-biogo-store-interval)
+    (name "go-github-com-biogo-store-step")
+    (arguments
+     '(#:import-path "github.com/biogo/store/step"
+       #:unpack-path "github.com/biogo/store"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-kr-pretty))
+    (synopsis "Step store for biogo")))
