@@ -16577,3 +16577,18 @@ useful for bioinformatic analysis.")
      (list go-gopkg-in-check-v1))
     (synopsis "HTS bgzf module for biogo")
     (description "This package provides tools for handling bgzf files.")))
+
+(define-public go-github-com-biogo-hts-cram
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-cram")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/cram"
+       #:unpack-path "github.com/biogo/hts"
+       #:tests? #false)) ;require network access
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github.com-ulikunitz-xz
+           go-github-com-kortschak-utter))
+    (synopsis "HTS CRAM module for biogo")
+    (description "This package provides tools for handling CRAM files.")))
