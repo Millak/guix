@@ -23,7 +23,7 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@mgail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -1141,6 +1141,29 @@ networks where it would otherwise be blocked or heavily throttled.")
 different output targets.  Supports colors and text decoration to all popular
 terminals.")
     (license license:bsd-3)))
+
+(define-public go-github-com-kortschak-utter
+  (package
+    (name "go-github-com-kortschak-utter")
+    (version "1.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kortschak/utter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13lg8gzvgjnljf1lz8qsfz3qcmbvrsxp3ip7mp2kscfz07r69dyw"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/kortschak/utter"))
+    (home-page "https://github.com/kortschak/utter")
+    (synopsis "Deep pretty printer")
+    (description
+     "This package implements a deep pretty printer for Go data structures to
+aid data snapshotting.")
+    (license license:isc)))
 
 (define-public go-github-com-shadowsocks-go-shadowsocks2
   (package
