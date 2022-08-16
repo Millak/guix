@@ -16517,3 +16517,27 @@ useful for bioinformatic analysis.")
      (list go-gopkg-in-check-v1
            go-github-com-kr-pretty))
     (synopsis "Step store for biogo")))
+
+(define-public go-github-com-biogo-hts-bam
+  (package
+    (name "go-github-com-biogo-hts-bam")
+    (version "1.4.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/biogo/hts")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "013ga6ilc4m3hyfr3yyiva9g4vs81afhj73v2sy7r75b5zxw7lx1"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/biogo/hts/bam"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://github.com/biogo/hts")
+    (synopsis "HTS BAM module for biogo")
+    (description "This package provides tools for handling BAM files.")
+    (license license:bsd-3)))
