@@ -16454,3 +16454,30 @@ module capable of computing base-level alignments for very large sequences.")
     (description "The package @code{graph} implements graph manipulation
 functions.")
     (license license:bsd-3)))
+
+(define-public go-github-com-biogo-store-interval
+  (package
+    (name "go-github-com-biogo-store-interval")
+    (version "0.0.0-20201120204734-aad293a2328f")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/biogo/store")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0skizrp1j6vgbl0g1kmh73picagqlvwckaqs0gkl6rai5lckxj8a"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/biogo/store/interval"
+       #:unpack-path "github.com/biogo/store"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-kr-pretty))
+    (home-page "https://github.com/biogo/store")
+    (synopsis "Interval store type for biogo")
+    (description
+     "The @code{store} package provides a number of data store types that are
+useful for bioinformatic analysis.")
+    (license license:bsd-3)))
