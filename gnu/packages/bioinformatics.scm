@@ -6449,6 +6449,43 @@ Values such as sequence name, sequence description, sequence quality and the
 sequence itself can be retrieved from these databases.")
     (license license:bsd-3)))
 
+(define-public python-taggd
+  (package
+    (name "python-taggd")
+    (version "0.3.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SpatialTranscriptomicsResearch/taggd")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0j19ah81z7aqrdljah9hyarp91gvgbk63pz6fz3pdpksy1yqyi6k"))
+              (modules '((guix build utils)))
+              (snippet
+               '(for-each delete-file
+                          (find-files "taggd" "\\.c$")))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-broken-tests
+           (lambda _
+             (substitute* "tests/taggd_demultiplex_test.py"
+               (("def test_normal_bam_run")
+                "def _disabled_test_normal_bam_run")))))))
+    (propagated-inputs
+     (list python-numpy python-pysam python-setuptools))
+    (native-inputs
+     (list python-cython))
+    (home-page "https://github.com/SpatialTranscriptomicsResearch/taggd")
+    (synopsis "Genetic barcode demultiplexing")
+    (description "This package provides TagGD barcode demultiplexing utilities
+for Spatial Transcriptomics data.")
+    (license license:bsd-3)))
+
 (define-public sra-tools
   (package
     (name "sra-tools")
