@@ -16493,3 +16493,15 @@ useful for bioinformatic analysis.")
      (list go-gopkg-in-check-v1
            go-github-com-kr-pretty))
     (synopsis "kdtree store type for biogo")))
+
+(define-public go-github-com-biogo-store-llrb
+  (package
+    (inherit go-github-com-biogo-store-interval)
+    (name "go-github-com-biogo-store-llrb")
+    (arguments
+     '(#:import-path "github.com/biogo/store/llrb"
+       #:unpack-path "github.com/biogo/store"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-kr-pretty))
+    (synopsis "LLRB store for biogo")))
