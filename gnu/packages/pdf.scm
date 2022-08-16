@@ -731,20 +731,20 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.19.1")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
-                           "mupdf-" version "-source.tar.xz"))
+                           "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32 "0gl0wf16m1cafs20h3v1f4ysf7zlbijjyd6s1r1krwvlzriwdsmm"))
+        (base32
+         "0s0qclxxdjis04mczgz0fhfpv0j8llk48g82zlfrk0daz0zgcwvg"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Remove bundled software.
-            (let* ((keep (list "extract"
-                               "lcms2")) ; different from our lcms2 package
+            ;; Remove bundled software.  Keep patched variants.
+            (let* ((keep (list "extract" "freeglut" "lcms2"))
                    (from "thirdparty")
                    (kept (string-append from "~temp")))
               (mkdir-p kept)
@@ -757,7 +757,9 @@ and based on PDF specification 1.7.")
     (build-system gnu-build-system)
     (inputs
      (list curl
-           freeglut
+           libxrandr
+           libxi
+           freeglut                     ;for GL/gl.h
            freetype
            gumbo-parser
            harfbuzz
@@ -773,24 +775,36 @@ and based on PDF specification 1.7.")
      (list pkg-config))
     (arguments
      (list
-       #:tests? #f                      ; no check target
-       #:make-flags
-       #~(list "verbose=yes"
-               (string-append "CC=" #$(cc-for-target))
-               "XCFLAGS=-fpic"
-               "USE_SYSTEM_LIBS=yes"
-               "USE_SYSTEM_MUJS=yes"
-               "shared=yes"
-               ;; Even with the linkage patch we must fix RUNPATH.
-               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
-               (string-append "prefix=" #$output))
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure))))      ; no configure script
+      #:tests? #f                       ;no check target
+      #:make-flags
+      #~(list "verbose=yes"
+              (string-append "CC=" #$(cc-for-target))
+              "XCFLAGS=-fpic"
+              "USE_SYSTEM_FREETYPE=yes"
+              "USE_SYSTEM_GUMBO=yes"
+              "USE_SYSTEM_HARFBUZZ=yes"
+              "USE_SYSTEM_JBIG2DEC=yes"
+              "USE_SYSTEM_JPEGXR=no # not available"
+              "USE_SYSTEM_LCMS2=no # lcms2mt is strongly preferred"
+              "USE_SYSTEM_LIBJPEG=yes"
+              "USE_SYSTEM_MUJS=no # not available"
+              "USE_SYSTEM_OPENJPEG=yes"
+              "USE_SYSTEM_ZLIB=yes"
+              "USE_SYSTEM_GLUT=no"
+              "USE_SYSTEM_CURL=yes"
+              "USE_SYSTEM_LEPTONICA=yes"
+              "USE_SYSTEM_TESSERACT=yes"
+              "USE_SYSTEM_MUJS=yes"
+              "shared=yes"
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+              (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)))) ;no configure script
     (home-page "https://mupdf.com")
     (synopsis "Lightweight PDF viewer and toolkit")
     (description
-      "MuPDF is a C library that implements a PDF and XPS parsing and
+     "MuPDF is a C library that implements a PDF and XPS parsing and
 rendering engine.  It is used primarily to render pages into bitmaps,
 but also provides support for other operations such as searching and
 listing the table of contents and hyperlinks.
@@ -799,9 +813,9 @@ The library ships with a rudimentary X11 viewer, and a set of command
 line tools for batch rendering @command{pdfdraw}, rewriting files
 @command{pdfclean}, and examining the file structure @command{pdfshow}.")
     (license (list license:agpl3+
-                   license:bsd-3 ; resources/cmaps
-                   license:x11 ; thirdparty/lcms2
-                   license:silofl1.1 ; resources/fonts/{han,noto,sil,urw}
+                   license:bsd-3        ;resources/cmaps
+                   license:x11          ;thirdparty/lcms2
+                   license:silofl1.1    ;resources/fonts/{han,noto,sil,urw}
                    license:asl2.0)))) ; resources/fonts/droid
 
 (define-public qpdf
