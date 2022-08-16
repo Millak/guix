@@ -16553,3 +16553,15 @@ useful for bioinformatic analysis.")
      (list go-gopkg-in-check-v1))
     (synopsis "HTS SAM module for biogo")
     (description "This package provides tools for handling SAM files.")))
+
+(define-public go-github-com-biogo-hts-tabix
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-tabix")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/tabix"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (synopsis "HTS Tabix module for biogo")
+    (description "This package provides tools for handling Tabix files.")))
