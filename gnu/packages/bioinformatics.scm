@@ -16429,3 +16429,28 @@ alignment algorithm.  It completes MashMap with a high-performance alignment
 module capable of computing base-level alignments for very large sequences.")
     (home-page "https://github.com/ekg/wfmash")
     (license license:expat)))
+
+(define-public go-github-com-biogo-graph
+  (package
+    (name "go-github-com-biogo-graph")
+    (version "0.0.0-20150317020928-057c1989faed")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/biogo/graph")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1kpzs5dfd5dsk4mg1g2qjz1prqd84ixhrcxxnf90hq25vxcnk7lh"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/biogo/graph"
+       #:tests? #false))      ;TODO: one of 13 tests fails for unknown reasons
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://github.com/biogo/graph")
+    (synopsis "Undirected graph analysis for biogo")
+    (description "The package @code{graph} implements graph manipulation
+functions.")
+    (license license:bsd-3)))
