@@ -161,7 +161,11 @@ module into a binary representation.")
                 ;; Python bindings.  Instruct it to use the correct output.
                 (substitute* "src/Makefile"
                   (("--prefix=\\$\\(PREFIX\\)")
-                   (string-append "--prefix=" #$output:python)))
+                   (string-append "--prefix=" #$output:python
+                                  ;; Python 3.10 refuses to execute the install
+                                  ;; command unless these flags are present.
+                                  " --single-version-externally-managed"
+                                  " --root=/")))
 
                 (apply invoke "make" "install-pywrap" make-flags)))))))
     ;; These libraries are in "Requires.private" in libselinux.pc.
