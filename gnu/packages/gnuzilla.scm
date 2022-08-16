@@ -265,6 +265,25 @@ in C/C++.")
      (substitute-keyword-arguments (package-arguments mozjs)
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'patch-for-python-3.10
+              (lambda _
+                ;; Some classes were moved from collections to collections.abc
+                ;; in Python 3.10.
+                (substitute* "python/mozbuild/mozbuild/util.py"
+                  (("collections\\.Sequence")
+                   "collections.abc.Sequence"))
+                (substitute* "python/mozbuild/mozbuild/makeutil.py"
+                  (("from collections import Iterable")
+                   "from collections.abc import Iterable"))
+                (substitute* "python/mozbuild/mozbuild/backend/configenvironment.py"
+                  (("from collections import Iterable, OrderedDict")
+                   "from collections import OrderedDict\n\
+from collections.abc import Iterable"))
+                (substitute*
+                    "testing/mozbase/manifestparser/manifestparser/filters.py"
+                  (("from collections import defaultdict, MutableSequence")
+                   "from collections import defaultdict\n\
+from collections.abc import MutableSequence"))))
             (replace 'configure
               (lambda* (#:key configure-flags #:allow-other-keys)
                 ;; The configure script does not accept environment variables as
