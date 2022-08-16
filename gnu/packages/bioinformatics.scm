@@ -16618,3 +16618,33 @@ indexing.")))
     (synopsis "Fasta sequence file index handling for biogo")
     (description "This package implements FAI fasta sequence file index
 handling.")))
+
+(define-public go-github-com-biogo-biogo
+  (package
+    (name "go-github-com-biogo-biogo")
+    (version "1.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/biogo/biogo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ali1mqf3dc26myv6l7wmqfr8i25461rbq3qdad8s0wi29622199"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/biogo/biogo"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-biogo-store-interval
+           go-github-com-biogo-store-kdtree
+           go-github-com-biogo-store-llrb
+           go-github-com-biogo-store-step
+           go-github-com-biogo-hts-bam
+           go-github-com-biogo-graph))
+    (home-page "https://github.com/biogo/biogo")
+    (synopsis "Bioinformatics library for Go")
+    (description
+     "Bíogo is a bioinformatics library for the Go language.")
+    (license license:bsd-3)))
