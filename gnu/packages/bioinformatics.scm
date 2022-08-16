@@ -16481,3 +16481,15 @@ functions.")
      "The @code{store} package provides a number of data store types that are
 useful for bioinformatic analysis.")
     (license license:bsd-3)))
+
+(define-public go-github-com-biogo-store-kdtree
+  (package
+    (inherit go-github-com-biogo-store-interval)
+    (name "go-github-com-biogo-store-kdtree")
+    (arguments
+     '(#:import-path "github.com/biogo/store/kdtree"
+       #:unpack-path "github.com/biogo/store"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-kr-pretty))
+    (synopsis "kdtree store type for biogo")))
