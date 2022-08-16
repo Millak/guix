@@ -3989,7 +3989,7 @@ reasonable substitute.")
 (define-public python-rq
   (package
     (name "python-rq")
-    (version "1.5.2")
+    (version "1.11")
     (source
      (origin
        (method git-fetch)
@@ -3998,7 +3998,7 @@ reasonable substitute.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ikqmpq0g1qiqwd7ar1286l4hqjb6aj2wr844gihhb8ijzwhp8va"))))
+        (base32 "1dj3m8dh9vf1qiq1drjhfw5xbr975v1kpzn4fwja83cfd7jrpzvy"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -4015,7 +4015,7 @@ reasonable substitute.")
                                                       (getenv "PATH")))
                         (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-mock python-pytest redis))
+     (list python-mock python-psutil python-pytest redis))
     (propagated-inputs
      (list python-click python-redis))
     (home-page "https://python-rq.org/")
