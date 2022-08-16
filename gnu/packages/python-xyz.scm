@@ -30644,3 +30644,35 @@ generator for Python.")
      "This package provides access to Misskey's API.  Misskey is a SNS
 platform using the ActivityPub protocol.")
     (license license:expat)))
+
+(define-public python-lief
+  (package
+    (name "python-lief")
+    (version "0.12.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lief-project/LIEF")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1xzbh3bxy4rw1yamnx68da1v5s56ay4g081cyamv67256g0qy2i1"))))
+    (build-system python-build-system)
+    (native-inputs (list cmake))
+    (arguments
+     (list
+      #:tests? #f                  ;needs network
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'build
+                     (lambda _
+                       (invoke
+                        "python" "setup.py" "--sdk" "build"
+                        (string-append
+                         "-j" (number->string (parallel-job-count)))))))))
+    (home-page "https://github.com/lief-project/LIEF")
+    (synopsis "Library to instrument executable formats")
+    (description
+     "@code{python-lief} is a cross platform library which can parse, modify
+and abstract ELF, PE and MachO formats.")
+    (license license:asl2.0)))
