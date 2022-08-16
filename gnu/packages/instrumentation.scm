@@ -241,7 +241,7 @@ many probes which instrument numerous interesting parts of Linux.")
                                   "lttng-ust-" version ".tar.bz2"))
               (sha256
                (base32
-                "1p7d94r275yvby6zqfxaswdl1q46zxbc8x5rkhnjxrp1d41byrsn"))))
+                "0vwgxp027pgwm0a4xr6bdibday7xjlnv6wmbqh546l2h2i8jzi1c"))))
     (build-system gnu-build-system)
     (inputs
      (list numactl))
