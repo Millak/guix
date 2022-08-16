@@ -6486,6 +6486,49 @@ sequence itself can be retrieved from these databases.")
 for Spatial Transcriptomics data.")
     (license license:bsd-3)))
 
+(define-public stpipeline
+  (package
+    (name "stpipeline")
+    (version "1.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stpipeline" version))
+              (sha256
+               (base32
+                "0har2g42fvaqpiz66lincy86aj1hvwzds26kxhxfamvyvv4721wk"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "requirements.txt"
+               (("argparse.*") "")))))))
+    (propagated-inputs
+     (list htseq
+           python-cython
+           python-invoke
+           python-numpy
+           python-pandas
+           python-pympler
+           python-pysam
+           python-regex
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-setuptools
+           python-sqlitedict
+           python-taggd
+           samtools
+           star))
+    (home-page "https://github.com/SpatialTranscriptomicsResearch/st_pipeline")
+    (synopsis "Pipeline for spatial mapping of unique transcripts")
+    (description
+     "This package provides an automated pipeline for spatial mapping of
+unique transcripts.")
+    (license license:expat)))
+
 (define-public sra-tools
   (package
     (name "sra-tools")
