@@ -267,7 +267,7 @@ to ring buffers shared with a consumer daemon.")
                                   "lttng-tools-" version ".tar.bz2"))
               (sha256
                (base32
-                "1gfp9y24lpaiz4lcmbp30yd400jmh99mlay9gb8pz9qd080bmlnf"))))
+                "13gh4bvlgbh82h9vb80aw8l1cfmdj3xyvjg30cscz9vqy7l04yni"))))
     (build-system gnu-build-system)
     (arguments
      `( ;; FIXME - Currently there's a segmentation fault by swig when enabling
