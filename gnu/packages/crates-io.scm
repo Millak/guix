@@ -29417,8 +29417,37 @@ primitive Rust types.")
 immutable interval tree.")
     (license license:expat)))
 
+(define-public rust-inventory-0.2
+  (package
+    (name "rust-inventory")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "inventory" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06h9xw67wx18rank4yyz93iq89j0fk6fbazryfvf5ach1dp4qd44"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ctor" ,rust-ctor-0.1)
+        ("rust-ghost" ,rust-ghost-0.1))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dtolnay/inventory")
+    (synopsis "Typed distributed plugin registration")
+    (description
+     "This package provides a way to set up a plugin registry into which
+plugins can be registered from any source file linked into your program.
+There does not need to be a central list of all the plugins.")
+    ;; Either license can be chosen at the users option.
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-inventory-0.1
   (package
+    (inherit rust-inventory-0.2)
     (name "rust-inventory")
     (version "0.1.11")
     (source
@@ -29428,21 +29457,12 @@ immutable interval tree.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
           (base32 "1m1zdjgs3nzfdxf86mc1i0id56fvk8rfw63rf04yi88bqrh53szh"))))
-    (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
         (("rust-ctor" ,rust-ctor-0.1)
          ("rust-ghost" ,rust-ghost-0.1)
-         ("rust-inventory-impl" ,rust-inventory-impl-0.1))))
-    (home-page "https://github.com/dtolnay/inventory")
-    (synopsis "Typed distributed plugin registration")
-    (description
-     "This package provides a way to set up a plugin registry into which
-plugins can be registered from any source file linked into your program.
-There does not need to be a central list of all the plugins.")
-    ;; Either license can be chosen at the users option.
-    (license (list license:expat license:asl2.0))))
+         ("rust-inventory-impl" ,rust-inventory-impl-0.1))))))
 
 (define-public rust-inventory-impl-0.1
   (package
