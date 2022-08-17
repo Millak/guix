@@ -210,6 +210,29 @@ itself as well as other components maintained by the LXQt project.")
 in Qt.")
     (license license:lgpl2.1+)))
 
+(define-public qtxdg-tools
+  (package
+    (name "qtxdg-tools")
+    (version "3.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/lxqt/qtxdg-tools/releases/download/"
+             version "/qtxdg-tools-" version ".tar.xz"))
+       (sha256
+        (base32 "0qn35v4dv71g0a4cqkbikppwmihxmfa560q9kw5pwk2y0xiwpncr"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #f))          ; no tests
+    (propagated-inputs (list libqtxdg))
+    (native-inputs (list lxqt-build-tools))
+    (home-page "https://github.com/lxqt/qtxdg-tools")
+    (synopsis "User tools for libqtxdg")
+    (description "This package contains a CLI MIME tool, @command{qtxdg-mat},
+for handling file associations and opening files with their default
+applications.")
+    (license license:lgpl2.1+)))
+
 (define-public liblxqt
   (package
     (name "liblxqt")
