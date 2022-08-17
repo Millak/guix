@@ -2126,7 +2126,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "6.18.1")
+    (version "7.6.2")
     (source
      (origin
        (method git-fetch)
@@ -2135,7 +2135,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17lakqy55p481fa5w6ylh79xbd4rdiqk9y21vmi4m2r4wx893zw1"))))
+        (base32 "193iwwb4mbr29mlgaqb67j8214k10k2q0ky9fcl1ja52vmdzz71b"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))
@@ -2165,6 +2165,8 @@ voice formats.")
            qtquickcontrols2-5
            qtserialport
            qtspeech
+           qtwebchannel-5
+           qtwebengine-5
            qtwebsockets-5
            rtl-sdr
            serialdv
