@@ -236,7 +236,7 @@ applications.")
 (define-public liblxqt
   (package
     (name "liblxqt")
-    (version "0.17.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
@@ -244,7 +244,7 @@ applications.")
              "https://github.com/lxqt/" name "/releases/download/"
              version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0ay3j6zdgffw3mzaq3wdq96la7fnn2dw52ij6987slv31563nknl"))))
+        (base32 "1fickg1q54pcb8bv3x0ydg4xx02cqykibnjcq09as2kws6xbhk9n"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -255,13 +255,6 @@ applications.")
              (substitute* "CMakeLists.txt"
                (("DESTINATION \"\\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
                 "DESTINATION \"share/polkit-1/actions"))
-             #t))
-         (add-after 'unpack 'patch-translations-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/share/lxqt/translations")))
              #t)))))
     (inputs
      (list kwindowsystem
