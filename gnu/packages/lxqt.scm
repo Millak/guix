@@ -1060,14 +1060,14 @@ QTermWidget.")
 (define-public screengrab
   (package
     (name "screengrab")
-    (version "2.2.0")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/screengrab/releases/download/"
                            version "/screengrab-" version ".tar.xz"))
        (sha256
-        (base32 "0cilzw7rz5m2klzpax7rrs5rr6whfda2svwzsn2jvmrirmh5by7r"))))
+        (base32 "14kh287d70v1lpd5w8pji88nmw3jd44q4h927vnszrkv6bwplzx7"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem libqtxdg qtbase-5 qtsvg-5 qtx11extras))
