@@ -1013,14 +1013,14 @@ processes currently in existence, much like code{top} or code{ps}.")
 (define-public qtermwidget
   (package
     (name "qtermwidget")
-    (version "0.17.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "10lv475qj0x3c3vl4yhjyr6y10qj5pq8n5pal5k24f6pf7xv412f"))))
+        (base32 "1m64c1m8dkb06fgfk09da2anjspphph6qdk41rqhds2qymh090v4"))))
     (build-system cmake-build-system)
     (inputs
      (list qtbase-5 utf8proc))
