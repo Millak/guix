@@ -40340,17 +40340,17 @@ platform-native strings.")
          "11agh8n3x2l4sr3sxvx6byc1j3ryb1g6flb1ywn0qhq7xv1y3cmg"))))
     (arguments `(#:skip-build? #t))))
 
-(define-public rust-ouroboros-macro-0.14
+(define-public rust-ouroboros-macro-0.15
   (package
     (name "rust-ouroboros-macro")
-    (version "0.14.0")
+    (version "0.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ouroboros_macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11cav04x82liknlrv50lpl1i1ln2jw4isdqzdjnjsg0pcpvwik9r"))))
+        (base32 "01lgyj5nxgr6r1l0m20pp4ilz3m14clsqg2j28hic2rrlsjafjkk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -40366,8 +40366,45 @@ platform-native strings.")
      "This package provides a proc macro for the @code{ouroboros} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ouroboros-macro-0.14
+  (package
+    (inherit rust-ouroboros-macro-0.15)
+    (name "rust-ouroboros-macro")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ouroboros_macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11cav04x82liknlrv50lpl1i1ln2jw4isdqzdjnjsg0pcpvwik9r"))))))
+
+(define-public rust-ouroboros-0.15
+  (package
+    (name "rust-ouroboros")
+    (version "0.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ouroboros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qhd9cvc4hwdbr37da1jh0k0742slchixlxn4wxgc7g3l63yl9bl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aliasable" ,rust-aliasable-0.1)
+        ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.15)
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+    (home-page "https://github.com/joshua-maros/ouroboros")
+    (synopsis "Self-referential struct generation")
+    (description
+     "Easy, safe self-referential struct generation for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ouroboros-0.14
   (package
+    (inherit rust-ouroboros-0.15)
     (name "rust-ouroboros")
     (version "0.14.0")
     (source
@@ -40377,17 +40414,11 @@ platform-native strings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ih1lna1d2is3a6aicmc7lpfhqmg046kssxpryk24kwg8j42ymh6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-aliasable" ,rust-aliasable-0.1)
         ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.14)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
-    (home-page "https://github.com/joshua-maros/ouroboros")
-    (synopsis "Self-referential struct generation")
-    (description
-     "Easy, safe self-referential struct generation for Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
 (define-public rust-output-vt100-0.1
   (package
