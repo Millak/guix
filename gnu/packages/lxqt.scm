@@ -373,14 +373,14 @@ the operating system LXQt is running on.")
 (define-public lxqt-config
   (package
     (name "lxqt-config")
-    (version "0.17.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0nr43d6fyc5zg4b3iwpca2cy58ry8q0rahrk6ixm7wrvmaiwkh93"))))
+        (base32 "0f0x82qma86kjdvn08qlg0ydxh9fnqikijfhnicynxdqfnp50ia5"))))
     (build-system cmake-build-system)
     (inputs
      (list eudev
@@ -406,12 +406,6 @@ the operating system LXQt is running on.")
      '(#:tests? #f                      ; no tests
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* '("src/CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_ETC_XDG_DIR\\}")
-                "DESTINATION \"etc/xdg"))
-             #t))
          (add-after 'unpack 'set-xkeyboard-config-file-name
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Set the file name to xkeyboard-config.
@@ -419,21 +413,7 @@ the operating system LXQt is running on.")
                (substitute* "lxqt-config-input/keyboardlayoutconfig.h"
                  (("/usr/share/X11/xkb/rules/base.lst")
                   (string-append xkb "/share/X11/xkb/rules/base.lst")))
-               #t)))
-         (add-after 'unpack 'patch-translations-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* '("lxqt-config-file-associations/CMakeLists.txt"
-                            "lxqt-config-brightness/CMakeLists.txt"
-                            "lxqt-config-appearance/CMakeLists.txt"
-                            "lxqt-config-locale/CMakeLists.txt"
-                            "lxqt-config-monitor/CMakeLists.txt"
-                            "lxqt-config-input/CMakeLists.txt"
-                            "liblxqt-config-cursor/CMakeLists.txt"
-                            "src/CMakeLists.txt")
-               (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/share/lxqt/translations")))
-             #t)))))
+               #t))))))
     (home-page "https://lxqt-project.org")
     (synopsis "Tools to configure LXQt and the underlying operating system")
     (description "lxqt-config is providing several tools involved in the
