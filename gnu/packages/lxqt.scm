@@ -927,14 +927,14 @@ image viewer.")
 (define-public obconf-qt
   (package
     (name "obconf-qt")
-    (version "0.16.1")
+    (version "0.16.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0hlbivdbiw7wjhwrp8qfmq50ks19v0q21m3pyjj0k2na7nv9d3a5"))))
+        (base32 "0q29f77dkwy005gzrmn2wj2ga1hdnfd2gwp05h72i2dj0qbdla3k"))))
     (build-system cmake-build-system)
     (inputs
      (list imlib2
