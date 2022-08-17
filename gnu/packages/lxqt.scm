@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2015, 2022 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
@@ -31,6 +31,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
@@ -129,7 +130,7 @@ to statistics about the system on which it's run.")
 (define-public lxqt-build-tools
   (package
     (name "lxqt-build-tools")
-    (version "0.9.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
@@ -137,16 +138,29 @@ to statistics about the system on which it's run.")
                            "/download/" version
                            "/lxqt-build-tools-" version ".tar.xz"))
        (sha256
-        (base32 "0kayad5l72h8n90zkf3hy8fxy72n4b1mrkjglpa9dj0cdj6qg0lp"))))
+        (base32 "1ff1pkrlxd8h0j8v49p6wrfhnqrz8s5b53hi835m41cvkzjljpfx"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:configure-flags
-       ;; 'startlxqt' will add LXQT_DATA_DIR to XDG_DATA_DIRS,
-       ;; LXQT_ETC_XDG_DIR to XDG_CONFIG_DIRS, and 'lxqt-about' will report
-       ;; LXQT_ETC_XDG_DIR in its "Technical Info".
-       '("-DLXQT_DATA_DIR=/run/current-system/profile/share"
-         "-DLXQT_ETC_XDG_DIR=/run/current-system/profile/etc/xdg")))
+     (list
+      #:tests? #f                       ; no tests
+      #:modules `((ice-9 regex)
+                  (guix build cmake-build-system)
+                  (guix build utils))
+      ;; In phases and configure-flags: Set LXQT_TRANSLATIONS_DIR,
+      ;; LXQT_DATA_DIR, etc. to relative paths, so that packages using
+      ;; LXQtConfigVars.cmake from lxqt-build-tools will install translations
+      ;; and data files into their outputs, remove the need to patch their
+      ;; cmake files.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'patch-LXQtConfigVars.cmake
+            (lambda _
+              (substitute* (string-append #$output
+                                          "/share/cmake/lxqt-build-tools"
+                                          "/modules/LXQtConfigVars.cmake")
+                (((regexp-quote (string-append #$output "/"))) "")))))
+      #:configure-flags
+      #~(list "-DLXQT_ETC_XDG_DIR=etc/xdg")))
     (native-inputs
      (list pkg-config glib))
     (inputs
