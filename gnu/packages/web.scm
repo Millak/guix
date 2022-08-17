@@ -5739,14 +5739,14 @@ on the fly.")
                          "$(ps -p $HITCH_PID -o state= | grep -qv '^Z$')"))
                       #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     (list pkg-config
 
-       ;; For tests.
-       ("curl" ,curl)
-       ("egrep" ,grep)
-       ("lsof" ,lsof)
-       ("procps" ,procps)
-       ("python" ,python)))
+           ;; For tests.
+           curl
+           grep
+           lsof
+           procps
+           python))
     (inputs
      (list libev openssl))
     (synopsis "Scalable TLS proxy")
