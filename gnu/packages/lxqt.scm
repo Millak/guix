@@ -698,20 +698,20 @@ allows for launching applications or shutting down the system.")
 (define-public lxqt-session
   (package
     (name "lxqt-session")
-    (version "0.17.1")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0iwwfyngpbhs2dwvbw0cci0bf3qbqcpjjw7h5vm46nimvgp8q1fr"))))
+        (base32 "0j8q5jfpb2l0vvji3xs8y0jcr792z6sxzj111qqvmdrbpxrkwxnw"))))
     (build-system cmake-build-system)
     (inputs
      (list eudev
            kwindowsystem
            liblxqt
-           libqtxdg
+           qtxdg-tools
            procps
            qtbase-5
            qtsvg-5
@@ -725,40 +725,28 @@ allows for launching applications or shutting down the system.")
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-source
            (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* '("autostart/CMakeLists.txt"
-                            "config/CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_ETC_XDG_DIR\\}")
-                "DESTINATION \"etc/xdg"))
              (let ((out (assoc-ref outputs "out")))
                (substitute* '("xsession/lxqt.desktop.in")
                  (("Exec=startlxqt") (string-append "Exec=" out "/bin/startlxqt"))
-                 (("TryExec=lxqt-session") (string-append "TryExec=" out "/bin/startlxqt")))
-               #t)))
-         ;; add write permission to lxqt-rc.xml file which is stored as read-only in store
+                 (("TryExec=lxqt-session") (string-append "TryExec=" out "/bin/startlxqt"))))))
+
          (add-after 'unpack 'patch-openbox-permission
            (lambda _
              (substitute* "startlxqt.in"
+               ;; Don't add 'etc/xdg' to XDG_CONFIG_DIRS, and 'share' to XDG_DATA_DIRS.
+               (("! contains .*;") "false;")
+               ;; Add write permission to lxqt-rc.xml file which is stored as
+               ;; read-only in store.
                (("cp \"\\$LXQT_DEFAULT_OPENBOX_CONFIG\" \"\\$XDG_CONFIG_HOME/openbox\"")
                  (string-append "cp \"$LXQT_DEFAULT_OPENBOX_CONFIG\" \"$XDG_CONFIG_HOME/openbox\"\n"
                                 "        # fix openbox permission issue\n"
-                                "        chmod u+w  \"$XDG_CONFIG_HOME/openbox\"/*")))
-             #t))
-         (add-after 'unpack 'patch-translations-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* '("lxqt-config-session/CMakeLists.txt"
-                            "lxqt-leave/CMakeLists.txt"
-                            "lxqt-session/CMakeLists.txt")
-               (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/share/lxqt/translations")))
-             #t))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/startlxqt")
-                 `("XDG_CONFIG_DIRS" ":" suffix ("/run/current-system/profile/share"
-                                                 "/run/current-system/profile/share/pcmanfm-qt")))
-               #t))))))
+                                "        chmod u+w  \"$XDG_CONFIG_HOME/openbox\"/*"))))))))
+    (native-search-paths
+     (list (search-path-specification
+            ;; LXQt applications install their default config files into
+            ;; 'share/lxqt' and search them from XDG_CONFIG_DIRS/lxqt.
+            (variable "XDG_CONFIG_DIRS")
+            (files '("share")))))
     (home-page "https://lxqt-project.org")
     (synopsis "Session manager for LXQt")
     (description "lxqt-session provides the standard session manager
