@@ -893,16 +893,7 @@ LXDE.")
      (list libconfig qtbase-5))
     (native-inputs
      (list lxqt-build-tools pkg-config qttools-5))
-    (arguments
-     '(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* '("autostart/CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_ETC_XDG_DIR\\}")
-                "DESTINATION \"etc/xdg"))
-             #t)))))
+    (arguments '(#:tests? #f))          ; no tests
     (home-page "https://lxqt-project.org")
     (synopsis "GUI configuration tool for compton X composite manager")
     (description "@code{compton-conf} is a configuration tool for X composite
