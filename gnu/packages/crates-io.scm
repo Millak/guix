@@ -54488,17 +54488,17 @@ Semantic Versioning.")
          (base32
           "18vhypw6zgccnrlm5ps1pwa0khz7ry927iznpr88b87cagr1v2iq"))))))
 
-(define-public rust-send-wrapper-0.4
+(define-public rust-send-wrapper-0.5
   (package
     (name "rust-send-wrapper")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "send_wrapper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1l7s28vfnwdbjyrrk3lx81jy4f0dcrv4iwyah2wj6vndxhqxaf7n"))))
+        (base32 "1mwbg1nv36d5kdjb0iwmprz24km0m8ck08dn59gdngqdc77hl34k"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/thk1/send_wrapper")
@@ -54510,6 +54510,20 @@ as you access the contained value only from within the original thread.  You
 also have to make sure that the wrapper is dropped from within the original
 thread.  If any of these constraints is violated, a panic occurs.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-send-wrapper-0.4
+  (package
+    (inherit rust-send-wrapper-0.5)
+    (name "rust-send-wrapper")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "send_wrapper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l7s28vfnwdbjyrrk3lx81jy4f0dcrv4iwyah2wj6vndxhqxaf7n"))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-seq-io-0.3
   (package
