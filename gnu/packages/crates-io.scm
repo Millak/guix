@@ -46449,6 +46449,28 @@ creating native Python extension modules.  Running and interacting with
 Python code from a Rust binary is also supported.")
     (license license:asl2.0)))
 
+(define-public rust-python3-dll-a-0.2
+  (package
+    (name "rust-python3-dll-a")
+    (version "0.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "python3-dll-a" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01k2nf4wq4f4xnaq3fy1gx12v10pndwmdrjq4x4pshhjxxnrpml9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ;Windows-like targets only
+       #:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/pyo3/python3-dll-a")
+    (synopsis "Python import library generator")
+    (description
+     "This crate generates import libraries for the Python shared library
+for MinGW-w64 and MSVC (cross-)compile targets.")
+    (license license:expat)))
+
 (define-public rust-qstring-0.7
   (package
     (name "rust-qstring")
