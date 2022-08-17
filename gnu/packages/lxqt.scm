@@ -812,14 +812,14 @@ for LXQt.")
 (define-public libfm-qt
   (package
     (name "libfm-qt")
-    (version "0.17.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1991lm1gnw9s5wwn1yf3vba63bfmrrgsxc70h3nhdl9mh16qygxa"))))
+        (base32 "0m2fq1wh553yqi64a5nrdvm57fk3jnc3kxgaf0ja7h95jw6czvm5"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no tests
