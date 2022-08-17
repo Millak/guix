@@ -5913,6 +5913,8 @@ deployments.")
 reverse proxy and load balancer.  You install it in front of any server that
 speaks HTTP and configure it to cache the contents through an extensive
 configuration language.")
+    (properties
+     '((release-monitoring-url . "https://varnish-cache.org/releases/index.html")))
     (license (list license:bsd-2           ;main distribution
                    license:zlib            ;lib/libvgz/*
                    license:public-domain   ;bin/varnishncsa/as64.c, include/miniobj.h
