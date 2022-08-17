@@ -330,7 +330,7 @@ for parsing HTML files.")
 (define-public fsearch
   (package
     (name "fsearch")
-    (version "0.1.4")
+    (version "0.2")
     (source
      (origin
        (method git-fetch)
@@ -339,7 +339,7 @@ for parsing HTML files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lc6fhz4zhjbs29xn53v97dqrxwmqaplhky8sm9776ws6fyifwd7"))))
+        (base32 "1cf5bzacf1xfg8b8yvh5wrmmqqpdpnp6q39fwja71x8x9s92ir1w"))))
     (build-system meson-build-system)
     (native-inputs
      (list autoconf
@@ -350,7 +350,7 @@ for parsing HTML files.")
            libtool
            pkg-config))
     (inputs
-     (list gtk+ icu4c pcre))
+     (list gtk+ icu4c pcre2))
     (home-page "https://github.com/cboxdoerfer/fsearch")
     (synopsis "Fast file search utility")
     (description
