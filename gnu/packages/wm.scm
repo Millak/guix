@@ -1949,8 +1949,8 @@ productive, customizable lisp based systems.")
       (inputs
        `(("stumpwm" ,stumpwm "lib")))
       (home-page "https://github.com/stumpwm/stumpwm-contrib")
-      (synopsis "StumpWM interactive shell")
-      (description "This package provides a StumpWM interactive shell.")
+      (synopsis "StumpWM extra modules")
+      (description "This package provides extra modules for StumpWM.")
       (license (list license:gpl2+ license:gpl3+ license:bsd-2)))))
 
 (define-public stumpish
