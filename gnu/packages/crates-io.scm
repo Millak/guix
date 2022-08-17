@@ -71565,10 +71565,10 @@ terms of allowing LLVM's auto-vectorizer to do its job.")
        (("rust-bytemuck" ,rust-bytemuck-1))))
     (license (list license:zlib))))
 
-(define-public rust-widestring-0.4
+(define-public rust-widestring-0.5
   (package
     (name "rust-widestring")
-    (version "0.4.2")
+    (version "0.5.1")
     (source
       (origin
         (method url-fetch)
@@ -71576,7 +71576,7 @@ terms of allowing LLVM's auto-vectorizer to do its job.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "13565qy4jhpg4x0xw8mwxzzsh0p8c93p5208lh6kpwp0q01y6qx7"))))
+          "10qrilijh1qzw362mvd4nsz3vv32dxx530vk41hkcx8hah22z20p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
@@ -71589,6 +71589,23 @@ such as those often used in Windows API or other FFI libraries.  Both UTF-16 and
 UTF-32 types are provided, including support for malformed encoding.")
     (license (list license:asl2.0
                    license:expat))))
+
+(define-public rust-widestring-0.4
+  (package
+    (inherit rust-widestring-0.5)
+    (name "rust-widestring")
+    (version "0.4.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "widestring" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "13565qy4jhpg4x0xw8mwxzzsh0p8c93p5208lh6kpwp0q01y6qx7"))))
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-wild-2
   (package
