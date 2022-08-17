@@ -1,0 +1,51 @@
+From b4e1ffcdbfe8dc98036a16022cbcc422385c1834 Mon Sep 17 00:00:00 2001
+From: DRC <information@virtualgl.org>
+Date: Tue, 23 Aug 2022 10:07:10 -0500
+Subject: [PATCH] Build: Find Xfont2/fontenc/Pixman using pkg-config
+
+... when TVNC_SYSTEMX11=1.  Referring to #339, we can't assume that
+these libraries will share include/library paths with libX11.  This
+commit reverts e9cb8665dc3822b33dc0ffc5571fce5a759e7cb9.
+
+Rebased on 3.0.1 by Maxim Cournoyer <maxim.cournoyer@gmail.com>
+
+diff --git a/unix/Xvnc/CMakeLists.txt b/unix/Xvnc/CMakeLists.txt
+index 064feda..293f794 100644
+--- a/unix/Xvnc/CMakeLists.txt
++++ b/unix/Xvnc/CMakeLists.txt
+@@ -94,11 +94,13 @@ if(NOT TVNC_SYSTEMX11)
+ endif()
+ 
+ if(TVNC_SYSTEMX11)
++	include(FindPkgConfig)
++	pkg_check_modules(X11_Xfont2 REQUIRED xfont2)
++	pkg_check_modules(X11_Fontenc REQUIRED fontenc)
++	pkg_check_modules(X11_Pixman REQUIRED pixman-1)
+ 	include_directories(${X11_X11_INCLUDE_PATH} ${X11_Xau_INCLUDE_PATH}
+-		${X11_Xdmcp_INCLUDE_PATH} ${X11_Xkbfile_INCLUDE_PATH})
+-	string(REGEX REPLACE "X11" "Xfont2" X11_Xfont2_LIB ${X11_X11_LIB})
+-	string(REGEX REPLACE "X11" "fontenc" X11_Fontenc_LIB ${X11_X11_LIB})
+-	string(REGEX REPLACE "X11" "pixman-1" X11_Pixman_LIB ${X11_X11_LIB})
++		${X11_Xdmcp_INCLUDE_PATH} ${X11_Xkbfile_INCLUDE_PATH}
++		${X11_Xfont2_INCLUDEDIR} ${X11_Pixman_INCLUDEDIR}/pixman-1)
+ else()
+ 	include_directories(${CMAKE_CURRENT_BINARY_DIR}/X_include)
+ 	set(X11_Xau_LIB Xau)
+diff --git a/unix/Xvnc/programs/Xserver/CMakeLists.txt b/unix/Xvnc/programs/Xserver/CMakeLists.txt
+index 8c05d43..f8d8f76 100644
+--- a/unix/Xvnc/programs/Xserver/CMakeLists.txt
++++ b/unix/Xvnc/programs/Xserver/CMakeLists.txt
+@@ -182,9 +182,10 @@ if(HAVE_MONOTONIC_CLOCK)
+ endif()
+ target_link_libraries(Xvnc dix mi vnc fb Xi composite mi damage damageext randr
+ 	record render os present Xext-server sync xfixes xkb ${X11_Xau_LIB}
+-	${X11_Xdmcp_LIB} ${X11_Xfont2_LIB} ${X11_Fontenc_LIB} ${FREETYPE_LIBRARIES}
+-	${X11_Pixman_LIB} sha1 ${TJPEG_LIBRARY} ${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES}
+-	vncauth m pthread ${PAM_LIB} ${EXTRA_LIB})
++	${X11_Xdmcp_LIB} ${X11_Xfont2_LDFLAGS} ${X11_Fontenc_LDFLAGS}
++	${FREETYPE_LIBRARIES} ${X11_Pixman_LDFLAGS} sha1 ${TJPEG_LIBRARY}
++	${ZLIB_LIBRARIES} ${BZIP2_LIBRARIES} vncauth m pthread ${PAM_LIB}
++	${EXTRA_LIB})
+ if(APPLE OR CMAKE_SYSTEM_NAME MATCHES "(OpenBSD|FreeBSD|NetBSD|DragonFly)")
+ 	find_library(ICONV_LIBRARIES NAMES iconv)
+ 	target_link_libraries(Xvnc ${ICONV_LIBRARIES})

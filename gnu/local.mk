@@ -1885,6 +1885,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/trytond-add-guix_trytond_path.patch	\
   %D%/packages/patches/ttf2eot-cstddef.patch			\
   %D%/packages/patches/tup-unbundle-dependencies.patch		\
+  %D%/packages/patches/turbovnc-custom-paths.patch		\
+  %D%/packages/patches/turbovnc-find-system-packages.patch	\
   %D%/packages/patches/tuxpaint-stamps-path.patch		\
   %D%/packages/patches/twinkle-bcg729.patch			\
   %D%/packages/patches/u-boot-allow-disabling-openssl.patch	\
