@@ -598,14 +598,14 @@ LXQt.")
 (define-public lxqt-powermanagement
   (package
     (name "lxqt-powermanagement")
-    (version "0.17.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "00njx8a8cs0zzpz798qc9j16k7i4y0ydy1xmmcq9yv0wawh4gqck"))))
+        (base32 "0zy6abbf3iwrxsr18gbxidb4m5spsigpa2778xg7y9r7fwgmqqkk"))))
     (build-system cmake-build-system)
     (inputs
      (list kidletime
@@ -619,24 +619,7 @@ LXQt.")
            solid))
     (native-inputs
      (list lxqt-build-tools qttools-5))
-    (arguments
-     '(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* '("autostart/CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_ETC_XDG_DIR\\}")
-                "DESTINATION \"etc/xdg"))
-             #t))
-         (add-after 'unpack 'patch-translations-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* '("config/CMakeLists.txt"
-                            "src/CMakeLists.txt")
-               (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/share/lxqt/translations")))
-             #t)))))
+    (arguments '(#:tests? #f))          ; no tests
     (home-page "https://lxqt-project.org")
     (synopsis "Power management module for LXQt")
     (description "lxqt-powermanagement is providing tools to monitor power
