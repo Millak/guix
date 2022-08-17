@@ -254,37 +254,40 @@ otherwise use the IMAGE name."
     (parameterize ((%graft? #f))
       (derivation->job name drv))))
 
-(define (image-jobs store system)
+(define* (image-jobs store system
+                     #:key source commit)
   "Return a list of jobs that build images for SYSTEM."
   (define MiB
     (expt 2 20))
 
-  (if (member system %guix-system-supported-systems)
-      `(,(image->job store
-                     (image
-                      (inherit efi-disk-image)
-                      (operating-system installation-os))
-                     #:name "usb-image"
-                     #:system system)
-        ,(image->job
-          store
-          (image
-           (inherit (image-with-label
-                     iso9660-image
-                     (string-append "GUIX_" system "_"
-                                    (if (> (string-length %guix-version) 7)
-                                        (substring %guix-version 0 7)
-                                        %guix-version))))
-           (operating-system installation-os))
-          #:name "iso9660-image"
-          #:system system)
-        ;; Only cross-compile Guix System images from x86_64-linux for now.
-        ,@(if (string=? system "x86_64-linux")
-              (map (cut image->job store <>
-                        #:system system)
-                   %guix-system-images)
-              '()))
-      '()))
+  (parameterize ((current-guix-package
+                  (channel-source->package source #:commit commit)))
+    (if (member system %guix-system-supported-systems)
+        `(,(image->job store
+                       (image
+                        (inherit efi-disk-image)
+                        (operating-system installation-os))
+                       #:name "usb-image"
+                       #:system system)
+          ,(image->job
+            store
+            (image
+             (inherit (image-with-label
+                       iso9660-image
+                       (string-append "GUIX_" system "_"
+                                      (if (> (string-length %guix-version) 7)
+                                          (substring %guix-version 0 7)
+                                          %guix-version))))
+             (operating-system installation-os))
+            #:name "iso9660-image"
+            #:system system)
+          ;; Only cross-compile Guix System images from x86_64-linux for now.
+          ,@(if (string=? system "x86_64-linux")
+                (map (cut image->job store <>
+                          #:system system)
+                     %guix-system-images)
+                '()))
+        '())))
 
 (define* (system-test-jobs store system
                            #:key source commit)
@@ -527,7 +530,9 @@ names."
                                hello system))))
          ('images
           ;; Build Guix System images only.
-          (image-jobs store system))
+          (image-jobs store system
+                      #:source source
+                      #:commit commit))
          ('system-tests
           ;; Build Guix System tests only.
           (system-test-jobs store system
