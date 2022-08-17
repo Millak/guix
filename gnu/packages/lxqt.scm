@@ -509,14 +509,14 @@ of other programs.")
 (define-public lxqt-panel
   (package
     (name "lxqt-panel")
-    (version "0.17.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1k2cfs1mhad486kh93vbxma3jpjksp4hzjv1xmp1g5alb5dgnc0q"))))
+        (base32 "11dg18ac6kj8qkkrg940bzpykjih6nnw8y3hfww3wiyg6dka9gd7"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib
@@ -530,6 +530,7 @@ of other programs.")
            libxdamage
            libxkbcommon
            libxrender
+           libxtst
            `(,lm-sensors "lib")
            lxqt-globalkeys
            pcre
@@ -539,6 +540,7 @@ of other programs.")
            qtx11extras
            solid
            xcb-util
+           xcb-util-image
            xkeyboard-config))
     (native-inputs
      (list pkg-config lxqt-build-tools qttools-5))
@@ -550,21 +552,6 @@ of other programs.")
      '(#:tests? #f                      ; no tests
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* '("autostart/CMakeLists.txt"
-                            "menu/CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_ETC_XDG_DIR\\}")
-                "DESTINATION \"etc/xdg"))
-             #t))
-         (add-after 'unpack 'patch-translations-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* '("cmake/BuildPlugin.cmake"
-                            "panel/CMakeLists.txt")
-               (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/share/lxqt/translations")))
-             #t))
          (add-after 'unpack 'set-xkeyboard-config-file-path
                 (lambda* (#:key inputs #:allow-other-keys)
                   ;; Set the path to xkeyboard-config.
