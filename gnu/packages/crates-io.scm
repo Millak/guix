@@ -24981,14 +24981,14 @@ authenticated encryption cipher.")
 (define-public rust-ghost-0.1
   (package
     (name "rust-ghost")
-    (version "0.1.2")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ghost" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yalg3g1g3cz63n3phy7cdhh7p2qd220mrpxy96alwxbpqdwynqs"))))
+        (base32 "0fj42hmlgcj1rbqcshlvk65npsks4ba7vdzphb9202gawf6zw6gb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
