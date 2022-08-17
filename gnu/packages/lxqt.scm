@@ -335,14 +335,14 @@ LXQt and the system it's running on.")
 (define-public lxqt-admin
   (package
     (name "lxqt-admin")
-    (version "0.17.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "07fkn3zmpfxjzzsv1hyv50sx0359n10lxjil35qn266nz165wj43"))))
+        (base32 "1zah3xdnif9miaq52mmfbbzvqjhca7w7h81ngrn25j9pvd2bflm8"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem
@@ -363,14 +363,6 @@ LXQt and the system it's running on.")
                             "lxqt-admin-time/CMakeLists.txt")
                (("DESTINATION \"\\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
                 "DESTINATION \"share/polkit-1/actions"))
-             #t))
-         (add-after 'unpack 'patch-translations-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* '("lxqt-admin-time/CMakeLists.txt"
-                            "lxqt-admin-user/CMakeLists.txt")
-               (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/share/lxqt/translations")))
              #t)))))
     (home-page "https://lxqt-project.org")
     (synopsis "LXQt system administration tool")
