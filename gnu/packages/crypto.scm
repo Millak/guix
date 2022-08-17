@@ -24,6 +24,7 @@
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Allan Adair <allan@adair.no>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1699,3 +1700,42 @@ sha256crypt, md5crypt, SunMD5, sha1crypt, NT, bsdicrypt, bigcrypt, and
 descrypt.")
     (home-page "https://github.com/besser82/libxcrypt")
     (license license:lgpl2.1)))
+
+(define-public keychain
+  (package
+    (name "keychain")
+    (version "2.8.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/funtoo/keychain")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bkjlg0a2bbdjhwp37ci1rwikvrl4s3xlbf2jq2z4azc96dr83mj"))))
+    (build-system gnu-build-system)
+    (propagated-inputs (list procps))
+    (arguments
+     `(#:tests? #f ; No test suite
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (replace 'install
+                    (lambda _
+                      (install-file "keychain"
+                                    (string-append %output "/bin/"))
+                      (install-file "keychain.1"
+                                    (string-append %output "/share/man/man1"))
+                      #t)))))
+    (synopsis
+     "SSH or GPG agent frontend that can share a single agent on the same
+system")
+    (description
+     "Keychain is usually run from shell profiles like ~/.bash_profile, but
+it is also possible to use it with non-interactive shells.  It works
+with various operating systems (including GNU/Linux and HURD) and
+shells (like bourne-compatible, csh-compatible and fish shells).  By
+default Keychain will only start ssh-agent, but it can also be
+configured to start gpg-agent.")
+    (home-page "https://www.funtoo.org/Keychain")
+    (license license:gpl2)))
