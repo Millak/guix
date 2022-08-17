@@ -31787,7 +31787,7 @@ headlines, keywords, tables and source blocks.")
       (license license:gpl3+)))) ; License is in pyimport.el
 
 (define-public emacs-straight-el
-  (let ((commit "4517e118ee43f849f708025dbb2cf4f281793121")
+  (let ((commit "fed215348076ba9182f634e0770a175220474b5a")
         (revision "0"))
     (package
       (name "emacs-straight-el")
@@ -31797,11 +31797,11 @@ headlines, keywords, tables and source blocks.")
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/raxod502/straight.el")
+           (url "https://github.com/radian-software/straight.el")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0idhgh203rac9c046286gir9rq0lgnlllzj4b4hrjpd3idg9v0r8"))))
+          (base32 "0z0j670s18mp1bhrsnng0mybcbnlywarhlz7zmrf9399rr513z1x"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -31833,7 +31833,7 @@ headlines, keywords, tables and source blocks.")
        (list git))
       (propagated-inputs
        (list emacs-magit))
-      (home-page "https://github.com/raxod502/straight.el/")
+      (home-page "https://github.com/radian-software/straight.el/")
       (synopsis "Purely functional package manager for the Emacs hacker")
       (description
        "@code{emacs-straight-el} is a purely functional package manager for the Emacs
