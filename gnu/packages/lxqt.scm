@@ -843,32 +843,31 @@ components to build desktop file managers which belongs to LXDE.")
 (define-public pcmanfm-qt
   (package
     (name "pcmanfm-qt")
-    (version "0.17.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1axs7dnh2z08ygy28iipfbgfck15k2i2pwlf0v8d8axjrmavzb3l"))))
+        (base32 "0pwl2j5kbs86vmq86phavq89bl2i82ic839bjk0v8kmxm9q2mrh9"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-settings.conf.in
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((wallpaper (search-input-file inputs
+                                "share/lxqt/wallpapers/waves-logo.png")))
+               (substitute* "config/pcmanfm-qt/lxqt/settings.conf.in"
+                 (("Wallpaper=.*")
+                  (string-append "Wallpaper=" wallpaper "\n")))))))))
     (inputs
-     (list libfm-qt qtbase-5 qtx11extras))
+     (list libfm-qt qtbase-5 qtx11extras lxqt-themes))
     (native-inputs
      (list pkg-config qttools-5 lxqt-build-tools))
-    (arguments
-     '(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* '("autostart/CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_ETC_XDG_DIR\\}")
-                "DESTINATION \"etc/xdg"))
-             (substitute* '("config/pcmanfm-qt/lxqt/settings.conf.in")
-               (("@LXQT_SHARE_DIR@")
-                "/run/current-system/profile/share/lxqt" ))
-             #t)))))
     (home-page "https://lxqt-project.org")
     (synopsis "File manager and desktop icon manager")
     (description "PCManFM-Qt is the Qt port of PCManFM, the file manager of
