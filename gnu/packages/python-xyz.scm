@@ -1792,13 +1792,13 @@ conventions and aliases in the same expression.")
 (define-public python-wand
   (package
     (name "python-wand")
-    (version "0.6.9")
+    (version "0.6.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Wand" version))
        (sha256
-        (base32 "1g5midlhff2yy64ppiq7mvmy5dssg82mi3rjpvym7nx85644w9s0"))))
+        (base32 "0mywzs235skwq670c80achrd34kangwy24793k1nij3651zllgrp"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1814,8 +1814,7 @@ conventions and aliases in the same expression.")
     (home-page "https://docs.wand-py.org/")
     (synopsis "MagickWand API binding for Python")
     (description
-     "Wand is a ctypes-based binding for the C API of ImageMagick's MagickWand
-library.")
+     "Wand is a ctypes-based binding for ImageMagick's MagickWand library.")
     (license license:expat)))
 
 (define-public python-lockfile
