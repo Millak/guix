@@ -423,7 +423,7 @@ configuration of both LXQt and the underlying operating system.")
 (define-public lxqt-globalkeys
   (package
     (name "lxqt-globalkeys")
-    (version "0.17.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
@@ -431,7 +431,7 @@ configuration of both LXQt and the underlying operating system.")
                            "releases/download/" version "/"
                            "lxqt-globalkeys-" version ".tar.xz"))
        (sha256
-        (base32 "0pnyqiqhaawrnyvw3ljp850d911abaalnl4rgvl2xyzybvlhki4h"))))
+        (base32 "0bbw85aa59w0qnvkdggm3hbacps6yfcvcrs32d34mvvhc7d6g04l"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem
@@ -442,24 +442,7 @@ configuration of both LXQt and the underlying operating system.")
            qtx11extras))
     (native-inputs
      (list pkg-config qttools-5 lxqt-build-tools))
-    (arguments
-     '(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* '("autostart/CMakeLists.txt"
-                            "xdg/CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_ETC_XDG_DIR\\}")
-                "DESTINATION \"etc/xdg"))
-             #t))
-         (add-after 'unpack 'patch-translations-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "config/CMakeLists.txt"
-               (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/share/lxqt/translations")))
-             #t)))))
+    (arguments '(#:tests? #f))          ; no tests
     (home-page "https://lxqt-project.org")
     (synopsis "Daemon used to register global keyboard shortcuts")
     (description "lxqt-globalkeys is providing tools to set global keyboard
