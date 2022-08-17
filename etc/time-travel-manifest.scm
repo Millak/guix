@@ -42,7 +42,7 @@
      ;; concurrent accesses are unsafe.
      (mparameterize %store-monad ((%repository-cache-directory
                                    (string-append (%repository-cache-directory)
-                                                  "/time-travel")))
+                                                  "/time-travel/" system)))
        (return (mkdir-p (%repository-cache-directory)))
        (latest-channel-derivation channels)))))
 
