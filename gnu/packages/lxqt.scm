@@ -984,14 +984,14 @@ window manager OpenBox.")
 (define-public qps
   (package
     (name "qps")
-    (version "2.3.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0zg0czrh3dlbnl5smxamhkdbj1g0szm47w1c0fwpaplgc1vv5lfq"))))
+        (base32 "16ybq07xpkl22mszakc1175xlqcayyj21i2h6wlxb8bmb7csg30n"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem
