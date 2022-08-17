@@ -300,14 +300,14 @@ and memory usage or network traffic.")
 (define-public lxqt-about
   (package
     (name "lxqt-about")
-    (version "0.17.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "04riqf2xgbcnq67l5zb0dfnnmc4a2zljx8zfn3jlvxirnd73l0zm"))))
+        (base32 "03bqhbpdnfpan3l4snzzz6j0054m4r9zcgygcg21znslwicbqnw3"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem
@@ -325,13 +325,6 @@ and memory usage or network traffic.")
          (add-before 'build 'setenv
            (lambda _
              (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")
-             #t))
-         (add-after 'unpack 'patch-translations-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/share/lxqt/translations")))
              #t)))))
     (home-page "https://lxqt-project.org")
     (synopsis "Provides information about LXQt and the system")
