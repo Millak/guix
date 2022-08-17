@@ -1139,14 +1139,6 @@ like @command{tar} and @command{zip}.")
         `(#:tests? #f                   ; no tests
           #:phases
             (modify-phases %standard-phases
-              (add-after 'unpack 'patch-translations-dir
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (substitute* "CMakeLists.txt"
-                    (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                     (string-append (assoc-ref outputs "out")
-                                    "/share/lxqt/translations"))
-                    (("\\$\\{LXQT_ETC_XDG_DIR\\}") "etc/xdg"))
-                  #t))
               (add-after 'unpack 'remove-definitions
                 (lambda _
                   (substitute* "CMakeLists.txt"
