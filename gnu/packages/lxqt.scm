@@ -667,14 +667,14 @@ Qt with LXQt.")
 (define-public lxqt-runner
   (package
     (name "lxqt-runner")
-    (version "0.17.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0n53jbvkmp4vgi21a720gsvi407m4ybqk8xrpnm5f48yjr88r9i4"))))
+        (base32 "1wfng8g28mq97ibrgpfbj353i15vdimmjp83pfqrmkddx0yvzcdv"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem
@@ -688,23 +688,7 @@ Qt with LXQt.")
            qtx11extras))
     (native-inputs
      (list pkg-config qttools-5 lxqt-build-tools))
-    (arguments
-     '(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* '("autostart/CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_ETC_XDG_DIR\\}")
-                "DESTINATION \"etc/xdg"))
-             #t))
-         (add-after 'unpack 'patch-translations-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/share/lxqt/translations")))
-             #t)))))
+    (arguments '(#:tests? #f))          ; no tests
     (home-page "https://lxqt-project.org")
     (synopsis "Tool used to launch programs quickly by typing their names")
     (description "lxqt-runner provides a GUI that comes up on the desktop and
