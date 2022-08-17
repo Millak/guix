@@ -453,14 +453,14 @@ as a whole and are not limited to distinct applications.")
 (define-public lxqt-notificationd
   (package
     (name "lxqt-notificationd")
-    (version "0.17.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1dyal7brmfnydfgb6lpxnqww8fj5gzixs7s3wf5nn2ihsz1wm4nk"))))
+        (base32 "0bz3qdvv591zvpkxqzqqmh1yq5icc3iinmjr13qzws3ajlj19z44"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem
@@ -471,24 +471,7 @@ as a whole and are not limited to distinct applications.")
            qtx11extras))
     (native-inputs
      (list lxqt-build-tools qttools-5))
-    (arguments
-     '(#:tests? #f                      ; no test target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* '("autostart/CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_ETC_XDG_DIR\\}")
-                "DESTINATION \"etc/xdg"))
-             #t))
-         (add-after 'unpack 'patch-translations-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* '("config/CMakeLists.txt"
-                            "src/CMakeLists.txt")
-               (("\\$\\{LXQT_TRANSLATIONS_DIR\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/share/lxqt/translations")))
-             #t)))))
+    (arguments '(#:tests? #f))          ; no test target
     (home-page "https://lxqt-project.org")
     (synopsis "The LXQt notification daemon")
     (description "lxqt-notificationd is LXQt's implementation of a daemon
