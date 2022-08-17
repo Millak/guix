@@ -786,30 +786,18 @@ permissions of other users including root.")
 (define-public lxqt-themes
   (package
     (name "lxqt-themes")
-    (version "0.17.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0kmvcz6rxghxxgb0m264zbvycc1zjma8mr4cpwg5kyrzb47rdw9z"))))
+        (base32 "18zrp2j0xpsrzy6m2dw8k55zczcc9jzavncasrp5j1dxscnzwrcr"))))
     (build-system cmake-build-system)
     (native-inputs
      (list lxqt-build-tools))
-    (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* '("CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_GRAPHICS_DIR\\}")
-                "DESTINATION \"share/lxqt/graphics"))
-             (substitute* '("themes/CMakeLists.txt")
-               (("DESTINATION \"\\$\\{LXQT_SHARE_DIR\\}")
-                "DESTINATION \"share/lxqt"))
-             #t)))))
+    (arguments '(#:tests? #f))          ; no tests
     (home-page "https://lxqt-project.org")
     (synopsis "Themes, graphics and icons for LXQt")
     (description "This package comprises a number of graphic files and themes
