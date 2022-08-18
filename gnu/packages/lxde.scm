@@ -531,7 +531,9 @@ in LXDE.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://downloads.sourceforge.net/lxde/"
+       (uri (string-append "mirror://sourceforge/lxde/"
+                           "LXSession%20%28session%20manager%29/"
+                           "LXSession%200.5.x/"
                            "lxsession-" version ".tar.xz"))
        (sha256
         (base32 "0imv9nysip1j9lrb2z96kl05isjgp312323wnnd5b59h0ff0sgp4"))
