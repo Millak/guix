@@ -1311,9 +1311,16 @@ pretty simple, REST API.")
               (substitute* "scripts/meson-install-dirs.py"
                 (("destdir = .*")
                  "destdir = '/tmp'"))))
+          (add-after 'unpack 'use-absolute-dnsmasq
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((dnsmasq (search-input-file inputs "sbin/dnsmasq")))
+                (substitute* "src/util/virdnsmasq.c"
+                  (("#define DNSMASQ \"dnsmasq\"")
+                   (string-append "#define DNSMASQ \"" dnsmasq "\""))))))
           (add-before 'configure 'disable-broken-tests
             (lambda _
               (let ((tests (list "commandtest"         ; hangs idly
+                                 "networkxml2conftest" ; fails with absolute dnsmasq
                                  "qemuxml2argvtest"    ; fails
                                  "virnetsockettest"))) ; tries to network
                 (substitute* "tests/meson.build"
