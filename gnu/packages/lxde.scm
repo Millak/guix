@@ -59,6 +59,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -77,7 +78,8 @@
                (base32
                 "1rfira3lx8v6scz1aq69925j4vslpp36bmgrrzcfby2c60q2c155"))))
     (build-system gnu-build-system)
-    (inputs (list glib gtk+-2))
+    (arguments (list #:configure-flags #~(list "--with-gtk=3")))
+    (inputs (list glib gtk+))
     (native-inputs (list intltool
                          `(,glib "bin") ; for gtester
                          libtool
