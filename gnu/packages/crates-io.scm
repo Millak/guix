@@ -28835,14 +28835,14 @@ Rust.")
 (define-public rust-indoc-1
   (package
     (name "rust-indoc")
-    (version "1.0.3")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "indoc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0diih20xsxjb159nr0dq6jxnyhq7gg10dlsnh2siikphmvm5m9z5"))))
+        (base32 "1qs42cn8rj7kdpmp1dlkzhv62rfmbx3ffwvsfw67zyq86jm1xaxd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #true
