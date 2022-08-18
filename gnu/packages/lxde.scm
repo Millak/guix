@@ -445,7 +445,8 @@ menu spec-compliant desktop menus for LXDE.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://downloads.sourceforge.net/lxde/"
+       (uri (string-append "mirror://sourceforge/lxde/LXDE%20Icon%20Theme/"
+                           "lxde-icon-theme-" version "/"
                            name "-" version ".tar.xz"))
        (sha256
         (base32
