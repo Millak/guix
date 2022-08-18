@@ -539,21 +539,20 @@ in LXDE.")
                    (and (string-suffix? ".c" file)
                         (file-exists? (c->vala file))))))
            (for-each delete-file
-                     (find-files "." generated-c-file?))
-           #t))))
+                     (find-files "." generated-c-file?))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags (list "--enable-gtk3")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'rm-stamp
            (lambda _
              (for-each delete-file (find-files "." "\\.stamp$"))
              ;; Force regeneration of configure script.
-             (delete-file "configure")
-             #t)))))
+             (delete-file "configure"))))))
     (inputs
-     `(("gtk+-2" ,gtk+-2)
-       ("polkit" ,polkit)))
+     (list gtk+
+           polkit))
     (native-inputs
      (list pkg-config
            intltool
