@@ -506,8 +506,9 @@ menu spec-compliant desktop menus for LXDE.")
         (base32
          "123f3yn4rp1w5b3n5aj3ad9snkxab29qkrs7bcvf5bx4cn57g3sf"))))
     (build-system gnu-build-system)
+    (arguments (list #:configure-flags #~(list "--enable-gtk3")))
     (inputs
-     (list gtk+-2))
+     (list gtk+))
     (native-inputs
      (list pkg-config intltool))
     (synopsis "Tool for mouse and keyboard configuration in LXDE")
