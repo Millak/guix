@@ -1061,6 +1061,26 @@ the reasonable size limit without losing vector properties of the
 scale-sensitive information.")
     (license license:expat)))
 
+(define-public r-ggvenn
+  (package
+    (name "r-ggvenn")
+    (version "0.1.9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggvenn" version))
+              (sha256
+               (base32
+                "0bm52j3idchignp6nrw7c76jlbfkjf5zng258957vq019vx9qxrq"))))
+    (properties `((upstream-name . "ggvenn")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr r-ggplot2))
+    (home-page "https://cran.r-project.org/package=ggvenn")
+    (synopsis "Draw Venn diagram with ggplot2")
+    (description
+     "This package offers an easy to use way to draw a Venn diagram with
+@code{ggplot2}.")
+    (license license:expat)))
+
 (define-public r-lmds
   (package
     (name "r-lmds")
