@@ -552,3 +552,35 @@ then compiled by a C++ compiler (GCC/Clang/etc.).  The resulting executable
 performs the design simulation.  Verilator also supports linking its generated
 libraries, optionally encrypted, into other simulators.")
     (license license:lgpl3)))
+
+(define-public fftgen
+  (let ((commit "1d75a992efd0528edea128a903aafdabe133cb08") ;no releases
+        (revision "0"))
+    (package
+      (name "fftgen")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ZipCPU/dblclockfft")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0qq874yalzpjdwnxhc5df8a0ifywv29wcncb09945x56xplvkcmd"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                              ;no tests
+         #:make-flags '("CFLAGS=-g -O2")          ;default flags lack -O2
+         #:phases (modify-phases %standard-phases
+                    (delete 'configure)
+                    (replace 'install
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (let ((bin (string-append (assoc-ref outputs "out")
+                                                  "/bin")))
+                          (install-file "sw/fftgen" bin)))))))
+      (synopsis "Generic pipelined FFT core generator")
+      (description "fftgen produces @acronym{FFT, fast-Fourier transforms}
+hardware designs in Verilog.")
+      (home-page "https://zipcpu.com/")
+      (license license:lgpl3+))))
