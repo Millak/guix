@@ -139,7 +139,8 @@ able to change themes, icons, and fonts used by GTK+ applications.")
                 "04n3vgh3ix12p8jfs4w0dyfq3anbjy33h7g53wbbqqc0f74xyplb"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags (list "--enable-gtk3")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'xrandr-absolutely
            ;; lxrandr is useless without xrandr and gives an unhelpful error
@@ -147,9 +148,8 @@ able to change themes, icons, and fonts used by GTK+ applications.")
            (lambda* (#:key input #:allow-other-keys)
              (substitute* "src/lxrandr.c"
                (("(\"|')xrandr\"" _ match)
-                (string-append match (which "xrandr") "\"")))
-             #t)))))
-    (inputs (list gtk+-2 xrandr))
+                (string-append match (which "xrandr") "\""))))))))
+    (inputs (list gtk+ xrandr))
     (native-inputs (list intltool pkg-config))
     (synopsis "LXDE monitor configuration tool")
     (description "LXRandR is a very basic monitor configuration tool.  It
