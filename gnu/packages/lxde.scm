@@ -241,11 +241,12 @@ speed up the access to freedesktop.org defined application menus.")
                (base32
                 "1xqc2k2jh165mm81xg0ghxx0ml1s3rhh4ndvbzkcri4kfhj7pjql"))))
     (build-system gnu-build-system)
-    (inputs (list gtk+-2 gvfs ; for trash and mount support
+    (arguments (list #:configure-flags #~(list "--with-gtk=3")))
+    (inputs (list gtk+ gvfs             ;for trash and mount support
                   libfm libx11))
     (native-inputs (list intltool libtool pkg-config))
     (propagated-inputs
-     (list lxmenu-data))   ; for "Open With..." application list
+     (list lxmenu-data))                ;for "Open With..." application list
     (synopsis "LXDE file manager")
     (description "PCMan is a lightweight GTK+ based file manager, compliant
 with freedesktop.org standard.")
