@@ -422,7 +422,8 @@ customizable menu system, and Bash integration.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://downloads.sourceforge.net/lxde/"
+       (uri (string-append "mirror://sourceforge//lxde/"
+                           "lxmenu-data%20%28desktop%20menu%29/"
                            name "-" version ".tar.xz"))
        (sha256
         (base32
