@@ -352,17 +352,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.18-version "5.18.16")
+(define-public linux-libre-5.18-version "5.18.18")
 (define-public linux-libre-5.18-gnu-revision "gnu")
 (define deblob-scripts-5.18
   (linux-libre-deblob-scripts
    linux-libre-5.18-version
    linux-libre-5.18-gnu-revision
    (base32 "09aikdhij4d89wqd8mmkdr0nrfwqz6dx3n74qm6wx815rfngd2dz")
-   (base32 "0vjpn8iw9yg39sr6jfhzyvivf159h9zfgnjamwa283zfll0h0a53")))
+   (base32 "03w1p49rf7sqsxvwpdndqa0k9hc9748rplyqiiw1q6cbdjficwyw")))
 (define-public linux-libre-5.18-pristine-source
   (let ((version linux-libre-5.18-version)
-        (hash (base32 "1khi1npn8d8jimwdy8bf3r7l780mxdmvk5azdv419pk33qjqdxgi")))
+        (hash (base32 "0as0cslwz6zdiwd5wzcjggw3qpa9hzvfmxlhy72jdhn5vk47dhy1")))
    (make-linux-libre-source version
 
                             (%upstream-linux-source version hash)
