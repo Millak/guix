@@ -16196,6 +16196,32 @@ control samples and applying quantile normalization on all markers of
 interest.")
       (license license:gpl2+))))
 
+(define-public r-kbet
+  (let ((commit "f35171dfb04c7951b8a09ac778faf7424c4b6bc0")
+        (revision "1"))
+    (package
+      (name "r-kbet")
+      (version (git-version "0.99.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/theislab/kBET")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1r91prl2kki3zk694vhlmxdlqh0ixlhs8jfcqw6wc7cdsa0nv67k"))))
+      (properties `((upstream-name . "kBET")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-cluster r-fnn r-ggplot2 r-mass r-rcolorbrewer))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/theislab/kBET")
+      (synopsis "k-nearest neighbour batch effect test")
+      (description
+       "This tool detects batch effects in high-dimensional data based on chi^2-test.")
+      ;; Any version of the GPL
+      (license license:gpl3+))))
+
 (define-public ccwl
   (package
     (name "ccwl")
