@@ -3533,6 +3533,24 @@ coordinates.")
 @end enumerate\n")
     (license license:gpl2+)))
 
+(define-public r-gensa
+  (package
+    (name "r-gensa")
+    (version "1.1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "GenSA" version))
+              (sha256
+               (base32
+                "03xqwxm7v7rnihx730a4p65dfwhjh4345r3d78y0qxxplk8d76cx"))))
+    (properties `((upstream-name . "GenSA")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=GenSA")
+    (synopsis "Generalized simulated annealing")
+    (description "This package performs search for the global minimum of a very
+complex non-linear objective function with a very large number of optima.")
+    (license license:gpl2)))
+
 (define-public r-geosphere
   (package
     (name "r-geosphere")
