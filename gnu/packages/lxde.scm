@@ -467,7 +467,9 @@ menu spec-compliant desktop menus for LXDE.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://downloads.sourceforge.net/lxde/"
+       (uri (string-append "mirror://sourceforge/lxde/"
+                           "lxde-common%20%28default%20config%29/"
+                           "lxde-common%20" (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
         (base32
