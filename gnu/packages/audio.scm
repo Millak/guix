@@ -875,6 +875,10 @@ engineers, musicians, soundtrack editors and composers.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("libraries/lib-files/FileNames.cpp")
                (("\"/usr/include/linux/magic.h\"") "<linux/magic.h>"))))
+         (add-after 'install 'delete-gratuitous-script
+           (lambda* (#:key outputs #:allow-other-keys)
+             (delete-file (string-append (assoc-ref outputs "out")
+                                         "/audacity"))))
          (add-after 'wrap-program 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))
        ;; The test suite is not "well exercised" according to the developers,
