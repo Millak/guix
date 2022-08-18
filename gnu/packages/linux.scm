@@ -9335,3 +9335,30 @@ desktop.")
 directly from the kernel device and prints a device description and the events
 with the value and the symbolic name.")
     (license license:gpl2+)))
+
+(define-public tp-smapi-module
+  (package
+    (name "tp-smapi-module")
+    (version "0.43")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/linux-thinkpad/tp_smapi")
+                    (commit (string-append "tp-smapi/" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rjb0njckczc2mj05cagvj0lkyvmyk6bw7wkiinv81lw8m90g77g"))))
+    (build-system linux-module-build-system)
+    (arguments
+     `(#:tests? #f))                    ;there are none.
+    (home-page "https://github.com/linux-thinkpad/tp_smapi")
+    (synopsis
+     "Linux Kernel module exposing features of ThinkPad hardware")
+    (description
+     "This package provides a Linux Kernel module that allows to control
+battery charging of specific ThinkPad laptops.  It also includes an improved
+version of the HDAPS driver.  The underlying hardware interfaces are
+@acronym{SMAPI, System Management Application Program Interface} and direct
+access to the embedded controller.")
+    (license license:gpl2+)))
