@@ -505,8 +505,9 @@ menu spec-compliant desktop menus for LXDE.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://downloads.sourceforge.net/lxde/"
-                           name "-" version ".tar.xz"))
+       (uri (string-append "mirror://sourceforge/lxde/"
+                           "LXInput%20%28Kbd%20and%20amp_%20mouse%20config%29/"
+                           "LXInput%200.3.x/" name "-" version ".tar.xz"))
        (sha256
         (base32
          "123f3yn4rp1w5b3n5aj3ad9snkxab29qkrs7bcvf5bx4cn57g3sf"))))
