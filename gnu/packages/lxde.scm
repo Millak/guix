@@ -174,7 +174,8 @@ or external monitor.")
                (base32
                 "0b2fxg8jjjpk219gh7qa18g45365598nd2bq7rrq0bdvqjdxy5i2"))))
     (build-system gnu-build-system)
-    (inputs (list gtk+-2))
+    (arguments (list #:configure-flags #~(list "--enable-gtk3")))
+    (inputs (list gtk+))
     (native-inputs (list intltool pkg-config))
     (synopsis "LXDE task manager")
     (description "LXTask is a lightweight task manager derived from Xfce task
