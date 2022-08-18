@@ -177,6 +177,11 @@ framebuffer graphics, audio output and input event.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'remove-buildtime
+           ;; Remove embedded build time for reproducible builds
+           (lambda _
+             (substitute* "src/core/core.c"
+               (("..BUILDTIME..") ""))))
          (add-after 'unpack 'disable-configure-during-bootstrap
            (lambda _
              (substitute* "autogen.sh"
