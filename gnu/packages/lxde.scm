@@ -115,7 +115,8 @@ libFM file management library.")))
        (sha256
         (base32 "0f4bjaamfxxdr9civvy55pa6vv9dx1hjs522gjbbgx7yp1cdh8kj"))))
     (build-system gnu-build-system)
-    (inputs (list gtk+-2))
+    (arguments (list #:configure-flags #~(list "--enable-gtk3")))
+    (inputs (list gtk+))
     (native-inputs (list intltool pkg-config))
     (synopsis "LXDE GTK+ theme switcher")
     (description "LXAppearance is a desktop-independent GTK+ theme switcher
