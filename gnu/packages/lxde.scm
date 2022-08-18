@@ -10,6 +10,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Meiyo Peng <meiyo@riseup.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -573,39 +574,47 @@ in LXDE.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://downloads.sourceforge.net/lxde/"
-                           "lxpanel-" version ".tar.xz"))
+       (uri (string-append "mirror://sourceforge/lxde/"
+                           "LXPanel%20%28desktop%20panel%29/"
+                           "LXPanel%200.10.x/lxpanel-"
+                           version ".tar.xz"))
        (sha256
         (base32 "1s0y8jjkw6qz0r8l90618b8xly0c8g906kah7b162sz3sxbqyc8y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (menu (assoc-ref inputs "lxmenu-data")))
-               (wrap-program (string-append out "/bin/lxpanel")
-                 `("XDG_DATA_DIRS" ":" prefix
-                   (,(string-append menu "/share"))))
-               #t))))))
+     (list
+      #:configure-flags #~(list "--enable-gtk3")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/lxpanel")
+                `("XDG_DATA_DIRS" ":" prefix
+                  (,(string-append #$(this-package-input "lxmenu-data")
+                                   "/share")))))))))
     (inputs
-     ;; TODO: libindicator-0.3.0
-     `(("curl" ,curl)
-       ("gtk+-2" ,gtk+-2)
-       ("alsa-lib" ,alsa-lib)
-       ("libwnck-2" ,libwnck-2)
-       ("keybinder" ,keybinder)
-       ("libxmu" ,libxmu)
-       ("libxpm" ,libxpm)
-       ("libxml2" ,libxml2)
-       ("cairo" ,cairo)
-       ("libx11" ,libx11)
-       ("wireless-tools" ,wireless-tools)))
+     (list alsa-lib
+           bash-minimal                 ;for wrap-program
+           cairo
+           curl
+           gtk+
+           keybinder
+           libindicator
+           libwnck
+           libx11
+           libxml2
+           libxmu
+           libxpm
+           wireless-tools))
     (native-inputs
-     (list pkg-config intltool docbook-xml gettext-minimal))
+     (list docbook-xml
+           gettext-minimal
+           intltool
+           pkg-config))
     (propagated-inputs
-     (list lxmenu-data libfm menu-cache))
+     (list libfm
+           lxmenu-data
+           menu-cache))
     (synopsis "X11 Desktop panel for LXDE")
     (description
      "Lxpanel provides an X11 desktop panel for LXDE.")
