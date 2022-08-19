@@ -9,7 +9,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -1284,13 +1284,13 @@ Luhn and family of ISO/IEC 7064 check digit algorithms.")
 (define-public python-duniterpy
   (package
     (name "python-duniterpy")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "duniterpy" version))
        (sha256
-        (base32 "13kp2ph7fb1cdkx1y6j2h8q33fj2akc104l77ng52cy4v8jic9nz"))))
+        (base32 "18i5bqz58vjp740pxb4wb4ixg1g2d73cwi0d8gp85fmj5p8f2gx7"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: Tests fail with: "TypeError: block_uid() missing 1 required
@@ -1303,13 +1303,11 @@ Luhn and family of ISO/IEC 7064 check digit algorithms.")
                         (("mnemonic>=0\\.19,<0.20")
                          "mnemonic>=0.19")))))))
     (propagated-inputs
-     (list python-aiohttp
-           python-attrs
+     (list python-attrs
            python-base58
            python-jsonschema
            python-libnacl
            python-pyaes
-           python-pylibscrypt
            python-graphql-core
            python-mnemonic
            python-websocket-client
