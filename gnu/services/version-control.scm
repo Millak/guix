@@ -331,6 +331,14 @@ access to exported repositories under @file{/srv/git}."
                                (strip-store-file-name admin-pubkey))))
                 (rc-file #$(string-append home "/.gitolite.rc")))
 
+           ;; activate-users+groups in (gnu build activation) sets the
+           ;; permission flags of home directories to #o700 and mentions that
+           ;; services needing looser permissions should chmod it during
+           ;; service activation.  We also want the git group to be able to
+           ;; read from the gitolite home directory, so a chmod'ing we will
+           ;; go!
+           (chmod #$home #o750)
+
            (simple-format #t "guix: gitolite: installing ~A\n" #$rc-file)
            (copy-file #$rc-file rc-file)
            ;; ensure gitolite's user can read the configuration
