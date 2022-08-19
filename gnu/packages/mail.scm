@@ -1179,29 +1179,30 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
     (inputs
      (list glib gmime xapian))
     (arguments
-     `(#:modules ((guix build meson-build-system)
+     (list
+      #:modules '((guix build meson-build-system)
                   (guix build emacs-utils)
                   (guix build utils))
-       #:imported-modules (,@%meson-build-system-modules
+      #:imported-modules `(,@%meson-build-system-modules
                            (guix build emacs-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-bin-references
-           (lambda _
-             (substitute* '("guile/tests/test-mu-guile.cc"
-                            "mu/tests/test-mu-cmd.cc"
-                            "mu/tests/test-mu-cmd-cfind.cc"
-                            "mu/tests/test-mu-query.cc")
-               (("/bin/sh") (which "sh")))
-             (substitute* '("lib/tests/bench-indexer.cc"
-                            "lib/utils/mu-test-utils.cc")
-               (("/bin/rm") (which "rm")))))
-         (add-after 'install 'install-emacs-autoloads
-           (lambda* (#:key outputs #:allow-other-keys)
-             (emacs-generate-autoloads
-              "mu4e"
-              (string-append (assoc-ref outputs "out")
-                             "/share/emacs/site-lisp/mu4e")))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-bin-references
+            (lambda _
+              (substitute* '("guile/tests/test-mu-guile.cc"
+                             "mu/tests/test-mu-cmd.cc"
+                             "mu/tests/test-mu-cmd-cfind.cc"
+                             "mu/tests/test-mu-query.cc")
+                (("/bin/sh") (which "sh")))
+              (substitute* '("lib/tests/bench-indexer.cc"
+                             "lib/utils/mu-test-utils.cc")
+                (("/bin/rm") (which "rm")))))
+          (add-after 'install 'install-emacs-autoloads
+            (lambda* (#:key outputs #:allow-other-keys)
+              (emacs-generate-autoloads
+               "mu4e"
+               (string-append (assoc-ref outputs "out")
+                              "/share/emacs/site-lisp/mu4e")))))))
     (home-page "https://www.djcbsoftware.nl/code/mu/")
     (synopsis "Quickly find emails")
     (description
