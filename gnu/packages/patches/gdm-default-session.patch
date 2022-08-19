@@ -4,12 +4,14 @@ and not in the directories listed in $XDG_DATA_DIRS.  The latter includes
 /run/current-system/profile, and only then.
 
 Fixes <https://bugs.gnu.org/37831>.
---- a/daemon/gdm-session.c	2021-07-23 15:16:15.164201000 +0000
-+++ b/daemon/gdm-session.c	2021-09-26 08:18:58.730134555 +0000
-@@ -354,25 +354,19 @@
+diff --git a/daemon/gdm-session.c b/daemon/gdm-session.c
+index 4b709731..3b83fcd3 100644
+--- a/daemon/gdm-session.c
++++ b/daemon/gdm-session.c
+@@ -362,16 +362,15 @@ get_system_session_dirs (GdmSession *self,
          GArray *search_array = NULL;
          char **search_dirs;
-         int i;
+         int i, j;
 -        const gchar * const *system_data_dirs = g_get_system_data_dirs ();
  
          static const char *x_search_dirs[] = {
@@ -25,43 +27,44 @@ Fixes <https://bugs.gnu.org/37831>.
  
          search_array = g_array_new (TRUE, TRUE, sizeof (char *));
  
-         if (type == NULL || g_str_equal (type, "x11")) {
--                for (i = 0; system_data_dirs[i]; i++) {
--                        gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
--                        g_array_append_val (search_array, dir);
--                }
--
-                 g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
-         }
+@@ -380,11 +379,6 @@ get_system_session_dirs (GdmSession *self,
  
-@@ -382,16 +376,7 @@
- #ifdef ENABLE_USER_DISPLAY_SERVER
-                 g_array_prepend_val (search_array, wayland_search_dir);
- 
--                for (i = 0; system_data_dirs[i]; i++) {
--                        gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
--                        g_array_insert_val (search_array, i, dir);
--                }
- #else
--                for (i = 0; system_data_dirs[i]; i++) {
--                        gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
--                        g_array_append_val (search_array, dir);
--                }
+                 if (g_str_equal (supported_type, "x11") &&
+                     (type == NULL || g_str_equal (type, supported_type))) {
+-                        for (i = 0; system_data_dirs[i]; i++) {
+-                                gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
+-                                g_array_append_val (search_array, dir);
+-                        }
 -
-                 g_array_append_val (search_array, wayland_search_dir);
+                         g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
+                 }
+ 
+@@ -392,11 +386,6 @@ get_system_session_dirs (GdmSession *self,
+ #ifdef ENABLE_WAYLAND_SUPPORT
+                 if (g_str_equal (supported_type, "wayland") &&
+                     (type == NULL || g_str_equal (type, supported_type))) {
+-                        for (i = 0; system_data_dirs[i]; i++) {
+-                                gchar *dir = g_build_filename (system_data_dirs[i], "wayland-sessions", NULL);
+-                                g_array_append_val (search_array, dir);
+-                        }
+-
+                         g_array_append_val (search_array, wayland_search_dir);
+                 }
  #endif
-         }
-diff -ur a/libgdm/gdm-sessions.c b/libgdm/gdm-sessions.c
---- a/libgdm/gdm-sessions.c	2019-10-07 04:53:35.000000000 -0400
-+++ b/libgdm/gdm-sessions.c	2020-04-18 18:31:42.491348691 -0400
-@@ -245,35 +245,23 @@
+diff --git a/libgdm/gdm-sessions.c b/libgdm/gdm-sessions.c
+index d8b4d5cd..7ed8de91 100644
+--- a/libgdm/gdm-sessions.c
++++ b/libgdm/gdm-sessions.c
+@@ -275,7 +275,7 @@ collect_sessions (void)
                  "/etc/X11/sessions/",
                  DMCONFDIR "/Sessions/",
                  DATADIR "/gdm/BuiltInSessions/",
 -                DATADIR "/xsessions/",
 +                "/run/current-system/profile/share/xsessions/"
          };
- 
+         const gchar *supported_session_types_env = NULL;
+         g_auto (GStrv) supported_session_types = NULL;
+@@ -288,29 +288,17 @@ collect_sessions (void)
          names_seen_before = g_hash_table_new (g_str_hash, g_str_equal);
          xorg_search_array = g_ptr_array_new_with_free_func (g_free);
  

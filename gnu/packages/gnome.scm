@@ -8382,7 +8382,7 @@ library.")
 (define-public gdm
   (package
     (name "gdm")
-    (version "40.1")
+    (version "42.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8390,7 +8390,7 @@ library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1zbks7bwbys1pn7sk0aq0dbn09adx51amb441z4z4j28cvma3f5b"))
+                "0m9qmm3vm81jmqlc30a1fb79hsr4l4lpiw0zjxww3gipd6bsqa53"))
               (patches
                (search-patches
                 "gdm-default-session.patch"
@@ -8586,6 +8586,7 @@ logo='~a'~%" icon))))))
            gtk+
            iso-codes
            libcanberra
+           libgudev
            linux-pam))
     (synopsis "Display manager for GNOME")
     (home-page "https://wiki.gnome.org/Projects/GDM/")
