@@ -3055,6 +3055,11 @@ interface and a programmable text output for scripting.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-manpage-date
+           (lambda _
+             ;; Replace current date with specific date to build reproducibly
+             (substitute* "doc/fixmanpages.in"
+               (("pod2man -d .* -n") "pod2man -d \"1970-01-01\" -n"))))
          (add-before 'build 'build-doc
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke "make" "-C" "doc" "doc"
