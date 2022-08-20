@@ -2300,9 +2300,42 @@ which make writing and running functional and integration tests easier.")
          "0nk0nyzhzamcrvn0qqzzy54isxxqwdi28swml7a2ym78c3f9sqpb"))))
     (build-system python-build-system)
     (arguments
-     ;; FIXME: Tests require pytest-timeout, which itself requires
-     ;; pytest>=2.8.0 for installation.
-     '(#:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "-k"
+                        (string-join
+                         (map (lambda (test)
+                                (string-append "not test_" test))
+                              '("invocation_error"
+                                "create_KeyboadInterrupt"
+                                "exit_code"
+                                "tox_get_python_executable"
+                                "find_alias_on_path"
+                                "get_executable"
+                                "get_executable_no_exist"
+                                "get_sitepackagesdir_error"
+                                "spinner_stdout_not_unicode"
+                                "provision_non_canonical_dep"
+                                "package_setuptools"
+                                "package_poetry"
+                                "parallel_interrupt"
+                                "provision_missing"
+                                "provision_from_pyvenv"
+                                "provision_interrupt_child"
+                                "create"
+                                "run_custom_install_command"
+                                "toxuone_env"
+                                "different_config_cwd"
+                                "test_usedevelop"
+                                "build_backend_without_submodule"
+                                "parallel"
+                                "parallel_live"
+                                "tox_env_var_flags_inserted_isolated"))
+                         " and "))))))))
     (propagated-inputs
      (list python-filelock
            python-packaging
@@ -2312,8 +2345,11 @@ which make writing and running functional and integration tests easier.")
            python-toml
            python-virtualenv))
     (native-inputs
-     (list ; FIXME: Missing: ("python-pytest-timeout" ,python-pytest-timeout)
-           python-pytest ; >= 2.3.5
+     (list python-flaky
+           python-pathlib2
+           python-pytest                ; >= 2.3.5
+           python-pytest-freezegun
+           python-pytest-timeout
            python-setuptools-scm))
     (home-page "https://tox.readthedocs.io")
     (synopsis "Virtualenv-based automation of test activities")
