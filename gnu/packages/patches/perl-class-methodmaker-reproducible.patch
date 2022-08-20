@@ -1,0 +1,21 @@
+Description: make build reproducible by sorting hash keys
+ cf. https://reproducible.debian.net/dbd/unstable/amd64/libclass-methodmaker-perl_2.21-1.debbindiff.html
+Origin: vendor
+Bug-Debian: https://bugs.debian.org/778979
+Author: Chris Lamb <lamby@debian.org>
+Reviewed-by: gregor herrmann <gregoa@debian.org>
+Last-Update: 2015-05-02
+Forwarded: https://rt.cpan.org/Ticket/Display.html?id=104163
+Bug: https://rt.cpan.org/Ticket/Display.html?id=104163
+
+--- a/lib/Class/MethodMaker/OptExt.pm
++++ b/lib/Class/MethodMaker/OptExt.pm
+@@ -357,7 +357,7 @@
+ 
+ # -------------------------------------
+ 
+-sub option_names { grep $_ ne 'DEFAULT', keys %{OPTEXT()} }
++sub option_names { grep $_ ne 'DEFAULT', sort keys %{OPTEXT()} }
+ 
+ sub optcode {
+   my $class = shift;

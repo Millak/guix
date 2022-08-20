@@ -1601,7 +1601,9 @@ Class::Load.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0a03i4k3a33qqwhykhz5k437ld5mag2vq52vvsy03gbynb65ivsy"))))
+         "0a03i4k3a33qqwhykhz5k437ld5mag2vq52vvsy03gbynb65ivsy"))
+       (patches (search-patches
+                 "perl-class-methodmaker-reproducible.patch"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Class-MethodMaker")
     (synopsis "Create generic methods for OO Perl")
