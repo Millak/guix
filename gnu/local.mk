@@ -1514,6 +1514,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mit-krb5-hurd.patch			\
   %D%/packages/patches/mixxx-link-qtscriptbytearray-qtscript.patch	\
   %D%/packages/patches/mixxx-system-googletest-benchmark.patch	\
+  %D%/packages/patches/mm-common-reproducible-tarball.patch	\
   %D%/packages/patches/mpc123-initialize-ao.patch		\
   %D%/packages/patches/mpg321-CVE-2019-14247.patch		\
   %D%/packages/patches/mpg321-gcc-10.patch			\

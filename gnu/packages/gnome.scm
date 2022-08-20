@@ -1141,7 +1141,10 @@ freedesktop.org desktop notification specification.")
                                   "mm-common-" version ".tar.xz"))
               (sha256
                (base32
-                "1x8yvjy0yg17qyhmqws8xh2k8dvzrhpwqz7j1cfwzalrb1i9c5g8"))))
+                "1x8yvjy0yg17qyhmqws8xh2k8dvzrhpwqz7j1cfwzalrb1i9c5g8"))
+              (patches
+               (search-patches
+                "mm-common-reproducible-tarball.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
