@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
+;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -302,5 +303,27 @@
   (boot-parameters-store-directory-prefix
    (operating-system-boot-parameters %default-operating-system
                                      %default-root-device)))
+
+(define %uuid-menu-entry
+  (menu-entry
+   (label "test")
+   (device (uuid "6d5b13d4-6092-46d0-8be4-073dc07413cc"))
+   (linux "/boot/bzImage")
+   (initrd "/boot/initrd.cpio.gz")))
+
+(define %file-system-label-menu-entry
+  (menu-entry
+   (label "test")
+   (device (file-system-label "test-label"))
+   (linux "/boot/bzImage")
+   (initrd "/boot/initrd.cpio.gz")))
+
+(test-equal "menu-entry roundtrip, uuid"
+  %uuid-menu-entry
+  (sexp->menu-entry (menu-entry->sexp %uuid-menu-entry)))
+
+(test-equal "menu-entry roundtrip, file-system-label"
+  %file-system-label-menu-entry
+  (sexp->menu-entry (menu-entry->sexp %file-system-label-menu-entry)))
 
 (test-end "boot-parameters")
