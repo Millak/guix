@@ -484,15 +484,11 @@ libraries are included in this package.")
                (lambda* (#:key inputs outputs #:allow-other-keys)
                 (mkdir-p ghc-bootstrap-prefix)
                 (with-directory-excursion ghc-bootstrap-path
-                  (copy-file (assoc-ref inputs "ghc-binary")
-                             "ghc-bin.tar.xz")
-                  (invoke "tar" "xvf" "ghc-bin.tar.xz"))))
+                  (invoke "tar" "xvf" (assoc-ref inputs "ghc-binary")))))
              (add-after 'unpack-bin 'unpack-testsuite-and-fix-bins
                (lambda* (#:key inputs outputs #:allow-other-keys)
                  (with-directory-excursion ".."
-                   (copy-file (assoc-ref inputs "ghc-testsuite")
-                              "ghc-testsuite.tar.xz")
-                   (invoke "tar" "xvf" "ghc-testsuite.tar.xz"))
+                   (invoke "tar" "xvf" (assoc-ref inputs "ghc-testsuite")))
                  (substitute*
                    (list "testsuite/timeout/Makefile"
                          "testsuite/timeout/timeout.py"
