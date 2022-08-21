@@ -33,6 +33,7 @@
             search-path-specification-file-pattern
 
             $PATH
+            $GUIX_EXTENSIONS_PATH
             $SSL_CERT_DIR
             $SSL_CERT_FILE
 
@@ -72,6 +73,16 @@
   (search-path-specification
    (variable "PATH")
    (files '("bin" "sbin"))))
+
+(define-public $GUIX_EXTENSIONS_PATH
+  ;; 'GUIX_EXTENSIONS_PATH' is used by Guix to locate extension commands.
+  ;; Like 'PATH', it's not attached to any package, so that users don't have
+  ;; to install the 'guix' package (which is not supposed to be installed,
+  ;; as it will mess up the 'guix pull' installation) or set the variable
+  ;; manually.
+  (search-path-specification
+   (variable "GUIX_EXTENSIONS_PATH")
+   (files '("share/guix/extensions"))))
 
 ;; Two variables for certificates (see (guix)X.509 Certificates),
 ;; respected by 'openssl', possibly GnuTLS in the future

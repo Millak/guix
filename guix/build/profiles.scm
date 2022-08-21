@@ -179,9 +179,10 @@ search path specifications."
          (()
           (values (reverse inputs)
                   (delete-duplicates
-                   (cons $PATH
-                         (map sexp->search-path-specification
-                              (reverse search-paths)))))))))))
+                   (cons* $PATH
+                          $GUIX_EXTENSIONS_PATH
+                          (map sexp->search-path-specification
+                               (reverse search-paths)))))))))))
 
 (define* (build-profile output manifest
                         #:key (extra-inputs '()) (symlink symlink))
