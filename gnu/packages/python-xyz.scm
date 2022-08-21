@@ -8337,8 +8337,11 @@ module with a few extra procedures.")
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
                   ;; Do not test the myproject.toml build as it tries to pull
-                  ;; dependencies from the Internet.
-                  (invoke "pytest" "-vv" "-k" "not project"))))))))
+                  ;; dependencies from the Internet.  Do not run a test that
+                  ;; tries to emulate a broken proprietary CI set-up, fails
+                  ;; to do so correctly, and then throws an error about it.
+                  (invoke "pytest" "-vv" "-k"
+                          "not project and not test_function_throttled"))))))))
     (native-inputs
      (modify-inputs
          (package-native-inputs python-jaraco-functools-bootstrap)
