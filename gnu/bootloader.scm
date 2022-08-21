@@ -4,6 +4,7 @@
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,8 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu bootloader)
+  #:use-module (gnu system file-systems)
+  #:use-module (gnu system uuid)
   #:use-module (guix discovery)
   #:use-module (guix gexp)
   #:use-module (guix profiles)
@@ -104,12 +107,19 @@
 
 (define (menu-entry->sexp entry)
   "Return ENTRY serialized as an sexp."
+  (define (device->sexp device)
+    (match device
+      ((? uuid? uuid)
+       `(uuid ,(uuid-type uuid) ,(uuid->string uuid)))
+      ((? file-system-label? label)
+       `(label ,(file-system-label->string label)))
+      (_ device)))
   (match entry
     (($ <menu-entry> label device mount-point linux linux-arguments initrd #f
                      ())
      `(menu-entry (version 0)
                   (label ,label)
-                  (device ,device)
+                  (device ,(device->sexp device))
                   (device-mount-point ,mount-point)
                   (linux ,linux)
                   (linux-arguments ,linux-arguments)
@@ -118,7 +128,7 @@
                      multiboot-kernel multiboot-arguments multiboot-modules)
      `(menu-entry (version 0)
                   (label ,label)
-                  (device ,device)
+                  (device ,(device->sexp device))
                   (device-mount-point ,mount-point)
                   (multiboot-kernel ,multiboot-kernel)
                   (multiboot-arguments ,multiboot-arguments)
@@ -127,6 +137,13 @@
 (define (sexp->menu-entry sexp)
   "Turn SEXP, an sexp as returned by 'menu-entry->sexp', into a <menu-entry>
 record."
+  (define (sexp->device device-sexp)
+    (match device-sexp
+      (('uuid type uuid-string)
+       (uuid uuid-string type))
+      (('label label)
+       (file-system-label label))
+      (_ device-sexp)))
   (match sexp
     (('menu-entry ('version 0)
                   ('label label) ('device device)
@@ -135,7 +152,7 @@ record."
                   ('initrd initrd) _ ...)
      (menu-entry
       (label label)
-      (device device)
+      (device (sexp->device device))
       (device-mount-point mount-point)
       (linux linux)
       (linux-arguments linux-arguments)
@@ -148,7 +165,7 @@ record."
                   ('multiboot-modules multiboot-modules) _ ...)
      (menu-entry
       (label label)
-      (device device)
+      (device (sexp->device device))
       (device-mount-point mount-point)
       (multiboot-kernel multiboot-kernel)
       (multiboot-arguments multiboot-arguments)
