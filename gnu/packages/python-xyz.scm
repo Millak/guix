@@ -1211,13 +1211,13 @@ iotop, uptime, pidof, tty, taskset, pmap.")
 (define-public python-shapely
   (package
     (name "python-shapely")
-    (version "1.8.2")
+    (version "1.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Shapely" version))
        (sha256
-        (base32 "1dpbjw0w2l1r9s5drmi4cyr1yd5h2a4m9vip7qhy7mbg03azjajp"))))
+        (base32 "130rqd0czi128wm5pdn47v4m6czxd7pkzanbya8q48gsm8ffb5d1"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython python-matplotlib python-pytest
