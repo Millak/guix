@@ -352,28 +352,28 @@ audio or video backends, ensuring good performance.")
              (when tests?
                (invoke "./tests")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("nasm" ,nasm)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list gettext-minimal
+           `(,glib "bin")
+           nasm
+           perl
+           pkg-config
+           python-wrapper))
     (inputs
-     `(("cairo" ,cairo)
-       ("curl" ,curl)
-       ("ffmpeg" ,ffmpeg)
-       ("freeglut" ,freeglut)
-       ("glew" ,glew)
-       ("glibmm" ,glibmm)
-       ("gnutls" ,gnutls)
-       ("libjpeg" ,libjpeg-turbo)
-       ("openssl" ,openssl)
-       ("pango" ,pango)
-       ("pcre2" ,pcre2)
-       ("rtmpdump" ,rtmpdump)
-       ("sdl2" ,sdl2)
-       ("sdl2-mixer" ,sdl2-mixer)
-       ("zlib" ,zlib)))
+     (list cairo
+           curl
+           ffmpeg
+           freeglut
+           glew
+           glibmm
+           gnutls
+           libjpeg-turbo
+           openssl
+           pango
+           pcre2
+           rtmpdump
+           sdl2
+           sdl2-mixer
+           zlib))
     (home-page "https://lightspark.github.io/")
     (synopsis "Flash player implementation")
     (description
