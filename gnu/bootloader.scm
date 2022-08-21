@@ -69,7 +69,6 @@
             bootloader-configuration-terminal-inputs
             bootloader-configuration-serial-unit
             bootloader-configuration-serial-speed
-            bootloader-configuration-additional-configuration
 
             %bootloaders
             lookup-bootloader-by-name
