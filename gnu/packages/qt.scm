@@ -3634,7 +3634,7 @@ time Web content can be enhanced with native controls.")
 (define-public dotherside
   (package
     (name "dotherside")
-    (version "0.6.4")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -3644,11 +3644,12 @@ time Web content can be enhanced with native controls.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09fz6v8rp28997f235yaifj8p4vvsyv45knc1iivgdvx7msgcd0m"))))
+         "13n2qb8q9jz4ihwlbs7y15lw90w9113gb1bgnb1dggpxkj64r953"))))
     (build-system cmake-build-system)
     (native-inputs
      (list qttools-5))
     (inputs
+     ;; TODO: Support Qt 6 (requires qtdeclarative of Qt6).
      (list qtbase-5 qtdeclarative-5))
     (home-page "https://filcuc.github.io/DOtherSide/index.html")
     (synopsis "C language library for creating bindings for the Qt QML language")
