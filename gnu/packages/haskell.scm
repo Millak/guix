@@ -444,7 +444,8 @@ libraries are included in this package.")
              ghc-bootstrap-x86_64-7.8.4
              ghc-bootstrap-i686-7.8.4))))
     (arguments
-     `(#:test-target "test"
+     (list
+       #:test-target "test"
        ;; We get a smaller number of test failures by disabling parallel test
        ;; execution.
        #:parallel-tests? #f
@@ -454,117 +455,112 @@ libraries are included in this package.")
        ;; then complains that they don't match.
        #:build #f
 
-       #:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-26)
-                  (srfi srfi-1))
+       #:modules '((guix build gnu-build-system)
+                   (guix build utils)
+                   (srfi srfi-26)
+                   (srfi srfi-1))
        #:configure-flags
-       (list
-        (string-append "--with-gmp-libraries="
-                       (assoc-ref %build-inputs "gmp") "/lib")
-        (string-append "--with-gmp-includes="
-                       (assoc-ref %build-inputs "gmp") "/include")
-        "--with-system-libffi"
-        (string-append "--with-ffi-libraries="
-                       (assoc-ref %build-inputs "libffi") "/lib")
-        (string-append "--with-ffi-includes="
-                       (assoc-ref %build-inputs "libffi") "/include"))
+       #~(list
+           (string-append "--with-gmp-libraries="
+                          (assoc-ref %build-inputs "gmp") "/lib")
+           (string-append "--with-gmp-includes="
+                          (assoc-ref %build-inputs "gmp") "/include")
+           "--with-system-libffi"
+           (string-append "--with-ffi-libraries="
+                          (assoc-ref %build-inputs "libffi") "/lib")
+           (string-append "--with-ffi-includes="
+                          (assoc-ref %build-inputs "libffi") "/include"))
        ;; FIXME: The user-guide needs dblatex, docbook-xsl and docbook-utils.
        ;; Currently we do not have the last one.
        ;; #:make-flags
        ;; (list "BUILD_DOCBOOK_HTML = YES")
        #:phases
-       (let* ((ghc-bootstrap-path
-               (string-append (getcwd) "/" ,name "-" ,version "/ghc-bin"))
-              (ghc-bootstrap-prefix
-               (string-append ghc-bootstrap-path "/usr" )))
-         (alist-cons-after
-          'unpack-bin 'unpack-testsuite-and-fix-bins
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (with-directory-excursion ".."
-              (copy-file (assoc-ref inputs "ghc-testsuite")
-                         "ghc-testsuite.tar.xz")
-              (invoke "tar" "xvf" "ghc-testsuite.tar.xz"))
-            (substitute*
-                (list "testsuite/timeout/Makefile"
-                      "testsuite/timeout/timeout.py"
-                      "testsuite/timeout/timeout.hs"
-                      "testsuite/tests/rename/prog006/Setup.lhs"
-                      "testsuite/tests/programs/life_space_leak/life.test"
-                      "libraries/process/System/Process/Internals.hs"
-                      "libraries/unix/cbits/execvpe.c")
-              (("/bin/sh") (which "sh"))
-              (("/bin/rm") "rm"))
-            #t)
-          (alist-cons-after
-           'unpack 'unpack-bin
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (mkdir-p ghc-bootstrap-prefix)
-             (with-directory-excursion ghc-bootstrap-path
-               (copy-file (assoc-ref inputs "ghc-binary")
-                          "ghc-bin.tar.xz")
-               (invoke "tar" "xvf" "ghc-bin.tar.xz")))
-           (alist-cons-before
-            'install-bin 'configure-bin
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((binaries
-                      (list
-                       "./utils/ghc-pwd/dist-install/build/tmp/ghc-pwd"
-                       "./utils/hpc/dist-install/build/tmp/hpc"
-                       "./utils/haddock/dist/build/tmp/haddock"
-                       "./utils/hsc2hs/dist-install/build/tmp/hsc2hs"
-                       "./utils/runghc/dist-install/build/tmp/runghc"
-                       "./utils/ghc-cabal/dist-install/build/tmp/ghc-cabal"
-                       "./utils/hp2ps/dist/build/tmp/hp2ps"
-                       "./utils/ghc-pkg/dist-install/build/tmp/ghc-pkg"
-                       "./utils/unlit/dist/build/tmp/unlit"
-                       "./ghc/stage2/build/tmp/ghc-stage2"))
-                     (gmp (assoc-ref inputs "gmp"))
-                     (gmp-lib (string-append gmp "/lib"))
-                     (gmp-include (string-append gmp "/include"))
-                     (ncurses-lib
-                      (dirname (search-input-file inputs "/lib/libncurses.so")))
-                     (ld-so (search-input-file inputs ,(glibc-dynamic-linker)))
-                     (libtinfo-dir
-                      (string-append ghc-bootstrap-prefix
-                                     "/lib/ghc-7.8.4/terminfo-0.4.0.0")))
-                (with-directory-excursion
-                    (string-append ghc-bootstrap-path "/ghc-7.8.4")
-                  (setenv "CONFIG_SHELL" (which "bash"))
-                  (setenv "LD_LIBRARY_PATH" gmp-lib)
-                  ;; The binaries have "/lib64/ld-linux-x86-64.so.2" hardcoded.
-                  (for-each
-                   (cut invoke "patchelf" "--set-interpreter" ld-so <>)
-                   binaries)
-                  ;; The binaries include a reference to libtinfo.so.5 which
-                  ;; is a subset of libncurses.so.5.  We create a symlink in a
-                  ;; directory included in the bootstrap binaries rpath.
-                  (mkdir-p libtinfo-dir)
-                  (symlink
-                   (string-append ncurses-lib "/libncursesw.so."
-                                  ;; Extract "6.0" from "6.0-20170930" if a
-                                  ;; dash-separated version tag exists.
-                                  ,(let* ((v (package-version ncurses))
-                                          (d (or (string-index v #\-)
-                                                 (string-length v))))
-                                     (version-major+minor (string-take v d))))
-                   (string-append libtinfo-dir "/libtinfo.so.5"))
-
-                  (setenv "PATH"
-                          (string-append (getenv "PATH") ":"
-                                         ghc-bootstrap-prefix "/bin"))
-                  (invoke
-                   (string-append (getcwd) "/configure")
-                   (string-append "--prefix=" ghc-bootstrap-prefix)
-                   (string-append "--with-gmp-libraries=" gmp-lib)
-                   (string-append "--with-gmp-includes=" gmp-include)))))
-            (alist-cons-before
-             'configure 'install-bin
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (with-directory-excursion
+       #~(let* ((ghc-bootstrap-path
+                  (string-append (getcwd) "/" #$name "-" #$version "/ghc-bin"))
+                (ghc-bootstrap-prefix
+                  (string-append ghc-bootstrap-path "/usr" )))
+           (modify-phases %standard-phases
+             (add-after 'unpack 'unpack-bin
+               (lambda* (#:key inputs outputs #:allow-other-keys)
+                (mkdir-p ghc-bootstrap-prefix)
+                (with-directory-excursion ghc-bootstrap-path
+                  (copy-file (assoc-ref inputs "ghc-binary")
+                             "ghc-bin.tar.xz")
+                  (invoke "tar" "xvf" "ghc-bin.tar.xz"))))
+             (add-after 'unpack-bin 'unpack-testsuite-and-fix-bins
+               (lambda* (#:key inputs outputs #:allow-other-keys)
+                 (with-directory-excursion ".."
+                   (copy-file (assoc-ref inputs "ghc-testsuite")
+                              "ghc-testsuite.tar.xz")
+                   (invoke "tar" "xvf" "ghc-testsuite.tar.xz"))
+                 (substitute*
+                   (list "testsuite/timeout/Makefile"
+                         "testsuite/timeout/timeout.py"
+                         "testsuite/timeout/timeout.hs"
+                         "testsuite/tests/rename/prog006/Setup.lhs"
+                         "testsuite/tests/programs/life_space_leak/life.test"
+                         "libraries/process/System/Process/Internals.hs"
+                         "libraries/unix/cbits/execvpe.c")
+                   (("/bin/sh") (search-input-file inputs "/bin/sh"))
+                   (("/bin/rm") "rm"))))
+             (add-before 'configure 'install-bin
+               (lambda* (#:key inputs outputs #:allow-other-keys)
+                 (with-directory-excursion
                    (string-append ghc-bootstrap-path "/ghc-7.8.4")
-                 (invoke "make" "install")))
-             %standard-phases)))))))
+                   (invoke "make" "install"))))
+             (add-before 'install-bin 'configure-bin
+               (lambda* (#:key inputs outputs #:allow-other-keys)
+                 (let* ((binaries
+                          (list
+                            "./utils/ghc-pwd/dist-install/build/tmp/ghc-pwd"
+                            "./utils/hpc/dist-install/build/tmp/hpc"
+                            "./utils/haddock/dist/build/tmp/haddock"
+                            "./utils/hsc2hs/dist-install/build/tmp/hsc2hs"
+                            "./utils/runghc/dist-install/build/tmp/runghc"
+                            "./utils/ghc-cabal/dist-install/build/tmp/ghc-cabal"
+                            "./utils/hp2ps/dist/build/tmp/hp2ps"
+                            "./utils/ghc-pkg/dist-install/build/tmp/ghc-pkg"
+                            "./utils/unlit/dist/build/tmp/unlit"
+                            "./ghc/stage2/build/tmp/ghc-stage2"))
+                        (gmp (assoc-ref inputs "gmp"))
+                        (gmp-lib (string-append gmp "/lib"))
+                        (gmp-include (string-append gmp "/include"))
+                        (ncurses-lib
+                         (dirname (search-input-file inputs "/lib/libncurses.so")))
+                        (ld-so (search-input-file inputs #$(glibc-dynamic-linker)))
+                        (libtinfo-dir
+                         (string-append ghc-bootstrap-prefix
+                                        "/lib/ghc-7.8.4/terminfo-0.4.0.0")))
+                   (with-directory-excursion
+                     (string-append ghc-bootstrap-path "/ghc-7.8.4")
+                     (setenv "CONFIG_SHELL" (which "bash"))
+                     (setenv "LD_LIBRARY_PATH" gmp-lib)
+                     ;; The binaries have "/lib64/ld-linux-x86-64.so.2" hardcoded.
+                     (for-each
+                      (cut invoke "patchelf" "--set-interpreter" ld-so <>)
+                      binaries)
+                     ;; The binaries include a reference to libtinfo.so.5 which
+                     ;; is a subset of libncurses.so.5.  We create a symlink in a
+                     ;; directory included in the bootstrap binaries rpath.
+                     (mkdir-p libtinfo-dir)
+                     (symlink
+                      (string-append ncurses-lib "/libncursesw.so."
+                                     ;; Extract "6.0" from "6.0-20170930" if a
+                                     ;; dash-separated version tag exists.
+                                     #$(let* ((v (package-version ncurses))
+                                              (d (or (string-index v #\-)
+                                                     (string-length v))))
+                                         (version-major+minor (string-take v d))))
+                      (string-append libtinfo-dir "/libtinfo.so.5"))
+
+                     (setenv "PATH"
+                             (string-append (getenv "PATH") ":"
+                                            ghc-bootstrap-prefix "/bin"))
+                     (invoke
+                      (string-append (getcwd) "/configure")
+                      (string-append "--prefix=" ghc-bootstrap-prefix)
+                      (string-append "--with-gmp-libraries=" gmp-lib)
+                      (string-append "--with-gmp-includes=" gmp-include))))))))))
     (native-search-paths (list (search-path-specification
                                 (variable "GHC_PACKAGE_PATH")
                                 (files (list
