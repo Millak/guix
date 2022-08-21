@@ -323,7 +323,7 @@ audio or video backends, ensuring good performance.")
 (define-public lightspark
   (package
     (name "lightspark")
-    (version "0.8.5")
+    (version "0.8.6")
     (source
      (origin
        (method git-fetch)
@@ -332,7 +332,7 @@ audio or video backends, ensuring good performance.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00535ndzjbz5xyr95cih01wlkc2mgvg60bv6amz4lnnglk0c5v0p"))))
+        (base32 "0v7d7vwb0xqkk3v8dyks0wyk52ga57v5lg93y74v1d2wh7spmmzw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ;requires Adobe Flex SDK, see README.tests
