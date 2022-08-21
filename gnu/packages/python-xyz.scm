@@ -30500,7 +30500,7 @@ window managers.")
 (define-public i3-autotiling
   (package
     (name "i3-autotiling")
-    (version "1.6")
+    (version "1.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -30509,7 +30509,7 @@ window managers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hjlvg7095s322gb43r9g7mqlsy3pj13l827jpnbn5x0918rq9rr"))))
+                "1m8k3g83n2n1xws89dh20f3sy6753wvip9dzf6bssv2cz9ll7406"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f))      ;no tests
     (native-inputs (list python-wheel))
