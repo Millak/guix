@@ -38021,6 +38021,11 @@ Installation Image}).
 Attempt to build for @var{system} instead of the host system type.
 This works as per @command{guix build} (@pxref{Invoking guix build}).
 
+@item --target=@var{triplet}
+Cross-build for @var{triplet}, which must be a valid GNU triplet, such
+as @code{"aarch64-linux-gnu"} (@pxref{Specifying target triplets, GNU
+configuration triplets,, autoconf, Autoconf}).
+
 @item --derivation
 @itemx -d
 Return the derivation file name of the given operating system without
