@@ -726,16 +726,7 @@ GTK icon cache for instance.")))
 module} command.  The @command{guix module create} sub-command creates
 @dfn{environment modules}, allowing you to manipulate software environments
 with the @command{module} command commonly found on @acronym{HPC,
-high-performance computing} clusters.
-
-To use this extension, set the @env{GUIX_EXTENSIONS_PATH} environment
-variable, along these lines:
-
-@example
-export GUIX_EXTENSIONS_PATH=\"$HOME/.guix-profile/share/guix/extensions\"
-@end example
-
-Replace @code{$HOME/.guix-profile} with the appropriate profile.")
+high-performance computing} clusters.")
     (license license:gpl3+)))
 
 
