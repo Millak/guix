@@ -408,7 +408,7 @@ libraries are included in this package.")
 (define-public ghc-7
   (package
     (name "ghc")
-    (version "7.10.2")
+    (version "7.10.3")
     (source
      (origin
       (method url-fetch)
@@ -416,7 +416,7 @@ libraries are included in this package.")
                           version "/" name "-" version "-src.tar.xz"))
       (sha256
        (base32
-        "1x8m4rp2v7ydnrz6z9g8x7z3x3d3pxhv2pixy7i7hkbqbdsp7kal"))))
+        "1vsgmic8csczl62ciz51iv8nhrkm72lyhbz7p7id13y2w7fcx46g"))))
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"))
     (outputs '("out" "doc"))
@@ -432,7 +432,7 @@ libraries are included in this package.")
                  version "/" name "-" version "-testsuite.tar.xz"))
            (sha256
             (base32
-             "0qp9da9ar87zbyn6wjgacd2ic1vgzbi3cklxnhsmjqyafv9qaj4b"))))))
+             "0fk4xjw1x5lk2ifvgqij06lrbf1vxq9qfix86h9r16c0bilm3hah"))))))
     (native-inputs
      `(("perl" ,perl)
        ("python" ,python-2)                ; for tests (fails with python-3)
