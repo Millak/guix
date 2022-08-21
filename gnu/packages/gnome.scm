@@ -8434,6 +8434,11 @@ library.")
          "--sbindir" (string-append #$output "/bin"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "daemon/gdm-session.c"
+                (("dbus-run-session")
+                 (search-input-file inputs "bin/dbus-run-session")))))
           (add-before 'configure 'pre-configure
             (lambda* (#:key inputs #:allow-other-keys)
               ;; We don't have <systemd/sd-daemon.h>.
@@ -8574,6 +8579,7 @@ logo='~a'~%" icon))))))
     (inputs
      (list accountsservice
            check                        ;for testing
+           dbus
            elogind
            eudev
            gnome-session
