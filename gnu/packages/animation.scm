@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -365,7 +365,6 @@ audio or video backends, ensuring good performance.")
        ("freeglut" ,freeglut)
        ("glew" ,glew)
        ("glibmm" ,glibmm)
-       ("gnash" ,gnash)
        ("gnutls" ,gnutls)
        ("libjpeg" ,libjpeg-turbo)
        ("openssl" ,openssl)
