@@ -6359,31 +6359,30 @@ from that to the system kernel's @file{/dev/random} machinery.")
     (source (package-source linux-libre))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'enter-subdirectory
-                    (lambda _
-                      (chdir "tools/power/cpupower")
-                      #t))
-                  (delete 'configure)
-                  (add-before 'build 'fix-makefiles
-                    (lambda _
-                      (substitute* "Makefile"
-                        (("/usr/") "/")
-                        (("/bin/(install|pwd)" _ command) command))
-                      (substitute* "bench/Makefile"
-                        (("\\$\\(CC\\) -o") "$(CC) $(LDFLAGS) -o"))
-                      #t)))
-       #:make-flags (let ((out (assoc-ref %outputs "out")))
-                      (list (string-append "DESTDIR=" out)
-                            (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
-                            "libdir=/lib"
-                            "docdir=/share/doc/cpupower"
-                            "confdir=$(docdir)/examples"
-                            ;; The Makefile recommends the following changes
-                            "DEBUG=false"
-                            "PACKAGE_BUGREPORT=bug-guix@gnu.org"))
-       #:tests? #f)) ;no tests
-    (native-inputs `(("gettext" ,gettext-minimal)))
+     (list #:make-flags
+           #~(list (string-append "DESTDIR=" #$output)
+                   (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+                   "libdir=/lib"
+                   "docdir=/share/doc/cpupower"
+                   "confdir=$(docdir)/examples"
+                   ;; The Makefile recommends the following changes
+                   "DEBUG=false"
+                   "PACKAGE_BUGREPORT=bug-guix@gnu.org")
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'enter-subdirectory
+                 (lambda _
+                   (chdir "tools/power/cpupower")))
+               (delete 'configure)      ; no configure script
+               (add-before 'build 'fix-makefiles
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("/usr/") "/")
+                     (("/bin/(install|pwd)" _ command) command))
+                   (substitute* "bench/Makefile"
+                     (("\\$\\(CC\\) -o") "$(CC) $(LDFLAGS) -o")))))))
+    (native-inputs (list gettext-minimal))
     (inputs (list pciutils))
     (home-page (package-home-page linux-libre))
     (synopsis "CPU frequency and voltage scaling tools for Linux")
