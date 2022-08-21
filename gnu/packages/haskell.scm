@@ -587,25 +587,24 @@ interactive environment for the functional language Haskell.")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (outputs '("out" "doc"))
     (inputs
-     `(("gmp" ,gmp)
-       ("ncurses" ,ncurses)
-       ("libffi" ,libffi)
-       ("ghc-testsuite"
-        ,(origin
-           (method url-fetch)
-           (uri (string-append
-                 "https://www.haskell.org/ghc/dist/"
-                 version "/" name "-" version "-testsuite.tar.xz"))
-           (sha256
-            (base32 "1wjc3x68l305bl1h1ijd3yhqp2vqj83lkp3kqbr94qmmkqlms8sj"))))))
+     (list gmp ncurses libffi))
     (native-inputs
      `(("perl" ,perl)
        ("python" ,python-2)                ; for tests
        ("ghostscript" ,ghostscript)        ; for tests
        ;; GHC is built with GHC.
-       ("ghc-bootstrap" ,ghc-7)))
+       ("ghc-bootstrap" ,ghc-7)
+       ("ghc-testsuite"
+        ,(origin
+           (method url-fetch)
+           (uri (string-append
+                  "https://www.haskell.org/ghc/dist/"
+                  version "/" name "-" version "-testsuite.tar.xz"))
+           (sha256
+            (base32 "1wjc3x68l305bl1h1ijd3yhqp2vqj83lkp3kqbr94qmmkqlms8sj")))) ))
     (arguments
-     `(#:test-target "test"
+     (list
+       #:test-target "test"
        ;; We get a smaller number of test failures by disabling parallel test
        ;; execution.
        #:parallel-tests? #f
@@ -616,53 +615,48 @@ interactive environment for the functional language Haskell.")
        #:build #f
 
        #:configure-flags
-       (list
-        (string-append "--with-gmp-libraries="
-                       (assoc-ref %build-inputs "gmp") "/lib")
-        (string-append "--with-gmp-includes="
-                       (assoc-ref %build-inputs "gmp") "/include")
-        "--with-system-libffi"
-        (string-append "--with-ffi-libraries="
-                       (assoc-ref %build-inputs "libffi") "/lib")
-        (string-append "--with-ffi-includes="
-                       (assoc-ref %build-inputs "libffi") "/include")
-        (string-append "--with-curses-libraries="
-                       (assoc-ref %build-inputs "ncurses") "/lib")
-        (string-append "--with-curses-includes="
-                       (assoc-ref %build-inputs "ncurses") "/include"))
+       #~(list
+           (string-append "--with-gmp-libraries="
+                          (assoc-ref %build-inputs "gmp") "/lib")
+           (string-append "--with-gmp-includes="
+                          (assoc-ref %build-inputs "gmp") "/include")
+           "--with-system-libffi"
+           (string-append "--with-ffi-libraries="
+                          (assoc-ref %build-inputs "libffi") "/lib")
+           (string-append "--with-ffi-includes="
+                          (assoc-ref %build-inputs "libffi") "/include")
+           (string-append "--with-curses-libraries="
+                          (assoc-ref %build-inputs "ncurses") "/lib")
+           (string-append "--with-curses-includes="
+                          (assoc-ref %build-inputs "ncurses") "/include"))
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-testsuite
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion ".."
-               (copy-file (assoc-ref inputs "ghc-testsuite")
-                          "ghc-testsuite.tar.xz")
-               (zero? (system* "tar" "xvf" "ghc-testsuite.tar.xz")))))
-         (add-before 'build 'fix-lib-paths
-           (lambda _
-             (substitute*
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'unpack-testsuite
+             (lambda* (#:key inputs #:allow-other-keys)
+               (with-directory-excursion ".."
+                 (invoke "tar" "xvf" (assoc-ref inputs "ghc-testsuite")))))
+           (add-before 'build 'fix-lib-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute*
                  (list "libraries/process/System/Process/Posix.hs"
                        "libraries/process/tests/process001.hs"
                        "libraries/process/tests/process002.hs"
                        "libraries/unix/cbits/execvpe.c")
-               (("/bin/sh") (which "sh"))
-               (("/bin/ls") (which "ls")))
-             #t))
-         (add-before 'build 'fix-environment
-           (lambda _
-             (unsetenv "GHC_PACKAGE_PATH")
-             (setenv "CONFIG_SHELL" (which "bash"))
-             #t))
-         (add-before 'check 'fix-testsuite
-           (lambda _
-             (substitute*
+                 (("/bin/sh") (search-input-file inputs "/bin/sh"))
+                 (("/bin/ls") (search-input-file inputs "/bin/ls")))))
+           (add-before 'build 'fix-environment
+             (lambda _
+               (unsetenv "GHC_PACKAGE_PATH")
+               (setenv "CONFIG_SHELL" (which "bash"))))
+           (add-before 'check 'fix-testsuite
+             (lambda _
+               (substitute*
                  (list "testsuite/timeout/Makefile"
                        "testsuite/timeout/timeout.py"
                        "testsuite/timeout/timeout.hs"
                        "testsuite/tests/programs/life_space_leak/life.test")
-               (("/bin/sh") (which "sh"))
-               (("/bin/rm") "rm"))
-             #t)))))
+                 (("/bin/sh") (which "sh"))
+                 (("/bin/rm") "rm")))))))
     (native-search-paths (list (search-path-specification
                                 (variable "GHC_PACKAGE_PATH")
                                 (files (list
