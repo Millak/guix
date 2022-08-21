@@ -204,17 +204,18 @@ Python.")
         (base32 "0315nq6r39n51n8qqamb7xv0ib0qrh76q7g3a1977172mbndijw3"))))
     (build-system python-build-system)
     (arguments
-     `(#:test-target "check"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-setuppy
-           (lambda _
-             (substitute* "setup.py"
-               (("include_dirs.append\\(.*\\)")
-                (string-append "include_dirs.append('"
-                               (assoc-ref %build-inputs "lzo")
-                               "/include/lzo"
-                               "')"))))))))
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setuppy
+            (lambda _
+              (substitute* "setup.py"
+                (("include_dirs.append\\(.*\\)")
+                 (string-append "include_dirs.append('"
+                                #$(this-package-input "lzo")
+                                "/include/lzo"
+                                "')"))))))))
     (inputs
      (list lzo))
     (home-page "https://github.com/jd-boyd/python-lzo")
