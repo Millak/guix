@@ -1541,6 +1541,30 @@ harmonized subsetting of rows (features) and columns (patients / samples)
 across the entire multi-'omics experiment.")
     (license license:artistic2.0)))
 
+(define-public r-parathyroidse
+  (package
+    (name "r-parathyroidse")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "parathyroidSE" version
+                                     'experiment))
+              (sha256
+               (base32
+                "1h33x55c4gbzmh085skqif04wdcvjp2l9fm55qzwws27kwd30c16"))))
+    (properties `((upstream-name . "parathyroidSE")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-summarizedexperiment))
+    (home-page "https://bioconductor.org/packages/parathyroidSE")
+    (synopsis "RangedSummarizedExperiment for RNA-Seq of parathyroid tumors")
+    (description
+     "This package provides @code{RangedSummarizedExperiment} objects of read
+counts in genes and exonic parts for paired-end RNA-Seq data from experiments on
+primary cultures of parathyroid tumors.  The sequencing was performed on tumor
+cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and control).")
+    ;; The author(s) mentions only LGPL without any specific version.
+    (license license:lgpl2.1+)))
+
 (define-public r-tcgabiolinksgui-data
   (package
     (name "r-tcgabiolinksgui-data")
