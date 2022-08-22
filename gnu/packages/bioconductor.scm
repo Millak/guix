@@ -5073,6 +5073,61 @@ annotation packages each of which has its own schema by taking advantage of
 the fact that each of these packages implements a select methods.")
     (license license:artistic2.0)))
 
+(define-public r-pcaexplorer
+  (package
+    (name "r-pcaexplorer")
+    (version "2.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "pcaExplorer" version))
+       (sha256
+        (base32
+         "0xkafpi6y5n8hljdaj183hd5z4ik7lpbklg2cbx1hwfz4n4hh1bl"))))
+    (properties `((upstream-name . "pcaExplorer")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi
+           r-base64enc
+           r-biomart
+           r-deseq2
+           r-dt
+           r-genefilter
+           r-genomicranges
+           r-ggplot2
+           r-ggrepel
+           r-go-db
+           r-gostats
+           r-heatmaply
+           r-iranges
+           r-knitr
+           r-limma
+           r-nmf
+           r-pheatmap
+           r-plotly
+           r-plyr
+           r-rmarkdown
+           r-s4vectors
+           r-scales
+           r-shiny
+           r-shinyace
+           r-shinybs
+           r-shinydashboard
+           r-summarizedexperiment
+           r-threejs
+           r-tidyr
+           r-topgo))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/federicomarini/pcaExplorer")
+    (synopsis
+     "Interactive Visualization of RNA-seq Data Using a Principal Components Approach")
+    (description
+     "This package provides functionality for interactive visualization of RNA-seq
+datasets based on Principal Components Analysis.  The methods provided allow for
+quick information extraction and effective data exploration.  A Shiny
+application encapsulates the whole analysis.")
+    (license license:expat)))
+
 (define-public r-pcamethods
   (package
     (name "r-pcamethods")
