@@ -2781,38 +2781,10 @@ Specification, the icon naming utility maps the icon names used by the
 GNOME and KDE desktops to the icon names proposed in the specification.")
     (license license:lgpl2.1+)))
 
-(define-public gnome-icon-theme
-  (package
-    (name "gnome-icon-theme")
-    (version "3.12.0")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnome/sources/" name "/"
-                          (version-major+minor version)  "/"
-                          name "-" version ".tar.xz"))
-      (sha256
-       (base32
-        "0fjh9qmmgj34zlgxb09231ld7khys562qxbpsjlaplq2j85p57im"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags
-       ;; Don't create 'icon-theme.cache'.
-       (let* ((coreutils (assoc-ref %build-inputs "coreutils"))
-              (true      (string-append coreutils "/bin/true")))
-         (list (string-append "GTK_UPDATE_ICON_CACHE=" true)))))
-    (native-inputs
-     (list icon-naming-utils intltool pkg-config))
-    (home-page "https://wiki.gnome.org/Personalization")
-    (synopsis "GNOME icon theme")
-    (description "Icons for the GNOME desktop.")
-    (license license:lgpl3))) ; or Creative Commons BY-SA 3.0
-
-;; gnome-icon-theme was renamed to adwaita-icon-theme after version 3.12.0.
 (define-public adwaita-icon-theme
-  (package/inherit gnome-icon-theme
+  (package
     (name "adwaita-icon-theme")
-    (version "40.1.1")
+    (version "42.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2820,13 +2792,25 @@ GNOME and KDE desktops to the icon names proposed in the specification.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1xpqa1rgmixlp953938d08xvf7kv36h747ysial8g65dsrp46v0b"))))
+                "1q5i31zd5jzr12p6vn831afwnzbzf6x73wna1y86drnyr2nvb1ay"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           ;; Don't create 'icon-theme.cache'.
+           #~(list "GTK_UPDATE_ICON_CACHE=")))
     (native-inputs
      ;; The following requires the SVG pixbuf loader, provided by librsvg,
      ;; available on x86_64 only.
      `(,@(if (target-64bit?)
-             `(("gtk-encode-symbolic-svg" ,gtk+ "bin"))
-             '())))))
+             `((,gtk+ "bin"))             ;for gtk-encode-symbolic-svg
+             '())))
+    (home-page "https://gitlab.gnome.org/GNOME/adwaita-icon-theme")
+    (synopsis "GNOME icon theme")
+    (description "Icons for the GNOME desktop.")
+    (license license:lgpl3))) ; or Creative Commons BY-SA 3.0
+
+(define-public gnome-icon-theme
+  (deprecated-package "gnome-icon-theme" adwaita-icon-theme))
 
 (define-public tango-icon-theme
   (package
