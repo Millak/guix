@@ -769,10 +769,10 @@ interactive environment for the functional language Haskell.")
     (arguments
      (substitute-keyword-arguments (package-arguments ghc-8.4)
        ((#:make-flags make-flags ''())
-        `(cons "EXTRA_RUNTEST_OPTS=--skip-perf-tests"
-               ,make-flags))
+        #~(cons "EXTRA_RUNTEST_OPTS=--skip-perf-tests"
+                #$make-flags))
        ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
+        #~(modify-phases #$phases
            (add-after 'install 'remove-unnecessary-references
              (lambda* (#:key outputs #:allow-other-keys)
                (substitute* (find-files (string-append (assoc-ref outputs "out") "/lib/")
@@ -797,8 +797,7 @@ interactive environment for the functional language Haskell.")
                                     (new    (string-append out subdir)))
                                (mkdir-p (dirname new))
                                (rename-file haddock-file new)))
-                           (find-files doc "\\.haddock$")))
-               #t))
+                           (find-files doc "\\.haddock$")))))
            (add-after 'unpack-testsuite 'skip-tests
              (lambda _
                ;; These two tests refer to the root user, which doesn't exist
@@ -806,8 +805,7 @@ interactive environment for the functional language Haskell.")
                (substitute* "libraries/unix/tests/all.T"
                  (("^test\\('T8108'") "# guix skipped: test('T8108'"))
                (substitute* "libraries/unix/tests/libposix/all.T"
-                 (("^test\\('posix010'") "# guix skipped: test('posix010'"))
-               #t))))))
+                 (("^test\\('posix010'") "# guix skipped: test('posix010'"))))))))
     (native-search-paths (list (search-path-specification
                                 (variable "GHC_PACKAGE_PATH")
                                 (files (list
