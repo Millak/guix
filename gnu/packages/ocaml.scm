@@ -8678,6 +8678,39 @@ QuickCheck-style property-based testing and the magical bug-finding powers of
 constant-time to avoid timing-attack with crypto stuff.")
     (license license:expat)))
 
+(define-public ocaml-digestif
+  (package
+    (name "ocaml-digestif")
+    (version "1.1.2")
+    (home-page "https://github.com/mirage/digestif")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0mc233d63y04jznsn3bxncgv7fkvyngbv6hcka412iq0y3x4qsmq"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-eqaf))
+    (native-inputs
+     (list pkg-config
+           ocaml-fmt
+           ocaml-alcotest
+           ocaml-bos
+           ocaml-astring
+           ocaml-fpath
+           ocaml-rresult
+           ocaml-findlib))
+    (synopsis "Simple hash algorithms in OCaml")
+    (description
+     "Digestif is an OCaml library that provides implementations of hash
+algorithms.  Implemented hash algorithms include MD5, SHA1, SHA224, SHA256,
+SHA384, SHA512, Blake2b, Blake2s and RIPEMD160.")
+    (license license:expat)))
+
 (define-public ocaml-bibtex2html
   (package
     (name "ocaml-bibtex2html")
