@@ -4713,7 +4713,7 @@ indicators etc).")
 (define-public glib-networking
   (package
     (name "glib-networking")
-    (version "2.70.0")
+    (version "2.72.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/glib-networking/"
@@ -4721,7 +4721,7 @@ indicators etc).")
                                   "glib-networking-" version ".tar.xz"))
               (sha256
                (base32
-                "0dbg1na239mbavn4hknkax5sns9q2dbdnqw9wcpmhv58mzkhid36"))
+                "0s42l6dkajciqc99zp6dc9l8yv9g8w7d8mgv97l7h7drgd60hand"))
               (patches
                (search-patches "glib-networking-gnutls-binding.patch"))))
     (build-system meson-build-system)
