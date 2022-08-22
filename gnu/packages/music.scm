@@ -3724,13 +3724,13 @@ websites such as Libre.fm.")
 (define-public beets
   (package
     (name "beets")
-    (version "1.5.0")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "beets" version))
               (sha256
                (base32
-                "0arl4nc3y8iwa331hf6ggai19y8ns9pl03g5d6ac857wq2x7nzw8"))))
+                "0paj2nxvdx4zz9xawjpbsh0dy1kp9kfhxg8akh1rpz2awhsbfvxa"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3773,7 +3773,6 @@ websites such as Libre.fm.")
            python-munkres
            python-musicbrainzngs
            python-pyyaml
-           python-six
            python-unidecode
            ;; Optional dependencies for plugins. Some of these are also required by tests.
            python-beautifulsoup4 ; For lyrics.
