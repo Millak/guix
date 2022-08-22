@@ -896,7 +896,7 @@ interactive environment for the functional language Haskell.")
     (arguments
      (substitute-keyword-arguments (package-arguments ghc-8.8)
        ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
+        #~(modify-phases #$phases
            (add-after 'unpack-testsuite 'patch-more-shebangs
              (lambda* (#:key inputs #:allow-other-keys)
                (let ((bash (assoc-ref inputs "bash")))
