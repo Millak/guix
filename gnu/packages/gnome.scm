@@ -10147,7 +10147,7 @@ GLib/GObject code.")
 (define-public libgnomekbd
   (package
     (name "libgnomekbd")
-    (version "3.26.1")
+    (version "3.28.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libgnomekbd/"
@@ -10155,14 +10155,21 @@ GLib/GObject code.")
                                   "libgnomekbd-" version ".tar.xz"))
               (sha256
                (base32
-                "0y962ykn3rr9gylj0pwpww7bi20lmhvsw6qvxs5bisbn2mih5jpp"))))
+                "1jarhq9crhq0wfnbcz7x3hgxbkan98ax3p2jwcgzj9jc7r27l1dk"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config
-           `(,glib "bin") intltool))
+     (list autoconf
+           automake
+           `(,glib "bin")
+           libtool
+           pkg-config
+           gettext-minimal
+           gobject-introspection))
     (propagated-inputs
      ;; Referred to in .h files and .pc.
-     (list glib gtk+ libxklavier))
+     (list glib
+           gtk+
+           libxklavier))
     (home-page "https://www.gnome.org")
     (synopsis "GNOME keyboard configuration library")
     (description
