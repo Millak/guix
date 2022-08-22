@@ -15,6 +15,7 @@
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,7 @@
 (define-module (gnu packages pulseaudio)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix l:)
@@ -178,57 +180,55 @@ rates.")
 (define-public pulseaudio
   (package
     (name "pulseaudio")
-    (version "15.0")
+    (version "16.1")
     (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://freedesktop.org/software/pulseaudio/releases/"
-                   name "-" version ".tar.xz"))
-             (sha256
-              (base32
-               "1851rg4h6sjwanvd294hn52z321rc6vbs4gbfrlw53597dx8h2x4"))
-             (modules '((guix build utils)))
-             (snippet
-              ;; Disable console-kit support by default since it's deprecated
-              ;; anyway.
-              '(begin
-                 (substitute* "src/daemon/default.pa.in"
-                   (("load-module module-console-kit" all)
-                    (string-append "#" all "\n")))
-                 #t))
-             (patches (search-patches
-                       "pulseaudio-fix-mult-test.patch"
-                       "pulseaudio-longer-test-timeout.patch"))))
+              (method url-fetch)
+              (uri (string-append
+                    "https://freedesktop.org/software/pulseaudio/releases/"
+                    name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1r2aa0g7al9jhrrbrnih6i3bfznd73kkbafrbzwpjyflj7735vwf"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Disable console-kit support by default since it's deprecated
+               ;; anyway.
+               '(substitute* "src/daemon/default.pa.in"
+                  (("load-module module-console-kit" all)
+                   (string-append "#" all "\n"))))
+              (patches (search-patches
+                        "pulseaudio-fix-mult-test.patch"
+                        "pulseaudio-longer-test-timeout.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list "-Doss-output=disabled"
-               "-Dlocalstatedir=/var"
-               (string-append "-Dudevrulesdir="
-                              out "/lib/udev/rules.d")
-               ;; Ensure the RUNPATH contains all installed library locations.
-               (string-append "-Dc_link_args=-Wl,-rpath="
-                              out "/lib/pulseaudio:"
-                              out "/lib:"
-                              out "/lib/pulse-" ,version "/modules")))
-       #:phases (modify-phases %standard-phases
-                 (add-before 'check 'pre-check
-                   (lambda _
-                     ;; 'tests/lock-autospawn-test.c' wants to create a file
-                     ;; under ~/.config/pulse.
-                     (setenv "HOME" (getcwd))
-                     ;; 'thread-test' needs more time on hydra and on slower
-                     ;; machines, so we set the default timeout to 120 seconds.
-                     (setenv "CK_DEFAULT_TIMEOUT" "120")
-                     #t)))))
+     (list
+      #:configure-flags
+      #~(list "-Doss-output=disabled"
+              "-Dlocalstatedir=/var"
+              (string-append "-Dudevrulesdir="
+                             #$output "/lib/udev/rules.d")
+              ;; Ensure the RUNPATH contains all installed library locations.
+              (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib/pulseaudio:"
+                             #$output "/lib:"
+                             #$output "/lib/pulse-" #$version "/modules"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; 'tests/lock-autospawn-test.c' wants to create a file
+              ;; under ~/.config/pulse.
+              (setenv "HOME" (getcwd))
+              ;; 'thread-test' needs more time on hydra and on slower
+              ;; machines, so we set the default timeout to 120 seconds.
+              (setenv "CK_DEFAULT_TIMEOUT" "120"))))))
     (inputs
      (list alsa-lib
            bluez
            sbc
            speexdsp
            libsndfile
-           jack-1 ; For routing the output to jack.
+           jack-1                       ; For routing the output to jack.
            dbus
            glib
            libltdl
@@ -241,16 +241,16 @@ rates.")
            libxcb
            libxtst
            elogind
-           eudev))         ;for the detection of hardware audio devices
+           eudev))                ;for the detection of hardware audio devices
     (native-inputs
-     `(("check" ,check)
-       ("doxygen" ,doxygen)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("m4" ,m4)
-       ("perl" ,perl)
-       ("perl-xml-parser" ,perl-xml-parser)
-       ("pkg-config" ,pkg-config)))
+     (list check
+           doxygen
+           gettext-minimal
+           `(,glib "bin")
+           m4
+           perl
+           perl-xml-parser
+           pkg-config))
     (propagated-inputs
      ;; 'libpulse*.la' contain `-ltdb' and `-lcap', so propagate them.
      (list libcap tdb))
