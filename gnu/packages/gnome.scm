@@ -7908,7 +7908,7 @@ users.")
 (define-public network-manager
   (package
     (name "network-manager")
-    (version "1.32.12")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/NetworkManager/"
@@ -7918,138 +7918,135 @@ users.")
                                        "network-manager-meson.patch"))
               (sha256
                (base32
-                "0jzmz0zw64dgvdn2g7pppr7bkywpbxcbdb1viv6p7zh2lnh3dax8"))))
+                "00zwx7cvl8p8xv5h8yvlj2r5wycbvbqia7z4hjmmvjicpiby1rxf"))))
     (build-system meson-build-system)
     (outputs '("out"
                "doc"))                  ; 8 MiB of gtk-doc HTML
     (arguments
-     `(#:configure-flags
-       (let ((out      (assoc-ref %outputs "out"))
-             (dhclient (search-input-file %build-inputs "/sbin/dhclient")))
-         (list
-          ;; Otherwise, the RUNPATH will lack the final 'NetworkManager' path
-          ;; component.
-          (string-append "-Dc_link_args=-Wl,-rpath="
-                         out "/lib:"
-                         out "/lib/NetworkManager/" ,version)
-          "-Dsystemd_journal=false"
-          "-Dsession_tracking=elogind"
-          "-Dsuspend_resume=elogind"
-          "-Dsystemdsystemunitdir=no"
-          "-Dsession_tracking_consolekit=false"
-          "-Ddhcpcd=no"
-          "-Ddhcpcanon=no"
-          "-Dcrypto=gnutls"
-          "-Diwd=true"
-          "-Dlibaudit=yes"
-          "-Dqt=false"
-          "-Ddocs=true"
-          "--sysconfdir=/etc"
-          "--localstatedir=/var"
-          (string-append "-Dudev_dir="
-                         out "/lib/udev")
-          (string-append "-Ddbus_conf_dir="
-                         out "/etc/dbus-1/system.d")
+     (list
+      #:configure-flags
+      #~(list
+         ;; Otherwise, the RUNPATH will lack the final 'NetworkManager' path
+         ;; component.
+         (string-append "-Dc_link_args=-Wl,-rpath="
+                        #$output "/lib:"
+                        #$output "/lib/NetworkManager/" #$version)
+         "-Dsystemd_journal=false"
+         "-Dsession_tracking=elogind"
+         "-Dsuspend_resume=elogind"
+         "-Dsystemdsystemunitdir=no"
+         "-Dsession_tracking_consolekit=false"
+         "-Ddhcpcd=no"
+         "-Ddhcpcanon=no"
+         "-Dcrypto=gnutls"
+         "-Diwd=true"
+         "-Dlibaudit=yes"
+         "-Dqt=false"
+         "-Ddocs=true"
+         "--sysconfdir=/etc"
+         "--localstatedir=/var"
+         (string-append "-Dudev_dir="
+                        #$output "/lib/udev")
+         (string-append "-Ddbus_conf_dir="
+                        #$output "/etc/dbus-1/system.d")
 
-          (string-append "-Ddhclient=" dhclient)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-dlopen-call-to-libjansson.so
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/libnm-glib-aux/nm-json-aux.c"
-               (("(handle = dlopen\\()soname" _ head)
-                (string-append
-                 head "\"" (search-input-file inputs
-                                              "lib/libjansson.so") "\"")))))
-         (add-before 'configure 'pre-configure
-           (lambda _
-             ;; These tests try to test aspects of network-manager's
-             ;; functionality within restricted containers, but they don't
-             ;; cope with being already in the Guix build jail as that jail
-             ;; lacks some features that they would like to proxy over (like
-             ;; a /sys mount).
-             (substitute* "src/core/tests/meson.build"
-               ((".*test-l3cfg.*") ""))
-             (substitute* "src/core/devices/tests/meson.build"
-               ((".*test-acd.*") "")
-               ((".*test-lldp.*") ""))
-             (substitute* "src/core/platform/tests/meson.build"
-               ((".*test-address-linux.*") "")
-               ((".*test-cleanup-linux.*") "")
-               ((".*test-link-linux.*") "")
-               ((".*test-lldp.*") "")
-               ((".*test-route-linux.*") "")
-               ((".*test-tc-linux.*") ""))))
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
-                                          "/xml/dtd/docbook")))
-               (substitute* (find-files "." ".*\\.(xsl|xml)")
-                 (("http://.*/docbookx\\.dtd")
-                  (string-append xmldoc "/docbookx.dtd"))))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; For the missing /etc/machine-id.
-             (setenv "DBUS_FATAL_WARNINGS" "0")))
-         (add-before 'install 'no-polkit-magic
-           ;; Meson ‘magically’ invokes pkexec, which fails (not setuid).
-           (lambda _
-             (setenv "PKEXEC_UID" "something")))
-         (add-after 'install 'move-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share"))
-               (for-each (lambda (directory)
-                           (copy-recursively (string-append out directory)
-                                             (string-append doc directory))
-                           (delete-file-recursively
-                            (string-append out directory)))
-                         '("/share/doc" "/share/gtk-doc"))))))))
+         (string-append "-Ddhclient=" (search-input-file %build-inputs
+                                                         "/sbin/dhclient")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-dlopen-call-to-libjansson.so
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/libnm-glib-aux/nm-json-aux.c"
+                (("(handle = dlopen\\()soname" _ head)
+                 (string-append
+                  head "\"" (search-input-file inputs
+                                               "lib/libjansson.so") "\"")))))
+          (add-before 'configure 'pre-configure
+            (lambda _
+              ;; These tests try to test aspects of network-manager's
+              ;; functionality within restricted containers, but they don't
+              ;; cope with being already in the Guix build jail as that jail
+              ;; lacks some features that they would like to proxy over (like
+              ;; a /sys mount).
+              (substitute* "src/core/tests/meson.build"
+                ((".*test-l3cfg.*") ""))
+              (substitute* "src/core/devices/tests/meson.build"
+                ((".*test-acd.*") "")
+                ((".*test-lldp.*") ""))
+              (substitute* "src/core/platform/tests/meson.build"
+                ((".*test-address-linux.*") "")
+                ((".*test-cleanup-linux.*") "")
+                ((".*test-link-linux.*") "")
+                ((".*test-lldp.*") "")
+                ((".*test-route-linux.*") "")
+                ((".*test-tc-linux.*") ""))))
+          (add-after 'unpack 'patch-docbook-xml
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "." ".*\\.(xsl|xml)")
+                (("http://.*/docbookx\\.dtd")
+                 (search-input-file inputs "xml/dtd/docbook/docbookx.dtd")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; For the missing /etc/machine-id.
+              (setenv "DBUS_FATAL_WARNINGS" "0")))
+          (add-before 'install 'no-polkit-magic
+            ;; Meson ‘magically’ invokes pkexec, which fails (not setuid).
+            (lambda _
+              (setenv "PKEXEC_UID" "something")))
+          (add-after 'install 'move-doc
+            (lambda _
+              (mkdir-p (string-append #$output:doc "/share"))
+              (for-each (lambda (directory)
+                          (copy-recursively (string-append #$output directory)
+                                            (string-append #$output:doc
+                                                           directory))
+                          (delete-file-recursively
+                           (string-append #$output directory)))
+                        '("/share/doc" "/share/gtk-doc")))))))
     (propagated-inputs
      (list glib))
     (native-inputs
-     `(("glib:bin" ,glib "bin")         ; for gdbus-codegen
-       ("gtk-doc" ,gtk-doc/stable)
-       ("gobject-introspection" ,gobject-introspection)
-       ("docbook-xml" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("intltool" ,intltool)
-       ("libxslt" ,libxslt)
-       ("libxml2" ,libxml2)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ;; For testing.
-       ("python" ,python-wrapper)
-       ("python-dbus" ,python-dbus)
-       ("python-pygobject" ,python-pygobject)))
+     (list `(,glib "bin")               ; for gdbus-codegen
+           gtk-doc/stable
+           gobject-introspection
+           docbook-xml
+           docbook-xsl
+           intltool
+           libxslt
+           libxml2
+           pkg-config
+           vala
+           ;; For testing.
+           python-wrapper
+           python-dbus
+           python-pygobject))
     (inputs
-     `(("curl" ,curl)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("dbus-glib" ,dbus-glib)
-       ("dnsmasq" ,dnsmasq)
-       ("eudev" ,eudev)
-       ("gnutls" ,gnutls)
-       ("iptables" ,iptables)
-       ("isc-dhcp" ,isc-dhcp)
-       ("iwd" ,iwd)                     ; wpa_supplicant alternative
-       ("jansson" ,jansson)
-       ("libaudit" ,audit)
-       ("libgcrypt" ,libgcrypt)
-       ("libgudev" ,libgudev)
-       ("libndp" ,libndp)
-       ("libnl" ,libnl)
-       ("libselinux" ,libselinux)
-       ("libsoup" ,libsoup)
-       ("mobile-broadband-provider-info" ,mobile-broadband-provider-info)
-       ("modem-manager" ,modem-manager)
-       ("newt" ,newt)                   ;for the 'nmtui' console interface
-       ("openresolv" ,openresolv)       ; alternative resolv.conf manager
-       ("polkit" ,polkit)
-       ("ppp" ,ppp)
-       ("readline" ,readline)
-       ("util-linux" ,util-linux)
-       ("elogind" ,elogind)))
+     (list curl
+           cyrus-sasl
+           dbus-glib
+           dnsmasq
+           eudev
+           gnutls
+           iptables
+           isc-dhcp
+           iwd                 ; wpa_supplicant alternative
+           jansson
+           audit
+           libgcrypt
+           libgudev
+           libndp
+           libnl
+           libselinux
+           libsoup
+           mobile-broadband-provider-info
+           modem-manager
+           newt               ;for the 'nmtui' console interface
+           openresolv   ; alternative resolv.conf manager
+           polkit
+           ppp
+           readline
+           util-linux
+           elogind))
     (synopsis "Network connection manager")
     (home-page "https://wiki.gnome.org/Projects/NetworkManager")
     (description
