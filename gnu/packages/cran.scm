@@ -749,6 +749,42 @@ similar rank-based tests for equal probability distributions due to Neuhauser
 WebAssembly engine.")
     (license license:expat)))
 
+(define-public r-rvenn
+  (package
+    (name "r-rvenn")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RVenn" version))
+       (sha256
+        (base32
+         "016m00xv59lkwm2is32v5nr4lw5a1ymdnz34r3ffflcv9bfrc6n4"))))
+    (properties `((upstream-name . "RVenn")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggforce
+           r-ggplot2
+           r-magrittr
+           r-pheatmap
+           r-purrr
+           r-rlang
+           r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=RVenn")
+    (synopsis "Set operations for many sets")
+    (description
+     "The base functions for set operations in @code{R} can be used for only two
+sets.  This package @code{RVenn} provides functions for dealing with multiple sets.
+It uses @code{purr} to find the union, intersection and difference of three or
+more sets.  This package also provides functions for pairwise set operations among
+several sets.  Further, based on @code{ggplot2} and @code{ggforce}, a Venn diagram
+can be drawn for two or three sets.  For bigger data sets, a clustered heatmap
+showing the presence or absence of the elements of the sets can be drawn based on
+the @code{pheatmap} package.  Finally, enrichment test can be applied to two sets
+whether an overlap is statistically significant or not.")
+    (license license:gpl3)))
+
 (define-public r-dot
   (package
     (name "r-dot")
