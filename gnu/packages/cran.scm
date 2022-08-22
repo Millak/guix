@@ -1117,6 +1117,45 @@ scale-sensitive information.")
 @code{ggplot2}.")
     (license license:expat)))
 
+(define-public r-ggvenndiagram
+  (package
+    (name "r-ggvenndiagram")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggVennDiagram" version))
+       (sha256
+        (base32
+         "1mjs488npnxd53nsw936iw2vzv7z38h8d02pm4lwrz4i83jg3www"))))
+    (properties `((upstream-name . "ggVennDiagram")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dplyr
+           r-ggplot2
+           r-magrittr
+           r-plotly
+           r-purrr
+           r-rvenn
+           r-sf
+           r-stringr
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/gaospecial/ggVennDiagram")
+    (synopsis "Implementention of the Venn diagram using ggplot2")
+    (description
+     "This package implements easy-to-use functions to generate 2-7 sets Venn
+plot in publication quality.  @code{ggVennDiagram} plot Venn using
+well-defined geometry dataset and @code{ggplot2}.  The shapes of 2-4 sets Venn
+use circles and ellipses, while the shapes of 4-7 sets Venn use irregular
+polygons (4 has both forms), which are developed and imported from another
+package @code{venn}.  We provide internal functions to integrate shape data
+with user provided sets data, and calculated the geometry of every
+regions/intersections of them, then separately plot Venn in three components:
+set edges, set labels, and regions.  From version 1.0, it is possible to
+customize these components as you demand in ordinary @code{ggplot2} grammar.")
+    (license license:gpl3)))
+
 (define-public r-lmds
   (package
     (name "r-lmds")
