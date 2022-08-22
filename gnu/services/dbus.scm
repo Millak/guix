@@ -317,18 +317,9 @@ tuples, are all set as environment variables when the bus daemon launches it."
   polkit-configuration make-polkit-configuration
   polkit-configuration?
   (polkit   polkit-configuration-polkit           ;file-like
-            (default %default-polkit))
+            (default polkit))
   (actions  polkit-configuration-actions          ;list of file-like
             (default '())))
-
-(define %default-polkit
-  ;; The default polkit package.
-  (let-system (system target)
-    ;; Since mozjs depends on Rust, which is currently x86_64-only, use
-    ;; polkit-duktape on other systems.
-    (if (string-prefix? "x86_64-" (or target system))
-        polkit-mozjs
-        polkit-duktape)))
 
 (define %polkit-accounts
   (list (user-group (name "polkitd") (system? #t))
