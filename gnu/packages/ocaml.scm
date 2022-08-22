@@ -8561,6 +8561,40 @@ It makes it possible to run pure OCaml programs in JavaScript environment like
 browsers and Node.js.")
     (license license:lgpl2.1+)))
 
+(define-public ocaml-afl-persistent
+  (package
+    (name "ocaml-afl-persistent")
+    (version "1.3")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/stedolan/ocaml-afl-persistent")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+           "06yyds2vcwlfr2nd3gvyrazlijjcrd1abnvkfpkaadgwdw3qam1i"))))
+    (build-system ocaml-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'build
+           (lambda _
+             (invoke "./build.sh")))
+         ;; XXX: The tests are already run in the build.sh script.
+         (delete 'check))))
+    (native-inputs
+     `(("opam" ,opam)))
+    (home-page "https://github.com/stedolan/ocaml-afl-persistent")
+    (synopsis "Use afl-fuzz in persistent mode")
+    (description
+      "afl-fuzz normally works by repeatedly forking the program being tested.
+Using this package, you can run afl-fuzz in ``persistent mode'', which avoids
+repeated forking and is much faster.")
+    (license license:expat)))
+
 (define-public ocaml-bibtex2html
   (package
     (name "ocaml-bibtex2html")
