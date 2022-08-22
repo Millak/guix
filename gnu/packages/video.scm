@@ -774,7 +774,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
 (define-public celluloid
   (package
     (name "celluloid")
-    (version "0.23")
+    (version "0.24")
     (source
      (origin
        (method url-fetch)
@@ -782,12 +782,12 @@ old-fashioned output methods with powerful ascii-art renderer.")
                            "/releases/download/v" version
                            "/celluloid-" version ".tar.xz"))
        (sha256
-        (base32 "0x23y09jwkg8wbb0yp5f03sj5hwjg3kyhbbww2y1a0izs1iijbdj"))))
+        (base32 "0ns9xh582c8kajw4v2x5ap5jfiba3gxywqc2klc0v6fc3id1gqii"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool pkg-config))
     (inputs
-     (list gtk libepoxy mpv))
+     (list gtk libadwaita libepoxy mpv))
     (home-page "https://github.com/celluloid-player/celluloid")
     (synopsis "GTK+ frontend for the mpv media player")
     (description "Celluloid is a simple GTK+ frontend for the mpv media player.
