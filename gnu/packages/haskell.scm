@@ -876,7 +876,8 @@ interactive environment for the functional language Haskell.")
        (sha256
         (base32 "179ws2q0dinl1a39wm9j37xzwm84zfz3c5543vz8v479khigdvp3"))))
     (native-inputs
-     `(("ghc-bootstrap" ,ghc-8.8)
+     `(;; GHC 8.10.7 must be built with GHC >= 8.6.
+       ("ghc-bootstrap" ,ghc-8.6)
        ("ghc-testsuite"
         ,(origin
            (method url-fetch)
