@@ -235,125 +235,122 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                "bin"                    ;executables; depends on Python
                "debug"))
     (arguments
-     `(#:disallowed-references
-       (,tzdata-for-tests
-        ;; Verify glib-mkenums, gtester, ... use the cross-compiled
-        ;; python.
-        ,@(if (%current-target-system)
-              (map (cut gexp-input <> #:native? #t)
-                   `(,(this-package-native-input "python")
-                     ,(this-package-native-input "python-wrapper")))
-              '()))
-       #:configure-flags ,#~(list "--default-library=both"
-                                  "-Dman=false"
-                                  "-Dselinux=disabled"
-                                  (string-append "--bindir="
-                                                 #$output:bin "/bin"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Needed to pass the test phase on slower ARM and i686 machines.
-         (add-after 'unpack 'increase-test-timeout
-           (lambda _
-             (substitute* "meson.build"
-               (("(test_timeout.*) = ([[:digit:]]+)" all first second)
-                (string-append first " = " second "0")))))
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "gio/tests/meson.build"
-               ((".*'testfilemonitor'.*") ;marked as flaky
-                ""))
-             (with-directory-excursion "glib/tests"
-               (substitute* '("unix.c" "utils.c")
-                 (("[ \t]*g_test_add_func.*;") "")))
-             (with-directory-excursion "gio/tests"
-               (substitute* '("contenttype.c" "gdbus-address-get-session.c"
-                              "gdbus-peer.c" "appinfo.c" "desktop-app-info.c")
-                 (("[ \t]*g_test_add_func.*;") "")))
+     (list
+      #:disallowed-references
+      (cons tzdata-for-tests
+            ;; Verify glib-mkenums, gtester, ... use the cross-compiled
+            ;; python.
+            (if (%current-target-system)
+                (map (cut gexp-input <> #:native? #t)
+                     `(,(this-package-native-input "python")
+                       ,(this-package-native-input "python-wrapper")))
+                '()))
+      #:configure-flags #~(list "--default-library=both"
+                                "-Dman=false"
+                                "-Dselinux=disabled"
+                                (string-append "--bindir="
+                                               #$output:bin "/bin"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Needed to pass the test phase on slower ARM and i686 machines.
+          (add-after 'unpack 'increase-test-timeout
+            (lambda _
+              (substitute* "meson.build"
+                (("(test_timeout.*) = ([[:digit:]]+)" all first second)
+                 (string-append first " = " second "0")))))
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "gio/tests/meson.build"
+                ((".*'testfilemonitor'.*") ;marked as flaky
+                 ""))
+              (with-directory-excursion "glib/tests"
+                (substitute* '("unix.c" "utils.c")
+                  (("[ \t]*g_test_add_func.*;") "")))
+              (with-directory-excursion "gio/tests"
+                (substitute* '("contenttype.c" "gdbus-address-get-session.c"
+                               "gdbus-peer.c" "appinfo.c" "desktop-app-info.c")
+                  (("[ \t]*g_test_add_func.*;") "")))
 
-             ,@(if (target-x86-32?)
-                   ;; Comment out parts of timer.c that fail on i686 due to
-                   ;; excess precision when building with GCC 10:
-                   ;; <https://gitlab.gnome.org/GNOME/glib/-/issues/820>.
-                   '((substitute* "glib/tests/timer.c"
-                       (("^  g_assert_cmpuint \\(micros.*" all)
-                        (string-append "//" all "\n"))
-                       (("^  g_assert_cmpfloat \\(elapsed, ==.*" all)
-                        (string-append "//" all "\n"))))
-                   '())))
-         ;; Python references are not being patched in patch-phase of build,
-         ;; despite using python-wrapper as input. So we patch them manually.
-         ;;
-         ;; These python scripts are both used during build and installed,
-         ;; so at first, use a python from 'native-inputs', not 'inputs'. When
-         ;; cross-compiling, the 'patch-shebangs' phase will replace
-         ;; the native python with a python from 'inputs'.
-         (add-after 'unpack 'patch-python-references
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (substitute* '("gio/gdbus-2.0/codegen/gdbus-codegen.in"
-                            "glib/gtester-report.in"
-                            "gobject/glib-genmarshal.in"
-                            "gobject/glib-mkenums.in")
-               (("@PYTHON@")
-                (search-input-file (or native-inputs inputs)
-                                   (string-append
-                                    "/bin/python"
-                                    ,(version-major+minor
-                                      (package-version python))))))))
-         (add-before 'check 'pre-check
-           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-             ;; For tests/gdatetime.c.
-             (setenv "TZDIR"
-                     (search-input-directory (or native-inputs inputs)
-                                             "share/zoneinfo"))
-             ;; Some tests want write access there.
-             (setenv "HOME" (getcwd))
-             (setenv "XDG_CACHE_HOME" (getcwd))))
-         (add-after 'install 'move-static-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (static (assoc-ref outputs "static")))
-               (mkdir-p (string-append static "/lib"))
-               (for-each (lambda (a)
-                           (rename-file a (string-append static "/lib/"
-                                                         (basename a))))
-                         (find-files out "\\.a$")))))
-         (add-after 'install 'patch-pkg-config-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Do not refer to "bindir", which points to "${prefix}/bin".
-               ;; We don't patch "bindir" to point to "$bin/bin", because that
-               ;; would create a reference cycle between the "out" and "bin"
-               ;; outputs.
-               (substitute*
-                   (list
-                    (string-append out "/lib/pkgconfig/gio-2.0.pc")
-                    (string-append out "/lib/pkgconfig/glib-2.0.pc"))
-                 (("^bindir=.*")
-                  "")
-                 (("=\\$\\{bindir\\}/")
-                  "="))))))))
+              #$@(if (target-x86-32?)
+                     ;; Comment out parts of timer.c that fail on i686 due to
+                     ;; excess precision when building with GCC 10:
+                     ;; <https://gitlab.gnome.org/GNOME/glib/-/issues/820>.
+                     '((substitute* "glib/tests/timer.c"
+                         (("^  g_assert_cmpuint \\(micros.*" all)
+                          (string-append "//" all "\n"))
+                         (("^  g_assert_cmpfloat \\(elapsed, ==.*" all)
+                          (string-append "//" all "\n"))))
+                     '())))
+          ;; Python references are not being patched in patch-phase of build,
+          ;; despite using python-wrapper as input. So we patch them manually.
+          ;;
+          ;; These python scripts are both used during build and installed,
+          ;; so at first, use a python from 'native-inputs', not 'inputs'. When
+          ;; cross-compiling, the 'patch-shebangs' phase will replace
+          ;; the native python with a python from 'inputs'.
+          (add-after 'unpack 'patch-python-references
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (substitute* '("gio/gdbus-2.0/codegen/gdbus-codegen.in"
+                             "glib/gtester-report.in"
+                             "gobject/glib-genmarshal.in"
+                             "gobject/glib-mkenums.in")
+                (("@PYTHON@")
+                 (search-input-file (or native-inputs inputs)
+                                    (string-append
+                                     "/bin/python"
+                                     #$(version-major+minor
+                                        (package-version python))))))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
+              ;; For tests/gdatetime.c.
+              (setenv "TZDIR"
+                      (search-input-directory (or native-inputs inputs)
+                                              "share/zoneinfo"))
+              ;; Some tests want write access there.
+              (setenv "HOME" (getcwd))
+              (setenv "XDG_CACHE_HOME" (getcwd))))
+          (add-after 'install 'move-static-libraries
+            (lambda _
+              (mkdir-p (string-append #$output:static "/lib"))
+              (for-each (lambda (a)
+                          (rename-file a (string-append #$output:static "/lib/"
+                                                        (basename a))))
+                        (find-files #$output "\\.a$"))))
+          (add-after 'install 'patch-pkg-config-files
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Do not refer to "bindir", which points to "${prefix}/bin".
+              ;; We don't patch "bindir" to point to "$bin/bin", because that
+              ;; would create a reference cycle between the "out" and "bin"
+              ;; outputs.
+              (substitute*
+                  (list (search-input-file outputs "lib/pkgconfig/gio-2.0.pc")
+                        (search-input-file outputs "lib/pkgconfig/glib-2.0.pc"))
+                (("^bindir=.*")
+                 "")
+                (("=\\$\\{bindir\\}/")
+                 "=")))))))
     (native-inputs
-     `(("dbus" ,dbus)
-       ("gettext" ,gettext-minimal)
-       ("m4" ,m4)                       ; for installing m4 macros
-       ("perl" ,perl)                   ; needed by GIO tests
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)               ; For 'patch-python-references
-       ("python-wrapper" ,python-wrapper)
-       ("tzdata" ,tzdata-for-tests)))   ; for tests/gdatetime.c
+     (list dbus
+           gettext-minimal
+           m4                           ;for installing m4 macros
+           perl                         ;needed by GIO tests
+           pkg-config
+           python                       ;for 'patch-python-references
+           python-wrapper
+           tzdata-for-tests))           ;for tests/gdatetime.c
     (inputs
      (list ;; "python", "python-wrapper" and "bash-minimal"
-           ;; are for the 'patch-shebangs' phase, to make
-           ;; sure the installed scripts end up with a correct shebang
-           ;; when cross-compiling.
-           bash-minimal
-           python
-           python-wrapper))
+      ;; are for the 'patch-shebangs' phase, to make
+      ;; sure the installed scripts end up with a correct shebang
+      ;; when cross-compiling.
+      bash-minimal
+      python
+      python-wrapper))
     (propagated-inputs
-     (list libffi ; in the Requires.private field of gobject-2.0.pc
-           pcre ; in the Requires.private field of glib-2.0.pc
-           `(,util-linux "lib") ;for libmount
-           zlib))         ; in the Requires.private field of glib-2.0.pc
+     (list libffi             ;in the Requires.private field of gobject-2.0.pc
+           pcre               ;in the Requires.private field of glib-2.0.pc
+           `(,util-linux "lib")  ;for libmount
+           zlib))                ;in the Requires.private field of glib-2.0.pc
     (native-search-paths
      ;; This variable is not really "owned" by GLib, but several related
      ;; packages refer to it: gobject-introspection's tools use it as a search
@@ -397,26 +394,24 @@ functions for strings and common data structures.")
         #~(cons "-Dgtk_doc=true"
                 (delete "-Dman=false" #$flags)))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'patch-docbook-xml
-             (lambda* (#:key inputs #:allow-other-keys)
-               (with-directory-excursion "docs"
-                 (substitute* (find-files "." "\\.xml$")
-                   (("http://www.oasis-open.org/docbook/xml/4\\.5/")
-                    (string-append (assoc-ref inputs "docbook-xml-4.5")
-                                   "/xml/dtd/docbook/"))
-                   (("http://www.oasis-open.org/docbook/xml/4\\.2/")
-                    (string-append (assoc-ref inputs "docbook-xml-4.2")
-                                   "/xml/dtd/docbook/"))))))
-           (add-after 'install 'move-doc
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (doc (assoc-ref outputs "doc"))
-                      (html (string-append "/share/gtk-doc")))
-                 (mkdir-p (string-append doc "/share"))
-                 (rename-file
-                  (string-append out html)
-                  (string-append doc html)))))))))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-docbook-xml
+              (lambda* (#:key inputs #:allow-other-keys)
+                (with-directory-excursion "docs"
+                  (substitute* (find-files "." "\\.xml$")
+                    (("http://www.oasis-open.org/docbook/xml/4\\.5/")
+                     (string-append (assoc-ref inputs "docbook-xml-4.5")
+                                    "/xml/dtd/docbook/"))
+                    (("http://www.oasis-open.org/docbook/xml/4\\.2/")
+                     (string-append (assoc-ref inputs "docbook-xml-4.2")
+                                    "/xml/dtd/docbook/"))))))
+            (add-after 'install 'move-doc
+              (lambda _
+                (let ((html "/share/gtk-doc"))
+                  (mkdir-p (string-append #$output:doc "/share"))
+                  (rename-file
+                   (string-append #$output html)
+                   (string-append #$output:doc html)))))))))))
 
 (define (python-extension-suffix python triplet)
   "Determine the suffix for C extensions for PYTHON when compiled
