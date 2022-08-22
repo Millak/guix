@@ -5502,7 +5502,7 @@ faster results and to avoid unnecessary server load.")
 (define-public upower
   (package
     (name "upower")
-    (version "0.99.15")
+    (version "1.90.0")
     (source
      (origin
        (method git-fetch)
@@ -5511,7 +5511,7 @@ faster results and to avoid unnecessary server load.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zk7w7pw8dhlnxhxzcbk33gmxmg8f32mppd67556v9z2qgcg4lhs"))
+        (base32 "1g17rm91p8vfpjyb0k2shylrs55nccn3fa890vlk4n9s71sghbzq"))
        (modules '((guix build utils)))
        (snippet
          ;; Upstream commit
