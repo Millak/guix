@@ -5062,6 +5062,45 @@ proteowizard library for mzML and mzIdentML.  The netCDF reading code has
 previously been used in XCMS.")
     (license license:artistic2.0)))
 
+(define-public r-organism-dplyr
+  (package
+    (name "r-organism-dplyr")
+    (version "1.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "Organism.dplyr" version))
+       (sha256
+        (base32
+         "0j29f85d66c45ww3417xx376vpz0mmvga5n7h2cl1sd4h70b55as"))))
+    (properties `((upstream-name . "Organism.dplyr")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi
+           r-annotationfilter
+           r-biocfilecache
+           r-dbi
+           r-dbplyr
+           r-dplyr
+           r-genomeinfodb
+           r-genomicfeatures
+           r-genomicranges
+           r-iranges
+           r-rlang
+           r-rsqlite
+           r-s4vectors
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/Organism.dplyr")
+    (synopsis "Dplyr-based access to Bioconductor annotation resources")
+    (description
+     "This package provides an alternative interface to Bioconductor @code{
+annotation} resources, in particular the gene identifier mapping functionality
+of the @code{org} packages (e.g., @code{org.Hs.eg.db}) and the genome coordinate
+functionality of the @code{TxDb} packages (e.g.,
+@code{TxDb.Hsapiens.UCSC.hg38.knownGene}).")
+    (license license:artistic2.0)))
+
 (define-public r-organismdbi
   (package
     (name "r-organismdbi")
