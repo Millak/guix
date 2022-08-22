@@ -250,7 +250,7 @@
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
-    (version "0.23.2")
+    (version "0.25.1")
     (source
      (origin
        (method git-fetch)
@@ -259,7 +259,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p5cwx0xwva4ajgj8hnrk8bx6n3hv1z7aqs4zivp81crnq4077yw"))))
+        (base32 "0qm43qkf0rpcbsf5wb7b51m79jvn2fkl19f49acbzjpavx66vn3n"))))
     (build-system emacs-build-system)
     (arguments
      '(#:phases
