@@ -977,8 +977,8 @@ application suites.")
            fontconfig
            freetype
            (if (target-x86-64?)
-             librsvg
-             librsvg-2.40)
+               librsvg
+               librsvg-2.40)
            glib
            libcloudproviders-minimal
            libepoxy
@@ -998,11 +998,11 @@ application suites.")
            wayland
            wayland-protocols))
     (inputs
-     (list colord-minimal ;to prevent a cycle with inkscape
+     (list colord-minimal               ;to prevent a cycle with inkscape
            cups
            graphene
            harfbuzz
-           iso-codes/official ;XXX TODO core-updates: use iso-codes
+           iso-codes
            json-glib-minimal
            libxml2
            rest))
@@ -1059,8 +1059,7 @@ application suites.")
                 "tree-performance text children derive"))
              (substitute* "testsuite/reftests/Makefile.in"
                (("TEST_PROGS = gtk-reftest")
-                "TEST_PROGS = "))
-             #t))
+                "TEST_PROGS = "))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests require a running X server.
@@ -1071,8 +1070,7 @@ application suites.")
              ;; Tests look for $XDG_RUNTIME_DIR.
              (setenv "XDG_RUNTIME_DIR" (getcwd))
              ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t))
+             (setenv "DBUS_FATAL_WARNINGS" "0")))
          (add-after 'install 'move-desktop-files
            ;; Move desktop files into 'bin' to avoid cycle references.
            (lambda* (#:key outputs #:allow-other-keys)
@@ -1080,8 +1078,7 @@ application suites.")
                    (bin (assoc-ref outputs "bin")))
                (mkdir-p (string-append bin "/share"))
                (rename-file (string-append out "/share/applications")
-                            (string-append bin "/share/applications"))
-               #t))))))
+                            (string-append bin "/share/applications"))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "GUIX_GTK3_PATH")
