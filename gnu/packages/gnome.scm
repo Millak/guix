@@ -5922,7 +5922,7 @@ without stepping on each others toes.")
 (define-public clutter
   (package
     (name "clutter")
-    (version "1.26.2")
+    (version "1.26.4")
     (source
      (origin
        (method url-fetch)
@@ -5931,31 +5931,31 @@ without stepping on each others toes.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0mif1qnrpkgxi43h7pimim6w6zwywa16ixcliw0yjm9hk0a368z7"))))
+         "1rn4cd1an6a9dfda884aqpcwcgq8dgydpqvb19nmagw4b70zlj4b"))))
     ;; NOTE: mutter exports a bundled fork of clutter, so when making changes
     ;; to clutter, corresponding changes may be appropriate in mutter as well.
     (build-system gnu-build-system)
     (outputs '("out"
-               "doc"))                            ;9 MiB of gtk-doc HTML pages
+               "doc"))                  ;9 MiB of gtk-doc HTML pages
     (native-inputs
-     `(("glib:bin" ,glib "bin")     ; for glib-genmarshal
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)))
+     (list `(,glib "bin")               ; for glib-genmarshal
+           gobject-introspection
+           libxslt
+           pkg-config))
     (propagated-inputs
-     (list cogl
+     (list atk
            cairo
-           atk
+           cogl
+           glib
            gtk+
            json-glib
-           glib
            libxcomposite
            libxdamage
            libxext
            xinput))
     (inputs
-     `(("libxkbcommon" ,libxkbcommon)
-       ("udev" ,eudev)))
+     (list eudev
+           libxkbcommon))
     (arguments
      `(#:configure-flags (list "--enable-x11-backend=yes"
 
@@ -5966,7 +5966,7 @@ without stepping on each others toes.")
        ;; XXX FIXME: Get test suite working.  It would probably fail in the
        ;; same way the cogl tests fail, since clutter is based on cogl.
        #:tests? #f))
-    (home-page "http://www.clutter-project.org")
+    (home-page "https://blogs.gnome.org/clutter/")
     (synopsis "OpenGL-based interactive canvas library")
     (description
      "Clutter is an OpenGL-based interactive canvas library, designed for
