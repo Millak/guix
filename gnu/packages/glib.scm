@@ -766,7 +766,7 @@ by GDBus included in Glib.")
 (define glibmm
   (package
     (name "glibmm")
-    (version "2.70.0")
+    (version "2.72.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/glibmm/"
@@ -774,31 +774,29 @@ by GDBus included in Glib.")
                                   "/glibmm-" version ".tar.xz"))
               (sha256
                (base32
-                "085mzpphz71sh5wh71ppikwnxsgn4pk3s4bzz6ingj6wxn5gs240"))))
+                "1n2w2pcpbxjbsxynmar3i5ibr7src6gnrdxb9nn57p5miai4jxia"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:configure-flags
-       (list "-Dbuild-documentation=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "tests/meson.build"
-               ;; This test uses /etc/fstab as an example file to read
-               ;; from; disable it.
-               (("[ \t]*.*giomm_simple.*$") "")
-               ;; This test does a DNS lookup, and then expects to be able
-               ;; to open a TLS session; just skip it.
-               (("[ \t]*.*giomm_tls_client.*$") ""))))
-         (add-after 'install 'move-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share"))
-               (rename-file
-                (string-append out "/share/doc")
-                (string-append doc "/share/doc"))))))))
+     (list
+      #:configure-flags #~(list "-Dbuild-documentation=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "tests/meson.build"
+                ;; This test uses /etc/fstab as an example file to read from;
+                ;; disable it.
+                (("[ \t]*.*giomm_simple.*$") "")
+                ;; This test does a DNS lookup, and then expects to be able to
+                ;; open a TLS session; just skip it.
+                (("[ \t]*.*giomm_tls_client.*$") ""))))
+          (add-after 'install 'move-doc
+            (lambda _
+              (mkdir-p (string-append #$output:doc "/share"))
+              (rename-file
+               (string-append #$output "/share/doc")
+               (string-append #$output:doc "/share/doc")))))))
     (native-inputs
      (list graphviz
            doxygen
