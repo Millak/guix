@@ -8655,6 +8655,29 @@ QuickCheck-style property-based testing and the magical bug-finding powers of
 @uref{http://lcamtuf.coredump.cx/afl/, afl-fuzz}.")
     (license license:expat)))
 
+(define-public ocaml-eqaf
+  (package
+    (name "ocaml-eqaf")
+    (version "0.9")
+    (home-page "https://github.com/mirage/eqaf")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "16ics56wiqyng70dy2hqikicm8ag1mv5w1h7hkiwvydw1x2j2rsl"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-cstruct))
+    (native-inputs (list ocaml-alcotest ocaml-crowbar))
+    (synopsis "OCaml library for constant-time equal function on string")
+    (description "This OCaml library provides an equal function on string in
+constant-time to avoid timing-attack with crypto stuff.")
+    (license license:expat)))
+
 (define-public ocaml-bibtex2html
   (package
     (name "ocaml-bibtex2html")
