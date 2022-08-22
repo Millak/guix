@@ -5177,65 +5177,68 @@ keyboard shortcuts.")
 (define-public colord-minimal
   (package
     (name "colord-minimal")
-    (version "1.4.5")
+    (version "1.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.freedesktop.org/software/colord/releases/"
                            "colord-" version ".tar.xz"))
        (sha256
-        (base32 "05sydi6qqqx1rrqwnga1vbg9srkf89wdcfw5w4p4m7r37m2flx5p"))))
+        (base32 "0vwfx06k1in8hci3kdxpc3c0bh81f1vl5bp7favd3rdz4wd661vl"))))
     (build-system meson-build-system)
     (arguments
-     '( ;; FIXME: One test fails:
-       ;; /colord/icc-store (in lib/colord/colord-self-test-private):
-       ;; Incorrect content type for /tmp/colord-vkve/already-exists.icc, got
-       ;; application/x-zerosize
-       #:tests? #f
-       #:glib-or-gtk? #t
-       #:configure-flags (list "-Dargyllcms_sensor=false" ;requires spotread
-                               "-Dbash_completion=false"
-                               "-Ddaemon_user=colord"
-                               "-Ddocs=false"
-                               "-Dlocalstatedir=/var"
-                               "-Dman=false"
-                               "-Dsane=true"
-                               "-Dsystemd=false") ;no systemd
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-build-system
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "rules/meson.build"
-               (("udev.get_pkgconfig_variable\\('udevdir'\\)")
-                (string-append "'" (assoc-ref outputs "out") "/lib/udev'")))))
-         (add-before 'configure 'set-sqlite3-file-name
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; "colormgr dump" works by invoking the "sqlite3" command.
-             ;; Record its absolute file name.
-             (let ((sqlite (assoc-ref inputs "sqlite")))
-               (substitute* "client/cd-util.c"
-                 (("\"sqlite3\"")
-                  (string-append "\"" sqlite "/bin/sqlite3\"")))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags #~(list "-Dargyllcms_sensor=false" ;requires spotread
+                                "-Dbash_completion=false"
+                                "-Ddaemon_user=colord"
+                                "-Ddocs=false"
+                                "-Dlocalstatedir=/var"
+                                "-Dman=false"
+                                "-Dsane=true"
+                                "-Dsystemd=false") ;no systemd
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; Skip the colord-test-private, which requires a *system* D-Bus
+              ;; session, which wants to run as root, among other requirements
+              ;; (see: https://github.com/hughsie/colord/issues/97).
+              (substitute* "lib/colord/meson.build"
+                ((".*test\\('colord-test-private'.*") ""))))
+          (add-before 'configure 'patch-build-system
+            (lambda _
+              (substitute* "rules/meson.build"
+                (("udev.get_pkgconfig_variable\\('udevdir'\\)")
+                 (string-append "'" #$output "/lib/udev'")))))
+          (add-before 'configure 'set-sqlite3-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; "colormgr dump" works by invoking the "sqlite3" command.
+              ;; Record its absolute file name.
+              (substitute* "client/cd-util.c"
+                (("\"sqlite3\"")
+                 (format #f "~s" (search-input-file inputs
+                                                    "bin/sqlite3")))))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")         ; for glib-compile-resources, etc.
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list `(,glib "bin")               ; for glib-compile-resources, etc.
+           gettext-minimal
+           pkg-config
+           vala))
     (propagated-inputs
      ;; colord.pc refers to all these.
-     `(("glib" ,glib)
-       ("lcms" ,lcms)
-       ("udev" ,eudev)))
+     (list glib
+           lcms
+           eudev))
     (inputs
-     `(("dbus-glib" ,dbus-glib)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gusb" ,gusb-minimal)
-       ("libgudev" ,libgudev)
-       ("libusb" ,libusb)
-       ("polkit" ,polkit)
-       ("python" ,python-wrapper)
-       ("sqlite" ,sqlite)
-       ("sane-backends" ,sane-backends)))
+     (list dbus-glib
+           gobject-introspection
+           gusb-minimal
+           libgudev
+           libusb
+           polkit
+           python-wrapper
+           sqlite
+           sane-backends))
     (home-page "https://www.freedesktop.org/software/colord/")
     (synopsis "Color management service")
     (description "Colord is a system service that makes it easy to manage,
@@ -5250,33 +5253,32 @@ output devices.")
      (substitute-keyword-arguments
          (package-arguments colord-minimal)
        ((#:configure-flags flags)
-        `(begin
-           (use-modules (srfi srfi-1))
-           (append '("-Dbash_completion=true"
-                     "-Ddocs=true"
-                     "-Dman=true"
-                     "-Dvapi=true")
-               (fold delete ,flags '("-Dbash_completion=false"
-                                     "-Ddocs=false"
-                                     "-Dman=false")))))
+        #~(begin
+            (use-modules (srfi srfi-1))
+            (append '("-Dbash_completion=true"
+                      "-Ddocs=true"
+                      "-Dman=true"
+                      "-Dvapi=true")
+                    (fold delete #$flags '("-Dbash_completion=false"
+                                           "-Ddocs=false"
+                                           "-Dman=false")))))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'fix-bash-completion-dir
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "data/meson.build"
-                 (("bash_completion.get_pkgconfig_variable\
+        #~(modify-phases #$phases
+            (add-after 'unpack 'fix-bash-completion-dir
+              (lambda* (#:key outputs #:allow-other-keys)
+                (substitute* "data/meson.build"
+                  (("bash_completion.get_pkgconfig_variable\
 \\('completionsdir'\\)")
-                  (string-append "'" (assoc-ref outputs "out")
-                                 "/etc/bash_completion.d'")))))))))
+                   (string-append "'" #$output
+                                  "/etc/bash_completion.d'")))))))))
     (native-inputs
-     (append
-         `(("bash-completion" ,bash-completion)
-           ("docbook-xsl-ns" ,docbook-xsl-ns)
-           ("gtk-doc" ,gtk-doc/stable)
-           ("libxml2" ,libxml2)         ;for XML_CATALOG_FILES
-           ("libxslt" ,libxslt)
-           ("vala" ,vala))              ;for VAPI, needed by simple-scan
-         (package-native-inputs colord-minimal)))))
+     (modify-inputs (package-native-inputs colord-minimal)
+       (append bash-completion
+               docbook-xsl-ns
+               gtk-doc/stable
+               libxml2                  ;for XML_CATALOG_FILES
+               libxslt
+               vala)))))                ;for VAPI, needed by simple-scan
 
 (define-public geoclue
   (package
