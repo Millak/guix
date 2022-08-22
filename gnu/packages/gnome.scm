@@ -2325,7 +2325,7 @@ the font would look under various sizes.")
 (define-public gcr
   (package
     (name "gcr")
-    (version "3.41.0")
+    (version "3.41.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2333,56 +2333,62 @@ the font would look under various sizes.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "00fsf82ycac8qi0kkiq759p6jrn63pyz4ksn4wnq7m4ax94zq289"))))
+                "0kx2pv272p0qc0nq1287gciyn34d95yxg41vq3lzxfzyqaijhwdv"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.60
-       #:phases
-       (modify-phases %standard-phases
-         ;; These fail because /var/lib/dbus/machine-id is not present in the
-         ;; build environment.
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "gcr/meson.build"
-               (("[[:blank:]]+'system-prompt',")
-                ""))
-             #t))
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t))
-         (add-after 'unpack 'fix-systemd-detection
-           (lambda _
-             (substitute* "gcr/gcr-ssh-agent-service.c"
-               (("#ifdef WITH_SYSTEMD")
-                "#if (WITH_SYSTEMD)"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Some tests expect to write to $HOME.
-             (setenv "HOME" "/tmp")
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-fatal-warnings-option
+            ;; Otherwise, the gi-docgen tool would fail because of the
+            ;; "Fontconfig error: No writable cache directories" warnings.
+            (lambda _
+              (substitute* (find-files "." "^meson\\.build$")
+                ((".*'--fatal-warnings',.*") ""))))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") "true"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Some tests expect to write to $HOME.
+              (setenv "HOME" "/tmp")))
+          (replace 'check
+            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+              (when tests?
+                (setenv "MESON_TESTTHREADS"
+                        (if parallel-tests?
+                            (number->string (parallel-job-count))
+                            "1"))
+                ;; Work around the "mock prompter couldn't get session bus
+                ;; address: Cannot spawn a message bus without a machine-id"
+                ;; error by manually creating the session bus via
+                ;; 'dbus-run-session'.
+                (invoke "dbus-run-session" "--"
+                        "meson" "test" "-t" "0")))))))
     (inputs
-     (list dbus gnupg ;called as a child process during tests
-           libgcrypt libsecret))
+     (list dbus
+           gnupg
+           libgcrypt
+           libsecret))
     (native-inputs
-     `(("python" ,python-wrapper)       ;for tests
-       ("openssh" ,openssh)             ;for tests
-       ("pkg-config" ,pkg-config)
-       ("gettext" ,gettext-minimal)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("gtk-doc" ,gtk-doc)
-       ("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("libxml2" ,libxml2)
-       ("vala" ,vala)
-       ("xsltproc" ,libxslt)))
+     (list gettext-minimal
+           gi-docgen
+           `(,glib "bin")
+           gobject-introspection
+           gtk-doc
+           libxml2
+           libxslt
+           openssh
+           pkg-config
+           python-wrapper
+           vala))
     ;; mentioned in gck.pc, gcr.pc and gcr-ui.pc
     (propagated-inputs
-     (list p11-kit glib gtk+))
+     (list glib
+           gtk+
+           p11-kit))
     (home-page "https://www.gnome.org")
     (synopsis "Libraries for displaying certificates and accessing key stores")
     (description
