@@ -268,73 +268,72 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "22.1.2")
+    (version "22.1.7")
     (source
-      (origin
-        (method url-fetch)
-        (uri (list (string-append "https://mesa.freedesktop.org/archive/"
-                                  "mesa-" version ".tar.xz")
-                   (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
-                                  "mesa-" version ".tar.xz")
-                   (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
-                                  version "/mesa-" version ".tar.xz")))
-        (sha256
-         (base32
-          "1smrvvh8l7xcccwfbccx9k0ihzh1whrnnwsmqb7i0gba99mj4w89"))
-        (patches
-         (search-patches "mesa-skip-tests.patch"))))
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://mesa.freedesktop.org/archive/"
+                                 "mesa-" version ".tar.xz")
+                  (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
+                                 "mesa-" version ".tar.xz")
+                  (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
+                                 version "/mesa-" version ".tar.xz")))
+       (sha256
+        (base32
+         "12ax6lmshc8aqzw5ca7ab7f7z64n9nyzci4r1s6y1l0iryr8x0ys"))))
     (build-system meson-build-system)
     (propagated-inputs
-      (list ;; The following are in the Requires.private field of gl.pc.
-            libdrm
-            libvdpau
-            libx11
-            libxdamage
-            libxfixes
-            libxshmfence
-            libxxf86vm
-            xorgproto))
+     ;; The following are in the Requires.private field of gl.pc.
+     (list libdrm
+           libvdpau
+           libx11
+           libxdamage
+           libxfixes
+           libxshmfence
+           libxxf86vm
+           xorgproto))
     (inputs
-     (append (list expat
-                   elfutils                 ;libelf required for r600 when using llvm
-                   (force libva-without-mesa)
-                   libxml2
-                   libxrandr
-                   libxvmc
-                   wayland
-                   wayland-protocols)
-             ;; TODO: Resort alphabetically.
-             ;; Note: update the 'clang' input of mesa-opencl when bumping this.
-             (list llvm)))
+     (list elfutils                  ;libelf required for r600 when using llvm
+           expat
+           (force libva-without-mesa)
+           libxml2
+           libxrandr
+           libxvmc
+           ;; Note: update the 'clang' input of mesa-opencl when bumping this.
+           llvm
+           wayland
+           wayland-protocols))
     (native-inputs
-     (append (list bison
-                   flex
-                   gettext-minimal
-                   pkg-config
-                   python-wrapper
-                   python-libxml2                  ;for OpenGL ES 1.1 and 2.0 support
-                   python-mako
-                   (@ (gnu packages base) which))
-             ;; TODO: Resort alphabetically.
-             (list glslang)))
+     (list bison
+           flex
+           gettext-minimal
+           glslang
+           pkg-config
+           python-libxml2               ;for OpenGL ES 1.1 and 2.0 support
+           python-mako
+           python-wrapper
+           (@ (gnu packages base) which)))
     (outputs '("out" "bin"))
     (arguments
      `(#:configure-flags
        '(,@(match (%current-system)
              ("aarch64-linux"
               ;; TODO: Fix svga driver for non-Intel architectures.
-              '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
+              '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
+panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
              ("armhf-linux"
               ;; Freedreno FTBFS when built on a 64-bit machine.
-              '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
-             ((or "powerpc64le-linux" "powerpc-linux")
+              '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,\
+r300,r600,swrast,tegra,v3d,vc4,virgl"))
+             ((or "powerpc64le-linux" "powerpc-linux" "riscv64-linux")
               '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
              (_
-              '("-Dgallium-drivers=auto")))
+              '("-Dgallium-drivers=iris,nouveau,r300,r600,radeonsi,\
+svga,swrast,virgl")))
          ;; Enable various optional features.  TODO: opencl requires libclc,
          ;; omx requires libomxil-bellagio
          "-Dplatforms=x11,wayland"
-         "-Dglx=dri"        ;Thread Local Storage, improves performance
+         "-Dglx=dri"               ;Thread Local Storage, improves performance
          ;; "-Dopencl=true"
          ;; "-Domx=true"
          "-Dosmesa=true"
@@ -347,10 +346,14 @@ also known as DXTn or DXTC) for Mesa.")
 
          ;; Explicitly enable Vulkan on some architectures.
          ,@(match (%current-system)
+             ((or "i686-linux" "x86_64-linux")
+              '("-Dvulkan-drivers=intel,amd"))
              ((or "powerpc64le-linux" "powerpc-linux")
               '("-Dvulkan-drivers=amd,swrast"))
              ("aarch64-linux"
               '("-Dvulkan-drivers=freedreno,amd,broadcom,swrast"))
+             ("riscv64-linux"
+              '("-Dvulkan-drivers=amd,swrast"))
              (_
               '("-Dvulkan-drivers=auto")))
 
@@ -360,8 +363,7 @@ also known as DXTn or DXTC) for Mesa.")
          ;; Also enable the tests.
          "-Dbuild-tests=true"
 
-         ;; Enable LLVM; default is x86/x86_64 only.
-         "-Dllvm=enabled")
+         "-Dllvm=enabled")              ; default is x86/x86_64 only
 
        ;; XXX: 'debugoptimized' causes LTO link failures on some drivers.  The
        ;; documentation recommends using 'release' for performance anyway.
@@ -409,6 +411,11 @@ also known as DXTn or DXTC) for Mesa.")
                     ;; This test times out and receives SIGTERM.
                     (substitute* "src/amd/common/meson.build"
                       (("and not with_platform_windows") "and with_platform_windows"))))
+                 ("i686-linux"
+                  ;; This test is known to fail on i686 (see:
+                  ;; https://gitlab.freedesktop.org/mesa/mesa/-/issues/4091).
+                  `((substitute* "src/util/meson.build"
+                      ((".*'tests/u_debug_stack_test.cpp',.*") ""))))
                  ("aarch64-linux"
                   ;; The ir3_disasm test segfaults.
                   ;; The simplest way to skip it is to run a different test instead.
