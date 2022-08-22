@@ -33,7 +33,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
-;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -5302,7 +5302,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
 (define-public bluez
   (package
     (name "bluez")
-    (version "5.64")
+    (version "5.65")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5310,7 +5310,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "0d6yl7l5zrlx5w3y503k72m9xsydx6gi1c65icchq1xknrjpwhxf"))))
+                "1m4n7nczjlbhb20bp2hwb2b85036xma5pqljmpk7ddalhgaa8r95"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5335,24 +5335,26 @@ Bluetooth audio output devices like headphones or loudspeakers.")
                 (("tester_init\\(&argc, &argv\\);") "return 77;"))))
           (add-after 'install 'post-install
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((out        #$output)
-                     (servicedir (string-append out "/share/dbus-1/services"))
+              (let* ((servicedir (string-append #$output
+                                                "/share/dbus-1/services"))
                      (service    "obexd/src/org.bluez.obex.service")
                      (rule       (string-append
-                                  out "/lib/udev/rules.d/97-hid2hci.rules")))
+                                  #$output "/lib/udev/rules.d/97-hid2hci.rules")))
                 ;; Install the obex dbus service file.
                 (substitute* service
                   (("/bin/false")
-                   (string-append out "/libexec/bluetooth/obexd")))
+                   (string-append #$output "/libexec/bluetooth/obexd")))
                 (install-file service servicedir)
                 ;; Fix paths in the udev rule.
                 (substitute* rule
                   (("hid2hci --method")
-                   (string-append out "/lib/udev/hid2hci --method"))
+                   (string-append #$output "/lib/udev/hid2hci --method"))
                   (("/sbin/udevadm")
                    (search-input-file inputs "/bin/udevadm")))))))))
     (native-inputs
-     (list pkg-config python-docutils gettext-minimal))
+     (list gettext-minimal
+           pkg-config
+           python-docutils))
     (inputs
      (list glib dbus eudev libical readline))
     (home-page "http://www.bluez.org/")
