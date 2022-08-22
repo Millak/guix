@@ -8620,6 +8620,41 @@ breaks, while respecting the constraints imposed by the structure of the
 document and by the text width.")
     (license license:lgpl2.0)))
 
+(define-public ocaml-crowbar
+  (package
+    (name "ocaml-crowbar")
+    (version "0.2.1")
+    (home-page "https://github.com/stedolan/crowbar")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "11f3kiw58g8njx15akx16xcplzvzdw9y6c4jpyfxylkxws4g0f6j"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:test-target "."))
+    (propagated-inputs
+     (list ocaml-ocplib-endian
+           ocaml-cmdliner
+           ocaml-afl-persistent))
+    (native-inputs
+     (list ocaml-calendar
+           ocaml-fpath
+           ocaml-uucp
+           ocaml-uunf
+           ocaml-uutf
+           ocaml-pprint))
+    (synopsis "Ocaml library for tests, let a fuzzer find failing cases")
+    (description "Crowbar is a library for testing code, combining
+QuickCheck-style property-based testing and the magical bug-finding powers of
+@uref{http://lcamtuf.coredump.cx/afl/, afl-fuzz}.")
+    (license license:expat)))
+
 (define-public ocaml-bibtex2html
   (package
     (name "ocaml-bibtex2html")
