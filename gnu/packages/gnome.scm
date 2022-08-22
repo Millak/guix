@@ -7519,7 +7519,7 @@ to display dialog boxes from the commandline and shell scripts.")
 (define-public mutter
   (package
     (name "mutter")
-    (version "41.0")
+    (version "42.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7527,7 +7527,7 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "17pqrm48kddqrc3fl96n5knhaxyn0crg0zv7zpmqhk848jks307s"))))
+                "0h1ak3201mdc2qbf67fhcn801ddp33hm0f0c52zis1l7s6ipyb62"))))
     ;; NOTE: Since version 3.21.x, mutter now bundles and exports forked
     ;; versions of cogl and clutter.  As a result, many of the inputs,
     ;; propagated-inputs, and configure flags used in cogl and clutter are
@@ -7546,28 +7546,37 @@ to display dialog boxes from the commandline and shell scripts.")
       #~(list
          ;; Otherwise, the RUNPATH will lack the final path component.
          (string-append "-Dc_link_args=-Wl,-rpath="
-                        #$output "/lib:" #$output "/lib/mutter-9")
+                        #$output "/lib:"
+                        #$output "/lib/mutter-9")
          ;; Disable systemd support.
          "-Dsystemd=false"
          ;; The following flags are needed for the bundled clutter
          (string-append "-Dxwayland_path="
-                        (search-input-file %build-inputs "/bin/Xwayland"))
+                        (search-input-file %build-inputs "bin/Xwayland"))
          ;; the remaining flags are needed for the bundled cogl
          (string-append "-Dopengl_libname="
-                        (search-input-file %build-inputs "/lib/libGL.so"))
+                        (search-input-file %build-inputs "lib/libGL.so"))
          (string-append "-Dgles2_libname="
-                        (search-input-file %build-inputs "/lib/libGLESv2.so"))
+                        (search-input-file %build-inputs "lib/libGLESv2.so"))
          "-Degl_device=true"            ;false by default
          "-Dwayland_eglstream=true")    ;false by default
-      #:test-options ''("--verbose")
+      #:test-options '(list "--verbose")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-runpath-linker-directives
+            (lambda _
+              ;; By default Mutter uses RPATH instead of RUNPATH, which our
+              ;; customized linker script makes use of.  Some libraries are
+              ;; also installed under lib/mutter-10 and need to be added to
+              ;; the RUNPATH.
+              (substitute* "meson.build"
+                (("'-Wl,--disable-new-dtags'")
+                 (string-append "'-Wl,-rpath=" #$output "/lib/mutter-10'")))))
           (add-after 'unpack 'patch-dlopen-calls
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/wayland/meta-wayland-egl-stream.c"
                 (("libnvidia-egl-wayland.so.1")
-                 (search-input-file inputs
-                                    "/lib/libnvidia-egl-wayland.so.1")))))
+                 (search-input-file inputs "lib/libnvidia-egl-wayland.so.1")))))
           (add-before 'configure 'set-udev-dir
             (lambda _
               (setenv "PKG_CONFIG_UDEV_UDEVDIR"
@@ -7592,7 +7601,12 @@ to display dialog boxes from the commandline and shell scripts.")
               (when tests?
                 ;; Setup (see the 'test-mutter' CI target at
                 ;; https://gitlab.gnome.org/GNOME/mutter/-/raw/main/.gitlab-ci.yml).
-                (setenv "XDG_RUNTIME_DIR" "runtime-dir")
+                (setenv "HOME" "/tmp")
+                (setenv "XDG_RUNTIME_DIR" (string-append (getcwd)
+                                                         "/runtime-dir"))
+                (mkdir (getenv "XDG_RUNTIME_DIR"))
+                (chmod (getenv "XDG_RUNTIME_DIR") #o700)
+
                 (setenv "GSETTINGS_SCHEMA_DIR" "data")
                 (setenv "MUTTER_DEBUG_DUMMY_MODE_SPECS" "800x600@10.0")
                 (setenv "PIPEWIRE_DEBUG" "2")
@@ -7635,16 +7649,17 @@ to display dialog boxes from the commandline and shell scripts.")
                         (error "`meson test' exited with status"
                                status))))))))))))
     (native-inputs
-     (list desktop-file-utils           ; for update-desktop-database
-           gettext-minimal
-           `(,glib "bin")               ; for glib-compile-schemas, etc.
+     (list desktop-file-utils           ;for update-desktop-database
+           `(,glib "bin")               ;for glib-compile-schemas, etc.
            gobject-introspection
+           intltool
            pkg-config
            xvfb-run
            ;; For git build
            autoconf
            automake
            libtool
+           wayland-protocols-next
            ;; For tests.
            ;; Warnings are configured to be fatal during the tests; add an icon
            ;; theme to please libxcursor.
@@ -7656,29 +7671,28 @@ to display dialog boxes from the commandline and shell scripts.")
            python-dbusmock
            tini))                       ;acting as init (zombie reaper)
     (propagated-inputs
-     (list ;; libmutter.pc refers to these:
-      gsettings-desktop-schemas
-      gtk+
-      ;; mutter-clutter-1.0.pc and mutter-cogl-1.0.pc refer to these:
-      atk
-      cairo
-      gdk-pixbuf
-      glib
-      json-glib
-      libinput
-      libx11
-      libxcomposite
-      libxcvt
-      libxdamage
-      libxext
-      libxfixes
-      libxkbcommon
-      libxml2
-      libxrandr
-      mesa
-      pango
-      eudev
-      xinput))
+     (list gsettings-desktop-schemas-next ;required by libmutter.pc
+           gtk+                           ;required by libmutter.pc
+           ;; mutter-clutter-1.0.pc and mutter-cogl-1.0.pc refer to these:
+           atk
+           cairo
+           eudev
+           gdk-pixbuf
+           glib
+           json-glib
+           libinput
+           libx11
+           libxcomposite
+           libxcvt
+           libxdamage
+           libxext
+           libxfixes
+           libxkbcommon
+           libxml2
+           libxrandr
+           mesa
+           pango
+           xinput))
     (inputs
      (list egl-wayland                  ;for wayland-eglstream-protocols
            elogind
