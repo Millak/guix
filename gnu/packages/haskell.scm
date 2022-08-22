@@ -681,13 +681,11 @@ interactive environment for the functional language Haskell.")
                            version "/" name "-" version "-src.tar.xz"))
        (sha256
         (base32 "1ch4j2asg7pr52ai1hwzykxyj553wndg7wq93i47ql4fllspf48i"))))
-    (inputs
-     (list gmp ncurses libffi))
     (native-inputs
      `(("perl" ,perl)
        ("python" ,python)               ; for tests
        ("ghostscript" ,ghostscript)     ; for tests
-       ;; GHC 8.4.3 is built with GHC 8.
+       ;; GHC 8.4.4 is built with GHC >= 8.0.
        ("ghc-bootstrap" ,ghc-8.0)
        ("ghc-testsuite"
         ,(origin
@@ -699,92 +697,39 @@ interactive environment for the functional language Haskell.")
             (base32
              "0s8lf9sxj7n89pjagi58b3fahnp34qvmwhnn0j1fbg6955vbrfj6"))))))
     (arguments
-     `(#:test-target "test"
-       ;; We get a smaller number of test failures by disabling parallel test
-       ;; execution.
-       #:parallel-tests? #f
-
-       ;; Don't pass --build=<triplet>, because the configure script
-       ;; auto-detects slightly different triplets for --host and --target and
-       ;; then complains that they don't match.
-       #:build #f
-
-       #:configure-flags
-       (list
-        (string-append "--with-gmp-libraries="
-                       (assoc-ref %build-inputs "gmp") "/lib")
-        (string-append "--with-gmp-includes="
-                       (assoc-ref %build-inputs "gmp") "/include")
-        "--with-system-libffi"
-        (string-append "--with-ffi-libraries="
-                       (assoc-ref %build-inputs "libffi") "/lib")
-        (string-append "--with-ffi-includes="
-                       (assoc-ref %build-inputs "libffi") "/include")
-        (string-append "--with-curses-libraries="
-                       (assoc-ref %build-inputs "ncurses") "/lib")
-        (string-append "--with-curses-includes="
-                       (assoc-ref %build-inputs "ncurses") "/include"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-testsuite
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "tar" "xvf"
-                     (assoc-ref inputs "ghc-testsuite")
-                     "--strip-components=1")
-             #t))
-         ;; This phase patches the 'ghc-pkg' command so that it sorts the list
-         ;; of packages in the binary cache it generates.
-         (add-before 'build 'fix-ghc-pkg-nondeterminism
-           (lambda _
-             (substitute* "utils/ghc-pkg/Main.hs"
-               (("confs = map \\(path </>\\) \\$ filter \\(\".conf\" `isSuffixOf`\\) fs")
-                "confs = map (path </>) $ filter (\".conf\" `isSuffixOf`) (sort fs)"))
-             #t))
-         (add-after 'unpack-testsuite 'fix-shell-wrappers
-           (lambda _
-             (substitute* '("driver/ghci/ghc.mk"
-                            "utils/mkdirhier/ghc.mk"
-                            "rules/shell-wrapper.mk")
-               (("echo '#!/bin/sh'")
-                (format #f "echo '#!~a'" (which "sh"))))
-             #t))
-         ;; This is necessary because the configure system no longer uses
-         ;; “AC_PATH_” but “AC_CHECK_”, setting the variables to just the
-         ;; plain command names.
-         (add-before 'configure 'set-target-programs
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((binutils (assoc-ref inputs "binutils"))
-                   (gcc (assoc-ref inputs "gcc"))
-                   (ld-wrapper (assoc-ref inputs "ld-wrapper")))
-               (setenv "CC" (string-append gcc "/bin/gcc"))
-               (setenv "CXX" (string-append gcc "/bin/g++"))
-               (setenv "LD" (string-append ld-wrapper "/bin/ld"))
-               (setenv "NM" (string-append binutils "/bin/nm"))
-               (setenv "RANLIB" (string-append binutils "/bin/ranlib"))
-               (setenv "STRIP" (string-append binutils "/bin/strip"))
-               ;; The 'ar' command does not follow the same pattern.
-               (setenv "fp_prog_ar" (string-append binutils "/bin/ar"))
-               #t)))
-         (add-before 'build 'fix-references
-           (lambda _
-             (substitute* '("testsuite/timeout/Makefile"
-                            "testsuite/timeout/timeout.py"
-                            "testsuite/timeout/timeout.hs"
-                            "testsuite/tests/programs/life_space_leak/life.test"
-                            ;; libraries
-                            "libraries/process/System/Process/Posix.hs"
-                            "libraries/process/tests/process001.hs"
-                            "libraries/process/tests/process002.hs"
-                            "libraries/unix/cbits/execvpe.c")
-               (("/bin/sh") (which "sh"))
-               (("/bin/ls") (which "ls"))
-               (("/bin/rm") "rm"))
-             #t))
-         (add-before 'build 'fix-environment
-           (lambda _
-             (unsetenv "GHC_PACKAGE_PATH")
-             (setenv "CONFIG_SHELL" (which "bash"))
-             #t)))))
+     (substitute-keyword-arguments (package-arguments ghc-8.0)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; This phase patches the 'ghc-pkg' command so that it sorts the list
+            ;; of packages in the binary cache it generates.
+            (add-before 'build 'fix-ghc-pkg-nondeterminism
+              (lambda _
+                (substitute* "utils/ghc-pkg/Main.hs"
+                  (("confs = map \\(path </>\\) \\$ filter \\(\".conf\" `isSuffixOf`\\) fs")
+                   "confs = map (path </>) $ filter (\".conf\" `isSuffixOf`) (sort fs)"))))
+            (add-after 'unpack-testsuite 'fix-shell-wrappers
+              (lambda _
+                (substitute* '("driver/ghci/ghc.mk"
+                               "utils/mkdirhier/ghc.mk"
+                               "rules/shell-wrapper.mk")
+                  (("echo '#!/bin/sh'")
+                   (format #f "echo '#!~a'" (which "sh"))))))
+            ;; This is necessary because the configure system no longer uses
+            ;; “AC_PATH_” but “AC_CHECK_”, setting the variables to just the
+            ;; plain command names.
+            (add-before 'configure 'set-target-programs
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((binutils (assoc-ref inputs "binutils"))
+                      (gcc (assoc-ref inputs "gcc"))
+                      (ld-wrapper (assoc-ref inputs "ld-wrapper")))
+                  (setenv "CC" (string-append gcc "/bin/gcc"))
+                  (setenv "CXX" (string-append gcc "/bin/g++"))
+                  (setenv "LD" (string-append ld-wrapper "/bin/ld"))
+                  (setenv "NM" (string-append binutils "/bin/nm"))
+                  (setenv "RANLIB" (string-append binutils "/bin/ranlib"))
+                  (setenv "STRIP" (string-append binutils "/bin/strip"))
+                  ;; The 'ar' command does not follow the same pattern.
+                  (setenv "fp_prog_ar" (string-append binutils "/bin/ar")))))))))
     (native-search-paths (list (search-path-specification
                                 (variable "GHC_PACKAGE_PATH")
                                 (files (list
@@ -903,7 +848,7 @@ interactive environment for the functional language Haskell.")
      (substitute-keyword-arguments (package-arguments ghc-8.6)
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
-           (add-after 'fix-references 'fix-cc-reference
+           (add-before 'build 'fix-cc-reference
              (lambda _
                (substitute* "utils/hsc2hs/Common.hs"
                  (("\"cc\"") "\"gcc\""))
