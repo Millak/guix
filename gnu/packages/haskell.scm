@@ -845,19 +845,17 @@ interactive environment for the functional language Haskell.")
     (arguments
      (substitute-keyword-arguments (package-arguments ghc-8.6)
        ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
+        #~(modify-phases #$phases
            (add-before 'build 'fix-cc-reference
              (lambda _
                (substitute* "utils/hsc2hs/Common.hs"
-                 (("\"cc\"") "\"gcc\""))
-               #t))
+                 (("\"cc\"") "\"gcc\""))))
            (add-after 'unpack-testsuite 'skip-more-tests
              (lambda _
                ;; XXX: This test fails because our ld-wrapper script
                ;; mangles the response file passed to the linker.
                (substitute* "testsuite/tests/hp2ps/all.T"
-                 (("^test\\('T15904'") "# guix skipped: test('T15904'"))
-               #t))))))
+                 (("^test\\('T15904'") "# guix skipped: test('T15904'"))))))))
     (native-search-paths (list (search-path-specification
                                 (variable "GHC_PACKAGE_PATH")
                                 (files (list
