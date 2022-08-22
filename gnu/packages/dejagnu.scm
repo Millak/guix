@@ -3,6 +3,7 @@
 ;;; Copyright © 2016, 2017, 2022 Efraim Flashner <efraim@flasher.co.il>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,6 +45,9 @@
     (inputs (list bash-minimal expect))
     (arguments
      (list
+      ;; Do an out-of-source build to work-around a non-deterministic bug in Expect:
+      ;; <https://lists.gnu.org/archive/html/bug-dejagnu/2021-06/msg00013.html>.
+      #:out-of-source? #true
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-/bin/sh
