@@ -1504,7 +1504,7 @@ watch your every step.")
 (define-public xfce4-equake-plugin
    (package
    (name "xfce4-equake-plugin")
-   (version "1.3.8")
+   (version "1.3.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1513,7 +1513,7 @@ watch your every step.")
                                   "/xfce4-equake-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "09b9k0n5xm115k44x74w4ad0xqklilyfh0hglsps7zj97pd7a5a3"))))
+                "073lxks7fb0bwgsp5rfwa310b9vd5jz6y5q8aa69kgfi0kbczygg"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
