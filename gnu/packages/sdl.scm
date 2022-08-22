@@ -13,6 +13,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (gnu packages)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -110,46 +112,47 @@ joystick, and graphics hardware.")
     (license license:lgpl2.1)))
 
 (define-public sdl2
-  (package (inherit sdl)
+  (package
+    (inherit sdl)
     (name "sdl2")
-    (version "2.0.14")
+    (version "2.24.0")
     (source (origin
-             (method url-fetch)
-             (uri
-              (string-append "https://libsdl.org/release/SDL2-"
-                             version ".tar.gz"))
-             (sha256
-              (base32
-               "1g1jahknv5r4yhh1xq5sf0md20ybdw1zh1i15lry26sq39bmn8fq"))))
+              (method url-fetch)
+              (uri
+               (string-append "https://libsdl.org/release/SDL2-"
+                              version ".tar.gz"))
+              (sha256
+               (base32
+                "15vd9najhjh6s9z9hhx7zp51iby690a1g3h7kcwjvyb82x5w7r4i"))))
     (arguments
      (substitute-keyword-arguments (package-arguments sdl)
        ((#:configure-flags flags)
-        `(append '("--disable-wayland-shared" "--enable-video-kmsdrm"
-                   "--disable-kmsdrm-shared")
-                 ,flags))
+        #~(append '("--disable-wayland-shared" "--enable-video-kmsdrm"
+                    "--disable-kmsdrm-shared")
+                  #$flags))
        ((#:make-flags flags ''())
-        `(cons*
-          ;; SDL dlopens libudev, so make sure it is in rpath. This overrides
-          ;; the LDFLAG set in sdl’s configure-flags, which isn’t necessary
-          ;; as sdl2 includes Mesa by default.
-          (string-append "LDFLAGS=-Wl,-rpath,"
-                         (assoc-ref %build-inputs "eudev") "/lib")
-          ,flags))))
+        #~(cons*
+           ;; SDL dlopens libudev, so make sure it is in rpath. This overrides
+           ;; the LDFLAG set in sdl’s configure-flags, which isn’t necessary
+           ;; as sdl2 includes Mesa by default.
+           (string-append "LDFLAGS=-Wl,-rpath,"
+                          #$(this-package-input "eudev") "/lib")
+           #$flags))))
     (inputs
      ;; SDL2 needs to be built with ibus support otherwise some systems
      ;; experience a bug where input events are doubled.
      ;;
      ;; For more information, see: https://dev.solus-project.com/T1721
-     (append `(("dbus" ,dbus)
-               ("eudev" ,eudev) ; for discovering input devices
-               ("fcitx" ,fcitx) ; helps with CJK input
-               ("glib" ,glib)
-               ("ibus" ,ibus)
-               ("libxkbcommon" ,libxkbcommon)
-               ("libxcursor" ,libxcursor) ; enables X11 cursor support
-               ("wayland" ,wayland)
-               ("wayland-protocols" ,wayland-protocols))
-             (package-inputs sdl)))
+     (modify-inputs (package-inputs sdl)
+       (append dbus
+               eudev                    ;for discovering input devices
+               fcitx                    ;helps with CJK input
+               glib
+               ibus
+               libxkbcommon
+               libxcursor               ;enables X11 cursor support
+               wayland
+               wayland-protocols)))
     (license license:bsd-3)))
 
 (define-public libmikmod
