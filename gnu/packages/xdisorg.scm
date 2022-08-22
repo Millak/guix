@@ -42,7 +42,7 @@
 ;;; Copyright © 2020 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
@@ -1378,7 +1378,7 @@ Wacom tablet applet.")
 (define-public xf86-input-wacom
   (package
     (name "xf86-input-wacom")
-    (version "0.39.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
@@ -1387,25 +1387,19 @@ Wacom tablet applet.")
              "xf86-input-wacom-" version "/"
              "xf86-input-wacom-" version ".tar.bz2"))
        (sha256
-        (base32 "11qk58az6qwii774ga45h5yqzipwn56f0d74kdbajqdv45p85gqj"))))
+        (base32 "04ks577ag2yir7kssv8zhig4rx9xqj2wifmlrcmy4k9lgw379di3"))))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-sdkdir="
-                            (assoc-ref %outputs "out")
-                            "/include/xorg")
-             (string-append "--with-xorg-conf-dir="
-                            (assoc-ref %outputs "out")
-                            "/share/X11/xorg.conf.d"))))
+     (list #:configure-flags
+           #~(list (string-append "--with-sdkdir=" #$output "/include/xorg")
+                   (string-append "--with-xorg-conf-dir=" #$output
+                                  "/share/X11/xorg.conf.d"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list xorg-server libxrandr libxinerama libxi eudev))
+    (native-inputs (list pkg-config))
+    (inputs (list xorg-server libxrandr libxinerama libxi eudev))
     (home-page "https://linuxwacom.github.io/")
     (synopsis "Wacom input driver for X")
-    (description
-     "The xf86-input-wacom driver is the wacom-specific X11 input driver for
-the X.Org X Server version 1.7 and later (X11R7.5 or later).")
+    (description "The xf86-input-wacom driver is the wacom-specific X11 input
+driver for the X.Org X Server version 1.7 and later (X11R7.5 or later).")
     (license license:x11)))
 
 (define-public redshift
