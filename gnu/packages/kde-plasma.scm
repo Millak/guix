@@ -6,6 +6,7 @@
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -162,6 +163,47 @@ manager which re-parents a Client window to a window decoration frame.")
     (description
      "This package provides a tool to adjust your monitor gamma settings.")
     (home-page "https://invent.kde.org/plasma/kgamma5")
+    (license license:gpl2+)))
+
+(define-public kscreen
+  (package
+    (name "kscreen")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "0361202n0366jiyv61w06jikh2i4s1fzr6x3chmdykx4fgvbqj7s"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; TODO: All tests fail
+     (list #:tests? #f))
+    (native-inputs (list extra-cmake-modules qttools-5 pkg-config))
+    (inputs (list kconfig
+                  kdbusaddons
+                  kdeclarative
+                  kglobalaccel
+                  ki18n
+                  kwindowsystem
+                  kiconthemes
+                  kcoreaddons
+                  kcmutils
+                  kxmlgui
+                  libkscreen
+                  libxi
+                  plasma-wayland-protocols
+                  qtsensors
+                  qtbase-5
+                  qtx11extras
+                  xcb-util))
+    (propagated-inputs (list plasma-framework))
+    (home-page "https://invent.kde.org/plasma/kscreen")
+    (synopsis "Screen management software")
+    (description "This package provides the screen management software for
+KDE Plasma Workspaces.")
     (license license:gpl2+)))
 
 (define-public ksshaskpass
