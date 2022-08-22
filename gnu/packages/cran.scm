@@ -1503,6 +1503,28 @@ qualitative palettes with many (20-30 or more) colors.  See Coombes and
 colleagues (2019) @url{https://doi:10.18637/jss.v090.c01}.")
     (license license:asl2.0)))
 
+(define-public r-polylabelr
+  (package
+    (name "r-polylabelr")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "polylabelr" version))
+              (sha256
+               (base32
+                "01b2v0l5g8nxwbd6nwqv8ahypgh6gfhd4qabg75brlj7z1iyfzf2"))))
+    (properties `((upstream-name . "polylabelr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/jolars/polylabelr")
+    (synopsis "Finding pole of inaccessibility (visual center) of a polygon")
+    (description
+     "This package provides a wrapper around the @code{C++} library @code{
+polylabel} from @code{Mapbox}, providing an efficient routine for finding the
+approximate pole of inaccessibility of a polygon, which usually serves as an
+excellent candidate for labeling of a polygon.")
+    (license license:expat)))
+
 (define-public r-poorman
   (package
     (name "r-poorman")
