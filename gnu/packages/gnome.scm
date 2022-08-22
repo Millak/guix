@@ -7478,7 +7478,7 @@ powerful general purpose text editor.")
 (define-public zenity
   (package
     (name "zenity")
-    (version "3.32.0")
+    (version "3.43.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/zenity/"
@@ -7486,12 +7486,17 @@ powerful general purpose text editor.")
                                   "zenity-" version ".tar.xz"))
               (sha256
                (base32
-                "15fdh8xfdhnwcynyh4byx3mrjxbyprqnwxzi7qn3g5wwaqryg1p7"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list gettext-minimal itstool pkg-config))
-    (inputs
-     (list libnotify webkitgtk))
+                "0czq2vx636xbvg7zbdqkxq41zgm7v1h048awy0cgls0q1hgcmmxh"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'disable-gtk-update-icon-cache
+                          ;; The gtk-update-icon-cache tool is only run when
+                          ;; DESTDIR is unset.
+                          (lambda _
+                            (setenv "DESTDIR" "/"))))))
+    (native-inputs (list gettext-minimal itstool pkg-config))
+    (inputs (list gtk+))
     (synopsis "Display graphical dialog boxes from shell scripts")
     (home-page "https://www.gnome.org")
     (description
