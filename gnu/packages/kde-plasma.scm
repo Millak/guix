@@ -1353,6 +1353,44 @@ on QtMultimedia and @command{yt-dlp}.")
 active window on Plasma Desktop.")
     (license (list license:gpl2 license:gpl3)))))
 
+(define-public plasma-browser-integration
+  (package
+    (name "plasma-browser-integration")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version
+                                  "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "18pbn5ic5l3m8i1y99yprpwd4x4746aq3abqn1f2cq5h2683h2ia"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config))
+    ;; TODO: Figure out how to integrate this package into web browsers
+    ;; CHROMIUM_EXTENSIONS_DIR - extension for chromium
+    ;; MOZILLA_DIR - extension for firefox
+    (inputs (list kio
+                  ki18n
+                  kcoreaddons
+                  kconfig
+                  kcrash
+                  kdbusaddons
+                  knotifications
+                  kitemmodels
+                  krunner
+                  kactivities
+                  purpose
+                  kfilemetadata
+                  kjobwidgets
+                  qtdeclarative-5))
+    (propagated-inputs (list plasma-workspace))
+    (home-page "https://invent.kde.org/plasma/plasma-browser-integration")
+    (synopsis "Integrate browsers into the Plasma Desktop")
+    (description
+     "This package aims to provide better integration of web browsers with
+the KDE Plasma 5 desktop.")
+    (license license:gpl3+)))
+
 (define-public plasma-disks
   (package
     (name "plasma-disks")
