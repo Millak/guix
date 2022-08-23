@@ -16456,6 +16456,55 @@ module capable of computing base-level alignments for very large sequences.")
     (home-page "https://github.com/ekg/wfmash")
     (license license:expat)))
 
+(define-public flair
+  (package
+    (name "flair")
+    (version "1.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/BrooksLabUCSC/flair")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "106swb2q7l20ki58fca1hg95q5f79bgp9gjb0clr2243ycrzyxf8"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: implement as a feature of python-build-system (PEP-621,
+          ;; PEP-631, PEP-660)
+          (replace 'build
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (apply invoke "pip" "--no-cache-dir" "--no-input"
+                     "install" "--no-deps" "--prefix" #$output
+                     (find-files "dist" "\\.whl$")))))))
+    (propagated-inputs
+     (list python-mappy
+           python-ncls
+           python-pybedtools
+           python-pysam
+           python-tqdm))
+    (native-inputs
+     (list python-pypa-build python-setuptools))
+    (home-page "https://flair.readthedocs.io/en/latest/")
+    (synopsis "Full-length alternative isoform analysis of RNA")
+    (description "This package implements FLAIR (Full-Length Alternative
+Isoform analysis of RNA) for the correction, isoform definition, and
+alternative splicing analysis of noisy reads.  FLAIR has primarily been used
+for nanopore cDNA, native RNA, and PacBio sequencing reads.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-biogo-graph
   (package
     (name "go-github-com-biogo-graph")
