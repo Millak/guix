@@ -1194,7 +1194,7 @@ desktop.")
            lximage-qt
            obconf-qt
            openbox
-           oxygen-icons
+           breeze-icons       ; default by <lxqt-session>/share/lxqt/lxqt.conf
            pavucontrol-qt
            qps
            qterminal))
