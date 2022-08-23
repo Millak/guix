@@ -11391,13 +11391,13 @@ cases include:
 (define-public python-mappy
   (package
    (name "python-mappy")
-   (version "2.18")
+   (version "2.24")
    (source (origin
             (method url-fetch)
             (uri (pypi-uri "mappy" version))
             (sha256
              (base32
-              "1a05p7rkmxa6qhm108na8flzj2v45jab06drk59kzk1ip2sgvzqq"))))
+              "1ycszza87p9qvx8mis9v1hry0ac465x1xcxbsn1k45qlxxrzp8im"))))
    (build-system python-build-system)
    (native-inputs
     (list python-cython))
