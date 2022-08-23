@@ -1766,6 +1766,26 @@ client-side scripting and application development around the NETCONF
 protocol.")
     (license license:asl2.0)))
 
+(define-public python-ncls
+  (package
+    (name "python-ncls")
+    (version "0.0.65")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ncls" version))
+              (sha256
+               (base32
+                "1wx06xqknd2r98w8z93f47g5dpxzn92kamhj8vkq0nj569hf7cg1"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-numpy))
+    (home-page "https://github.com/endrebak/ncls")
+    (synopsis "Nested containment list data structure")
+    (description
+     "This package provides a wrapper for the nested containment list data
+structure.  It is a static interval-tree that is fast for both construction
+and lookups.")
+    (license license:bsd-3)))
+
 (define-public python-license-expression
   (package
     (name "python-license-expression")
