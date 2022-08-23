@@ -42,8 +42,10 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vpn)
@@ -818,6 +820,37 @@ integration of Qt applications when running on a KDE Plasma workspace.")
     (synopsis "Plasma applet for managing network connections")
     (description "This package provides Plasma applet for managing network
 connections.")
+    (license (list license:lgpl2.1 license:lgpl3))))
+
+(define-public plasma-pa
+  (package
+    (name "plasma-pa")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0g06pm1isnzx4hv6380rjpyr22s4j5iw9083s71vnl4npx28npvb"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules kdoctools pkg-config))
+    (inputs (list glib
+                  kcoreaddons
+                  kdeclarative
+                  kglobalaccel
+                  knotifications
+                  kwindowsystem
+                  kirigami
+                  ki18n
+                  qtdeclarative-5))
+    (propagated-inputs (list libcanberra pulseaudio plasma-framework))
+    (home-page "https://invent.kde.org/plasma/plasma-pa")
+    (synopsis "Plasma applet for audio volume management using PulseAudio")
+    (description
+     "This package provides Plasma applet for audio volume management using
+PulseAudio.")
     (license (list license:lgpl2.1 license:lgpl3))))
 
 (define-public plasma-pass
