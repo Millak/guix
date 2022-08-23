@@ -7770,7 +7770,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
 (define-public evolution-data-server
   (package
     (name "evolution-data-server")
-    (version "3.42.1")
+    (version "3.44.4")
     (source
      (origin
        (method url-fetch)
@@ -7778,75 +7778,76 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0a7my8spwcaf2i2fz8ndddi1drv6l9gxq0qblmnkxzyhfwm7zrp6"))))
+        (base32 "1sxjrjr31wqbp9g4pf6dwj8rc4mi7c5fbfd489ha92ym7246bin0"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       (let* ((lib (string-append (assoc-ref %outputs "out") "/lib"))
-              (runpaths (map (lambda (s)
-                               (string-append lib "/evolution-data-server/" s))
-                             '("addressbook-backends" "calendar-backends"
-                               "camel-providers" "credential-modules"
-                               "registry-modules"))))
-         (list "-DENABLE_GOOGLE=OFF"          ;disable Google Contacts support
-               "-DENABLE_VALA_BINDINGS=ON"
-               (string-append "-DCMAKE_INSTALL_RPATH=" lib ";"
-                              (string-append lib "/evolution-data-server;")
-                              (string-join runpaths ";"))
-               "-DENABLE_INTROSPECTION=ON" ;required for Vala bindings
-               "-DWITH_PHONENUMBER=ON"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             ;; tests/book-migration/test-migration.c:160:test_fetch_contacts:
-             ;; assertion failed (g_slist_length (contacts) == 20): (0 == 20)
-             (delete-file-recursively "tests/book-migration")
-             (substitute* "tests/CMakeLists.txt"
-               (("add_subdirectory\\(book-migration\\)") ""))))
-         (add-after 'unpack 'patch-paths
-          (lambda _
-            (substitute* '("tests/test-server-utils/e-test-server-utils.c"
-                           "tests/libedata-book/data-test-utils.c"
-                           "tests/libedata-book/test-book-cache-utils.c"
-                           "tests/libedata-cal/test-cal-cache-utils.c")
-              (("/bin/rm") (which "rm")))))
-         (add-before 'configure 'dont-override-rpath
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               ;; CMakeLists.txt hard-codes runpath to just the libdir.
-               ;; Remove it so the configure flag is respected.
-               (("SET\\(CMAKE_INSTALL_RPATH .*") "")))))))
+     (list
+      #:configure-flags
+      #~(let* ((lib (string-append #$output "/lib"))
+               (runpaths (map (lambda (s)
+                                (string-append lib "/evolution-data-server/" s))
+                              '("addressbook-backends" "calendar-backends"
+                                "camel-providers" "credential-modules"
+                                "registry-modules"))))
+          (list "-DENABLE_GOOGLE=OFF"   ;disable Google Contacts support
+                "-DENABLE_VALA_BINDINGS=ON"
+                (string-append "-DCMAKE_INSTALL_RPATH=" lib ";"
+                               (string-append lib "/evolution-data-server;")
+                               (string-join runpaths ";"))
+                "-DENABLE_INTROSPECTION=ON" ;required for Vala bindings
+                "-DWITH_PHONENUMBER=ON"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              ;; tests/book-migration/test-migration.c:160:test_fetch_contacts:
+              ;; assertion failed (g_slist_length (contacts) == 20): (0 == 20)
+              (delete-file-recursively "tests/book-migration")
+              (substitute* "tests/CMakeLists.txt"
+                (("add_subdirectory\\(book-migration\\)") ""))))
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* '("tests/test-server-utils/e-test-server-utils.c"
+                             "tests/libedata-book/data-test-utils.c"
+                             "tests/libedata-book/test-book-cache-utils.c"
+                             "tests/libedata-cal/test-cal-cache-utils.c")
+                (("/bin/rm") (which "rm")))))
+          (add-before 'configure 'dont-override-rpath
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; CMakeLists.txt hard-codes runpath to just the libdir.
+                ;; Remove it so the configure flag is respected.
+                (("SET\\(CMAKE_INSTALL_RPATH .*") "")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-mkenums, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("gperf" ,gperf)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("protobuf" ,protobuf)
-       ("vala" ,vala)
-       ("python" ,python-wrapper)))
+     (list `(,glib "bin")               ; for glib-mkenums, etc.
+           gobject-introspection
+           gperf
+           gsettings-desktop-schemas
+           intltool
+           pkg-config
+           protobuf
+           vala
+           python-wrapper))
     (propagated-inputs
      ;; These are all in the Requires field of .pc files.
-     `(("gtk+" ,gtk+)
-       ("libical" ,libical)
-       ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup-minimal-2)
-       ("nss" ,nss)
-       ("sqlite" ,sqlite)))
+     (list gtk+
+           libical
+           libsecret
+           libsoup-minimal-2
+           nss
+           sqlite))
     (inputs
-     `(("bdb" ,bdb)
-       ("boost" ,boost)
-       ("gcr" ,gcr)
-       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
-       ("json-glib" ,json-glib)
-       ("libcanberra" ,libcanberra)
-       ("libgweather" ,libgweather)
-       ("libphonenumber" ,libphonenumber)
-       ("mit-krb5" ,mit-krb5)
-       ("openldap" ,openldap)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+     (list bdb
+           boost
+           gcr
+           `(,gnome-online-accounts "lib")
+           json-glib
+           libcanberra
+           libgweather
+           libphonenumber
+           mit-krb5
+           openldap
+           webkitgtk-with-libsoup2))
     (synopsis "Store address books and calendars")
     (home-page "https://wiki.gnome.org/Apps/Evolution")
     (description
