@@ -5631,7 +5631,7 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-numpy
   (package
     (name "python-numpy")
-    (version "1.23.1")
+    (version "1.23.2")
     (source
      (origin
        (method url-fetch)
@@ -5640,7 +5640,7 @@ writing C extensions for Python as easy as Python itself.")
              version "/numpy-" version ".tar.gz"))
        (sha256
         (base32
-         "095nv17vm8hvj8cj0d76syl9xh99bbnkgnjr9ccy3wpykcsfyj6p"))))
+         "00bx3idjwhmzkdawg2dx1bp0316ig37jfx0dm82bvyv1hbj013dp"))))
     (build-system python-build-system)
     (arguments
      (list
