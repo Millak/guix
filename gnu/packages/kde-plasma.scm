@@ -38,12 +38,15 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vpn)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
@@ -718,6 +721,54 @@ KDE Frameworks components.")
     (description "This package provides YouTube video player based
 on QtMultimedia and @command{yt-dlp}.")
     (license license:gpl3+)))
+
+(define-public plasma-nm
+  (package
+    (name "plasma-nm")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "036bx0qjrjanfxy8aiy6ab7rmm2h8l7wlkvlwhzw2hgl1w03xjps"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "ctest" "-E" "mobileproviderstest")))))))
+    (native-inputs (list extra-cmake-modules pkg-config))
+    (home-page "https://invent.kde.org/plasma/plasma-nm")
+    (inputs (list kconfigwidgets
+                  kcompletion
+                  kcoreaddons
+                  kdeclarative
+                  kdbusaddons
+                  kio
+                  ki18n
+                  networkmanager-qt
+                  knotifications
+                  kirigami
+                  plasma-framework
+                  modemmanager-qt
+                  network-manager
+                  qca
+                  kservice
+                  solid
+                  prison
+                  kwallet
+                  kwidgetsaddons
+                  kwindowsystem
+                  openconnect
+                  qtdeclarative-5))
+    (synopsis "Plasma applet for managing network connections")
+    (description "This package provides Plasma applet for managing network
+connections.")
+    (license (list license:lgpl2.1 license:lgpl3))))
 
 (define-public plasma-pass
   (package
