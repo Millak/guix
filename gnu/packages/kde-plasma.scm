@@ -722,6 +722,56 @@ KDE Frameworks components.")
 on QtMultimedia and @command{yt-dlp}.")
     (license license:gpl3+)))
 
+(define-public plasma-integration
+  (package
+    (name "plasma-integration")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1pab56cg2zi8fcaar53lhhh98iw7l07f5lkymkqhsh8a5crfc3yr"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f                  ;TODO: Failing tests
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "HOME" (getcwd))
+                              (setenv "XDG_RUNTIME_DIR" (getcwd))
+                              (setenv "XDG_CACHE_HOME" (getcwd))
+                              (setenv "QT_QPA_PLATFORM" "offscreen")
+                              (invoke "ctest" "-E"
+                                      "(frameworkintegration-kdeplatformtheme_unittest|frameworkintegration-kfontsettingsdata_unittest|frameworkintegration-kfiledialog_unittest|qmltests|frameworkintegration-kfiledialogqml_unittest")))))))
+    (native-inputs (list extra-cmake-modules pkg-config))
+    (inputs (list breeze
+                  kconfig
+                  kio
+                  ki18n
+                  kwidgetsaddons
+                  kconfigwidgets
+                  kiconthemes
+                  knotifications
+                  libxcb
+                  libxcursor
+                  plasma-wayland-protocols
+                  qtdeclarative-5
+                  qtquickcontrols2-5
+                  qtwayland-5
+                  qtx11extras
+                  wayland))
+    (home-page "https://invent.kde.org/plasma/plasma-integration")
+    (synopsis
+     "Qt Platform Theme integration plugins for the Plasma workspaces")
+    (description
+     "This package provides a set of plugins responsible for better
+integration of Qt applications when running on a KDE Plasma workspace.")
+    (license license:lgpl2.0)))
+
 (define-public plasma-nm
   (package
     (name "plasma-nm")
