@@ -11322,7 +11322,7 @@ tabs, and it supports drag and drop re-ordering of terminals.")
 (define-public libhandy
   (package
     (name "libhandy")
-    (version "1.5.0")
+    (version "1.7.90")
     (source
      (origin
        (method git-fetch)
@@ -11331,7 +11331,7 @@ tabs, and it supports drag and drop re-ordering of terminals.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19gl0xxybraw2iyn6cdi9w7nps825lb2bhav7d2x51wla0lq3kdc"))))
+        (base32 "1z8sbx7g19c1p8dy0sn0l25qfvrd2j28h269lsqm1y98r818h2k1"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -11355,25 +11355,24 @@ tabs, and it supports drag and drop re-ordering of terminals.")
            (lambda _
              ;; Tests require a running X server.
              (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t)))))
+             (setenv "DISPLAY" ":1"))))))
     (inputs
      (list gtk+ glade3))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection) ; for g-ir-scanner
-       ("vala" ,vala)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml-4.3)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)
-       ("gettext" ,gettext-minimal)
+     (list gobject-introspection        ; for g-ir-scanner
+           `(,glib "bin")
+           vala
+           libxml2
+           libxslt
+           docbook-xsl
+           docbook-xml-4.3
+           gtk-doc/stable
+           pkg-config
+           gettext-minimal
 
-       ;; Test suite dependencies.
-       ("xorg-server" ,xorg-server-for-tests)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)))
+           ;; Test suite dependencies.
+           hicolor-icon-theme
+           xorg-server-for-tests))
     (home-page "https://gitlab.gnome.org/GNOME/libhandy/")
     (synopsis "Library full of GTK+ widgets for mobile phones")
     (description "The aim of the handy library is to help with developing user
