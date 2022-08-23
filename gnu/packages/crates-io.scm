@@ -15391,7 +15391,7 @@ reallocations.")
 (define-public rust-csv-1
   (package
     (name "rust-csv")
-    (version "1.1.5")
+    (version "1.1.6")
     (source
      (origin
        (method url-fetch)
@@ -15400,7 +15400,7 @@ reallocations.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "15wydz6klf1shh1ac5n6rsihc4xrz1lzi8vjmhava94v54rqdmgr"))))
+         "1q9nqn0qlamwl18v57p82c8yhxy43lkzf2z1mndmycsvqinkm092"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
