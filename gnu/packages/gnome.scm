@@ -2147,27 +2147,25 @@ offline sources, providing a centralized place for managing your contacts.")
 (define-public gnome-desktop
   (package
     (name "gnome-desktop")
-    (version "40.4")
+    (version "42.4")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnome/sources/" name "/"
-                          (version-major version)  "/"
-                          name "-" version ".tar.xz"))
-      (sha256
-       (base32
-        "1vs5knn2yj6a449p9bn5w5407i1yvxfxg8xv844qgl70hpsrdbl8"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/" name "/"
+                           (version-major version)  "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "09ddr5fzhh02fcn7xl1wy18qfsdqryd5msl2nbhdnsbr0vawkqhw"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-before 'configure 'patch-path
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libc   (assoc-ref inputs "libc")))
-               (substitute* "libgnome-desktop/gnome-languages.c"
-                 (("\"locale\"")
-                  (string-append "\"" libc "/bin/locale\"")))
-               #t)))
+             (substitute* "libgnome-desktop/gnome-languages.c"
+               (("\"locale\"")
+                (format #f "~s" (search-input-file inputs "bin/locale"))))))
          (add-before 'configure 'patch-bubblewrap
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "libgnome-desktop/gnome-desktop-thumbnail-script.c"
@@ -2179,8 +2177,8 @@ offline sources, providing a centralized place for managing your contacts.")
                                "\", \""
                                (%store-directory)
                                "\","))
-               (("\"--ro-bind\", \"/etc/ld.so.cache\", \"/etc/ld.so.cache\",") ""))
-             #t))
+               (("\"--ro-bind\", \"/etc/ld.so.cache\", \"/etc/ld.so.cache\",")
+                ""))))
          (add-before 'check 'pre-check
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Tests require a running X server and locales.
@@ -2192,26 +2190,27 @@ offline sources, providing a centralized place for managing your contacts.")
                      (search-input-directory inputs
                                              "lib/locale")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for gdbus-codegen
-       ("glibc-locales" ,glibc-locales) ; for tests
-       ("gobject-introspection" ,gobject-introspection)
-       ("itstool" ,itstool)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list `(,glib "bin")                   ;for gdbus-codegen
+           glibc-locales                    ;for tests
+           gobject-introspection
+           itstool
+           intltool
+           pkg-config
+           libxml2
+           xorg-server-for-tests))
     (propagated-inputs
      ;; Required by gnome-desktop-3.0.pc.
-     (list gsettings-desktop-schemas
+     (list gsettings-desktop-schemas-next
+           gtk
            gtk+
            iso-codes
            libseccomp
            libx11
            xkeyboard-config))
     (inputs
-     (list gdk-pixbuf
+     (list bubblewrap
+           gdk-pixbuf
            glib
-           bubblewrap
            libxext
            libxkbfile
            libxrandr))
@@ -2225,7 +2224,7 @@ There is no API or ABI guarantee, although we are doing our best to provide
 stability.  Documentation for the API is available with gtk-doc.
 
 The gnome-about program helps find which version of GNOME is installed.")
-    ; Some bits under the LGPL.
+                                        ; Some bits under the LGPL.
     (license license:gpl2+)))
 
 (define-public gnome-disk-utility
