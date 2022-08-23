@@ -63,6 +63,7 @@
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -8089,23 +8090,26 @@ emulates the behaviour of Gunnar Monell's older fbgrab utility.")
 (define-public libcgroup
   (package
     (name "libcgroup")
-    (version "0.41")
+    (version "2.0.2")
+    (home-page "https://github.com/libcgroup/libcgroup")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://sourceforge/libcg/" name "/"
-             version "/" name "-" version ".tar.bz2"))
+       (uri (string-append home-page "/releases/download/v"
+                           version "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lgvyq37gq84sk30sg18admxaj0j0p5dq3bl6g74a1ppgvf8pqz4"))))
+        (base32 "1y0c9ncsawamj77raiw6qkbm5cdsyvhjb2mvgma1kxmgw0r3pxlf"))))
     (build-system gnu-build-system)
     (arguments
+     ;; Tests are virtualized with lxc, it is not very feasible
+     ;; to make them executable under guix build. Also, note that
+     ;; origin is using source tarball release which is prepared
+     ;; after testing.
      `(#:tests? #f))
     (native-inputs
      (list bison flex))
     (inputs
      (list linux-pam))
-    (home-page "https://sourceforge.net/projects/libcg/")
     (synopsis "Control groups management tools")
     (description "Control groups is Linux kernel method for process resource
 restriction, permission handling and more.  This package provides userspace
