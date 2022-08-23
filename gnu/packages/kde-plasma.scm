@@ -255,14 +255,14 @@ call it if it is not associated to a terminal.")
 (define-public libkscreen
   (package
     (name "libkscreen")
-    (version "5.25.3")
+    (version "5.25.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1mxkrk04wcyw4xbfiyxbp5iwnhqr10yk39zx5bbjd9zag0vdi7z5"))))
+        (base32 "17ib0sgrhmmf3f8w3fni0825xz5581av5vnz8gca41vyf12css25"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules
