@@ -26,6 +26,7 @@
 (define-module (gnu packages kde-plasma)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
   #:use-module (guix build-system cmake)
@@ -723,6 +724,35 @@ KDE Frameworks components.")
     (description "This package provides YouTube video player based
 on QtMultimedia and @command{yt-dlp}.")
     (license license:gpl3+)))
+
+(define-public plasma-active-window-control
+(let ((commit "0b1c091b5662fb21917064d7809b3be8b4a8be47")
+       (revision "1"))
+  (package
+    (name "plasma-active-window-control")
+    (version (git-version "1.7.3" revision commit))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://invent.kde.org/plasma/plasma-active-window-control")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lns1n7p6b64z7l3bn27hni100pp3k2whzzzg0adr4hiynycdix6"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs
+     (list kwindowsystem
+           libsm
+           plasma-framework
+           qtdeclarative-5
+           qtx11extras))
+    (home-page "https://invent.kde.org/plasma/plasma-active-window-control")
+    (synopsis "Plasma applet for controlling the currently active window")
+    (description "This package provides window control applet for the current
+active window on Plasma Desktop.")
+    (license (list license:gpl2 license:gpl3)))))
 
 (define-public plasma-disks
   (package
