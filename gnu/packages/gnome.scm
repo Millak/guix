@@ -5664,7 +5664,7 @@ services for numerous locations.")
 (define-public gnome-settings-daemon
   (package
     (name "gnome-settings-daemon")
-    (version "41.0")
+    (version "42.2")
     (source
      (origin
        (method url-fetch)
@@ -5673,71 +5673,68 @@ services for numerous locations.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "111qcvlqjpasnswdniy5n53wyrs1y7a91qx1w4nsppnizdhn7jp6"))
+         "005b1dvrfcyr6n4srl6c0lzr95c18prps4xm1lf2ghcfm8a9fi4w"))
        (patches (search-patches "gnome-settings-daemon-gc.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:meson ,meson-0.60
-       #:configure-flags
-       (list (string-append "-Dudev_dir="
-                            (assoc-ref %outputs "out") "/lib/udev")
-             "-Dsystemd=false"
-             ;; Otherwise, the RUNPATH will lack the final path component.
-             (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out")
-                            "/lib/gnome-settings-daemon-3.0"))
-
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'set-baobab-file-name
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; Hard-code the file name of Baobab instead of looking
-                      ;; it up in $PATH.  This ensures users get the "Examine"
-                      ;; button in the low disk space notification of GDM even
-                      ;; if they don't have GNOME in their main profile.
-                      (let ((baobab (assoc-ref inputs "baobab")))
-                        (substitute* "plugins/housekeeping/gsd-disk-space.c"
-                          (("g_find_program_in_path \\(DISK_SPACE_ANALYZER\\)")
-                           (string-append "g_strdup (\"" baobab
-                                          "/bin/baobab\")")))))))
-
-       ;; Color management test can't reach the colord system service.
-       #:tests? #f))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list (string-append "-Dudev_dir=" #$output "/lib/udev")
+              "-Dsystemd=false"
+              ;; Otherwise, the RUNPATH will lack the final path component.
+              (string-append "-Dc_link_args=-Wl,-rpath=" #$output
+                             "/lib/gnome-settings-daemon-3.0"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-baobab-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Hard-code the file name of Baobab instead of looking
+              ;; it up in $PATH.  This ensures users get the "Examine"
+              ;; button in the low disk space notification of GDM even
+              ;; if they don't have GNOME in their main profile.
+              (substitute* "plugins/housekeeping/gsd-disk-space.c"
+                (("g_find_program_in_path \\(DISK_SPACE_ANALYZER\\)")
+                 (format #f "g_strdup (~s)"
+                         (search-input-file inputs "bin/baobab")))))))
+      ;; Color management test can't reach the colord system service.
+      #:tests? #f))
     (native-inputs
-     `(("glib:bin" ,glib "bin")     ; for glib-mkenums
-       ("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("xsltproc" ,libxslt)
-       ("libxml2" ,libxml2)                       ;for XML_CATALOG_FILES
-       ("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)))
+     (list docbook-xml-4.2
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")               ;for glib-mkenums
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt
+           perl
+           pkg-config))
     (inputs
      (list alsa-lib
            baobab
            colord
-           libgudev
-           upower
-           polkit
-           pulseaudio
-           libcanberra
-           libx11
-           libxtst
-           lcms
-           libnotify
+           cups
+           gcr
            geoclue
            geocode-glib-with-libsoup2
-           libgweather
            gnome-desktop
-           nss
-           cups
-           gsettings-desktop-schemas
-           libwacom
+           gsettings-desktop-schemas-next
+           lcms
+           libcanberra
+           libgudev
+           libgweather4-with-libsoup2
+           libnotify
            (librsvg-for-system)
-           xf86-input-wacom
-           wayland
+           libwacom
+           libx11
+           libxtst
+           modem-manager
            network-manager
-           gcr
-           modem-manager))
+           nss
+           polkit
+           pulseaudio
+           upower
+           wayland
+           xf86-input-wacom))
     (home-page "https://www.gnome.org")
     (synopsis "GNOME settings daemon")
     (description
