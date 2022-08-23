@@ -882,7 +882,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
 (define-public llvm-11
   (package
     (inherit llvm-12)
-    (version "11.0.0")
+    (version "11.1.0")
     (source
      (origin
       (method url-fetch)
@@ -890,16 +890,16 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
       (patches (search-patches "llvm-8-missing-include.patch"))
       (sha256
        (base32
-        "0s94lwil98w7zb7cjrbnxli0z7gklb312pkw74xs1d6zk346hgwi"))))))
+        "199yq3a214avcbi4kk2q0ajriifkvsr0l2dkx3a666m033ihi1ff"))))))
 
 (define-public clang-runtime-11
   (clang-runtime-from-llvm
    llvm-11
-   "0d5j5l8phwqjjscmk8rmqn0i2i0abl537gdbkagl8fjpzy1gyjip"))
+   "0x1j8ngf1zj63wlnns9vlibafq48qcm72p4jpaxkmkb4qw0grwfy"))
 
 (define-public clang-11
   (clang-from-llvm llvm-11 clang-runtime-11
-                   "02ajkij85966vd150iy246mv16dsaph1kfi0y8wnncp8w6nar5hg"
+                   "12sm91qx2m79cvj75a9aazf2x8xybjbd593dv6v7rxficpq8i0ha"
                    #:patches '("clang-11.0-libc-search-path.patch")
                    #:tools-extra
                    (origin
@@ -908,7 +908,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                                     (package-version llvm-11)))
                      (sha256
                       (base32
-                       "02bcwwn54661madhq4nxc069s7p7pj5gpqi8ww50w3anbpviilzy")))))
+                       "18n1w1hkv931xzq02b34wglbv6zd6sd0r5kb8piwvag7klj7qw3n")))))
 
 (define-public libomp-11
   (package
@@ -919,7 +919,7 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
               (uri (llvm-uri "openmp" version))
               (sha256
                (base32
-                "0k389d0g9zlfyzh1kpb3i5jdawzpn0hrdxzbjinpvdv7rbw4sw1d"))
+                "0bh5cswgpc79awlq8j5i7hp355adaac7s6zaz0zwp6mkflxli1yi"))
               (file-name (string-append "libomp-" version ".tar.xz"))))
     (native-inputs
      (modify-inputs (package-native-inputs libomp-12)
