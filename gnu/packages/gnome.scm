@@ -5432,7 +5432,7 @@ permission from user.")
 (define-public geocode-glib
   (package
     (name "geocode-glib")
-    (version "3.26.2")
+    (version "3.26.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/geocode-glib/"
@@ -5440,29 +5440,31 @@ permission from user.")
                                   "geocode-glib-" version ".tar.xz"))
               (sha256
                (base32
-                "1l8g0f13xgkrk335afr9w8k46mziwb2jnyhl07jccl5yl37q9zh1"))))
+                "1aipd82qk404qy88pyfgplzgi83db4hi51vkl54h8isqs4k6i6id"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; The tests require a bunch of locales.
-         (add-before 'check 'set-locales
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "GUIX_LOCPATH"
-                     (search-input-directory inputs "lib/locale")))))))
+     (list
+      #:configure-flags #~(list "-Dsoup2=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The tests require a bunch of locales.
+          (add-before 'check 'set-locales
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "GUIX_LOCPATH"
+                      (search-input-directory inputs "lib/locale")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-mkenums
-       ("glibc-locales" ,glibc-locales) ; for tests
-       ("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)
-       ("json-glib" ,json-glib)))
+     (list `(,glib "bin")               ;for glib-mkenums
+           glibc-locales                ;for tests
+           gettext-minimal
+           gobject-introspection
+           gtk-doc/stable
+           pkg-config
+           json-glib))
     (propagated-inputs
-     ;; geocode-glib-1.0.pc refers to GIO.
+     ;; geocode-glib-2.0.pc refers to GIO.
      (list glib))
     (inputs
-     `(("libsoup" ,libsoup-minimal-2)))
+     (list libsoup))
     (home-page "https://github.com/GNOME/geocode-glib/")
     (synopsis "Geocoding and reverse-geocoding library")
     (description
@@ -5471,6 +5473,16 @@ and latitude from an address) and reverse geocoding (finding an address from
 coordinates) using the Nominatim service.  geocode-glib caches requests for
 faster results and to avoid unnecessary server load.")
     (license license:lgpl2.0+)))
+
+(define-public geocode-glib-with-libsoup2
+  (package
+    (inherit geocode-glib)
+    (name "geocode-glib-with-libsoup2")
+    (arguments (substitute-keyword-arguments (package-arguments geocode-glib)
+                 ((#:configure-flags flags ''())
+                  #~(delete "-Dsoup2=false" #$flags))))
+    (inputs (modify-inputs (package-inputs geocode-glib)
+              (replace "libsoup" libsoup-minimal-2)))))
 
 (define-public upower
   (package
@@ -5698,7 +5710,7 @@ services for numerous locations.")
            lcms
            libnotify
            geoclue
-           geocode-glib
+           geocode-glib-with-libsoup2
            libgweather
            gnome-desktop
            nss
@@ -9847,7 +9859,7 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
            gtk+
            gsound
            geoclue
-           geocode-glib
+           geocode-glib-with-libsoup2
            libgweather
            libhandy
            gnome-desktop))

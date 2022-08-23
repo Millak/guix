@@ -1,3 +1,5 @@
+Allow the configuration file to be specified via an environment variable.
+
 diff --git a/src/gclue-config.c b/src/gclue-config.c
 index 7ab2a67..e41f3df 100644
 --- a/src/gclue-config.c
