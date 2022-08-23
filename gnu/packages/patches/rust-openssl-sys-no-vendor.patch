@@ -6,12 +6,12 @@ Starting from rust-openssl-sys@0.9.69 Cargo.toml starts searching for openssl-3.
 
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -31,14 +31,11 @@
+@@ -31,15 +31,12 @@
  [build-dependencies.cc]
  version = "1.0"
  
 -[build-dependencies.openssl-src]
--version = "111.0.1"
+-version = "111"
 -optional = true
 -
  [build-dependencies.pkg-config]
@@ -20,6 +20,7 @@ Starting from rust-openssl-sys@0.9.69 Cargo.toml starts searching for openssl-3.
  [features]
  vendored = ["openssl-src"]
 +openssl-src = []
+ 
  [target."cfg(target_env = \"msvc\")".build-dependencies.vcpkg]
- version = "0.2"
+ version = "0.2.8"
 
