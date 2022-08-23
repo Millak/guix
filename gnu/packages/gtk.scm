@@ -724,11 +724,11 @@ ever use this library.")
     (license license:lgpl2.1+)))
 
 ;;; A minimal variant used to prevent a cycle with Inkscape.
-(define-public at-spi2-core-minimal
+(define-public at-spi2-core
   (hidden-package
    (package
      (name "at-spi2-core")
-     (version "2.40.0")
+     (version "2.45.90")
      (source (origin
                (method url-fetch)
                (uri (string-append "mirror://gnome/sources/" name "/"
@@ -736,33 +736,44 @@ ever use this library.")
                                    name "-" version ".tar.xz"))
                (sha256
                 (base32
-                 "0a9l6cfxynjn6jcp29d72i75xbkrzs1l5kmqcwmfal801b9sg5j1"))))
+                 "03dba3c6m3sfapkkbbgzvbi1qcmrrlppydxjjs1m8ds9qb9hl1g9"))))
      (build-system meson-build-system)
      (arguments
-      '(#:glib-or-gtk? #t    ; To wrap binaries and/or compile schemas
-        #:phases
-        (modify-phases %standard-phases
-          (add-after 'install 'check
-            (lambda _
-              (setenv "HOME" (getenv "TMPDIR")) ; xfconfd requires a writable HOME
-              ;; Run test-suite under a dbus session.
-              (setenv "XDG_DATA_DIRS" ; for finding org.xfce.Xfconf.service
-                      (string-append %output "/share"))
-              ;; Don't fail on missing  '/etc/machine-id'.
-              (setenv "DBUS_FATAL_WARNINGS" "0") ;
-              (invoke "dbus-launch" "ninja" "test")))
-          (delete 'check))))
+      (list
+       #:glib-or-gtk? #t              ;to wrap binaries and/or compile schemas
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'check)
+           (add-after 'install 'check
+             (lambda _
+               (setenv "HOME" (getenv "TMPDIR")) ;xfconfd requires a writable HOME
+               ;; Run test-suite under a dbus session.
+               (setenv "XDG_DATA_DIRS"  ;for finding org.xfce.Xfconf.service
+                       (string-append #$output "/share:" (getenv "XDG_DATA_DIRS")))
+               ;; Don't fail on missing  '/etc/machine-id'.
+               (setenv "DBUS_FATAL_WARNINGS" "0")
+               (with-directory-excursion (string-append "../at-spi2-core-"
+                                                        #$version "")
+                 (invoke "dbus-run-session" "--" "ci/run-registryd-tests.sh")
+                 (substitute* "ci/run-tests.sh"
+                   (("ps auxwww") "")   ;avoid a dependency on procps
+                   (("meson test -C _build")
+                    "meson test -C ../build")) ;adjust build directory
+                 (invoke "dbus-run-session" "--" "ci/run-tests.sh")))))))
      (inputs
-      (list bash-minimal))
+      (list bash-minimal libxml2))
      (propagated-inputs
       ;; atspi-2.pc refers to all these.
       (list dbus glib libx11 libxi libxtst))
      (native-inputs
-      `(("gettext" ,gettext-minimal)
-        ("glib" ,glib "bin")
-        ("gobject-introspection" ,gobject-introspection)
-        ("pkg-config" ,pkg-config)
-        ("python" ,python-wrapper)))
+      (list gettext-minimal
+            `(,glib "bin")
+            gobject-introspection
+            gsettings-desktop-schemas
+            pkg-config
+            python-dbusmock
+            python-pytest
+            python-wrapper))
      (synopsis "Assistive Technology Service Provider Interface, core components")
      (description
       "The Assistive Technology Service Provider Interface, core components,
@@ -770,86 +781,45 @@ is part of the GNOME accessibility project.")
      (license license:lgpl2.1+)
      (home-page "https://wiki.gnome.org/Accessibility/"))))
 
-(define-public at-spi2-core
-  (package/inherit at-spi2-core-minimal
-    (outputs (cons "doc" (package-outputs at-spi2-core-minimal)))
+(define-public at-spi2-core-with-documentation
+  (package/inherit at-spi2-core
+    (outputs (cons "doc" (package-outputs at-spi2-core)))
     (arguments
-     (substitute-keyword-arguments (package-arguments at-spi2-core-minimal)
+     (substitute-keyword-arguments (package-arguments at-spi2-core)
        ((#:configure-flags flags ''())
-        `(cons ,(if (%current-target-system)
-                    "-Ddocs=false"
-                    "-Ddocs=true")
-               ,flags))
+        #~(cons #$(if (%current-target-system)
+                      "-Ddocs=false"
+                      "-Ddocs=true")
+                #$flags))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'set-documentation-path
-             (lambda* (#:key outputs #:allow-other-keys)
-               ;; Ensure that the cross-references point to the "doc" output.
-               (substitute* "doc/libatspi/meson.build"
-                 (("docpath =.*")
-                  (string-append "docpath = '" (assoc-ref outputs "doc")
-                                 "/share/gtk-doc/html'\n")))))
-           (add-before 'install 'prepare-doc-directory
-             (lambda* (#:key outputs #:allow-other-keys)
-               (mkdir-p (string-append (assoc-ref outputs "doc") "/share"))))
-           ,@(if (%current-target-system)
-                 '()
-                 '((add-after 'install 'move-documentation
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let ((out (assoc-ref outputs "out"))
-                             (doc (assoc-ref outputs "doc")))
-                         (copy-recursively
-                          (string-append out "/share/gtk-doc")
-                          (string-append doc "/share/gtk-doc"))
-                         (delete-file-recursively
-                          (string-append out "/share/gtk-doc")))))))))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'set-documentation-path
+              (lambda _
+                ;; Ensure that the cross-references point to the "doc" output.
+                (substitute* "doc/libatspi/meson.build"
+                  (("docpath =.*")
+                   (string-append "docpath = '" #$output:doc
+                                  "/share/gtk-doc/html'\n")))))
+            (add-before 'install 'prepare-doc-directory
+              (lambda _
+                (mkdir-p (string-append #$output:doc "/share"))))
+            #$@(if (%current-target-system)
+                   #~()
+                   #~((add-after 'install 'move-documentation
+                        (lambda _
+                          (copy-recursively
+                           (string-append #$output "/share/gtk-doc")
+                           (string-append #$output:doc "/share/gtk-doc"))
+                          (delete-file-recursively
+                           (string-append #$output "/share/gtk-doc"))))))))))
     (native-inputs
-     (append `(("docbook-xml" ,docbook-xml-4.3)
-               ("gtk-doc" ,gtk-doc/stable)
-               ("libxml2" ,libxml2))    ;for XML_CATALOG_FILES
-         (package-native-inputs at-spi2-core-minimal)))
+     (modify-inputs (package-native-inputs at-spi2-core)
+       (append docbook-xml-4.3 gtk-doc/stable)))
     (properties (alist-delete 'hidden?
-                              (package-properties at-spi2-core-minimal)))))
+                              (package-properties at-spi2-core)))))
 
 (define-public at-spi2-atk
-  (package
-    (name "at-spi2-atk")
-    (version "2.38.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version)  "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0ks6r9sx27l80n3a7yjmkilxv48cqj183wc7cap3caw2myjhi86g"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       ;; Compiling tests requires "libxml2" to be in 'inputs'.
-       ,@(if (%current-target-system)
-             `(#:configure-flags '("-Dtests=false"))
-             '())
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           ;; Run test-suite under a dbus session.
-           (lambda _
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             (invoke "dbus-launch" "meson" "test"))))))
-    (propagated-inputs
-     (list at-spi2-core-minimal)) ; required by atk-bridge-2.0.pc
-    (inputs
-     (list atk glib))
-    (native-inputs
-     (list dbus ; For tests
-           gobject-introspection libxml2 pkg-config))
-    (synopsis "Assistive Technology Service Provider Interface, ATK bindings")
-    (description
-     "The Assistive Technology Service Provider Interface
-is part of the GNOME accessibility project.")
-    (license license:lgpl2.1+)
-    (home-page "https://wiki.gnome.org/Accessibility/")))
+  (deprecated-package "at-spi2-atk" at-spi2-core))
 
 (define-public gtk+-2
   (package
@@ -971,7 +941,7 @@ application suites.")
                                 "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
     (propagated-inputs
      (list atk
-           at-spi2-atk
+           at-spi2-core
            cairo
            fribidi
            fontconfig

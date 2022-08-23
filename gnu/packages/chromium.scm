@@ -878,7 +878,7 @@
     (inputs
      (list alsa-lib
            atk
-           at-spi2-atk
+           at-spi2-core
            cups
            curl
            dbus

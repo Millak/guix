@@ -9444,7 +9444,7 @@ world.")
        ;; XXX: Find out exactly which ones are needed and why.
        ("font-abattis-cantarell"            ,font-abattis-cantarell)
        ("font-dejavu"               ,font-dejavu)
-       ("at-spi2-core"              ,at-spi2-core-minimal)
+       ("at-spi2-core"              ,at-spi2-core)
        ("dbus"                      ,dbus)
        ("dconf"                     ,dconf)
        ("desktop-file-utils"        ,desktop-file-utils)
@@ -10391,7 +10391,7 @@ accessibility infrastructure.")
            pkg-config
            libxml2))
     (inputs
-     (list at-spi2-atk
+     (list at-spi2-core
            gsettings-desktop-schemas
            gstreamer
            gst-plugins-base
