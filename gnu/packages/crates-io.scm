@@ -22254,7 +22254,7 @@ custom fixed-size hash types.")
 (define-public rust-flate2-1
   (package
     (name "rust-flate2")
-    (version "1.0.22")
+    (version "1.0.23")
     (source
      (origin
        (method url-fetch)
@@ -22263,7 +22263,7 @@ custom fixed-size hash types.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0gy5iwfqylb2f0dd9n7r8w2xwbzlrqlsairvyj2w9jf1jzl8hs8y"))))
+         "1bq9vavadgqqr72z5bzbp952c4q67a71kfc4r55qzlw6cvlj55dk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -22275,11 +22275,11 @@ custom fixed-size hash types.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-libz-sys" ,rust-libz-sys-1)
         ("rust-miniz-sys" ,rust-miniz-sys-0.1)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.4)
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.5)
         ("rust-tokio-io" ,rust-tokio-io-0.1))
        #:cargo-development-inputs
        (("rust-futures" ,rust-futures-0.1)
-        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rand" ,rust-rand-0.7)
         ("rust-tokio-io" ,rust-tokio-io-0.1)
         ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
