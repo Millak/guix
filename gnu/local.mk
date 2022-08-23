@@ -51,6 +51,7 @@
 # Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 # Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 # Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+# Copyright © 2022 muradm <mail@muradm.net>
 #
 # This file is part of GNU Guix.
 #
@@ -672,6 +673,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/nfs.scm			\
   %D%/services/pam-mount.scm			\
   %D%/services/science.scm			\
+  %D%/services/security.scm			\
   %D%/services/security-token.scm		\
   %D%/services/shepherd.scm			\
   %D%/services/sound.scm			\
@@ -756,6 +758,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/package-management.scm		\
   %D%/tests/reconfigure.scm			\
   %D%/tests/rsync.scm				\
+  %D%/tests/security.scm			\
   %D%/tests/security-token.scm			\
   %D%/tests/singularity.scm			\
   %D%/tests/ssh.scm				\
