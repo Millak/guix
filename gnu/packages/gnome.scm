@@ -1705,7 +1705,7 @@ client devices can handle.")
 (define-public libnma
   (package
     (name "libnma")
-    (version "1.8.28")
+    (version "1.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1713,29 +1713,31 @@ client devices can handle.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "09mp6k0hfam1vyyv9kcd8j4gb2r58i05ipx2nswb58ris599bxja"))))
+                "0h095a26w3sgbspsf7wzz8ddg62j3jb9ckrrv41k7cdp0k2dkhsg"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags (list "-Dlibnma_gtk4=true")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-docbook-xml
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
-                                          "/xml/dtd/docbook")))
-               (substitute* "libnma-docs.xml"
-                 (("http://.*/docbookx\\.dtd")
-                  (string-append xmldoc "/docbookx.dtd")))
-               #t))))))
+             (substitute* "libnma-docs.xml"
+               (("http://.*/docbookx\\.dtd")
+                (search-input-file
+                 inputs "xml/dtd/docbook/docbookx.dtd"))))))))
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.3)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gtk-doc" ,gtk-doc/stable)
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list docbook-xml-4.3
+           gettext-minimal
+           `(,glib "bin")
+           gtk-doc/stable
+           gobject-introspection
+           pkg-config
+           vala))
     (inputs
-     (list gcr gtk+ iso-codes mobile-broadband-provider-info
+     (list gcr
+           gtk
+           iso-codes
+           mobile-broadband-provider-info
            network-manager))
     (synopsis "Network Manager's applet library")
     (description "Libnma is an applet library for Network Manager.  It was
