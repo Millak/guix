@@ -4864,7 +4864,7 @@ GitLab instance.")
 (define-public guile-smc
   (package
     (name "guile-smc")
-    (version "0.3.0")
+    (version "0.5.2")
     (source
      (origin
        (method git-fetch)
@@ -4874,7 +4874,7 @@ GitLab instance.")
        (file-name (string-append name "-" version))
        (sha256
         (base32
-         "0szkjmasi70m1vppck7nhdxg4lnxzjq6mihi6r1552s8sxm5z008"))))
+         "05q20vi59whjs7jb8bgcxnnfy6c3wx26m5ps2fwlsz52nggarxzb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")     ;to prevent guild warnings
@@ -4886,23 +4886,6 @@ GitLab instance.")
        #:phases
        (modify-phases %standard-phases
          (delete 'strip)
-         (add-after 'configure 'patch
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "modules/smc/core/log.scm"
-               (("  #:use-module \\(logging logger\\)")
-                (string-append
-                 "  #:use-module (logging logger)\n"
-                 "  #:use-module (logging rotating-log)"))
-               (("#:init-value \"logger\"")
-                (format #f
-                        "#:init-value \"~a/bin/logger\""
-                        (assoc-ref inputs "inetutils")))
-             (("\\(add-handler! %logger %syslog\\)")
-              (string-append
-               "(add-handler! %logger\n"
-               "              (make <rotating-log>\n"
-               "                    #:file-name \"smc.log\"))\n")))
-             #t))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out       (assoc-ref outputs "out"))
@@ -4919,15 +4902,11 @@ GitLab instance.")
                     ,(string-append guile-lib scm)))
                  `("GUILE_LOAD_COMPILED_PATH" prefix
                    (,(string-append out go)
-                    ,(string-append guile-lib go)))))
-             #t)))))
+                    ,(string-append guile-lib go))))))))))
     (native-inputs
-     (list autoconf automake pkg-config texinfo))
+     (list autoconf automake pkg-config texinfo help2man which))
     (inputs
-     `(("bash"      ,bash-minimal)
-       ("guile"     ,guile-3.0)
-       ("guile-lib" ,guile-lib)
-       ("inetutils" ,inetutils)))
+     (list bash-minimal guile-3.0 guile-lib inetutils))
     (home-page "https://github.com/artyom-poptsov/guile-smc")
     (synopsis "GNU Guile state machine compiler")
     (description
