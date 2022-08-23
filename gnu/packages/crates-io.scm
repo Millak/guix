@@ -29815,19 +29815,24 @@ whether or not a given path points to an executable file.")
 (define-public rust-itertools-0.10
   (package
     (name "rust-itertools")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "itertools" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06dkghwi1a6ah2103gibxnr2ys762m5x4rp75x0q43imis8p5m9p"))))
+        (base32 "1bsyxnm20x05rwc5qskrqy4cfswrcadzlwc26dkqml6hz64vipb9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-either" ,rust-either-1))))
+     `(#:cargo-inputs
+       (("rust-either" ,rust-either-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-permutohedron" ,rust-permutohedron-0.2)
+        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-rand" ,rust-rand-0.7))))
     (home-page "https://github.com/rust-itertools/itertools")
     (synopsis "Extra iterator adaptors, methods, free functions, and macros")
     (description
