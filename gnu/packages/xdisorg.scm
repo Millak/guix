@@ -1344,28 +1344,39 @@ Escape key when Left Control is pressed and released on its own.")
 (define-public libwacom
   (package
     (name "libwacom")
-    (version "1.10")
+    (version "2.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://github.com/linuxwacom/libwacom/releases/download/"
-                    "libwacom-" version "/libwacom-" version ".tar.bz2"))
+                    "libwacom-" version "/libwacom-" version ".tar.xz"))
               (sha256
                (base32
-                "14aj4ss1chxxgaprs9sfriia2ch9wj9rqay0ndkzk1m7jx2qrjgn"))))
-    (build-system glib-or-gtk-build-system)
+                "056l5dndd8654bmwlxxhvx8082s7pp9bg0wm68zb56iz3rv25l6h"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("--disable-static")))
+     (list
+      #:configure-flags #~(list "--default-library=shared")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'fix-tests
+                     (lambda _
+                       ;; Do not attempt to run systemd-specific commands.
+                       (substitute* "test/test_udev_rules.py"
+                         (("(systemd-hwdb|systemctl)")
+                          "true")))))))
     (native-inputs
      (list pkg-config
            ;; For tests.
-           python))
+           python
+           python-evdev
+           python-libevdev
+           python-pytest
+           python-pyudev))
     (inputs
-     (list gtk+ libgudev eudev libxml2))
+     (list gtk+ eudev libxml2))
     (propagated-inputs
-     ;; libwacom includes header files that include GLib, and libinput uses
-     ;; those header files.
-     (list glib))
+     ;; libwacom.pc 'Requires' these:
+     (list glib libgudev))
     (home-page "https://linuxwacom.github.io/")
     (synopsis "Helper library for Wacom tablet settings")
     (description
