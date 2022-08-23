@@ -33,6 +33,8 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages authentication)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
@@ -716,6 +718,27 @@ KDE Frameworks components.")
     (description "This package provides YouTube video player based
 on QtMultimedia and @command{yt-dlp}.")
     (license license:gpl3+)))
+
+(define-public plasma-pass
+  (package
+    (name "plasma-pass")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/" name "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "107pd6cnkd46px83pm3q7vbw10g5pd0qsw77jmr0c774k4xv1w01"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list ki18n kitemmodels kwindowsystem oath-toolkit qtdeclarative-5))
+    (propagated-inputs (list plasma-framework))
+    (home-page "https://invent.kde.org/plasma/plasma-pass")
+    (synopsis "Plasma applet for the Pass password manager")
+    (description
+     "This package provides a Plasma applet for the Pass password manager.")
+    (license license:lgpl2.1+)))
 
 (define-public plasma-vault
   (package
