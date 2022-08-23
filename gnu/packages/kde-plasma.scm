@@ -1440,6 +1440,25 @@ sensors, process information and other system resources.")
     (home-page "https://invent.kde.org/plasma/plasma-systemmonitor")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public plasma-workspace-wallpapers
+  (package
+    (name "plasma-workspace-wallpapers")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version
+                                  "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0pdgg8h6zwyxf1pj241mg3hd94wh38bqxj68af5jfp10xrwkzcyr"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "Oxygen wallpapers for the KDE desktop")
+    (description
+     "This package provides wallpapers for the KDE desktop.")
+    (license license:lgpl3+)))
+
 (define-public polkit-kde-agent
   (package
     (name "polkit-kde-agent")
