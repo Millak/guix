@@ -669,6 +669,25 @@ KDE Frameworks components.")
      "This package provides a daemon that listens to system notifications.")
     (license license:gpl2+)))
 
+(define-public oxygen-sounds
+  (package
+    (name "oxygen-sounds")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "04rn3ccqszznknvblz2i8r406m32hk4d3yzma4vzq93jfk57hdf1"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "Sounds for the KDE desktop")
+    (description "This package provides Oxygen sounds for the KDE desktop.")
+    (license license:lgpl3+)))
+
 (define-public plasmatube
   (package
     (name "plasmatube")
