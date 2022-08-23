@@ -1221,6 +1221,27 @@ demonstration purposes in the @code{AneuFinder} package.")
 from Illumina 450k methylation arrays.")
     (license license:artistic2.0)))
 
+(define-public r-bladderbatch
+  (package
+    (name "r-bladderbatch")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "bladderbatch" version
+                                     'experiment))
+              (sha256
+               (base32
+                "1dpbaqsqizyi99r0imf5m4lndhhrkyiaqii9bi8rp18fjbjdd72k"))))
+    (properties `((upstream-name . "bladderbatch")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase))
+    (home-page "https://bioconductor.org/packages/bladderbatch")
+    (synopsis "Bladder gene expression data illustrating batch effects")
+    (description
+     "This package contains microarray gene expression data on 57 bladder samples from
+5 batches.  The data are used as an illustrative example for the sva package.")
+    (license license:artistic2.0)))
+
 (define-public r-biscuiteerdata
   (package
     (name "r-biscuiteerdata")
