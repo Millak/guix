@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Peng Mei Yu <pengmeiyu@riseup.net>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
 
 (define-module (gnu packages calendar)
   #:use-module (gnu packages)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -130,32 +132,32 @@ the <tz.h> library for handling time zones and leap seconds.")
                 "13ycghsi4iv8mnm0xv97bs0x6qvfhdxkw20n3yhcc7bg6n0bg122"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f ; test suite appears broken
-       #:parallel-build? #f             ;may cause GIR generation failure
-       #:configure-flags '("-DSHARED_ONLY=true"
-                           ;; required by evolution-data-server
-                           "-DGOBJECT_INTROSPECTION=true"
-                           "-DICAL_GLIB_VAPI=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-reference
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "doc/reference/libical-glib/libical-glib-docs.sgml.in"
-               (("http://www.oasis-open.org/docbook/xml/4.3/")
-                (string-append (assoc-ref inputs "docbook-xml")
-                               "/xml/dtd/docbook/")))))
-         (add-before 'configure 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; TODO: libical 3.1.0 supports using TZDIR instead of a hard-coded
-             ;; zoneinfo database.  When that is released we can drop
-             ;; the tzdata dependency.
-             (let ((tzdata (assoc-ref inputs "tzdata")))
-               (substitute* "src/libical/icaltz-util.c"
-                 (("\\\"/usr/share/zoneinfo\\\",")
-                  (string-append "\"" tzdata "/share/zoneinfo\""))
-                 (("\\\"/usr/lib/zoneinfo\\\",") "")
-                 (("\\\"/etc/zoneinfo\\\",") "")
-                 (("\\\"/usr/share/lib/zoneinfo\\\"") ""))))))))
+     (list
+      #:configure-flags #~(list "-DSHARED_ONLY=true"
+                                ;; required by evolution-data-server
+                                "-DGOBJECT_INTROSPECTION=true"
+                                "-DICAL_GLIB_VAPI=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-docbook-reference
+            (lambda _
+              (substitute* "doc/reference/libical-glib/libical-glib-docs.sgml.in"
+                (("http://www.oasis-open.org/docbook/xml/4.3/")
+                 (string-append #$(this-package-native-input "docbook-xml")
+                                "/xml/dtd/docbook/")))))
+          (add-before 'configure 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define zoneinfo (search-input-directory inputs "share/zoneinfo"))
+              ;; The timezones test fails if TZDIR is not set, for some
+              ;; reason.  If only TZDIR is set, tests checking the timezone
+              ;; fallback fail, so also patch the source.
+              (setenv "TZDIR" zoneinfo) ;for tests
+              (substitute* "src/libical/icaltz-util.c"
+                (("\\\"/usr/share/zoneinfo\\\",")
+                 (format #f "~s" zoneinfo))
+                (("\\\"/usr/lib/zoneinfo\\\",") "")
+                (("\\\"/etc/zoneinfo\\\",") "")
+                (("\\\"/usr/share/lib/zoneinfo\\\"") "")))))))
     (native-inputs
      (list docbook-xml-4.3
            gobject-introspection
