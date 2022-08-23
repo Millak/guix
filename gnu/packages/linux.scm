@@ -8699,11 +8699,11 @@ of Linux application development.")
                (base32
                 "066g4ri2k8pdflclvr2919f6x98gmqrqyj1xyiingw2nn2pwgcf1"))))
     (arguments
-     '(#:configure-flags
-       (list (string-append "-Dudevrulesdir=" (assoc-ref %outputs "out")
-                            "/lib/udev/rules.d")
-             "-Dsystemd=disabled"
-             "-Dsession-managers=[]")))
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dudevrulesdir=" #$output "/lib/udev/rules.d")
+              "-Dsystemd=disabled"
+              "-Dsession-managers=[]")))
     (inputs (modify-inputs (package-inputs pipewire)
               (prepend avahi
                        bluez
