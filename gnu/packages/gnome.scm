@@ -12337,7 +12337,7 @@ GObject introspection bindings.")
 (define-public sysprof
   (package
     (name "sysprof")
-    (version "3.42.1")
+    (version "3.44.0")
     (source
      (origin
        (method url-fetch)
@@ -12345,32 +12345,34 @@ GObject introspection bindings.")
                            (version-major+minor version) "/"
                            "sysprof-" version ".tar.xz"))
        (sha256
-        (base32 "0090986ar3lz9m9fy7l5y9ibzzmgsx54cm6gp8ggsxgf0habi5hp"))))
+        (base32 "0nq0icbln0ryqzlybr7wyl19mhr3vkqzs6wasn430fwpf5drypdb"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "-Dsystemdunitdir="
-                            %output
-                            "/share/systemd"))
-       #:tests? #f ; 3/4 test-model-filter barfs some dbus nonsense
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-install-script
-           (lambda _
-             (substitute* "build-aux/meson/post_install.sh"
-               (("gtk-update-icon-cache") "true")
-               (("update-desktop-database") "true"))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dsystemdunitdir=" #$output "/share/systemd"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-install-script
+            (lambda _
+              (substitute* "build-aux/meson/post_install.sh"
+                (("gtk-update-icon-cache") "true")
+                (("update-desktop-database") "true")))))))
     (propagated-inputs
      (list polkit))
     (inputs
-     (list glib gtk+ json-glib libdazzle polkit))
+     (list glib
+           gtk+
+           json-glib
+           libdazzle
+           libunwind
+           polkit))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin") ; for gdbus-codegen, etc.
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)))
+     (list gettext-minimal
+           `(,glib "bin")               ;for gdbus-codegen, etc.
+           itstool
+           pkg-config
+           libxml2))
     ;; This home page is so woefully out of date as to be essentially useless.
     ;; (home-page "http://www.sysprof.com")
     (home-page "https://wiki.gnome.org/Apps/Sysprof")
