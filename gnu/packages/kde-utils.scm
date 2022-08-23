@@ -22,6 +22,7 @@
 
 (define-module (gnu packages kde-utils)
   #:use-module (guix build-system qt)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -30,6 +31,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages glib) ; dbus for tests
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages pkg-config)
@@ -38,6 +40,7 @@
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages samba)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
 
 (define-public ark
@@ -179,6 +182,50 @@ Kate's features include:
 @end itemize")
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0))))
+
+(define-public wacomtablet
+  (package
+    (name "wacomtablet")
+    (version "3.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/"
+                                  name "/" version "/"
+                                  name "-" version ".tar.xz"))
+              (patches (search-patches
+                        "wacomtablet-add-missing-includes.patch"
+                        "wacomtablet-qt5.15.patch"))
+              (sha256
+               (base32
+                "197pwpl87gqlnza36bp68jvw8ww25znk08acmi8bpz7n84xfc368"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "dbus-launch" "ctest" "-E"
+                               "(Test.KDED.DBusTabletService|Test.KDED.TabletHandler|Test.KDED.XInputAdaptor|Test.KDED.XsetWacomAdaptor)")))))))
+    (native-inputs (list dbus extra-cmake-modules kdoctools pkg-config))
+    (inputs (list kcoreaddons
+                  ki18n
+                  kglobalaccel
+                  kconfig
+                  kxmlgui
+                  kwidgetsaddons
+                  kwindowsystem
+                  knotifications
+                  kdbusaddons
+                  qtx11extras
+                  qtdeclarative-5
+                  libwacom
+                  xf86-input-wacom
+                  libxi))
+    (propagated-inputs (list plasma-framework))
+    (home-page "https://invent.kde.org/system/wacomtablet")
+    (synopsis "KDE GUI for the Wacom Linux Drivers")
+    (description "Provides KDE GUI for the Wacom Linux Drivers.")
+    (license license:gpl2+)))
 
 (define-public kmag
   (package
