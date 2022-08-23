@@ -9287,7 +9287,7 @@ files.")
 (define-public baobab
   (package
     (name "baobab")
-    (version "40.0")
+    (version "42.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -9296,22 +9296,25 @@ files.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "19yii3bdgivxrcka1c4g6dpbmql5nyawwhzlsph7z6bs68nambm6"))))
+                "1p2hg8qxbvdfax9z4qjhdsxia93zrsdq58krx8zjnn5ipbkan6jb"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("gtk+-bin" ,gtk+ "bin") ; for gtk-update-icon-cache
-       ("itstool" ,itstool)
-       ("xmllint" ,libxml2)
-       ("glib" ,glib "bin")
-       ("vala" ,vala)))
+     (list desktop-file-utils           ;for update-desktop-database
+           gettext-minimal
+           `(,glib "bin")
+           `(,gtk+ "bin")               ;for gtk-update-icon-cache
+           itstool
+           libxml2
+           pkg-config
+           python
+           vala))
     (inputs
-     (list gtk+ libhandy))
+     (list gtk libadwaita libhandy
+           ;; XXX: Ensure pango-next is used instead of the equally propagated
+           ;; 'pango'.
+           pango-next))
     (synopsis "Disk usage analyzer for GNOME")
     (description
      "Baobab (Disk Usage Analyzer) is a graphical application to analyse disk
