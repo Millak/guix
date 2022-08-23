@@ -11056,7 +11056,7 @@ hexadecimal or ASCII.  It is useful for editing binary files in general.")
 (define-public libdazzle
   (package
     (name "libdazzle")
-    (version "3.37.1")
+    (version "3.44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libdazzle/"
@@ -11064,7 +11064,7 @@ hexadecimal or ASCII.  It is useful for editing binary files in general.")
                                   "libdazzle-" version ".tar.xz"))
               (sha256
                (base32
-                "03r5cr11dc031qa3694bpgm3lajrhiiln67kvl7vjj4q0scf7w7x"))))
+                "1blfs61ifv4fywl0wbr1cm3rvmgrv06yiqajbnq0qs72nrgf9lrw"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -11073,15 +11073,17 @@ hexadecimal or ASCII.  It is useful for editing binary files in general.")
            (lambda _
              ;; Tests require a running X server.
              (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t)))))
+             (setenv "DISPLAY" ":1"))))))
     (native-inputs
      (list `(,glib "bin") ; glib-compile-resources
+           gobject-introspection
            pkg-config
            ;; For tests.
-           xorg-server-for-tests))
+           xorg-server-for-tests
+           vala))
     (inputs
-     (list glib gobject-introspection gtk+ vala))
+     (list glib
+           gtk+))
     (home-page "https://gitlab.gnome.org/GNOME/libdazzle")
     (synopsis "Companion library to GObject and Gtk+")
     (description "The libdazzle library is a companion library to GObject and
