@@ -4927,28 +4927,33 @@ with a FSM is being built (for example, from a Makefile.)")
 (define-public guile-ini
   (package
     (name "guile-ini")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/artyom-poptsov/guile-ini")
-             (commit (string-append "v" version))))
-       (file-name (string-append name "-" version))
-       (sha256
-        (base32
-         "0injn60530valhx3gsmdp72g6z886yf0n08hscky21h3dafm14kc"))))
+    (version "0.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/artyom-poptsov/guile-ini")
+                    (commit (string-append "v" version))))
+              (file-name (string-append name "-" version))
+              (sha256
+               (base32
+                "0ky7sffxywc2p84q5kdsphr99q0g5gy45rj0vx7f77hwpfm2093x"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0")))     ;to prevent guild warnings
-    (native-inputs
-     (list autoconf automake pkg-config texinfo))
-    (inputs
-     `(("bash" ,bash-minimal)
-       ("guile" ,guile-3.0)
-       ("guile-lib" ,guile-lib)))
-    (propagated-inputs
-     (list guile-smc))
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
+       #:phases (modify-phases %standard-phases
+                  (delete 'strip)
+                  (add-before 'build 'generate-fsm-context
+                    ;; Make sure the intermediate FSM context is present
+                    ;; before the build.
+                    (lambda _
+                      (let ((cwd (getcwd)))
+                        (chdir "modules/ini/")
+                        (invoke "make" "GUILE_AUTO_COMPILE=0"
+                                "fsm-context.scm")
+                        (chdir cwd)))))))
+    (native-inputs (list autoconf automake pkg-config texinfo))
+    (inputs (list bash-minimal guile-3.0 guile-lib))
+    (propagated-inputs (list guile-smc))
     (home-page "https://github.com/artyom-poptsov/guile-ini")
     (synopsis "Guile library for INI format support")
     (description
