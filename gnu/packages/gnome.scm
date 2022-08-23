@@ -7712,7 +7712,7 @@ window manager.")
 (define-public gnome-online-accounts
   (package
     (name "gnome-online-accounts")
-    (version "3.43.1")
+    (version "3.44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7720,44 +7720,45 @@ window manager.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1s5pmy3hx6hhnyi40r7b773py9kn2qbkxnpxv6149z9fl5ikdjrv"))))
+                "0hkkxa3zqyl0i4kw1p3ak4alwxw4wydh9al6fzwbcdgl0r0ms79q"))))
     (outputs '("out" "lib"))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--libdir=" (assoc-ref %outputs "out") "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-libgoa-output
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((lib (assoc-ref outputs "lib")))
-               (substitute* '("src/goa/Makefile.in" "src/goa/goa-1.0.pc.in")
-                 (("@prefix@") lib)
-                 (("@exec_prefix@") lib)
-                 (("@libdir@") (string-append lib "/lib"))
-                 (("@includedir@") (string-append lib "/include"))
-                 (("@datadir@") (string-append lib "/share")))
-               ;; Make sure gobject-introspection knows about the output
-               ;; too (see <https://bugs.gnu.org/36535>).
-               (setenv "outputs" "out lib")))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--libdir=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-libgoa-output
+            (lambda _
+              (let ((lib #$output:lib))
+                (substitute* '("src/goa/Makefile.in" "src/goa/goa-1.0.pc.in")
+                  (("@prefix@") lib)
+                  (("@exec_prefix@") lib)
+                  (("@libdir@") (string-append lib "/lib"))
+                  (("@includedir@") (string-append lib "/include"))
+                  (("@datadir@") (string-append lib "/share")))
+                ;; Make sure gobject-introspection knows about the output
+                ;; too (see <https://bugs.gnu.org/36535>).
+                (setenv "outputs" "out lib")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ("xsltproc" ,libxslt)))
+     (list `(,glib "bin")               ; for glib-compile-schemas, etc.
+           gobject-introspection
+           gettext-minimal
+           pkg-config
+           vala
+           libxslt))
     (propagated-inputs
-     (list glib ; required by goa-1.0.pc
-           gtk+))         ; required by goa-backend-1.0.pc
+     (list glib                         ; required by goa-1.0.pc
+           gtk+))                       ; required by goa-backend-1.0.pc
     (inputs
-     `(("docbook-xsl" ,docbook-xsl)
-       ("json-glib" ,json-glib)
-       ("libsecret" ,libsecret)
-       ("rest" ,rest)
-       ;; WebKitGtk propagates libsoup 3, which causes the build to fail; so
-       ;; use a special variant.
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+     (list docbook-xsl
+           json-glib
+           libsecret
+           rest
+           ;; WebKitGtk propagates libsoup 3, which causes the build to fail; so
+           ;; use a special variant.
+           webkitgtk-with-libsoup2))
     (synopsis "Single sign-on framework for GNOME")
     (home-page "https://wiki.gnome.org/Projects/GnomeOnlineAccounts")
     (description
