@@ -370,9 +370,7 @@ features to enable users to create their discs easily and quickly.")
                                "-Denable-gtk-doc=false"
                                "-Dvapigen=false")))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list `(,glib "bin") pkg-config vala))
     (inputs
      (list glib glib-networking))
     (synopsis "Cloudproviders Integration API")
