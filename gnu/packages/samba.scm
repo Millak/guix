@@ -185,14 +185,14 @@ external dependencies.")
 (define-public samba
   (package
     (name "samba")
-    (version "4.16.2")
+    (version "4.17.0rc3")             ;4.16.4 doesn't build with mit-krb5 1.20
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://download.samba.org/pub/samba/stable/"
+       (uri (string-append "https://download.samba.org/pub/samba/rc/"
                            "samba-" version ".tar.gz"))
        (sha256
-        (base32 "1745gx36gyd7353a94w4lrgksbmms0502kj9gg63il9zbdns1dx0"))))
+        (base32 "1vi5vxv9cmy00wyrrr01xsdf4yc0fa96vj7980l51lnn90fgvj60"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -226,7 +226,7 @@ external dependencies.")
                         ;; a single directory to avoid RPATH issues.
                         (string-append "--libdir=" libdir)
                         (string-append "--with-privatelibdir=" libdir)
-                        "--with-system-mitkrb5" ;#$(this-package-input "mit-krb5")
+                        "--with-system-mitkrb5"
                         (string-append "--with-system-mitkdc="
                                        (search-input-file inputs "sbin/krb5kdc"))
                         "--with-experimental-mit-ad-dc"))))
@@ -290,14 +290,14 @@ Desktops into Active Directory environments using the winbind daemon.")
   ;; Version that rarely changes, depended on by libsoup.
   (hidden-package
    (package/inherit samba
-     (version "4.15.3")
+     (version "4.17.0rc3")            ;4.16.4 doesn't build with mit-krb5 1.20
      (source
       (origin
         (method url-fetch)
-        (uri (string-append "https://download.samba.org/pub/samba/stable/"
+        (uri (string-append "https://download.samba.org/pub/samba/rc/"
                             "samba-" version ".tar.gz"))
         (sha256
-         (base32 "1nrp85aya0pbbqdqjaqcw82cnzzys16yls37hi2h6mci8d09k4si")))))))
+         (base32 "1vi5vxv9cmy00wyrrr01xsdf4yc0fa96vj7980l51lnn90fgvj60")))))))
 
 (define-public talloc
   (package
