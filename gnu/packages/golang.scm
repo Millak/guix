@@ -3812,12 +3812,21 @@ application's http.Handlers.")
         (base32
          "12i402dxq5js4npnncg043vx874h6nk4ffn4gswcccxrp6h10ivz"))))
     (build-system go-build-system)
+    (arguments
+     (list
+       #:import-path "github.com/sirupsen/logrus"
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key inputs #:allow-other-keys #:rest args)
+               (unless
+                 ;; The tests fail when run with gccgo.
+                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                 (apply (assoc-ref %standard-phases 'check) args)))))))
     (propagated-inputs
      (list go-github-com-davecgh-go-spew go-github-com-pmezard-go-difflib
            go-github-com-stretchr-testify go-golang-org-x-crypto
            go-golang-org-x-sys))
-    (arguments
-     '(#:import-path "github.com/sirupsen/logrus"))
     (home-page "https://github.com/sirupsen/logrus")
     (synopsis "Structured, pluggable logging for Go")
     (description "Logrus is a structured logger for Go, completely API
