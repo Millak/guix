@@ -24,6 +24,7 @@
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3746,6 +3747,9 @@ color-related widgets.")
      "QCustomPlot is a Qt C++ widget providing 2D plots, graphs and charts.")
     (license license:gpl3+)))
 
+;; TODO: Split shiboken2 binding generator into a dedicated output.
+;; This executable requires libxml2, libxslt, clang-toolchain at runtime.
+;; The libshiboken library only requires Qt and Python at runtime.
 (define-public python-shiboken-2
   (package
     (name "python-shiboken-2")
@@ -3768,30 +3772,31 @@ color-related widgets.")
            qtbase-5
            qtxmlpatterns))
     (arguments
-     `(#:tests? #f
-       ;; FIXME: Building tests fails
-       #:configure-flags '("-DBUILD_TESTS=off")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-shiboken-dir-only
-           (lambda _ (chdir "sources/shiboken2") #t))
-         (add-before 'configure 'make-files-writable-and-update-timestamps
-           (lambda _
-             ;; The build scripts need to modify some files in
-             ;; the read-only source directory, and also attempts
-             ;; to create Zip files which fails because the Zip
-             ;; format does not support timestamps before 1980.
-             (let ((circa-1980 (* 10 366 24 60 60)))
-               (for-each (lambda (file)
-                           (make-file-writable file)
-                           (utime file circa-1980 circa-1980))
-                         (find-files ".")))
-             #t))
-         (add-before 'configure 'set-build-env
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((llvm (assoc-ref inputs "clang-toolchain")))
-               (setenv "CLANG_INSTALL_DIR" llvm)
-               #t))))))
+     (list
+      #:tests? #f
+      ;; FIXME: Building tests fails
+      #:configure-flags #~(list "-DBUILD_TESTS=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-shiboken-dir-only
+            (lambda _ (chdir "sources/shiboken2") #t))
+          (add-before 'configure 'make-files-writable-and-update-timestamps
+            (lambda _
+              ;; The build scripts need to modify some files in
+              ;; the read-only source directory, and also attempts
+              ;; to create Zip files which fails because the Zip
+              ;; format does not support timestamps before 1980.
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (for-each (lambda (file)
+                            (make-file-writable file)
+                            (utime file circa-1980 circa-1980))
+                          (find-files ".")))
+              #t))
+          (add-before 'configure 'set-build-env
+            (lambda _
+              (let ((llvm #$(this-package-input "clang-toolchain")))
+                (setenv "CLANG_INSTALL_DIR" llvm)
+                #t))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "Shiboken generates bindings for C++ libraries using CPython source code")
