@@ -4051,7 +4051,16 @@ which satisfies the cron expression.")
          "1jwxndf8rsyx0fgrp47d99rp55yzssmryb92jfj3yf7zd8rjjljn"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "gopkg.in/check.v1"))
+     (list
+       #:import-path "gopkg.in/check.v1"
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key inputs #:allow-other-keys #:rest args)
+               (unless
+                 ;; The tests fail when run with gccgo.
+                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                 (apply (assoc-ref %standard-phases 'check) args)))))))
     (propagated-inputs
      (list go-github-com-kr-pretty))
     (home-page "https://gopkg.in/check.v1")
