@@ -54,6 +54,7 @@
 (define-module (gnu packages golang)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (guix memoization)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix download)
@@ -6017,7 +6018,16 @@ decode/encode structures and slices.")
                 "1761pybhc2kqr6v5fm8faj08x9bql8427yqg6vnfv6nhrasx1mwq"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/pkg/errors"))
+     (list
+       #:import-path "github.com/pkg/errors"
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key inputs #:allow-other-keys #:rest args)
+               (unless
+                 ;; The tests fail when run with gccgo.
+                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                 (apply (assoc-ref %standard-phases 'check) args)))))))
     (synopsis "Go error handling primitives")
     (description "This package provides @code{error}, which offers simple
 error handling primitives in Go.")
