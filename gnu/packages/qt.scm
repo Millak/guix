@@ -3810,6 +3810,40 @@ color-related widgets.")
       license:lgpl3
       license:bsd-3))))
 
+(define-public python-shiboken-6
+  (package
+    (inherit python-shiboken-2)
+    (name "python-shiboken-6")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://download.qt.io/official_releases"
+                                  "/QtForPython/pyside6/PySide6-" version
+                                  "-src/pyside-setup-opensource-src-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0xwri69nnbhn6fajm7l045r0s0qv8nlq6qj8wcj87srli3b5xa75"))))
+    (build-system cmake-build-system)
+    (inputs
+     (modify-inputs (package-inputs python-shiboken-2)
+       (replace "qtbase" qtbase)
+       (delete "qtxmlpatterns")))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-shiboken-2)
+       ((#:phases p)
+        #~(modify-phases #$p
+            (replace 'use-shiboken-dir-only
+              (lambda _ (chdir "sources/shiboken6") #t))))
+       ((#:configure-flags flags)
+        #~(cons*
+           ;; The RUNPATH of shibokenmodule contains the entry in build
+           ;; directory instead of install directory.
+           "-DCMAKE_SKIP_RPATH=TRUE"
+           (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
+                          #$output "/lib")
+           #$flags))))))
+
 (define-public python-pyside-2
   (package
     (name "python-pyside-2")
