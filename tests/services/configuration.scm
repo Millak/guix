@@ -169,7 +169,7 @@
   (not (defined? 'serialize-maybe-string)))
 
 (test-assert "maybe type, no default"
-  (eq? 'unset
+  (eq? %unset-value
        (config-with-maybe-string/no-serialization-name
         (config-with-maybe-string/no-serialization))))
 
