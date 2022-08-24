@@ -1118,13 +1118,13 @@ gets and puts artifacts through HTTP(S) using Apache HttpClient-4.x.")))
 (define maven-pom
   (package
     (name "maven-pom")
-    (version "3.8.5")
+    (version "3.8.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/maven/"
                                   "maven-3/" version "/source/"
                                   "apache-maven-" version "-src.tar.gz"))
-              (sha256 (base32 "01y0fjvlvgy1bl3mdhbjll2xhzpli6aklqb3w29xpbgk6frxn3d6"))
+              (sha256 (base32 "0jszmcaxp597a62ajrc478jxix1qmw4pknhiygsbjdy3kccc7gvj"))
               (modules '((guix build utils)))
               (snippet
                '(begin
