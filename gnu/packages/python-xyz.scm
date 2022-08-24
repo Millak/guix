@@ -5686,7 +5686,11 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
                               ;; These tests may fail on 32-bit systems (see:
                               ;; https://github.com/numpy/numpy/issues/18387).
                               "not test_float_remainder_overflow "
-                              "and not test_pareto"
+                              "and not test_pareto "
+                              ;; The 'test_rint_big_int' test fails on older
+                              ;; x86_64 CPUs such as the Core 2 Duo (see:
+                              ;; https://github.com/numpy/numpy/issues/22170).
+                              "and not test_rint_big_int "
                               ;; These tests seem to fail on machines without
                               ;; an FPU is still under investigation upstream.
                               ;; https://github.com/numpy/numpy/issues/20635
