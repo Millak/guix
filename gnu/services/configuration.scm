@@ -57,6 +57,7 @@
             serialize-configuration
             define-maybe
             define-maybe/no-serialization
+            %unset-value
             maybe-value-set?
             generate-documentation
             configuration->documentation
@@ -172,10 +173,10 @@ does not have a default value" field kind)))
      (values #'(field-type def)))
     ((field-type)
      (identifier? #'field-type)
-     (values #'(field-type 'unset)))
+     (values #'(field-type %unset-value)))
     (field-type
      (identifier? #'field-type)
-     (values #'(field-type 'unset)))))
+     (values #'(field-type %unset-value)))))
 
 (define (define-configuration-helper serialize? serializer-prefix syn)
   (syntax-case syn ()
@@ -301,9 +302,18 @@ does not have a default value" field kind)))
 (define (empty-serializer field-name val) "")
 (define serialize-package empty-serializer)
 
+;; Ideally this should be an implementation detail, but we export it
+;; to provide a simpler API that enables unsetting a configuration
+;; field that has a maybe type, but also a default value.
+;;
+;; An example use-case would be something like a network application
+;; that uses a default port, but the field can explicitly be unset to
+;; request a random port at startup.
+(define %unset-value 'unset)
+
 (define (maybe-value-set? value)
   "Predicate to check whether a 'maybe' value was explicitly provided."
-  (not (eq? 'unset value)))
+  (not (eq? %unset-value value)))
 
 ;; A little helper to make it easier to document all those fields.
 (define (generate-documentation documentation documentation-name)
