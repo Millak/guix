@@ -18207,13 +18207,13 @@ JSON) codec.")
     (synopsis "Natural sorting for python and shell")
     (description
      "Natsort lets you apply natural sorting on lists instead of
-     lexicographical.  If you use the built-in @code{sorted} method in python
-     on a list such as @code{[@code{a20}, @code{a9}, @code{a1}, @code{a4},
-                                   @code{a10}]}, it would be returned as @code{[@code{a1}, @code{a10}, @code{a20},
-                                   @code{a4}, @code{a9}]}.  Natsort provides a function @code{natsorted} that
-     identifies numbers and sorts them separately from strings.  It can also sort
-     version numbers, real numbers, mixed types and more, and comes with a shell
-     command @command{natsort} that exposes this functionality in the command line.")
+lexicographical.  If you use the built-in @code{sorted} method in python on a
+list such as @code{[@code{a20}, @code{a9}, @code{a1}, @code{a4}, @code{a10}]},
+it would be returned as @code{[@code{a1}, @code{a10}, @code{a20}, @code{a4},
+@code{a9}]}.  Natsort provides a function @code{natsorted} that identifies
+numbers and sorts them separately from strings.  It can also sort version
+numbers, real numbers, mixed types and more, and comes with a shell command
+@command{natsort} that exposes this functionality in the command line.")
     (license license:expat)))
 
 (define-public glances
