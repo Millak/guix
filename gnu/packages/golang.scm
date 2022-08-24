@@ -3009,7 +3009,7 @@ Go.")
 (define-public go-github-com-stretchr-objx
   (package
     (name "go-github-com-stretchr-objx")
-    (version "0.2.0")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -3019,7 +3019,7 @@ Go.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0pcdvakxgddaiwcdj73ra4da05a3q4cgwbpm2w75ycq4kzv8ij8k"))
+         "0dygds32qxx6x1x2mmn7msyjr15qi5r70pyzv8dz8cprxq32nzc1"))
         (modules '((guix build utils)))
         (snippet
          '(begin
