@@ -9138,7 +9138,7 @@ anti-fragmentation protection.")
 (define-public go-github-com-valyala-fasthttp
   (package
     (name "go-github-com-valyala-fasthttp")
-    (version "1.31.0")
+    (version "1.39.0")
     (source
      (origin
        (method git-fetch)
@@ -9147,7 +9147,7 @@ anti-fragmentation protection.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ra0n2shcp11736xv37cjnsqn32gvqfm3dkf9v8j98xmch2wqxqg"))))
+        (base32 "12qwx0yk7wjj25v4fswgmj28r69gk94kqdmzavca8k9f0yznniz1"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/valyala/fasthttp"))
