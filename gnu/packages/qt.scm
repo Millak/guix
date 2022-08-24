@@ -3874,68 +3874,66 @@ color-related widgets.")
     (propagated-inputs
      (list python-shiboken-2))
     (native-inputs
-     `(("cmake" ,cmake-minimal)
-       ("python" ,python-wrapper)
-       ("qttools-5" ,qttools-5)
-       ("which" ,which)))
+     (list cmake-minimal python-wrapper qttools-5 which))
     (arguments
-     `(#:tests? #f
-       ;; FIXME: Building tests fail.
-       #:configure-flags
-       (list "-DBUILD_TESTS=FALSE"
-             (string-append "-DPYTHON_EXECUTABLE="
-                            (assoc-ref %build-inputs "python")
-                            "/bin/python"))
-       #:modules ((guix build cmake-build-system)
+     (list
+      #:tests? #f
+      ;; FIXME: Building tests fail.
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=FALSE"
+              (string-append "-DPYTHON_EXECUTABLE="
+                             (assoc-ref %build-inputs "python")
+                             "/bin/python"))
+      #:modules '((guix build cmake-build-system)
                   (guix build utils)
                   (srfi srfi-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'go-to-source-dir
-           (lambda _ (chdir "sources/pyside2") #t))
-         (add-after 'go-to-source-dir 'fix-qt-module-detection
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Activate qt module support even if it not in the same
-             ;; directory as qtbase.
-             (substitute* "../cmake_helpers/helpers.cmake"
-               (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
-                "true"))
-             ;; Add include directories for qt modules.
-             (let ((dirs (map (lambda (name)
-                                (string-append (assoc-ref inputs name)
-                                               "/include/qt5"))
-                              '("qtdatavis3d"
-                                "qtdeclarative"
-                                "qtlocation"
-                                "qtmultimedia"
-                                "qtquickcontrols"
-                                "qtquickcontrols2"
-                                "qtscript"
-                                "qtscxml"
-                                "qtsensors"
-                                "qtspeech"
-                                "qtsvg"
-                                "qttools-5"
-                                "qtwebchannel"
-                                "qtwebengine"
-                                "qtwebsockets"
-                                "qtx11extras"
-                                "qtxmlpatterns"))))
-               (substitute* "cmake/Macros/PySideModules.cmake"
-                 (("\\$\\{PATH_SEP\\}\\$\\{core_includes\\}" all)
-                  (fold (lambda (dir paths)
-                          (string-append paths "${PATH_SEP}" dir))
-                        all
-                        dirs)))
-               (setenv "CXXFLAGS" (fold (lambda (dir paths)
-                                          (string-append paths " -I" dir))
-                                        ""
-                                        dirs)))))
-         (add-before 'configure 'set-clang-dir
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((clang (assoc-ref inputs "clang-toolchain")))
-               (setenv "CLANG_INSTALL_DIR" clang)
-               #t))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'go-to-source-dir
+            (lambda _ (chdir "sources/pyside2") #t))
+          (add-after 'go-to-source-dir 'fix-qt-module-detection
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Activate qt module support even if it not in the same
+              ;; directory as qtbase.
+              (substitute* "../cmake_helpers/helpers.cmake"
+                (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
+                 "true"))
+              ;; Add include directories for qt modules.
+              (let ((dirs (map (lambda (name)
+                                 (string-append (assoc-ref inputs name)
+                                                "/include/qt5"))
+                               '("qtdatavis3d"
+                                 "qtdeclarative"
+                                 "qtlocation"
+                                 "qtmultimedia"
+                                 "qtquickcontrols"
+                                 "qtquickcontrols2"
+                                 "qtscript"
+                                 "qtscxml"
+                                 "qtsensors"
+                                 "qtspeech"
+                                 "qtsvg"
+                                 "qttools"
+                                 "qtwebchannel"
+                                 "qtwebengine"
+                                 "qtwebsockets"
+                                 "qtx11extras"
+                                 "qtxmlpatterns"))))
+                (substitute* "cmake/Macros/PySideModules.cmake"
+                  (("\\$\\{PATH_SEP\\}\\$\\{core_includes\\}" all)
+                   (fold (lambda (dir paths)
+                           (string-append paths "${PATH_SEP}" dir))
+                         all
+                         dirs)))
+                (setenv "CXXFLAGS" (fold (lambda (dir paths)
+                                           (string-append paths " -I" dir))
+                                         ""
+                                         dirs)))))
+          (add-before 'configure 'set-clang-dir
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((clang (assoc-ref inputs "clang-toolchain")))
+                (setenv "CLANG_INSTALL_DIR" clang)
+                #t))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "The Qt for Python product enables the use of Qt5 APIs in Python applications")
