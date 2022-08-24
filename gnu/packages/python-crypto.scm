@@ -441,14 +441,14 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography-vectors-next
   (package
     (name "python-cryptography-vectors")
-    (version "36.0.1")
+    (version "37.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography_vectors" version))
        (sha256
         (base32
-         "166mvhhmgglqai1sjkkb76mpdkad2yykam11d2w44hs2snpr117w"))))
+         "1a1yi37ygw0jp72q280cmxd3qn9y9vmcch2bcnjkg2g2202l0qas"))))
     (build-system python-build-system)
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Test vectors for the cryptography package")
@@ -470,14 +470,14 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography-next
   (package
     (name "python-cryptography")
-    (version "36.0.1")
+    (version "37.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography" version))
        (sha256
         (base32
-         "0f1n8bvngarhsssm60xc59xfzkh7yqpyyyypaph3v5bs7pfc3rak"))))
+         "10haq7sn8mrdlhcfs791rczknnxm0wpww0lkpjzcqx141ryc3yb3"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -489,11 +489,13 @@ is used by the Requests library to verify HTTPS requests.")
                   (ice-9 match))
       #:phases
       #~(modify-phases (@ (guix build python-build-system) %standard-phases)
-          (add-after 'unpack 'loosen-ouroboros-version
+          (add-after 'unpack 'adjust-pyo3-requirement
             (lambda _
+              ;; The package depends on 0.15.2, which is not on crates.io(!?).
+              ;; Downgrade to 0.15.1...
               (substitute* "src/rust/Cargo.toml"
-                (("ouroboros = \"0\\.13\"")
-                 "ouroboros = \"0.14\""))))
+                (("pyo3 = \\{ version = \"0\\.15\\.2\"")
+                 "pyo3 = { version = \"0.15.1\""))))
           (add-before 'build 'configure-cargo
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Hide irrelevant inputs from cargo-build-system so it does
@@ -518,6 +520,9 @@ is used by the Requests library to verify HTTPS requests.")
                 (invoke "pytest" "-vv" "tests")))))))
     (inputs
      (list openssl
+           ;; TODO: Most of these inputs are transitive dependencies of
+           ;; the Rust requirements (see src/rust/cargo.toml).  Surely
+           ;; there is a better way than manually listing everything..?
            rust-aliasable-0.1
            rust-asn1-0.8
            rust-asn1-derive-0.8
@@ -538,8 +543,8 @@ is used by the Requests library to verify HTTPS requests.")
            rust-num-integer-0.1
            rust-num-traits-0.2
            rust-once-cell-1
-           rust-ouroboros-0.14
-           rust-ouroboros-macro-0.14
+           rust-ouroboros-0.15
+           rust-ouroboros-macro-0.15
            rust-parking-lot-0.11
            rust-parking-lot-core-0.8
            rust-paste-0.1
@@ -572,6 +577,7 @@ is used by the Requests library to verify HTTPS requests.")
            python-pretend
            python-pytz
            python-pytest
+           python-pytest-benchmark
            python-pytest-subtests
            python-setuptools-rust
            rust
