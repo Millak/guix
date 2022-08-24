@@ -95,7 +95,7 @@
                                  ;; doesn't interfere with
                                  ;; define-configuration and define-maybe
                                  ;; internals.
-                                 #''unset def))
+                                 #''%unset-marker% def))
                            #'(def ...) #'(target ...)))
                      ((new-doc ...)
                       (map (lambda (doc target)

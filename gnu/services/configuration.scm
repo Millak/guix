@@ -305,12 +305,13 @@ does not have a default value" field kind)))
 
 ;; Ideally this should be an implementation detail, but we export it
 ;; to provide a simpler API that enables unsetting a configuration
-;; field that has a maybe type, but also a default value.
+;; field that has a maybe type, but also a default value.  We give it
+;; a value that sticks out to the reader when something goes wrong.
 ;;
 ;; An example use-case would be something like a network application
 ;; that uses a default port, but the field can explicitly be unset to
 ;; request a random port at startup.
-(define %unset-value 'unset)
+(define %unset-value '%unset-marker%)
 
 (define (maybe-value-set? value)
   "Predicate to check whether a 'maybe' value was explicitly provided."
