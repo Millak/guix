@@ -18194,6 +18194,13 @@ JSON) codec.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'remove-test-hypothesis-deadlines
+           (lambda _
+             (substitute* "tests/test_utils.py"
+               (("from hypothesis import given")
+                "from hypothesis import given, settings")
+               (("( +)@given" all spaces)
+                (string-append spaces "@settings(deadline=None)\n" all)))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
