@@ -3851,10 +3851,7 @@ color-related widgets.")
     (source (package-source python-shiboken-2))
     (build-system cmake-build-system)
     (inputs
-     (list libxml2
-           libxslt
-           clang-toolchain
-           qtbase-5
+     (list qtbase-5
            qtdatavis3d
            qtdeclarative-5
            qtlocation
@@ -3866,6 +3863,7 @@ color-related widgets.")
            qtsensors
            qtspeech
            qtsvg-5
+           qttools-5
            qtwebchannel-5
            qtwebengine-5
            qtwebsockets-5
@@ -3874,7 +3872,7 @@ color-related widgets.")
     (propagated-inputs
      (list python-shiboken-2))
     (native-inputs
-     (list cmake-minimal python-wrapper qttools-5 which))
+     (list python-wrapper))
     (arguments
      (list
       #:tests? #f
@@ -3928,12 +3926,7 @@ color-related widgets.")
                 (setenv "CXXFLAGS" (fold (lambda (dir paths)
                                            (string-append paths " -I" dir))
                                          ""
-                                         dirs)))))
-          (add-before 'configure 'set-clang-dir
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((clang (assoc-ref inputs "clang-toolchain")))
-                (setenv "CLANG_INSTALL_DIR" clang)
-                #t))))))
+                                         dirs))))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "The Qt for Python product enables the use of Qt5 APIs in Python applications")
