@@ -676,7 +676,16 @@ test) much simpler.")
                (base32 "0flf3fb6fsw3bk1viva0fzrzw87djaj1mqvrx2gzg1ssn7xzfrzr"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/smartystreets/assertions"))
+     (list
+       #:import-path "github.com/smartystreets/assertions"
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key inputs #:allow-other-keys #:rest args)
+               (unless
+                 ;; The tests fail when run with gccgo.
+                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                 (apply (assoc-ref %standard-phases 'check) args)))))))
     (native-inputs
      (list go-github.com-smartystreets-gunit))
     (synopsis "Assertions for testing with Go")
