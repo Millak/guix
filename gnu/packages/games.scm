@@ -6568,15 +6568,16 @@ fish.  The whole game is accompanied by quiet, comforting music.")
                 (("SDL_image.h") "SDL2/SDL_image.h"))))
           (delete 'configure)
           (replace 'check
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (setenv "HOME" (getcwd))
-              ;; Fake a terminal for the test cases.
-              (setenv "TERM" "xterm-256color")
-              ;; Run the tests that don't require a debug build.
-              (apply invoke "make" "nondebugtest"
-                     (format #f "-j~d" (parallel-job-count))
-                     ;; Force command line build for test cases.
-                     (append make-flags '("GAME=crawl" "TILES="))))))))
+            (lambda* (#:key tests? make-flags #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" (getcwd))
+                ;; Fake a terminal for the test cases.
+                (setenv "TERM" "xterm-256color")
+                ;; Run the tests that don't require a debug build.
+                (apply invoke "make" "nondebugtest"
+                       (format #f "-j~d" (parallel-job-count))
+                       ;; Force command line build for test cases.
+                       (append make-flags '("GAME=crawl" "TILES=")))))))))
     (synopsis "Roguelike dungeon crawler game")
     (description "Dungeon Crawl Stone Soup (also known as \"Crawl\" or DCSS
 for short) is a roguelike adventure through dungeons filled with dangerous
