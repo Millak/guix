@@ -3800,7 +3800,7 @@ application's http.Handlers.")
 (define-public go-github-com-sirupsen-logrus
   (package
     (name "go-github-com-sirupsen-logrus")
-    (version "1.8.1")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -3810,7 +3810,7 @@ application's http.Handlers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rvqzic2zz7fpxyizmqxwmhv1m52ii9bgxnqa6km8wsa0l08wh42"))))
+         "12i402dxq5js4npnncg043vx874h6nk4ffn4gswcccxrp6h10ivz"))))
     (build-system go-build-system)
     (propagated-inputs
      (list go-github-com-davecgh-go-spew go-github-com-pmezard-go-difflib
