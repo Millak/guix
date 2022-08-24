@@ -3880,8 +3880,8 @@ color-related widgets.")
       #:configure-flags
       #~(list "-DBUILD_TESTS=FALSE"
               (string-append "-DPYTHON_EXECUTABLE="
-                             (assoc-ref %build-inputs "python")
-                             "/bin/python"))
+                             (search-input-file %build-inputs
+                                                "/bin/python")))
       #:modules '((guix build cmake-build-system)
                   (guix build utils)
                   (srfi srfi-1))
@@ -3890,33 +3890,35 @@ color-related widgets.")
           (add-after 'unpack 'go-to-source-dir
             (lambda _ (chdir "sources/pyside2") #t))
           (add-after 'go-to-source-dir 'fix-qt-module-detection
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               ;; Activate qt module support even if it not in the same
               ;; directory as qtbase.
               (substitute* "../cmake_helpers/helpers.cmake"
                 (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
                  "true"))
               ;; Add include directories for qt modules.
-              (let ((dirs (map (lambda (name)
-                                 (string-append (assoc-ref inputs name)
-                                                "/include/qt5"))
-                               '("qtdatavis3d"
-                                 "qtdeclarative"
-                                 "qtlocation"
-                                 "qtmultimedia"
-                                 "qtquickcontrols"
-                                 "qtquickcontrols2"
-                                 "qtscript"
-                                 "qtscxml"
-                                 "qtsensors"
-                                 "qtspeech"
-                                 "qtsvg"
-                                 "qttools"
-                                 "qtwebchannel"
-                                 "qtwebengine"
-                                 "qtwebsockets"
-                                 "qtx11extras"
-                                 "qtxmlpatterns"))))
+              (let ((dirs (map (lambda (path)
+                                 (string-append path "/include/qt5"))
+                               (list
+                                #$@(map (lambda (name)
+                                          (this-package-input name))
+                                        '("qtdatavis3d"
+                                          "qtdeclarative"
+                                          "qtlocation"
+                                          "qtmultimedia"
+                                          "qtquickcontrols"
+                                          "qtquickcontrols2"
+                                          "qtscript"
+                                          "qtscxml"
+                                          "qtsensors"
+                                          "qtspeech"
+                                          "qtsvg"
+                                          "qttools"
+                                          "qtwebchannel"
+                                          "qtwebengine"
+                                          "qtwebsockets"
+                                          "qtx11extras"
+                                          "qtxmlpatterns"))))))
                 (substitute* "cmake/Macros/PySideModules.cmake"
                   (("\\$\\{PATH_SEP\\}\\$\\{core_includes\\}" all)
                    (fold (lambda (dir paths)
