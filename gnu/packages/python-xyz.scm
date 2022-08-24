@@ -18195,8 +18195,9 @@ JSON) codec.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "pytest" "-v"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
     (native-inputs
      (list python-hypothesis python-pytest-cov python-pytest-mock
            python-pytest))
