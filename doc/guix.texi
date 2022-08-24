@@ -39003,7 +39003,7 @@ to be a string, or left unspecified.
   (name
    ;; If set to a string, the `serialize-string' procedure will be used
    ;; to serialize the string.  Otherwise this field is not serialized.
-   maybe-string    ; equivalent to (maybe-string *unspecified*)
+   maybe-string
    "The name of this module."))
 @end lisp
 
@@ -39032,6 +39032,11 @@ whether its value is set or not.
    maybe-symbol
    "Docstring."))
 @end lisp
+@end deffn
+
+@deffn (Scheme Procedure) maybe-value-set? @var{value}
+Predicate to check whether a user explicitly specified the value of a
+maybe field.
 @end deffn
 
 @deffn {Scheme Procedure} serialize-configuration @var{configuration} @

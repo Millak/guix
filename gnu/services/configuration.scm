@@ -57,6 +57,7 @@
             serialize-configuration
             define-maybe
             define-maybe/no-serialization
+            maybe-value-set?
             generate-documentation
             configuration->documentation
             empty-serializer
@@ -142,7 +143,8 @@ does not have a default value" field kind)))
                                     (id #'stem #'serialize-maybe- #'stem))))
        #`(begin
            (define (maybe-stem? val)
-             (or (eq? val 'unset) (stem? val)))
+             (or (not (maybe-value-set? val))
+                 (stem? val)))
            #,@(if serialize?
                   (list #'(define (serialize-maybe-stem field-name val)
                             (if (stem? val)
@@ -260,11 +262,10 @@ does not have a default value" field kind)))
                       (default-value-thunk
                         (lambda ()
                           (display '#,(id #'stem #'% #'stem))
-                          (if (eq? (syntax->datum field-default)
-                                   'unset)
+                          (if (maybe-value-set? (syntax->datum field-default))
+                              field-default
                               (configuration-missing-default-value
-                               '#,(id #'stem #'% #'stem) 'field)
-                              field-default)))
+                               '#,(id #'stem #'% #'stem) 'field))))
                       (documentation doc))
                      ...))))))))
 
@@ -299,6 +300,10 @@ does not have a default value" field kind)))
 
 (define (empty-serializer field-name val) "")
 (define serialize-package empty-serializer)
+
+(define (maybe-value-set? value)
+  "Predicate to check whether a 'maybe' value was explicitly provided."
+  (not (eq? 'unset value)))
 
 ;; A little helper to make it easier to document all those fields.
 (define (generate-documentation documentation documentation-name)
