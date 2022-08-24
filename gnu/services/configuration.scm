@@ -58,6 +58,7 @@
             define-maybe
             define-maybe/no-serialization
             %unset-value
+            maybe-value
             maybe-value-set?
             generate-documentation
             configuration->documentation
@@ -314,6 +315,15 @@ does not have a default value" field kind)))
 (define (maybe-value-set? value)
   "Predicate to check whether a 'maybe' value was explicitly provided."
   (not (eq? %unset-value value)))
+
+;; Ideally there should be a compiler macro for this predicate, that expands
+;; to a conditional that only instantiates the default value when needed.
+(define* (maybe-value value #:optional (default #f))
+  "Returns VALUE, unless it is the unset value, in which case it returns
+DEFAULT."
+  (if (maybe-value-set? value)
+      value
+      default))
 
 ;; A little helper to make it easier to document all those fields.
 (define (generate-documentation documentation documentation-name)
