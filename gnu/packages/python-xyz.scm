@@ -9758,7 +9758,7 @@ Python style, together with a fast and comfortable execution environment.")
                ;; to the Google Storage service.
                (delete-file "tests/test_google_lifesciences.py")
                (invoke "pytest")))))))
-    (inputs
+    (propagated-inputs
      (list python-appdirs
            python-configargparse
            python-connection-pool
