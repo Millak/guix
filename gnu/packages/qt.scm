@@ -4046,9 +4046,9 @@ generate Python bindings for your C or C++ code.")))
             (lambda _ (chdir "sources/pyside2-tools") #t)))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
-     "Contains command line tools for PySide2")
+     "Command line tools for PySide2")
     (description
-     "Contains lupdate, rcc and uic tools for PySide2")
+     "Python-pyside-2-tools contains lupdate, rcc and uic tools for PySide2")
     (license license:gpl2)))
 
 (define-public libqglviewer
