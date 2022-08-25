@@ -393,6 +393,28 @@ Gaussian quadrature for a numerical solution.")
 Distance (EMD).")
     (license license:expat)))
 
+(define-public r-glmpca
+  (package
+    (name "r-glmpca")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "glmpca" version))
+              (sha256
+               (base32
+                "02xjf0gg52925hw9nw2j0znfmzfzfwbv0fxjl9d2fy9j63drr2h4"))))
+    (properties `((upstream-name . "glmpca")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/willtownes/glmpca")
+    (synopsis "Dimension Reduction of Non-Normally Distributed Data")
+    (description
+     "This package implements a generalized version of principal components
+analysis (GLM-PCA) for dimension reduction of non-normally distributed data
+such as counts or binary matrices.")
+    (license license:lgpl3+)))
+
 (define-public r-googledrive
   (package
     (name "r-googledrive")
