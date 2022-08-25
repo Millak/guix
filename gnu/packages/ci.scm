@@ -196,14 +196,14 @@ intended as a replacement for Hydra.")
     (name "laminar")
     (version "1.2")
     (source
-     (origin (method url-fetch)
-             (uri (string-append "https://github.com/ohwgiles/laminar/archive/"
-                                 version
-                                 ".tar.gz"))
-             (file-name (string-append name "-" version ".tar.gz"))
+     (origin (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/ohwgiles/laminar")
+                   (commit version)))
+             (file-name (git-file-name name version))
              (sha256
               (base32
-               "0vcgpp8g67mlhqnyhkihxz9j5jz1pal79jrdhnmjl5ddbhkvji8i"))))
+               "1sg0kccp3nczkn2vxcsqv10vyvmjnhpaykc1nfhh55jyda4xzf9w"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; TODO Can't build tests
