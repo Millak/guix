@@ -53720,7 +53720,7 @@ function.")
 (define-public rust-scroll-0.10
   (package
     (name "rust-scroll")
-    (version "0.10.1")
+    (version "0.10.2")
     (source
       (origin
         (method url-fetch)
@@ -53729,12 +53729,14 @@ function.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1cbcns8538sqmfnmdbphqy0fd4j8z75z802pvmz3zlwmnln37cmb"))))
+          "1v61drdig30qfx2xh8bn7qdk2xgqbmmhwyrznjl0gf1h915qv8px"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-scroll-derive" ,rust-scroll-derive-0.10))))
+     `(#:cargo-inputs
+       (("rust-scroll-derive" ,rust-scroll-derive-0.10))
+       #:cargo-development-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-rayon" ,rust-rayon-1))))
     (home-page "https://github.com/m4b/scroll")
     (synopsis "Endian-aware Read/Write traits for byte buffers")
     (description
