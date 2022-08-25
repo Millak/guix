@@ -1112,7 +1112,7 @@ and RFC 5389).")
 (define-public go-github-com-cespare-xxhash
   (package
     (name "go-github-com-cespare-xxhash")
-    (version "2.1.0")
+    (version "2.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1121,7 +1121,7 @@ and RFC 5389).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12ad3z7ki9j07c4kx3ywkl6188i2afsjg7sl60wd21p6zkkpfjxq"))))
+                "1f3wyr9msnnz94szrkmnfps9wm40s5sp9i4ak0kl92zcrkmpy29a"))))
     (build-system go-build-system)
     (arguments
      (list
