@@ -3950,6 +3950,78 @@ generate Python bindings for your C or C++ code.")
               license:gpl3
               license:gpl2))))
 
+(define-public python-pyside-6
+  (package
+    (inherit python-pyside-2)
+    (name "python-pyside-6")
+    (version (package-version python-shiboken-6))
+    (source (package-source python-shiboken-6))
+    ;; TODO: Add more Qt components if available.
+    (inputs
+     (list qtbase
+           qtdeclarative
+           qtmultimedia
+           qtnetworkauth
+           qtpositioning
+           qtsvg
+           qttools
+           qtwebchannel
+           qtwebengine
+           qtwebsockets))
+    (propagated-inputs
+     (list python-shiboken-6))
+    (native-inputs
+     (list python-wrapper))
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=FALSE"
+              (string-append "-DPYTHON_EXECUTABLE="
+                             (search-input-file %build-inputs
+                                                "/bin/python")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'go-to-source-dir
+            (lambda _ (chdir "sources/pyside6") #t))
+          (add-after 'go-to-source-dir 'fix-qt-module-detection
+            (lambda _
+              (substitute* "cmake/PySideHelpers.cmake"
+                (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
+                 "true"))
+              (let ((dirs (map (lambda (path)
+                                 (string-append path "/include/qt6"))
+                               (list
+                                #$@(map (lambda (name)
+                                          (this-package-input name))
+                                        '("qtdeclarative"
+                                          "qtmultimedia"
+                                          "qtnetworkauth"
+                                          "qtpositioning"
+                                          "qtsvg"
+                                          "qttools"
+                                          "qtwebchannel"
+                                          "qtwebengine"
+                                          "qtwebsockets"))))))
+                (substitute* "cmake/Macros/PySideModules.cmake"
+                  (("set\\(shiboken_include_dir_list " all)
+                   (string-append all (string-join dirs ";") " ")))
+                (setenv "CXXFLAGS"
+                        (string-join
+                         (map (lambda (dir)
+                                (string-append "-I" dir))
+                              dirs)
+                         " "))))))))
+    (synopsis
+     "The Qt for Python product enables the use of Qt6 APIs in Python applications")
+    (description
+     "The Qt for Python product enables the use of Qt6 APIs in Python
+applications.  It lets Python developers utilize the full potential of Qt,
+using the PySide6 module.  The PySide6 module provides access to the
+individual Qt modules such as QtCore, QtGui,and so on.  Qt for Python also
+comes with the Shiboken6 CPython binding code generator, which can be used to
+generate Python bindings for your C or C++ code.")))
+
 (define-public python-pyside-2-tools
   (package
     (name "python-pyside-2-tools")
