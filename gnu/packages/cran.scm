@@ -1124,6 +1124,39 @@ isolated functions, also called crates, print to the console with their total
 size and can be easily tested locally before being sent to a remote.")
     (license license:gpl3)))
 
+(define-public r-climaemet
+  (package
+    (name "r-climaemet")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "climaemet" version))
+              (sha256
+               (base32
+                "1z0i8iz7f32kns8j1yb3sp2m0zhl4pgp4bf52aiqykjp9i791dqm"))))
+    (properties `((upstream-name . "climaemet")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dplyr
+           r-ggplot2
+           r-httr
+           r-jsonlite
+           r-rappdirs
+           r-readr
+           r-rlang
+           r-tibble
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://ropenspain.github.io/climaemet/")
+    (synopsis "Climate AEMET Tools")
+    (description
+     "This package provides tools to download the climatic data of the Spanish
+Meteorological Agency (AEMET) directly from R using their API and create
+scientific graphs (climate charts, trend analysis of climate time series,
+temperature and precipitation anomalies maps, warming stripes graphics,
+climatograms, etc.).")
+    (license license:gpl3)))
+
 (define-public r-climatol
   (package
     (name "r-climatol")
