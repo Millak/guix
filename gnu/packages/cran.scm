@@ -6551,6 +6551,27 @@ Information-Maximization (Infomax), and @dfn{Joint Approximate Diagonalization
 of Eigenmatrices} (JADE).")
     (license license:gpl2+)))
 
+(define-public r-ips
+  (package
+    (name "r-ips")
+    (version "0.0.11")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ips" version))
+              (sha256
+               (base32
+                "02jxanfhsjrabj33nwjv71vdc87hiyzikyqrfdj9ix6dky6lm199"))))
+    (properties `((upstream-name . "ips")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape r-phangorn r-plyr r-seqinr r-xml))
+    (home-page "https://cran.r-project.org/package=ips")
+    (synopsis "Interfaces to phylogenetic software in R")
+    (description
+     "This package provides functions that wrap popular phylogenetic software
+for sequence alignment, masking of sequence alignments, and estimation of
+phylogenies and ancestral character states.")
+    (license license:gpl3)))
+
 (define-public r-dtw
   (package
     (name "r-dtw")
