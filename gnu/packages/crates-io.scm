@@ -39493,6 +39493,7 @@ file formats.")
 
 (define-public rust-object-0.28
   (package
+    (inherit rust-object-0.29)
     (name "rust-object")
     (version "0.28.2")
     (source
@@ -39504,7 +39505,6 @@ file formats.")
        (sha256
         (base32
          "1wgv6gx69rpn4jjqs24kvafwsic1q06iaafs5mb9hy34hp7c3x89"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -39529,13 +39529,7 @@ file formats.")
              (substitute* "Cargo.toml"
                (("1.6.\\*")
                 ,(package-version rust-indexmap-1)))
-             #t)))))
-    (home-page "https://github.com/gimli-rs/object")
-    (synopsis "Unified interface for reading and writing object file formats")
-    (description
-     "This package provides a unified interface for reading and writing object
-file formats.")
-    (license (list license:asl2.0 license:expat))))
+             #t)))))))
 
 (define-public rust-object-0.24
   (package
