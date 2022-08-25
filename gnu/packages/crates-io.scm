@@ -46615,6 +46615,44 @@ creating native Python extension modules.  Running and interacting with
 Python code from a Rust binary is also supported.")
     (license license:asl2.0)))
 
+(define-public rust-pyo3-0.13
+  (package
+    (inherit rust-pyo3-0.15)
+    (name "rust-pyo3")
+    (version "0.13.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1hq965lgi25dn578fpn9hjva6zjr1c8rl7lxywijq44aw7lbhds8"))))
+    (arguments
+     `(#:skip-build? #true
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-ctor" ,rust-ctor-0.1)
+        ("rust-hashbrown" ,rust-hashbrown-0.9)
+        ("rust-indoc" ,rust-indoc-0.3)
+        ("rust-inventory" ,rust-inventory-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-bigint" ,rust-num-bigint-0.3)
+        ("rust-num-complex" ,rust-num-complex-0.3)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
+        ("rust-paste" ,rust-paste-0.1)
+        ("rust-pyo3-macros" ,rust-pyo3-macros-0.13)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unindent" ,rust-unindent-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
+        ("rust-bitflags" ,rust-bitflags-1.2)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-half" ,rust-half-1)
+        ("rust-proptest" ,rust-proptest-0.10)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
+
 (define-public rust-qstring-0.7
   (package
     (name "rust-qstring")
