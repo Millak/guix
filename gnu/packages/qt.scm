@@ -4031,17 +4031,19 @@ generate Python bindings for your C or C++ code.")))
     (inputs
      (list python-pyside-2 python-shiboken-2 qtbase-5))
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       (list "-DBUILD_TESTS=off"
-             (string-append "-DPYTHON_EXECUTABLE="
-                            (assoc-ref %build-inputs "python")
-                            "/bin/python"))
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'go-to-source-dir
-                    (lambda _ (chdir "sources/pyside2-tools") #t)))))
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=off"
+              (string-append "-DPYTHON_EXECUTABLE="
+                             (search-input-file %build-inputs
+                                                "/bin/python")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'go-to-source-dir
+            (lambda _ (chdir "sources/pyside2-tools") #t)))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "Contains command line tools for PySide2")
