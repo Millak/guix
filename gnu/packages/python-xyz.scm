@@ -9688,7 +9688,7 @@ Python style, together with a fast and comfortable execution environment.")
                ;; because there are no AWS credentials.
                (delete-file "tests/test_tibanna.py")
                (invoke "pytest")))))))
-    (inputs
+    (propagated-inputs
      (list python-appdirs
            python-configargparse
            python-connection-pool
