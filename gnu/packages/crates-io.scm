@@ -6816,23 +6816,23 @@ bindings to C and C++ libraries.")
 (define-public rust-bio-types-0.12
   (package
     (name "rust-bio-types")
-    (version "0.12.0")
+    (version "0.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bio-types" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0qww2l3hbxyayhpv16yxzayxxxmvq7wk3j64xsx9rigzzfbdjy9z"))))
+        (base32 "1dmcjwky9fszmwwg7ywv52xhz93zibsgl7nj9x7gadvz8yb45g0k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-derive-new" ,rust-derive-new-0.5)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-petgraph" ,rust-petgraph-0.5)
+        ("rust-petgraph" ,rust-petgraph-0.6)
         ("rust-regex" ,rust-regex-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-strum-macros" ,rust-strum-macros-0.20)
+        ("rust-strum-macros" ,rust-strum-macros-0.21)
         ("rust-thiserror" ,rust-thiserror-1))))
     (home-page "https://rust-bio.github.io")
     (synopsis "Common biomedical types for use in rust-bio and rust-htslib")
