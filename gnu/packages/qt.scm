@@ -3207,14 +3207,14 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
 (define-public python-qtpy
   (package
     (name "python-qtpy")
-    (version "2.0.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "QtPy" version))
        (sha256
           (base32
-           "13zbhnl2rm30xafwrzfwdb4mjp7gk4s9h2xagbf83pnjzczhgzdd"))))
+           "051rj10lbv2ny48lz34zhclcbdxxdbk4di2mdk91m9143w91npyq"))))
     (build-system python-build-system)
     (propagated-inputs (list python-packaging))
     (arguments
