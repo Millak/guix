@@ -59269,6 +59269,33 @@ map.")
 Rust.")
     (license license:expat)))
 
+(define-public rust-statrs-0.15
+  (package
+    (name "rust-statrs")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "statrs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01bggaq9n09ch20r4yq9s2c4y54367nd71asg22nl8bq9s7bpg85"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-nalgebra" ,rust-nalgebra-0.27)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rand" ,rust-rand-0.8))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/boxtown/statrs")
+    (synopsis "Statistical computing library for Rust")
+    (description "This package provides a statistical computing library for
+Rust.")
+    (license license:expat)))
+
 (define-public rust-statrs-0.13
   (package
     (name "rust-statrs")
