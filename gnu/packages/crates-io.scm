@@ -57808,26 +57808,26 @@ crate.")
 (define-public rust-slog-term-2
   (package
     (name "rust-slog-term")
-    (version "2.6.0")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "slog-term" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1dpmz5ksjkvz8p5h2qv8mznbvgvgpcflx49nrq2rn4kirw3xicds"))))
+        (base32 "0z4pz2q3b7a47xql2kw1pkcx8mw5yh0an3hj9y5jaysvqn2r3ll7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
-        ("rust-chrono" ,rust-chrono-0.4)
         ("rust-erased-serde" ,rust-erased-serde-0.3)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-slog" ,rust-slog-2)
-        ("rust-term" ,rust-term-0.6)
-        ("rust-thread-local" ,rust-thread-local-1))
+        ("rust-term" ,rust-term-0.7)
+        ("rust-thread-local" ,rust-thread-local-1)
+        ("rust-time" ,rust-time-0.3))
        #:cargo-development-inputs
        (("rust-slog-async" ,rust-slog-async-2))))
     (home-page "https://github.com/slog-rs/slog")
