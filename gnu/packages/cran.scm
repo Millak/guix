@@ -4015,6 +4015,26 @@ work well on small screens.")
 data store designed for maximum speed.")
     (license license:asl2.0)))
 
+(define-public r-mapdata
+  (package
+    (name "r-mapdata")
+    (version "2.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "mapdata" version))
+              (sha256
+               (base32
+                "0xnxh73rgcq55zrw81a2bq8yd67bxc2rafp4shf6nyrqj04iip0y"))))
+    (properties `((upstream-name . "mapdata")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-maps))
+    (home-page "https://cran.r-project.org/package=mapdata")
+    (synopsis "Extra map databases")
+    (description
+     "This is a supplement to the @code{maps} package providing the larger
+and/or higher-resolution databases.")
+    (license license:gpl2)))
+
 (define-public r-maps
   (package
     (name "r-maps")
