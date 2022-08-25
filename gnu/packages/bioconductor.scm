@@ -5751,6 +5751,38 @@ a scRNA-seq experiment onto the cell-types or individual cells identified in a
 different experiment.")
     (license license:gpl3)))
 
+(define-public r-scry
+  (package
+    (name "r-scry")
+    (version "1.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "scry" version))
+              (sha256
+               (base32
+                "16mj21r91jy8ircdz8rfrdli9gjy0hrx90kf6ghs305d3d4dl193"))))
+    (properties `((upstream-name . "scry")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocsingular
+           r-delayedarray
+           r-glmpca
+           r-hdf5array
+           r-matrix
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/scry.html")
+    (synopsis "Small-count analysis methods for high-dimensional data")
+    (description
+     "Many modern biological datasets consist of small counts that are not
+well fit by standard linear-Gaussian methods such as principal component
+analysis.  This package provides implementations of count-based feature
+selection and dimension reduction algorithms.  These methods can be used to
+facilitate unsupervised analysis of any high-dimensional data such as
+single-cell RNA-seq.")
+    (license license:artistic2.0)))
+
 (define-public r-seqlogo
   (package
     (name "r-seqlogo")
