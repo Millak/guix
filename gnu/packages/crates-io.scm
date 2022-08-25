@@ -39133,14 +39133,14 @@ directly.")
 (define-public rust-num-traits-0.2
   (package
     (name "rust-num-traits")
-    (version "0.2.14")
+    (version "0.2.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-traits" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "144j176s2p76azy2ngk2vkdzgwdc0bc8c93jhki8c9fsbknb2r4s"))))
+        (base32 "1kfdqqw2ndz0wx2j75v9nbjx7d3mh3150zs4p5595y02rwsdx3jp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
