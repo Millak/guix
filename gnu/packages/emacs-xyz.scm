@@ -32113,6 +32113,30 @@ workspace diagnostics, symbols, and file symbols from @{emacs-lsp-mode}
 by leveraging @code{emacs-consult} APIs.")
     (license license:expat)))
 
+(define-public emacs-pdb-capf
+  (let ((commit "31602ccab53aa7dcf26a1af222c7da2bcc1390ed")
+        (revision "0"))
+    (package
+      (name "emacs-pdb-capf")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/muffinmad/emacs-pdb-capf")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0x2pg03csf25vj8y2zb5sv493dk3n0s4xbkihii2mzhkx82vgpxg"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/muffinmad/emacs-pdb-capf")
+      (synopsis "Completion-at-point function for pdb")
+      (description
+"@code{emacs-pdb-capf} provides a @code{completion-at-point} function
+for pdb allowing completion in a @code{*gud-pdb*} buffer.")
+      (license license:gpl3+))))
+
 (define-public emacs-bitbake-modes
   (package
    (name "emacs-bitbake-modes")
