@@ -1124,6 +1124,28 @@ isolated functions, also called crates, print to the console with their total
 size and can be easily tested locally before being sent to a remote.")
     (license license:gpl3)))
 
+(define-public r-climatol
+  (package
+    (name "r-climatol")
+    (version "3.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "climatol" version))
+              (sha256
+               (base32
+                "0p3nk4n7izj0cmmqd9apa1gix5lfdzp08ydy0n7rkl5kbkmrkb6n"))))
+    (properties `((upstream-name . "climatol")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mapdata r-maps))
+    (home-page "http://www.climatol.eu/")
+    (synopsis "Climate tools")
+    (description
+     "This package provides functions for the quality control, homogenization
+and missing data infilling of climatological series, and to obtain
+climatological summaries and grids from the results.  Also functions to draw
+wind-roses and Walter&Lieth climate diagrams are included.")
+    (license license:gpl2+)))
+
 (define-public r-clipr
   (package
     (name "r-clipr")
