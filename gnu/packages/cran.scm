@@ -116,6 +116,35 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
+(define-public r-aer
+  (package
+    (name "r-aer")
+    (version "1.2-10")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "AER" version))
+              (sha256
+               (base32
+                "1p6vxr0220lim5i4gwsvphqrfd65zbs8h3qydz4gipca9asmy2k5"))))
+    (properties `((upstream-name . "AER")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-car
+           r-formula
+           r-lmtest
+           r-sandwich
+           r-survival
+           r-zoo))
+    (home-page "https://cran.r-project.org/package=AER")
+    (synopsis "Applied econometrics with R")
+    (description
+     "This package provides functions, data sets, examples, demos, and
+vignettes for the book Christian Kleiber and Achim Zeileis (2008), Applied
+Econometrics with R, Springer-Verlag, New York.  ISBN 978-0-387-77316-2. (See
+the vignette \"AER\" for a package overview.)")
+    ;; Either version of the GPL
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-afpt
   (package
     (name "r-afpt")
