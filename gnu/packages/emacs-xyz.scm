@@ -9106,7 +9106,7 @@ list of candidates.")
       (synopsis "Consulting-read interface for BibTeX completion")
       (description "This package provides a read interface for BibTeX
 completion using Consult.")
-      (license license:gpl3))))
+      (license license:gpl3+))))
 
 (define-public emacs-consult-dir
   (package
