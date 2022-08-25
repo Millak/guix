@@ -1279,4 +1279,7 @@ a number of components: Writer, a word processor; Calc, a spreadsheet
 application; Impress, a presentation engine; Draw, a drawing and
 flowcharting application; Base, a database and database frontend;
 Math for editing mathematics.")
+  (properties
+   '((release-monitoring-url
+      . "https://www.libreoffice.org/download/download-libreoffice/")))
   (license license:mpl2.0)))
