@@ -57677,7 +57677,7 @@ implementations.")
 (define-public rust-slog-2
   (package
     (name "rust-slog")
-    (version "2.5.2")
+    (version "2.7.0")
     (source
       (origin
         (method url-fetch)
@@ -57686,7 +57686,7 @@ implementations.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "16bv6zrdn1sm315vbnia02g31xvsmbjyz5gv3z0vrgxdli0cdj8w"))))
+          "01ldk4yarx7x4y4rgsf4kmrcy3wrpcxdd53v2lkk355x9rnh8iw3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
