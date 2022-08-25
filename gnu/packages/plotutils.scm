@@ -4,6 +4,7 @@
 ;;; Copyright © 2016-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -24,6 +25,7 @@
 (define-module (gnu packages plotutils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module ((guix utils) #:select (target-x86-32?))
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ruby)
   #:use-module (guix download)
@@ -59,6 +61,7 @@
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xorg))
 
 (define-public asymptote
@@ -417,6 +420,54 @@ for exporting 2D vector graphics in many file formats.  It also has support
 for 2D vector graphics animations.  The package also contains command-line
 programs for plotting scientific data.")
     (license license:gpl2+)))
+
+(define-public plplot
+  (package
+    (name "plplot")
+    (version "5.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/plplot/plplot/"
+                                  version "%20Source/plplot-" version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0ywccb6bs1389zjfmc9zwdvdsvlpm7vg957whh6b5a96yvcf8bdr"))
+              (modules '((guix build utils)))
+              (snippet #~(begin (delete-file-recursively "www")
+                                (substitute* "CMakeLists.txt"
+                                  (("add_subdirectory\\(www\\)") ""))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-DLIB_DIR=" #$output "/lib")
+              "-DBUILD_TEST=TRUE"
+              "-DENABLE_wxwidgets=TRUE")))
+    (native-inputs (list pkg-config))
+    (inputs (list wxwidgets))
+    (home-page "http://plplot.org/") ;no HTTPS
+    (synopsis "Scientific plotting library with Unicode support")
+    (description
+     "PLplot is a software package for creating scientific plots.
+The PLplot core library can be used to create:
+
+@itemize
+@item standard x-y plots
+@item semi-log plots
+@item log-log plots
+@item contour plots
+@item 3D surface plots
+@item mesh plots
+@item bar charts
+@item pie charts
+@end itemize")
+    (license (list license:lgpl2.0
+                   license:gpl2+ ;octave bindings
+                   license:bsd-2 ;docbook docs
+                   license:ogl-psi1.0 ;files in data/ss
+                   license:cc-by-sa3.0 ;examples/Chloe.pgm
+                   license:expat)))) ;Cmake files
 
 (define-public ruby-unicode-plot
   (package
