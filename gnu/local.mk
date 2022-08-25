@@ -221,6 +221,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/cybersecurity.scm		\
   %D%/packages/cyrus-sasl.scm			\
   %D%/packages/darwin.scm			\
+  %D%/packages/data-language.scm		\
   %D%/packages/databases.scm			\
   %D%/packages/datamash.scm			\
   %D%/packages/datastructures.scm		\
