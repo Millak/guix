@@ -165,6 +165,34 @@ manager which re-parents a Client window to a window decoration frame.")
     (home-page "https://invent.kde.org/plasma/kgamma5")
     (license license:gpl2+)))
 
+(define-public kmenuedit
+  (package
+    (name "kmenuedit")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "0z85w7w207dnsinsz8yg6s408pwfy3l7wjkcsjpyg8aj8s9x6nl7"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules kdoctools))
+    (inputs (list ki18n
+                  kxmlgui
+                  kdbusaddons
+                  kiconthemes
+                  kio
+                  kitemviews
+                  sonnet
+                  kglobalaccel
+                  kwindowsystem))
+    (synopsis "Menu Editor for Plasma Workspaces")
+    (description "This package provides menu editor for Plasma Workspaces.")
+    (home-page "https://invent.kde.org/plasma/kmenuedit")
+    (license license:gpl2+)))
+
 (define-public kscreen
   (package
     (name "kscreen")
