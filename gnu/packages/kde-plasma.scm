@@ -409,6 +409,46 @@ directly, you need to tell @code{ssh-add} about it.  @code{ssh-add} will then
 call it if it is not associated to a terminal.")
     (license license:gpl2+)))
 
+(define-public ksystemstats
+  (package
+    (name "ksystemstats")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "07xm6gn2k3vsl1pkrd2n9w8w8b7jq26h3cpslqha4ipw0by2mlqa"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "ctest" "-E" "ksystemstatstest")))))))
+    (native-inputs (list extra-cmake-modules pkg-config))
+    (inputs (list glib
+                  kcoreaddons
+                  kdbusaddons
+                  solid
+                  networkmanager-qt
+                  kiconthemes
+                  kio
+                  ki18n
+                  libksysguard
+                  libnl
+                  eudev
+                  `(,lm-sensors "lib")
+                  network-manager))
+    (synopsis "Plugin based system monitoring daemon")
+    (description
+     "This package provides a daemon that collects statistics about
+the running system.")
+    (home-page "https://invent.kde.org/plasma/ksystemstats")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public latte-dock
   (package
     (name "latte-dock")
