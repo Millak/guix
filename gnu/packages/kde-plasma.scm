@@ -32,6 +32,7 @@
   #:use-module (guix build-system qt)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
@@ -115,6 +116,36 @@ the Plasma Desktop.  Breeze is the default theme for the KDE Plasma desktop.")
 Breeze is the default theme for the KDE Plasma desktop.")
     (license (list license:bsd-3                  ;cmake/FindSass.cmake
                    license:lgpl2.1+))))           ;<all other files>
+
+(define-public kactivitymanagerd
+  (package
+    (name "kactivitymanagerd")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0hsllhqi46n25sr27crnad053ghk3hni2w496g6d2qfmi20l3g4n"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list boost
+                  kconfig
+                  kcoreaddons
+                  kwindowsystem
+                  kglobalaccel
+                  kio
+                  kxmlgui
+                  kdbusaddons
+                  ki18n
+                  kcrash))
+    (synopsis "System service to manage user's activities")
+    (description "This package provides components for managing the KDE Activity
+concept.")
+    (home-page "https://invent.kde.org/plasma/kactivitymanagerd")
+    (license (list license:gpl2 license:gpl3))))
 
 (define-public kdecoration
   (package
