@@ -3580,7 +3580,6 @@ PickleShare.")
         (base32
          "0q7fnk8n3m5mpjzh6xyhj409k8sacdbjsfis98my9c50fdn5sr7y"))))
     (build-system python-build-system)
-    (native-inputs (list unzip))
     (inputs (list sqlite-next))         ;SQLite 3.39 required.
     (arguments
      (list #:phases
@@ -3588,11 +3587,11 @@ PickleShare.")
                (replace 'build
                  (lambda _
                    (invoke "python" "setup.py" "build" "--enable-all-extensions"
-                           "--enable=load_extension") #t))
+                           "--enable=load_extension")))
                (add-after 'build 'build-test-helper
                  (lambda _
                    (invoke "gcc" "-fPIC" "-shared" "-o" "./testextension.sqlext"
-                           "-I." "-Isqlite3" "src/testextension.c") #t)))))
+                           "-I." "-Isqlite3" "src/testextension.c"))))))
     (home-page "https://github.com/rogerbinns/apsw/")
     (synopsis "Another Python SQLite Wrapper")
     (description
