@@ -52,6 +52,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages package-management) ; flatpak
@@ -1229,3 +1230,31 @@ monitor")
 sensors, process information and other system resources.")
     (home-page "https://invent.kde.org/plasma/plasma-systemmonitor")
     (license (list license:gpl2 license:gpl3))))
+
+(define-public polkit-kde-agent
+  (package
+    (name "polkit-kde-agent")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version "/"
+                                  name "-1-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1qb9nxlkgcv0c30l2vqgf9xs9d220q5pg7ikpb6zjzvj4wsvlvwd"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list ki18n
+                  kwindowsystem
+                  kdbusaddons
+                  kwidgetsaddons
+                  kcoreaddons
+                  kcrash
+                  kiconthemes
+                  polkit-qt))
+    (synopsis "Polkit authentication UI for Plasma")
+    (description
+     "This package contains a daemon providing a Polkit authentication
+UI for Plasma")
+    (home-page "https://invent.kde.org/plasma/polkit-kde-agent-1")
+    (license license:gpl2+)))
