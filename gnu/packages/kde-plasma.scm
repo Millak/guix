@@ -63,6 +63,37 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages web))
 
+(define-public bluedevil
+  (package
+    (name "bluedevil")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1dsah7rcx2brcd1d5x7bvhrixx5nvwp1fwq9b8k2zc038xzpx6ys"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config qttools-5))
+    (inputs (list kcoreaddons
+                  kwidgetsaddons
+                  kdbusaddons
+                  knotifications
+                  kwindowsystem
+                  plasma-framework
+                  ki18n
+                  kio
+                  kdeclarative
+                  bluez-qt
+                  shared-mime-info
+                  qtdeclarative-5))
+    (synopsis "Manage the Bluetooth settings from Plasma")
+    (description
+     "This package provides Bluetooth manager for Plasma Shell.")
+    (home-page "https://invent.kde.org/plasma/bluedevil")
+    (license (list license:lgpl2.1 license:lgpl3))))
+
 (define-public breeze
   (package
     (name "breeze")
