@@ -3568,44 +3568,38 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.36.0-r1")
+    (version "3.39.2.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/rogerbinns/apsw/releases"
-                            "/download/" version "/apsw-" version ".zip"))
-        (sha256
-          (base32
-           "0w8q73147hv77dlpqrx6h1gx03acc8xqhvdpfp6vkffdm0wmqd8p"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rogerbinns/apsw")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0q7fnk8n3m5mpjzh6xyhj409k8sacdbjsfis98my9c50fdn5sr7y"))))
     (build-system python-build-system)
-    (native-inputs
-     (list unzip))
-    (inputs
-     (list sqlite))
+    (native-inputs (list unzip))
+    (inputs (list sqlite-next))         ;SQLite 3.39 required.
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             (invoke "python" "setup.py" "build" "--enable-all-extensions"
-                     "--enable=load_extension")
-             #t))
-         (add-after 'build 'build-test-helper
-           (lambda _
-             (invoke "gcc" "-fPIC" "-shared" "-o" "./testextension.sqlext"
-                     "-I." "-Isqlite3" "src/testextension.c")
-             #t))
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "setup.py" "test")
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'build
+                 (lambda _
+                   (invoke "python" "setup.py" "build" "--enable-all-extensions"
+                           "--enable=load_extension") #t))
+               (add-after 'build 'build-test-helper
+                 (lambda _
+                   (invoke "gcc" "-fPIC" "-shared" "-o" "./testextension.sqlext"
+                           "-I." "-Isqlite3" "src/testextension.c") #t)))))
     (home-page "https://github.com/rogerbinns/apsw/")
     (synopsis "Another Python SQLite Wrapper")
-    (description "APSW is a Python wrapper for the SQLite
-embedded relational database engine.  In contrast to other wrappers such as
-pysqlite it focuses on being a minimal layer over SQLite attempting just to
-translate the complete SQLite API into Python.")
+    (description
+     "APSW is a Python wrapper for the SQLite embedded relational database
+engine.  In contrast to other wrappers such as pysqlite it focuses on being a
+minimal layer over SQLite attempting just to translate the complete SQLite API
+into Python.")
     (license license:zlib)))
 
 (define-public python-aiosqlite
