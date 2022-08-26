@@ -12193,26 +12193,25 @@ your operating-system definition:
            python-pycairo
            python-pygobject))
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
-                           ,@%meson-build-system-modules)
-       #:modules (((guix build python-build-system) #:prefix python:)
-                  (guix build meson-build-system)
-                  (guix build utils))
-       #:tests? #f ;; The flake8 test fails trying to validate piper.in as code.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'dont-update-gtk-icon-cache
-           (lambda _
-             (substitute* "meson.build"
-               (("meson.add_install_script('meson_install.sh')") ""))))
-         ;; TODO: Switch to wrap-script when it is fixed.
-         (add-after 'install 'wrap-python
-           (assoc-ref python:%standard-phases 'wrap))
-         (add-after 'wrap-python 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (wrap-program
-                 (string-append (assoc-ref outputs "out" )"/bin/piper")
-               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+     (list #:glib-or-gtk? #t
+           #:tests? #f ;; The flake8 test fails trying to validate piper.in as code.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'dont-update-gtk-icon-cache
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("meson.add_install_script('meson_install.sh')") ""))))
+               (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+                 (lambda _
+                   (let ((pylib (string-append #$output
+                                               "/lib/python"
+                                               #$(version-major+minor
+                                                  (package-version python))
+                                               "/site-packages")))
+                     (wrap-program
+                         (string-append #$output "/bin/piper")
+                       `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
+                       `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (home-page "https://github.com/libratbag/piper/")
     (synopsis "Configure bindings and LEDs on gaming mice")
     (description "Piper is a GTK+ application for configuring gaming mice with
