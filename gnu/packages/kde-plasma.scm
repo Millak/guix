@@ -854,6 +854,35 @@ KDE Frameworks components.")
      "This package provides a daemon that listens to system notifications.")
     (license license:gpl2+)))
 
+(define-public milou
+  (package
+    (name "milou")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0ijdbiq169sy47g0x22pj9x6abldpfxcnski4w1jh9hi9qz1rc25"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kcoreaddons
+                  ki18n
+                  kdeclarative
+                  kitemmodels
+                  kservice
+                  plasma-framework
+                  kwindowsystem
+                  krunner
+                  qtdeclarative-5))
+    (synopsis "Dedicated search application built on top of Baloo")
+    (description "This package provides a dedicated search application built
+on top of Baloo.")
+    (home-page "https://invent.kde.org/plasma/milou")
+    (license (list license:gpl2+))))
+
 (define-public oxygen-sounds
   (package
     (name "oxygen-sounds")
