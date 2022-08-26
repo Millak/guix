@@ -545,3 +545,24 @@ wayland-server API.")
 KDE Frameworks components.")
     (home-page "https://invent.kde.org/plasma/kwayland-integration")
     (license (list license:lgpl2.1 license:lgpl3))))
+
+(define-public kwrited
+  (package
+    (name "kwrited")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "03gw3czdgyf35n6x79x416rk6f7w1ayzmy5pb65v9733nx1j34mh"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kcoreaddons ki18n kpty knotifications))
+    (home-page "https://invent.kde.org/plasma/kwrited")
+    (synopsis "System notification daemon")
+    (description
+     "This package provides a daemon that listens to system notifications.")
+    (license license:gpl2+)))
