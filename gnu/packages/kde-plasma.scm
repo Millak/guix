@@ -41,6 +41,8 @@
   #:use-module (gnu packages firmware)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
@@ -48,6 +50,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
@@ -712,6 +715,29 @@ basic needs and easy to configure for those who want special setups.")
 manage running processes.  It obtains this information by interacting
 with a ksysguardd daemon, which may also run on a remote system.")
     (license license:gpl3+)))
+
+(define-public kwallet-pam
+  (package
+    (name "kwallet-pam")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "14w803lc3s2c0f4mqzzdhpfy5qnlz7wv00pbrc3v4k3zv381ci8n"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs (list extra-cmake-modules pkg-config))
+    (inputs (list linux-pam kwallet libgcrypt socat))
+    (synopsis "PAM Integration with KWallet")
+    (description "Provide PAM Integration with KWallet to unlock KWallet when
+you login.")
+    (home-page "https://invent.kde.org/plasma/kwallet-pam")
+    (license (list license:lgpl2.1+))))
 
 (define-public kwayland-server
   (package
