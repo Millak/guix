@@ -1142,7 +1142,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.6.6")
+    (version "4.8.0")
     (source
      (origin
        (method url-fetch)
@@ -1150,110 +1150,111 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0w5fb4grgmb6nhf2glq2y5xqnc9y4v3lm0s9xnbw5xv96p8y9gvv"))
+        (base32 "0zxxvjnbmaahvm9lwm007dzgc0yl8qamkp1467c5kqyi6ws21mn8"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
     (build-system meson-build-system)
     (outputs '("out" "bin" "doc"))
     (arguments
-     `(#:modules ((guix build utils)
+     (list
+      #:modules '((guix build utils)
                   (guix build meson-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
-       #:configure-flags
-       (list
-        "-Dbroadway-backend=true"       ;for broadway display-backend
-        "-Dcloudproviders=enabled"      ;for cloud-providers support
-        "-Dtracker=enabled"             ;for filechooser search support
-        "-Dcolord=enabled"              ;for color printing support
-        ,@(if (%current-target-system)
-              ;; If true, gtkdoc-scangobj will try to execute a
-              ;; cross-compiled binary.
-              '("-Dgtk_doc=false")
-              '("-Dgtk_doc=true"))
-        "-Dman-pages=true")
-       #:parallel-tests? #f             ;parallel tests are not supported
-       #:test-options '("--setup=x11"   ;defaults to wayland
-                        ;; Use the same test options as upstream uses for
-                        ;; their CI.
-                        "--suite=gtk"
-                        "--no-suite=gsk-compare-broadway")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
-           (assoc-ref glib-or-gtk:%standard-phases
-                      'generate-gdk-pixbuf-loaders-cache-file))
-         (add-after 'unpack 'patch-rst2man
-           (lambda _
-             (substitute* "docs/reference/gtk/meson.build"
-               (("find_program\\('rst2man'") "find_program('rst2man.py'"))))
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
-             ;; Correct DTD resources of docbook.
-             (substitute* (find-files "docs" "\\.xml$")
-               (("http://www.oasis-open.org/docbook/xml/4.3/")
-                (string-append
-                 (assoc-ref (or native-inputs inputs) "docbook-xml-4.3")
-                 "/xml/dtd/docbook/")))
-             ;; Disable building of icon cache.
-             (substitute* "meson.build"
-               (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false"))
-             ;; Disable failing tests.
-             (substitute* (find-files "testsuite" "meson.build")
-               (("[ \t]*'empty-text.node',") "")
-               (("[ \t]*'testswitch.node',") "")
-               (("[ \t]*'widgetfactory.node',") "")
-               ;; The unaligned-offscreen test fails for unknown reasons, also
-               ;; on different distributions (see:
-               ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/4889).
-               (("  'unaligned-offscreen',") ""))
-             (substitute* "testsuite/reftests/meson.build"
-               (("[ \t]*'label-wrap-justify.ui',") ""))))
-         (add-before 'build 'set-cache
-           (lambda _
-             (setenv "XDG_CACHE_HOME" (getcwd))))
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for those variables.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             ;; Required for the calendar test.
-             (setenv "TZDIR" (search-input-directory inputs
-                                                     "share/zoneinfo"))))
-         (add-after 'install 'move-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (assoc-ref outputs "bin"))
-                    (doc (assoc-ref outputs "doc")))
-               (for-each mkdir-p
-                         (list
-                          (string-append bin "/bin")
-                          (string-append bin "/share/applications")
-                          (string-append bin "/share/icons")
-                          (string-append bin "/share/man")
-                          (string-append bin "/share/metainfo")
-                          (string-append doc "/share/doc")))
-               ;; Move programs and related files to output 'bin'.
-               (for-each (lambda (dir)
-                           (rename-file
-                            (string-append out dir)
-                            (string-append bin dir)))
-                         (list
-                          "/bin"
-                          "/share/applications"
-                          "/share/icons"
-                          "/share/man"
-                          "/share/metainfo"))
-               ;; Move HTML documentation to output 'doc'.
-               (rename-file
-                (string-append out "/share/doc")
-                (string-append doc "/share/doc"))))))))
+      #:configure-flags
+      #~(list
+         "-Dbroadway-backend=true"      ;for broadway display-backend
+         "-Dcloudproviders=enabled"     ;for cloud-providers support
+         "-Dtracker=enabled"            ;for filechooser search support
+         "-Dcolord=enabled"             ;for color printing support
+         #$@(if (%current-target-system)
+                ;; If true, gtkdoc-scangobj will try to execute a
+                ;; cross-compiled binary.
+                '("-Dgtk_doc=false")
+                '("-Dgtk_doc=true"))
+         "-Dman-pages=true")
+      #:test-options '(list "--setup=x11" ;defaults to wayland
+                            ;; Use the same test options as upstream uses for
+                            ;; their CI.
+                            "--suite=gtk"
+                            "--no-suite=gsk-compare-broadway")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
+          (add-after 'unpack 'patch-rst2man
+            (lambda _
+              (substitute* "docs/reference/gtk/meson.build"
+                (("find_program\\('rst2man'")
+                 "find_program('rst2man.py'"))))
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
+              ;; Correct DTD resources of docbook.
+              (substitute* (find-files "docs" "\\.xml$")
+                (("http://www.oasis-open.org/docbook/xml/4.3/")
+                 (string-append #$(this-package-native-input "docbook-xml")
+                                "/xml/dtd/docbook/")))
+              ;; Disable building of icon cache.
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))
+              ;; Disable failing tests.
+              (substitute* (find-files "testsuite" "meson.build")
+                (("[ \t]*'empty-text.node',") "")
+                (("[ \t]*'testswitch.node',") "")
+                (("[ \t]*'widgetfactory.node',") "")
+                ;; The unaligned-offscreen test fails for unknown reasons, also
+                ;; on different distributions (see:
+                ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/4889).
+                (("  'unaligned-offscreen',") ""))
+              (substitute* "testsuite/reftests/meson.build"
+                (("[ \t]*'label-wrap-justify.ui',") "")
+                ;; The inscription-markup.ui fails due to /etc/machine-id
+                ;; related warnings (see:
+                ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/5169).
+                (("[ \t]*'inscription-markup.ui',") ""))))
+          (add-before 'build 'set-cache
+            (lambda _
+              (setenv "XDG_CACHE_HOME" (getcwd))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; Tests write to $HOME.
+              (setenv "HOME" (getcwd))
+              ;; Tests look for those variables.
+              (setenv "XDG_RUNTIME_DIR" (getcwd))
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0")
+              ;; Required for the calendar test.
+              (setenv "TZDIR" (search-input-directory inputs
+                                                      "share/zoneinfo"))))
+          (add-after 'install 'move-files
+            (lambda _
+              (for-each mkdir-p
+                        (list
+                         (string-append #$output:bin "/bin")
+                         (string-append #$output:bin "/share/applications")
+                         (string-append #$output:bin "/share/icons")
+                         (string-append #$output:bin "/share/man")
+                         (string-append #$output:bin "/share/metainfo")
+                         (string-append #$output:doc "/share/doc")))
+              ;; Move programs and related files to output 'bin'.
+              (for-each (lambda (dir)
+                          (rename-file
+                           (string-append #$output dir)
+                           (string-append #$output:bin dir)))
+                        (list
+                         "/bin"
+                         "/share/applications"
+                         "/share/icons"
+                         "/share/man"
+                         "/share/metainfo"))
+              ;; Move HTML documentation to output 'doc'.
+              (rename-file
+               (string-append #$output "/share/doc")
+               (string-append #$output:doc "/share/doc")))))))
     (native-inputs
      (list docbook-xml-4.3
            docbook-xsl
