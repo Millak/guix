@@ -138,6 +138,32 @@ These window decorations can be used by for example an X11 based window
 manager which re-parents a Client window to a window decoration frame.")
     (license license:lgpl3+)))
 
+(define-public kgamma
+  (package
+    (name "kgamma")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "5-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1c305bs50km7bsn0phz7yj4x2168sxwsw9zxbpcgw4q3r53c0ywz"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kauth
+                  kcoreaddons
+                  kconfig
+                  kconfigwidgets
+                  kdoctools
+                  ki18n))
+    (synopsis "Adjust monitor gamma settings")
+    (description
+     "This package provides a tool to adjust your monitor gamma settings.")
+    (home-page "https://invent.kde.org/plasma/kgamma5")
+    (license license:gpl2+)))
+
 (define-public ksshaskpass
   (package
     (name "ksshaskpass")
