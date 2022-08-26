@@ -5176,6 +5176,27 @@ methods.")
     (description "This package provides a safe abstraction around AtomicPtr.")
     (license license:asl2.0)))
 
+(define-public rust-atomic-polyfill-1
+  (package
+    (name "rust-atomic-polyfill")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "atomic-polyfill" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ckvmx98ffyxax1irb61p0aln4v65xxnz4d2qgavhvcd513zb6fj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-critical-section" ,rust-critical-section-1))))
+    (home-page "https://github.com/embassy-rs/atomic-polyfill")
+    (synopsis "Atomic polyfills, for targets where they're not available.")
+    (description "This package provides atomic polyfills, for targets where
+they're not available.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-atomic-polyfill-0.1
   (package
     (name "rust-atomic-polyfill")
