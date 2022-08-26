@@ -37,6 +37,10 @@
   #:use-module (gnu packages authentication)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages elf) ; patchelf
+  #:use-module (gnu packages display-managers)
+  #:use-module (gnu packages firmware)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -48,6 +52,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages package-management) ; flatpak
   #:use-module (gnu packages video)
   #:use-module (gnu packages vpn)
   #:use-module (gnu packages qt)
@@ -125,6 +130,87 @@ the Plasma Desktop.  Breeze is the default theme for the KDE Plasma desktop.")
 Breeze is the default theme for the KDE Plasma desktop.")
     (license (list license:bsd-3                  ;cmake/FindSass.cmake
                    license:lgpl2.1+))))           ;<all other files>
+
+(define-public discover
+  (package
+    (name "discover")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version
+                                  "/"
+                                  name
+                                  "-"
+                                  version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "01vdi66c7v60db25p0qi0q73wgqw6dy2kirbk34bvhld41gpxhhv"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'fix-so
+                          (lambda* _
+                            (invoke "patchelf" "--replace-needed"
+                                    "libDiscoverCommon.so"
+                                    (string-append #$output
+                                     "/lib/plasma-discover/libDiscoverCommon.so")
+                                    (string-append #$output
+                                     "/lib/qt5/plugins/discover/fwupd-backend.so"))
+                            (invoke "patchelf" "--replace-needed"
+                                    "libDiscoverCommon.so"
+                                    (string-append #$output
+                                     "/lib/plasma-discover/libDiscoverCommon.so")
+                                    (string-append #$output
+                                     "/lib/qt5/plugins/discover/packagekit-backend.so"))
+                            (invoke "patchelf" "--replace-needed"
+                                    "libDiscoverCommon.so"
+                                    (string-append #$output
+                                     "/lib/plasma-discover/libDiscoverCommon.so")
+                                    (string-append #$output
+                                     "/lib/qt5/plugins/discover/kns-backend.so"))))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "ctest" "-E" "knsbackendtest")))))))
+    (native-inputs (list extra-cmake-modules patchelf pkg-config))
+    (inputs (list appstream-qt
+                  attica
+                  fwupd ; optional
+                  flatpak ; optional
+                  kcoreaddons
+                  kconfig
+                  kcrash
+                  kdbusaddons
+                  ki18n
+                  karchive
+                  kxmlgui
+                  kirigami
+                  kuserfeedback
+                  knewstuff
+                  knotifications
+                  kio
+                  kdeclarative
+                  kcmutils
+                  kidletime
+                  packagekit-qt5
+                  qtdeclarative-5
+                  qtgraphicaleffects
+                  qtquickcontrols2-5))
+    ;; -- The following features have been disabled:
+    ;; * Ostree, Library to manage ostree repository. Required to build the rpm-ostree backend
+    ;; * RpmOstree, rpm-ostree binary to manage the system. Required to build the rpm-ostree backend
+    ;;
+    ;; -- The following OPTIONAL packages have not been found:
+    ;; * Snapd, Library that exposes Snapd, <https://www.snapcraft.io>
+    ;; Required to build the Snap backend
+    (synopsis "KDE and Plasma resources management GUI")
+    (description
+     "This package provides a way to find and install applications,
+games, and tools.")
+    (home-page "https://invent.kde.org/plasma/discover")
+    (license (list license:gpl2 license:gpl3))))
 
 (define-public drkonqi
   (package
