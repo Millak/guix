@@ -9232,6 +9232,31 @@ replaced with the directory you choose.")
 and present results either as single emails or full trees.")
     (license license:gpl3+)))
 
+(define-public emacs-consult-org-roam
+  (let* ((commit "9572c5bc194a583dc9e86ea7d2751959d86b5c78")
+         (revision "0"))
+    (package
+      (name "emacs-consult-org-roam")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jgru/consult-org-roam")
+               (commit commit)))
+         (sha256
+          (base32
+           "0c2hjd2gw77h77487fzdqfybg0ricsvlnwwfxai9baawz37bcn7q"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-consult emacs-org-roam))
+      (home-page "https://github.com/jgru/consult-org-roam")
+      (synopsis "Consult integration for Org Roam")
+      (description
+       "This is a set of functions to use Org Roam with Consult.  This
+packages replaces Org Roam's own completing read functions with equivalent
+versions utilizing Consult's internal API.")
+      (license license:gpl3+))))
+
 (define-public emacs-consult-eglot
   (package
    (name "emacs-consult-eglot")
