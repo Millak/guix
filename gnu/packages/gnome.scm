@@ -12165,7 +12165,7 @@ your operating-system definition:
 (define-public piper
   (package
     (name "piper")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method git-fetch)
@@ -12173,11 +12173,12 @@ your operating-system definition:
              (url "https://github.com/libratbag/piper")
              (commit version)))
        (sha256
-        (base32 "02x4d4n0078slj2pl0rvgayrrxvna6y6vj8fxfamvazsh5xyfzwk"))
+        (base32 "0jsvfy0ihdcgnqljfgs41lys1nlz18qvsa0a8ndx3pyr41f8w8wf"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs
-     (list gettext-minimal
+     (list appstream
+           gettext-minimal
            `(,glib "bin")
            gobject-introspection
            pkg-config
