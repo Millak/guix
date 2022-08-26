@@ -753,6 +753,32 @@ on QtMultimedia and @command{yt-dlp}.")
     (home-page "https://invent.kde.org/plasma/plasma-disks")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public plasma-firewall
+  (package
+    (name "plasma-firewall")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0k3pc0dcsjr2hhh4hr8vhsvaddn66s6imm8skrr02icxqvljs6jh"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list iproute
+                  kcoreaddons
+                  kcmutils
+                  ki18n
+                  kdeclarative
+                  python
+                  qtdeclarative-5))
+    (synopsis "Control Panel for system firewall")
+    (description "This package provides interface to system firewall.")
+    (home-page "https://invent.kde.org/plasma/plasma-firewall")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public plasma-integration
   (package
     (name "plasma-integration")
