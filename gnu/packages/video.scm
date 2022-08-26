@@ -163,6 +163,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages perl-web)
@@ -3320,7 +3321,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "27.1.3")
+    (version "27.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3330,7 +3331,7 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ndiarr3d6qihymaigf34jjml0lrgbj640fnpnffz2ysj7276q0j"))
+                "13bfzjqmvabli99yr1h0306w5lx72mbl5sxrnr46hjig1a6rw91s"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
@@ -3338,10 +3339,10 @@ be used for realtime video capture via Linux-specific APIs.")
      (list
       #:configure-flags
       #~(list (string-append "-DOBS_VERSION_OVERRIDE=" #$version)
-              "-DENABLE_UNIT_TESTS=TRUE"
+              "-DENABLE_UNIT_TESTS=ON"
               ;; Browser plugin requires cef, but it is not packaged yet.
               ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
-              "-DBUILD_BROWSER=FALSE")
+              "-DBUILD_BROWSER=OFF")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'install 'wrap-executable
@@ -3359,10 +3360,11 @@ be used for realtime video capture via Linux-specific APIs.")
             (separator #f)                         ;single entry
             (files '("share/obs/obs-plugins")))))
     (native-inputs
-     (list cmocka pkg-config))
+     (list cmocka pkg-config swig))
     (inputs
      (list
       alsa-lib
+      bash-minimal
       curl
       eudev
       ffmpeg
@@ -3373,10 +3375,14 @@ be used for realtime video capture via Linux-specific APIs.")
       jansson
       libx264
       libxcomposite
+      libxkbcommon
+      luajit
       mbedtls-apache
       mesa
+      pciutils
       pipewire-0.3
       pulseaudio
+      python
       qtbase-5
       qtsvg-5
       qtx11extras
