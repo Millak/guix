@@ -724,6 +724,35 @@ KDE Frameworks components.")
 on QtMultimedia and @command{yt-dlp}.")
     (license license:gpl3+)))
 
+(define-public plasma-disks
+  (package
+    (name "plasma-disks")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0vci2cf8vx2lclypys9rmvjb8haakv6ksrvqm5j28pazbq2kskvl"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kcoreaddons
+                  kdbusaddons
+                  knotifications
+                  ki18n
+                  solid
+                  kservice
+                  kio
+                  kauth
+                  kdeclarative
+                  smartmontools))
+    (synopsis "Monitors S.M.A.R.T. capable devices for imminent failure")
+    (description "This package provides interface to S.M.A.R.T. data of disks.")
+    (home-page "https://invent.kde.org/plasma/plasma-disks")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public plasma-integration
   (package
     (name "plasma-integration")
