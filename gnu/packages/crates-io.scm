@@ -25120,6 +25120,7 @@ debugging format.")
 
 (define-public rust-gimli-0.23
   (package
+    (inherit rust-gimli-0.26)
     (name "rust-gimli")
     (version "0.23.0")
     (source
@@ -25129,7 +25130,6 @@ debugging format.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1km657nwcrb0pnv7v0ldhgl9y8s889y2j9jckmws8k2i8bhkyl7n"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -25138,13 +25138,7 @@ debugging format.")
         ("rust-indexmap" ,rust-indexmap-1)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
-    (home-page "https://github.com/gimli-rs/gimli")
-    (synopsis "Library for reading and writing the DWARF debugging format")
-    (description
-     "This package provides a library for reading and writing the DWARF
-debugging format.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
 (define-public rust-gimli-0.20
   (package
