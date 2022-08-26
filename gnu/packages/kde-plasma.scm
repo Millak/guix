@@ -413,6 +413,50 @@ KDE Frameworks 5 to better interact with the system.")
     (home-page "https://invent.kde.org/plasma/kde-cli-tools")
     (license license:lgpl2.0+)))
 
+(define-public kdeplasma-addons
+  (package
+    (name "kdeplasma-addons")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version
+                                  "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1a5cq0jz69hlcr22wxi2p5mzxv5xcp88220irxmq0dhpk85kywlx"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "ctest" "-E"
+                               "(converterrunnertest|spellcheckrunnertest)")))))))
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list karchive
+                  kconfig
+                  kcoreaddons
+                  kdeclarative
+                  kholidays
+                  ki18n
+                  kio
+                  kcmutils
+                  knotifications
+                  krunner
+                  kservice
+                  kunitconversion
+                  knewstuff
+                  plasma-framework
+                  purpose
+                  sonnet
+                  qtdeclarative-5))
+                 ;qtwebengine-5)) ;; Optional for online dictionary
+    (synopsis "Add-ons to improve your Plasma experience")
+    (description
+     "This package provides multiple addons for the Plasma Desktop.")
+    (home-page "https://invent.kde.org/plasma/kdeplasma-addons")
+    (license license:lgpl2.0)))
+
 (define-public kgamma
   (package
     (name "kgamma")
