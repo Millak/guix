@@ -1696,6 +1696,44 @@ deadlock, like the standard Barrier).")
 syntax (e.g.  EasyList, EasyPrivacy) filter parsing and matching.")
     (license license:mpl2.0)))
 
+(define-public rust-addr2line-0.17
+  (package
+    (name "rust-addr2line")
+    (version "0.17.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "addr2line" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0sw16zqy6w0ar633z69m7lw6gb0k1y7xj3387a8wly43ij5div5r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #false ;use of undeclared crate or module `auxiliary`
+       #:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-cpp-demangle" ,rust-cpp-demangle-0.3)
+        ("rust-fallible-iterator" ,rust-fallible-iterator-0.2)
+        ("rust-gimli" ,rust-gimli-0.26)
+        ("rust-object" ,rust-object-0.27)
+        ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-findshlibs" ,rust-findshlibs-0.10)
+        ("rust-memmap" ,rust-memmap-0.7)
+        ("rust-rustc-test" ,rust-rustc-test-0.3)
+        ("rust-typed-arena" ,rust-typed-arena-2))))
+    (home-page "https://github.com/gimli-rs/addr2line")
+    (synopsis "Symbolication library written in Rust, using gimli")
+    (description
+     "This package provides a cross-platform symbolication library written in
+Rust, using gimli.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-addr2line-0.14
   (package
     (name "rust-addr2line")
