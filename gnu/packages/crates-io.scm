@@ -14290,6 +14290,23 @@ criterion.")
         ("rust-num-complex" ,rust-num-complex-0.2)
         ("rust-rand" ,rust-rand-0.4))))))
 
+(define-public rust-critical-section-1
+  (package
+    (name "rust-critical-section")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "critical-section" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06p0j7yy289six3k7j3m3f1phk9n7h9x2cd8fjfbw6fhh4aaaayh"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rust-embedded/critical-section")
+    (synopsis "Critical section abstraction")
+    (description "This package provides a critical section abstraction.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-critical-section-0.2
   (package
     (name "rust-critical-section")
