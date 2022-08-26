@@ -50,6 +50,7 @@
   #:use-module (gnu packages tls)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -465,17 +466,33 @@ device-specific programs to convert and print many types of files.")
 (define-public cups-pk-helper
   (package
     (name "cups-pk-helper")
-    (version "0.2.6")
+    (version "0.2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://freedesktop.org/software/"
                                   name "/releases/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0a52jw6rm7lr5nbyksiia0rn7sasyb5cjqcb95z1wxm2yprgi6lm"))))
-    (build-system gnu-build-system)
+                "0cg8wbxpkz9bkpasz973cdazi02svqpbw9mafvpgrscg8kdhs1v6"))))
+    (build-system meson-build-system)
+    (arguments
+     ;; XXX The tests require a running D-Bus and CUPS daemon, of course.
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-compatibility-symlink
+                 ;; XXX Upstream (and, presumably, the world) has moved to
+                 ;; /share/dbus-1 over /etc/dbus-1, but Guix System's
+                 ;; dbus-configuration-directory has yet to catch up.
+                 ;; TODO It should be properly fixed and this phase removed.
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (with-directory-excursion (assoc-ref outputs "out")
+                     (mkdir-p "etc")
+                     (symlink "../share/dbus-1" "etc/dbus-1")))))))
     (native-inputs
-     (list intltool pkg-config glib polkit cups))
+     (list intltool pkg-config `(,glib "bin")))
+    (inputs
+     (list glib polkit cups-minimal))
     (home-page "https://www.freedesktop.org/wiki/Software/cups-pk-helper/")
     (synopsis "PolicyKit helper to configure CUPS with fine-grained privileges")
     (description
@@ -854,7 +871,7 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
 (define-public epson-inkjet-printer-escpr
   (package
     (name "epson-inkjet-printer-escpr")
-    (version "1.7.18")
+    (version "1.7.21")
     ;; XXX: This currently works.  But it will break as soon as a newer
     ;; version is available since the URLs for older versions are not
     ;; preserved.  An alternative source will be added as soon as
@@ -862,11 +879,11 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://download3.ebz.epson.net/dsc/f/03/00/13/43/"
-                           "81/cbdd80826424935cef20d16be8ee5851388977a7/"
-                           "epson-inkjet-printer-escpr-1.7.18-1lsb3.2.tar.gz"))
+       (uri (string-append "https://download3.ebz.epson.net/dsc/f/03/00/13/77/"
+                           "93/e85dc2dc266e96fdc242bd95758bd88d1a51963e/"
+                           "epson-inkjet-printer-escpr-1.7.21-1lsb3.2.tar.gz"))
        (sha256
-        (base32 "06pa47rl1gy19bg3fsp4a4y9vdy4ya2maajm14n791ivhf2hcwyh"))))
+        (base32 "0z1x9p58321plf2swfxgl72wn7ls8bfbyjwd9l9c8jxfr1v2skkz"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules

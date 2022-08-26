@@ -18,6 +18,7 @@
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1511,6 +1512,29 @@ that may return a colorized version of its argument."
                                    (sort packages package<?))) " ")))
       (split-lines list (string-length "dependencies: "))))
 
+  (define (output->recutils package output)
+    (string-append
+     "+ " output ": "
+     (or
+      (any
+       (match-lambda
+         (('output-synopsis key synopsis)
+          (and (string=? key output) (P_ synopsis)))
+         (_ #f))
+       (package-properties package))
+      (assoc-ref `(("bin" . ,(G_ "executable programs and scripts"))
+                   ("debug" . ,(G_ "debug information"))
+                   ("lib" . ,(G_ "shared libraries"))
+                   ("static" . ,(G_ "static libraries"))
+                   ("out" . ,(G_ "everything else")))
+                 output)
+      (G_ "see Appendix H"))))
+
+  (define (package-outputs/out-last package)
+    ((compose append partition)
+     (negate (cut string=? "out" <>))
+     (package-outputs package)))
+
   (define (package<? p1 p2)
     (string<? (package-full-name p1) (package-full-name p2)))
 
@@ -1522,7 +1546,8 @@ that may return a colorized version of its argument."
   ;; Note: Don't i18n field names so that people can post-process it.
   (format port "name: ~a~%" (highlight (package-name p) port*))
   (format port "version: ~a~%" (highlight (package-version p) port*))
-  (format port "outputs: ~a~%" (string-join (package-outputs p)))
+  (format port "outputs:~%~{~a~%~}"
+          (map (cut output->recutils p <>) (package-outputs/out-last p)))
   (format port "systems: ~a~%"
           (split-lines (string-join (package-transitive-supported-systems p))
                        (string-length "systems: ")))

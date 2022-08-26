@@ -262,7 +262,7 @@ other text such as code.  The syntax uses the syntax of the Django template
 system, and the core design of Django is reused in Grantlee.")
     (license license:lgpl2.1+)))
 
-(define (qt5-urls component version)
+(define (qt-urls component version)
   "Return a list of URLs for VERSION of the Qt5 COMPONENT."
   ;; We can't use a mirror:// scheme because these URLs are not exact copies:
   ;; the layout differs between them.
@@ -290,7 +290,7 @@ system, and the core design of Django is reused in Grantlee.")
     (version "5.15.5")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "1p2fa94m1y8qzhdfi2d7dck93qh1lgsinibwl1wy92bwmacwfhhc"))
@@ -543,7 +543,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
     (version "6.3.1")
     (source (origin
               (inherit (package-source qtbase-5))
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "00sfya41ihqb0zwg6wf1kiy02iymj6mk584hhk2c4s94khfl4r0a"))
@@ -825,7 +825,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
     (version "6.3.1")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "1zbcaswpl79ixcxzj85qzjq73962s4c7316pibwfrskqswmwcgm4"))))
@@ -855,7 +855,7 @@ came with the @{qtgraphicaleffects} Qt 5 package.")
     (version "5.15.5")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "0cdhmhxngv4y7kl5vbcii4l4anbz0hj7dvhlddy1agyl19j9xky4"))))
@@ -923,7 +923,7 @@ HostData=lib/qt5
     (version "6.3.1")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "1xvxz2jfpr1al85rhwss7ji5vkxa812d0b888hry5f7pwqcg86bv"))))
@@ -954,7 +954,7 @@ HostData=lib/qt5
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "1xjb2z2h1ajw7z9cwq8djpdvjwalpnmirwcwrlbjqv5r4ghmi82a"))
@@ -981,7 +981,7 @@ support for MNG, TGA, TIFF and WBMP image formats.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0wxsrnnkkn68myy211rfz98brs7j3qmx3hmy097vh5avgsmw11bn"))))
@@ -1001,7 +1001,7 @@ from within Qt 5.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "065vj1gk5i4cg0f9spksyb9ps4px0vssx262y77aakvw408vfmq5"))))
@@ -1029,7 +1029,7 @@ xmlpatternsvalidator.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0ji5131g7h2mrgxw1wxc5mcvmsn3fbw64j28gzpa25gv3vcnkhaw"))))
@@ -1069,7 +1069,7 @@ with JavaScript and C++.")))
     ;; TODO: Package 'masm' and unbundle from sources.
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "1s268fha3650dn1lqxf8jfa07wxpw09f6p7rjyiwq3w24d0nkrq3"))))
@@ -1196,7 +1196,7 @@ integrate QML code with JavaScript and C++.")
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0b2dnxw1rjbp1srhgns148cwl99f50mx29588dal3avv0f73s597"))))
@@ -1214,7 +1214,7 @@ with Bluetooth and NFC.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0f120rfqnmlffjhrm5jbpipk1qsbzp1a2v3q8gz94hz6n9dqpav6"))))
@@ -1237,7 +1237,7 @@ consume data received from the server, or both.")))
     (version "6.3.1")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "06hj0pkdzjicmbiinjp1dk1ziz8cb3fgcwy7a0dxxjvzr680v64z"))))
@@ -1276,7 +1276,7 @@ consume data received from the server, or both.")
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0zlhm4js02niibb23rw87wf4ik0gy4ai08fwprnwy7zf4rm1ss3d"))))
@@ -1305,7 +1305,7 @@ recognition API for devices.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0q76iy1frcgm85mid17lh4p6gnn04n19n6zklgpv4w3md1ng97xw"))
@@ -1349,7 +1349,7 @@ set of plugins for interacting with pulseaudio and GStreamer.")))
     (version "6.3.1")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               ;; Note: the source bundles *patched* glslang and SPIRV-Cross
               ;; sources.
               (sha256
@@ -1378,7 +1378,7 @@ Vulkan, OpenGL and other main graphic APIs.")
     (version "6.3.1")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "0dkk3lmzi2fs13cnj8q1lpcs6gghj219826gkwnzyd6nmlm280vy"))
@@ -1443,7 +1443,7 @@ set of plugins for interacting with pulseaudio and GStreamer.")
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (patches (search-patches "qtwayland-gcc-11.patch"))
              (sha256
               (base32
@@ -1491,7 +1491,7 @@ compositor libraries.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0xg2djwhrj5jqamawlp75g70nmwbp2ph2hh1pm45s36jkxm0k7al"))))
@@ -1520,7 +1520,7 @@ interacting with serial ports from within Qt.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "180gm1jvqfn0h3251zafdd1wd3af00phwaa5qljsbrj6s6ywj79j"))))
@@ -1549,7 +1549,7 @@ and others.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "1w8mcpdqlphgg3a6yfq18liwlj2nkwrafv0n80h242x5l2mk3ljf"))))
@@ -1568,7 +1568,7 @@ popular web engines, Qt WebKit 2 and Qt WebEngine.")))
     (version "6.3.1")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "0s16zx3qn3byldvhmsnwijm8rmizk8vpqj7fnwhjg6c67z10m8ma"))))
@@ -1605,7 +1605,7 @@ application).")
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "1m0p4ssykw07lbip2qyv6w34f8ng13bxb63j0w446f5w0492nn9f"))))
@@ -1633,7 +1633,7 @@ OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0arwaky3jy5ql3z4d8f7k7diidzb1kncdans7pn50hsa1bzacfal"))))
@@ -1652,7 +1652,7 @@ native APIs where it makes sense.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0mlhhhcxx3gpr9kh04c6fljxcj50c2j21r0wb9f7d7nk4flip7b2"))))
@@ -1678,7 +1678,7 @@ positioning and geolocation plugins.")))
     (version "6.3.1")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "1x8wmc6gwmxk92zjcsrbhrbqbfvnk7302ggghld5wk8jk5lsf2vl"))))
@@ -1710,7 +1710,7 @@ plugin for Adobe After Effects.")
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0v7wkzq9i8w3qrw0z8al7lb6clr57lfisyb1fm9cnhi73fvph1vd"))))
@@ -1732,7 +1732,7 @@ that helps in Qt development.")))
     (version "6.3.1")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "1h96w4bzkbd80vr7lh6hnypdlmbzc1y52c2zrqzvkgm3587pa4n4"))))
@@ -1759,7 +1759,7 @@ that helps in Qt development.")
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "17yk0p8ci47xlfpllc17arlycng47wrnnskimskzz85bspabc8pm"))
@@ -1779,7 +1779,7 @@ ECMAScript and Qt.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0mjw25wcgd2bvjz9rr4qjydb423c63615rcx1vws4jmydqdihssr"))))
@@ -1799,7 +1799,7 @@ can be used to build complete interfaces in Qt Quick.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "1cxg4ml07k1zcyi5m4lx06sz8f5l67isb5vhk7nakxm0wnn7p8y4"))))
@@ -1826,7 +1826,7 @@ not available.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0xznn5zqp6xrqfgl54l8cig9asqf9m2hz0p3ga514rh8spmdazr3"))))
@@ -1849,7 +1849,7 @@ coloring, and many more.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0wa4d8f025hlp4bmdzdy5wcahm9wjg6bkwig8dpw9nrsj3idz5b0"))))
@@ -1875,7 +1875,7 @@ and mobile applications targeting TV-like form factors.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0xf5mqsrw16h8xjglymgfc8qg2qa5bi4fgdl4j3dkhvvpr7vrphp"))
@@ -1904,7 +1904,7 @@ also contains functionality to support data models and executable content.")))
     (version "6.3.1")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "0v78wamvdw02kf9rq7m5v24q2g6jmgq4ch0fnfa014p1r978wy06"))))
@@ -1934,7 +1934,7 @@ information and perform area based monitoring.")
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "04z6mwzn73gg56hgs7gividinfgndx4kmcnp7w6h3wamrdlkfdx7"))))
@@ -1950,7 +1950,7 @@ purchasing goods and services.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0y051i1837bfybkf8cm7cx8k5wjmbi47pxawaaz6wm0hd2z5b4qi"))))
@@ -1979,7 +1979,7 @@ selecting one of the charts themes.")
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0sczwqlc36jdywf7bqxz0hm6mr7fn8p1fsnc33jliiqzn9yrg77x"))))
@@ -2002,7 +2002,7 @@ customized by using themes or by adding custom items and labels to them.")
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0c7mz715rlpg0cqgs6s0aszmslyamkhnpamc1iij6i571sj5j2f1"))))
@@ -2018,7 +2018,7 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")))
     (version "6.3.1")
     (source (origin
               (method url-fetch)
-              (uri (qt5-urls name version))
+              (uri (qt-urls name version))
               (sha256
                (base32
                 "0apvsb2ip1m3kw8vi9spvf6f6q72ys8vr40rpyysi7shsjwm83yn"))))
@@ -2038,7 +2038,7 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "1m0xcqlbxsfn0cd4ajin1h3i4l51dajmkw91v0r4a61xi14i0kks"))))
@@ -2070,7 +2070,7 @@ processes or computers.")))
     (version "5.15.5")
     (source (origin
              (method url-fetch)
-             (uri (qt5-urls name version))
+             (uri (qt-urls name version))
              (sha256
               (base32
                "0xskp9dzjy5nqszygk8gwvjyiylgynx5sq3nk2vi3zwgfdh5jpm4"))))
@@ -2126,7 +2126,7 @@ using the Enchant spell-checking library.")
     (source
      (origin
        (method url-fetch)
-       (uri (qt5-urls name version))
+       (uri (qt-urls name version))
        (sha256
         (base32
          "0zahr9w6rqdxwh2whsgk3fhcszs7wa9j95lq4sqi8xzin2wcgl17"))
@@ -2504,7 +2504,7 @@ and binaries removed, and adds modular support for using system libraries.")
     (source
      (origin
        (method url-fetch)
-       (uri (qt5-urls name version))
+       (uri (qt-urls name version))
        (sha256
         (base32
          "0ivfsqd5c0cxsnssj6z37901cf6a47w50zaqgjiysvcm3ar36ymd"))
@@ -3202,14 +3202,14 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
 (define-public python-qtpy
   (package
     (name "python-qtpy")
-    (version "2.0.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "QtPy" version))
        (sha256
           (base32
-           "13zbhnl2rm30xafwrzfwdb4mjp7gk4s9h2xagbf83pnjzczhgzdd"))))
+           "051rj10lbv2ny48lz34zhclcbdxxdbk4di2mdk91m9143w91npyq"))))
     (build-system python-build-system)
     (propagated-inputs (list python-packaging))
     (arguments
@@ -3629,7 +3629,7 @@ time Web content can be enhanced with native controls.")
 (define-public dotherside
   (package
     (name "dotherside")
-    (version "0.6.4")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -3639,11 +3639,12 @@ time Web content can be enhanced with native controls.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09fz6v8rp28997f235yaifj8p4vvsyv45knc1iivgdvx7msgcd0m"))))
+         "13n2qb8q9jz4ihwlbs7y15lw90w9113gb1bgnb1dggpxkj64r953"))))
     (build-system cmake-build-system)
     (native-inputs
      (list qttools-5))
     (inputs
+     ;; TODO: Support Qt 6 (requires qtdeclarative of Qt6).
      (list qtbase-5 qtdeclarative-5))
     (home-page "https://filcuc.github.io/DOtherSide/index.html")
     (synopsis "C language library for creating bindings for the Qt QML language")

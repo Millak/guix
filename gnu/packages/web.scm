@@ -109,6 +109,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-gtk)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
@@ -1996,6 +1997,8 @@ communication asynchronously.  Memory copies and transformations are kept to a
 minimum to provide high performance operation.")
     ;; Most of the code is covered by the Apache License, Version 2.0, but the
     ;; bundled CuTest framework uses a different non-copyleft license.
+    (properties
+     '((release-monitoring-url . "https://serf.apache.org/download")))
     (license (list license:asl2.0 (license:non-copyleft "file://test/CuTest-README.txt")))))
 
 (define-public libsass
@@ -3101,7 +3104,7 @@ RSS 0.91, RSS 1.0, RSS 2.0, Atom.")
 (define-public perl-file-listing
   (package
     (name "perl-file-listing")
-    (version "6.11")
+    (version "6.15")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -3109,7 +3112,7 @@ RSS 0.91, RSS 1.0, RSS 2.0, Atom.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "0vmzw1mhv580flzkla80gvwfpficnhlbqr1dnlf9x50bw7n18k62"))))
+               "033p2ckkjbxrl390x8aq4wq4fpj5aidsazkbw82mhqxrksgzpi26"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-http-date))
@@ -3435,7 +3438,7 @@ jar in conformance with RFC 6265 <http://tools.ietf.org/html/rfc6265>.")
 (define-public perl-http-cookies
   (package
     (name "perl-http-cookies")
-    (version "6.06")
+    (version "6.10")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -3443,7 +3446,7 @@ jar in conformance with RFC 6265 <http://tools.ietf.org/html/rfc6265>.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "13rnz3233vbsfariya4njiyfaj6k94j6bvlyh3dmfmh24hpqgx77"))))
+               "01vhppq18g6ppn3z9mvdfghfzibwg1sczzvnp3jbbrjw7iikcvz3"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-http-message))
@@ -3795,7 +3798,7 @@ select or poll.")
 (define-public perl-libwww
   (package
     (name "perl-libwww")
-    (version "6.55")
+    (version "6.67")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -3803,7 +3806,7 @@ select or poll.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "0869hn711d6fd6yil8p88wij6p1zdrbnycy7p9p176q39ajd7l61"))))
+               "08xp4q90nkvpwnks2qfqjhqgff6447myayqi6kc1panh7w5c9vln"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-test-fatal perl-test-needs perl-test-requiresinternet))
@@ -4024,7 +4027,7 @@ is limited to http and https.")
 (define-public perl-net-http
   (package
     (name "perl-net-http")
-    (version "6.21")
+    (version "6.22")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -4032,7 +4035,7 @@ is limited to http and https.")
                    "Net-HTTP-" version ".tar.gz"))
              (sha256
               (base32
-               "1i7fk6q1iaxzgf82mjd5hg77hvy7dbb79488cijg16dyfrds6nip"))))
+               "18m1b1274wmsl3cdfwg27pm7s1fgrrlhwy4gw4zl8da2p2jzkyk2"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-io-socket-ssl perl-uri))
@@ -5736,14 +5739,14 @@ on the fly.")
                          "$(ps -p $HITCH_PID -o state= | grep -qv '^Z$')"))
                       #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     (list pkg-config
 
-       ;; For tests.
-       ("curl" ,curl)
-       ("egrep" ,grep)
-       ("lsof" ,lsof)
-       ("procps" ,procps)
-       ("python" ,python)))
+           ;; For tests.
+           curl
+           grep
+           lsof
+           procps
+           python))
     (inputs
      (list libev openssl))
     (synopsis "Scalable TLS proxy")
@@ -5843,13 +5846,13 @@ deployments.")
   (package
     (name "varnish")
     (home-page "https://varnish-cache.org/")
-    (version "7.0.1")
+    (version "7.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "_downloads/varnish-" version ".tgz"))
               (sha256
                (base32
-                "0q265fzarz5530g8lasvfpgks8z1kq1yh7rn88bn2qfly3pmpry4"))))
+                "14512fjjzwini3fics6sib9y83s45vlrpncamixqmmg7j0jvxbrc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
@@ -5910,6 +5913,8 @@ deployments.")
 reverse proxy and load balancer.  You install it in front of any server that
 speaks HTTP and configure it to cache the contents through an extensive
 configuration language.")
+    (properties
+     '((release-monitoring-url . "https://varnish-cache.org/releases/index.html")))
     (license (list license:bsd-2           ;main distribution
                    license:zlib            ;lib/libvgz/*
                    license:public-domain   ;bin/varnishncsa/as64.c, include/miniobj.h
@@ -7952,7 +7957,7 @@ concurrency, and return status.")
 (define-public libzim
   (package
     (name "libzim")
-    (version "6.3.2")
+    (version "8.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7960,19 +7965,19 @@ concurrency, and return status.")
                     (commit version)))
               (sha256
                (base32
-                "00kc4qc0a69jh1jwk5xhi567b7ffpc3p38ffrf2xaax4hvpjwmn6"))
+                "1a7wj8kmpx5aqx0wsfcnaqlfsf1gr66iqxyn24cgjnk4d1rjsahm"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
      ;; TODO: Find out why tests fail.
      '(#:tests? #f))
     (inputs
-     `(("icu4c" ,icu4c)
-       ("liblzma" ,xz)
-       ("libuuid" ,util-linux "lib")
-       ("python" ,python-wrapper)       ;for libzim-compile-resources
-       ("xapian" ,xapian)
-       ("zstd" ,zstd "lib")))
+     (list icu4c
+           python-wrapper ; for libzim-compile-resources
+           xapian
+           xz
+           (list util-linux "lib")
+           (list zstd "lib")))
     (native-inputs
      (list pkg-config googletest))
     (home-page "https://wiki.openzim.org/wiki/Main_Page")
@@ -7986,7 +7991,7 @@ for ZIM files.")
 (define-public kiwix-lib
   (package
     (name "kiwix-lib")
-    (version "9.4.1")
+    (version "11.0.0")
     (home-page "https://github.com/kiwix/kiwix-lib/")
     (source (origin
               (method git-fetch)
@@ -7995,7 +8000,7 @@ for ZIM files.")
                     (commit version)))
               (sha256
                (base32
-                "034nk6l623v78clrs2d0k1vg69sbzrd8c0q79qiqmlkinck1nkxw"))
+                "1w5dabzvd3cnhw064qf9166476fszkkxjcml21x35av0dcd1vlk6"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
@@ -8003,13 +8008,11 @@ for ZIM files.")
        (modify-phases %standard-phases
          (add-before 'configure 'fix-paths-and-includes
            (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CPPFLAGS" (string-append "-I" (assoc-ref inputs "mustache")))
              (substitute* "src/aria2.cpp"
                (("ARIA2_CMD \"aria2c\"")
                 (string-append "ARIA2_CMD \""
-                               (assoc-ref inputs "aria2")
-                               "/bin/aria2c\"")))
-             #t)))))
+                               (search-input-file inputs "/bin/aria2c")
+                               "\""))))))))
     (inputs
      (list aria2
            curl
@@ -8021,19 +8024,10 @@ for ZIM files.")
            zlib
            `(,zstd "lib")))
     (native-inputs
-     `(("mustache" ,(origin
-                      (method git-fetch)
-                      (uri (git-reference
-                            (url "https://github.com/kainjow/Mustache")
-                            ;; XXX: Readme says to use version 3.  Can we use 3.2.1?
-                            (commit "v4.1")))
-                      (file-name (git-file-name "mustache" "4.1"))
-                      (sha256
-                       (base32
-                        "0r9rbk6v1wpld2ismfsk2lkhbyv3dkf0p03hkjivbj05qkfhvlbb"))))
-       ("pkg-config" ,pkg-config)
-       ;; for kiwix-compile-resources
-       ("python" ,python-wrapper)))
+     (list cpp-mustache
+           pkg-config
+           ;; for kiwix-compile-resources
+           python-wrapper))
     (synopsis "Common code base for all Kiwix ports")
     (description "The Kiwix library provides the Kiwix software suite core.
 It contains the code shared by all Kiwix ports.")
@@ -8042,7 +8036,7 @@ It contains the code shared by all Kiwix ports.")
 (define-public kiwix-desktop
   (package
     (name "kiwix-desktop")
-    (version "2.0.5")
+    (version "2.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8051,7 +8045,7 @@ It contains the code shared by all Kiwix ports.")
                     ".tar.gz"))
               (sha256
                (base32
-                "1a9h4qmh6fkfscyp6lax0ri07dvvzw2wp4kr1sm86n0bdk3cwwha"))))
+                "0ani12d91azcwwys499848ws7rx0m7c23nalcm5fanjak76bg6n6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -8061,30 +8055,17 @@ It contains the code shared by all Kiwix ports.")
              (invoke "qmake"
                      (string-append "PREFIX="
                                     (assoc-ref outputs "out")))))
-         (add-before 'configure 'enable-print-support
-           (lambda _
-             (substitute* "kiwix-desktop.pro"
-               (("webenginewidgets") "webenginewidgets printsupport"))
-             #t))
-         (add-before 'configure 'substitute-source
-           ;; Looks like .pro file is missing a feature.
-           ;; See https://github.com/kiwix/kiwix-desktop/issues/556.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "kiwix-desktop.pro"
-               (("webenginewidgets" all) (string-append all " printsupport")))
-             #t))
          (add-after 'install 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/kiwix-desktop"))
-                    (qt-process-path (string-append
-                                      (assoc-ref inputs "qtwebengine-5")
-                                      "/lib/qt5/libexec/QtWebEngineProcess")))
+                    (qt-process-path (search-input-file
+                                      inputs "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
-               #t))))))
+                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (inputs
-     (list curl
+     (list bash-minimal
+           curl
            icu4c
            kiwix-lib
            libmicrohttpd
@@ -8098,8 +8079,8 @@ It contains the code shared by all Kiwix ports.")
            zlib
            `(,zstd "lib")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qmake" ,qtbase-5)))
+     (list pkg-config
+           qtbase-5))
     (home-page "https://wiki.kiwix.org/wiki/Software")
     (synopsis "Viewer and manager of ZIM files")
     (description "Kiwix Desktop allows you to enjoy a lot of different content
@@ -8109,14 +8090,14 @@ offline (such as Wikipedia), without any access to Internet.")
 (define-public kiwix-tools
   (package
     (name "kiwix-tools")
-    (version "3.1.2")
+    (version "3.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.kiwix.org/release/"
                                   "kiwix-tools/kiwix-tools-" version ".tar.xz"))
               (sha256
                (base32
-                "1npf9ddhpkmx97gxmvmwmi8a69md8kh2szimd9rpg6ggd4big03a"))))
+                "07mj0lrznydhdbirybdyxswypr7hy290mjdv7lkjr6gxgdp29d37"))))
     (build-system meson-build-system)
     (inputs
      (list curl

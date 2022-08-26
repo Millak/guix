@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Olivier Dion <olivier.dion@polymtl.ca>
+;;; Copyright © 2021, 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +50,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system linux-module)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -206,17 +207,41 @@ interactive SVGs out of traces genated from various tracing tools.  It comes
 with the script @command{flamegraph.pl} and many stackcollapse scripts.")
       (license license:cddl1.0))))
 
+(define-public lttng-modules
+  (package
+    (name "lttng-modules")
+    (version "2.13.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://lttng.org/files/lttng-modules/"
+                                  "lttng-modules-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1vm9nnjvid7acsvgwnjyxd60ih9rmbhnfjldxip58n8x9q7d0nb1"))))
+    (build-system linux-module-build-system)
+    (arguments
+     `(#:tests? #f ; no tests
+       #:make-flags (list "CONFIG_LTTNG=m"
+                          "CONFIG_LTTNG_CLOCK_PLUGIN_TEST=m")))
+    (home-page "https://lttng.org/")
+    (synopsis "LTTng kernel modules for the LTTng tracer toolset")
+    (description
+     "LTTng kernel modules are Linux kernel modules which make
+LTTng kernel tracing possible.  They include essential control modules and
+many probes which instrument numerous interesting parts of Linux.")
+    (license (list license:lgpl2.1 license:gpl2 license:expat))))
+
 (define-public lttng-ust
   (package
     (name "lttng-ust")
-    (version "2.13.1")
+    (version "2.13.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-ust/"
                                   "lttng-ust-" version ".tar.bz2"))
               (sha256
                (base32
-                "1p7d94r275yvby6zqfxaswdl1q46zxbc8x5rkhnjxrp1d41byrsn"))))
+                "0vwgxp027pgwm0a4xr6bdibday7xjlnv6wmbqh546l2h2i8jzi1c"))))
     (build-system gnu-build-system)
     (inputs
      (list numactl))
@@ -235,14 +260,14 @@ to ring buffers shared with a consumer daemon.")
 (define-public lttng-tools
   (package
     (name "lttng-tools")
-    (version "2.13.2")
+    (version "2.13.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-tools/"
                                   "lttng-tools-" version ".tar.bz2"))
               (sha256
                (base32
-                "1gfp9y24lpaiz4lcmbp30yd400jmh99mlay9gb8pz9qd080bmlnf"))))
+                "13gh4bvlgbh82h9vb80aw8l1cfmdj3xyvjg30cscz9vqy7l04yni"))))
     (build-system gnu-build-system)
     (arguments
      `( ;; FIXME - Currently there's a segmentation fault by swig when enabling

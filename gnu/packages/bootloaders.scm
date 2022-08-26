@@ -7,7 +7,7 @@
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 nee <nee@cock.li>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
@@ -1157,14 +1157,14 @@ tools, and more.")
 (define-public os-prober
   (package
     (name "os-prober")
-    (version "1.80")
+    (version "1.81")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://debian/pool/main/o/os-prober/os-prober_"
                            version ".tar.xz"))
        (sha256
-        (base32 "13z3rshgz5xj0328a80wavdimjw925yha9s1ks398sq0kn5w6qw0"))))
+        (base32 "10w8jz6mqhp0skdcam9mpgv79vx1sv7lkpra3rqjg0jkhvn2in9g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)

@@ -9,7 +9,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -30,6 +30,8 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
+;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -78,14 +80,16 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gettext)
-  #:use-module (gnu packages gnome)
-  #:use-module (gnu packages golang)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
+  #:use-module (gnu packages gsasl)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
@@ -98,6 +102,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
@@ -278,14 +283,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.5.5")
+    (version "5.5.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/homebank-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0rwykjpv4w7bffyvx2j6py17nxw9jcbml7ma4is194i3npn0bkmy"))))
+                "1nn75wzk9h82zsakxng1v94nlg7hq3ssicvskl1m5hg4fa68w3j6"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -462,6 +467,37 @@ in ability, and easy to use.
 This package provides the Emacs mode.")
       (license license:gpl2+))))
 
+(define-public emacs-hledger-mode
+  (let ((commit "400bde42a8d2712af80cd7c773c9cdfbb63a515a")
+        (revision "1"))
+    (package
+      (name "emacs-hledger-mode")
+      (version (git-version "20220515" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/narendraj9/hledger-mode")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0xmcfpr3rxli1adwypg18npl8hb8ak5rg6a6i26inzzqja6vr897"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-popup
+             emacs-async
+             emacs-htmlize))
+      (arguments
+       '(#:include '("^[^/]+.el$")
+         #:exclude '()))
+      (home-page "https://github.com/narendraj9/hledger-mode")
+      (synopsis "Mode for writing journal entries for hledger")
+      (description
+       "This major mode for Emacs enables writing and managing hledger
+journal files.  It generates some useful reports along with some financial
+ratios that can help you keep a check on your financial health for users of
+the plaintext accounting system hledger.")
+      (license license:gpl3))))
+
 (define-public geierlein
   (package
     (name "geierlein")
@@ -590,7 +626,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.10")
+    (version "4.2.11")
     (source
      (origin
        (method git-fetch)
@@ -599,7 +635,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0axpypq9byda61rp3sznrq24b24qxbfwk56j75qp06s1ackg0pcv"))))
+        (base32 "1g0xnb63c52l379zrqkfhxlkg1d2hf2dgjs2swspa0vah845r282"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -671,7 +707,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.18.0.0")
+    (version "0.18.1.0")
     (source
      (origin
        (method git-fetch)
@@ -689,7 +725,7 @@ blockchain.")
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "1jq2v2dg50gl3cf9s61jssny5rraclxqj4cc4y0sl00ip8icj08v"))))
+        (base32 "18yj44pki7x8ir6wg02g1h6yxp1hnqb0nrx9x5dvv94rda48cy66"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -776,7 +812,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.18.0.0")
+    (version "0.18.1.0")
     (source
      (origin
        (method git-fetch)
@@ -792,7 +828,7 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "14rbw9803h3g7ld3d24vc3i9n55n09x13frkmd128xx5jw17v5sr"))))
+        (base32 "1z627jy9n6cwc9yv0w58fbhix4qnllk0q42ga75mhlawaz68j0qi"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -801,6 +837,7 @@ the Monero command line client and daemon.")
      (modify-inputs (package-inputs monero)
        (append libgcrypt
                monero
+               p2pool
                qtbase-5
                qtdeclarative-5
                qtgraphicaleffects
@@ -834,6 +871,17 @@ the Monero command line client and daemon.")
                       (string-append
                        "set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\")\n"
                        all)))))
+               (add-after 'unpack 'fix-p2pool-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/p2pool/P2PoolManager.cpp"
+                     ;; Location for files created by P2Pool
+                     (("m_p2poolPath = QApplication::applicationDirPath\\(\\);")
+                      "m_p2poolPath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);")
+                     ;; Location of p2pool program
+                     (("m_p2pool = m_p2poolPath \\+ \"/p2pool\";")
+                      (string-append "m_p2pool = \""
+                                     (search-input-file inputs "/bin/p2pool")
+                                     "\";")))))
                (replace 'install
                  (lambda _
                    (let ((bin (string-append #$output "/bin")))
@@ -1236,13 +1284,13 @@ Luhn and family of ISO/IEC 7064 check digit algorithms.")
 (define-public python-duniterpy
   (package
     (name "python-duniterpy")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "duniterpy" version))
        (sha256
-        (base32 "13kp2ph7fb1cdkx1y6j2h8q33fj2akc104l77ng52cy4v8jic9nz"))))
+        (base32 "18i5bqz58vjp740pxb4wb4ixg1g2d73cwi0d8gp85fmj5p8f2gx7"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: Tests fail with: "TypeError: block_uid() missing 1 required
@@ -1255,13 +1303,11 @@ Luhn and family of ISO/IEC 7064 check digit algorithms.")
                         (("mnemonic>=0\\.19,<0.20")
                          "mnemonic>=0.19")))))))
     (propagated-inputs
-     (list python-aiohttp
-           python-attrs
+     (list python-attrs
            python-base58
            python-jsonschema
            python-libnacl
            python-pyaes
-           python-pylibscrypt
            python-graphql-core
            python-mnemonic
            python-websocket-client
@@ -2081,3 +2127,100 @@ analysis of financial market data.")
 format used by SWIFT.  It returns smart Python collections for statistics
 and manipulation.")
     (license license:bsd-3)))
+
+(define-public xmrig
+  (package
+    (name "xmrig")
+    (version "6.18.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xmrig/xmrig")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "1ncnfjpjwjdv29plyiam2nh01bfni49sgfi3qkijygi1450w71dx"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; TODO: Try to use system libraries instead of bundled ones in
+        ;; "src/3rdparty/". It requires changes to some "cmake/..." scripts
+        ;; and to some source files.
+        #~(substitute* "src/donate.h"
+            (("constexpr const int kDefaultDonateLevel = 1;")
+             "constexpr const int kDefaultDonateLevel = 0;")
+            (("constexpr const int kMinimumDonateLevel = 1;")
+             "constexpr const int kMinimumDonateLevel = 0;")))))
+    (build-system cmake-build-system)
+    (inputs
+     (list
+      `(,hwloc "lib")
+      libuv
+      openssl))
+    (arguments
+     (list
+      ;; There are no tests.
+      #:tests? #f
+      #:phases
+      #~(modify-phases
+         %standard-phases
+         (replace 'install
+           ;; There is no 'install' target, we must install xmrig manually
+           (lambda* (#:key #:allow-other-keys)
+             (install-file "xmrig"
+                           (string-append #$output "/bin")))))))
+    (home-page "https://xmrig.com/")
+    (synopsis "Monero miner")
+    (description
+     "XMRig is a high performance, cross platform RandomX, KawPow,
+CryptoNight, AstroBWT and GhostRider unified CPU/GPU miner and RandomX
+benchmark.
+
+Warning: upstream, by default, receives a percentage of the mining time.  This
+anti-functionality has been neutralised in Guix, but possibly not in all other
+distributions.
+
+Warning: this software, because of it's nature, has high energy consumption.
+Also, the energy expenses might be higher that the cryptocurrency gained by
+mining.")
+    (license license:gpl3+)))
+
+(define-public p2pool
+  (package
+    (name "p2pool")
+    (version "2.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SChernykh/p2pool")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "19pn7axj96yvza2x7678rs79c2vgmhl8d7f9ki72v2n6l2630fw8"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(for-each delete-file-recursively
+                    '("external/lib"
+                      "external/src/cppzmq"
+                      "external/src/curl"
+                      "external/src/libuv"
+                      "external/src/libzmq"
+                      "external/src/rapidjson")))))
+    (build-system cmake-build-system)
+    (inputs
+     (list cppzmq curl gss libuv rapidjson zeromq))
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (install-file "p2pool" (string-append #$output "/bin")))))))
+    (home-page "https://p2pool.io/")
+    (synopsis "Decentralized Monero mining pool")
+    (description "Monero P2Pool is a peer-to-peer Monero mining pool.  P2Pool
+combines the advantages of pool and solo mining; you still fully control your
+Monero node and what it mines, but you get frequent payouts like on a regular
+pool.")
+    (license license:gpl3)))

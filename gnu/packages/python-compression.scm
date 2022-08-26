@@ -5,7 +5,7 @@
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -195,28 +195,27 @@ Python.")
 (define-public python-lzo
   (package
     (name "python-lzo")
-    (version "1.12")
+    (version "1.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-lzo" version))
        (sha256
-        (base32
-         "0iakqgd51n1cd7r3lpdylm2rgbmd16y74cra9kcapwg84mlf9a4p"))))
+        (base32 "0315nq6r39n51n8qqamb7xv0ib0qrh76q7g3a1977172mbndijw3"))))
     (build-system python-build-system)
     (arguments
-     `(#:test-target "check"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-setuppy
-           (lambda _
-             (substitute* "setup.py"
-               (("include_dirs.append\\(.*\\)")
-                (string-append "include_dirs.append('"
-                               (assoc-ref %build-inputs "lzo")
-                               "/include/lzo"
-                               "')")))
-             #t)))))
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-setuppy
+            (lambda _
+              (substitute* "setup.py"
+                (("include_dirs.append\\(.*\\)")
+                 (string-append "include_dirs.append('"
+                                #$(this-package-input "lzo")
+                                "/include/lzo"
+                                "')"))))))))
     (inputs
      (list lzo))
     (home-page "https://github.com/jd-boyd/python-lzo")
@@ -230,14 +229,14 @@ Python strings.")
 (define-public python-lz4
   (package
     (name "python-lz4")
-    (version "0.10.1")
+    (version "4.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lz4" version))
        (sha256
         (base32
-         "0ghv1xbaq693kgww1x9c22bplz479ls9szjsaa4ig778ls834hm0"))
+         "16vj2bnhhdkcz2a2ai2mx2kf9ngx1cjr18636yp1514kq9r72fq8"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -245,8 +244,18 @@ Python strings.")
            (delete-file-recursively "lz4libs")
            #t))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Taken from tox.ini (excludes experimental tests).
+                     (invoke "pytest" "-vv" "tests/block" "tests/frame")))))))
     (native-inputs
-     (list pkg-config python-nose python-setuptools-scm))
+     (list pkg-config python-pytest python-pkgconfig python-setuptools-scm
+           ;; For tests.
+           python-psutil))
     (inputs
      (list lz4))
     (home-page "https://github.com/python-lz4/python-lz4")

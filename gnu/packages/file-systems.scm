@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2017, 2018, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
@@ -379,6 +379,48 @@ Each file in the archive is protected by a checksum.  If part of the archive
 is corrupted you'll lose the affected file(s) but not the whole back-up.")
     (home-page "https://www.fsarchiver.org/")
     (license license:gpl2)))
+
+(define-public fstransform
+  (package
+    (name "fstransform")
+    (version "0.9.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cosmos72/fstransform")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vhypb6pbghja95av62ds4mhldbg0h8g4yg94k9r7lsxm7bgpfr3"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-README
+                 ;; There are no man pages.  Install a poor substitute.
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (doc (string-append out "/share/doc/" #$name)))
+                     (install-file "README" doc)))))))
+    (inputs (list e2fsprogs))
+    (home-page "https://github.com/cosmos72/fstransform")
+    (synopsis "Convert file system types in place without copying all data")
+    (description
+     "This package provides several command-line tools to transform a supported
+file system, such as XFS, into one of a different supported type, such as ext4.
+All existing file contents, names, and directories are preserved.
+
+The conversion happens @dfn{in place}, without the need to create a complete
+copy of the original data.  This lets you transform almost full file systems on
+systems where adding (sufficient) additional storage space is not an option.
+
+Do @emph{not} use this package when you could simply create an empty file system
+from scratch and restore from a back-up.  Transformation is limited, slow, and
+significantly increases the risk of irreversible data loss!")
+    ;; Please follow <https://github.com/cosmos72/fstransform/issues/46>.
+    (license (list license:gpl2         ; fsattr/src/e4attr.* → sbin/fsattr
+                   license:gpl3+))))    ; the rest
 
 (define-public gphotofs
   (package

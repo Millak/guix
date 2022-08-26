@@ -665,19 +665,27 @@ test) much simpler.")
 (define-public go-github.com-smartystreets-assertions
   (package
     (name "go-github.com-smartystreets-assertions")
-    (version "1.8.1")
+    (version "1.13.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/smartystreets/assertions")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "1j0adgbykl55rf2945g0n5bmqdsnjcqlx5dcmpfh4chki43hiwg9"))))
+               (base32 "0flf3fb6fsw3bk1viva0fzrzw87djaj1mqvrx2gzg1ssn7xzfrzr"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/smartystreets/assertions"))
+     (list
+       #:import-path "github.com/smartystreets/assertions"
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key inputs #:allow-other-keys #:rest args)
+               (unless
+                 ;; The tests fail when run with gccgo.
+                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                 (apply (assoc-ref %standard-phases 'check) args)))))))
     (native-inputs
      (list go-github.com-smartystreets-gunit))
     (synopsis "Assertions for testing with Go")

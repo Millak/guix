@@ -140,7 +140,7 @@ protocol.")
 (define-public ldns
   (package
     (name "ldns")
-    (version "1.8.1")
+    (version "1.8.3")
     (source
      (origin
        (method url-fetch)
@@ -148,7 +148,7 @@ protocol.")
         (string-append "https://www.nlnetlabs.nl/downloads/"
                        "ldns/ldns-" version ".tar.gz"))
        (sha256
-        (base32 "18vzdmyg9bm45janw602d4hifjsncrv143awlwcslfjdrsmjk0lm"))
+        (base32 "0q3q1svyxpj2g5wdkfy1ndb14m9fzffwyskflpihfabb0g8jvxy3"))
        (patches
         (search-patches
          ;; To create make-flag variables,
@@ -333,14 +333,14 @@ and BOOTP/TFTP for network booting of diskless machines.")
     ;; When updating, check whether isc-dhcp's bundled copy should be as well.
     ;; The BIND release notes are available here:
     ;; https://www.isc.org/bind/
-    (version "9.16.31")
+    (version "9.16.32")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://ftp.isc.org/isc/bind9/" version
                            "/bind-" version ".tar.xz"))
        (sha256
-        (base32 "1yvwdvcyy996p50j7nr4b010w16jjj5czw15g87wf1dn6xncp8lc"))
+        (base32 "0w2rcjxqnbhwzgsdsas36dadjq0qn6s1xjx4g4qk0ph2nvf4gj9j"))
        (patches
         (search-patches "bind-re-add-attr-constructor-priority.patch"))))
     (build-system gnu-build-system)
@@ -871,7 +871,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.1.8")
+    (version "3.1.9")
     (source
      (origin
        (method git-fetch)
@@ -880,7 +880,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v3rh27qnyihdqp5nm8bnn9xd5rl2fbwhj4cmdpc8ik4qs21xyf4"))
+        (base32 "0w3jyz9qgkb34gkv2lr71phk5ad3rycn86qyw7n88ryhdsk45j73"))
        (modules '((guix build utils)))
        (snippet
         '(begin

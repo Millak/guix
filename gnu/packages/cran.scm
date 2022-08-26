@@ -104,6 +104,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages statistics)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages textutils)
@@ -114,6 +115,35 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public r-aer
+  (package
+    (name "r-aer")
+    (version "1.2-10")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "AER" version))
+              (sha256
+               (base32
+                "1p6vxr0220lim5i4gwsvphqrfd65zbs8h3qydz4gipca9asmy2k5"))))
+    (properties `((upstream-name . "AER")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-car
+           r-formula
+           r-lmtest
+           r-sandwich
+           r-survival
+           r-zoo))
+    (home-page "https://cran.r-project.org/package=AER")
+    (synopsis "Applied econometrics with R")
+    (description
+     "This package provides functions, data sets, examples, demos, and
+vignettes for the book Christian Kleiber and Achim Zeileis (2008), Applied
+Econometrics with R, Springer-Verlag, New York.  ISBN 978-0-387-77316-2. (See
+the vignette \"AER\" for a package overview.)")
+    ;; Either version of the GPL
+    (license (list license:gpl2 license:gpl3))))
 
 (define-public r-afpt
   (package
@@ -391,6 +421,28 @@ Gaussian quadrature for a numerical solution.")
      "This package provides tools to calculate the Earth Mover's
 Distance (EMD).")
     (license license:expat)))
+
+(define-public r-glmpca
+  (package
+    (name "r-glmpca")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "glmpca" version))
+              (sha256
+               (base32
+                "02xjf0gg52925hw9nw2j0znfmzfzfwbv0fxjl9d2fy9j63drr2h4"))))
+    (properties `((upstream-name . "glmpca")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/willtownes/glmpca")
+    (synopsis "Dimension Reduction of Non-Normally Distributed Data")
+    (description
+     "This package implements a generalized version of principal components
+analysis (GLM-PCA) for dimension reduction of non-normally distributed data
+such as counts or binary matrices.")
+    (license license:lgpl3+)))
 
 (define-public r-googledrive
   (package
@@ -748,6 +800,42 @@ similar rank-based tests for equal probability distributions due to Neuhauser
 WebAssembly engine.")
     (license license:expat)))
 
+(define-public r-rvenn
+  (package
+    (name "r-rvenn")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RVenn" version))
+       (sha256
+        (base32
+         "016m00xv59lkwm2is32v5nr4lw5a1ymdnz34r3ffflcv9bfrc6n4"))))
+    (properties `((upstream-name . "RVenn")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggforce
+           r-ggplot2
+           r-magrittr
+           r-pheatmap
+           r-purrr
+           r-rlang
+           r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=RVenn")
+    (synopsis "Set operations for many sets")
+    (description
+     "The base functions for set operations in @code{R} can be used for only two
+sets.  This package @code{RVenn} provides functions for dealing with multiple sets.
+It uses @code{purr} to find the union, intersection and difference of three or
+more sets.  This package also provides functions for pairwise set operations among
+several sets.  Further, based on @code{ggplot2} and @code{ggforce}, a Venn diagram
+can be drawn for two or three sets.  For bigger data sets, a clustered heatmap
+showing the presence or absence of the elements of the sets can be drawn based on
+the @code{pheatmap} package.  Finally, enrichment test can be applied to two sets
+whether an overlap is statistically significant or not.")
+    (license license:gpl3)))
+
 (define-public r-dot
   (package
     (name "r-dot")
@@ -1059,6 +1147,65 @@ all labels and text in vector format.  This allows users to keep plots within
 the reasonable size limit without losing vector properties of the
 scale-sensitive information.")
     (license license:expat)))
+
+(define-public r-ggvenn
+  (package
+    (name "r-ggvenn")
+    (version "0.1.9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggvenn" version))
+              (sha256
+               (base32
+                "0bm52j3idchignp6nrw7c76jlbfkjf5zng258957vq019vx9qxrq"))))
+    (properties `((upstream-name . "ggvenn")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr r-ggplot2))
+    (home-page "https://cran.r-project.org/package=ggvenn")
+    (synopsis "Draw Venn diagram with ggplot2")
+    (description
+     "This package offers an easy to use way to draw a Venn diagram with
+@code{ggplot2}.")
+    (license license:expat)))
+
+(define-public r-ggvenndiagram
+  (package
+    (name "r-ggvenndiagram")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggVennDiagram" version))
+       (sha256
+        (base32
+         "1mjs488npnxd53nsw936iw2vzv7z38h8d02pm4lwrz4i83jg3www"))))
+    (properties `((upstream-name . "ggVennDiagram")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dplyr
+           r-ggplot2
+           r-magrittr
+           r-plotly
+           r-purrr
+           r-rvenn
+           r-sf
+           r-stringr
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/gaospecial/ggVennDiagram")
+    (synopsis "Implementention of the Venn diagram using ggplot2")
+    (description
+     "This package implements easy-to-use functions to generate 2-7 sets Venn
+plot in publication quality.  @code{ggVennDiagram} plot Venn using
+well-defined geometry dataset and @code{ggplot2}.  The shapes of 2-4 sets Venn
+use circles and ellipses, while the shapes of 4-7 sets Venn use irregular
+polygons (4 has both forms), which are developed and imported from another
+package @code{venn}.  We provide internal functions to integrate shape data
+with user provided sets data, and calculated the geometry of every
+regions/intersections of them, then separately plot Venn in three components:
+set edges, set labels, and regions.  From version 1.0, it is possible to
+customize these components as you demand in ordinary @code{ggplot2} grammar.")
+    (license license:gpl3)))
 
 (define-public r-lmds
   (package
@@ -1481,6 +1628,28 @@ with default R plot functions.")
 qualitative palettes with many (20-30 or more) colors.  See Coombes and
 colleagues (2019) @url{https://doi:10.18637/jss.v090.c01}.")
     (license license:asl2.0)))
+
+(define-public r-polylabelr
+  (package
+    (name "r-polylabelr")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "polylabelr" version))
+              (sha256
+               (base32
+                "01b2v0l5g8nxwbd6nwqv8ahypgh6gfhd4qabg75brlj7z1iyfzf2"))))
+    (properties `((upstream-name . "polylabelr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/jolars/polylabelr")
+    (synopsis "Finding pole of inaccessibility (visual center) of a polygon")
+    (description
+     "This package provides a wrapper around the @code{C++} library @code{
+polylabel} from @code{Mapbox}, providing an efficient routine for finding the
+approximate pole of inaccessibility of a polygon, which usually serves as an
+excellent candidate for labeling of a polygon.")
+    (license license:expat)))
 
 (define-public r-poorman
   (package
@@ -3511,6 +3680,24 @@ coordinates.")
   requires proper coordinate scaling.
 @end enumerate\n")
     (license license:gpl2+)))
+
+(define-public r-gensa
+  (package
+    (name "r-gensa")
+    (version "1.1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "GenSA" version))
+              (sha256
+               (base32
+                "03xqwxm7v7rnihx730a4p65dfwhjh4345r3d78y0qxxplk8d76cx"))))
+    (properties `((upstream-name . "GenSA")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=GenSA")
+    (synopsis "Generalized simulated annealing")
+    (description "This package performs search for the global minimum of a very
+complex non-linear objective function with a very large number of optima.")
+    (license license:gpl2)))
 
 (define-public r-geosphere
   (package
@@ -6393,6 +6580,27 @@ Information-Maximization (Infomax), and @dfn{Joint Approximate Diagonalization
 of Eigenmatrices} (JADE).")
     (license license:gpl2+)))
 
+(define-public r-ips
+  (package
+    (name "r-ips")
+    (version "0.0.11")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ips" version))
+              (sha256
+               (base32
+                "02jxanfhsjrabj33nwjv71vdc87hiyzikyqrfdj9ix6dky6lm199"))))
+    (properties `((upstream-name . "ips")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape r-phangorn r-plyr r-seqinr r-xml))
+    (home-page "https://cran.r-project.org/package=ips")
+    (synopsis "Interfaces to phylogenetic software in R")
+    (description
+     "This package provides functions that wrap popular phylogenetic software
+for sequence alignment, masking of sequence alignments, and estimation of
+phylogenies and ancestral character states.")
+    (license license:gpl3)))
+
 (define-public r-dtw
   (package
     (name "r-dtw")
@@ -9216,6 +9424,14 @@ always locate the files relative to your project root.")
         (base32
          "0b1szzsqyc8wcfpkn5517bb1ds064vs2hky71my3p74kfngay991"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'build-reproducibly
+           (lambda _
+             (setenv "PYTHONHASHSEED" "0")
+             (setenv "PYTHONDONTWRITEBYTECODE" "1"))))))
     (inputs (list python))
     (propagated-inputs
      (list r-here
@@ -13657,9 +13873,20 @@ package provides a minimal R interface by relying on the Rcpp package.")
        (uri (cran-uri "RcppParallel" version))
        (sha256
         (base32
-         "1sn211ajlb1p12sglxqns175rg078yvww268m8cp0vvd7cmk55k3"))))
+         "1sn211ajlb1p12sglxqns175rg078yvww268m8cp0vvd7cmk55k3"))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "src/tbb/"))))
     (properties `((upstream-name . "RcppParallel")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'use-system-tbb
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TBB_ROOT" (assoc-ref inputs "tbb")))))))
+    (inputs (list tbb-2020))
     (home-page "https://rcppcore.github.io/RcppParallel/")
     (synopsis "Parallel programming tools for Rcpp")
     (description
@@ -19040,6 +19267,15 @@ packages with Rcpp.")
         (base32
          "17znizh4yabh2zs9mzyr0sl6p0pw49961i61br7cl1b7v9sza18q"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'build-reproducibly
+           (lambda _
+             (substitute* "R/aaa.R"
+               (("BASEDATETIME <- Sys.time.*")
+                "BASEDATETIME <- structure(0, class = c(\"POSIXct\", \"POSIXt\"))\n")))))))
     (propagated-inputs
      (list r-farver r-magrittr r-rcpp r-rlang))
     (home-page "https://github.com/thomasp85/tweenr")

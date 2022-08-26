@@ -35,6 +35,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system r)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
@@ -1220,6 +1221,27 @@ demonstration purposes in the @code{AneuFinder} package.")
 from Illumina 450k methylation arrays.")
     (license license:artistic2.0)))
 
+(define-public r-bladderbatch
+  (package
+    (name "r-bladderbatch")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "bladderbatch" version
+                                     'experiment))
+              (sha256
+               (base32
+                "1dpbaqsqizyi99r0imf5m4lndhhrkyiaqii9bi8rp18fjbjdd72k"))))
+    (properties `((upstream-name . "bladderbatch")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase))
+    (home-page "https://bioconductor.org/packages/bladderbatch")
+    (synopsis "Bladder gene expression data illustrating batch effects")
+    (description
+     "This package contains microarray gene expression data on 57 bladder samples from
+5 batches.  The data are used as an illustrative example for the sva package.")
+    (license license:artistic2.0)))
+
 (define-public r-biscuiteerdata
   (package
     (name "r-biscuiteerdata")
@@ -1539,6 +1561,30 @@ data.  It also links assay barcodes with patient identifiers, enabling
 harmonized subsetting of rows (features) and columns (patients / samples)
 across the entire multi-'omics experiment.")
     (license license:artistic2.0)))
+
+(define-public r-parathyroidse
+  (package
+    (name "r-parathyroidse")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "parathyroidSE" version
+                                     'experiment))
+              (sha256
+               (base32
+                "1h33x55c4gbzmh085skqif04wdcvjp2l9fm55qzwws27kwd30c16"))))
+    (properties `((upstream-name . "parathyroidSE")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-summarizedexperiment))
+    (home-page "https://bioconductor.org/packages/parathyroidSE")
+    (synopsis "RangedSummarizedExperiment for RNA-Seq of parathyroid tumors")
+    (description
+     "This package provides @code{RangedSummarizedExperiment} objects of read
+counts in genes and exonic parts for paired-end RNA-Seq data from experiments on
+primary cultures of parathyroid tumors.  The sequencing was performed on tumor
+cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and control).")
+    ;; The author(s) mentions only LGPL without any specific version.
+    (license license:lgpl2.1+)))
 
 (define-public r-tcgabiolinksgui-data
   (package
@@ -2090,8 +2136,8 @@ canonical cancer pathways.")
     (description
      "The project is intended to support the use of @dfn{sequins}(synthetic
 sequencing spike-in controls) owned and made available by the Garvan Institute
-of Medical Research.  The goal is to provide a standard open source library for
-quantitative analysis, modelling and visualization of spike-in controls.")
+of Medical Research.  The goal is to provide a standard library for quantitative
+analysis, modelling, and visualization of spike-in controls.")
     (license license:bsd-3)))
 
 (define-public r-aneufinder
@@ -5016,6 +5062,45 @@ proteowizard library for mzML and mzIdentML.  The netCDF reading code has
 previously been used in XCMS.")
     (license license:artistic2.0)))
 
+(define-public r-organism-dplyr
+  (package
+    (name "r-organism-dplyr")
+    (version "1.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "Organism.dplyr" version))
+       (sha256
+        (base32
+         "0j29f85d66c45ww3417xx376vpz0mmvga5n7h2cl1sd4h70b55as"))))
+    (properties `((upstream-name . "Organism.dplyr")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi
+           r-annotationfilter
+           r-biocfilecache
+           r-dbi
+           r-dbplyr
+           r-dplyr
+           r-genomeinfodb
+           r-genomicfeatures
+           r-genomicranges
+           r-iranges
+           r-rlang
+           r-rsqlite
+           r-s4vectors
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/Organism.dplyr")
+    (synopsis "Dplyr-based access to Bioconductor annotation resources")
+    (description
+     "This package provides an alternative interface to Bioconductor @code{
+annotation} resources, in particular the gene identifier mapping functionality
+of the @code{org} packages (e.g., @code{org.Hs.eg.db}) and the genome coordinate
+functionality of the @code{TxDb} packages (e.g.,
+@code{TxDb.Hsapiens.UCSC.hg38.knownGene}).")
+    (license license:artistic2.0)))
+
 (define-public r-organismdbi
   (package
     (name "r-organismdbi")
@@ -5047,6 +5132,61 @@ previously been used in XCMS.")
 annotation packages each of which has its own schema by taking advantage of
 the fact that each of these packages implements a select methods.")
     (license license:artistic2.0)))
+
+(define-public r-pcaexplorer
+  (package
+    (name "r-pcaexplorer")
+    (version "2.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "pcaExplorer" version))
+       (sha256
+        (base32
+         "0xkafpi6y5n8hljdaj183hd5z4ik7lpbklg2cbx1hwfz4n4hh1bl"))))
+    (properties `((upstream-name . "pcaExplorer")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi
+           r-base64enc
+           r-biomart
+           r-deseq2
+           r-dt
+           r-genefilter
+           r-genomicranges
+           r-ggplot2
+           r-ggrepel
+           r-go-db
+           r-gostats
+           r-heatmaply
+           r-iranges
+           r-knitr
+           r-limma
+           r-nmf
+           r-pheatmap
+           r-plotly
+           r-plyr
+           r-rmarkdown
+           r-s4vectors
+           r-scales
+           r-shiny
+           r-shinyace
+           r-shinybs
+           r-shinydashboard
+           r-summarizedexperiment
+           r-threejs
+           r-tidyr
+           r-topgo))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/federicomarini/pcaExplorer")
+    (synopsis
+     "Interactive Visualization of RNA-seq Data Using a Principal Components Approach")
+    (description
+     "This package provides functionality for interactive visualization of RNA-seq
+datasets based on Principal Components Analysis.  The methods provided allow for
+quick information extraction and effective data exploration.  A Shiny
+application encapsulates the whole analysis.")
+    (license license:expat)))
 
 (define-public r-pcamethods
   (package
@@ -5610,6 +5750,38 @@ two different experiments.  @code{scmap} is a method for projecting cells from
 a scRNA-seq experiment onto the cell-types or individual cells identified in a
 different experiment.")
     (license license:gpl3)))
+
+(define-public r-scry
+  (package
+    (name "r-scry")
+    (version "1.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "scry" version))
+              (sha256
+               (base32
+                "16mj21r91jy8ircdz8rfrdli9gjy0hrx90kf6ghs305d3d4dl193"))))
+    (properties `((upstream-name . "scry")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocsingular
+           r-delayedarray
+           r-glmpca
+           r-hdf5array
+           r-matrix
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/scry.html")
+    (synopsis "Small-count analysis methods for high-dimensional data")
+    (description
+     "Many modern biological datasets consist of small counts that are not
+well fit by standard linear-Gaussian methods such as principal component
+analysis.  This package provides implementations of count-based feature
+selection and dimension reduction algorithms.  These methods can be used to
+facilitate unsupervised analysis of any high-dimensional data such as
+single-cell RNA-seq.")
+    (license license:artistic2.0)))
 
 (define-public r-seqlogo
   (package
@@ -6541,9 +6713,10 @@ problems in genomics, brain imaging, astrophysics, and data mining.")
     `(("r-knitr" ,r-knitr)))
    (home-page "https://github.com/yixuan/RcppNumerical")
    (synopsis "Rcpp integration for numerical computing libraries")
-   (description "This package provides a collection of open source libraries
-for numerical computing (numerical integration, optimization, etc.) and their
-integration with @code{Rcpp}.")
+   (description
+    "This package provides a collection of libraries for numerical computing
+(numerical integration, optimization, etc.) and their integration with
+@code{Rcpp}.")
    (license license:gpl2+)))
 
 (define-public r-apeglm
@@ -7917,6 +8090,16 @@ coordinates.")
         (base32
          "0kc708ss5byzw8qh439mb4nq6hsfmz73gfamiznw3lv352brd33g"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'make-build-order-reproducible
+           (lambda _
+             (substitute* '("src/SYMPHONY/Cgl/configure.ac"
+                            "src/SYMPHONY/Cgl/configure")
+               (("for file in `ls \\*/Makefile.in`")
+                "for file in `ls */Makefile.in | sort`")))))))
     (inputs
      (list zlib))
     (native-inputs
@@ -12985,8 +13168,22 @@ gene expression.")
          "0q2y4n6bcc9pvz5sgfkw1lrb00rrp7q29i1vh7srdfmfhgpyz6bk"))))
     (properties `((upstream-name . "bgx")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'do-not-tune-cflags-for-reproducibility
+           (lambda _
+             (substitute* "configure.ac"
+               (("AX_GCC_ARCHFLAG.*") ""))
+             (delete-file "configure")
+             (invoke "autoreconf" "-vif"))))))
+    (inputs
+     (list boost))
     (propagated-inputs
      (list r-affy r-biobase r-gcrma r-rcpp))
+    (native-inputs
+     (list autoconf automake))
     (home-page "https://bioconductor.org/packages/bgx/")
     (synopsis "Bayesian gene expression")
     (description

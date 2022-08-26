@@ -1771,7 +1771,7 @@ supported by the MyPy typechecker.")
 (define-public python-mypy
   (package
     (name "python-mypy")
-    (version "0.942")
+    (version "0.971")
     (source
      (origin
        ;; Because of https://github.com/python/mypy/issues/9584, the
@@ -1788,10 +1788,7 @@ supported by the MyPy typechecker.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hxnrqhvskiclwfj2s4gyfclzjas1dvpfxhyng8v7mq38rqps1j5"))
-       (patches
-        (search-patches "python-mypy-12332.patch"
-                        "python-mypy-use-sys-path.patch"))))
+         "0i8swdynms1wpiprgqn24za6mx8rlgxr2jash3cb5xi8jyf58n97"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1799,7 +1796,10 @@ supported by the MyPy typechecker.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "mypyc")))))))
+               (invoke "pytest" "-vv" "mypyc"
+                       ;; XXX: This test gets an unexpected DeprecationWarning
+                       ;; from recent versions of setuptools.  Ignore for now.
+                       "-k" "not testImports")))))))
     (native-inputs
      (list python-attrs
            python-lxml

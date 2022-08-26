@@ -7,7 +7,7 @@
 ;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
 ;;; Copyright © 2019 L  p R n  d n <guix@lprndn.info>
 ;;; Copyright © 2019 Ingo Ruhnke <grumbel@gmail.com>
@@ -218,7 +218,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
 (define-public catfish
   (package
     (name "catfish")
-    (version "4.16.3")
+    (version "4.16.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -226,7 +226,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
                                   "/catfish-" version ".tar.bz2"))
               (sha256
                (base32
-                "1nng7mklrfihgppyxldpssdscl1dzb5z6hyx10akk089s5i9mag9"))))
+                "1z5m9f4cj473n68rrhhbkq3x5df5k394qp4n27lqqyny6k2h2p3f"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -270,7 +270,7 @@ it to your needs by using several command line options.")
 (define-public elementary-xfce-icon-theme
   (package
     (name "elementary-xfce-icon-theme")
-    (version "0.16")
+    (version "0.17")
     (source (origin
               (method git-fetch)
               (uri
@@ -280,7 +280,7 @@ it to your needs by using several command line options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s8g7qyjdlq93fbrgysahy5kcbd8b2cpnfmpdvl0vbzyhy2x18d7"))))
+                "0jlawp6rg55w5cm4d7836r660i2pnc5gkzpdjsq7w5875i85arzm"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
@@ -359,7 +359,7 @@ merging features essential for loading menus modified with menu editors.")
 (define-public tumbler
   (package
     (name "tumbler")
-    (version "4.16.0")
+    (version "4.16.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -367,7 +367,7 @@ merging features essential for loading menus modified with menu editors.")
                                   "tumbler-" version ".tar.bz2"))
               (sha256
                (base32
-                "0rmga1l7da0pjrs6jlyq1nfn513r543v7cchshrif1341knpy2wv"))))
+                "0gi77675gi1bbhrrg0p60dy06clf24xa0hz2jb74hnzk2gxbyaw5"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool
@@ -397,7 +397,7 @@ management D-Bus specification.")
 (define-public xfce4-panel
   (package
     (name "xfce4-panel")
-    (version "4.16.4")
+    (version "4.16.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -405,7 +405,7 @@ management D-Bus specification.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "116dr516dvcgnccc55p0ks5dgc1s7v9rvb66lkdl8lk53al53bqz"))
+                "0c42qy76wqa1mr2rk8ka2vwj6k8w2bn7dp00zq67dkvnpki96rh9"))
               (patches (search-patches "xfce4-panel-plugins.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -737,7 +737,7 @@ like appearance, display, keyboard and mouse settings.")
 (define-public thunar
   (package
     (name "thunar")
-    (version "4.16.10")                           ;stable version = even minor
+    (version "4.16.11")                           ;stable version = even minor
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -745,7 +745,7 @@ like appearance, display, keyboard and mouse settings.")
                                   "thunar-" version ".tar.bz2"))
               (sha256
                (base32
-                "14lwi4ax0wj77980kkfhdf18b97339b17y8qc8gl2365mgswh1gi"))))
+                "06wa58dy9z28j7l4a2l7j052sa3h6vfpvxd440cy7qz5na8dwzgl"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -826,7 +826,7 @@ on the screen.")
 (define-public xfdesktop
   (package
     (name "xfdesktop")
-    (version "4.16.0")
+    (version "4.16.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -834,7 +834,7 @@ on the screen.")
                                   "xfdesktop-" version ".tar.bz2"))
               (sha256
                (base32
-                "1bjv2mpkv7zmpzssbvvzh0x4pn8cqm8dvhgsv5i1xwngzspsajwk"))
+                "04dxljc74zlkz7h8wjj3hx9300r202a4d2hj8agfjmdf100cn7g3"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
@@ -955,7 +955,7 @@ features playback of local media files, DVD/CD and live streams.")
 (define-public xfce4-terminal
   (package
     (name "xfce4-terminal")
-    (version "1.0.3")
+    (version "1.0.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/" name "/"
@@ -963,7 +963,7 @@ features playback of local media files, DVD/CD and live streams.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1vgmgz38q5902m4prbww4zy5j8n10pyq5ni3f46z7fpzxp9acs8w"))))
+                "1x5saijxykxmn2hksf4qvaj965b6i0wy62z9hgrc2vvwmxbmkrbq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -1348,7 +1348,7 @@ of data to either CD/DVD/BD.")
 (define-public xfce4-screenshooter
   (package
    (name "xfce4-screenshooter")
-   (version "1.9.10")
+   (version "1.9.11")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1358,7 +1358,7 @@ of data to either CD/DVD/BD.")
                                 version ".tar.bz2"))
             (sha256
              (base32
-              "1mwjhakbjv9g6ffn6c55cbrfsrqhb2apwhmffvz8rfgm4y2igd04"))))
+              "1d7qyc2w4962crmkz5n0mma2qmyp9hhq455karyzacjbb6z0cgg7"))))
    (build-system gnu-build-system)
    (native-inputs
     (list pkg-config intltool
@@ -1504,7 +1504,7 @@ watch your every step.")
 (define-public xfce4-equake-plugin
    (package
    (name "xfce4-equake-plugin")
-   (version "1.3.8")
+   (version "1.3.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1513,7 +1513,7 @@ watch your every step.")
                                   "/xfce4-equake-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "09b9k0n5xm115k44x74w4ad0xqklilyfh0hglsps7zj97pd7a5a3"))))
+                "073lxks7fb0bwgsp5rfwa310b9vd5jz6y5q8aa69kgfi0kbczygg"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))

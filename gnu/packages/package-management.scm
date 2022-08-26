@@ -1356,6 +1356,23 @@ environments.")
     ;; and the fonts included in this package are licensed OFL1.1.
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
+(define-public gwl/next
+  (let ((commit "706a0895f639ed3ed77d0fe88382f51a6638b514")
+        (revision "1"))
+    (package
+      (inherit gwl)
+      (name "gwl-next")
+      (version (git-version "0.5.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/gwl.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
+
 (define-public guix-build-coordinator
   (let ((commit "cc884efa7ee8a481cd3dae1b93d27454ac8dfcd2")
         (revision "59"))

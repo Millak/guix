@@ -69,17 +69,19 @@
                  " " value "\n"))
 
 (define (address-family? obj)
-  (memv obj (list 'unset AF_INET AF_INET6)))
+  (memv obj (list AF_INET AF_INET6)))
+
+(define-maybe address-family)
 
 (define (serialize-address-family field family)
-  (if (eq? 'unset family)
-      ""
+  (if (maybe-value-set? family)
       (string-append "  " (serialize-field-name field) " "
                      (cond ((= family AF_INET) "inet")
                            ((= family AF_INET6) "inet6")
                            ;; The 'else' branch is unreachable.
                            (else (raise (condition (&error)))))
-                     "\n")))
+                     "\n")
+      ""))
 
 (define (natural-number? obj)
   (and (integer? obj) (exact? obj) (> obj 0)))
@@ -115,7 +117,7 @@
    maybe-string
    "Host name---e.g., @code{\"foo.example.org\"} or @code{\"192.168.1.2\"}.")
   (address-family
-   address-family
+   maybe-address-family
    "Address family to use when connecting to this host: one of
 @code{AF_INET} (for IPv4 only), @code{AF_INET6} (for IPv6 only).
 Additionally, the field can be left unset to allow any address family.")

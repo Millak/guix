@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
@@ -23,6 +23,7 @@
 (define-module (gnu packages selinux)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -49,41 +50,42 @@
 (define-public libsepol
   (package
     (name "libsepol")
-    (version "3.2")
+    (version "3.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/SELinuxProject/selinux")
-                     (commit version)))
+                    (url "https://github.com/SELinuxProject/selinux")
+                    (commit version)))
               (file-name (git-file-name "selinux" version))
               (sha256
                (base32
-                "03p3lmvrvkcvsmiczsjzhyfgxlxdkdyq0p8igv3s3hdak5n92jjn"))))
+                "1lcmgmfr0q7g5cwg6b7jm6ncw8cw6c1jblkm93v1g37bfhcgrqc0"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; tests require checkpolicy, which requires libsepol
-       #:test-target "test"
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "PREFIX=" out)
-               (string-append "SHLIBDIR=" out "/lib")
-               (string-append "MAN3DIR=" out "/share/man/man3")
-               (string-append "MAN5DIR=" out "/share/man/man5")
-               (string-append "MAN8DIR=" out "/share/man/man8")
-               (string-append "CFLAGS=-Wno-error")
-               (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
-               (string-append "CC=" ,(cc-for-target))))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir ,name)))
-         (add-after 'enter-dir 'portability
-           (lambda _
-             (substitute* "src/ibpkeys.c"
-               (("#include \"ibpkey_internal.h\"" line)
-                (string-append line "\n#include <inttypes.h>\n"))
-               (("%#lx") "%#\" PRIx64 \"")))))))
+     (list
+      #:tests? #f         ; tests require checkpolicy, which requires libsepol
+      #:test-target "test"
+      #:make-flags
+      #~(let ((out #$output))
+          (list (string-append "PREFIX=" out)
+                (string-append "SHLIBDIR=" out "/lib")
+                (string-append "MAN3DIR=" out "/share/man/man3")
+                (string-append "MAN5DIR=" out "/share/man/man5")
+                (string-append "MAN8DIR=" out "/share/man/man8")
+                (string-append "CFLAGS=-Wno-error")
+                (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
+                (string-append "CC=" #$(cc-for-target))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'enter-dir
+            (lambda _ (chdir #$name)))
+          (add-after 'enter-dir 'portability
+            (lambda _
+              (substitute* "src/ibpkeys.c"
+                (("#include \"ibpkey_internal.h\"" line)
+                 (string-append line "\n#include <inttypes.h>\n"))
+                (("%#lx") "%#\" PRIx64 \"")))))))
     (native-inputs
      (list flex))
     (home-page "https://selinuxproject.org/")
@@ -100,25 +102,24 @@ boolean settings).")
   (package/inherit libsepol
     (name "checkpolicy")
     (arguments
-     `(#:tests? #f ; there is no check target
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "PREFIX=" out)
-               (string-append "LIBSEPOLA="
-                              (assoc-ref %build-inputs "libsepol")
-                              "/lib/libsepol.a")
-               (string-append "CC=" ,(cc-for-target))))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'portability)
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir ,name))))))
+     (list
+      #:tests? #f                       ; there is no check target
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "LIBSEPOLA="
+                             (search-input-file %build-inputs
+                                                "/lib/libsepol.a"))
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'portability)
+          (add-after 'unpack 'enter-dir
+            (lambda _ (chdir #$name))))))
     (inputs
-     `(("libsepol" ,libsepol)))
+     (list libsepol))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)))
+     (list bison flex))
     (synopsis "Check SELinux security policy configurations and modules")
     (description
      "This package provides the tools \"checkpolicy\" and \"checkmodule\".
@@ -136,44 +137,42 @@ module into a binary representation.")
     (arguments
      (substitute-keyword-arguments (package-arguments libsepol)
        ((#:make-flags flags)
-        `(cons* "PYTHON=python3"
-                (string-append "LIBSEPOLA="
-                              (assoc-ref %build-inputs "libsepol")
-                              "/lib/libsepol.a")
-                (string-append "PYTHONLIBDIR="
-                               (assoc-ref %outputs "python")
-                               "/lib/python"
-                               ,(version-major+minor (package-version python))
-                               "/site-packages/")
-                ,flags))
+        #~(cons* "PYTHON=python3"
+                 (string-append "LIBSEPOLA="
+                                (search-input-file %build-inputs
+                                                   "/lib/libsepol.a"))
+                 (string-append "PYTHONLIBDIR="
+                                #$output:python
+                                "/lib/python"
+                                #$(version-major+minor (package-version python))
+                                "/site-packages/")
+                 #$flags))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'portability)
-           (replace 'enter-dir
-             (lambda _ (chdir ,name)))
-           (add-after 'build 'pywrap
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (apply invoke "make" "pywrap" make-flags)))
-           (add-after 'install 'install-pywrap
-             (lambda* (#:key make-flags outputs #:allow-other-keys)
-               ;; The build system uses "python setup.py install" to install
-               ;; Python bindings.  Instruct it to use the correct output.
-               (substitute* "src/Makefile"
-                 (("--prefix=\\$\\(PREFIX\\)")
-                  (string-append "--prefix=" (assoc-ref outputs "python"))))
+        #~(modify-phases #$phases
+            (delete 'portability)
+            (replace 'enter-dir
+              (lambda _ (chdir #$name)))
+            (add-after 'build 'pywrap
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "pywrap" make-flags)))
+            (add-after 'install 'install-pywrap
+              (lambda* (#:key make-flags #:allow-other-keys)
+                ;; The build system uses "python setup.py install" to install
+                ;; Python bindings.  Instruct it to use the correct output.
+                (substitute* "src/Makefile"
+                  (("--prefix=\\$\\(PREFIX\\)")
+                   (string-append "--prefix=" #$output:python)))
 
-               (apply invoke "make" "install-pywrap" make-flags)))))))
+                (apply invoke "make" "install-pywrap" make-flags)))))))
     ;; These libraries are in "Requires.private" in libselinux.pc.
     (propagated-inputs
-     `(("libsepol" ,libsepol)
-       ("pcre" ,pcre)))
+     (list libsepol pcre2))
     ;; For pywrap phase
     (inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     ;; These inputs are only needed for the pywrap phase.
     (native-inputs
-     `(("swig" ,swig)
-       ("pkg-config" ,pkg-config)))
+     (list pkg-config swig))
     (synopsis "SELinux core libraries and utilities")
     (description
      "The libselinux library provides an API for SELinux applications to get
@@ -189,41 +188,33 @@ the core SELinux management utilities.")
     (arguments
      (substitute-keyword-arguments (package-arguments libsepol)
        ((#:make-flags flags)
-        `(cons* "PYTHON=python3"
-                (string-append "PYTHONLIBDIR="
-                               (assoc-ref %outputs "out")
-                               "/lib/python"
-                               ,(version-major+minor (package-version python))
-                               "/site-packages/")
-                ,flags))
+        #~(cons* "PYTHON=python3"
+                 (string-append "PYTHONLIBDIR="
+                                #$output
+                                "/lib/python"
+                                #$(version-major+minor (package-version python))
+                                "/site-packages/")
+                 #$flags))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'portability)
-           (replace 'enter-dir
-             (lambda _ (chdir ,name)))
-           (add-before 'install 'adjust-semanage-conf-location
-             (lambda _
-               (substitute* "src/Makefile"
-                 (("DEFAULT_SEMANAGE_CONF_LOCATION=/etc")
-                  "DEFAULT_SEMANAGE_CONF_LOCATION=$(PREFIX)/etc"))))
-           (add-after 'build 'pywrap
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (apply invoke "make" "pywrap" make-flags)))
-           (add-after 'install 'install-pywrap
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (apply invoke "make" "install-pywrap" make-flags)))))))
+        #~(modify-phases #$phases
+            (delete 'portability)
+            (replace 'enter-dir
+              (lambda _ (chdir #$name)))
+            (add-before 'install 'adjust-semanage-conf-location
+              (lambda _
+                (substitute* "src/Makefile"
+                  (("DEFAULT_SEMANAGE_CONF_LOCATION=/etc")
+                   "DEFAULT_SEMANAGE_CONF_LOCATION=$(PREFIX)/etc"))))
+            (add-after 'build 'pywrap
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "pywrap" make-flags)))
+            (add-after 'install 'install-pywrap
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "install-pywrap" make-flags)))))))
     (inputs
-     `(("libsepol" ,libsepol)
-       ("libselinux" ,libselinux)
-       ("audit" ,audit)
-       ;; For pywrap phase
-       ("python" ,python-wrapper)))
+     (list audit libsepol libselinux python-wrapper))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ;; For pywrap phase
-       ("swig" ,swig)
-       ("pkg-config" ,pkg-config)))
+     (list bison flex pkg-config swig))
     (synopsis "SELinux policy management libraries")
     (description
      "The libsemanage library provides an API for the manipulation of SELinux
@@ -236,22 +227,22 @@ binary policies.")
     (arguments
      (substitute-keyword-arguments (package-arguments libsepol)
        ((#:make-flags flags)
-        `(let ((docbook (assoc-ref %build-inputs "docbook-xsl")))
-           (cons (string-append "XMLTO=xmlto --skip-validation -x "
-                                docbook "/xml/xsl/docbook-xsl-"
-                                ,(package-version docbook-xsl)
-                                "/manpages/docbook.xsl")
-                 ,flags)))
+        #~(let ((xsl (search-input-directory %build-inputs "xml/xsl")))
+            (cons (string-append "XMLTO=xmlto --skip-validation -x "
+                                 xsl "/docbook-xsl-"
+                                 #$(package-version
+                                    (this-package-native-input "docbook-xsl"))
+                                 "/manpages/docbook.xsl")
+                  #$flags)))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'portability)
-           (replace 'enter-dir
-             (lambda _ (chdir ,name)))))))
+        #~(modify-phases #$phases
+            (delete 'portability)
+            (replace 'enter-dir
+              (lambda _ (chdir #$name)))))))
     (inputs
-     `(("libsepol" ,libsepol)))
+     (list libsepol))
     (native-inputs
-     `(("xmlto" ,xmlto)
-       ("docbook-xsl" ,docbook-xsl)))
+     (list xmlto docbook-xsl))
     (synopsis "SELinux common intermediate language (CIL) compiler")
     (description "The SELinux CIL compiler is a compiler that converts the
 @dfn{common intermediate language} (CIL) into a kernel binary policy file.")
@@ -261,39 +252,41 @@ binary policies.")
   (package/inherit libsepol
     (name "python-sepolgen")
     (arguments
-     `(#:modules ((srfi srfi-1)
-                  (guix build gnu-build-system)
-                  (guix build utils))
-       ,@(substitute-keyword-arguments (package-arguments libsepol)
-           ((#:phases phases)
-            `(modify-phases ,phases
-               (delete 'portability)
-               (replace 'enter-dir
-                 (lambda _ (chdir "python/sepolgen")))
-               ;; By default all Python files would be installed to
-               ;; $out/gnu/store/...-python-.../, so we override the
-               ;; PACKAGEDIR to fix this.
-               (add-after 'enter-dir 'fix-target-path
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let ((get-python-version
-                          ;; FIXME: copied from python-build-system
-                          (lambda (python)
-                            (let* ((version     (last (string-split python #\-)))
-                                   (components  (string-split version #\.))
-                                   (major+minor (take components 2)))
-                              (string-join major+minor ".")))))
-                     (substitute* "src/sepolgen/Makefile"
-                       (("^PACKAGEDIR.*")
-                        (string-append "PACKAGEDIR="
-                                       (assoc-ref outputs "out")
-                                       "/lib/python"
-                                       (get-python-version
-                                        (assoc-ref inputs "python"))
-                                       "/site-packages/sepolgen")))
-                     (substitute* "src/share/Makefile"
-                       (("\\$\\(DESTDIR\\)") (assoc-ref outputs "out")))))))))))
+     (substitute-keyword-arguments (package-arguments libsepol)
+       ((#:modules _ #~%gnu-build-system-modules)
+        '((srfi srfi-1)
+          (guix build gnu-build-system)
+          (guix build utils)))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'portability)
+            (replace 'enter-dir
+              (lambda _ (chdir "python/sepolgen")))
+            ;; By default all Python files would be installed to
+            ;; $out/gnu/store/...-python-.../, so we override the
+            ;; PACKAGEDIR to fix this.
+            (add-after 'enter-dir 'fix-target-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((get-python-version
+                       ;; FIXME: copied from python-build-system
+                       (lambda (python)
+                         (let* ((version     (last (string-split python #\-)))
+                                (components  (string-split version #\.))
+                                (major+minor (take components 2)))
+                           (string-join major+minor "."))))
+                      (python (dirname (dirname (search-input-file
+                                                 inputs "bin/python3")))))
+                  (substitute* "src/sepolgen/Makefile"
+                    (("^PACKAGEDIR.*")
+                     (string-append "PACKAGEDIR="
+                                    #$output
+                                    "/lib/python"
+                                    (get-python-version python)
+                                    "/site-packages/sepolgen")))
+                  (substitute* "src/share/Makefile"
+                    (("\\$\\(DESTDIR\\)") #$output)))))))))
     (inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (native-inputs '())
     (synopsis "Python module for generating SELinux policies")
     (description
@@ -361,51 +354,52 @@ tools, and libraries designed to facilitate SELinux policy analysis.")
   (package/inherit libsepol
     (name "policycoreutils")
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "CC=" ,(cc-for-target))
-               (string-append "PREFIX=" out)
-               (string-append "LOCALEDIR=" out "/share/locale")
-               (string-append "BASHCOMPLETIONDIR=" out
-                              "/share/bash-completion/completions")
-               "INSTALL=install -c -p"
-               "INSTALL_DIR=install -d"
-               ;; These ones are needed because some Makefiles define the
-               ;; directories relative to DESTDIR, not relative to PREFIX.
-               (string-append "SBINDIR=" out "/sbin")
-               (string-append "ETCDIR=" out "/etc")
-               (string-append "SYSCONFDIR=" out "/etc/sysconfig")
-               (string-append "MAN5DIR=" out "/share/man/man5")
-               (string-append "INSTALL_NLS_DIR=" out "/share/locale")
-               (string-append "AUTOSTARTDIR=" out "/etc/xdg/autostart")
-               (string-append "DBUSSERVICEDIR=" out "/share/dbus-1/services")
-               (string-append "SYSTEMDDIR=" out "/lib/systemd")
-               (string-append "INITDIR=" out "/etc/rc.d/init.d")
-               (string-append "SELINUXDIR=" out "/etc/selinux")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'enter-dir
-           (lambda _ (chdir ,name)))
-         (add-after 'enter-dir 'ignore-/usr-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Rewrite lookup paths for header files.
-             (substitute* '("newrole/Makefile"
-                            "setfiles/Makefile"
-                            "run_init/Makefile")
-               (("/usr(/include/security/pam_appl.h)" _ file)
-                (search-input-file inputs file))
-               (("/usr(/include/libaudit.h)" _ file)
-                (search-input-file inputs file))))))))
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(let ((out #$output))
+          (list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" out)
+                (string-append "LOCALEDIR=" out "/share/locale")
+                (string-append "BASHCOMPLETIONDIR=" out
+                               "/share/bash-completion/completions")
+                "INSTALL=install -c -p"
+                "INSTALL_DIR=install -d"
+                ;; These ones are needed because some Makefiles define the
+                ;; directories relative to DESTDIR, not relative to PREFIX.
+                (string-append "SBINDIR=" out "/sbin")
+                (string-append "ETCDIR=" out "/etc")
+                (string-append "SYSCONFDIR=" out "/etc/sysconfig")
+                (string-append "MAN5DIR=" out "/share/man/man5")
+                (string-append "INSTALL_NLS_DIR=" out "/share/locale")
+                (string-append "AUTOSTARTDIR=" out "/etc/xdg/autostart")
+                (string-append "DBUSSERVICEDIR=" out "/share/dbus-1/services")
+                (string-append "SYSTEMDDIR=" out "/lib/systemd")
+                (string-append "INITDIR=" out "/etc/rc.d/init.d")
+                (string-append "SELINUXDIR=" out "/etc/selinux")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'enter-dir
+            (lambda _ (chdir #$name)))
+          (add-after 'enter-dir 'ignore-/usr-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Rewrite lookup paths for header files.
+              (substitute* '("newrole/Makefile"
+                             "setfiles/Makefile"
+                             "run_init/Makefile")
+                (("/usr(/include/security/pam_appl.h)" _ file)
+                 (search-input-file inputs file))
+                (("/usr(/include/libaudit.h)" _ file)
+                 (search-input-file inputs file))))))))
     (inputs
-     `(("audit" ,audit)
-       ("pam" ,linux-pam)
-       ("libsepol" ,libsepol)
-       ("libselinux" ,libselinux)
-       ("libsemanage" ,libsemanage)))
+     (list audit
+           linux-pam
+           libsepol
+           libselinux
+           libsemanage))
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
+     (list gettext-minimal))
     (synopsis "SELinux core utilities")
     (description "The policycoreutils package contains the core utilities that
 are required for the basic operation of an SELinux-enabled GNU system and its

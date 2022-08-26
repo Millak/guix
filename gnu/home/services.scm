@@ -420,8 +420,9 @@ extended with one gexp.")))
             (he-path (string-append (getenv "HOME") "/.guix-home"))
             (new-home-env (getenv "GUIX_NEW_HOME"))
             (new-home (or new-home-env
-                          ;; Path of the activation file if called interactively
-                          (dirname (car (command-line)))))
+                          ;; Absolute path of the directory of the activation
+                          ;; file if called interactively.
+                          (canonicalize-path (dirname (car (command-line))))))
             (old-home-env (getenv "GUIX_OLD_HOME"))
             (old-home (or old-home-env
                           (if (file-exists? (he-init-file he-path))

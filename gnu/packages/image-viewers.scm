@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -287,7 +288,8 @@ collection.  Geeqie was initially based on GQview.")
                (base32
                 "0hi9v0rdx47nys0wvm9xasdrafa34r5kq6crb074a0ipwmc60iiq"))))
     (build-system gnu-build-system)
-    (inputs (list gtk+-2 libjpeg-turbo))
+    (arguments (list #:configure-flags #~(list "--enable-gtk3")))
+    (inputs (list gtk+ libjpeg-turbo))
     (native-inputs (list intltool pkg-config))
     (synopsis "Simple and fast image viewer for X")
     (description "gpicview is a lightweight GTK+ 2.x based image viewer.
@@ -411,34 +413,32 @@ needs.")
     (name "viewnior")
     (version "1.8")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/hellosiyan/Viewnior")
-               (commit (string-append name "-" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "14qvx1wajncd5ab0207274cwk32f4ipfnlaci6phmah0cwra2did"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hellosiyan/Viewnior")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14qvx1wajncd5ab0207274cwk32f4ipfnlaci6phmah0cwra2did"))))
     (build-system meson-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             ;; Don't create 'icon-theme.cache'
-             (substitute* "meson.build"
-               (("meson.add_install_script*") ""))
-             #t)))
-       #:tests? #f)) ; no tests
+     '(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-source
+                    (lambda _
+                      ;; Don't create 'icon-theme.cache'
+                      (substitute* "meson.build"
+                        (("meson.add_install_script*") "")))))
+       #:tests? #f))                    ;no tests
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin") ; glib-genmarshal
-       ("pkg-config" ,pkg-config)
-       ("shared-mime-info" ,shared-mime-info)))
+     (list gettext-minimal
+           `(,glib "bin")               ;glib-genmarshal
+           pkg-config
+           shared-mime-info))
     (inputs
-     `(("exiv2" ,exiv2)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gtk+-2" ,gtk+-2)))
+     (list exiv2
+           gdk-pixbuf
+           gtk+-2))
     (home-page "https://siyanpanayotov.com/project/viewnior")
     (synopsis "Simple, fast and elegant image viewer")
     (description "Viewnior is an image viewer program.  Created to be simple,

@@ -221,14 +221,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.37.1")
+   (version "2.37.2")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "001m3gnal902hv22gp1m44c6247357pb80db0svms74gidmjq5n8"))))
+              "00xhdm086bxm4v2p8m7ra7vf9kwdppw4l2n3vakfff253j19qg8w"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -248,7 +248,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "098yz8kzvzmmrkyiv8j79s5nryws302pnq6jcbrqbidrziwcxkjd"))))
+            "1zhn91fzyyz890a5hm0bvs0vnhy8c81q1fhsk2gfwbbh73z161nz"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook-xsl" ,docbook-xsl)
@@ -1657,7 +1657,7 @@ visualize your public Git repositories on a web interface.")
 (define-public pre-commit
   (package
     (name "pre-commit")
-    (version "2.19.0")
+    (version "2.20.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -1666,7 +1666,7 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "102z1n6wjrmk5h4p59l929bi0r91bl3vz62j4k6sz2j7k0a791g5"))))
+        (base32 "19jcg6nfnscp87h4wmbpw6r3lc8c75zkvb6wqgavq5dh7wkyg6pq"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

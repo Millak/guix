@@ -330,7 +330,7 @@ for parsing HTML files.")
 (define-public fsearch
   (package
     (name "fsearch")
-    (version "0.1.4")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -339,7 +339,7 @@ for parsing HTML files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lc6fhz4zhjbs29xn53v97dqrxwmqaplhky8sm9776ws6fyifwd7"))))
+        (base32 "126sg0fa96vxwinih120riqhj42jlxs2h1bp373r6ml7jwkvlyyn"))))
     (build-system meson-build-system)
     (native-inputs
      (list autoconf
@@ -350,7 +350,7 @@ for parsing HTML files.")
            libtool
            pkg-config))
     (inputs
-     (list gtk+ icu4c pcre))
+     (list gtk+ icu4c pcre2))
     (home-page "https://github.com/cboxdoerfer/fsearch")
     (synopsis "Fast file search utility")
     (description
@@ -506,14 +506,14 @@ conflict with slocate compatibility.")
 (define-public plocate
   (package
     (name "plocate")
-    (version "1.1.15")
+    (version "1.1.16")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://plocate.sesse.net/download/"
                            "plocate-" version ".tar.gz"))
        (sha256
-        (base32 "0l7igd81acsha5l5mv2rv7n9j1bc4f6ys4hfvs3ii0cbv9a5k1fi"))))
+        (base32 "0ccn785yi069dgwp4j3g23zvvivzsf5chadbdr357qphkmpxy125"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags

@@ -331,9 +331,9 @@ debian/copyright for more information.")))))
       (home-page "http://apt-mirror.github.io/")
       (synopsis "Script for mirroring a Debian repository")
       (description
-       "apt-mirror is a small tool that provides the ability to
-selectively mirror Debian and Ubuntu GNU/Linux distributions or any
-other apt sources typically provided by open source developers.")
+       "apt-mirror is a small tool that provides the ability to selectively
+mirror @acronym{APT, advanced package tool} sources, including GNU/Linux
+distributions such as Debian and Trisquel.")
       (license license:gpl2))))
 
 (define-public dpkg

@@ -177,6 +177,11 @@ framebuffer graphics, audio output and input event.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'remove-buildtime
+           ;; Remove embedded build time for reproducible builds
+           (lambda _
+             (substitute* "src/core/core.c"
+               (("..BUILDTIME..") ""))))
          (add-after 'unpack 'disable-configure-during-bootstrap
            (lambda _
              (substitute* "autogen.sh"
@@ -879,6 +884,7 @@ basic geometries.")
     (native-inputs
      (list python-defcon-bootstrap
            python-fontpens-bootstrap
+           python-setuptools-scm
            python-pytest
            python-wheel
            unzip))
@@ -1942,8 +1948,9 @@ Cflags: -I${includedir}~%" #$output #$version))))))))
       (inputs (list expat fontconfig freetype harfbuzz mesa libwebp zlib))
       (home-page "https://skia.org/")
       (synopsis "2D graphics library")
-      (description "Skia is an open source 2D graphics library.  It can be
-used for drawing text, geometries, and images and has support for:
+      (description
+       "Skia is a 2D graphics library for drawing text, geometries, and images.
+It supports:
 @itemize
 @item 3x3 matrices with perspective
 @item antialiasing, transparency, filters
@@ -2045,7 +2052,7 @@ Some feature highlights:
 (define-public openxr
   (package
     (name "openxr")
-    (version "1.0.23")
+    (version "1.0.24")
     (source
      (origin
        (method git-fetch)
@@ -2059,7 +2066,7 @@ Some feature highlights:
            ;; Delete bundled jsoncpp.
            (delete-file-recursively "src/external/jsoncpp")))
        (sha256
-        (base32 "11w5a2ny30r8jghd5jwdxi5b2c84m21fmkp0lhpicbrwr98xgpj3"))))
+        (base32 "1lkbw03hpwnqcbn0fmxs4cnp5m04hc0ys6y111n7vlrg11sjdpq5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests

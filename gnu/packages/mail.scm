@@ -558,7 +558,7 @@ aliasing facilities to work just as they would on normal mail.")
 (define-public mutt
   (package
     (name "mutt")
-    (version "2.2.6")
+    (version "2.2.7")
     (source (origin
              (method url-fetch)
              (uri (list
@@ -568,7 +568,7 @@ aliasing facilities to work just as they would on normal mail.")
                                    version ".tar.gz")))
              (sha256
               (base32
-               "1lw8111wbsw4hkvrlfsd2cf2l1j25vqwbzys07z0ding2wsxk8pz"))
+               "1wbdsgx5x7h4alsfmjqac46xvbbakc7djlpngd3rydmvb27qa4zb"))
              (patches (search-patches "mutt-store-references.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -1160,7 +1160,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.8.7")
+    (version "1.8.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1169,7 +1169,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yfbw234yqnqfnsn5bj1hqwpy78pkxn05vl18z8nvsqdmpzal4gx"))))
+                "1anpv49242qpayziz111rzznkmfgkd2a9y5xda6xhmzhqdhx79h2"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1179,29 +1179,30 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
     (inputs
      (list glib gmime xapian))
     (arguments
-     `(#:modules ((guix build meson-build-system)
+     (list
+      #:modules '((guix build meson-build-system)
                   (guix build emacs-utils)
                   (guix build utils))
-       #:imported-modules (,@%meson-build-system-modules
+      #:imported-modules `(,@%meson-build-system-modules
                            (guix build emacs-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-bin-references
-           (lambda _
-             (substitute* '("guile/tests/test-mu-guile.cc"
-                            "mu/tests/test-mu-cmd.cc"
-                            "mu/tests/test-mu-cmd-cfind.cc"
-                            "mu/tests/test-mu-query.cc")
-               (("/bin/sh") (which "sh")))
-             (substitute* '("lib/tests/bench-indexer.cc"
-                            "lib/utils/mu-utils.cc")
-               (("/bin/rm") (which "rm")))))
-         (add-after 'install 'install-emacs-autoloads
-           (lambda* (#:key outputs #:allow-other-keys)
-             (emacs-generate-autoloads
-              "mu4e"
-              (string-append (assoc-ref outputs "out")
-                             "/share/emacs/site-lisp")))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-bin-references
+            (lambda _
+              (substitute* '("guile/tests/test-mu-guile.cc"
+                             "mu/tests/test-mu-cmd.cc"
+                             "mu/tests/test-mu-cmd-cfind.cc"
+                             "mu/tests/test-mu-query.cc")
+                (("/bin/sh") (which "sh")))
+              (substitute* '("lib/tests/bench-indexer.cc"
+                             "lib/utils/mu-test-utils.cc")
+                (("/bin/rm") (which "rm")))))
+          (add-after 'install 'install-emacs-autoloads
+            (lambda* (#:key outputs #:allow-other-keys)
+              (emacs-generate-autoloads
+               "mu4e"
+               (string-append (assoc-ref outputs "out")
+                              "/share/emacs/site-lisp/mu4e")))))))
     (home-page "https://www.djcbsoftware.nl/code/mu/")
     (synopsis "Quickly find emails")
     (description

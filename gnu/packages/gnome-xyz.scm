@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Sughosha <sughosha@proton.me>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1137,7 +1138,7 @@ like GNOME, Unity, Budgie, Pantheon, XFCE, Mate, etc.")
     (native-inputs
      (list gtk+
            `(,glib "bin") ; for "glib-compile-resources"
-           librsvg
+           (librsvg-for-system)
            pkg-config
            ruby-sass
            sassc))

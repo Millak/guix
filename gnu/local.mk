@@ -1252,6 +1252,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-ac-d-bus-fix-tests.patch		\
   %D%/packages/patches/guile-cross-compilation.patch		\
   %D%/packages/patches/guile-fibers-destroy-peer-schedulers.patch \
+  %D%/packages/patches/guile-fibers-epoll-instance-is-dead.patch \
   %D%/packages/patches/guile-fibers-wait-for-io-readiness.patch \
   %D%/packages/patches/guile-gdbm-ffi-support-gdbm-1.14.patch	\
   %D%/packages/patches/guile-git-adjust-for-libgit2-1.2.0.patch \
@@ -1379,10 +1380,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/kodi-set-libcurl-ssl-parameters.patch		\
   %D%/packages/patches/kodi-skip-test-449.patch		\
   %D%/packages/patches/laby-make-install.patch			\
-  %D%/packages/patches/lcalc-default-parameters-1.patch		\
-  %D%/packages/patches/lcalc-default-parameters-2.patch		\
-  %D%/packages/patches/lcalc-lcommon-h.patch    		\
-  %D%/packages/patches/lcalc-using-namespace-std.patch 		\
   %D%/packages/patches/ldns-drill-examples.patch		\
   %D%/packages/patches/leela-zero-gtest.patch			\
   %D%/packages/patches/less-hurd-path-max.patch			\
@@ -1471,7 +1468,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/llvm-roc-4.0.0-remove-isystem-usr-include.patch \
   %D%/packages/patches/llvm-roc-5.0.0-linkdl.patch \
   %D%/packages/patches/lm-sensors-hwmon-attrs.patch		\
-  %D%/packages/patches/lrcalc-includes.patch    		\
   %D%/packages/patches/lsh-fix-x11-forwarding.patch		\
   %D%/packages/patches/lsof-fatal-test-failures.patch		\
   %D%/packages/patches/lua-CVE-2014-5461.patch                      \
@@ -1627,6 +1623,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/perl-5.14-module-pluggable-search.patch	\
   %D%/packages/patches/perl-5.14-no-sys-dirs.patch		\
   %D%/packages/patches/perl-autosplit-default-time.patch	\
+  %D%/packages/patches/perl-class-methodmaker-reproducible.patch \
   %D%/packages/patches/perl-finance-quote-unuse-mozilla-ca.patch \
   %D%/packages/patches/perl-image-exiftool-CVE-2021-22204.patch	\
   %D%/packages/patches/perl-net-amazon-s3-moose-warning.patch	\
@@ -1734,8 +1731,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-versioneer-guix-support.patch	\
   %D%/packages/patches/python-waitress-fix-tests.patch		\
   %D%/packages/patches/python-werkzeug-tests.patch		\
-  %D%/packages/patches/python-mypy-12332.patch			\
-  %D%/packages/patches/python-mypy-use-sys-path.patch		\
   %D%/packages/patches/python-zeep-Fix-pytest_httpx-test-cases.patch	\
   %D%/packages/patches/qemu-build-info-manual.patch		\
   %D%/packages/patches/qemu-glibc-2.27.patch 			\

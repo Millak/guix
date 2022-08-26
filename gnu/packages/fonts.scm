@@ -51,6 +51,7 @@
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2022 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -732,6 +733,26 @@ following fonts in the OpenType format: Adventor, Bonum, Chorus, Cursor,
 Heros, Pagella, Schola, Termes.")
     (license license:gfl1.0)))
 
+(define-public font-latin-modern
+  (package
+    (name "font-latin-modern")
+    (version "2.004")
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://www.gust.org.pl/projects/e-foundry/"
+                           "latin-modern/download/lm" version "otf.zip"))
+       (sha256
+        (base32 "06qnvd6kh07gy2197vx3nmskhiqhp7ip9cpi2rkbwa1p3l2kc0jv"))))
+    (build-system font-build-system)
+    (home-page "https://www.gust.org.pl/projects/e-foundry/latin-modern")
+    (synopsis "OpenType fonts based on Computer Modern")
+    (description "The Latin Modern fonts are a set of scalable fonts based on
+the PostScript Type 1 version of the Computer Modern fonts and contain many
+additional characters (mostly accented ones).  This package provides the
+OpenType variant of these fonts.")
+    (license license:gfl1.0)))
+
 (define-public font-amiri
   (package
     (name "font-amiri")
@@ -821,7 +842,7 @@ for use at smaller text sizes")))
 (define-public font-gnu-unifont
   (package
     (name "font-gnu-unifont")
-    (version "14.0.03")
+    (version "14.0.04")
     (source
      (origin
        (method url-fetch)
@@ -831,7 +852,7 @@ for use at smaller text sizes")))
              (string-append "mirror://gnu/unifont/unifont-"
                             version "/unifont-" version ".tar.gz")))
        (sha256
-        (base32 "1swzwh355ipqhm3vvy7005fqawydlcdbkxm3h04vhicahp8hl06l"))))
+        (base32 "1fzycjxmgnq77r2s5914w1phg3qdwwnwa6p3zyfa1cscrxy52phz"))))
     (build-system gnu-build-system)
     (outputs '("out"   ; TrueType version
                "pcf"   ; PCF (bitmap) version

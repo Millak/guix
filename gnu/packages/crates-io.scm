@@ -25025,14 +25025,14 @@ authenticated encryption cipher.")
 (define-public rust-ghost-0.1
   (package
     (name "rust-ghost")
-    (version "0.1.2")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ghost" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yalg3g1g3cz63n3phy7cdhh7p2qd220mrpxy96alwxbpqdwynqs"))))
+        (base32 "0fj42hmlgcj1rbqcshlvk65npsks4ba7vdzphb9202gawf6zw6gb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -28897,14 +28897,14 @@ Rust.")
 (define-public rust-indoc-1
   (package
     (name "rust-indoc")
-    (version "1.0.3")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "indoc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0diih20xsxjb159nr0dq6jxnyhq7gg10dlsnh2siikphmvm5m9z5"))))
+        (base32 "1qs42cn8rj7kdpmp1dlkzhv62rfmbx3ffwvsfw67zyq86jm1xaxd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #true
@@ -29479,8 +29479,37 @@ primitive Rust types.")
 immutable interval tree.")
     (license license:expat)))
 
+(define-public rust-inventory-0.2
+  (package
+    (name "rust-inventory")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "inventory" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06h9xw67wx18rank4yyz93iq89j0fk6fbazryfvf5ach1dp4qd44"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ctor" ,rust-ctor-0.1)
+        ("rust-ghost" ,rust-ghost-0.1))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dtolnay/inventory")
+    (synopsis "Typed distributed plugin registration")
+    (description
+     "This package provides a way to set up a plugin registry into which
+plugins can be registered from any source file linked into your program.
+There does not need to be a central list of all the plugins.")
+    ;; Either license can be chosen at the users option.
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-inventory-0.1
   (package
+    (inherit rust-inventory-0.2)
     (name "rust-inventory")
     (version "0.1.11")
     (source
@@ -29490,21 +29519,12 @@ immutable interval tree.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
           (base32 "1m1zdjgs3nzfdxf86mc1i0id56fvk8rfw63rf04yi88bqrh53szh"))))
-    (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
         (("rust-ctor" ,rust-ctor-0.1)
          ("rust-ghost" ,rust-ghost-0.1)
-         ("rust-inventory-impl" ,rust-inventory-impl-0.1))))
-    (home-page "https://github.com/dtolnay/inventory")
-    (synopsis "Typed distributed plugin registration")
-    (description
-     "This package provides a way to set up a plugin registry into which
-plugins can be registered from any source file linked into your program.
-There does not need to be a central list of all the plugins.")
-    ;; Either license can be chosen at the users option.
-    (license (list license:expat license:asl2.0))))
+         ("rust-inventory-impl" ,rust-inventory-impl-0.1))))))
 
 (define-public rust-inventory-impl-0.1
   (package
@@ -40387,17 +40407,17 @@ platform-native strings.")
          "11agh8n3x2l4sr3sxvx6byc1j3ryb1g6flb1ywn0qhq7xv1y3cmg"))))
     (arguments `(#:skip-build? #t))))
 
-(define-public rust-ouroboros-macro-0.14
+(define-public rust-ouroboros-macro-0.15
   (package
     (name "rust-ouroboros-macro")
-    (version "0.14.0")
+    (version "0.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ouroboros_macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11cav04x82liknlrv50lpl1i1ln2jw4isdqzdjnjsg0pcpvwik9r"))))
+        (base32 "01lgyj5nxgr6r1l0m20pp4ilz3m14clsqg2j28hic2rrlsjafjkk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -40413,8 +40433,45 @@ platform-native strings.")
      "This package provides a proc macro for the @code{ouroboros} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ouroboros-macro-0.14
+  (package
+    (inherit rust-ouroboros-macro-0.15)
+    (name "rust-ouroboros-macro")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ouroboros_macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11cav04x82liknlrv50lpl1i1ln2jw4isdqzdjnjsg0pcpvwik9r"))))))
+
+(define-public rust-ouroboros-0.15
+  (package
+    (name "rust-ouroboros")
+    (version "0.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ouroboros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qhd9cvc4hwdbr37da1jh0k0742slchixlxn4wxgc7g3l63yl9bl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aliasable" ,rust-aliasable-0.1)
+        ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.15)
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+    (home-page "https://github.com/joshua-maros/ouroboros")
+    (synopsis "Self-referential struct generation")
+    (description
+     "Easy, safe self-referential struct generation for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ouroboros-0.14
   (package
+    (inherit rust-ouroboros-0.15)
     (name "rust-ouroboros")
     (version "0.14.0")
     (source
@@ -40424,17 +40481,11 @@ platform-native strings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ih1lna1d2is3a6aicmc7lpfhqmg046kssxpryk24kwg8j42ymh6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-aliasable" ,rust-aliasable-0.1)
         ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.14)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
-    (home-page "https://github.com/joshua-maros/ouroboros")
-    (synopsis "Self-referential struct generation")
-    (description
-     "Easy, safe self-referential struct generation for Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
 (define-public rust-output-vt100-0.1
   (package
@@ -54504,17 +54555,17 @@ Semantic Versioning.")
          (base32
           "18vhypw6zgccnrlm5ps1pwa0khz7ry927iznpr88b87cagr1v2iq"))))))
 
-(define-public rust-send-wrapper-0.4
+(define-public rust-send-wrapper-0.5
   (package
     (name "rust-send-wrapper")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "send_wrapper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1l7s28vfnwdbjyrrk3lx81jy4f0dcrv4iwyah2wj6vndxhqxaf7n"))))
+        (base32 "1mwbg1nv36d5kdjb0iwmprz24km0m8ck08dn59gdngqdc77hl34k"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/thk1/send_wrapper")
@@ -54526,6 +54577,20 @@ as you access the contained value only from within the original thread.  You
 also have to make sure that the wrapper is dropped from within the original
 thread.  If any of these constraints is violated, a panic occurs.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-send-wrapper-0.4
+  (package
+    (inherit rust-send-wrapper-0.5)
+    (name "rust-send-wrapper")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "send_wrapper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l7s28vfnwdbjyrrk3lx81jy4f0dcrv4iwyah2wj6vndxhqxaf7n"))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-seq-io-0.3
   (package
@@ -71599,10 +71664,10 @@ terms of allowing LLVM's auto-vectorizer to do its job.")
        (("rust-bytemuck" ,rust-bytemuck-1))))
     (license (list license:zlib))))
 
-(define-public rust-widestring-0.4
+(define-public rust-widestring-0.5
   (package
     (name "rust-widestring")
-    (version "0.4.2")
+    (version "0.5.1")
     (source
       (origin
         (method url-fetch)
@@ -71610,7 +71675,7 @@ terms of allowing LLVM's auto-vectorizer to do its job.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "13565qy4jhpg4x0xw8mwxzzsh0p8c93p5208lh6kpwp0q01y6qx7"))))
+          "10qrilijh1qzw362mvd4nsz3vv32dxx530vk41hkcx8hah22z20p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
@@ -71623,6 +71688,23 @@ such as those often used in Windows API or other FFI libraries.  Both UTF-16 and
 UTF-32 types are provided, including support for malformed encoding.")
     (license (list license:asl2.0
                    license:expat))))
+
+(define-public rust-widestring-0.4
+  (package
+    (inherit rust-widestring-0.5)
+    (name "rust-widestring")
+    (version "0.4.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "widestring" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "13565qy4jhpg4x0xw8mwxzzsh0p8c93p5208lh6kpwp0q01y6qx7"))))
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-wild-2
   (package

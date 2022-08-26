@@ -57,6 +57,9 @@
             serialize-configuration
             define-maybe
             define-maybe/no-serialization
+            %unset-value
+            maybe-value
+            maybe-value-set?
             generate-documentation
             configuration->documentation
             empty-serializer
@@ -142,7 +145,8 @@ does not have a default value" field kind)))
                                     (id #'stem #'serialize-maybe- #'stem))))
        #`(begin
            (define (maybe-stem? val)
-             (or (eq? val 'unset) (stem? val)))
+             (or (not (maybe-value-set? val))
+                 (stem? val)))
            #,@(if serialize?
                   (list #'(define (serialize-maybe-stem field-name val)
                             (if (stem? val)
@@ -170,10 +174,10 @@ does not have a default value" field kind)))
      (values #'(field-type def)))
     ((field-type)
      (identifier? #'field-type)
-     (values #'(field-type 'unset)))
+     (values #'(field-type %unset-value)))
     (field-type
      (identifier? #'field-type)
-     (values #'(field-type 'unset)))))
+     (values #'(field-type %unset-value)))))
 
 (define (define-configuration-helper serialize? serializer-prefix syn)
   (syntax-case syn ()
@@ -260,11 +264,10 @@ does not have a default value" field kind)))
                       (default-value-thunk
                         (lambda ()
                           (display '#,(id #'stem #'% #'stem))
-                          (if (eq? (syntax->datum field-default)
-                                   'unset)
+                          (if (maybe-value-set? (syntax->datum field-default))
+                              field-default
                               (configuration-missing-default-value
-                               '#,(id #'stem #'% #'stem) 'field)
-                              field-default)))
+                               '#,(id #'stem #'% #'stem) 'field))))
                       (documentation doc))
                      ...))))))))
 
@@ -299,6 +302,29 @@ does not have a default value" field kind)))
 
 (define (empty-serializer field-name val) "")
 (define serialize-package empty-serializer)
+
+;; Ideally this should be an implementation detail, but we export it
+;; to provide a simpler API that enables unsetting a configuration
+;; field that has a maybe type, but also a default value.  We give it
+;; a value that sticks out to the reader when something goes wrong.
+;;
+;; An example use-case would be something like a network application
+;; that uses a default port, but the field can explicitly be unset to
+;; request a random port at startup.
+(define %unset-value '%unset-marker%)
+
+(define (maybe-value-set? value)
+  "Predicate to check whether a 'maybe' value was explicitly provided."
+  (not (eq? %unset-value value)))
+
+;; Ideally there should be a compiler macro for this predicate, that expands
+;; to a conditional that only instantiates the default value when needed.
+(define* (maybe-value value #:optional (default #f))
+  "Returns VALUE, unless it is the unset value, in which case it returns
+DEFAULT."
+  (if (maybe-value-set? value)
+      value
+      default))
 
 ;; A little helper to make it easier to document all those fields.
 (define (generate-documentation documentation documentation-name)

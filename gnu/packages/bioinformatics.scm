@@ -3985,26 +3985,44 @@ HMMs).")
 (define-public htseq
   (package
     (name "htseq")
-    (version "0.12.3")
+    (version "2.0.2")
+    ;; Sources on pypi do not include everything needed to run the tests.
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "HTSeq" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/htseq/htseq")
+                    (commit (string-append "release_" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pk41vkzxsbb5nv644325mh8akmz4zdply9r2s80dgg5b21pgp0b"))))
+                "1kbr4ydjjhizz6r5m3xd4f0wj7qnn8zs0vnzghhgaa0yhbya5r19"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-cython))
-    ;; Numpy needs to be propagated when htseq is used as a Python library.
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Avoid rebuilding the extension.  Everything is built during the
+         ;; 'install phase anyway.
+         (delete 'build)
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
     (propagated-inputs
-     (list python-numpy))
-    (inputs
-     (list python-pysam python-matplotlib))
-    (home-page "https://htseq.readthedocs.io/")
-    (synopsis "Analysing high-throughput sequencing data with Python")
+     (list python-matplotlib
+           python-numpy
+           python-pysam))
+    (native-inputs
+     (list python-cython
+           python-pandas
+           python-pytest
+           python-scipy
+           swig))
+    (home-page "https://github.com/htseq")
+    (synopsis "Framework for analyzing high-throughput sequencing data")
     (description
-     "HTSeq is a Python package that provides infrastructure to process data
-from high-throughput sequencing assays.")
+     "This package provides a framework to process and analyze data from
+high-throughput sequencing (HTS) assays")
     (license license:gpl3+)))
 
 (define-public java-htsjdk
@@ -6276,36 +6294,37 @@ subsequent visualization, annotation and storage of results.")
         (base32 "0m8wkyvbgvcr5kzc284w8fbhpxwglh2c1xq0yc3yv00a53gs7rv0"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       ,#~(list "BLASFLAGS=-llapack -lopenblas"
-                (string-append "CFLAGS=-Wall -O2 -DDYNAMIC_ZLIB=1"
-                               " -I" (search-input-directory
-                                       %build-inputs "include/simde"))
-                "ZLIB=-lz"
-                "BIN=plink prettify"
-                (string-append "CC=" #$(cc-for-target))
-                (string-append "PREFIX=" #$output)
-                "DESTDIR=")
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #false ;TEST_EXTRACT_CHR doesn't produce expected files
+      #:make-flags
+      #~(list "BLASFLAGS=-llapack -lopenblas"
+              "NO_SSE42=1"
+              "NO_AVX2=1"
+              "STATIC_ZSTD="
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              "DESTDIR=")
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'chdir
-           (lambda _ (chdir "1.9")))
-         (delete 'configure)  ; no "configure" script
+           (lambda _ (chdir "2.0/build_dynamic")))
+         (delete 'configure)            ; no "configure" script
          (replace 'check
            (lambda* (#:key tests? inputs #:allow-other-keys)
              (when tests?
-               (symlink "plink" "plink19")
-               (symlink (search-input-file inputs "/bin/plink") "plink107")
                (setenv "PATH" (string-append (getcwd) ":" (getenv "PATH")))
-               (with-directory-excursion "tests"
-                 ;; The model test fails because of a 0.0001 difference.
-                 (substitute* "tests.py"
-                   (("diff -q test1.model test2.model")
-                    "echo yes"))
-                 (invoke "bash" "test_setup.sh")
-                 (invoke "python3" "tests.py"))))))))
+               (with-directory-excursion "../Tests"
+                 (substitute* "run_tests.sh"
+                   (("^./run_tests" m)
+                    (string-append (which "bash") " " m)))
+                 (invoke "bash" "run_tests.sh")))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "plink2"
+                           (string-append
+                            (assoc-ref outputs "out") "/bin")))))))
     (inputs
-     (list lapack openblas zlib))
+     (list lapack openblas zlib `(,zstd "lib")))
     (native-inputs
      (list diffutils plink python simde)) ; for tests
     (home-page "https://www.cog-genomics.org/plink/")
@@ -6429,6 +6448,86 @@ complexity samples.")
 Values such as sequence name, sequence description, sequence quality and the
 sequence itself can be retrieved from these databases.")
     (license license:bsd-3)))
+
+(define-public python-taggd
+  (package
+    (name "python-taggd")
+    (version "0.3.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SpatialTranscriptomicsResearch/taggd")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0j19ah81z7aqrdljah9hyarp91gvgbk63pz6fz3pdpksy1yqyi6k"))
+              (modules '((guix build utils)))
+              (snippet
+               '(for-each delete-file
+                          (find-files "taggd" "\\.c$")))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-broken-tests
+           (lambda _
+             (substitute* "tests/taggd_demultiplex_test.py"
+               (("def test_normal_bam_run")
+                "def _disabled_test_normal_bam_run")))))))
+    (propagated-inputs
+     (list python-numpy python-pysam python-setuptools))
+    (native-inputs
+     (list python-cython))
+    (home-page "https://github.com/SpatialTranscriptomicsResearch/taggd")
+    (synopsis "Genetic barcode demultiplexing")
+    (description "This package provides TagGD barcode demultiplexing utilities
+for Spatial Transcriptomics data.")
+    (license license:bsd-3)))
+
+(define-public stpipeline
+  (package
+    (name "stpipeline")
+    (version "1.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stpipeline" version))
+              (sha256
+               (base32
+                "0har2g42fvaqpiz66lincy86aj1hvwzds26kxhxfamvyvv4721wk"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "requirements.txt"
+               (("argparse.*") "")))))))
+    (propagated-inputs
+     (list htseq
+           python-cython
+           python-invoke
+           python-numpy
+           python-pandas
+           python-pympler
+           python-pysam
+           python-regex
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-setuptools
+           python-sqlitedict
+           python-taggd
+           samtools
+           star))
+    (home-page "https://github.com/SpatialTranscriptomicsResearch/st_pipeline")
+    (synopsis "Pipeline for spatial mapping of unique transcripts")
+    (description
+     "This package provides an automated pipeline for spatial mapping of
+unique transcripts.")
+    (license license:expat)))
 
 (define-public sra-tools
   (package
@@ -11292,13 +11391,13 @@ cases include:
 (define-public python-mappy
   (package
    (name "python-mappy")
-   (version "2.18")
+   (version "2.24")
    (source (origin
             (method url-fetch)
             (uri (pypi-uri "mappy" version))
             (sha256
              (base32
-              "1a05p7rkmxa6qhm108na8flzj2v45jab06drk59kzk1ip2sgvzqq"))))
+              "1ycszza87p9qvx8mis9v1hry0ac465x1xcxbsn1k45qlxxrzp8im"))))
    (build-system python-build-system)
    (native-inputs
     (list python-cython))
@@ -16097,6 +16196,32 @@ control samples and applying quantile normalization on all markers of
 interest.")
       (license license:gpl2+))))
 
+(define-public r-kbet
+  (let ((commit "f35171dfb04c7951b8a09ac778faf7424c4b6bc0")
+        (revision "1"))
+    (package
+      (name "r-kbet")
+      (version (git-version "0.99.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/theislab/kBET")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1r91prl2kki3zk694vhlmxdlqh0ixlhs8jfcqw6wc7cdsa0nv67k"))))
+      (properties `((upstream-name . "kBET")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-cluster r-fnn r-ggplot2 r-mass r-rcolorbrewer))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/theislab/kBET")
+      (synopsis "k-nearest neighbour batch effect test")
+      (description
+       "This tool detects batch effects in high-dimensional data based on chi^2-test.")
+      ;; Any version of the GPL
+      (license license:gpl3+))))
+
 (define-public ccwl
   (package
     (name "ccwl")
@@ -16330,3 +16455,271 @@ alignment algorithm.  It completes MashMap with a high-performance alignment
 module capable of computing base-level alignments for very large sequences.")
     (home-page "https://github.com/ekg/wfmash")
     (license license:expat)))
+
+(define-public flair
+  (package
+    (name "flair")
+    (version "1.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/BrooksLabUCSC/flair")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "106swb2q7l20ki58fca1hg95q5f79bgp9gjb0clr2243ycrzyxf8"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: implement as a feature of python-build-system (PEP-621,
+          ;; PEP-631, PEP-660)
+          (replace 'build
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (apply invoke "pip" "--no-cache-dir" "--no-input"
+                     "install" "--no-deps" "--prefix" #$output
+                     (find-files "dist" "\\.whl$")))))))
+    (propagated-inputs
+     (list python-mappy
+           python-ncls
+           python-pybedtools
+           python-pysam
+           python-tqdm))
+    (native-inputs
+     (list python-pypa-build python-setuptools))
+    (home-page "https://flair.readthedocs.io/en/latest/")
+    (synopsis "Full-length alternative isoform analysis of RNA")
+    (description "This package implements FLAIR (Full-Length Alternative
+Isoform analysis of RNA) for the correction, isoform definition, and
+alternative splicing analysis of noisy reads.  FLAIR has primarily been used
+for nanopore cDNA, native RNA, and PacBio sequencing reads.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-biogo-graph
+  (package
+    (name "go-github-com-biogo-graph")
+    (version "0.0.0-20150317020928-057c1989faed")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/biogo/graph")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1kpzs5dfd5dsk4mg1g2qjz1prqd84ixhrcxxnf90hq25vxcnk7lh"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/biogo/graph"
+       #:tests? #false))      ;TODO: one of 13 tests fails for unknown reasons
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://github.com/biogo/graph")
+    (synopsis "Undirected graph analysis for biogo")
+    (description "The package @code{graph} implements graph manipulation
+functions.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-biogo-store-interval
+  (package
+    (name "go-github-com-biogo-store-interval")
+    (version "0.0.0-20201120204734-aad293a2328f")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/biogo/store")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0skizrp1j6vgbl0g1kmh73picagqlvwckaqs0gkl6rai5lckxj8a"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/biogo/store/interval"
+       #:unpack-path "github.com/biogo/store"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-kr-pretty))
+    (home-page "https://github.com/biogo/store")
+    (synopsis "Interval store type for biogo")
+    (description
+     "The @code{store} package provides a number of data store types that are
+useful for bioinformatic analysis.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-biogo-store-kdtree
+  (package
+    (inherit go-github-com-biogo-store-interval)
+    (name "go-github-com-biogo-store-kdtree")
+    (arguments
+     '(#:import-path "github.com/biogo/store/kdtree"
+       #:unpack-path "github.com/biogo/store"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-kr-pretty))
+    (synopsis "kdtree store type for biogo")))
+
+(define-public go-github-com-biogo-store-llrb
+  (package
+    (inherit go-github-com-biogo-store-interval)
+    (name "go-github-com-biogo-store-llrb")
+    (arguments
+     '(#:import-path "github.com/biogo/store/llrb"
+       #:unpack-path "github.com/biogo/store"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-kr-pretty))
+    (synopsis "LLRB store for biogo")))
+
+(define-public go-github-com-biogo-store-step
+  (package
+    (inherit go-github-com-biogo-store-interval)
+    (name "go-github-com-biogo-store-step")
+    (arguments
+     '(#:import-path "github.com/biogo/store/step"
+       #:unpack-path "github.com/biogo/store"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-kr-pretty))
+    (synopsis "Step store for biogo")))
+
+(define-public go-github-com-biogo-hts-bam
+  (package
+    (name "go-github-com-biogo-hts-bam")
+    (version "1.4.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/biogo/hts")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "013ga6ilc4m3hyfr3yyiva9g4vs81afhj73v2sy7r75b5zxw7lx1"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/biogo/hts/bam"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://github.com/biogo/hts")
+    (synopsis "HTS BAM module for biogo")
+    (description "This package provides tools for handling BAM files.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-biogo-hts-sam
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-sam")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/sam"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (synopsis "HTS SAM module for biogo")
+    (description "This package provides tools for handling SAM files.")))
+
+(define-public go-github-com-biogo-hts-tabix
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-tabix")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/tabix"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (synopsis "HTS Tabix module for biogo")
+    (description "This package provides tools for handling Tabix files.")))
+
+(define-public go-github-com-biogo-hts-bgzf
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-bgzf")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/bgzf"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (synopsis "HTS bgzf module for biogo")
+    (description "This package provides tools for handling bgzf files.")))
+
+(define-public go-github-com-biogo-hts-cram
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-cram")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/cram"
+       #:unpack-path "github.com/biogo/hts"
+       #:tests? #false)) ;require network access
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github.com-ulikunitz-xz
+           go-github-com-kortschak-utter))
+    (synopsis "HTS CRAM module for biogo")
+    (description "This package provides tools for handling CRAM files.")))
+
+(define-public go-github-com-biogo-hts-csi
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-csi")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/csi"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (synopsis "Coordinate sorted indexing for biogo")
+    (description "This package implements CSIv1 and CSIv2 coordinate sorted
+indexing.")))
+
+(define-public go-github-com-biogo-hts-fai
+  (package
+    (inherit go-github-com-biogo-hts-bam)
+    (name "go-github-com-biogo-hts-fai")
+    (arguments
+     '(#:import-path "github.com/biogo/hts/fai"
+       #:unpack-path "github.com/biogo/hts"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (synopsis "Fasta sequence file index handling for biogo")
+    (description "This package implements FAI fasta sequence file index
+handling.")))
+
+(define-public go-github-com-biogo-biogo
+  (package
+    (name "go-github-com-biogo-biogo")
+    (version "1.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/biogo/biogo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ali1mqf3dc26myv6l7wmqfr8i25461rbq3qdad8s0wi29622199"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/biogo/biogo"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-biogo-store-interval
+           go-github-com-biogo-store-kdtree
+           go-github-com-biogo-store-llrb
+           go-github-com-biogo-store-step
+           go-github-com-biogo-hts-bam
+           go-github-com-biogo-graph))
+    (home-page "https://github.com/biogo/biogo")
+    (synopsis "Bioinformatics library for Go")
+    (description
+     "Bíogo is a bioinformatics library for the Go language.")
+    (license license:bsd-3)))

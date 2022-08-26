@@ -122,6 +122,7 @@
     (service seatd-service-type)
     (service greetd-service-type
              (greetd-configuration
+              (greeter-supplementary-groups '("input" "video"))
               (terminals
                (list
                 ;; we can make any terminal active by default
@@ -255,6 +256,15 @@ minimal %BASE-SERVICES."
                    (socks (map wait-for-unix-socket-m socks)))
                 (and (= 2 (length socks)) (every identity socks)))))
 
+          (test-equal "seatd.sock ownership"
+            '("root" "seat")
+            `(,(marionette-eval
+                '(passwd:name (getpwuid (stat:uid (stat "/run/seatd.sock"))))
+                marionette)
+              ,(marionette-eval
+                '(group:name (getgrgid (stat:gid (stat "/run/seatd.sock"))))
+                marionette)))
+
           (test-assert "greetd is ready"
             (begin
               (marionette-type "ps -C greetd -o pid,args --no-headers > ps-greetd\n"
@@ -285,6 +295,13 @@ minimal %BASE-SERVICES."
             (begin
               (marionette-type "echo alice > /run/user/1000/test\n" marionette)
               (file-get-all-strings "/run/user/1000/test")))
+
+          (test-equal "check greeter user has correct groups"
+            "greeter input video\n"
+            (begin
+              (marionette-type "id -Gn greeter > /run/user/1000/greeter-groups\n"
+                               marionette)
+              (file-get-all-strings "/run/user/1000/greeter-groups")))
 
           (test-assert "screendump"
             (begin

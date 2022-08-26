@@ -96,14 +96,14 @@ over IRC, instant messaging, network games, and most server software.")
 (define-public libupnp
   (package
     (name "libupnp")
-    (version "1.14.12")
+    (version "1.14.13")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://github.com/pupnp/pupnp/releases/download"
                           "/release-" version "/libupnp-" version".tar.bz2"))
       (sha256
-       (base32 "1b5mnn01cx840paggxrajg63gqzmw8mi4p14jhi9r4qyvam80709"))))
+       (base32 "0klag10gwrr6yx41v72w1jmyz87wzj1qpdcwv45qzjn53bp7lp82"))))
     (native-inputs
      (list pkg-config))
     (build-system gnu-build-system)

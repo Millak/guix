@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
 ;;; Copyright © 2021-2022 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,14 +61,14 @@
 (define-public tor
   (package
     (name "tor")
-    (version "0.4.7.9")
+    (version "0.4.7.10")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://dist.torproject.org/tor-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "08lva4jrash1fhq8vim56alria5kfganmp3y3lhddx08h9cki7fk"))))
+               "0nss8g6hx42nqiir6l03dj15r433fvygq9r00nmnv8wylpgmczk4"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -160,31 +161,35 @@ This package only provides a client to the Tor Network.")))
 (define-public torsocks
   (package
     (name "torsocks")
-    (version "2.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://people.torproject.org/~dgoulet/"
-                                  "torsocks/torsocks-" version ".tar.xz"))
-              (sha256
-               (base32
-                "08inrkap29gikb6sdmb58z43hw4abwrfw7ny40c4xzdkss0vkwdr"))))
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://gitlab.torproject.org/tpo/core/torsocks/-/archive/v"
+             version "/torsocks-v" version ".tar.bz2"))
+       (sha256
+        (base32
+         "1a7k3njdhp7dz603knhisna1zvxw35j3g213p6dvczv9bcjy7cjl"))))
     (build-system gnu-build-system)
     (inputs
      (list libcap))
+    (native-inputs
+     (list autoconf automake libtool))
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'build 'absolutize
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "src/bin/torsocks"
-                        (("getcap=.*")
-                         (string-append "getcap=" (which "getcap") "\n")))
-                      #t)))))
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'absolutize
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/bin/torsocks"
+               (("getcap=.*")
+                (string-append "getcap=" (which "getcap") "\n"))))))))
     (home-page "https://www.torproject.org/")
-    (synopsis "Use socks-friendly applications with Tor")
+    (synopsis "Transparently route an application's traffic through Tor.")
     (description
-     "Torsocks allows you to use most socks-friendly applications in a safe
-way with Tor.  It ensures that DNS requests are handled safely and explicitly
-rejects UDP traffic from the application you're using.")
+     "Torsocks allows you to use most applications in a safe way with Tor.  It
+ensures that DNS requests are handled safely and explicitly rejects UDP
+traffic from the application you're using.")
 
     ;; All the files explicitly say "version 2 only".
     (license license:gpl2)))

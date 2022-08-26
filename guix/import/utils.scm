@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
@@ -283,6 +283,10 @@ LENGTH characters."
                    (string-append "This package provides"
                                   (substring description
                                              (string-length "Provides"))))
+                  ((string-prefix? "Implements " description)
+                   (string-append "This package implements"
+                                  (substring description
+                                             (string-length "Implements"))))
                   ((string-prefix? "Functions " description)
                    (string-append "This package provides functions"
                                   (substring description

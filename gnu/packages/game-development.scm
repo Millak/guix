@@ -2136,10 +2136,11 @@ of the others")
 
 (define-public ioquake3
   ;; We follow master since it seems that there won't be releases after 1.3.6.
-  (let ((commit "95b9cab4d644fa3bf757cfff821cc4f7d76e38b0"))
+  (let ((revision "2")
+        (commit "29b0cc3a4d037046eb3247fc04f4b703f6a33452"))
     (package
       (name "ioquake3")
-      (version (git-version "1.3.6" "1" commit))
+      (version (git-version "1.3.6" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -2148,48 +2149,48 @@ of the others")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "1vflk028z9gccg5yfi5451y1k5wxjdh3qbhjf4x6r7w2pzlxh16z"))))
+          (base32 "0fqq2qpnrgpgf3gs71wvxlkcihxcrvhvllh88ii4ip134c1qbs9q"))))
       (build-system gnu-build-system)
       (inputs
-       `(("sdl2" ,sdl2)
-         ("libjpeg" ,libjpeg-turbo)
-         ("openal" ,openal)
-         ("curl" ,curl)
-         ("opusfile" ,opusfile)
-         ("opus" ,opus)
-         ("libvorbis" ,libvorbis)
-         ("freetype" ,freetype)
-         ("libogg" ,libogg)))
+       (list curl
+             freetype
+             libjpeg-turbo
+             libogg
+             libvorbis
+             openal
+             opus
+             opusfile
+             sdl2))
       (native-inputs
-       (list which ; Else SDL_version.h won't be found.
+       (list which                      ; else SDL_version.h won't be found.
              pkg-config))
       (arguments
-       '(#:tests? #f                    ; No tests.
-         #:make-flags '("CC=gcc"
-                        "USE_INTERNAL_LIBS=0"
-                        "USE_FREETYPE=1"
-                        "USE_RENDERER_DLOPEN=0"
-                        "USE_OPENAL_DLOPEN=0"
-                        "USE_CURL_DLOPEN=0")
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (invoke "make" "copyfiles" "CC=gcc"
-                        "USE_INTERNAL_LIBS=0"
+       (list
+        #:tests? #f                     ; no tests
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                "USE_INTERNAL_LIBS=0"
+                "USE_FREETYPE=1"
+                "USE_RENDERER_DLOPEN=0"
+                "USE_OPENAL_DLOPEN=0"
+                "USE_CURL_DLOPEN=0")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ; no configure-script
+            (replace 'install
+              (lambda* (#:key make-flags outputs #:allow-other-keys)
+                (apply invoke "make" "copyfiles"
                        (string-append "COPYDIR="
                                       (assoc-ref outputs "out")
-                                      "/bin")))))))
+                                      "/bin")
+                       make-flags))))))
       (home-page "https://ioquake3.org/")
       (synopsis "FPS game engine based on Quake 3")
       (description "ioquake3 is a free software first person shooter engine
 based on the Quake 3: Arena and Quake 3: Team Arena source code.  Compared to
 the original, ioquake3 has been cleaned up, bugs have been fixed and features
-added.  The permanent goal is to create the open source Quake 3 distribution
-upon which people base their games, ports to new platforms, and other
-projects.")
+added.  The permanent goal is to create a Quake 3 distribution upon which
+people base their games, ports to new platforms, and other projects.")
       (license license:gpl2))))
 
 (define-public instead
@@ -2651,7 +2652,7 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
 (define-public dhewm3
   (package
     (name "dhewm3")
-    (version "1.5.1")
+    (version "1.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2659,7 +2660,7 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
                     version "/dhewm3-" version "-src.tar.xz"))
               (sha256
                (base32
-                "0s2brx6wyljhjbpli97iy4lc4fqqsvdc09raz8njg0vgzcsiyrri"))))
+                "10p0w1x5wx9b7d8mzvb6yqjia9prhkjwz04vbvphy8p383r33am6"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; No tests.
@@ -2667,17 +2668,13 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
        (modify-phases %standard-phases
          (add-after 'unpack 'change-to-build-dir
            (lambda _
-             (chdir "neo")
-             #t)))))
+             (chdir "neo"))))))
     (inputs
-     `(("curl" ,curl)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libogg" ,libogg)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("openal" ,openal)
-       ("sdl2" ,sdl2)
-       ("zlib" ,zlib)))
+     (list curl
+           libx11
+           openal
+           sdl2
+           zlib))
     (home-page "https://dhewm3.org/")
     (synopsis "Port of the original Doom 3 engine")
     (description
@@ -2810,8 +2807,6 @@ construction toolset for games.
 @item It is automatic, which means that you can throw any level geometry
       at it and you will get robust mesh out.
 @item It is fast which means swift turnaround times for level designers.
-@item It is open source so it comes with full source and you can
-      customize it to your heart's content.
 @end itemize
 
 The Recast process starts with constructing a voxel mold from a level

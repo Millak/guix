@@ -96,7 +96,7 @@
            (home-environment-essential-services he))))
 
 (define* (home-environment-derivation he)
-  "Return a derivation that builds OS."
+  "Return a derivation that builds home environment."
   (let* ((services         (home-environment-services he))
          (home (fold-services services
                               #:target-type home-service-type)))

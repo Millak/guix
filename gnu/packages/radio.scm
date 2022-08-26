@@ -1415,14 +1415,14 @@ operators.")
 (define-public xnec2c
   (package
     (name "xnec2c")
-    (version "4.4.5")
+    (version "4.4.11")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xnec2c.org/releases/xnec2c-v"
                            version ".tar.gz"))
        (sha256
-        (base32 "0v3qr16d42jri2vwwgrhhknaypdcjyn6ccdjpqfzr8zzr33z5pca"))))
+        (base32 "13ybnb1v1y9wjmj49s8ir2rpfsz7h8r9jwv0qd4if9wsn44jg29k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -2126,7 +2126,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "6.18.1")
+    (version "7.6.2")
     (source
      (origin
        (method git-fetch)
@@ -2135,7 +2135,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17lakqy55p481fa5w6ylh79xbd4rdiqk9y21vmi4m2r4wx893zw1"))))
+        (base32 "193iwwb4mbr29mlgaqb67j8214k10k2q0ky9fcl1ja52vmdzz71b"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))
@@ -2165,6 +2165,8 @@ voice formats.")
            qtquickcontrols2-5
            qtserialport
            qtspeech
+           qtwebchannel-5
+           qtwebengine-5
            qtwebsockets-5
            rtl-sdr
            serialdv

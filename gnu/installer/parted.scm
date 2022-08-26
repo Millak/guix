@@ -80,7 +80,6 @@
             efi-installation?
             default-esp-mount-point
 
-            with-delay-device-in-use?
             force-device-sync
             eligible-devices
             partition-user-type

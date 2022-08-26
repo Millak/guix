@@ -39,6 +39,7 @@
 
 
 
+;; TODO Use %unset-value and the define-maybe infrastructure.
 (define unset-field (list 'unset-field))
 
 (define (predicate/unset pred)

@@ -307,7 +307,7 @@ CONFIG, a <jami-configuration> object."
          (dbus (jami-configuration-dbus config))
          (dbus-daemon (file-append dbus "/bin/dbus-daemon"))
          (accounts (jami-configuration-accounts config))
-         (declarative-mode? (not (eq? 'unset accounts))))
+         (declarative-mode? (maybe-value-set? accounts)))
 
     (with-extensions (list guile-packrat ;used by guile-ac-d-bus
                            guile-ac-d-bus
@@ -649,7 +649,7 @@ argument, either a registered username or the fingerprint of the account.")
                                           account-details)
                            (let ((username (archive-name->username
                                             archive)))
-                             (when (not (eq? 'unset allowed-contacts))
+                             (when (not (eq? '#$%unset-value allowed-contacts))
                                ;; Reject calls from unknown contacts.
                                (set-account-details
                                 '(("DHT.PublicInCalls" . "false")) username)
@@ -659,7 +659,7 @@ argument, either a registered username or the fingerprint of the account.")
                                ;; Add allowed ones.
                                (for-each (cut add-contact <> username)
                                          allowed-contacts))
-                             (when (not (eq? 'unset moderators))
+                             (when (not (eq? '#$%unset-value moderators))
                                ;; Disable the 'AllModerators' property.
                                (set-all-moderators #f username)
                                ;; Remove all moderators.
