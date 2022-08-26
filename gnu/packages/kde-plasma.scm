@@ -126,6 +126,47 @@ Breeze is the default theme for the KDE Plasma desktop.")
     (license (list license:bsd-3                  ;cmake/FindSass.cmake
                    license:lgpl2.1+))))           ;<all other files>
 
+(define-public drkonqi
+  (package
+    (name "drkonqi")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0vw4bfld2jdiwm4g3008x8s1lq1ydf87ckb0fvyzsp11hq9nnnk7"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "ctest" "-E" "connectiontest")))))))
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list ki18n
+                  kcoreaddons
+                  kconfig
+                  kservice
+                  kdeclarative
+                  kjobwidgets
+                  kio
+                  kcrash
+                  kcompletion
+                  kwidgetsaddons
+                  kwallet
+                  knotifications
+                  kidletime
+                  kwindowsystem
+                  ksyntaxhighlighting
+                  qtdeclarative-5))
+    (synopsis "Crash handler for KDE software")
+    (description "This package provides an automatic handler for crashed apps.")
+    (home-page "https://invent.kde.org/plasma/drkonqi")
+    (license license:gpl2+)))
+
 (define-public kactivitymanagerd
   (package
     (name "kactivitymanagerd")
