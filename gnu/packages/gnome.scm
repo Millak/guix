@@ -12194,7 +12194,6 @@ your operating-system definition:
            python-pygobject))
     (arguments
      (list #:glib-or-gtk? #t
-           #:tests? #f ;; The flake8 test fails trying to validate piper.in as code.
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'dont-update-gtk-icon-cache
@@ -12211,7 +12210,11 @@ your operating-system definition:
                      (wrap-program
                          (string-append #$output "/bin/piper")
                        `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                       `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
+                       `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))
+               (add-before 'check 'flake8-config
+                 (lambda _
+                   ;; Make sure the tests use the local flake8 config
+                   (symlink (string-append #$source "/.flake8") ".flake8"))))))
     (home-page "https://github.com/libratbag/piper/")
     (synopsis "Configure bindings and LEDs on gaming mice")
     (description "Piper is a GTK+ application for configuring gaming mice with
