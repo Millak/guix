@@ -5641,7 +5641,7 @@ built on the Actix ecosystem.")
 (define-public rust-backtrace-0.3
   (package
     (name "rust-backtrace")
-    (version "0.3.56")
+    (version "0.3.66")
     (source
      (origin
        (method url-fetch)
@@ -5650,18 +5650,19 @@ built on the Actix ecosystem.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1g716jmrik0fx29va3js4gw8hwk5jlsmvqaa9ryp1c9qyh07c4cx"))))
+         "19yrfx0gprqmzphmf6qv32g93w76ny5g751ks1abdkqnsqcl7f6a"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-addr2line" ,rust-addr2line-0.14)
-        ("rust-backtrace-sys" ,rust-backtrace-sys-0.1)
+       (("rust-addr2line" ,rust-addr2line-0.17)
+        ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-cpp-demangle" ,rust-cpp-demangle-0.3)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.4)
-        ("rust-object" ,rust-object-0.23)
+        ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.5)
+        ("rust-object" ,rust-object-0.29)
         ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-1)
