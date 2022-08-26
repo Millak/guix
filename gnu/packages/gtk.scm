@@ -1057,7 +1057,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.6.6")
+    (version "4.6.7")
     (source
      (origin
        (method url-fetch)
@@ -1065,7 +1065,7 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0w5fb4grgmb6nhf2glq2y5xqnc9y4v3lm0s9xnbw5xv96p8y9gvv"))
+        (base32 "1s0hn1mqw9zzr99bgc5bj90am2x6vr5g5q23mmzmqajy9dy2xzgg"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
     (build-system meson-build-system)
