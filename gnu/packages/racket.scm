@@ -200,6 +200,7 @@ otherwise."
       racket-vm-bc))
 
 (define %racket-version "8.5") ; Remember to update chez-scheme-for-racket!
+(define %zuo-version "1.0") ; defined in racket/src/zuo/zuo.c
 (define %racket-commit
   (string-append "v" %racket-version))
 (define %racket-origin
@@ -231,6 +232,54 @@ otherwise."
                        "zlib")))
          ;; Unbundle libffi.
          (delete-file-recursively "racket/src/bc/foreign/libffi")))))
+
+
+(define-public zuo
+  (let ((revision #f))
+    (package
+      (name "zuo")
+      (version (string-append %zuo-version
+                              "-racket"
+                              "8.6"
+                              (if revision "-guix" "")
+                              (or revision "")))
+      (source
+       (origin
+         (inherit %racket-origin)
+         (uri (git-reference
+               (url "https://github.com/racket/racket")
+               (commit "v8.6")))
+         (sha256
+          (base32 "1yi36nr7zrdwrnvpmliirxxjz4pyfyhkar6yvk3rapvmg4q2vmnk"))
+         (patches (append (origin-patches %racket-origin)
+                          (search-patches "racket-backport-8.6-zuo.patch"
+                                          "racket-zuo-bin-sh.patch")))
+         (file-name (git-file-name "racket" "8.6"))))
+      (outputs '("out" "debug"))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:out-of-source? #t
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda args
+                (chdir "racket/src/zuo"))))))
+      (home-page "https://github.com/racket/zuo")
+      ;; ^ This is downstream of https://github.com/racket/racket,
+      ;; but it's designed to be a friendly landing place
+      (synopsis "Tiny Racket for build scripts")
+      (description "Zuo (作) is a tiny Racket with primitives for dealing
+with files and running processes.  It comes with a @command{make}-like
+embedded DSL, which is used to build Racket itself.
+
+Zuo is a Racket variant in the sense that program files start with
+@code{#lang}, and the module path after @code{#lang} determines the parsing
+and expansion of the file content.  That's how the @command{make}-like DSL is
+defined, and even the base Zuo language is defined by layers of @code{#lang}s.
+One of the early layers implements macros.")
+      (license (list license:asl2.0 license:expat)))))
+
 
 (define racket-vm-common-configure-flags
   #~`(,@(cond
