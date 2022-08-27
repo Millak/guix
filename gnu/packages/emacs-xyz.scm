@@ -12208,7 +12208,7 @@ target will call @code{compile} on it.")
 (define-public emacs-cider
   (package
     (name "emacs-cider")
-    (version "1.4.1")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -12217,11 +12217,19 @@ target will call @code{compile} on it.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08635ln514nrglx6qyhaq1x7y7lw4mcd659ba8zs071yjiariarm"))))
+        (base32 "1ih902n8p3pl1apprprkyrlnrp2dxli86y5k09zahy9mglfz2z5n"))))
     (build-system emacs-build-system)
     (arguments
      '(#:exclude                        ;don't exclude 'cider-test.el'
-       '("^\\.dir-locals\\.el$" "^test/")))
+       '("^\\.dir-locals\\.el$" "^test/")
+       #:phases
+       ;; XXX: file "test/cider-tests.el" contains a bogus "/bin/command"
+       ;; string, and `patch-el-files' phase chokes on it (even though the
+       ;; file is excluded from installation).  Remove the phase altogether
+       ;; since there is no "/bin/executable" to replace in the code base
+       ;; anyway.
+       (modify-phases %standard-phases
+         (delete 'patch-el-files))))
     (propagated-inputs
      (list emacs-clojure-mode
            emacs-parseedn
