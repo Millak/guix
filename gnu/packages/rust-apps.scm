@@ -53,6 +53,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages ibus)
@@ -365,7 +366,7 @@ Features include:
 (define-public exa
   (package
     (name "exa")
-    (version "0.9.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
@@ -374,14 +375,14 @@ Features include:
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1s902xgplz1167k0r7x235p914lprpsqy2if0kpa1mlb0fswqqq4"))))
+         "1dd7waq2bnxc1xwygqphi8k1g2qzykr6fk0q4rgrhhxp2jd09f04"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-datetime" ,rust-datetime-0.4)
+        ("rust-datetime" ,rust-datetime-0.5)
         ("rust-env-logger" ,rust-env-logger-0.6)
-        ("rust-git2" ,rust-git2-0.9)
+        ("rust-git2" ,rust-git2-0.13)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
@@ -389,64 +390,45 @@ Features include:
         ("rust-log" ,rust-log-0.4)
         ("rust-natord" ,rust-natord-1)
         ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-number-prefix" ,rust-number-prefix-0.3)
+        ("rust-number-prefix" ,rust-number-prefix-0.4)
         ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
         ("rust-term-grid" ,rust-term-grid-0.1)
         ("rust-term-size" ,rust-term-size-0.3)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-users" ,rust-users-0.9)
-        ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.4))
+        ("rust-users" ,rust-users-0.11)
+        ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.5))
        #:cargo-development-inputs
-       (("rust-datetime" ,rust-datetime-0.4))
+       (("rust-datetime" ,rust-datetime-0.5))
        #:phases
        (modify-phases %standard-phases
-         ;; Ignoring failing tests.
-         ;; Reported in https://github.com/ogham/exa/issues/318
-         (add-before 'check 'disable-failing-tests
+         (add-after 'build 'build-manual
            (lambda _
-             (substitute* "src/options/mod.rs"
-               (("^.*fn oneline_across.*" oneline-across)
-                (string-append "#[ignore]\n" oneline-across)))
-
-             (substitute* "src/options/view.rs"
-               (("test!\\(across:.*") "")
-               (("test!\\(cr:.*") "")
-               (("test!\\(empty:.*") "")
-               (("test!\\(gracross:.*") "")
-               (("test!\\(grid:.*") "")
-               (("test!\\(icons:.*") "")
-               (("test!\\(just_binary:.*") "")
-               (("test!\\(just_blocks:.*") "")
-               (("test!\\(just_bytes:.*") "")
-               (("test!\\(just_git:.*") "")
-               (("test!\\(just_group:.*") "")
-               (("test!\\(just_header:.*") "")
-               (("test!\\(just_inode:.*") "")
-               (("test!\\(just_links:.*") "")
-               (("test!\\(leg:.*") "")
-               (("test!\\(lid:.*") "")
-               (("test!\\(original_g:.*") ""))
-             #t))
+             (map (lambda (page)
+                    (system (string-append
+                             "pandoc --standalone -f markdown -t man man/"
+                             page ".md > " page)))
+                  `("exa.1" "exa_colors.5"))))
          (add-after 'install 'install-extras
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
                     (share (string-append out "/share"))
-                    (man1  (string-append share "/man/man1")))
-               (install-file "contrib/man/exa.1" man1)
+                    (man1  (string-append share "/man/man1"))
+                    (man5  (string-append share "/man/man5")))
+               (install-file "exa.1" man1)
+               (install-file "exa_colors.5" man5)
                (mkdir-p (string-append out "/etc/bash_completion.d"))
                (mkdir-p (string-append share "/fish/vendor_completions.d"))
                (mkdir-p (string-append share "/zsh/site-functions"))
-               (copy-file "contrib/completions.bash"
+               (copy-file "completions/completions.bash"
                           (string-append out "/etc/bash_completion.d/exa"))
-               (copy-file "contrib/completions.fish"
-                          (string-append share "/fish/vendor_completions.d/exa.fish"))
-               (copy-file "contrib/completions.zsh"
-                          (string-append share "/zsh/site-functions/_exa"))
-               #t))))))
-    (inputs
-     (list libgit2 zlib))
-    (native-inputs
-     (list pkg-config))
+               (copy-file "completions/completions.fish"
+                          (string-append
+                            share "/fish/vendor_completions.d/exa.fish"))
+               (copy-file "completions/completions.zsh"
+                          (string-append
+                            share "/zsh/site-functions/_exa"))))))))
+    (inputs (list libgit2 zlib))
+    (native-inputs (list pkg-config pandoc))
     (home-page "https://the.exa.website/")
     (synopsis "Modern replacement for ls")
     (description "@code{exa} is a modern replacement for the command-line
