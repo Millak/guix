@@ -7370,14 +7370,14 @@ configuration program to choose applications starting on login.")
              ;; For the missing /etc/machine-id.
              (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")       ; for glib-compile-resources
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)
-       ;; For testing
-       ("dbus-launch" ,dbus)
-       ("dconf" ,dconf) ; required to properly store settings
-       ("uuidgen" ,util-linux)
-       ("xvfb" ,xorg-server-for-tests)))
+     (list `(,glib "bin")               ;for glib-compile-resources
+           pkg-config
+           libxml2
+           ;; For testing
+           dbus
+           dconf                        ;required to properly store settings
+           util-linux
+           xorg-server-for-tests))
     (propagated-inputs
      ;; These are all in the Requires.private field of gjs-1.0.pc.
      (list cairo gobject-introspection mozjs-78))
