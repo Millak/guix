@@ -12,6 +12,7 @@
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -185,14 +186,16 @@ external dependencies.")
 (define-public samba
   (package
     (name "samba")
-    (version "4.16.2")
+    (version "4.16.4")
     (source
+     ;; For updaters: the current PGP fingerprint is
+     ;; 81F5E2832BD2545A1897B713AA99442FB680B620.
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/samba/stable/"
                            "samba-" version ".tar.gz"))
        (sha256
-        (base32 "1745gx36gyd7353a94w4lrgksbmms0502kj9gg63il9zbdns1dx0"))))
+        (base32 "0bvhqinxwpbwp4ayhd9q8ga0w89gnkl1m3nrwpj1fnhjzd4ghclm"))))
     (build-system gnu-build-system)
     (arguments
      (list
