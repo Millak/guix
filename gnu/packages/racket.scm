@@ -128,10 +128,9 @@
 ;; This file defines the packages 'racket-vm-cgc', 'racket-vm-bc', and
 ;; 'racket-vm-cs'. All three are in-place builds of 'racket/src/' and
 ;; 'racket/collects/' and are installed to 'opt/racket-vm/' in the store
-;; output. The function 'racket-vm-for-system' returns the recomended Racket
-;; VM package for a given system.
+;; output.
 ;;
-;; We then define the packages 'racket-minimal' and
+;; Using 'racket-vm-cs', we then define the packages 'racket-minimal' and
 ;; 'racket'. These use Racket's support for ``layered installations'', which
 ;; allow an immutable base layer to be extended with additional packages.
 ;; They use the layer configuration directly provide ready-to-install FHS-like
@@ -191,17 +190,6 @@
 ;; convienience.)
 ;;
 ;; CODE:
-
-(define* (racket-vm-for-system #:optional
-                               (system (or (%current-target-system)
-                                           (%current-system))))
-  "Return 'racket-vm-cs' if we are able to build it for SYSTEM; 'racket-vm-bc'
-otherwise."
-  ;; Once we figure out the issues in https://racket.discourse.group/t/950,
-  ;; we can use 'racket-vm-cs' everywhere.
-  (if (racket-cs-native-supported-system? system)
-      racket-vm-cs
-      racket-vm-bc))
 
 (define %racket-version "8.6") ; Remember to update chez-scheme-for-racket!
 (define %zuo-version "1.0") ; defined in racket/src/zuo/zuo.c
@@ -566,7 +554,7 @@ used to build the name of the resulting store item."
     (inputs
      (list openssl
            sqlite
-           (racket-vm-for-system)
+           racket-vm-cs
            (racket-packages-origin
             "base" %racket-origin
             '(("base" "pkgs/base")
@@ -684,7 +672,7 @@ DrRacket IDE, are not included.")
       unixodbc
       libedit ;; TODO reconsider in light of expeditor and readline-gpl
       racket-minimal ;; <-- TODO non-tethered layer
-      (racket-vm-for-system)
+      racket-vm-cs
       (simple-racket-origin
        "2d" (base32 "0fb5v6058ls08xw3zbmqyr2ym0psm119gl9ffgmhm9w8rs9i4dq7")
        '("2d" "2d-doc" "2d-lib"))
