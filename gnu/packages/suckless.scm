@@ -33,6 +33,7 @@
 (define-module (gnu packages suckless)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages fonts)
@@ -49,6 +50,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
@@ -1180,6 +1182,33 @@ import and export OPML and to fetch, filter, merge and order feed items.")
        "farbfeld is a lossless image format which is easy to parse,
 pipe and compress.")
       (home-page "https://git.suckless.org/farbfeld/")
+      (license license:isc))))
+
+(define-public snafu
+  (let ((commit "e436fb4f61ca93a4ec85122506b2c2d4fec30eb6")
+        (revision "0"))
+    (package
+      (name "snafu")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/jsbmg/snafu")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1c6ahxw0qz0703my28k2z0kgi0am5bp5d02l4rgyphgvjk1jfv8h"))))
+      (arguments
+       `(#:cargo-inputs
+         (("rust-chrono" ,rust-chrono-0.4))
+         #:tests? #f)) ; There are no tests.
+      (build-system cargo-build-system)
+      (home-page "https://github.com/jsbmg/snafu")
+      (synopsis "Status text for DWM window manager")
+      (description "@code{snafu} provides status text for DWM's builtin bar.  It
+shows battery status, battery capacity, current WiFi connection, and the time in
+a nice format.")
       (license license:isc))))
 
 (define-public svkbd
