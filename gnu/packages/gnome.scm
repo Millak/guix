@@ -5046,9 +5046,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
            python-pygobject
            vala))
     (propagated-inputs
-     (list glib))                       ;required by libsecret-1.pc
-    (inputs
-     (list libgcrypt))
+     (list glib libgcrypt))             ;required by libsecret-1.pc
     (home-page "https://wiki.gnome.org/Projects/Libsecret/")
     (synopsis "GObject bindings for \"Secret Service\" API")
     (description
