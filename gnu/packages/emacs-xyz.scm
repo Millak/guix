@@ -24459,7 +24459,8 @@ other frame parameters.")
       (inputs
        (list emacs-flycheck emacs-spinner))
       (synopsis "Emacs major mode for editing Arduino sketches")
-      (description "Emacs major mode for editing Arduino sketches.")
+      (description "This package provides an Emacs major mode for editing
+Arduino sketches and Org Babel support.")
       (home-page "https://repo.or.cz/arduino-mode")
       (license license:gpl3+))))
 
