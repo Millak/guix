@@ -36,7 +36,6 @@
   #:use-module (ice-9 match)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
-  #:use-module (gnu packages bash)
   #:use-module (gnu packages chez)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
@@ -212,7 +211,7 @@ otherwise."
     (sha256
      (base32 "0f9zyhdvbh4xsndrqjzl85j5ziz0rmqi676g9s1lw3h3skq2636h"))
     (file-name (git-file-name "racket" %racket-version))
-    (patches (search-patches "racket-minimal-sh-via-rktio.patch"))
+    (patches (search-patches "racket-rktio-bin-sh.patch"))
     (modules '((guix build utils)))
     (snippet
      #~(begin
@@ -232,8 +231,7 @@ otherwise."
          ;; Unbundle libffi.
          (delete-file-recursively "racket/src/bc/foreign/libffi")))))
 
-(define (racket-vm-common-configure-flags)
-  ;; under a lambda abstraction to avoid evaluating bash-minimal too early.
+(define racket-vm-common-configure-flags
   #~`(,@(cond
          ((false-if-exception
            (search-input-file %build-inputs "/bin/libtool"))
@@ -248,8 +246,6 @@ otherwise."
                (list (string-append "--enable-racket=" racket))))
          (else
           '()))
-      ,(string-append "CPPFLAGS=-DGUIX_RKTIO_PATCH_BIN_SH="
-                      #$(file-append bash-minimal "/bin/sh"))
       "--disable-strip"
       ;; Using --enable-origtree lets us distinguish the VM from subsequent
       ;; layers and produces a build with the shape expected by tools such as
@@ -267,7 +263,6 @@ otherwise."
      (version %racket-version)
      (source %racket-origin)
      (inputs (list ncurses ;; <- common to all variants (for #%terminal)
-                   bash-minimal ;; <- common to all variants (for `system`)
                    libffi)) ;; <- only for BC variants
      (native-inputs (list libtool)) ;; <- only for BC variants
      (outputs '("out" "debug"))
@@ -276,7 +271,7 @@ otherwise."
       (list
        #:configure-flags
        #~(cons "--enable-cgcdefault"
-               #$(racket-vm-common-configure-flags))
+               #$racket-vm-common-configure-flags)
        ;; Tests are in packages like racket-test-core and
        ;; main-distribution-test that aren't part of the main
        ;; distribution.
@@ -359,7 +354,7 @@ code to use the 3M garbage collector.")
      (substitute-keyword-arguments (package-arguments racket-vm-cgc)
        ((#:configure-flags _ '())
         #~(cons "--enable-bconly"
-                #$(racket-vm-common-configure-flags)))))
+                #$racket-vm-common-configure-flags))))
     (synopsis "Racket BC [3M] implementation")
     (description "The Racket BC (``before Chez'' or ``bytecode'')
 implementation was the default before Racket 8.0.  It uses a compiler written
@@ -405,7 +400,7 @@ collector, 3M (``Moving Memory Manager'').")
                                 #$(this-package-native-input
                                    "chez-scheme-for-racket")
                                 "/bin/scheme")
-                 #$(racket-vm-common-configure-flags)))))
+                 #$racket-vm-common-configure-flags))))
     (synopsis "Racket CS implementation")
     (description "The Racket CS implementation, which uses ``Chez Scheme'' as
 its core compiler and runtime system, has been the default Racket VM
