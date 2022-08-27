@@ -312,8 +312,11 @@ One of the early layers implements macros.")
      (source %racket-origin)
      (inputs (list ncurses ;; <- common to all variants (for #%terminal)
                    libffi)) ;; <- only for BC variants
-     (native-inputs (list zuo ;; <- for all variants
-                          libtool)) ;; <- only for BC variants
+     (native-inputs (cons* zuo ;; <- for all variants
+                           libtool ;; <- only for BC variants
+                           (if (%current-target-system)
+                               (list this-package)
+                               '())))
      (outputs '("out" "debug"))
      (build-system gnu-build-system)
      (arguments
@@ -401,8 +404,10 @@ code to use the 3M garbage collector.")
     (inherit racket-vm-cgc)
     (name "racket-vm-bc")
     (native-inputs
-     (modify-inputs (package-native-inputs racket-vm-cgc)
-       (prepend racket-vm-cgc)))
+     (if (%current-target-system)
+         (package-native-inputs racket-vm-cgc)
+         (modify-inputs (package-native-inputs racket-vm-cgc)
+           (prepend racket-vm-cgc))))
     (arguments
      (substitute-keyword-arguments (package-arguments racket-vm-cgc)
        ((#:configure-flags _ '())
@@ -432,11 +437,17 @@ collector, 3M (``Moving Memory Manager'').")
        (prepend zlib lz4)
        (delete "libffi")))
     (native-inputs
-     (modify-inputs (package-native-inputs racket-vm-cgc)
-       (delete "libtool")
-       (prepend chez-scheme-for-racket
-                chez-nanopass-bootstrap
-                racket-vm-bc)))
+     (let ((native-inputs (package-native-inputs racket-vm-cgc)))
+       (modify-inputs (if (%current-target-system)
+                          (modify-inputs native-inputs
+                            (delete "racket-vm-cgc"))
+                          native-inputs)
+         (delete "libtool")
+         (prepend chez-scheme-for-racket
+                  chez-nanopass-bootstrap
+                  (if (%current-target-system)
+                      racket-vm-cs
+                      racket-vm-bc)))))
     (arguments
      (substitute-keyword-arguments (package-arguments racket-vm-cgc)
        ((#:phases those-phases #~%standard-phases)
@@ -450,7 +461,7 @@ collector, 3M (``Moving Memory Manager'').")
                  "--enable-libz"
                  "--enable-lz4"
                  (string-append "--enable-scheme="
-                                #$(this-package-native-input
+                                #+(this-package-native-input
                                    "chez-scheme-for-racket")
                                 "/bin/scheme")
                  #$racket-vm-common-configure-flags))))
