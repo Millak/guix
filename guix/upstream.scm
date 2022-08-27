@@ -66,7 +66,7 @@
             upstream-updater-name
             upstream-updater-description
             upstream-updater-predicate
-            upstream-updater-latest
+            upstream-updater-import
 
             upstream-input-change?
             upstream-input-change-name
@@ -241,7 +241,7 @@ correspond to the same version."
   (name        upstream-updater-name)
   (description upstream-updater-description)
   (pred        upstream-updater-predicate)
-  (latest      upstream-updater-latest))
+  (import      upstream-updater-import))
 
 (define (importer-modules)
   "Return the list of importer modules."
@@ -272,7 +272,7 @@ correspond to the same version."
   "Return an updater among UPDATERS that matches PACKAGE, or #f if none of
 them matches."
   (find (match-lambda
-          (($ <upstream-updater> name description pred latest)
+          (($ <upstream-updater> name description pred import)
            (pred package)))
         updaters))
 
@@ -285,9 +285,9 @@ them until one of them returns an upstream source.  It is the caller's
 responsibility to ensure that the returned source is newer than the current
 one."
   (any (match-lambda
-         (($ <upstream-updater> name description pred latest)
+         (($ <upstream-updater> name description pred import)
           (and (pred package)
-               (latest package))))
+               (import package))))
        updaters))
 
 (define* (package-latest-release* package

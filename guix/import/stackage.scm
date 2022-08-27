@@ -175,6 +175,6 @@ PACKAGE or #f if the package is not included in the Stackage LTS release."
    (name 'stackage)
    (description "Updater for Stackage LTS packages")
    (pred stackage-lts-package?)
-   (latest latest-lts-release)))
+   (import latest-lts-release)))
 
 ;;; stackage.scm ends here

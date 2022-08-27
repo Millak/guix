@@ -344,4 +344,4 @@ latest version of PACKAGE-NAME."
    (name 'hexpm)
    (description "Updater for hex.pm packages")
    (pred (url-prefix-predicate hexpm-package-url))
-   (latest latest-release)))
+   (import latest-release)))

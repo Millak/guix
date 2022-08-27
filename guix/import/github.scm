@@ -330,6 +330,6 @@ releases."
    (name 'github)
    (description "Updater for GitHub packages")
    (pred github-package?)
-   (latest latest-release)))
+   (import latest-release)))
 
 

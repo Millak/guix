@@ -488,10 +488,10 @@
                        (name 'dummy)
                        (pred (const #t))
                        (description "")
-                       (latest (const (upstream-source
-                                       (package "foo")
-                                       (version "42.0")
-                                       (urls '("http://example.org")))))))))
+                       (import (const (upstream-source
+                                         (package "foo")
+                                         (version "42.0")
+                                         (urls '("http://example.org")))))))))
         (let* ((p (dummy-package "foo" (version "1.0")))
                (t (options->transformation
                    `((with-latest . "foo")))))

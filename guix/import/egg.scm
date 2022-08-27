@@ -348,6 +348,6 @@ not work."
    (name 'egg)
    (description "Updater for CHICKEN egg packages")
    (pred egg-package?)
-   (latest latest-release)))
+   (import latest-release)))
 
 ;;; egg.scm ends here

@@ -189,7 +189,7 @@ package on RubyGems."
    (name 'gem)
    (description "Updater for RubyGem packages")
    (pred gem-package?)
-   (latest latest-release)))
+   (import latest-release)))
 
 (define* (gem-recursive-import package-name #:optional version)
   (recursive-import package-name

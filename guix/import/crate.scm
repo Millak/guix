@@ -370,5 +370,5 @@ look up the development dependencs for the given crate."
    (name 'crate)
    (description "Updater for crates.io packages")
    (pred crate-package?)
-   (latest latest-release)))
+   (import latest-release)))
 

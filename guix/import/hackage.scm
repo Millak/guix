@@ -381,6 +381,6 @@ respectively."
    (name 'hackage)
    (description "Updater for Hackage packages")
    (pred hackage-package?)
-   (latest latest-release)))
+   (import latest-release)))
 
 ;;; cabal.scm ends here

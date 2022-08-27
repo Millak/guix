@@ -583,4 +583,4 @@ source.  To build it from source, refer to the upstream repository at
    (name 'pypi)
    (description "Updater for PyPI packages")
    (pred pypi-package?)
-   (latest latest-release)))
+   (import latest-release)))

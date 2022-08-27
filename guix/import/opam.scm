@@ -435,4 +435,4 @@ package in OPAM."
     (name 'opam)
     (description "Updater for OPAM packages")
     (pred opam-package?)
-    (latest latest-release)))
+    (import latest-release)))

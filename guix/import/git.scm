@@ -226,4 +226,4 @@ tag, or #false and #false if the latest version could not be determined."
    (name 'generic-git)
    (description "Updater for packages hosted on Git repositories")
    (pred git-package?)
-   (latest latest-git-release)))
+   (import latest-git-release)))

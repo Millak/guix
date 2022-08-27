@@ -848,7 +848,7 @@ the directory containing its source tarball."
    (name 'gnu)
    (description "Updater for GNU packages")
    (pred gnu-hosted?)
-   (latest latest-gnu-release)))
+   (import latest-gnu-release)))
 
 (define %gnu-ftp-updater
   ;; This is for GNU packages taken from alternate locations, such as
@@ -859,41 +859,41 @@ the directory containing its source tarball."
    (pred (lambda (package)
            (and (not (gnu-hosted? package))
                 (pure-gnu-package? package))))
-   (latest latest-release*)))
+   (import latest-release*)))
 
 (define %savannah-updater
   (upstream-updater
    (name 'savannah)
    (description "Updater for packages hosted on savannah.gnu.org")
    (pred (url-prefix-predicate "mirror://savannah/"))
-   (latest latest-savannah-release)))
+   (import latest-savannah-release)))
 
 (define %sourceforge-updater
   (upstream-updater
    (name 'sourceforge)
    (description "Updater for packages hosted on sourceforge.net")
    (pred (url-prefix-predicate "mirror://sourceforge/"))
-   (latest latest-sourceforge-release)))
+   (import latest-sourceforge-release)))
 
 (define %xorg-updater
   (upstream-updater
    (name 'xorg)
    (description "Updater for X.org packages")
    (pred (url-prefix-predicate "mirror://xorg/"))
-   (latest latest-xorg-release)))
+   (import latest-xorg-release)))
 
 (define %kernel.org-updater
   (upstream-updater
    (name 'kernel.org)
    (description "Updater for packages hosted on kernel.org")
    (pred (url-prefix-predicate "mirror://kernel.org/"))
-   (latest latest-kernel.org-release)))
+   (import latest-kernel.org-release)))
 
 (define %generic-html-updater
   (upstream-updater
    (name 'generic-html)
    (description "Updater that crawls HTML pages.")
    (pred html-updatable-package?)
-   (latest latest-html-updatable-release)))
+   (import latest-html-updatable-release)))
 
 ;;; gnu-maintenance.scm ends here

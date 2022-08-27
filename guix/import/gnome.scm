@@ -130,4 +130,4 @@ https://discourse.gnome.org/t/new-gnome-versioning-scheme/4235"
    (name 'gnome)
    (description "Updater for GNOME packages")
    (pred (url-prefix-predicate "mirror://gnome/"))
-   (latest latest-gnome-release)))
+   (import latest-gnome-release)))

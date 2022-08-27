@@ -444,7 +444,7 @@ type '<elpa-package>'."
    (name 'elpa)
    (description "Updater for ELPA packages")
    (pred package-from-elpa-repository?)
-   (latest latest-release)))
+   (import latest-release)))
 
 (define elpa-guix-name (cut guix-name "emacs-" <>))
 

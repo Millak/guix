@@ -187,4 +187,4 @@ not be determined."
     (name 'kde)
     (description "Updater for KDE packages")
     (pred (url-prefix-predicate "mirror://kde/"))
-    (latest latest-kde-release)))
+    (import latest-kde-release)))

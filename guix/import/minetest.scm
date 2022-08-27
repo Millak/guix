@@ -513,4 +513,4 @@ or #false if the latest release couldn't be determined."
     (name 'minetest)
     (description "Updater for Minetest packages on ContentDB")
     (pred minetest-package?)
-    (latest latest-minetest-release)))
+    (import latest-minetest-release)))

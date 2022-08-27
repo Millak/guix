@@ -776,13 +776,13 @@ s-expression corresponding to that package, or #f on failure."
    (name 'cran)
    (description "Updater for CRAN packages")
    (pred cran-package?)
-   (latest latest-cran-release)))
+   (import latest-cran-release)))
 
 (define %bioconductor-updater
   (upstream-updater
    (name 'bioconductor)
    (description "Updater for Bioconductor packages")
    (pred bioconductor-package?)
-   (latest latest-bioconductor-release)))
+   (import latest-bioconductor-release)))
 
 ;;; cran.scm ends here

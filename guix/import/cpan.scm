@@ -358,4 +358,4 @@ in RELEASE, a <cpan-release> record."
    (name 'cpan)
    (description "Updater for CPAN packages")
    (pred cpan-package?)
-   (latest latest-release)))
+   (import latest-release)))

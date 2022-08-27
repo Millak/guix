@@ -145,4 +145,4 @@ for example, 'linuxdcpp'. Return #f if there is no releases."
    (name 'launchpad)
    (description "Updater for Launchpad packages")
    (pred launchpad-package?)
-   (latest latest-release)))
+   (import latest-release)))
