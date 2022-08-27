@@ -594,8 +594,8 @@ Chez Scheme.")))
 (define-public stex-bootstrap
   ;; This commit includes a fix which we would otherwise want to use as
   ;; patch.  Let's revert to tagged releases as soon as one becomes available.
-  (let ((commit "54051494434a197772bf6ca5b4e6cf6be55f39a5")
-        (revision "1"))
+  (let ((commit "afa607564a5662ffd748e824801277a6b5a3d11c")
+        (revision "2"))
     (hidden-package
      (package
        (name "stex")
@@ -611,7 +611,7 @@ Chez Scheme.")))
                 (url "https://github.com/dybvig/stex")
                 (commit commit)))
           (sha256
-           (base32 "01jnvw8qw33gnpzwrakwhsr05h6b609lm180jnspcrb7lds2p23d"))
+           (base32 "0n6dryv5j7cw2qmsj55wqb0ph901h83a2hl4j891ppxp0xx18nkp"))
           (file-name (git-file-name name version))
           (snippet
            #~(for-each delete-file
