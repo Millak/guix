@@ -282,7 +282,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
         (base32 "12vb15gs56g8wl5nqlm4llr508brh4m2lfknhq4lizbxzqzawkb1"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases (delete 'configure))
+     `(#:phases (modify-phases %standard-phases (delete 'configure))
 
        ;; The 'all' target depends on three targets that directly populate
        ;; $(MANDIR) based on its current contents.  Doing that in parallel
@@ -290,9 +290,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
        #:parallel-build? #f
 
        #:tests? #f
-       #:make-flags (list (string-append "mandir="
-                                         (assoc-ref %outputs "out")
-                                         "/share/man"))))
+       #:make-flags ,#~(list (string-append "mandir=" #$output "/share/man"))))
     (home-page "https://www.kernel.org/doc/man-pages/")
     (synopsis "Development manual pages from the Linux project")
     (description
