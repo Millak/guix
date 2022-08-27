@@ -238,6 +238,10 @@ importer."))
                        "julien@lepiller.eu")
   java ocaml translations)
 
+(define-member (person "Philip McGrath"
+                       "philip@philipmcgrath.com")
+  racket)
+
 (define-member (person "Mathieu Othacehe"
                        "othacehe@gnu.org")
   core installer mentors)
