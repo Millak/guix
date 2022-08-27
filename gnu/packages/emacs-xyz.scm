@@ -16,7 +16,7 @@
 ;;; Copyright © 2016, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016-2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Clément Lassieur <clement@lassieur.org>
@@ -30356,6 +30356,28 @@ conversion program}, a Japanese input method on Emacs.")
      "Daredevil SKK is a version of @acronym{SKK, Simple Kana to Kanji
 conversion program}, a Japanese input method on Emacs.  This package adds
 support for the Nicola keyboard layout to it.")))
+
+(define-public emacs-tamil99
+  (package
+    (name "emacs-tamil99")
+    (version "0.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.systemreboot.net/tamil99/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f9s3b6fd42j21922qkxfr3j83a7qym73nynph86w87vkis40zqw"))))
+    (build-system emacs-build-system)
+    (home-page "https://git.systemreboot.net/tamil99/about/")
+    (synopsis "Tamil99 input method for Emacs")
+    (description "This package implements the @code{tamil99} input method for
+Emacs.  Tamil99 is a keyboard layout and input method that is specifically
+designed for the Tamil language.  Vowels and vowel modifiers are input with
+your left hand, and consonants are input with your right hand.")
+    (license license:gpl3+)))
 
 (define-public emacs-objed
   (package
