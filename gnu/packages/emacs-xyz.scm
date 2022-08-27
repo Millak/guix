@@ -13284,7 +13284,7 @@ programming and reproducible research.")
 (define-public emacs-org-contrib
   (package
     (name "emacs-org-contrib")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -13293,16 +13293,7 @@ programming and reproducible research.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17aca4mc3gbdh6nhlcaa5ymh1yy76nwysrvy9sfcqkzvd5lgagzc"))
-       ;; XXX: ob-sclang.el is packaged separately to avoid the dependency on
-       ;; SuperCollider and qtwebengine-5.  This will be unnecessary in 0.4+
-       ;; release as the file is going to be removed from the repository.
-
-       ;; XXX: org-contacts.el is now maintained in a separate repository and
-       ;; will soon be removed from org-contrib
-       (modules '((guix build utils)))
-       (snippet '(begin (delete-file "lisp/ob-sclang.el")
-                        (delete-file "lisp/org-contacts.el")))))
+        (base32 "06b1rpywj596nnnap6pj6fnmcq8fcc4i30zv7qsvs3ryxciw01fb"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -13313,8 +13304,7 @@ programming and reproducible research.")
     (native-inputs
      (list emacs-cider))
     (propagated-inputs
-     (list emacs-arduino-mode ;XXX: remove after 0.4+ release.
-           emacs-org))
+     (list emacs-org))
     (home-page "https://git.sr.ht/~bzg/org-contrib")
     (synopsis "Unmaintained add-ons for Org mode")
     (description
