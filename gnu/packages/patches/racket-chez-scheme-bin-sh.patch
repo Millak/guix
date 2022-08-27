@@ -1,4 +1,4 @@
-From e982b6687494bf071386c67be74e57a29cf4ce00 Mon Sep 17 00:00:00 2001
+From f86370295c5bb14d4bb93d0ccfa37a2b79f19f25 Mon Sep 17 00:00:00 2001
 From: Philip McGrath <philip@philipmcgrath.com>
 Date: Wed, 24 Aug 2022 19:55:14 -0400
 Subject: [PATCH] Chez Scheme: patch s_process for "/bin/sh" on Guix
@@ -24,12 +24,12 @@ on `system` from the C library.
  1 file changed, 20 insertions(+), 1 deletion(-)
 
 diff --git a/racket/src/ChezScheme/c/prim5.c b/racket/src/ChezScheme/c/prim5.c
-index f5e3e345be..922421ca75 100644
+index 82bbf8d687..be8f603447 100644
 --- a/racket/src/ChezScheme/c/prim5.c
 +++ b/racket/src/ChezScheme/c/prim5.c
-@@ -22,6 +22,12 @@
- #include <limits.h>
- #include <ctype.h>
+@@ -27,6 +27,12 @@
+ #include <sys/resource.h>
+ #endif
  
 +/* BEGIN PATCH for Guix */
 +#ifndef WIN32
@@ -38,9 +38,9 @@ index f5e3e345be..922421ca75 100644
 +/* END PATCH for Guix */
 +
  /* locally defined functions */
- static INT s_errno PROTO((void));
- static IBOOL s_addr_in_heap PROTO((uptr x));
-@@ -856,6 +862,17 @@ static ptr s_process(s, stderrp) char *s; IBOOL stderrp; {
+ static INT s_errno(void);
+ static IBOOL s_addr_in_heap(uptr x);
+@@ -861,6 +867,17 @@ static ptr s_process(char *s, IBOOL stderrp) {
  
      INT tofds[2], fromfds[2], errfds[2];
      struct sigaction act, oint_act;
@@ -58,10 +58,10 @@ index f5e3e345be..922421ca75 100644
  
      if (pipe(tofds)) S_error("process","cannot open pipes");
      if (pipe(fromfds)) {
-@@ -881,7 +898,9 @@ static ptr s_process(s, stderrp) char *s; IBOOL stderrp; {
-         CLOSE(1); if (dup(fromfds[1]) != 1) _exit(1);
-         CLOSE(2); if (dup(stderrp ? errfds[1] : 1) != 2) _exit(1);
-         {INT i; for (i = 3; i < NOFILE; i++) (void)CLOSE(i);}
+@@ -897,7 +914,9 @@ static ptr s_process(char *s, IBOOL stderrp) {
+           }
+         }
+ #endif /* __GNU__ Hurd */
 -        execl("/bin/sh", "/bin/sh", "-c", s, NULL);
 +        /* BEGIN PATCH for Guix */
 +        execl(guix_sh, guix_sh, "-c", s, NULL);
@@ -70,7 +70,7 @@ index f5e3e345be..922421ca75 100644
          /*NOTREACHED*/
      } else {
 
-base-commit: 9d228d16fb99c274c964e5bef93e97333888769f
+base-commit: 87eee6e2adb8c6bc11e60619c706fa6295096085
 -- 
 2.32.0
 

@@ -115,7 +115,7 @@ in Chez Scheme machine types, or '#f' if none is defined."
    ((target-linux? system)
     "le")
    ((target-hurd? system)
-    #f)
+    "gnu")
    ((target-mingw? system)
     "nt")
    ;; missing (guix utils) predicates
@@ -131,6 +131,8 @@ in Chez Scheme machine types, or '#f' if none is defined."
    ;; Nix says "x86_64-solaris", but accommodate "-solaris2"
    ((string-contains system "solaris")
     "s2")
+   ((string-suffix? "-qnx" system)
+    "qnx")
    ;; unknown
    (else
     #f)))
@@ -167,6 +169,9 @@ in Chez Scheme machine types, or '#f' if none is defined."
      ("arm32" bootstrap-bootfiles)
      ("arm64" . #f)
      ("ppc32" threads))
+    ;; Hurd
+    ("gnu"
+     ("i3" . #f))
     ;; FreeBSD
     ("fb"
      ("i3" threads) ;; commented out
@@ -192,6 +197,9 @@ in Chez Scheme machine types, or '#f' if none is defined."
     ("s2"
      ("i3" threads) ;; commented out
      ("a6" threads)) ;; commented out
+    ;; QNX
+    ("qnx"
+     ("i3" . #f))
     ;; Windows
     ("nt"
      ("i3" threads bootstrap-bootfiles)
@@ -433,7 +441,7 @@ and 32-bit PowerPC architectures.")
   (package
     (inherit chez-scheme)
     (name "chez-scheme-for-racket")
-    (version "9.5.7.6")
+    (version "9.5.9.2")
     ;; The version should match `(scheme-fork-version-number)`.
     ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
     ;; It will always be different than the upstream version!
@@ -444,18 +452,52 @@ and 32-bit PowerPC architectures.")
        (delete "libx11" "util-linux:lib")))
     (native-inputs
      (modify-inputs (package-native-inputs chez-scheme)
+       (prepend zuo)
        (replace "chez-scheme-bootstrap-bootfiles"
          chez-scheme-for-racket-bootstrap-bootfiles)))
     (arguments
      (substitute-keyword-arguments (package-arguments chez-scheme)
+       ((#:out-of-source? _ #f)
+        #t)
+       ((#:tests? _ #t)
+        ;; FIXME: There have been some flaky test failures. Some have been
+        ;; fixed upstream post-release but have proven non-trivial to
+        ;; backport; at least one issue remains. Re-enable tests once
+        ;; https://github.com/racket/racket/issues/4359 is fixed.
+        #f)
        ((#:configure-flags cfg-flags #~'())
-        #~(cons* "--disable-x11"
-                 "--threads" ;; ok to potentially duplicate
-                 #$cfg-flags))
+        #~`("--disable-x11"
+            "--threads" ;; ok to potentially duplicate
+            ,@(let* ((chez+version (strip-store-file-name #$output))
+                     (doc-prefix (assoc-ref %outputs "doc"))
+                     (doc-dir (string-append doc-prefix
+                                             "/share/doc/"
+                                             chez+version)))
+                (list (string-append "--installcsug="
+                                     doc-dir
+                                     "/csug")
+                      (string-append "--installreleasenotes="
+                                     doc-dir
+                                     "/release_notes")))
+            ,@#$cfg-flags))
+       ((#:make-flags mk-flags #~'())
+        #~(cons* (string-append "ZUO="
+                                #+(this-package-native-input "zuo")
+                                "/bin/zuo")
+                 (string-append "STEXLIB="
+                                #+(this-package-native-input "stex")
+                                "/lib/stex")
+                 #$mk-flags))
        ((#:phases those-phases #~%standard-phases)
         #~(let* ((those-phases #$those-phases)
                  (unpack (assoc-ref those-phases 'unpack)))
             (modify-phases those-phases
+              (replace 'install-docs
+                (lambda* (#:key make-flags #:allow-other-keys)
+                  (apply invoke
+                         "make"
+                         "install-docs"
+                         make-flags)))
               (replace 'unpack
                 (lambda args
                   (unpack #:source #$(or (package-source this-package)

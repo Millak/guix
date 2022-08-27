@@ -1,0 +1,36 @@
+From 8b4d686a62fd66dedfc40ecdcf3698316993d614 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Sun, 17 Jul 2022 22:51:44 -0400
+Subject: [PATCH] racket-index: set write permission when copying
+ `docindex.sqlite`
+
+Fixes https://github.com/racket/racket/issues/4357
+
+(cherry picked from commit 55b6cbdca1f36a4f37bab1519c1b658717d3cad2)
+---
+ pkgs/racket-index/setup/scribble.rkt | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/pkgs/racket-index/setup/scribble.rkt b/pkgs/racket-index/setup/scribble.rkt
+index 6694f0b793..e27a8fa348 100644
+--- a/pkgs/racket-index/setup/scribble.rkt
++++ b/pkgs/racket-index/setup/scribble.rkt
+@@ -252,7 +252,14 @@
+     (unless (file-exists? db-file)
+       (define-values (base name dir?) (split-path db-file))
+       (make-directory* base)
+-      (when copy-from (copy-file copy-from db-file))
++      (when copy-from
++        (copy-file copy-from db-file)
++        ;; we might not have write permissions for the previous layer:
++        ;; ensure that we do for the new file
++        (define orig-mode (file-or-directory-permissions db-file 'bits))
++        (define writeable-mode (bitwise-ior user-write-bit orig-mode))
++        (unless (= writeable-mode orig-mode)
++          (file-or-directory-permissions db-file writeable-mode)))
+       (doc-db-disconnect
+        (doc-db-file->connection db-file #t))))
+   (when (or (ormap can-build*? main-docs)
+-- 
+2.32.0
+
