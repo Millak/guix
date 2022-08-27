@@ -1993,6 +1993,41 @@ directly.")
 Distributed @acronym{Source Control Management, SCM} system.")
       (license license:gpl3+))))
 
+(define-public emacs-alarm-clock
+  (package
+    (name "emacs-alarm-clock")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wlemuel/alarm-clock")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11afq6lnlqdzbll015fx3031bslwfaz5362qgk2ipgqlk872559h"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:include #~(cons "alarm.mp3" %default-include)
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'configure
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((mpg123 (search-input-file inputs "/bin/mpg123"))
+                         (notify-send
+                          (search-input-file inputs "/bin/notify-send")))
+                     (substitute* "alarm-clock.el"
+                       (("\"mpg123\"") (string-append "\"" mpg123 "\""))
+                       (("notify-send") notify-send))))))))
+    (inputs
+     (list libnotify mpg123))
+    (propagated-inputs
+     (list emacs-f))
+    (home-page "https://github.com/wlemuel/alarm-clock")
+    (synopsis "Alarm clock for Emacs")
+    (description "Alarm Clock provides an alarm clock for Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-anaphora
   (package
     (name "emacs-anaphora")
