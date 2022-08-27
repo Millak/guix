@@ -293,6 +293,7 @@ Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
     (build-system gnu-build-system)
     (inputs
      (list
+      chez-scheme-bootstrap-bootfiles
       `(,util-linux "lib") ;<-- libuuid
       zlib
       lz4
@@ -300,8 +301,7 @@ Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
       ;; for X11 clipboard support in expeditor:
       ;; https://github.com/cisco/ChezScheme/issues/9#issuecomment-222057232
       libx11))
-    (native-inputs (list chez-scheme-bootstrap-bootfiles
-                         chez-nanopass-bootstrap
+    (native-inputs (list chez-nanopass-bootstrap
                          stex-bootstrap))
     (native-search-paths
      (list (search-path-specification
@@ -338,7 +338,7 @@ Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
               (when (directory-exists? "boot")
                 (delete-file-recursively "boot"))
               (copy-recursively
-               (search-input-directory (or native-inputs inputs)
+               (search-input-directory inputs
                                        "lib/chez-scheme-bootfiles")
                "boot")))
           ;; NOTE: The custom Chez 'configure' script doesn't allow
@@ -449,12 +449,12 @@ and 32-bit PowerPC architectures.")
     (source #f) ; avoid problematic cycle with racket.scm
     (inputs
      (modify-inputs (package-inputs chez-scheme)
-       (delete "libx11" "util-linux:lib")))
+       (delete "libx11" "util-linux:lib")
+        (replace "chez-scheme-bootstrap-bootfiles"
+          chez-scheme-for-racket-bootstrap-bootfiles)))
     (native-inputs
      (modify-inputs (package-native-inputs chez-scheme)
-       (prepend zuo)
-       (replace "chez-scheme-bootstrap-bootfiles"
-         chez-scheme-for-racket-bootstrap-bootfiles)))
+       (prepend zuo)))
     (arguments
      (substitute-keyword-arguments (package-arguments chez-scheme)
        ((#:out-of-source? _ #f)
