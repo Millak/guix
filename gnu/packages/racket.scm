@@ -412,7 +412,20 @@ code to use the 3M garbage collector.")
      (substitute-keyword-arguments (package-arguments racket-vm-cgc)
        ((#:configure-flags _ '())
         #~(cons "--enable-bconly"
-                #$racket-vm-common-configure-flags))))
+                #$(cond
+                   ((target-ppc64le?)
+                    ;; Attempt to avoid a problem bootstrapping Chez Scheme:
+                    ;; see <https://issues.guix.gnu.org/57050#19>
+                    ;; and <https://racket.discourse.group/t/950/30>.
+                    #~(map
+                       (lambda (flag)
+                         (if (string-prefix? "CPPFLAGS=" flag)
+                             (string-append flag
+                                            " -DSTACK_SAFETY_MARGIN=2000000")
+                             flag))
+                       #$racket-vm-common-configure-flags))
+                   (else
+                    racket-vm-common-configure-flags))))))
     (synopsis "Racket BC [3M] implementation")
     (description "The Racket BC (``before Chez'' or ``bytecode'')
 implementation was the default before Racket 8.0.  It uses a compiler written
