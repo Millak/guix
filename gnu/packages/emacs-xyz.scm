@@ -16844,7 +16844,7 @@ groups.")
 (define-public emacs-taxy-magit-section
   (package
     (name "emacs-taxy-magit-section")
-    (version "0.9.1")
+    (version "0.10")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -16852,7 +16852,7 @@ groups.")
                     ".tar"))
               (sha256
                (base32
-                "0ybkz5nqjdrg2z9bfd07xg4k49hrl26vsrwz2vqpfbsqqg5vr4pr"))))
+                "1g58nvpb04ldhn5qnjw2q5idrv6vhlfa0qmb46cvis6bkz46cxkw"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-magit emacs-taxy))
     (home-page "https://github.com/alphapapa/taxy.el")
