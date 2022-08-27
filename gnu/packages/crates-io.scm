@@ -6417,7 +6417,7 @@ bindings to C and C++ libraries.")
        (sha256
         (base32 "0g96ypnck6n60p3cz9k3y3jnxi4z7jfv2pha5bxsm8269806aj7x"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #false ;tests/headers/16-byte-alignment.h does not exist
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-cexpr" ,rust-cexpr-0.4)
@@ -6433,7 +6433,13 @@ bindings to C and C++ libraries.")
         ("rust-regex" ,rust-regex-1)
         ("rust-rustc-hash" ,rust-rustc-hash-1)
         ("rust-shlex" ,rust-shlex-0.1)
-        ("rust-which" ,rust-which-3))))))
+        ("rust-which" ,rust-which-3))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-2)
+        ("rust-diff" ,rust-diff-0.1)
+        ("rust-shlex" ,rust-shlex-0.1))))
+    (inputs
+     (list clang))))
 
 (define-public rust-bindgen-0.55
   (package
