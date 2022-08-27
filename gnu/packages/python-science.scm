@@ -146,7 +146,7 @@ atlas_libs = openblas~%"  #$(this-package-input "openblas"))))))
            python-pydata-sphinx-theme
            python-pytest
            python-pytest-xdist
-           python-sphinx
+           python-sphinx-4
            python-sphinx-panels
            python-threadpoolctl
            which))

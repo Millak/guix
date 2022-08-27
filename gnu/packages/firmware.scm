@@ -265,9 +265,11 @@ broadband modem as found, for example, on PinePhone.")
                  bin))
              #t)))))
     (home-page "https://github.com/riscv-software-src/opensbi")
-    (synopsis "RISC-V Open Source Supervisor Binary Interface")
-    (description "A reference implementation of the RISC-V SBI specifications
-for platform-specific firmwares executing in M-mode.")
+    (synopsis "RISC-V @acronym{SBI, Supervisor Binary Interface} implementation")
+    (description
+     "OpenSBI is the reference implementation of the RISC-V @acronym{SBI,
+Supervisory Binary Interface} specifications for platform-specific firmwares
+executing in M-mode.")
     (license (list license:bsd-2
                    ;; lib/utils/libfdt/* is dual licensed under bsd-2 and gpl2+.
                    license:gpl2+

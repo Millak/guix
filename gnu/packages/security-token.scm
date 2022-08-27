@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2016 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -891,15 +891,15 @@ phone is required.")
 (define-public libfido2
   (package
     (name "libfido2")
-    (version "1.9.0")
+    (version "1.11.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "git://github.com/Yubico/libfido2")
+             (url "https://github.com/Yubico/libfido2")
              (commit version)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "12zy4cnlcffcb64lsx8198y09j1dwi0bcn9rr82q6i1k950yzd3p"))))
+       (sha256 (base32 "1nk4irmdg36930lgc892qmlmd4whz4fq37wknkdx5ap57i5x18i6"))))
     (native-inputs (list pkg-config))
     (inputs (list eudev libcbor openssl zlib))
     (build-system cmake-build-system)

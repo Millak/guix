@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
@@ -55,16 +57,16 @@
 (define-public ocrad
   (package
     (name "ocrad")
-    (version "0.27")
+    (version "0.28")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/ocrad/ocrad-"
                                  version ".tar.lz"))
              (sha256
               (base32
-               "0divffvcaim89g4pvqs8kslbcxi475bcl3b4ynphf284k9zfdgx9"))))
+               "0bmzpcv7sjf8f5pvd9wwh9yp6s7zqd226876g5csmbdxdmbymk1l"))))
     (build-system gnu-build-system)
-    (native-inputs (list lzip))
+    (native-inputs (list libpng lzip))
     (home-page "https://www.gnu.org/software/ocrad/")
     (synopsis "Optical character recognition based on feature extraction")
     (description
@@ -73,72 +75,126 @@ feature extraction method.  It can read images in PBM, PGM or PPM formats and
 it produces text in 8-bit or UTF-8 formats.")
     (license license:gpl3+)))
 
+(define-public tesseract-ocr-tessdata-fast
+  (package
+    (name "tesseract-ocr-tessdata-fast")
+    (version "4.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tesseract-ocr/tessdata_fast")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1m310cpb87xx8l8q7jy9fvzf6a0m8rm0dmjpbiwhc2mi6w4gn084"))))
+    (build-system copy-build-system)
+    (arguments (list #:install-plan #~'(("." "share/tesseract-ocr/tessdata"))
+                     #:phases #~(modify-phases %standard-phases
+                                  (add-after 'unpack 'delete-broken-links
+                                    (lambda _
+                                      (delete-file "configs")
+                                      (delete-file "pdf.ttf"))))))
+    (home-page "https://github.com/tesseract-ocr/tessdata_fast")
+    (synopsis "Fast integer versions of trained LSTM models")
+    (description "This repository contains fast integer versions of trained
+models for the Tesseract OCR Engine.")
+    (license license:asl2.0)))
+
 (define-public tesseract-ocr
-  ;; There are useful commits beyond the last official stable release.
-  (let ((commit "97079fa353557af6df86fd20b5d2e0dff5d8d5df")
-        (revision "1"))
-    (package
-      (name "tesseract-ocr")
-      (version (git-version "4.1.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/tesseract-ocr/tesseract")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "11137a4aaay7qp64vdjd83hz1l089nzi5a0ql0qgk8gn79pyhi98"))))
-      (build-system gnu-build-system)
-      (inputs
-       `(("cairo" ,cairo)
-         ("icu" ,icu4c)
-         ("leptonica" ,leptonica)
-         ("pango" ,pango)
-         ("python-wrapper" ,python-wrapper)))
-      (native-inputs
-       `(("asciidoc" ,asciidoc)
-         ("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("docbook-xsl" ,docbook-xsl)
-         ("libarchive" ,libarchive)
-         ("libcurl" ,curl)
-         ("libtool" ,libtool)
-         ("libtiff" ,libtiff)
-         ("pkg-config" ,pkg-config)
-         ("xsltproc" ,libxslt)))
-      (arguments
-       `(#:configure-flags
-         (let ((leptonica (assoc-ref %build-inputs "leptonica")))
-           (list (string-append "LIBLEPT_HEADERSDIR=" leptonica "/include")))
-         #:tests? #f ; Tests currently result in a segfault
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-docbook
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; Don't attempt to download XSL schema.
-               (substitute* "doc/Makefile.am"
-                 (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
-                  (string-append (assoc-ref inputs "docbook-xsl")
-                                 "/xml/xsl/docbook-xsl-"
-                                 ,(package-version docbook-xsl)
-                                 "/manpages/docbook.xsl")))))
-           (add-after 'install 'build-training
-             (lambda _
-               (invoke "make" "training")))
-           (add-after 'build-training 'install-training
-             (lambda _
-               (invoke "make" "training-install"))))))
-      (home-page "https://github.com/tesseract-ocr/tesseract")
-      (synopsis "Optical character recognition engine")
-      (description
-       "Tesseract is an optical character recognition (OCR) engine with very
+  (package
+    (name "tesseract-ocr")
+    (version "5.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tesseract-ocr/tesseract")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0dai539h07lqj8lyhznd3wbwdpqr78qrsczq78rsmsryqvmdbyaa"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "LIBLEPT_HEADERSDIR="
+                             #$(this-package-input "leptonica") "/include")
+              "--disable-static")       ;avoid 6 MiB static archive
+      ;; The unit tests are disabled because they require building bundled
+      ;; third party libraries.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-override-xml-catalog-files
+            (lambda _
+              (substitute* "configure.ac"
+                (("AC_SUBST\\(\\[XML_CATALOG_FILES])")
+                 ""))))
+          (add-after 'unpack 'adjust-TESSDATA_PREFIX-macro
+            (lambda _
+              ;; Use a deeper TESSDATA_PREFIX hierarchy so that a more
+              ;; specific search-path than '/share' can be specified.  The
+              ;; build system uses CPPFLAGS for itself, so we can't simply set
+              ;; a make flag.
+              (substitute* "Makefile.am"
+                (("-DTESSDATA_PREFIX='\"@datadir@\"'")
+                 "-DTESSDATA_PREFIX='\"@datadir@/tesseract-ocr\"'"))))
+          (add-after 'build 'build-training
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (define n (if parallel-build? (number->string
+                                             (parallel-job-count))
+                            "1"))
+              (invoke "make" "-j" n "training")))
+          (add-after 'install 'install-training
+            (lambda _
+              (invoke "make" "training-install")))
+          (add-after 'install 'install-minimal-tessdata
+            ;; tesseract-ocr cannot be used without its trained models data;
+            ;; install the English language as a minimal base which can be
+            ;; extended via TESSDATA_PREFIX.
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (define eng.traineddata
+                "/share/tesseract-ocr/tessdata/eng.traineddata")
+              (install-file (search-input-file (or native-inputs inputs)
+                                               eng.traineddata)
+                            (dirname (string-append #$output
+                                                    eng.traineddata))))))))
+    (native-inputs
+     (list asciidoc
+           autoconf
+           automake
+           curl
+           docbook-xsl
+           libarchive
+           libtiff
+           libtool
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt
+           pkg-config
+           tesseract-ocr-tessdata-fast))
+    (inputs
+     (list cairo
+           icu4c
+           leptonica
+           pango
+           python-wrapper))
+    (native-search-paths (list (search-path-specification
+                                (variable "TESSDATA_PREFIX")
+                                (files (list "share/tesseract-ocr/tessdata"))
+                                (separator #f)))) ;single value
+    (home-page "https://github.com/tesseract-ocr/tesseract")
+    (synopsis "Optical character recognition engine")
+    (description
+     "Tesseract is an optical character recognition (OCR) engine with very
 high accuracy.  It supports many languages, output text formatting, hOCR
 positional information and page layout analysis.  Several image formats are
 supported through the Leptonica library.  It can also detect whether text is
-monospaced or proportional.")
-      (license license:asl2.0))))
+monospaced or proportional.  Support for the English language is included by
+default.  To add support for more languages, the
+@code{tesseract-ocr-tessdata-fast} package should be installed.")
+    (license license:asl2.0)))
 
 (define-public gimagereader
   (package

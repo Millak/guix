@@ -450,16 +450,14 @@ Resources file.")
 (define-public encodings
   (package
     (name "encodings")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/font/encodings-"
-               version
-               ".tar.bz2"))
+        (uri (string-append "mirror://xorg/individual/font/encodings-"
+                            version ".tar.xz"))
         (sha256
-          (base32 "0caafx0yqqnqyvbalxhh3mb0r9v36xmcy5zjhygb2i508dhy35mx"))))
+          (base32 "09pwhj8arm9hx0819m1yykaw9n77lxavaq4gn4iacd8zcvg03qvp"))))
     (build-system gnu-build-system)
     (inputs
       (list mkfontscale))
@@ -825,16 +823,14 @@ For example: @code{6x10}, @code{9x15bold}, etc.")
 (define-public font-util
   (package
     (name "font-util")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/font/font-util-"
-               version
-               ".tar.bz2"))
+        (uri (string-append "mirror://xorg/individual/font/font-util-"
+                            version ".tar.xz"))
         (sha256
-          (base32 "10i2a8b3d1h3w7klsqf31iz7zbd6l8wglil54fkhdb1385281n1s"))))
+          (base32 "1lpb5qd2drilql4wl644m682hvmv67hdbbisnrm0ah4wfy8ci4g7"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (home-page "https://www.x.org/wiki/")

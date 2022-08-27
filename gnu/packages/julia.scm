@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Tim Howes <timhowes@lavabit.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
+;;; Copyright © 2021, 2022 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -139,7 +139,7 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
 (define-public julia
   (package
     (name "julia")
-    (version "1.6.3")
+    (version "1.6.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -147,7 +147,7 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
                     version "/julia-" version ".tar.gz"))
               (sha256
                (base32
-                "1515x8fs25l3f9csbmd1v4nm041zvjnvigy6s5iidy4yrkwdx4r5"))
+                "0q9xgdpvdkskpzl294w215f6c15c5jk276c9dah5f5w4np3ivbvl"))
               (patches
                (search-patches "julia-SOURCE_DATE_EPOCH-mtime.patch"
                                "julia-allow-parallel-build.patch"))))
@@ -206,6 +206,10 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
              (substitute* "base/Makefile"
                (("\\$\\$\\(build_depsbindir\\)/libwhich")
                 (search-input-file inputs "/bin/libwhich")))))
+         (add-after 'unpack 'activate-gnu-source-for-loader
+           (lambda _
+             (substitute* "cli/Makefile"
+               (("LOADER_CFLAGS =") "LOADER_CFLAGS = -D_GNU_SOURCE"))))
          (add-after 'unpack 'change-number-of-precompile-statements
            (lambda _
              ;; Remove nss-certs drops the number of statements below 1200,
@@ -222,12 +226,11 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
                                   "base/Makefile")
                      ((".*libquadmath.*") ""))
                    (substitute* "Makefile"
-                     (("libquadmath ") ""))
-                   #t)))
+                     (("libquadmath ") "")))))
              '())
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
-           (lambda _ (setenv "HOME" "/tmp") #t))
+           (lambda _ (setenv "HOME" "/tmp")))
          (add-before 'build 'fix-include-and-link-paths
            (lambda* (#:key inputs #:allow-other-keys)
              ;; LIBUTF8PROC is a linker flag, not a build target.  It is
@@ -332,10 +335,11 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
                    (mpfr (assoc-ref inputs "mpfr"))
                    (gmp (assoc-ref inputs "gmp"))
                    (nghttp2 (assoc-ref inputs "libnghttp2"))
+                   (zlib (assoc-ref inputs "zlib"))
                    (suitesparse (assoc-ref inputs "suitesparse")))
                ;; Some tests only check to see if the input is the correct version.
                (substitute* "stdlib/PCRE2_jll/test/runtests.jl"
-                 (("10.36.0") ,(package-version pcre2)))
+                 (("10.40.0") ,(package-version pcre2)))
                (substitute* "stdlib/MbedTLS_jll/test/runtests.jl"
                  (("2.24.0") ,(package-version mbedtls-apache)))
                (substitute* "stdlib/MPFR_jll/test/runtests.jl"
@@ -344,6 +348,8 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
                  (("6.2.0") ,(package-version gmp)))
                (substitute* "stdlib/nghttp2_jll/test/runtests.jl"
                  (("1.41.0") ,(package-version nghttp2)))
+               (substitute* "stdlib/Zlib_jll/test/runtests.jl"
+                 (("1.2.12") ,(package-version zlib)))
                (substitute* "stdlib/SuiteSparse_jll/test/runtests.jl"
                  (("5004") ,(string-replace-substring
                               (version-major+minor
@@ -355,17 +361,12 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
              ;; https://github.com/JuliaLang/julia/pull/41614
              ;; https://github.com/JuliaLang/julia/issues/41156
              (substitute* "test/choosetests.jl"
-               (("skip_tests = \\[\\]")
-                "skip_tests = [\"REPL\", \"precompile\"]"))
+               (("\"precompile\",") ""))
              ;; Dates/io tests fail on master when networking is unavailable
              ;; https://github.com/JuliaLang/julia/issues/34655
              (substitute* "stdlib/Dates/test/io.jl"
                (("using Dates") "import Dates
 using Dates: @dateformat_str, Date, DateTime, DateFormat, Time"))
-             ;; Upstream bug I found when packaging
-             ;; https://github.com/JuliaLang/julia/issues/35785
-             (substitute* "test/file.jl"
-               (("@test dirname\\(t\\) == d") "@test_broken dirname(t) == d"))
              ;; julia embeds a certificate, we are not doing that
              (substitute* "stdlib/MozillaCACerts_jll/test/runtests.jl"
                (("@test isfile\\(MozillaCACerts_jll.cacert\\)")
@@ -385,14 +386,7 @@ using Dates: @dateformat_str, Date, DateTime, DateFormat, Time"))
              (substitute* "test/cmdlineargs.jl"
                (("test v\\[3") "test_broken v[3")
                (("test isempty\\(v\\[3") "test_broken isempty(v[3"))
-             ;; These tests randomly fails because they depend on CPU.
-             (substitute* "stdlib/LinearAlgebra/test/matmul.jl"
-               ;; Fixed in v1.6.4 (see:
-               ;; https://github.com/JuliaLang/julia/blob/v1.6.4/
-               ;; stdlib/LinearAlgebra/test/matmul.jl#L155).
-               (("@test mul\\!\\(C, vf, transpose\\(vf\\), 2, 3\\)\
- == 2vf\\*vf' \\.\\+ 3C0")
-                "@test mul!(C, vf, transpose(vf), 2, 3) ≈ 2vf*vf' .+ 3C0"))
+             ;; These test(s) randomly fails because they depend on CPU.
              (substitute* "test/math.jl"
                ;; @test_broken cannot be used because if the test randomly
                ;; passes, then it also raises an error.
@@ -447,6 +441,7 @@ using Dates: @dateformat_str, Date, DateTime, DateFormat, Time"))
                      ("" "$JULIA_DEPOT_PATH"))))))))
        #:make-flags
        (list
+        "VERBOSE=1" ;; more helpful logging of what make is doing
         (string-append "prefix=" (assoc-ref %outputs "out"))
 
          ;; Passing the MARCH or JULIA_CPU_TARGET flag is necessary to build

@@ -114,10 +114,7 @@ type generated and used by Transmission clients, suitable for passing to the
 ;; name-value pair for the JSON builder.
 (set! serialize-maybe-string
   (lambda (field-name val)
-    (serialize-string field-name
-                      (if (eq? val 'unset)
-                          ""
-                          val))))
+    (serialize-string field-name (maybe-value val ""))))
 
 (define (string-list? val)
   (and (list? val)
@@ -180,9 +177,9 @@ type generated and used by Transmission clients, suitable for passing to the
 (define-maybe file-object)
 (set! serialize-maybe-file-object
   (lambda (field-name val)
-    (if (eq? val 'unset)
-        (serialize-string field-name "")
-        (serialize-file-object field-name val))))
+    (if (maybe-value-set? val)
+        (serialize-file-object field-name val)
+        (serialize-string field-name ""))))
 
 (define (file-object-list? val)
   (and (list? val)

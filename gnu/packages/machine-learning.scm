@@ -828,10 +828,10 @@ in terms of new algorithms.")
     (home-page "https://onnx.ai/")
     (synopsis "Open Neural Network Exchange")
     (description
-     "Open Neural Network Exchange (ONNX) provides an open source format for
-AI models, both deep learning and traditional ML.  It defines an extensible
-computation graph model, as well as definitions of built-in operators and
-standard data types.")
+     "@acronym{ONNX, Open Neural Network Exchange} is a format for AI models,
+both deep learning and traditional @acronym{ML, machine learning}.  It defines
+an extensible computation graph model, as well as definitions of built-in
+operators and standard data types.")
     (license license:expat)))
 
 (define-public python-onnx

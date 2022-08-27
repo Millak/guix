@@ -38,6 +38,7 @@
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -875,6 +876,10 @@ engineers, musicians, soundtrack editors and composers.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("libraries/lib-files/FileNames.cpp")
                (("\"/usr/include/linux/magic.h\"") "<linux/magic.h>"))))
+         (add-after 'install 'delete-gratuitous-script
+           (lambda* (#:key outputs #:allow-other-keys)
+             (delete-file (string-append (assoc-ref outputs "out")
+                                         "/audacity"))))
          (add-after 'wrap-program 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))
        ;; The test suite is not "well exercised" according to the developers,
@@ -5863,3 +5868,30 @@ framework.  It provides a visual interface to audio and video connections
 managed by PipeWire.")
     (home-page "https://gitlab.freedesktop.org/rncbc/qpwgraph")
     (license license:gpl2)))
+
+(define-public streamripper
+  (package
+    (name "streamripper")
+    (version "1.64.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://sourceforge.net/projects/streamripper"
+                           "/files/streamripper%20(current)/"
+                           version "/streamripper-" version ".tar.gz"))
+       (sha256
+        (base32 "0hnyv3206r0rfprn3k7k6a0j959kagsfyrmyjm3gsf3vkhp5zmy1"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete bundled copy of libmad.
+        '(delete-file-recursively "libmad-0.15.1b"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list faad2 glib libmad libvorbis))
+    (home-page "http://streamripper.sourceforge.net")
+    (synopsis "Record audio streams to your hard drive")
+    (description "Streamripper records shoutcast-compatible
+streams.  For shoutcast style streams it finds the “meta data” or track
+separation data, and uses that as a marker for where the track should
+be separated.")
+    (license license:gpl2+)))

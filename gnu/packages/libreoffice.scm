@@ -1254,8 +1254,6 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
                        (dirname
                         (search-input-file %build-inputs
                                            "lib/libboost_system.so")))
-        ;; Avoid undefined symbols required by boost::spirit
-        "LDFLAGS=-lboost_system"
         ;; Avoid a dependency on ucpp.
         "--with-idlc-cpp=cpp"
         ;; The fonts require an external tarball (crosextrafonts).
@@ -1282,4 +1280,7 @@ a number of components: Writer, a word processor; Calc, a spreadsheet
 application; Impress, a presentation engine; Draw, a drawing and
 flowcharting application; Base, a database and database frontend;
 Math for editing mathematics.")
+  (properties
+   '((release-monitoring-url
+      . "https://www.libreoffice.org/download/download-libreoffice/")))
   (license license:mpl2.0)))

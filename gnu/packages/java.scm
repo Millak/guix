@@ -2284,6 +2284,9 @@ new Date();"))
                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))
     (home-page "https://openjdk.java.net/projects/jdk/17")))
 
+;;; Convenience alias to point to the latest version of OpenJDK.
+(define-public openjdk openjdk17)
+
 (define-public icedtea icedtea-8)
 
 

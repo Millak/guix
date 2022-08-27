@@ -10307,7 +10307,7 @@ box''.")
 (define-public rust-cc-1
   (package
     (name "rust-cc")
-    (version "1.0.67")
+    (version "1.0.73")
     (source
      (origin
        (method url-fetch)
@@ -10315,7 +10315,7 @@ box''.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1z9p27ys80shv09zhknmlal8jjra78agdwg97i6jjd6lg83rpip3"))))
+         "04ccylrjq94jssh8f7d7hxv64gs9f1m1jrsxb7wqgfxk4xljmzrg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
@@ -25025,14 +25025,14 @@ authenticated encryption cipher.")
 (define-public rust-ghost-0.1
   (package
     (name "rust-ghost")
-    (version "0.1.2")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ghost" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yalg3g1g3cz63n3phy7cdhh7p2qd220mrpxy96alwxbpqdwynqs"))))
+        (base32 "0fj42hmlgcj1rbqcshlvk65npsks4ba7vdzphb9202gawf6zw6gb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -28897,14 +28897,14 @@ Rust.")
 (define-public rust-indoc-1
   (package
     (name "rust-indoc")
-    (version "1.0.3")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "indoc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0diih20xsxjb159nr0dq6jxnyhq7gg10dlsnh2siikphmvm5m9z5"))))
+        (base32 "1qs42cn8rj7kdpmp1dlkzhv62rfmbx3ffwvsfw67zyq86jm1xaxd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #true
@@ -29479,8 +29479,37 @@ primitive Rust types.")
 immutable interval tree.")
     (license license:expat)))
 
+(define-public rust-inventory-0.2
+  (package
+    (name "rust-inventory")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "inventory" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06h9xw67wx18rank4yyz93iq89j0fk6fbazryfvf5ach1dp4qd44"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ctor" ,rust-ctor-0.1)
+        ("rust-ghost" ,rust-ghost-0.1))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dtolnay/inventory")
+    (synopsis "Typed distributed plugin registration")
+    (description
+     "This package provides a way to set up a plugin registry into which
+plugins can be registered from any source file linked into your program.
+There does not need to be a central list of all the plugins.")
+    ;; Either license can be chosen at the users option.
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-inventory-0.1
   (package
+    (inherit rust-inventory-0.2)
     (name "rust-inventory")
     (version "0.1.11")
     (source
@@ -29490,21 +29519,12 @@ immutable interval tree.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
           (base32 "1m1zdjgs3nzfdxf86mc1i0id56fvk8rfw63rf04yi88bqrh53szh"))))
-    (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
         (("rust-ctor" ,rust-ctor-0.1)
          ("rust-ghost" ,rust-ghost-0.1)
-         ("rust-inventory-impl" ,rust-inventory-impl-0.1))))
-    (home-page "https://github.com/dtolnay/inventory")
-    (synopsis "Typed distributed plugin registration")
-    (description
-     "This package provides a way to set up a plugin registry into which
-plugins can be registered from any source file linked into your program.
-There does not need to be a central list of all the plugins.")
-    ;; Either license can be chosen at the users option.
-    (license (list license:expat license:asl2.0))))
+         ("rust-inventory-impl" ,rust-inventory-impl-0.1))))))
 
 (define-public rust-inventory-impl-0.1
   (package
@@ -40387,17 +40407,17 @@ platform-native strings.")
          "11agh8n3x2l4sr3sxvx6byc1j3ryb1g6flb1ywn0qhq7xv1y3cmg"))))
     (arguments `(#:skip-build? #t))))
 
-(define-public rust-ouroboros-macro-0.14
+(define-public rust-ouroboros-macro-0.15
   (package
     (name "rust-ouroboros-macro")
-    (version "0.14.0")
+    (version "0.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ouroboros_macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11cav04x82liknlrv50lpl1i1ln2jw4isdqzdjnjsg0pcpvwik9r"))))
+        (base32 "01lgyj5nxgr6r1l0m20pp4ilz3m14clsqg2j28hic2rrlsjafjkk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -40413,8 +40433,45 @@ platform-native strings.")
      "This package provides a proc macro for the @code{ouroboros} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ouroboros-macro-0.14
+  (package
+    (inherit rust-ouroboros-macro-0.15)
+    (name "rust-ouroboros-macro")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ouroboros_macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11cav04x82liknlrv50lpl1i1ln2jw4isdqzdjnjsg0pcpvwik9r"))))))
+
+(define-public rust-ouroboros-0.15
+  (package
+    (name "rust-ouroboros")
+    (version "0.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ouroboros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qhd9cvc4hwdbr37da1jh0k0742slchixlxn4wxgc7g3l63yl9bl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aliasable" ,rust-aliasable-0.1)
+        ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.15)
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+    (home-page "https://github.com/joshua-maros/ouroboros")
+    (synopsis "Self-referential struct generation")
+    (description
+     "Easy, safe self-referential struct generation for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ouroboros-0.14
   (package
+    (inherit rust-ouroboros-0.15)
     (name "rust-ouroboros")
     (version "0.14.0")
     (source
@@ -40424,17 +40481,11 @@ platform-native strings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ih1lna1d2is3a6aicmc7lpfhqmg046kssxpryk24kwg8j42ymh6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-aliasable" ,rust-aliasable-0.1)
         ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.14)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
-    (home-page "https://github.com/joshua-maros/ouroboros")
-    (synopsis "Self-referential struct generation")
-    (description
-     "Easy, safe self-referential struct generation for Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
 (define-public rust-output-vt100-0.1
   (package
@@ -46269,8 +46320,34 @@ they were parsed from")
 @code{LC_COLLATE} and @code{LC_CTYPE} are not yet supported.")
     (license license:expat)))
 
+(define-public rust-pyo3-build-config-0.16
+  (package
+    (name "rust-pyo3-build-config")
+    (version "0.16.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-build-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j2jj5qnnpagi3gvkwjpydcxfsd5qv3vmpghnaqs7n1mdia5pdmm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-once-cell" ,rust-once-cell-1)
+        ("rust-python3-dll-a" ,rust-python3-dll-a-0.2)
+        ("rust-target-lexicon" ,rust-target-lexicon-0.12))))
+    (native-inputs (list python))       ;for tests
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Build configuration for PyO3")
+    (description
+     "This package contains build configuration helpers for the PyO3
+ecosystem.")
+    (license license:asl2.0)))
+
 (define-public rust-pyo3-build-config-0.15
   (package
+    (inherit rust-pyo3-build-config-0.16)
     (name "rust-pyo3-build-config")
     (version "0.15.1")
     (source
@@ -46280,20 +46357,63 @@ they were parsed from")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0aw5zfqwzj5rzfxjyqvrqfam138d1009jh6kia4xrgdz538y9yfv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-once-cell" ,rust-once-cell-1))))
+    (native-inputs '())))
+
+(define-public rust-pyo3-ffi-0.16
+  (package
+    (name "rust-pyo3-ffi")
+    (version "0.16.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3-ffi" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0avls4q393nmzhb124zg6kp5lj6xzy2f6qx564qa7b614xqs0xf2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.16))))
     (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Build configuration for PyO3")
+    (synopsis "Python API bindings for the PyO3 ecosystem")
     (description
-     "This package contains build configuration helpers for the PyO3
-ecosystem.")
+     "This crate provides Rust FFI declarations for Python 3.")
+    (license license:asl2.0)))
+
+(define-public rust-pyo3-macros-backend-0.16
+  (package
+    (name "rust-pyo3-macros-backend")
+    (version "0.16.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-macros-backend" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bvzvdx2a6hhliny12n2vy7v7gbsgzanxjckjr1cbxbkizss1gak"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.16)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Code generation for PyO3")
+    (description
+     "This package provides code generation backends for PyO3.")
     (license license:asl2.0)))
 
 (define-public rust-pyo3-macros-backend-0.15
   (package
+    (inherit rust-pyo3-macros-backend-0.16)
     (name "rust-pyo3-macros-backend")
     (version "0.15.1")
     (source
@@ -46310,15 +46430,35 @@ ecosystem.")
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.15)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-pyo3-macros-0.16
+  (package
+    (name "rust-pyo3-macros")
+    (version "0.16.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "pyo3-macros" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "1xwh7sl4n73746q80n5m5afd261zg0kxcqfnlr89ik7vbd4c8kr8"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.16)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Code generation for PyO3")
+    (synopsis "Proc macros for PyO3")
     (description
-     "This package provides code generation backends for PyO3.")
+     "This package provides compiler macros for use with PyO3.")
     (license license:asl2.0)))
 
 (define-public rust-pyo3-macros-0.15
   (package
+    (inherit rust-pyo3-macros-0.16)
     (name "rust-pyo3-macros")
     (version "0.15.1")
     (source
@@ -46334,15 +46474,64 @@ ecosystem.")
         #:cargo-inputs
         (("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.15)
          ("rust-quote" ,rust-quote-1)
-         ("rust-syn" ,rust-syn-1))))
+         ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-pyo3-0.16
+  (package
+    (name "rust-pyo3")
+    (version "0.16.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p5kjsj3jdw2gnahdjrzljmi93w3nxdp11qq8x3i80b0a3l04qqy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-eyre" ,rust-eyre-0.6)
+        ("rust-hashbrown" ,rust-hashbrown-0.11)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-indoc" ,rust-indoc-1)
+        ("rust-inventory" ,rust-inventory-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-complex" ,rust-num-complex-0.4)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
+        ("rust-paste" ,rust-paste-0.1)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.16)
+        ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.16)
+        ("rust-pyo3-macros" ,rust-pyo3-macros-0.16)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unindent" ,rust-unindent-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
+        ("rust-bitflags" ,rust-bitflags-1.2)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-half" ,rust-half-1)
+        ("rust-proptest" ,rust-proptest-0.10)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-send-wrapper" ,rust-send-wrapper-0.5)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-widestring" ,rust-widestring-0.5))
+       ;; FIXME: fails to initialize Python interpreter.
+       #:tests? #f))
+    (inputs (list python))
     (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Proc macros for PyO3")
+    (synopsis "Rust bindings for the Python interpreter")
     (description
-     "This package provides compiler macros for use with PyO3.")
+     "This package provides Rust bindings for Python, including tools for
+creating native Python extension modules.  Running and interacting with
+Python code from a Rust binary is also supported.")
     (license license:asl2.0)))
 
 (define-public rust-pyo3-0.15
   (package
+    (inherit rust-pyo3-0.16)
     (name "rust-pyo3")
     (version "0.15.1")
     (source
@@ -46388,15 +46577,29 @@ ecosystem.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-trybuild" ,rust-trybuild-1))
        ;; FIXME: fails to initialize Python interpreter.
-       #:tests? #f))
-    (inputs (list python))
-    (home-page "https://github.com/pyo3/pyo3")
-    (synopsis "Rust bindings for the Python interpreter")
+       #:tests? #f))))
+
+(define-public rust-python3-dll-a-0.2
+  (package
+    (name "rust-python3-dll-a")
+    (version "0.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "python3-dll-a" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01k2nf4wq4f4xnaq3fy1gx12v10pndwmdrjq4x4pshhjxxnrpml9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ;Windows-like targets only
+       #:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/pyo3/python3-dll-a")
+    (synopsis "Python import library generator")
     (description
-     "This package provides Rust bindings for Python, including tools for
-creating native Python extension modules.  Running and interacting with
-Python code from a Rust binary is also supported.")
-    (license license:asl2.0)))
+     "This crate generates import libraries for the Python shared library
+for MinGW-w64 and MSVC (cross-)compile targets.")
+    (license license:expat)))
 
 (define-public rust-qstring-0.7
   (package
@@ -54504,17 +54707,17 @@ Semantic Versioning.")
          (base32
           "18vhypw6zgccnrlm5ps1pwa0khz7ry927iznpr88b87cagr1v2iq"))))))
 
-(define-public rust-send-wrapper-0.4
+(define-public rust-send-wrapper-0.5
   (package
     (name "rust-send-wrapper")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "send_wrapper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1l7s28vfnwdbjyrrk3lx81jy4f0dcrv4iwyah2wj6vndxhqxaf7n"))))
+        (base32 "1mwbg1nv36d5kdjb0iwmprz24km0m8ck08dn59gdngqdc77hl34k"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/thk1/send_wrapper")
@@ -54526,6 +54729,20 @@ as you access the contained value only from within the original thread.  You
 also have to make sure that the wrapper is dropped from within the original
 thread.  If any of these constraints is violated, a panic occurs.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-send-wrapper-0.4
+  (package
+    (inherit rust-send-wrapper-0.5)
+    (name "rust-send-wrapper")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "send_wrapper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l7s28vfnwdbjyrrk3lx81jy4f0dcrv4iwyah2wj6vndxhqxaf7n"))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-seq-io-0.3
   (package
@@ -71599,10 +71816,10 @@ terms of allowing LLVM's auto-vectorizer to do its job.")
        (("rust-bytemuck" ,rust-bytemuck-1))))
     (license (list license:zlib))))
 
-(define-public rust-widestring-0.4
+(define-public rust-widestring-0.5
   (package
     (name "rust-widestring")
-    (version "0.4.2")
+    (version "0.5.1")
     (source
       (origin
         (method url-fetch)
@@ -71610,7 +71827,7 @@ terms of allowing LLVM's auto-vectorizer to do its job.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "13565qy4jhpg4x0xw8mwxzzsh0p8c93p5208lh6kpwp0q01y6qx7"))))
+          "10qrilijh1qzw362mvd4nsz3vv32dxx530vk41hkcx8hah22z20p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
@@ -71623,6 +71840,23 @@ such as those often used in Windows API or other FFI libraries.  Both UTF-16 and
 UTF-32 types are provided, including support for malformed encoding.")
     (license (list license:asl2.0
                    license:expat))))
+
+(define-public rust-widestring-0.4
+  (package
+    (inherit rust-widestring-0.5)
+    (name "rust-widestring")
+    (version "0.4.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "widestring" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "13565qy4jhpg4x0xw8mwxzzsh0p8c93p5208lh6kpwp0q01y6qx7"))))
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-wild-2
   (package

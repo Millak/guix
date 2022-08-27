@@ -2181,7 +2181,7 @@ users to select LV2 plugins and run them with jalv.")
 (define-public mixxx
   (package
     (name "mixxx")
-    (version "2.3.2")
+    (version "2.3.3")
     (source
      (origin
        (method git-fetch)
@@ -2193,7 +2193,7 @@ users to select LV2 plugins and run them with jalv.")
         (search-patches "mixxx-link-qtscriptbytearray-qtscript.patch"
                         "mixxx-system-googletest-benchmark.patch"))
        (sha256
-        (base32 "1h26vpf60rk56fsw1nvmxihg7ammlj8q4zgim49q4s4ww7j8wwqj"))
+        (base32 "0zrmy97lk0xdfnlvygshr8vradypmnypki3s1mhc296xhq96n6rm"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete libraries that we already have or don't need.
@@ -3310,7 +3310,7 @@ from the command line.")
            lilv
            lv2
            qtbase-5
-           qtsvg
+           qtsvg-5
            qtx11extras
            rubberband
            suil
@@ -3724,13 +3724,13 @@ websites such as Libre.fm.")
 (define-public beets
   (package
     (name "beets")
-    (version "1.5.0")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "beets" version))
               (sha256
                (base32
-                "0arl4nc3y8iwa331hf6ggai19y8ns9pl03g5d6ac857wq2x7nzw8"))))
+                "0paj2nxvdx4zz9xawjpbsh0dy1kp9kfhxg8akh1rpz2awhsbfvxa"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3773,7 +3773,6 @@ websites such as Libre.fm.")
            python-munkres
            python-musicbrainzngs
            python-pyyaml
-           python-six
            python-unidecode
            ;; Optional dependencies for plugins. Some of these are also required by tests.
            python-beautifulsoup4 ; For lyrics.
@@ -4849,7 +4848,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "3.18.2")
+    (version "4.3.4")
     (source
      (origin
        (method git-fetch)
@@ -4858,7 +4857,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lkn7rfrjvmds62i69igcgmic2snscgb9f6gdg5nzyfkis1fq5iz"))))
+        (base32 "10rf9li9kr6qdzkqv66wlg7gw2il18n7kd4fhk848hh5dcmg1icv"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
@@ -4884,18 +4883,18 @@ studio.")
            fftw
            gst-plugins-base
            gstreamer
-           gtk+
+           gtk
            jack-1
            ladspa
            libinstpatch
            libsamplerate
            libsndfile
-           libsoup-minimal-2
+           libsoup
            libxml2
            lv2
            pulseaudio
            `(,util-linux "lib")
-           webkitgtk-with-libsoup2))
+           webkitgtk))
     (home-page "https://nongnu.org/gsequencer/")
     (synopsis "Advanced Gtk+ Sequencer")
     (description

@@ -5,6 +5,7 @@
 ;;; Copyright © 2017, 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -193,16 +194,16 @@ intended as a replacement for Hydra.")
 (define-public laminar
   (package
     (name "laminar")
-    (version "1.1")
+    (version "1.2")
     (source
-     (origin (method url-fetch)
-             (uri (string-append "https://github.com/ohwgiles/laminar/archive/"
-                                 version
-                                 ".tar.gz"))
-             (file-name (string-append name "-" version ".tar.gz"))
+     (origin (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/ohwgiles/laminar")
+                   (commit version)))
+             (file-name (git-file-name name version))
              (sha256
               (base32
-               "1lzfmfjygmbdr2n1q49kwwffw8frz5y6iczhdz5skwmzwg0chbsf"))))
+               "1sg0kccp3nczkn2vxcsqv10vyvmjnhpaykc1nfhh55jyda4xzf9w"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; TODO Can't build tests
@@ -223,8 +224,7 @@ intended as a replacement for Hydra.")
                (("install\\(FILES \\$\\{CMAKE\\_CURRENT\\_BINARY\\_DIR\\}\\/laminar\\.service DESTINATION \\$\\{SYSTEMD\\_UNITDIR\\}\\)")
                 "")
                (("install\\(FILES etc/laminar\\.conf DESTINATION \\/etc\\)") "")
-               (("\\/usr\\/") ""))
-             #t))
+               (("\\/usr\\/") ""))))
          (add-after 'configure 'copy-in-javascript-and-css
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (use-modules (ice-9 popen))
@@ -253,9 +253,7 @@ intended as a replacement for Hydra.")
 
              ;; ansi_up.js isn't minified
              (copy-file (assoc-ref inputs "ansi_up.js")
-                        "../build/js/ansi_up.js")
-
-             #t)))))
+                        "../build/js/ansi_up.js"))))))
     (inputs
      (list capnproto rapidjson sqlite boost zlib))
     (native-inputs

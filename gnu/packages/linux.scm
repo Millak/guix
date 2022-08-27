@@ -352,17 +352,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.18-version "5.18.16")
+(define-public linux-libre-5.18-version "5.18.19")
 (define-public linux-libre-5.18-gnu-revision "gnu")
 (define deblob-scripts-5.18
   (linux-libre-deblob-scripts
    linux-libre-5.18-version
    linux-libre-5.18-gnu-revision
    (base32 "09aikdhij4d89wqd8mmkdr0nrfwqz6dx3n74qm6wx815rfngd2dz")
-   (base32 "0vjpn8iw9yg39sr6jfhzyvivf159h9zfgnjamwa283zfll0h0a53")))
+   (base32 "03w1p49rf7sqsxvwpdndqa0k9hc9748rplyqiiw1q6cbdjficwyw")))
 (define-public linux-libre-5.18-pristine-source
   (let ((version linux-libre-5.18-version)
-        (hash (base32 "1khi1npn8d8jimwdy8bf3r7l780mxdmvk5azdv419pk33qjqdxgi")))
+        (hash (base32 "1mc8zhiw0v7fka64mydpdrxkrvy0jyqggq5lghw3pyqj2wjrpw6z")))
    (make-linux-libre-source version
 
                             (%upstream-linux-source version hash)
@@ -371,22 +371,22 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.59")
+(define-public linux-libre-5.15-version "5.15.63")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
    linux-libre-5.15-version
    linux-libre-5.15-gnu-revision
    (base32 "1n57mz5agvf1d0ggbg080d7hvx8p9y0iqxkq4ypg10a7n96zy7y5")
-   (base32 "129qlhwdv2mfb85gbvq03kkbdfp73b444rryr4rrbvi0jmq4cp24")))
+   (base32 "1r189c704jvizk452zcsm9v3g27ybjcjchjwxazsy3nx0wdwx7si")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1jxw6fnc7yaw7r6193wy6l8wdlpy3frw48drnc3dnh3k0m1cdpg6")))
+        (hash (base32 "0hbkxgadz0vcslni4r46yc202wcnxblcfvkcph1017b2b8gcvlvd")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.135")
+(define-public linux-libre-5.10-version "5.10.138")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -396,12 +396,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1981axxswghza3iadp94q54y8w30h9w9vyq4cbjiiv9alvbv0pb8")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "0i1kahv739qpyyml7d7sx306nv7gp55i5d97vlb0fryfx4dsd6g4")))
+        (hash (base32 "1a2vmcqzi71w88j79lxsrgyycq1l1gxp0cvh5ya4afhfisxh7819")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.209")
+(define-public linux-libre-5.4-version "5.4.211")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -411,12 +411,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1vnjbdyssa7dwyjl9kg35alwvf7yh597cl74yr1wy2gk5bc9paw6")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "1kdnz99k7zspzaxqaxahbf6hncigy4cvjlb79jsy7a95qxxr31qf")))
+        (hash (base32 "1v1dgsk66fi6x6v9k6hg9ik3f3b3pv7a3gk8mybmgm9cnx0k5d5z")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.254")
+(define-public linux-libre-4.19-version "4.19.256")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -426,12 +426,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "1rd40wmdaymbly2zvf60mjqsflkd4n1y232qz0ixn1rfl28yz62i")))
+        (hash (base32 "0jgm7ydha9achbcq3a6q85wq1nz4qg7phx122jzk0mqb1339bpk7")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.290")
+(define-public linux-libre-4.14-version "4.14.291")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -441,12 +441,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0zyxb99a7fa2l85vnzmvg2nry99clj20d4j38piqm921iqxak2j4")))
+        (hash (base32 "15h76l81zn733g8dc6gsymf52nz325plhminv3m4x3klwhav34zc")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.325")
+(define-public linux-libre-4.9-version "4.9.326")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
@@ -456,7 +456,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0bib3641dbcqdkx3anna3caxnsg3nw9cnmhcklq0s93g3m57041h")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "04msx0x0d8v93zjr3jj0qqkgg7m4hb7rj6hk5vzrzasmgbjmb3dl")))
+        (hash (base32 "0yw83a8nk5abjsvqrz8m2sj699c228j2f2wr5q8m95vgqzfw5wrb")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -1372,81 +1372,6 @@ and the notification, WiFi, and Bluetooth LED.")
      "This package performs runtime integrity checking of the Linux kernel and
 detection of security vulnerability exploits against the kernel.")
     (license license:gpl2)))
-
-(define-public rtl8821ce-linux-module
-  (let ((commit "be733dc86781c68571650b395dd0fa6b53c0a039")
-        (revision "6"))
-    (package
-      (name "rtl8821ce-linux-module")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/tomaspinho/rtl8821ce")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "00sd7s0582b9jcpfgy0fw6418dwg700mfyizkfr22jf2x140iy70"))))
-      (build-system linux-module-build-system)
-      (arguments
-       (list #:make-flags
-             #~(list (string-append "CC=" #$(cc-for-target))
-                     (string-append "KSRC="
-                                    (assoc-ref %build-inputs
-                                               "linux-module-builder")
-                                    "/lib/modules/build"))
-             #:phases
-             #~(modify-phases %standard-phases
-                 (replace 'build
-                   (lambda* (#:key (make-flags '()) (parallel-build? #t)
-                                   #:allow-other-keys)
-                     (apply invoke "make"
-                            `(,@(if parallel-build?
-                                    `("-j" ,(number->string (parallel-job-count)))
-                                    '())
-                              ,@make-flags)))))
-             #:tests? #f))                  ; no test suite
-      (home-page "https://github.com/tomaspinho/rtl8821ce")
-      (synopsis "Linux driver for Realtek RTL8821CE wireless network adapters")
-      (description "This is Realtek's RTL8821CE Linux driver for wireless
-network adapters.")
-      (license license:gpl2))))
-
-(define-public rtl8812au-aircrack-ng-linux-module
-  (let ((commit "6d0d9fb56d4d918012a5c7a030b9233cad039cdd")
-        (revision "8"))
-    (package
-      (inherit rtl8821ce-linux-module)
-      (name "rtl8812au-aircrack-ng-linux-module")
-      (version (git-version "5.6.4.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/aircrack-ng/rtl8812au")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "012asiy43ik13kl9p97sscdsqq5jihq73s4ws3g5wqqczqcgrsvc"))
-         (modules '((guix build utils)))
-         (snippet
-          #~(begin
-              ;; Remove bundled tarballs, APKs, word lists, speadsheets,
-              ;; and other unnecessary unlicenced things.
-              (for-each delete-file-recursively (list "android"
-                                                      "docs"
-                                                      "tools"))))))
-      (supported-systems '("x86_64-linux" "i686-linux"))
-      (home-page "https://github.com/aircrack-ng/rtl8812au")
-      (synopsis "Linux driver for Realtek USB wireless network adapters")
-      (description
-       "This is Realtek's rtl8812au Linux driver for USB 802.11n wireless
-network adapters, modified by the aircrack-ng project to support monitor mode
-and frame injection.  It provides a @code{88XXau} kernel module that supports
-RTL8812AU, RTL8821AU, and RTL8814AU chips.")
-      (license license:gpl2+))))
 
 (define-public vhba-module
   (package
@@ -6662,7 +6587,7 @@ the @code{mce-inject} module loaded if it exists.")
 (define-public mcelog
   (package
     (name "mcelog")
-    (version "181")
+    (version "187")
     (source
      (origin
        (method git-fetch)
@@ -6671,7 +6596,7 @@ the @code{mce-inject} module loaded if it exists.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c9zdivv86xd8dmwia0k9fbr52zrafbyzn7ss53mh17sry5gm716"))
+        (base32 "0zdlwbdqs4s72yrpz4irhp12c1wqzy8kmf4hxahk13dmafd6dbnj"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -7286,14 +7211,14 @@ re-use code and to avoid re-inventing the wheel.")
 (define-public libnftnl
   (package
     (name "libnftnl")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://netfilter.org/libnftnl/"
                            "libnftnl-" version ".tar.bz2"))
        (sha256
-        (base32 "02kdxp4l1ds5lpkw6rxv6f7icc70am6ik3p9z5l8v48mkm7h1z4y"))))
+        (base32 "0m82bmh8i24hwxmz7rxwxjll4904ghd2b1x1p5h8algrg6dyl5p9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -7328,7 +7253,7 @@ used by nftables.")
 (define-public nftables
   (package
     (name "nftables")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
@@ -7337,7 +7262,7 @@ used by nftables.")
                   (string-append "https://www.nftables.org/projects/nftables"
                                  "/files/nftables-" version ".tar.bz2")))
        (sha256
-        (base32 "0ddsdj6zs78hndffl3iikpa1wzjxcpmr3xqcq4la71gnl7zb2zwj"))))
+        (base32 "02p59m773l2xqcb7ib7cprlpjfdnp792bahbs6c3dx1s74c4n6wd"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
                  '("--disable-static"
@@ -7840,14 +7765,14 @@ available in the kernel Linux.")
 (define-public cpuid
   (package
     (name "cpuid")
-    (version "20220620")
+    (version "20220812")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.etallen.com/cpuid/cpuid-"
                                   version ".src.tar.gz"))
               (sha256
                (base32
-                "06nb69vlv1szdzq1dp784pgbr9z2py050v1hlrn4rr56jp0a2nci"))))
+                "1gss85szv4b48d93d6hzkkzggicdvw8dijiwfs84ywclgnwqzxiv"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

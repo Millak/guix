@@ -1211,13 +1211,13 @@ iotop, uptime, pidof, tty, taskset, pmap.")
 (define-public python-shapely
   (package
     (name "python-shapely")
-    (version "1.8.2")
+    (version "1.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Shapely" version))
        (sha256
-        (base32 "1dpbjw0w2l1r9s5drmi4cyr1yd5h2a4m9vip7qhy7mbg03azjajp"))))
+        (base32 "130rqd0czi128wm5pdn47v4m6czxd7pkzanbya8q48gsm8ffb5d1"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython python-matplotlib python-pytest
@@ -1766,6 +1766,26 @@ client-side scripting and application development around the NETCONF
 protocol.")
     (license license:asl2.0)))
 
+(define-public python-ncls
+  (package
+    (name "python-ncls")
+    (version "0.0.65")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ncls" version))
+              (sha256
+               (base32
+                "1wx06xqknd2r98w8z93f47g5dpxzn92kamhj8vkq0nj569hf7cg1"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-numpy))
+    (home-page "https://github.com/endrebak/ncls")
+    (synopsis "Nested containment list data structure")
+    (description
+     "This package provides a wrapper for the nested containment list data
+structure.  It is a static interval-tree that is fast for both construction
+and lookups.")
+    (license license:bsd-3)))
+
 (define-public python-license-expression
   (package
     (name "python-license-expression")
@@ -1792,13 +1812,13 @@ conventions and aliases in the same expression.")
 (define-public python-wand
   (package
     (name "python-wand")
-    (version "0.6.7")
+    (version "0.6.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Wand" version))
        (sha256
-        (base32 "1nxn7zvbnfgk4kkxajbzglcjpbgr84ilhnxm990nifjxqb61ph7b"))))
+        (base32 "0mywzs235skwq670c80achrd34kangwy24793k1nij3651zllgrp"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1814,8 +1834,7 @@ conventions and aliases in the same expression.")
     (home-page "https://docs.wand-py.org/")
     (synopsis "MagickWand API binding for Python")
     (description
-     "Wand is a ctypes-based binding for the C API of ImageMagick's MagickWand
-library.")
+     "Wand is a ctypes-based binding for ImageMagick's MagickWand library.")
     (license license:expat)))
 
 (define-public python-lockfile
@@ -1935,14 +1954,14 @@ other machines, such as over the network.")
 (define-public python-setuptools
   (package
     (name "python-setuptools")
-    (version "62.0.0")
+    (version "64.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "setuptools" version))
        (sha256
         (base32
-         "0sm8n6y6q640cpac9wjyggidbgi4n9la7vs7pwriyvhvgzccp6br"))
+         "1sllqf0bhsl2yilf1w0xnlz0r4yaksmwaj0ap91zdc6kgbigdjiv"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove included binaries which are used to build self-extracting
@@ -2414,7 +2433,7 @@ for additional processing.")
          "1cagg06vfph864s6l5jb0zqliwxh647bki8j6lf4a4qrv40jnhs8"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-mock python-nose python-six python-unittest2))
+     (list python-mock python-nose python-six))
     (native-inputs
      (list python-coverage))
     (home-page "https://github.com/celery/case")
@@ -3454,14 +3473,14 @@ interfaces.")
 (define-public python-click
   (package
     (name "python-click")
-    (version "8.1.2")
+    (version "8.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "click" version))
        (sha256
         (base32
-         "0whs38a2i0561kwbgigs6vic9r0a1887m2v1aw3rmv6r2kz0g5s7"))))
+         "13kvp8visj5xh9d43brnda6q0kc1s40flxa5cw0p0a9hzf5dr0kn"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3850,21 +3869,14 @@ JavaScript-like message boxes.  Types of dialog boxes include:
   (package
     (name "python-pympler")
     (home-page "https://pythonhosted.org/Pympler/")
-    (version "0.9")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pympler" version))
               (sha256
                (base32
-                "0ivfw2k86nbw9ck9swidl4422w7bhjldxwj90a4sy5r1cbgygjzj"))))
+                "1ynkqpv2akldmvkll5vh5zhwj433s1d59iv0f76lygyak4silgwr"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'check)
-                  (add-after 'install 'check
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (add-installed-pythonpath inputs outputs)
-                      (invoke "python" "setup.py" "test"))))))
     (synopsis "Measure, monitor and analyze memory behavior")
     (description
      "Pympler is a development tool to measure, monitor and analyze
@@ -4232,7 +4244,6 @@ logging and tracing of the execution.")
      (list python-lockfile))
     (native-inputs
      (list python-coverage
-           python-unittest2
            python-testtools
            python-testscenarios
            python-twine
@@ -4873,6 +4884,60 @@ utility, a static analysis tool (linter) for Robot Framework source files.")
     (description "Pabot is a parallel executor for Robot Framework tests.")
     (license license:asl2.0)))
 
+(define-public python-sshtunnel
+  (package
+    (name "python-sshtunnel")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sshtunnel" version))
+              (sha256
+               (base32
+                "1z7rdgpp9m36ysh9pfzrn3vyiaj05bkjvcjdhj8vz0fvfjkhxjz7"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests? (invoke "pytest" "-vv" "tests")))))))
+    (propagated-inputs (list python-paramiko))
+    (native-inputs (list openssh python-pytest))
+    (home-page "https://github.com/pahaz/sshtunnel")
+    (synopsis "Python SSH tunnels library")
+    (description "@code{sshtunnel} is a Python module for easily creating SSH
+tunnels in the background, using Python.")
+    (license license:expat)))
+
+(define-public python-robotframework-sshtunnellibrary
+  (package
+    (name "python-robotframework-sshtunnellibrary")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/C-Squad/robotframework-sshtunnellibrary")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vkkmkb8iql13xpbyj4hvnnmfgzqlr8rffgryp2082cadb3w7xrd"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "unittest"
+                                      "discover" "-s" "test")))))))
+    (propagated-inputs (list python-robotframework python-sshtunnel))
+    (home-page "https://github.com/C-Squad/robotframework-sshtunnellibrary")
+    (synopsis "Alternative RobotFramework library for SSH tunnels")
+    (description "SSHTunnelLibrary is an alternative RobotFramework
+library (to the more official one that comes from the
+@code{robotframework-sshlibrary} package) to support SSH tunnels.")
+    (license license:asl2.0)))
+
 (define-public python-robotframework-stacktrace
   (package
     (name "python-robotframework-stacktrace")
@@ -5503,13 +5568,13 @@ provides additional functionality on the produced Mallard documents.")
 (define-public python-cython
   (package
     (name "python-cython")
-    (version "0.29.30")
+    (version "0.29.32")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cython" version))
        (sha256
-        (base32 "1qzrcnla3fg4fmf7ncvxhr1y35gvya1ybj12jjwshvzym0nvcd92"))))
+        (base32 "1xqsihpqnfal29nb5kmw8z71nd4jbsnbz7p3lkr094xpb13wycw7"))))
     (build-system python-build-system)
     ;; we need the full python package and not just the python-wrapper
     ;; because we need libpython3.3m.so
@@ -5644,6 +5709,8 @@ with Python.  It contains among other things: a powerful N-dimensional array
 object, sophisticated (broadcasting) functions, tools for integrating C/C++
 and Fortran code, useful linear algebra, Fourier transform, and random number
 capabilities.")
+    (properties
+     '((upstream-name . "numpy")))
     (license license:bsd-3)))
 
 (define-public python-numpy-documentation
@@ -5723,7 +5790,7 @@ capabilities.")
            python-pandas
            python-pydata-sphinx-theme
            python-scipy                 ;used by matplotlib
-           python-sphinx
+           python-sphinx-4
            python-sphinx-panels
            texinfo
            texlive-bin
@@ -8268,8 +8335,11 @@ module with a few extra procedures.")
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
                   ;; Do not test the myproject.toml build as it tries to pull
-                  ;; dependencies from the Internet.
-                  (invoke "pytest" "-vv" "-k" "not project"))))))))
+                  ;; dependencies from the Internet.  Do not run a test that
+                  ;; tries to emulate a broken proprietary CI set-up, fails
+                  ;; to do so correctly, and then throws an error about it.
+                  (invoke "pytest" "-vv" "-k"
+                          "not project and not test_function_throttled"))))))))
     (native-inputs
      (modify-inputs
          (package-native-inputs python-jaraco-functools-bootstrap)
@@ -14122,13 +14192,13 @@ minimal and fast API targeting the following uses:
 (define-public python-icalendar
   (package
     (name "python-icalendar")
-    (version "4.0.7")
+    (version "4.1.0")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "icalendar" version))
              (sha256
               (base32
-               "19574j3jwssm2dkqykih4568xqfgjsa3hcd79yl5s2vfys3qvh8g"))))
+               "15dkq42rkqjdi17rpvmd1plnbwn4daby0nk1s1c3xi7w5v0bfj4p"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-dateutil python-pytz))
@@ -17216,13 +17286,13 @@ addresses, and phone numbers.")
 (define-public python-pyaml
   (package
     (name "python-pyaml")
-    (version "18.11.0")
+    (version "21.10.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyaml" version))
               (sha256
                (base32
-                "0fi604ix8lbpj1266q7js6szm771saprdzzcdwmj43wy83694qmr"))))
+                "10w3frzqir5sbpglc9bwb8w414dsivmcvji07yxy61mz2gp9ylf6"))))
     (build-system python-build-system)
     (native-inputs
      (list python-unidecode))
@@ -18104,9 +18174,17 @@ JSON) codec.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (replace 'check
+         (add-after 'unpack 'remove-test-hypothesis-deadlines
            (lambda _
-             (invoke "pytest" "-v"))))))
+             (substitute* "tests/test_utils.py"
+               (("from hypothesis import given")
+                "from hypothesis import given, settings")
+               (("( +)@given" all spaces)
+                (string-append spaces "@settings(deadline=None)\n" all)))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
     (native-inputs
      (list python-hypothesis python-pytest-cov python-pytest-mock
            python-pytest))
@@ -18116,13 +18194,13 @@ JSON) codec.")
     (synopsis "Natural sorting for python and shell")
     (description
      "Natsort lets you apply natural sorting on lists instead of
-     lexicographical.  If you use the built-in @code{sorted} method in python
-     on a list such as @code{[@code{a20}, @code{a9}, @code{a1}, @code{a4},
-                                   @code{a10}]}, it would be returned as @code{[@code{a1}, @code{a10}, @code{a20},
-                                   @code{a4}, @code{a9}]}.  Natsort provides a function @code{natsorted} that
-     identifies numbers and sorts them separately from strings.  It can also sort
-     version numbers, real numbers, mixed types and more, and comes with a shell
-     command @command{natsort} that exposes this functionality in the command line.")
+lexicographical.  If you use the built-in @code{sorted} method in python on a
+list such as @code{[@code{a20}, @code{a9}, @code{a1}, @code{a4}, @code{a10}]},
+it would be returned as @code{[@code{a1}, @code{a10}, @code{a20}, @code{a4},
+@code{a9}]}.  Natsort provides a function @code{natsorted} that identifies
+numbers and sorts them separately from strings.  It can also sort version
+numbers, real numbers, mixed types and more, and comes with a shell command
+@command{natsort} that exposes this functionality in the command line.")
     (license license:expat)))
 
 (define-public glances
@@ -18302,40 +18380,40 @@ JSON) codec.")
 (define-public python-setproctitle
   (package
     (name "python-setproctitle")
-    (version "1.1.10")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "setproctitle" version))
        (sha256
         (base32
-         "163kplw9dcrw0lffq1bvli5yws3rngpnvrxrzdw89pbphjjvg0v2"))))
+         "1zbp6kyzfbrmbh9j3idai0mnpa28zn5db3k5l07jc3c3gj89gyxr"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
+           (lambda* (#:key tests? #:allow-other-keys)
              (setenv "PYTHON" (or (which "python3") (which "python")))
              (setenv "PYCONFIG" (if (which "python3-config")
                                     "python3-config --embed"
                                     "python-config"))
-             (setenv "CC" "gcc")
-             ;; No need to extend PYTHONPATH to find the built package, since
-             ;; the Makefile will build anyway
-             (invoke "make" "check"))))))
+             (substitute* "tests/conftest.py"
+               (("cc") "gcc"))
+             (when tests?
+               (invoke "pytest" "tests/")))))))
     (native-inputs
-     (list procps))             ; required for tests
+     (list procps python-pytest))   ; required for tests
     (home-page "https://github.com/dvarrazzo/py-setproctitle")
     (synopsis
      "Setproctitle implementation for Python to customize the process title")
     (description "The library allows a process to change its title (as displayed
-                                                                       by system tools such as ps and top).
+by system tools such as @code{ps} and @code{top}).
 
-     Changing the title is mostly useful in multi-process systems, for
-     example when a master process is forked: changing the children's title
-     allows identifying the task each process is busy with.  The technique
-     is used by PostgreSQL and the OpenSSH Server for example.")
+Changing the title is mostly useful in multi-process systems, for example when a
+master process is forked: changing the children's title allows identifying the
+task each process is busy with.  The technique is used by PostgreSQL and the
+OpenSSH Server for example.")
     (license license:bsd-3)))
 
 (define-public python-validictory
@@ -19078,7 +19156,15 @@ from the header, as well as section details and data available.")
               (uri (pypi-uri "m2r" version))
               (sha256
                (base32
-                "16gdm8i06jjmlpvckpfmlkr4693dh0vs192vgsqn84fsdkbbm45z"))))
+                "16gdm8i06jjmlpvckpfmlkr4693dh0vs192vgsqn84fsdkbbm45z"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Adjust test regex for Python 3.10 compatibility.
+               ;; Taken from upstream pull request:
+               ;; https://github.com/miyakogi/m2r/pull/62
+               '(substitute* "tests/test_cli.py"
+                  (("self.assertIn\\('optional arguments:', message\\)")
+                   "self.assertRegex(message, r'option(s|al arguments):')")))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-docutils python-mistune))
@@ -19423,14 +19509,21 @@ builds partial trees by inspecting living objects.")
 (define-public python-mando
   (package
     (name "python-mando")
-    (version "0.6.4")
+    (version "0.7.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "mando" version))
               (sha256
                (base32
-                "0q6rl085q1hw1wic52pqfndr0x3nirbxnhqj9akdm5zhq2fv3zkr"))))
+                "001mikga36i811pbc95rb45m2kzivkx4xb0fn3pzl4xnnjcskfhq"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (propagated-inputs
      (list python-rst2ansi python-six))
     (native-inputs
@@ -19757,6 +19850,8 @@ while only declaring the test-specific fields.")
                       (substitute* "setup.py"
                         ((".*'future'.*")
                          "")
+                        (("mando>=0\\.6,<0\\.7")
+                         "mando>=0.6")
                         (("colorama==0.4.1")
                          "colorama>=0.4.1"))))
                   (replace 'check
@@ -20833,31 +20928,29 @@ Rust Python extensions implemented with @code{PyO3} or @code{rust-cpython}.")
 (define-public python-pyclipper
   (package
     (name "python-pyclipper")
-    (version "1.1.0.post3")
+    (version "1.3.0.post3")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pyclipper" version ".zip"))
+       (uri (pypi-uri "pyclipper" version))
        (sha256
-        (base32 "164yksvqwqvwzh8f8lq92asg87hd8rvcy2xb5vm4y4ccvd5xgb7i"))
+        (base32 "0vqzbmq2di1jaj6230m5i1ld0mg6wdb1c6r6i5zli54varavr7v3"))
       (modules '((guix build utils)))
       (snippet
        '(begin
           ;; This file is generated by Cython.
-          (delete-file "pyclipper/pyclipper.cpp") #t))))
+          (delete-file "src/pyclipper/_pyclipper.cpp") #t))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'build 'cythonize-sources
            (lambda _
-             (with-directory-excursion "pyclipper"
-               (invoke "cython" "--cplus" "pyclipper.pyx")))))))
-    (propagated-inputs
-     (list python-setuptools-scm-git-archive))
+             (with-directory-excursion "src/pyclipper"
+               (invoke "cython" "--cplus" "_pyclipper.pyx")))))))
     (native-inputs
-     (list python-cython python-pytest python-pytest-runner
-           python-unittest2 unzip))
+     (list python-cython python-setuptools-scm
+           python-pytest python-pytest-runner))
     (home-page "https://github.com/greginvm/pyclipper")
     (synopsis "Wrapper for Angus Johnson's Clipper library")
     (description
@@ -21497,53 +21590,69 @@ based on the CPython 2.7 and 3.7 parsers.")
 (define-public python-typer
   (package
     (name "python-typer")
-    (version "0.3.2")
+    (version "0.6.1")
     (source
      (origin
-       ;; Building `python-typer` from the git repository requires the `flit-core`
-       ;; Python package that is not installed by `python-flit`.
-       (method url-fetch)
-       (uri (pypi-uri "typer" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tiangolo/typer")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "00v3h63dq8yxahp9vg3yb9r27l2niwv8gv0dbds9dzrc298dfmal"))))
+        (base32 "1knv353qhkl2imav3jfp6bgq47m8wkkqhq1dzmqg2sv8rsy7zgl7"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
-       (modify-phases %standard-phases
-         ;; Unfortunately, this doesn't seem to be enough to fix these two
-         ;; tests, but we'll patch this anyway.
-         (add-after 'unpack 'patch-shell-reference
-           (lambda _
-             (substitute* "tests/test_completion/test_completion.py"
-               (("\"bash\"") (string-append "\"" (which "bash") "\""))
-               (("\"/bin/bash\"") (string-append "\"" (which "bash") "\"")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp") ; some tests need it
+       ,#~(modify-phases %standard-phases
+            ;; Unfortunately, this doesn't seem to be enough to fix these two
+            ;; tests, but we'll patch this anyway.
+            (add-after 'unpack 'patch-shell-reference
+              (lambda _
+                (substitute* "tests/test_completion/test_completion.py"
+                  (("\"bash\"") (string-append "\"" (which "bash") "\""))
+                  (("\"/bin/bash\"")
+                   (string-append "\"" (which "bash") "\"")))))
+            (replace 'build
+              (lambda _
+                (invoke "flit" "build")))
+            (replace 'install
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (add-installed-pythonpath inputs outputs)
+                (for-each
+                 (lambda (wheel)
+                   (format #true wheel)
+                   (invoke "python" "-m" "pip" "install"
+                           wheel (string-append "--prefix=" #$output)))
+                 (find-files "dist" "\\.whl$"))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "HOME" "/tmp") ; some tests need it
 
-               ;; This is for completion tests
-               (with-output-to-file "/tmp/.bashrc" (lambda _ (display "# dummy")))
+                  ;; This is for completion tests
+                  (with-output-to-file "/tmp/.bashrc"
+                    (lambda _ (display "# dummy")))
 
-               (setenv "GUIX_PYTHONPATH"
-                       (string-append (getcwd) ":"
-                                      (getenv "GUIX_PYTHONPATH")))
-               (let ((disabled-tests (list "test_show_completion"
-                                           "test_install_completion")))
-                 (invoke "python" "-m" "pytest" "tests/"
-                         "-k"
-                         (string-append "not "
-                                        (string-join disabled-tests
-                                                     " and not "))))))))))
+                  (setenv "GUIX_PYTHONPATH"
+                          (string-append (getcwd) ":"
+                                         (getenv "GUIX_PYTHONPATH")))
+                  (let ((disabled-tests (list "test_show_completion"
+                                              "test_install_completion")))
+                    (invoke "python" "-m" "pytest" "tests/"
+                            "-k"
+                            (string-append "not "
+                                           (string-join disabled-tests
+                                                        " and not "))))))))))
     (propagated-inputs
      (list python-click))
     (native-inputs
-     (list python-coverage python-pytest python-shellingham))
+     (list python-coverage python-flit python-pytest python-rich
+           python-shellingham))
     (home-page "https://github.com/tiangolo/typer")
     (synopsis
-      "Typer builds CLI based on Python type hints")
+     "Typer builds CLI based on Python type hints")
     (description
-      "Typer is a library for building CLI applications.  It's based on
+     "Typer is a library for building CLI applications.  It's based on
 Python 3.6+ type hints.")
     ;; MIT license
     (license license:expat)))
@@ -23332,7 +23441,6 @@ Features:
      (list python-cfgv
            python-identify
            python-importlib-metadata
-           python-importlib-resources
            python-nodeenv
            python-pyyaml
            python-toml
@@ -29717,8 +29825,6 @@ fashion.")
                    (substitute* "prober.py"
                      (("cmd = .cc")
                       (string-append "cmd = \"" #$(cc-for-target)))))))))
-    (native-inputs
-     (list python-unittest2))
     (home-page "http://semanchuk.com/philip/posix_ipc/")
     (synopsis "POSIX IPC primitives for Python")
     (description
@@ -30395,7 +30501,7 @@ window managers.")
 (define-public i3-autotiling
   (package
     (name "i3-autotiling")
-    (version "1.6")
+    (version "1.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -30404,7 +30510,7 @@ window managers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hjlvg7095s322gb43r9g7mqlsy3pj13l827jpnbn5x0918rq9rr"))))
+                "1m8k3g83n2n1xws89dh20f3sy6753wvip9dzf6bssv2cz9ll7406"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f))      ;no tests
     (native-inputs (list python-wheel))
@@ -30481,4 +30587,92 @@ both.")
     (description "This is a PEP 561 type stub package for the @code{orjson}
 package.  It can be used by type-checking tools like mypy, PyCharm, pytype
 etc. to check code that uses @code{orjson}.")
+    (license license:asl2.0)))
+
+(define-public python-nanoid
+  ;; There are no tests on PyPi.
+  (let ((commit "061f9a598f310b0e2e91b9ed6ce725a22770da64")
+        (revision "0"))
+  (package
+    (name "python-nanoid")
+    (version "2.0.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/puyuan/py-nanoid")
+           (commit commit)))
+         (file-name (git-file-name name commit))
+         (sha256
+          (base32 "0y1bcw0h27g8rkqq7cp33ywn0i0lp0q3rjixzkh4191y1dp9yf8s"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (home-page "https://github.com/puyuan/py-nanoid")
+    (synopsis "Unique string ID generator")
+    (description
+     "This package provides a tiny, secure, URL-friendly, unique string ID
+generator for Python.")
+    (license license:expat))))
+
+(define-public python-misskey
+  (package
+    (name "python-misskey")
+    (version "4.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/YuzuRyo61/Misskey.py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rma8pdsjsy00cg76q6q4qki4xpldykmz1m6dl3w2bjjxfhlbaz5"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;needs network
+    (propagated-inputs (list python-requests))
+    (home-page "https://misskeypy.readthedocs.io")
+    (synopsis "Python bindings for Misskey's API")
+    (description
+     "This package provides access to Misskey's API.  Misskey is a SNS
+platform using the ActivityPub protocol.")
+    (license license:expat)))
+
+(define-public python-lief
+  (package
+    (name "python-lief")
+    (version "0.12.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lief-project/LIEF")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1xzbh3bxy4rw1yamnx68da1v5s56ay4g081cyamv67256g0qy2i1"))))
+    (build-system python-build-system)
+    (native-inputs (list cmake))
+    (arguments
+     (list
+      #:tests? #f                  ;needs network
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'build
+                     (lambda _
+                       (invoke
+                        "python" "setup.py" "--sdk" "build"
+                        (string-append
+                         "-j" (number->string (parallel-job-count)))))))))
+    (home-page "https://github.com/lief-project/LIEF")
+    (synopsis "Library to instrument executable formats")
+    (description
+     "@code{python-lief} is a cross platform library which can parse, modify
+and abstract ELF, PE and MachO formats.")
     (license license:asl2.0)))

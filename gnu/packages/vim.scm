@@ -77,7 +77,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.0000")
+    (version "9.0.0235")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -86,7 +86,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0zzhpkcx0gi2hngwvp0w8c4f289fzxvdc4955spkb9f1f3119pwb"))))
+               "1fshlggcq1fw4cbsgmagwxkmdiwv2cla0vds383z49ayqgqnamnj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -659,7 +659,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.7.0")
+    (version "0.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -668,7 +668,7 @@ are detected, the user is notified.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m7xmry66pn27gvk7qj9di83xa1h7zjp4c6ygnf218pqhr08x06g"))))
+                "1jn4i4ral79ys06i50bimylm515sfh41z503gj50a74h1ylg0z4w"))))
     (build-system cmake-build-system)
     (arguments
      (list #:modules

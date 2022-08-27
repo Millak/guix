@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2019, 2020 Adrian Malacoda <malacoda@monarch-pass.net>
 ;;; Copyright © 2020, 2021, 2022 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -97,16 +97,16 @@
 (define-public mozjs
   (package
     (name "mozjs")
-    (version "78.15.0")
+    (version "102.2.0")
     (source (origin
               (method url-fetch)
               ;; TODO: Switch to IceCat source once available on ftp.gnu.org.
-              (uri (string-append "https://archive.mozilla.org/pub/firefox"
+              (uri (string-append "https://ftp.mozilla.org/pub/firefox"
                                   "/releases/" version "esr/source/firefox-"
                                   version "esr.source.tar.xz"))
               (sha256
                (base32
-                "0l91cxdc5v9fps79ckb1kid4gw6v5qng1jd9zvaacwaiv628shx4"))))
+                "1zwpgis7py1bf8p88pz3mpai6a02qrdb8ww2fa9kxxdl9b8r2k81"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -148,7 +148,7 @@
                 (for-each generate-all-checksums
                           '("js" "third_party/rust")))))
           (replace 'configure
-            (lambda* (#:key inputs configure-flags #:allow-other-keys)
+            (lambda* (#:key configure-flags #:allow-other-keys)
               ;; The configure script does not accept environment variables as
               ;; arguments.  It also must be run from a different directory,
               ;; but not the root directory either.
@@ -157,43 +157,11 @@
               (setenv "SHELL" (which "sh"))
               (setenv "CONFIG_SHELL" (which "sh"))
               (setenv "AUTOCONF" (which "autoconf"))
-              (apply invoke "../js/src/configure"
-                     (cons (string-append "--prefix=" #$output)
-                           configure-flags))))
-          (add-after 'unpack 'adjust-for-icu-68
-            (lambda _
-              (with-directory-excursion "js/src/tests"
-                ;; The test suite expects a lightly patched ICU 67.  Since
-                ;; Guix is about to switch to ICU 68, massage the tests to
-                ;; work with that instead of patching ICU.  Try removing this
-                ;; phase for newer versions of mozjs.
-
-                ;; These tests look up locale names and expects to get
-                ;; "GB" instead of "UK".
-                (substitute* "non262/Intl/DisplayNames/language.js"
-                  (("Traditionell, GB")
-                   "Traditionell, UK"))
-                (substitute* "non262/Intl/DisplayNames/region.js"
-                  (("\"GB\": \"GB\"")
-                   "\"GB\": \"UK\""))
-
-                ;; XXX: Some localized time formats have changed, and
-                ;; substitution fails for accented characters, even though
-                ;; it works in the REPL(?).  Just delete these for now.
-                (delete-file "non262/Intl/Date/toLocaleString_timeZone.js")
-                (delete-file "non262/Intl/Date/toLocaleDateString_timeZone.js")
-
-                ;; Similarly, these get an unexpected "A" suffix when looking
-                ;; up a time in the "ar-MA-u-ca-islamicc" locale, which is
-                ;; tricky to substitute.
-                (delete-file "non262/Intl/DateTimeFormat/format_timeZone.js")
-                (delete-file "non262/Intl/DateTimeFormat/format.js")
-
-                ;; This file compares a generated list of ICU locale names
-                ;; with actual lookups.  Some have changed slightly, i.e.
-                ;; daf-Latn-ZZ -> daf-Latn-CI, so drop it for simplicity.
-                (delete-file "non262/Intl/Locale/likely-subtags-generated.js"))))
-          (add-before 'check 'pre-check
+              (apply invoke "python" "../configure.py"
+                     "--enable-project=js"
+                     (string-append "--prefix=" #$output)
+                     configure-flags)))
+          (add-before 'check 'adjust-tests
             (lambda _
               (with-directory-excursion "../js/src/tests"
                 (substitute* "shell/os.js"
@@ -201,23 +169,174 @@
                   ((".*killed process should not have exitStatus.*")
                    ""))
 
-                ;; XXX: Delete all tests that test time zone functionality,
-                ;; because the test suite uses /etc/localtime to figure out
-                ;; the offset from the hardware clock, which does not work
-                ;; in the build container.  See <tests/non262/Date/shell.js>.
-                (delete-file-recursively "non262/Date")
-                (delete-file "non262/Intl/DateTimeFormat/tz-environment-variable.js")
+                ;; The test suite expects a lightly patched ICU.  Disable tests
+                ;; that do not work with the system version.  See
+                ;; "intl/icu-patches" for clues.
 
-                (setenv "JSTESTS_EXTRA_ARGS"
-                        (string-join
-                         (list
-                          ;; Do not run tests marked as "random".
-                          "--exclude-random"
-                          ;; Exclude web platform tests.
-                          "--wpt=disabled"
-                          ;; Respect the daemons configured number of jobs.
-                          (string-append "--worker-count="
-                                         (number->string (parallel-job-count))))))))))))
+                ;; See <https://unicode-org.atlassian.net/browse/ICU-20992> and
+                ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1636984> and
+                ;; related patch for why this is failing.
+                (delete-file "non262/Intl/DateTimeFormat/\
+fractional-second-digits-append-item.js")
+                ;; FIXME: got "0 \u251CAM/PM: noon\u2524", expected "0 (AM/PM: noon)"
+                (delete-file "non262/Intl/DateTimeFormat/day-period-hour-cycle.js")
+                ;; FIXME: got "en-US-posix", expected "en-US-POSIX".
+                (delete-file "non262/Intl/available-locales-supported.js")
+                ;; FIXME: got "en-US", expected "en-US-POSIX"
+                (delete-file "non262/Intl/available-locales-resolved.js"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "JSTESTS_EXTRA_ARGS"
+                      (string-join
+                       (list
+                        ;; Do not run tests marked as "random".
+                        "--exclude-random"
+                        ;; Exclude web platform tests.
+                        "--wpt=disabled"
+                        ;; Respect the daemons configured number of jobs.
+                        (string-append "--worker-count="
+                                       (number->string (parallel-job-count)))))))))))
+    (native-inputs
+     (list autoconf
+           llvm                         ;for llvm-objdump
+           m4
+           perl
+           pkg-config
+           python-wrapper
+           rust
+           `(,rust "cargo")))
+    (inputs
+     (list icu4c readline zlib))
+    (propagated-inputs
+     (list nspr))                ; in the Requires.private field of mozjs-*.pc
+    (home-page
+     "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey")
+    (synopsis "Mozilla javascript engine")
+    (description "SpiderMonkey is Mozilla's JavaScript engine written
+in C/C++.")
+    (license license:mpl2.0))) ; and others for some files
+
+(define-public mozjs-91
+  (package
+    (inherit mozjs)
+    (version "91.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://ftp.mozilla.org/pub/firefox"
+                                  "/releases/" version "esr/source/firefox-"
+                                  version "esr.source.tar.xz"))
+              (sha256
+               (base32
+                "0qh7j960wdp5zcfqhkj8ki47spp9i9ms12xx0v0kxvmmw36jpgjk"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mozjs)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'disable-timezone-tests
+              (lambda _
+                (with-directory-excursion "../js/src/tests"
+                  ;; FIXME: Assertion failed: got "2021a", expected "2021a3"?
+                  (delete-file "non262/Intl/DateTimeFormat/timeZone_version.js")
+                  ;; XXX: Delete all tests that test time zone functionality,
+                  ;; because the test suite uses /etc/localtime to figure out
+                  ;; the offset from the hardware clock, which does not work
+                  ;; in the build container.  See <tests/non262/Date/shell.js>.
+                  (delete-file-recursively "non262/Date")
+                  (delete-file
+                   "non262/Intl/DateTimeFormat/tz-environment-variable.js"))))))))
+    (inputs (modify-inputs (package-inputs mozjs)
+              (replace "icu4c" icu4c-69)))))
+
+(define-public mozjs-78
+  (package
+    (inherit mozjs)
+    (name "mozjs")
+    (version "78.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.mozilla.org/pub/firefox"
+                                  "/releases/" version "esr/source/firefox-"
+                                  version "esr.source.tar.xz"))
+              (sha256
+               (base32
+                "0l91cxdc5v9fps79ckb1kid4gw6v5qng1jd9zvaacwaiv628shx4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments mozjs)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'configure
+              (lambda* (#:key configure-flags #:allow-other-keys)
+                ;; The configure script does not accept environment variables as
+                ;; arguments.  It also must be run from a different directory,
+                ;; but not the root directory either.
+                (mkdir "run-configure-from-here")
+                (chdir "run-configure-from-here")
+                (setenv "SHELL" (which "sh"))
+                (setenv "CONFIG_SHELL" (which "sh"))
+                (setenv "AUTOCONF" (which "autoconf"))
+                (apply invoke "../js/src/configure"
+                       (cons (string-append "--prefix=" #$output)
+                             configure-flags))))
+            (replace 'adjust-tests
+              (lambda _
+                (with-directory-excursion "../js/src/tests"
+                  ;; The test suite expects a lightly patched ICU 67.  Since
+                  ;; Guix is about to switch to ICU 68, massage the tests to
+                  ;; work with that instead of patching ICU.  Try removing this
+                  ;; phase for newer versions of mozjs.
+
+                  ;; These tests look up locale names and expects to get
+                  ;; "GB" instead of "UK".
+                  (substitute* "non262/Intl/DisplayNames/language.js"
+                    (("Traditionell, GB")
+                     "Traditionell, UK"))
+                  (substitute* "non262/Intl/DisplayNames/region.js"
+                    (("\"GB\": \"GB\"")
+                     "\"GB\": \"UK\""))
+
+                  ;; XXX: Some localized time formats have changed, and
+                  ;; substitution fails for accented characters, even though
+                  ;; it works in the REPL(?).  Just delete these for now.
+                  (delete-file "non262/Intl/Date/toLocaleString_timeZone.js")
+                  (delete-file "non262/Intl/Date/toLocaleDateString_timeZone.js")
+
+                  ;; Similarly, these get an unexpected "A" suffix when looking
+                  ;; up a time in the "ar-MA-u-ca-islamicc" locale, which is
+                  ;; tricky to substitute.
+                  (delete-file "non262/Intl/DateTimeFormat/format_timeZone.js")
+                  (delete-file "non262/Intl/DateTimeFormat/format.js")
+
+                  ;; This file compares a generated list of ICU locale names
+                  ;; with actual lookups.  Some have changed slightly, i.e.
+                  ;; daf-Latn-ZZ -> daf-Latn-CI, so drop it for simplicity.
+                  (delete-file "non262/Intl/Locale/likely-subtags-generated.js"))))
+            (replace 'pre-check
+              (lambda _
+                (with-directory-excursion "../js/src/tests"
+                  (substitute* "shell/os.js"
+                    ;; FIXME: Why does the killed process have an exit status?
+                    ((".*killed process should not have exitStatus.*")
+                     ""))
+
+                  ;; XXX: Delete all tests that test time zone functionality,
+                  ;; because the test suite uses /etc/localtime to figure out
+                  ;; the offset from the hardware clock, which does not work
+                  ;; in the build container.  See <tests/non262/Date/shell.js>.
+                  (delete-file-recursively "non262/Date")
+                  (delete-file "non262/Intl/DateTimeFormat/tz-environment-variable.js")
+
+                  (setenv "JSTESTS_EXTRA_ARGS"
+                          (string-join
+                           (list
+                            ;; Do not run tests marked as "random".
+                            "--exclude-random"
+                            ;; Exclude web platform tests.
+                            "--wpt=disabled"
+                            ;; Respect the daemons configured number of jobs.
+                            (string-append "--worker-count="
+                                           (number->string
+                                            (parallel-job-count)))))))))))))
     (native-inputs
      (list autoconf-2.13
            automake
@@ -228,15 +347,7 @@
            rust
            `(,rust "cargo")))
     (inputs
-     (list icu4c-69 readline zlib))
-    (propagated-inputs
-     (list nspr))                ; in the Requires.private field of mozjs-*.pc
-    (home-page
-     "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey")
-    (synopsis "Mozilla javascript engine")
-    (description "SpiderMonkey is Mozilla's JavaScript engine written
-in C/C++.")
-    (license license:mpl2.0))) ; and others for some files
+     (list icu4c-69 readline zlib))))
 
 (define mozilla-compare-locales
   (origin
@@ -367,8 +478,8 @@ in C/C++.")
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "91.12.0-guix0-preview1")
-(define %icecat-build-id "20220726000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "91.13.0-guix0-preview1")
+(define %icecat-build-id "20220823000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -390,11 +501,11 @@ in C/C++.")
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0p1bhc1qla4a7iqk0fc6sj224ld6wplpmj4yw6nfx1b8hbqqy2vc"))))
+              "0qh7j960wdp5zcfqhkj8ki47spp9i9ms12xx0v0kxvmmw36jpgjk"))))
 
-         (upstream-icecat-base-version "91.12.0") ; maybe older than base-version
+         (upstream-icecat-base-version "91.13.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
-         (gnuzilla-commit "298024d727053a1609df4003fb4438836d5181f4")
+         (gnuzilla-commit "4a87716686104266a9cccc2d83cc249e312f3673")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -406,7 +517,7 @@ in C/C++.")
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "1lgz6knklxbrqr1vaj9d0y0997f4f6v44a8cng8ihkmn7aa7lvwg"))))
+              "070j78al04xzchfl5xj1w300hmw17a3iqcw7mnlxf6b8rqlgj20p"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.

@@ -3557,8 +3557,10 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
        (list texlive-atbegshi
              texlive-auxhook
              texlive-bitset
+             texlive-cm
              texlive-etexcmds
              texlive-gettitlestring
+             texlive-graphics           ;for keyval
              texlive-hycolor
              texlive-intcalc
              texlive-kvdefinekeys

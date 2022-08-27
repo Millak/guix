@@ -481,14 +481,14 @@ mapping from string keys to string values.")
 (define-public memcached
   (package
     (name "memcached")
-    (version "1.6.15")
+    (version "1.6.16")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://memcached.org/files/memcached-" version ".tar.gz"))
        (sha256
-        (base32 "05fmds73hr71bha9gszjfp02lgyacqfyyhkgl6xysy4kchyvwyld"))))
+        (base32 "1nilmfhy8hc7zzlihnx3hmiqf7siyrpgz2g5s3r3l36xy4xsjl9h"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent cyrus-sasl))
@@ -698,6 +698,38 @@ auto-completion and syntax highlighting.")
      "This Python package provides an API to execute meta-commands (AKA
 \"special\", or \"backslash commands\") on PostgreSQL.")
     (license license:bsd-3)))
+
+(define-public python-sqlitedict
+  (package
+    (name "python-sqlitedict")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sqlitedict" version))
+              (sha256
+               (base32
+                "05sxy016k3p5sjjhdg0ad9z15i6vm3rq4cr9m8nrc7jfdx0p18r3"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        "-k"
+                        ;; No idea why these fail.
+                        (string-append "not test_py24_error"
+                                       " and not test_tablenames"))))))))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/piskvorky/sqlitedict")
+    (synopsis "Persistent dict backed up by sqlite3 and pickle")
+    (description
+     "This package provides a lightweight wrapper around the sqlite3 database
+with a simple, Pythonic @code{dict}-like interface and support for
+multi-thread access.")
+    (license license:asl2.0)))
 
 (define-public pgcli
   (package
@@ -1489,8 +1521,6 @@ CSV, DB3, iXF, SQLite, MS-SQL or MySQL to PostgreSQL.")
        (sha256
         (base32 "1ry8lxgdc1p3k7gbw20r405jqi5lvhi5wk83kxdbiv8xv3f5kh6q"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-unittest2))
     (inputs
      (list python-cryptography))
     (arguments
@@ -3510,44 +3540,37 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.36.0-r1")
+    (version "3.39.2.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/rogerbinns/apsw/releases"
-                            "/download/" version "/apsw-" version ".zip"))
-        (sha256
-          (base32
-           "0w8q73147hv77dlpqrx6h1gx03acc8xqhvdpfp6vkffdm0wmqd8p"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rogerbinns/apsw")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0q7fnk8n3m5mpjzh6xyhj409k8sacdbjsfis98my9c50fdn5sr7y"))))
     (build-system python-build-system)
-    (native-inputs
-     (list unzip))
-    (inputs
-     (list sqlite))
+    (inputs (list sqlite))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             (invoke "python" "setup.py" "build" "--enable-all-extensions"
-                     "--enable=load_extension")
-             #t))
-         (add-after 'build 'build-test-helper
-           (lambda _
-             (invoke "gcc" "-fPIC" "-shared" "-o" "./testextension.sqlext"
-                     "-I." "-Isqlite3" "src/testextension.c")
-             #t))
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "setup.py" "test")
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'build
+                 (lambda _
+                   (invoke "python" "setup.py" "build" "--enable-all-extensions"
+                           "--enable=load_extension")))
+               (add-after 'build 'build-test-helper
+                 (lambda _
+                   (invoke "gcc" "-fPIC" "-shared" "-o" "./testextension.sqlext"
+                           "-I." "-Isqlite3" "src/testextension.c"))))))
     (home-page "https://github.com/rogerbinns/apsw/")
     (synopsis "Another Python SQLite Wrapper")
-    (description "APSW is a Python wrapper for the SQLite
-embedded relational database engine.  In contrast to other wrappers such as
-pysqlite it focuses on being a minimal layer over SQLite attempting just to
-translate the complete SQLite API into Python.")
+    (description
+     "APSW is a Python wrapper for the SQLite embedded relational database
+engine.  In contrast to other wrappers such as pysqlite it focuses on being a
+minimal layer over SQLite attempting just to translate the complete SQLite API
+into Python.")
     (license license:zlib)))
 
 (define-public python-aiosqlite
@@ -3931,7 +3954,7 @@ reasonable substitute.")
 (define-public python-rq
   (package
     (name "python-rq")
-    (version "1.5.2")
+    (version "1.11")
     (source
      (origin
        (method git-fetch)
@@ -3940,7 +3963,7 @@ reasonable substitute.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ikqmpq0g1qiqwd7ar1286l4hqjb6aj2wr844gihhb8ijzwhp8va"))))
+        (base32 "1dj3m8dh9vf1qiq1drjhfw5xbr975v1kpzn4fwja83cfd7jrpzvy"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -3957,7 +3980,7 @@ reasonable substitute.")
                                                       (getenv "PATH")))
                         (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-mock python-pytest redis))
+     (list python-mock python-psutil python-pytest redis))
     (propagated-inputs
      (list python-click python-redis))
     (home-page "https://python-rq.org/")
@@ -4757,9 +4780,9 @@ a Gtk.Grid Widget.")
            sqlite))
     (native-inputs (list qttools-5))
     (home-page "https://sqlitebrowser.org/")
-    (synopsis "Database browser for SQLite")
-    (description "Sqlitebrowser is a high quaility, visual, open source tool to
-create design, and edit database file compatible with SQLite.")
+    (synopsis "Visual database browser and editor for SQLite")
+    (description "Sqlitebrowser lets you create, design, and edit database files
+compatible with SQLite using a graphical user interface.")
     (license
      ;; dual license
      (list license:gpl3+

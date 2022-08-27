@@ -463,7 +463,7 @@ as dictionaries, skip lists, and memory pools.")
 (define-public packcc
   (package
     (name "packcc")
-    (version "1.7.2")
+    (version "1.8.0")
     (home-page "https://github.com/arithy/packcc")
     (source (origin
               (method git-fetch)
@@ -473,7 +473,7 @@ as dictionaries, skip lists, and memory pools.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mb6ys5ylvjz0xpq6769ir98s80p98s9ahd0c9k8p2ra1w20vz33"))))
+                "0b25p7ri1l2l20awyknljfnj7r4rg7cf2x3bljijx5q6j8rxdcsg"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases

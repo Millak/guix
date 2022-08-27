@@ -17,7 +17,7 @@
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2021 Nikolay Korotkiy <sikmir@disroot.org>
+;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -100,6 +100,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
@@ -216,7 +217,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
 (define-public geos
   (package
     (name "geos")
-    (version "3.10.2")
+    (version "3.11.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.osgeo.org/geos/geos-"
@@ -224,7 +225,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "05apyh6dvv15fax4xvxa0kr622h4y08w9p3274mlqsrqmjcwbfsh"))))
+                "12l59pxawyizmc4wn20dvjn7aifqwkim4ysmc78h91mayjmqravr"))))
     (build-system cmake-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
@@ -940,7 +941,7 @@ development.")
 (define-public gdal
   (package
     (name "gdal")
-    (version "3.5.0")
+    (version "3.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -948,7 +949,7 @@ development.")
                      version ".tar.gz"))
               (sha256
                (base32
-                "0h7dgjx8nk3dd17wwqm2yjnaqciyrd2mz9gcjswpcnmap09wbzrs"))
+                "1l93q7xf6qx9ck5axfkf3ygmvclxkvrjd8x00ckn7j0d0750ci3w"))
               (modules '((guix build utils)))
               (snippet
                 `(begin
@@ -1322,7 +1323,7 @@ based on the Osmium library.")
 (define-public osm2pgsql
   (package
     (name "osm2pgsql")
-    (version "1.5.1")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1331,32 +1332,30 @@ based on the Osmium library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i18mskcs087dn3f3h9n7j0wafn8502m0h13mrjwin38xsz0crfj"))
+        (base32 "15fxr4xq7siy237763l7nswx7v0swr3qzs2h3zkjzgvajw4p6qii"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (delete-file-recursively "contrib/protozero")
-           (delete-file-recursively "contrib/libosmium")
-           #t))))
+        ;; Remove bundled libraries.
+        '(delete-file-recursively "contrib"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f; tests fail because we need to setup a database
        #:configure-flags
-       (list (string-append "-DOSMIUM_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "libosmium")
-                            "/include")
-             (string-append "-DPROTOZERO_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "protozero")
-                            "/include"))))
+       (list "-DEXTERNAL_LIBOSMIUM=ON"
+             "-DEXTERNAL_PROTOZERO=ON"
+             "-DEXTERNAL_FMT=ON"
+             "-DEXTERNAL_RAPIDJSON=ON")))
     (inputs
      (list boost
            bzip2
            expat
+           fmt
            libosmium
            lua
            postgresql
            proj
            protozero
+           rapidjson
            zlib))
     (native-inputs
      (list python python-psycopg2))
@@ -1828,7 +1827,7 @@ ways, and relations) and their metadata tags.")
 (define-public libmaxminddb
   (package
     (name "libmaxminddb")
-    (version "1.4.3")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
@@ -1836,7 +1835,7 @@ ways, and relations) and their metadata tags.")
                            "/releases/download/" version "/"
                            "/libmaxminddb-" version ".tar.gz"))
        (sha256
-        (base32 "0fd4a4sxiiwzbd5h74wl1ijnb7xybjyybb7q41vdq3w8nk3zdzd5"))))
+        (base32 "0rw2z7rx8jzgdcgqlmc4wqrsjmiwd8vm5wvvrldy472rghcaq83n"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -1855,14 +1854,14 @@ associated with an address.")
 (define-public python-maxminddb
   (package
     (name "python-maxminddb")
-    (version "1.5.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "maxminddb" version))
        (sha256
         (base32
-         "0y9giw81k4wdmpryr4k42w50z292mf364a6vs1vxf83ksc9ig6j4"))))
+         "1rc4a403r3b4vhmhb03gidd0fmsbvfpbf3qfcw25h4db9zn0fxz3"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f)) ;; Tests require a copy of the maxmind database

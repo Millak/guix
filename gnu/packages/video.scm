@@ -143,6 +143,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
@@ -162,6 +163,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages perl-web)
@@ -773,7 +775,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
 (define-public celluloid
   (package
     (name "celluloid")
-    (version "0.23")
+    (version "0.24")
     (source
      (origin
        (method url-fetch)
@@ -781,12 +783,12 @@ old-fashioned output methods with powerful ascii-art renderer.")
                            "/releases/download/v" version
                            "/celluloid-" version ".tar.xz"))
        (sha256
-        (base32 "0x23y09jwkg8wbb0yp5f03sj5hwjg3kyhbbww2y1a0izs1iijbdj"))))
+        (base32 "0ns9xh582c8kajw4v2x5ap5jfiba3gxywqc2klc0v6fc3id1gqii"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool pkg-config))
     (inputs
-     (list gtk libepoxy mpv))
+     (list gtk libadwaita libepoxy mpv))
     (home-page "https://github.com/celluloid-player/celluloid")
     (synopsis "GTK+ frontend for the mpv media player")
     (description "Celluloid is a simple GTK+ frontend for the mpv media player.
@@ -2483,26 +2485,16 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2022.07.18")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/yt-dlp/yt-dlp/"
-                                  "releases/download/"
-                                  version "/yt-dlp.tar.gz"))
-              (sha256
-               (base32
-                "1wmzfqhysx1mqdba4ikvm6nbahasihi4xgqwqad20y3vs701slyj"))
-              (snippet
-               #~(begin
-                   ;; Delete the pre-generated files, except for the man page
-                   ;; which requires 'pandoc' to build.
-                   (for-each delete-file
-                             (list "yt-dlp"
-                                   ;;pandoc is needed to generate
-                                   ;;"yt-dlp.1"
-                                   "completions/bash/yt-dlp"
-                                   "completions/fish/yt-dlp.fish"
-                                   "completions/zsh/_yt-dlp"))))))
+    (version "2022.08.08")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yt-dlp/yt-dlp/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07qz1zdndlpki0asw35zk5hdjcwpl3n1g54nxg4yb1iykbyv7rll"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) #t)
@@ -2515,9 +2507,17 @@ YouTube.com and many more sites.")
                   (("\\.get_param\\('ffmpeg_location'\\)" match)
                    (format #f "~a or '~a'" match (which "ffmpeg"))))))
             (replace 'build-generated-files
-              (lambda _
-                ;; Avoid the yt-dlp.1 target, which requires pandoc.
-                (invoke "make" "PYTHON=python" "yt-dlp" "completions")))
+              (lambda* (#:key inputs #:allow-other-keys)
+                (if (assoc-ref inputs "pandoc")
+                  (invoke "make"
+                          "PYTHON=python"
+                          "yt-dlp"
+                          "yt-dlp.1"
+                          "completions")
+                  (invoke "make"
+                          "PYTHON=python"
+                          "yt-dlp"
+                          "completions"))))
             (replace 'fix-the-data-directories
               (lambda* (#:key outputs #:allow-other-keys)
                 (let ((prefix (assoc-ref outputs "out")))
@@ -2537,8 +2537,14 @@ YouTube.com and many more sites.")
                       python-mutagen
                       python-pycryptodomex
                       python-websockets)))
-    (native-inputs (modify-inputs (package-native-inputs youtube-dl)
-                     (append python-pytest)))
+    (native-inputs
+     (append
+       ;; To generate the manpage.
+       (if (member (%current-system)
+                   (package-transitive-supported-systems pandoc))
+         (list pandoc)
+         '())
+       (list python-pytest zip)))
     (description
      "yt-dlp is a small command-line program to download videos from
 YouTube.com and many more sites.  It is a fork of youtube-dl with a
@@ -3147,7 +3153,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
 (define-public mlt
   (package
     (name "mlt")
-    (version "7.6.0")
+    (version "7.8.0")
     (source
      (origin
        (method git-fetch)
@@ -3156,7 +3162,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dj7jb5nk0qy28mlw0pcmj4nd607mgx229nhf14gjc0fq9gx71sd"))))
+        (base32 "01589xpx1vgx1l1zjg553nbjks5wy31rdvyq1sjnbp9w7p7nzjdg"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3312,7 +3318,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "27.1.3")
+    (version "27.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3322,7 +3328,7 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ndiarr3d6qihymaigf34jjml0lrgbj640fnpnffz2ysj7276q0j"))
+                "13bfzjqmvabli99yr1h0306w5lx72mbl5sxrnr46hjig1a6rw91s"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
@@ -3330,10 +3336,10 @@ be used for realtime video capture via Linux-specific APIs.")
      (list
       #:configure-flags
       #~(list (string-append "-DOBS_VERSION_OVERRIDE=" #$version)
-              "-DENABLE_UNIT_TESTS=TRUE"
+              "-DENABLE_UNIT_TESTS=ON"
               ;; Browser plugin requires cef, but it is not packaged yet.
               ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
-              "-DBUILD_BROWSER=FALSE")
+              "-DBUILD_BROWSER=OFF")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'install 'wrap-executable
@@ -3351,10 +3357,11 @@ be used for realtime video capture via Linux-specific APIs.")
             (separator #f)                         ;single entry
             (files '("share/obs/obs-plugins")))))
     (native-inputs
-     (list cmocka pkg-config))
+     (list cmocka pkg-config swig))
     (inputs
      (list
       alsa-lib
+      bash-minimal
       curl
       eudev
       ffmpeg
@@ -3365,10 +3372,14 @@ be used for realtime video capture via Linux-specific APIs.")
       jansson
       libx264
       libxcomposite
+      libxkbcommon
+      luajit
       mbedtls-apache
       mesa
+      pciutils
       pipewire-0.3
       pulseaudio
+      python
       qtbase-5
       qtsvg-5
       qtx11extras
@@ -4801,7 +4812,7 @@ transitions, and effects and then export your film to many common formats.")
 (define-public shotcut
   (package
     (name "shotcut")
-    (version "22.04.25")
+    (version "22.06.23")
     (source
      (origin
        (method git-fetch)
@@ -4810,7 +4821,7 @@ transitions, and effects and then export your film to many common formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ccbx2crqrnhl19d7267xc40vs0cjmps2cnhi1g1l6bqxbi7k88x"))))
+        (base32 "1kvhcblzjdjiv3jggdx41djq9pz6a9hg4ilgcwin13gb19ir7dcc"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f                      ;there are no tests
@@ -4827,14 +4838,6 @@ transitions, and effects and then export your film to many common formats.")
                (substitute* "src/jobs/meltjob.cpp"
                  (("\"melt\"") (string-append "\"" mlt "/bin/melt\""))
                  (("\"melt-7\"") (string-append "\"" mlt "/bin/melt-7\""))))))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (invoke "qmake"
-                       (string-append "PREFIX=" out)
-                       "QMAKE_LRELEASE=lrelease"
-                       "QMAKE_LUPDATE=lupdate"
-                       "shotcut.pro"))))
          (add-after 'install 'wrap-executable
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -4859,6 +4862,7 @@ transitions, and effects and then export your film to many common formats.")
     (inputs
      (list bash-minimal
            ffmpeg
+           fftw
            frei0r-plugins
            jack-1
            ladspa

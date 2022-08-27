@@ -3055,6 +3055,11 @@ interface and a programmable text output for scripting.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-manpage-date
+           (lambda _
+             ;; Replace current date with specific date to build reproducibly
+             (substitute* "doc/fixmanpages.in"
+               (("pod2man -d .* -n") "pod2man -d \"1970-01-01\" -n"))))
          (add-before 'build 'build-doc
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke "make" "-C" "doc" "doc"
@@ -3756,14 +3761,14 @@ protocol daemons for BGP, IS-IS, LDP, OSPF, PIM, and RIP.")
 (define-public bird
   (package
     (name "bird")
-    (version "2.0.8")
+    (version "2.0.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://bird.network.cz/pub/bird/bird-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1xp7f0im1v8pqqx3xqyfkd1nsxk8vnbqgrdrwnwhg8r5xs1xxlhr"))))
+                "0npx3zgbjnhm4905zmj2qkz3d13s8hakassq6sbzm1ywv3fl3lvy"))))
     (inputs
      (list libssh readline))
     (native-inputs
@@ -4149,11 +4154,11 @@ cables.")
      (list lua openssl pcre2 zlib))
     (home-page "https://www.haproxy.org/")
     (synopsis "Reliable, high performance TCP/HTTP load balancer")
-    (description "HAProxy is a free, very fast and reliable solution offering
-high availability, load balancing, and proxying for TCP and HTTP-based
-applications.  It is particularly suited for web sites crawling under very
-high loads while needing persistence or Layer7 processing.  Supporting tens of
-thousands of connections is clearly realistic with today's hardware.")
+    (description "HAProxy offers @acronym{HA, high availability}, load
+balancing, and proxying for TCP and HTTP-based applications.  It is particularly
+suited to Web sites crawling under very high loads while needing persistence or
+Layer 7 processing.  Supporting tens of thousands of connections is clearly
+realistic with today's hardware.")
     (license (list license:gpl2+
                    license:lgpl2.1
                    license:lgpl2.1+))))

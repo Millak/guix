@@ -111,10 +111,10 @@
    "The type of mail retriever to use.  Valid values include
 @samp{passwd} and @samp{static}.")
   (server
-   (string 'unset)
+   string
    "Name or IP address of the server to retrieve mail from.")
   (username
-   (string 'unset)
+   string
    "Username to login to the mail server with.")
   (port
    (non-negative-integer #f)
@@ -143,7 +143,7 @@
 
 (define-configuration getmail-destination-configuration
   (type
-   (string 'unset)
+   string
    "The type of mail destination.  Valid values include @samp{Maildir},
 @samp{Mboxrd} and @samp{MDA_external}.")
   (path

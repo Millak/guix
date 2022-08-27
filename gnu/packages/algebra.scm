@@ -1628,7 +1628,7 @@ John Cremona to compute his elliptic curve database.")
 (define-public lrcalc
   (package
     (name "lrcalc")
-    (version "1.2")
+    (version "2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1637,18 +1637,10 @@ John Cremona to compute his elliptic curve database.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c12d04jdyxkkav4ak8d1aqrv594gzihwhpxvc6p9js0ry1fahss"))
-              (patches (search-patches "lrcalc-includes.patch"))))
+                "0s3amf3z75hnrjyszdndrvk4wp5p630dcgyj341i6l57h43d1p4k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-permission
-           (lambda _
-             (chmod "lrcalc.maple.src" #o644)
-             #t)))))
     (synopsis "Littlewood-Richardson calculator in algebraic combinatorics")
     (description "The Littlewood-Richardson Calculator (lrcalc) is a
 program designed to compute Littlewood-Richardson coefficients.  It computes

@@ -650,7 +650,7 @@ address of one of the participants.")
            speech-dispatcher
            speex ; avoid bundled
            speexdsp ; avoid bundled
-           ;; xiph-rnnoise ; TODO: unbundle rnnoise
+           ;; rnnoise ; TODO: unbundle rnnoise
            ))
     (native-inputs
      (list pkg-config python qttools-5))

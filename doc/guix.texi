@@ -586,7 +586,7 @@ great time to try it and get involved!
 
 @item riscv64-linux
 little-endian 64-bit RISC-V processors, specifically RV64GC, and
-Linux-Libre kernel. This playform is available as a "technology preview":
+Linux-Libre kernel. This platform is available as a "technology preview":
 although it is supported, substitutes are not yet available from the
 build farm (@pxref{Substitutes}), and some packages may fail to build
 (@pxref{Tracking Bugs and Patches}).  That said, the Guix community is
@@ -7615,7 +7615,7 @@ procedure returns.
 Return the list of inputs required by @var{package} for development
 purposes on @var{system}.  When @var{target} is true, return the inputs
 needed to cross-compile @var{package} from @var{system} to
-@var{triplet}, where @var{triplet} is a triplet such as
+@var{target}, where @var{target} is a triplet such as
 @code{"aarch64-linux-gnu"}.
 
 Note that the result includes both explicit inputs and implicit
@@ -15818,8 +15818,8 @@ cross-compilation, because every instruction needs to be emulated.
 
 The availability of substitutes for the architecture targeted by the
 @code{--system} option can mitigate this problem.  An other way to work
-around it is to install GNU Guix on a machine which CPU is supporting
-the targeted instruction set, an set it up as an offload machine
+around it is to install GNU Guix on a machine whose CPU supports
+the targeted instruction set, and set it up as an offload machine
 (@pxref{Daemon Offload Setup}).
 
 @node System Configuration
@@ -16439,9 +16439,13 @@ Manual}, for more information on these flags.
 @item @code{options} (default: @code{#f})
 This is either @code{#f}, or a string denoting mount options passed to
 the file system driver.  @xref{Mount-Unmount-Remount,,, libc, The GNU C
-Library Reference Manual}, for details and run @command{man 8 mount} for
-options for various file systems.  Note that the
-@code{file-system-options->alist} and @code{alist->file-system-options}
+Library Reference Manual}, for details.
+
+Run @command{man 8 mount} for options for various file systems, but
+beware that what it lists as file-system-independent ``mount options'' are
+in fact flags, and belong in the @code{flags} field described above.
+
+The @code{file-system-options->alist} and @code{alist->file-system-options}
 procedures from @code{(gnu system file-systems)} can be used to convert
 file system options given as an association list to the string
 representation, and vice-versa.
@@ -18564,6 +18568,13 @@ the 'root' account has just been created.
 @item @code{terminals} (default: @code{'()})
 List of @code{greetd-terminal-configuration} per terminal for which
 @code{greetd} should be started.
+
+@item @code{greeter-supplementary-groups} (default: @code{'()})
+List of groups which should be added to @code{greeter} user. For instance:
+@lisp
+(greeter-supplementary-groups '("seat" "video"))
+@end lisp
+Note that this example will fail if @code{seat} group does not exist.
 @end table
 @end deftp
 
@@ -19851,7 +19862,7 @@ network.  A specific port value can be provided by appending the
 @code{:PORT} suffix.  By default, it uses the Jami bootstrap nodes, but
 any host can be specified here.  It's also possible to disable
 bootstrapping by explicitly setting this field to the
-@code{'unset} value.
+@code{%unset-value} value.
 
 @item @code{port} (default: @code{4222}) (type: maybe-number)
 The UDP port to bind to.  When left unspecified, an available port is
@@ -23161,6 +23172,30 @@ input), without requiring the applications needing access to be root.
   %base-services)
 
 @end lisp
+
+@code{seatd} operates over a UNIX domain socket, with @code{libseat}
+providing the client side of the protocol.  Applications that acquire
+access to the shared resources via @code{seatd} (e.g. @code{sway})
+need to be able to talk to this socket.
+This can be achieved by adding the user they run under to the group
+owning @code{seatd}'s socket (usually ``seat''), like so:
+
+@lisp
+(user-account
+  (name "alice")
+  (group "users")
+  (supplementary-groups '("wheel"   ; allow use of sudo, etc.
+                          "seat"    ; seat management
+                          "audio"   ; sound card
+                          "video"   ; video devices such as webcams
+                          "cdrom")) ; the good ol' CD-ROM
+  (comment "Bob's sister"))
+@end lisp
+
+Depending on your setup, you will have to not only add regular users,
+but also system users to this group.  For instance, some greetd greeters
+require graphics and therefore also need to negotiate with seatd.
+
 @end defvr
 
 @deftp {Data Type} seatd-configuration
@@ -23170,10 +23205,7 @@ Configuration record for the seatd daemon service.
 @item @code{seatd} (default: @code{seatd})
 The seatd package to use.
 
-@item @code{user} (default: @samp{"root"})
-User to own the seatd socket.
-
-@item @code{group} (default: @samp{"users"})
+@item @code{group} (default: @samp{"seat"})
 Group to own the seatd socket.
 
 @item @code{socket} (default: @samp{"/run/seatd.sock"})
@@ -23311,7 +23343,7 @@ Script file to use as @file{default.pa}.  In case the
 directive pointing to @file{/etc/pulse/default.pa.d} is appended to the
 provided script.
 
-@item @code{extra-script-files} (default: @code{'())})
+@item @code{extra-script-files} (default: @code{'()})
 A list of file-like objects defining extra PulseAudio scripts to run at
 the initialization of the @command{pulseaudio} daemon, after the main
 @code{script-file}.  The scripts are deployed to the
@@ -31334,7 +31366,7 @@ Each parameter definition is preceded by its type; for example,
 @samp{boolean foo} indicates that the @code{foo} parameter should be
 specified as a boolean.  Types starting with @code{maybe-} denote
 parameters that won't show up in TLP config file when their value is
-left unset, or is explicitly set to the @code{'unset} value.
+left unset, or is explicitly set to the @code{%unset-value} value.
 
 @c The following documentation was initially generated by
 @c (generate-tlp-documentation) in (gnu services pm).  Manually maintained
@@ -36638,9 +36670,9 @@ Set the mount @emph{options} of the root file system.  It overrides the
 @item fsck.mode=@var{mode}
 Whether to check the @var{root} file system for errors before mounting
 it.  @var{mode} is one of @code{skip} (never check), @code{force} (always
-check), or @code{auto} to respect the root file-system object's 'check?'
-setting (@pxref{File Systems}) and run a full scan only if the file system
-was not cleanly shut down.
+check), or @code{auto} to respect the root @code{<file-system>} object's
+@code{check?} setting (@pxref{File Systems}) and run a full scan only if
+the file system was not cleanly shut down.
 
 @code{auto} is the default if this option is not present or if @var{mode}
 is not one of the above.
@@ -38904,7 +38936,7 @@ In some cases multiple different configuration records might be defined
 in the same file, but their serializers for the same type might have to
 be different, because they have different configuration formats.  For
 example, the @code{serialize-boolean} procedure for the Getmail service
-would have to be different for the one for the Transmission service.  To
+would have to be different from the one for the Transmission service.  To
 make it easier to deal with this situation, one can specify a serializer
 prefix by using the @code{prefix} literal in the
 @code{define-configuration} form.  This means that one doesn't have to
@@ -38955,8 +38987,7 @@ macro which is a shorthand of this.
 Sometimes a field should not be serialized if the user doesn’t specify a
 value.  To achieve this, you can use the @code{define-maybe} macro to
 define a ``maybe type''; if the value of a maybe type is left unset, or
-is set to the @code{'unset} value, then it will not be
-serialized.
+is set to the @code{%unset-value} value, then it will not be serialized.
 
 When defining a ``maybe type'', the corresponding serializer for the
 regular type will be used by default.  For example, a field of type
@@ -38975,7 +39006,7 @@ to be a string, or left unspecified.
   (name
    ;; If set to a string, the `serialize-string' procedure will be used
    ;; to serialize the string.  Otherwise this field is not serialized.
-   maybe-string    ; equivalent to (maybe-string *unspecified*)
+   maybe-string
    "The name of this module."))
 @end lisp
 
@@ -38986,7 +39017,7 @@ serializer name by using the @code{prefix} literal.
 (define-maybe integer
   (prefix baz-))
 
-(define (baz-serialize-interger field-name value)
+(define (baz-serialize-integer field-name value)
   @dots{})
 @end lisp
 
@@ -39004,6 +39035,11 @@ whether its value is set or not.
    maybe-symbol
    "Docstring."))
 @end lisp
+@end deffn
+
+@deffn (Scheme Procedure) maybe-value-set? @var{value}
+Predicate to check whether a user explicitly specified the value of a
+maybe field.
 @end deffn
 
 @deffn {Scheme Procedure} serialize-configuration @var{configuration} @
@@ -39213,7 +39249,7 @@ software, configuration, and state.  Software in mainstream distros are
 usually installed system-wide, but with GNU Guix most software packages
 can be installed on a per-user basis without needing root privileges,
 and are thus considered part of the user’s @dfn{home environment}.
-Packages on their own not very useful in many cases, because often they
+Packages on their own are not very useful in many cases, because often they
 require some additional configuration, usually config files that reside
 in @env{XDG_CONFIG_HOME} (@file{~/.config} by default) or other
 directories.  Everything else can be considered state, like media files,
@@ -39373,12 +39409,12 @@ specified) will ignore @file{~/.profile}, even if @file{~/.zprofile}
 doesn't exist.
 
 To make your shell respect @file{~/.profile}, add @code{. ~/.profile} or
-@code{source ~/profile} to the startup file for the login shell.  In
+@code{source ~/.profile} to the startup file for the login shell.  In
 case of Bash, it is @file{~/.bash_profile}, and in case of Zsh, it is
 @file{~/.zprofile}.
 
 @quotation Note
-This step is only required if your shell is NOT managed by Guix Home.
+This step is only required if your shell is @emph{not} managed by Guix Home.
 Otherwise, everything will be done automatically.
 @end quotation
 
@@ -39470,7 +39506,7 @@ export _JAVA_AWT_WM_NONREPARENTING
 @quotation Note
 Make sure that module @code{(gnu packages shells)} is imported with
 @code{use-modules} or any other way, this namespace contains the
-definition of the @code{zsh} packages, which is used in the example
+definition of the @code{zsh} package, which is used in the example
 above.
 @end quotation
 
@@ -39534,11 +39570,94 @@ users @emph{should not} use this service, in most cases it's better to extend
 the required command using the appropriate service type.
 @end defvr
 
+@defvr {Scheme Variable} home-files-service-type
+The service of this type allows to specify a list of files, which will
+go to @file{~/.guix-home/files}, usually this directory contains
+configuration files (to be more precise it contains symlinks to files in
+@file{/gnu/store}), which should be placed in @file{$XDG_CONFIG_DIR} or
+in rare cases in @file{$HOME}.  It accepts extension values in the
+following format:
+
+@lisp
+`((".sway/config" ,sway-file-like-object)
+  (".tmux.conf" ,(local-file "./tmux.conf")))
+@end lisp
+
+Each nested list contains two values: a subdirectory and file-like
+object.  After building a home environment @file{~/.guix-home/files}
+will be populated with apropiate content and all nested directories will
+be created accordingly, however, those files won't go any further until
+some other service will do it.  By default a
+@code{home-symlink-manager-service-type}, which creates necessary
+symlinks in home folder to files from @file{~/.guix-home/files} and
+backs up already existing, but clashing configs and other things, is a
+part of essential home services (enabled by default), but it's possible
+to use alternative services to implement more advanced use cases like
+read-only home.  Feel free to experiment and share your results.
+@end defvr
+
+@defvr {Scheme Variable} home-xdg-configuration-files-service-type
+The service is very similiar to @code{home-files-service-type} (and
+actually extends it), but used for defining files, which will go to
+@file{~/.guix-home/files/.config}, which will be symlinked to
+@file{$XDG_CONFIG_DIR} by @code{home-symlink-manager-service-type} (for
+example) during activation.  It accepts extension values in the
+following format:
+
+@lisp
+`(("sway/config" ,sway-file-like-object)
+  ;; -> ~/.guix-home/files/.config/sway/config
+  ;; -> $XDG_CONFIG_DIR/sway/config (by symlink-manager)
+  ("tmux/tmux.conf" ,(local-file "./tmux.conf")))
+@end lisp
+@end defvr
+
 @defvr {Scheme Variable} home-activation-service-type
 The service of this type generates a guile script, which runs on every
 @command{guix home reconfigure} invocation or any other action, which
 leads to the activation of the home environment.
 @end defvr
+
+@defvr {Scheme Variable} home-symlink-manager-service-type
+The service of this type generates a guile script, which will be
+executed during activation of home environment, and do a few following
+steps:
+
+@enumerate
+@item
+Reads the content of @file{files/} directory of current and pending home
+environments.
+
+@item
+Cleans up all symlinks created by symlink-manager on previous
+activation.  Also, sub-directories, which become empty also will be
+cleaned up.
+
+@item
+Creates new symlinks the following way: It looks @file{files/} directory
+(usually defined with @code{home-files-service-type},
+@code{home-xdg-configuration-files-service-type} and maybe some others),
+takes the files from @file{files/.config/} subdirectory and put
+respective links in @env{XDG_CONFIG_DIR}.  For example symlink for
+@file{files/.config/sway/config} will end up in
+@file{$XDG_CONFIG_DIR/sway/config}.  The rest files in @file{files/}
+outside of @file{files/.config/} subdirectory will be treated slightly
+different: symlink will just go to @file{$HOME}.
+@file{files/.some-program/config} will end up in
+@file{$HOME/.some-program/config}.
+
+@item
+If some sub-directories are missing, they will be created.
+
+@item
+If there is a clashing files on the way, they will be backed up.
+
+@end enumerate
+
+symlink-manager is a part of essential home services and is enabled and
+used by default.
+@end defvr
+
 
 @node Shells Home Services
 @subsection Shells
@@ -39609,7 +39728,7 @@ added after the contents of the @code{bash-profile} field.
 Association list of aliases to set for the Bash session.  The aliases
 will be defined after the contents of the @code{bashrc} field has been
 put in the @file{.bashrc} file.  The alias will automatically be quoted,
-so something line this:
+so something like this:
 
 @lisp
 '(("ls" . "ls -alF"))
@@ -39643,7 +39762,7 @@ process for example).
 @end deftp
 
 You can extend the Bash service by using the @code{home-bash-extension}
-configuration record, whose fields most mirror that of
+configuration record, whose fields must mirror that of
 @code{home-bash-configuration} (@pxref{home-bash-configuration}).  The
 contents of the extensions will be added to the end of the corresponding
 Bash configuration files (@pxref{Bash Startup Files,,, bash, The GNU

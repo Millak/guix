@@ -4904,7 +4904,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
 (define-public libsecret
   (package
     (name "libsecret")
-    (version "0.20.4")
+    (version "0.20.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4913,28 +4913,47 @@ and the GLib main loop, to integrate well with GNOME applications.")
                     "libsecret-" version ".tar.xz"))
               (sha256
                (base32
-                "0a4xnfmraxchd9cq5ai66j12jv2vrgjmaaxz25kl031jvda4qnij"))))
-    (build-system gnu-build-system)
-    (outputs '("out" "doc"))
+                "0k9bs47rzb3dwvznb4179d6nw7rbzjdyd4y8hx6vazfd1wscxcrz"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f ; FIXME: Testing hangs.
-       #:configure-flags
-       (list (string-append "--with-html-dir="
-                            (assoc-ref %outputs "doc")
-                            "/share/gtk-doc/html"))))
+     (list
+      #:configure-flags
+      #~(list "-Dgtk_doc=false")        ;requires gi-docgen
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "libsecret/meson.build"
+                ;; The test-collection test fails non-deterministically (see:
+                ;; https://gitlab.gnome.org/GNOME/libsecret/-/issues/80).
+                ((".*'test-collection',.*") ""))))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? test-options #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (setenv "XDG_DATA_DIRS" ;for /org/freedesktop/secrets/collection
+                        (string-append #$output "/share:"
+                                       (getenv "XDG_DATA_DIRS")))
+                (apply invoke "dbus-run-session" "--"
+                       "meson" "test" "--print-errorlogs" "-t" "0"
+                       test-options)))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin") ; for gdbus-codegen, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ("xsltproc" ,libxslt)))
+     (list dbus
+           docbook-xml-4.2
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")               ;for gdbus-codegen, etc.
+           gobject-introspection
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt
+           pkg-config
+           python
+           python-dbus
+           python-pygobject
+           vala))
     (propagated-inputs
-     (list glib)) ; required by libsecret-1.pc
-    (inputs
-     ;; The ‘build’ phase complains about missing docbook-xml-4.2 but adding it
-     ;; doesn't seem to affect the build result.
-     (list docbook-xsl libgcrypt libxml2)) ; for XML_CATALOG_FILES
+     (list glib libgcrypt))             ;required by libsecret-1.pc
     (home-page "https://wiki.gnome.org/Projects/Libsecret/")
     (synopsis "GObject bindings for \"Secret Service\" API")
     (description
@@ -7130,7 +7149,7 @@ configuration program to choose applications starting on login.")
 (define-public gjs
   (package
     (name "gjs")
-    (version "1.70.0")
+    (version "1.72.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7138,7 +7157,7 @@ configuration program to choose applications starting on login.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0pqwhq0znprs0h5ixz396912acwzk9zvjfhi9qvh52ii38s2j1jb"))
+                "0xrrv9lsi087yb9yf146a1aarf5yh6rf4jw9blx30zasvjdkgvnx"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -7147,10 +7166,7 @@ configuration program to choose applications starting on login.")
                     (("☭") ""))))))
     (build-system meson-build-system)
     (arguments
-     ;; Use meson-0.59, otherwise we'd get "ERROR: "install_dir" must be
-     ;; specified when installing a target".
-     `(#:meson ,meson-0.59
-       #:configure-flags '("-Dinstalled_tests=false")
+     '(#:configure-flags '("-Dinstalled_tests=false")
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
@@ -7162,17 +7178,17 @@ configuration program to choose applications starting on login.")
              ;; For the missing /etc/machine-id.
              (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")       ; for glib-compile-resources
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)
-       ;; For testing
-       ("dbus-launch" ,dbus)
-       ("dconf" ,dconf) ; required to properly store settings
-       ("uuidgen" ,util-linux)
-       ("xvfb" ,xorg-server-for-tests)))
+     (list `(,glib "bin")               ;for glib-compile-resources
+           pkg-config
+           libxml2
+           ;; For testing
+           dbus
+           dconf                        ;required to properly store settings
+           util-linux
+           xorg-server-for-tests))
     (propagated-inputs
      ;; These are all in the Requires.private field of gjs-1.0.pc.
-     (list cairo gobject-introspection mozjs))
+     (list cairo gobject-introspection mozjs-91))
     (inputs
      (list gtk+ readline))
     (synopsis "Javascript bindings for GNOME")

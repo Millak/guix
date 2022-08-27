@@ -1,0 +1,99 @@
+From 5db4077e9f5166033637d2af9532ec6144b85646 Mon Sep 17 00:00:00 2001
+From: Maxime Devos <maximedevos@telenet.be>
+Date: Thu, 30 Jun 2022 14:21:47 +0000
+Subject: [PATCH 1/2] Fix behaviour of 'epoll-wake!' after 'run-fibers'.
+
+This avoids the "epoll instance is dead" error noticed in
+GNUnet-Scheme's test suite, as reported at
+<https://github.com/wingo/fibers/issues/61>.
+A test is added in the next commit.
+
+This patch has been applied upstream, but there hasn't been
+a new release yet at time of writing.
+
+* fibers/epoll.scm (epoll-wake!)[dead]: Instead of throwing an error,
+just return #t.
+---
+ fibers/epoll.scm | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/fibers/epoll.scm b/fibers/epoll.scm
+index d26db4d..eb63242 100644
+--- a/fibers/epoll.scm
++++ b/fibers/epoll.scm
+@@ -1,6 +1,7 @@
+ ;; epoll
+ 
+ ;;;; Copyright (C) 2016 Andy Wingo <wingo@pobox.com>
++;;;; Copyright (C) 2022 Maxime Devos <maximedevos@telenet.be>
+ ;;;; 
+ ;;;; This library is free software; you can redistribute it and/or
+ ;;;; modify it under the terms of the GNU Lesser General Public
+@@ -135,7 +136,12 @@ epoll wait (if appropriate)."
+     ('waiting
+      (primitive-epoll-wake (fileno (epoll-wake-write-pipe epoll))))
+     ('not-waiting #t)
+-    ('dead (error "epoll instance is dead"))))
++    ;; This can happen if a fiber was waiting on a condition and
++    ;; run-fibers completes before the fiber completes and afterwards
++    ;; the condition is signalled.  In that case, we don't have to
++    ;; resurrect the fiber or something, we can just do nothing.
++    ;; (Bug report: https://github.com/wingo/fibers/issues/61)
++    ('dead #t)))
+ 
+ (define (epoll-default-folder fd events seed)
+   (acons fd events seed))
+
+From c01d3853eb56ea4adacc31f51f6e917f8c0abe1c Mon Sep 17 00:00:00 2001
+From: Maxime Devos <maximedevos@telenet.be>
+Date: Thu, 30 Jun 2022 14:18:36 +0000
+Subject: [PATCH 2/2] Test for issue #61.
+
+* tests/conditions.scm: Add a test.
+---
+ tests/conditions.scm | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/tests/conditions.scm b/tests/conditions.scm
+index 505c42a..179605a 100644
+--- a/tests/conditions.scm
++++ b/tests/conditions.scm
+@@ -1,6 +1,7 @@
+ ;; Fibers: cooperative, event-driven user-space threads.
+ 
+ ;;;; Copyright (C) 2016 Free Software Foundation, Inc.
++;;;; Copyright (C) 2022 Maxime Devos <maximedevos@telenet.be>
+ ;;;;
+ ;;;; This library is free software; you can redistribute it and/or
+ ;;;; modify it under the terms of the GNU Lesser General Public
+@@ -21,6 +22,7 @@
+   #:use-module (fibers)
+   #:use-module (fibers conditions)
+   #:use-module (fibers operations)
++  #:use-module (fibers scheduler)
+   #:use-module (fibers timers))
+ 
+ (define failed? #f)
+@@ -78,4 +80,22 @@
+                              (wait cv)
+                              #t))
+ 
++;; Make a condition, wait for it inside a fiber, let the fiber abruptly
++;; terminate and signal the condition afterwards.  This tests for the bug
++;; noticed at <https://github.com/wingo/fibers/issues/61>.
++(assert-equal #t
++	      (let ((cv (make-condition)))
++		(run-fibers
++		 (lambda ()
++		   (spawn-fiber (lambda () (wait cv)))
++		   (yield-current-task)) ; let the other fiber wait forever
++		 ;; This test relies on not draining -- this is the default,
++		 ;; but let's make this explicit.
++		 #:drain? #false ;
++		 ;; For simplicity, disable concurrency and preemption.
++		 ;; That way, we can use 'yield-current-task' instead of an
++		 ;; arbitrary sleep time.
++		 #:hz 0 #:parallelism 1)
++		(signal-condition! cv)))
++
+ (exit (if failed? 1 0))

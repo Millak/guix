@@ -417,43 +417,36 @@ dictionary and suggesting spelling corrections.")
     (package
       (name "guile2.0-bash")
       (version (string-append "0.1.6-" revision "." (string-take commit 7)))
-      (home-page
-       "https://anonscm.debian.org/cgit/users/kaction-guest/retired/dev.guile-bash.git")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (commit commit)
-                      (url home-page)))
+                      (url "https://git.sr.ht/~kaction/guile-bash")))
                 (sha256
                  (base32
                   "097vny990wp2qpjij6a5a5gwc6fxzg5wk56inhy18iki5v6pif1p"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
-       '(#:configure-flags
-         ;; Add -I to match 'bash.pc' of Bash 4.4.
-         (list (string-append "CPPFLAGS=-I"
-                              (assoc-ref %build-inputs "bash:include")
-                              "/include/bash/include")
-
-               ;; The '.a' file is useless.
-               "--disable-static"
-
-               ;; Install 'lib/bash' as Bash 4.4 expects.
-               (string-append "--libdir=" (assoc-ref %outputs "out")
-                              "/lib/bash"))))
-      (native-inputs `(("pkg-config" ,pkg-config)
-                       ("autoconf" ,autoconf)
-                       ("automake" ,automake)
-                       ("libtool" ,libtool)
-                       ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
-                       ("gettext" ,gettext-minimal)
-
-                       ;; Bash with loadable module support, for the test
-                       ;; suite.
-                       ("bash-full" ,bash)))
+       (list
+        #:configure-flags
+        #~(list (string-append "CPPFLAGS=-I" ; match bash.pc
+                               (assoc-ref %build-inputs "bash:include")
+                               "/include/bash/include")
+                ;; The '.a' file is useless.
+                "--disable-static"
+                ;; Install 'lib/bash' as Bash 4.4 expects.
+                (string-append "--libdir=" #$output "/lib/bash"))))
+      (native-inputs
+       (list autoconf
+             automake
+             bash                    ; with loadable module support, for tests
+             gettext-minimal         ; for AC_LIB_LINKFLAGS_FROM_LIBS
+             libtool
+             pkg-config))
       (inputs `(("guile" ,guile-2.0)
                 ("bash:include" ,bash "include")))
+      (home-page "https://git.sr.ht/~kaction/guile-bash")
       (synopsis "Extend Bash using Guile")
       (description
        "Guile-Bash provides a shared library and set of Guile modules,
@@ -483,19 +476,20 @@ and then run @command{scm example.scm}.")
     (inherit guile2.0-bash)
     (name "guile-bash")
     (inputs
-     `(("guile" ,guile-3.0-latest)
-       ,@(assoc-remove! (package-inputs guile2.0-bash) "guile")))
+     (modify-inputs (package-inputs guile2.0-bash)
+       (replace "guile" guile-3.0-latest)))
     (arguments
-     `(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'install-guile
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (copy-recursively
-                       (string-append (assoc-ref outputs "out")
-                                      (assoc-ref inputs "guile") "/share")
-                       (string-append (assoc-ref outputs "out") "/share"))
-                      #t)))
-       ,@(package-arguments guile2.0-bash)))))
+     (substitute-keyword-arguments (package-arguments guile2.0-bash)
+       ;; XXX The tests succeed with Guile 2.0 but fail with 3.0.
+       ((#:tests? _ #f) #f)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'install-guile
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (copy-recursively
+                 (string-append (assoc-ref outputs "out")
+                                (assoc-ref inputs "guile") "/share")
+                 (string-append (assoc-ref outputs "out") "/share"))))))))))
 
 (define-public guile-8sync
   (let ((commit "183b4f02e68279d4984e79b79e06bfcf1861fcbf") (revision "0"))
@@ -621,7 +615,8 @@ Unix-style DSV format and RFC 4180 format.")
                (base32
                 "0ll63d7202clapg1k4bilbnlmfa4qvpjnsd7chbkka4kxf5klilc"))
               (patches
-               (search-patches "guile-fibers-wait-for-io-readiness.patch"))))
+               (search-patches "guile-fibers-wait-for-io-readiness.patch"
+                               "guile-fibers-epoll-instance-is-dead.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list texinfo pkg-config autoconf automake libtool
@@ -3703,12 +3698,12 @@ the style of the Node Package Manager (NPM).")
   (package
     (name "guile-hashing")
     (version "1.2.0")
-    (home-page "https://github.com/weinholt/hashing")
+    (home-page "https://gitlab.com/weinholt/hashing")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit (string-append "v" version))))
+                    (commit "f138deaec38d54ddb621c082764ece276deebe7f")))
               (file-name (git-file-name name version))
               (sha256
                (base32
@@ -3761,12 +3756,12 @@ SHA-512).")
   (package
     (name "guile-packrat")
     (version "0.1.1")
-    (home-page "https://github.com/weinholt/packrat")
+    (home-page "https://gitlab.com/weinholt/packrat")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit (string-append "v" version))))
+                    (commit "4201ebe741b605db58a21d70195cfb7db3c38eae")))
               (file-name (git-file-name name version))
               (sha256
                (base32
@@ -4176,8 +4171,8 @@ more objects or strings, represented by a Json object or an IRI.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/weinholt/struct-pack")
-             (commit (string-append "v" version))))
+             (url "https://gitlab.com/weinholt/struct-pack")
+             (commit "11b71963793ed4a3bf761efdd83cf2fe123239ee")))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0hd72m821pahjphzyjn26i55542v8makr55xzjll2cycja4wsbc1"))))
@@ -4205,7 +4200,7 @@ more objects or strings, represented by a Json object or an IRI.")
                       #t)))))
     (native-inputs
      (list guile-3.0))
-    (home-page "https://github.com/weinholt/struct-pack")
+    (home-page "https://gitlab.com/weinholt/struct-pack")
     (synopsis "R6RS library for working with packed byte structures")
     (description
      "This is an R6RS library for working with packed byte structures.  It is
@@ -4215,16 +4210,16 @@ similar to struct in Python or pack and unpack in Perl.")
 (define-public guile-machine-code
   (package
     (name "guile-machine-code")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/weinholt/machine-code")
+             (url "https://gitlab.com/weinholt/machine-code")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wzj3caj2jypzyjqfkfqkvr3kkbjabsnhldv9kvnx9w9qnria5yd"))))
+        (base32 "1yjzpg5p082kg4vaqlwbwddrrhxyxar6gsx9ql72hpwah4ka82h5"))))
     (build-system guile-build-system)
     (arguments
      `(#:compile-flags '("--r6rs" "-Wunbound-variable" "-Warity-mismatch")
@@ -4251,7 +4246,7 @@ similar to struct in Python or pack and unpack in Perl.")
      (list guile-3.0))
     (propagated-inputs
      (list guile-struct-pack))
-    (home-page "https://github.com/weinholt/machine-code")
+    (home-page "https://gitlab.com/weinholt/machine-code")
     (synopsis "Tools that relate to machine code and object formats")
     (description
      "This project is about the development of tools that relate to machine
@@ -4268,7 +4263,7 @@ object formats and related areas.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/weinholt/laesare")
+             (url "https://gitlab.com/weinholt/laesare")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -4297,7 +4292,7 @@ object formats and related areas.")
                       #t)))))
     (native-inputs
      (list guile-3.0))
-    (home-page "https://github.com/weinholt/laesare")
+    (home-page "https://gitlab.com/weinholt/laesare")
     (synopsis "R6RS Scheme library that provides a reader")
     (description
      "This is an R6RS Scheme library that provides a reader with some extra

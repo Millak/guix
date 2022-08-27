@@ -31,6 +31,7 @@
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1303,60 +1304,7 @@ while also supporting native scrolling and @command{tmux} control mode
     (license license:asl2.0)))
 
 (define-public wterm
-  (package
-    (name "wterm")
-    (version "0.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/majestrate/wterm")
-             (commit "0ae42717c08a85a6509214e881422c7fbe7ecc45")))
-       (sha256
-         (base32
-          "0g4lzmc1w6na81i6hny32xds4xfig4xzswzfijyi6p93a1226dv0"))
-       (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libdrm" ,libdrm)
-       ("libxkbcommon" ,libxkbcommon)
-       ("ncurses" ,ncurses)
-       ("pixman" ,pixman)
-       ("wayland" ,wayland)))
-    (arguments
-     '(#:tests? #f
-
-       ;; Without -j1 it fails to find file libwld.a.
-       #:parallel-build? #f
-
-       #:make-flags (list "CC=gcc"
-                          (string-append "PREFIX=" %output)
-                          (string-append "TERMINFO="
-                                         (assoc-ref %outputs "out")
-                                         "/share/terminfo"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'terminfo-fix
-           (lambda _
-             (substitute* "Makefile"
-               (("\ttic .*") "\tmkdir -p $(SHARE_PREFIX)/share/terminfo
-\ttic -o $(SHARE_PREFIX)/share/terminfo -s wterm.info\n"))
-             #t)))))
-    (native-search-paths
-      (list (search-path-specification
-              (variable "TERMINFO_DIRS")
-              (files '("share/terminfo")))))
-    (home-page "https://github.com/majestrate/wterm")
-    (synopsis "Terminal emulator for Wayland")
-    (description "wterm is a native Wayland terminal emulator based on
-an st fork using wld. st is a simple terminal emulator for X originally
-made by suckless.")
-    (license license:x11)))
+  (deprecated-package "wterm" foot))
 
 (define-public tio
   (package

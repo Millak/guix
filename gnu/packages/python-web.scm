@@ -53,6 +53,7 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -362,6 +363,13 @@ for adding, removing and dropping callbacks.")
                        ;; This test probably requires to be run with the
                        ;; library loaded from the the build directory.
                        "not test_c_parser_loaded and "
+                       ;; TODO: These tests fail with recent versions of Pytest
+                       ;; and the fix is difficult to backport:
+                       ;; https://github.com/aio-libs/aiohttp/pull/6872
+                       ;; Re-enable after 3.9.
+                       "not test_session_close_awaitable and "
+                       "not test_async_with_session and "
+                       "not test_close_run_until_complete_not_deprecated and "
                        ;; Disable the following tests as they require
                        ;; networking.
                        "not TestDeflateBuffer and "
@@ -7760,4 +7768,21 @@ The ShopifyAPI library allows Python developers to programmatically access the
 admin section of stores using an ActiveResource-like interface similar the
 ruby Shopify API gem.  The library makes HTTP requests to Shopify in order to
 list, create, update, or delete resources (e.g. Order, Product, Collection).")
+    (license license:expat)))
+
+(define-public python-whatthepatch
+  (package
+    (name "python-whatthepatch")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "whatthepatch" version))
+              (sha256
+               (base32
+                "17zspm5sxhvggkdhwq4s0fzf4mkc825xshn734g2j2iy2xcylh65"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/cscorley/whatthepatch")
+    (synopsis "Patch parsing and application")
+    (description
+     "This package provides a library to parse and apply patches.")
     (license license:expat)))

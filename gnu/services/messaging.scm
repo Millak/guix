@@ -90,7 +90,12 @@
                      ((new-def ...)
                       (map (lambda (def target)
                              (if (eq? 'common (syntax->datum target))
-                                 #''unset def))
+                                 ;; TODO Use the %unset-value variable, or
+                                 ;; even better just simplify this so that it
+                                 ;; doesn't interfere with
+                                 ;; define-configuration and define-maybe
+                                 ;; internals.
+                                 #''%unset-marker% def))
                            #'(def ...) #'(target ...)))
                      ((new-doc ...)
                       (map (lambda (doc target)
@@ -200,7 +205,7 @@
 (define-maybe file-object-list)
 
 (define (raw-content? val)
-  (not (eq? val 'unset)))
+  (maybe-value-set? val))
 (define (serialize-raw-content field-name val)
   val)
 (define-maybe raw-content)
@@ -474,12 +479,12 @@ by the Prosody service.  See @url{https://prosody.im/doc/logging}."
      global)
 
     (http-max-content-size
-     (maybe-non-negative-integer 'unset)
+     (maybe-non-negative-integer %unset-value)
      "Maximum allowed size of the HTTP body (in bytes)."
      common)
 
     (http-external-url
-     (maybe-string 'unset)
+     (maybe-string %unset-value)
      "Some modules expose their own URL in various ways.  This URL is built
 from the protocol, host and port used.  If Prosody sits behind a proxy, the
 public URL will be @code{http-external-url} instead.  See
@@ -556,7 +561,7 @@ support.  To add an external component, you simply fill the hostname field.  See
      int-component)
 
     (mod-muc
-     (maybe-mod-muc-configuration 'unset)
+     (maybe-mod-muc-configuration %unset-value)
      "Multi-user chat (MUC) is Prosody's module for allowing you to create
 hosted chatrooms/conferences for XMPP users.
 
@@ -573,7 +578,7 @@ See also @url{https://prosody.im/doc/modules/mod_muc}."
      ext-component)
 
     (raw-content
-     (maybe-raw-content 'unset)
+     (maybe-raw-content %unset-value)
      "Raw content that will be added to the configuration file."
      common)))
 

@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Jacob Hart <hartja1@yahoo.com>
+;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -132,7 +133,7 @@
                 (string-append gui "/share/man/man1/transmission-gtk.1"))
              #t))))))
     (inputs
-     (list libevent curl openssl zlib gtk+))
+     (list libevent curl openssl zlib gtk+ libappindicator))
     (native-inputs
      (list intltool pkg-config))
     (home-page "https://transmissionbt.com/")
