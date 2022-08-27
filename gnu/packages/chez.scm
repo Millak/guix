@@ -235,14 +235,15 @@ future."
                                              (system
                                               (or (%current-target-system)
                                                   (%current-system))))
-  "Can Racket's variant of Chez Scheme generate native code for SYSTEM?
-Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
+  "Can Racket's variant of Chez Scheme generate native code for SYSTEM?  If
+so, return the applicable machine type as a string.  Otherwise, when SYSTEM
+can use only the ``portable bytecode'' backends, return #f."
   (let ((chez-arch (target-chez-arch system))
         (chez-os (target-chez-os system)))
     (and (and=> (assoc-ref %chez-features-table chez-os)
                 ;; NOT assoc-ref: supported even if cdr is #f
                 (cut assoc chez-arch <>))
-         #t)))
+         (string-append "t" chez-arch chez-os))))
 
 ;;
 ;; Chez Scheme:
@@ -453,8 +454,12 @@ and 32-bit PowerPC architectures.")
         (replace "chez-scheme-bootstrap-bootfiles"
           chez-scheme-for-racket-bootstrap-bootfiles)))
     (native-inputs
-     (modify-inputs (package-native-inputs chez-scheme)
-       (prepend zuo)))
+     (let ((native-inputs (modify-inputs (package-native-inputs chez-scheme)
+                            (prepend zuo))))
+       (if (%current-target-system)
+           (modify-inputs native-inputs
+             (prepend this-package))
+           native-inputs)))
     (arguments
      (substitute-keyword-arguments (package-arguments chez-scheme)
        ((#:out-of-source? _ #f)
@@ -468,6 +473,15 @@ and 32-bit PowerPC architectures.")
        ((#:configure-flags cfg-flags #~'())
         #~`("--disable-x11"
             "--threads" ;; ok to potentially duplicate
+            #$@(if (%current-target-system)
+                   (list (string-append "-m="
+                                        (racket-cs-native-supported-system?)))
+                   '())
+            #$@(if (%current-target-system)
+                   (list (string-append "--toolprefix="
+                                        (%current-target-system)
+                                        "-"))
+                   '())
             ,@(let* ((chez+version (strip-store-file-name #$output))
                      (doc-prefix (assoc-ref %outputs "doc"))
                      (doc-dir (string-append doc-prefix
@@ -490,18 +504,42 @@ and 32-bit PowerPC architectures.")
                  #$mk-flags))
        ((#:phases those-phases #~%standard-phases)
         #~(let* ((those-phases #$those-phases)
-                 (unpack (assoc-ref those-phases 'unpack)))
+                 (gnu:unpack (assoc-ref those-phases 'unpack))
+                 (gnu:build (assoc-ref those-phases 'build)))
             (modify-phases those-phases
+              (replace 'build
+                ;; need to override target for cross-compilation
+                ;; https://racket.discourse.group/t/950/19
+                (lambda* (#:key target (make-flags '()) (parallel-build? #t)
+                          #:allow-other-keys)
+                  (gnu:build #:make-flags (if target
+                                              (cons "kernel" make-flags)
+                                              make-flags)
+                             #:parallel-build? parallel-build?)))
               (replace 'install-docs
-                (lambda* (#:key make-flags #:allow-other-keys)
+                (lambda* (#:key native-inputs (make-flags '())
+                          #:allow-other-keys)
+                  ;; The tests for 'native-inputs' are cross-compilation
+                  ;; workarounds that would be better to address upstream:
+                  ;; see <https://racket.discourse.group/t/950/20>.
+                  (when native-inputs
+                    (substitute* "Makefile"
+                      (("install-docs: build \\$[(]ZUO[)]")
+                       "install-docs: $(ZUO)")))
                   (apply invoke
                          "make"
                          "install-docs"
-                         make-flags)))
+                         (if native-inputs
+                             (cons (string-append
+                                    "Scheme="
+                                    (search-input-file native-inputs
+                                                       "/bin/scheme"))
+                                   make-flags)
+                             make-flags))))
               (replace 'unpack
                 (lambda args
-                  (unpack #:source #$(or (package-source this-package)
-                                         (package-source racket-vm-bc)))))
+                  (gnu:unpack #:source #$(or (package-source this-package)
+                                             (package-source racket-vm-bc)))))
               (add-after 'unpack 'chdir
                 (lambda args
                   (chdir "racket/src/ChezScheme"))))))))
@@ -583,8 +621,12 @@ source.")))
     (name "chez-scheme-for-racket-bootstrap-bootfiles")
     (version (package-version chez-scheme-for-racket))
     (source #f) ; avoid problematic cycle with racket.scm
-    (native-inputs (list chez-nanopass-bootstrap racket-vm-bc))
-    ;; TODO: cross compilation
+    (native-inputs
+     (cons* chez-nanopass-bootstrap
+            (if (%current-target-system)
+                (list zuo
+                      chez-scheme-for-racket)
+                (list racket-vm-bc))))
     (arguments
      (substitute-keyword-arguments
          (package-arguments chez-scheme-bootstrap-bootfiles)
@@ -604,9 +646,22 @@ source.")))
                   #$unpack-nanopass+stex))
               (add-before 'install 'build
                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  (invoke (search-input-file (or native-inputs inputs)
-                                             "/opt/racket-vm/bin/racket")
-                          "rktboot/main.rkt"))))))))
+                  #$(cond
+                     ((%current-target-system)
+                      ;; cross-compiling
+                      #~(invoke
+                         (search-input-file (or native-inputs inputs)
+                                            "/bin/zuo")
+                         "makefiles/boot.zuo"
+                         (search-input-file (or native-inputs inputs)
+                                            "/bin/scheme")
+                         #$(racket-cs-native-supported-system?)))
+                     (else
+                      ;; bootstrapping
+                      #~(invoke
+                         (search-input-file (or native-inputs inputs)
+                                            "/opt/racket-vm/bin/racket")
+                         "rktboot/main.rkt"))))))))))
     (supported-systems
      (package-supported-systems chez-scheme-for-racket))
     (home-page "https://github.com/racket/ChezScheme")
