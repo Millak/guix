@@ -311,7 +311,7 @@ One of the early layers implements macros.")
      (version %racket-version)
      (source %racket-origin)
      (inputs (list ncurses ;; <- common to all variants (for #%terminal)
-                   libffi)) ;; <- only for BC variants
+                   libffi)) ;; <- for BC and non-native CS variants
      (native-inputs (cons* zuo ;; <- for all variants
                            libtool ;; <- only for BC variants
                            (if (%current-target-system)
@@ -417,10 +417,8 @@ code to use the 3M garbage collector.")
     (description "The Racket BC (``before Chez'' or ``bytecode'')
 implementation was the default before Racket 8.0.  It uses a compiler written
 in C targeting architecture-independent bytecode, plus a JIT compiler on most
-platforms.  Racket BC has a different C API and supports a slightly different
-set of architectures than the current default runtime system, Racket CS (based
-on ``Chez Scheme'').  It is the recommended implementation for architectures
-that Racket CS doesn't support.
+platforms.  Racket BC has a different C API than the current default runtime
+system, Racket CS (based on ``Chez Scheme'').
 
 This package is the normal implementation of Racket BC with a precise garbage
 collector, 3M (``Moving Memory Manager'').")
@@ -433,9 +431,12 @@ collector, 3M (``Moving Memory Manager'').")
     (inherit racket-vm-bc)
     (name "racket-vm-cs")
     (inputs
-     (modify-inputs (package-inputs racket-vm-cgc)
-       (prepend zlib lz4)
-       (delete "libffi")))
+     (let ((inputs (modify-inputs (package-inputs racket-vm-cgc)
+                     (prepend zlib lz4))))
+       (if (racket-cs-native-supported-system?)
+           (modify-inputs inputs
+             (delete "libffi"))
+           inputs)))
     (native-inputs
      (let ((native-inputs (package-native-inputs racket-vm-cgc)))
        (modify-inputs (if (%current-target-system)
@@ -464,12 +465,19 @@ collector, 3M (``Moving Memory Manager'').")
                                 #+(this-package-native-input
                                    "chez-scheme-for-racket")
                                 "/bin/scheme")
+                 #$@(if (racket-cs-native-supported-system?)
+                        #~()
+                        #~(#$(string-append "--enable-mach="
+                                            (nix-system->pbarch-machine-type))
+                           "--enable-pb"))
                  #$racket-vm-common-configure-flags))))
     (synopsis "Racket CS implementation")
     (description "The Racket CS implementation, which uses ``Chez Scheme'' as
 its core compiler and runtime system, has been the default Racket VM
 implementation since Racket 8.0.  It performs better than the Racket BC
-implementation for most programs.
+implementation for most programs.  On systems for which Racket CS cannot
+generate machine code, this package uses a variant of its ``portable
+bytecode'' backend specialized for word size and endianness.
 
 Using the Racket VM packages directly is not recommended: instead, install the
 @code{racket-minimal} or @code{racket} packages.")

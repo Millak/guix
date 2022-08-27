@@ -37,6 +37,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages racket)
@@ -49,6 +50,7 @@
   #:use-module (srfi srfi-26)
   #:export (chez-scheme-for-system
             racket-cs-native-supported-system?
+            nix-system->pbarch-machine-type
             unpack-nanopass+stex))
 
 ;; Commentary:
@@ -230,6 +232,28 @@ future."
         (chez-os (target-chez-os system)))
     (and=> (assoc-ref %chez-features-table chez-os)
            (cut assoc-ref <> chez-arch))))
+
+(define* (nix-system->pbarch-machine-type #:optional
+                                          (system
+                                           (or (%current-target-system)
+                                               (%current-system)))
+                                          #:key (threads? #t))
+  "Return a string naming the pseudo–machine type used by Racket's variant of
+Chez Scheme to represent the appropriate ``pbarch'' backend for SYSTEM: that
+is, the ``portable bytecode'' backend specialized for SYSTEM's word size and
+endianness.  The result will name the threaded machine type unless THREADS? is
+provided and is #f."
+  (string-append (if threads?
+                     "t"
+                     "")
+                 "pb"
+                 (if (target-64bit? system)
+                     "64"
+                     "32")
+                 ;; missing (guix utils) predicate target-little-endian?
+                 (if (target-ppc32? system)
+                     "b"
+                     "l")))
 
 (define* (racket-cs-native-supported-system? #:optional
                                              (system
@@ -449,10 +473,14 @@ and 32-bit PowerPC architectures.")
     ;; When updating, remember to also update %racket-version in racket.scm.
     (source #f) ; avoid problematic cycle with racket.scm
     (inputs
-     (modify-inputs (package-inputs chez-scheme)
-       (delete "libx11" "util-linux:lib")
-        (replace "chez-scheme-bootstrap-bootfiles"
-          chez-scheme-for-racket-bootstrap-bootfiles)))
+     (let ((inputs (modify-inputs (package-inputs chez-scheme)
+                     (replace "chez-scheme-bootstrap-bootfiles"
+                       chez-scheme-for-racket-bootstrap-bootfiles)
+                     (delete "libx11" "util-linux:lib"))))
+       (if (racket-cs-native-supported-system?)
+           inputs
+           (modify-inputs inputs
+             (prepend libffi)))))
     (native-inputs
      (let ((native-inputs (modify-inputs (package-native-inputs chez-scheme)
                             (prepend zuo))))
@@ -473,10 +501,16 @@ and 32-bit PowerPC architectures.")
        ((#:configure-flags cfg-flags #~'())
         #~`("--disable-x11"
             "--threads" ;; ok to potentially duplicate
-            #$@(if (%current-target-system)
-                   (list (string-append "-m="
-                                        (racket-cs-native-supported-system?)))
-                   '())
+            #$(string-append "-m=" (or (racket-cs-native-supported-system?)
+                                       (nix-system->pbarch-machine-type)))
+            ;; ^ could skip -m= for non-cross non-pbarch builds
+            #$@(if (racket-cs-native-supported-system?)
+                   #~()
+                   ;; not inferred on non-native platforms: see
+                   ;; https://racket.discourse.group/t/950/9
+                   #~("--enable-libffi"
+                      "CFLAGS=-g -O2 -D_REENTRANT -pthread"
+                      "LIBS=-lm -ldl -lrt -lffi -lncurses"))
             #$@(if (%current-target-system)
                    (list (string-append "--toolprefix="
                                         (%current-target-system)
@@ -543,10 +577,7 @@ and 32-bit PowerPC architectures.")
               (add-after 'unpack 'chdir
                 (lambda args
                   (chdir "racket/src/ChezScheme"))))))))
-    ;; TODO: How to build pbarch/pbchunks for other systems?
-    ;; See https://racket.discourse.group/t/950
-    (supported-systems (filter racket-cs-native-supported-system?
-                               %supported-systems))
+    (supported-systems %supported-systems)
     (home-page "https://github.com/racket/ChezScheme")
     ;; ^ This is downstream of https://github.com/racket/racket,
     ;; but it's designed to be a friendly landing place for people
@@ -559,12 +590,16 @@ supported by upstream Chez Scheme.
 Main additions to Chez Scheme in the Racket variant:
 @itemize @bullet
 @item
-AArch64 support
+AArch64 code generation
 @item
-Portable bytes (@code{pb}) support, which is mainly useful for bootstrapping
-a build on any supported platform
+Portable bytecode (@code{pb}) mode, which is mainly useful for bootstrapping a
+build on any platform, but can also be used on platforms without native-code
+generation, compiled via Emscripten, linked with @code{libffi}, or used with
+bytecode partially compiled to C
 @item
 Unboxed floating-point arithmetic and flvectors
+@item
+Faster multiplication and division for large exact numbers
 @item
 Type reconstruction during optimization (especially for safe code)
 @item
@@ -576,8 +611,6 @@ accounting
 @item
 Ordered finalization, immobile (but collectable) objects, weak/ephemeron
 generic hash tables, and reference bytevectors
-@item
-Faster multiplication and division for large exact numbers
 @end itemize")
     (license asl2.0)))
 
@@ -655,13 +688,18 @@ source.")))
                          "makefiles/boot.zuo"
                          (search-input-file (or native-inputs inputs)
                                             "/bin/scheme")
-                         #$(racket-cs-native-supported-system?)))
+                         #$(or (racket-cs-native-supported-system?)
+                               (nix-system->pbarch-machine-type))))
                      (else
                       ;; bootstrapping
                       #~(invoke
                          (search-input-file (or native-inputs inputs)
                                             "/opt/racket-vm/bin/racket")
-                         "rktboot/main.rkt"))))))))))
+                         "rktboot/main.rkt"
+                         #$@(if (racket-cs-native-supported-system?)
+                                #~()
+                                (let ((m (nix-system->pbarch-machine-type)))
+                                  #~("--machine" #$m)))))))))))))
     (supported-systems
      (package-supported-systems chez-scheme-for-racket))
     (home-page "https://github.com/racket/ChezScheme")
