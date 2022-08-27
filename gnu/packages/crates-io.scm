@@ -16838,8 +16838,41 @@ hexadecimal, base32, and base64.")
      "Processing of data: URL according to WHATWG's Fetch Standard.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-datetime-0.5
+  (package
+    (name "rust-datetime")
+    (version "0.5.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "datetime" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1g2lhc2ay46njrnnyc0729ibyzkpv3r3d4g0h3gzwmrygykzghs4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+        (("rust-iso8601" ,rust-iso8601-0.3)
+         ("rust-libc" ,rust-libc-0.2)
+         ("rust-locale" ,rust-locale-0.2)
+         ("rust-num-traits" ,rust-num-traits-0.2)
+         ("rust-pad" ,rust-pad-0.1)
+         ("rust-redox-syscall" ,rust-redox-syscall-0.1)
+         ("rust-winapi" ,rust-winapi-0.3))
+        #:cargo-development-inputs
+        (("rust-regex" ,rust-regex-0.1)
+         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))
+    (home-page "https://github.com/rust-datetime/datetime")
+    (synopsis "Library for date and time formatting and arithmetic")
+    (description "This package provides a library for date and time formatting
+and arithmetic.")
+    (license license:expat)))
+
 (define-public rust-datetime-0.4
   (package
+    (inherit rust-datetime-0.5)
     (name "rust-datetime")
     (version "0.4.7")
     (source
@@ -16851,7 +16884,6 @@ hexadecimal, base32, and base64.")
         (sha256
          (base32
           "1fd74bq48xg8ki5yw1mr1pa5hd3j5lbk4iqc5r0kh3l62b0vci2w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
         (("rust-iso8601" ,rust-iso8601-0.1)
@@ -16864,12 +16896,7 @@ hexadecimal, base32, and base64.")
          ("rust-winapi" ,rust-winapi-0.2))
         #:cargo-development-inputs
         (("rust-regex" ,rust-regex-0.1)
-         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))
-    (home-page "https://github.com/rust-datetime/datetime")
-    (synopsis "Library for date and time formatting and arithmetic")
-    (description "This package provides a library for date and time formatting
-and arithmetic.")
-    (license license:expat)))
+         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))))
 
 (define-public rust-dbl-0.3
   (package
