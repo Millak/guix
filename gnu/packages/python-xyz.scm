@@ -5618,7 +5618,10 @@ writing C extensions for Python as easy as Python itself.")
 [openblas]
 libraries = openblas
 library_dirs = ~a/lib
-include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
+include_dirs = ~:*~a/include~%"
+                          (dirname (dirname
+                                    (search-input-file
+                                     inputs "include/openblas_config.h"))))))))
           (add-before 'build 'fix-executable-paths
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Make /gnu/store/...-bash-.../bin/sh the default shell,
