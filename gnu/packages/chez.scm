@@ -613,6 +613,9 @@ Chez Scheme.")))
           (sha256
            (base32 "0n6dryv5j7cw2qmsj55wqb0ph901h83a2hl4j891ppxp0xx18nkp"))
           (file-name (git-file-name name version))
+          (patches
+           ;; submitted upstream in https://github.com/dybvig/stex/pull/6
+           (search-patches "stex-copy-from-immutable-store.patch"))
           (snippet
            #~(for-each delete-file
                        '("sbin/install" "doc/stex.pdf" "doc/stex.html")))))
