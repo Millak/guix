@@ -30360,8 +30360,30 @@ and locking in the core framework.")
 whether or not a given path points to an executable file.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-iso8601-0.3
+  (package
+    (name "rust-iso8601")
+    (version "0.3.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "iso8601" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0vvn6f9gv2295ik77nvaz99wzbwz1bmasrd787sz6d9mlwa6ks23"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nom" ,rust-nom-4))))
+    (home-page "https://github.com/badboy/iso8601")
+    (synopsis "Parsing ISO8601 dates using nom")
+    (description "Parsing ISO8601 dates using nom.")
+    (license license:expat)))
+
 (define-public rust-iso8601-0.1
   (package
+    (inherit rust-iso8601-0.3)
     (name "rust-iso8601")
     (version "0.1.1")
     (source
@@ -30377,11 +30399,7 @@ whether or not a given path points to an executable file.")
     (arguments
      `(#:cargo-inputs
        (("rust-clippy" ,rust-clippy-0.0)
-        ("rust-nom" ,rust-nom-1))))
-    (home-page "https://github.com/badboy/iso8601")
-    (synopsis "Parsing ISO8601 dates using nom")
-    (description "Parsing ISO8601 dates using nom.")
-    (license license:expat)))
+        ("rust-nom" ,rust-nom-1))))))
 
 (define-public rust-itertools-0.10
   (package
