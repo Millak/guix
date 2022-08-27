@@ -7338,7 +7338,7 @@ configuration program to choose applications starting on login.")
 (define-public gjs
   (package
     (name "gjs")
-    (version "1.70.0")
+    (version "1.72.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7346,7 +7346,7 @@ configuration program to choose applications starting on login.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0pqwhq0znprs0h5ixz396912acwzk9zvjfhi9qvh52ii38s2j1jb"))
+                "0xrrv9lsi087yb9yf146a1aarf5yh6rf4jw9blx30zasvjdkgvnx"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -7355,10 +7355,7 @@ configuration program to choose applications starting on login.")
                     (("☭") ""))))))
     (build-system meson-build-system)
     (arguments
-     ;; Use meson-0.59, otherwise we'd get "ERROR: "install_dir" must be
-     ;; specified when installing a target".
-     `(#:meson ,meson-0.59
-       #:configure-flags '("-Dinstalled_tests=false")
+     '(#:configure-flags '("-Dinstalled_tests=false")
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
@@ -7380,11 +7377,11 @@ configuration program to choose applications starting on login.")
            xorg-server-for-tests))
     (propagated-inputs
      ;; These are all in the Requires.private field of gjs-1.0.pc.
-     (list cairo gobject-introspection mozjs-78))
+     (list cairo gobject-introspection mozjs-91))
     (inputs
      (list gtk+ readline))
     (synopsis "Javascript bindings for GNOME")
-    (home-page "https://live.gnome.org/Gjs")
+    (home-page "https://wiki.gnome.org/Gjs")
     (description
      "Gjs is a javascript binding for GNOME.  It's mainly based on spidermonkey
 javascript engine and the GObject introspection framework.")
