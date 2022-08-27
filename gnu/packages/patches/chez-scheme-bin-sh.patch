@@ -1,0 +1,76 @@
+From 3c838e6a0c3214d95bf02048cddccfd1b69a679f Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Thu, 19 May 2022 13:41:56 -0400
+Subject: [PATCH] patch s_process for "/bin/sh" on Guix
+
+If:
+
+    1. The nonstandard but ubiquitous macro `_PATH_BSHELL` from
+       <paths.h> is defined; and
+
+    2. The path specified by `_PATH_BSHELL` exists;
+
+then `s_process` will call `execl` with the file specified by
+`_PATH_BSHELL` instead of "/bin/sh".
+
+Checking that the path specified by `_PATH_BSHELL` exists safeguards
+against obscure errors if attempting to use stand-alone executables
+built by the patched Racket in non-Guix envoronments.
+
+This patch does not change the behavior of `s_system`, which relies
+on `system` from the C library.
+---
+ c/prim5.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/c/prim5.c b/c/prim5.c
+index 5a07893..bc2736c 100644
+--- a/c/prim5.c
++++ b/c/prim5.c
+@@ -23,6 +23,12 @@
+ #include <ctype.h>
+ #include <math.h>
+ 
++/* BEGIN PATCH for Guix */
++#ifndef WIN32
++# include <paths.h>
++#endif
++/* END PATCH for Guix */
++
+ /* locally defined functions */
+ static INT s_errno(void);
+ static iptr s_addr_in_heap(uptr x);
+@@ -746,6 +752,17 @@ static ptr s_process(char *s, IBOOL stderrp) {
+ 
+     INT tofds[2], fromfds[2], errfds[2];
+     struct sigaction act, oint_act;
++    /* BEGIN PATCH for Guix */
++#if defined(_PATH_BSHELL)
++    struct stat guix_stat_buf;
++    char *guix_sh =
++      (0 == stat(_PATH_BSHELL, &guix_stat_buf))
++      ? _PATH_BSHELL
++      : "/bin/sh";
++#else /* _PATH_BSHELL */
++    char *guix_sh = "/bin/sh";
++#endif
++    /* END PATCH for Guix */
+ 
+     if (pipe(tofds)) S_error("process","cannot open pipes");
+     if (pipe(fromfds)) {
+@@ -771,7 +788,9 @@ static ptr s_process(char *s, IBOOL stderrp) {
+         CLOSE(1); if (dup(fromfds[1]) != 1) _exit(1);
+         CLOSE(2); if (dup(stderrp ? errfds[1] : 1) != 2) _exit(1);
+         {INT i; for (i = 3; i < NOFILE; i++) (void)CLOSE(i);}
+-        execl("/bin/sh", "/bin/sh", "-c", s, NULL);
++        /* BEGIN PATCH for Guix */
++        execl(guix_sh, guix_sh, "-c", s, NULL);
++        /* END PATCH for Guix */
+         _exit(1) /* only if execl fails */;
+         /*NOTREACHED*/
+     } else {
+
+base-commit: 9df56e7b25bc523663eac3da24be33afc5f76c84
+-- 
+2.32.0
+

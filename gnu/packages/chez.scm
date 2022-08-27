@@ -269,6 +269,7 @@ Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
                (base32
                 "0xchqq8cm0ka5wgpn18sjs0hh15rc3nb7xrjqbbc9al3asq0d7gc"))
               (file-name (git-file-name name version))
+              (patches (search-patches "chez-scheme-bin-sh.patch"))
               (snippet #~(begin
                            (use-modules (guix build utils))
                            ;; TODO: consider putting this in a (guix ...) or

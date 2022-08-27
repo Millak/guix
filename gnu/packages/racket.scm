@@ -211,7 +211,8 @@ otherwise."
     (sha256
      (base32 "0f9zyhdvbh4xsndrqjzl85j5ziz0rmqi676g9s1lw3h3skq2636h"))
     (file-name (git-file-name "racket" %racket-version))
-    (patches (search-patches "racket-rktio-bin-sh.patch"))
+    (patches (search-patches "racket-chez-scheme-bin-sh.patch"
+                             "racket-rktio-bin-sh.patch"))
     (modules '((guix build utils)))
     (snippet
      #~(begin
