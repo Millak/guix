@@ -7380,7 +7380,7 @@ configuration program to choose applications starting on login.")
        ("xvfb" ,xorg-server-for-tests)))
     (propagated-inputs
      ;; These are all in the Requires.private field of gjs-1.0.pc.
-     (list cairo gobject-introspection mozjs))
+     (list cairo gobject-introspection mozjs-78))
     (inputs
      (list gtk+ readline))
     (synopsis "Javascript bindings for GNOME")
