@@ -253,6 +253,43 @@ call it if it is not associated to a terminal.")
      "@code{kscreenlocker} is a library for creating secure lock screens.")
     (license license:gpl2+)))
 
+(define-public ksysguard
+  (package
+    (name "ksysguard")
+    (version "5.22.0")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "mirror://kde/stable/ksysguard/" version
+                          "/ksysguard-" version ".tar.xz"))
+      (sha256
+       (base32 "0bb2aj46v7ig0wn3ir68igryl2gblz2n75cddn8fwamvbx76570g"))))
+    (build-system qt-build-system)
+    ;; TODO: No tests found
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kconfig
+       kcoreaddons
+       kdbusaddons
+       ki18n
+       kiconthemes
+       kinit
+       kio
+       kitemviews
+       knewstuff
+       knotifications
+       kwindowsystem
+       libksysguard
+       `(,lm-sensors "lib")
+       qtbase-5))
+    (home-page "https://www.kde.org/applications/system/ksysguard/")
+    (synopsis "Plasma process and performance monitor")
+    (description "KSysGuard is a program to monitor various elements of your
+system, or any other remote system with the KSysGuard daemon (ksysgardd)
+installed.")
+    (license license:gpl2+)))
+
 (define-public libkscreen
   (package
     (name "libkscreen")
