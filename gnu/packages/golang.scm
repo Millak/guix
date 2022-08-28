@@ -9969,3 +9969,26 @@ implementation.")
     (description
      "Package jsonrpc2 provides a Go implementation of JSON-RPC 2.0.")
     (license license:expat)))
+
+(define-public go-github-com-disintegration-imaging
+  (package
+    (name "go-github-com-disintegration-imaging")
+    (version "1.6.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/disintegration/imaging")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1sl201nmk601h0aii4234sycn4v2b0rjxf8yhrnik4yjzd68q9x5"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/disintegration/imaging"))
+    (inputs (list go-golang-org-x-image))
+    (home-page "https://github.com/disintegration/imaging")
+    (synopsis "Simple image processing for Go")
+    (description "This package provides basic image processing functions
+(resize, rotate, crop, brightness/contrast adjustments, etc.).")
+    (license license:expat)))
