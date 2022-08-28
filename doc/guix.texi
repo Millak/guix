@@ -37439,6 +37439,15 @@ corresponds to COM1 (@pxref{Serial terminal,,, grub,GNU GRUB manual}).
 The speed of the serial interface, as an integer.  For GRUB, the
 default value is chosen at run-time; currently GRUB chooses
 9600@tie{}bps (@pxref{Serial terminal,,, grub,GNU GRUB manual}).
+
+@item @code{device-tree-support?} (default: @code{#t})
+Whether to support Linux @uref{https://en.wikipedia.org/wiki/Devicetree,
+device tree} files loading.
+
+This option in enabled by default.  In some cases involving the
+@code{u-boot} bootloader, where the device tree has already been loaded
+in RAM, it can be handy to disable the option by setting it to
+@code{#f}.
 @end table
 
 @end deftp

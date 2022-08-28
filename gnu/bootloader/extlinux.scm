@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,9 @@ corresponding to old generations of the system."
   (define all-entries
     (append entries (bootloader-configuration-menu-entries config)))
 
+  (define with-fdtdir?
+    (bootloader-configuration-device-tree-support? config))
+
   (define (menu-entry->gexp entry)
     (let ((label (menu-entry-label entry))
           (kernel (menu-entry-linux entry))
@@ -46,12 +50,16 @@ corresponding to old generations of the system."
       #~(format port "LABEL ~a
   MENU LABEL ~a
   KERNEL ~a
-  FDTDIR ~a/lib/dtbs
+  ~a
   INITRD ~a
   APPEND ~a
 ~%"
                 #$label #$label
-                #$kernel (dirname #$kernel) #$initrd
+                #$kernel
+                (if #$with-fdtdir?
+                    (string-append "FDTDIR " (dirname #$kernel) "/lib/dtbs")
+                    "")
+                #$initrd
                 (string-join (list #$@kernel-arguments)))))
 
   (define builder
