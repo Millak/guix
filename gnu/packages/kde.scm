@@ -487,6 +487,34 @@ illustrate project schedules.")
 the functionality of the KDE resource and network access abstractions.")
     (license license:lgpl2.0+)))
 
+(define-public kio-fuse
+  (package
+    (name "kio-fuse")
+    (version "5.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/" name "/" version "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1pb62h45c06dq3rml91xbf8j5y2c1l8z8j8lycchxrlgys5rlrv6"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "HOME" (getcwd))
+                              (setenv "XDG_RUNTIME_DIR" (getcwd))
+                              (setenv "QT_QPA_PLATFORM" "offscreen")
+                              (invoke "dbus-launch" "ctest" "-E"
+                               "(fileopstest-cache|fileopstest-filejob)")))))))
+    (native-inputs (list dbus extra-cmake-modules pkg-config))
+    (inputs (list fuse-3 kio kcoreaddons qtbase-5))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "FUSE Interface for KIO")
+    (description "This package provides FUSE Interface for KIO.")
+    (license license:lgpl2.1+)))
 
 (define-public kseexpr
   (package
