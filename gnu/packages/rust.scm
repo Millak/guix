@@ -654,7 +654,7 @@ safety and thread safety guarantees.")
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:tests? _ #f)
-          #t)
+          (not (%current-target-system)))
          ((#:phases phases)
           `(modify-phases ,phases
              (add-after 'unpack 'relax-gdb-auto-load-safe-path
