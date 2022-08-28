@@ -1715,6 +1715,31 @@ activities effectively, without being distracting.")
 integration of Qt applications when running on a KDE Plasma workspace.")
     (license license:lgpl2.0)))
 
+(define-public plasma-nano
+  (package
+    (name "plasma-nano")
+    (version "5.24.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://download.kde.org/stable/plasma/"
+                                  version "/plasma-nano-" version ".tar.xz"))
+              (sha256
+               (base32
+                "13jxhfi3c3dhg7zdyfqnsii661h1am0w9dsv82dalqvwr1mw28l5"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config qttools))
+    (inputs (list qtbase-5
+                  qtdeclarative-5
+                  plasma-framework
+                  kwindowsystem
+                  kwayland
+                  ki18n))
+    (home-page "https://plasma-mobile.org/")
+    (synopsis "Minimal Plasma Shell package")
+    (description
+     "This package provides a minimal implementation of Plasma Shell.")
+    (license license:lgpl2.0+)))
+
 (define-public plasma-nm
   (package
     (name "plasma-nm")
