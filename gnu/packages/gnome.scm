@@ -5526,12 +5526,12 @@ service via the system message bus.")
                              (search-input-directory %build-inputs
                                                      "share/zoneinfo")))))
     (native-inputs
-     (list `(,glib "bin")               ;for glib-mkenums
+     (list gettext-minimal
+           `(,glib "bin")               ;for glib-mkenums
            gobject-introspection
            pkg-config
            python
            vala
-           intltool
            python-pygobject))
     (propagated-inputs
      ;; gweather-3.0.pc refers to GTK+, GDK-Pixbuf, GLib/GObject, libxml, and
