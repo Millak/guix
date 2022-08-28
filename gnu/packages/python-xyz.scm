@@ -12505,7 +12505,7 @@ $ rm -rf /tmp/env
     (arguments
      (substitute-keyword-arguments (package-arguments python-pip-run-bootstrap)
        ((#:tests? _ #f)
-        #t)
+        (not (%current-target-system)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (replace 'check
