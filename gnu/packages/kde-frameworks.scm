@@ -84,6 +84,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -172,6 +173,39 @@
 modules provided by CMake to find common software.  In addition, it provides
 common build settings used in software produced by the KDE community.")
     (license license:bsd-3)))
+
+(define-public kquickcharts
+  (package
+    (name "kquickcharts")
+    (version "5.96.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/frameworks/"
+                                  (version-major+minor version)
+                                  "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1sd9mfxk72xfa1kz77s7z312scfm0vwvvgmyi4pypb9cs7d9dq3j"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (system "Xvfb :1 -screen 0 640x480x24 &")
+                              (setenv "DISPLAY" ":1")
+                              (setenv "QT_QPA_PLATFORM" "offscreen")
+                              (invoke "ctest")))))))
+    (inputs (list qtbase-5 qtdeclarative-5 qtquickcontrols2-5
+                  xorg-server-for-tests))
+    (native-inputs (list extra-cmake-modules glslang pkg-config))
+    (home-page "https://api.kde.org/frameworks/kquickcharts/html/index.html")
+    (synopsis "QtQuick plugin providing high-performance charts")
+    (description
+     "The Quick Charts module provides a set of charts that can be
+used from QtQuick applications for both simple display of data as well as
+continuous display of high-volume data.")
+    (license (list license:lgpl2.1 license:lgpl3))))
 
 (define-public phonon
   (package
