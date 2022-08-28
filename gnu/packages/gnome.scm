@@ -8701,6 +8701,7 @@ properties, screen resolution, and other GNOME parameters.")
               (uri (string-append "mirror://gnome/sources/" name "/"
                                   (version-major version) "/"
                                   name "-" version ".tar.xz"))
+              (patches (search-patches "gnome-shell-polkit-autocleanup.patch"))
               (sha256
                (base32
                 "0ragmcln210zvzhc2br33yprbkj9drjzd7inp5sdxra0a7l73yaj"))))
