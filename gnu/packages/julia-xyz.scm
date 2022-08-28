@@ -2939,7 +2939,8 @@ each one has a fixed size.  Currently support inline strings from 1 byte up to
       ;; Got exception outside of a @test
       ;; OverflowError: 96908232 * 106943408 overflowed for type Int32
       ;; Disable as stopgap.
-      #:tests? (not (target-x86-32?))))
+      #:tests? (not (or (%current-target-system)
+                        (target-x86-32?)))))
     (propagated-inputs
      (list julia-axisalgorithms
            julia-offsetarrays
