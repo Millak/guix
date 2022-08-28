@@ -8706,7 +8706,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:tests? _ #f)
-          #t)
+          (not (%current-target-system)))
          ((#:phases phases #~%standard-phases)
           #~(modify-phases #$phases
               (replace 'check
