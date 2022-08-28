@@ -8306,7 +8306,7 @@ module with a few extra procedures.")
      (substitute-keyword-arguments
          (package-arguments python-jaraco-functools-bootstrap)
        ((#:tests? _ #f)
-        #t)
+        (not (%current-target-system)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (replace 'check
