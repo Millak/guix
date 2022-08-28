@@ -261,6 +261,7 @@ engine that uses Wayland for graphics output.")
            woff2
            wpebackend-fdo
            xdg-dbus-proxy))
+    (properties '((timeout . 144000)))  ; 40 hours, most notably for aarch64
     (home-page "https://www.webkitgtk.org/")
     (synopsis "Web content engine for GTK+")
     (description "WebKitGTK+ is a full-featured port of the WebKit rendering engine,
