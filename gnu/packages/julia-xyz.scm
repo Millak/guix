@@ -4660,7 +4660,8 @@ can be avoided.")
      ;; Expression: hash(tr_float, hash(1)) === hash(v_float, hash(1))
      ;; MethodError: no method matching decompose(::ReverseDiff.TrackedReal{Float64, Float64, Nothing})
      ;; Disable as stopgap.
-     (list #:tests? (not (target-x86-32?))))
+     (list #:tests? (not (or (%current-target-system)
+                             (target-x86-32?)))))
     (propagated-inputs
      (list julia-diffresults
            julia-diffrules
