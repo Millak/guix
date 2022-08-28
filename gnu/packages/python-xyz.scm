@@ -12382,7 +12382,7 @@ invoked on those path objects directly.")
      (substitute-keyword-arguments
          (package-arguments python-path-bootstrap)
        ((#:tests? _ #f)
-        #t)
+        (not (%current-target-system)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (replace 'check
