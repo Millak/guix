@@ -7,6 +7,7 @@
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,7 +124,7 @@ the WPE-flavored port of WebKit.")
 engine that uses Wayland for graphics output.")
     (license license:bsd-2)))
 
-(define %webkit-version "2.36.4")
+(define %webkit-version "2.36.7")
 
 (define-public webkitgtk
   (package
@@ -134,7 +135,7 @@ engine that uses Wayland for graphics output.")
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "1a72w9md2xvb82rd2sk3c7pqrvr28rqa8i4yq5ldjyd4hlgvxgmn"))
+               (base32 "0hqpfgzbb7lzdih9aw86rmkljm8ynv8zw3b72z88211gngr0q9hc"))
               (patches (search-patches
                         "webkitgtk-adjust-bubblewrap-paths.patch"))))
     (build-system cmake-build-system)
@@ -302,7 +303,7 @@ propagated by default) such as @code{gst-plugins-good} and
               (uri (string-append "https://wpewebkit.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "08f0sz4d5bpgrgvkgby3fri3wk5474f66gvp3y39laflypnknyih"))))
+               (base32 "1jcm5fjzn1k9l87qwqgmvd5qriwpv3vgs632zc6asqn5zxr7sx7k"))))
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
        ((#:configure-flags flags)

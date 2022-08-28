@@ -1210,7 +1210,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnome-online-miners-tracker-3.patch	\
   %D%/packages/patches/gnome-screenshot-meson-0.60.patch	\
   %D%/packages/patches/gnome-settings-daemon-gc.patch		\
-  %D%/packages/patches/gnome-session-support-elogind.patch      \
+  %D%/packages/patches/gnome-session-support-elogind.patch	\
+  %D%/packages/patches/gnome-shell-polkit-autocleanup.patch	\
   %D%/packages/patches/gnome-todo-libportal.patch		\
   %D%/packages/patches/gnome-tweaks-search-paths.patch		\
   %D%/packages/patches/gnupg-CVE-2022-34903.patch		\
@@ -1799,6 +1800,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/sbcl-png-fix-sbcl-compatibility.patch	\
   %D%/packages/patches/scalapack-gcc-10-compilation.patch	\
   %D%/packages/patches/scheme48-tests.patch			\
+  %D%/packages/patches/scons-test-environment.patch		\
   %D%/packages/patches/scotch-build-parallelism.patch		\
   %D%/packages/patches/scotch-integer-declarations.patch	\
   %D%/packages/patches/screen-hurd-path-max.patch		\
