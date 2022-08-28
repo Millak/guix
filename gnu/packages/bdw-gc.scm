@@ -4,6 +4,7 @@
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -134,6 +135,11 @@ C or C++ programs, though that is not its primary goal.")
                (base32
                 "1bwry043f62pc4mgdd37zx3fif19qyrs8f5bw7qxlmkzh5hdyzjq"))))
     (build-system gnu-build-system)
+    (arguments
+     `(,@(if (target-riscv64?)
+           `(#:configure-flags
+             (list "CFLAGS_EXTRA=-latomic"))
+           '())))
     (outputs '("out" "debug"))
     (synopsis "Accessing hardware atomic memory update operations")
     (description
