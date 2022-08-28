@@ -2049,7 +2049,8 @@ c-style numerical formatting.")
      ;; Expression: dual_isapprox(FDNUM ^ PRIMAL, exp(PRIMAL * log(FDNUM)))
      ;; ERROR: LoadError: LoadError: There was an error during testing
      ;; Disable as stopgap.
-     (list #:tests? (not (target-x86-32?))))
+     (list #:tests? (not (or (%current-target-system)
+                             (target-x86-32?)))))
     (inputs                             ;required for tests
      (list julia-calculus
            julia-difftests))
