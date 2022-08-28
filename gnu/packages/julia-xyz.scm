@@ -165,7 +165,8 @@ provides functions to run a few automatable checks for Julia packages.")
      ;; Expression: @inferred(ArrayInterface.size(Rnr)) === (StaticInt(4),)
      ;; Evaluated: (static(2),) === (static(4),)
      ;; Disable as stopgap.
-     (list #:tests? (not (target-x86-32?))))
+     (list #:tests? (not (or (%current-target-system)
+                             (target-x86-32?)))))
     (propagated-inputs
      (list julia-ifelse
            julia-requires
