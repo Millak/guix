@@ -5546,6 +5546,55 @@ service via the system message bus.")
 services for numerous locations.")
     (license license:gpl2+)))
 
+;; libgweather no longer follows the GNOME version, and recommends changing
+;; the package name in distributions to avoid accidental downgrades.  See
+;; <https://discourse.gnome.org/t/changes-in-libgweather-for-gnome-42/7770/2>.
+;; TODO: how to prevent the updater from picking version 40?
+(define-public libgweather4
+  (package
+    (inherit libgweather)
+    (name "libgweather4")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/libgweather/"
+                                  (version-major+minor version) "/"
+                                  "libgweather-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0k43mr7vmcg14lkwjk6p9wwy3zlw23wkfpkfcy6b8wkg3f0483a4"))))
+    (arguments
+     (list
+      ;; FIXME: multiple tests fails as such:
+      ;;   "GLib-GIO-FATAL-ERROR: Settings schema 'org.gnome.system.proxy'
+      ;;   is not installed"
+      #:tests? #f
+      #:configure-flags
+      #~(list (string-append "-Dzoneinfo_dir="
+                             (search-input-directory %build-inputs
+                                                     "share/zoneinfo"))
+              ;; TODO: Requires 'gi-docgen'.
+              "-Dgtk_doc=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")               ;for glib-mkenums
+           gobject-introspection
+           pkg-config
+           python
+           vala
+           python-pygobject))
+    ;; TODO: It would be good to make the package respect TZDIR instead
+    ;; of using a "hard coded" version of tzdata.
+    (inputs (list tzdata))
+    (propagated-inputs
+     ;; gweather4.pc refers to all of these.
+     (list glib libxml2 libsoup-minimal-2 geocode-glib))))
+
 (define-public gnome-settings-daemon
   (package
     (name "gnome-settings-daemon")
