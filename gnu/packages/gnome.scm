@@ -5519,27 +5519,24 @@ service via the system message bus.")
                 "1rkf4yv43qcahyx7bismdv6z2vh5azdnm1fqfmnzrada9cm8ykna"))))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f ; one of two tests requires network access
-       #:configure-flags
-       `(,(string-append "-Dzoneinfo_dir="
-                         (assoc-ref %build-inputs "tzdata")
-                         "/share/zoneinfo"))))
+     (list
+      #:tests? #f                    ;one of two tests requires network access
+      #:configure-flags
+      #~(list (string-append "-Dzoneinfo_dir="
+                             (search-input-directory %build-inputs
+                                                     "share/zoneinfo")))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-mkenums
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("vala" ,vala)
-       ("intltool" ,intltool)
-       ("python-pygobject" ,python-pygobject)))
+     (list `(,glib "bin")               ;for glib-mkenums
+           gobject-introspection
+           pkg-config
+           python
+           vala
+           intltool
+           python-pygobject))
     (propagated-inputs
      ;; gweather-3.0.pc refers to GTK+, GDK-Pixbuf, GLib/GObject, libxml, and
      ;; libsoup.
-     `(("gtk+" ,gtk+)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("libxml2" ,libxml2)
-       ("libsoup" ,libsoup-minimal-2)
-       ("geocode-glib" ,geocode-glib)))
+     (list gtk+ gdk-pixbuf libxml2 libsoup-minimal-2 geocode-glib))
     (inputs
      (list tzdata))
     (home-page "https://wiki.gnome.org/action/show/Projects/LibGWeather")
