@@ -22762,6 +22762,37 @@ binding @code{*debugger-hook*} is not enough -- most notably, for
      ;; Tests fail on ECL: https://github.com/phoe/trivial-custom-debugger/issues/3
      '(#:tests? #f))))
 
+(define-public sbcl-safe-read
+  (let ((commit "d25f08597b34d7aaeb86b045d57f7b020a5bb5f0")
+        (revision "0"))
+    (package
+      (name "sbcl-safe-read")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/safe-read")
+               (commit commit)))
+         (file-name (git-file-name "cl-safe-read" version))
+         (sha256
+          (base32 "1r9k8danfnqgpbn2vb90n6wdc6jd92h1ig565yplrbh6232lhi26"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-local-time sbcl-trivial-garbage))
+      (home-page "https://github.com/phoe/safe-read/")
+      (synopsis "Safer variant of READ")
+      (description
+       "This package provides a safer variant of @code{READ} secure against
+internbombing, excessive input and macro characters.")
+      (license license:bsd-2))))
+
+(define-public cl-safe-read
+  (sbcl-package->cl-source-package sbcl-safe-read))
+
+(define-public ecl-safe-read
+  (sbcl-package->ecl-package sbcl-safe-read))
+
 (define-public sbcl-ospm
   (package
     (name "sbcl-ospm")
