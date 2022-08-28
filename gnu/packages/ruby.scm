@@ -7211,7 +7211,8 @@ run.")
     (arguments
      `(#:test-target "default"
        ;; TODO: Figure out why test hangs.
-       #:tests? ,(not (target-riscv64?))
+       #:tests? ,(not (or (%current-target-system)
+                          (target-riscv64?)))
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-home
