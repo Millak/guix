@@ -13934,6 +13934,25 @@ gnu/packages/multiprecision.scm:40:12: 6.1.2 is already the latest version of gm
 
 @end table
 
+If for some reason you don't want to update to the latest version, you
+can update to a specific version by appending an equal sign and the
+desired version number to the package specification.  Note that not all
+updaters support this; an error is reported when an updater cannot
+refresh to the specified version.
+
+@example
+$ guix refresh trytond-party
+gnu/packages/guile.scm:392:2: guile would be upgraded from 3.0.3 to 3.0.5
+$ guix refresh -u guile=3.0.4
+@dots{}
+gnu/packages/guile.scm:392:2: guile: updating from version 3.0.3 to version 3.0.4...
+@dots{}
+$ guix refresh -u guile@@2.0=2.0.12
+@dots{}
+gnu/packages/guile.scm:147:2: guile: updating from version 2.0.10 to version 2.0.12...
+@dots{}
+@end example
+
 Sometimes the upstream name differs from the package name used in Guix,
 and @command{guix refresh} needs a little help.  Most updaters honor the
 @code{upstream-name} property in package definitions, which can be used
