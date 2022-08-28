@@ -11305,7 +11305,7 @@ from an XML-based format.")
     (arguments
      (substitute-keyword-arguments (package-arguments python-fonttools)
        ((#:tests? _ #f)
-        #t)
+        (not (%current-target-system)))
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (replace 'check
