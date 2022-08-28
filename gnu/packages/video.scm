@@ -2500,7 +2500,7 @@ YouTube.com and many more sites.")
         (base32 "07qz1zdndlpki0asw35zk5hdjcwpl3n1g54nxg4yb1iykbyv7rll"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
-       ((#:tests? _) #t)
+       ((#:tests? _) (not (%current-target-system)))
        ((#:phases phases)
         #~(modify-phases #$phases
             ;; See the comment for the corresponding phase in youtube-dl.
