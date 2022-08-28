@@ -34,7 +34,6 @@
   #:use-module (guix monads)
   #:use-module (guix store)
   #:use-module ((guix self) #:select (make-config.scm))
-  #:autoload   (guix describe) (current-profile)
   #:use-module (guix channels)
   #:autoload   (guix git) (update-cached-checkout)
   #:use-module (guix i18n)
@@ -372,8 +371,7 @@ currently-deployed commit (from CURRENT-CHANNELS, which is as returned by
 'guix system describe' by default) and the target commit (as returned by 'guix
 describe')."
   (define new
-    (or (and=> (current-profile) profile-channels)
-        '()))
+    ((@ (guix describe) current-channels)))
 
   (when (null? current-channels)
     (warning (G_ "cannot determine provenance for current system~%")))
