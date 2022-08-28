@@ -847,30 +847,6 @@ to perform data analysis.")
     (license (list license:gpl2+     ;labplot
                    license:gpl3+)))) ;liborigin
 
-(define-public kqtquickcharts
-  (package
-    (name "kqtquickcharts")
-    (version "22.04.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "mirror://kde/stable/release-service/"
-                            version "/src/kqtquickcharts-" version ".tar.xz"))
-        (sha256
-         (base32
-          "0bm7rdysvlfnfnvy87ii3kxl238q83vw0ia58zsnwjmkxmlgf6mp"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
-    (home-page "https://phabricator.kde.org/source/kqtquickcharts/")
-    (synopsis "Interactive charts for Qt Quick")
-    (description
-     "Kqtquickcharts is a QtQuick plugin to render beautiful and interactive
-charts.")
-    (license license:lgpl2.1+)))
-
 (define-public kdf
   (package
     (name "kdf")
