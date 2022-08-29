@@ -55,6 +55,7 @@
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages dns)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graphviz)
@@ -226,20 +227,21 @@ with a PKCS #11 Cryptographic Token Interface.")
 (define-public pcsc-lite
   (package
     (name "pcsc-lite")
-    (version "1.9.3")
+    (version "1.9.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://pcsclite.apdu.fr/files/"
                                   "pcsc-lite-" version ".tar.bz2"))
               (sha256
                (base32
-                "0n9y9m1wr5bwanpnylpdza3sf7lawi63jjizrl1aj5yxf4y46mk9"))))
+                "12923c6l5qzga1xlcxvm0vzbqrxnxq1qgzlrxf2y5gpcaz2q0bah"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-usbdropdir=/var/lib/pcsc/drivers"
                            "--disable-libsystemd")))
     (native-inputs
-     (list perl ; for pod2man
+     (list flex
+           perl                         ;for pod2man
            pkg-config))
     (inputs
      (list python eudev))
