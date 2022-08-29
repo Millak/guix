@@ -201,7 +201,7 @@
    "Whether this jail is enabled.")
   (backend
    maybe-symbol
-   "Backend to use to detect changes in the @code{ogpath}.  The default is
+   "Backend to use to detect changes in the @code{log-path}.  The default is
 'auto.  To consult the defaults of the jail configuration, refer to the
 @file{/etc/fail2ban/jail.conf} file of the @code{fail2ban} package."
 fail2ban-jail-configuration-serialize-backend)
