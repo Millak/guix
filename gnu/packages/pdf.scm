@@ -530,15 +530,15 @@ using the DjVuLibre library.")
                 "01vw0lrcj9g7d5h2xvm4xb08mvfld4syfr381fjrbdj52zm9bxvp"))))
     (native-inputs (list pkg-config))
     (inputs
-     `(("gumbo-parser" ,gumbo-parser)
-       ("jbig2dec" ,jbig2dec)
-       ("libjpeg" ,libjpeg-turbo)
-       ("mujs" ,mujs)
-       ("mupdf" ,mupdf)
-       ("openjpeg" ,openjpeg)
-       ("openssl" ,openssl)
-       ("tesseract" ,tesseract-ocr)
-       ("zathura" ,zathura)))
+     (list gumbo-parser
+           jbig2dec
+           libjpeg-turbo
+           mujs
+           mupdf
+           openjpeg
+           openssl
+           tesseract-ocr
+           zathura))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f                      ; package does not contain tests
