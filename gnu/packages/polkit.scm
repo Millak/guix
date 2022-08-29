@@ -45,7 +45,6 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages docbook)
-  #:use-module (gnu packages gnuzilla)
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages nss)
