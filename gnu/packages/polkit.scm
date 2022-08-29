@@ -82,11 +82,14 @@
       #~(list "--sysconfdir=/etc"
               "-Dman=true"
               "-Dtests=true"
-              ;; ERROR: Pkg-config binary for machine
-              ;; MachineChoice.BUILD not found, giving up.  Just
-              ;; disable introspection for now.
+              ;; Work around cross-compilation failure.  The build system
+              ;; probes for the _target_ gobject-introspection, but if we
+              ;; change it to native, Meson fails with:
+              ;;   ERROR: Pkg-config binary for machine
+              ;;   MachineChoice.BUILD not found, giving up.
+              ;; Just disable introspection for now.
               #$@(if (%current-target-system)
-                     '("-Dos-type=unknown")
+                     '("-Dintrospection=false")
                      '()))
       #:phases
       #~(modify-phases %standard-phases
