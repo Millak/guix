@@ -106,6 +106,26 @@
                          "-c" "qemu:///system" "connect"))
              marionette))
 
+          (test-eq "create default network"
+            0
+            (marionette-eval
+             '(begin
+                (chdir "/tmp")
+                (system* #$(file-append libvirt "/bin/virsh")
+                         "-c" "qemu:///system" "net-define"
+                         #$(file-append libvirt
+                                        "/etc/libvirt/qemu/networks/default.xml")))
+             marionette))
+
+          (test-eq "start default network"
+            0
+            (marionette-eval
+             '(begin
+                (chdir "/tmp")
+                (system* #$(file-append libvirt "/bin/virsh")
+                         "-c" "qemu:///system" "net-start" "default"))
+             marionette))
+
           (test-end))))
 
   (gexp->derivation "libvirt-test" test))

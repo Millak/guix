@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2021 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
