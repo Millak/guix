@@ -5514,30 +5514,29 @@ faster results and to avoid unnecessary server load.")
         (base32 "1g17rm91p8vfpjyb0k2shylrs55nccn3fa890vlk4n9s71sghbzq"))
        (modules '((guix build utils)))
        (snippet
-         ;; Upstream commit
-         ;; <https://cgit.freedesktop.org/upower/commit/?id=18457c99b68786cd729b315723d680e6860d9cfa>
-         ;; moved 'dbus-1/system.d' from etc/ to share/.  However,
-         ;; 'dbus-configuration-directory' in (gnu services dbus)
-         ;; expects it in etc/.  Thus, move it back to its previous
-         ;; location.
-         #~(substitute* "src/meson.build"
+        ;; Upstream commit <https://cgit.freedesktop.org/upower/commit/
+        ;; ?id=18457c99b68786cd729b315723d680e6860d9cfa> moved
+        ;; 'dbus-1/system.d' from etc/ to share/.  However,
+        ;; 'dbus-configuration-directory' in (gnu services dbus) expects it in
+        ;; etc/.  Thus, move it back to its previous location.
+        #~(substitute* "src/meson.build"
             (("dbusdir / 'system.d'")
-              "get_option('sysconfdir') / 'dbus-1/system.d'")
+             "get_option('sysconfdir') / 'dbus-1/system.d'")
             ;; Avoid writing to /var during the build, this is
             ;; not possible in Guix!
             (("^install_subdir\\('does-not-exist'.*$") "")))))
     (build-system meson-build-system)
     (arguments
-      (list
-       #:glib-or-gtk? #t
-       #:configure-flags
-       #~(list "-Dsystemdsystemunitdir=no"
-               ;; If not specified, udev will try putting history information
-               ;; in /gnu/store.
-               "-Dhistorydir=/var/lib/upower"
-               (string-append "-Dudevrulesdir=" #$output "/bin/udev/rules.d"))))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list "-Dsystemdsystemunitdir=no"
+              ;; If not specified, udev will try putting history information
+              ;; in /gnu/store.
+              "-Dhistorydir=/var/lib/upower"
+              (string-append "-Dudevrulesdir=" #$output "/bin/udev/rules.d"))))
     (native-inputs
-     (list `(,glib "bin") ; for gdbus-codegen
+     (list `(,glib "bin")               ; for gdbus-codegen
            gobject-introspection
            gtk-doc
            intltool
@@ -5551,8 +5550,8 @@ faster results and to avoid unnecessary server load.")
            umockdev
            ;; For man pages.
            docbook-xsl
-           libxslt ; for 'xsltproc'
-           libxml2))           ; for 'XML_CATALOG_FILES'
+           libxslt                      ; for 'xsltproc'
+           libxml2))                    ; for 'XML_CATALOG_FILES'
     (inputs
      (list dbus-glib libgudev libusb))
     (propagated-inputs
