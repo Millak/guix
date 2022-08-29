@@ -288,7 +288,7 @@
      (list c-ares
            http-parser
            icu4c
-           libuv
+           libuv-for-node
            `(,nghttp2-for-node "lib")
            openssl-1.1
            zlib
@@ -308,7 +308,7 @@
            c-ares
            http-parser
            icu4c
-           libuv
+           libuv-for-node
            `(,nghttp2-for-node "lib")
            openssl
            python-wrapper               ;for node-gyp (supports python3)
