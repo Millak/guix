@@ -1654,32 +1654,32 @@ is hereby granted."))))
     (native-inputs
      (list nasm))
     (arguments
-     `(#:configure-flags '("-DCMAKE_INSTALL_LIBDIR:PATH=lib"
-                           "-DENABLE_STATIC=0"
-                           ;; djpeg-shared-3x2-float-prog-cmp fails on 32-bit PPC.
-                           ,@(if (string=? "powerpc-linux" (%current-system))
-                               `("-DFLOATTEST=NO")
-                               '())
-                           ;; The build system probes for the current CPU, but
-                           ;; that fails when cross-compiling.
-                           ,@(let ((target (%current-target-system)))
-                               (if target
-                                   (cond
-                                    ((string-prefix? "arm" target)
-                                     `("-DCMAKE_SYSTEM_PROCESSOR=arm"))
-                                    ((string-prefix? "aarch64" target)
-                                     `("-DCMAKE_SYSTEM_PROCESSOR=aarch64"))
-                                    ((string-prefix? "i686" target)
-                                     `("-DCMAKE_SYSTEM_PROCESSOR=x86"))
-                                    ((string-prefix? "x86_64" target)
-                                     `("-DCMAKE_SYSTEM_PROCESSOR=x86_64"))
-                                    ;; 32-bit and 64-bit
-                                    ((string-prefix? "powerpc" target)
-                                     `("-DCMAKE_SYSTEM_PROCESSOR=powerpc"))
-                                    ((string-prefix? "riscv64" target)
-                                     `("-DCMAKE_SYSTEM_PROCESSOR=riscv64"))
-                                    (else '()))
-                                   '())))))
+     (list #:configure-flags
+           #~'("-DCMAKE_INSTALL_LIBDIR:PATH=lib"
+               "-DENABLE_STATIC=0"
+               ;; djpeg-shared-3x2-float-prog-cmp fails on 32-bit PPC.
+               #$@(if (string=? "powerpc-linux" (%current-system))
+                      '("-DFLOATTEST=NO")
+                      '())
+               ;; The build system probes for the current CPU, but
+               ;; that fails when cross-compiling.
+               #$@(let ((target (%current-target-system)))
+                    (if target
+                        (cond ((string-prefix? "arm" target)
+                               '("-DCMAKE_SYSTEM_PROCESSOR=arm"))
+                              ((string-prefix? "aarch64" target)
+                               '("-DCMAKE_SYSTEM_PROCESSOR=aarch64"))
+                              ((string-prefix? "i686" target)
+                               '("-DCMAKE_SYSTEM_PROCESSOR=x86"))
+                              ((string-prefix? "x86_64" target)
+                               '("-DCMAKE_SYSTEM_PROCESSOR=x86_64"))
+                              ;; 32-bit and 64-bit
+                              ((string-prefix? "powerpc" target)
+                               '("-DCMAKE_SYSTEM_PROCESSOR=powerpc"))
+                              ((string-prefix? "riscv64" target)
+                               '("-DCMAKE_SYSTEM_PROCESSOR=riscv64"))
+                              (else '()))
+                        '())))))
     (home-page "https://libjpeg-turbo.org/")
     (synopsis "SIMD-accelerated JPEG image handling library")
     (description "libjpeg-turbo is a JPEG image codec that accelerates baseline
