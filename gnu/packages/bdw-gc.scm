@@ -135,11 +135,6 @@ C or C++ programs, though that is not its primary goal.")
                (base32
                 "0glzah695wsf6c27hs5wwlw4mnq1vfivdshz1rb8pq7w4mp5dazh"))))
     (build-system gnu-build-system)
-    (arguments
-     `(,@(if (target-riscv64?)
-           `(#:configure-flags
-             (list "CFLAGS_EXTRA=-latomic"))
-           '())))
     (outputs '("out" "debug"))
     (synopsis "Accessing hardware atomic memory update operations")
     (description
