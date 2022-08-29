@@ -194,7 +194,8 @@
 (define-configuration fail2ban-jail-configuration
   (name
    string
-   "Required name of this jail configuration.")
+   "Required name of this jail configuration."
+   empty-serializer)
   (enabled?
    (boolean #t)
    "Whether this jail is enabled.")
