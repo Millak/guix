@@ -127,7 +127,7 @@
           (string-append "bantime." (substring name 9))))
         ((string-contains name "-")
          (fail2ban-jail-configuration-serialize-field-name
-          (string-filter (lambda (c) (equal? c #\-)) name)))
+          (string-filter (lambda (c) (not (equal? c #\-))) name)))
         (else name)))
 
 (define (fail2ban-jail-configuration-serialize-string field-name value)
