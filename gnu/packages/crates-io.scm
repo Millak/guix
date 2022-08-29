@@ -40295,32 +40295,33 @@ crate.")
 (define-public rust-openssl-0.10
   (package
     (name "rust-openssl")
-    (version "0.10.30")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "openssl" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1d5wwajanjw1q5d2y23yaq8rvbaqb20z53v7hfdryhb56vzmwmwd"))))
+    (version "0.10.41")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "openssl" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1l2vpxq5ln326s64lbacqs4hq6k5yn2zhwqbyby0sj9nagvfp3v1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-foreign-types" ,rust-foreign-types-0.3)
-        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-openssl-macros" ,rust-openssl-macros-0.1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9))
        #:cargo-development-inputs
-       (("rust-hex" ,rust-hex-0.3)
-        ("rust-tempdir" ,rust-tempdir-0.3))))
+       (("rust-hex" ,rust-hex-0.3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl))
     (home-page "https://github.com/sfackler/rust-openssl")
     (synopsis "OpenSSL bindings")
-    (description "OpenSSL bindings.")
+    (description "This package provides OpenSSL bindings for Rust.")
     (license license:asl2.0)))
 
 (define-public rust-openssl-0.9
