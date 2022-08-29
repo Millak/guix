@@ -138,7 +138,8 @@
     (propagated-inputs
      (list glib))                       ;required by polkit-gobject-1.pc
     (native-inputs
-     (list `(,glib "bin")               ;for glib-mkenums
+     (list gettext-minimal
+           `(,glib "bin")               ;for glib-mkenums
            docbook-xsl                  ;for man page generation
            gobject-introspection
            libxml2                      ;for XML_CATALOG_FILES
