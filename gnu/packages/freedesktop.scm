@@ -939,6 +939,48 @@ backends, PackageKit can perform these tasks using the appropriate package
 manager for the current system.")
     (license license:gpl2+)))
 
+(define-public python-libevdev
+  (package
+    (name "python-libevdev")
+    (version "0.11")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "libevdev" version))
+              (sha256
+               (base32
+                "03snix86j0angq0lydp29f8833clxq8h0x4spmh8lj7j9mm01jp9"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-dlopen-calls
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "libevdev/_clib.py"
+                (("libevdev.so.2")
+                 (search-input-file inputs "lib/libevdev.so.2")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "test")))))))
+    (native-inputs (list python-pytest))
+    (inputs (list libevdev))
+    (home-page "https://gitlab.freedesktop.org/libevdev/python-libevdev")
+    (synopsis "Python wrapper for libevdev")
+    (description "This package provides a Python wrapper around
+@code{libevdev}, taking advantage of @code{libevdev}'s advanced event
+handling.  Documentation is available at
+@url{https://python-libevdev.readthedocs.io/en/latest/}.
+@code{libevdev} makes it easy to:
+@itemize
+@item read and parse events from an input device;
+@item create a virtual input device and make it send events;
+@item duplicate an existing device and modify the event stream.
+@end itemize
+For information about libevdev, see:
+@url{https://freedesktop.org/wiki/Software/libevdev/}.")
+    (license license:expat)))
+
 (define-public python-pyxdg
   (package
     (name "python-pyxdg")
