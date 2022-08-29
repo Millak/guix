@@ -562,7 +562,7 @@ in LXDE.")
              (delete-file "configure"))))))
     (inputs
      (list gtk+
-           polkit))
+           polkit-duktape))
     (native-inputs
      (list pkg-config
            intltool
