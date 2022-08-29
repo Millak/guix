@@ -53,8 +53,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages xml)
-  #:export (polkit))
+  #:use-module (gnu packages xml))
 
 (define-public polkit
   (package
