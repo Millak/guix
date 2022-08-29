@@ -76,13 +76,10 @@
    (build-system gnu-build-system)
    (outputs '("out"
               "doc"))                             ;1.2 MiB of man3 pages
-   (inputs (list gnutls libidn mit-krb5
-                 `(,nghttp2 "lib") zlib))
+   (inputs
+    (list gnutls libidn mit-krb5 `(,nghttp2 "lib") zlib))
    (native-inputs
-     `(("nghttp2" ,nghttp2)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-minimal-wrapper)))
+     (list nghttp2 perl pkg-config python-minimal-wrapper))
    (native-search-paths
     ;; These variables are introduced by curl-use-ssl-cert-env.patch.
     (list $SSL_CERT_DIR
@@ -99,7 +96,10 @@
     `(#:disallowed-references ("doc")
       #:configure-flags (list "--with-gnutls"
                               (string-append "--with-gssapi="
-                                             (assoc-ref %build-inputs "mit-krb5"))
+                                             (dirname (dirname
+                                                       (search-input-file
+                                                        %build-inputs
+                                                        "lib/libgssrpc.so"))))
                               "--disable-static")
       #:phases
       (modify-phases %standard-phases
@@ -157,8 +157,8 @@ tunneling, and so on.")
        ((#:configure-flags flags)
         `(cons "--with-libssh2" ,flags))))
     (inputs
-     `(("libssh2" ,libssh2)
-       ,@(package-inputs curl)))
+     (modify-inputs (package-inputs curl)
+       (prepend libssh2)))
     (properties `((hidden? . #t)))))
 
 (define-public kurly
