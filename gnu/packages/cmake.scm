@@ -152,7 +152,7 @@ using the CMake build system.")
 (define-public cmake-bootstrap
   (package
     (name "cmake-bootstrap")
-    (version "3.23.2")
+    (version "3.24.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://cmake.org/files/v"
@@ -160,7 +160,7 @@ using the CMake build system.")
                                   "/cmake-" version ".tar.gz"))
               (sha256
                (base32
-                "1ai6zycs4zj49d46lzz9b6l0q5hvlkyix66zd90rlvs6ac0b85pk"))
+                "0ax83yfis1n74llqhckrbgzcp82pfwx039xs2dgq06nvlivy4ca9"))
               (patches (search-patches "cmake-curl-certificates.patch"))))
     (build-system gnu-build-system)
     (arguments
