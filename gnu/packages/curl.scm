@@ -62,90 +62,88 @@
 
 (define-public curl
   (package
-   (name "curl")
-   (version "7.84.0")
-   (source (origin
-             (method url-fetch)
-             (uri (string-append "https://curl.se/download/curl-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "1f2xgj0wvys9xw50h7vcbaraavjr9rxx9n06x2xfbgs7ym1qn49d"))
-             (patches (search-patches "curl-use-ssl-cert-env.patch"
-                                      "curl-easy-lock.patch"))))
-   (build-system gnu-build-system)
-   (outputs '("out"
-              "doc"))                             ;1.2 MiB of man3 pages
-   (inputs
-    (list gnutls libidn mit-krb5 `(,nghttp2 "lib") zlib))
-   (native-inputs
+    (name "curl")
+    (version "7.84.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://curl.se/download/curl-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1f2xgj0wvys9xw50h7vcbaraavjr9rxx9n06x2xfbgs7ym1qn49d"))
+              (patches (search-patches "curl-use-ssl-cert-env.patch"
+                                       "curl-easy-lock.patch"))))
+    (build-system gnu-build-system)
+    (outputs '("out"
+               "doc"))                  ;1.2 MiB of man3 pages
+    (inputs
+     (list gnutls libidn mit-krb5 `(,nghttp2 "lib") zlib))
+    (native-inputs
      (list nghttp2 perl pkg-config python-minimal-wrapper))
-   (native-search-paths
-    ;; These variables are introduced by curl-use-ssl-cert-env.patch.
-    (list $SSL_CERT_DIR
-          $SSL_CERT_FILE
-          ;; Note: This search path is respected by the `curl` command-line
-          ;; tool only.  Patching libcurl to read it too would bring no
-          ;; advantages and require maintaining a more complex patch.
-          (search-path-specification
-           (variable "CURL_CA_BUNDLE")
-           (file-type 'regular)
-           (separator #f)                         ;single entry
-           (files '("etc/ssl/certs/ca-certificates.crt")))))
-   (arguments
-    `(#:disallowed-references ("doc")
-      #:configure-flags (list "--with-gnutls"
-                              (string-append "--with-gssapi="
-                                             (dirname (dirname
-                                                       (search-input-file
-                                                        %build-inputs
-                                                        "lib/libgssrpc.so"))))
-                              "--disable-static")
+    (native-search-paths
+     ;; These variables are introduced by curl-use-ssl-cert-env.patch.
+     (list $SSL_CERT_DIR
+           $SSL_CERT_FILE
+           ;; Note: This search path is respected by the `curl` command-line
+           ;; tool only.  Patching libcurl to read it too would bring no
+           ;; advantages and require maintaining a more complex patch.
+           (search-path-specification
+            (variable "CURL_CA_BUNDLE")
+            (file-type 'regular)
+            (separator #f)              ;single entry
+            (files '("etc/ssl/certs/ca-certificates.crt")))))
+    (arguments
+     (list
+      #:disallowed-references '("doc")
+      #:configure-flags
+      #~(list "--with-gnutls"
+              (string-append "--with-gssapi="
+                             (dirname (dirname
+                                       (search-input-file
+                                        %build-inputs "lib/libgssrpc.so"))))
+              "--disable-static")
       #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'tweak-lib3026-test
-          (lambda _
-            ;; Have that test create a hundred threads, not a thousand.
-            (substitute* "tests/libtest/lib3026.c"
-              (("NUM_THREADS .*$")
-               "NUM_THREADS 100\n"))))
-        (add-after 'unpack 'do-not-record-configure-flags
-          (lambda _
-            ;; Do not save the configure options to avoid unnecessary references.
-            (substitute* "curl-config.in"
-              (("@CONFIGURE_OPTIONS@")
-               "\"not available\""))))
-        (add-after
-         'install 'move-man3-pages
-         (lambda* (#:key outputs #:allow-other-keys)
-           ;; Move section 3 man pages to "doc".
-           (let ((out (assoc-ref outputs "out"))
-                 (doc (assoc-ref outputs "doc")))
-             (mkdir-p (string-append doc "/share/man"))
-             (rename-file (string-append out "/share/man/man3")
-                          (string-append doc "/share/man/man3")))))
-        (replace 'check
-          (lambda* (#:key tests? #:allow-other-keys)
-            (substitute* "tests/runtests.pl"
-              (("/bin/sh") (which "sh")))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'tweak-lib3026-test
+            (lambda _
+              ;; Have that test create a hundred threads, not a thousand.
+              (substitute* "tests/libtest/lib3026.c"
+                (("NUM_THREADS .*$")
+                 "NUM_THREADS 100\n"))))
+          (add-after 'unpack 'do-not-record-configure-flags
+            (lambda _
+              ;; Do not save the configure options to avoid unnecessary references.
+              (substitute* "curl-config.in"
+                (("@CONFIGURE_OPTIONS@")
+                 "\"not available\""))))
+          (add-after 'install 'move-man3-pages
+            (lambda _
+              ;; Move section 3 man pages to "doc".
+              (mkdir-p (string-append #$output:doc "/share/man"))
+              (rename-file (string-append #$output "/share/man/man3")
+                           (string-append #$output:doc "/share/man/man3"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (substitute* "tests/runtests.pl"
+                (("/bin/sh") (which "sh")))
 
-            (when tests?
-              ;; The top-level "make check" does "make -C tests quiet-test", which
-              ;; is too quiet.  Use the "test" target instead, which is more
-              ;; verbose.
-              (invoke "make" "-C" "tests" "test")))))))
-   (synopsis "Command line tool for transferring data with URL syntax")
-   (description
-    "curl is a command line tool for transferring data with URL syntax,
+              (when tests?
+                ;; The top-level "make check" does "make -C tests quiet-test", which
+                ;; is too quiet.  Use the "test" target instead, which is more
+                ;; verbose.
+                (invoke "make" "-C" "tests" "test")))))))
+    (synopsis "Command line tool for transferring data with URL syntax")
+    (description
+     "curl is a command line tool for transferring data with URL syntax,
 supporting DICT, FILE, FTP, FTPS, Gopher, HTTP, HTTPS, IMAP, IMAPS, LDAP,
 LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, Telnet and TFTP.
 curl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP
 form based upload, proxies, cookies, file transfer resume, user+password
 authentication (Basic, Digest, NTLM, Negotiate, kerberos...), proxy
 tunneling, and so on.")
-   (license (license:non-copyleft "file://COPYING"
-                                  "See COPYING in the distribution."))
-   (home-page "https://curl.haxx.se/")))
+    (license (license:non-copyleft "file://COPYING"
+                                   "See COPYING in the distribution."))
+    (home-page "https://curl.haxx.se/")))
 
 (define-public curl-minimal
   (deprecated-package "curl-minimal" curl))
@@ -155,7 +153,7 @@ tunneling, and so on.")
     (arguments
      (substitute-keyword-arguments (package-arguments curl)
        ((#:configure-flags flags)
-        `(cons "--with-libssh2" ,flags))))
+        #~(cons "--with-libssh2" #$flags))))
     (inputs
      (modify-inputs (package-inputs curl)
        (prepend libssh2)))
