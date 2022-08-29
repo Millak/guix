@@ -3,6 +3,7 @@
 ;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
