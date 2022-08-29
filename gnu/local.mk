@@ -988,6 +988,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/clucene-contribs-lib.patch               \
   %D%/packages/patches/cube-nocheck.patch			\
   %D%/packages/patches/curl-easy-lock.patch			\
+  %D%/packages/patches/curl-nghttp2-compat.patch		\
   %D%/packages/patches/curl-use-ssl-cert-env.patch		\
   %D%/packages/patches/cursynth-wave-rand.patch			\
   %D%/packages/patches/cvs-CVE-2017-12836.patch		\

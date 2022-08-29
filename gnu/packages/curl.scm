@@ -72,6 +72,7 @@
                (base32
                 "1f2xgj0wvys9xw50h7vcbaraavjr9rxx9n06x2xfbgs7ym1qn49d"))
               (patches (search-patches "curl-use-ssl-cert-env.patch"
+                                       "curl-nghttp2-compat.patch"
                                        "curl-easy-lock.patch"))))
     (build-system gnu-build-system)
     (outputs '("out"
