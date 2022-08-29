@@ -3086,6 +3086,36 @@ pre-alpha code.")
 parameters, which  define* and lambda* special forms")
     (license license:gpl3+)))
 
+(define-public guile-srfi-128
+  (package
+    (name "guile-srfi-128")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://inqlab.net/git/guile-srfi-128.git")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "03d85q5l2gc2c8cmri6zd4pfndvnadlhwh77hsx6ixvvm8vwq4sy"))
+       (file-name (git-file-name name version))))
+    (build-system guile-build-system)
+    (native-inputs
+     (list guile-3.0))
+    (home-page "https://inqlab.net/git/guile-srfi-128.git")
+    (synopsis "SRFI 128 Comparators (reduced) port for Guile")
+    (description
+     "This package provides an implementation of SRFI 128 for Guile.
+SRFI 128 defines comparators, which bundles a test type predicate, an
+equality predicate, an ordering predicate and a hash function into a
+single Scheme object.  This can be used in the implementation of data
+structures.  This package re-uses the SRFI sample implementation.")
+    (license
+     (list license:lgpl3+
+           ;; contains ISC code from the SRFI sample implementation
+           license:isc))))
+
 (define-public guile-srfi-145
   (package
     (name "guile-srfi-145")
