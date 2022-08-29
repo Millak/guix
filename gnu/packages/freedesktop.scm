@@ -1602,7 +1602,7 @@ which speak the Mobile Interface Broadband Model (MBIM) protocol.")
 (define-public libqmi
   (package
     (name "libqmi")
-    (version "1.24.14")
+    (version "1.30.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1610,7 +1610,7 @@ which speak the Mobile Interface Broadband Model (MBIM) protocol.")
                     "libqmi-" version ".tar.xz"))
               (sha256
                (base32
-                "0zshxqbm9ldybgrzh7pjmwmfjvvvfd0xh8qhgl8xiqdb9ply73r0"))))
+                "140rmjw436rh6rqmnfw6yaflpffd27ilwcv4s9jvvl1skv784946"))))
     (build-system gnu-build-system)
     (inputs
      (list libgudev))
