@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Fredrik Salomonsson <plattfot@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -75,7 +75,16 @@
                     "sddm-" version ".tar.xz"))
               (sha256
                (base32
-                "0hcdysw8ibr66vk8i7v56l0v5ijvhlq67v4460mc2xf2910g2m72"))))
+                "0hcdysw8ibr66vk8i7v56l0v5ijvhlq67v4460mc2xf2910g2m72"))
+              (snippet
+               #~(begin
+                   ;; https://github.com/sddm/sddm/issues/1536
+                   ;; https://github.com/sddm/sddm/commit/e93bf95c54ad8c2a1604f8d7be05339164b19308
+                   ;; Commit comes shortly after the 0.19.0 release.
+                   (use-modules ((guix build utils)))
+                   (substitute* "src/daemon/XorgDisplayServer.cpp"
+                     (("m_cookie\\[i\\] = digits\\[dis\\(gen\\)\\]")
+                      "m_cookie[i] = QLatin1Char(digits[dis(gen)])"))))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config qttools-5))
