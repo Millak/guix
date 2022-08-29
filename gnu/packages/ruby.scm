@@ -230,25 +230,6 @@ a focus on simplicity and productivity.")
         (base32
          "1w2qncacm7h3f3il1whghdabwnv9fvwmz9f1a9vcg32006ljyzx8"))))))
 
-(define-public ruby-2.4
-  (package
-    (inherit ruby-2.6)
-    (version "2.4.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1prhqlgik1zmw9lakl6hkriqslspw48pvhxff17h7ns42p8qwrnm"))
-       (modules '((guix build utils)))
-       (snippet `(begin
-                   ;; Remove bundled libffi
-                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
-                   #t))))))
-
 (define-public ruby ruby-2.7)
 
 (define-public mruby
