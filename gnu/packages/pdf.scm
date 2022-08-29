@@ -826,14 +826,14 @@ line tools for batch rendering @command{pdfdraw}, rewriting files
 (define-public qpdf
   (package
     (name "qpdf")
-    (version "10.6.0")
+    (version "10.6.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/qpdf/qpdf/" version
                                   "/qpdf-" version ".tar.gz"))
               (sha256
                (base32
-                "07jin19jlcsyxgdxny2ddb08w4kkyl9ivwjw0krn9ncv9wdsa3vg"))))
+                "049q94rzlcbdr09rvl8xfj3924mk7rfm35x8cg4nisl4lnr27z78"))))
     (build-system gnu-build-system)
     (arguments
      (list
