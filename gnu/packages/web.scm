@@ -7512,7 +7512,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
      ;; Required to build the tools (i.e. without ‘--enable-lib-only’).
      (append
       (if (hurd-target?)
-          `(,openssl "static")
+          `((,openssl "static"))
           (list jemalloc))              ; fight nghttpd{,x} heap fragmentation
       (list c-ares
             jansson                     ; for HPACK tools
