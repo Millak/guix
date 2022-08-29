@@ -10035,7 +10035,7 @@ capabilities.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list curl libssh2 openssl zlib))
+     (list curl libssh2 libgit2 openssl zlib))
     (home-page "https://crates.io")
     (synopsis "Package manager for Rust")
     (description "Cargo, a package manager for Rust.  This package provides
