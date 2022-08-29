@@ -2651,6 +2651,21 @@ on the GNOME Desktop with a single simple application.")
 schemas for settings shared by various components of the GNOME desktop.")
     (license license:lgpl2.1+)))
 
+(define-public gsettings-desktop-schemas-next
+  (package
+    (inherit gsettings-desktop-schemas)
+    (name "gsettings-desktop-schemas-next") ;to avoid propagation conflicts
+    (version "42.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/" name "/"
+                           (version-major version)  "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1li3fcqwnw20f4j0i21i88fygm0hli8gmzkn4apgf8ynkrd371k6"))))))
+
 (define-public python-liblarch
   (package
     (name "python-liblarch")
