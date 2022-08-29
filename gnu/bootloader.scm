@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2017, 2020, 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -212,31 +212,33 @@ instead~%")))
 (define-record-type* <bootloader-configuration>
   bootloader-configuration make-bootloader-configuration
   bootloader-configuration?
-  (bootloader         bootloader-configuration-bootloader) ;<bootloader>
-  (targets            %bootloader-configuration-targets    ;list of strings
-                      (default #f))
-  (target             %bootloader-configuration-target ;deprecated
-                      (default #f) (sanitize warn-target-field-deprecation))
-  (menu-entries       bootloader-configuration-menu-entries ;list of <menu-entry>
-                      (default '()))
-  (default-entry      bootloader-configuration-default-entry ;integer
-                      (default 0))
-  (timeout            bootloader-configuration-timeout ;seconds as integer
-                      (default 5))
-  (keyboard-layout    bootloader-configuration-keyboard-layout ;<keyboard-layout> | #f
-                      (default #f))
-  (theme              bootloader-configuration-theme ;bootloader-specific theme
-                      (default #f))
-  (terminal-outputs   bootloader-configuration-terminal-outputs ;list of symbols
-                      (default '(gfxterm)))
-  (terminal-inputs    bootloader-configuration-terminal-inputs ;list of symbols
-                      (default '()))
-  (serial-unit        bootloader-configuration-serial-unit ;integer | #f
-                      (default #f))
-  (serial-speed       bootloader-configuration-serial-speed ;integer | #f
-                      (default #f))
-  (device-tree-support? bootloader-configuration-device-tree-support?
-                        (default #t)))  ;boolean
+  (bootloader
+   bootloader-configuration-bootloader) ;<bootloader>
+  (targets               %bootloader-configuration-targets
+                         (default #f))     ;list of strings
+  (target                %bootloader-configuration-target ;deprecated
+                         (default #f)
+                         (sanitize warn-target-field-deprecation))
+  (menu-entries          bootloader-configuration-menu-entries
+                         (default '()))   ;list of <menu-entry>
+  (default-entry         bootloader-configuration-default-entry
+                         (default 0))     ;integer
+  (timeout               bootloader-configuration-timeout
+                         (default 5))     ;seconds as integer
+  (keyboard-layout       bootloader-configuration-keyboard-layout
+                         (default #f))    ;<keyboard-layout> | #f
+  (theme                 bootloader-configuration-theme
+                         (default #f))    ;bootloader-specific theme
+  (terminal-outputs      bootloader-configuration-terminal-outputs
+                         (default '(gfxterm)))   ;list of symbols
+  (terminal-inputs       bootloader-configuration-terminal-inputs
+                         (default '()))   ;list of symbols
+  (serial-unit           bootloader-configuration-serial-unit
+                         (default #f))    ;integer | #f
+  (serial-speed          bootloader-configuration-serial-speed
+                         (default #f))    ;integer | #f
+  (device-tree-support?  bootloader-configuration-device-tree-support?
+                         (default #t)))   ;boolean
 
 (define-deprecated (bootloader-configuration-target config)
   bootloader-configuration-targets
