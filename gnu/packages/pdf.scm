@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2017 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2017, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016, 2019 Arun Isaac <arunisaac@systemreboot.net>
@@ -82,6 +82,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
+  #:use-module (gnu packages ocr)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -518,7 +519,7 @@ using the DjVuLibre library.")
 (define-public zathura-pdf-mupdf
   (package
     (name "zathura-pdf-mupdf")
-    (version "0.3.6")
+    (version "0.3.9")
     (source (origin
               (method url-fetch)
               (uri
@@ -526,39 +527,39 @@ using the DjVuLibre library.")
                               "/download/zathura-pdf-mupdf-" version ".tar.xz"))
               (sha256
                (base32
-                "1r3v37k9fl2rxipvacgxr36llywvy7n20a25h3ajlyk70697sa66"))))
+                "01vw0lrcj9g7d5h2xvm4xb08mvfld4syfr381fjrbdj52zm9bxvp"))))
     (native-inputs (list pkg-config))
     (inputs
-     `(("jbig2dec" ,jbig2dec)
+     `(("gumbo-parser" ,gumbo-parser)
+       ("jbig2dec" ,jbig2dec)
        ("libjpeg" ,libjpeg-turbo)
        ("mujs" ,mujs)
        ("mupdf" ,mupdf)
        ("openjpeg" ,openjpeg)
        ("openssl" ,openssl)
+       ("tesseract" ,tesseract-ocr)
        ("zathura" ,zathura)))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f                      ; package does not contain tests
        #:configure-flags (list (string-append "-Dplugindir="
                                               (assoc-ref %outputs "out")
-                                              "/lib/zathura")
-                               "-Dlink-external=true")
+                                              "/lib/zathura"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-libmupdfthird.a-requirement
            (lambda _
              ;; Ignore a missing (apparently superfluous) static library.
              (substitute* "meson.build"
-               ((".*mupdfthird.*") ""))
-             #t))
-         (add-before 'configure 'add-mujs-to-dependencies
+               (("mupdfthird = .*")
+                "")
+               ((", mupdfthird")
+                ""))))
+         (add-after 'unpack 'fix-mupdf-detection
            (lambda _
-             ;; Add mujs to the 'build_dependencies'.
              (substitute* "meson.build"
-               (("^  libopenjp2 = dependency.*" x)
-                (string-append x "  mujs = cc.find_library('mujs')\n"))
-               (("^    libopenjp2")
-                "    libopenjp2, mujs")))))))
+               (("dependency\\('mupdf', required: false\\)")
+                "cc.find_library('mupdf')")))))))
     (home-page "https://pwmt.org/projects/zathura-pdf-mupdf/")
     (synopsis "PDF support for zathura (mupdf backend)")
     (description "The zathura-pdf-mupdf plugin adds PDF support to zathura
