@@ -134,6 +134,38 @@ Breeze is the default theme for the KDE Plasma desktop.")
     (license (list license:bsd-3                  ;cmake/FindSass.cmake
                    license:lgpl2.1+))))           ;<all other files>
 
+(define-public calindori
+  (package
+    (name "calindori")
+    (version "22.09")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma-mobile/" version
+                                  "/calindori-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1pwgdqznp76mhk0ikzjhy3c67qgk91kgv69ygqwzlh5hwiw5sl4n"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kconfig
+                  kcoreaddons
+                  kdbusaddons
+                  ki18n
+                  kirigami
+                  kcalendarcore
+                  knotifications
+                  kpeople
+                  qtbase-5
+                  qtdeclarative-5
+                  qtquickcontrols2-5
+                  qtsvg-5
+                  qtgraphicaleffects))
+    (home-page "https://invent.kde.org/plasma-mobile/calindori")
+    (synopsis "Calendar for Plasma Mobile")
+    (description
+     "This package provides a touch friendly calendar application.")
+    (license license:gpl3+)))
+
 (define-public discover
   (package
     (name "discover")
