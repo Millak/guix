@@ -3140,6 +3140,44 @@ structures.  This package re-uses the SRFI sample implementation.")
 denote the invalidity of certain code paths in a Scheme program.")
     (license license:gpl3+)))
 
+(define-public guile-srfi-146
+  (package
+    (name "guile-srfi-146")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://inqlab.net/git/guile-srfi-146.git")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "13dbzlav4fql8lcfr021z5368lwri6i15x0ykv8llzyghlbbx2w6"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list guile-3.0
+           guile-srfi-128 guile-srfi-145 guile-srfi-158
+           autoconf automake pkg-config))
+    (inputs (list guile-3.0))
+    (propagated-inputs
+     (list guile-srfi-128 guile-srfi-145 guile-srfi-158))
+    (synopsis "SRFI 146 (Mappings) for Guile")
+    (description
+     "This package provides an implementation of SRFI 146 for Guile.
+SRFI 146 defines datastructures that implement mappings (finite sets
+of associations consiting of a key and a value).  Two types of
+mappings are defined: One using a comparator to define an order on the
+keys and another using a hash function on the keys.  The
+datastructures and procedures are by default purely-functional.  This
+package re-uses the SRFI sample implementation that is based on
+red-black trees and Hash Array Mapped Trie (HAMT).")
+    (home-page "https://inqlab.net/git/guile-srfi-146.git")
+    (license
+     (list license:lgpl3+
+           ;; contains ISC code from the SRFI sample implementation
+           license:isc))))
+
 (define-public guile-srfi-158
   (let ((commit "13126d1ed37892c864337a600a43d6876625fb99")
         (revision "0"))
