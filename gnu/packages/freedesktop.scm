@@ -1559,7 +1559,8 @@ message bus.")
            elogind
            shadow))
     (propagated-inputs
-     (list polkit))                     ; listed in Requires.private
+     ;; accountsservice.pc 'Requires' these:
+     (list glib polkit))
     (home-page "https://www.freedesktop.org/wiki/Software/AccountsService/")
     (synopsis "D-Bus interface for user account query and manipulation")
     (description
