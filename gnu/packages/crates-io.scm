@@ -26792,7 +26792,14 @@ already-hashed or hash-like data.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1268ka4750pyg2pbgsr43f0289l5zah4arir2k4igx5a8c6fg7la"))))
+                "1268ka4750pyg2pbgsr43f0289l5zah4arir2k4igx5a8c6fg7la"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Without this line users of hashbrown would be unable to
+               ;; parse the contents of the Cargo.toml.
+               '(substitute* "Cargo.toml"
+                  (("\\[package\\]" m)
+                   (string-append "cargo-features = [\"edition2021\"]\n" m))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
