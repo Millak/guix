@@ -290,7 +290,7 @@
            icu4c
            libuv
            `(,nghttp2 "lib")
-           openssl
+           openssl-1.1
            zlib
            ;; Regular build-time dependencies.
            perl
@@ -867,7 +867,7 @@ source files.")
            icu4c-71
            libuv-for-node
            `(,nghttp2 "lib")
-           openssl
+           openssl-1.1
            zlib
            ;; Regular build-time dependencies.
            perl
@@ -884,7 +884,7 @@ source files.")
            llhttp-bootstrap
            brotli
            `(,nghttp2 "lib")
-           openssl
+           openssl-1.1
            python-wrapper ;; for node-gyp (supports python3)
            zlib))))
 

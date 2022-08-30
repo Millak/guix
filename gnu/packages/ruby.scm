@@ -138,7 +138,7 @@
                (("/bin/sh") (which "sh")))
              #t)))))
     (inputs
-     (list readline openssl libffi gdbm))
+     (list readline openssl-1.1 libffi gdbm))
     (propagated-inputs
      (list zlib))
     (native-search-paths
@@ -216,11 +216,14 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1w7jpq3flnm007z5kj8kixgm8l4smb80w8ak4993a12j0irzq8lf"))))))
+         "1w7jpq3flnm007z5kj8kixgm8l4smb80w8ak4993a12j0irzq8lf"))))
+    (inputs
+     (modify-inputs (package-inputs ruby-2.7)
+       (replace "openssl" openssl)))))
 
 (define-public ruby-3.1
   (package
-    (inherit ruby-2.7)
+    (inherit ruby-3.0)
     (version "3.1.2")
     (source
      (origin

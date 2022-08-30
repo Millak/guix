@@ -608,7 +608,7 @@ message digests and key derivation functions.")
                (add-after 'unpack 'set-no-rust
                  (lambda _
                    (setenv "CRYPTOGRAPHY_DONT_BUILD_RUST" "1"))))))
-    (inputs (list openssl))
+    (inputs (list openssl-1.1))
     (native-inputs
      (list python-cryptography-vectors
            python-hypothesis
