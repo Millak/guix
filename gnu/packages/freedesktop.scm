@@ -1121,7 +1121,6 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
         . "https://wayland.freedesktop.org/releases.html")))
     (license license:expat)))
 
-;;; This is just a temporary package that should be deleted
 (define-public wayland-protocols-next
   (package
     (inherit wayland-protocols)
