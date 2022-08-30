@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2020, 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +21,7 @@
   #:use-module (guix records)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
+  #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:export (partition
@@ -60,21 +61,71 @@
 
 
 ;;;
+;;; Sanitizers.
+;;;
+
+(define-with-syntax-properties (validate-size (value properties))
+  (unless (and value
+               (or (eq? value 'guess) (integer? value)))
+    (raise
+       (make-compound-condition
+        (condition
+         (&error-location
+          (location (source-properties->location properties))))
+        (formatted-message
+         (G_ "size (~a) can only be 'guess or a numeric expression ~%")
+         value 'field))))
+  value)
+
+
+;;;
 ;;; Partition record.
 ;;;
+
+(define-with-syntax-properties (validate-partition-offset (value properties))
+  (unless (and value (integer? value))
+    (raise
+       (make-compound-condition
+        (condition
+         (&error-location
+          (location (source-properties->location properties))))
+        (formatted-message
+         (G_ "the partition offset (~a) can only be a \
+numeric expression ~%") value 'field))))
+  value)
+
+(define-with-syntax-properties (validate-partition-flags (value properties))
+  (let ((bad-flags (lset-difference eq? value '(boot esp))))
+    (unless (and (list? value) (null? bad-flags))
+      (raise
+       (make-compound-condition
+        (condition
+         (&error-location
+          (location (source-properties->location properties))))
+        (formatted-message
+         (G_ "unsupported partition flag(s): ~a ~%") bad-flags)))))
+  value)
 
 (define-record-type* <partition> partition make-partition
   partition?
   (device               partition-device (default #f))
-  (size                 partition-size)
-  (offset               partition-offset (default 0))
-  (file-system          partition-file-system (default "ext4"))
+  (size                 partition-size   ;size in bytes as integer or 'guess
+                        (sanitize validate-size))
+  (offset               partition-offset
+                        (default 0)   ;offset in bytes as integer
+                        (sanitize validate-partition-offset))
+  (file-system          partition-file-system
+                        (default "ext4"))  ;string
   (file-system-options  partition-file-system-options
-                        (default '()))
-  (label                partition-label (default #f))
-  (uuid                 partition-uuid (default #f))
-  (flags                partition-flags (default '()))
-  (initializer          partition-initializer (default #f))) ;gexp | #f
+                        (default '()))  ;list of strings
+  (label                partition-label)  ;string
+  (uuid                 partition-uuid
+                        (default #f))  ;<uuid>
+  (flags                partition-flags
+                        (default '())  ;list of symbols
+                        (sanitize validate-partition-flags))
+  (initializer          partition-initializer
+                        (default #f))) ;gexp | #f
 
 
 ;;;
@@ -109,7 +160,8 @@ that is not in SET, mentioning FIELD in the error message."
   (platform           image-platform ;<platform>
                       (default #f))
   (size               image-size  ;size in bytes as integer
-                      (default 'guess))
+                      (default 'guess)
+                      (sanitize validate-size))
   (operating-system   image-operating-system  ;<operating-system>
                       (default #f))
   (partition-table-type image-partition-table-type ; 'mbr or 'gpt
