@@ -1506,7 +1506,8 @@ message bus.")
            vala
            xmlto))
     (inputs
-     (list dbus
+     (list coreutils-minimal
+           dbus
            elogind
            shadow))
     (propagated-inputs
