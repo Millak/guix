@@ -5209,7 +5209,12 @@ result in several formats:
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "006bfcmjwg0phg8gc25b1sl2ngjrb2bh1b3fd0s5gbf9nlkr8qsn"))))
+         "006bfcmjwg0phg8gc25b1sl2ngjrb2bh1b3fd0s5gbf9nlkr8qsn"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* "Cargo.toml"
+           (("\\[package\\]" m)
+            (string-append "cargo-features = [\"rust-version\"]\n" m))))))
     (build-system cargo-build-system)
     (arguments
      `(;; Strip the '--release' flag to work around the doctest failures with
