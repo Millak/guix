@@ -295,7 +295,7 @@ compatible to GNU Pth.")
     (version "2.2.36")
     (source (origin
               (method url-fetch)
-              (uri (string-append "ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-" version
+              (uri (string-append "mirror://gnupg/gnupg/gnupg-" version
                                   ".tar.bz2"))
               (patches (search-patches "gnupg-default-pinentry.patch"))
               (sha256

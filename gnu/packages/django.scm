@@ -1359,3 +1359,54 @@ Django's filtering system in ORM).")
 models that use Django's standard @code{ImageField}, in addition to the
 image files already supported by it.")
     (license license:expat)))
+
+(define-public python-django-cleanup
+  (package
+    (name "python-django-cleanup")
+    (version "6.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/un1t/django-cleanup")
+             (commit (string-append version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c1nghn1bnlq0a4d3sy3s363ksqsnxksixbimdy3cc6a0vk4sjps"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests-settings
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; django-cleanup optionally integrates with
+             ;; sorl-thumbnail, which is not available in Guix yet, so
+             ;; this patch comments it out to avoid import failures in
+             ;; test settings.
+             (substitute* "django_cleanup/testapp/settings.py"
+               (("'sorl\\.thumbnail',") "# 'sorl.thumbnail',"))))
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               ;; Add CWD to PYTHONPATH so that the tests can find the
+               ;; testapp package in the source.
+               (setenv "PYTHONPATH" (getcwd))
+               (invoke "pytest")))))))
+    (native-inputs
+     (list ;; python-django-sorl-thumbnail  ; TODO: Add to Guix.
+           python-easy-thumbnails
+           python-pillow
+           python-pytest
+           python-pytest-cov
+           python-pytest-django
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-django))
+    (home-page "https://github.com/un1t/django-cleanup")
+    (synopsis "Automatically deletes unused media files")
+    (description "This application automatically deletes user-uploaded
+files when a model is modified or deleted.  It works for FileField,
+ImageField and their subclasses.  Files set as default values for any
+FileField are not deleted.")
+    (license license:expat)))

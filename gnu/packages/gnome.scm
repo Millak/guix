@@ -5445,27 +5445,24 @@ service via the system message bus.")
                 "1rkf4yv43qcahyx7bismdv6z2vh5azdnm1fqfmnzrada9cm8ykna"))))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f ; one of two tests requires network access
-       #:configure-flags
-       `(,(string-append "-Dzoneinfo_dir="
-                         (assoc-ref %build-inputs "tzdata")
-                         "/share/zoneinfo"))))
+     (list
+      #:tests? #f                    ;one of two tests requires network access
+      #:configure-flags
+      #~(list (string-append "-Dzoneinfo_dir="
+                             (search-input-directory %build-inputs
+                                                     "share/zoneinfo")))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-mkenums
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("vala" ,vala)
-       ("intltool" ,intltool)
-       ("python-pygobject" ,python-pygobject)))
+     (list gettext-minimal
+           `(,glib "bin")               ;for glib-mkenums
+           gobject-introspection
+           pkg-config
+           python
+           vala
+           python-pygobject))
     (propagated-inputs
      ;; gweather-3.0.pc refers to GTK+, GDK-Pixbuf, GLib/GObject, libxml, and
      ;; libsoup.
-     `(("gtk+" ,gtk+)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("libxml2" ,libxml2)
-       ("libsoup" ,libsoup-minimal-2)
-       ("geocode-glib" ,geocode-glib)))
+     (list gtk+ gdk-pixbuf libxml2 libsoup-minimal-2 geocode-glib))
     (inputs
      (list tzdata))
     (home-page "https://wiki.gnome.org/action/show/Projects/LibGWeather")
@@ -5474,6 +5471,55 @@ service via the system message bus.")
      "libgweather is a library to access weather information from online
 services for numerous locations.")
     (license license:gpl2+)))
+
+;; libgweather no longer follows the GNOME version, and recommends changing
+;; the package name in distributions to avoid accidental downgrades.  See
+;; <https://discourse.gnome.org/t/changes-in-libgweather-for-gnome-42/7770/2>.
+;; TODO: how to prevent the updater from picking version 40?
+(define-public libgweather4
+  (package
+    (inherit libgweather)
+    (name "libgweather4")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/libgweather/"
+                                  (version-major+minor version) "/"
+                                  "libgweather-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0k43mr7vmcg14lkwjk6p9wwy3zlw23wkfpkfcy6b8wkg3f0483a4"))))
+    (arguments
+     (list
+      ;; FIXME: multiple tests fails as such:
+      ;;   "GLib-GIO-FATAL-ERROR: Settings schema 'org.gnome.system.proxy'
+      ;;   is not installed"
+      #:tests? #f
+      #:configure-flags
+      #~(list (string-append "-Dzoneinfo_dir="
+                             (search-input-directory %build-inputs
+                                                     "share/zoneinfo"))
+              ;; TODO: Requires 'gi-docgen'.
+              "-Dgtk_doc=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")               ;for glib-mkenums
+           gobject-introspection
+           pkg-config
+           python
+           vala
+           python-pygobject))
+    ;; TODO: It would be good to make the package respect TZDIR instead
+    ;; of using a "hard coded" version of tzdata.
+    (inputs (list tzdata))
+    (propagated-inputs
+     ;; gweather4.pc refers to all of these.
+     (list glib libxml2 libsoup-minimal-2 geocode-glib))))
 
 (define-public gnome-settings-daemon
   (package
@@ -8575,6 +8621,7 @@ properties, screen resolution, and other GNOME parameters.")
               (uri (string-append "mirror://gnome/sources/" name "/"
                                   (version-major version) "/"
                                   name "-" version ".tar.xz"))
+              (patches (search-patches "gnome-shell-polkit-autocleanup.patch"))
               (sha256
                (base32
                 "0ragmcln210zvzhc2br33yprbkj9drjzd7inp5sdxra0a7l73yaj"))))

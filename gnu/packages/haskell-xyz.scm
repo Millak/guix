@@ -12000,9 +12000,6 @@ in the @code{IO} monad, like @code{IORef}s or parts of the OpenGL state.")
         (base32
          "0j9awbg47fzb58k5z2wgkp6a0042j7hqrl1g6lyflrbsfswdp5n4"))))
     (build-system haskell-build-system)
-    (arguments
-     '(;; Two tests fail: "Discrete CDF is OK" and "Quantile is CDF inverse".
-       #:tests? #t))
     (inputs
      (list ghc-aeson
            ghc-async

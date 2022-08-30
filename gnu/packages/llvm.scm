@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1846,6 +1847,7 @@ setup(name=\"clang\", packages=[\"clang\"])\n")))))
     (build-system emacs-build-system)
     (inputs
      (list clang))
+    (propagated-inputs '())
     (arguments
      `(#:phases
        (modify-phases %standard-phases

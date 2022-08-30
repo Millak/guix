@@ -381,7 +381,7 @@ OpenSSL for TARGET."
                (error "unsupported openssl target architecture")))))
         (string-append kernel "-" arch))))
 
-(define-public openssl
+(define-public openssl-1.1
   (package
     (name "openssl")
     (version "1.1.1q")
@@ -515,7 +515,7 @@ OpenSSL for TARGET."
 
 (define-public openssl-3.0
   (package
-    (inherit openssl)
+    (inherit openssl-1.1)
     (version "3.0.5")
     (source (origin
               (method url-fetch)
@@ -531,7 +531,7 @@ OpenSSL for TARGET."
                (base32
                 "0yja085lygkdxbf4k4rckkj9r24p8dgix8avqljnbbbixydqszda"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments openssl)
+     (substitute-keyword-arguments (package-arguments openssl-1.1)
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (add-before 'configure 'configure-perl
@@ -540,6 +540,8 @@ OpenSSL for TARGET."
                         (search-input-file (or native-inputs inputs)
                                            "/bin/perl"))))))))
     (license license:asl2.0)))
+
+(define-public openssl openssl-1.1)
 
 (define-public bearssl
   (package

@@ -29,6 +29,7 @@
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -100,7 +101,7 @@
 (define-public ruby-2.6
   (package
     (name "ruby")
-    (version "2.6.5")
+    (version "2.6.10")
     (source
      (origin
        (method url-fetch)
@@ -109,7 +110,7 @@
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "0qhsw2mr04f3lqinkh557msr35pb5rdaqy4vdxcj91flgxqxmmnm"))
+         "1wn12klc44hn2nh5v1lkqbdyvljip6qhwjqvkkf8zf112gaxxn2z"))
        (modules '((guix build utils)))
        (snippet `(begin
                    ;; Remove bundled libffi
@@ -137,7 +138,7 @@
                (("/bin/sh") (which "sh")))
              #t)))))
     (inputs
-     (list readline openssl libffi gdbm))
+     (list readline openssl-1.1 libffi gdbm))
     (propagated-inputs
      (list zlib))
     (native-search-paths
@@ -154,6 +155,7 @@ a focus on simplicity and productivity.")
   (package
     (inherit ruby-2.6)
     (version "2.7.4")
+    (replacement ruby-2.7-fixed) ; security fixes
     (source
      (origin
        (inherit (package-source ruby-2.6))
@@ -188,10 +190,24 @@ a focus on simplicity and productivity.")
     (native-inputs
      (list autoconf))))
 
+(define ruby-2.7-fixed
+  (package
+    (inherit ruby-2.7)
+    (version "2.7.6")
+    (source
+     (origin
+       (inherit (package-source ruby-2.7))
+       (uri (string-append "https://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.gz"))
+       (sha256
+        (base32
+         "042xrdk7hsv4072bayz3f8ffqh61i8zlhvck10nfshllq063n877"))))))
+
 (define-public ruby-3.0
   (package
     (inherit ruby-2.7)
-    (version "3.0.2")
+    (version "3.0.4")
     (source
      (origin
        (method url-fetch)
@@ -200,12 +216,15 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "0h2w2ms4gx2s96v3lzdr3add94bd2qqkhdjzaycmaqhg21rpf3jp"))))))
+         "1w7jpq3flnm007z5kj8kixgm8l4smb80w8ak4993a12j0irzq8lf"))))
+    (inputs
+     (modify-inputs (package-inputs ruby-2.7)
+       (replace "openssl" openssl)))))
 
 (define-public ruby-3.1
   (package
-    (inherit ruby-2.7)
-    (version "3.1.1")
+    (inherit ruby-3.0)
+    (version "3.1.2")
     (source
      (origin
        (method url-fetch)
@@ -214,40 +233,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1akcl7vhmwfm6ybj7493kzy58ykh2r39ri9f4xfm2xmhg1msmvvs"))))))
-
-(define-public ruby-2.5
-  (package
-    (inherit ruby-2.6)
-    (version "2.5.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1w2qncacm7h3f3il1whghdabwnv9fvwmz9f1a9vcg32006ljyzx8"))))))
-
-(define-public ruby-2.4
-  (package
-    (inherit ruby-2.6)
-    (version "2.4.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1prhqlgik1zmw9lakl6hkriqslspw48pvhxff17h7ns42p8qwrnm"))
-       (modules '((guix build utils)))
-       (snippet `(begin
-                   ;; Remove bundled libffi
-                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
-                   #t))))))
+         "0amzqczgvr51ilcqfgw0n41hrfanzi0wh8k6am3x5dm1z0bx046a"))))))
 
 (define-public ruby ruby-2.7)
 
@@ -7203,7 +7189,8 @@ run.")
     (arguments
      `(#:test-target "default"
        ;; TODO: Figure out why test hangs.
-       #:tests? ,(not (target-riscv64?))
+       #:tests? ,(not (or (%current-target-system)
+                          (target-riscv64?)))
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-home

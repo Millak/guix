@@ -16,7 +16,7 @@
 ;;; Copyright © 2016, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016-2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Clément Lassieur <clement@lassieur.org>
@@ -1993,6 +1993,41 @@ directly.")
 Distributed @acronym{Source Control Management, SCM} system.")
       (license license:gpl3+))))
 
+(define-public emacs-alarm-clock
+  (package
+    (name "emacs-alarm-clock")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wlemuel/alarm-clock")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11afq6lnlqdzbll015fx3031bslwfaz5362qgk2ipgqlk872559h"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:include #~(cons "alarm.mp3" %default-include)
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'configure
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((mpg123 (search-input-file inputs "/bin/mpg123"))
+                         (notify-send
+                          (search-input-file inputs "/bin/notify-send")))
+                     (substitute* "alarm-clock.el"
+                       (("\"mpg123\"") (string-append "\"" mpg123 "\""))
+                       (("notify-send") notify-send))))))))
+    (inputs
+     (list libnotify mpg123))
+    (propagated-inputs
+     (list emacs-f))
+    (home-page "https://github.com/wlemuel/alarm-clock")
+    (synopsis "Alarm clock for Emacs")
+    (description "Alarm Clock provides an alarm clock for Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-anaphora
   (package
     (name "emacs-anaphora")
@@ -2922,14 +2957,14 @@ as a library for other Emacs packages.")
 (define-public emacs-auctex
   (package
     (name "emacs-auctex")
-    (version "13.1.3")
+    (version "13.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "auctex-" version ".tar"))
        (sha256
-        (base32 "0v9rxwz6ngnwrgvzgdki861s136gq30lqhy2gcd9q0a36gb6zhwk"))))
+        (base32 "1r9qysnfdbiblq3c95rgsh7vgy3k4qabnj0vicqhdkca0cl2b2bj"))))
     (build-system emacs-build-system)
     ;; We use 'emacs' because AUCTeX requires dbus at compile time
     ;; ('emacs-minimal' does not provide dbus).
@@ -6611,14 +6646,14 @@ user.")
 (define-public emacs-subed
   (package
     (name "emacs-subed")
-    (version "1.0.3")
+    (version "1.0.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
                                   version ".tar"))
               (sha256
                (base32
-                "0wibakmp1lhfyr6sifb7f3jcqp2s5sy0z37ad9n1n9rhj5q8yhzg"))))
+                "0js48yar8xgj3wjmlkv3k5208q1zvv74sg4lhk6asiy4cq3pqjia"))))
     (arguments
      (list
       #:tests? #t
@@ -9232,6 +9267,31 @@ replaced with the directory you choose.")
 and present results either as single emails or full trees.")
     (license license:gpl3+)))
 
+(define-public emacs-consult-org-roam
+  (let* ((commit "9572c5bc194a583dc9e86ea7d2751959d86b5c78")
+         (revision "0"))
+    (package
+      (name "emacs-consult-org-roam")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jgru/consult-org-roam")
+               (commit commit)))
+         (sha256
+          (base32
+           "0c2hjd2gw77h77487fzdqfybg0ricsvlnwwfxai9baawz37bcn7q"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-consult emacs-org-roam))
+      (home-page "https://github.com/jgru/consult-org-roam")
+      (synopsis "Consult integration for Org Roam")
+      (description
+       "This is a set of functions to use Org Roam with Consult.  This
+packages replaces Org Roam's own completing read functions with equivalent
+versions utilizing Consult's internal API.")
+      (license license:gpl3+))))
+
 (define-public emacs-consult-eglot
   (package
    (name "emacs-consult-eglot")
@@ -10272,8 +10332,8 @@ state and will work even without lispy being enabled.")
 
 (define-public emacs-lpy
   ;; There is no proper release/tag.
-  (let ((commit "076ce9acb68f6ac1b39127b634a91ffd865d13d8")
-        (revision "4"))
+  (let ((commit "ce78a4613458790cc785c1687af7eed8f0d8d66c")
+        (revision "5"))
     (package
       (name "emacs-lpy")
       (version (git-version "0.1.0" revision commit))
@@ -10285,7 +10345,7 @@ state and will work even without lispy being enabled.")
                (commit commit)))
          (sha256
           (base32
-           "10sab50wmr3zn7jgzx93201ymhmacqacn3m2qllsqkfw2gpsi6dn"))
+           "1vxrjy6k030hcbclblgcaaw7h6k17kl3n9zla08527525c0gma01"))
          (file-name (git-file-name name version))))
       (propagated-inputs
        (list emacs-zoutline emacs-lispy))
@@ -12148,7 +12208,7 @@ target will call @code{compile} on it.")
 (define-public emacs-cider
   (package
     (name "emacs-cider")
-    (version "1.4.1")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -12157,11 +12217,19 @@ target will call @code{compile} on it.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08635ln514nrglx6qyhaq1x7y7lw4mcd659ba8zs071yjiariarm"))))
+        (base32 "1ih902n8p3pl1apprprkyrlnrp2dxli86y5k09zahy9mglfz2z5n"))))
     (build-system emacs-build-system)
     (arguments
      '(#:exclude                        ;don't exclude 'cider-test.el'
-       '("^\\.dir-locals\\.el$" "^test/")))
+       '("^\\.dir-locals\\.el$" "^test/")
+       #:phases
+       ;; XXX: file "test/cider-tests.el" contains a bogus "/bin/command"
+       ;; string, and `patch-el-files' phase chokes on it (even though the
+       ;; file is excluded from installation).  Remove the phase altogether
+       ;; since there is no "/bin/executable" to replace in the code base
+       ;; anyway.
+       (modify-phases %standard-phases
+         (delete 'patch-el-files))))
     (propagated-inputs
      (list emacs-clojure-mode
            emacs-parseedn
@@ -13224,7 +13292,7 @@ programming and reproducible research.")
 (define-public emacs-org-contrib
   (package
     (name "emacs-org-contrib")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -13233,16 +13301,7 @@ programming and reproducible research.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17aca4mc3gbdh6nhlcaa5ymh1yy76nwysrvy9sfcqkzvd5lgagzc"))
-       ;; XXX: ob-sclang.el is packaged separately to avoid the dependency on
-       ;; SuperCollider and qtwebengine-5.  This will be unnecessary in 0.4+
-       ;; release as the file is going to be removed from the repository.
-
-       ;; XXX: org-contacts.el is now maintained in a separate repository and
-       ;; will soon be removed from org-contrib
-       (modules '((guix build utils)))
-       (snippet '(begin (delete-file "lisp/ob-sclang.el")
-                        (delete-file "lisp/org-contacts.el")))))
+        (base32 "06b1rpywj596nnnap6pj6fnmcq8fcc4i30zv7qsvs3ryxciw01fb"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -13253,8 +13312,7 @@ programming and reproducible research.")
     (native-inputs
      (list emacs-cider))
     (propagated-inputs
-     (list emacs-arduino-mode ;XXX: remove after 0.4+ release.
-           emacs-org))
+     (list emacs-org))
     (home-page "https://git.sr.ht/~bzg/org-contrib")
     (synopsis "Unmaintained add-ons for Org mode")
     (description
@@ -13857,6 +13915,27 @@ using a convenient notation.")
 files in Emacs.  Files of this type (e.g., @file{BUILD.gn} or @file{*.gni})
 are common in Chromium-derived projects.")
     (license license:bsd-3)))
+
+(define-public emacs-drag-stuff
+  (package
+    (name "emacs-drag-stuff")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rejeep/drag-stuff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jrr59iazih3imkl9ja1lbni9v3xv6b8gmqs015g2mxhlql35jka"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/rejeep/drag-stuff")
+    (synopsis "Drag stuff around in Emacs")
+    (description
+"Drag Stuff is a minor mode for Emacs that makes it possible to drag
+stuff (words, region, lines) around in Emacs.")
+    (license license:gpl3+)))
 
 (define-public emacs-bazel
   ;; From 2021-11-21.
@@ -16844,7 +16923,7 @@ groups.")
 (define-public emacs-taxy-magit-section
   (package
     (name "emacs-taxy-magit-section")
-    (version "0.9.1")
+    (version "0.10")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -16852,7 +16931,7 @@ groups.")
                     ".tar"))
               (sha256
                (base32
-                "0ybkz5nqjdrg2z9bfd07xg4k49hrl26vsrwz2vqpfbsqqg5vr4pr"))))
+                "1g58nvpb04ldhn5qnjw2q5idrv6vhlfa0qmb46cvis6bkz46cxkw"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-magit emacs-taxy))
     (home-page "https://github.com/alphapapa/taxy.el")
@@ -19757,8 +19836,8 @@ never confused by comments or @code{foo-bar} matching @code{foo}.")
 (define-public emacs-crdt
   ;; XXX: Upstream does not always tag new releases.  The commit below
   ;; corresponds exactly to latest version bump.
-  (let ((commit "2feb88ea9a2589946014878790af585cad9f28fc")
-        (version "0.3.2"))
+  (let ((commit "480f60fdda9e40848920fa460b59dfba23fa06e5")
+        (version "0.3.3"))
     (package
       (name "emacs-crdt")
       (version version)
@@ -19770,7 +19849,7 @@ never confused by comments or @code{foo-bar} matching @code{foo}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1fc98kl5qm7h5hrd70g61zzbdinnbf0zvk9rghf6w78ndp6lv7fz"))))
+          (base32 "10hb2xwv8ylkm4cla2q5l11r1m1s1j4ywiwvy9x5884gxvbpbbph"))))
       (build-system emacs-build-system)
       (home-page "https://code.librehq.com/qhong/crdt.el")
       (synopsis "Real-time collaborative editing environment")
@@ -24370,37 +24449,27 @@ other frame parameters.")
     (license license:gpl3+)))
 
 (define-public emacs-arduino-mode
-  (let ((commit "23ae47c9f28f559e70b790b471f20310e163a39b")
-        (revision "1"))                 ;no release yet
+  (let ((commit "652c6a328fa8f2db06534d5f231c6b6933be3edc")
+        (revision "0"))
     (package
       (name "emacs-arduino-mode")
-      (version (git-version "0" revision commit))
+      (version (git-version "1.3.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/stardiviner/arduino-mode")
+               (url "https://repo.or.cz/arduino-mode")
                (commit commit)))
          (sha256
-          (base32 "08vnbz9gpah1l93fzfd87aawrhcnh2v1kyfxgsn88pdwg8awz8rx"))
+          (base32 "16izwrk1dfsa14kylfhsxdwkx76g0jdk0znl1z7cypxh5q9ijy1x"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           ;; Emacs complains that "defmethod" and "defgeneric" are obsolete
-           ;; macros when compiling. Substitute them with the recommended
-           ;; macros "cl-defmethod" and "cl-defgeneric", respectively.
-           (add-after 'unpack 'fix-obsolete
-             (lambda _
-               (substitute* "ede-arduino.el"
-                 (("defmethod") "cl-defmethod")
-                 (("defgeneric") "cl-defgeneric")))))))
       (inputs
        (list emacs-flycheck emacs-spinner))
       (synopsis "Emacs major mode for editing Arduino sketches")
-      (description "Emacs major mode for editing Arduino sketches.")
-      (home-page "https://github.com/stardiviner/arduino-mode")
+      (description "This package provides an Emacs major mode for editing
+Arduino sketches and Org Babel support.")
+      (home-page "https://repo.or.cz/arduino-mode")
       (license license:gpl3+))))
 
 (define-public emacs-annalist
@@ -30311,6 +30380,28 @@ conversion program}, a Japanese input method on Emacs.")
 conversion program}, a Japanese input method on Emacs.  This package adds
 support for the Nicola keyboard layout to it.")))
 
+(define-public emacs-tamil99
+  (package
+    (name "emacs-tamil99")
+    (version "0.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.systemreboot.net/tamil99/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f9s3b6fd42j21922qkxfr3j83a7qym73nynph86w87vkis40zqw"))))
+    (build-system emacs-build-system)
+    (home-page "https://git.systemreboot.net/tamil99/about/")
+    (synopsis "Tamil99 input method for Emacs")
+    (description "This package implements the @code{tamil99} input method for
+Emacs.  Tamil99 is a keyboard layout and input method that is specifically
+designed for the Tamil language.  Vowels and vowel modifiers are input with
+your left hand, and consonants are input with your right hand.")
+    (license license:gpl3+)))
+
 (define-public emacs-objed
   (package
     (name "emacs-objed")
@@ -31020,7 +31111,7 @@ web development.")
 (define-public emacs-iter2
   (package
     (name "emacs-iter2")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -31029,7 +31120,7 @@ web development.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jzd9kzxf3ncw40d55r1apw0cpk4i1a3s5p85mg9n20553cb6lhj"))))
+        (base32 "1hsg5q1acghb0xz2pv5g20zg5j32wikp47b62if8afq767rkc5f3"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/doublep/iter2")
     (synopsis "Reimplementation of Elisp generators")

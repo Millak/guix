@@ -579,7 +579,16 @@ subscribe to events.")
                   (assoc-ref inputs "pango") "/lib/libpango-1.0.so.0\")\n"))
                 (("^pangocairo = ffi.dlopen.*")
                  (string-append "pangocairo = ffi.dlopen(\""
-                  (assoc-ref inputs "pango") "/lib/libpangocairo-1.0.so.0\")\n"))))))))
+                  (assoc-ref inputs "pango") "/lib/libpangocairo-1.0.so.0\")\n")))))
+       (add-after 'install 'install-xsession
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (xsessions (string-append out "/share/xsessions"))
+                    (qtile (string-append out "/bin/qtile start")))
+               (mkdir-p xsessions)
+               (copy-file "resources/qtile.desktop" (string-append xsessions "/qtile.desktop"))
+               (substitute* (string-append xsessions "/qtile.desktop")
+                 (("qtile start") qtile))))))))
     (inputs
       (list glib pango pulseaudio))
     (propagated-inputs

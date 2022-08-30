@@ -82,6 +82,10 @@
                           "1jk3bmiw61ypcchqkk1fyg5wh8wpggk574wxyfyaic870zh3lhgq")
              (julia-patch "libunwind-cfa-rsp"
                           "1aswjhvysahhldbzh1afbf0hsjxrvs6xidsz2i7s1cjkjbdiia1z"))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libunwind)
+       ;; Skip tests on this older and patched version of libunwind.
+       ((#:tests? _ #t) #f)))
     (home-page "https://github.com/JuliaLang/tree/master/deps/")))
 
 (define (julia-patch-url version name)

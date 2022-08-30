@@ -2831,7 +2831,7 @@ linux/libcurl_wrapper.h"
             (file-type 'regular)
             (separator #f)
             (variable "QTWEBENGINEPROCESS_PATH")
-            (files '("lib/qt5/libexec/QtWebEngineProcess")))))
+            (files '("lib/qt6/libexec/QtWebEngineProcess")))))
     (home-page "https://wiki.qt.io/QtWebEngine")
     (synopsis "Qt WebEngine module")
     (description "The Qt WebEngine module provides support for web

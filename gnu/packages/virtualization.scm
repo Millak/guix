@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2021 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
@@ -1311,9 +1311,16 @@ pretty simple, REST API.")
               (substitute* "scripts/meson-install-dirs.py"
                 (("destdir = .*")
                  "destdir = '/tmp'"))))
+          (add-after 'unpack 'use-absolute-dnsmasq
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((dnsmasq (search-input-file inputs "sbin/dnsmasq")))
+                (substitute* "src/util/virdnsmasq.c"
+                  (("#define DNSMASQ \"dnsmasq\"")
+                   (string-append "#define DNSMASQ \"" dnsmasq "\""))))))
           (add-before 'configure 'disable-broken-tests
             (lambda _
               (let ((tests (list "commandtest"         ; hangs idly
+                                 "networkxml2conftest" ; fails with absolute dnsmasq
                                  "qemuxml2argvtest"    ; fails
                                  "virnetsockettest"))) ; tries to network
                 (substitute* "tests/meson.build"

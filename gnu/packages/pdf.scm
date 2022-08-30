@@ -83,6 +83,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages ocr)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -522,7 +523,7 @@ using the DjVuLibre library.")
 (define-public zathura-pdf-mupdf
   (package
     (name "zathura-pdf-mupdf")
-    (version "0.3.6")
+    (version "0.3.9")
     (source (origin
               (method url-fetch)
               (uri
@@ -530,39 +531,39 @@ using the DjVuLibre library.")
                               "/download/zathura-pdf-mupdf-" version ".tar.xz"))
               (sha256
                (base32
-                "1r3v37k9fl2rxipvacgxr36llywvy7n20a25h3ajlyk70697sa66"))))
+                "01vw0lrcj9g7d5h2xvm4xb08mvfld4syfr381fjrbdj52zm9bxvp"))))
     (native-inputs (list pkg-config))
     (inputs
-     `(("jbig2dec" ,jbig2dec)
-       ("libjpeg" ,libjpeg-turbo)
-       ("mujs" ,mujs)
-       ("mupdf" ,mupdf)
-       ("openjpeg" ,openjpeg)
-       ("openssl" ,openssl)
-       ("zathura" ,zathura)))
+     (list gumbo-parser
+           jbig2dec
+           libjpeg-turbo
+           mujs
+           mupdf
+           openjpeg
+           openssl
+           tesseract-ocr
+           zathura))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f                      ; package does not contain tests
        #:configure-flags (list (string-append "-Dplugindir="
                                               (assoc-ref %outputs "out")
-                                              "/lib/zathura")
-                               "-Dlink-external=true")
+                                              "/lib/zathura"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-libmupdfthird.a-requirement
            (lambda _
              ;; Ignore a missing (apparently superfluous) static library.
              (substitute* "meson.build"
-               ((".*mupdfthird.*") ""))
-             #t))
-         (add-before 'configure 'add-mujs-to-dependencies
+               (("mupdfthird = .*")
+                "")
+               ((", mupdfthird")
+                ""))))
+         (add-after 'unpack 'fix-mupdf-detection
            (lambda _
-             ;; Add mujs to the 'build_dependencies'.
              (substitute* "meson.build"
-               (("^  libopenjp2 = dependency.*" x)
-                (string-append x "  mujs = cc.find_library('mujs')\n"))
-               (("^    libopenjp2")
-                "    libopenjp2, mujs")))))))
+               (("dependency\\('mupdf', required: false\\)")
+                "cc.find_library('mupdf')")))))))
     (home-page "https://pwmt.org/projects/zathura-pdf-mupdf/")
     (synopsis "PDF support for zathura (mupdf backend)")
     (description "The zathura-pdf-mupdf plugin adds PDF support to zathura
@@ -735,20 +736,20 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.19.1")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
-                           "mupdf-" version "-source.tar.xz"))
+                           "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32 "0gl0wf16m1cafs20h3v1f4ysf7zlbijjyd6s1r1krwvlzriwdsmm"))
+        (base32
+         "0s0qclxxdjis04mczgz0fhfpv0j8llk48g82zlfrk0daz0zgcwvg"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Remove bundled software.
-            (let* ((keep (list "extract"
-                               "lcms2")) ; different from our lcms2 package
+            ;; Remove bundled software.  Keep patched variants.
+            (let* ((keep (list "extract" "freeglut" "lcms2"))
                    (from "thirdparty")
                    (kept (string-append from "~temp")))
               (mkdir-p kept)
@@ -761,7 +762,9 @@ and based on PDF specification 1.7.")
     (build-system gnu-build-system)
     (inputs
      (list curl
-           freeglut
+           libxrandr
+           libxi
+           freeglut                     ;for GL/gl.h
            freetype
            gumbo-parser
            harfbuzz
@@ -777,24 +780,36 @@ and based on PDF specification 1.7.")
      (list pkg-config))
     (arguments
      (list
-       #:tests? #f                      ; no check target
-       #:make-flags
-       #~(list "verbose=yes"
-               (string-append "CC=" #$(cc-for-target))
-               "XCFLAGS=-fpic"
-               "USE_SYSTEM_LIBS=yes"
-               "USE_SYSTEM_MUJS=yes"
-               "shared=yes"
-               ;; Even with the linkage patch we must fix RUNPATH.
-               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
-               (string-append "prefix=" #$output))
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure))))      ; no configure script
+      #:tests? #f                       ;no check target
+      #:make-flags
+      #~(list "verbose=yes"
+              (string-append "CC=" #$(cc-for-target))
+              "XCFLAGS=-fpic"
+              "USE_SYSTEM_FREETYPE=yes"
+              "USE_SYSTEM_GUMBO=yes"
+              "USE_SYSTEM_HARFBUZZ=yes"
+              "USE_SYSTEM_JBIG2DEC=yes"
+              "USE_SYSTEM_JPEGXR=no # not available"
+              "USE_SYSTEM_LCMS2=no # lcms2mt is strongly preferred"
+              "USE_SYSTEM_LIBJPEG=yes"
+              "USE_SYSTEM_MUJS=no # not available"
+              "USE_SYSTEM_OPENJPEG=yes"
+              "USE_SYSTEM_ZLIB=yes"
+              "USE_SYSTEM_GLUT=no"
+              "USE_SYSTEM_CURL=yes"
+              "USE_SYSTEM_LEPTONICA=yes"
+              "USE_SYSTEM_TESSERACT=yes"
+              "USE_SYSTEM_MUJS=yes"
+              "shared=yes"
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+              (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)))) ;no configure script
     (home-page "https://mupdf.com")
     (synopsis "Lightweight PDF viewer and toolkit")
     (description
-      "MuPDF is a C library that implements a PDF and XPS parsing and
+     "MuPDF is a C library that implements a PDF and XPS parsing and
 rendering engine.  It is used primarily to render pages into bitmaps,
 but also provides support for other operations such as searching and
 listing the table of contents and hyperlinks.
@@ -803,9 +818,9 @@ The library ships with a rudimentary X11 viewer, and a set of command
 line tools for batch rendering @command{pdfdraw}, rewriting files
 @command{pdfclean}, and examining the file structure @command{pdfshow}.")
     (license (list license:agpl3+
-                   license:bsd-3 ; resources/cmaps
-                   license:x11 ; thirdparty/lcms2
-                   license:silofl1.1 ; resources/fonts/{han,noto,sil,urw}
+                   license:bsd-3        ;resources/cmaps
+                   license:x11          ;thirdparty/lcms2
+                   license:silofl1.1    ;resources/fonts/{han,noto,sil,urw}
                    license:asl2.0)))) ; resources/fonts/droid
 
 (define-public qpdf

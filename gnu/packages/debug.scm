@@ -621,7 +621,7 @@ error reporting, better tracing, profiling, and a debugger.")
 (define-public rr
   (package
     (name "rr")
-    (version "5.5.0")
+    (version "5.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -629,7 +629,7 @@ error reporting, better tracing, profiling, and a debugger.")
                     (commit version)))
               (sha256
                (base32
-                "079x891axkiy8qbvjar9vbaldlx7pm9p0i3nq6infdc66nc69635"))
+                "0sdpsd7bcbmx9gmp7lv71znzxz708wm8qxq5apbyc6hh80z4fzqz"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -641,7 +641,9 @@ error reporting, better tracing, profiling, and a debugger.")
              ;; Satisfy the ‘validate-runpath’ phase.  This isn't a direct
              ;; consequence of clearing CMAKE_INSTALL_RPATH.
              (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
-                            (assoc-ref %build-inputs "capnproto") "/lib")
+                            (assoc-ref %build-inputs "capnproto")
+                            "/lib,-rpath=" (assoc-ref %build-inputs "zlib")
+                            "/lib")
              ,@(if (and (not (%current-target-system))
                         (member (%current-system)
                                 '("x86_64-linux" "aarch64-linux")))
@@ -666,7 +668,7 @@ error reporting, better tracing, profiling, and a debugger.")
     (native-inputs
      (list pkg-config ninja which))
     (inputs
-     (list gdb capnproto python python-pexpect))
+     (list gdb capnproto python python-pexpect zlib))
     (home-page "https://rr-project.org/")
     (synopsis "Record and reply debugging framework")
     (description

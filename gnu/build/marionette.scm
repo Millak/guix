@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -267,39 +268,50 @@ Monitor\")."
      ;; The "quit" command terminates QEMU immediately, with no output.
      (unless (string=? command "quit") (wait-for-monitor-prompt monitor)))))
 
-(define* (marionette-screen-text marionette
-                                 #:key
-                                 (ocrad "ocrad"))
-  "Take a screenshot of MARIONETTE, perform optical character
-recognition (OCR), and return the text read from the screen as a string.  Do
-this by invoking OCRAD (file name for GNU Ocrad's command)"
-  (define (random-file-name)
-    (string-append "/tmp/marionette-screenshot-"
-                   (number->string (random (expt 2 32)) 16)
-                   ".ppm"))
+(define* (invoke-ocrad-ocr image #:key (ocrad "ocrad"))
+  "Invoke the OCRAD command on image, and return the recognized text."
+  (let* ((pipe (open-pipe* OPEN_READ ocrad "-i" "-s" "10" image))
+         (text (get-string-all pipe)))
+    (unless (zero? (close-pipe pipe))
+      (error "'ocrad' failed" ocrad))
+    text))
 
-  (let ((image (random-file-name)))
+(define* (invoke-tesseract-ocr image #:key (tesseract "tesseract"))
+  "Invoke the TESSERACT command on IMAGE, and return the recognized text."
+  (let* ((output-basename (tmpnam))
+         (output-basename* (string-append output-basename ".txt")))
     (dynamic-wind
       (const #t)
       (lambda ()
-        (marionette-control (string-append "screendump " image)
-                            marionette)
-
-        ;; Tell Ocrad to invert the image colors (make it black on white) and
-        ;; to scale the image up, which significantly improves the quality of
-        ;; the result.  In spite of this, be aware that OCR confuses "y" and
-        ;; "V" and sometimes erroneously introduces white space.
-        (let* ((pipe (open-pipe* OPEN_READ ocrad
-                                 "-i" "-s" "10" image))
-               (text (get-string-all pipe)))
-          (unless (zero? (close-pipe pipe))
-            (error "'ocrad' failed" ocrad))
-          text))
+        (let ((exit-val (status:exit-val
+                         (system* tesseract image output-basename))))
+          (unless (zero? exit-val)
+            (error "'tesseract' failed" tesseract))
+          (call-with-input-file output-basename* get-string-all)))
       (lambda ()
-        (false-if-exception (delete-file image))))))
+        (false-if-exception (delete-file output-basename))
+        (false-if-exception (delete-file output-basename*))))))
+
+(define* (marionette-screen-text marionette #:key (ocr "ocrad"))
+  "Take a screenshot of MARIONETTE, perform optical character
+recognition (OCR), and return the text read from the screen as a string.  Do
+this by invoking OCR, which should be the file name of GNU Ocrad's
+@command{ocrad} or Tesseract OCR's @command{tesseract} command."
+  (define image (string-append (tmpnam) ".ppm"))
+  ;; Use the QEMU Monitor to save an image of the screen to the host.
+  (marionette-control (string-append "screendump " image) marionette)
+  ;; Process it via the OCR.
+  (cond
+   ((string-contains ocr "ocrad")
+    (invoke-ocrad-ocr image #:ocrad ocr))
+   ((string-contains ocr "tesseract")
+    (invoke-tesseract-ocr image #:tesseract ocr))
+   (else (error "unsupported ocr command"))))
 
 (define* (wait-for-screen-text marionette predicate
-                               #:key (timeout 30) (ocrad "ocrad"))
+                               #:key
+                               (ocr "ocrad")
+                               (timeout 30))
   "Wait for TIMEOUT seconds or until the screen text on MARIONETTE matches
 PREDICATE, whichever comes first.  Raise an error when TIMEOUT is exceeded."
   (define start
@@ -308,13 +320,14 @@ PREDICATE, whichever comes first.  Raise an error when TIMEOUT is exceeded."
   (define end
     (+ start timeout))
 
-  (let loop ()
+  (let loop ((last-text #f))
     (if (> (car (gettimeofday)) end)
-        (error "'wait-for-screen-text' timeout" predicate)
-        (or (predicate (marionette-screen-text marionette #:ocrad ocrad))
-            (begin
-              (sleep 1)
-              (loop))))))
+        (error "'wait-for-screen-text' timeout" 'ocr-text: last-text)
+        (let ((text (marionette-screen-text marionette #:ocr ocr)))
+          (or (predicate text)
+              (begin
+                (sleep 1)
+                (loop text)))))))
 
 (define %qwerty-us-keystrokes
   ;; Maps "special" characters to their keystrokes.

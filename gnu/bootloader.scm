@@ -1,9 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2017, 2020, 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +23,8 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu bootloader)
+  #:use-module (gnu system file-systems)
+  #:use-module (gnu system uuid)
   #:use-module (guix discovery)
   #:use-module (guix gexp)
   #:use-module (guix profiles)
@@ -69,6 +73,7 @@
             bootloader-configuration-terminal-inputs
             bootloader-configuration-serial-unit
             bootloader-configuration-serial-speed
+            bootloader-configuration-device-tree-support?
 
             %bootloaders
             lookup-bootloader-by-name
@@ -104,12 +109,19 @@
 
 (define (menu-entry->sexp entry)
   "Return ENTRY serialized as an sexp."
+  (define (device->sexp device)
+    (match device
+      ((? uuid? uuid)
+       `(uuid ,(uuid-type uuid) ,(uuid->string uuid)))
+      ((? file-system-label? label)
+       `(label ,(file-system-label->string label)))
+      (_ device)))
   (match entry
     (($ <menu-entry> label device mount-point linux linux-arguments initrd #f
                      ())
      `(menu-entry (version 0)
                   (label ,label)
-                  (device ,device)
+                  (device ,(device->sexp device))
                   (device-mount-point ,mount-point)
                   (linux ,linux)
                   (linux-arguments ,linux-arguments)
@@ -118,7 +130,7 @@
                      multiboot-kernel multiboot-arguments multiboot-modules)
      `(menu-entry (version 0)
                   (label ,label)
-                  (device ,device)
+                  (device ,(device->sexp device))
                   (device-mount-point ,mount-point)
                   (multiboot-kernel ,multiboot-kernel)
                   (multiboot-arguments ,multiboot-arguments)
@@ -127,6 +139,13 @@
 (define (sexp->menu-entry sexp)
   "Turn SEXP, an sexp as returned by 'menu-entry->sexp', into a <menu-entry>
 record."
+  (define (sexp->device device-sexp)
+    (match device-sexp
+      (('uuid type uuid-string)
+       (uuid uuid-string type))
+      (('label label)
+       (file-system-label label))
+      (_ device-sexp)))
   (match sexp
     (('menu-entry ('version 0)
                   ('label label) ('device device)
@@ -135,7 +154,7 @@ record."
                   ('initrd initrd) _ ...)
      (menu-entry
       (label label)
-      (device device)
+      (device (sexp->device device))
       (device-mount-point mount-point)
       (linux linux)
       (linux-arguments linux-arguments)
@@ -148,7 +167,7 @@ record."
                   ('multiboot-modules multiboot-modules) _ ...)
      (menu-entry
       (label label)
-      (device device)
+      (device (sexp->device device))
       (device-mount-point mount-point)
       (multiboot-kernel multiboot-kernel)
       (multiboot-arguments multiboot-arguments)
@@ -193,29 +212,33 @@ instead~%")))
 (define-record-type* <bootloader-configuration>
   bootloader-configuration make-bootloader-configuration
   bootloader-configuration?
-  (bootloader         bootloader-configuration-bootloader) ;<bootloader>
-  (targets            %bootloader-configuration-targets    ;list of strings
-                      (default #f))
-  (target             %bootloader-configuration-target ;deprecated
-                      (default #f) (sanitize warn-target-field-deprecation))
-  (menu-entries       bootloader-configuration-menu-entries ;list of <menu-entry>
-                      (default '()))
-  (default-entry      bootloader-configuration-default-entry ;integer
-                      (default 0))
-  (timeout            bootloader-configuration-timeout ;seconds as integer
-                      (default 5))
-  (keyboard-layout    bootloader-configuration-keyboard-layout ;<keyboard-layout> | #f
-                      (default #f))
-  (theme              bootloader-configuration-theme ;bootloader-specific theme
-                      (default #f))
-  (terminal-outputs   bootloader-configuration-terminal-outputs ;list of symbols
-                      (default '(gfxterm)))
-  (terminal-inputs    bootloader-configuration-terminal-inputs ;list of symbols
-                      (default '()))
-  (serial-unit        bootloader-configuration-serial-unit ;integer | #f
-                      (default #f))
-  (serial-speed       bootloader-configuration-serial-speed ;integer | #f
-                      (default #f)))
+  (bootloader
+   bootloader-configuration-bootloader) ;<bootloader>
+  (targets               %bootloader-configuration-targets
+                         (default #f))     ;list of strings
+  (target                %bootloader-configuration-target ;deprecated
+                         (default #f)
+                         (sanitize warn-target-field-deprecation))
+  (menu-entries          bootloader-configuration-menu-entries
+                         (default '()))   ;list of <menu-entry>
+  (default-entry         bootloader-configuration-default-entry
+                         (default 0))     ;integer
+  (timeout               bootloader-configuration-timeout
+                         (default 5))     ;seconds as integer
+  (keyboard-layout       bootloader-configuration-keyboard-layout
+                         (default #f))    ;<keyboard-layout> | #f
+  (theme                 bootloader-configuration-theme
+                         (default #f))    ;bootloader-specific theme
+  (terminal-outputs      bootloader-configuration-terminal-outputs
+                         (default '(gfxterm)))   ;list of symbols
+  (terminal-inputs       bootloader-configuration-terminal-inputs
+                         (default '()))   ;list of symbols
+  (serial-unit           bootloader-configuration-serial-unit
+                         (default #f))    ;integer | #f
+  (serial-speed          bootloader-configuration-serial-speed
+                         (default #f))    ;integer | #f
+  (device-tree-support?  bootloader-configuration-device-tree-support?
+                         (default #t)))   ;boolean
 
 (define-deprecated (bootloader-configuration-target config)
   bootloader-configuration-targets

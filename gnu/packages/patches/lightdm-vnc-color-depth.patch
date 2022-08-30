@@ -1,0 +1,81 @@
+There is no longer support for 8 bit color depth in TigerVNC (see:
+https://github.com/TigerVNC/tigervnc/commit/e86d8720ba1e79b486ca29a5c2b27fa25811e6a2);
+using it causes a fatal error.
+
+Submitted upstream at: https://github.com/canonical/lightdm/pull/265.
+
+diff --git a/data/lightdm.conf b/data/lightdm.conf
+index 0df38429..60e3e8b4 100644
+--- a/data/lightdm.conf
++++ b/data/lightdm.conf
+@@ -160,4 +160,4 @@
+ #listen-address=
+ #width=1024
+ #height=768
+-#depth=8
++#depth=24
+diff --git a/src/x-server-xvnc.c b/src/x-server-xvnc.c
+index 68340d53..27ca4454 100644
+--- a/src/x-server-xvnc.c
++++ b/src/x-server-xvnc.c
+@@ -127,7 +127,7 @@ x_server_xvnc_init (XServerXVNC *server)
+     XServerXVNCPrivate *priv = x_server_xvnc_get_instance_private (server);
+     priv->width = 1024;
+     priv->height = 768;
+-    priv->depth = 8;
++    priv->depth = 24;
+ }
+ 
+ static void
+diff --git a/tests/scripts/vnc-command.conf b/tests/scripts/vnc-command.conf
+index 0f1e25fd..335956d9 100644
+--- a/tests/scripts/vnc-command.conf
++++ b/tests/scripts/vnc-command.conf
+@@ -19,7 +19,7 @@ command=Xvnc -option
+ #?VNC-CLIENT CONNECT
+ 
+ # Xvnc server starts
+-#?XVNC-0 START GEOMETRY=1024x768 DEPTH=8 OPTION=TRUE
++#?XVNC-0 START GEOMETRY=1024x768 DEPTH=24 OPTION=TRUE
+ 
+ # Daemon connects when X server is ready
+ #?*XVNC-0 INDICATE-READY
+diff --git a/tests/scripts/vnc-guest.conf b/tests/scripts/vnc-guest.conf
+index 431bb244..ce2b97db 100644
+--- a/tests/scripts/vnc-guest.conf
++++ b/tests/scripts/vnc-guest.conf
+@@ -21,7 +21,7 @@ user-session=default
+ #?VNC-CLIENT CONNECT
+ 
+ # Xvnc server starts
+-#?XVNC-0 START GEOMETRY=1024x768 DEPTH=8 OPTION=FALSE
++#?XVNC-0 START GEOMETRY=1024x768 DEPTH=24 OPTION=FALSE
+ 
+ # Daemon connects when X server is ready
+ #?*XVNC-0 INDICATE-READY
+diff --git a/tests/scripts/vnc-login.conf b/tests/scripts/vnc-login.conf
+index cdfe17b8..f0d65b7f 100644
+--- a/tests/scripts/vnc-login.conf
++++ b/tests/scripts/vnc-login.conf
+@@ -21,7 +21,7 @@ user-session=default
+ #?VNC-CLIENT CONNECT
+ 
+ # Xvnc server starts
+-#?XVNC-0 START GEOMETRY=1024x768 DEPTH=8 OPTION=FALSE
++#?XVNC-0 START GEOMETRY=1024x768 DEPTH=24 OPTION=FALSE
+ 
+ # Daemon connects when X server is ready
+ #?*XVNC-0 INDICATE-READY
+diff --git a/tests/scripts/vnc-open-file-descriptors.conf b/tests/scripts/vnc-open-file-descriptors.conf
+index 753c84dd..e5d35730 100644
+--- a/tests/scripts/vnc-open-file-descriptors.conf
++++ b/tests/scripts/vnc-open-file-descriptors.conf
+@@ -21,7 +21,7 @@ user-session=default
+ #?VNC-CLIENT CONNECT
+ 
+ # Xvnc server starts
+-#?XVNC-0 START GEOMETRY=1024x768 DEPTH=8 OPTION=FALSE
++#?XVNC-0 START GEOMETRY=1024x768 DEPTH=24 OPTION=FALSE
+ 
+ # Daemon connects when X server is ready
+ #?*XVNC-0 INDICATE-READY

@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2372,4 +2373,25 @@ is configurable: you can choose how you want the test output and test result
 diagnostics to end up in your TAP output (as TAP diagnostics, YAML blocks, or
 attachments).
 @end itemize")
+    (license license:expat)))
+
+(define-public python-xvfbwrapper
+  (package
+    (name "python-xvfbwrapper")
+    (version "0.2.9")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "xvfbwrapper" version))
+              (sha256
+               (base32
+                "097wxhvp01ikqpg1z3v8rqhss6f1vwr399zpz9a05d2135bsxx5w"))))
+    (build-system python-build-system)
+    (propagated-inputs (list xorg-server-for-tests))
+    (home-page "https://github.com/cgoldberg/xvfbwrapper")
+    (synopsis "Python module for controlling virtual displays with Xvfb")
+    (description
+     "Xvfb (X virtual framebuffer) is a display server implementing
+the X11 display server protocol.  It runs in memory and does not require a
+physical display.  Only a network layer is necessary.  Xvfb is useful for
+running acceptance tests on headless servers.")
     (license license:expat)))

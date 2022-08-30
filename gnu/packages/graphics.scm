@@ -2155,6 +2155,109 @@ Features include:
 ")
     (license license:gpl3+)))
 
+(define-public mmg
+  (package
+    (name "mmg")
+    (version "5.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MmgTools/mmg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "173biz5skbwg27i5w6layg7mydjzv3rmi1ywhra4rx9rjf5c0cc5"))))
+    (build-system cmake-build-system)
+    (outputs '("out" "lib" "doc"))
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "-DCMAKE_INSTALL_PREFIX=" #$output:lib)
+                   (string-append "-DCMAKE_INSTALL_RPATH=" #$output:lib "/lib")
+                   ;; The build doesn't honor -DCMAKE_INSTALL_BINDIR, hence
+                   ;; the adjust-bindir phase.
+                   ;;(string-append "-DCMAKE_INSTALL_BINDIR=" #$output "/bin")
+                   "-DBUILD_SHARED_LIBS=ON"
+                   "-DBUILD_TESTING=ON"
+                   ;; The longer tests are for continuous integration and
+                   ;; depend on input data which must be downloaded.
+                   "-DONLY_VERY_SHORT_TESTS=ON"
+                   ;; TODO: Add Elas (from
+                   ;; https://github.com/ISCDtoolbox/LinearElasticity).
+                   "-DUSE_ELAS=OFF"
+                   ;; TODO: Figure out how to add VTK to inputs without
+                   ;; causing linking errors in ASLI of the form:
+                   ;;
+                   ;;   ld: /gnu/store/…-vtk-9.0.1/lib/libvtkWrappingPythonCore-9.0.so.1:
+                   ;;     undefined reference to `PyUnicode_InternFromString'
+                   ;;
+                   ;; Also, adding VTK to inputs requires adding these as well:
+                   ;;
+                   ;;   double-conversion eigen expat freetype gl2ps glew hdf5
+                   ;;   jsoncpp libjpeg-turbo libpng libtheora libtiff libx11
+                   ;;   libxml2 lz4 netcdf proj python sqlite zlib
+                   "-DUSE_VTK=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'build-doc
+                 (lambda _
+                   ;; Fontconfig wants to write to a cache directory.
+                   (setenv "HOME" "/tmp")
+                   (invoke "make" "doc")))
+               (add-after 'install 'install-doc
+                 (lambda _
+                   (copy-recursively
+                    "../source/doc/man" (string-append #$output
+                                                       "/share/man/man1"))
+                   (copy-recursively
+                    "doc" (string-append #$output:doc "/share/doc/"
+                                         #$name "-" #$version))))
+               (add-after 'install 'adjust-bindir
+                 (lambda _
+                   (let ((src (string-append #$output:lib "/bin"))
+                         (dst (string-append #$output "/bin")))
+                     (copy-recursively src dst)
+                     (delete-file-recursively src))))
+               ;; Suffixing program names with build information, i.e.,
+               ;; optimization flags and whether debug symbols were generated,
+               ;; is unusual and fragilizes scripts calling these programs.
+               (add-after 'adjust-bindir 'fix-program-names
+                 (lambda _
+                   (with-directory-excursion (string-append #$output "/bin")
+                     (rename-file "mmg2d_O3d" "mmg2d")
+                     (rename-file "mmg3d_O3d" "mmg3d")
+                     (rename-file "mmgs_O3d" "mmgs")))))))
+    (native-inputs
+     ;; For the documentation
+     (list doxygen graphviz
+           ;; TODO: Fix failing LaTeX invocation (which results in equations
+           ;; being inserted literally into PNGs rather than being typeset).
+           ;;texlive-tiny
+           ))
+    (inputs
+     (list scotch))
+    (home-page "http://www.mmgtools.org/")
+    (synopsis "Surface and volume remeshers")
+    (description "Mmg is a collection of applications and libraries for
+bidimensional and tridimensional surface and volume remeshing.  It consists
+of:
+
+@itemize
+@item the @code{mmg2d} application and library: mesh generation from a set of
+edges, adaptation and optimization of a bidimensional triangulation and
+isovalue discretization;
+
+@item the @code{mmgs} application and library: adaptation and optimization of
+a surface triangulation and isovalue discretization;
+
+@item the @code{mmg3d} application and library: adaptation and optimization of
+a tetrahedral mesh, isovalue discretization and Lagrangian movement;
+
+@item the @code{mmg} library gathering the @code{mmg2d}, @code{mmgs} and
+@code{mmg3d} libraries.
+@end itemize")
+    (license license:lgpl3+)))
+
 (define-public f3d
   ;; There have been many improvements since the last tagged version (1.2.1,
   ;; released in December 2021), including support for the Alembic file

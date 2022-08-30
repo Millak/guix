@@ -21287,6 +21287,208 @@ Relogin after logout.
 @end table
 @end deftp
 
+@cindex lightdm, graphical login manager
+@cindex display manager, lightdm
+@defvr {Scheme Variable} lightdm-service-type
+This is the type of the service to run the
+@url{https://github.com/canonical/lightdm,LightDM display manager}.  Its
+value must be a @code{lightdm-configuration} record, which is documented
+below.  Among its distinguishing features are TigerVNC integration for
+easily remoting your desktop as well as support for the XDMCP protocol,
+which can be used by remote clients to start a session from the login
+manager.
+
+In its most basic form, it can be used simply as:
+
+@lisp
+(service lightdm-service-type)
+@end lisp
+
+A more elaborate example making use of the VNC capabilities and enabling
+more features and verbose logs could look like:
+
+@lisp
+(service lightdm-service-type
+         (lightdm-configuration
+          (allow-empty-passwords? #t)
+          (xdmcp? #t)
+          (vnc-server? #t)
+          (vnc-server-command
+           (file-append tigervnc-server "/bin/Xvnc"
+                        "  -SecurityTypes None"))
+          (seats
+           (list (lightdm-seat-configuration
+                  (name "*")
+                  (user-session "ratpoison"))))))
+@end lisp
+@end defvr
+
+@c The LightDM service documentation can be auto-generated via the
+@c 'generate-doc' procedure at the bottom of the (gnu services lightdm)
+@c module.
+@c %start of fragment
+@deftp {Data Type} lightdm-configuration
+Available @code{lightdm-configuration} fields are:
+
+@table @asis
+@item @code{lightdm} (default: @code{lightdm}) (type: file-like)
+The lightdm package to use.
+
+@item @code{allow-empty-passwords?} (default: @code{#f}) (type: boolean)
+Whether users not having a password set can login.
+
+@item @code{debug?} (default: @code{#f}) (type: boolean)
+Enable verbose output.
+
+@item @code{xorg-configuration} (type: xorg-configuration)
+The default Xorg server configuration to use to generate the Xorg server
+start script.  It can be refined per seat via the @code{xserver-command}
+of the @code{<lightdm-seat-configuration>} record, if desired.
+
+@item @code{greeters} (type: list-of-greeter-configurations)
+The LightDM greeter configurations specifying the greeters to use.
+
+@item @code{seats} (type: list-of-seat-configurations)
+The seat configurations to use.  A LightDM seat is akin to a user.
+
+@item @code{xdmcp?} (default: @code{#f}) (type: boolean)
+Whether a XDMCP server should listen on port UDP 177.
+
+@item @code{xdmcp-listen-address} (type: maybe-string)
+The host or IP address the XDMCP server listens for incoming
+connections.  When unspecified, listen on for any hosts/IP addresses.
+
+@item @code{vnc-server?} (default: @code{#f}) (type: boolean)
+Whether a VNC server is started.
+
+@item @code{vnc-server-command} (type: file-like)
+The Xvnc command to use for the VNC server, it's possible to provide
+extra options not otherwise exposed along the command, for example to
+disable security:
+
+@lisp
+(vnc-server-command (file-append tigervnc-server "/bin/Xvnc"
+                                 " -SecurityTypes None" ))
+@end lisp
+
+Or to set a PasswordFile for the classic (unsecure) VncAuth
+mecanism:
+
+@lisp
+(vnc-server-command (file-append tigervnc-server "/bin/Xvnc"
+                                 " -PasswordFile /var/lib/lightdm/.vnc/passwd"))
+@end lisp
+
+The password file should be manually created using the
+@command{vncpasswd} command.  Note that LightDM will create new sessions
+for VNC users, which means they need to authenticate in the same way as
+local users would.
+
+@item @code{vnc-server-listen-address} (type: maybe-string)
+The host or IP address the VNC server listens for incoming connections.
+When unspecified, listen for any hosts/IP addresses.
+
+@item @code{vnc-server-port} (default: @code{5900}) (type: number)
+The TCP port the VNC server should listen to.
+
+@item @code{extra-config} (default: @code{()}) (type: list-of-strings)
+Extra configuration values to append to the LightDM configuration file.
+
+@end table
+@end deftp
+
+
+@c %end of fragment
+@c %start of fragment
+
+@deftp {Data Type} lightdm-gtk-greeter-configuration
+Available @code{lightdm-gtk-greeter-configuration} fields are:
+
+@table @asis
+@item @code{lightdm-gtk-greeter} (default: @code{lightdm-gtk-greeter}) (type: file-like)
+The lightdm-gtk-greeter package to use.
+
+@item @code{assets} @
+(default: @code{(adwaita-icon-theme gnome-themes-extrahicolor-icon-theme)}) @
+(type: list-of-file-likes)
+The list of packages complementing the greeter, such as package
+providing icon themes.
+
+@item @code{theme-name} (default: @code{"Adwaita"}) (type: string)
+The name of the theme to use.
+
+@item @code{icon-theme-name} (default: @code{"Adwaita"}) (type: string)
+The name of the icon theme to use.
+
+@item @code{cursor-theme-name} (default: @code{"Adwaita"}) (type: string)
+The name of the cursor theme to use.
+
+@item @code{cursor-theme-size} (default: @code{16}) (type: number)
+The size to use for the the cursor theme.
+
+@item @code{allow-debugging?} (type: maybe-boolean)
+Set to #t to enable debug log level.
+
+@item @code{background} (type: file-like)
+The background image to use.
+
+@item @code{at-spi-enabled?} (default: @code{#f}) (type: boolean)
+Enable accessibility support through the Assistive Technology Service
+Provider Interface (AT-SPI).
+
+@item @code{a11y-states} @
+(default: @code{(contrast font keyboard reader)}) (type: list-of-a11y-states)
+The accessibility features to enable, given as list of symbols.
+
+@item @code{reader} (type: maybe-file-like)
+The command to use to launch a screen reader.
+
+@item @code{extra-config} (default: @code{()}) (type: list-of-strings)
+Extra configuration values to append to the LightDM GTK Greeter
+configuration file.
+
+@end table
+@end deftp
+
+@c %end of fragment
+@c %start of fragment
+
+@deftp {Data Type} lightdm-seat-configuration
+Available @code{lightdm-seat-configuration} fields are:
+
+@table @asis
+@item @code{name} (type: seat-name)
+The name of the seat.  An asterisk (*) can be used in the name to apply
+the seat configuration to all the seat names it matches.
+
+@item @code{user-session} (type: maybe-string)
+The session to use by default.  The session name must be provided as a
+lowercase string, such as @code{"gnome"}, @code{"ratpoison"}, etc.
+
+@item @code{type} (default: @code{local}) (type: seat-type)
+The type of the seat, either the @code{local} or @code{xremote} symbol.
+
+@item @code{autologin-user} (type: maybe-string)
+The username to automatically log in with by default.
+
+@item @code{greeter-session} @
+(default: @code{lightdm-gtk-greeter}) (type: greeter-session)
+The greeter session to use, specified as a symbol.  Currently, only
+@code{lightdm-gtk-greeter} is supported.
+
+@item @code{xserver-command} (type: maybe-file-like)
+The Xorg server command to run.
+
+@item @code{session-wrapper} (type: file-like)
+The xinitrc session wrapper to use.
+
+@item @code{extra-config} (default: @code{()}) (type: list-of-strings)
+Extra configuration values to append to the seat configuration section.
+
+@end table
+@end deftp
+@c %end of fragment
+
 
 @cindex Xorg, configuration
 @deftp {Data Type} xorg-configuration
@@ -36287,6 +36489,255 @@ Extra command line options for @code{nix-service-type}.
 @end table
 @end deftp
 
+@cindex Fail2Ban
+@subsubheading Fail2Ban service
+
+@uref{http://www.fail2ban.org/, @code{fail2ban}} scans log files
+(e.g. @code{/var/log/apache/error_log}) and bans IP addresses that show
+malicious signs -- repeated password failures, attempts to make use of
+exploits, etc.
+
+@code{fail2ban-service-type} service type is provided by the @code{(gnu
+services security)} module.
+
+This service type runs the @code{fail2ban} daemon.  It can be configured
+in various ways, which are:
+
+@table @asis
+@item Basic configuration
+The basic parameters of the Fail2Ban service can be configured via its
+@code{fail2ban} configuration, which is documented below.
+
+@item User-specified jail extensions
+The @code{fail2ban-jail-service} function can be used to add new
+Fail2Ban jails.
+
+@item Shepherd extension mechanism
+Service developers can extend the @code{fail2ban-service-type} service
+type itself via the usual service extension mechanism.
+@end table
+
+@defvr {Scheme Variable} fail2ban-service-type
+
+This is the type of the service that runs @code{fail2ban} daemon.  Below
+is an example of a basic, explicit configuration:
+
+@lisp
+(append
+ (list
+  (service fail2ban-service-type
+           (fail2ban-configuration
+            (extra-jails
+             (list
+              (fail2ban-jail-configuration
+               (name "sshd")
+               (enabled #t))))))
+  ;; There is no implicit dependency on an actual SSH
+  ;; service, so you need to provide one.
+  (service openssh-service-type))
+ %base-services)
+@end lisp
+@end defvr
+
+@deffn {Scheme Procedure} fail2ban-jail-service @var{svc-type} @var{jail}
+Extend @var{svc-type}, a @code{<service-type>} object with @var{jail}, a
+@code{fail2ban-jail-configuration} object.
+
+For example:
+
+@lisp
+(append
+ (list
+  (service
+   ;; The 'fail2ban-jail-service' procedure can extend any service type
+   ;; with a fail2ban jail.  This removes the requirement to explicitly
+   ;; extend services with fail2ban-service-type.
+   (fail2ban-jail-service
+    openssh-service-type
+    (fail2ban-jail-configuration
+     (name "sshd")
+     (enabled #t)))
+   (openssh-configuration ...))))
+@end lisp
+@end deffn
+
+Below is the reference for the different @code{jail-service-type}
+configuration records.
+
+@c The documentation is to be auto-generated via
+@c 'generate-documentation'.  See at the bottom of (gnu services
+@c security).
+
+@deftp {Data Type} fail2ban-configuration
+Available @code{fail2ban-configuration} fields are:
+
+@table @asis
+@item @code{fail2ban} (default: @code{fail2ban}) (type: package)
+The @code{fail2ban} package to use.  It is used for both binaries and as
+base default configuration that is to be extended with
+@code{<fail2ban-jail-configuration>} objects.
+
+@item @code{run-directory} (default: @code{"/var/run/fail2ban"}) (type: string)
+The state directory for the @code{fail2ban} daemon.
+
+@item @code{jails} (default: @code{()}) (type: list-of-fail2ban-jail-configurations)
+Instances of @code{<fail2ban-jail-configuration>} collected from
+extensions.
+
+@item @code{extra-jails} (default: @code{()}) (type: list-of-fail2ban-jail-configurations)
+Instances of @code{<fail2ban-jail-configuration>} explicitly provided.
+
+@item @code{extra-content} (type: maybe-string)
+Extra raw content to add to the end of the @file{jail.local} file.
+
+@end table
+
+@end deftp
+
+@deftp {Data Type} fail2ban-ignore-cache-configuration
+Available @code{fail2ban-ignore-cache-configuration} fields are:
+
+@table @asis
+@item @code{key} (type: string)
+Cache key.
+
+@item @code{max-count} (type: integer)
+Cache size.
+
+@item @code{max-time} (type: integer)
+Cache time.
+
+@end table
+
+@end deftp
+
+@deftp {Data Type} fail2ban-jail-action-configuration
+Available @code{fail2ban-jail-action-configuration} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+Action name.
+
+@item @code{arguments} (default: @code{()}) (type: list-of-arguments)
+Action arguments.
+
+@end table
+
+@end deftp
+
+@deftp {Data Type} fail2ban-jail-configuration
+Available @code{fail2ban-jail-configuration} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+Required name of this jail configuration.
+
+@item @code{enabled?} (default: @code{#t}) (type: boolean)
+Whether this jail is enabled.
+
+@item @code{backend} (type: maybe-symbol)
+Backend to use to detect changes in the @code{ogpath}.  The default is
+'auto.  To consult the defaults of the jail configuration, refer to the
+@file{/etc/fail2ban/jail.conf} file of the @code{fail2ban} package.
+
+@item @code{max-retry} (type: maybe-integer)
+The number of failures before a host get banned (e.g.  @code{(max-retry
+5)}).
+
+@item @code{max-matches} (type: maybe-integer)
+The number of matches stored in ticket (resolvable via tag
+@code{<matches>}) in action.
+
+@item @code{find-time} (type: maybe-string)
+The time window during which the maximum retry count must be reached for
+an IP address to be banned.  A host is banned if it has generated
+@code{max-retry} during the last @code{find-time} seconds (e.g.
+@code{(find-time "10m")}).  It can be provided in seconds or using
+Fail2Ban's "time abbreviation format", as described in @command{man 5
+jail.conf}.
+
+@item @code{ban-time} (type: maybe-string)
+The duration, in seconds or time abbreviated format, that a ban should
+last.  (e.g.  @code{(ban-time "10m")}).
+
+@item @code{ban-time-increment?} (type: maybe-boolean)
+Whether to consider past bans to compute increases to the default ban
+time of a specific IP address.
+
+@item @code{ban-time-factor} (type: maybe-string)
+The coefficient to use to compute an exponentially growing ban time.
+
+@item @code{ban-time-formula} (type: maybe-string)
+This is the formula used to calculate the next value of a ban time.
+
+@item @code{ban-time-multipliers} (type: maybe-string)
+Used to calculate next value of ban time instead of formula.
+
+@item @code{ban-time-max-time} (type: maybe-string)
+The maximum number of seconds a ban should last.
+
+@item @code{ban-time-rnd-time} (type: maybe-string)
+The maximum number of seconds a randomized ban time should last.  This
+can be useful to stop ``clever'' botnets calculating the exact time an
+IP address can be unbanned again.
+
+@item @code{ban-time-overall-jails?} (type: maybe-boolean)
+When true, it specifies the search of an IP address in the database
+should be made across all jails.  Otherwise, only the current jail of
+the ban IP address is considered.
+
+@item @code{ignore-self?} (type: maybe-boolean)
+Never ban the local machine's own IP address.
+
+@item @code{ignore-ip} (default: @code{()}) (type: list-of-strings)
+A list of IP addresses, CIDR masks or DNS hosts to ignore.
+@code{fail2ban} will not ban a host which matches an address in this
+list.
+
+@item @code{ignore-cache} (type: maybe-fail2ban-ignore-cache-configuration)
+Provide cache parameters for the ignore failure check.
+
+@item @code{filter} (type: maybe-fail2ban-jail-filter-configuration)
+The filter to use by the jail, specified via a
+@code{<fail2ban-jail-filter-configuration>} object.  By default, jails
+have names matching their filter name.
+
+@item @code{log-time-zone} (type: maybe-string)
+The default time zone for log lines that do not have one.
+
+@item @code{log-encoding} (type: maybe-symbol)
+The encoding of the log files handled by the jail.  Possible values are:
+@code{'ascii}, @code{'utf-8} and @code{'auto}.
+
+@item @code{log-path} (default: @code{()}) (type: list-of-strings)
+The file names of the log files to be monitored.
+
+@item @code{action} (default: @code{()}) (type: list-of-fail2ban-jail-actions)
+A list of @code{<fail2ban-jail-action-configuration>}.
+
+@item @code{extra-content} (type: maybe-string)
+Extra content for the jail configuration.
+
+@end table
+
+@end deftp
+
+@deftp {Data Type} fail2ban-jail-filter-configuration
+Available @code{fail2ban-jail-filter-configuration} fields are:
+
+@table @asis
+@item @code{name} (type: string)
+Filter to use.
+
+@item @code{mode} (type: maybe-string)
+Mode for filter.
+
+@end table
+
+@end deftp
+
+@c End of auto-generated fail2ban documentation.
+
 @node Setuid Programs
 @section Setuid Programs
 
@@ -36964,6 +37415,15 @@ corresponds to COM1 (@pxref{Serial terminal,,, grub,GNU GRUB manual}).
 The speed of the serial interface, as an integer.  For GRUB, the
 default value is chosen at run-time; currently GRUB chooses
 9600@tie{}bps (@pxref{Serial terminal,,, grub,GNU GRUB manual}).
+
+@item @code{device-tree-support?} (default: @code{#t})
+Whether to support Linux @uref{https://en.wikipedia.org/wiki/Devicetree,
+device tree} files loading.
+
+This option in enabled by default.  In some cases involving the
+@code{u-boot} bootloader, where the device tree has already been loaded
+in RAM, it can be handy to disable the option by setting it to
+@code{#f}.
 @end table
 
 @end deftp
@@ -37536,6 +37996,11 @@ Installation Image}).
 @itemx -s @var{system}
 Attempt to build for @var{system} instead of the host system type.
 This works as per @command{guix build} (@pxref{Invoking guix build}).
+
+@item --target=@var{triplet}
+Cross-build for @var{triplet}, which must be a valid GNU triplet, such
+as @code{"aarch64-linux-gnu"} (@pxref{Specifying target triplets, GNU
+configuration triplets,, autoconf, Autoconf}).
 
 @item --derivation
 @itemx -d

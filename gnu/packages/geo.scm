@@ -253,7 +253,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "41.2")
+    (version "42.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -261,7 +261,7 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "037xmkmcmcw87vb1c1s3y225m8757k331cvk1m8cshf6mx61p0l1"))))
+                "1cb9s2zz1zib3f33c035lmgshpl679isbzdd3alrx4yclw61nvay"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -318,7 +318,7 @@ topology functions.")
        ("libhandy" ,libhandy)
        ("libsecret" ,libsecret)
        ("libsoup" ,libsoup-minimal-2)
-       ("libgweather" ,libgweather)
+       ("libgweather" ,libgweather4)
        ("libxml2" ,libxml2)
        ("librsvg" ,librsvg)
        ("glib-networking" ,glib-networking)

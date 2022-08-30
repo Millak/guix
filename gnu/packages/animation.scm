@@ -3,6 +3,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,6 +48,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jemalloc)
+  #:use-module (gnu packages mp3)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
@@ -495,3 +497,100 @@ waveform until they line up with the proper sounds.")
 lets you create traditional hand-drawn animations (cartoons) using both bitmap
 and vector graphics.")
     (license license:gpl2)))
+
+(define-public swftools
+  ;; Last release of swftools was 0.9.2 on 2012-04-21 - it is really old and
+  ;; does not compile with what's available in guix, master on the other hand works.
+  (let ((commit "772e55a271f66818b06c6e8c9b839befa51248f4")
+        (revision "1"))
+    (package
+      (name "swftools")
+      (version (git-version "0.9.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/matthiaskramm/swftools")
+               (commit commit)))
+         (sha256
+                 (base32 "0a8a29rn7gpxnba3spnvkpdgr7mdlssvr273mzw5b2wjvbzard3w"))
+         (file-name (git-file-name name version))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; XXX: Swftools includes the source tarball of an old version of
+             ;; xpdf.
+
+             ;; To fix a linking error I followed the workaround in:
+             ;; https://github.com/matthiaskramm/swftools/issues/178
+             ;; and implented it as a two-step snippet because substitute*
+             ;; does not match multiline regexes.
+             (substitute* "lib/lame/quantize.c"
+               ;; move inline keywords to the same line as their function headers
+               (("^inline.*\n") "inline "))
+             (substitute* "lib/lame/quantize.c"
+               ;; make this particular function not inline
+               (("inline (void bitpressure_strategy1)" _ f) f))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f)) ; no rule for check
+      (inputs (list zlib freetype giflib libjpeg-turbo lame))
+      (home-page "http://www.swftools.org")
+      (synopsis "Collection of utilities for working with Adobe Flash files")
+
+      ;; XXX: This package will built all of swftools' tools but one: PDF2SWF,
+      ;; purposefuly commented out of the description below.
+      (description "SWFTools is a collection of utilities for working with
+Adobe Flash files (SWF files).  The tool collection includes programs for
+reading SWF files, combining them, and creating them from other content (like
+images, sound files, videos or sourcecode).  The current collection is
+ comprised of the programs detailed below:
+
+@itemize
+@comment PDF2SWF is not currentlybeing  build alongside other tools.  The next
+@comment two lines should be uncommented if this will ever get fixed.
+@comment @item
+@comment @command{pdf2swf} A PDF to SWF Converter.
+
+@item
+@command{swfcombine} A multi-function tool for inserting, contatenating,
+stacking and changing parameters in SWFs.
+
+@item
+@command{swfstrings} Scans SWFs for text data.
+@item
+@command{swfdump} Prints out various informations about SWFs.
+
+@item
+@command{jpeg2swf} Takes one or more JPEG pictures and generates a SWF
+slideshow from them.
+
+@item
+@command{png2swf} Like JPEG2SWF, only for PNGs.
+
+@item
+@command{gif2swf} Converts GIFs to SWF.  Also able to handle animated GIFs.
+
+@item
+@command{wav2swf} Converts WAV audio files to SWFs, using the LAME MP3
+ encoder library.
+
+@item
+@command{font2swf} Converts font files (TTF, Type1) to SWF.
+
+@item
+@command{swfbbox} Allows to read out, optimize and readjust SWF bounding boxes.
+
+@item
+@command{swfc} A tool for creating SWF files from simple script files.  Supports
+both ActionScript 2.0 aand 3.0.
+
+@item
+@command{swfextract} Allows to extract Movieclips, Sounds, Images etc. from SWF
+ files.
+
+@item
+@command{as3compile} A standalone ActionScript 3.0 compiler.  Mostly compatible
+ with Flex.
+@end itemize")
+      (license license:gpl2+))))

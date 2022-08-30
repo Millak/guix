@@ -1733,15 +1733,16 @@ execution of any hook written in any language before every commit.")
 (define-public mercurial
   (package
     (name "mercurial")
-    (version "5.8.1")
+    (version "6.2.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://www.mercurial-scm.org/"
                                  "release/mercurial-" version ".tar.gz"))
-             (patches (search-patches "mercurial-hg-extension-path.patch"))
+             (patches (search-patches "mercurial-hg-extension-path.patch"
+                                      "mercurial-openssl-compat.patch"))
              (sha256
               (base32
-               "16xi4bmjqzi7ig8sfa5mnypfpbbbiyafmmqrs4nxmgc743za7fl1"))))
+               "1nl2726szaxyrxlyssrsir5c6vb4ci0i6g969i6xaahw1nidgica"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -1751,13 +1752,11 @@ execution of any hook written in any language before every commit.")
          (delete 'configure)
          (add-after 'unpack 'patch-tests
            (lambda _
-             (substitute* '("tests/test-extdiff.t"
-                            "tests/test-logtoprocess.t"
-                            "tests/test-patchbomb.t"
-                            "tests/test-run-tests.t"
-                            "tests/test-transplant.t")
+             (substitute* (find-files "tests" "\\.(t|py)$")
                (("/bin/sh")
-                (which "sh")))))
+                (which "sh"))
+               (("/usr/bin/env")
+                (which "env")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (with-directory-excursion "tests"
@@ -1768,6 +1767,12 @@ execution of any hook written in any language before every commit.")
                            ;; PATH from before (that's why we are building it!)?
                            "test-hghave.t"
 
+                           ;; This test creates a shebang spanning multiple
+                           ;; lines which is difficult to substitute.  It
+                           ;; only tests the test runner itself, which gets
+                           ;; thoroughly tested during the check phase anyway.
+                           "test-run-tests.t"
+
                            ;; These tests fail because the program is not
                            ;; connected to a TTY in the build container.
                            "test-nointerrupt.t"
@@ -1775,6 +1780,15 @@ execution of any hook written in any language before every commit.")
 
                            ;; FIXME: This gets killed but does not receive an interrupt.
                            "test-commandserver.t"
+
+                           ;; These tests get unexpected warnings about using
+                           ;; deprecated functionality in Python, but otherwise
+                           ;; succeed; try enabling for later Mercurial versions.
+                           "test-demandimport.py"
+                           "test-patchbomb-tls.t"
+                           ;; Similarly, this gets a more informative error
+                           ;; message from Python 3.10 than it expects.
+                           "test-http-bad-server.t"
 
                            ;; Only works when run in a hg-repo, not in an
                            ;; extracted tarball
@@ -1806,7 +1820,7 @@ execution of any hook written in any language before every commit.")
            ;; The following inputs are only needed to run the tests.
            python-nose unzip which))
     (inputs
-     (list python))
+     (list python-wrapper))
     ;; Find third-party extensions.
     (native-search-paths
      (list (search-path-specification

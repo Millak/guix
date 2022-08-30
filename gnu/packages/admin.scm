@@ -1725,12 +1725,12 @@ over ssh connections.")
              (substitute* "Makefile"
                ((".*/service/realmd-.*") "")))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("glib-bin" ,glib "bin")
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list autoconf
+           automake
+           `(,glib "bin")
+           intltool
+           pkg-config
+           python))
     (inputs
      (list glib mit-krb5 openldap polkit))
     (synopsis "DBus service for network authentication")

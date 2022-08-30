@@ -188,28 +188,22 @@ project.")
 (define-public ruby-ffi
   (package
     (name "ruby-ffi")
-    (version "1.12.2")
+    (version "1.15.5")
     (source (origin
               ;; Pull from git because the RubyGems release bundles LibFFI,
               ;; and comes with a gemspec that makes it difficult to unbundle.
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/ffi/ffi")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cvqsbjr2gfjgqggq9kdx90qhhzr7qkyr9wmxdsfsik6cnxnnpmd"))))
+                "1qk55s1zwpdjykwkj9l37m71i5n228i7f8bg3ply3ks9py16m7s6"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'do-not-depend-on-ccache
-           (lambda _
-             (substitute* "spec/ffi/fixtures/GNUmakefile"
-               (("^CCACHE := .*")
-                ""))
-             #t))
          (replace 'replace-git-ls-files
            (lambda _
              ;; Do not try to execute git, or include the (un)bundled LibFFI.
@@ -219,9 +213,10 @@ project.")
                (("lfs \\+?= .*")
                 "lfs = []\n"))
              (substitute* "Rakefile"
+               (("git .*ls-files -z")
+                "find * -type f -print0 | sort -z")
                (("LIBFFI_GIT_FILES = .*")
-                "LIBFFI_GIT_FILES = []\n"))
-             #t))
+                "LIBFFI_GIT_FILES = []\n"))))
          (replace 'build
           (lambda _
             ;; Tests depend on the native extensions, so we build it
@@ -240,8 +235,7 @@ project.")
                    (setenv "MAKE" "make")
                    (setenv "CC" "gcc")
                    (invoke "rspec" "spec"))
-                 (format #t "test suite not run~%"))
-             #t)))))
+                 (format #t "test suite not run~%")))))))
     (native-inputs
      (list ruby-rake-compiler ruby-rspec ruby-rubygems-tasks))
     (inputs

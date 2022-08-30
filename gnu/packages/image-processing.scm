@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -510,6 +511,9 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
              ;;
              ;; DISPATCH is the list of optional dispatches.
              "-DCPU_BASELINE=SSE2"
+
+             ;; Build Python bindings.
+             "-DBUILD_opencv_python3=ON"
 
              ,@(match (%current-system)
                  ("x86_64-linux"

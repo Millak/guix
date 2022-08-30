@@ -12,6 +12,7 @@
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -187,6 +188,8 @@ external dependencies.")
     (name "samba")
     (version "4.17.0rc3")             ;4.16.4 doesn't build with mit-krb5 1.20
     (source
+     ;; For updaters: the current PGP fingerprint is
+     ;; 81F5E2832BD2545A1897B713AA99442FB680B620.
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/samba/rc/"

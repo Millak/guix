@@ -34,6 +34,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -53,6 +54,7 @@
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -383,6 +385,105 @@ other lower-level build files.")
     (description "@code{premake5} is a command line utility that reads a
 scripted definition of a software project and outputs @file{Makefile}s or
 other lower-level build files.")))
+
+(define-public scons
+  (package
+    (name "scons")
+    (version "4.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SCons/scons")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (patches (search-patches "scons-test-environment.patch"))
+              (sha256
+               (base32
+                "1czswx1fj2j48rspkrvarkr43k0vii9rsmz054c9yby1dq362fgr"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:modules (append %python-build-system-modules
+                        '((ice-9 ftw) (srfi srfi-26)))
+      #:phases
+      #~(modify-phases (@ (guix build python-build-system) %standard-phases)
+          (add-after 'unpack 'adjust-hard-coded-paths
+            (lambda _
+              (substitute* "SCons/Script/Main.py"
+                (("/usr/share/scons")
+                 (string-append #$output "/share/scons")))))
+          (add-before 'build 'bootstrap
+            (lambda _
+              ;; XXX: Otherwise setup.py bdist_wheel fails.
+              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))
+              (invoke "python" "scripts/scons.py")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "runtest.py" "--all" "--unit-only"))))
+          (add-after 'install 'move-manuals
+            (lambda _
+              ;; XXX: For some reason manuals get installed to the top-level
+              ;; #$output directory.
+              (with-directory-excursion #$output
+                (let ((man1 (string-append #$output "/share/man/man1"))
+                      (stray-manuals (scandir "."
+                                              (cut string-suffix? ".1" <>))))
+                  (mkdir-p man1)
+                  (for-each (lambda (manual)
+                              (link manual (string-append man1 "/" manual))
+                              (delete-file manual))
+                            stray-manuals))))))))
+    (native-inputs
+     ;; TODO: Add 'fop' when available in Guix to generate manuals.
+     (list python-wheel
+           ;;For tests.
+           python-psutil))
+    (home-page "https://scons.org/")
+    (synopsis "Software construction tool written in Python")
+    (description
+     "SCons is a software construction tool.  Think of SCons as an improved,
+cross-platform substitute for the classic Make utility with integrated
+functionality similar to autoconf/automake and compiler caches such as ccache.
+In short, SCons is an easier, more reliable and faster way to build
+software.")
+    (license license:x11)))
+
+(define-public scons-3
+  (package
+    (inherit scons)
+    (version "3.0.4")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/SCons/scons")
+                   (commit version)))
+             (file-name (git-file-name "scons" version))
+             (sha256
+              (base32
+               "1xy8jrwz87y589ihcld4hv7wn122sjbz914xn8h50ww77wbhk8hn"))))
+    (arguments
+     `(#:use-setuptools? #f                ; still relies on distutils
+       #:tests? #f                         ; no 'python setup.py test' command
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'bootstrap
+           (lambda _
+             (substitute* "src/engine/SCons/compat/__init__.py"
+               (("sys.modules\\[new\\] = imp.load_module\\(old, \\*imp.find_module\\(old\\)\\)")
+                "sys.modules[new] = __import__(old)"))
+             (substitute* "src/engine/SCons/Platform/__init__.py"
+               (("mod = imp.load_module\\(full_name, file, path, desc\\)")
+                "mod = __import__(full_name)"))
+             (invoke "python" "bootstrap.py" "build/scons" "DEVELOPER=guix")
+             (chdir "build/scons")
+             #t)))))
+    (native-inputs '())))
+
+(define-public scons-python2
+  (package
+    (inherit (package-with-python2 scons-3))
+    (name "scons-python2")))
 
 (define-public tup
   (package

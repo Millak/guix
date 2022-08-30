@@ -341,7 +341,7 @@ info --version")
                       (wait-for-screen-text marionette
                                             (lambda (text)
                                               (string-contains text "Password"))
-                                            #:ocrad
+                                            #:ocr
                                             #$(file-append ocrad "/bin/ocrad"))
                       (marionette-type (string-append password "\n\n")
                                        marionette))
@@ -510,7 +510,7 @@ info --version")
 
           (test-assert "screen text"
             (let ((text (marionette-screen-text marionette
-                                                #:ocrad
+                                                #:ocr
                                                 #$(file-append ocrad
                                                                "/bin/ocrad"))))
               ;; Check whether the welcome message and shell prompt are

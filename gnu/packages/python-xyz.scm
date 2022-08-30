@@ -127,6 +127,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3046,51 +3047,6 @@ only a chosen subset of the YAML format that is required to parse cookiecutter
 user configuration files.  It does not have support for serializing into YAML
 and is not compatible with JSON.")
     (license license:expat)))
-
-(define-public scons
-  (package
-    (name "scons")
-    (version "3.0.4")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/SCons/scons")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1xy8jrwz87y589ihcld4hv7wn122sjbz914xn8h50ww77wbhk8hn"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:use-setuptools? #f                ; still relies on distutils
-       #:tests? #f                         ; no 'python setup.py test' command
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'bootstrap
-           (lambda _
-             (substitute* "src/engine/SCons/compat/__init__.py"
-               (("sys.modules\\[new\\] = imp.load_module\\(old, \\*imp.find_module\\(old\\)\\)")
-                "sys.modules[new] = __import__(old)"))
-             (substitute* "src/engine/SCons/Platform/__init__.py"
-               (("mod = imp.load_module\\(full_name, file, path, desc\\)")
-                "mod = __import__(full_name)"))
-             (invoke "python" "bootstrap.py" "build/scons" "DEVELOPER=guix")
-             (chdir "build/scons")
-             #t)))))
-    (home-page "https://scons.org/")
-    (synopsis "Software construction tool written in Python")
-    (description
-     "SCons is a software construction tool.  Think of SCons as an improved,
-cross-platform substitute for the classic Make utility with integrated
-functionality similar to autoconf/automake and compiler caches such as ccache.
-In short, SCons is an easier, more reliable and faster way to build
-software.")
-    (license license:x11)))
-
-(define-public scons-python2
-  (package
-    (inherit (package-with-python2 scons))
-    (name "scons-python2")))
 
 (define-public python-exceptiongroup
   (package
@@ -8281,7 +8237,7 @@ procedures.")
      (substitute-keyword-arguments
          (package-arguments python-jaraco-context-bootstrap)
        ((#:tests? _ #f)
-        #t)
+        (not (%current-target-system)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (replace 'check
@@ -8332,7 +8288,7 @@ module with a few extra procedures.")
      (substitute-keyword-arguments
          (package-arguments python-jaraco-functools-bootstrap)
        ((#:tests? _ #f)
-        #t)
+        (not (%current-target-system)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (replace 'check
@@ -8732,7 +8688,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:tests? _ #f)
-          #t)
+          (not (%current-target-system)))
          ((#:phases phases #~%standard-phases)
           #~(modify-phases #$phases
               (replace 'check
@@ -9715,7 +9671,7 @@ Python style, together with a fast and comfortable execution environment.")
                ;; because there are no AWS credentials.
                (delete-file "tests/test_tibanna.py")
                (invoke "pytest")))))))
-    (inputs
+    (propagated-inputs
      (list python-appdirs
            python-configargparse
            python-connection-pool
@@ -9766,15 +9722,14 @@ Python style, together with a fast and comfortable execution environment.")
          ;; For cluster execution Snakemake will call Python.  Since there is
          ;; no suitable GUIX_PYTHONPATH set, cluster execution will fail.  We
          ;; fix this by calling the snakemake wrapper instead.
-
-         ;; XXX: There is another instance of sys.executable on line 692, but
-         ;; it is not clear how to patch it.
          (add-after 'unpack 'call-wrapper-not-wrapped-snakemake
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "snakemake/executors/__init__.py"
-               (("\\{sys.executable\\} -m snakemake")
-                (string-append (assoc-ref outputs "out")
-                               "/bin/snakemake")))))
+               (("self\\.get_python_executable\\(\\),")
+                "")
+               (("\"-m snakemake\"")
+                (string-append "\"" (assoc-ref outputs "out")
+                               "/bin/snakemake" "\"")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -9786,7 +9741,7 @@ Python style, together with a fast and comfortable execution environment.")
                ;; to the Google Storage service.
                (delete-file "tests/test_google_lifesciences.py")
                (invoke "pytest")))))))
-    (inputs
+    (propagated-inputs
      (list python-appdirs
            python-configargparse
            python-connection-pool
@@ -11332,7 +11287,7 @@ from an XML-based format.")
     (arguments
      (substitute-keyword-arguments (package-arguments python-fonttools)
        ((#:tests? _ #f)
-        #t)
+        (not (%current-target-system)))
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
            (replace 'check
@@ -12409,7 +12364,7 @@ invoked on those path objects directly.")
      (substitute-keyword-arguments
          (package-arguments python-path-bootstrap)
        ((#:tests? _ #f)
-        #t)
+        (not (%current-target-system)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (replace 'check
@@ -12532,7 +12487,7 @@ $ rm -rf /tmp/env
     (arguments
      (substitute-keyword-arguments (package-arguments python-pip-run-bootstrap)
        ((#:tests? _ #f)
-        #t)
+        (not (%current-target-system)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (replace 'check
@@ -30449,6 +30404,68 @@ versa.  Extended WKB/WKT are also supported.")
 binary diff utility.  It also provides two command-line tools, @code{bsdiff4}
 and @code{bspatch4}.")
     (license license:bsd-2)))
+
+(define-public python-mpv
+  (package
+    (name "python-mpv")
+    (version "1.0.1")
+    (source
+     (origin
+       ;; python-mpv from pypi does not include the tests directory.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jaseg/python-mpv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "10w6j3n62ap45sf6q487kz8z6g58sha37i14fa2hhng794z7a8jh"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; One of the tests never completes, so neutering it using
+            ;; early return allows other test to run without issue.
+            (substitute* "tests/test_mpv.py"
+              ;; Note the typo in "prooperty" - this was fixed later in
+              ;; upstream but has no effect on whether the tests hangs or not.
+              (("test_wait_for_prooperty_event_overflow.*" line)
+               ;; The long whitespace between \n and return is to match the
+               ;; identation level, which is significant in python.
+               (string-append line "\n        return\n")))))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'patch-reference-to-mpv
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Without an absolute path it is not able find and
+                   ;; load the libmpv library.
+                   (substitute* "mpv.py"
+                     (("sofile = .*")
+                      (string-append "sofile = \""
+                                     (search-input-file inputs "/lib/libmpv.so")
+                                     "\"\n")))))
+               (add-before 'check 'prepare-for-tests
+                 (lambda _
+                   ;; Fontconfig throws errors when it has no cache dir to use.
+                   (setenv "XDG_CACHE_HOME" (getcwd))
+                   ;; Some tests fail without a writable and readable HOME.
+                   (setenv "HOME" (getcwd)))))))
+    (native-inputs
+     (list python-xvfbwrapper)) ; needed for tests only
+    (inputs (list mpv))
+    (propagated-inputs (list python-pillow)) ; for raw screenshots
+    (home-page "https://github.com/jaseg/python-mpv")
+    (synopsis "Python interface to the mpv media player")
+    (description
+     "python-mpv is a ctypes-based python interface to the mpv media player.
+It gives you more or less full control of all features of the player, just
+as the lua interface does.")
+    ;; From the project's README:
+    ;;  python-mpv inherits the underlying libmpv's license, which can be either
+    ;;  GPLv2 or later (default) or LGPLv2.1 or later.  For details, see the mpv
+    ;;  copyright page.
+    (license license:gpl2+)))
 
 (define-public python-biblib
   (let ((upstream-version "0.1.0")

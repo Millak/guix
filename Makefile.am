@@ -534,6 +534,7 @@ SCM_TESTS =					\
   tests/services.scm				\
   tests/services/file-sharing.scm		\
   tests/services/configuration.scm		\
+  tests/services/lightdm.scm			\
   tests/services/linux.scm			\
   tests/services/telephony.scm			\
   tests/sets.scm				\

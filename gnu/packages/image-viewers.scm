@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +56,7 @@
   #:use-module (guix build-system qt)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages animation)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -85,14 +87,20 @@
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
+  #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages terminals)
+  #:use-module (gnu packages upnp)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages))
 
@@ -973,3 +981,131 @@ synchronization of multiple instances.")
     (description
      "xzgv is a fast image viewer that provides extensive keyboard support.")
     (license license:gpl2+)))
+
+(define-public hydrus-network
+  (package
+    (name "hydrus-network")
+    (version "495")                       ;upstream has a weekly release cycle
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hydrusnetwork/hydrus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "03zhrcmjzbk37sl9nwjahfmr8aflss84c4xhg5ci5b8jvbbqmr1j"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove pre-built binaries from bin/.
+        #~(for-each delete-file (find-files "bin" "^swfrender")))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(let ((static-dir "/share/hydrus/static"))
+          (modify-phases %standard-phases
+            ;; Hydrus is a python program but does not uses setup.py or any
+            ;; other build system to build itself - it's delivered ready to
+            ;; run from the source.
+            (replace 'check
+              (lambda _
+                (setenv "DISPLAY" ":0")
+                (setenv "XDG_CACHE_HOME" (getcwd))
+                (setenv "HOME" (getcwd))
+                (invoke "xvfb-run" "python" "test.py")))
+            ;; XXX: program help files are not built.  Updating
+            ;; python-pymdown-extensions to its latest version might be the
+            ;; solution, but this would require also packaging its new build
+            ;; system that is not present in guix yet.
+            (delete 'build)
+            (add-before 'install 'patch-variables
+              (lambda* (#:key outputs inputs #:allow-other-keys)
+                (let ((ffmpeg    (search-input-file inputs "/bin/ffmpeg"))
+                      (swfrender (search-input-file inputs "/bin/swfrender"))
+                      (upnpc     (search-input-file inputs "/bin/upnpc"))
+                      (out       (assoc-ref outputs "out")))
+                  (with-directory-excursion "hydrus"
+                    ;; Without this the program would incorrectly assume
+                    ;; that it uses user's ffmpeg binary when it isn't.
+                    (substitute* "client/ClientController.py"
+                      (("if (HydrusVideoHandling\\.FFMPEG_PATH).*" _ var)
+                       (string-append "if " var " == \"" ffmpeg "\":\n")))
+                    (with-directory-excursion "core"
+                      (substitute* "HydrusConstants.py"
+                        (("STATIC_DIR = .*")
+                         (string-append "STATIC_DIR = \"" out static-dir "\"\n")))
+                      (substitute* "HydrusFlashHandling.py"
+                        (("SWFRENDER_PATH = .*\n")
+                         (string-append "SWFRENDER_PATH = \"" swfrender "\"\n")))
+                      (substitute* "HydrusVideoHandling.py"
+                        (("FFMPEG_PATH = .*\n")
+                         (string-append "FFMPEG_PATH = \"" ffmpeg "\"\n")))
+                      (substitute* "networking/HydrusNATPunch.py"
+                        (("UPNPC_PATH = .*\n")
+                         (string-append "UPNPC_PATH = \"" upnpc "\"\n"))))))))
+            ;; Since everything lives in hydrus's root directory, it needs to
+            ;; be spread out to comply with guix's expectations.
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (client (string-append out "/bin/hydrus"))
+                       (server (string-append out "/bin/hydrus-server")))
+                  (copy-recursively "static"
+                                    (string-append out static-dir))
+                  (copy-recursively "hydrus"
+                                    (string-append out
+                                                   "/lib/python"
+                                                   (python-version
+                                                    #$(this-package-input "python"))
+                                                   "/site-packages/hydrus"))
+                  (mkdir (string-append out "/bin"))
+                  (copy-file "client.py" client)
+                  (chmod client #o0555)
+                  (copy-file "server.py" server)
+                  (chmod server #o0555))))))))
+    ;; All native-inputs are only needed for the the check phase
+    (native-inputs
+     (list xvfb-run
+           python-nose
+           python-mock
+           python-httmock))
+    ;; All python packages were taken from static/build_files/linux/requirements.txt
+    (propagated-inputs
+     (list python-beautifulsoup4
+           python-cbor2
+           python-chardet
+           python-cloudscraper
+           python-html5lib
+           python-lxml
+           python-lz4
+           python-numpy
+           opencv ; its python bindings are a drop-in replacement for opencv-python-headless
+           python-pillow
+           python-psutil
+           python-pylzma
+           python-pyopenssl
+           ;; Since hydrus' version 494 it supports python-pyside-6 but it's not yet
+           ;; in guix. pyside-2 is still supported as a fallback.
+           python-pyside-2
+           python-pysocks
+           python-mpv
+           python-pyyaml
+           python-qtpy
+           python-requests
+           python-send2trash
+           python-service-identity
+           python-six
+           python-twisted))
+    (inputs
+     (list swftools ffmpeg miniupnpc python))
+    (synopsis "Organize your media with tags like a dektop booru")
+    (description
+     "The hydrus network client is an application written for
+internet-fluent media nerds who have large image/swf/webm collections.
+It browses with tags instead of folders, a little like a booru on your desktop.
+Advanced users can share tags and files anonymously through custom servers that
+any user may run.  Everything is free and privacy is the first concern.")
+    (home-page "https://hydrusnetwork.github.io/hydrus/")
+    (license license:wtfpl2)))

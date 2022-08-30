@@ -320,15 +320,25 @@ s-expression, etc.
 @cindex reducing boilerplate
 We also provide templates for common git commit messages and package
 definitions in the @file{etc/snippets} directory.  These templates can
-be used with @url{https://joaotavora.github.io/yasnippet/, YASnippet} to
-expand short trigger strings to interactive text snippets.  You may want
-to add the snippets directory to the @var{yas-snippet-dirs} variable in
+be used to expand short trigger strings to interactive text snippets. If
+you use @url{https://joaotavora.github.io/yasnippet/, YASnippet}, you
+may want to add the @file{etc/snippets/yas} snippets directory to the
+@var{yas-snippet-dirs} variable.  If you use
+@url{https://github.com/minad/tempel/, Tempel}, you may want to add the
+@file{etc/snippets/tempel/*} path to the @var{tempel-path} variable in
 Emacs.
 
 @lisp
 ;; @r{Assuming the Guix checkout is in ~/src/guix.}
+;; @r{Yasnippet configuration}
 (with-eval-after-load 'yasnippet
-  (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets"))
+  (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets/yas"))
+;; @r{Tempel configuration}
+(with-eval-after-load 'tempel
+   ;; Ensure tempel-path is a list -- it may also be a string.
+   (unless (listp 'tempel-path)
+     (setq tempel-path (list tempel-path)))
+   (add-to-list 'tempel-path "~/src/guix/etc/snippets/tempel/*"))
 @end lisp
 
 The commit message snippets depend on @url{https://magit.vc/, Magit} to
