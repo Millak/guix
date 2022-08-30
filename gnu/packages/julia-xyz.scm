@@ -165,7 +165,8 @@ provides functions to run a few automatable checks for Julia packages.")
      ;; Expression: @inferred(ArrayInterface.size(Rnr)) === (StaticInt(4),)
      ;; Evaluated: (static(2),) === (static(4),)
      ;; Disable as stopgap.
-     (list #:tests? (not (target-x86-32?))))
+     (list #:tests? (not (or (%current-target-system)
+                             (target-x86-32?)))))
     (propagated-inputs
      (list julia-ifelse
            julia-requires
@@ -2048,7 +2049,8 @@ c-style numerical formatting.")
      ;; Expression: dual_isapprox(FDNUM ^ PRIMAL, exp(PRIMAL * log(FDNUM)))
      ;; ERROR: LoadError: LoadError: There was an error during testing
      ;; Disable as stopgap.
-     (list #:tests? (not (target-x86-32?))))
+     (list #:tests? (not (or (%current-target-system)
+                             (target-x86-32?)))))
     (inputs                             ;required for tests
      (list julia-calculus
            julia-difftests))
@@ -2937,7 +2939,8 @@ each one has a fixed size.  Currently support inline strings from 1 byte up to
       ;; Got exception outside of a @test
       ;; OverflowError: 96908232 * 106943408 overflowed for type Int32
       ;; Disable as stopgap.
-      #:tests? (not (target-x86-32?))))
+      #:tests? (not (or (%current-target-system)
+                        (target-x86-32?)))))
     (propagated-inputs
      (list julia-axisalgorithms
            julia-offsetarrays
@@ -4658,7 +4661,8 @@ can be avoided.")
      ;; Expression: hash(tr_float, hash(1)) === hash(v_float, hash(1))
      ;; MethodError: no method matching decompose(::ReverseDiff.TrackedReal{Float64, Float64, Nothing})
      ;; Disable as stopgap.
-     (list #:tests? (not (target-x86-32?))))
+     (list #:tests? (not (or (%current-target-system)
+                             (target-x86-32?)))))
     (propagated-inputs
      (list julia-diffresults
            julia-diffrules

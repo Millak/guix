@@ -3,6 +3,7 @@
 ;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -104,6 +105,26 @@
                 (chdir "/tmp")
                 (system* ,(string-append #$libvirt "/bin/virsh")
                          "-c" "qemu:///system" "connect"))
+             marionette))
+
+          (test-eq "create default network"
+            0
+            (marionette-eval
+             '(begin
+                (chdir "/tmp")
+                (system* #$(file-append libvirt "/bin/virsh")
+                         "-c" "qemu:///system" "net-define"
+                         #$(file-append libvirt
+                                        "/etc/libvirt/qemu/networks/default.xml")))
+             marionette))
+
+          (test-eq "start default network"
+            0
+            (marionette-eval
+             '(begin
+                (chdir "/tmp")
+                (system* #$(file-append libvirt "/bin/virsh")
+                         "-c" "qemu:///system" "net-start" "default"))
              marionette))
 
           (test-end))))

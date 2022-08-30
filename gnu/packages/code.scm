@@ -16,6 +16,7 @@
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 lu hui <luhuins@163.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -744,7 +745,7 @@ independent targets.")
 (define-public uncrustify
   (package
     (name "uncrustify")
-    (version "0.74.0")
+    (version "0.75.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -753,7 +754,7 @@ independent targets.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v48vhmzxjzysbf0vhxzayl2pkassvbabvwg84xd6b8n5i74ijxd"))))
+                "1mzzzd4alajjdshbjd2a5mddqcpag8yyss72n09mfpialzyf7g60"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("python" ,python-wrapper)))

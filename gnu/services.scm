@@ -482,11 +482,8 @@ configuration being used."
 (define (provenance-entry config-file)
   "Return system entries describing the operating system provenance: the
 channels in use and CONFIG-FILE, if it is true."
-  (define profile
-    (current-profile))
-
   (define channels
-    (and=> profile profile-channels))
+    (current-channels))
 
   (mbegin %store-monad
     (let ((config-file (cond ((string? config-file)

@@ -784,7 +784,7 @@ to enter the LUKS passphrase."
             ;; At this point we have no choice but to use OCR to determine
             ;; when the passphrase should be entered.
             (wait-for-screen-text #$marionette passphrase-prompt?
-                                  #:ocrad #$ocrad)
+                                  #:ocr #$ocrad)
             (marionette-type #$(string-append %luks-passphrase "\n")
                              #$marionette)
 
@@ -792,7 +792,7 @@ to enter the LUKS passphrase."
             ;; we can then be sure we match the "Enter passphrase" prompt from
             ;; 'cryptsetup', in the initrd.
             (wait-for-screen-text #$marionette (negate bios-boot-screen?)
-                                  #:ocrad #$ocrad
+                                  #:ocr #$ocrad
                                   #:timeout 20)))
 
         (test-assert "enter LUKS passphrase for the initrd"
@@ -800,7 +800,7 @@ to enter the LUKS passphrase."
             ;; XXX: Here we use OCR as well but we could instead use QEMU
             ;; '-serial stdio' and run it in an input pipe,
             (wait-for-screen-text #$marionette passphrase-prompt?
-                                  #:ocrad #$ocrad
+                                  #:ocr #$ocrad
                                   #:timeout 60)
             (marionette-type #$(string-append %luks-passphrase "\n")
                              #$marionette)
@@ -999,7 +999,7 @@ launched as a shepherd service."
             ;; XXX: Here we use OCR as well but we could instead use QEMU
             ;; '-serial stdio' and run it in an input pipe,
             (wait-for-screen-text #$marionette passphrase-prompt?
-                                  #:ocrad #$ocrad
+                                  #:ocr #$ocrad
                                   #:timeout 120)
             (marionette-type #$(string-append %luks-passphrase "\n")
                              #$marionette)

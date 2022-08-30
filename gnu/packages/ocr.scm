@@ -177,9 +177,11 @@ models for the Tesseract OCR Engine.")
     (inputs
      (list cairo
            icu4c
-           leptonica
            pango
            python-wrapper))
+    (propagated-inputs
+     ;; Required by tesseract.pc.
+     (list leptonica))
     (native-search-paths (list (search-path-specification
                                 (variable "TESSDATA_PREFIX")
                                 (files (list "share/tesseract-ocr/tessdata"))

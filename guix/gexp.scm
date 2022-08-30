@@ -2140,8 +2140,8 @@ Call RESOLVE-COLLISION when several files collide, passing it the list of
 colliding files.  RESOLVE-COLLISION must return the chosen file or #f, in
 which case the colliding entry is skipped altogether.
 
-When HARD-LINKS? is true, create hard links instead of symlinks.  When QUIET?
-is true, the derivation will not print anything."
+When COPY? is true, copy files instead of creating symlinks.  When QUIET?  is
+true, the derivation will not print anything."
   (define symlink
     (if copy?
         (gexp (lambda (old new)

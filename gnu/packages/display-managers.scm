@@ -37,6 +37,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system trivial)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -53,6 +54,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
@@ -275,7 +277,10 @@ experience for your users, your family and yourself")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wr60c946p8jz9kb8zi4cd8d4mkcy7infbvlfzwajiglc22nblxn"))))
+                "1wr60c946p8jz9kb8zi4cd8d4mkcy7infbvlfzwajiglc22nblxn"))
+              (patches (search-patches "lightdm-arguments-ordering.patch"
+                                       "lightdm-vncserver-check.patch"
+                                       "lightdm-vnc-color-depth.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:parallel-tests? #f             ; fails when run in parallel
@@ -310,8 +315,8 @@ experience for your users, your family and yourself")
              (unsetenv "LC_ALL"))))))
     (inputs
      (list audit
-           bash-minimal                           ;for cross-compilation
-           coreutils-minimal                      ;ditto
+           bash-minimal                 ;for cross-compilation
+           coreutils-minimal            ;ditto
            linux-pam
            shadow                       ;for sbin/nologin
            libgcrypt
@@ -356,17 +361,29 @@ display manager which supports different greeters.")
               (sha256
                (base32
                 "04q62mvr97l9gv8h37hfarygqc7p0498ig7xclcg4kxkqw0b7yxy"))))
-    (build-system gnu-build-system)
+    (build-system glib-or-gtk-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list "--disable-indicator-services-command" ;requires upstart
+              ;; Put the binary under /bin rather than /sbin, so that it gets
+              ;; wrapped by the glib-or-gtk-wrap phase.
+              (string-append "--sbindir=" #$output "/bin")
+              (string-append "--with-libxklavier")
               (string-append "--enable-at-spi-command="
                              (search-input-file
-                              %build-inputs "libexec/at-spi-bus-launcher")))
-
+                              %build-inputs "libexec/at-spi-bus-launcher")
+                             " --launch-immediately"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'customize-default-config-path
+            (lambda _
+              (substitute* "src/Makefile.in"
+                ;; Have the default config directory sourced from
+                ;; /etc/lightdm/lightdm-gtk-greeter.conf, which is where the
+                ;; lightdm service writes it.
+                (("\\$\\(sysconfdir)/lightdm/lightdm-gtk-greeter.conf")
+                 "/etc/lightdm/lightdm-gtk-greeter.conf"))))
           (add-after 'install 'fix-.desktop-file
             (lambda* (#:key outputs #:allow-other-keys)
               (substitute* (search-input-file
@@ -375,34 +392,38 @@ display manager which supports different greeters.")
                 (("Exec=lightdm-gtk-greeter")
                  (string-append "Exec="
                                 (search-input-file
-                                 outputs "sbin/lightdm-gtk-greeter"))))))
-          (add-after 'fix-.desktop-file 'wrap-program
-            ;; Mimic glib-or-gtk build system which doesn't wrap files in
-            ;; /sbin.
-            (lambda* (#:key outputs inputs #:allow-other-keys)
-              (let ((gtk #$(this-package-input "gtk+"))
-                    (shared-mime-info #$(this-package-input "shared-mime-info"))
-                    (glib #$(this-package-input "glib")))
-                (wrap-program (search-input-file
-                               outputs "sbin/lightdm-gtk-greeter")
-                  `("XDG_DATA_DIRS" ":" prefix
-                    ,(cons "/run/current-system/profile/share"
-                           (map (lambda (pkg)
-                                  (string-append pkg "/share"))
-                                (list gtk shared-mime-info glib))))
-                  `("GTK_PATH" ":" prefix (,gtk))
-                  `("GIO_EXTRA_MODULES" ":" prefix (,gtk))
-                  '("XCURSOR_PATH" ":" prefix
-                    ("/run/current-system/profile/share/icons")))))))))
+                                 outputs "bin/lightdm-gtk-greeter"))))))
+          (add-after 'glib-or-gtk-wrap 'custom-wrap
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-script (search-input-file
+                            outputs "bin/lightdm-gtk-greeter")
+                ;; Wrap GDK_PIXBUF_MODULE_FILE, so that the SVG loader is
+                ;; available at all times even outside of profiles, such as
+                ;; when used in the lightdm-service-type.  Otherwise, it
+                ;; wouldn't be able to display its own icons.
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(search-input-file
+                     outputs
+                     "lib/gdk-pixbuf-2.0/2.10.0/loaders.cache")))
+                `("XDG_DATA_DIRS" ":" prefix
+                  (,(string-append "/run/current-system/profile/share:"
+                                   (getenv "XDG_DATA_DIRS"))))
+                '("XCURSOR_PATH" ":" prefix
+                  ("/run/current-system/profile/share/icons"))))))))
     (native-inputs
-     (list exo intltool pkg-config xfce4-dev-tools))
+     (list exo
+           intltool
+           pkg-config
+           xfce4-dev-tools))
     (inputs
-     (list bash-minimal                 ;for wrap-program
+     (list at-spi2-core
+           bash-minimal                 ;for wrap-program
+           gtk+
+           guile-3.0
+           librsvg
+           libxklavier
            lightdm
-           shared-mime-info
-           at-spi2-core
-           glib
-           gtk+))
+           shared-mime-info))
     (synopsis "GTK+ greeter for LightDM")
     (home-page "https://github.com/xubuntu/lightdm-gtk-greeter")
     (description "This package provides a LightDM greeter implementation using

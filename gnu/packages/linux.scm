@@ -7683,9 +7683,9 @@ Text-based output formats: CSV, XML, Netfilter's LOG, Netfilter's conntrack
      ;; Disable the test suite on armhf-linux, as there are too many
      ;; failures to keep track of (see for example:
      ;; https://github.com/proot-me/proot/issues/286).
-     `(#:tests? ,(not (string-prefix? "armhf"
-                                      (or (%current-target-system)
-                                          (%current-system))))
+     `(#:tests? ,(not (or (%current-target-system)
+                          (string-prefix? "armhf"
+                                          (or (%current-system)))))
        #:make-flags '("-C" "src")
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'patch-sources
