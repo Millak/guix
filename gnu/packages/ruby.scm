@@ -154,8 +154,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-2.7
   (package
     (inherit ruby-2.6)
-    (version "2.7.4")
-    (replacement ruby-2.7-fixed) ; security fixes
+    (version "2.7.6")
     (source
      (origin
        (inherit (package-source ruby-2.6))
@@ -164,7 +163,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.gz"))
        (sha256
         (base32
-         "0nxwkxh7snmjqf787qsp4i33mxd1rbf9yzyfiky5k230i680jhrh"))))
+         "042xrdk7hsv4072bayz3f8ffqh61i8zlhvck10nfshllq063n877"))))
     (arguments
      `(#:test-target "test"
        #:configure-flags '("--enable-shared") ; dynamic linking
@@ -189,20 +188,6 @@ a focus on simplicity and productivity.")
              #t)))))
     (native-inputs
      (list autoconf))))
-
-(define ruby-2.7-fixed
-  (package
-    (inherit ruby-2.7)
-    (version "2.7.6")
-    (source
-     (origin
-       (inherit (package-source ruby-2.7))
-       (uri (string-append "https://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.gz"))
-       (sha256
-        (base32
-         "042xrdk7hsv4072bayz3f8ffqh61i8zlhvck10nfshllq063n877"))))))
 
 (define-public ruby-3.0
   (package
