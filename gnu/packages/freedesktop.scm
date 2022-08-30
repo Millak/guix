@@ -1501,10 +1501,13 @@ message bus.")
            libxml2                      ;for XML_CATALOG_FILES
            libxslt
            pkg-config
-           python-dbusmock
-           python-pygobject
            vala
-           xmlto))
+           xmlto
+
+           ;; For the tests.
+           python
+           python-dbusmock
+           python-pygobject))
     (inputs
      (list coreutils-minimal
            dbus
