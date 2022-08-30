@@ -750,6 +750,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/guix.scm				\
   %D%/tests/monitoring.scm                      \
   %D%/tests/nfs.scm				\
+  %D%/tests/image.scm				\
   %D%/tests/install.scm				\
   %D%/tests/ldap.scm				\
   %D%/tests/linux-modules.scm			\
