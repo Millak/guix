@@ -55,6 +55,7 @@
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
+;;; Copyright © 2022 msimonin <matthieu.simonin@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7786,3 +7787,28 @@ list, create, update, or delete resources (e.g. Order, Product, Collection).")
     (description
      "This package provides a library to parse and apply patches.")
     (license license:expat)))
+
+(define-public python-grid5000
+  (package
+    (name "python-grid5000")
+    (version "1.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.inria.fr/msimonin/python-grid5000")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               "097pm8b68ihk29xz9zv29b1x0bhgjb4lfj8zxk2grbsh7wr9dipg")))
+    (build-system python-build-system)
+    (native-inputs (list python-wheel))
+    (propagated-inputs (list python-requests python-ipython python-pyyaml))
+    (arguments
+     (list #:tests? #f)) ; No tests.
+    (home-page "https://pypi.org/project/python-grid5000/")
+    (synopsis "Grid5000 python client")
+    (description
+     "python-grid5000 is a python package wrapping the Grid5000 REST API.
+You can use it as a library in your python project or you can explore the
+Grid5000 resources interactively using the embedded shell.")
+    (license license:gpl3+)))
