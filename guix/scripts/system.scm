@@ -41,6 +41,7 @@
   #:use-module (guix grafts)
   #:use-module (guix gexp)
   #:use-module (guix derivations)
+  #:use-module (guix diagnostics)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix monads)
@@ -1257,7 +1258,10 @@ resulting from command-line parsing."
                          (size image-size)
                          (volatile-root? volatile?)
                          (shared-network? shared-network?))))
-         (os          (image-operating-system image))
+         (os          (or (image-operating-system image)
+                          (raise
+                           (formatted-message
+                            (G_ "image lacks an operating-system")))))
          (target-file (match args
                         ((first second) second)
                         (_ #f)))
