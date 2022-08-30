@@ -541,7 +541,7 @@ OpenSSL for TARGET."
                                            "/bin/perl"))))))))
     (license license:asl2.0)))
 
-(define-public openssl openssl-1.1)
+(define-public openssl openssl-3.0)
 
 (define-public bearssl
   (package
