@@ -1494,10 +1494,10 @@ message bus.")
     (native-inputs
      (list docbook-xml-4.1.2
            docbook-xsl
+           gettext-minimal
            `(,glib "bin")               ; for gdbus-codegen, etc.
            gobject-introspection
            gtk-doc
-           intltool
            libxml2                      ;for XML_CATALOG_FILES
            libxslt
            pkg-config
