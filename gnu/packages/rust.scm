@@ -166,7 +166,7 @@
     (inputs
      `(("libcurl" ,curl)
        ("llvm" ,llvm)
-       ("openssl" ,openssl)
+       ("openssl" ,openssl-1.1)
        ("zlib" ,zlib)))
     (native-inputs
      `(("bison" ,bison)
