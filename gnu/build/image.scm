@@ -83,7 +83,6 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
         (fs-options (partition-file-system-options partition))
         (label (partition-label partition))
         (uuid (partition-uuid partition))
-        (flags (partition-flags partition))
         (journal-options "lazy_itable_init=1,lazy_journal_init=1"))
     (apply invoke
            `("fakeroot" "mke2fs" "-t" ,fs "-d" ,root
