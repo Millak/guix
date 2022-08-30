@@ -108,7 +108,6 @@ numeric expression ~%") value 'field))))
 
 (define-record-type* <partition> partition make-partition
   partition?
-  (device               partition-device (default #f))
   (size                 partition-size   ;size in bytes as integer or 'guess
                         (sanitize validate-size))
   (offset               partition-offset
