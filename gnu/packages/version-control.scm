@@ -2460,7 +2460,7 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
 (define-public tig
   (package
     (name "tig")
-    (version "2.5.6")
+    (version "2.5.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2468,7 +2468,7 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
                     version "/tig-" version ".tar.gz"))
               (sha256
                (base32
-                "0pwn7mlfnd5ngcbagjs9vsr7jgmia8676p0i91vvfl4v6qrmzfsh"))
+                "0xna55y1r1jssdmrzpinv96p7w00w9hn39q5l3d8l299dg4bmiyv"))
               (modules '((guix build utils)))
               (snippet
                '(begin
