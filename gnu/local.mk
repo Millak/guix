@@ -1510,7 +1510,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/libmemcached-build-with-gcc7.patch	\
   %D%/packages/patches/libmhash-hmac-fix-uaf.patch		\
   %D%/packages/patches/libsigrokdecode-python3.9-fix.patch	\
-  %D%/packages/patches/mercurial-hg-extension-path.patch       \
+  %D%/packages/patches/mercurial-hg-extension-path.patch	\
+  %D%/packages/patches/mercurial-openssl-compat.patch		\
   %D%/packages/patches/mesa-opencl-all-targets.patch		\
   %D%/packages/patches/mesa-skip-tests.patch			\
   %D%/packages/patches/meson-allow-dirs-outside-of-prefix.patch	\

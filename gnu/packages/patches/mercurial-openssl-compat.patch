@@ -1,0 +1,89 @@
+Tweak cipher selection to make TLS < 1.2 work with OpenSSL 3.
+
+Taken from Debian:
+
+  https://salsa.debian.org/python-team/packages/mercurial/-/blob/debian/master/debian/patches/openssl_3_cipher_tlsv1.patch
+
+--- a/mercurial/sslutil.py
++++ b/mercurial/sslutil.py
+@@ -117,17 +117,17 @@ def _hostsettings(ui, hostname):
+     ciphers = ui.config(b'hostsecurity', b'%s:ciphers' % bhostname, ciphers)
+ 
+     # If --insecure is used, we allow the use of TLS 1.0 despite config options.
+     # We always print a "connection security to %s is disabled..." message when
+     # --insecure is used. So no need to print anything more here.
+     if ui.insecureconnections:
+         minimumprotocol = b'tls1.0'
+         if not ciphers:
+-            ciphers = b'DEFAULT'
++            ciphers = b'DEFAULT:@SECLEVEL=0'
+ 
+     s[b'minimumprotocol'] = minimumprotocol
+     s[b'ciphers'] = ciphers
+ 
+     # Look for fingerprints in [hostsecurity] section. Value is a list
+     # of <alg>:<fingerprint> strings.
+     fingerprints = ui.configlist(
+         b'hostsecurity', b'%s:fingerprints' % bhostname
+@@ -621,17 +621,17 @@ def wrapserversocket(
+ 
+     # Improve forward secrecy.
+     sslcontext.options |= getattr(ssl, 'OP_SINGLE_DH_USE', 0)
+     sslcontext.options |= getattr(ssl, 'OP_SINGLE_ECDH_USE', 0)
+ 
+     # In tests, allow insecure ciphers
+     # Otherwise, use the list of more secure ciphers if found in the ssl module.
+     if exactprotocol:
+-        sslcontext.set_ciphers('DEFAULT')
++        sslcontext.set_ciphers('DEFAULT:@SECLEVEL=0')
+     elif util.safehasattr(ssl, b'_RESTRICTED_SERVER_CIPHERS'):
+         sslcontext.options |= getattr(ssl, 'OP_CIPHER_SERVER_PREFERENCE', 0)
+         # pytype: disable=module-attr
+         sslcontext.set_ciphers(ssl._RESTRICTED_SERVER_CIPHERS)
+         # pytype: enable=module-attr
+ 
+     if requireclientcert:
+         sslcontext.verify_mode = ssl.CERT_REQUIRED
+--- a/tests/test-https.t
++++ b/tests/test-https.t
+@@ -356,19 +356,19 @@ Start servers running supported TLS vers
+   $ cat ../hg1.pid >> $DAEMON_PIDS
+   $ hg serve -p $HGPORT2 -d --pid-file=../hg2.pid --certificate=$PRIV \
+   > --config devel.serverexactprotocol=tls1.2
+   $ cat ../hg2.pid >> $DAEMON_PIDS
+   $ cd ..
+ 
+ Clients talking same TLS versions work
+ 
+-  $ P="$CERTSDIR" hg --config hostsecurity.minimumprotocol=tls1.0 --config hostsecurity.ciphers=DEFAULT id https://localhost:$HGPORT/
++  $ P="$CERTSDIR" hg --config hostsecurity.minimumprotocol=tls1.0 --config hostsecurity.ciphers=DEFAULT:@SECLEVEL=0 id https://localhost:$HGPORT/
+   5fed3813f7f5
+-  $ P="$CERTSDIR" hg --config hostsecurity.minimumprotocol=tls1.1 --config hostsecurity.ciphers=DEFAULT id https://localhost:$HGPORT1/
++  $ P="$CERTSDIR" hg --config hostsecurity.minimumprotocol=tls1.1 --config hostsecurity.ciphers=DEFAULT:@SECLEVEL=0 id https://localhost:$HGPORT1/
+   5fed3813f7f5
+   $ P="$CERTSDIR" hg --config hostsecurity.minimumprotocol=tls1.2 id https://localhost:$HGPORT2/
+   5fed3813f7f5
+ 
+ Clients requiring newer TLS version than what server supports fail
+ 
+   $ P="$CERTSDIR" hg id https://localhost:$HGPORT/
+   (could not negotiate a common security protocol (tls1.1+) with localhost; the likely cause is Mercurial is configured to be more secure than the server can support)
+@@ -400,17 +400,17 @@ Clients requiring newer TLS version than
+ 
+   $ hg --config hostsecurity.minimumprotocol=tls1.2 id --insecure https://localhost:$HGPORT1/
+   warning: connection security to localhost is disabled per current settings; communication is susceptible to eavesdropping and tampering
+   5fed3813f7f5
+ 
+ The per-host config option overrides the default
+ 
+   $ P="$CERTSDIR" hg id https://localhost:$HGPORT/ \
+-  > --config hostsecurity.ciphers=DEFAULT \
++  > --config hostsecurity.ciphers=DEFAULT:@SECLEVEL=0 \
+   > --config hostsecurity.minimumprotocol=tls1.2 \
+   > --config hostsecurity.localhost:minimumprotocol=tls1.0
+   5fed3813f7f5
+ 
+ The per-host config option by itself works
+ 
+   $ P="$CERTSDIR" hg id https://localhost:$HGPORT/ \
+   > --config hostsecurity.localhost:minimumprotocol=tls1.2
