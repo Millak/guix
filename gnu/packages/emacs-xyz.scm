@@ -166,6 +166,7 @@
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages games)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages gtk)
@@ -3385,6 +3386,57 @@ environment set through Direnv.")
     (description "This Emacs package provides a command showing the symbols
 that the binary uses instead of the actual binary contents.")
     (license license:gpl3+)))
+
+(define-public emacs-org-fc
+  (let ((commit "f64b5336485a42be91cfe77850c02a41575f5984")
+        (revision "0"))
+    (package
+      (name "emacs-org-fc")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~l3kn/org-fc")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1d0a3vr09zkplclypcgpfbfd6r0h0i3g3zsqb4pcz6x239d59gd5"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons* "\\.awk$" "\\.org$" %default-include)
+        #:exclude #~(cons "^tests/" %default-exclude)
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch"
+                               "-L" "."
+                               "-L" "tests/"
+                               "-l" "tests/org-fc-filter-test.el"
+                               "-l" "tests/org-fc-indexer-test.el"
+                               "-l" "tests/org-fc-review-data-test.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'qualify-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((find (search-input-file inputs "/bin/find"))
+                      (gawk (search-input-file inputs "/bin/gawk"))
+                      (xargs (search-input-file inputs "/bin/xargs")))
+                  (substitute* "org-fc-awk.el"
+                    (("\"find ") (string-append "\"" find " "))
+                    (("\"gawk ") (string-append "\"" gawk " "))
+                    (("\"xargs ") (string-append "\"" xargs " ")))))))))
+      (inputs (list findutils gawk))
+      (propagated-inputs (list emacs-hydra))
+      (home-page "https://www.leonrische.me/fc/index.html")
+      (synopsis "Spaced repetition system for Emacs Org mode")
+      (description
+       "Org-fc is a spaced-repetition system for Emacs' Org mode.
+It allows you to mark headlines in a file as flashcards, turning pieces of
+knowledge you want to learn into a question-answer test.  These cards are
+reviewed at regular interval.  After each review, the next review interval is
+calculated based on how well you remembered the contents of the card.")
+      (license license:gpl3+))))
 
 (define-public emacs-font-lock-studio
   (let ((commit "12c35967b31233e06946c70627aa3152dacfe261")
