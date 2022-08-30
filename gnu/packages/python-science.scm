@@ -348,13 +348,13 @@ library.")
 (define-public python-pandas
   (package
     (name "python-pandas")
-    (version "1.4.2")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas" version))
        (sha256
-        (base32 "04lsak3j5hq2hk0vfjf532rdxdqmg2akamdl4yl3qipihp2izg4j"))))
+        (base32 "0ryv66s9cvd27q6a985vv556k2qlnlrdna2z7qc7bdhphrrhsv5b"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((guix build utils)
@@ -422,7 +422,7 @@ library.")
     (inputs
      (list which xclip xsel))
     (native-inputs
-     (list python-cython
+     (list python-cython-0.29.32
            python-beautifulsoup4
            python-lxml
            python-html5lib
