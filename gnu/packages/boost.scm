@@ -68,7 +68,7 @@
 (define-public boost
   (package
     (name "boost")
-    (version "1.79.0")
+    (version "1.80.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://boostorg.jfrog.io/artifactory/main/release/"
@@ -76,13 +76,33 @@
                                   (version-with-underscores version) ".tar.bz2"))
               (patches
                (list (boost-patch
-                      ;; 1.79.0 was released with a segmentation fault:
-                      ;; <https://github.com/boostorg/json/issues/692>.
-                      "0001-json-array-erase-relocate.patch" version
-                      "1b0izwj8w92imr8ydzrh522syncprpf82n3kcy6apxn6p54b7p0f")))
+                      ;; Boost.Filesystem directory iterators may fail to
+                      ;; construct for a network share on Windows prior to 10:
+                      ;; https://github.com/boostorg/filesystem/pull/246,
+                      ;; https://github.com/boostorg/filesystem/issues/245
+                      "0001-filesystem-win-fix-dir-it-net-share.patch" version
+                      "067hhylqkzzdbqzc1hkbpaqmvz248lxqrdhb2yi6iq9qabsik3lk")
+                     (boost-patch
+                      ;; In Boost.Filesystem on Windows, weakly_canonical fails
+                      ;; to process paths that start with the "\\?\" prefix:
+                      ;; https://github.com/boostorg/filesystem/issues/247
+                      "0002-filesystem-fix-weakly-canonical-long-paths.patch" version
+                      "00w3albf8527glclx85p5b2ml3vr06xpwwmfyzg005v1cp8avcpi")
+                     (boost-patch
+                      ;; Boost.Unordered containers are not in a valid state
+                      ;; after moving:
+                      ;; https://github.com/boostorg/unordered/issues/139
+                      "0003-unordered-valid-after-move.patch" version
+                      "0dw839w22cawqawfpsx7j7v9y0x2vn66m732iidpxvdxbjn2kzva")
+                     (boost-patch
+                      ;; Fixed a missing include on POSIX systems that don't
+                      ;; support *at APIs:
+                      ;; https://github.com/boostorg/filesystem/issues/250
+                      "0004-filesystem-posix-fix-no-at-apis-missing-include.patch" version
+                      "09k8k3b1306jkjls12wfghj820n828j6aaxzmcr0wpnjhp8fzi1v")))
               (sha256
                (base32
-                "0fggarccddj6q4ifj3kn7g565rbhn4ia1vd45fxb7y57a6fmhpa7"))))
+                "1h00qp4z5k6lfz310xjwsmqs8fwxi6ngas51169cafz4h9fmc68y"))))
     (build-system gnu-build-system)
     (inputs
      (append
