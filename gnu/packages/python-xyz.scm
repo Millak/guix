@@ -29427,6 +29427,24 @@ very small subset the Python stubs contained in the complete @code{typeshed}
 collection.")
     (license license:asl2.0)))
 
+(define-public python-types-protobuf
+  (package
+    (name "python-types-protobuf")
+    (version "3.20.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "types-protobuf" version))
+              (sha256
+               (base32
+                "000f8n6d4ilihiaf590k73rx3327jh8ima5q5dpxlwz3frj45qrn"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for @code{protobuf}")
+    (description "This package contains typing stubs for @code{protobuf}, a
+very small subset the Python stubs contained in the complete @code{typeshed}
+collection.")
+    (license license:asl2.0)))
+
 (define-public python-types-pytz
   (package
     (name "python-types-pytz")
