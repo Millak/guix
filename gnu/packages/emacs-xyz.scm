@@ -14663,27 +14663,29 @@ actually changing the buffer's text.")
     (license license:gpl3+)))
 
 (define-public emacs-diff-hl
-  (package
-    (name "emacs-diff-hl")
-    (version "1.8.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dgutov/diff-hl")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "075klzf66z1rvhpxv4j694pdkmi7f4fpw6c8q4ncz0h4y5wdbl8w"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/dgutov/diff-hl")
-    (synopsis
-     "Highlight uncommitted changes using VC")
-    (description
-     "@code{diff-hl-mode} highlights uncommitted changes on the side of the
+  ;;; XXX: Latest release is not tagged.  Use commit matching version bump.
+  (let ((commit "37b00f3bad841e131d69442a89cbebc3041d996b"))
+    (package
+      (name "emacs-diff-hl")
+      (version "1.9.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dgutov/diff-hl")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0s3fcwk6c99n2q25bf0a33lphr9mcrxmvr5wz8qsj86jfbyi1is1"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/dgutov/diff-hl")
+      (synopsis
+       "Highlight uncommitted changes using VC")
+      (description
+       "@code{diff-hl-mode} highlights uncommitted changes on the side of the
 window (using the fringe, by default), allows you to jump between
 the hunks and revert them selectively.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-diminish
   ;; XXX: Upstream did not tag last release.
