@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
 (define-module (gnu packages rpc)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix utils)
@@ -157,14 +159,14 @@ browsers to backend services.")
 (define-public python-grpcio
   (package
     (name "python-grpcio")
-    (version "1.27.2")
+    (version "1.47.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "grpcio" version))
        (sha256
         (base32
-         "0zl89jwcff9hkd8mi4yf3qbhns9vbv1s4x4vahm5mkpr7jwk5ras"))
+         "00gqhz0b1sqnfx6zy7h5z41b6mpsq57r1f3p95xradcvmdgskfsx"))
        (modules '((guix build utils) (ice-9 ftw)))
        (snippet
         '(begin
@@ -176,26 +178,33 @@ browsers to backend services.")
                                 (lambda (file)
                                   (not (member file
                                                '("." ".."
-                                                 "abseil-cpp"
                                                  "address_sorting"
-                                                 "upb")))))))
-           #t))))
+                                                 "upb"
+                                                 "xxhash")))))))))))
     (build-system python-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'build 'use-system-libraries
-                    (lambda _
-                      (setenv "GRPC_PYTHON_BUILD_SYSTEM_CARES" "1")
-                      (setenv "GRPC_PYTHON_BUILD_SYSTEM_OPENSSL" "1")
-                      (setenv "GRPC_PYTHON_BUILD_SYSTEM_ZLIB" "1")
-                      #t))
-                  (add-before 'build 'configure-compiler
-                    (lambda _
-                      (substitute* '("setup.py" "src/python/grpcio/commands.py")
-                        (("'cc'") "'gcc'"))
-                      #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'use-system-libraries
+            (lambda _
+              (setenv "GRPC_PYTHON_BUILD_SYSTEM_CARES" "1")
+              (setenv "GRPC_PYTHON_BUILD_SYSTEM_OPENSSL" "1")
+              (setenv "GRPC_PYTHON_BUILD_SYSTEM_ZLIB" "1")
+              (setenv "GRPC_PYTHON_BUILD_SYSTEM_RE2" "1")
+              (setenv "GRPC_PYTHON_BUILD_SYSTEM_ABSL" "1")
+              ;; Fix the linker options to link with abseil-cpp, which is
+              ;; looked under /usr/lib.
+              (substitute* "setup.py"
+                (("pathlib.Path\\('/usr').glob\\('lib\\*/libabsl_\\*.so')")
+                 (format #f "pathlib.Path('~a').glob('lib*/libabsl_*.so')"
+                         #$(this-package-input "abseil-cpp"))))))
+          (add-before 'build 'configure-compiler
+            (lambda _
+              (substitute* '("setup.py" "src/python/grpcio/commands.py")
+                (("'cc'") "'gcc'")))))))
     (inputs
-     (list c-ares openssl zlib))
+     (list abseil-cpp c-ares openssl re2 zlib))
     (propagated-inputs
      (list python-six))
     (home-page "https://grpc.io")
