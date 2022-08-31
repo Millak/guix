@@ -21727,6 +21727,21 @@ Included are implementations of:
 @end enumerate\n")
     (license license:psfl)))
 
+(define-public python-typing-extensions-next
+  (package
+    (inherit python-typing-extensions)
+    (name "python-typing-extensions")
+    (version "4.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/python/typing")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bbry1rg7q5ppkgzdk4nwl7q1w8bbhajm4q68wb9dm6rf7hg1023"))))))
+
 (define-public bpython
   (package
     (name "bpython")
