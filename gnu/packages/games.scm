@@ -11169,3 +11169,39 @@ principle of prioritizing the guests' happiness with a well-maintained park.
 Should they go unwise, a theme park plunge into chaos with vandalizing guests
 and unsafe rides.  Which path will you take?")
     (license license:gpl2)))
+
+(define-public steam-devices-udev-rules
+  ;; Last release from 2019-04-10
+  (let ((commit "d87ef558408c5e7a1a793d738db4c9dc2cb5f8fa")
+        (revision "0"))
+    (package
+      (name "steam-devices-udev-rules")
+      (version (git-version "1.0.0.61" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ValveSoftware/steam-devices")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1yqigraz9f19018ma5n2pbx7naadh9960lia3z8ayg7vz1fjdl54"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("./" "lib/udev/rules.d"
+                           #:include-regexp ("rules$")))
+         #:phases (modify-phases %standard-phases
+                    (add-after 'unpack 'patch-paths
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (substitute* "60-steam-input.rules"
+                          (("/bin/sh")
+                           (search-input-file inputs "/bin/sh"))
+                          (("udevadm")
+                           (search-input-file inputs "/bin/udevadm"))))))))
+      (inputs (list eudev))
+      (home-page "https://github.com/ValveSoftware/steam-devices")
+      (synopsis "udev rules for game controllers and virtual reality devices")
+      (description
+       "This package provides a set of udev rules for game controllers and
+virtual reality devices.")
+      (license license:expat))))
