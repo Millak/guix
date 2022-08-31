@@ -128,6 +128,7 @@
             packages->manifest
             ca-certificate-bundle
             %default-profile-hooks
+            %manifest-format-version
             profile-derivation
             profile-search-paths
             load-profile
