@@ -156,6 +156,24 @@ browsers to backend services.")
        (delete "abseil-cpp" "protobuf")
        (prepend abseil-cpp-20200923.3 protobuf-3.6)))))
 
+(define-public python-grpc-stubs
+  (package
+    (name "python-grpc-stubs")
+    (version "1.24.11")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "grpc-stubs" version))
+              (sha256
+               (base32
+                "19dkm365g38lvxm799d29dnzg60g8in8251c18qkvsv4n92h8axh"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-grpcio python-typing-extensions))
+    (home-page "https://github.com/shabbyrobe/grpc-stubs")
+    (synopsis "gRPC typing stubs for Python")
+    (description "This is a PEP-561-compliant stub-only package which provides
+type information of gRPC.")
+    (license license:expat)))
+
 (define-public python-grpcio
   (package
     (name "python-grpcio")
