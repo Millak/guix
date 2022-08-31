@@ -18,12 +18,12 @@ This is what this patch does.
 -    local -a dirs=(${BASH_COMPLETION_USER_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/bash-completion}/completions)
 +    local -a dirs=(
 +        ${BASH_COMPLETION_USER_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/bash-completion}/completions
-+        "$HOME/.guix-profile/share/bash-completion/completions/$base"
-+        "$HOME/.guix-profile/etc/bash_completion.d/$base"
-+        "$HOME/.guix-home/profile/share/bash-completion/completions/$base"
-+        "$HOME/.guix-home/profile/etc/bash_completion.d/$base"
-+        "/run/current-system/profile/share/bash-completion/completions/$base"
-+        "/run/current-system/profile/etc/bash_completion.d/$base" )
++        "$HOME/.guix-profile/share/bash-completion/completions"
++        "$HOME/.guix-profile/etc/bash_completion.d"
++        "$HOME/.guix-home/profile/share/bash-completion/completions"
++        "$HOME/.guix-home/profile/etc/bash_completion.d"
++        "/run/current-system/profile/share/bash-completion/completions"
++        "/run/current-system/profile/etc/bash_completion.d" )
 +
      local ifs=$IFS IFS=: dir cmd="${1##*/}" compfile
      [[ -n $cmd ]] || return 1
