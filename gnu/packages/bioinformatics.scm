@@ -10936,7 +10936,7 @@ in an easily configurable manner.")
 (define-public pigx-bsseq
   (package
     (name "pigx-bsseq")
-    (version "0.1.7")
+    (version "0.1.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_bsseq/"
@@ -10944,7 +10944,7 @@ in an easily configurable manner.")
                                   "/pigx_bsseq-" version ".tar.gz"))
               (sha256
                (base32
-                "1hfiignq3410dbl6f67vc6zr69abknpcgxixx475dspky2jb5lyn"))))
+                "1s8zgrqxabrawrgkga5rmgb0gyzj7ck47p3rkicjkfv7r2yjy0d7"))))
     (build-system gnu-build-system)
     (arguments
      `(;; TODO: tests currently require 12+GB of RAM.  See
