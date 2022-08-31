@@ -4333,7 +4333,7 @@ which is restored where possible when the file is loaded again.")
 (define-public emacs-s
   (package
     (name "emacs-s")
-    (version "1.12.0")
+    (version "1.13.0")
     (source
      (origin
        (method git-fetch)
@@ -4342,7 +4342,7 @@ which is restored where possible when the file is loaded again.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g8mqd13llj007al4nlxxx4z2lcsg3wk970mgjn0avwrhjjgdmmv"))))
+        (base32 "010i92kagqbfis46n1ffa28fgkdkjp55n13b6f4izar5r7ixm6wx"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
