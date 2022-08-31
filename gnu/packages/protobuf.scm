@@ -46,6 +46,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rpc)
   #:use-module (gnu packages ruby))
 
 (define-public fstrm
@@ -270,6 +271,71 @@ encoder in C++.  The developer using protozero has to manually translate the
 in ansi C.  It is especially suitable for use in microcontrollers, but fits
 any memory-restricted system.")
     (license license:zlib)))
+
+(define-public python-mypy-protobuf
+  (package
+    (name "python-mypy-protobuf")
+    (version "3.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nipunn1313/mypy-protobuf")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0z03h9k68qvnlyhpk0ndwp01bdx77vrjr6mybxq4ldilkkbksklk"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (add-before 'check 'generate-protos-for-tests
+            (lambda _
+              ;; Generate Python sources.
+              (for-each (lambda (proto)
+                          (invoke "protoc"
+                                  "--proto_path=proto"
+                                  "--experimental_allow_proto3_optional"
+                                  "--python_out=test/generated" proto))
+                        (find-files "." "\\.proto$"))
+              ;; Generate GRPC protos.
+              (for-each (lambda (proto)
+                          (invoke "python" "-m" "grpc_tools.protoc"
+                                  "--proto_path=proto"
+                                  "--experimental_allow_proto3_optional"
+                                  "--grpc_python_out=test/generated" proto))
+                        (find-files "proto/testproto/grpc" "\\.proto$"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (setenv "PYTHONPATH" "test/generated")
+              (invoke "pytest" "-vv" "--ignore=test/generated" "test"))))))
+    (native-inputs
+     (list python-grpc-stubs
+           python-grpcio-tools
+           python-pypa-build
+           python-pytest
+           python-typing-extensions-next))
+    (propagated-inputs
+     (list protobuf
+           python-protobuf
+           python-types-protobuf))
+    (home-page "https://github.com/nipunn1313/mypy-protobuf")
+    (synopsis "Generate Mypy stub files from protobuf specifications")
+    (description "This Python package provide tools to generate Mypy stubs
+from protobuf specification files.")
+    (license license:asl2.0)))
 
 (define-public python-nanopb
   (package
