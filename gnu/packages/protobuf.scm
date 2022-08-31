@@ -237,6 +237,39 @@ encoder in C++.  The developer using protozero has to manually translate the
               license:asl2.0            ; for folly
               license:bsd-2))))
 
+(define-public nanopb
+  (package
+    (name "nanopb")
+    (version "0.4.6.4")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/nanopb/nanopb")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gb6q4igrjj8jap4p1ijza4y8dkjlingzym3cli1w18f90d7xlh7"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                "-DBUILD_STATIC_LIBS=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source/tests"
+                  (invoke "scons"))))))))
+    (native-inputs (list protobuf python-protobuf python-wrapper scons))
+    (home-page "https://jpa.kapsi.fi/nanopb/")
+    (synopsis "Small code-size Protocol Buffers implementation in ANSI C")
+    (description "Nanopb is a small code-size Protocol Buffers implementation
+in ansi C.  It is especially suitable for use in microcontrollers, but fits
+any memory-restricted system.")
+    (license license:zlib)))
+
 (define-public python-protobuf
   (package
     (name "python-protobuf")
