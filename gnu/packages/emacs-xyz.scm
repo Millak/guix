@@ -32441,6 +32441,33 @@ tree to go back to previous buffer states.  To use vundo, type @kbd{M-x vundo RE
 the buffer you want to undo.  An undo tree buffer should pop up.")
     (license license:gpl3+)))
 
+(define-public emacs-project-x
+  ;; There is no proper release.
+  ;; The base version is extracted from the README.org.
+  (let ((revision "0")
+        (commit  "0b78f4e33b994612fcb305b3cf6d3b1e3b62cea7"))
+    (package
+      (name "emacs-project-x")
+      (version (git-version "0.1.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/karthink/project-x")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1xxzxxm0jila5s9sfay6ywj2j8pyz4wwcrycvnrrzh0vxcsgzf9s"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/karthink/project-x")
+      (synopsis "Enhancement to Emacs built-in Project library")
+      (description
+       "Project-X provides convenience features for Emacs' Project library.
+In particular, it saves and restores project files and window configurations
+across sessions.")
+      (license license:gpl3+))))
+
 (define-public emacs-vertico-posframe
   (package
     (name "emacs-vertico-posframe")
