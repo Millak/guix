@@ -213,6 +213,34 @@ browsers to backend services.")
 with the HTTP/2-based RPC framework gRPC.")
     (license license:asl2.0)))
 
+(define-public python-grpcio-tools
+  (package
+    (name "python-grpcio-tools")
+    (version "1.47.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "grpcio-tools" version))
+              (modules '((guix build utils)))
+              (snippet
+               ;; This file is auto-generated.
+               '(delete-file "grpc_tools/_protoc_compiler.cpp"))
+              (sha256
+               (base32
+                "0g3xwv55lvf5w64zb44dipwqz7729cbqc7rib77ddqab91w56jzn"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'configure
+                          (lambda _
+                            (setenv "GRPC_PYTHON_BUILD_WITH_CYTHON" "1"))))))
+    (native-inputs (list python-cython))
+    (propagated-inputs (list python-grpcio python-protobuf))
+    (home-page "https://grpc.io")
+    (synopsis "Protobuf code generator for gRPC")
+    (description "The gRPC tools for Python provide a special plugin for
+generating server and client code from @file{.proto} service definitions.")
+    (license license:asl2.0)))
+
 (define-public apache-thrift
   (package
     (name "apache-thrift")
