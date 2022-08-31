@@ -64,6 +64,9 @@
 ;;; Sanitizers.
 ;;;
 
+;; Image and partition sizes can be either be a size in bytes or the 'guess
+;; symbol denoting that the size should be estimated by Guix, according to the
+;; image content.
 (define-with-syntax-properties (validate-size (value properties))
   (unless (and value
                (or (eq? value 'guess) (integer? value)))
@@ -82,6 +85,7 @@
 ;;; Partition record.
 ;;;
 
+;; The partition offset should be a bytes count as an integer.
 (define-with-syntax-properties (validate-partition-offset (value properties))
   (unless (and value (integer? value))
     (raise
@@ -94,6 +98,7 @@
 numeric expression ~%") value 'field))))
   value)
 
+;; The supported partition flags.
 (define-with-syntax-properties (validate-partition-flags (value properties))
   (let ((bad-flags (lset-difference eq? value '(boot esp))))
     (unless (and (list? value) (null? bad-flags))
@@ -144,8 +149,11 @@ that is not in SET, mentioning FIELD in the error message."
         (formatted-message (G_ "~s: invalid '~a' value") value 'field))))
     value))
 
+;; The supported image formats.
 (define-set-sanitizer validate-image-format format
   (disk-image compressed-qcow2 docker iso9660))
+
+;; The supported partition table types.
 (define-set-sanitizer validate-partition-table-type partition-table-type
   (mbr gpt))
 
@@ -184,6 +192,22 @@ that is not in SET, mentioning FIELD in the error message."
 ;;; Image type.
 ;;;
 
+;; The role of this record is to provide a constructor that is able to turn an
+;; <operating-system> record into an <image> record.  Some basic <image-type>
+;; records are defined in the (gnu system image) module.  They are able to
+;; turn an <operating-system> record into an EFI or an ISO 9660 bootable
+;; image, a Docker image or even a QCOW2 image.
+;;
+;; Other <image-type> records are defined in the (gnu system images ...)
+;; modules.  They are dedicated to specific machines such as Novena and Pine64
+;; SoC boards that require specific images.
+;;
+;; All the available <image-type> records are collected by the 'image-modules'
+;; procedure.  This allows the "guix system image" command to turn a given
+;; <operating-system> record into an image, thanks to the specified
+;; <image-type>.  In that case, the <image-type> look up is done using the
+;; name field of the <image-type> record.
+
 (define-record-type* <image-type>
   image-type make-image-type
   image-type?
@@ -196,10 +220,15 @@ that is not in SET, mentioning FIELD in the error message."
 ;;;
 
 (define* (os->image os #:key type)
+  "Use the image constructor from TYPE, an <image-type> record to turn the
+given OS, an <operating-system> record into an image and return it."
   (let ((constructor (image-type-constructor type)))
     (constructor os)))
 
 (define* (os+platform->image os platform #:key type)
+  "Use the image constructor from TYPE, an <image-type> record to turn the
+given OS, an <operating-system> record into an image targeting PLATFORM, a
+<platform> record and return it."
   (image
    (inherit (os->image os #:type type))
    (platform platform)))
