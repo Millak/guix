@@ -149,7 +149,7 @@ which allows users to view a desktop computing environment.")
             ;; These are required by the pkg-config files.
             gtk+
             pixman
-            openssl))
+            openssl-1.1))
     (inputs
       `(("glib-networking" ,glib-networking)
         ("gobject-introspection" ,gobject-introspection)
@@ -221,7 +221,7 @@ which allows users to view a desktop computing environment.")
                 "1xd0xffw0g5vvwbq4ksmm3jjfq45f9dw20xpmi82g1fj9f7wy85k"))))
     (build-system gnu-build-system)
     (propagated-inputs
-      (list openssl pixman spice-protocol))
+      (list openssl-1.1 pixman spice-protocol))
     (inputs
       (list cyrus-sasl
             glib

@@ -1659,7 +1659,7 @@ support for Rust.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list curl libgit2-1.3 libssh2 openssl zlib))
+     (list curl libgit2-1.3 libssh2 openssl-1.1 zlib))
     (home-page "https://github.com/lu-zero/cargo-c")
     (synopsis "Build and install C-compatible libraries")
     (description

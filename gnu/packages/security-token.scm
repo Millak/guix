@@ -310,7 +310,7 @@ website for more information about Yubico and the YubiKey.")
                   (string-append
                    "DEFAULT_PCSC_PROVIDER=\"" libpcsclite "\"")))))))))
     (inputs
-     (list readline openssl pcsc-lite ccid))
+     (list readline openssl-1.1 pcsc-lite ccid))
     (native-inputs
      (list libxslt docbook-xsl pkg-config))
     (home-page "https://github.com/OpenSC/OpenSC/wiki")
