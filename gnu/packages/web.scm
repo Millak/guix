@@ -1954,8 +1954,7 @@ from streaming URLs.  It is a command-line wrapper for the libquvi library.")
            ;;("gss" ,gss)
            zlib))
     (arguments
-     `(#:scons ,scons-3   ;TODO: remove in the next rebuild cycle
-       #:scons-flags (list (string-append "APR=" (assoc-ref %build-inputs "apr"))
+     `(#:scons-flags (list (string-append "APR=" (assoc-ref %build-inputs "apr"))
                            (string-append "APU=" (assoc-ref %build-inputs "apr-util"))
                            (string-append "OPENSSL=" (assoc-ref %build-inputs "openssl"))
                            ;; (string-append "GSSAPI=" (assoc-ref %build-inputs "gss"))
