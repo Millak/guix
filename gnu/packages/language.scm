@@ -457,6 +457,9 @@ specifications in the document.")
     (description "LibStemmer provides stemming library, supporting several
 languages.")
     (home-page "https://snowballstem.org/")
+    (properties
+     '((release-monitoring-url . "https://snowballstem.org/download.html")
+       (upstream-name . "libstemmer_c")))
     (license license:bsd-3)))
 
 (define-public perl-lingua-en-findnumber
