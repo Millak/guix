@@ -36,6 +36,7 @@
   #:use-module (guix build-system ruby)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
   #:use-module (gnu packages gcc)
@@ -269,6 +270,36 @@ encoder in C++.  The developer using protozero has to manually translate the
 in ansi C.  It is especially suitable for use in microcontrollers, but fits
 any memory-restricted system.")
     (license license:zlib)))
+
+(define-public python-nanopb
+  (package
+    (inherit nanopb)
+    (name "python-nanopb")
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no Python-specific tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (copy-file "extra/poetry/pyproject.toml" "pyproject.toml")
+              (delete-file "build.py")
+              ;; Mimick extra/poetry/poetry_build.sh.
+              (mkdir "nanopb")
+              (copy-recursively "generator" "nanopb/generator")
+              (invoke "touch" "nanopb/__init__.py"
+                      "nanopb/generator/__init__.py")
+              (invoke "make" "-C" "nanopb/generator/proto")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs (list poetry protobuf python-pypa-build))
+    (propagated-inputs (list python-protobuf))
+    (synopsis "Small code-size Protocol Buffers implementation in Python")))
 
 (define-public python-protobuf
   (package
