@@ -2847,14 +2847,14 @@ specific files and directories.")
 (define-public src
   (package
     (name "src")
-    (version "1.18")
+    (version "1.29")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://www.catb.org/~esr/src/src-" version ".tar.gz"))
               (sha256
                (base32
-                "0n0skhvya8w2az45h2gsafxy8m2mvqas64nrgxifcmrzfv0rf26c"))))
+                "0ha287gc95vz6bdvn42pi3qibc56h1w5dshsvjvdn2zd283amksd"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags
@@ -2880,7 +2880,8 @@ specific files and directories.")
      ;; For testing.
      (list git perl))
     (inputs
-     `(("python" ,python-wrapper)
+     `(("cssc" ,cssc)
+       ("python" ,python-wrapper)
        ("rcs" ,rcs)))
     (synopsis "Simple revision control")
     (home-page "http://www.catb.org/~esr/src/")
