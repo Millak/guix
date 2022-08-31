@@ -8697,6 +8697,54 @@ to identify differentially methylated regions in epigenetic epidemiology
 studies.")
     (license license:artistic2.0)))
 
+(define-public r-milor
+  (package
+    (name "r-milor")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "miloR" version))
+              (sha256
+               (base32
+                "1jz9p3grnczx0bpdw6j64x21in8zgm3qy19hmm296har2rx9m5zs"))))
+    (properties `((upstream-name . "miloR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-biocneighbors
+           r-biocparallel
+           r-biocsingular
+           r-cowplot
+           r-dplyr
+           r-edger
+           r-ggbeeswarm
+           r-ggplot2
+           r-ggraph
+           r-ggrepel
+           r-gtools
+           r-igraph
+           r-irlba
+           r-limma
+           r-matrix
+           r-matrixstats
+           r-patchwork
+           r-rcolorbrewer
+           r-s4vectors
+           r-singlecellexperiment
+           r-stringr
+           r-summarizedexperiment
+           r-tibble
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://marionilab.github.io/miloR")
+    (synopsis "Differential neighbourhood abundance testing on a graph")
+    (description
+     "Milo performs single-cell differential abundance testing.  Cell states
+are modelled as representative neighbourhoods on a nearest neighbour graph.
+Hypothesis testing is performed using a negative bionomial generalized linear
+model.")
+    (license license:gpl3)))
+
 (define-public r-minfi
   (package
     (name "r-minfi")
