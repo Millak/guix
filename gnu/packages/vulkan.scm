@@ -45,16 +45,16 @@
 (define-public spirv-headers
   (package
     (name "spirv-headers")
-    (version "1.5.3")
+    (version "1.2.198.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/SPIRV-Headers")
-             (commit version)))
+             (commit (string-append "sdk-" version))))
        (sha256
         (base32
-         "069sivqajp7z4p44lmrz23lvf237xpkjxd4lzrg27836pwqcz9bj"))
+         "0v6ycgfxh9d2gzhxrnxgrn5gyg2cshg55767qdg46px8412j5lbi"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
