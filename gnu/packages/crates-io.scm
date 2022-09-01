@@ -24529,6 +24529,31 @@ API library @code{gdi32}.")
 suffering from the ABA problem by using generational indices.")
     (license license:mpl2.0)))
 
+(define-public rust-generator-0.7
+  (package
+    (name "rust-generator")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "generator" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1iwfjhlf76fl50hanfvglzwaq60gm0fwqwd48x837a6fw6n4q66c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-windows" ,rust-windows-0.32))))
+    (home-page "https://github.com/Xudong-Huang/generator-rs.git")
+    (synopsis "Stackfull Generator Library in Rust")
+    (description "This package provides a stackfull generator library in
+Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-generator-0.6
   (package
     (name "rust-generator")
