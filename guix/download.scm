@@ -96,15 +96,15 @@
       (hackage
        "http://hackage.haskell.org/")
       (savannah           ; http://download0.savannah.gnu.org/mirmon/savannah/
-       "http://download.savannah.gnu.org/releases/"
-       "http://nongnu.freemirror.org/nongnu/"
-       "http://ftp.cc.uoc.gr/mirrors/nongnu.org/"
-       "http://ftp.twaren.net/Unix/NonGNU/"
-       "http://mirror.csclub.uwaterloo.ca/nongnu/"
-       "http://nongnu.askapache.com/"
-       "http://savannah.c3sl.ufpr.br/"
+       "https://download.savannah.gnu.org/releases/"
+       "https://nongnu.freemirror.org/nongnu/"
+       "https://ftp.cc.uoc.gr/mirrors/nongnu.org/"
+       "http://ftp.twaren.net/Unix/NonGNU/" ; https appears unsupported
+       "https://mirror.csclub.uwaterloo.ca/nongnu/"
+       "https://nongnu.askapache.com/"
+       "https://savannah.c3sl.ufpr.br/"
        "http://download.savannah.gnu.org/releases-noredirect/"
-       "http://download-mirror.savannah.gnu.org/releases/"
+       "https://download-mirror.savannah.gnu.org/releases/"
        "ftp://ftp.twaren.net/Unix/NonGNU/"
        "ftp://mirror.csclub.uwaterloo.ca/nongnu/"
        "ftp://mirror.publicns.net/pub/nongnu/"
