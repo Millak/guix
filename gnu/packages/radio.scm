@@ -1945,59 +1945,33 @@ defined radio with support for rtl-sdr.")
     (license license:gpl2+)))
 
 (define-public csdr
-  ;; No release since 2017, use commit directly.
-  (let ((commit "6ef2a74206887155290a54c7117636f66742f858")
-        (revision "1"))
-    (package
-      (name "csdr")
-      (version (git-version "0.15" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/ha7ilm/csdr")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0ic35130lf66lk3wawgc5bcg711l7chv9al1hzdc1xrmq9qf9hri"))))
-      (build-system gnu-build-system)
-      (inputs
-       (list fftwf))
-      (arguments
-       `(#:make-flags
-         (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-               ;; Don't print summary of SIMD optimized functions.
-               "PARSEVECT=no")
-         #:tests? #f  ; No check phase
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'configure
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "Makefile"
-                 (("PARAMS_MISC = -Wno-unused-result" all)
-                  ;; The 'validate-runpath' phase fails without this.
-                  (string-append
-                   all " -Wl,-rpath=" (assoc-ref outputs "out") "/lib"))
-                 (("PARAMS_SIMD =.*")
-                  ;; Disable to make reproducibility and cross-compilation work.
-                  "")
-                 (("gcc ")
-                  ,(string-append (cc-for-target) " "))
-                 (("g\\+\\+ ")
-                  ,(string-append (cxx-for-target) " ")))))
-           (add-before 'install 'make-installation-directories
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (mkdir-p (string-append out "/bin"))
-                 (mkdir-p (string-append out "/lib"))))))))
-      (home-page "https://github.com/ha7ilm/csdr")
-      (synopsis "DSP for software defined radio")
-      (description
-       "This package includes the @code{libcsdr} library of
+  (package
+    (name "csdr")
+    (version "0.18.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jketterl/csdr")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sdni0p9qcf4yw1wf5jz1pyb9wv6wmdblirh2q6s7jblh50vfwz1"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list fftwf libsamplerate))
+    (arguments
+     (list #:tests? #f)) ; No check phase
+    (home-page "https://github.com/jketterl/csdr")
+    (synopsis "DSP for software defined radio")
+    (description
+     "This package includes the @code{libcsdr} library of
 @acronym{DSP, Digital Signal Processing} functions for
 @acronym{SDRs, Software Defined Radios}, and the @code{csdr} command line
 program that can be used to build simple signal processing flow graphs.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public serialdv
   (package
