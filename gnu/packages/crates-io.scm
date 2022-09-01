@@ -69370,6 +69370,34 @@ char type that allow for the querying if whether or not a character is
 a member of a certain category of Unicode characters.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unicode-ident-1
+  (package
+    (name "rust-unicode-ident")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "unicode-ident" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1bqswc96ws8l6k7xx56dg521a3l5imi3mhlcz7rsi6a92mxb7xf4"))))
+    (build-system cargo-build-system)
+    ;; Most development inputs are competing implementations
+    ;; for benchmarks.
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/dtolnay/unicode-ident")
+    (synopsis "Implementation of Unicode Standard Annex #31")
+    (description
+     "This package lets you determine whether characters have the
+@code{XID_Start} or @code{XID_Continue} properties according to Unicode
+Standard Annex #31.")
+    ;; For data derived from Unicode Character Database the unicode license
+    ;; applies; for everything else the user may choose between Expat and
+    ;; ASL2.0.
+    (license (list license:expat license:asl2.0
+                   license:unicode))))
+
 (define-public rust-unicode-linebreak-0.1
   (package
     (name "rust-unicode-linebreak")
