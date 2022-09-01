@@ -70369,6 +70369,29 @@ a part of rav1e.")
 crate.")
     (license license:expat)))
 
+(define-public rust-valuable-0.1
+  (package
+    (name "rust-valuable")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "valuable" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0v9gp3nkjbl30z0fd56d8mx7w1csk86wwjhfjhr400wh9mfpw2w3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-valuable-derive" ,rust-valuable-derive-0.1))))
+    (home-page "https://github.com/tokio-rs/valuable")
+    (synopsis "Object-safe value inspection")
+    (description
+     "This package implements object-safe value inspection, used to pass
+un-typed structured data across trait-object boundaries.")
+    (license license:expat)))
+
 (define-public rust-value-bag-1
   (package
     (name "rust-value-bag")
