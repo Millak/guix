@@ -3235,7 +3235,8 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
           '())
       (list gtk+ libxml2)))
     (native-inputs
-     (list docbook-xml-4.2
+     (list atk                          ;for tests
+           docbook-xml-4.2
            docbook-xsl
            gettext-minimal
            `(,glib "bin")
