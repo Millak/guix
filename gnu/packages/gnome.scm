@@ -10762,16 +10762,16 @@ photo-booth-like software, such as Cheese.")
              #t)))))
     (build-system meson-build-system)
     (native-inputs
-     `(("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml-4.3)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gtk-doc" ,gtk-doc/stable)
-       ("itstool" ,itstool)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list docbook-xsl
+           docbook-xml-4.3
+           gettext-minimal
+           `(,glib "bin")
+           gtk-doc/stable
+           itstool
+           libxml2
+           libxslt
+           pkg-config
+           vala))
     (propagated-inputs
      (list gnome-video-effects
            clutter
