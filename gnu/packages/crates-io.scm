@@ -33110,14 +33110,15 @@ by inspecting the system for user preference.")
 (define-public rust-log-0.4
   (package
     (name "rust-log")
-    (version "0.4.14")
+    (version "0.4.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "log" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04175hv0v62shd82qydq58a48k3bjijmk54v38zgqlbxqkkbpfai"))))
+        (base32
+         "0biqlaaw1lsr8bpnmbcc0fvgjj34yy79ghqzyi0ali7vgil2xcdb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Not all test files included in release.
@@ -33127,7 +33128,8 @@ by inspecting the system for user preference.")
         ("rust-sval" ,rust-sval-1)
         ("rust-value-bag" ,rust-value-bag-1))
        #:cargo-development-inputs
-       (("rust-serde" ,rust-serde-1)
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
         ("rust-serde-test" ,rust-serde-test-1)
         ("rust-sval" ,rust-sval-1)
         ("rust-value-bag" ,rust-value-bag-1))))
