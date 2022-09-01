@@ -33248,6 +33248,38 @@ logging implementation for the `log` facade.")
     (description "This package tests and asserts log statements.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-loom-0.5
+  (package
+    (name "rust-loom")
+    (version "0.5.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "loom" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1x9hmiv00ir79kypcg0jdw0j0fkd3ymq6rpv6pli6q5qifrfql7z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;#:skip-build? #t
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-generator" ,rust-generator-0.7)
+        ("rust-pin-utils" ,rust-pin-utils-0.1)
+        ("rust-scoped-tls" ,rust-scoped-tls-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/tokio-rs/loom")
+    (synopsis "Permutation testing for concurrent code")
+    (description
+     "Loom is a testing tool for concurrent Rust code.  It runs a test many
+times, permuting the possible concurrent executions of that test under the C11
+memory model.  It uses state reduction techniques to avoid combinatorial
+explosion.")
+    (license license:expat)))
+
 (define-public rust-loom-0.4
   (package
     (name "rust-loom")
