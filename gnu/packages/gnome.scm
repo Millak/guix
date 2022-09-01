@@ -10723,7 +10723,7 @@ photo-booth-like software, such as Cheese.")
 (define-public cheese
   (package
     (name "cheese")
-    (version "3.38.0")
+    (version "41.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10731,8 +10731,7 @@ photo-booth-like software, such as Cheese.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0vyim2avlgq3a48rgdfz5g21kqk11mfb53b2l883340v88mp7ll8"))
-              (patches (search-patches "cheese-vala-update.patch"))))
+                "1y92glc0d6w323x2bdbc0gdh1jdffvkbv6cwlwm1rx0wgvv1svqh"))))
     (arguments
      `(#:glib-or-gtk? #t
        ;; Tests require GDK.
