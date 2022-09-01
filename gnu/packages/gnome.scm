@@ -8859,7 +8859,7 @@ like switching to windows and launching applications.")
 (define-public gtk-vnc
   (package
     (name "gtk-vnc")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
@@ -8868,7 +8868,7 @@ like switching to windows and launching applications.")
                        (version-major+minor version) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1060ws037v556rx1qhfrcg02859rscksrzr8fq11himdg4d1y6m8"))))
+        (base32 "0jmr6igyzcj2wmx5v5ywaazvdz3hx6a6rys26yb4l4s71l281bvs"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))   ; To wrap binaries and/or compile schemas
@@ -8887,17 +8887,18 @@ like switching to windows and launching applications.")
        ("python" ,python-wrapper)
        ("vala" ,vala)))
     (inputs
-     `(("cairo" ,cairo)
-       ("librsvg" ,(librsvg-for-system))
-       ("glib" ,glib)
-       ("gnutls" ,gnutls)
-       ("libgcrypt" ,libgcrypt)
-       ("libsasl" ,cyrus-sasl)
-       ("pulseaudio" ,pulseaudio)
-       ("x11" ,libx11)
-       ("zlib" ,zlib)))
+     (list cairo (librsvg-for-system)))
     (propagated-inputs
-     (list gtk+))
+     ;; These are all in Requires or Requires.private of the .pc files.
+     (list cyrus-sasl
+           gdk-pixbuf
+           glib
+           gnutls
+           gtk+
+           libgcrypt
+           libx11
+           pulseaudio
+           zlib))
     (synopsis "VNC client viewer widget for GTK+")
     (description "GTK-VNC is a project providing client side APIs for the RFB
 protocol / VNC remote desktop technology.  It is built using coroutines allowing
