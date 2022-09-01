@@ -3150,16 +3150,6 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
                        (("g_test_add.*JavaScript.*" all)
                         (string-append "// " all "\n")))
                      (delete-file "tests/catalogs/gjsplugin.xml")))))
-
-         (add-before 'configure 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "man/meson.build"
-               (("http://docbook.sourceforge.net/release/xsl/\
-current/manpages/docbook.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/manpages/docbook.xsl")))))
          (add-before 'check 'pre-check
            (lambda _
              (setenv "HOME" "/tmp")
@@ -3182,6 +3172,7 @@ current/manpages/docbook.xsl")
            gobject-introspection
            hicolor-icon-theme
            itstool
+           libxml2                      ;for XML_CATALOG_FILES
            libxslt                      ;for xsltproc
            python
            python-pygobject
