@@ -38494,7 +38494,7 @@ image -t qcow2} on x86_64 hardware:
 @example
 $ qemu-system-x86_64 \
    -nic user,model=virtio-net-pci \
-   -enable-kvm -m 1024 \
+   -enable-kvm -m 2048 \
    -device virtio-blk,drive=myhd \
    -drive if=none,file=/tmp/qemu-image,id=myhd
 @end example
@@ -38521,7 +38521,7 @@ virtual machine support (KVM) of the Linux kernel will make things run
 faster.
 
 @c To run Xfce + 'guix pull', we need at least 1G of RAM.
-@item -m 1024
+@item -m 2048
 RAM available to the guest OS, in mebibytes.  Defaults to 128@tie{}MiB,
 which may be insufficient for some operations.
 
