@@ -70345,6 +70345,30 @@ first byte.")
 a part of rav1e.")
     (license license:bsd-2)))
 
+(define-public rust-valuable-derive-0.1
+  (package
+    (name "rust-valuable-derive")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "valuable-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0cjvqljzsj891cjzlwv0ihrv4m0n5211a6pr6b7cz42ich66ji4x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/tokio-rs/valuable")
+    (synopsis "Macros for the valuable crate.")
+    (description "This package provides macros for the @code{valuable}
+crate.")
+    (license license:expat)))
+
 (define-public rust-value-bag-1
   (package
     (name "rust-value-bag")
