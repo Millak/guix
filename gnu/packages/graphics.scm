@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2016, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -771,11 +771,11 @@ applications, including the \"half\" 16-bit floating-point type.")
               (patches (search-patches "ilmbase-fix-tests.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'change-directory
-                    (lambda _
-                      (chdir "IlmBase")
-                      #t)))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'change-directory
+                          (lambda _
+                            (chdir "IlmBase")
+                            #t)))))
     (home-page "https://www.openexr.com/")
     (synopsis "Utility C++ libraries for threads, maths, and exceptions")
     (description
