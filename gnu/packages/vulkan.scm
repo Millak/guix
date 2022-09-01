@@ -260,7 +260,7 @@ and the ICD.")
 (define-public vulkan-tools
   (package
     (name "vulkan-tools")
-    (version "1.2.162")
+    (version "1.2.201")
     (source
      (origin
        (method git-fetch)
@@ -270,7 +270,7 @@ and the ICD.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "129wzk7xj3vn3c8b4p7fzkd0npl58118s2i1d88gsfnlix54nagq"))))
+         "1ik90d7pygaw2pq81brqmcjiczag3biqvgpqp3cpws07glf29lf9"))))
     (build-system cmake-build-system)
     (inputs
      (list glslang libxrandr vulkan-loader wayland))
