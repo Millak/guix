@@ -22,6 +22,7 @@
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 vlist)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (guix i18n)
@@ -426,6 +427,34 @@ each line except the first one (they're assumed to be already there)."
        (display (make-string indent #\space) port)
        (loop tail)))))
 
+(define %symbols-followed-by-octal-integers
+  ;; Symbols for which the following integer must be printed as octal.
+  '(chmod umask mkdir mkstemp))
+
+(define %symbols-followed-by-hexadecimal-integers
+  ;; Likewise, for hexadecimal integers.
+  '(logand logior logxor lognot))
+
+(define (integer->string integer context)
+  "Render INTEGER as a string using a base suitable based on CONTEXT."
+  (define base
+    (match context
+      ((head . tail)
+       (cond ((memq head %symbols-followed-by-octal-integers) 8)
+             ((memq head %symbols-followed-by-hexadecimal-integers)
+              (if (any (cut memq <> %symbols-followed-by-octal-integers)
+                       tail)
+                  8
+                  16))
+             (else 10)))
+      (_ 10)))
+
+  (string-append (match base
+                   (10 "")
+                   (16 "#x")
+                   (8  "#o"))
+                 (number->string integer base)))
+
 (define* (pretty-print-with-comments port obj
                                      #:key
                                      (format-comment
@@ -661,9 +690,12 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
              (display ")" port)
              (+ column 1)))))
       (_
-       (let* ((str (if (string? obj)
-                       (escaped-string obj)
-                       (object->string obj)))
+       (let* ((str (cond ((string? obj)
+                          (escaped-string obj))
+                         ((integer? obj)
+                          (integer->string obj context))
+                         (else
+                          (object->string obj))))
               (len (string-width str)))
          (if (and (> (+ column 1 len) max-width)
                   (not delimited?))

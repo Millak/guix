@@ -248,6 +248,14 @@ mnopqrstuvwxyz.\")"
   (list x y z))")
 
 (test-pretty-print "\
+(begin
+  (chmod \"foo\" #o750)
+  (chmod port
+         (logand #o644
+                 (lognot (umask))))
+  (logand #x7f xyz))")
+
+(test-pretty-print "\
 (substitute-keyword-arguments (package-arguments x)
   ((#:phases phases)
    `(modify-phases ,phases
