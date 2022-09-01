@@ -40165,22 +40165,22 @@ other crates to create safe wrappers around Oniguruma.")
 (define-public rust-once-cell-1
   (package
     (name "rust-once-cell")
-    (version "1.9.0")
+    (version "1.13.0")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "once-cell" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (uri (crate-uri "once_cell" version))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mfqhrsgi368x92bwnq3vi3p5nv0n1qlrn69gfflhvkfkxfm2cns"))))
+        (base32
+         "1qfqvgnwfzzwxd13ybvplzshaqwnjnna9ghcn0zgijaq0zixp9hq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-atomic-polyfill" ,rust-atomic-polyfill-0.1)
-        ("rust-parking-lot" ,rust-parking-lot-0.11))
+        ("rust-parking-lot-core" ,rust-parking-lot-core-0.9))
        #:cargo-development-inputs
-       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
+       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/matklad/once_cell")
