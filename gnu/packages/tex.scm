@@ -9680,6 +9680,28 @@ section.
 @end enumerate\n")
       (license license:lppl1.3c))))
 
+(define-public texlive-biblatex-apa
+  (package
+    ;; Version 9.16 2022-06-22
+    (inherit (simple-texlive-package
+              "texlive-biblatex-apa"
+              (list "doc/latex/biblatex-apa/"
+                    "tex/latex/biblatex-apa/")
+              (base32
+               "0ivf7xbzj4xd57sqfbi87hbr73rraqifkzvx06yxgq0gmzz0x6wl")
+              #:trivial? #t))
+    (propagated-inputs
+     (list texlive-biblatex biber texlive-csquotes))
+    (home-page
+     "https://www.ctan.org/pkg/biblatex-apa")
+    (synopsis "BibLaTeX citation and reference style for APA")
+    (description
+     "This is a fairly complete BibLaTeX style (citations and references) for
+@acronym{APA, American Psychological Association} publications.  It implements
+and automates most of the guidelines in the APA 7th edition style guide for
+citations and references.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-todonotes
   (let ((template (simple-texlive-package
                    "texlive-todonotes"

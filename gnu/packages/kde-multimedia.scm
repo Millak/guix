@@ -106,7 +106,8 @@ This package is part of the KDE multimedia module.")
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list kconfig
+     (list bash-minimal
+           kconfig
            kconfigwidgets
            kcoreaddons
            kcrash
@@ -246,14 +247,13 @@ This package is part of the KDE multimedia module.")
         (base32 "06vsh7knyhcbcbf632jhldbqpzfkdyils2l8dbcdw5nj5hhgzzmr"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules))
+     (list extra-cmake-modules kdoctools))
     (inputs
      (list kcoreaddons
            kcompletion
            kconfig
            kcrash
            kdbusaddons
-           kdoctools
            kglobalaccel
            ki18n
            kiconthemes
@@ -560,7 +560,7 @@ camera.  Use it to take pictures and make videos to share.")
        (base32 "1na52ypp57wqrc6pl1khinx9i6fidv1k97nnxcy8zb4l7d5sh1nd"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules pkg-config))
+     (list extra-cmake-modules kdoctools pkg-config))
     (inputs
      (list alsa-lib
            glib
@@ -570,7 +570,6 @@ camera.  Use it to take pictures and make videos to share.")
            kconfigwidgets
            kcrash
            kdbusaddons
-           kdoctools
            kglobalaccel
            ki18n
            kiconthemes
@@ -639,7 +638,7 @@ This package is part of the KDE multimedia module.")
                     "-DCMAKE_CXX_FLAGS=-I"
                     #$(this-package-input "qtx11extras")
                     "/include/qt5"))))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kmplayer")
+    (home-page "https://apps.kde.org/kmplayer/")
     (synopsis "Media player using mplayer/phonon as backend")
     (description "Kmplayer can play all the audio/video supported by
 mplayer/phonon from a local file or URL and be embedded in Konqueror and

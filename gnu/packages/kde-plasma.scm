@@ -5,6 +5,7 @@
 ;;; Copyright © 2017, 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages web))
 
@@ -155,6 +157,32 @@ manager which re-parents a Client window to a window decoration frame.")
 password of the ssh key in KWallet.  Ksshaskpass is not meant to be executed
 directly, you need to tell @code{ssh-add} about it.  @code{ssh-add} will then
 call it if it is not associated to a terminal.")
+    (license license:gpl2+)))
+
+(define-public layer-shell-qt
+  (package
+    (name "layer-shell-qt")
+    (version "5.24.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version
+                                  "/layer-shell-qt-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1aq089pws39w9ncsiqzgg3qvfg5hc5a74pzra0smdpy5ipfsb6a4"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     (list libxkbcommon
+           qtbase-5
+           qtdeclarative-5
+           qtwayland
+           wayland
+           wayland-protocols))
+    (home-page "https://invent.kde.org/plasma/layer-shell-qt")
+    (synopsis "Qt component for the Wayland ql-layer-shell protocol")
+    (description "Qt component for the Wayland ql-layer-shell protocol.")
     (license license:gpl2+)))
 
 (define-public kscreenlocker

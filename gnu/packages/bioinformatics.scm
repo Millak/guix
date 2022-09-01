@@ -10936,7 +10936,7 @@ in an easily configurable manner.")
 (define-public pigx-bsseq
   (package
     (name "pigx-bsseq")
-    (version "0.1.7")
+    (version "0.1.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_bsseq/"
@@ -10944,7 +10944,7 @@ in an easily configurable manner.")
                                   "/pigx_bsseq-" version ".tar.gz"))
               (sha256
                (base32
-                "1hfiignq3410dbl6f67vc6zr69abknpcgxixx475dspky2jb5lyn"))))
+                "1s8zgrqxabrawrgkga5rmgb0gyzj7ck47p3rkicjkfv7r2yjy0d7"))))
     (build-system gnu-build-system)
     (arguments
      `(;; TODO: tests currently require 12+GB of RAM.  See
@@ -11592,47 +11592,43 @@ including:
     (license license:gpl3+)))
 
 (define-public r-dyngen
-  (let ((commit "37fd1798fcbd41093fb3d7775bb2d268e2fc82b6")
-        (revision "1"))
-    (package
-      (name "r-dyngen")
-      (version (git-version "1.0.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/dynverse/dyngen")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "05pr6v1b8yji1jnj3fwx0crmg8ay6yy6lp9qjmcyvhkwbmf3kvc7"))))
-      (properties `((upstream-name . "dyngen")))
-      (build-system r-build-system)
-      (propagated-inputs
-       (list r-assertthat
-             r-dplyr
-             r-dynutils
-             r-ggplot2
-             r-ggraph
-             r-ggrepel
-             r-gillespiessa2
-             r-igraph
-             r-lmds
-             r-matrix
-             r-patchwork
-             r-pbapply
-             r-purrr
-             r-rlang
-             r-tibble
-             r-tidygraph
-             r-tidyr
-             r-viridis))
-      (home-page "https://github.com/dynverse/dyngen")
-      (synopsis "Multi-Modal simulator for single-cell omics analyses")
-      (description
-       "This package provides a multi-modal simulation engine for studying
+  (package
+    (name "r-dyngen")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dyngen" version))
+       (sha256
+        (base32
+         "1qmqy0dyiz30zpf3ii4h2ip6hg2449ghb474sjzrqa1yk9mdpy4i"))))
+    (properties `((upstream-name . "dyngen")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-dplyr
+           r-dynutils
+           r-ggplot2
+           r-ggraph
+           r-ggrepel
+           r-gillespiessa2
+           r-igraph
+           r-lmds
+           r-matrix
+           r-patchwork
+           r-pbapply
+           r-purrr
+           r-rlang
+           r-tibble
+           r-tidygraph
+           r-tidyr
+           r-viridis))
+    (home-page "https://github.com/dynverse/dyngen")
+    (synopsis "Multi-Modal simulator for single-cell omics analyses")
+    (description
+     "This package provides a multi-modal simulation engine for studying
 dynamic cellular processes at single-cell resolution.")
-      (license license:expat))))
+    (license license:expat)))
 
 ;; Needed for r-liana
 (define-public r-omnipathr/devel

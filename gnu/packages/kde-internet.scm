@@ -415,38 +415,6 @@ multiple torrents at the same time and comes with extended features to make it
 a full-featured client for BitTorrent.")
     (license license:gpl2+)))
 
-(define-public libgravatar
-  (package
-    (name "libgravatar")
-    (version "20.04.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/libgravatar-" version ".tar.xz"))
-       (sha256
-        (base32 "0981ci2kr20v4fk11h57rqya0brgslfazpgq1yk5yqiwyqqm49r2"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list kconfig
-           ki18n
-           kio
-           kpimcommon
-           ktextwidgets
-           kwidgetsaddons
-           qtbase-5))
-    (arguments
-     `(#:tests? #f)) ;; 2/7 tests fail (due to network issues?)
-    (home-page "https://invent.kde.org/pim/libgravatar")
-    (synopsis "Online avatar lookup library")
-    (description "This library retrieves avatar images based on a
-hash from a person's email address, as well as local caching to avoid
-unnecessary network operations.")
-    (license ;; GPL for programs, LGPL for libraries
-     (list license:gpl2+ license:lgpl2.0+))))
-
 (define-public libktorrent
   (package
     (name "libktorrent")

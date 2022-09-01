@@ -2287,6 +2287,79 @@ Python objects.  It tries to use the objects available in the standard
 which make writing and running functional and integration tests easier.")
     (license license:asl2.0)))
 
+(define-public python-tox
+  (package
+    (name "python-tox")
+    (version "3.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tox" version))
+       (sha256
+        (base32
+         "0nk0nyzhzamcrvn0qqzzy54isxxqwdi28swml7a2ym78c3f9sqpb"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "-k"
+                        (string-join
+                         (map (lambda (test)
+                                (string-append "not test_" test))
+                              '("invocation_error"
+                                "create_KeyboadInterrupt"
+                                "exit_code"
+                                "tox_get_python_executable"
+                                "find_alias_on_path"
+                                "get_executable"
+                                "get_executable_no_exist"
+                                "get_sitepackagesdir_error"
+                                "spinner_stdout_not_unicode"
+                                "provision_non_canonical_dep"
+                                "package_setuptools"
+                                "package_poetry"
+                                "parallel_interrupt"
+                                "provision_missing"
+                                "provision_from_pyvenv"
+                                "provision_interrupt_child"
+                                "create"
+                                "run_custom_install_command"
+                                "toxuone_env"
+                                "different_config_cwd"
+                                "test_usedevelop"
+                                "build_backend_without_submodule"
+                                "parallel"
+                                "parallel_live"
+                                "tox_env_var_flags_inserted_isolated"))
+                         " and "))))))))
+    (propagated-inputs
+     (list python-filelock
+           python-packaging
+           python-pluggy
+           python-py
+           python-six
+           python-toml
+           python-virtualenv))
+    (native-inputs
+     (list python-flaky
+           python-pathlib2
+           python-pytest                ; >= 2.3.5
+           python-pytest-freezegun
+           python-pytest-timeout
+           python-setuptools-scm))
+    (home-page "https://tox.readthedocs.io")
+    (synopsis "Virtualenv-based automation of test activities")
+    (description "Tox is a generic virtualenv management and test command line
+tool.  It can be used to check that a package installs correctly with
+different Python versions and interpreters, or run tests in each type of
+supported environment, or act as a frontend to continuous integration
+servers.")
+    (license license:expat)))
+
 (define-public python-sybil
   (package
     (name "python-sybil")

@@ -145,6 +145,7 @@ denote ranges as interpreted by 'matching-generations'."
                                 dry-run?
                                 (hooks %default-profile-hooks)
                                 allow-collisions?
+                                (format-version %manifest-format-version)
                                 bootstrap?)
   "Build a new generation of PROFILE, a file name, using the packages
 specified in MANIFEST, a manifest object.  When ALLOW-COLLISIONS? is true,
@@ -154,6 +155,7 @@ hooks\" run when building the profile."
                      (profile-derivation manifest
                                          #:allow-collisions? allow-collisions?
                                          #:hooks (if bootstrap? '() hooks)
+                                         #:format-version format-version
                                          #:locales? (not bootstrap?))))
          (prof     (derivation->output-path prof-drv)))
 

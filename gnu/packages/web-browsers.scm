@@ -468,7 +468,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.5.1")
+    (version "2.5.2")
     (source
      (origin
        (method url-fetch)
@@ -476,7 +476,7 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "1g7dfrnjgifvbmz1523iq9qxhrsciajr8dv3pak6dlacm235i276"))))
+        (base32 "0279fi4lx8sfxz3mx6ar0wz01kiiqa1zkv9fxc6xw0y4vlacxgx9"))))
     (build-system python-build-system)
     (native-inputs
      (list python-attrs))               ; for tests

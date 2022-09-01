@@ -425,13 +425,14 @@ specifications in the document.")
 (define-public libstemmer
   (package
     (name "libstemmer")
-    (version "2.0.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
-       (uri "https://snowballstem.org/dist/libstemmer_c.tgz")
+       (uri (string-append "https://snowballstem.org/dist/libstemmer_c-"
+                           version ".tar.gz"))
        (sha256
-        (base32 "1z2xvrjsaaypc04lwz7dg8mjm5cq1gzmn0l544pn6y2ll3r7ckh5"))))
+        (base32 "1hvphdl8pfq1q3cgh7bshsabsxc7id6wswrqilplwszkkkzdjhdr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; No tests exist
@@ -450,13 +451,14 @@ specifications in the document.")
                     (out-lib (string-append out "/lib")))
                (install-file "stemwords" out-bin)
                (install-file "include/libstemmer.h" out-include)
-               (rename-file "libstemmer.o" "libstemmer.a")
-               (install-file "libstemmer.a" out-lib)
-               #t))))))
+               (install-file "libstemmer.a" out-lib)))))))
     (synopsis "Stemming Library")
     (description "LibStemmer provides stemming library, supporting several
 languages.")
     (home-page "https://snowballstem.org/")
+    (properties
+     '((release-monitoring-url . "https://snowballstem.org/download.html")
+       (upstream-name . "libstemmer_c")))
     (license license:bsd-3)))
 
 (define-public perl-lingua-en-findnumber

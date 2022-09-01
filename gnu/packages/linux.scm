@@ -63,6 +63,7 @@
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -352,6 +353,22 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
+(define-public linux-libre-5.19-version "5.19.5")
+(define-public linux-libre-5.19-gnu-revision "gnu")
+(define deblob-scripts-5.19
+  (linux-libre-deblob-scripts
+   linux-libre-5.19-version
+   linux-libre-5.19-gnu-revision
+   (base32 "0a4pln89nbxiniykm14kyqmnn79gfgj22dr3h94w917xhidq7gp1")
+   (base32 "1ph67fvg5qvlkh4cynrrmvkngkb0sw6k90b1mwy9466s24khn05i")))
+(define-public linux-libre-5.19-pristine-source
+  (let ((version linux-libre-5.19-version)
+        (hash (base32 "1g9p4m9w9y0y1gk6vzqvsxzwqspbm10mmhd8n1mhal1yz721qgwc")))
+   (make-linux-libre-source version
+                            (%upstream-linux-source version hash)
+                            deblob-scripts-5.19)))
+
+
 (define-public linux-libre-5.18-version "5.18.19")
 (define-public linux-libre-5.18-gnu-revision "gnu")
 (define deblob-scripts-5.18
@@ -364,7 +381,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (let ((version linux-libre-5.18-version)
         (hash (base32 "1mc8zhiw0v7fka64mydpdrxkrvy0jyqggq5lghw3pyqj2wjrpw6z")))
    (make-linux-libre-source version
-
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.18)))
 
@@ -386,7 +402,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.138")
+(define-public linux-libre-5.10-version "5.10.139")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -396,7 +412,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1981axxswghza3iadp94q54y8w30h9w9vyq4cbjiiv9alvbv0pb8")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1a2vmcqzi71w88j79lxsrgyycq1l1gxp0cvh5ya4afhfisxh7819")))
+        (hash (base32 "1wdyk1w8lr5l4d038bd44rdndxjvfcva2n51h2i38jd4fp12l00w")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
@@ -488,6 +504,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (inherit source)
     (patches (append (origin-patches source)
                      patches))))
+
+(define-public linux-libre-5.19-source
+  (source-with-patches linux-libre-5.19-pristine-source
+                       (list %boot-logo-patch
+                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
 (define-public linux-libre-5.18-source
   (source-with-patches linux-libre-5.18-pristine-source
@@ -602,6 +623,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
+
+(define-public linux-libre-headers-5.19
+  (make-linux-libre-headers* linux-libre-5.19-version
+                             linux-libre-5.19-gnu-revision
+                             linux-libre-5.19-source))
 
 (define-public linux-libre-headers-5.18
   (make-linux-libre-headers* linux-libre-5.18-version
@@ -923,6 +949,13 @@ It has been modified to remove all non-free binary blobs.")
 ;;;
 ;;; Generic kernel packages.
 ;;;
+
+(define-public linux-libre-5.19
+  (make-linux-libre* linux-libre-5.19-version
+                     linux-libre-5.19-gnu-revision
+                     linux-libre-5.19-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
 
 (define-public linux-libre-5.18
   (make-linux-libre* linux-libre-5.18-version
@@ -8085,23 +8118,26 @@ emulates the behaviour of Gunnar Monell's older fbgrab utility.")
 (define-public libcgroup
   (package
     (name "libcgroup")
-    (version "0.41")
+    (version "2.0.2")
+    (home-page "https://github.com/libcgroup/libcgroup")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://sourceforge/libcg/" name "/"
-             version "/" name "-" version ".tar.bz2"))
+       (uri (string-append home-page "/releases/download/v"
+                           version "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "0lgvyq37gq84sk30sg18admxaj0j0p5dq3bl6g74a1ppgvf8pqz4"))))
+        (base32 "1y0c9ncsawamj77raiw6qkbm5cdsyvhjb2mvgma1kxmgw0r3pxlf"))))
     (build-system gnu-build-system)
     (arguments
+     ;; Tests are virtualized with lxc, it is not very feasible
+     ;; to make them executable under guix build. Also, note that
+     ;; origin is using source tarball release which is prepared
+     ;; after testing.
      `(#:tests? #f))
     (native-inputs
      (list bison flex))
     (inputs
      (list linux-pam))
-    (home-page "https://sourceforge.net/projects/libcg/")
     (synopsis "Control groups management tools")
     (description "Control groups is Linux kernel method for process resource
 restriction, permission handling and more.  This package provides userspace

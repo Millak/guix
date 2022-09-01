@@ -173,8 +173,7 @@ This package contains GUI widgets for baloo.")
                                        (assoc-ref inputs "qtwebengine-5")
                                        "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
-               #t))))))
+                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -261,7 +260,7 @@ browser for easy news reading.")
                   `("MLT_PREFIX" ":" =
                     (,#$(this-package-input "mlt"))))))))))
     (native-inputs
-     (list extra-cmake-modules pkg-config qttools-5))
+     (list extra-cmake-modules kdoctools pkg-config qttools-5))
     (inputs
      (list bash-minimal
            breeze                       ; make dark them available easily
@@ -383,8 +382,7 @@ projects.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "cmake/modules/FindClang.cmake"
                (("^\\s*PATHS \"\\$\\{CLANG_LIBRARY_DIRS\\}\"" line)
-                (string-append line " " (assoc-ref inputs "clang") "/lib")))
-             #t)))))
+                (string-append line " " (assoc-ref inputs "clang") "/lib"))))))))
     (home-page "https://kdevelop.org")
     (synopsis "IDE for C, C++, Python, Javascript and PHP")
     (description "The KDevelop IDE provides semantic syntax highlighting, as
@@ -797,14 +795,12 @@ communicate with each other.  Here's a few things KDE Connect can do:
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                ;; This test fails, I don't know why.
-               (invoke "ctest" "-E" "parsertest"))
-             #t)))))
-    (native-inputs
-     `(("bison" ,bison)
-       ("extra-cmake-modules" ,extra-cmake-modules)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("qttools-5" ,qttools-5)))
+               (invoke "ctest" "-E" "parsertest")))))))
+    (native-inputs (list bison
+                         extra-cmake-modules
+                         pkg-config
+                         python-wrapper
+                         qttools-5))
     (inputs
      (list breeze ;for dark themes
            breeze-icons ;for icons
@@ -1007,13 +1003,12 @@ Python, PHP, and Perl.")
              "-DBUILD_TOUCH=YES"
              "-DBUILD_MARBLE_TESTS=FALSE")))
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules kdoctools qttools-5))
     ;; One optional dependency missing: libwlocate.
     (inputs
      (list gpsd
            kcoreaddons
            kcrash
-           kdoctools
            ki18n
            kio
            knewstuff

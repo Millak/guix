@@ -509,16 +509,16 @@ formats such as PNG.")
 (define-public tiled
   (package
     (name "tiled")
-    (version "1.8.1")
+    (version "1.8.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/bjorn/tiled")
+                    (url "https://github.com/mapeditor/tiled")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05gczsywkk45bh0z1vv8l6cmrlncc2qj8agavj5ryxpnxkzy69r1"))))
+                "0iimfj4kbhmjk94586fqz11bk4i7v0zsxby8agx7450cqlh2y3zi"))))
     (build-system gnu-build-system)
     (inputs
      (list qtbase-5 qtdeclarative-5 qtsvg-5 zlib))

@@ -36555,7 +36555,7 @@ is an example of a basic, explicit configuration:
              (list
               (fail2ban-jail-configuration
                (name "sshd")
-               (enabled #t))))))
+               (enabled? #t))))))
   ;; There is no implicit dependency on an actual SSH
   ;; service, so you need to provide one.
   (service openssh-service-type))
@@ -36580,7 +36580,7 @@ For example:
     openssh-service-type
     (fail2ban-jail-configuration
      (name "sshd")
-     (enabled #t)))
+     (enabled? #t)))
    (openssh-configuration ...))))
 @end lisp
 @end deffn
@@ -36660,7 +36660,7 @@ Required name of this jail configuration.
 Whether this jail is enabled.
 
 @item @code{backend} (type: maybe-symbol)
-Backend to use to detect changes in the @code{ogpath}.  The default is
+Backend to use to detect changes in the @code{log-path}.  The default is
 'auto.  To consult the defaults of the jail configuration, refer to the
 @file{/etc/fail2ban/jail.conf} file of the @code{fail2ban} package.
 

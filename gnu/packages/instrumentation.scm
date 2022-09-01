@@ -333,7 +333,17 @@ line for tracing control, a @code{lttng-ctl} library for tracing control and a
                (base32 "1ab735idi0h62yvhzd7822jj3555vygixv4xjrfrdvi8d2hhz6qn"))))
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-file-names
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* '("execsnoop" "killsnoop" "kernel/funcslower")
+               (("/usr/bin/gawk")
+                (search-input-file inputs "/bin/awk")))
+             (substitute* "execsnoop"
+               (("/usr/bin/getconf")
+                (search-input-file inputs "/bin/getconf"))))))
+       #:install-plan
        ',(append
           (map (cut list <> "bin/")
                '("disk/bitesize"
@@ -360,7 +370,6 @@ line for tracing control, a @code{lttng-ctl} library for tracing control and a
       bash
       coreutils                         ; cat + rm
       gawk
-      gcc-toolchain                     ; objdump + ldconfig
       file
       perf
       perl

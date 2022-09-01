@@ -28,7 +28,7 @@
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2021 Alice BRENON <alice.brenon@ens-lyon.fr>
+;;; Copyright © 2021, 2022 Alice BRENON <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -10912,6 +10912,27 @@ conflicts, expose it.
 expose it from another module in the hierarchy.
 @end itemize")
     (license license:expat)))
+
+(define-public ghc-roman-numerals
+  (package
+    (name "ghc-roman-numerals")
+    (version "0.5.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "roman-numerals" version))
+              (sha256
+               (base32
+                "10da5vls9l5i255bapms4b2r7dnwmxgsaa1cdll2lrmid5dikixr"))))
+    (build-system haskell-build-system)
+    (inputs (list ghc-base-unicode-symbols))
+    (home-page "https://github.com/roelvandijk/roman-numerals")
+    (synopsis "Parsing and pretty printing of Roman numerals")
+    (description
+     "This library provides functions for parsing and pretty printing Roman numerals.
+Because the notation of Roman numerals has varied through the centuries this
+package allows for some customisation using a configuration that is passed to
+the conversion functions.")
+    (license license:bsd-3)))
 
 (define-public ghc-safe
   (package

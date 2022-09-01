@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
+;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -234,7 +235,7 @@ common build settings used in software produced by the KDE community.")
     (arguments
      `(#:configure-flags
        '( "-DPHONON_BUILD_PHONON4QT5=ON")))
-    (home-page "https://phonon.kde.org")
+    (home-page "https://community.kde.org/Phonon")
     (synopsis "Phonon backend which uses GStreamer")
     (description "Phonon makes use of backend libraries to provide sound.
 Phonon-GStreamer is a backend based on the GStreamer multimedia library.")
@@ -715,7 +716,7 @@ infrastructure.")
            qtsvg-5))
     (native-inputs
      (list pkg-config extra-cmake-modules kdoctools))
-    (home-page "https://apps.kde.org/en/kgraphviewer")
+    (home-page "https://apps.kde.org/kgraphviewer/")
     (synopsis "Graphviz dot graph viewer for KDE")
     (description "KGraphViewer is a Graphviz DOT graph file viewer, aimed to
 replace the other outdated Graphviz tools.")
@@ -797,8 +798,7 @@ other special events for a geographical region.")
                 "1f952488492sm904i1iwgjp2gc7z07312mlshw4ckh2801y0qclc"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     `(("gettext" ,gettext-minimal)
-       ("python" ,python)))
+     (list gettext-minimal python))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
@@ -1036,6 +1036,30 @@ integration with a custom editor as well as a ready-to-use
     (properties `((upstream-name . "syntax-highlighting")))
     (license license:lgpl2.1+)))
 
+(define-public plasma-wayland-protocols
+  (package
+    (name "plasma-wayland-protocols")
+    (version "1.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/" name "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "07zhf2dzacj4xlhackpzaxqnp0d1ldkqlx0f313pw1pgd74zlkxp"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (arguments '(#:tests? #f))          ;no tests
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "KDE Plasma Wayland Protocols")
+    (description
+     "This package contains XML files describing non-standard Wayland
+protocols used in KDE Plasma.")
+    ;; The XML files have varying licenses, open them for details.
+    (license (list license:bsd-3
+                   license:lgpl2.1+
+                   license:expat))))
+
 (define-public kwayland
   (package
     (name "kwayland")
@@ -1130,11 +1154,11 @@ configuration pages, message boxes, and password requests.")
            qttools-5
            xorg-server-for-tests)) ; for the tests
     (inputs
-     `(("libxrender" ,libxrender)
-       ("qtbase" ,qtbase-5)
-       ("qtx11extras" ,qtx11extras)
-       ("xcb-utils-keysyms" ,xcb-util-keysyms)
-       ("xcb-util-wm" ,xcb-util-wm)))
+     (list libxrender
+           qtbase-5
+           qtx11extras
+           xcb-util-keysyms
+           xcb-util-wm))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1375,9 +1399,7 @@ feel.")
     (native-inputs
      (list bison dbus extra-cmake-modules flex qttools-5))
     (inputs
-     `(("qtbase" ,qtbase-5)
-       ("qtdeclarative-5" ,qtdeclarative-5)
-       ("udev" ,eudev)))
+     (list qtbase-5 qtdeclarative-5 eudev))
     ;; TODO: Add runtime-only dependency MediaPlayerInfo
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Desktop hardware abstraction")
@@ -3449,19 +3471,18 @@ need.")
     (native-inputs
      (list extra-cmake-modules pkg-config))
     ;; TODO: Optional packages not yet in Guix: packagekitqt5, AppStreamQt
-    (inputs
-     `(("kconfig" ,kconfig)
-       ("kconfigwidgets" ,kconfigwidgets)
-       ("kcoreaddons" ,kcoreaddons)
-       ("ki18n" ,ki18n)
-       ("kiconthemes" ,kiconthemes)
-       ("kitemviews" ,kitemviews)
-       ("knewstuff" ,knewstuff)
-       ("knotificantions" ,knotifications)
-       ("kpackage" ,kpackage)
-       ("kwidgetsaddons" ,kwidgetsaddons)
-       ("qtbase" ,qtbase-5)
-       ("qtx11extras" ,qtx11extras)))
+    (inputs (list kconfig
+                  kconfigwidgets
+                  kcoreaddons
+                  ki18n
+                  kiconthemes
+                  kitemviews
+                  knewstuff
+                  knotifications
+                  kpackage
+                  kwidgetsaddons
+                  qtbase-5
+                  qtx11extras))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -3784,3 +3805,27 @@ offers abstract functionality to deal with scripts.")
     ;; under a variety of licenses.
     (license (list license:lgpl2.0+ license:lgpl2.1+
                    license:lgpl2.0 license:gpl3+))))
+
+(define-public kdav
+  (package
+    (name "kdav")
+    (version "20.04.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kdav-" version ".tar.xz"))
+       (sha256
+        (base32 "0445gl4xm0h39igkxgb6vmq5iaa04wkgrgbs7nfd0zwngk8xaidn"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list kcoreaddons ki18n kio qtbase-5 qtxmlpatterns))
+    (home-page "https://invent.kde.org/frameworks/kdav")
+    (synopsis "DAV protocol implementation with KJobs")
+    (description "This is a DAV protocol implementation with KJobs.  Calendars
+and todos are supported, using either GroupDAV or CalDAV, and contacts are
+supported using GroupDAV or CardDAV.")
+    (license ;; GPL for programs, LGPL for libraries
+     (list license:gpl2+ license:lgpl2.0+))))

@@ -343,6 +343,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/kawa.scm				\
   %D%/packages/kde.scm				\
   %D%/packages/kde-frameworks.scm		\
+  %D%/packages/kde-games.scm			\
   %D%/packages/kde-internet.scm			\
   %D%/packages/kde-multimedia.scm		\
   %D%/packages/kde-pim.scm			\
@@ -750,6 +751,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/guix.scm				\
   %D%/tests/monitoring.scm                      \
   %D%/tests/nfs.scm				\
+  %D%/tests/image.scm				\
   %D%/tests/install.scm				\
   %D%/tests/ldap.scm				\
   %D%/tests/linux-modules.scm			\
@@ -1451,7 +1453,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libxml2-terminating-newline.patch	\
   %D%/packages/patches/libxml2-xpath-recursion-limit.patch	\
   %D%/packages/patches/libxml2-xpath0-Add-option-xpath0.patch	\
-  %D%/packages/patches/libxmlb-install-xb-tool-into-bindir.patch \
   %D%/packages/patches/libxslt-generated-ids.patch		\
   %D%/packages/patches/libxt-guix-search-paths.patch		\
   %D%/packages/patches/lierolibre-check-unaligned-access.patch	\
