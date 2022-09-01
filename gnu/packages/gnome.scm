@@ -8873,19 +8873,20 @@ like switching to windows and launching applications.")
     (arguments
      `(#:glib-or-gtk? #t))   ; To wrap binaries and/or compile schemas
     (native-inputs
-     `(;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
-       ;; dependency on other platforms (FIXME).
-       ,@(if (target-x86-64?)
-             `(("gjs" ,gjs))
-             '())
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("node" ,node)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("vala" ,vala)))
+     (append
+      ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
+      ;; dependency on other platforms (FIXME).
+       (if (target-x86-64?)
+           (list gjs)
+           '())
+       (list `(,glib "bin")
+             gobject-introspection
+             intltool
+             node
+             perl
+             pkg-config
+             python-wrapper
+             vala)))
     (inputs
      (list cairo (librsvg-for-system)))
     (propagated-inputs
