@@ -3177,10 +3177,10 @@ current/manpages/docbook.xsl")
     (native-inputs
      (list docbook-xml-4.2
            docbook-xsl
+           gettext-minimal
            `(,glib "bin")
            gobject-introspection
            hicolor-icon-theme
-           intltool
            itstool
            libxslt                      ;for xsltproc
            python
