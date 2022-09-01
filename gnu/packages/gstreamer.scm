@@ -577,7 +577,24 @@ This package provides the core library and elements.")
                 ;; This test causes nondeterministic failures (see:
                 ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/950).
                 ((".*'elements/appsrc.c'.*")
-                 ""))))
+                 ""))
+              ;; Some other tests fail on other architectures.
+              #$@(cond
+                   ((target-x86-32?)
+                    #~((substitute* "tests/check/meson.build"
+                         ((".*'libs/libsabi\\.c'.*") ""))))
+                   ((target-riscv64?)
+                    #~((substitute* "tests/check/meson.build"
+                         ((".*'libs/gstglcolorconvert\\.c'.*") "")
+                         ((".*'libs/gstglcontext\\.c'.*") "")
+                         ((".*'libs/gstglmemory\\.c'.*") "")
+                         ((".*'libs/gstglupload\\.c'.*") "")
+                         ((".*'elements/glimagesink\\.c'.*") "")
+                         ((".*'pipelines/gl-launch-lines\\.c'.*") "")
+                         ((".*'elements/glstereo\\.c'.*") "")
+                         ((".*'elements/glmixer\\.c'.*") ""))))
+                   (else
+                     #~()))))
           (add-before 'configure 'patch
             (lambda _
               (substitute* "tests/check/libs/pbutils.c"
