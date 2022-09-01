@@ -14732,8 +14732,7 @@ message passing.")
         (base32 "0mk790w2y7cn9zqj6cn1kl8vvgaamlkj6fmpxg1iprdqyp3v6v0g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))))
     (home-page
