@@ -10744,15 +10744,6 @@ photo-booth-like software, such as Cheese.")
              (substitute* "meson_post_install.py"
                (("gtk-update-icon-cache") (which "true")))
              #t))
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Avoid a network connection attempt during the build.
-             (substitute* '("docs/reference/cheese.xml"
-                            "docs/reference/cheese-docs.xml")
-               (("http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd")
-                (string-append (assoc-ref inputs "docbook-xml")
-                               "/xml/dtd/docbook/docbookx.dtd")))
-             #t))
          (add-after 'install 'wrap-cheese
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out             (assoc-ref outputs "out"))
