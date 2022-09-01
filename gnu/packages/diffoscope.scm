@@ -48,7 +48,6 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
-  #:use-module (gnu packages mono)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pascal)
@@ -196,7 +195,6 @@
              libarchive
              llvm-9
              lz4
-             mono
              ocaml
              odt2txt
              openssh
