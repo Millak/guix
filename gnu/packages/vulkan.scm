@@ -207,7 +207,7 @@ interpretation of the specifications for these languages.")
 (define-public vulkan-loader
   (package
     (name "vulkan-loader")
-    (version "1.2.162")
+    (version "1.2.202")
     (source
      (origin
        (method git-fetch)
@@ -217,32 +217,23 @@ interpretation of the specifications for these languages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "15gx9ab6w1sjq9hkpbas7z2f8f47j6mlln6p3w26qmydjj8gfjjv"))))
+         "1vsaa16clncz19lihgj39rdg4dspkxjay1ii6pkf6fpl1vkw1dh2"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        ,#~(list
            (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
                           #$(this-package-input "vulkan-headers"))
-           (string-append "-DCMAKE_INSTALL_INCLUDEDIR="
-                          #$(this-package-input "vulkan-headers")
-                          "/include"))
+           (string-append "-DGOOGLETEST_INSTALL_DIR="
+                          (getcwd) "/source/external/googletest")
+           "-DBUILD_TESTS=ON")
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'unpack-googletest
                     (lambda* (#:key inputs #:allow-other-keys)
                       (let ((gtest (assoc-ref inputs "googletest:source")))
                         (when gtest
                           (copy-recursively gtest "external/googletest"))
-                        #t)))
-                  (add-after 'unpack 'disable-loader-tests
-                    (lambda _
-                      ;; Many tests require a Vulkan driver.  Skip those.
-                      (substitute* "tests/loader_validation_tests.cpp"
-                        ((".*= vkCreateInstance.*" all)
-                         (string-append "GTEST_SKIP();\n" all))
-                        (("TEST_F.*InstanceExtensionEnumerated.*" all)
-                         (string-append all "\nGTEST_SKIP();\n")))
-                      #t)))))
+                        #t))))))
     (native-inputs
      `(("googletest:source" ,(package-source googletest))
        ("libxrandr" ,libxrandr)
