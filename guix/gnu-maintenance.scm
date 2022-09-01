@@ -538,9 +538,12 @@ are unavailable."
                (upstream-source
                 (package package)
                 (version version)
-                (urls (list url))
+                ;; uri-mirror-rewrite: Don't turn nice mirror:// URIs into ftp://
+                ;; URLs during "guix refresh -u".
+                (urls (list (uri-mirror-rewrite url)))
                 (signature-urls
-                 (list ((or file->signature file->signature/guess) url))))))))
+                 (and=> ((or file->signature file->signature/guess) url)
+                        (lambda (url) (list (uri-mirror-rewrite url))))))))))
 
     (define candidates
       (filter-map url->release links))
