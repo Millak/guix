@@ -12,7 +12,7 @@
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1222,22 +1222,14 @@ descriptions maintained upstream."
 
 (define (check-mirror-url package)
   "Check whether PACKAGE uses source URLs that should be 'mirror://'."
-  (define (check-mirror-uri uri)                  ;XXX: could be optimized
-    (let loop ((mirrors %mirrors))
-      (match mirrors
-        (()
-         #f)
-        (((mirror-id mirror-urls ...) rest ...)
-         (match (find (cut string-prefix? <> uri) mirror-urls)
-           (#f
-            (loop rest))
-           (prefix
-            (make-warning package
-                          (G_ "URL should be \
-'mirror://~a/~a'")
-                          (list mirror-id
-                                (string-drop uri (string-length prefix)))
-                          #:field 'source)))))))
+  (define (check-mirror-uri uri)
+    (define rewritten-uri
+      (uri-mirror-rewrite uri))
+
+    (and (not (string=? uri rewritten-uri))
+         (make-warning package (G_ "URL should be '~a'")
+                       (list rewritten-uri)
+                       #:field 'source)))
 
   (let ((origin (package-source package)))
     (if (and (origin? origin)

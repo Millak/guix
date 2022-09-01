@@ -33,6 +33,8 @@
   #:use-module (rnrs io ports)
   #:use-module (system foreign)
   #:use-module ((guix http-client) #:hide (open-socket-for-uri))
+  ;; not required in many cases, so autoloaded to reduce start-up costs.
+  #:autoload   (guix download) (%mirrors)
   #:use-module (guix ftp-client)
   #:use-module (guix utils)
   #:use-module (guix memoization)
@@ -57,6 +59,8 @@
             official-gnu-packages
             find-package
             gnu-package?
+
+            uri-mirror-rewrite
 
             release-file?
             releases
@@ -657,6 +661,23 @@ GNOME packages; EMMS is included though, because its releases are on gnu.org."
     (if (and url (string-prefix? old url))
         (string-append new (string-drop url (string-length old)))
         url)))
+
+(define (uri-mirror-rewrite uri)
+  "Rewrite URI to a mirror:// URI if possible, or return URI unmodified."
+  (if (string-prefix? "mirror://" uri)
+      uri                            ;nothing to do, it's already a mirror URI
+      (let loop ((mirrors %mirrors))
+        (match mirrors
+          (()
+           uri)
+          (((mirror-id mirror-urls ...) rest ...)
+           (match (find (cut string-prefix? <> uri) mirror-urls)
+             (#f
+              (loop rest))
+             (prefix
+              (format #f "mirror://~a/~a"
+                      mirror-id
+                      (string-drop uri (string-length prefix))))))))))
 
 (define (adjusted-upstream-source source rewrite-url)
   "Rewrite URLs in SOURCE by apply REWRITE-URL to each of them."
