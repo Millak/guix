@@ -417,7 +417,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/moe.scm				\
   %D%/packages/motti.scm			\
   %D%/packages/monitoring.scm			\
-  %D%/packages/mono.scm				\
   %D%/packages/moreutils.scm			\
   %D%/packages/mpd.scm				\
   %D%/packages/mp3.scm				\
@@ -1529,7 +1528,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/mpg321-gcc-10.patch			\
   %D%/packages/patches/module-init-tools-moduledir.patch	\
   %D%/packages/patches/monero-use-system-miniupnpc.patch			\
-  %D%/packages/patches/mono-mdoc-timestamping.patch		\
   %D%/packages/patches/mosaicatcher-unbundle-htslib.patch	\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\
