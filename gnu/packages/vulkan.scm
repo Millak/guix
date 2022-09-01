@@ -4,6 +4,7 @@
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -393,3 +394,52 @@ shader compilation.")
      (synopsis "Direct3D 12 to Vulkan translation library")
      (description "vkd3d is a library for translating Direct3D 12 to Vulkan.")
      (license license:lgpl2.1))))
+
+(define-public vulkan-validationlayers
+  (package
+    (name "vulkan-validationlayers")
+    (version "1.2.201")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/KhronosGroup/Vulkan-ValidationLayers")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jnz9cmy5d5g6jh9p4wr0qrlqlpfp07b3cizq37i5p1bcabdgmrz"))))
+    (build-system cmake-build-system)
+    (inputs (list glslang
+                  libxrandr
+                  mesa
+                  shaderc
+                  spirv-tools
+                  vulkan-loader
+                  wayland))
+    (native-inputs (list pkg-config python spirv-headers vulkan-headers))
+    (arguments
+     (list #:tests? #f ;no tests
+           #:configure-flags #~(list "-DUSE_ROBIN_HOOD_HASHING=OFF"
+                                     (string-append "-DGLSLANG_INSTALL_DIR="
+                                                    #$glslang)
+                                     (string-append
+                                      "-DSPIRV_HEADERS_INSTALL_DIR="
+                                      #$spirv-headers) "-Wno-dev")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'set-layer-path-in-manifest
+                          (lambda _
+                            (let ((manifest (string-append #$output
+                                             "/share/vulkan/explicit_layer.d"
+                                             "/VkLayer_khronos_validation.json")))
+                              (substitute* manifest
+                                (("\"libVkLayer_khronos_validation.so\"")
+                                 (string-append "\"" #$output
+                                  "/lib/libVkLayer_khronos_validation.so\"")))))))))
+    (home-page "https://github.com/KhronosGroup/Vulkan-ValidationLayers")
+    (synopsis "Khronos official validation layers for Vulkan")
+    (description
+     "Vulkan-ValidationLayers provides the Khronos official validation layers that
+can assist development by enabling developers to verify their applications correctly
+use the Vulkan API.")
+    (license license:asl2.0)))
