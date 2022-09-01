@@ -8189,7 +8189,7 @@ Cisco's AnyConnect SSL VPN.")
        #:configure-flags
        '("-Dappindicator=yes")))
     (native-inputs
-     (list intltool
+     (list gettext-minimal
            `(,glib "bin") ; for glib-compile-resources, etc.
            gobject-introspection
            gtk-doc/stable
