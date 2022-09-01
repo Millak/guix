@@ -1973,6 +1973,49 @@ defined radio with support for rtl-sdr.")
 program that can be used to build simple signal processing flow graphs.")
     (license license:gpl3+)))
 
+(define-public convert-samples
+  (package
+    (name "convert-samples")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/glv2/convert-samples")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d9w9m5agi8fiv1wk8nhjrbm2jkm2fks4ymbxkn0xphbwj3gwr7i"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake))
+    (inputs
+     (list liquid-dsp))
+    (synopsis "SDR samples converter")
+    (description
+     "@code{convert-samples} is a command-line program to convert samples
+received from software defined radios from one format to another.
+
+Supported formats:
+@itemize
+@item s8: signed 8 bit integer
+@item u8: unsigned 8 bit integer
+@item s16: signed 16 bit integer
+@item u16: unsigned 16 bit integer
+@item s32: signed 32 bit integer
+@item u32: unsigned 32 bit integer
+@item f32: 32 bit float
+@item cs8: complex made of signed 8 bit integers
+@item cu8: complex made of unsigned 8 bit integers
+@item cs16: complex made of signed 16 bit integers
+@item cu16: complex made of unsigned 16 bit integers
+@item cs32: complex made of signed 32 bit integers
+@item cu32: complex made of unsigned 32 bit integers
+@item cf32: complex made of 32 bit floats
+@end itemize")
+    (home-page "https://github.com/glv2/convert-samples")
+    (license license:gpl3+)))
+
 (define-public serialdv
   (package
     (name "serialdv")
