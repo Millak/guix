@@ -11647,3 +11647,24 @@ necessary, so that previous text may be overwritten.  In addition, the command
 which the command @code{\\tab} advances typesetting position to the next
 defined ``tab stop''.")
     (license license:lppl1.3+)))
+
+(define-public texlive-generic-soul
+  (let ((template (simple-texlive-package
+                   "texlive-generic-soul"
+                   (list "/doc/generic/soul/"
+                         "/tex/generic/soul/")
+                   (base32
+                    "11jdgvfpcv10y5j898495lf29k2m03x39v9jzb4v79w4cgxcmfps")
+                   #:trivial? #t)))
+    (package
+      (inherit template)
+      (home-page "http://www.ctan.org/pkg/soul")
+      (synopsis "Hyphenation for letterspacing, underlining, and more")
+      (description
+       "@code{soul} enables hyphenatable spacing out (letterspacing),
+underlining, striking out, etc., using the TeX hyphenation algorithm to find
+the proper hyphens automatically.  The package also provides a mechanism that
+can be used to implement similar tasks, that have to treat text syllable by
+syllable.  The package itself does not support UTF-8 input in ordinary
+(PDF)LaTeX; some UTF-8 support is offered by package @code{soulutf8}.")
+      (license license:lppl))))
