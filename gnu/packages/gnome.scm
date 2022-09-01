@@ -977,30 +977,30 @@ cloud integration is offered through GNOME Online Accounts.")
                  `("GUIX_PYTHONPATH" =
                    (,(getenv "GUIX_PYTHONPATH") ,pylib)))))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("itstools" ,itstool)
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           itstool
+           pkg-config))
     (inputs
-     `(("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
-       ("grilo" ,grilo)
-       ("grilo-plugins" ,grilo-plugins)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gst-plugins-good" ,gst-plugins-good)
-       ("gstreamer" ,gstreamer)
-       ("gvfs" ,gvfs)
-       ("json-glib" ,json-glib)
-       ("libdazzle" ,libdazzle)
-       ("libmediaart" ,libmediaart)
-       ("libsoup" ,libsoup-minimal-2)
-       ("pycairo" ,python-pycairo)
-       ("pygobject" ,python-pygobject)
-       ("python" ,python)
-       ("tracker" ,tracker)
-       ("tracker-miners" ,tracker-miners)))
+     (list `(,gnome-online-accounts "lib")
+           grilo
+           grilo-plugins
+           gst-plugins-base
+           gst-plugins-good
+           gstreamer
+           gvfs
+           json-glib
+           libdazzle
+           libmediaart
+           libsoup-minimal-2
+           python-pycairo
+           python-pygobject
+           python
+           tracker
+           tracker-miners))
     (synopsis "Simple music player for GNOME desktop")
     (description "GNOME Music is the new GNOME music playing application that
 aims to combine an elegant and immersive browsing experience with simple
