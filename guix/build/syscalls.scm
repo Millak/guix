@@ -2321,8 +2321,7 @@ always a positive integer."
   (terminal-dimension window-size-rows port (const 25)))
 
 (define openpty
-  (let ((proc (syscall->procedure int "openpty" '(* * * * *)
-                                  #:library "libutil")))
+  (let ((proc (syscall->procedure int "openpty" '(* * * * *))))
     (lambda ()
       "Return two file descriptors: one for the pseudo-terminal control side,
 and one for the controlled side."
@@ -2343,8 +2342,7 @@ and one for the controlled side."
           (values (* head) (* inferior)))))))
 
 (define login-tty
-  (let* ((proc (syscall->procedure int "login_tty" (list int)
-                                   #:library "libutil")))
+  (let* ((proc (syscall->procedure int "login_tty" (list int))))
     (lambda (fd)
       "Make FD the controlling terminal of the current process (with the
 TIOCSCTTY ioctl), redirect standard input, standard output and standard error
