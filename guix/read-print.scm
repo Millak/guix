@@ -386,6 +386,21 @@ particular newlines, is left as is."
                           str)
      #\")))
 
+(define %natural-whitespace-string-forms
+  ;; When a string has one of these forms as its parent, only double quotes
+  ;; and backslashes are escaped; newlines, tabs, etc. are left as-is.
+  '(synopsis description G_ N_))
+
+(define (printed-string str context)
+  "Return the read syntax for STR depending on CONTEXT."
+  (match context
+    (()
+     (object->string str))
+    ((head . _)
+     (if (memq head %natural-whitespace-string-forms)
+         (escaped-string str)
+         (object->string str)))))
+
 (define (string-width str)
   "Return the \"width\" of STR--i.e., the width of the longest line of STR."
   (apply max (map string-length (string-split str #\newline))))
@@ -691,7 +706,7 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
              (+ column 1)))))
       (_
        (let* ((str (cond ((string? obj)
-                          (escaped-string obj))
+                          (printed-string obj context))
                          ((integer? obj)
                           (integer->string obj context))
                          (else
