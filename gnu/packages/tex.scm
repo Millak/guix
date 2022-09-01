@@ -11591,3 +11591,21 @@ within ‘words’ that contain non-alphabetic characters (e.g., that include
 underscores), and hyphenation of text typeset in monospaced (e.g., cmtt)
 fonts.")
     (license license:lppl1.3c+)))
+
+(define-public texlive-latex-lastpage
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-lastpage"
+              (list "doc/latex/lastpage/"
+                    "tex/latex/lastpage/")
+              (base32 "0q6x743b8fkw9r82lrxy49f9xsg81bffynwvpnvpnp3h4mkafvdb")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lastpage")
+    (synopsis "Reference last page for Page N of M type footers")
+    (description
+     "This package enables referencing the number of pages in a LaTeX document
+through the introduction of a new label which can be referenced like
+@code{\\pageref{LastPage}} to give a reference to the last page of a document.
+It is particularly useful in the page footer that says: Page N of M.")
+    (license license:lppl1.3c+)))
