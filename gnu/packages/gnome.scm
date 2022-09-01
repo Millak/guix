@@ -8189,11 +8189,11 @@ Cisco's AnyConnect SSL VPN.")
        #:configure-flags
        '("-Dappindicator=yes")))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("glib:bin" ,glib "bin") ; for glib-compile-resources, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)))
+     (list intltool
+           `(,glib "bin") ; for glib-compile-resources, etc.
+           gobject-introspection
+           gtk-doc/stable
+           pkg-config))
     (propagated-inputs
      ;; libnm-gtk.pc refers to all these.
      (list dbus-glib gtk+ network-manager
