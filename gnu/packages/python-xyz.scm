@@ -6469,9 +6469,16 @@ tests = True~%" (assoc-ref inputs "tcl") (assoc-ref inputs "tk"))))))
                   (invoke "pytest"
                           "-n" (number->string (parallel-job-count))
                           "-m" "not network" "--pyargs" "matplotlib"
-                          ;; The 'test_lazy_auto_backend_selection' fails
-                          ;; because it would require an X server; skip it.
-                          "-k" "not test_lazy_auto_backend_selection"))))))))
+                          "-k"
+                          (string-append
+                           ;; The 'test_lazy_auto_backend_selection' fails
+                           ;; because it would require an X server; skip it.
+                           "not test_lazy_auto_backend_selection"
+                           ;; test_getattr fails for the GTK backend because
+                           ;; of an unexpected warning from Python 3.10
+                           ;; (via the gi module):
+                           ;; https://gitlab.gnome.org/GNOME/pygobject/-/issues/494
+                           " and not test_getattr")))))))))
     (propagated-inputs
      (list gobject-introspection
            python-cairocffi
