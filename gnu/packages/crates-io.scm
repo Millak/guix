@@ -70288,14 +70288,14 @@ a part of rav1e.")
 (define-public rust-value-bag-1
   (package
     (name "rust-value-bag")
-    (version "1.0.0-alpha.6")
+    (version "1.0.0-alpha.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "value-bag" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cas61n2vkf9b82ljv6dzs8hp8s07arl68vw24rr1jamw0860rvb"))))
+        (base32 "0mgc2vlqikx16gabp4ghbm3fs773kxvwjmrn57rydxs92a6vf292"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -70304,7 +70304,8 @@ a part of rav1e.")
         ("rust-erased-serde" ,rust-erased-serde-0.3)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-fmt" ,rust-serde-fmt-1)
-        ("rust-sval" ,rust-sval-1))))
+        ("rust-sval" ,rust-sval-1)
+        ("rust-version-check" ,rust-version-check-0.9))))
     (home-page "https://github.com/sval-rs/value-bag")
     (synopsis "Anonymous structured values")
     (description "This package provides anonymous structured values.")
