@@ -11668,3 +11668,20 @@ can be used to implement similar tasks, that have to treat text syllable by
 syllable.  The package itself does not support UTF-8 input in ordinary
 (PDF)LaTeX; some UTF-8 support is offered by package @code{soulutf8}.")
       (license license:lppl))))
+
+(define-public texlive-latex-totcount
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-totcount"
+              (list "doc/latex/totcount/"
+                    "tex/latex/totcount/")
+              (base32 "0z4mijyk3z7555q8da41aiji602plis5z261z4rr1fl8sndhnhn1")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/totcount")
+    (synopsis "Find the last value of a counter")
+    (description
+     "This package records the value that was last set, for any counter of
+interest.  Since most such counters are simply incremented when they are
+changed, the recorded value will usually be the maximum value.")
+    (license license:lppl1.3c+)))
