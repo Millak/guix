@@ -183,7 +183,7 @@ interpretation of the specifications for these languages.")
 (define-public vulkan-headers
   (package
     (name "vulkan-headers")
-    (version "1.2.164")
+    (version "1.2.202")
     (source
      (origin
        (method git-fetch)
@@ -193,7 +193,7 @@ interpretation of the specifications for these languages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11wzxvwim4jna1yssbmprl211dhmz8vmrd498zww3bghzlj7bljv"))))
+         "0lsjpxqb7k2mf0w1qadpki6vnwxr29kjg5y1jafl3pvk0mdy1azj"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; No tests.
