@@ -363,10 +363,12 @@ return the corresponding signature URL, or #f it signatures are unavailable."
       (upstream-source
        (package project)
        (version (tarball->version file))
-       (urls (list url))
+       ;; uri-mirror-rewrite: Don't turn nice mirror:// URIs into ftp://
+       ;; URLs during "guix refresh -u".
+       (urls (list (uri-mirror-rewrite url)))
        (signature-urls (match (file->signature url)
                          (#f #f)
-                         (sig (list sig)))))))
+                         (sig (list (uri-mirror-rewrite sig))))))))
 
   (let loop ((directory directory)
              (result    #f))
