@@ -3175,18 +3175,18 @@ current/manpages/docbook.xsl")
           '())
       (list gtk+ libxml2)))
     (native-inputs
-     `(("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("libxslt" ,libxslt) ;for xsltproc
-       ("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("glib:bin" ,glib "bin")
-       ("python" ,python)
-       ("python-pygobject" ,python-pygobject)
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list docbook-xml-4.2
+           docbook-xsl
+           `(,glib "bin")
+           gobject-introspection
+           hicolor-icon-theme
+           intltool
+           itstool
+           libxslt                      ;for xsltproc
+           python
+           python-pygobject
+           pkg-config
+           xorg-server-for-tests))
     (home-page "https://glade.gnome.org")
     (synopsis "GTK+ rapid application development tool")
     (description "Glade is a rapid application development (RAD) tool to
