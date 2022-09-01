@@ -43601,14 +43601,22 @@ crate.")
 (define-public rust-pin-project-lite-0.2
   (package
     (name "rust-pin-project-lite")
-    (version "0.2.7")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project-lite" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hwl8iyx3h9i3i3jr2vqj07nf4ay1v1w1ga29cbjmdd6d4fd2ccd"))))
+        (base32 "05n1z851l356hpgqadw4ar64mjanaxq1qlwqsf2k05ziq8xax9z0"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* "Cargo.toml"
+           (("\\[dev-dependencies.rustversion\\]" m)
+            (string-append "
+[dev-dependencies.macrotest]
+version = \"1\"
+" m))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
