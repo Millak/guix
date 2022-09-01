@@ -660,13 +660,6 @@ GNOME packages; EMMS is included though, because its releases are on gnu.org."
 (define gnu-hosted?
   (url-prefix-predicate "mirror://gnu/"))
 
-(define (url-prefix-rewrite old new)
-  "Return a one-argument procedure that rewrites URL prefix OLD to NEW."
-  (lambda (url)
-    (if (and url (string-prefix? old url))
-        (string-append new (string-drop url (string-length old)))
-        url)))
-
 (define (uri-mirror-rewrite uri)
   "Rewrite URI to a mirror:// URI if possible, or return URI unmodified."
   (if (string-prefix? "mirror://" uri)
@@ -683,15 +676,6 @@ GNOME packages; EMMS is included though, because its releases are on gnu.org."
               (format #f "mirror://~a/~a"
                       mirror-id
                       (string-drop uri (string-length prefix))))))))))
-
-(define (adjusted-upstream-source source rewrite-url)
-  "Rewrite URLs in SOURCE by apply REWRITE-URL to each of them."
-  (upstream-source
-   (inherit source)
-   (urls (map rewrite-url (upstream-source-urls source)))
-   (signature-urls (and=> (upstream-source-signature-urls source)
-                          (lambda (urls)
-                            (map rewrite-url urls))))))
 
 (define %savannah-base
   ;; One of the Savannah mirrors listed at
