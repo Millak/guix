@@ -292,7 +292,7 @@ API.")
 (define-public shaderc
   (package
     (name "shaderc")
-    (version "2020.4")
+    (version "2021.3")
     (source
      (origin
        (method git-fetch)
@@ -302,7 +302,7 @@ API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07h78nd964h2bdm4drzws8i1gvyal8a3wlhbcm5qxqk6vknv8hrk"))))
+         "0qjwixcx74dvx68jl51x2mp2q1346hvhwxr8w3wk36nzla62k2s6"))))
     (build-system cmake-build-system)
     (arguments
      `(;; FIXME: Skip most of the tests, because enabling system gtest breaks
