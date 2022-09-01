@@ -706,15 +706,12 @@ GNOME packages; EMMS is included though, because its releases are on gnu.org."
                        ((? string? uri) uri)
                        ((uri mirrors ...) uri))))
          (package   (package-upstream-name package))
-         (directory (dirname (uri-path uri)))
-         (rewrite   (url-prefix-rewrite %savannah-base
-                                        "mirror://savannah")))
+         (directory (dirname (uri-path uri))))
     ;; Note: We use the default 'file->signature', which adds ".sig", ".asc",
     ;; or whichever detached signature naming scheme PACKAGE uses.
-    (and=> (latest-html-release package
-                                #:base-url %savannah-base
-                                #:directory directory)
-           (cut adjusted-upstream-source <> rewrite))))
+    (latest-html-release package
+                         #:base-url %savannah-base
+                         #:directory directory)))
 
 (define (latest-sourceforge-release package)
   "Return the latest release of PACKAGE."
