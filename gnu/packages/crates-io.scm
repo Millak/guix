@@ -73872,6 +73872,28 @@ configuration file and/or environment variables.")
     (description "Rust for Windows")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-0.32
+  (package
+    (inherit rust-windows-0.9)
+    (name "rust-windows")
+    (version "0.32.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1v0h5b5g1ak2f2a6gkgjqgrqkkbdcfmf02nfmmj27g4nj3dzdvgv"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-windows-implement" ,rust-windows-implement-0.32)
+        ("rust-windows-aarch64-msvc" ,rust-windows-aarch64-msvc-0.32)
+        ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.32)
+        ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.32)
+        ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.32)
+        ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.32))))))
+
 (define-public rust-windows-x86-64-msvc-0.28
   (package
     (name "rust-windows-x86-64-msvc")
