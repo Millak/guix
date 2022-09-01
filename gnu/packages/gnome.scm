@@ -8879,9 +8879,9 @@ like switching to windows and launching applications.")
        (if (target-x86-64?)
            (list gjs)
            '())
-       (list `(,glib "bin")
+       (list gettext-minimal
+             `(,glib "bin")
              gobject-introspection
-             intltool
              node
              perl
              pkg-config
