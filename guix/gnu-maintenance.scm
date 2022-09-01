@@ -791,14 +791,11 @@ GNOME packages; EMMS is included though, because its releases are on gnu.org."
                        ((? string? uri) uri)
                        ((uri mirrors ...) uri))))
          (package   (package-upstream-name package))
-         (directory (dirname (uri-path uri)))
-         (rewrite   (url-prefix-rewrite %kernel.org-base
-                                        "mirror://kernel.org")))
-    (and=> (latest-html-release package
-                                #:base-url %kernel.org-base
-                                #:directory directory
-                                #:file->signature file->signature)
-           (cut adjusted-upstream-source <> rewrite))))
+         (directory (dirname (uri-path uri))))
+    (latest-html-release package
+                         #:base-url %kernel.org-base
+                         #:directory directory
+                         #:file->signature file->signature)))
 
 (define html-updatable-package?
   ;; Return true if the given package may be handled by the generic HTML
