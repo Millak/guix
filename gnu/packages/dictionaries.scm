@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2016, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -238,7 +238,7 @@ and a Python library.")
 (define-public translate-shell
   (package
     (name "translate-shell")
-    (version "0.9.6.12")
+    (version "0.9.7")
     (source
       (origin
         (method git-fetch)
@@ -247,7 +247,7 @@ and a Python library.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "075vqnha21rhr1b61dim7dqlfwm1yffyzcaa83s36rpk9r5sddzx"))))
+         (base32 "03p00v8g0y2xs3sza2r2kmhwiajaz9viab6xk9snw7chzw2cddiq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -256,8 +256,7 @@ and a Python library.")
          (add-after 'unpack 'remove-unnecessary-file
            ;; This file gets generated during the build phase.
            (lambda _
-             (delete-file "translate")
-             #t))
+             (delete-file "translate")))
          (add-after 'install 'wrap-binary
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out     (assoc-ref outputs "out"))
@@ -270,8 +269,7 @@ and a Python library.")
                                (,(string-append out "/bin:"
                                                 curl "/bin:"
                                                 fribidi "/bin:"
-                                                rlwrap "/bin")))))
-             #t))
+                                                rlwrap "/bin")))))))
          (add-after 'install 'emacs-install
            (assoc-ref emacs:%standard-phases 'install))
          (add-after 'emacs-install 'emacs-make-autoloads

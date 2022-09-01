@@ -123,6 +123,7 @@
     "third_party/ced" ;BSD-3
     "third_party/cld_3" ;ASL2.0
     "third_party/closure_compiler" ;ASL2.0
+    "third_party/content_analysis_sdk" ;BSD-3
     "third_party/cpuinfo" ;BSD-2
     "third_party/crashpad" ;ASL2.0
     "third_party/crashpad/crashpad/third_party/lss" ;ASL2.0
@@ -316,7 +317,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "104.0.5112.101")
+(define %chromium-version "105.0.5195.52")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/102.0.5005.61-1")
 
@@ -328,7 +329,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0jy5hjn61p5mnbqns3jlybim7iy8w9cmzm3i84wn68cyyx1bk25m"))))
+      "1smzgnd3zmh57pz7sk9nb7m31wbhx1x9y3ll3m4zaxwrrb41kghn"))))
 
 (define %debian-origin
   (origin
@@ -343,17 +344,44 @@
      (base32
       "1ln6r1qzlr7dsgvcbssvvc34my4mpkwv9hmvlb2dhjncs7isp65j"))))
 
-(define (debian-patch name)
+(define %chromium-gcc-patchset
+  (let ((commit "chromium-105-patchset-1"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/stha09/chromium-patches")
+            (commit commit)))
+      (file-name (git-file-name "chromium-gcc-patches"
+                                (string-drop commit 9)))
+      (sha256
+       (base32
+        "08c3pbdqjdqi7rmyqkkh6q429611ikakf4gkzwg1gr07vyknwkfa")))))
+
+(define (origin-file origin file)
   (computed-file
-   (basename name)
-   #~(symlink (string-append #$%debian-origin "/debian/patches/" #$name)
+   (basename file)
+   #~(symlink (string-append #$origin "/" #$file)
               #$output)))
+
+(define (debian-patch name)
+  (origin-file %debian-origin (string-append "/debian/patches/" name)))
 
 (define %debian-patches
   (map debian-patch
        '("system/jsoncpp.patch"
          "system/zlib.patch"
          "system/openjpeg.patch")))
+
+(define (gcc-patch name)
+  (origin-file %chromium-gcc-patchset name))
+
+(define %gcc-patches
+  (map gcc-patch
+       '("chromium-105-AdjustMaskLayerGeometry-ceilf.patch"
+         "chromium-105-Bitmap-include.patch"
+         "chromium-105-browser_finder-include.patch"
+         "chromium-105-raw_ptr-noexcept.patch"
+         "chromium-105-Trap-raw_ptr.patch")))
 
 ;; Take a patch from Arch that reverts a change which requires an unreleased
 ;; version of ffmpeg.
@@ -405,7 +433,8 @@
           (for-each (lambda (patch)
                       (invoke "patch" "-p1" "--force" "--input"
                               patch "--no-backup-if-mismatch"))
-                    (append '#+%debian-patches '#+%guix-patches))
+                    (append '#+%debian-patches '#+%guix-patches
+                            '#+%gcc-patches))
 
           (invoke "patch" "-Rp1" "--force" "--input" "--no-backup-if-mismatch"
                   "--input" #$%ungoogled-chromium-unroll-ffmpeg.patch)
@@ -477,7 +506,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0nrghgngxdn9richjnxii9y94dg5zpwc3gd3vx609r4xaphibw30"))
+                "0hkwjilzy0x28knm6nrkywnsmldhz4kgpnxka2iaghihkjzb4wfw"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -611,25 +640,25 @@
                       "sandbox/linux/syscall_broker/broker_host.cc")
                   (("include \"base/third_party/valgrind/") "include \"valgrind/"))
 
-                (for-each (lambda (file)
-                            (substitute* file
-                              ;; Fix opus include path.
-                              ;; Do not substitute opus_private.h.
-                              (("#include \"opus\\.h\"")
-                               "#include \"opus/opus.h\"")
-                              (("#include \"opus_custom\\.h\"")
-                               "#include \"opus/opus_custom.h\"")
-                              (("#include \"opus_defines\\.h\"")
-                               "#include \"opus/opus_defines.h\"")
-                              (("#include \"opus_multistream\\.h\"")
-                               "#include \"opus/opus_multistream.h\"")
-                              (("#include \"opus_types\\.h\"")
-                               "#include \"opus/opus_types.h\"")))
-                          (find-files (string-append "third_party/webrtc/modules"
-                                                     "/audio_coding/codecs/opus")))
-                (substitute* "media/audio/audio_opus_encoder.h"
-                  (("\"third_party/opus/src/include/opus.h\"")
-                   "<opus/opus.h>"))
+                (substitute*
+                    (append
+                     '("media/audio/audio_opus_encoder.h")
+                     (find-files (string-append "third_party/webrtc/modules"
+                                                "/audio_coding/codecs/opus")))
+                  ;; Fix opus include path.
+                  ;; Do not substitute opus_private.h.
+                  (("#include \"opus\\.h\"")
+                   "#include \"opus/opus.h\"")
+                  (("#include \"opus_custom\\.h\"")
+                   "#include \"opus/opus_custom.h\"")
+                  (("#include \"opus_defines\\.h\"")
+                   "#include \"opus/opus_defines.h\"")
+                  (("#include \"opus_multistream\\.h\"")
+                   "#include \"opus/opus_multistream.h\"")
+                  (("#include \"opus_types\\.h\"")
+                   "#include \"opus/opus_types.h\"")
+                  (("\"third_party/opus/src/include/([a-z_-]+\\.h)\"" _ header)
+                   (string-append "<opus/" header ">")))
 
                 (substitute* "third_party/webrtc/rtc_base/strings/json.h"
                   (("#include \"third_party/jsoncpp/")

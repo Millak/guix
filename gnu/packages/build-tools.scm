@@ -325,6 +325,19 @@ resembles Python.")
               (patches (search-patches
                         "meson-allow-dirs-outside-of-prefix.patch"))))))
 
+(define-public meson-0.63
+  (package
+    (inherit meson)
+    (version "0.63.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/mesonbuild/meson/"
+                                  "releases/download/" version  "/meson-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1sb5rdra5zc6c3ni8x65zs7r7vsnbarammf5440zzmhkf8li7zh6"))))))
+
 (define-public premake4
   (package
     (name "premake")

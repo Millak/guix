@@ -36,21 +36,43 @@
   #:use-module (guix build-system meson)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages assembly)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
-  #:use-module (gnu packages curl)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
+  #:use-module (gnu packages curl)
+  #:use-module (gnu packages efi)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages hardware)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages man)
+  #:use-module (gnu packages mingw)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages web)
+  #:use-module (gnu packages xml))
 
 (define-public ath9k-htc-firmware
   (package
@@ -167,6 +189,103 @@ Linux-libre.")
 assembler, disassembler, and debugging tools for the Linux kernel b43 wireless
 driver.")
       (license license:gpl2))))
+
+(define-public fwupd
+  (package
+    (name "fwupd")
+    (version "1.8.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fwupd/fwupd")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02jf052qj1nl47ppqrgz3s9qapq4pajgkf6lbj5rxr5sshlrw44n"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "--wrap-mode=nofallback"
+                                "-Dsystemd=false"
+                                (string-append "-Defi_os_dir="
+                                               #$gnu-efi "/lib")
+                                "-Defi_binary=false"
+                                (string-append "-Dudevdir="
+                                               #$output "/lib/udev")
+                                "--localstatedir=/var"
+                                (string-append "--libexecdir="
+                                               #$output "/libexec")
+                                "-Dsupported_build=true"
+                                ;; Disable LVFS, because it contains
+                                ;; nonfree firmwares.
+                                "-Dlvfs=disabled")
+      #:glib-or-gtk? #t               ;To wrap binaries and/or compile schemas
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-source-writable
+            (lambda _
+              (for-each make-file-writable
+                        (find-files "."))
+              (substitute* "src/fu-self-test.c"
+                (("/bin/sh")
+                 (which "sh")))))
+          (add-before 'build 'setup-home
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-before 'install 'no-polkit-magic
+            (lambda _
+              (setenv "PKEXEC_UID" "something")))
+          (add-after 'install 'ensure-all-remotes-are-disabled
+            ;; Because no remote currently promises to offer only free
+            ;; software firmwares, disable them to prevent a user to
+            ;; unknowingly install proprietary firmware updates.
+            (lambda _
+              (substitute* (find-files (string-append #$output "/etc")
+                                       "\\.conf$")
+                (("Enabled=true")
+                 "Enabled=false")))))))
+    (native-inputs (list gobject-introspection
+                         python-pygobject
+                         python-pillow
+                         python-pycairo
+                         python
+                         pkg-config
+                         vala
+                         gtk-doc
+                         which
+                         umockdev
+                         `(,glib "bin")
+                         help2man
+                         gettext-minimal))
+    (inputs (list bash-completion
+                  glib
+                  libgudev
+                  libxmlb
+                  gusb
+                  sqlite
+                  libarchive
+                  libjcat
+                  json-glib
+                  curl
+                  polkit
+                  eudev
+                  gcab
+                  gnutls
+                  libelf
+                  tpm2-tss
+                  cairo
+                  efivar
+                  pango
+                  protobuf-c
+                  mingw-w64-tools
+                  libsmbios
+                  gnu-efi))
+    (home-page "https://fwupd.org/")
+    (synopsis "Daemon to allow session software to update firmware")
+    (description "This package aims to make updating firmware on GNU/Linux
+automatic, safe and reliable.  It is used by tools such as GNOME Software.")
+    (license license:lgpl2.1+)))
 
 (define-public openfwwf-firmware
   (package

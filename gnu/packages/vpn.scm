@@ -1197,3 +1197,31 @@ public keys and can roam across IP addresses.")
      "xl2tpd is an implementation of the Layer 2 Tunnelling Protocol (RFC 2661).
 L2TP allows you to tunnel PPP over UDP.")
     (license license:gpl2)))
+
+(define-public vpn-slice
+  (package
+    (name "vpn-slice")
+    (version "0.16.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "vpn-slice" version))
+              (sha256
+               (base32
+                "1anfx4hn2ggm6sbwqmqx68s3l2rjcy4z4l038xqb440jnk8jvl18"))))
+    (build-system python-build-system)
+    (inputs (list python-dnspython python-setproctitle))
+    (home-page "https://github.com/dlenski/vpn-slice")
+    (synopsis "Split tunneling replacement for vpnc-script")
+    (description "vpn-slice is a replacement for @command{vpnc-script} used by
+@code{openconnect} and @code{vpnc}.  Instead of trying to copy the behavior of
+standard corporate VPN clients, which normally reroute all your network
+traffic through the VPN, vpn-slice tries to minimize your contact with an
+intrusive VPN.  This is also known as a split-tunnel VPN, since it splits your
+traffic between the VPN tunnel and your normal network interfaces.
+
+By default, vpn-slice only routes traffic for specific hosts or subnets
+through the VPN.  It automatically looks up named hosts, using the VPN's DNS
+servers, and adds entries for them to your @file{/etc/hosts} (which it cleans
+up after VPN disconnection), however it does not otherwise alter your
+@file{/etc/resolv.conf} at all.")
+    (license license:gpl3+)))

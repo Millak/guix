@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
 (define-module (gnu packages rpc)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix utils)
@@ -154,17 +156,35 @@ browsers to backend services.")
        (delete "abseil-cpp" "protobuf")
        (prepend abseil-cpp-20200923.3 protobuf-3.6)))))
 
+(define-public python-grpc-stubs
+  (package
+    (name "python-grpc-stubs")
+    (version "1.24.11")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "grpc-stubs" version))
+              (sha256
+               (base32
+                "19dkm365g38lvxm799d29dnzg60g8in8251c18qkvsv4n92h8axh"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-grpcio python-typing-extensions))
+    (home-page "https://github.com/shabbyrobe/grpc-stubs")
+    (synopsis "gRPC typing stubs for Python")
+    (description "This is a PEP-561-compliant stub-only package which provides
+type information of gRPC.")
+    (license license:expat)))
+
 (define-public python-grpcio
   (package
     (name "python-grpcio")
-    (version "1.27.2")
+    (version "1.47.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "grpcio" version))
        (sha256
         (base32
-         "0zl89jwcff9hkd8mi4yf3qbhns9vbv1s4x4vahm5mkpr7jwk5ras"))
+         "00gqhz0b1sqnfx6zy7h5z41b6mpsq57r1f3p95xradcvmdgskfsx"))
        (modules '((guix build utils) (ice-9 ftw)))
        (snippet
         '(begin
@@ -176,32 +196,67 @@ browsers to backend services.")
                                 (lambda (file)
                                   (not (member file
                                                '("." ".."
-                                                 "abseil-cpp"
                                                  "address_sorting"
-                                                 "upb")))))))
-           #t))))
+                                                 "upb"
+                                                 "xxhash")))))))))))
     (build-system python-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'build 'use-system-libraries
-                    (lambda _
-                      (setenv "GRPC_PYTHON_BUILD_SYSTEM_CARES" "1")
-                      (setenv "GRPC_PYTHON_BUILD_SYSTEM_OPENSSL" "1")
-                      (setenv "GRPC_PYTHON_BUILD_SYSTEM_ZLIB" "1")
-                      #t))
-                  (add-before 'build 'configure-compiler
-                    (lambda _
-                      (substitute* '("setup.py" "src/python/grpcio/commands.py")
-                        (("'cc'") "'gcc'"))
-                      #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'use-system-libraries
+            (lambda _
+              (setenv "GRPC_PYTHON_BUILD_SYSTEM_CARES" "1")
+              (setenv "GRPC_PYTHON_BUILD_SYSTEM_OPENSSL" "1")
+              (setenv "GRPC_PYTHON_BUILD_SYSTEM_ZLIB" "1")
+              (setenv "GRPC_PYTHON_BUILD_SYSTEM_RE2" "1")
+              (setenv "GRPC_PYTHON_BUILD_SYSTEM_ABSL" "1")
+              ;; Fix the linker options to link with abseil-cpp, which is
+              ;; looked under /usr/lib.
+              (substitute* "setup.py"
+                (("pathlib.Path\\('/usr').glob\\('lib\\*/libabsl_\\*.so')")
+                 (format #f "pathlib.Path('~a').glob('lib*/libabsl_*.so')"
+                         #$(this-package-input "abseil-cpp"))))))
+          (add-before 'build 'configure-compiler
+            (lambda _
+              (substitute* '("setup.py" "src/python/grpcio/commands.py")
+                (("'cc'") "'gcc'")))))))
     (inputs
-     (list c-ares openssl zlib))
+     (list abseil-cpp c-ares openssl re2 zlib))
     (propagated-inputs
      (list python-six))
     (home-page "https://grpc.io")
     (synopsis "HTTP/2-based RPC framework")
     (description "This package provides a Python library for communicating
 with the HTTP/2-based RPC framework gRPC.")
+    (license license:asl2.0)))
+
+(define-public python-grpcio-tools
+  (package
+    (name "python-grpcio-tools")
+    (version "1.47.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "grpcio-tools" version))
+              (modules '((guix build utils)))
+              (snippet
+               ;; This file is auto-generated.
+               '(delete-file "grpc_tools/_protoc_compiler.cpp"))
+              (sha256
+               (base32
+                "0g3xwv55lvf5w64zb44dipwqz7729cbqc7rib77ddqab91w56jzn"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'configure
+                          (lambda _
+                            (setenv "GRPC_PYTHON_BUILD_WITH_CYTHON" "1"))))))
+    (native-inputs (list python-cython))
+    (propagated-inputs (list python-grpcio python-protobuf))
+    (home-page "https://grpc.io")
+    (synopsis "Protobuf code generator for gRPC")
+    (description "The gRPC tools for Python provide a special plugin for
+generating server and client code from @file{.proto} service definitions.")
     (license license:asl2.0)))
 
 (define-public apache-thrift

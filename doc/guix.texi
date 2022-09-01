@@ -36531,7 +36531,7 @@ is an example of a basic, explicit configuration:
              (list
               (fail2ban-jail-configuration
                (name "sshd")
-               (enabled #t))))))
+               (enabled? #t))))))
   ;; There is no implicit dependency on an actual SSH
   ;; service, so you need to provide one.
   (service openssh-service-type))
@@ -36556,7 +36556,7 @@ For example:
     openssh-service-type
     (fail2ban-jail-configuration
      (name "sshd")
-     (enabled #t)))
+     (enabled? #t)))
    (openssh-configuration ...))))
 @end lisp
 @end deffn
@@ -36636,7 +36636,7 @@ Required name of this jail configuration.
 Whether this jail is enabled.
 
 @item @code{backend} (type: maybe-symbol)
-Backend to use to detect changes in the @code{ogpath}.  The default is
+Backend to use to detect changes in the @code{log-path}.  The default is
 'auto.  To consult the defaults of the jail configuration, refer to the
 @file{/etc/fail2ban/jail.conf} file of the @code{fail2ban} package.
 
@@ -38470,7 +38470,7 @@ image -t qcow2} on x86_64 hardware:
 @example
 $ qemu-system-x86_64 \
    -nic user,model=virtio-net-pci \
-   -enable-kvm -m 1024 \
+   -enable-kvm -m 2048 \
    -device virtio-blk,drive=myhd \
    -drive if=none,file=/tmp/qemu-image,id=myhd
 @end example
@@ -38497,7 +38497,7 @@ virtual machine support (KVM) of the Linux kernel will make things run
 faster.
 
 @c To run Xfce + 'guix pull', we need at least 1G of RAM.
-@item -m 1024
+@item -m 2048
 RAM available to the guest OS, in mebibytes.  Defaults to 128@tie{}MiB,
 which may be insufficient for some operations.
 

@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +27,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
@@ -39,14 +42,14 @@
 (define-public dolphin
   (package
     (name "dolphin")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-" version ".tar.xz"))
        (sha256
-        (base32 "0xr5s0s40i2bsfjfapvpa7dxh9s4604cxirg97xcaacd6fdvhpds"))))
+        (base32 "07ian9aai9mjygn6bgxanv8h16i83wf69nkl8c9qynwbz4fkwmwf"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools ruby ruby-test-unit))
@@ -69,14 +72,15 @@
            knotifications
            kparts
            ktextwidgets
+           kuserfeedback
            kwindowsystem
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            phonon
            qtbase-5
            solid))
     (arguments
      `(#:tests? #f)) ;; TODO: 4/15 tests fail even with offscreen
-    (home-page "https://kde.org/applications/system/org.kde.dolphin")
+    (home-page "https://apps.kde.org/dolphin/")
     (synopsis "File manager for KDE")
     (description "Dolphin is a file manager for KDE focusing on usability.
 The main features of Dolphin are:
@@ -95,14 +99,14 @@ The main features of Dolphin are:
 (define-public dolphin-plugins
   (package
     (name "dolphin-plugins")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-plugins-" version ".tar.xz"))
        (sha256
-        (base32 "12g44s6g7ma6avp15l45l42qyzbglswvahm2wji79zdls5vjnz7r"))))
+        (base32 "1ii1xrz22caxcgrr9ibzkh7nvw1h9d8xb5a2fadni0makk02qjif"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -111,8 +115,9 @@ The main features of Dolphin are:
            ki18n
            kio
            ktexteditor
+           ksyntaxhighlighting
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5))
     (home-page "http://www.kde.org/")
     (synopsis "VCS-Plugins for Dolphin")
@@ -123,14 +128,14 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
 (define-public khelpcenter
   (package
     (name "khelpcenter")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/khelpcenter-" version ".tar.xz"))
        (sha256
-        (base32 "0wxzjragvjcfc7c4qja8wzpshhaywficj7f7wkmppzybcsxwn9qb"))))
+        (base32 "0ga270imh1ssifj0w3434z9hgrmn0dqrschygywy1z2hcpyx991d"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -151,12 +156,22 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
            kservice
            kwindowsystem
            libxml2
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5
            xapian))
     (arguments
-     `(#:tests? #f)) ;; 1/1 test fails
-    (home-page "https://kde.org/applications/system/org.kde.Help")
+     `(#:tests? #f  ;; 1/1 test fails
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'wrap-executable
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out")))
+               ;; Since qt-wrap selectors do not wrap for /share/kf5
+               ;; directories, we need this so khelpcenter can find html4.css.
+               (wrap-program (string-append out "/bin/khelpcenter")
+                 `("XDG_DATA_DIRS" suffix
+                   (,(string-append (assoc-ref inputs "khtml") "/share"))))))))))
+    (home-page "https://apps.kde.org/khelpcenter/")
     (synopsis "KDE documentation viewer")
     (description "KHelpCenter uses meta data files which describe the
 documentation available in the system.  Each document is represented by a meta
@@ -172,17 +187,17 @@ document meta data file.")
 (define-public konsole
   (package
     (name "konsole")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konsole-" version ".tar.xz"))
        (sha256
-        (base32 "0ckr7bjkyaw0gr5kx569jfnhkhwmlk4lqk41ng61qwxlb4bsdbdm"))))
+        (base32 "19yrhjjbwq7kaip05ig8raqnh87k5dg57jck2zrsdrhq2f4nb3ql"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules kdoctools zlib))
     (inputs
      (list kbookmarks
            kcompletion
@@ -207,7 +222,7 @@ document meta data file.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5
            qtscript))
     (arguments
@@ -226,14 +241,14 @@ This package is part of the KDE base applications module.")
 (define-public krfb
   (package
     (name "krfb")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krfb-" version ".tar.xz"))
        (sha256
-        (base32 "092ijn88jpmgk2zwz37vzf35jisl234mc3krc9jl7bd955akx51k"))))
+        (base32 "09h05al7ivf9pzf2p6mnja1124746fawmr3vdk6rggjjw0p0wgn1"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
@@ -247,19 +262,23 @@ This package is part of the KDE base applications module.")
            ki18n
            knotifications
            kwallet
+           kwayland
            kwidgetsaddons
            kwindowsystem
            kxmlgui
            libvnc
            libxcb
            libxtst
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            pipewire-0.3
+           plasma-wayland-protocols
            qtbase-5
+           qtwayland
            qtx11extras
+           wayland
            xcb-util-image
            zlib))
-    (home-page "https://kde.org/applications/internet/org.kde.krfb")
+    (home-page "https://apps.kde.org/krfb/")
     (synopsis "Desktop Sharing utility")
     (description "KDE Desktop Sharing is a server application that allows you
 to share your current session with a user on another machine.  The desktop
@@ -276,14 +295,14 @@ This package is part of the KDE networking module.")
 (define-public ksystemlog
   (package
     (name "ksystemlog")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ksystemlog-" version ".tar.xz"))
        (sha256
-        (base32 "1826h89ynvlxdwzyqil2d79cvynglww6fax7qp41wxasgarxhsni"))))
+        (base32 "0x9j3m0kndbaxldsk2rh8zawz0nqqdpn1xf36m4zzymm3b034glv"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -300,9 +319,9 @@ This package is part of the KDE networking module.")
            ktextwidgets
            kwidgetsaddons
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5))
-    (home-page "https://kde.org/applications/system/org.kde.ksystemlog")
+    (home-page "https://apps.kde.org/ksystemlog/")
     (synopsis "System log viewer")
     (description "This program is developed for being used by beginner users,
 which don't know how to find information about their Linux system, and how the
@@ -315,14 +334,14 @@ This package is part of the KDE administration module.")
 (define-public yakuake
   (package
     (name "yakuake")
-    (version "20.12.1")
+    (version "22.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/yakuake-" version ".tar.xz"))
               (sha256
                (base32
-                "02pal9xx1wbpw7dimvs2aw1xnyjqlvbjlybkkfhf8x7c6m1r63aa"))))
+                "0h5c8j65m6gylvwrj4sag4rlx92brbfllyrwpi7kwfjbwf7a5j1k"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -348,7 +367,7 @@ This package is part of the KDE administration module.")
            qtbase-5
            qtsvg-5
            qtx11extras))
-    (home-page "https://www.kde.org/applications/system/yakuake/")
+    (home-page "https://apps.kde.org/yakuake/")
     (synopsis "Quad-style terminal emulator for KDE")
     (description "Yakuake is a drop-down terminal emulator based on KDE Konsole
 technology.  Features include:

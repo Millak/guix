@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2015, 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -529,19 +529,13 @@ This package provides the core library and elements.")
         "17rw8wj1x1bg153m9z76pdvgz5k93m3riyalfpzq00x7h7fv6c3y"))))
     (build-system meson-build-system)
     (propagated-inputs
-     (cons* glib                    ;required by gstreamer-sdp-1.0.pc
-            gstreamer               ;required by gstreamer-plugins-base-1.0.pc
-            libgudev                ;required by gstreamer-gl-1.0.pc
-            ;; wayland-client.h is referred to in
-            ;; include/gstreamer-1.0/gst/gl/wayland/gstgldisplay_wayland.h
-            wayland
-            ;; XXX: Do not enable Orc optimizations on ARM systems because
-            ;; it leads to two test failures.
-            ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/issues/683
-            (if (string-prefix? "arm" (or (%current-target-system)
-                                          (%current-system)))
-                '()
-                (list orc))))           ;required by gstreamer-audio-1.0.pc
+     (list glib                     ;required by gstreamer-sdp-1.0.pc
+           gstreamer                ;required by gstreamer-plugins-base-1.0.pc
+           libgudev                 ;required by gstreamer-gl-1.0.pc
+           ;; wayland-client.h is referred to in
+           ;; include/gstreamer-1.0/gst/gl/wayland/gstgldisplay_wayland.h
+           wayland
+           orc))                    ;required by gstreamer-audio-1.0.pc
     (inputs
      ;; TODO: Add libvorbisidec
      (list alsa-lib
@@ -580,7 +574,24 @@ This package provides the core library and elements.")
                 ;; This test causes nondeterministic failures (see:
                 ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/950).
                 ((".*'elements/appsrc.c'.*")
-                 ""))))
+                 ""))
+              ;; Some other tests fail on other architectures.
+              #$@(cond
+                   ((target-x86-32?)
+                    #~((substitute* "tests/check/meson.build"
+                         ((".*'libs/libsabi\\.c'.*") ""))))
+                   ((target-riscv64?)
+                    #~((substitute* "tests/check/meson.build"
+                         ((".*'libs/gstglcolorconvert\\.c'.*") "")
+                         ((".*'libs/gstglcontext\\.c'.*") "")
+                         ((".*'libs/gstglmemory\\.c'.*") "")
+                         ((".*'libs/gstglupload\\.c'.*") "")
+                         ((".*'elements/glimagesink\\.c'.*") "")
+                         ((".*'pipelines/gl-launch-lines\\.c'.*") "")
+                         ((".*'elements/glstereo\\.c'.*") "")
+                         ((".*'elements/glmixer\\.c'.*") ""))))
+                   (else
+                     #~()))))
           (add-before 'configure 'patch
             (lambda _
               (substitute* "tests/check/libs/pbutils.c"

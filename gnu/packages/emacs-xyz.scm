@@ -3015,7 +3015,7 @@ or XEmacs.")
 (define-public emacs-autothemer
   (package
     (name "emacs-autothemer")
-    (version "0.2.9")
+    (version "0.2.10")
     (source
      (origin
        (method git-fetch)
@@ -3025,7 +3025,7 @@ or XEmacs.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1p7ii7f0w607zxyqnr8ivi0n0sg2p93pi6dpd9kjqywdagqyrnw1"))))
+         "1dz09n8qiqvzxckmy6mjnpw4f62jpk35cw16w0lhfpvfa8by4mp8"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash))
@@ -3248,7 +3248,7 @@ of bibliographic references.")
 (define-public emacs-corfu
   (package
     (name "emacs-corfu")
-    (version "0.26")
+    (version "0.27")
     (source
      (origin
        (method git-fetch)
@@ -3257,7 +3257,7 @@ of bibliographic references.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00fmw6a1pjl4paawrhvbjw2ydnds3vxl2gjgzc9i13khnbv8wdq1"))))
+        (base32 "17cdbqkil4454kd3w77w18fv15djwg07qclgcnlp6mimp6sbam9w"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -4333,7 +4333,7 @@ which is restored where possible when the file is loaded again.")
 (define-public emacs-s
   (package
     (name "emacs-s")
-    (version "1.12.0")
+    (version "1.13.0")
     (source
      (origin
        (method git-fetch)
@@ -4342,7 +4342,7 @@ which is restored where possible when the file is loaded again.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g8mqd13llj007al4nlxxx4z2lcsg3wk970mgjn0avwrhjjgdmmv"))))
+        (base32 "010i92kagqbfis46n1ffa28fgkdkjp55n13b6f4izar5r7ixm6wx"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
@@ -6367,7 +6367,7 @@ repetitions for example).")
 (define-public emacs-flycheck-guile
   (package
     (name "emacs-flycheck-guile")
-    (version "0.2")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -6377,7 +6377,7 @@ repetitions for example).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cs5r0ik6a3bl1k3imjl0r8y1i69kx9x9m9cgxj470qk34brwyj5"))))
+        (base32 "0hkj3y7xlbbnwagmccav620r3qngpc909pj3n5b876r8gp6rm87p"))))
     (propagated-inputs
      (list emacs-flycheck emacs-geiser emacs-geiser-guile))
     (build-system emacs-build-system)
@@ -14663,27 +14663,29 @@ actually changing the buffer's text.")
     (license license:gpl3+)))
 
 (define-public emacs-diff-hl
-  (package
-    (name "emacs-diff-hl")
-    (version "1.8.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dgutov/diff-hl")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "075klzf66z1rvhpxv4j694pdkmi7f4fpw6c8q4ncz0h4y5wdbl8w"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/dgutov/diff-hl")
-    (synopsis
-     "Highlight uncommitted changes using VC")
-    (description
-     "@code{diff-hl-mode} highlights uncommitted changes on the side of the
+  ;;; XXX: Latest release is not tagged.  Use commit matching version bump.
+  (let ((commit "37b00f3bad841e131d69442a89cbebc3041d996b"))
+    (package
+      (name "emacs-diff-hl")
+      (version "1.9.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dgutov/diff-hl")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0s3fcwk6c99n2q25bf0a33lphr9mcrxmvr5wz8qsj86jfbyi1is1"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/dgutov/diff-hl")
+      (synopsis
+       "Highlight uncommitted changes using VC")
+      (description
+       "@code{diff-hl-mode} highlights uncommitted changes on the side of the
 window (using the fringe, by default), allows you to jump between
 the hunks and revert them selectively.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-diminish
   ;; XXX: Upstream did not tag last release.
@@ -27083,14 +27085,14 @@ well as an option for visually flashing evaluated s-expressions.")
 (define-public emacs-tramp
   (package
     (name "emacs-tramp")
-    (version "2.5.3.1")
+    (version "2.5.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "tramp-" version ".tar"))
        (sha256
-        (base32 "0dqc5gmp20isrlanccvj6nhalmmsfg7bmm690gxfgrbqcc2vj69a"))))
+        (base32 "1jcicb9f7c1nmaqg20yy2j4wd0qfch4llc26ga7q3ckhx41pvbiw"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -31571,7 +31573,7 @@ and preferred services can easily be configured.")
 (define-public emacs-vertico
   (package
     (name "emacs-vertico")
-    (version "0.25")
+    (version "0.26")
     (source
      (origin
        (method git-fetch)
@@ -31580,7 +31582,7 @@ and preferred services can easily be configured.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13lgvaxbbgc08q5dc2pmagnvg1hr2vvl6c9qxvpwqcj06kw9b5ln"))))
+        (base32 "16bv4pfc3k37dqyj1va3cb24db36pn8hsazk3ak4xhrgf2q5l548"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases

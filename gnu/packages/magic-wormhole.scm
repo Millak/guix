@@ -22,6 +22,7 @@
   #:use-module (guix licenses)
   #:use-module (guix build-system python)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz))

@@ -9,9 +9,9 @@
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2018, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2017, 2020, 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2017, 2020, 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Stefan Stefanović <stefanx2ovic@gmail.com>
@@ -74,6 +74,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cryptsetup)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages docbook)
@@ -127,7 +128,7 @@
 (define-public appstream
   (package
     (name "appstream")
-    (version "0.13.1")
+    (version "0.15.5")
     (source
      (origin
        (method url-fetch)
@@ -136,69 +137,44 @@
                        "appstream/releases/"
                        "AppStream-" version ".tar.xz"))
        (sha256
-        (base32 "09l6ixz1w29pi0nb0flz14m4r3f2hpqpp1fq8y66v9xa4c9fczds"))))
+        (base32 "1hh41r82a2p7anyadfsp9lmylrrj1a6gknx2g4w6ha97riifs5fb"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-libstemmer
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "meson.build"
-               (("/usr/include")
-                (string-append (assoc-ref inputs "libstemmer")
-                               "/include")))
-             #t))
-         (add-after 'patch-libstemmer 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "docs/api"
-               (substitute* "appstream-docs.xml"
-                 (("http://www.oasis-open.org/docbook/xml/4.3/")
-                  (string-append (assoc-ref inputs "docbook-xml-4.3")
-                                 "/xml/dtd/docbook/"))))
-             (for-each (lambda (file)
-                         (substitute* file
-                           (("http://www.oasis-open.org/docbook/xml/4.5/")
-                            (string-append (assoc-ref inputs "docbook-xml")
-                                           "/xml/dtd/docbook/"))))
-                       (find-files "scripts/desc" "\\.xml$"))
-             #t))
-         (add-after 'patch-docbook-xml 'disable-failing-tests
-           (lambda _
-             (substitute* "tests/test-pool.c"
-               (("[ \t]*g_test_add_func \\(\"/AppStream/PoolRead?.*;")
-                "")
-               (("[ \t]*g_test_add_func \\(\"/AppStream/PoolReadAsync?.*;")
-                "")
-               (("[ \t]*g_test_add_func \\(\"/AppStream/PoolEmpty?.*;")
-                "")
-               (("[ \t]*g_test_add_func \\(\"/AppStream/Cache?.*;")
-                "")
-               (("[ \t]*g_test_add_func \\(\"/AppStream/Merges?.*;")
-                ""))
-             #t))
-         (add-after 'disable-failing-tests 'patch-install-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "data/meson.build"
-               (("/etc")
-                (string-append (assoc-ref outputs "out")
-                               "/etc")))
-             #t)))))
+     (list
+      #:meson meson-0.63
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-libstemmer
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((libstemmer.h (search-input-file inputs
+                                                     "include/libstemmer.h")))
+              (substitute* "meson.build"
+                (("/usr/include")
+                 (dirname libstemmer.h))))))
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "tests/test-pool.c"
+                (("[ \t]*g_test_add_func \\(\"/AppStream/PoolRead?.*;")
+                 ""))))
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
     (native-inputs
-     `(("cmake" ,cmake)
-       ("docbook-xml-4.3" ,docbook-xml-4.3)
-       ("docbook-xml" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gperf" ,gperf)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("xsltproc" ,libxslt)))
+     (list docbook-xml-4.3
+           docbook-xml
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gperf
+           gtk-doc/stable
+           itstool
+           libxslt
+           pkg-config
+           python-wrapper))
     (inputs
-     (list libsoup-minimal-2 libstemmer libxml2 libyaml lmdb))
+     (list curl libsoup-minimal-2 libstemmer libxmlb libxml2 libyaml lmdb))
     (propagated-inputs
      (list glib))
     (synopsis "Tools and libraries to work with AppStream metadata")
@@ -211,9 +187,21 @@ specifications for things like an unified software metadata database, screenshot
 services and various other things needed to create user-friendly
 application-centers for distributions.")
     (home-page "https://www.freedesktop.org/wiki/Distributions/AppStream/")
-    ;; XXX: meson.build claims both, headers just indicate lgpl2.1+
-    ;;      there are also some (irrelevant) wtfpl2 examples
-    (license (list license:gpl2+ license:lgpl2.1+))))
+    (license license:lgpl2.1+)))
+
+(define-public appstream-qt
+  (package/inherit appstream
+    (name "appstream-qt")
+    (native-inputs
+     (modify-inputs (package-native-inputs appstream)
+       (prepend qttools-5)))
+    (inputs
+     (modify-inputs (package-inputs appstream)
+       (prepend qtbase-5)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments appstream)
+       ((#:configure-flags flags #~'())
+        #~(append '("-Dqt=true") #$flags))))))
 
 (define-public farstream
   (package
@@ -1091,6 +1079,21 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
      '((release-monitoring-url
         . "https://wayland.freedesktop.org/releases.html")))
     (license license:expat)))
+
+;;; This is just a temporary package that should be deleted
+(define-public wayland-protocols-next
+  (package
+    (inherit wayland-protocols)
+    (name "wayland-protocols")
+    (version "1.26")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://wayland.freedesktop.org/releases/"
+                    "wayland-protocols-" version ".tar.xz"))
+              (sha256
+               (base32
+                "04vgllmpmrv14x3x64ns01vgwx4hriljayjkz9idgbv83i63hly5"))))))
 
 (define-public waylandpp
   (package

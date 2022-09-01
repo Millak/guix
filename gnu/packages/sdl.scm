@@ -543,7 +543,7 @@ directory.")
 (define-public guile-sdl
   (package
     (name "guile-sdl")
-    (version "0.5.3")
+    (version "0.6.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -551,7 +551,7 @@ directory.")
                               version ".tar.lz"))
               (sha256
                (base32
-                "040gyk3n3yp8i30ngdg97n3083g8b6laky2nlh10jqcyjdd550d6"))))
+                "1q985nd3birr5pny74915x098fisa6llas3ijgf1b4gdz5717nzz"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("lzip" ,lzip)

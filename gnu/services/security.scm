@@ -127,7 +127,7 @@
           (string-append "bantime." (substring name 9))))
         ((string-contains name "-")
          (fail2ban-jail-configuration-serialize-field-name
-          (string-filter (lambda (c) (equal? c #\-)) name)))
+          (string-filter (lambda (c) (not (equal? c #\-))) name)))
         (else name)))
 
 (define (fail2ban-jail-configuration-serialize-string field-name value)
@@ -194,13 +194,14 @@
 (define-configuration fail2ban-jail-configuration
   (name
    string
-   "Required name of this jail configuration.")
+   "Required name of this jail configuration."
+   empty-serializer)
   (enabled?
    (boolean #t)
    "Whether this jail is enabled.")
   (backend
    maybe-symbol
-   "Backend to use to detect changes in the @code{ogpath}.  The default is
+   "Backend to use to detect changes in the @code{log-path}.  The default is
 'auto.  To consult the defaults of the jail configuration, refer to the
 @file{/etc/fail2ban/jail.conf} file of the @code{fail2ban} package."
 fail2ban-jail-configuration-serialize-backend)

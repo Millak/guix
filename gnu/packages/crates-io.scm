@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Evgenii Lepikhin <e.lepikhin@corp.mail.ru>
+;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56150,7 +56151,7 @@ functionality and without weak references.")
   (package
     (inherit rust-sha-1-0.10)
     (name "rust-sha-1")
-    (version "0.9.1")
+    (version "0.9.8")
     (source
      (origin
        (method url-fetch)
@@ -56159,16 +56160,15 @@ functionality and without weak references.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0w37j7swjkbzgi9mf7ihkw0zfik6vl97fs6jdpqs6r68hvm3c2hp"))))
+         "19jibp8l9k5v4dnhj5kfhaczdfd997h22qz0hin6pw9wvc9ngkcr"))))
     (arguments
      `(#:cargo-inputs
        (("rust-block-buffer" ,rust-block-buffer-0.9)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-cpuid-bool" ,rust-cpuid-bool-0.1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
         ("rust-digest" ,rust-digest-0.9)
-        ("rust-libc" ,rust-libc-0.2)
         ("rust-opaque-debug" ,rust-opaque-debug-0.3)
-        ("rust-sha1-asm" ,rust-sha1-asm-0.4))
+        ("rust-sha1-asm" ,rust-sha1-asm-0.5))
        #:cargo-development-inputs
        (("rust-digest" ,rust-digest-0.9)
         ("rust-hex-literal" ,rust-hex-literal-0.2))))))

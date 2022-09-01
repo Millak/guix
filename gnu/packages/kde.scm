@@ -15,6 +15,8 @@
 ;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +62,7 @@
   #:use-module (gnu packages ebook)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -81,6 +84,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
@@ -95,26 +99,21 @@
 (define-public baloo-widgets
   (package
     (name "baloo-widgets")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/baloo-widgets-" version ".tar.xz"))
        (sha256
-        (base32 "1x4v79vhvc5ixkbsf3jyjz5ig1lf78rfw3r7g3llpb4j1kcp3wh0"))))
+        (base32 "0084bnrlbdypdwzxi9gfxcywhyjd1z2cmh7p6gv0zhc9f7h6ffnp"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list baloo kconfig ki18n kio qtbase-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+     `(#:tests? #f)) ;; tests fail
     (home-page "https://community.kde.org/Baloo")
     (synopsis "Wigets for use with Baloo")
     (description "Baloo is a framework for searching and managing metadata.
@@ -124,15 +123,14 @@ This package contains GUI widgets for baloo.")
 (define-public grantleetheme
   (package
     (name "grantleetheme")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/grantleetheme-" version ".tar.xz"))
        (sha256
-        (base32 "0gabc5cb0sf00s7m5v2jnq55qsrdbrq6nqd15y1i15p788zifsjx"))
-       (patches (search-patches "grantlee-merge-theme-dirs.patch"))))
+        (base32 "50c6s1g3vp5sdhpiciz1j6rsryld7hcc6lvmxdlsvms2bbcmnj7l"))))
     (build-system qt-build-system)
     (arguments `(#:tests? #f))  ; unexpected error in the test suite.
     (native-inputs
@@ -153,14 +151,14 @@ This package contains GUI widgets for baloo.")
 (define-public akregator
   (package
     (name "akregator")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akregator-" version ".tar.xz"))
        (sha256
-        (base32 "1711yhwsdq9iyc3wm3a4xmz81p73hvvc0h58sasc89ifpry50k2p"))))
+        (base32 "9yy5c29zxpli4cddknmdvjkgii3j7pvw6lhwqfrqjc8jh83gm8f8"))))
     (build-system qt-build-system)
     (arguments
      `(#:phases
@@ -173,8 +171,7 @@ This package contains GUI widgets for baloo.")
                                        (assoc-ref inputs "qtwebengine-5")
                                        "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
-               #t))))))
+                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -223,7 +220,7 @@ browser for easy news reading.")
 (define-public kdenlive
   (package
     (name "kdenlive")
-    (version "21.12.3")
+    (version "22.04.3")
     (source
      (origin
        (method git-fetch)
@@ -232,7 +229,7 @@ browser for easy news reading.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19fs5zhz1nv5cvf709c5741nri139pl5mzpf2xnd4sqj0rmyv228"))))
+        (base32 "0v545kd5rm5isy4cx21fp3pi49mvsv1r1ahp0jhim8s6b7ghrh64"))))
     (build-system qt-build-system)
     (arguments
      ;; XXX: there is a single test that spawns other tests and
@@ -261,7 +258,7 @@ browser for easy news reading.")
                   `("MLT_PREFIX" ":" =
                     (,#$(this-package-input "mlt"))))))))))
     (native-inputs
-     (list extra-cmake-modules pkg-config qttools-5))
+     (list extra-cmake-modules kdoctools pkg-config qttools-5))
     (inputs
      (list bash-minimal
            breeze                       ; make dark them available easily
@@ -307,68 +304,65 @@ projects.")
 (define-public kdevelop
   (package
     (name "kdevelop")
-    (version "5.6.1")
+    (version "22.04.3")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "mirror://kde/stable/kdevelop"
-                            "/" version "/src/kdevelop-"
-                            version ".tar.xz"))
+        (uri (string-append "mirror://kde/stable/release-service/" version
+                            "/src/kdevelop-" version ".tar.xz"))
         (sha256
-         (base32 "02ip5r67hjfpywkm3mz86n6wbqcr7996ifzfd2fyzsvm4998hi4y"))))
+         (base32 "03dwllxy96sy20kdsc3sll0n6bhh6gdmpjl821flsxv0jb5naplv"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config shared-mime-info qttools-5))
-    (inputs
-     `(("boost" ,boost)
-       ("clang" ,clang)
-       ("grantlee" ,grantlee)
-       ("karchive" ,karchive)
-       ("kcmutils" ,kcmutils)
-       ("kcrash" ,kcrash)
-       ("kdeclarative" ,kdeclarative)
-       ("kdoctools" ,kdoctools)
-       ("kguiaddons" ,kguiaddons)
-       ("ki18n" ,ki18n)
-       ("kiconthemes" ,kiconthemes)
-       ("kio" ,kio)  ;; not checked as requirement
-       ("kitemmodels" ,kitemmodels)
-       ("kitemviews" ,kitemviews)
-       ("kjobwidgets" ,kjobwidgets)
-       ("knotifications" ,knotifications)
-       ("knotifyconfig" ,knotifyconfig)
-       ("kparts" ,kparts)
-       ("kservice" ,kservice)
-       ("ktexteditor" ,ktexteditor)
-       ("kwindowsystem" ,kwindowsystem)
-       ("kxmlgui" ,kxmlgui)
-       ("libkomparediff2" ,libkomparediff2)
-       ("oxygen-icons" ,oxygen-icons)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtquickcontrols-5" ,qtquickcontrols-5)  ;; not checked as requirement
-       ("qtquickcontrols2-5" ,qtquickcontrols2-5)  ;; not checked as requirement
-       ("qtwebkit" ,qtwebkit)
-       ("threadweaver" ,threadweaver)
+    (inputs (list boost
+                  clang
+                  grantlee
+                  karchive
+                  kcmutils
+                  kcrash
+                  kdeclarative
+                  kdoctools
+                  kguiaddons
+                  ki18n
+                  kiconthemes
+                  kio ;; not checked as requirement
+                  kitemmodels
+                  kitemviews
+                  kjobwidgets
+                  knotifications
+                  knotifyconfig
+                  kparts
+                  kservice
+                  ksyntaxhighlighting
+                  ktexteditor
+                  kwindowsystem
+                  kxmlgui
+                  libkomparediff2
+                  breeze-icons
+                  qtbase-5
+                  qtdeclarative-5
+                  qtquickcontrols-5 ;; not checked as requirement
+                  qtquickcontrols2-5 ;; not checked as requirement
+                  qtwebkit
+                  threadweaver
+                  ;; recommendes
+                  astyle
+                  kdevelop-pg-qt
+                  libksysguard
 
-       ;; recommendes
-       ("astyle" ,astyle)
-       ("kdevelop-pg-qt" ,kdevelop-pg-qt)
-       ("libksysguard" ,libksysguard)
-
-       ;; optional
-       ("apr" ,apr)            ; required for subversion support
-       ("apr-util" ,apr-util)  ; required for subversion support
-       ("attica" ,attica)
-       ("kconfigwidgets" ,kconfigwidgets)
-       ("knewstuff" ,knewstuff)
-       ("krunner" ,krunner)
-       ;; TODO: OktetaGui, OktetaKastenControllers
-       ("plasma" ,plasma-framework)
-       ;; TODO: purpose
-       ("sonnet" ,sonnet)
-       ("subversion" ,subversion)))
-
+                  ;; optional
+                  apr ; required for subversion support
+                  apr-util ; required for subversion support
+                  attica
+                  kconfigwidgets
+                  knewstuff
+                  krunner
+                  ;; TODO: OktetaGui, OktetaKastenControllers
+                  plasma-framework
+                  ;; TODO: purpose
+                  sonnet
+                  subversion))
        ;; run-time packages - TODO
        ;; ClazyStandalone
        ;; Cppcheck
@@ -383,8 +377,7 @@ projects.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "cmake/modules/FindClang.cmake"
                (("^\\s*PATHS \"\\$\\{CLANG_LIBRARY_DIRS\\}\"" line)
-                (string-append line " " (assoc-ref inputs "clang") "/lib")))
-             #t)))))
+                (string-append line " " (assoc-ref inputs "clang") "/lib"))))))))
     (home-page "https://kdevelop.org")
     (synopsis "IDE for C, C++, Python, Javascript and PHP")
     (description "The KDevelop IDE provides semantic syntax highlighting, as
@@ -406,7 +399,7 @@ software (Git, Subversion, Mercurial, CVS and Bazaar).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kfab4p717acbdkcdi41d98vwch7v431gb2qi6s38hmclsf8bf8g"))))
+        (base32 "3kfab4p717acbdkcdi41d98vwch7v431gb2qi6s38hmclsf8bf8g"))))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
@@ -424,14 +417,14 @@ for some KDevelop language plugins (Ruby, PHP, CSS...).")
 (define-public kdiagram
   (package
     (name "kdiagram")
-    (version "2.7.0")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/kdiagram/" version
                            "/kdiagram-" version ".tar.xz"))
        (sha256
-        (base32 "1pgvf2q8b59hw0jg5ajmj5nrn4q8cgnifpvdd0fynk2ml6zym8k3"))
+        (base32 "07s3kwv0mqvb64x8nz4w1yb3hbk28yzkw4qg1jibai7as4xsv7ap"))
        (patches (search-patches
                  "kdiagram-Fix-missing-link-libraries.patch"))))
     (build-system qt-build-system)
@@ -462,7 +455,7 @@ illustrate project schedules.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "088q3kkv2wq426w000iq14wy3a45rrnn0bmsdks6caz4vq04ccay"))))
+        (base32 "888q3kkv2wq426w000iq14wy3a45rrnn0bmsdks6caz4vq04ccay"))))
     (build-system qt-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_TESTS=ON"))) ; disabled by default
@@ -487,7 +480,7 @@ expression library, that is used in Krita.")
              "mirror://kde/stable/krita/" version "/krita-" version
              ".tar.gz"))
        (sha256
-        (base32 "0iaypyv21zxvhr989r9j9nlhx642jc89xphz1qaw9q1y0yjiy7gd"))))
+        (base32 "2iaypyv21zxvhr989r9j9nlhx642jc89xphz1qaw9q1y0yjiy7gd"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f
@@ -527,7 +520,7 @@ expression library, that is used in Krita.")
            libheif
            libmypaint
            libpng
-           libraw-0.18
+           libraw
            libtiff
            libwebp
            libx11
@@ -579,7 +572,7 @@ features include brush stabilizers, brush engines and wrap-around mode.")
            qtbase-5
            qtsvg-5
            qtxmlpatterns))
-    (home-page "https://apps.kde.org/en/massif-visualizer")
+    (home-page "https://apps.kde.org/massif-visualizer/")
     (synopsis "Visualize massif data generated by Valgrind")
     (description
      "Massif Visualizer is a tool that visualizes massif data.
@@ -591,14 +584,14 @@ compressed massif files can also be opened transparently.")
 (define-public libkomparediff2
   (package
     (name "libkomparediff2")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://kde/stable/release-service/" version
                             "/src/libkomparediff2-" version ".tar.xz"))
         (sha256
-         (base32 "0m8m7sgpf2f4nxpaaymyvihlk0pcyblyd99mcbibrnyr5kzkzzdc"))))
+         (base32 "1vaxbx7c6r7skh3452blxyrngfcsdyjmmvcg6j2wcsn04m01mw8k"))))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
@@ -622,14 +615,14 @@ used in KDE development tools Kompare and KDevelop.")
 (define-public qca
   (package
     (name "qca")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://kde/stable/qca/" version
                             "/qca-" version ".tar.xz"))
         (sha256
-         (base32 "0rvvf97la95lah67jcj0p06n4br0pc2mri0q1hn4x522hndqybjn"))))
+         (base32 "1i7m5y3dfwij9cyjp72ya5zd2skgp7mfmrmf7bvrbzg3ly0mhsbb"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
@@ -646,16 +639,15 @@ cards.")
 (define-public kpmcore
   (package
     (name "kpmcore")
-    (version "4.1.0")
+    (version "22.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "mirror://kde/stable/kpmcore"
-                    "/" version "/src/"
-                    name "-" version ".tar.xz"))
+                    "mirror://kde/stable/release-service/" version
+                    "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0jsig7algmab9h0fb09my0axjqzw83zgscamhzl8931lribs6idm"))))
+                "04qslli4vnbnl329zynbinlwaigxr9xpswra5n0v710p92as0qif"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
@@ -664,9 +656,19 @@ cards.")
            kcoreaddons
            ki18n
            kwidgetsaddons
+           polkit-qt
            qtbase-5
            qca
            `(,util-linux "lib")))
+    (arguments
+     `(#:tests? #f ;; 4/6 tests fail do to no plugin instance
+	   #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-cmake-install-directories
+           (lambda _
+             (substitute* "src/util/CMakeLists.txt"
+               (("DESTINATION \\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
+                "DESTINATION share/polkit-1/actions")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Library for managing partitions")
     (description "Library for managing partitions.")
@@ -701,7 +703,7 @@ different notification systems.")
 (define-public kdeconnect
   (package
     (name "kdeconnect")
-    (version "20.04.2")
+    (version "22.04.3")
     (source
       (origin
         (method url-fetch)
@@ -710,47 +712,47 @@ different notification systems.")
                             version ".tar.xz"))
         (sha256
          (base32
-          "0yq3afbbcc9gmlcachvh3xz3gdj57092fpagp36l5knw8gr0d9ip"))))
+          "015gxglclds2vmjr4bv51yfv840bafzgrl71cnwgnwwy8rrh9x4x"))))
     (build-system qt-build-system)
     (arguments
      `(#:configure-flags '("-DBUILD_TESTING=ON"
-                           "-DKDE_INSTALL_LIBEXECDIR=libexec")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'adjust-include-header
-           (lambda _
-             (substitute* "plugins/runcommand/runcommandplugin.cpp"
-               (("<kcmutils_version.h>")
-                "<KF5/kcmutils_version.h>")))))
+                           "-DKDE_INSTALL_LIBEXECDIR=libexec"
+                           ;; So kdeconnect.so isn't installed to lib/plugins
+                           "-DPLUGIN_INSTALL_DIR=lib/qt5/plugins")
        #:tests? #f)) ; tests fail hard in our build environment
     (native-inputs
-     `(("extra-cmake-modules" ,extra-cmake-modules)
-       ("kdoctools" ,kdoctools)
-       ("libxtst" ,libxtst)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list extra-cmake-modules
+           kdoctools
+           libxtst
+           pkg-config
+           python-wrapper))
     (inputs
      (list kcmutils
            kconfigwidgets
            kdbusaddons
+           kguiaddons
            ki18n
            kiconthemes
            kio
            kirigami
            knotifications
+           kpackage
            kpeople
            kpeoplevcard
            kwayland
            libfakekey
            pulseaudio-qt
            qca
+           qqc2-desktop-style
            qtbase-5
            qtdeclarative-5
            qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols-5
            qtquickcontrols2-5
-           qtx11extras))
+           qtx11extras
+           qtwayland
+           wayland))
     (home-page "https://community.kde.org/KDEConnect")
     (synopsis "Enable your devices to communicate with each other")
     (description "KDE Connect is a project that enables all your devices to
@@ -772,7 +774,7 @@ communicate with each other.  Here's a few things KDE Connect can do:
 (define-public labplot
   (package
     (name "labplot")
-    (version "2.8.2")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
@@ -780,7 +782,7 @@ communicate with each other.  Here's a few things KDE Connect can do:
                            "/" version "/labplot-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1yhxnchwb4n83sxrbn4im41g2sqr0xsim2y242mvyd8pjzd83icf"))))
+        (base32 "1wi19gj18yhrim1cb2dwgpnc2yvydm87h41fcg670ampy24i98z5"))))
     (build-system qt-build-system)
     (arguments
      `(#:configure-flags
@@ -797,14 +799,12 @@ communicate with each other.  Here's a few things KDE Connect can do:
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                ;; This test fails, I don't know why.
-               (invoke "ctest" "-E" "parsertest"))
-             #t)))))
-    (native-inputs
-     `(("bison" ,bison)
-       ("extra-cmake-modules" ,extra-cmake-modules)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("qttools-5" ,qttools-5)))
+               (invoke "ctest" "-E" "(ParserTest|ReadStatFilterTest)")))))))
+    (native-inputs (list bison
+                         extra-cmake-modules
+                         pkg-config
+                         python-wrapper
+                         qttools-5))
     (inputs
      (list breeze ;for dark themes
            breeze-icons ;for icons
@@ -850,7 +850,7 @@ to perform data analysis.")
 (define-public kqtquickcharts
   (package
     (name "kqtquickcharts")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
       (origin
         (method url-fetch)
@@ -858,7 +858,7 @@ to perform data analysis.")
                             version "/src/kqtquickcharts-" version ".tar.xz"))
         (sha256
          (base32
-          "1wxp35mf9zlpgzi4msdl86b2krdq2ipqw371gyx23r7j84vdyxi3"))))
+          "0bm7rdysvlfnfnvy87ii3kxl238q83vw0ia58zsnwjmkxmlgf6mp"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -874,14 +874,14 @@ charts.")
 (define-public kdf
   (package
     (name "kdf")
-    (version "20.12.1")
+    (version "22.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kdf-" version ".tar.xz"))
               (sha256
                (base32
-                "0ba67hs4vlb3qyvdzhnpmf8p62df12s8aqw4hzf9vnxff3qix5k1"))))
+                "1m0dwk3inqzk9kjjzgsaam15lnpbhzjfmwrzv8sazfk44scnr2v1"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -907,14 +907,14 @@ unmount drives and view them in a file manager.")
 (define-public kcachegrind
   (package
     (name "kcachegrind")
-    (version "20.04.1")
+    (version "22.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kcachegrind-" version ".tar.xz"))
               (sha256
                (base32
-                "0fx17s6fj1pxl1mgfrqhchk8sihkbji1x8y3nhb1r0971wzd1nsc"))))
+                "12ckn90hqm2c5c58xqkzgcih64jk4kwkgz4q0f5ns1rxv3pidz5n"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules perl python qttools-5 kdoctools))
@@ -941,14 +941,14 @@ Python, PHP, and Perl.")
 (define-public libkdegames
   (package
     (name "libkdegames")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/libkdegames-" version ".tar.xz"))
       (sha256
-       (base32 "1xsrrvhwjwi5aajcaxydmzc69i4yx6shs8ly8vr85njc188ycg13"))))
+       (base32 "0igq87anam9x2mclb0lkvwhrxk62y1f4xl14a4dhd97mqsc5pbzn"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -979,7 +979,7 @@ Python, PHP, and Perl.")
            qtbase-5
            qtdeclarative-5
            qtsvg-5))
-    (home-page "https://games.kde.org/")
+    (home-page "https://apps.kde.org/categories/games/")
     (synopsis "Runtime library for kdegames")
     (description "Runtime library for kdegames")
     (license (list license:gpl2+  license:fdl1.2+))))
@@ -987,7 +987,7 @@ Python, PHP, and Perl.")
 (define-public marble-qt
   (package
     (name "marble-qt")
-    (version "21.12.3")
+    (version "22.04.3")
     (source
      (origin
        (method git-fetch)
@@ -996,7 +996,8 @@ Python, PHP, and Perl.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h5a7did4shi3z5l0ad9arl6xr79xpjr7dbzx5l8xpp771pb0pcj"))))
+        (base32
+		"1saacnrl0hkl32nq96l1bgn9yrsz455q96jdxzp7ax8iaa5nmdiz"))))
     (build-system qt-build-system)
     (arguments
      ;; FIXME: libmarblewidget-qt5.so.28 not found.  Also enable the
@@ -1007,13 +1008,12 @@ Python, PHP, and Perl.")
              "-DBUILD_TOUCH=YES"
              "-DBUILD_MARBLE_TESTS=FALSE")))
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules kdoctools qttools-5))
     ;; One optional dependency missing: libwlocate.
     (inputs
      (list gpsd
            kcoreaddons
            kcrash
-           kdoctools
            ki18n
            kio
            knewstuff
@@ -1044,14 +1044,14 @@ creating routes by drag and drop and more.")
 (define-public okular
   (package
     (name "okular")
-    (version "20.12.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0gpm7n47yijsjg4yba561j5pbvd98hgvr93w1kvzk851nb87m89c"))))
+        (base32 "03jpwgrhjgyx14g1h3lxhnyib88ck0qkqcxh4fpc398xwdr3amkw"))))
     (build-system qt-build-system)
     ;; The tests fail because they can't find the proper mimetype plugins:
     ;; "org.kde.okular.core: No plugin for mimetype '"image/jpeg"'."
@@ -1099,7 +1099,7 @@ creating routes by drag and drop and more.")
            threadweaver
            kcrash
            kjs))
-    (home-page "https://kde.org/applications/graphics/okular/")
+    (home-page "https://apps.kde.org/okular/")
     (synopsis "Document viewer")
     (description
      "Okular is a document viewer developed for KDE.  It can display files in
@@ -1109,7 +1109,7 @@ a variety of formats, including PDF, PostScript, DejaVu, and EPub.")
 (define-public poxml
   (package
     (name "poxml")
-    (version "20.12.1")
+    (version "22.04.3")
     (source (origin
               (method url-fetch)
               (uri
@@ -1117,13 +1117,13 @@ a variety of formats, including PDF, PostScript, DejaVu, and EPub.")
                               "/src/poxml-" version ".tar.xz"))
               (sha256
                (base32
-                "1smjvblx0jcv3afs2sr4qcmvhqd44iw24hvr9fppa3nxhrmjwmlk"))))
+                "1nrp0i3a39pw4pzcanpmjyks3pl1lyfj3zq61ii8xx402xw1ip2w"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
      (list gettext-minimal qtbase-5))
-    (home-page "https://kde.org/applications/development")
+    (home-page "https://apps.kde.org/development/")
     (synopsis "Tools for translating DocBook XML files with Gettext")
     (description "This is a collection of tools that facilitate translating
 DocBook XML files using Gettext message files (PO files).  Also included are
@@ -1134,14 +1134,14 @@ PO template files.")
 (define-public kdegraphics-mobipocket
   (package
     (name "kdegraphics-mobipocket")
-    (version "20.12.0")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0fm880lp9g60zgrkjyh4jxws6x0s77l9ia4f8pza3w8sxcbbswk5"))))
+        (base32 "12yrwa22c4qxsf10fv76fzaaj5xlv5lmrwcqvf6qhgr6f9qsw7sj"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -1156,14 +1156,14 @@ Mobipocket e-books in Dolphin and other KDE apps.")
 (define-public libkexiv2
   (package
     (name "libkexiv2")
-    (version "20.12.0")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0k0iinf7s8qlk3fwvq7iic1b4zn2gm65rfd58q7d3wb1i1j2hjjk"))))
+        (base32 "0p43z69yh5jk8m1hn3xynjpgzxpkc89h0dafj5964qx4xp4vxl19"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -1178,20 +1178,20 @@ picture metadata as EXIF/IPTC and XMP.")
 (define-public zeroconf-ioslave
   (package
     (name "zeroconf-ioslave")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/zeroconf-ioslave-" version ".tar.xz"))
        (sha256
-        (base32 "1qck5jyc4psslpibhki8sz8aj0hsnx8z791vzyn10lmdzn71vx8c"))))
+        (base32 "0jbrdbphxn77dg2a4wzsm7q24455j4d1xhd4rj5iwhq4ywiig9i1"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list kdbusaddons kdnssd ki18n kio qtbase-5))
-    (home-page "https://kde.org/applications/internet/org.kde.zeroconf_ioslave")
+    (home-page "https://apps.kde.org/kio_zeroconf/")
     (synopsis "DNS-SD Service Discovery Monitor")
     (description "Adds an entry to Dolphin's Network page to show local
 services such as printers which advertise themselves with DNSSD (called Avahi
@@ -1205,14 +1205,14 @@ or Bonjour by other projects).")
   ;; FIXME: Check https://www.reddit.com/r/kde/comments/f7ojg9 for insights
   (package
     (name "kuserfeedback")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/kuserfeedback/"
                            "/kuserfeedback-" version ".tar.xz"))
        (sha256
-        (base32 "1dwx9fscnfp3zsxdir774skn8xvad2dvscnaaw3ji6mrnkmm6bss"))))
+        (base32 "0r7jcc88n5b4rc0asjzh7m7g33i35k3z99l08qkrn92kn4ickakn"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules

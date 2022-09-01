@@ -3,6 +3,8 @@
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,14 +57,14 @@
 (define-public audiocd-kio
   (package
     (name "audiocd-kio")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/audiocd-kio-" version ".tar.xz"))
        (sha256
-        (base32 "0qlnxxbayqhz25jbvzis27jw2zbw1pmacp8rv7v5wa7zfqn3kmyk"))))
+        (base32 "0d6pbsh1fbhwwr2c4kf9b17dhzzx2jsmgamawcp4kn7pw9i7i8ql"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -78,7 +80,7 @@
            libvorbis
            phonon
            qtbase-5))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kio_audiocd")
+    (home-page "https://apps.kde.org/kio_audiocd/")
     (synopsis "Transparent audio CD integration for applications using the KDE
 Platform")
     (description "KIO AudioCD is a KIO slave that enables KIO-aware
@@ -94,19 +96,20 @@ This package is part of the KDE multimedia module.")
 (define-public dragon
   (package
     (name "dragon")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dragon-" version ".tar.xz"))
        (sha256
-        (base32 "1sssg20a1vpwk816lp5jgwahilaswb9f3hgfqvc73il4g11ky1xj"))))
+        (base32 "0284shnqwbh1953ym197qaqgjwrnva77zi55lvvykg5cq42x512s"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list kconfig
+     (list bash-minimal
+           kconfig
            kconfigwidgets
            kcoreaddons
            kcrash
@@ -119,12 +122,24 @@ This package is part of the KDE multimedia module.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            phonon
            phonon-backend-gstreamer
+           gst-plugins-base
+           gst-plugins-good
            qtbase-5
            solid))
-    (home-page "https://kde.org/applications/multimedia/org.kde.dragonplayer")
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'qt-wrap 'gst-wrap
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out             (assoc-ref outputs "out"))
+                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+               (wrap-program (string-append out "/bin/dragon")
+                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))
+               #t))))))
+    (home-page "https://apps.kde.org/dragonplayer/")
     (synopsis "Simple video player")
     (description "Dragon Player is a multimedia player where the focus is on
 simplicity, instead of features.  Dragon Player does one thing, and only one
@@ -139,14 +154,14 @@ This package is part of the KDE multimedia module.")
 (define-public elisa
   (package
     (name "elisa")
-    (version "20.12.0")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/elisa-" version ".tar.xz"))
        (sha256
-        (base32 "02450lsnbd37fms1i2bb9qc9wir4vym6qqd9p5hr6a6s6qwfs6qf"))))
+        (base32 "1v2h7ayyrv6f6hdkl78x1nrv5x0l6n8dh0xrfm5fnii4f694iik8"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config dbus kdoctools
@@ -162,6 +177,7 @@ This package is part of the KDE multimedia module.")
            kdeclarative
            kfilemetadata
            ki18n
+           kiconthemes
            kio
            kirigami
            kmediaplayer
@@ -169,7 +185,7 @@ This package is part of the KDE multimedia module.")
            kpackage
            kwidgetsaddons
            kxmlgui
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            phonon
            qtbase-5
            qtdeclarative-5
@@ -182,7 +198,8 @@ This package is part of the KDE multimedia module.")
            ;; TODO: upnpqt https://gitlab.com/homeautomationqt/upnp-player-qt
            vlc))
     (arguments
-     `(#:phases
+     `(#:tests? #f ;; many tests fail
+       #:phases
        (modify-phases %standard-phases
          (add-before 'check 'start-xorg-server
            (lambda* (#:key inputs #:allow-other-keys)
@@ -197,7 +214,7 @@ This package is part of the KDE multimedia module.")
                (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
                (invoke "dbus-launch" "make" test-target))
              #t)))))
-    (home-page "https://kde.org/applications/multimedia/org.kde.elisa")
+    (home-page "https://apps.kde.org/elisa/")
     (synopsis "Powerful music player for Plasma 5")
     (description "Elisa is a simple music player aiming to provide a nice
 experience for its users.  Elisa browses music by album, artist or
@@ -210,20 +227,20 @@ its own database.  You can build and play your own playlist.")
 (define-public ffmpegthumbs
   (package
     (name "ffmpegthumbs")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ffmpegthumbs-" version ".tar.xz"))
        (sha256
-        (base32 "17l50z33a1h5zkrrfkb261yi2hms66qj36l1mndq7mvs97y2ggmc"))))
+        (base32 "1jl7l3n2lfg71kbzwjn5nrm3qlgilhnvs67iil162mnv52gf3c0v"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list ffmpeg kconfig ki18n kio qtbase-5))
-    (home-page "https://kde.org/applications/multimedia/org.kde.ffmpegthumbs")
+     (list ffmpeg kconfig ki18n kio taglib qtbase-5))
+    (home-page "https://apps.kde.org/ffmpegthumbs/")
     (synopsis "Video thumbnail generator for KDE using ffmpeg")
     (description "
 FFMpegThumbs is a video thumbnail generator for KDE file managers
@@ -236,24 +253,23 @@ This package is part of the KDE multimedia module.")
 (define-public juk
   (package
     (name "juk")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/juk-" version ".tar.xz"))
        (sha256
-        (base32 "06vsh7knyhcbcbf632jhldbqpzfkdyils2l8dbcdw5nj5hhgzzmr"))))
+        (base32 "12pnbx17r1103w39gglybdzs8kcpwghy5lc4q9fqk89s1r7l3c7h"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules))
+     (list extra-cmake-modules kdoctools))
     (inputs
      (list kcoreaddons
            kcompletion
            kconfig
            kcrash
            kdbusaddons
-           kdoctools
            kglobalaccel
            ki18n
            kiconthemes
@@ -265,13 +281,13 @@ This package is part of the KDE multimedia module.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            phonon
            phonon-backend-gstreamer
            qtbase-5
            qtsvg-5
            taglib))
-    (home-page "https://kde.org/applications/multimedia/org.kde.juk")
+    (home-page "https://apps.kde.org/juk/")
     (synopsis "Music jukebox / music player")
     (description "JuK is a powerful music player capable of managing a large
 music collection.
@@ -291,7 +307,7 @@ This package is part of the KDE multimedia module.")
 (define-public kid3
   (package
     (name "kid3")
-    (version "3.9.0")
+    (version "3.9.1")
     (source
      (origin
        (method git-fetch)
@@ -300,7 +316,7 @@ This package is part of the KDE multimedia module.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02r3cnwr05mcxjawzip3jl1lfijvzfbbafq3saipjjjp4kiq9bk4"))))
+        (base32 "1rq0742rm3y5ps7878qd7xhhiizy6d6ls6hdjqa6z5sq077s5lz9"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -349,14 +365,14 @@ variety of formats.")
 (define-public k3b
   (package
     (name "k3b")
-    (version "20.04.2")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/k3b-" version ".tar.xz"))
        (sha256
-        (base32 "15wm987hz6rfs9ds9l1gbs6gdsardj1ywvk6zmpvj2i2190y4b3q"))))
+        (base32 "1bizk66ad2yq8xszjqvv2ghk069d0l6iczn5rlna1p3zigr43ysl"))))
     (build-system qt-build-system)
     (arguments
      `(#:phases
@@ -430,14 +446,14 @@ variety of formats.")
            libsamplerate
            libsndfile
            libvorbis
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            qtbase-5
            shared-mime-info
            solid
            sox
            taglib
            zlib))
-    (home-page "https://kde.org/applications/multimedia/org.kde.k3b")
+    (home-page "https://apps.kde.org/k3b/")
     (synopsis "Sophisticated CD/DVD burning application")
     (description "K3b is CD-writing software which intends to be feature-rich
 and provide an easily usable interface.  Features include burning audio CDs
@@ -473,7 +489,7 @@ available CD drives.")
            kwindowsystem
            kxmlgui
            libxscrnsaver
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            qtbase-5
            qtx11extras
            solid
@@ -488,7 +504,7 @@ available CD drives.")
                (("\\s*qPrintable\\(transponder\\.getTransmissionType\\(\\)\\)\\);")
                  "transponder.getTransmissionType());"))
              #t)))))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kaffeine")
+    (home-page "https://apps.kde.org/kaffeine/")
     (synopsis "Versatile media player for KDE")
     (description "Kaffeine is a media player for KDE.  While it supports
 multiple Phonon backends, its default backend is Xine, giving Kaffeine a wide
@@ -503,14 +519,14 @@ autoloading of subtitle files for use while playing video.")
 (define-public kamoso
   (package
     (name "kamoso")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kamoso-" version ".tar.xz"))
        (sha256
-        (base32 "0c47j315kjfikd3b6x18786k3gqymicjjslpm0a58zdxl3wpqfay"))))
+        (base32 "0br7dbnm2ypdl55pscp8wr0vwrgprycrxxj206b5r1l9ysx9aqip"))))
     (build-system qt-build-system)
     (native-inputs
      `(("extra-cmake-modules" ,extra-cmake-modules)
@@ -526,7 +542,7 @@ autoloading of subtitle files for use while playing video.")
            kirigami
            knotifications
            kparts
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            purpose
            qtbase-5
            qtdeclarative-5
@@ -535,12 +551,8 @@ autoloading of subtitle files for use while playing video.")
            qtquickcontrols2-5 ; not listed as dependency
            qtx11extras))
     (arguments
-     (list #:tests? #f ; test program gets built, but is not found
-           #:configure-flags
-           #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
-                                  #$(this-package-input "gst-plugins-base")
-                                  "/include/gstreamer-1.0"))))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kamoso")
+     (list #:tests? #f)) ; test program gets built, but is not found
+    (home-page "https://apps.kde.org/kamoso/")
     (synopsis "Take pictures and videos out of your webcam")
     (description "Kamoso is a simple and friendly program to use your
 camera.  Use it to take pictures and make videos to share.")
@@ -550,17 +562,17 @@ camera.  Use it to take pictures and make videos to share.")
 (define-public kmix
   (package
     (name "kmix")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/kmix-" version ".tar.xz"))
       (sha256
-       (base32 "1na52ypp57wqrc6pl1khinx9i6fidv1k97nnxcy8zb4l7d5sh1nd"))))
+       (base32 "0zc96l9mnn763pw54ki715sw3wm4z6rjdz2zzsjc6l5iwcqzwqq8"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules pkg-config))
+     (list extra-cmake-modules kdoctools pkg-config))
     (inputs
      (list alsa-lib
            glib
@@ -570,7 +582,6 @@ camera.  Use it to take pictures and make videos to share.")
            kconfigwidgets
            kcrash
            kdbusaddons
-           kdoctools
            kglobalaccel
            ki18n
            kiconthemes
@@ -579,12 +590,12 @@ camera.  Use it to take pictures and make videos to share.")
            kwindowsystem
            kxmlgui
            libcanberra
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            plasma-framework
            pulseaudio
            qtbase-5
            solid))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kmix")
+    (home-page "https://apps.kde.org/kmix/")
     (synopsis "Volume control and mixer")
     (description "KMix is an audio device mixer, used to adjust volume, select
 recording inputs, and set other hardware options.
@@ -594,54 +605,59 @@ This package is part of the KDE multimedia module.")
      (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
 
 (define-public kmplayer
-  (package
-    (name "kmplayer")
-    (version "0.12.0b")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/kmplayer/0.12"
-                           "/kmplayer-" version ".tar.bz2"))
-       (sha256
-        (base32 "0wzdxym4fc83wvqyhcwid65yv59a2wvp1lq303cn124mpnlwx62y"))
-       (patches (search-patches
-                 "kmplayer-aarch64.patch"
-                 "kmplayer-upstream_Fix-build-with-Qt-5.9.patch"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules pkg-config kdoctools))
-    (inputs
-     (list kconfig
-           kcoreaddons
-           kdelibs4support
-           ki18n
-           kinit
-           kio
-           kparts
-           kmediaplayer
-           kwidgetsaddons
-           libxcb ;; FIXME: why does cmake not find XEVIE and XPRINT?
-           oxygen-icons ; default icon set
-           phonon
-           qtbase-5
-           cairo
-           qtsvg-5
-           qtx11extras
-           xcb-util
-           xcb-util-cursor
-           xcb-util-errors
-           xcb-util-image
-           xcb-util-keysyms
-           xcb-util-wm))
-    (arguments
-     (list #:configure-flags
-           #~(list (string-append
-                    "-DCMAKE_CXX_FLAGS=-I"
-                    #$(this-package-input "qtx11extras")
-                    "/include/qt5"))))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kmplayer")
-    (synopsis "Media player using mplayer/phonon as backend")
-    (description "Kmplayer can play all the audio/video supported by
+  ;; The latest release was in 2016, and does not work with the newer
+  ;; KDE libraries.
+  (let ((commit "88e85308b71dc5e58cc655b5b9a13cd71b78233f")
+        (revision "1"))
+    (package
+      (name "kmplayer")
+      (version (git-version "0.12.0b" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://invent.kde.org/multimedia/kmplayer")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1pzk0js499diqabpwxjq6nnwpmj1ikpyyykzjbm844xcbm74cl19"))))
+      (build-system qt-build-system)
+      (native-inputs
+       (list extra-cmake-modules pkg-config kdoctools))
+      (inputs
+       (list kbookmarks
+             kconfig
+             kcoreaddons
+             kdelibs4support
+             ki18n
+             kinit
+             kio
+             kparts
+             kmediaplayer
+             kwidgetsaddons
+             libxcb       ;; FIXME: why does cmake not find XEVIE and XPRINT?
+             breeze-icons ; default icon set
+             phonon
+             qtbase-5
+             cairo
+             qtsvg-5
+             qtx11extras
+             xcb-util
+             xcb-util-cursor
+             xcb-util-errors
+             xcb-util-image
+             xcb-util-keysyms
+             xcb-util-wm))
+      (arguments
+       (list #:configure-flags
+             #~(list (string-append
+                      "-DCMAKE_CXX_FLAGS=-I"
+                      #$(this-package-input "qtx11extras")
+                      "/include/qt5"))))
+      (home-page "https://apps.kde.org/kmplayer/")
+      (synopsis "Media player using mplayer/phonon as backend")
+      (description "Kmplayer can play all the audio/video supported by
 mplayer/phonon from a local file or URL and be embedded in Konqueror and
 KHTML.  It also plays DVDs.
 
@@ -655,20 +671,20 @@ Some features:
 @item Broadcasting, http streaming, using ffserver/ffmpeg
 @item For TV sources, you need v4lctl (part of the xawtv package)
 @end itemize")
-    (license ;; GPL for programs, LGPL for libraries, FDL for documentation
-     (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
+      (license ;; GPL for programs, LGPL for libraries, FDL for documentation
+       (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+)))))
 
 (define-public kwave
   (package
     (name "kwave")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/kwave-" version ".tar.xz"))
        (sha256
-        (base32 "0ysa873pc2gip95cxr8yv7ifd9qql5zg6h67i9n9q3iqa6v58iyw"))))
+        (base32 "0j6ck44lkfcnaa0rymv2aqvdcy0zbybbklm1s6mvbgdpfsh0rhkm"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules (librsvg-for-system) pkg-config kdoctools))
@@ -695,12 +711,12 @@ Some features:
            libsamplerate
            libvorbis
            opus
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            pulseaudio
            qtbase-5
            qtmultimedia-5
            zlib))
-    (home-page "https://kde.org/applications/multimedia/org.kde.kwave")
+    (home-page "https://apps.kde.org/kwave/")
     (synopsis "Sound editor for KDE")
     (description "Kwave is a sound editor designed for the KDE Desktop
 Environment.
@@ -735,14 +751,14 @@ Its features include:
 (define-public libkcddb
   (package
     (name "libkcddb")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcddb-" version ".tar.xz"))
        (sha256
-        (base32 "1fwryaj8ldmsqhl5qxjda8by9i7xlb97r8p9rqzckw697hkfhs0h"))))
+        (base32 "1js5r8hxqabnygmavfjvjbfy5c7978bmwm2rqlgsfyn17fkmf2y8"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -765,14 +781,14 @@ Its features include:
 (define-public libkcompactdisc
   (package
     (name "libkcompactdisc")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcompactdisc-" version ".tar.xz"))
        (sha256
-        (base32 "0iy4i0hxqsrnndd4iqkww7v1rqry7kvi5paxdw5qjfffwn8kcsbx"))))
+        (base32 "0fv9dbx74xs42iiw67bvjpxga0d126q2nfs8n4hiv3z2xda9n4ic"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))

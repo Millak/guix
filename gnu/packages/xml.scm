@@ -89,7 +89,7 @@
 (define-public libxmlb
   (package
     (name "libxmlb")
-    (version "0.3.8")
+    (version "0.3.9")
     (source
      (origin
        (method git-fetch)
@@ -99,9 +99,7 @@
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0znz2y1ig2kvlda44a3kxa8x7f222nbg50rjz6nlngzka0ccsgxx"))
-       ;; Drop xb-tool patch after libxmlb 0.3.8, merged upstream
-       (patches (search-patches "libxmlb-install-xb-tool-into-bindir.patch"))))
+        (base32 "1n6ffza134sj9ck9nbngdhq8kvbsk5mvjqki3ph4xc283b1ywr71"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))

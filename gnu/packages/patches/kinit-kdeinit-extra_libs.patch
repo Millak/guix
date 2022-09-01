@@ -21,27 +21,6 @@ pkgs/development/libraries/kde-frameworks/kinit/kdeinit-extra_libs.patch
  #endif
  };
  #endif
-@@ -1533,20 +1531,6 @@ static int initXconnection()
- }
- #endif
- 
--#ifndef Q_OS_OSX
--// Find a shared lib in the lib dir, e.g. libkio.so.
--// Completely unrelated to plugins.
--static QString findSharedLib(const QString &lib)
--{
--    QString path = QFile::decodeName(CMAKE_INSTALL_PREFIX "/" LIB_INSTALL_DIR "/") + lib;
--    if (QFile::exists(path)) {
--        return path;
--    }
--    // We could also look in LD_LIBRARY_PATH, but really, who installs the main libs in different prefixes?
--    return QString();
--}
--#endif
--
- extern "C" {
- 
-     static void secondary_child_handler(int)
 @@ -1673,7 +1673,7 @@
  #if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
      if (!d.suicide && qEnvironmentVariableIsEmpty("KDE_IS_PRELINKED")) {

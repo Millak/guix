@@ -743,6 +743,25 @@ variables into the markdown template")
 Markdown.  All extensions are found under the module namespace of pymdownx.")
     (license license:expat)))
 
+(define-public python-plotille
+  (package
+    (name "python-plotille")
+    (version "4.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "plotille" version))
+              (sha256
+               (base32
+                "0fvsk6glxfphhqy405h05rj3v95jd1byl5hv2fyd5l31wln23shj"))))
+    (build-system python-build-system)
+    (native-inputs (list python-six))
+    (home-page "https://github.com/tammoippen/plotille")
+    (synopsis "Plot in the terminal using braille dots")
+    (description
+     "Plotille provides a figure class and graphing functions to create plots,
+scatter plots, histograms and heatmaps in the terminal using braille dots.")
+    (license license:expat)))
+
 (define-public python-mdx-gh-links
   (package
     (name "python-mdx-gh-links")
@@ -2796,14 +2815,14 @@ audio playback capability for Python 3 on OSX, Windows, and Linux.")
 (define-public python-simplejson
   (package
     (name "python-simplejson")
-    (version "3.17.2")
+    (version "3.17.6")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "simplejson" version))
       (sha256
        (base32
-        "0hc8nqwdlll4a9cr1k9msn5kmb6kmbjirpgvhjh254nr4sgwgv3m"))))
+        "19pqqn01y6qmhhv8q6dh4p1acav49kl923kklnns2qxz5a6h766g"))))
     (build-system python-build-system)
     (native-inputs
      (list python-toml))
@@ -14597,43 +14616,6 @@ both in documentation and via Python’s warnings system, as well as the
 that deprecated code is eventually removed.")
     (license license:asl2.0)))
 
-(define-public python-tox
-  (package
-    (name "python-tox")
-    (version "3.20.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tox" version))
-       (sha256
-        (base32
-         "0nk0nyzhzamcrvn0qqzzy54isxxqwdi28swml7a2ym78c3f9sqpb"))))
-    (build-system python-build-system)
-    (arguments
-     ;; FIXME: Tests require pytest-timeout, which itself requires
-     ;; pytest>=2.8.0 for installation.
-     '(#:tests? #f))
-    (propagated-inputs
-     (list python-filelock
-           python-packaging
-           python-pluggy
-           python-py
-           python-six
-           python-toml
-           python-virtualenv))
-    (native-inputs
-     (list ; FIXME: Missing: ("python-pytest-timeout" ,python-pytest-timeout)
-           python-pytest ; >= 2.3.5
-           python-setuptools-scm))
-    (home-page "https://tox.readthedocs.io")
-    (synopsis "Virtualenv-based automation of test activities")
-    (description "Tox is a generic virtualenv management and test command line
-tool.  It can be used to check that a package installs correctly with
-different Python versions and interpreters, or run tests in each type of
-supported environment, or act as a frontend to continuous integration
-servers.")
-    (license license:expat)))
-
 (define-public python-jmespath
   (package
    (name "python-jmespath")
@@ -21703,6 +21685,21 @@ Included are implementations of:
 @item AsyncGenerator
 @end enumerate\n")
     (license license:psfl)))
+
+(define-public python-typing-extensions-next
+  (package
+    (inherit python-typing-extensions)
+    (name "python-typing-extensions")
+    (version "4.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/python/typing")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bbry1rg7q5ppkgzdk4nwl7q1w8bbhajm4q68wb9dm6rf7hg1023"))))))
 
 (define-public bpython
   (package
@@ -29400,6 +29397,24 @@ async I/O support.")
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for @code{freezegun}")
     (description "This package contains typing stubs for for @code{freezegun}, a
+very small subset the Python stubs contained in the complete @code{typeshed}
+collection.")
+    (license license:asl2.0)))
+
+(define-public python-types-protobuf
+  (package
+    (name "python-types-protobuf")
+    (version "3.20.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "types-protobuf" version))
+              (sha256
+               (base32
+                "000f8n6d4ilihiaf590k73rx3327jh8ima5q5dpxlwz3frj45qrn"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for @code{protobuf}")
+    (description "This package contains typing stubs for @code{protobuf}, a
 very small subset the Python stubs contained in the complete @code{typeshed}
 collection.")
     (license license:asl2.0)))
