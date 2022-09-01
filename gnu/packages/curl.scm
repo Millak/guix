@@ -63,17 +63,15 @@
 (define-public curl
   (package
     (name "curl")
-    (version "7.84.0")
+    (version "7.85.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://curl.se/download/curl-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1f2xgj0wvys9xw50h7vcbaraavjr9rxx9n06x2xfbgs7ym1qn49d"))
-              (patches (search-patches "curl-use-ssl-cert-env.patch"
-                                       "curl-nghttp2-compat.patch"
-                                       "curl-easy-lock.patch"))))
+                "1rjbn0h5rddclhvxb8p5gddxszcrpbf5cw1whx6wnj4s9dnlmdc8"))
+              (patches (search-patches "curl-use-ssl-cert-env.patch"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ;1.2 MiB of man3 pages
@@ -105,12 +103,6 @@
               "--disable-static")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'tweak-lib3026-test
-            (lambda _
-              ;; Have that test create a hundred threads, not a thousand.
-              (substitute* "tests/libtest/lib3026.c"
-                (("NUM_THREADS .*$")
-                 "NUM_THREADS 100\n"))))
           (add-after 'unpack 'do-not-record-configure-flags
             (lambda _
               ;; Do not save the configure options to avoid unnecessary references.
