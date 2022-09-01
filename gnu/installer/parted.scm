@@ -2,6 +2,7 @@
 ;;; Copyright © 2018, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -983,6 +984,11 @@ exists."
     (for-each
      (lambda (partition)
        (and (data-partition? partition)
+            ;; Do not remove logical partitions ourselves, since
+            ;; disk-remove-partition* will remove all the logical partitions
+            ;; residing on an extended partition, which would lead to a
+            ;; double-remove and ensuing SEGFAULT.
+            (not (logical-partition? partition))
             (disk-remove-partition* disk partition)))
      non-boot-partitions)
 

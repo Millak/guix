@@ -1549,6 +1549,9 @@ also walk each side of a merge and test those changes individually.")
                                         (assoc-ref inputs "inetutils")
                                         "/bin/logger\"")))
 
+                      (substitute* "src/lib/Gitolite/Cache.pm"
+                        (("/usr/sbin/redis-server") "redis-server"))
+
                       (substitute* "src/commands/svnserve"
                         (("/usr/bin/svnserve") "svnserve"))))
                   (replace 'install

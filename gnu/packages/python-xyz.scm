@@ -743,6 +743,25 @@ variables into the markdown template")
 Markdown.  All extensions are found under the module namespace of pymdownx.")
     (license license:expat)))
 
+(define-public python-plotille
+  (package
+    (name "python-plotille")
+    (version "4.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "plotille" version))
+              (sha256
+               (base32
+                "0fvsk6glxfphhqy405h05rj3v95jd1byl5hv2fyd5l31wln23shj"))))
+    (build-system python-build-system)
+    (native-inputs (list python-six))
+    (home-page "https://github.com/tammoippen/plotille")
+    (synopsis "Plot in the terminal using braille dots")
+    (description
+     "Plotille provides a figure class and graphing functions to create plots,
+scatter plots, histograms and heatmaps in the terminal using braille dots.")
+    (license license:expat)))
+
 (define-public python-mdx-gh-links
   (package
     (name "python-mdx-gh-links")

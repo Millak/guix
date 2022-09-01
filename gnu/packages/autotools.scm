@@ -519,6 +519,18 @@ complexity of working with shared libraries across platforms.")
     (license gpl3+)
     (home-page "https://www.gnu.org/software/libtool/")))
 
+(define-public libtool-2.4.7
+  (package
+    (inherit libtool)
+    (version "2.4.7")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/libtool/libtool-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0pb3l4x37k6fj1lwnpzws55gi3pxl0hx56jm4bzmbrkw0mzj2zsg"))))))
+
 (define-public config
   (let ((revision "1")
         (commit "c8ddc8472f8efcadafc1ef53ca1d863415fddd5f"))

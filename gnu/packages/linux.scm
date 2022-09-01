@@ -8716,7 +8716,7 @@ of Linux application development.")
   (package
     (inherit pipewire)
     (name "pipewire")
-    (version "0.3.43")
+    (version "0.3.56")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8725,17 +8725,13 @@ of Linux application development.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gp2h0sidapcqmnifl0iipdmbzb18bdh8zdi7pfywr9gsksh0cxy"))))
+                "066g4ri2k8pdflclvr2919f6x98gmqrqyj1xyiingw2nn2pwgcf1"))))
     (arguments
      '(#:configure-flags
        (list (string-append "-Dudevrulesdir=" (assoc-ref %outputs "out")
                             "/lib/udev/rules.d")
              "-Dsystemd=disabled"
-             "-Dsession-managers=[]")
-       #:phases
-       (modify-phases %standard-phases
-         ;; Skip shrink-runpath, otherwise validate-runpath fails.
-         (delete 'shrink-runpath))))
+             "-Dsession-managers=[]")))
     (inputs (modify-inputs (package-inputs pipewire)
               (prepend avahi
                        bluez
@@ -8748,7 +8744,7 @@ of Linux application development.")
 (define-public wireplumber
   (package
     (name "wireplumber")
-    (version "0.4.6")
+    (version "0.4.11")
     (source
      (origin
        (method git-fetch)
@@ -8758,7 +8754,7 @@ of Linux application development.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g7xkgkjlxrhs49hqkwrjk2hb478gq55wwydafvvbsv78vsa7qfb"))))
+        (base32 "09pg5cki1xn9bwn3bcjdc54z7b4iqkk1dhn560qyjcglq8xg7nnw"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dsystemd=disabled"

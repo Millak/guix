@@ -1945,59 +1945,76 @@ defined radio with support for rtl-sdr.")
     (license license:gpl2+)))
 
 (define-public csdr
-  ;; No release since 2017, use commit directly.
-  (let ((commit "6ef2a74206887155290a54c7117636f66742f858")
-        (revision "1"))
-    (package
-      (name "csdr")
-      (version (git-version "0.15" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/ha7ilm/csdr")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0ic35130lf66lk3wawgc5bcg711l7chv9al1hzdc1xrmq9qf9hri"))))
-      (build-system gnu-build-system)
-      (inputs
-       (list fftwf))
-      (arguments
-       `(#:make-flags
-         (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-               ;; Don't print summary of SIMD optimized functions.
-               "PARSEVECT=no")
-         #:tests? #f  ; No check phase
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'configure
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "Makefile"
-                 (("PARAMS_MISC = -Wno-unused-result" all)
-                  ;; The 'validate-runpath' phase fails without this.
-                  (string-append
-                   all " -Wl,-rpath=" (assoc-ref outputs "out") "/lib"))
-                 (("PARAMS_SIMD =.*")
-                  ;; Disable to make reproducibility and cross-compilation work.
-                  "")
-                 (("gcc ")
-                  ,(string-append (cc-for-target) " "))
-                 (("g\\+\\+ ")
-                  ,(string-append (cxx-for-target) " ")))))
-           (add-before 'install 'make-installation-directories
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (mkdir-p (string-append out "/bin"))
-                 (mkdir-p (string-append out "/lib"))))))))
-      (home-page "https://github.com/ha7ilm/csdr")
-      (synopsis "DSP for software defined radio")
-      (description
-       "This package includes the @code{libcsdr} library of
+  (package
+    (name "csdr")
+    (version "0.18.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jketterl/csdr")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sdni0p9qcf4yw1wf5jz1pyb9wv6wmdblirh2q6s7jblh50vfwz1"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list fftwf libsamplerate))
+    (arguments
+     (list #:tests? #f)) ; No check phase
+    (home-page "https://github.com/jketterl/csdr")
+    (synopsis "DSP for software defined radio")
+    (description
+     "This package includes the @code{libcsdr} library of
 @acronym{DSP, Digital Signal Processing} functions for
 @acronym{SDRs, Software Defined Radios}, and the @code{csdr} command line
 program that can be used to build simple signal processing flow graphs.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
+
+(define-public convert-samples
+  (package
+    (name "convert-samples")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/glv2/convert-samples")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d9w9m5agi8fiv1wk8nhjrbm2jkm2fks4ymbxkn0xphbwj3gwr7i"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake))
+    (inputs
+     (list liquid-dsp))
+    (synopsis "SDR samples converter")
+    (description
+     "@code{convert-samples} is a command-line program to convert samples
+received from software defined radios from one format to another.
+
+Supported formats:
+@itemize
+@item s8: signed 8 bit integer
+@item u8: unsigned 8 bit integer
+@item s16: signed 16 bit integer
+@item u16: unsigned 16 bit integer
+@item s32: signed 32 bit integer
+@item u32: unsigned 32 bit integer
+@item f32: 32 bit float
+@item cs8: complex made of signed 8 bit integers
+@item cu8: complex made of unsigned 8 bit integers
+@item cs16: complex made of signed 16 bit integers
+@item cu16: complex made of unsigned 16 bit integers
+@item cs32: complex made of signed 32 bit integers
+@item cu32: complex made of unsigned 32 bit integers
+@item cf32: complex made of 32 bit floats
+@end itemize")
+    (home-page "https://github.com/glv2/convert-samples")
+    (license license:gpl3+)))
 
 (define-public serialdv
   (package

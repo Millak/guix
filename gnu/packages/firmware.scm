@@ -205,32 +205,46 @@ driver.")
                 "02jf052qj1nl47ppqrgz3s9qapq4pajgkf6lbj5rxr5sshlrw44n"))))
     (build-system meson-build-system)
     (arguments
-     (list #:configure-flags #~(list "--wrap-mode=nofallback"
-                                     "-Dsystemd=false"
-                                     (string-append "-Defi_os_dir="
-                                                    #$gnu-efi "/lib")
-                                     "-Defi_binary=false"
-                                     (string-append "-Dudevdir="
-                                                    #$output "/lib/udev")
-                                     "--localstatedir=/var"
-                                     (string-append "--libexecdir="
-                                                    #$output "/libexec")
-                                     "-Dsupported_build=true")
-           #:glib-or-gtk? #t ;To wrap binaries and/or compile schemas
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'make-source-writable
-                          (lambda _
-                            (for-each make-file-writable
-                                      (find-files "."))
-                            (substitute* "src/fu-self-test.c"
-                              (("/bin/sh")
-                               (which "sh")))))
-                        (add-before 'build 'setup-home
-                          (lambda _
-                            (setenv "HOME" "/tmp")))
-                        (add-before 'install 'no-polkit-magic
-                          (lambda _
-                            (setenv "PKEXEC_UID" "something"))))))
+     (list
+      #:configure-flags #~(list "--wrap-mode=nofallback"
+                                "-Dsystemd=false"
+                                (string-append "-Defi_os_dir="
+                                               #$gnu-efi "/lib")
+                                "-Defi_binary=false"
+                                (string-append "-Dudevdir="
+                                               #$output "/lib/udev")
+                                "--localstatedir=/var"
+                                (string-append "--libexecdir="
+                                               #$output "/libexec")
+                                "-Dsupported_build=true"
+                                ;; Disable LVFS, because it contains
+                                ;; nonfree firmwares.
+                                "-Dlvfs=disabled")
+      #:glib-or-gtk? #t               ;To wrap binaries and/or compile schemas
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-source-writable
+            (lambda _
+              (for-each make-file-writable
+                        (find-files "."))
+              (substitute* "src/fu-self-test.c"
+                (("/bin/sh")
+                 (which "sh")))))
+          (add-before 'build 'setup-home
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-before 'install 'no-polkit-magic
+            (lambda _
+              (setenv "PKEXEC_UID" "something")))
+          (add-after 'install 'ensure-all-remotes-are-disabled
+            ;; Because no remote currently promises to offer only free
+            ;; software firmwares, disable them to prevent a user to
+            ;; unknowingly install proprietary firmware updates.
+            (lambda _
+              (substitute* (find-files (string-append #$output "/etc")
+                                       "\\.conf$")
+                (("Enabled=true")
+                 "Enabled=false")))))))
     (native-inputs (list gobject-introspection
                          python-pygobject
                          python-pillow
