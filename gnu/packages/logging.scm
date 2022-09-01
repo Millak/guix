@@ -273,7 +273,7 @@ library.")
              "--enable-liblogging_stdlog"
              "--enable-unlimited_select"
              "--enable-usertools"
-         
+
              ;; Input plugins
              "--enable-imbatchreport"
              "--enable-imczmq"
@@ -285,7 +285,7 @@ library.")
              "--enable-impstats"
              "--enable-imptcp"
              "--enable-imtuxedoulog"
-       
+
              ;; Output plugins
              "--enable-clickhouse"
              "--enable-elasticsearch"
