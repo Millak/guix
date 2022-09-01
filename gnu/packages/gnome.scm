@@ -3143,7 +3143,7 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
              (substitute* "meson_post_install.py"
                (("gtk-update-icon-cache") "true"))))
 
-         ,@(if (this-package-native-input "gjs")
+         ,@(if (this-package-input "gjs")
                '()
                '((add-after 'unpack 'skip-gjs-test
                    (lambda _
@@ -3170,7 +3170,13 @@ current/manpages/docbook.xsl")
              (system "Xvfb :1 &")
              (setenv "DISPLAY" ":1"))))))
     (inputs
-     (list gtk+ libxml2))
+     (append
+      ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
+      ;; dependency on other platforms (FIXME).
+      (if (target-x86-64?)
+          (list gjs)
+          '())
+      (list gtk+ libxml2)))
     (native-inputs
      `(("hicolor-icon-theme" ,hicolor-icon-theme)
        ("intltool" ,intltool)
@@ -3182,13 +3188,6 @@ current/manpages/docbook.xsl")
        ("python" ,python)
        ("python-pygobject" ,python-pygobject)
        ("gobject-introspection" ,gobject-introspection)
-
-       ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
-       ;; dependency on other platforms (FIXME).
-       ,@(if (target-x86-64?)
-             `(("gjs" ,gjs))
-             '())
-
        ("pkg-config" ,pkg-config)
        ("xorg-server" ,xorg-server-for-tests)))
     (home-page "https://glade.gnome.org")
