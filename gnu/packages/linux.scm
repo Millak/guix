@@ -8720,7 +8720,7 @@ of Linux application development.")
   (package
     (inherit pipewire)
     (name "pipewire")
-    (version "0.3.43")
+    (version "0.3.56")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8729,17 +8729,13 @@ of Linux application development.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gp2h0sidapcqmnifl0iipdmbzb18bdh8zdi7pfywr9gsksh0cxy"))))
+                "066g4ri2k8pdflclvr2919f6x98gmqrqyj1xyiingw2nn2pwgcf1"))))
     (arguments
      '(#:configure-flags
        (list (string-append "-Dudevrulesdir=" (assoc-ref %outputs "out")
                             "/lib/udev/rules.d")
              "-Dsystemd=disabled"
-             "-Dsession-managers=[]")
-       #:phases
-       (modify-phases %standard-phases
-         ;; Skip shrink-runpath, otherwise validate-runpath fails.
-         (delete 'shrink-runpath))))
+             "-Dsession-managers=[]")))
     (inputs (modify-inputs (package-inputs pipewire)
               (prepend avahi
                        bluez
