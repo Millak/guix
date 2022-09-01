@@ -3132,30 +3132,31 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
                 "171x7vshhw0nqgnhkcaqfylpr5qrmhclwmkva6wjm5s9m2pavj9i"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") "true"))))
 
-         ,@(if (this-package-input "gjs")
-               '()
-               '((add-after 'unpack 'skip-gjs-test
-                   (lambda _
-                     ;; When the optional dependency on GJS is missing, skip
-                     ;; the GJS plugin tests.
-                     (substitute* "tests/modules.c"
-                       (("g_test_add.*JavaScript.*" all)
-                        (string-append "// " all "\n")))
-                     (delete-file "tests/catalogs/gjsplugin.xml")))))
-         (add-before 'check 'pre-check
-           (lambda _
-             (setenv "HOME" "/tmp")
-             ;; Tests require a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1"))))))
+          #$@(if (this-package-input "gjs")
+                 '()
+                 '((add-after 'unpack 'skip-gjs-test
+                     (lambda _
+                       ;; When the optional dependency on GJS is missing, skip
+                       ;; the GJS plugin tests.
+                       (substitute* "tests/modules.c"
+                         (("g_test_add.*JavaScript.*" all)
+                          (string-append "// " all "\n")))
+                       (delete-file "tests/catalogs/gjsplugin.xml")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              ;; Tests require a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
     (inputs
      (append
       ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
