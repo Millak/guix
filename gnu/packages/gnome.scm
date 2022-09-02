@@ -10727,7 +10727,7 @@ photo-booth-like software, such as Cheese.")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/" name "-"
+                                  (version-major version) "/" name "-"
                                   version ".tar.xz"))
               (sha256
                (base32
