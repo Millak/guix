@@ -4954,6 +4954,23 @@ that are compatible with @code{natbib}: @code{plainnat}, @code{unsrtnat},
 designed from the start to be compatible with @code{natbib}.")
     (license license:lppl)))
 
+(define-public texlive-latex-newfloat
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-newfloat"
+              (list "doc/latex/newfloat/"
+                    "tex/latex/newfloat/")
+              (base32 "1047max3li9ni15njgsvc7qglakgrjy2l0s72imgzdmwgb2h8jyf")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newfloat")
+    (synopsis "Define new floating environments")
+    (description
+     "This package offers the command @code{\\DeclareFloatingEnvironment},
+which the user may use to define new floating environments which behave like
+the LaTeX standard foating environments @code{figure} and @code{table}.")
+    (license license:lppl)))
+
 (define-public texlive-latex-newunicodechar
   (package
     (inherit (simple-texlive-package
