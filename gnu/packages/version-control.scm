@@ -1573,17 +1573,15 @@ also walk each side of a merge and test those changes individually.")
                             (coreutils (assoc-ref inputs "coreutils"))
                             (findutils (assoc-ref inputs "findutils"))
                             (git (assoc-ref inputs "git")))
-                        (wrap-program (string-append out "/bin/gitolite")
-                          `("PATH" ":" prefix
-                            ,(map (lambda (dir)
-                                    (string-append dir "/bin"))
-                                  (list out coreutils findutils git))))))))))
+                        (for-each (lambda (file-name)
+                                    (wrap-program (string-append out file-name)
+                                      `("PATH" ":" prefix
+                                        ,(map (lambda (dir)
+                                                (string-append dir "/bin"))
+                                              (list out coreutils findutils git)))))
+                                  '("/bin/gitolite" "/bin/gitolite-shell"))))))))
     (inputs
-     (list bash-minimal perl coreutils findutils inetutils))
-    ;; git and openssh are propagated because trying to patch the source via
-    ;; regexp matching is too brittle and prone to false positives.
-    (propagated-inputs
-     (list git openssh))
+     (list bash-minimal coreutils findutils git inetutils openssh perl))
     (home-page "https://gitolite.com")
     (synopsis "Git access control layer")
     (description
