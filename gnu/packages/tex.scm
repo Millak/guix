@@ -11572,3 +11572,22 @@ use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
 Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
 use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
     (license (list license:lppl1.3+ license:silofl1.1))))
+
+(define-public texlive-latex-hyphenat
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-hyphenat"
+              (list "doc/latex/hyphenat/"
+                    "tex/latex/hyphenat/")
+              (base32 "0b3jx2yvryx95am0ll9h6yc99niw2lwgsbq7r89j84z2qyp2llsq")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hyphenat")
+    (synopsis "Disable/enable hyphenation")
+    (description
+     "This package can disable all hyphenation or enable hyphenation of
+non-alphabetics or monospaced fonts.  The package can also enable hyphenation
+within ‘words’ that contain non-alphabetic characters (e.g., that include
+underscores), and hyphenation of text typeset in monospaced (e.g., cmtt)
+fonts.")
+    (license license:lppl1.3c+)))
