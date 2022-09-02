@@ -30,6 +30,7 @@
 ;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5397,6 +5398,24 @@ suitable for a gemspec file.")
 The output can be customized with a formatting system.")
     (home-page "https://github.com/jfelchner/ruby-progressbar")
     (license license:expat)))
+
+(define-public ruby-latest-ruby
+  (package
+    (name "ruby-latest-ruby")
+    (version "3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "latest_ruby" version))
+              (sha256
+               (base32
+                "15rqwgxzpnkzdiz8m02jra0zq5sx0fiz61vkfrj1ls6slqfhnzqg"))))
+    (build-system ruby-build-system)
+    (arguments
+     '(#:tests? #f)) ; No Rakefile
+    (synopsis "Answers the question of what the latest Ruby version is")
+    (description "Knows about MRI, Rubinius, JRuby, MagLev and MacRuby.")
+    (home-page "https://github.com/kyrylo/latest_ruby")
+    (license license:zlib)))
 
 (define-public ruby-pry
   (package
