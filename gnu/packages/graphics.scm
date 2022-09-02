@@ -2655,6 +2655,80 @@ anything from rendering scalable icons in an editor application to prototyping
 a game.")
       (license license:zlib))))
 
+(define-public asli
+  (package
+    (name "asli")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tpms-lattice/ASLI")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02hwdavpsy3vmivd6prp03jn004ykrl11lbkvksy5i2zm38zbknr"))
+       (patches (search-patches "asli-use-system-libs.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled libraries except (the ones missing from Guix and)
+        ;; KU Leuven's mTT, which is an obscure (i.e., unfindable by searching
+        ;; online for “mTT KU Leuven”), BSD-3 licensed, header-only library.
+        #~(begin
+            ;;(delete-file-recursively "libs/AdaptTools") ; Missing from Guix
+            (delete-file-recursively "libs/CGAL")
+            ;;(delete-file-recursively "libs/alglib") ; Missing from Guix
+            (delete-file-recursively "libs/eigen")
+            (delete-file-recursively "libs/mmg")
+            ;;(delete-file-recursively "libs/tetgen") ; Missing from Guix
+            (delete-file-recursively "libs/yaml")))))
+    (build-system cmake-build-system)
+    (inputs
+     (list boost
+           cgal
+           eigen
+           gmp
+           `(,mmg "lib")
+           mpfr
+           tbb-2020
+           yaml-cpp))
+    (arguments
+     (list #:tests? #f                  ; No tests
+           #:configure-flags
+           #~(list "-DCGAL_ACTIVATE_CONCURRENT_MESH_3=ON"
+                   (string-append "-DEIGEN3_INCLUDE_DIR="
+                                  #$(this-package-input "eigen")
+                                  "/include/eigen3")
+                   (string-append "-DMMG_INCLUDE_DIR="
+                                  (ungexp (this-package-input "mmg") "lib")
+                                  "/include")
+                   (string-append "-DMMG_LIBRARY_DIR="
+                                  (ungexp (this-package-input "mmg") "lib")
+                                  "/lib"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install        ; No install phase
+                 (lambda _
+                   (with-directory-excursion "../source/bin"
+                     (install-file "ASLI" (string-append #$output "/bin"))
+                     ;; The manual is included in the repository.
+                     ;; Building it requires -DASLI_DOC=ON, but this is marked
+                     ;; as unsupported (presumably for users).
+                     ;; Besides, some of the LaTeX packages it uses are
+                     ;; missing from Guix, for example emptypage, fvextra and
+                     ;; menukeys.
+                     (install-file "docs/ASLI [User Manual].pdf"
+                                   (string-append #$output "/share/doc/"
+                                                  #$name "-" #$version))))))))
+    (home-page "http://www.biomech.ulg.ac.be/ASLI/")
+    (synopsis "Create lattice infills with varying unit cell type, size and feature")
+    (description "ASLI (A Simple Lattice Infiller) is a command-line tool that
+allows users to fill any 3D geometry with a functionally graded lattice.  The
+lattice infill is constructed out of unit cells, described by implicit
+functions, whose type, size and feature can be varied locally to obtain the
+desired local properties.")
+    (license license:agpl3+)))
+
 (define-public f3d
   (package
     (name "f3d")
