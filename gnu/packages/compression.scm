@@ -484,7 +484,7 @@ compressed with pbzip2 can be decompressed with bzip2).")
 (define-public xz
   (package
    (name "xz")
-   (version "5.2.5")
+   (version "5.2.6")
    (source (origin
             (method url-fetch)
             (uri (list (string-append "http://tukaani.org/xz/xz-" version
@@ -493,7 +493,7 @@ compressed with pbzip2 can be decompressed with bzip2).")
                                       version ".tar.gz")))
             (sha256
              (base32
-              "045s9agl3bpv3swlwydhgsqh7791957vmgw2plw8f1rks07r3x7n"))))
+              "185kj56a996d04d943xisvpifvnsbr7iplyf2nyjxkbvw6z5l452"))))
    (build-system gnu-build-system)
    (arguments
     `(#:phases
