@@ -1045,7 +1045,17 @@ xmlpatternsvalidator.")))
                  ;; is provided by qtdeclarative-5.
                  (substitute*
                      "lib/cmake/Qt5QuickCompiler/Qt5QuickCompilerConfig.cmake"
-                   (("\\$\\{_qt5Core_install_prefix\\}") out)))))))))
+                   (("\\$\\{_qt5Core_install_prefix\\}") out)))))
+           ;; TODO: Add phase unconditionally.
+           ,@(if (target-riscv64?)
+               '((add-after 'unpack 'fix-linking-riscv64
+                   (lambda _
+                     (substitute* "src/qml/qml.pro"
+                       (("DEFINES \\+= QT_NO_FOREACH")
+                        (string-append
+                          "isEqual(QT_ARCH, \"riscv64\"): QMAKE_LIBS += -latomic\n\n"
+                          "DEFINES += QT_NO_FOREACH"))))))
+               '())))))
     (native-inputs
      (list perl
            pkg-config
