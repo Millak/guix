@@ -275,7 +275,7 @@ file metadata operations that can be performed per second.")
 (define-public phoronix-test-suite
   (package
     (name "phoronix-test-suite")
-    (version "10.8.3")
+    (version "10.8.4")
     (source
      (origin
        (method url-fetch)
@@ -330,7 +330,7 @@ file metadata operations that can be performed per second.")
                        (scandir "." (cut string-match rx <>))))))
        (sha256
         (base32
-         "105shk78jy46nwj6vnlmgp3y3lv9klar3dmcgasy4bslm4l2wx2b"))
+         "1x5pyzzn7ipi0ia1xlvq3bpw0rgf7h7sbr2kzhz1k8y06var480z"))
        (patches (search-patches "phoronix-test-suite-fsdg.patch"))))
     (arguments
      (list
