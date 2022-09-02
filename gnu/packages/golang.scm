@@ -9992,3 +9992,9 @@ implementation.")
     (description "This package provides basic image processing functions
 (resize, rotate, crop, brightness/contrast adjustments, etc.).")
     (license license:expat)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

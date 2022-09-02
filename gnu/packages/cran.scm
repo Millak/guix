@@ -34569,3 +34569,9 @@ calculate a dimension's unknown value from other dimensions' measurements.")
      "Tools for integrating spatially-misaligned GIS datasets.  Part of the
 Sub-National Geospatial Data Archive System.")
     (license license:gpl2)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

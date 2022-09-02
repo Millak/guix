@@ -13766,3 +13766,9 @@ can also be used as a Ruby library or as a web application, though the later
 has not yet been packaged for Guix.")
     (license license:bsd-2)
     (properties `((upstream-name . "anystyle-cli")))))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

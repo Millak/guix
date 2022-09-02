@@ -11685,3 +11685,9 @@ syllable.  The package itself does not support UTF-8 input in ordinary
 interest.  Since most such counters are simply incremented when they are
 changed, the recorded value will usually be the maximum value.")
     (license license:lppl1.3c+)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;
