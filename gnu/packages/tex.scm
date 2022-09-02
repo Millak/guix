@@ -9804,8 +9804,8 @@ of compatibility notes, for other packages, is provided in the
 documentation.  The package also provides the \"caption outside
 float\" facility, in the same way that simpler packages like
 @code{capt-ofcapt-of} do.  The package supersedes @code{caption2}.
-Packages @code{bicaption}, @code{ltcaption}, @code{newfloat},
-@code{subcaption} and @code{totalcount} are included in the bundle.")
+Packages @code{bicaption}, @code{ltcaption} and @code{subcaption} are
+included in the bundle.")
       (license license:lppl1.3+))))
 
 (define-public texlive-symbol
