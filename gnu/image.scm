@@ -114,6 +114,7 @@ numeric expression ~%") value 'field))))
 (define-record-type* <partition> partition make-partition
   partition?
   (size                 partition-size   ;size in bytes as integer or 'guess
+                        (default 'guess)
                         (sanitize validate-size))
   (offset               partition-offset
                         (default 0)   ;offset in bytes as integer
