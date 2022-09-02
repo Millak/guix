@@ -5440,6 +5440,29 @@ invocation, and source and documentation browsing.")
     (home-page "https://cobaltbluemedia.com/pryrepl/")
     (license license:expat)))
 
+(define-public ruby-pry-doc
+  (package
+    (name "ruby-pry-doc")
+    (version "1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "pry-doc" version))
+              (sha256
+               (base32
+                "0wyvql6pb6m8jl8bsamabxhxhd86bnqblspaxzz05sl0fm2ynj0r"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-pry ruby-yard))
+    (native-inputs (list ruby-latest-ruby ruby-rspec ruby-rake)) ;for tests
+    (synopsis "Provides YARD and extended documentation support for Pry")
+    (description
+     "Pry Doc is a Pry REPL plugin.  It provides extended documentation
+support for the REPL by means of improving the @code{show-doc} and
+@code{show-source} commands.  With help of the plugin the commands are
+be able to display the source code and the docs of Ruby methods and
+classes implemented in C.")
+    (home-page "https://github.com/pry/pry-doc")
+    (license license:expat)))
+
 (define-public ruby-single-cov
   (package
     (name "ruby-single-cov")
