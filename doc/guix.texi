@@ -7322,6 +7322,14 @@ unavailable to the build process, possibly leading to a build failure.
 
 @xref{package Reference}, for a full description of possible fields.
 
+@quotation Going further
+@cindex Scheme programming language, getting started
+Intimidated by the Scheme language or curious about it?  The Cookbook
+has a short section to get started that recaps some of the things shown
+above and explains the fundamentals.  @xref{A Scheme Crash Course,,,
+guix-cookbook, GNU Guix Cookbook}, for more information.
+@end quotation
+
 Once a package definition is in place, the
 package may actually be built using the @code{guix build} command-line
 tool (@pxref{Invoking guix build}), troubleshooting any build failures
