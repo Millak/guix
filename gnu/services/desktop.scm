@@ -205,9 +205,9 @@
   (use-percentage-for-policy? upower-configuration-use-percentage-for-policy?
                               (default #f))
   (percentage-low             upower-configuration-percentage-low
-                              (default 10))
+                              (default 20))
   (percentage-critical        upower-configuration-percentage-critical
-                              (default 3))
+                              (default 5))
   (percentage-action          upower-configuration-percentage-action
                               (default 2))
   (time-low                   upower-configuration-time-low

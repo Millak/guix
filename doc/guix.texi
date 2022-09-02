@@ -22760,11 +22760,11 @@ Ignore the lid state, this can be useful if it's incorrect on a device.
 Whether battery percentage based policy should be used.  The default is to use
 the time left, change to @code{#t} to use the percentage.
 
-@item @code{percentage-low} (default: @code{10})
+@item @code{percentage-low} (default: @code{20})
 When @code{use-percentage-for-policy?} is @code{#t}, this sets the percentage
 at which the battery is considered low.
 
-@item @code{percentage-critical} (default: @code{3})
+@item @code{percentage-critical} (default: @code{5})
 When @code{use-percentage-for-policy?} is @code{#t}, this sets the percentage
 at which the battery is considered critical.
 
