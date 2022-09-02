@@ -1181,13 +1181,15 @@ with strong support for multi-part, multi-channel use cases.")
              #t))
          ,@(if (not (target-64bit?))
                `((add-after 'change-directory 'disable-broken-test
-                   ;; This test fails on i686. Upstream developers suggest that
-                   ;; this test is broken on i686 and can be safely disabled:
-                   ;; https://github.com/openexr/openexr/issues/67#issuecomment-21169748
                    (lambda _
                      (substitute* "IlmImfTest/main.cpp"
-                       ((".*testOptimizedInterleavePatterns.*") ""))
-                     #t)))
+                       ;; This test fails on i686. Upstream developers suggest
+                       ;; that this test is broken on i686 and can be safely
+                       ;; disabled:
+                       ;; https://github.com/openexr/openexr/issues/67#issuecomment-21169748
+                       ((".*testOptimizedInterleavePatterns.*") "")
+                       ;; This one fails similarly on i686.
+                       ((".*testCompression.*") "")))))
                '()))))
     (native-inputs
      (list pkg-config))
