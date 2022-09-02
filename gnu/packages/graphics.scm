@@ -747,6 +747,12 @@ many more.")
        (sha256
         (base32 "1nyld18mf220ghm1vidnfnn0rdns9z5i4l9s66xgd0kfdgarb31f"))))
     (build-system cmake-build-system)
+    (arguments
+     ;; XXX: On i686-linux, tests fail due to rounding issues (excess
+     ;; precision), as was discussed and patched long ago:
+     ;; <https://issues.guix.gnu.org/22049>.  It seems the relevant fixes
+     ;; didn't make it upstream, so skip tests.
+     (list #:tests? (not (target-x86-32?))))
     (home-page "https://github.com/AcademySoftwareFoundation/Imath")
     (synopsis "Library of math operations for computer graphics")
     (description
