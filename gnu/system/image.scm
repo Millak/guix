@@ -784,7 +784,6 @@ it can be used for bootloading."
 (define* (system-image image)
   "Return the derivation of IMAGE.  It can be a raw disk-image or an ISO9660
 image, depending on IMAGE format."
-  (define substitutable? (image-substitutable? image))
   (define platform (image-platform image))
 
   ;; The image platform definition may provide the appropriate "system"
