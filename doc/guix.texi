@@ -22756,9 +22756,10 @@ Enable polling the kernel for battery level changes.
 @item @code{ignore-lid?} (default: @code{#f})
 Ignore the lid state, this can be useful if it's incorrect on a device.
 
-@item @code{use-percentage-for-policy?} (default: @code{#f})
-Whether battery percentage based policy should be used.  The default is to use
-the time left, change to @code{#t} to use the percentage.
+@item @code{use-percentage-for-policy?} (default: @code{#t})
+Whether a to use a policy based on battery percentage rather than on
+estimated time left.  A policy based on battery percentage is usually
+more reliable.
 
 @item @code{percentage-low} (default: @code{20})
 When @code{use-percentage-for-policy?} is @code{#t}, this sets the percentage
