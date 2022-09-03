@@ -30437,7 +30437,7 @@ support for the Nicola keyboard layout to it.")))
 (define-public emacs-tamil99
   (package
     (name "emacs-tamil99")
-    (version "0.1.1")
+    (version "0.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -30446,7 +30446,7 @@ support for the Nicola keyboard layout to it.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f9s3b6fd42j21922qkxfr3j83a7qym73nynph86w87vkis40zqw"))))
+                "12sr59b2ngay66snb2m4a5zy6n11ahnmc5wy42l3ks7fd4cc5rgs"))))
     (build-system emacs-build-system)
     (home-page "https://git.systemreboot.net/tamil99/about/")
     (synopsis "Tamil99 input method for Emacs")
