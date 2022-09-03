@@ -73,6 +73,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages file)
   #:use-module (gnu packages freedesktop)
@@ -1120,12 +1121,24 @@ your online accounts makes it necessary.")
                                   ".tar.gz"))
               (sha256
                (base32
-                "0sc96xcsc20xd4fyby3i45nm9as3hl4nhk9snkvmk5l9mpbrjs3g"))))
+                "0sc96xcsc20xd4fyby3i45nm9as3hl4nhk9snkvmk5l9mpbrjs3g"))
+              (modules '((guix build utils)))
+              ;; Delete bundled libraries.
+              (snippet
+               ;; TODO: Unbundle LZMA-SDK as well
+               #~(for-each delete-file-recursively
+                           '("deps/zlib" "deps/xxHash" "deps/OpenCL-Headers")))))
+    (inputs (list minizip xxhash zlib))
     (native-inputs (list opencl-headers))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ;no tests
-       #:make-flags (list (string-append "PREFIX=" %output))
+     '(#:tests? #f                                ;no tests
+       #:make-flags (list (string-append "PREFIX=" %output)
+                          ;; TODO: unbundle
+                          ;; (string-append "USE_SYSTEM_LZMA=1")
+                          (string-append "USE_SYSTEM_ZLIB=1")
+                          (string-append "USE_SYSTEM_OPENCL=1")
+                          (string-append "USE_SYSTEM_XXHASH=1"))
        #:phases (modify-phases %standard-phases
                   ;; Don't embed timestamps, for bit-for-bit reproducibility.
                   (add-after 'unpack 'fix-reproducibility
