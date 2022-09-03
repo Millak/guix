@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -407,7 +408,7 @@ environment type of 'digital-ocean-environment-type'."
     (raise (condition
             (&message
              (message (G_ "No Digital Ocean access token was provided. This \
-may be fixed by setting the environment variable GUIX_DIGITAL_OCAEN_TOKEN to \
+may be fixed by setting the environment variable GUIX_DIGITAL_OCEAN_TOKEN to \
 one procured from https://cloud.digitalocean.com/account/api/tokens.")))))))
 
 (define (maybe-raise-unsupported-configuration-error machine)
