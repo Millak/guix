@@ -854,7 +854,7 @@ model to base your own plug-in on, here it is.")
             libnice
             libofa
             libopenmpt
-            librsvg
+            (librsvg-for-system)
             libsndfile
             libsrtp
             libssh2
