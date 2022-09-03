@@ -1132,20 +1132,18 @@ your online accounts makes it necessary.")
     (native-inputs (list opencl-headers))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                                ;no tests
-       #:make-flags (list (string-append "PREFIX=" %output)
-                          ;; TODO: unbundle
-                          ;; (string-append "USE_SYSTEM_LZMA=1")
-                          (string-append "USE_SYSTEM_ZLIB=1")
-                          (string-append "USE_SYSTEM_OPENCL=1")
-                          (string-append "USE_SYSTEM_XXHASH=1"))
-       #:phases (modify-phases %standard-phases
-                  ;; Don't embed timestamps, for bit-for-bit reproducibility.
-                  (add-after 'unpack 'fix-reproducibility
-                    (lambda _
-                      (substitute* "src/Makefile"
-                        (("\\$\\(shell date \\+%s\\)") "0"))))
-                  (delete 'configure))))
+     (list #:tests? #f ;no tests
+           #:make-flags #~(list (string-append "PREFIX=" #$output)
+                                (string-append "USE_SYSTEM_ZLIB=1")
+                                (string-append "USE_SYSTEM_OPENCL=1")
+                                (string-append "USE_SYSTEM_XXHASH=1"))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-reproducibility
+                          (lambda _
+                            (substitute* "src/Makefile"
+                              (("\\$\\(shell date \\+%s\\)")
+                               "0"))))
+                        (delete 'configure))))
     (home-page "https://hashcat.net/hashcat/")
     (synopsis "Advanced password recovery utility")
     (description
