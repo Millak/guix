@@ -44,7 +44,7 @@
 (define-public erlang
   (package
     (name "erlang")
-    (version "25.0.2")
+    (version "25.0.4")
     (source (origin
               (method git-fetch)
               ;; The tarball from http://erlang.org/download contains many
@@ -56,7 +56,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xgp035vy0yy5m155rpmf22m6rq7pvw3m65s5mz22bcpj2rw4b0x"))
+                "0n39pd5d8mmyj03d8fdan0zb2pcc383pmqf0v7s356fgirdbsrcm"))
               (patches (search-patches "erlang-man-path.patch"))))
     (build-system gnu-build-system)
     (native-inputs
