@@ -838,7 +838,7 @@ eye-candy, customizable, and reasonably lightweight.")
 (define-public foot
   (package
     (name "foot")
-    (version "1.12.1")
+    (version "1.13.1")
     (home-page "https://codeberg.org/dnkl/foot")
     (source (origin
               (method git-fetch)
@@ -846,7 +846,7 @@ eye-candy, customizable, and reasonably lightweight.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14jqs4sarxbrgi5pxz0afqa9jxq90cb5ayqd21qj2n65whqa5bpk"))))
+                "0k0zbh6adwr99y9aazlyvp6s1k8zaq2j6x8kqb8q9a5qjjg56lay"))))
     (build-system meson-build-system)
     (arguments
      `(;; Using a "release" build is recommended both for performance, and
