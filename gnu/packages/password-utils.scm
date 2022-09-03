@@ -54,6 +54,7 @@
 
 (define-module (gnu packages password-utils)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -1128,12 +1129,13 @@ your online accounts makes it necessary.")
                ;; TODO: Unbundle LZMA-SDK as well
                #~(for-each delete-file-recursively
                            '("deps/zlib" "deps/xxHash" "deps/OpenCL-Headers")))))
-    (inputs (list minizip xxhash zlib))
-    (native-inputs (list opencl-headers))
+    (inputs (list minizip opencl-headers xxhash zlib))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no tests
            #:make-flags #~(list (string-append "PREFIX=" #$output)
+                                (string-append "AR=" #$(ar-for-target))
+                                (string-append "CC=" #$(cc-for-target))
                                 (string-append "USE_SYSTEM_ZLIB=1")
                                 (string-append "USE_SYSTEM_OPENCL=1")
                                 (string-append "USE_SYSTEM_XXHASH=1"))
