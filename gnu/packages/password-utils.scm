@@ -35,6 +35,7 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1126,6 +1127,11 @@ your online accounts makes it necessary.")
      '(#:tests? #f ;no tests
        #:make-flags (list (string-append "PREFIX=" %output))
        #:phases (modify-phases %standard-phases
+                  ;; Don't embed timestamps, for bit-for-bit reproducibility.
+                  (add-after 'unpack 'fix-reproducibility
+                    (lambda _
+                      (substitute* "src/Makefile"
+                        (("\\$\\(shell date \\+%s\\)") "0"))))
                   (delete 'configure))))
     (home-page "https://hashcat.net/hashcat/")
     (synopsis "Advanced password recovery utility")
