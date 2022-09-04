@@ -4926,6 +4926,14 @@ format.  This tool is meant to be called on a PlantUML file when a program
 with a FSM is being built (for example, from a Makefile.)")
     (license license:gpl3)))
 
+(define-public guile2.2-smc
+  (package
+    (inherit guile-smc)
+    (name "guile2.2-smc")
+    (inputs (modify-inputs (package-inputs guile-smc)
+              (replace "guile" guile-2.2)
+              (replace "guile-lib" guile2.2-lib)))))
+
 (define-public guile-ini
   (package
     (name "guile-ini")
