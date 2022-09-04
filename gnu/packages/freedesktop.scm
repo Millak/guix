@@ -1554,7 +1554,8 @@ message bus.")
            python-dbusmock
            python-pygobject))
     (inputs
-     (list coreutils-minimal
+     (list bash-minimal
+           coreutils-minimal
            dbus
            elogind
            shadow))
