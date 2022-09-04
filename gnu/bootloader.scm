@@ -46,6 +46,7 @@
             menu-entry-multiboot-kernel
             menu-entry-multiboot-arguments
             menu-entry-multiboot-modules
+            menu-entry-chain-loader
 
             menu-entry->sexp
             sexp->menu-entry
@@ -104,8 +105,10 @@
   (multiboot-arguments menu-entry-multiboot-arguments
                        (default '()))      ; list of string-valued gexps
   (multiboot-modules menu-entry-multiboot-modules
-                     (default '())))       ; list of multiboot commands, where
+                     (default '()))        ; list of multiboot commands, where
                                            ; a command is a list of <string>
+  (chain-loader     menu-entry-chain-loader
+                    (default #f)))         ; string, path of efi file
 
 (define (menu-entry->sexp entry)
   "Return ENTRY serialized as an sexp."
@@ -117,8 +120,9 @@
        `(label ,(file-system-label->string label)))
       (_ device)))
   (match entry
-    (($ <menu-entry> label device mount-point linux linux-arguments initrd #f
-                     ())
+    (($ <menu-entry> label device mount-point
+                     (? identity linux) linux-arguments (? identity initrd)
+                     #f () () #f)
      `(menu-entry (version 0)
                   (label ,label)
                   (device ,(device->sexp device))
@@ -127,14 +131,22 @@
                   (linux-arguments ,linux-arguments)
                   (initrd ,initrd)))
     (($ <menu-entry> label device mount-point #f () #f
-                     multiboot-kernel multiboot-arguments multiboot-modules)
+                     (? identity multiboot-kernel) multiboot-arguments
+                     multiboot-modules #f)
      `(menu-entry (version 0)
                   (label ,label)
                   (device ,(device->sexp device))
                   (device-mount-point ,mount-point)
                   (multiboot-kernel ,multiboot-kernel)
                   (multiboot-arguments ,multiboot-arguments)
-                  (multiboot-modules ,multiboot-modules)))))
+                  (multiboot-modules ,multiboot-modules)))
+    (($ <menu-entry> label device mount-point #f () #f #f () ()
+                     (? identity chain-loader))
+     `(menu-entry (version 0)
+                  (label ,label)
+                  (device ,(device->sexp device))
+                  (device-mount-point ,mount-point)
+                  (chain-loader ,chain-loader)))))
 
 (define (sexp->menu-entry sexp)
   "Turn SEXP, an sexp as returned by 'menu-entry->sexp', into a <menu-entry>
@@ -171,7 +183,16 @@ record."
       (device-mount-point mount-point)
       (multiboot-kernel multiboot-kernel)
       (multiboot-arguments multiboot-arguments)
-      (multiboot-modules multiboot-modules)))))
+      (multiboot-modules multiboot-modules)))
+    (('menu-entry ('version 0)
+                  ('label label) ('device device)
+                  ('device-mount-point mount-point)
+                  ('chain-loader chain-loader) _ ...)
+     (menu-entry
+      (label label)
+      (device (sexp->device device))
+      (device-mount-point mount-point)
+      (chain-loader chain-loader)))))
 
 
 ;;;
