@@ -1572,7 +1572,7 @@ also walk each side of a merge and test those changes individually.")
                       (let ((out (assoc-ref outputs "out"))
                             (coreutils (assoc-ref inputs "coreutils"))
                             (findutils (assoc-ref inputs "findutils"))
-                            (git (assoc-ref inputs "git")))
+                            (git (assoc-ref inputs "git-minimal")))
                         (for-each (lambda (file-name)
                                     (wrap-program (string-append out file-name)
                                       `("PATH" ":" prefix
@@ -1581,7 +1581,7 @@ also walk each side of a merge and test those changes individually.")
                                               (list out coreutils findutils git)))))
                                   '("/bin/gitolite" "/bin/gitolite-shell"))))))))
     (inputs
-     (list bash-minimal coreutils findutils git inetutils openssh perl))
+     (list bash-minimal coreutils findutils git-minimal inetutils openssh perl))
     (home-page "https://gitolite.com")
     (synopsis "Git access control layer")
     (description
