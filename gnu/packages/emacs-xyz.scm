@@ -16807,27 +16807,6 @@ with specific output formats.")
 buffer's environment.")
     (license license:gpl3+)))
 
-(define-public emacs-inheritenv
-  (package
-    (name "emacs-inheritenv")
-    (version "0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/purcell/inheritenv")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ygzf70vfb7qwpsllcq5i3brprsnx3sxy2zng02mzwrr5jkx4ypc"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/purcell/inheritenv/releases")
-    (synopsis "Emacs temp buffers inherit buffer-local environment variables")
-    (description
-     "Inheritenv provides tools to execute processes inheriting the calling
-buffer's environment.")
-    (license license:gpl3+)))
-
 (define-public emacs-enlive
   (package
     (name "emacs-enlive")
