@@ -457,7 +457,7 @@
 '&store-connection-error' upon error."
   (let ((s (with-fluids ((%default-port-encoding #f))
              ;; This trick allows use of the `scm_c_read' optimization.
-             (socket PF_UNIX SOCK_STREAM 0)))
+             (socket PF_UNIX (logior SOCK_STREAM SOCK_CLOEXEC) 0)))
         (a (make-socket-address PF_UNIX file)))
 
     (system-error-to-connection-error file
@@ -485,7 +485,7 @@
       ((ai rest ...)
        (let ((s (socket (addrinfo:fam ai)
                         ;; TCP/IP only
-                        SOCK_STREAM IPPROTO_IP)))
+                        (logior SOCK_STREAM SOCK_CLOEXEC) IPPROTO_IP)))
 
          (catch 'system-error
            (lambda ()
