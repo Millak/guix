@@ -1733,28 +1733,30 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/artyom-poptsov/guile-ics")
-                    (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "11wv6qk8xd4sd8s97mnw383p098ffivk0na4jii76r5wbmg1wd7q"))
-              (modules '((guix build utils)))))
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/artyom-poptsov/guile-ics")
+             (commit (string-append "v" version))))
+       (file-name (string-append name "-" version "-checkout"))
+       (sha256
+        (base32
+         "1526kdzcn0qvf5hpb4x5q01vb9mph9gfw24p81inqgjvy7a57lf9"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (delete 'strip))))
     (native-inputs
      (list autoconf
            automake
            texinfo
-           ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
-           gettext-minimal
+           gettext-minimal ;Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
            help2man
            pkg-config))
     (inputs (list guile-3.0 which))
-    (propagated-inputs (list guile-lib))
+    (propagated-inputs (list guile-lib guile-smc))
     (home-page "https://github.com/artyom-poptsov/guile-ics")
     (synopsis "Guile parser library for the iCalendar format")
     (description
