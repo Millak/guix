@@ -1713,6 +1713,10 @@ operate properly.")
          ;; The static libraries are 23 MiB
          "--disable-static"
 
+         #$@(if (target-riscv64?)
+              '("--extra-cflags=-fPIC")
+              '())
+
          ;; Runtime cpu detection is not implemented on
          ;; MIPS, so we disable some features.
          "--disable-mips32r2"
