@@ -34,6 +34,8 @@
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
   #:export (menu-entry
             menu-entry?
@@ -110,6 +112,23 @@
   (chain-loader     menu-entry-chain-loader
                     (default #f)))         ; string, path of efi file
 
+(define (report-menu-entry-error menu-entry)
+  (raise
+   (condition
+    (&message
+     (message
+      (format #f (G_ "invalid menu-entry: ~a") menu-entry)))
+    (&fix-hint
+     (hint
+      (G_ "Please chose only one of:
+@enumerate
+@item direct boot by specifying fields @code{linux},
+@code{linux-arguments} and @code{linux-modules},
+@item multiboot by specifying fields @code{multiboot-kernel},
+@code{multiboot-arguments} and @code{multiboot-modules},
+@item chain-loader by specifying field @code{chain-loader}.
+@end enumerate"))))))
+
 (define (menu-entry->sexp entry)
   "Return ENTRY serialized as an sexp."
   (define (device->sexp device)
@@ -146,7 +165,8 @@
                   (label ,label)
                   (device ,(device->sexp device))
                   (device-mount-point ,mount-point)
-                  (chain-loader ,chain-loader)))))
+                  (chain-loader ,chain-loader)))
+    (_ (report-menu-entry-error entry))))
 
 (define (sexp->menu-entry sexp)
   "Turn SEXP, an sexp as returned by 'menu-entry->sexp', into a <menu-entry>
