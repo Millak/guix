@@ -22793,6 +22793,43 @@ internbombing, excessive input and macro characters.")
 (define-public ecl-safe-read
   (sbcl-package->ecl-package sbcl-safe-read))
 
+(define-public sbcl-portable-condition-system
+  (let ((commit "1307ec146d227a9d8ea42312c1ba2a5206a9eb3c")
+        (revision "0"))
+    (package
+      (name "sbcl-portable-condition-system")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/portable-condition-system")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "099lb9f4bavj95wik99wla5rf6fk1gdw9pvn0cqlaf0wf20csd3h"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("portable-condition-system")))
+      (native-inputs
+       (list sbcl-1am))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-split-sequence))
+      (home-page "https://github.com/phoe/portable-condition-system")
+      (synopsis "Portable condition system for Common Lisp")
+      (description
+       "This package provides an example implementation of the Common Lisp
+condition system and library, based on the original condition system
+implementation by Kent M. Pitman.")
+      (license license:cc0))))
+
+(define-public cl-portable-condition-system
+  (sbcl-package->cl-source-package sbcl-portable-condition-system))
+
+(define-public ecl-portable-condition-system
+  (sbcl-package->ecl-package sbcl-portable-condition-system))
+
 (define-public sbcl-ospm
   (package
     (name "sbcl-ospm")
