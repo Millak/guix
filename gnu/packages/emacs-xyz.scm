@@ -3016,7 +3016,7 @@ or XEmacs.")
 (define-public emacs-autothemer
   (package
     (name "emacs-autothemer")
-    (version "0.2.11")
+    (version "0.2.12")
     (source
      (origin
        (method git-fetch)
@@ -3026,7 +3026,7 @@ or XEmacs.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kr2izg9smg1g8s0aybc9bq7n2bjxdwd3r070r9w0035wzpvzb1h"))))
+         "1qx7szd64qna0ip6cv75p7bw9gx0lhq56bxss77lxs9g5rdnr38k"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash))
@@ -3035,7 +3035,7 @@ or XEmacs.")
     (description
      "Autothemer provides a thin layer on top of @code{deftheme} and
 @code{custom-theme-set-faces} that creates a new custom color theme, based on
-a set of simplified face specifications and a user-supplied color palette")
+a set of simplified face specifications and a user-supplied color palette.")
     (license license:gpl3+)))
 
 (define-public emacs-howm
