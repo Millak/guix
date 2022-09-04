@@ -1293,7 +1293,6 @@ application suites.")
            libcloudproviders            ;for cloud-providers support
            libjpeg-turbo
            libpng
-           librsvg
            libtiff
            python
            rest
@@ -1302,7 +1301,7 @@ application suites.")
      ;; Following dependencies are referenced in .pc files.
      (list cairo
            fontconfig
-           librsvg
+           librsvg-bootstrap
            glib
            graphene
            libepoxy
