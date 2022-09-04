@@ -22880,6 +22880,41 @@ It has extensive support for Guix, among others:
        (cons (list "osicat" cl-osicat)
              (package-inputs pkg))))))
 
+(define-public sbcl-data-lens
+  (let ((commit "801bc1e0331f19fdc38be314c86ccac9362fde78")
+        (revision "0"))
+    (package
+     (name "sbcl-data-lens")
+     (version (git-version "0.0.0" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fiddlerwoaroof/data-lens")
+               (commit commit)))
+         (file-name (git-file-name "cl-data-lens" version))
+         (sha256
+          (base32 "1w4rvhcnss037q0bb1j70kdlhfh9085hy95d9q56sk519alhzhrp"))))
+     (build-system asdf-build-system/sbcl)
+     (native-inputs
+      (list sbcl-fiveam))
+     (inputs
+       (list sbcl-cl-ppcre
+             sbcl-alexandria
+             sbcl-serapeum))
+     (synopsis "Functional utilities for Common Lisp")
+     (description
+      "The @code{cl-data-lens} library provides a language for expressing data
+manipulations as the composition of more primitive operations.")
+     (home-page "https://fiddlerwoaroof.github.io/data-lens/")
+     (license license:asl2.0))))
+
+(define-public cl-data-lens
+  (sbcl-package->cl-source-package sbcl-data-lens))
+
+(define-public ecl-data-lens
+  (sbcl-package->ecl-package sbcl-data-lens))
+
 (define-public sbcl-ndebug
   (package
     (name "sbcl-ndebug")
