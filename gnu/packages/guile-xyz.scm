@@ -1770,9 +1770,8 @@ The library is shipped with documentation in Info format and usage examples.")
   (package
     (inherit guile-ics)
     (name "guile2.2-ics")
-    (inputs (modify-inputs (package-inputs guile-ics)
-              (replace "guile" guile-2.2)))
-    (propagated-inputs `(("guile-lib" ,guile2.2-lib)))))
+    (inputs (list guile-2.2 which))
+    (propagated-inputs (list guile2.2-lib guile2.2-smc))))
 
 (define-public guile-imanifest
   (let ((commit "ccd5a2111b008d778106f5595a3a585954d95d0")
