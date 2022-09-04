@@ -975,7 +975,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/cling-use-shared-library.patch		\
   %D%/packages/patches/clucene-pkgconfig.patch			\
   %D%/packages/patches/cmake-curl-certificates.patch		\
-  %D%/packages/patches/cmh-support-fplll.patch      		\
   %D%/packages/patches/coda-use-system-libs.patch		\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch		\
   %D%/packages/patches/containerd-create-pid-file.patch		\
