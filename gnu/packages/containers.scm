@@ -272,7 +272,7 @@ configure network interfaces in Linux containers.")
 (define-public podman
   (package
     (name "podman")
-    (version "3.4.4")
+    (version "4.2.0")
     (source
      (origin
        (method git-fetch)
@@ -280,7 +280,7 @@ configure network interfaces in Linux containers.")
              (url "https://github.com/containers/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1q09qsl1wwiiy5njvb97n1j5f5jin4ckmzj5xbdfs28czb2kx3g5"))
+        (base32 "00wyjppd11hznmals9ax4s2qjklj6p1vfz4jjkp50bk8q4blxfbj"))
        (file-name (git-file-name name version))))
 
     (build-system gnu-build-system)
