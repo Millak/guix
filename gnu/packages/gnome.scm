@@ -2287,7 +2287,7 @@ The gnome-about program helps find which version of GNOME is installed.")
 (define-public gnome-font-viewer
   (package
     (name "gnome-font-viewer")
-    (version "40.0")
+    (version "42.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-font-viewer/"
@@ -2295,33 +2295,34 @@ The gnome-about program helps find which version of GNOME is installed.")
                                   "/gnome-font-viewer-" version ".tar.xz"))
               (sha256
                (base32
-                "0hpyi0sz3gcqqs9lkwyk8b6hr39m3n27432x98kxr436jj37dk6j"))))
+                "1k4dhk5dmkpxb5xpr9vrl7k2fdpi2fidzni1l2hhb891zzgvi8ng"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.60
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-post-install-script
-           (lambda _
-             (substitute* "meson-postinstall.sh"
-               (("update-desktop-database") (which "true")))
-             #t))
-         (add-after 'install 'patch-thumbnailer
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute*
-                   (string-append
-                    out
-                    "/share/thumbnailers/gnome-font-viewer.thumbnailer")
-                 (("gnome-thumbnail-font")
-                  (string-append out "/bin/gnome-thumbnail-font"))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-post-install-script
+            (lambda _
+              (substitute* "meson-postinstall.sh"
+                (("update-desktop-database") (which "true")))))
+          (add-after 'install 'patch-thumbnailer
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute*
+                  (search-input-file
+                   outputs "share/thumbnailers/gnome-font-viewer.thumbnailer")
+                (("gnome-thumbnail-font")
+                 (search-input-file outputs "bin/gnome-thumbnail-font"))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config))
     (inputs
-     (list glib gnome-desktop gtk+ libhandy libxml2))
+     (list glib
+           gnome-desktop
+           gtk
+           libadwaita
+           libhandy
+           libxml2))
     (home-page "https://gitlab.gnome.org/GNOME/gnome-font-viewer")
     (synopsis "GNOME Fonts")
     (description "Application to show you the fonts installed on your computer
