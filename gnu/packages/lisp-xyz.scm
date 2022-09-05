@@ -18453,6 +18453,51 @@ RSS feeds data via HTTP.  Currently, it supports RSS versions 0.90,
 (define-public cl-rss
   (sbcl-package->cl-source-package sbcl-rss))
 
+(define-public sbcl-binascii
+  (let ((commit "0fb0a9e5773148fd04d50efef08c1cc10f6fc487")
+        (revision "1"))
+    (package
+      (name "sbcl-binascii")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sharplispers/binascii")
+               (commit commit)))
+         (file-name (git-file-name "cl-binascii" version))
+         (sha256
+          (base32 "000rcdl8qshr7n48zq9bzrc4lkjx4ylb3r3w9x9syhiwfla9j4b7"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Unbundle the RT test framework.
+          '(begin
+             (delete-file "tests/rt.lisp")
+             (substitute* "binascii.asd"
+               ((":depends-on \\(binascii\\)")
+                ":depends-on (binascii rt)")
+               (("\\(:file \"rt\"\\)")
+                "")
+               (("\\(:file \"tests\" :depends-on \\(\"rt\"\\)\\)")
+                "(:file \"tests\")"))))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-rt))
+      (home-page "https://github.com/sharplispers/binascii")
+      (synopsis "Common Lisp library of ASCII encoding schemes for binary data")
+      (description
+       "@code{binascii} is a Common Lisp library for converting binary data
+to ASCII text of some kind.  Such conversions are common in email protocols
+(for encoding attachments to support old non-8-bit clean transports) or
+encoding binary data in HTTP and XML applications.  @code{binascii} supports
+the encodings described in RFC 4648: base64, base32, base16, and variants.
+It also supports base85, used in Adobe's PostScript and PDF document formats,
+and a variant called ascii85, used by git for binary diff files.")
+      (license license:bsd-3))))
+
+(define-public cl-binascii
+  (sbcl-package->cl-source-package sbcl-binascii))
+
 (define-public sbcl-trivial-with-current-source-form
   (let ((commit "9e343e043a77a5478c1f77bb626db22335fbbfb8")
         (revision "1"))
