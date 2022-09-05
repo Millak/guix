@@ -2032,7 +2032,7 @@ to other formats.")
 (define-public gnome-characters
   (package
     (name "gnome-characters")
-    (version "40.0")
+    (version "42.0")
     (source
      (origin
        (method url-fetch)
@@ -2041,28 +2041,35 @@ to other formats.")
                            "/gnome-characters-" version ".tar.xz"))
        (sha256
         (base32
-         "0z2xa4w921bzpzj6gv88pvbrijcnnwni6jxynwz0ybaravyzaqha"))))
+         "1y40g7k7yyzikbbxhf69q4c0221lga1cli1p617v99pq2swgz82x"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:meson ,meson-0.60
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'wrap
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; GNOME Characters needs Typelib files from GTK and
-                      ;; gnome-desktop.
-                      (wrap-program (string-append (assoc-ref outputs "out")
-                                                   "/bin/gnome-characters")
-                        `("GI_TYPELIB_PATH" ":" prefix
-                          (,(getenv "GI_TYPELIB_PATH")))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'disable-gtk-update-icon-cache
+                     (lambda _
+                       (setenv "DESTDIR" "/")))
+                   (add-after 'install 'wrap
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       ;; GNOME Characters needs Typelib files from GTK and
+                       ;; gnome-desktop.
+                       (wrap-program (search-input-file outputs
+                                                        "bin/gnome-characters")
+                         `("GI_TYPELIB_PATH" ":" prefix
+                           (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-minimal)))
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config
+           python-minimal))
     (inputs
-     (list gjs gtk+ libhandy libunistring gnome-desktop))
+     (list gjs
+           gnome-desktop
+           gtk
+           libadwaita
+           libhandy
+           libunistring))
     (home-page "https://wiki.gnome.org/Apps/CharacterMap")
     (synopsis "Find and insert unusual characters")
     (description "Characters is a simple utility application to find
