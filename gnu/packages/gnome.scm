@@ -10367,7 +10367,7 @@ handling the startup notification side.")
 (define-public gnome-calculator
   (package
     (name "gnome-calculator")
-    (version "41.0")
+    (version "42.2")
     (source
      (origin
        (method url-fetch)
@@ -10376,12 +10376,17 @@ handling the startup notification side.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "16fwwfnw1w8p53ffny6zkff5cfsmg7xax9kmfgb7czjqv15w0vd6"))))
+         "1866qn0r9xp7b7j1436kry2k3bdh9ikhz2wm41jxcn1nljyb3nik"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           (lambda _
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false"))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests require a writable HOME.
@@ -10389,14 +10394,14 @@ handling the startup notification side.")
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ;for glib-compile-schemas, gio-2.0.
-           `(,gtk+ "bin")               ;for gtk-update-icon-cache
            itstool
-           vala
            pkg-config
-           python))
+           python
+           vala))
     (inputs
-     (list `(,glib "bin")
+     (list gsettings-desktop-schemas-next
            gtksourceview
+           libadwaita
            libgee
            libhandy
            libsoup-minimal-2
