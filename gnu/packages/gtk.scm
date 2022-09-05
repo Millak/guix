@@ -2567,7 +2567,7 @@ shell scripts.  Example of how to use @code{yad} can be consulted at
 (define-public dragon-drop
   (package
    (name "dragon-drop")
-   (version "1.1.1")
+   (version "1.2.0")
    (source (origin
              (method git-fetch)
              (uri
@@ -2577,7 +2577,7 @@ shell scripts.  Example of how to use @code{yad} can be consulted at
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0fgzz39007fdjwq72scp0qygp2v3zc5f1xkm0sxaa8zxm25g1bra"))))
+               "1cspkrr976mqi6cjkgrckdmjbgahnxmq267wn1zd7gamv64vm8f2"))))
    (build-system gnu-build-system)
    (inputs (list gtk+))
    (native-inputs (list pkg-config))
