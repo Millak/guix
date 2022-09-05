@@ -10701,6 +10701,29 @@ are valid as arguments for the macros.  The package may be used under
 LaTeX and plain TeX.")
     (license (license:fsf-free "file:/binhex.dtx"))))
 
+(define-public texlive-latex-translations
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-translations"
+              (list "doc/latex/translations/"
+                    "tex/latex/translations/")
+              (base32 "0vl7ckpbkjvz3a5snzppb96ncwgmhpwb2p6cg30grfyn421kap3v")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translations")
+    (synopsis "Internationalisation of LaTeX2e packages")
+    (description
+     ;; Polish not mentioned on CTAN, but there is a
+     ;; translations-basic-dictionary-polish.trsl file.
+     "This package (once part of the @code{exsheets} package), provides a
+framework for providing multilingual features to a LaTeX package.  The package
+has its own basic dictionaries for English, Brazilian, Catalan, Dutch, French,
+German, Polish and Spanish.  It aims to use translation material for English,
+Dutch, French, German, Italian, Spanish, Catalan, Turkish, Croatian, Hungarian,
+Danish and Portuguese from babel or polyglossia if either is in use in the
+document.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-translator
   (package
     (inherit (simple-texlive-package
