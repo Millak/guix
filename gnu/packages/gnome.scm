@@ -9927,7 +9927,7 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
 (define-public gnome-clocks
   (package
     (name "gnome-clocks")
-    (version "40.0")
+    (version "42.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9935,7 +9935,7 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "02d3jg46sn8d9gd4dsaly22gg5vkbz2gpq4pmwpvncb4rsqk7sn2"))))
+                "1q3gvniwd4dkr1ghqpp05zr7qswdhaxqrn8j6bm3qbh39bdihw8f"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -9944,24 +9944,25 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "build-aux/post-install.py"
-               (("gtk-update-icon-cache") "true")))))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")))))))
     (native-inputs
-     `(("vala" ,vala)
-       ("pkg-config" ,pkg-config)
-       ("glib" ,glib "bin")             ; for glib-compile-resources
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("itstool" ,itstool)))
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")               ; for glib-compile-resources
+           itstool
+           pkg-config
+           vala-next))
     (inputs
-     (list glib
-           gtk+
-           gsound
-           geoclue
+     (list geoclue
            geocode-glib-with-libsoup2
-           libgweather
-           libhandy
-           gnome-desktop))
+           glib
+           gnome-desktop
+           gsound
+           gtk
+           libadwaita
+           libgweather4-with-libsoup2))
     (home-page "https://wiki.gnome.org/Apps/Clocks")
     (synopsis "GNOME's clock application")
     (description
