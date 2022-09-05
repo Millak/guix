@@ -65,6 +65,7 @@
   #:use-module (ice-9 match)
   #:export (root-offset
             root-label
+            image-without-os
 
             esp-partition
             esp32-partition
@@ -102,6 +103,12 @@
 ;; Generic root partition label.
 (define root-label "Guix_image")
 
+(define-syntax-rule (image-without-os . fields)
+    "Return an image record with the mandatory operating-system field set to
+#false.  This is useful when creating an image record that will serve as a
+parent image record."
+   (image (operating-system #false) . fields))
+
 (define esp-partition
   (partition
    (size (* 40 (expt 2 20)))
@@ -127,17 +134,17 @@
    (initializer (gexp initialize-root-partition))))
 
 (define efi-disk-image
-  (image
+  (image-without-os
    (format 'disk-image)
    (partitions (list esp-partition root-partition))))
 
 (define efi32-disk-image
-  (image
+  (image-without-os
    (format 'disk-image)
    (partitions (list esp32-partition root-partition))))
 
 (define iso9660-image
-  (image
+  (image-without-os
    (format 'iso9660)
    (partitions
     (list (partition
@@ -146,11 +153,11 @@
            (flags '(boot)))))))
 
 (define docker-image
-  (image
+  (image-without-os
    (format 'docker)))
 
 (define* (raw-with-offset-disk-image #:optional (offset root-offset))
-  (image
+  (image-without-os
    (format 'disk-image)
    (partitions
     (list (partition

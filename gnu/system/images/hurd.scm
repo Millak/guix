@@ -74,7 +74,7 @@
                            #:wal-mode? #f)))))
 
 (define hurd-disk-image
-  (image
+  (image-without-os
    (format 'disk-image)
    (platform hurd)
    (partitions

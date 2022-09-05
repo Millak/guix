@@ -170,8 +170,7 @@ that is not in SET, mentioning FIELD in the error message."
   (size               image-size  ;size in bytes as integer
                       (default 'guess)
                       (sanitize validate-size))
-  (operating-system   image-operating-system  ;<operating-system>
-                      (default #f))
+  (operating-system   image-operating-system)  ;<operating-system>
   (partition-table-type image-partition-table-type ; 'mbr or 'gpt
                       (default 'mbr)
                       (sanitize validate-partition-table-type))
