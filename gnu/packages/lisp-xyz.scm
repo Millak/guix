@@ -7814,17 +7814,16 @@ of function partial application and composition.")
 (define-public sbcl-yason
   (package
     (name "sbcl-yason")
-    (version "0.7.7")
+    (version "0.8.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/phmarek/yason")
              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "cl-yason" version))
        (sha256
-        (base32
-         "0479rbjgbj80jpk5bby18inlv1kfp771a82rlcq5psrz65qqa9bj"))))
+        (base32 "0d22sw7nf2ygqm56ilybg7bza63cv43pc4184r8rvsjz2in37n51"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria sbcl-trivial-gray-streams))
