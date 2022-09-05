@@ -4355,13 +4355,13 @@ names in their natural, rather than lexicographic, order.")
 (define-public r-genomicalignments
   (package
     (name "r-genomicalignments")
-    (version "1.32.0")
+    (version "1.32.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicAlignments" version))
               (sha256
                (base32
-                "1ifmlc0488f5yzcf4p92dmdc7psxl5c0aa7qpxjk0a07gf7lldbi"))))
+                "09pg7822camyav5zvlpv360sj5gz8q1bhk528qa2da2qsz74a3cz"))))
     (properties
      `((upstream-name . "GenomicAlignments")))
     (build-system r-build-system)
