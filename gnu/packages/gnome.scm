@@ -2102,7 +2102,7 @@ commonly used macros.")
 (define-public gnome-contacts
   (package
     (name "gnome-contacts")
-    (version "40.0")
+    (version "42.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-contacts/"
@@ -2110,48 +2110,42 @@ commonly used macros.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0w2g5xhw65adzvwzakrj5kaim4sw1w7s8qqwm3nm6inq50znzpn9"))))
+                "05jj5kiab13crm18r166w7h31jpny7f3px98q7d2ix93vj7w60l8"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Dcheese=disabled")
+     `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'generate-vapis
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; To generate goa's missing .vapi file
-             (define goa
-               (assoc-ref inputs "gnome-online-accounts"))
-
-             (invoke "vapigen" "--directory=vapi" "--pkg=gio-2.0"
-                     "--library=goa-1.0"
-                     (string-append goa "/share/gir-1.0/Goa-1.0.gir"))))
          (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "build-aux/meson_post_install.py"
-               (("gtk-update-icon-cache") "true")))))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")))))))
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils
+           docbook-xml
+           docbook-xml-4.2
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           libxslt
+           pkg-config))
     (inputs
-     `(("docbook-xml" ,docbook-xml)
-       ("dockbook-xsl" ,docbook-xsl)
-       ("evolution-data-server" ,evolution-data-server)
-       ("gettext" ,gettext-minimal)
-       ("gnome-desktop" ,gnome-desktop)
-       ("gnome-online-accounts" ,gnome-online-accounts)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gtk+" ,gtk+)
-       ("libgee" ,libgee)
-       ("libhandy" ,libhandy)
-       ("libxslt" ,libxslt)
-       ("telepathy-glib" ,telepathy-glib)
-       ("vala" ,vala)))
+     (list evolution-data-server-3.44
+           gnome-desktop
+           gnome-online-accounts-3.44
+           gst-plugins-base
+           gtk
+           libadwaita
+           libgee
+           libhandy
+           libportal
+           telepathy-glib
+           vala))
     (propagated-inputs
-     (list folks telepathy-mission-control))
+     (list folks-with-libsoup2
+           telepathy-mission-control))
     (synopsis "GNOME's integrated address book")
     (description
      "GNOME Contacts organizes your contact information from online and
