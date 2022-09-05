@@ -3157,14 +3157,14 @@ directories and files.")
 (define-public python-pytest-regressions
   (package
     (name "python-pytest-regressions")
-    (version "2.2.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-regressions" version))
        (sha256
         (base32
-         "05jpsvv8rj8i4x24fphpnar5dl4s6d6bw6ikjk5d8v96rdviz9qm"))))
+         "0792s1rp4hksfarnnciy0yiy2q2yqqsbin3mc9h2gxp86kdlrv5k"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-pytest-datadir python-pyyaml))
