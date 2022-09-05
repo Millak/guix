@@ -6709,6 +6709,22 @@ splines, and filled circles and ellipses.  The package uses @code{tpic}
 @code{\\special} commands.")
     (license license:public-domain)))
 
+(define-public texlive-latex-enotez
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-enotez"
+              (list "doc/latex/enotez/"
+                    "tex/latex/enotez/")
+              (base32 "1s1wyq6m5932gpbpvvkiw857q94jn1rp7xy9y7hysz9aafjqjyk2")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/enotez")
+    (synopsis "Support for end-notes")
+    (description
+     "This package allows nested endnotes, supports @code{hyperref} and
+provides means for easy customization of the list of notes.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-enumitem
   (package
     (inherit
