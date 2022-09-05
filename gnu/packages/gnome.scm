@@ -1893,7 +1893,7 @@ and running smart commands.")
 (define-public gnome-user-docs
   (package
    (name "gnome-user-docs")
-   (version "40.5")
+   (version "42.0")
    (source
     (origin
       (method url-fetch)
@@ -1901,7 +1901,7 @@ and running smart commands.")
                           (version-major version)
                           "/gnome-user-docs-" version ".tar.xz"))
       (sha256
-       (base32 "0p6ysdqlfc7vvzsrcanl9bhsc7666sv42xxzpbgsf5j55z3yrkpr"))))
+       (base32 "01g9smkk2sj3yrih2wjn6vx9av855n7w6nqf9wpxvfq086h7vcmj"))))
    (build-system gnu-build-system)
    (native-inputs
     (list gettext-minimal itstool pkg-config libxml2))
