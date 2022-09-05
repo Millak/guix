@@ -6211,6 +6211,45 @@ the same place.  The package also has a range of techniques for labelling
 footnotes with symbols rather than numbers.")
     (license license:lppl1.3+)))
 
+(define-public texlive-latex-frankenstein
+  (package
+    (name "texlive-latex-frankenstein")
+    (version (number->string %texlive-revision))
+    (source (origin
+              (method svn-fetch)
+              (uri (svn-reference (url (string-append
+                                        "svn://www.tug.org/texlive/tags/"
+                                        %texlive-tag "/Master/texmf-dist/"
+                                        "/tex/latex/frankenstein"))
+                                  (revision %texlive-revision)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1zhdvn3zgdarlzfcyq8nzilvw0v0bqgl4m0y7j233cbqw8wiil4z"))))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder (begin
+                   (use-modules (guix build utils))
+                   (let ((target (string-append (assoc-ref %outputs "out")
+                                  "/share/texmf-dist/tex/latex/frankenstein")))
+                     (mkdir-p target)
+                     (copy-recursively (assoc-ref %build-inputs "source")
+                                       target) #t))))
+    (home-page "https://ctan.org/pkg/frankenstein")
+    (synopsis "Collection of unrelated LaTeX packages")
+    (description
+     "Frankenstein is a bundle of LaTeX packages serving various purposes and a
+BibTeX bibliography style.  The individual packages are: @code{abbrevs},
+@code{achicago}, @code{achicago} bibstyle, @code{attrib}, @code{blkcntrl},
+@code{compsci}, @code{dialogue}, @code{lips}, @code{moredefs}, @code{newclude},
+@code{slemph} and @code{titles}.  Note: The installation follows the suboptimal
+``Quick and dirty'' recipe, rendering some features unavailable.")
+    ;; README mentions an unspecified version of GNU GPL and points to COPYING,
+    ;; which is missing. However, the individual files mention LPPL 1.2 or
+    ;; later.
+    (license license:lppl1.2+)))
+
 (define-public texlive-latex-letltxmacro
   (package
     (inherit (simple-texlive-package
