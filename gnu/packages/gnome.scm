@@ -6572,67 +6572,65 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
    (license license:gpl2+)))
 
 (define-public eog
- (package
-   (name "eog")
-   (version "40.3")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnome/sources/" name "/"
-                                (version-major version) "/"
-                                name "-" version ".tar.xz"))
-            (sha256
-             (base32
-              "0ddjwcd77nw0rxb5x5bz5hd671m8gya9827p8rsnb58x103kpai8"))
-            ;; XXX: Remove when upgrading to 42.0
-            (patches (search-patches "eog-update-libportal-usage.patch"))))
-   (build-system meson-build-system)
-   (arguments
-    `(#:glib-or-gtk? #t
-      #:meson ,meson-0.60
+  (package
+    (name "eog")
+    (version "42.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0ph4b05cjlkzbn8vil4hjkwvfr1cp819yi2qifp418p15rm4lk8f"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
       #:configure-flags
       ;; Otherwise, the RUNPATH will lack the final 'eog' path component.
-      (list (string-append "-Dc_link_args=-Wl,-rpath="
-                           (assoc-ref %outputs "out") "/lib/eog"))
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib/eog"))
       #:phases
-      (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))))
-        (add-after 'install 'wrap-eog
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out               (assoc-ref outputs "out"))
-                  (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
-              (wrap-program (string-append out "/bin/eog")
-                `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
-   (propagated-inputs
-    (list dconf))
-   (native-inputs
-    `(("intltool" ,intltool)
-      ("itstool" ,itstool)
-      ("glib" ,glib "bin")
-      ("gobject-introspection" ,gobject-introspection)
-      ("pkg-config" ,pkg-config)
-      ("xmllint" ,libxml2)))
-   (inputs
-    `(("gnome-desktop" ,gnome-desktop)
-      ("shared-mime-info" ,shared-mime-info)
-      ("adwaita-icon-theme" ,adwaita-icon-theme)
-      ("exempi" ,exempi)
-      ("lcms" ,lcms)
-      ("libexif" ,libexif)
-      ("libpeas" ,libpeas)
-      ("libportal" ,libportal)
-      ("libjpeg" ,libjpeg-turbo)
-      ("librsvg" ,librsvg)
-      ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-      ("gtk+" ,gtk+)))
-   (home-page "https://wiki.gnome.org/Apps/EyeOfGnome")
-   (synopsis "GNOME image viewer")
-   (description "Eye of GNOME is the GNOME image viewer.  It
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (add-after 'install 'wrap-eog
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                (wrap-program (search-input-file outputs "bin/eog")
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
+    (propagated-inputs
+     (list dconf))
+    (native-inputs
+     (list gettext-minimal
+           itstool
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           libxml2))
+    (inputs
+     (list gnome-desktop
+           shared-mime-info
+           adwaita-icon-theme
+           exempi
+           lcms
+           libexif
+           libhandy
+           libpeas
+           libportal
+           libjpeg-turbo
+           librsvg
+           gtk))
+    (home-page "https://wiki.gnome.org/Apps/EyeOfGnome")
+    (synopsis "GNOME image viewer")
+    (description "Eye of GNOME is the GNOME image viewer.  It
 supports image conversion, rotation, and slideshows.")
-   (license license:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public eog-plugins
   ;; Note: EOG looks for its plugins (via libpeas) in ~/.local as well as
