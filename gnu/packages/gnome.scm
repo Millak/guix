@@ -9973,7 +9973,7 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
 (define-public gnome-calendar
   (package
     (name "gnome-calendar")
-    (version "40.2")
+    (version "42.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9981,36 +9981,35 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0czasxnmbw2zm21lmxam8qixacagciq3f815s809hn0f9byh2dwy"))))
+                "1ggvnl2jnc24nzpkjvsk57vpckjzb14a7mmnk6jjm84nmqxccz5f"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.60
-       ;; gnome-calendar has to be installed before the tests can be run
-       ;; https://bugzilla.gnome.org/show_bug.cgi?id=788224
-       #:tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "build-aux/meson/meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t)))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib-bin" ,glib "bin")         ; For glib-compile-schemas
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin")               ; For glib-compile-schemas
+           pkg-config))
     (inputs
-     `(("gnome-online-accounts" ,gnome-online-accounts)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("libdazzle" ,libdazzle)
-       ("libedataserverui" ,evolution-data-server)
-       ("libgweather" ,libgweather)
-       ("libhandy" ,libhandy)
-       ("geoclue" ,geoclue)))
-    (propagated-inputs
-     (list evolution-data-server))
+     ;; Note: not propagating evolution-data-server-3.44 to keep profiles
+     ;; clean from libsoup2.
+     (list evolution-data-server-3.44
+           geoclue
+           geocode-glib-with-libsoup2
+           gnome-online-accounts-3.44
+           gsettings-desktop-schemas
+           libadwaita
+           libdazzle
+           libgweather4-with-libsoup2
+           ;; Remove pango-next when it's the default.
+           pango-next))
     (home-page "https://wiki.gnome.org/Apps/Calendar")
     (synopsis "GNOME's calendar application")
     (description
