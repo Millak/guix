@@ -4831,17 +4831,16 @@ common definitions and porting layer.")
 (define-public libxau
   (package
     (name "libxau")
-    (version "1.0.9")
+    (version "1.0.10")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXau-"
-               version
-               ".tar.bz2"))
+               version ".tar.xz"))
         (sha256
           (base32
-            "1v3krc6x0zliaa66qq1bf9j60x5nqfy68v8axaiglxpnvgqcpy6c"))))
+            "02hc3azypiiahr9y1cyn0mqc5zd997hh3h0rp7jqfbsd6f9g5rlb"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
