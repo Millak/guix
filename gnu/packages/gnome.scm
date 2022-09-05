@@ -851,7 +851,7 @@ patterns.")
                "subprojects/libgd"))))))
     (inputs (list glib
                   gnome-autoar
-                  `(,gnome-online-accounts "lib")
+                  gnome-online-accounts
                   gspell
                   gtk+
                   json-glib
@@ -988,7 +988,7 @@ cloud integration is offered through GNOME Online Accounts.")
            itstool
            pkg-config))
     (inputs
-     (list `(,gnome-online-accounts "lib")
+     (list gnome-online-accounts
            grilo
            grilo-plugins
            gst-plugins-base
@@ -1307,7 +1307,6 @@ in the GNOME desktop.")
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("gnome-online-accounts" ,gnome-online-accounts)
-       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
        ("grilo" ,grilo)
        ("libgdata" ,libgdata)
        ("libgfbgraph" ,gfbgraph)
@@ -1521,7 +1520,6 @@ extraction, and lookup for applications on the desktop.")
       ("geoclue" ,geoclue)
       ("gnome-desktop" ,gnome-desktop)
       ("gnome-online-accounts" ,gnome-online-accounts)
-      ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
       ("gstreamer" ,gstreamer)
       ("ibus" ,ibus)
       ("json-glib" ,json-glib)
@@ -1982,7 +1980,7 @@ formats like PNG, SVG, PDF and EPS.")
     (propagated-inputs
      `(("gcr" ,gcr)
        ("glib" ,glib)
-       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
+       ("gnome-online-accounts" ,gnome-online-accounts)
        ("json-glib" ,json-glib)
        ("liboauth" ,liboauth)
        ("libsoup" ,libsoup-minimal-2)
@@ -2107,7 +2105,7 @@ commonly used macros.")
            (lambda* (#:key inputs #:allow-other-keys)
              ;; To generate goa's missing .vapi file
              (define goa
-               (assoc-ref inputs "gnome-online-accounts:lib"))
+               (assoc-ref inputs "gnome-online-accounts"))
 
              (invoke "vapigen" "--directory=vapi" "--pkg=gio-2.0"
                      "--library=goa-1.0"
@@ -2128,7 +2126,7 @@ commonly used macros.")
        ("evolution-data-server" ,evolution-data-server)
        ("gettext" ,gettext-minimal)
        ("gnome-desktop" ,gnome-desktop)
-       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
+       ("gnome-online-accounts" ,gnome-online-accounts)
        ("gobject-introspection" ,gobject-introspection)
        ("gst-plugins-base" ,gst-plugins-base)
        ("gtk+" ,gtk+)
@@ -6352,7 +6350,7 @@ for application developers.")
     (inputs
      `(("grilo" ,grilo)
        ;("gmime" ,gmime) ; unused
-       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
+       ("gnome-online-accounts" ,gnome-online-accounts)
        ("gom" ,gom)
        ;("gssdp" ,gssdp) ; unused
        ;("gupnp" ,gupnp) ; unused
@@ -7789,6 +7787,55 @@ window manager.")
 (define-public gnome-online-accounts
   (package
     (name "gnome-online-accounts")
+    (version "3.45.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "15zzzndbfba8a497vxb6cmy1y22l3lfn4sx9s9r59kwzd83i6fxn"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'disable-gtk-update-icon-cache
+            (lambda _
+              (setenv "DESTDIR" "/"))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")               ; for glib-compile-schemas, etc.
+           gobject-introspection
+           libxslt
+           pkg-config
+           vala))
+    (propagated-inputs
+     (list glib                         ; required by goa-1.0.pc
+           gtk+))                       ; required by goa-backend-1.0.pc
+    (inputs
+     (list docbook-xsl
+           gcr
+           json-glib
+           libsecret
+           mit-krb5
+           rest-next
+           webkitgtk))
+    (synopsis "Single sign-on framework for GNOME")
+    (home-page "https://wiki.gnome.org/Projects/GnomeOnlineAccounts")
+    (description
+     "GNOME Online Accounts provides interfaces so that applications and
+libraries in GNOME can access the user's online accounts.  It has providers
+for Google, ownCloud, Facebook, Flickr, Windows Live, Pocket, Foursquare,
+Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
+    (license license:lgpl2.0+)))
+
+(define-public gnome-online-accounts-3.44
+  (package
+    (inherit gnome-online-accounts)
+    (name "gnome-online-accounts")
     (version "3.44.0")
     (source (origin
               (method url-fetch)
@@ -7798,52 +7845,17 @@ window manager.")
               (sha256
                (base32
                 "0hkkxa3zqyl0i4kw1p3ak4alwxw4wydh9al6fzwbcdgl0r0ms79q"))))
-    (outputs '("out" "lib"))
     (build-system glib-or-gtk-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list (string-append "--libdir=" #$output "/lib"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'patch-libgoa-output
-            (lambda _
-              (let ((lib #$output:lib))
-                (substitute* '("src/goa/Makefile.in" "src/goa/goa-1.0.pc.in")
-                  (("@prefix@") lib)
-                  (("@exec_prefix@") lib)
-                  (("@libdir@") (string-append lib "/lib"))
-                  (("@includedir@") (string-append lib "/include"))
-                  (("@datadir@") (string-append lib "/share")))
-                ;; Make sure gobject-introspection knows about the output
-                ;; too (see <https://bugs.gnu.org/36535>).
-                (setenv "outputs" "out lib")))))))
-    (native-inputs
-     (list `(,glib "bin")               ; for glib-compile-schemas, etc.
-           gobject-introspection
-           gettext-minimal
-           pkg-config
-           vala
-           libxslt))
-    (propagated-inputs
-     (list glib                         ; required by goa-1.0.pc
-           gtk+))                       ; required by goa-backend-1.0.pc
-    (inputs
-     (list docbook-xsl
-           json-glib
-           libsecret
-           rest
-           ;; WebKitGtk propagates libsoup 3, which causes the build to fail; so
-           ;; use a special variant.
-           webkitgtk-with-libsoup2))
-    (synopsis "Single sign-on framework for GNOME")
-    (home-page "https://wiki.gnome.org/Projects/GnomeOnlineAccounts")
-    (description
-     "GNOME Online Accounts provides interfaces so that applications and
-libraries in GNOME can access the user's online accounts.  It has providers
-for Google, ownCloud, Facebook, Flickr, Windows Live, Pocket, Foursquare,
-Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
-    (license license:lgpl2.0+)))
+    (arguments (substitute-keyword-arguments
+                   (strip-keyword-arguments
+                    '(#:glib-or-gtk?)
+                    (package-arguments gnome-online-accounts))
+                 ((#:phases phases)
+                  #~(modify-phases #$phases
+                      (delete 'disable-gtk-update-icon-cache)))))
+    (inputs (modify-inputs (package-inputs gnome-online-accounts)
+              (replace "rest" rest)
+              (replace "webkitgtk" webkitgtk-with-libsoup2)))))
 
 (define-public evolution-data-server
   (package
@@ -7918,7 +7930,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
      (list bdb
            boost
            gcr
-           `(,gnome-online-accounts "lib")
+           gnome-online-accounts
            json-glib
            libcanberra
            libgweather
@@ -8803,7 +8815,6 @@ devices using the GNOME desktop.")
            gnome-bluetooth
            gnome-desktop
            gnome-online-accounts
-           `(,gnome-online-accounts "lib")
            gnome-session
            gnome-settings-daemon
            grilo
@@ -9912,7 +9923,7 @@ library.")
     (native-inputs
      (list gobject-introspection intltool pkg-config))
     (inputs
-     (list `(,gnome-online-accounts "lib") json-glib rest))
+     (list gnome-online-accounts json-glib rest))
     (home-page "https://wiki.gnome.org/Projects/Zapojit")
     (synopsis "Library for accessing SkyDrive and Hotmail")
     (description
@@ -9997,7 +10008,7 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
        ("glib-bin" ,glib "bin")         ; For glib-compile-schemas
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
+     `(("gnome-online-accounts" ,gnome-online-accounts)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("libdazzle" ,libdazzle)
        ("libedataserverui" ,evolution-data-server)
@@ -10062,7 +10073,7 @@ desktop.  It supports multiple calendars, month, week and year view.")
            libportal
            python-pygobject
            evolution-data-server
-           `(,gnome-online-accounts "lib")
+           gnome-online-accounts
            gsettings-desktop-schemas))
     (home-page "https://wiki.gnome.org/Apps/Todo")
     (synopsis "GNOME's ToDo Application")
@@ -10280,7 +10291,7 @@ compiled.")
            which))
     (inputs
      `(("json-glib" ,json-glib)
-       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
+       ("gnome-online-accounts" ,gnome-online-accounts)
        ("rest" ,rest)))
     (synopsis "GLib/GObject wrapper for the Facebook API")
     (description "This library allows you to use the Facebook API from
@@ -11974,7 +11985,7 @@ these services on the Guix System.")
            gcr
            glib
            gmime
-           `(,gnome-online-accounts "lib")
+           gnome-online-accounts
            gsettings-desktop-schemas
            gspell
            gsound

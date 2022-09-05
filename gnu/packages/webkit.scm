@@ -277,11 +277,9 @@ propagated by default) such as @code{gst-plugins-good} and
                    license:bsd-2
                    license:bsd-3))))
 
-;;; Required by gnome-online-accounts as webkitgtk propagates libsoup 3, which
-;;; causes the build to fail.  Also required by e.g. emacs-next-pgtk,
-;;; emacs-xwidgets, and some other GNOME packages for webkit2gtk-4.0.  See
-;;; also the upstream tracker for libsoup 3:
-;;; https://gitlab.gnome.org/GNOME/libsoup/-/issues/218
+;;; Required by e.g. emacs-next-pgtk, emacs-xwidgets, and some other GNOME
+;;; packages for webkit2gtk-4.0.  See also the upstream tracker for libsoup 3:
+;;; https://gitlab.gnome.org/GNOME/libsoup/-/issues/218.
 (define-public webkitgtk-with-libsoup2
   (package/inherit webkitgtk
     (name "webkitgtk-with-libsoup2")
