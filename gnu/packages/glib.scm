@@ -546,6 +546,26 @@ provide bindings to call into the C library.")
       ;; For tools.
       license:gpl2+))))
 
+(define-public gobject-introspection-next
+  (package
+    (inherit gobject-introspection)
+    (name "gobject-introspection")
+    (version "1.73.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/"
+                                  "gobject-introspection/" (version-major+minor version)
+                                  "/gobject-introspection-" version ".tar.xz"))
+              (sha256
+               (base32 "1gkbx32as3v2286w7k3j24fwhkxj6brr49881m2zavxamfwxdm34"))
+              (patches (search-patches
+                        "gobject-introspection-cc-1.72.patch"
+                        "gobject-introspection-girepository.patch"
+                        "gobject-introspection-absolute-shlib-path-1.72.patch"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs gobject-introspection)
+       (replace "glib" glib-next)))))
+
 (define intltool
   (package
     (name "intltool")

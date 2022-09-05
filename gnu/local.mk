@@ -1225,7 +1225,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnutls-cross.patch			\
   %D%/packages/patches/gnutls-guile-eintr-eagain.patch		\
   %D%/packages/patches/gobject-introspection-absolute-shlib-path.patch \
+  %D%/packages/patches/gobject-introspection-absolute-shlib-path-1.72.patch \
   %D%/packages/patches/gobject-introspection-cc.patch		\
+  %D%/packages/patches/gobject-introspection-cc-1.72.patch	\
   %D%/packages/patches/gobject-introspection-girepository.patch	\
   %D%/packages/patches/go-fix-script-tests.patch			\
   %D%/packages/patches/go-github-com-golang-snappy-32bit-test.patch \
