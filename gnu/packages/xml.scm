@@ -82,6 +82,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix deprecation)
   #:use-module (guix utils)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config))
@@ -2483,26 +2484,20 @@ because lxml.etree already has its own implementation of XPath 1.0.")
 (define-public python-lxml
   (package
     (name "python-lxml")
-    (version "4.6.3")
+    (version "4.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lxml" version))
        (sha256
-        (base32 "0s14r1w2x9sdlcsw8mxiqgw4rz5zs5lpqpxrfyn4a1mkndqqbdrr"))
-       ;; Adapt a test to libxml2 2.9.12, taken from this commit:
-       ;; https://github.com/lxml/lxml/commit/852ed1092bd80b6b9a51db24371047e
-       (modules '((guix build utils)))
-       (snippet
-        '(substitute* "src/lxml/tests/test_etree.py"
-             (("self\\.assertEqual\\(\\{'hha': None\\}, el\\.nsmap\\)")
-              "self.assertEqual({}, el.nsmap)")))))
+         (base32 "0grczyrrq2rbwhvpri15cyhv330s494vbz3js3jky8xp5c2rnx7y"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda _
-                      (invoke "make" "test"))))))
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "make" "test")))))))
     (inputs
      (list libxml2 libxslt))
     (home-page "https://lxml.de/")
@@ -2512,17 +2507,8 @@ because lxml.etree already has its own implementation of XPath 1.0.")
 libxml2 and libxslt.")
     (license license:bsd-3))) ; and a few more, see LICENSES.txt
 
-(define-public python-lxml-4.7
-  (package
-    (inherit python-lxml)
-    (version "4.7.1")
-    (source
-     (origin
-       (inherit (package-source python-lxml))
-       (uri (pypi-uri "lxml" version))
-       (sha256
-        (base32
-         "090viyanaki4q7w7i000xl0qh4in52bkl3qal55sz2bbm8w3hqd1"))))))
+(define-deprecated python-lxml-4.7 python-lxml)
+(export python-lxml-4.7)
 
 (define-public python-untangle
   ;; The latest tagged release is from 2014; use the latest commit.

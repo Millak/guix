@@ -3092,7 +3092,7 @@ and custom quantization matrices.")
      (list python-pysocks
            python-websocket-client
            python-isodate
-           python-lxml-4.7
+           python-lxml
            python-pycountry
            python-pycryptodome
            python-requests
