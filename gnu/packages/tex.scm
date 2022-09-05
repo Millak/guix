@@ -6855,6 +6855,23 @@ that is untidy; this package (though it is no substitute for a properly
 designed class) helps alleviate this untidiness.")
     (license license:lppl)))
 
+(define-public texlive-latex-pbox
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-pbox"
+              (list "doc/latex/pbox/"
+                    "tex/latex/pbox/")
+              (base32 "0902snjidmhjml01zcppcpp4j6pidin1sdvfi7gnbb5v86zd5f0n")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pbox")
+    (synopsis "\\parbox with a variable width")
+    (description
+     "@code{pbox} defines a \\pbox{<max width>}{<text>} command which adjusts
+the box width to that of the enclosed text, up to the maximum width given.  The
+package also defines some associated length commands.")
+    (license license:gpl3+)))
+
 (define-public texlive-latex-pdfpages
   (package
     (name "texlive-latex-pdfpages")
