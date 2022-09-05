@@ -2540,33 +2540,25 @@ forgotten when the session ends.")
 (define-public evince
   (package
     (name "evince")
-    (version "40.2")
+    (version "42.3")
     (source (origin
               (method url-fetch)
-              (uri "mirror://gnome/sources/evince/40/evince-40.2.tar.xz")
+              (uri "mirror://gnome/sources/evince/42/evince-42.3.tar.xz")
               (sha256
                (base32
-                "0xrwls1bhvny8vvd7mfjy9p26zjch0pd6x6j9jn9g2ka6xwyrxqg"))))
+                "0pk42icnf4kdcaqaj17mcf4sxi82h1fdg2ds2zdrcv4lbj2czbj9"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.60
        #:build-type "release"
-       #:configure-flags
-       '("-Dnautilus=false"
-         "-Dintrospection=true"
-         ;; XXX: Generating the documentation fails because the
-         ;; libevdocument.devhelp document cannot be created. This seems to be
-         ;; caused by a problem during the XSL transformation.
-         "-Dgtk_doc=false")
+       #:configure-flags '("-Dnautilus=false")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t)))))
+               (("gtk-update-icon-cache") "true")))))))
     (inputs
      (list libarchive
            libgxps
@@ -2575,7 +2567,7 @@ forgotten when the session ends.")
            ghostscript
            poppler
            libtiff
-           texlive-libkpathsea ; for DVI support
+           texlive-libkpathsea          ; for DVI support
            gnome-desktop
            gsettings-desktop-schemas
            gspell
@@ -2595,13 +2587,14 @@ forgotten when the session ends.")
            libsecret
            libhandy))
     (native-inputs
-     `(("itstool" ,itstool)
-       ("intltool" ,intltool)
-       ("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)))
-    (home-page "https://www.gnome.org/projects/evince/")
+     (list itstool
+           gettext-minimal
+           gi-docgen
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           libxml2))
+    (home-page " https://wiki.gnome.org/Apps")
     (synopsis "GNOME's document viewer")
     (description
      "Evince is a document viewer for multiple document formats.  It
