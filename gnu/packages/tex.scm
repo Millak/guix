@@ -5554,6 +5554,25 @@ always (re)defines a command.  There is also @code{\\makeenvironment} and
 @code{\\provideenvironment} for environments.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-latex-marginfix
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-marginfix"
+              (list "doc/latex/marginfix/"
+                    "tex/latex/marginfix/")
+              (base32 "1qinf42mjry8bi5h3kgbi6hcymnk8fw0w43527wm95nc365dq0mf")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/marginfix")
+    (synopsis "Patch \\marginpar to avoid overfull margins")
+    (description
+     "Authors using LaTeX to typeset books with significant margin material
+often run into the problem of long notes running off the bottom of the page.
+This package implements a solution to make marginpars ``just work'' by keeping
+a list of floating inserts and arranging them intelligently in the output
+routine.")
+    (license license:lppl)))
+
 (define-public texlive-metalogo
   (package
     (inherit (simple-texlive-package
