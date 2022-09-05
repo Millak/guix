@@ -873,7 +873,7 @@ tomorrow, the rest of the week and for special occasions.")
 (define-public gnome-photos
   (package
     (name "gnome-photos")
-    (version "40.0")
+    (version "43.beta")                 ;for geocode-glib 2 support
     (source
      (origin
        (method url-fetch)
@@ -883,58 +883,59 @@ tomorrow, the rest of the week and for special occasions.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1bzi79plw6ji6qlckhxnwfnswy6jpnhzmmyanml2i2xg73hp6bg0"))))
+         "1pry45dy4sjw8y63vxw2b499brcxzpkd4hmg2vbqy538r79ah2g9"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:meson ,meson-0.60
-       #:configure-flags
-       (list "-Ddogtail=false"     ; Not available
-             ;; Required for RUNPATH validation.
-             (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib/gnome-photos"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-gnome-photos
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let*
-                 ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/gnome-photos")
-                 `("GRL_PLUGIN_PATH" =
-                   (,(getenv "GRL_PLUGIN_PATH"))))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list "-Ddogtail=false"         ; Not available
+              ;; Required for RUNPATH validation.
+              (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib/gnome-photos"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-gtk-update-icon-cache
+            (lambda _
+              (setenv "DESTDIR" "/")))
+          (add-after 'install 'wrap-gnome-photos
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/gnome-photos")
+                `("GRL_PLUGIN_PATH" =
+                  (,(getenv "GRL_PLUGIN_PATH")))))))))
     (native-inputs
-     `(("dbus" ,dbus)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("git" ,git-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)))
+     (list dbus
+           desktop-file-utils
+           gettext-minimal
+           git-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gsettings-desktop-schemas
+           itstool
+           pkg-config))
     (inputs
-     `(("babl" ,babl)
-       ("cairo" ,cairo)
-       ("librsvg" ,librsvg)
-       ("gegl" ,gegl)
-       ("geocode-glib" ,geocode-glib)
-       ("gexiv2" ,gexiv2)
-       ("gnome-online-accounts" ,gnome-online-accounts)
-       ("gnome-online-miners" ,gnome-online-miners)
-       ("grilo" ,grilo)
-       ("grilo-plugins" ,grilo-plugins)
-       ("gtk+" ,gtk+)
-       ("libdazzle" ,libdazzle)
-       ("libgdata" ,libgdata)
-       ("libgfbgraph" ,gfbgraph)
-       ("libhandy" ,libhandy)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("librest" ,rest)
-       ("pygobject" ,python-pygobject)
-       ("tracker" ,tracker)
-       ("tracker-miners" ,tracker-miners)))
+     (list babl
+           cairo
+           gegl
+           geocode-glib
+           gexiv2
+           gfbgraph
+           gnome-online-accounts
+           gnome-online-miners
+           grilo
+           grilo-plugins
+           gtk+
+           libdazzle
+           libgdata
+           libhandy
+           libjpeg-turbo
+           libportal
+           libpng
+           librsvg
+           python-pygobject
+           rest
+           tracker
+           tracker-miners))
     (synopsis "Access, organize and share your photos on GNOME desktop")
     (description "GNOME Photos is a simple and elegant replacement for using a
 file manager to deal with photos.  Enhance, crop and edit in a snap.  Seamless
