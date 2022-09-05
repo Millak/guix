@@ -2230,7 +2230,7 @@ The gnome-about program helps find which version of GNOME is installed.")
 (define-public gnome-disk-utility
   (package
     (name "gnome-disk-utility")
-    (version "40.2")
+    (version "42.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2238,7 +2238,7 @@ The gnome-about program helps find which version of GNOME is installed.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1rr1ypb89p51b6428yqvczmpmylwjfnhnkgx78hzm3vxm3m15lff"))))
+                "02q906gn420xbf1f0apazryzqfv5b1ammz1vrci66hk79m2n8r8v"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind=libelogind")
@@ -2248,16 +2248,15 @@ The gnome-about program helps find which version of GNOME is installed.")
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t)))))
+               (("gtk-update-icon-cache") "true")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("docbook-xml" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)))
+     (list docbook-xml
+           docbook-xsl
+           `(,glib "bin")
+           gettext-minimal
+           pkg-config
+           libxml2
+           libxslt))
     (inputs
      (list elogind
            glib
