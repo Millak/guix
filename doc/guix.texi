@@ -98,7 +98,7 @@ Copyright @copyright{} 2021 pukkamustard@*
 Copyright @copyright{} 2021 Alice Brenon@*
 Copyright @copyright{} 2021, 2022 Josselin Poiret@*
 Copyright @copyright{} 2021 muradm@*
-Copyright @copyright{} 2021 Andrew Tropin@*
+Copyright @copyright{} 2021, 2022 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
 Copyright @copyright{} 2022 Remco van 't Veer@*
 Copyright @copyright{} 2022 Aleksandr Vityazev@*
