@@ -8079,14 +8079,14 @@ functions like pickle, json or PyYAML module.")
 (define-public python-pathlib2
   (package
     (name "python-pathlib2")
-    (version "2.3.6")
+    (version "2.3.7.post1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pathlib2" version))
        (sha256
         (base32
-         "0psyg60vk8wca473djrh0v9gb853z8wcawi8im5dyg00amawp2vx"))))
+         "0hf62d0lsf37vnr5fxqp5rfn85njgsr45j4rw71w10wbi6nyvq4z"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-scandir python-six))
