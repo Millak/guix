@@ -1400,13 +1400,13 @@ Python's @code{random.seed}.")
 (define-public python-pytest-mock
   (package
     (name "python-pytest-mock")
-    (version "3.6.1")
+    (version "3.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-mock" version))
        (sha256
-        (base32 "0qhfmd05z3g88bnwq6644jl6p5wy01i4yy7h8883z9jjih2pl8a0"))
+        (base32 "0kzdwwdjw001qzf1n4qzh7c364rvmb0cmkfqdwr2l9bwxy2v1ggv"))
        (modules '((guix build utils)))
        (snippet
         ;; Some tests do a string match on Pytest output, and fails when
