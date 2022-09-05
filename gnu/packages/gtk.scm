@@ -91,6 +91,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
@@ -610,63 +611,101 @@ printing and other features typical of a source code editor.")
     (home-page "https://developer.gnome.org/gtksourceview/")))
 
 (define-public gtksourceview
- (package
-   (name "gtksourceview")
-   (version "4.2.0")
-   (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnome/sources/gtksourceview/"
-                                 (version-major+minor version) "/"
-                                 "gtksourceview-" version ".tar.xz"))
-             (sha256
-              (base32
-               "0xgnjj7jd56wbl99s76sa1vjq9bkz4mdsxwgwlcphg689liyncf4"))))
-   (build-system gnu-build-system)
-   (arguments
-    '(#:phases
-      (modify-phases %standard-phases
-        (add-before
-         'check 'pre-check
-         (lambda* (#:key inputs #:allow-other-keys)
-           (let ((xorg-server (assoc-ref inputs "xorg-server")))
-             ;; Tests require a running X server.
-             (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
-             (setenv "DISPLAY" ":1")
-             ;; For the missing /etc/machine-id.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t))))))
-   (native-inputs
-    `(("glib:bin" ,glib "bin") ; for glib-genmarshal, etc.
-      ("intltool" ,intltool)
-      ("itstool" ,itstool)
-      ("gobject-introspection" ,gobject-introspection)
-      ("pkg-config" ,pkg-config)
-      ("vala" ,vala)
-      ;; For testing.
-      ("xorg-server" ,xorg-server-for-tests)
-      ("shared-mime-info" ,shared-mime-info)))
-   (propagated-inputs
-    ;; gtksourceview-3.0.pc refers to all these.
-    (list glib gtk+ libxml2))
-   (home-page "https://wiki.gnome.org/Projects/GtkSourceView")
-   (synopsis "GNOME source code widget")
-   (description "GtkSourceView is a text widget that extends the standard
+  (package
+    (name "gtksourceview")
+    (version "5.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/gtksourceview/"
+                                  (version-major+minor version) "/"
+                                  "gtksourceview-" version ".tar.xz"))
+              (sha256
+               (base32
+                "068dqhacvs65gnmrryahm6qs0q050admlpqqi1gy8wgh2p6qrraa"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-gtk-update-icon-cache
+           (lambda _
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false"))))
+         (add-before 'check 'pre-check
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (let ((Xvfb (search-input-file (or native-inputs inputs)
+                                            "bin/Xvfb")))
+               ;; Tests require a running X server.
+               (system (string-append Xvfb " :1 &"))
+               (setenv "DISPLAY" ":1")
+               ;; For the missing /etc/machine-id.
+               (setenv "DBUS_FATAL_WARNINGS" "0")))))))
+    (native-inputs
+     (list `(,glib "bin")               ; for glib-genmarshal, etc.
+           gettext-minimal
+           gi-docgen
+           gobject-introspection-next
+           pkg-config
+           vala
+           ;; For testing.
+           xorg-server-for-tests
+           shared-mime-info))
+    (propagated-inputs
+     ;; gtksourceview-5.pc refers to all these.
+     (list fontconfig
+           fribidi
+           glib-next
+           gtk
+           libxml2
+           pcre2
+           pango-next))
+    (home-page "https://wiki.gnome.org/Projects/GtkSourceView")
+    (synopsis "GNOME source code widget")
+    (description "GtkSourceView is a text widget that extends the standard
 GTK+ text widget GtkTextView.  It improves GtkTextView by implementing syntax
 highlighting and other features typical of a source code editor.")
-   (license license:lgpl2.1+)))
+    (license license:lgpl2.1+)))
+
+;;; This older version is used by tepl.
+(define-public gtksourceview-4
+  (package
+    (inherit gtksourceview)
+    (version "4.8.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/gtksourceview/"
+                                  (version-major+minor version) "/"
+                                  "gtksourceview-" version ".tar.xz"))
+              (sha256
+               (base32
+                "10n61sa0g447nx73yapb00z57shp48gfvk1lv1s29ji0cd81j063"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs gtksourceview)
+       (replace "gobject-introspection" gobject-introspection)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs gtksourceview)
+       (replace "gtk" gtk+)
+       (replace "pango-next" pango)
+       (replace "glib" glib)))))
 
 (define-public gtksourceview-3
- (package (inherit gtksourceview)
-   (name "gtksourceview")
-   (version "3.24.10")
-   (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnome/sources/" name "/"
-                                 (version-major+minor version) "/"
-                                 name "-" version ".tar.xz"))
-             (sha256
-              (base32
-               "16ym7jwiki4s1pilwr4incx0yg7ll94f1cajrnpndkxxs36hcm5b"))))))
+  (package
+    (inherit gtksourceview-4)
+    (name "gtksourceview")
+    (version "3.24.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1zbpj283b5ycz767hqz5kdq02wzsga65pp4fykvhg8xj6x50f6v9"))))
+    (build-system gnu-build-system)
+    (arguments (substitute-keyword-arguments (package-arguments gtksourceview)
+                 ((#:phases phases)
+                  `(modify-phases ,phases
+                     (delete 'disable-gtk-update-icon-cache)))))))
 
 (define-public gdk-pixbuf
   (package

@@ -1060,7 +1060,7 @@ between different kinds of computer systems.")
      (list amtk
            glib
            gtk+
-           gtksourceview
+           gtksourceview-4
            libxml2
            uchardet))
     (synopsis "Text editor product line")
@@ -1627,7 +1627,7 @@ sharing to the masses.")
            gjs
            gst-plugins-base
            gstreamer
-           gtksourceview
+           gtksourceview-4
            harfbuzz
            libepoxy
            libmusicbrainz
