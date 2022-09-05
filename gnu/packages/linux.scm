@@ -2703,7 +2703,7 @@ that the Ethernet protocol is much simpler than the IP protocol.")
 (define-public iproute
   (package
     (name "iproute2")
-    (version "5.15.0")
+    (version "5.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2711,40 +2711,38 @@ that the Ethernet protocol is much simpler than the IP protocol.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "1zwin8sjnnwf2a9rjwzb3q8lkhcpy06s29sh05f5gxd7z6jy9qrq"))))
+                "14bp7mlyb5dizrzhd5hh5m9aq6xn1jlwaf9b5sjgglkzd96s7dr6"))))
     (build-system gnu-build-system)
     (arguments
-     `( ;; There is a test suite, but it wants network namespaces and sudo.
-       #:tests? #f
-       #:make-flags (let ((out (assoc-ref %outputs "out")))
-                      (list "DESTDIR="
-                            (string-append "CC=" ,(cc-for-target))
-                            "HOSTCC=gcc"
-                            (string-append "BASH_COMPDIR=" out
-                                           "/etc/bash_completion.d")
-                            (string-append "LIBDIR=" out "/lib")
-                            (string-append "HDRDIR=" out "/include")
-                            (string-append "SBINDIR=" out "/sbin")
-                            (string-append "CONFDIR=" out "/etc")
-                            (string-append "DOCDIR=" out "/share/doc/"
-                                           ,name "-" ,version)
-                            (string-append "MANDIR=" out "/share/man")))
-       #:phases (modify-phases %standard-phases
-                  (add-before 'install 'pre-install
-                    (lambda _
-                      ;; Don't attempt to create /var/lib/arpd.
-                      (substitute* "Makefile"
-                        (("^.*ARPDDIR.*$") ""))
-                      #t))
-                  (add-after 'unpack 'patch-configure
-                    (lambda _
-                      (let ((target ,(%current-target-system)))
-                        (substitute* "configure"
-                          (("pkg-config")
-                            (if target
-                              (string-append target "-pkg-config")
-                              "pkg-config")))
-                        #t))))))
+     (list
+      ;; There is a test suite, but it wants network namespaces and sudo.
+      #:tests? #f
+      #:make-flags
+      #~(let ((out #$output))
+          (list (string-append "CC=" #$(cc-for-target))
+                "HOSTCC=gcc"
+                (string-append "BASH_COMPDIR=" out
+                               "/etc/bash_completion.d")
+                (string-append "LIBDIR=" out "/lib")
+                (string-append "HDRDIR=" out "/include")
+                (string-append "SBINDIR=" out "/sbin")
+                (string-append "CONFDIR=" out "/etc")
+                (string-append "MANDIR=" out "/share/man")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key (configure-flags #~'()) #:allow-other-keys)
+              ;; The configure script does not understand some of the
+              ;; default options of gnu-build-system.
+              (setenv "PKG_CONFIG" #$(pkg-config-for-target))
+              (apply invoke "./configure"
+                     "--prefix" #$output
+                     configure-flags)))
+          (add-before 'install 'pre-install
+            (lambda _
+              ;; Don't attempt to create /var/lib/arpd.
+              (substitute* "Makefile"
+                (("^.*ARPDDIR.*$") "")))))))
     (inputs
      (list bdb iptables libmnl))
     (native-inputs
