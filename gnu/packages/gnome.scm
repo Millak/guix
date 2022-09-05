@@ -4902,6 +4902,46 @@ claim to be \"RESTful\".  It includes convenience wrappers for libsoup and
 libxml to ease remote use of the RESTful API.")
     (license license:lgpl2.1+)))
 
+(define-public rest-next
+  (package
+    (inherit rest)
+    (name "rest")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/rest/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1qy2291d2vprdbbxmf0sa98izk09nl3znzzv7lckwf6f1v0sarlj"))))
+    (build-system meson-build-system)
+    (arguments (substitute-keyword-arguments (package-arguments rest)
+                 ((#:tests? _ #f) #t)
+                 ((#:configure-flags _)
+                  #~(list))
+                 ((#:phases phases '%standard-phases)
+                  #~(modify-phases #$phases
+                      (add-after 'unpack 'disable-problematic-tests
+                        ;; These tests require networking.
+                        (lambda _
+                          (substitute* "tests/meson.build"
+                            ((".*'flickr',.*") "")
+                            ((".*'lastfm',.*") ""))))
+                      (add-before 'check 'prepare-for-tests
+                        (lambda _
+                          (setenv "HOME" "/tmp")))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs rest)
+       (append gettext-minimal
+               gi-docgen
+               gsettings-desktop-schemas)))
+    (inputs (list gtksourceview json-glib libadwaita))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs rest)
+       (replace "libsoup" libsoup)
+       (append json-glib)))))
+
 ;;; A minimal version of libsoup used to prevent a cycle with Inkscape.
 (define-public libsoup-minimal
   (package
