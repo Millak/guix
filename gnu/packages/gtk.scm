@@ -429,7 +429,7 @@ handling for GTK+-2.x.")
 (define-public pango-next
   (package
     (inherit pango)
-    (name "pango")
+    (name "pango-next")                 ;to avoid profile conflicts
     (version "1.50.4")
     (source (origin
               (method url-fetch)
