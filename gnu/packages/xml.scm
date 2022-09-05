@@ -324,7 +324,7 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
 (define-public libxslt
   (package
     (name "libxslt")
-    (version "1.1.35")
+    (version "1.1.37")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.gnome.org/sources"
@@ -332,7 +332,7 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
                                  "/libxslt-" version ".tar.xz"))
              (sha256
               (base32
-               "0yfx6hgwx4qcq7mrxb7ywabhpl64qj5h2idab746lb47k8zg6iw2"))
+               "1d1s2bk0m6d7bzml9w90ycl0jlpcy4v07595cwaddk17h3f2fjrs"))
              (patches (search-patches "libxslt-generated-ids.patch"))))
     (build-system gnu-build-system)
     (arguments
