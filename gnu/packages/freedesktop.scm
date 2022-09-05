@@ -1770,27 +1770,37 @@ share connections to real-time communication services without conflicting.")
 (define-public colord-gtk
   (package
     (name "colord-gtk")
-    (version "0.1.26")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.freedesktop.org/software/colord"
                                   "/releases/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0i9y3bb5apj6a0f8cx36l6mjzs7xc0k7nf0magmf58vy2mzhpl18"))))
-    (build-system gnu-build-system)
-    (arguments '(#:tests? #f)) ; require the colord system service
+                "1l61ydb0zv2ffilwpapgz5mm3bznr28zl16xqbxnz6kdsrb6cimr"))))
+    (build-system meson-build-system)
+    (arguments '(#:tests? #f            ;require the colord system service
+                 ;; Building documentation fails with: "Cannot build man pages
+                 ;; without docbook-xsl-ns".
+                 #:configure-flags (list "-Ddocs=false" "-Dman=false")))
     (native-inputs
-     (list gobject-introspection intltool pkg-config vala))
+     (list gettext-minimal
+           gobject-introspection
+           pkg-config
+           vala))
+    (inputs
+     ;; TODO: remove pango-next after it's the default.
+     (list gtk+
+           pango-next))
     (propagated-inputs
      ;; colord-gtk.pc refers to all these.
-     (list colord gtk+))
+     (list colord gtk))
     (synopsis "GTK integration for libcolord")
     (home-page "https://www.freedesktop.org/software/colord/")
     (description
-     "This is a GTK+ convenience library for interacting with colord.  It is
-useful for both applications which need colour management and applications that
-wish to perform colour calibration.")
+     "This is a GTK convenience library for interacting with colord.  It is
+useful for both applications which need colour management and applications
+that wish to perform colour calibration.")
     (license license:lgpl2.1+)))
 
 (define-public libfprint
