@@ -242,14 +242,14 @@ which can be read by any architecture.")
 (define-public xorgproto
   (package
     (name "xorgproto")
-    (version "2022.1")
+    (version "2022.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://xorg/individual/proto"
-                                  "/xorgproto-" version ".tar.bz2"))
+                                  "/xorgproto-" version ".tar.xz"))
               (sha256
                (base32
-                "19n2ig296x89yhyjc2mcrm4m2wp8sfh9i38z3qn4s8rzjrkcqb8x"))))
+                "17kbq1x68jl9mz69ays5c0w72lpkqi937raxk0im7y88pvrdn4sx"))))
     (build-system gnu-build-system)
     (propagated-inputs
      ;; To get util-macros in (almost?) all package inputs.
