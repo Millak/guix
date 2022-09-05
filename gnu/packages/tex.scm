@@ -5103,6 +5103,27 @@ recent classes such as powerdot or beamer, both of which are tuned to
 
 (define-deprecated-package texlive-latex-seminar texlive-seminar)
 
+(define-public texlive-latex-seqsplit
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-seqsplit"
+              (list "doc/latex/seqsplit/"
+                    "tex/latex/seqsplit/")
+              (base32 "1vwzs90520qsk22djl6gs6gpqx83y4b19kziirwj2xwbivcfk1h4")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/seqsplit")
+    (synopsis "Split long sequences of characters in a neutral way")
+    (description
+     "@code{seqsplit} provides a command @code{\\seqsplit}, which makes its
+argument splittable anywhere, and then leaves the TeX paragraph-maker to do the
+splitting.  The package is suitable for situations when one needs to type long
+sequences of letters or of numbers in which there is no obvious break points to
+be found, such as in base-sequences in genes or calculations of transcendental
+numbers.  While the package may obviously be used to typeset DNA sequences, the
+user may consider the @code{dnaseq} as a rather more powerful alternative.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-latex-stackengine
   (package
     (inherit (simple-texlive-package
