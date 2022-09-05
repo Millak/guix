@@ -7705,7 +7705,7 @@ support for Python 3 and PyPy.  It is based on cffi.")
 (define-public python-cairocffi
   (package
     (name "python-cairocffi")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        ;; The PyPI archive does not include the documentation, so use Git.
@@ -7716,7 +7716,7 @@ support for Python 3 and PyPy.  It is based on cffi.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ypw0c2lr43acn57hbmckk183zq4h477j7p4ig2zjvw0mcpvia50"))))
+         "0lylyxyyd8csjhn5kxwzrcr6ick6pvvm1wclpmb5ni28jznxn7lb"))))
     (build-system python-build-system)
     (outputs '("out" "doc"))
     (inputs
