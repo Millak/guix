@@ -63,6 +63,7 @@
              (uri (string-append
                    "https://www.freedesktop.org/software/polkit/releases/"
                    name "-" version ".tar.gz"))
+             (patches (search-patches "polkit-disable-systemd.patch"))
              (sha256
               (base32
                "1apz3bh7nbpmlp1cr00pb8z8wp0c7yb23ninb959jz3r38saxiwx"))
@@ -75,11 +76,17 @@
                  (substitute* "test/meson.build"
                    (("subdir\\('polkitbackend'\\)")
                     ""))
-                 ;; Guix System's polkit
-                 ;; service stores actions under /etc/polkit-1/actions.
+                 ;; Look up actions and rules from /etc/polkit ...
+                 (substitute* "src/polkitbackend/meson.build"
+                   (("'-DPACKAGE_SYSCONF_DIR=.*,")
+                    "'-DPACKAGE_SYSCONF_DIR=\"/etc\"',"))
                  (substitute* "src/polkitbackend/polkitbackendinteractiveauthority.c"
                    (("PACKAGE_DATA_DIR \"/polkit-1/actions\"")
                     "PACKAGE_SYSCONF_DIR \"/polkit-1/actions\""))
+                 ;; ... but install package files below the prefix.
+                 (substitute* "meson.build"
+                   (("pk_sysconfdir = get_option\\('sysconfdir'\\)")
+                    "pk_sysconfdir = get_option('prefix') + '/etc'"))
                  ;; Set the setuid helper's real location.
                  (substitute* "src/polkitagent/polkitagentsession.c"
                    (("PACKAGE_PREFIX \"/lib/polkit-1/polkit-agent-helper-1\"")
@@ -104,7 +111,9 @@
            docbook-xsl))                ;for man page generation
     (arguments
      (list #:configure-flags
-           #~'("-Dman=true"
+           #~'("--sysconfdir=/etc"
+               "-Dsession_tracking=libelogind"
+               "-Dman=true"
                "-Dtests=true"
                "-Djs_engine=mozjs"
                ;; Work around broken gobject-introspection detection when
