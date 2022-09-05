@@ -2574,20 +2574,25 @@ downloaded, or download a strip for a particular date or index, if possible.")
 (define-public python-et-xmlfile
   (package
     (name "python-et-xmlfile")
-    (version "1.0.1")
+    (version "1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "et_xmlfile" version))
+       ;; Use a checkout because the PyPI archive does not contain tests.
+       (method hg-fetch)
+       (uri (hg-reference
+             (url "https://foss.heptapod.net/openpyxl/et_xmlfile")
+             (changeset version)))
+       (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32
-         "0nrkhcb6jdrlb6pwkvd4rycw34y3s931hjf409ij9xkjsli9fkb1"))))
+        (base32 "09r8rjc5bhkqrm5c4n9jrlvad8vrvbyswl9g0wrc1qc7nzh9mpw7"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest python-lxml))   ;used for the tests
     (home-page "https://bitbucket.org/openpyxl/et_xmlfile")
