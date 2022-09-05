@@ -7340,7 +7340,7 @@ such as gzip tarballs.")
 (define-public gnome-session
   (package
     (name "gnome-session")
-    (version "40.1")
+    (version "42.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7349,37 +7349,35 @@ such as gzip tarballs.")
               (patches (search-patches "gnome-session-support-elogind.patch"))
               (sha256
                (base32
-                "02z0xr6sv9ibl7awbw9j4y05hf4jk1zgvsbbmh7n27hhjvsvc8pl"))))
+                "1alwjqr36rd0s132qs2clwnxgilcbylps6lm41lr50mn782hdjiw"))))
     (arguments
-     `(#:meson ,meson-0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-gnome-session
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              ;; Make sure 'gnome-session' finds the 'gsettings' program.
-             (let ((glib (assoc-ref inputs "glib:bin"))
-                   (out  (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/gnome-session")
-                 `("PATH" ":" prefix (,(string-append glib "/bin"))))))))
-
+             (wrap-program (search-input-file outputs "bin/gnome-session")
+               `("PATH" ":" prefix
+                 (,(dirname (search-input-file (or native-inputs inputs)
+                                               "bin/gdbus"))))))))
        #:configure-flags
        '("-Ddocbook=false" ; FIXME: disabled because of docbook validation error
-         "-Dman=false" ; FIXME: disabled because of docbook validation error
+         "-Dman=false"   ; FIXME: disabled because of docbook validation error
          "-Delogind=true"
          "-Dsystemd=false"
          "-Dsystemd_session=disable"
          "-Dsystemd_journal=false")))
     (build-system meson-build-system)
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
-       ("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("xsltproc" ,libxslt)
-       ("libxml2" ,libxml2) ;for 'XML_CATALOG_FILES'
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml)
-       ("xmlto" ,xmlto)))
+     (list docbook-xml
+           docbook-xsl
+           `(,glib "bin")               ; for glib-compile-schemas, etc.
+           intltool
+           libxml2                      ;for 'XML_CATALOG_FILES'
+           libxslt
+           pkg-config
+           xmlto))
     (inputs
      (list elogind
            gnome-desktop
