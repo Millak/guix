@@ -10,6 +10,8 @@
       . "\\(<https?://\\bugs\\.gnu\\.org/\\([0-9]+\\)>\\)")
      (bug-reference-url-format . "https://bugs.gnu.org/%s")
 
+     (eval . (add-to-list 'completion-ignored-extensions ".go"))
+
      ;; Emacs-Guix
      (eval . (setq-local guix-directory
                          (locate-dominating-file default-directory
