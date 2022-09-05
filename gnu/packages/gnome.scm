@@ -8739,7 +8739,7 @@ devices using the GNOME desktop.")
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
-    (version "41.2")
+    (version "42.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8747,85 +8747,68 @@ devices using the GNOME desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0j72ixhli621psbrma86qxy0spv6gpjx6k9hg2jih97c6dmzqwc2"))
-              (patches (search-patches
-                        "gnome-control-center-libexecdir.patch"))))
+                "0zhw6hcrrcpq1zjkyzr5ipznxnzd2aczrqd7n2y7xbz21mjy62nf"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags
-       (list "-Dcheese=false"
-             (string-append "-Dgnome_session_libexecdir="
-                            (assoc-ref %build-inputs "gnome-session")
-                            "/libexec"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libc   (assoc-ref inputs "libc"))
-                   (tzdata (assoc-ref inputs "tzdata"))
-                   (libgnomekbd (assoc-ref inputs "libgnomekbd"))
-                   (nm-applet   (assoc-ref inputs "network-manager-applet"))
-                   (gnome-desktop (assoc-ref inputs "gnome-desktop")))
-               (substitute* "panels/datetime/tz.h"
-                 (("/usr/share/zoneinfo/zone.tab")
-                  (string-append tzdata "/share/zoneinfo/zone.tab")))
-               (substitute* "tests/datetime/test-endianess.c"
-                 (("/usr/share/locale")
-                  (string-append libc "/share/locale")))
-               (substitute* "panels/region/cc-region-panel.c"
-                 (("\"gkbd-keyboard-display")
-                  (string-append "\"" libgnomekbd
-                                 "/bin/gkbd-keyboard-display")))
-               (substitute* '("panels/network/net-device-bluetooth.c"
-                              "panels/network/net-device-mobile.c"
-                              "panels/network/connection-editor/net-connection-editor.c")
-                 (("\"nm-connection-editor")
-                  (string-append "\"" nm-applet
-                                 "/bin/nm-connection-editor")))
-               (substitute* '("panels/user-accounts/run-passwd.c")
-                 (("/usr/bin/passwd")
-                  "/run/setuid-programs/passwd"))
-               (substitute* "panels/info-overview/cc-info-overview-panel.c"
-                 (("DATADIR \"/gnome/gnome-version.xml\"")
-                  (string-append "\"" gnome-desktop
-                                 "/share/gnome/gnome-version.xml\""))))))
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "build-aux/meson/meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))))
-         (add-before 'install 'no-polkit-magic
-           ;; Meson ‘magically’ invokes pkexec, which fails (not setuid).
-           (lambda _
-             (setenv "PKEXEC_UID" "something"))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "panels/datetime/tz.h"
+                (("/usr/share/zoneinfo/zone.tab")
+                 (search-input-file inputs "share/zoneinfo/zone.tab")))
+              (substitute* "tests/datetime/test-endianess.c"
+                (("/usr/share/locale")
+                 (search-input-directory inputs "share/locale")))
+              (substitute* "panels/region/cc-region-panel.c"
+                (("\"gkbd-keyboard-display")
+                 (string-append "\"" (search-input-file
+                                      inputs "bin/gkbd-keyboard-display"))))
+              (substitute* '("panels/network/net-device-bluetooth.c"
+                             "panels/network/net-device-mobile.c"
+                             "panels/network/connection-editor/net-connection-editor.c")
+                (("\"nm-connection-editor")
+                 (string-append "\"" (search-input-file
+                                      inputs "bin/nm-connection-editor"))))
+              (substitute* "panels/user-accounts/run-passwd.c"
+                (("/usr/bin/passwd")
+                 "/run/setuid-programs/passwd"))
+              (substitute* "panels/info-overview/cc-info-overview-panel.c"
+                (("DATADIR \"/gnome/gnome-version.xml\"")
+                 (format #f "~s" (search-input-file
+                                  inputs "share/gnome/gnome-version.xml"))))))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "build-aux/meson/meson_post_install.py"
+                (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
-     (list `(,glib "bin")               ;for glib-mkenums, etc.
-           intltool
+     (list docbook-xsl
+           gettext-minimal
+           `(,glib "bin")               ;for glib-mkenums, etc.
+           libxslt
            pkg-config
            python
-           libxslt
-           ;; For tests
-           hicolor-icon-theme
            python-dbusmock
            xorg-server-for-tests))
     (inputs
      (list accountsservice
-           clutter-gtk
            colord-gtk
            cups
            dconf
-           docbook-xsl
            gcr
            gnome-bluetooth
            gnome-desktop
            gnome-online-accounts
            gnome-session
            gnome-settings-daemon
+           gnutls
            grilo
            gsound
            ibus
-           libcanberra
+           libadwaita
            libgnomekbd
            libgudev
            libgtop
@@ -8833,7 +8816,6 @@ devices using the GNOME desktop.")
            libpwquality
            librsvg                      ;for loading SVG files
            libsecret
-           libsoup-minimal-2
            libxml2
            libwacom
            mesa
