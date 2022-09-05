@@ -11269,13 +11269,13 @@ It has a flexible system of @samp{authorizers} able to manage both
 (define-public python-fs
   (package
     (name "python-fs")
-    (version "2.4.14")
+    (version "2.4.16")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fs" version))
        (sha256
-        (base32 "0v5kqzi0vd8ar4j4qf5440nzwa9dcagpxb3q6k0cln4cqlmxqmcm"))))
+        (base32 "04ykd7q49qgv13hl2n71lzihs2c9099r50lmd85vgx0k2bawg5xf"))))
     (build-system python-build-system)
     (arguments
      (list
