@@ -946,7 +946,7 @@ cloud integration is offered through GNOME Online Accounts.")
 (define-public gnome-music
   (package
     (name "gnome-music")
-    (version "40.1.1")
+    (version "42.0")
     (source
      (origin
        (method url-fetch)
@@ -956,13 +956,19 @@ cloud integration is offered through GNOME Online Accounts.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0lcdal4qdhclr8961p57xf010y92l6wwmkw86lyi9wy224z6gjr0"))))
+         "1l6536dv5g4qy2jbca0pnw632zc92al9cjsq6kwf1gajk27ijs4x"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
        #:meson ,meson-0.60
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           ;; Don't create 'icon-theme.cache'.
+           (lambda _
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false"))))
          (add-after 'install 'wrap-gnome-music
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let*
@@ -985,7 +991,6 @@ cloud integration is offered through GNOME Online Accounts.")
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
-           `(,gtk+ "bin")
            itstool
            pkg-config))
     (inputs
@@ -995,8 +1000,10 @@ cloud integration is offered through GNOME Online Accounts.")
            gst-plugins-base
            gst-plugins-good
            gstreamer
+           gtk
            gvfs
            json-glib
+           libadwaita
            libdazzle
            libmediaart
            libsoup-minimal-2
