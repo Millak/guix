@@ -1845,12 +1845,19 @@ exec " gcc "/bin/" program
 ;; In the future, Gash et al. could handle it directly, but it's not
 ;; ready yet.
 (define bash-mesboot (mesboot-package "bash-mesboot" static-bash))
-(define grep-mesboot (mesboot-package "grep-mesboot" grep))
 (define sed-mesboot (mesboot-package "sed-mesboot" sed))
 
 ;; "sed" from Gash-Utils lacks the 'w' command as of 0.2.0.
 (define coreutils-mesboot
   (let ((pkg (mesboot-package "coreutils-mesboot" coreutils)))
+    (package
+      (inherit pkg)
+      (native-inputs
+       `(("sed" ,sed-mesboot)
+         ,@(package-native-inputs pkg))))))
+
+(define grep-mesboot
+  (let ((pkg (mesboot-package "grep-mesboot" grep)))
     (package
       (inherit pkg)
       (native-inputs

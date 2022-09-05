@@ -105,14 +105,14 @@ command-line arguments, multiple languages, and so on.")
 (define-public grep
   (package
    (name "grep")
-   (version "3.7")
+   (version "3.8")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/grep/grep-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0g42svbc1nq5bamxfj6x7320wli4dlj86padk0hwgbk04hqxl42w"))
+              "10n3mc9n1xmg85hpxyr4wiqzfp27ffxzwhvkv021j27vnk0pr3a9"))
             (patches (search-patches "grep-timing-sensitive-test.patch"))))
    (build-system gnu-build-system)
    (native-inputs (list perl))                   ;some of the tests require it

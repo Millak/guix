@@ -439,7 +439,8 @@ Makefile, simplifying the entire process for the developer.")
               (sha256
                (base32
                 "0pb3l4x37k6fj1lwnpzws55gi3pxl0hx56jm4bzmbrkw0mzj2zsg"))
-              (patches (search-patches "libtool-skip-tests2.patch"))))
+              (patches (search-patches "libtool-skip-tests2.patch"
+                                       "libtool-grep-compat.patch"))))
     (build-system gnu-build-system)
     (propagated-inputs (list m4))
     (native-inputs
