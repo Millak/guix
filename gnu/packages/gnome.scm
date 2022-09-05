@@ -8698,7 +8698,7 @@ usage and information about running processes.")
 (define-public gnome-bluetooth
   (package
     (name "gnome-bluetooth")
-    (version "3.34.5")
+    (version "42.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-bluetooth/"
@@ -8706,24 +8706,29 @@ usage and information about running processes.")
                                   "gnome-bluetooth-" version ".tar.xz"))
               (sha256
                (base32
-                "1a9ynlwwkb3wpg293ym517vmrkk63y809mmcv9a21k5yr199x53c"))))
+                "1p5wq3rh9p7fhka57qcds6lvphd26yyc18ilncx95jbcvcfcyvqx"))))
     (build-system meson-build-system)
-    (arguments
-     (list #:meson meson-0.60))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for gdbus-codegen, etc.
-       ("gtk+" ,gtk+ "bin") ; gtk-update-icon-cache
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("python-dbus" ,python-dbus)
-       ("xmllint" ,libxml2)))
+     (list gettext-minimal
+           gobject-introspection
+           `(,glib "bin")               ;for gdbus-codegen, etc.
+           libxml2
+           pkg-config
+           python
+           python-dbus))
     (propagated-inputs
-     ;; gnome-bluetooth-1.0.pc refers to all these.
-     (list glib gtk+))
+     ;; These are all required by the gnome-bluetooth .pc file.
+     (list glib
+           gtk
+           libadwaita))
     (inputs
-     (list eudev libcanberra libnotify python-dbus))
+     (list eudev
+           gsound
+           libnotify
+           ;; TODO: Delete pango-next after it's the default.
+           pango-next
+           python-dbus
+           upower))
     (synopsis "GNOME Bluetooth subsystem")
     (home-page "https://wiki.gnome.org/Projects/GnomeBluetooth")
     (description
