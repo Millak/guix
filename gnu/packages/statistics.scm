@@ -7151,3 +7151,26 @@ in regression analysis.  This includes plotting interactions, and calculating
 simple slopes, standardized coefficients, regions of significance (Johnson &
 Neyman, 1936; cf.  Spiller et al., 2012), etc.")
     (license license:gpl3)))
+
+(define-public r-mumin
+  (package
+    (name "r-mumin")
+    (version "1.47.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "MuMIn" version))
+              (sha256
+               (base32
+                "1xhsc9hmx2b3zqyvpjs64rs90ccrfcsglrq2mhh85mgplsnva8qj"))))
+    (properties `((upstream-name . "MuMIn")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-nlme))
+    (home-page "https://cran.r-project.org/package=MuMIn")
+    (synopsis "Multi-Model Inference")
+    (description
+     "Tools for performing model selection and model averaging.  Automated model
+selection through subsetting the maximum model, with optional constraints for
+model inclusion.  Model parameter and prediction averaging based on model
+weights derived from information criteria (AICc and alike) or custom model
+weighting schemes.")
+    (license license:gpl2)))
