@@ -203,7 +203,7 @@ them as it goes.")
            python-booleanoperations
            python-defcon
            python-fontmath
-           python-fonttools-next
+           python-fonttools
            python-lxml
            python-tqdm
            python-ufonormalizer

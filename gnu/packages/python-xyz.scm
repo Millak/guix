@@ -11301,13 +11301,13 @@ number of lines in the contained files easily.")
   (hidden-package
    (package
      (name "python-fonttools")
-     (version "4.28.5")
+     (version "4.37.1")
      (source (origin
                (method url-fetch)
                (uri (pypi-uri "fonttools" version ".zip"))
                (sha256
                 (base32
-                 "1jhl5n3rfqq7fznvsh6r80n7ylap1a7ppq1040y8cflhyz80ap2l"))))
+                 "1ryc1wca2v92wn24baryj5fr32lspl8rbsig32fnkxp1islf21j6"))))
      (build-system python-build-system)
      (native-inputs
       (list unzip))
@@ -11359,18 +11359,6 @@ from an XML-based format.")
            python-unicodedata2
            python-zopfli))
     (properties (alist-delete 'hidden? (package-properties python-fonttools)))))
-
-(define-public python-fonttools-next
-  (package
-    (inherit python-fonttools-full)
-    (version "4.32.0")
-    (source (origin
-              (inherit (package-source python-fonttools-full))
-              (method url-fetch)
-              (uri (pypi-uri "fonttools" version ".zip"))
-              (sha256
-               (base32
-                "14nk43z0dmznypm3zp4sdc04x1y608jawlnmwdkk32a947khvaar"))))))
 
 (define-public python-ly
   (package
