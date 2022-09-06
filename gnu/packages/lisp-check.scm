@@ -63,6 +63,36 @@
 (define-public ecl-1am
   (sbcl-package->ecl-package sbcl-1am))
 
+(define-public sbcl-2am
+  (let ((commit "1d2fd21bbd8f26ec91b962705cab098dd7b5f11c")
+        (revision "0"))
+    (package
+      (name "sbcl-2am")
+      (version (git-version "0.0.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://gitlab.common-lisp.net/dkochmanski/2am")
+                (commit commit)))
+          (file-name (git-file-name "cl-2am" version))
+          (sha256
+           (base32 "0zgx4ymyzvfg44z36yr4l87cd9mprajd7sycr2zc67ab6330rynf"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://gitlab.common-lisp.net/dkochmanski/2am")
+      (synopsis "Small testing framework based on 1am")
+      (description
+       "This is a small testing framework for Common Lisp.  The entire API
+consists of: @code{test}, @code{is}, @code{signals}, @code{finishes},
+@code{run}, @code{suite} and @code{setf suite}.")
+      (license license:expat))))
+
+(define-public cl-2am
+  (sbcl-package->cl-source-package sbcl-2am))
+
+(define-public ecl-2am
+  (sbcl-package->ecl-package sbcl-2am))
+
 (define-public sbcl-check-it
   (let ((commit "b79c9103665be3976915b56b570038f03486e62f"))
     (package
