@@ -12184,7 +12184,9 @@ functions.")
              sbcl-zpb-ttf))
       (arguments
        '(#:asd-systems '("mcclim"
-                         "clim-examples")
+                         "clim-examples"
+                         ;; clim-debugger is required by cleavir.
+                         "clim-debugger")
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-paths
@@ -12216,7 +12218,14 @@ specification}, a toolkit for writing GUIs in Common Lisp.")
   (sbcl-package->cl-source-package sbcl-mcclim))
 
 (define-public ecl-mcclim
-  (sbcl-package->ecl-package sbcl-mcclim))
+  (let ((pkg (sbcl-package->ecl-package sbcl-mcclim)))
+    (package
+      (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ;; Tests fail with "FUNCTION: Not a valid argument (R1
+         ;; (GENERATE-REGION))."  on ECL.
+         ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-cl-inflector
   (let ((commit "f1ab16919ccce3bd82a0042677d9616dde2034fe")
