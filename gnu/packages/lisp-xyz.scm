@@ -22893,6 +22893,37 @@ the Processing language and shares some of the API.")
 (define-public ecl-sketch
   (sbcl-package->ecl-package sbcl-sketch))
 
+(define-public sbcl-cl-cron
+  (let ((commit "092aef5d5666fb43c04258e4043f609670a20456")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-cron")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ciel-lang/cl-cron")
+               (commit commit)))
+         (file-name (git-file-name "cl-cron" version))
+         (sha256
+          (base32 "0y4li8j2h1nbpldpqm39ld9kgs4a7biy94h49n27l59l7mn1jd0d"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+        (list sbcl-bordeaux-threads))
+      (home-page "https://github.com/ciel-lang/cl-cron/")
+      (synopsis "Run cron like jobs in Common Lisp")
+      (description
+       "@code{cl-cron} is a simple tool that provides cron like facilities
+directly inside of Common Lisp.")
+      (license license:gpl3+))))
+
+(define-public cl-cron
+  (sbcl-package->cl-source-package sbcl-cl-cron))
+
+(define-public ecl-cl-cron
+  (sbcl-package->ecl-package sbcl-cl-cron))
+
 (define-public sbcl-string-pokemonize
   (let ((commit "2dc01643defb497e4d1eb833def71dfc1e8d5da6")
         (revision "0"))
