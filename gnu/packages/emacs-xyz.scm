@@ -61,7 +61,7 @@
 ;;; Copyright © 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Evan Straw <evan.straw99@gmail.com>
-;;; Copyright © 2020, 2021 Masaya Tojo <masaya@tojo.tokyo>
+;;; Copyright © 2020, 2021, 2022 Masaya Tojo <masaya@tojo.tokyo>
 ;;; Copyright © 2020, 2021 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
@@ -28040,6 +28040,30 @@ files to numerous other formats via Pandoc.")
        "Org Reveal exports your Org documents to @code{reveal.js} presentations.
 With org-reveal, you can create beautiful presentations with 3D effects from
 simple but powerful Org contents.")
+      (license license:gpl3+))))
+
+(define-public emacs-ox-rss
+  ;; XXX: Upstream provides no version nor tags whatsoever.
+  (let ((commit "83dc898fa5493925b01716e5dd495d5e07c3d41a")
+        (revision "0"))
+    (package
+      (name "emacs-ox-rss")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/nsavage/ox-rss")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0513kixv9bgkignmji95m3rskn6px6c0fack4zdl61qq09fg8w6h"))))
+      (build-system emacs-build-system)
+      (home-page "https://gitlab.com/nsavage/ox-rss")
+      (synopsis "RSS 2.0 back-end for Org export engine")
+      (description
+       "This library implements an RSS 2.0 back-end for Org exporter, based
+on the HTML back-end.")
       (license license:gpl3+))))
 
 (define-public emacs-wc-mode
