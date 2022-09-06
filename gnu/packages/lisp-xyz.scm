@@ -180,6 +180,43 @@ inline @code{LAMBDA}.")
 (define-public ecl-cl-map-bind
   (sbcl-package->ecl-package sbcl-map-bind))
 
+(define-public sbcl-positional-lambda
+  (let ((commit "a43a7bb4ef6faa277e6a7440ec9839711c4b9d28")
+        (revision "0"))
+    (package
+      (name "sbcl-positional-lambda")
+      (version (git-version "2.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/Hexstream/positional-lambda")
+                (commit commit)))
+          (file-name (git-file-name "cl-positional-lambda" version))
+          (sha256
+           (base32 "1l27mw5ciqz7rnjq1lwslgk220i8iqcr39rs8b7hxkp1yqmah5zq"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+        (list sbcl-parachute))
+      (inputs
+        (list sbcl-map-bind))
+      (home-page "https://www.hexstreamsoft.com/libraries/positional-lambda/")
+      (synopsis "Macro favouring positional references over naming")
+      (description
+       "This package provides a concise, intuitive and flexible macro for
+trivial lambdas that eschews explicit naming of parameter variables in favor
+of positional references, with support for a used or ignored &rest parameter
+and automatic declaration of ignored parameters when logical @code{gaps}
+are left in the positional references.  Further convenience features
+are provided.")
+      (license license:unlicense))))
+
+(define-public cl-positional-lambda
+  (sbcl-package->cl-source-package sbcl-positional-lambda))
+
+(define-public ecl-cl-positional-lambda
+  (sbcl-package->ecl-package sbcl-positional-lambda))
+
 (define-public sbcl-bodge-utilities
   (let ((commit "6304bac4abe06d53579e2c0fc4437d14ff077d9f")
         (revision "1"))
