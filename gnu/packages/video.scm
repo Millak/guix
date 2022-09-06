@@ -1569,14 +1569,14 @@ operate properly.")
 (define-public ffmpeg-5
   (package
     (name "ffmpeg")
-    (version "5.1")
+    (version "5.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "00wbd5skv6ba5yqq4ca505ncckhvpzwflcsall7madg2bsmnmssm"))))
+                "0d84pjmlb5ss1yybxic3wlyrr31wcsg29ysqx5qiwlcnqkw3zgwm"))))
     (build-system gnu-build-system)
     (inputs
      (append
