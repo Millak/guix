@@ -362,7 +362,13 @@ services.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kvqbqijfyp3fhsqjyzwd7b3cm5khwv557wq196mv6rx47aaivgd"))))
+                "0kvqbqijfyp3fhsqjyzwd7b3cm5khwv557wq196mv6rx47aaivgd"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Unbundle dependencies.  TODO: build-aux/test-driver.scm
+               ;; is bundled too, but it's not yet automatically copied by
+               ;; autoreconf -i.
+               #~(delete-file "build-aux/config.rpath"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
