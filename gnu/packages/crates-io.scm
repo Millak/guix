@@ -74213,6 +74213,26 @@ crate.")
 crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-i686-gnu-0.36
+  (package
+    (name "rust-windows-i686-gnu")
+    (version "0.36.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows_i686_gnu" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1dm3svxfzamrv6kklyda9c3qylgwn5nwdps6p0kc9x6s077nq3hq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Code gen support for the windows crate")
+    (description "This package provides code gen support for the windows
+crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-i686-gnu-0.28
   (package
     (name "rust-windows-i686-gnu")
