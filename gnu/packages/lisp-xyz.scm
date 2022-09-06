@@ -22283,6 +22283,10 @@ place outside with-notes.
          (sha256
           (base32 "05smc81ml9rbcbzdhqg2mi9drnjsipq62r5q7f7qql8hbx01vl9i"))))
       (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria))
+      (arguments
+       '(#:asd-systems '("ctype" "ctype-tfun")))
       (home-page "https://github.com/s-expressionists/ctype")
       (synopsis "Common Lisp type system implementation ")
       (description
