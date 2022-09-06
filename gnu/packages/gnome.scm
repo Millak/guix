@@ -5268,7 +5268,7 @@ once.")
 (define-public gnome-sudoku
   (package
     (name "gnome-sudoku")
-    (version "40.2")
+    (version "42.0")
     (source
      (origin
        (method url-fetch)
@@ -5277,7 +5277,7 @@ once.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "18slsxifad5cjz4fqi818i66jc9b7kzgn01qxa0ra4y7wcqha4in"))))
+         "13y2qphrj99b0lc7bh71is1f6i0jvyw8adfg8lv48sq2p3fv8bhx"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -5288,16 +5288,20 @@ once.")
              (substitute* "build-aux/post_install.py"
                (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
-     (list pkg-config
-           python                             ;for 'build-aux/post_install.py'
-           desktop-file-utils
-           `(,glib "bin")                         ;for glib-compile-resources
-           intltool
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")               ;for glib-compile-resources
            itstool
-           vala
-           libxml2))
+           libxml2
+           pkg-config
+           python                       ;for 'build-aux/post_install.py'
+           vala))
     (inputs
-     (list gtk+ json-glib libgee librsvg qqwing))
+     (list gtk+
+           json-glib
+           libgee
+           librsvg
+           qqwing))
     (home-page "https://wiki.gnome.org/Apps/Sudoku")
     (synopsis "Japanese logic game")
     (description
