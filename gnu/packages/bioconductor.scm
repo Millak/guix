@@ -4113,17 +4113,17 @@ global-scaling and full-quantile normalization.")
 (define-public r-edger
   (package
     (name "r-edger")
-    (version "3.38.1")
+    (version "3.38.4")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "edgeR" version))
               (sha256
                (base32
-                "1q933m76155gy30wgps2gdd8pxzsfhppydjqn0fhjrwj6kqz8mik"))))
+                "1ww69xrg9qrmq7dix2k48j6akgn58ss3340hm7pjvzx508x1j6n6"))))
     (properties `((upstream-name . "edgeR")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-limma r-locfit r-rcpp r-statmod)) ;for estimateDisp
+     (list r-limma r-locfit r-rcpp))
     (home-page "http://bioinf.wehi.edu.au/edgeR")
     (synopsis "EdgeR does empirical analysis of digital gene expression data")
     (description "This package can do differential expression analysis of
