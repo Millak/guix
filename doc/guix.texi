@@ -28841,6 +28841,14 @@ types, or alternatively, a config file can be provided.
 @item @code{nginx} (default: @code{nginx})
 The nginx package to use.
 
+@item @code{shepherd-requirement} (default: @code{'()})
+This is a list of symbols naming Shepherd services the nginx service
+will depend on.
+
+This is useful if you would like @command{nginx} to be started after a
+back-end web server or a logging service such as Anonip has been
+started.
+
 @item @code{log-directory} (default: @code{"/var/log/nginx"})
 The directory to which NGinx will write log files.
 
