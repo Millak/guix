@@ -74055,6 +74055,26 @@ configuration file and/or environment variables.")
 crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-x86-64-msvc-0.36
+  (package
+    (name "rust-windows-x86-64-msvc")
+    (version "0.36.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows_x86_64_msvc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "103n3xijm5vr7qxr1dps202ckfnv7njjnnfqmchg8gl5ii5cl4f8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Code gen support for the windows crate")
+    (description "This package provides code gen support for the windows
+crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-x86-64-msvc-0.32
   (package
     (name "rust-windows-x86-64-msvc")
