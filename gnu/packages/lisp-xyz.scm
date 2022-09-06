@@ -22720,6 +22720,39 @@ objects.")
 (define-public ecl-cl-geometry
   (sbcl-package->ecl-package sbcl-cl-geometry))
 
+(define-public sbcl-amb
+  (let ((commit "884bef69a1ea02f3b9deae0341e1a038ff31b896")
+        (revision "0"))
+    (package
+     (name "sbcl-amb")
+     (version (git-version "1.0.0" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/amb")
+               (commit commit)))
+         (file-name (git-file-name "cl-amb" version))
+         (sha256
+          (base32 "1klh1aakklj1famrff0sccnwlv8238b1q446288aqnqgxxw6pf21"))))
+     (build-system asdf-build-system/sbcl)
+     (inputs
+       (list sbcl-alexandria))
+     (native-inputs
+       (list sbcl-parachute))
+     (synopsis "Implementation of John McCarthy's ambiguous operator")
+     (description
+      "@code{cl-amb} provides an implementation of John McCarthy's ambiguous
+operator in portable Common Lisp.")
+     (home-page "https://github.com/phoe/amb/")
+     (license license:expat))))
+
+(define-public cl-amb
+  (sbcl-package->cl-source-package sbcl-amb))
+
+(define-public ecl-amb
+  (sbcl-package->ecl-package sbcl-amb))
+
 (define-public sbcl-sketch
   ;; No release in years.
   (let ((commit "4cc00b08e202c7adda41391463096cf9df1705c3"))
