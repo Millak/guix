@@ -3568,18 +3568,22 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.39.2.0")
+    (version "3.39.2.1")
+    ;; The compressed release has fetching functionality disabled.
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rogerbinns/apsw")
-             (commit version)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/rogerbinns/apsw/releases/download/"
+             version "/apsw-" version ".zip"))
        (sha256
         (base32
-         "0q7fnk8n3m5mpjzh6xyhj409k8sacdbjsfis98my9c50fdn5sr7y"))))
+         "06x3qgg71xz8l3kz8gz04wkfp5f6zfrg476a4mm1c5hikqyw6ykj"))
+       ;; Cherry-picked from upstream, remove when bumping to 3.39.3.
+       (patches
+        (search-patches "python-apsw-3.39.2.1-test-fix.patch"))))
     (build-system python-build-system)
+    (native-inputs (list unzip))
     (inputs (list sqlite-next))         ;SQLite 3.39 required.
     (arguments
      (list #:phases
