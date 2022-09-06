@@ -522,6 +522,31 @@ repositories through the
 server}.  The main advantage compared to @code{vc-hg} is speed.")
     (license license:gpl3+)))
 
+(define-public emacs-telephone-line
+  (let ((commit "6f3455a365912e8f0c45a2240ea79507dee45ade")
+        (revision "0"))
+    (package
+      (name "emacs-telephone-line")
+      (version (git-version "0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/dbordak/telephone-line")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hnd6wnc52sc0ckriqnhaz64pyjk027y0dpcmh2zhpd27i8d4hmq"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/dbordak/telephone-line")
+      (synopsis "Implementation of Powerline for Emacs")
+      (description
+       "Telephone Line is a new implementation of Powerline for Emacs with
+optional baked-in Evil support, antialiased separators, and an easy
+configuration language which makes it trivial to write your own themes.")
+      (license license:gpl3+))))
+
 (define-public emacs-terminal-here
   (package
     (name "emacs-terminal-here")
