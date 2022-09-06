@@ -184,6 +184,7 @@ Weblate} (@pxref{Translating Guix}).
 * Home Configuration::          Configuring the home environment.
 * Documentation::               Browsing software user manuals.
 * Platforms::                   Defining platforms.
+* System Images::               Creating system images.
 * Installing Debugging Files::  Feeding the debugger.
 * Using TeX and LaTeX::         Typesetting.
 * Security Updates::            Deploying security fixes quickly.
@@ -412,6 +413,13 @@ Platforms
 
 * platform Reference::          Detail of platform declarations.
 * Supported Platforms::         Description of the supported platforms.
+
+System Images
+
+* image Reference::             Detail of image declarations.
+* Instantiate an Image::        How to instantiate an image record.
+* image-type Reference::        Detail of image types declaration.
+* Image Modules::               Definition of image modules.
 
 Installing Debugging Files
 
@@ -41402,6 +41410,499 @@ from MinGW.
 Platform targeting x86 CPU running GNU/Hurd (also referred to as
 ``GNU'').
 @end defvr
+
+@node System Images
+@chapter Creating System Images.
+
+@cindex system images
+When it comes to installing Guix System for the first time on a new
+machine, you can basically proceed in three different ways.  The first
+one is to use an existing operating system on the machine to run the
+@command{guix system init} command (@pxref{Invoking guix system}).  The
+second one, is to produce an installation image (@pxref{Building the
+Installation Image}). This is a bootable system which role is to
+eventually run @command{guix system init}.  Finally, the third option
+would be to produce an image that is a direct instantiation of the
+system you wish to run.  That image can then be copied on a bootable
+device such as an USB drive or a memory card.  The target machine would
+then directly boot from it, without any kind of installation procedure.
+
+The @command{guix system image} command is able to turn an operating
+system definition into a bootable image.  This command supports
+different image types, such as @code{efi-raw}, @code{iso9660} and
+@code{docker}.  Any modern @code{x86_64} machine will probably be able
+to boot from an @code{iso9660} image.  However, there are a few machines
+out there that require specific image types.  Those machines, in general
+using @code{ARM} processors, may expect specific partitions at specific
+offsets.
+
+This chapter explains how to define customized system images and how to
+turn them into actual bootable images.
+
+@menu
+* image Reference::        Detail of image declarations.
+* Instantiate an Image::   How to instantiate an image record.
+* image-type Reference::   Detail of image types declaration.
+* Image Modules::          Definition of image modules.
+@end menu
+
+@node image Reference
+@section @code{image} Reference
+
+The @code{image} record, described right after, allows you to define a
+customized bootable system image.
+
+@deftp {Data Type} image
+This is the data type representing a system image.
+
+@table @asis
+@item @code{name} (default: @code{#false})
+The image name as a symbol, @code{'my-iso9660} for instance.  The name
+is optional and it defaults to @code{#false}.
+
+@item @code{format}
+The image format as a symbol.  The following formats are supported:
+
+@itemize
+@item @code{disk-image}, a raw disk image composed of one or multiple
+partitions.
+
+@item @code{compressed-qcow2}, a compressed qcow2 image composed of
+one or multiple partitions.
+
+@item @code{docker}, a Docker image.
+
+@item @code{iso9660}, an ISO-9660 image.
+
+@end itemize
+
+@item @code{platform} (default: @code{#false})
+The @code{platform} record the image is targeting (@pxref{Platforms}),
+@code{aarch64-linux} for instance.  By default, this field is set to
+@code{#false} and the image will target the host platform.
+
+@item @code{size} (default: @code{'guess})
+The image size in bytes or @code{'guess}.  The @code{'guess} symbol,
+which is the default, means that the image size will be inferred based
+on the image content.
+
+@item @code{operating-system}
+The image's @code{operating-system} record that is instanciated.
+
+@item @code{partition-table-type} (default: @code{'mbr})
+The image partition table type as a symbol.  Possible values are
+@code{'mbr} and @code{'gpt}.  It default to @code{'mbr}.
+
+@item @code{partitions} (default: @code{'()})
+The image partitions as a list of @code{partition} records
+(@pxref{partition Reference}).
+
+@item @code{compression?} (default: @code{#true})
+Whether the image content should be compressed, as a boolean.  It
+defaults to @code{#true} and only applies to @code{'iso9660} image
+formats.
+
+@item @code{volatile-root?} (default: @code{#true})
+Whether the image root partition should be made volatile, as a boolean.
+
+This is achieved by using a RAM backed file system (overlayfs) that is
+mounted on top of the root partition by the initrd.  It defaults to
+@code{#true}.  When set to @code{#false}, the image root partition is
+mounted as read-write partition by the initrd.
+
+@item @code{shared-store?} (default: @code{#false})
+Whether the image's store should be shared with the host system, as a
+boolean.  This can be useful when creating images dedicated to virtual
+machines.  When set to @code{#false}, which is the default, the image's
+@code{operating-system} closure is copied to the image.  Otherwise, when
+set to @code{#true}, it is assumed that the host store will be made
+available at boot, using a @code{9p} mount for instance.
+
+@item @code{shared-network?} (default: @code{#false})
+Whether to use the host network interfaces within the image, as a
+boolean.  This is only used for the @code{'docker} image format.  It
+defaults to @code{#false}.
+
+@item @code{substitutable?} (default: @code{#true})
+Whether the image derivation should be substitutable, as a boolean.  It
+defaults to @code{true}.
+
+@end table
+@end deftp
+
+@node partition Reference
+@subsection @code{partition} Reference
+
+In @code{image} record may contain some partitions.
+
+@deftp {Data Type} partition
+This is the data type representing an image partition.
+
+@table @asis
+@item @code{size} (default: @code{'guess})
+The partition size in bytes or @code{'guess}.  The @code{'guess} symbol,
+which is the default, means that the partition size will be inferred
+based on the partition content.
+
+@item @code{offset} (default: @code{0})
+The partition's start offset in bytes, relative to the image start or
+the previous partition end.  It defaults to @code{0} which means that
+there is no offset applied.
+
+@item @code{file-system} (default: @code{"ext4"})
+The partition file system as a string, defaulting to @code{"ext4"}.  The
+supported values are @code{"vfat"}, @code{"fat16"}, @code{"fat32"} and
+@code{"ext4"}.
+
+@item @code{file-system-options} (default: @code{'()})
+The partition file system creation options that should be passed to the
+partition creation tool, as a list of strings.  This is only supported
+when creating @code{"ext4"} partitions.
+
+See the @code{"extended-options"} man page section of the
+@code{"mke2fs"} tool for a more complete reference.
+
+@item @code{label}
+The partition label as a mandatory string, @code{"my-root"} for
+instance.
+
+@item @code{uuid} (default: @code{#false})
+The partition UUID as an @code{uuid} record (@pxref{File Systems}).  By
+default it is @code{#false}, which means that the partition creation
+tool will attribute a random UUID to the partition.
+
+@item @code{flags} (default: @code{'()})
+The partition flags as a list of symbols.  Possible values are
+@code{'boot} and @code{'esp}.  The @code{'boot} flags should be set if
+you want to boot from this partition.  Exactly one partition should have
+this flag set, usually the root one. The @code{'esp} flag identifies a
+UEFI System Partition.
+
+@item @code{initializer} (default: @code{#false})
+The partition initializer procedure as a gexp.  This procedure is called
+to populate a partition.  If no initializer is passed, the
+@code{initialize-root-partition} procedure from the @code{(gnu build
+image)} module is used.
+
+@end table
+@end deftp
+
+@node Instantiate an Image
+@section Instantiate an Image
+
+Let's say you would like to create an MBR image with three distinct
+partitions:
+
+@itemize
+@item The @acronym{ESP, EFI System Partition}, a partition of
+40@tie{}MiB at offset 1024@tie{}KiB with a vfat file system.
+
+@item an ext4 partition of 50@tie{}MiB data file, and labeled ``data''.
+
+@item an ext4 bootable partition containing the @code{%simple-os}
+operating-system.
+@end itemize
+
+You would then write the following image definition in a
+@code{my-image.scm} file for instance.
+
+@lisp
+(use-modules (gnu)
+             (gnu image)
+             (gnu tests)
+             (gnu system image)
+             (guix gexp))
+
+(define MiB (expt 2 20))
+
+(image
+ (format 'disk-image)
+ (operating-system %simple-os)
+ (partitions
+  (list
+   (partition
+    (size (* 40 MiB))
+    (offset (* 1024 1024))
+    (label "GNU-ESP")
+    (file-system "vfat")
+    (flags '(esp))
+    (initializer (gexp initialize-efi-partition)))
+   (partition
+    (size (* 50 MiB))
+    (label "DATA")
+    (file-system "ext4")
+    (initializer #~(lambda* (root . rest)
+                     (mkdir root)
+                     (call-with-output-file
+                         (string-append root "/data")
+                       (lambda (port)
+                         (format port "my-data"))))))
+   (partition
+    (size 'guess)
+    (label root-label)
+    (file-system "ext4")
+    (flags '(boot))
+    (initializer (gexp initialize-root-partition))))))
+@end lisp
+
+Note that the first and third partitions use generic initializers
+procedures, initialize-efi-partition and initialize-root-partition
+respectively.  The initialize-efi-partition installs a GRUB EFI loader
+that is loading the GRUB bootloader located in the root partition.  The
+initialize-root-partition instantiates a complete system as defined by
+the @code{%simple-os} operating-system.
+
+You can now run:
+
+@example
+guix system image my-image.scm
+@end example
+
+to instantiate the @code{image} definition.  That produces a disk image
+which has the expected structure:
+
+@example
+$ parted $(guix system image my-image.scm) print
+@dots{}
+Model:  (file)
+Disk /gnu/store/yhylv1bp5b2ypb97pd3bbhz6jk5nbhxw-disk-image: 1714MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      1049kB  43.0MB  41.9MB  primary  fat16        esp
+ 2      43.0MB  95.4MB  52.4MB  primary  ext4
+ 3      95.4MB  1714MB  1619MB  primary  ext4         boot
+@end example
+
+The size of the @code{boot} partition has been inferred to @code{1619MB}
+so that it is large enough to host the @code{%simple-os}
+operating-system.
+
+You can also use existing @code{image} record definitions and inherit
+from them to simplify the @code{image} definition.  The @code{(gnu
+system image)} module provides the following @code{image} definition
+variables.
+
+@defvr {Scheme Variable} efi-disk-image
+A MBR disk-image composed of two partitions: a 64 bits ESP partition and
+a ROOT boot partition.  This image can be used on most @code{x86_64} and
+@code{i686} machines, supporting BIOS or UEFI booting.
+@end defvr
+
+@defvr {Scheme Variable} efi32-disk-image
+Same as @code{efi-disk-image} but with a 32 bits EFI partition.
+@end defvr
+
+@defvr {Scheme Variable} iso9660-image
+An ISO-9660 image composed of a single bootable partition.  This image
+can also be used on most @code{x86_64} and @code{i686} machines.
+@end defvr
+
+@defvr {Scheme Variable} docker-image
+A Docker image that can be used to spawn a Docker container.
+@end defvr
+
+Using the @code{efi-disk-image} we can simplify our previous
+@code{image} declaration this way:
+
+@example
+(use-modules (gnu)
+             (gnu image)
+             (gnu tests)
+             (gnu system image)
+             (guix gexp)
+             (ice-9 match))
+
+(define MiB (expt 2 20))
+
+(define data
+  (partition
+   (size (* 50 MiB))
+   (label "DATA")
+   (file-system "ext4")
+   (initializer #~(lambda* (root . rest)
+                    (mkdir root)
+                    (call-with-output-file
+                        (string-append root "/data")
+                      (lambda (port)
+                        (format port "my-data")))))))
+
+(image
+ (inherit efi-disk-image)
+ (operating-system %simple-os)
+ (partitions
+  (match (image-partitions efi-disk-image)
+    ((esp root)
+     (list esp data root)))))
+@end example
+
+This will give the exact same @code{image} instantiation but the
+@code{image} declaration is simpler.
+
+@node image-type Reference
+@section image-type Reference
+
+The @command{guix system image} command can, as we saw above, take a
+file containing an @code{image} declaration as argument and produce an
+actual disk image from it.  The same command can also handle a file
+containing an @code{operating-system} declaration as argument.  In that
+case, how is the @code{operating-system} turned into an image?
+
+That's where the @code{image-type} record intervenes.  This record
+defines how to transform an @code{operating-system} record into an
+@code{image} record.
+
+@deftp {Data Type} image-type
+This is the data type representing an image-type.
+
+@table @asis
+@item @code{name}
+The image-type name as a mandatory symbol, @code{'efi32-raw} for
+instance.
+
+@item @code{constructor}
+The image-type constructor, as a mandatory procedure that takes an
+@code{operating-system} record as argument and returns an @code{image}
+record.
+
+@end table
+@end deftp
+
+There are several @code{image-type} records provided by the @code{(gnu
+system image)} and the @code{(gnu system images @dots{})} modules.
+
+@defvr {Scheme Variable} efi-raw-image-type
+Build an image based on the @code{efi-disk-image} image.
+@end defvr
+
+@defvr {Scheme Variable} efi32-raw-image-type
+Build an image based on the @code{efi32-disk-image} image.
+@end defvr
+
+@defvr {Scheme Variable} qcow2-image-type
+Build an image based on the @code{efi-disk-image} image but with the
+@code{compressed-qcow2} image format.
+@end defvr
+
+@defvr {Scheme Variable} iso-image-type
+Build a compressed image based on the @code{iso9660-image} image.
+@end defvr
+
+@defvr {Scheme Variable} uncompressed-iso-image-type
+Build an image based on the @code{iso9660-image} image but with the
+@code{compression?} field set to @code{#false}.
+@end defvr
+
+@defvr {Scheme Variable} docker-image-type
+Build an image based on the @code{docker-image} image.
+@end defvr
+
+@defvr {Scheme Variable} raw-with-offset-image-type
+Build an MBR image with a single partition starting at a @code{1024KiB}
+offset.  This is useful to leave some room to install a bootloader in
+the post-MBR gap.
+@end defvr
+
+@defvr {Scheme Variable} pinebook-pro-image-type
+Build an image that is targeting the Pinebook Pro machine.  The MBR
+image contains a single partition starting at a @code{9MiB} offset.  The
+@code{u-boot-pinebook-pro-rk3399-bootloader} bootloader will be
+installed in this gap.
+@end defvr
+
+@defvr {Scheme Variable} rock64-image-type
+Build an image that is targeting the Rock64 machine.  The MBR image
+contains a single partition starting at a @code{16MiB} offset.  The
+@code{u-boot-rock64-rk3328-bootloader} bootloader will be installed in
+this gap.
+@end defvr
+
+@defvr {Scheme Variable} novena-image-type
+Build an image that is targeting the Novena machine.  It has the same
+characteristics as @code{raw-with-offset-image-type}.
+@end defvr
+
+@defvr {Scheme Variable} pine64-image-type
+Build an image that is targeting the Pine64 machine.  It has the same
+characteristics as @code{raw-with-offset-image-type}.
+@end defvr
+
+@defvr {Scheme Variable} hurd-image-type
+Build an image that is targeting a @code{i386} machine running the Hurd
+kernel.  The MBR image contains a single ext2 partitions with specific
+@code{file-system-options} flags.
+@end defvr
+
+@defvr {Scheme Variable} hurd-qcow2-image-type
+Build an image similar to the one built by the @code{hurd-image-type}
+but with the @code{format} set to @code{'compressed-qcow2}.
+@end defvr
+
+So, if we get back to the @code{guix system image} command taking an
+@code{operating-system} declaration as argument.  By default, the
+@code{efi-raw-image-type} is used to turn the provided
+@code{operating-system} into an actual bootable image.
+
+To use a different @code{image-type}, the @code{--image-type} option can
+be used.  The @code{--list-image-types} option will list all the
+supported image types.  It turns out to be a textual listing of all the
+@code{image-types} variables described just above (@pxref{Invoking guix
+system}).
+
+@node Image Modules
+@section Image Modules
+
+Let's take the example of the Pine64, an ARM based machine.  To be able
+to produce an image targeting this board, we need the following
+elements:
+
+@itemize
+@item An @code{operating-system} record containing at least
+an appropriate kernel (@code{linux-libre-arm64-generic}) and bootloader
+@code{u-boot-pine64-lts-bootloader}) for the Pine64.
+
+@item Possibly, an @code{image-type} record providing a way to
+turn an @code{operating-system} record to an @code{image} record
+suitable for the Pine64.
+
+@item An actual @code{image} that can be instantiated with the
+@command{guix system image} command.
+
+@end itemize
+
+The @code{(gnu system images pine64)} module provides all those
+elements: @code{pine64-barebones-os}, @code{pine64-image-type} and
+@code{pine64-barebones-raw-image} respectively.
+
+The module returns the @code{pine64-barebones-raw-image} in order for
+users to be able to run:
+
+@example
+guix system image gnu/system/images/pine64.scm
+@end example
+
+Now, thanks to the @code{pine64-image-type} record declaring the
+@code{'pine64-raw} @code{image-type}, one could also prepare a
+@code{my-pine.scm} file with the following content:
+
+@example
+(use-modules (gnu system images pine64))
+(operating-system
+  (inherit pine64-barebones-os)
+  (timezone "Europe/Athens"))
+@end example
+
+to customize the @code{pine64-barebones-os}, and run:
+
+@example
+$ guix system image --image-type=pine64-raw my-pine.scm
+@end example
+
+Note that there are other modules in the @code{gnu/system/images}
+directory targeting @code{Novena}, @code{Pine64}, @code{PinebookPro} and
+@code{Rock64} machines.
 
 @node Installing Debugging Files
 @chapter Installing Debugging Files
