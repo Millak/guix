@@ -23013,3 +23013,36 @@ especially in a multi-threaded context.")
 
 (define-public ecl-ndebug
   (sbcl-package->ecl-package sbcl-ndebug))
+
+(define-public sbcl-smug
+  (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
+        (revision "0"))
+    (package
+     (name "sbcl-smug")
+     (version (git-version "0.0.0" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/drewc/smug")
+               (commit commit)))
+         (file-name (git-file-name "cl-smug" version))
+         (sha256
+          (base32 "13gzkj9skya2ziwclk041v7sif392ydbvhvikhg2raa3qjcxb3rq"))))
+     (build-system asdf-build-system/sbcl)
+     (arguments
+      `(#:tests? #f)) ; There are no tests.
+     (synopsis "Parser combinators for Common Lisp")
+     (description
+      "@code{cl-smug} is a library for parsing text, based on monadic parser
+combinators.  Using a simple technique from the functional programming
+camp, @code{cl-smug} makes it simple to create quick extensible recursive
+descent parsers without funky syntax or impenetrable macrology.")
+     (home-page "http://smug.drewc.ca/")
+     (license license:expat))))
+
+(define-public cl-smug
+  (sbcl-package->cl-source-package sbcl-smug))
+
+(define-public ecl-smug
+  (sbcl-package->ecl-package sbcl-smug))
