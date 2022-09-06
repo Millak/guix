@@ -9498,7 +9498,7 @@ can add your own files to the collection.")
 (define-public gnome-screenshot
   (package
     (name "gnome-screenshot")
-    (version "40.0")
+    (version "41.0")
     (source
      (origin
        (method url-fetch)
@@ -9507,12 +9507,13 @@ can add your own files to the collection.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1qm544ymwibk31s30k47vnn79xg30m18r7l4di0c57g375dak31n"))
+         "15wmikwk62cdi93gas77nqh4fbhlrxrncyfmcd1gfa34jbn7vnsa"))
        (patches
         (search-patches "gnome-screenshot-meson-0.60.patch"))))
     (build-system meson-build-system)
     (arguments
-     '(#:phases
+     '(#:glib-or-gtk? #t
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
@@ -9520,14 +9521,17 @@ can add your own files to the collection.")
              (substitute* "build-aux/postinstall.py"
                (("gtk-update-icon-cache") "true")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
-       ("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("intltool" ,intltool)
-       ("appstream-glib" ,appstream-glib)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list appstream-glib
+           desktop-file-utils           ; for update-desktop-database
+           gettext-minimal
+           `(,glib "bin")               ; for glib-compile-schemas, etc.
+           pkg-config
+           python))
     (inputs
-     (list gtk+ libcanberra libhandy libx11 libxext))
+     (list gtk+
+           libhandy
+           libx11
+           libxext))
     (home-page "https://gitlab.gnome.org/GNOME/gnome-screenshot")
     (synopsis "Take pictures of your screen")
     (description
