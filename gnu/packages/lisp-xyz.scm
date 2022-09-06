@@ -148,6 +148,38 @@ portable between implementations.")
 (define-public ecl-alexandria
   (sbcl-package->ecl-package sbcl-alexandria))
 
+(define-public sbcl-map-bind
+  (let ((commit "532d55d93540c632e22b2cd264b5daa5f9d3d900")
+        (revision "0"))
+    (package
+      (name "sbcl-map-bind")
+      (version (git-version "1.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/Hexstream/map-bind")
+                (commit commit)))
+          (file-name (git-file-name "cl-map-bind" version))
+          (sha256
+           (base32 "0hfy65xyqc4zqfncn11pp3hjjkdz7m91cynnv91s3lgcl3kffva0"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+        (list sbcl-parachute))
+      (home-page "https://www.hexstreamsoft.com/libraries/map-bind/")
+      (synopsis "Macro favouring positional references over naming")
+      (description
+       "@code{MAP-BIND} is a macro that allows visual grouping of variables with
+their corresponding values in calls to mapping operators when using an
+inline @code{LAMBDA}.")
+      (license license:unlicense))))
+
+(define-public cl-map-bind
+  (sbcl-package->cl-source-package sbcl-map-bind))
+
+(define-public ecl-cl-map-bind
+  (sbcl-package->ecl-package sbcl-map-bind))
+
 (define-public sbcl-bodge-utilities
   (let ((commit "6304bac4abe06d53579e2c0fc4437d14ff077d9f")
         (revision "1"))
