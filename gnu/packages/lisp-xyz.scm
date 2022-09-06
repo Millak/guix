@@ -22580,6 +22580,32 @@ can be useful for games, 3D, and GL in general.")
 (define-public ecl-mathkit
   (sbcl-package->ecl-package sbcl-mathkit))
 
+(define-public sbcl-rucksack
+  (let ((commit "89278f88513ef328d290aa8b2baa06d63b44a9b1")
+        (revision "0"))
+    (package
+     (name "sbcl-rucksack")
+     (version (git-version "0.1.20" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/arieltan/rucksack")
+               (commit commit)))
+         (file-name (git-file-name "cl-rucksack" version))
+         (sha256
+          (base32 "0acpsxaxpp90km7gdbn9sysilycp3yg1g040fg1vqakpj2yb8vad"))))
+     (build-system asdf-build-system/sbcl)
+     (synopsis "Flexible, light weight, persistence library")
+     (description
+      "@code{cl-rucksack} is a persistence library based on Arthur Lemmens'
+Rucksack with some enhancements.")
+     (home-page "https://github.com/arieltan/rucksack/")
+     (license license:expat))))
+
+(define-public cl-rucksack
+  (sbcl-package->cl-source-package sbcl-rucksack))
+
 (define-public sbcl-sdl2kit
   (let ((commit "aae663224a10ece2b0c374aa5942a3f0bc1b3c2f"))
     (package
