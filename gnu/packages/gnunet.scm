@@ -33,6 +33,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
@@ -363,6 +364,15 @@ services.")
                (base32
                 "0kvqbqijfyp3fhsqjyzwd7b3cm5khwv557wq196mv6rx47aaivgd"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; For reproducibility, do not insert real timestamps in the PDF.
+               (add-after 'unpack 'reproducible-timestamp
+                 (lambda _
+                   (substitute* "Makefile.am"
+                     (("\\$\\(TEXMACS_CONVERT\\)")
+                      "faketime -m -f '1970-01-01 00:00:00' $(TEXMACS_CONVERT)")))))))
     (inputs (list guile-3.0)) ;for pkg-config
     (propagated-inputs (list guile-bytestructures guile-gcrypt guile-pfds
                              guile-fibers-1.1))
@@ -373,6 +383,7 @@ services.")
                          guile-gcrypt
                          guile-pfds
                          guile-fibers-1.1
+                         libfaketime
                          automake
                          autoconf
                          pkg-config
