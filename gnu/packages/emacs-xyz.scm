@@ -298,16 +298,16 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
-    (version "0.23.2")
+    (version "0.26.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/emacs-geiser/guile.git")
+             (url "https://gitlab.com/emacs-geiser/guile")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18m5ldj4r4c2hxgvv5b4azl90r8az1kn5f3s913h971asyv4wx06"))))
+        (base32 "06939mv9i7zzqvq71d0ixk3y9135132f3pk9jgjdwvacl1d31h8k"))))
     (build-system emacs-build-system)
     (arguments
      (list
