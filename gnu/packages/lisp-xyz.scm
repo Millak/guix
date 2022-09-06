@@ -14641,10 +14641,10 @@ source files.")
   (sbcl-package->cl-source-package sbcl-cl-indentify))
 
 (define-public sbcl-concrete-syntax-tree
-  (let ((commit "abd242a59dadc5452aa9dbc1d313c83ec2c11f46"))
+  (let ((commit "4f01430c34f163356f3a2cfbf0a8a6963ff0e5ac"))
     (package
       (name "sbcl-concrete-syntax-tree")
-      (version (git-version "0.0.0" "1" commit))
+      (version (git-version "0.0.0" "2" commit))
       (source
        (origin
          (method git-fetch)
@@ -14653,10 +14653,14 @@ source files.")
                (commit commit)))
          (file-name (git-file-name name commit))
          (sha256
-          (base32 "1lyrglc3h1if44gxd9cwv90wa90nrdjvb7fry39b1xn8ywdfa7di"))))
+          (base32 "169ibaz1vv7pphib28443zzk3hf1mrcarhzfm8hnbdbk529cnxyi"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-acclimation))
+      (arguments
+       '(#:asd-systems '("concrete-syntax-tree"
+                         "concrete-syntax-tree-destructuring"
+                         "concrete-syntax-tree-source-info")))
       (home-page "https://github.com/s-expressionists/Concrete-Syntax-Tree")
       (synopsis "Parse Common Lisp code into a concrete syntax tree")
       (description
