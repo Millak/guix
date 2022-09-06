@@ -2493,7 +2493,7 @@ GNOME Desktop.")
 (define-public gnome-keyring
   (package
     (name "gnome-keyring")
-    (version "40.0")
+    (version "42.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2501,12 +2501,10 @@ GNOME Desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0cdrlcw814zayhvlaxqs1sm9bqlfijlp22dzzd0g5zg2isq4vlm3"))))
+                "1rp38v4s9116ivycp27w806wihqid48gk3p0czzbg9knri0d1x67"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f  ;48 of 603 tests fail because /var/lib/dbus/machine-id does
-                                        ;not exist
       #:configure-flags
       #~(list
          (string-append "--with-pkcs11-config="
@@ -2518,29 +2516,45 @@ GNOME Desktop.")
           (add-after 'unpack 'fix-/bin/sh-reference
             (lambda _
               (substitute* "po/Makefile.in.in"
-                (("/bin/sh") (which "sh"))))))))
+                (("/bin/sh") (which "sh")))))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")  ;some tests require a writable HOME
+                (setenv "XDG_DATA_DIRS" (string-append (getenv "XDG_DATA_DIRS")
+                                                       ":" #$output "/share"))
+                (invoke "dbus-run-session" "make" "check" "-j"
+                        (if parallel-tests?
+                            (number->string (parallel-job-count))
+                            "1"))))))))
     (inputs
-     (list libgcrypt linux-pam openssh dbus gcr))
+     (list dbus
+           gcr
+           libgcrypt
+           linux-pam
+           openssh))
     (native-inputs
-     (list pkg-config
+     (list dbus                         ;for tests
+           docbook-xml-4.3
+           docbook-xml
+           docbook-xsl
+           gettext-minimal
            `(,glib "bin")
            glib                         ;for m4 macros
-           python-wrapper               ;for tests
-           intltool
-           autoconf
-           automake
            libxml2                      ;for XML_CATALOG_FILES
            libxslt                      ;for documentation
-           docbook-xml
-           docbook-xsl))
+           pkg-config
+           python-wrapper))             ;for tests
     (propagated-inputs
      (list gcr))
     (home-page "https://www.gnome.org")
     (synopsis "Daemon to store passwords and encryption keys")
     (description
-     "gnome-keyring is a program that keeps passwords and other secrets for
-users.  It is run as a daemon in the session, similar to ssh-agent, and other
-applications locate it via an environment variable or D-Bus.
+     "@command{gnome-keyring} is a program that keeps passwords and other
+secrets for users.  It is run as a daemon in the session, similar to
+@command{ssh-agent}, and other applications locate it via an environment
+variable or D-Bus.
 
 The program can manage several keyrings, each with its own master password,
 and there is also a session keyring which is never stored to disk, but
