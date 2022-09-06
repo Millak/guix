@@ -16006,7 +16006,7 @@ running a customisable handler command (@code{ignore} by default).")
 (define-public emacs-json-reformat
   (package
     (name "emacs-json-reformat")
-    (version "0.0.6")
+    (version "0.0.7")
     (source
      (origin
        (method git-fetch)
@@ -16015,7 +16015,7 @@ running a customisable handler command (@code{ignore} by default).")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qp4n2k6s69jj4gwwimkpadjv245y54wk3bxb1x96f034gkp81vs"))
+        (base32 "1gaifz1brh7yh1wk1c02gddwis4ab6bggv27gy7gcd2s861f8bkx"))
        (patches (search-patches "emacs-json-reformat-fix-tests.patch"))))
     (build-system emacs-build-system)
     (arguments
@@ -16034,6 +16034,15 @@ running a customisable handler command (@code{ignore} by default).")
                                "ert-deftest json-reformat-test:json-reformat-region")
                               (beginning-of-line)
                               (kill-sexp))
+                       (basic-save-buffer)))))
+         (add-before 'check 'delete-json-reformat-region-occur-error-test
+           (lambda _
+             (emacs-batch-edit-file "test/json-reformat-test.el"
+               `(progn (goto-char (point-min))
+                       (re-search-forward
+                        "ert-deftest json-reformat-test:json-reformat-region-occur-error")
+                       (beginning-of-line)
+                       (kill-sexp)
                        (basic-save-buffer))))))))
     (native-inputs
      (list emacs-dash emacs-ert-runner emacs-shut-up))
