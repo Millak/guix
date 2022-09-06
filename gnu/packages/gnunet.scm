@@ -349,28 +349,19 @@ services.")
 (define-public gnunet-scheme
   (package
     (name "gnunet-scheme")
-    (version "0.2")
+    (version "0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://git.gnunet.org/git/gnunet-scheme.git")
-                    (commit (string-append "v" version))))
+                    ;; Go three commits beyond the v0.3 tag, as these three
+                    ;; commits work-around
+                    ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=49623>.
+                    (commit "f5dc44e66373c29f1c84ea89d8080939a8dfbfd2")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a11n58m346vs2khns2hfnxv8lbscf8aaqzhmq0d7nwdpn808nrp"))
-              (modules '((guix build utils)))
-              ;; XXX: Work-around
-              ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=49623>,
-              ;; this can be removed once Guile > 3.0.7 is released.
-              (snippet '(substitute* '("gnu/gnunet/config/parser.scm"
-                                       "tests/config-parser.scm")
-                          (("#\\{\\$\\{\\}\\}#") "#{${;};}#")
-                          (("#\\{\\$\\{:-\\}\\}#") "#{${;:-};}#")
-                          (("#\\{\\$\\{\\}\\}# #\\{\\$\\{:-\\}\\}#")
-                           "#{$\\x7b;\\x7d;}# #{$\\x7b;:-\\x7d;}#")
-                          (("'#\\{\\$\\{\\}\\}# '#\\{\\$\\{:-\\}\\}#")
-                           "'#{$\\x7b;\\x7d;}# '#{$\\x7b;:-\\x7d;}#")))))
+                "0kvqbqijfyp3fhsqjyzwd7b3cm5khwv557wq196mv6rx47aaivgd"))))
     (build-system gnu-build-system)
     (inputs (list guile-3.0)) ;for pkg-config
     (propagated-inputs (list guile-bytestructures guile-gcrypt guile-pfds
@@ -390,11 +381,19 @@ services.")
                          guile-quickcheck)) ;for tests
     (synopsis "Guile implementation of GNUnet client libraries")
     (description
-     "This package provides Guile modules for connecting to the NSE (network
-size estimation) and DHT (distributed hash table) services of GNUnet.  It also
-has infrastructure for writing new GNUnet services and connecting to them and
-can be used from multi-threaded environments.  It is not to be confused with
-@code{guile-gnunet} -- @code{guile-gnunet} supports a different set of services.")
+     "This package provides Guile modules for connecting to various
+GNUnet services. It also has infrastructure for writing new GNUnet services and
+connecting to them and can be used from multi-threaded environments.  It is not
+to be confused with @code{guile-gnunet} -- @code{guile-gnunet} supports a different
+set of services.
+
+The following services are supported:
+
+@itemize
+@item NSE (network size estimation)
+@item DHT (distributed hash table)
+@item CADET (secure end-to-end communication between arbitrary peers)
+@end itemize")
     ;; Most code is licensed as AGPL and a few modules are licensed as LGPL
     ;; or GPL.  Documentation is licensed as GFDL.
     (license (list license:agpl3+ license:gpl3+ license:fdl1.3+ license:lgpl3+))
