@@ -118,14 +118,25 @@
                  (string-append out "/share/gir-1.0/"))
                 (("@INTROSPECTION_TYPELIBDIR@")
                  (string-append out "/lib/girepository-1.0/"))))))
-         (add-after 'unpack 'fix-manpage-generation
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xsldoc (string-append (assoc-ref inputs "docbook-xsl")
-                                          "/xml/xsl/docbook-xsl-"
-                                          ,(package-version docbook-xsl))))
-               (substitute* '("docs/man/Makefile.am" "docs/man/Makefile.in")
-                 (("http://docbook.sourceforge.net/release/xsl/current")
-                  xsldoc)))))
+         ;; TODO: Core-updates: Unify on the cross-build version.
+         ,@(if (%current-target-system)
+             `((add-after 'unpack 'fix-manpage-generation
+               (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                 (let ((xsldoc (string-append (assoc-ref (or native-inputs inputs)
+                                                         "docbook-xsl")
+                                              "/xml/xsl/docbook-xsl-"
+                                              ,(package-version docbook-xsl))))
+                   (substitute* '("docs/man/Makefile.am" "docs/man/Makefile.in")
+                     (("http://docbook.sourceforge.net/release/xsl/current")
+                      xsldoc))))))
+             `((add-after 'unpack 'fix-manpage-generation
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let ((xsldoc (string-append (assoc-ref inputs "docbook-xsl")
+                                              "/xml/xsl/docbook-xsl-"
+                                              ,(package-version docbook-xsl))))
+                   (substitute* '("docs/man/Makefile.am" "docs/man/Makefile.in")
+                     (("http://docbook.sourceforge.net/release/xsl/current")
+                      xsldoc)))))))
          (replace
           'install
           (lambda* (#:key outputs (make-flags '()) #:allow-other-keys)
