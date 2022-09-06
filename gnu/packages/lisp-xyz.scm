@@ -286,6 +286,39 @@ implementation with no external dependencies.")
 (define-public ecl-bodge-queue
   (sbcl-package->ecl-package sbcl-bodge-queue))
 
+(define-public sbcl-list-named-class
+  (let ((commit "2955791a7469131bcab42d800883f27993ee1d62")
+        (revision "0"))
+    (package
+      (name "sbcl-list-named-class")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/list-named-class")
+               (commit commit)))
+         (file-name (git-file-name "cl-list-named-class" version))
+         (sha256
+          (base32 "1bdi9q9wvfj66jji3n9hpjrj9271ial2awsb0xw80bmy6wqbg8kq"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-1am))
+      (inputs
+       (list sbcl-alexandria sbcl-closer-mop))
+      (home-page "https://github.com/phoe/list-named-class/")
+      (synopsis "Name classes after lists of symbols")
+      (description
+       "This package makes it possible to name classes by lists of symbols
+instead of symbols.")
+      (license license:expat))))
+
+(define-public cl-list-named-class
+  (sbcl-package->cl-source-package sbcl-list-named-class))
+
+(define-public ecl-list-named-class
+  (sbcl-package->ecl-package sbcl-list-named-class))
+
 (define-public sbcl-golden-utils
   (let ((commit "fe1898f9abbd302b0359f017637c063173cf73e1")
         (revision "3"))
