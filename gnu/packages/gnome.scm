@@ -5314,7 +5314,7 @@ more fun.")
 (define-public gnome-terminal
   (package
     (name "gnome-terminal")
-    (version "3.40.3")
+    (version "3.44.1")
     (source
      (origin
        (method url-fetch)
@@ -5323,35 +5323,46 @@ more fun.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "08hsic7sn32xw12i3j0ard2bhfhp8gmzqm0pa8xzl5l1jhzsmsfb"))))
-    (build-system glib-or-gtk-build-system)
+         "0yykb64yi1h0g65q890jf5awjr2sdvfda4xbxnmajcgj3zp20vzv"))))
+    (build-system meson-build-system)
     (arguments
-     '(#:configure-flags
-       (list "--disable-migration" "--disable-search-provider"
-             "--without-nautilus-extension")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-/bin/true
-           (lambda _
-             (substitute* "configure"
-               (("/bin/true") (which "true"))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            ;; The build system looks for a dbus file from gnome-shell in the
+            ;; installation tree of teh package it is configuring...
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/meson.build"
+                (("gt_prefix.*'org.gnome.ShellSearchProvider2.xml'")
+                 (format #f "'~a'" (search-input-file
+                                    inputs "share/dbus-1/interfaces/\
+org.gnome.ShellSearchProvider2.xml"))))))
+          (add-before 'install 'disable-gtk-update-icon-cache
+            (lambda _
+              (setenv "DESTDIR" "/"))))))
     (native-inputs
-     `(("docbook-xsl" ,docbook-xsl)
-       ("pkg-config" ,pkg-config)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("libxslt" ,libxslt)
-       ("xmllint" ,libxml2)))
+     (list desktop-file-utils
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")
+           itstool
+           libxml2
+           libxslt
+           pkg-config
+           python))
     (propagated-inputs
      (list dconf))
     (inputs
-     (list gtk+
-           vte
+     (list gnome-shell
            gnutls
            gsettings-desktop-schemas
+           gtk+
+           nautilus                     ;for extension
            `(,util-linux "lib")
-           vala))
+           vala
+           vte))
     (home-page "https://wiki.gnome.org/Apps/Terminal")
     (synopsis "Terminal emulator")
     (description
