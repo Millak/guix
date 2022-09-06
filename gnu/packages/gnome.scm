@@ -5206,14 +5206,17 @@ documentation.")
     (native-inputs
      (list appstream-glib
            desktop-file-utils
+           gettext-minimal
            `(,glib "bin")               ; for glib-compile-resources
-           intltool
            itstool
            pkg-config
            python-wrapper               ; for meson_post_install.py
            vala))
     (inputs
-     (list gtk+ libgnome-games-support librsvg yelp))
+     (list gtk+
+           libgnome-games-support
+           librsvg
+           yelp))
     (home-page "https://wiki.gnome.org/Apps/Mines")
     (synopsis "Minesweeper game")
     (description
