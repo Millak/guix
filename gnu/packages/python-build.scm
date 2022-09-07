@@ -7,6 +7,7 @@
 ;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -473,4 +474,26 @@ system, then @code{flit_core} to build the package.")
      "Setuptools_scm handles managing your Python package versions in
 @dfn{software configuration management} (SCM) metadata instead of declaring
 them as the version argument or in a SCM managed file.")
+    (license license:expat)))
+
+(define-public python-editables
+  (package
+    (name "python-editables")
+    (version "0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pfmoore/editables")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gbfkgzmrmbd4ycshm09fr2wd4f1n9gq7s567jgkavhfkn7s2pn1"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/pfmoore/editables")
+    (synopsis "Editable installations")
+    (description "This library supports the building of wheels which, when
+installed, will expose packages in a local directory on @code{sys.path} in
+``editable mode''.  In other words, changes to the package source will be
+reflected in the package visible to Python, without needing a reinstall.")
     (license license:expat)))
