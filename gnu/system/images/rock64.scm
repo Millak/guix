@@ -54,9 +54,11 @@
 (define rock64-image-type
   (image-type
    (name 'rock64-raw)
-   (constructor (cut image-with-os
-                     (raw-with-offset-disk-image (expt 2 24))
-                     <>))))
+   (constructor (lambda (os)
+                  (image
+                   (inherit (raw-with-offset-disk-image (expt 2 24)))
+                   (operating-system os)
+                   (platform aarch64-linux))))))
 
 (define rock64-barebones-raw-image
   (image

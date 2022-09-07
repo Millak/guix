@@ -58,7 +58,11 @@
 (define pine64-image-type
   (image-type
    (name 'pine64-raw)
-   (constructor (cut image-with-os (raw-with-offset-disk-image) <>))))
+   (constructor (lambda (os)
+                  (image
+                   (inherit (raw-with-offset-disk-image))
+                   (operating-system os)
+                   (platform aarch64-linux))))))
 
 (define pine64-barebones-raw-image
   (image

@@ -53,7 +53,11 @@
 (define novena-image-type
   (image-type
    (name 'novena-raw)
-   (constructor (cut image-with-os (raw-with-offset-disk-image) <>))))
+   (constructor (lambda (os)
+                  (image
+                   (inherit (raw-with-offset-disk-image))
+                   (operating-system os)
+                   (platform armv7-linux))))))
 
 (define novena-barebones-raw-image
   (image
