@@ -58,9 +58,12 @@
 (define pinebook-pro-image-type
   (image-type
    (name 'pinebook-pro-raw)
-   (constructor (cut image-with-os
-                     (raw-with-offset-disk-image (* 9 (expt 2 20))) ;9MiB
-                     <>))))
+   (constructor (lambda (os)
+                  (image
+                   (inherit
+                    (raw-with-offset-disk-image (* 9 (expt 2 20)))) ;9MiB
+                   (operating-system os)
+                   (platform aarch64-linux))))))
 
 (define pinebook-pro-barebones-raw-image
   (image

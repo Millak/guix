@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,7 +60,9 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages dbm)
   #:use-module (gnu packages ed)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
@@ -80,6 +83,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
@@ -1351,3 +1355,58 @@ and make for REPLs that start blazing fast.
      "Buildapp is an application for SBCL or CCL that configures and saves an
 executable Common Lisp image.  It is similar to cl-launch and hu.dwim.build.")
     (license license:bsd-2)))
+
+(define-public eisl
+  (package
+    (name "eisl")
+    (version "2.62")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sasagawa888/eisl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yqzj64h9z4dlf2jz5chy6l6lggd4scgsd06crvfi9h1j1cxjvgi"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list bash-minimal freeglut gdbm libiconv ncurses tcl tk))
+    (native-inputs
+     (list cppcheck))
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "library/compiler.lsp"
+                     (("\"cc ")
+                      "\"gcc "))
+                   (substitute* "library/tcltk.lsp"
+                     (("c-include \"<tcl/tcl\\.h>\"")
+                      "c-include \"<tcl.h>\"")
+                     (("c-option \"-ltcl -ltk\" linux")
+                      "c-option \"-ltcl8.6 -ltk8.6\" linux"))))
+               (delete 'configure)
+               (add-after 'install 'wrap
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (wrap-program (string-append #$output "/bin/eisl")
+                     `("PATH" prefix
+                       ,(map (lambda (bin)
+                               (string-append (assoc-ref inputs bin) "/bin"))
+                             '("binutils" "coreutils" "gcc" "ld-wrapper")))
+                     `("LIBRARY_PATH" suffix
+                       ,(map (lambda (lib)
+                               (string-append (assoc-ref inputs lib) "/lib"))
+                             '("libc")))))))))
+    (home-page "https://github.com/sasagawa888/eisl")
+    (synopsis "Implementation of ISLisp")
+    (description "Easy ISLISP (eisl) is an implementation of ISLisp which
+includes a compiler as well as an interpreter.")
+    (license (list license:bsd-2 ;; documents/license.txt
+                   license:expat ;; cii/LICENSE
+                   license:gpl2+ ;; nana/gdb/test.c and others under nana/
+                   license:bsd-3)))) ;; bench/*

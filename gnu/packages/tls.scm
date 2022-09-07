@@ -664,7 +664,7 @@ kilobytes of RAM.")
         "ac_cv_func_getentropy=no"
         ;; FIXME It's using it's own bundled certificate, instead it should
         ;; behave like OpenSSL by using environment variables.
-        (string-append "--with-openssldir=" %output
+        (string-append "--with-openssldir=" (assoc-ref %outputs "out")
                        "/share/libressl-"
                        ,(package-version this-package))
         ;; Provide a TLS-enabled netcat.

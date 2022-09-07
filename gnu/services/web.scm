@@ -93,6 +93,7 @@
             nginx-configuration
             nginx-configuration?
             nginx-configuration-nginx
+            nginx-configuration-shepherd-requirement
             nginx-configuration-log-directory
             nginx-configuration-run-directory
             nginx-configuration-server-blocks
@@ -556,6 +557,8 @@
   nginx-configuration?
   (nginx         nginx-configuration-nginx          ;file-like
                  (default nginx))
+  (shepherd-requirement nginx-configuration-shepherd-requirement
+                        (default '()))              ;list of symbols
   (log-directory nginx-configuration-log-directory  ;string
                  (default "/var/log/nginx"))
   (run-directory nginx-configuration-run-directory  ;string
@@ -779,7 +782,7 @@ of index files."
 (define (nginx-shepherd-service config)
   (match-record config
                 <nginx-configuration>
-                (nginx file run-directory)
+                (nginx file run-directory shepherd-requirement)
    (let* ((nginx-binary (file-append nginx "/sbin/nginx"))
           (pid-file (in-vicinity run-directory "pid"))
           (nginx-action
@@ -803,7 +806,7 @@ of index files."
      (list (shepherd-service
             (provision '(nginx))
             (documentation "Run the nginx daemon.")
-            (requirement '(user-processes loopback))
+            (requirement `(user-processes loopback ,@shepherd-requirement))
             (modules `((ice-9 match)
                        ,@%default-modules))
             (start (nginx-action "-p" run-directory))

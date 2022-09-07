@@ -1382,14 +1382,16 @@ connection alive.")
                        ;; build system uses the built 'gen' executable.
                        (setenv "BUILD_CC" "gcc"))))
                  '())
-           (add-before 'build 'update-config-scripts
+           (add-before 'configure 'update-config-scripts
              (lambda* (#:key native-inputs inputs #:allow-other-keys)
                (for-each (lambda (file)
                                (install-file
                                  (search-input-file
                                    (or native-inputs inputs)
                                    (string-append "/bin/" file)) "."))
-                         '("config.guess" "config.sub"))
+                         '("config.guess" "config.sub"))))
+           (add-before 'build 'update-config-scripts-for-bind
+             (lambda* (#:key native-inputs inputs #:allow-other-keys)
                (for-each (lambda (file)
                                (install-file
                                  (search-input-file

@@ -457,7 +457,7 @@
 '&store-connection-error' upon error."
   (let ((s (with-fluids ((%default-port-encoding #f))
              ;; This trick allows use of the `scm_c_read' optimization.
-             (socket PF_UNIX SOCK_STREAM 0)))
+             (socket PF_UNIX (logior SOCK_STREAM SOCK_CLOEXEC) 0)))
         (a (make-socket-address PF_UNIX file)))
 
     (system-error-to-connection-error file
@@ -471,41 +471,38 @@
 (define (open-inet-socket host port)
   "Connect to the Unix-domain socket at HOST:PORT and return it.  Raise a
 '&store-connection-error' upon error."
-  (let ((sock (with-fluids ((%default-port-encoding #f))
-                ;; This trick allows use of the `scm_c_read' optimization.
-                (socket PF_UNIX SOCK_STREAM 0))))
-    (define addresses
-      (getaddrinfo host
-                   (if (number? port) (number->string port) port)
-                   (if (number? port)
-                       (logior AI_ADDRCONFIG AI_NUMERICSERV)
-                       AI_ADDRCONFIG)
-                   0                              ;any address family
-                   SOCK_STREAM))                  ;TCP only
+  (define addresses
+    (getaddrinfo host
+                 (if (number? port) (number->string port) port)
+                 (if (number? port)
+                     (logior AI_ADDRCONFIG AI_NUMERICSERV)
+                     AI_ADDRCONFIG)
+                 0                                ;any address family
+                 SOCK_STREAM))                    ;TCP only
 
-    (let loop ((addresses addresses))
-      (match addresses
-        ((ai rest ...)
-         (let ((s (socket (addrinfo:fam ai)
-                          ;; TCP/IP only
-                          SOCK_STREAM IPPROTO_IP)))
+  (let loop ((addresses addresses))
+    (match addresses
+      ((ai rest ...)
+       (let ((s (socket (addrinfo:fam ai)
+                        ;; TCP/IP only
+                        (logior SOCK_STREAM SOCK_CLOEXEC) IPPROTO_IP)))
 
-           (catch 'system-error
-             (lambda ()
-               (connect s (addrinfo:addr ai))
+         (catch 'system-error
+           (lambda ()
+             (connect s (addrinfo:addr ai))
 
-               ;; Setting this option makes a dramatic difference because it
-               ;; avoids the "ACK delay" on our RPC messages.
-               (setsockopt s IPPROTO_TCP TCP_NODELAY 1)
-               s)
-             (lambda args
-               ;; Connection failed, so try one of the other addresses.
-               (close s)
-               (if (null? rest)
-                   (raise (condition (&store-connection-error
-                                      (file host)
-                                      (errno (system-error-errno args)))))
-                   (loop rest))))))))))
+             ;; Setting this option makes a dramatic difference because it
+             ;; avoids the "ACK delay" on our RPC messages.
+             (setsockopt s IPPROTO_TCP TCP_NODELAY 1)
+             s)
+           (lambda args
+             ;; Connection failed, so try one of the other addresses.
+             (close s)
+             (if (null? rest)
+                 (raise (condition (&store-connection-error
+                                    (file host)
+                                    (errno (system-error-errno args)))))
+                 (loop rest)))))))))
 
 (define (connect-to-daemon uri)
   "Connect to the daemon at URI, a string that may be an actual URI or a file

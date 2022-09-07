@@ -61,7 +61,7 @@
 ;;; Copyright © 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Evan Straw <evan.straw99@gmail.com>
-;;; Copyright © 2020, 2021 Masaya Tojo <masaya@tojo.tokyo>
+;;; Copyright © 2020, 2021, 2022 Masaya Tojo <masaya@tojo.tokyo>
 ;;; Copyright © 2020, 2021 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
@@ -166,6 +166,7 @@
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages games)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages gtk)
@@ -250,7 +251,7 @@
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
-    (version "0.26")
+    (version "0.26.1")
     (source
      (origin
        (method git-fetch)
@@ -259,7 +260,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pm33zlcq84h61xhplmrlicckrax1pv39zrmv8ryzhi9mqrb6bdg"))))
+        (base32 "1k5ligm1aba9b6dqg0yi86a2y2fhnxi7jsjgxj9jw7icgfa11djn"))))
     (build-system emacs-build-system)
     (arguments
      '(#:phases
@@ -297,16 +298,16 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
-    (version "0.23.2")
+    (version "0.26.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/emacs-geiser/guile.git")
+             (url "https://gitlab.com/emacs-geiser/guile")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18m5ldj4r4c2hxgvv5b4azl90r8az1kn5f3s913h971asyv4wx06"))))
+        (base32 "06939mv9i7zzqvq71d0ixk3y9135132f3pk9jgjdwvacl1d31h8k"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -3015,7 +3016,7 @@ or XEmacs.")
 (define-public emacs-autothemer
   (package
     (name "emacs-autothemer")
-    (version "0.2.10")
+    (version "0.2.14")
     (source
      (origin
        (method git-fetch)
@@ -3025,7 +3026,7 @@ or XEmacs.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1dz09n8qiqvzxckmy6mjnpw4f62jpk35cw16w0lhfpvfa8by4mp8"))))
+         "0jxlfwcfqdjr3da2xzjnigmckarhjbn6b1i1x4pdzb5djjcz00qc"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash))
@@ -3034,7 +3035,7 @@ or XEmacs.")
     (description
      "Autothemer provides a thin layer on top of @code{deftheme} and
 @code{custom-theme-set-faces} that creates a new custom color theme, based on
-a set of simplified face specifications and a user-supplied color palette")
+a set of simplified face specifications and a user-supplied color palette.")
     (license license:gpl3+)))
 
 (define-public emacs-howm
@@ -3385,6 +3386,57 @@ environment set through Direnv.")
     (description "This Emacs package provides a command showing the symbols
 that the binary uses instead of the actual binary contents.")
     (license license:gpl3+)))
+
+(define-public emacs-org-fc
+  (let ((commit "f64b5336485a42be91cfe77850c02a41575f5984")
+        (revision "0"))
+    (package
+      (name "emacs-org-fc")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~l3kn/org-fc")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1d0a3vr09zkplclypcgpfbfd6r0h0i3g3zsqb4pcz6x239d59gd5"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons* "\\.awk$" "\\.org$" %default-include)
+        #:exclude #~(cons "^tests/" %default-exclude)
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch"
+                               "-L" "."
+                               "-L" "tests/"
+                               "-l" "tests/org-fc-filter-test.el"
+                               "-l" "tests/org-fc-indexer-test.el"
+                               "-l" "tests/org-fc-review-data-test.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'qualify-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((find (search-input-file inputs "/bin/find"))
+                      (gawk (search-input-file inputs "/bin/gawk"))
+                      (xargs (search-input-file inputs "/bin/xargs")))
+                  (substitute* "org-fc-awk.el"
+                    (("\"find ") (string-append "\"" find " "))
+                    (("\"gawk ") (string-append "\"" gawk " "))
+                    (("\"xargs ") (string-append "\"" xargs " ")))))))))
+      (inputs (list findutils gawk))
+      (propagated-inputs (list emacs-hydra))
+      (home-page "https://www.leonrische.me/fc/index.html")
+      (synopsis "Spaced repetition system for Emacs Org mode")
+      (description
+       "Org-fc is a spaced-repetition system for Emacs' Org mode.
+It allows you to mark headlines in a file as flashcards, turning pieces of
+knowledge you want to learn into a question-answer test.  These cards are
+reviewed at regular interval.  After each review, the next review interval is
+calculated based on how well you remembered the contents of the card.")
+      (license license:gpl3+))))
 
 (define-public emacs-font-lock-studio
   (let ((commit "12c35967b31233e06946c70627aa3152dacfe261")
@@ -13233,7 +13285,7 @@ passive voice.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.5.4")
+    (version "9.5.5")
     (source
      (origin
        (method git-fetch)
@@ -13242,7 +13294,7 @@ passive voice.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1an866kkn5r84933s04agm1c3197kza2pvk8lqp2xzpjd09ba394"))))
+        (base32 "0bswysz5laiya9pm689v4rpxjlfqg21azyh1jal9jq80iwjwi2p8"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
@@ -15954,7 +16006,7 @@ running a customisable handler command (@code{ignore} by default).")
 (define-public emacs-json-reformat
   (package
     (name "emacs-json-reformat")
-    (version "0.0.6")
+    (version "0.0.7")
     (source
      (origin
        (method git-fetch)
@@ -15963,7 +16015,7 @@ running a customisable handler command (@code{ignore} by default).")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qp4n2k6s69jj4gwwimkpadjv245y54wk3bxb1x96f034gkp81vs"))
+        (base32 "1gaifz1brh7yh1wk1c02gddwis4ab6bggv27gy7gcd2s861f8bkx"))
        (patches (search-patches "emacs-json-reformat-fix-tests.patch"))))
     (build-system emacs-build-system)
     (arguments
@@ -15982,6 +16034,15 @@ running a customisable handler command (@code{ignore} by default).")
                                "ert-deftest json-reformat-test:json-reformat-region")
                               (beginning-of-line)
                               (kill-sexp))
+                       (basic-save-buffer)))))
+         (add-before 'check 'delete-json-reformat-region-occur-error-test
+           (lambda _
+             (emacs-batch-edit-file "test/json-reformat-test.el"
+               `(progn (goto-char (point-min))
+                       (re-search-forward
+                        "ert-deftest json-reformat-test:json-reformat-region-occur-error")
+                       (beginning-of-line)
+                       (kill-sexp)
                        (basic-save-buffer))))))))
     (native-inputs
      (list emacs-dash emacs-ert-runner emacs-shut-up))
@@ -16708,6 +16769,30 @@ the nick color and the background color
 enables you to easily define search engines, bind them to keybindings, and
 query them from the comfort of your editor.")
     (home-page "https://github.com/hrs/engine-mode")
+    (license license:gpl3+)))
+
+(define-public emacs-engrave-faces
+  (package
+    (name "emacs-engrave-faces")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/engrave-faces-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "1q4sjl2rvcfwcirm32nmi53258ln71yhh1dgszlxwknm38a14v3i"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/tecosaur/engrave-faces")
+    (synopsis "Convert font-lock faces to other formats")
+    (description "There are some great packages for exporting buffers to
+particular formats, but each one seems to reinvent the core mechanism of
+processing the font-lock in a buffer such that it can be exported to
+a particular format.
+
+This package aims to produce a versatile generic core which can process
+a fontified buffer and pass the data to any number of backends which can deal
+with specific output formats.")
     (license license:gpl3+)))
 
 (define-public emacs-inheritenv
@@ -27966,6 +28051,30 @@ With org-reveal, you can create beautiful presentations with 3D effects from
 simple but powerful Org contents.")
       (license license:gpl3+))))
 
+(define-public emacs-ox-rss
+  ;; XXX: Upstream provides no version nor tags whatsoever.
+  (let ((commit "83dc898fa5493925b01716e5dd495d5e07c3d41a")
+        (revision "0"))
+    (package
+      (name "emacs-ox-rss")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/nsavage/ox-rss")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0513kixv9bgkignmji95m3rskn6px6c0fack4zdl61qq09fg8w6h"))))
+      (build-system emacs-build-system)
+      (home-page "https://gitlab.com/nsavage/ox-rss")
+      (synopsis "RSS 2.0 back-end for Org export engine")
+      (description
+       "This library implements an RSS 2.0 back-end for Org exporter, based
+on the HTML back-end.")
+      (license license:gpl3+))))
+
 (define-public emacs-wc-mode
   (package
     (name "emacs-wc-mode")
@@ -30385,7 +30494,7 @@ support for the Nicola keyboard layout to it.")))
 (define-public emacs-tamil99
   (package
     (name "emacs-tamil99")
-    (version "0.1.1")
+    (version "0.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -30394,7 +30503,7 @@ support for the Nicola keyboard layout to it.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0f9s3b6fd42j21922qkxfr3j83a7qym73nynph86w87vkis40zqw"))))
+                "12sr59b2ngay66snb2m4a5zy6n11ahnmc5wy42l3ks7fd4cc5rgs"))))
     (build-system emacs-build-system)
     (home-page "https://git.systemreboot.net/tamil99/about/")
     (synopsis "Tamil99 input method for Emacs")
@@ -30767,29 +30876,26 @@ rather excellent completion provided by both Bash and Zsh.")
     (license license:gpl3+)))
 
 (define-public emacs-shell-command+
-  ;; XXX: Upstream did not tag last release.  The commit below corresponds to
-  ;; the exact version bump.
-  (let ((commit "bf744c63bbd1e3bbb93407bd32d6da670b23e67e"))
-    (package
-      (name "emacs-shell-command+")
-      (version "2.3.2")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.sr.ht/~pkal/shell-command-plus")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32 "0prlvcryq5ngrzn5f45rkw09wbr99v7nnwps2bjrjc3wvr2rp6h0"))))
-      (build-system emacs-build-system)
-      (home-page "http://elpa.gnu.org/packages/shell-command+.html")
-      (synopsis "Extended Emacs @code{shell-command}")
-      (description
-       "Shell-command+ is a @code{shell-command} substitute that extends the
+  (package
+    (name "emacs-shell-command+")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~pkal/shell-command-plus")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "14akj7pavfhch6ljwl26mhv7qczgmqn7mld62cf6mh4ghmhy3z4y"))))
+    (build-system emacs-build-system)
+    (home-page "http://elpa.gnu.org/packages/shell-command+.html")
+    (synopsis "Extended Emacs @code{shell-command}")
+    (description
+     "Shell-command+ is a @code{shell-command} substitute that extends the
 regular Emacs command with several features.  You can for example count all
 the lines in a buffer with @code{> wc -l}, or delete all lower case letters in
 the selected region with @code{| tr -d a-z}.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-shell-pop
   (let ((commit "4b4394037940a890a313d715d203d9ead2d156a6")
@@ -31699,7 +31805,7 @@ dict.org) from within Emacs.")
 (define-public emacs-multitran
   (package
     (name "emacs-multitran")
-    (version "0.4.14")
+    (version "0.4.16")
     (source
      (origin
        (method git-fetch)
@@ -31708,7 +31814,7 @@ dict.org) from within Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13lmhp2vm953s4phqdd119kp7s3p0kb3kqz4z6g3ga6m6py3gq3i"))))
+        (base32 "0zjl7zyydx2pan2ashbwbp70nlmw17hq5w03sfk12wi7j1nihwbz"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/zevlg/multitran.el")
     (synopsis "Emacs interface to the multitran.com online dictionary")
@@ -32388,6 +32494,33 @@ projects.")
 tree to go back to previous buffer states.  To use vundo, type @kbd{M-x vundo RET} in
 the buffer you want to undo.  An undo tree buffer should pop up.")
     (license license:gpl3+)))
+
+(define-public emacs-project-x
+  ;; There is no proper release.
+  ;; The base version is extracted from the README.org.
+  (let ((revision "0")
+        (commit  "0b78f4e33b994612fcb305b3cf6d3b1e3b62cea7"))
+    (package
+      (name "emacs-project-x")
+      (version (git-version "0.1.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/karthink/project-x")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1xxzxxm0jila5s9sfay6ywj2j8pyz4wwcrycvnrrzh0vxcsgzf9s"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/karthink/project-x")
+      (synopsis "Enhancement to Emacs built-in Project library")
+      (description
+       "Project-X provides convenience features for Emacs' Project library.
+In particular, it saves and restores project files and window configurations
+across sessions.")
+      (license license:gpl3+))))
 
 (define-public emacs-vertico-posframe
   (package

@@ -62,10 +62,13 @@ not be determined."
 
   (define (even-minor-version? version)
     (match (string-tokenize version %not-dot)
-      (((= string->number major) (= string->number minor) . rest)
+      (((= string->number major) (= string->number minor) micro)
+       ;; This is for things like GLib, with version strings like "2.72.3".
        (and minor (even? minor)))
       (((= string->number major) . _)
-       ;; It should at last start with a digit.
+       ;; GNOME applications have version strings like "42.1" (only two
+       ;; integers) and are not subject to the odd/even policy.  MAJOR should
+       ;; be a valid number though.
        major)))
 
   (define upstream-name

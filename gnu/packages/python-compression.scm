@@ -397,13 +397,13 @@ wrapper.  It provides a backport of the @code{Path} object.")
 (define-public python-zopfli
   (package
     (name "python-zopfli")
-    (version "0.1.9")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zopfli" version ".zip"))
        (sha256
-        (base32 "0yqdwvlpbvhhri0qmzag076ddi0sv43qjlk17l0siylfib03rpkq"))))
+        (base32 "1ipjkcgdbplsrhr31ypk48px8cax4cm9gcjj7yrcrhg20ql3s9p5"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -417,8 +417,8 @@ wrapper.  It provides a backport of the @code{Path} object.")
                    (replace 'check
                      (lambda* (#:key tests? #:allow-other-keys)
                        (when tests?
-                         (invoke "python" "tests/tests.py" "-v")))))))
-    (native-inputs (list unzip python-setuptools-scm))
+                         (invoke "pytest" "-vv")))))))
+    (native-inputs (list unzip python-pytest python-setuptools-scm))
     (inputs (list zopfli))
     (home-page "https://github.com/fonttools/py-zopfli")
     (synopsis "Python bindings for Zopfli")

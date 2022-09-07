@@ -4952,6 +4952,23 @@ that are compatible with @code{natbib}: @code{plainnat}, @code{unsrtnat},
 designed from the start to be compatible with @code{natbib}.")
     (license license:lppl)))
 
+(define-public texlive-latex-newfloat
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-newfloat"
+              (list "doc/latex/newfloat/"
+                    "tex/latex/newfloat/")
+              (base32 "1047max3li9ni15njgsvc7qglakgrjy2l0s72imgzdmwgb2h8jyf")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newfloat")
+    (synopsis "Define new floating environments")
+    (description
+     "This package offers the command @code{\\DeclareFloatingEnvironment},
+which the user may use to define new floating environments which behave like
+the LaTeX standard foating environments @code{figure} and @code{table}.")
+    (license license:lppl)))
+
 (define-public texlive-latex-newunicodechar
   (package
     (inherit (simple-texlive-package
@@ -9785,8 +9802,8 @@ of compatibility notes, for other packages, is provided in the
 documentation.  The package also provides the \"caption outside
 float\" facility, in the same way that simpler packages like
 @code{capt-ofcapt-of} do.  The package supersedes @code{caption2}.
-Packages @code{bicaption}, @code{ltcaption}, @code{newfloat},
-@code{subcaption} and @code{totalcount} are included in the bundle.")
+Packages @code{bicaption}, @code{ltcaption} and @code{subcaption} are
+included in the bundle.")
       (license license:lppl1.3+))))
 
 (define-public texlive-symbol
@@ -11553,3 +11570,22 @@ use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
 Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
 use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
     (license (list license:lppl1.3+ license:silofl1.1))))
+
+(define-public texlive-latex-hyphenat
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-hyphenat"
+              (list "doc/latex/hyphenat/"
+                    "tex/latex/hyphenat/")
+              (base32 "0b3jx2yvryx95am0ll9h6yc99niw2lwgsbq7r89j84z2qyp2llsq")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hyphenat")
+    (synopsis "Disable/enable hyphenation")
+    (description
+     "This package can disable all hyphenation or enable hyphenation of
+non-alphabetics or monospaced fonts.  The package can also enable hyphenation
+within ‘words’ that contain non-alphabetic characters (e.g., that include
+underscores), and hyphenation of text typeset in monospaced (e.g., cmtt)
+fonts.")
+    (license license:lppl1.3c+)))

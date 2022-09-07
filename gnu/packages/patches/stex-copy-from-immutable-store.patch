@@ -1,0 +1,41 @@
+From 9434b4a36646c036db8de326158056aa3293fb82 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Thu, 28 Apr 2022 22:56:20 -0400
+Subject: [PATCH] fix read-only gifs and math directories
+
+An installed copy of stex might have all write permission bits removed,
+even for the owner of the installed files: this is the case with Guix
+package of stex, for example. If such an installation is used to
+initialize the gifs or math directories (e.g. for an out-of-source
+build), tar likewise creates them without write permissions, preventing
+subdirectories from being created later. Set the user write bit
+explicitly to avoid this problem.
+  Mf-stex
+
+Related to https://github.com/racket/racket/pull/4203
+---
+
+Submitted upstream in https://github.com/dybvig/stex/pull/6
+
+ Mf-stex | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Mf-stex b/Mf-stex
+index 09ec6f3..11fb214 100644
+--- a/Mf-stex
++++ b/Mf-stex
+@@ -112,9 +112,11 @@ $(x).mathrun: gifs $(mathfiles)
+ 
+ gifs:
+ 	(cd $(STEXLIB); tar -cf - gifs) | tar -xpf -
++	chmod u+w gifs
+ 
+ math:
+ 	(cd $(STEXLIB); tar -cf - math) | tar -xpf -
++	chmod u+w math
+ 
+ $(mathfiles): $(x).hthirdrun $(figps)
+ 	echo -n gifs= > $(mathfiles)
+-- 
+2.32.0
+

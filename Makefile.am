@@ -401,10 +401,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/5.19-arm64.conf	\
   gnu/packages/aux-files/linux-libre/5.19-i686.conf	\
   gnu/packages/aux-files/linux-libre/5.19-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/5.18-arm.conf	\
-  gnu/packages/aux-files/linux-libre/5.18-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/5.18-i686.conf	\
-  gnu/packages/aux-files/linux-libre/5.18-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/5.15-arm.conf	\
   gnu/packages/aux-files/linux-libre/5.15-arm64.conf	\
   gnu/packages/aux-files/linux-libre/5.15-i686.conf	\

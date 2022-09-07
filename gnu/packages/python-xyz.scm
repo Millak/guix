@@ -2574,20 +2574,25 @@ downloaded, or download a strip for a particular date or index, if possible.")
 (define-public python-et-xmlfile
   (package
     (name "python-et-xmlfile")
-    (version "1.0.1")
+    (version "1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "et_xmlfile" version))
+       ;; Use a checkout because the PyPI archive does not contain tests.
+       (method hg-fetch)
+       (uri (hg-reference
+             (url "https://foss.heptapod.net/openpyxl/et_xmlfile")
+             (changeset version)))
+       (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32
-         "0nrkhcb6jdrlb6pwkvd4rycw34y3s931hjf409ij9xkjsli9fkb1"))))
+        (base32 "09r8rjc5bhkqrm5c4n9jrlvad8vrvbyswl9g0wrc1qc7nzh9mpw7"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest python-lxml))   ;used for the tests
     (home-page "https://bitbucket.org/openpyxl/et_xmlfile")
@@ -3544,20 +3549,22 @@ version numbers.")
 (define-public python-jdcal
   (package
     (name "python-jdcal")
-    (version "1.4")
+    (version "1.4.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "jdcal" version))
         (sha256
           (base32
-            "1ja6j2xq97bsl6rv09mhdx7n0xnrsfx0mj5xqza0mxghqmkm02pa"))))
+            "1j6g19jf21qprjsr8h0r7nsbss366gy8j9izq8cz53gbjvh74a27"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/phn/jdcal")
@@ -7494,7 +7501,7 @@ a front-end for C compilers or analysis tools.")
 (define-public python-xlsxwriter
   (package
     (name "python-xlsxwriter")
-    (version "1.3.9")
+    (version "3.0.3")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -7504,7 +7511,7 @@ a front-end for C compilers or analysis tools.")
              (commit (string-append "RELEASE_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04idf331rp0iyhlnh7268jmim8ydw4jjb81hr5rh548sqnq4bhpl"))))
+        (base32 "1lr7mmik6r4zns069i4zfx1cnwhz6snmlh2zsiry0cwx8cv33wpm"))))
     (build-system python-build-system)
     (home-page "https://github.com/jmcnamara/XlsxWriter")
     (synopsis "Python module for creating Excel XLSX files")
@@ -7691,7 +7698,7 @@ support for Python 3 and PyPy.  It is based on cffi.")
 (define-public python-cairocffi
   (package
     (name "python-cairocffi")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        ;; The PyPI archive does not include the documentation, so use Git.
@@ -7702,7 +7709,7 @@ support for Python 3 and PyPy.  It is based on cffi.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ypw0c2lr43acn57hbmckk183zq4h477j7p4ig2zjvw0mcpvia50"))))
+         "0lylyxyyd8csjhn5kxwzrcr6ick6pvvm1wclpmb5ni28jznxn7lb"))))
     (build-system python-build-system)
     (outputs '("out" "doc"))
     (inputs
@@ -11255,13 +11262,13 @@ It has a flexible system of @samp{authorizers} able to manage both
 (define-public python-fs
   (package
     (name "python-fs")
-    (version "2.4.14")
+    (version "2.4.16")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fs" version))
        (sha256
-        (base32 "0v5kqzi0vd8ar4j4qf5440nzwa9dcagpxb3q6k0cln4cqlmxqmcm"))))
+        (base32 "04ykd7q49qgv13hl2n71lzihs2c9099r50lmd85vgx0k2bawg5xf"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -22563,7 +22570,7 @@ Let's Encrypt.")
 (define-public python-cfgv
   (package
     (name "python-cfgv")
-    (version "3.1.0")
+    (version "3.3.1")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -22573,16 +22580,17 @@ Let's Encrypt.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vvkkqw92sak4b28bpscpppq483amy52ch2yqy1i2m23q7xjkabx"))))
+        (base32 "1pci97cmn3v45sfch9s3lshidrl0309ls9byidic0l8drkwnkwcj"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-covdefaults python-coverage python-pytest))
+     (list python-pytest))
     (home-page "https://github.com/asottile/cfgv")
     (synopsis "Configuration validation library")
     (description

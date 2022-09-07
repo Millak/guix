@@ -1,0 +1,609 @@
+From f17b030fa2f902bb3666913d4a3cd6ba9c146d22 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Wed, 3 Aug 2022 03:13:03 -0400
+Subject: [PATCH 1/3] Chez Scheme: Fix build on GNU/Hurd
+
+Mostly GNU/Hurd should take the same options as GNU/Linux. One
+difference is that the Hurd does not define macros such as `PATH_MAX` or
+`NOFILE`, because it avoids imposing arbitrary limits on such resources.
+This patch provides alternatives for localized uses of those constants,
+but it accepts the pervasive use of `PATH_MAX` in finding bootfiles for
+now. See https://www.gnu.org/software/hurd/hurd/porting/guidelines.html.
+
+(cherry picked from commit 87eee6e2adb8c6bc11e60619c706fa6295096085)
+---
+ racket/src/ChezScheme/README.md    |  1 +
+ racket/src/ChezScheme/c/number.c   | 22 +++++++++----------
+ racket/src/ChezScheme/c/prim5.c    | 35 ++++++++++++++++++++++++++++--
+ racket/src/ChezScheme/c/scheme.c   | 34 +++++++++++++++++------------
+ racket/src/ChezScheme/c/version.h  |  7 ++++--
+ racket/src/ChezScheme/configure    | 17 ++++++++++-----
+ racket/src/ChezScheme/s/cmacros.ss |  1 +
+ racket/src/cs/c/configure          | 14 ++++++++++--
+ racket/src/cs/c/configure.ac       | 14 ++++++++++--
+ racket/src/cs/rumble/system.ss     |  3 +++
+ 10 files changed, 109 insertions(+), 39 deletions(-)
+
+diff --git a/racket/src/ChezScheme/README.md b/racket/src/ChezScheme/README.md
+index a4a11a5eef..25231dd9bb 100644
+--- a/racket/src/ChezScheme/README.md
++++ b/racket/src/ChezScheme/README.md
+@@ -13,6 +13,7 @@ Supported platforms (bytecode interpreter may work for others):
+  * OpenBSD: x86, x86_64, ARMv6, AArch64, PowerPC32
+  * NetBSD: x86, x86_64, ARMv6, AArch64, PowerPC32
+  * Solaris: x86, x86_64
++ * GNU/Hurd: x86
+  * Android: ARMv7, AArch64
+  * iOS: AArch64
+  * WebAssembly via Emscripten (bytecode interpreter only)
+diff --git a/racket/src/ChezScheme/c/number.c b/racket/src/ChezScheme/c/number.c
+index ede38cc626..e2bce0d2d3 100644
+--- a/racket/src/ChezScheme/c/number.c
++++ b/racket/src/ChezScheme/c/number.c
+@@ -1041,15 +1041,15 @@ floating-point operations
+ 
+ #ifdef IEEE_DOUBLE
+ /* exponent stored + 1024, hidden bit to left of decimal point */
+-#define bias 1023
+-#define bitstoright 52
+-#define m1mask 0xf
+-#ifdef WIN32
+-#define hidden_bit 0x10000000000000
+-#else
+-#define hidden_bit 0x10000000000000ULL
+-#endif
+-#ifdef LITTLE_ENDIAN_IEEE_DOUBLE
++# define bias 1023
++# define bitstoright 52
++# define m1mask 0xf
++# ifdef WIN32
++#  define hidden_bit 0x10000000000000
++# else
++#  define hidden_bit 0x10000000000000ULL
++# endif
++# ifdef LITTLE_ENDIAN_IEEE_DOUBLE
+ struct dblflt {
+     UINT m4: 16;
+     UINT m3: 16;
+@@ -1058,7 +1058,7 @@ struct dblflt {
+     UINT e: 11;
+     UINT sign: 1;
+ };
+-#else
++# else
+ struct dblflt {
+     UINT sign: 1;
+     UINT e: 11;
+@@ -1067,7 +1067,7 @@ struct dblflt {
+     UINT m3: 16;
+     UINT m4: 16;
+ };
+-#endif
++# endif
+ #endif
+ 
+ double S_random_double(U32 m1, U32 m2, U32 m3, U32 m4, double scale) {
+diff --git a/racket/src/ChezScheme/c/prim5.c b/racket/src/ChezScheme/c/prim5.c
+index 124d1e049c..82bbf8d687 100644
+--- a/racket/src/ChezScheme/c/prim5.c
++++ b/racket/src/ChezScheme/c/prim5.c
+@@ -23,6 +23,10 @@
+ #include <ctype.h>
+ #include <math.h>
+ 
++#if defined(__GNU__) /* Hurd */
++#include <sys/resource.h>
++#endif
++
+ /* locally defined functions */
+ static INT s_errno(void);
+ static IBOOL s_addr_in_heap(uptr x);
+@@ -58,7 +62,7 @@ static void s_showalloc(IBOOL show_dump, const char *outfn);
+ static ptr s_system(const char *s);
+ static ptr s_process(char *s, IBOOL stderrp);
+ static I32 s_chdir(const char *inpath);
+-#ifdef GETWD
++#if defined(GETWD) || defined(__GNU__) /* Hurd */
+ static char *s_getwd(void);
+ #endif
+ static ptr s_set_code_byte(ptr p, ptr n, ptr x);
+@@ -881,7 +885,18 @@ static ptr s_process(char *s, IBOOL stderrp) {
+         CLOSE(0); if (dup(tofds[0]) != 0) _exit(1);
+         CLOSE(1); if (dup(fromfds[1]) != 1) _exit(1);
+         CLOSE(2); if (dup(stderrp ? errfds[1] : 1) != 2) _exit(1);
++#ifndef __GNU__ /* Hurd */
+         {INT i; for (i = 3; i < NOFILE; i++) (void)CLOSE(i);}
++#else /* __GNU__ Hurd: no NOFILE */
++        {
++          INT i;
++          struct rlimit rlim;
++          getrlimit(RLIMIT_NOFILE, &rlim);
++          for (i = 3; i < rlim.rlim_cur; i++) {
++            (void)CLOSE(i);
++          }
++        }
++#endif /* __GNU__ Hurd */
+         execl("/bin/sh", "/bin/sh", "-c", s, NULL);
+         _exit(1) /* only if execl fails */;
+         /*NOTREACHED*/
+@@ -927,6 +942,22 @@ static I32 s_chdir(const char *inpath) {
+ static char *s_getwd() {
+   return GETWD(TO_VOIDP(&BVIT(S_bytevector(PATH_MAX), 0)));
+ }
++#elif defined(__GNU__) /* Hurd: no PATH_MAX */
++static char *s_getwd() {
++  char *path;
++  size_t len;
++  ptr bv;
++  path = getcwd(NULL, 0);
++  if (NULL == path) {
++    return NULL;
++  } else {
++    len = strlen(path);
++    bv = S_bytevector(len);
++    memcpy(TO_VOIDP(&BVIT(bv, 0)), path, len);
++    free(path);
++    return TO_VOIDP(&BVIT(bv, 0));
++  }
++}
+ #endif /* GETWD */
+ 
+ static ptr s_set_code_byte(ptr p, ptr n, ptr x) {
+@@ -1817,7 +1848,7 @@ void S_prim5_init(void) {
+     Sforeign_symbol("(cs)s_rational", (void *)S_rational);
+     Sforeign_symbol("(cs)sub", (void *)S_sub);
+     Sforeign_symbol("(cs)rem", (void *)S_rem);
+-#ifdef GETWD
++#if defined(GETWD) || defined(__GNU__) /* Hurd */
+     Sforeign_symbol("(cs)s_getwd", (void *)s_getwd);
+ #endif
+     Sforeign_symbol("(cs)s_chdir", (void *)s_chdir);
+diff --git a/racket/src/ChezScheme/c/scheme.c b/racket/src/ChezScheme/c/scheme.c
+index ed5564540b..0c40e3eaf0 100644
+--- a/racket/src/ChezScheme/c/scheme.c
++++ b/racket/src/ChezScheme/c/scheme.c
+@@ -458,6 +458,12 @@ static IBOOL next_path(char *path, const char *name, const char *ext, const char
+ static const char *path_last(const char *path);
+ static char *get_defaultheapdirs(void);
+ 
++#ifdef PATH_MAX
++# define BOOT_PATH_MAX PATH_MAX
++#else /* hack for Hurd: better to remove the restriction */
++# define BOOT_PATH_MAX 4096
++#endif
++
+ static const char *path_last(const char *p) {
+   const char *s;
+ #ifdef WIN32
+@@ -483,7 +489,7 @@ static const char *path_last(const char *p) {
+ 
+ static char *get_defaultheapdirs() {
+   char *result;
+-  wchar_t buf[PATH_MAX];
++  wchar_t buf[BOOT_PATH_MAX];
+   DWORD len = sizeof(buf);
+   if (ERROR_SUCCESS != RegGetValueW(HKEY_LOCAL_MACHINE, L"Software\\Chez Scheme\\csv" VERSION, L"HeapSearchPath", RRF_RT_REG_SZ, NULL, buf, &len))
+     return DEFAULT_HEAP_PATH;
+@@ -512,14 +518,14 @@ static char *get_defaultheapdirs() {
+  * leaving the full path with name affixed in path and *sp / *dsp pointing
+  * past the current entry.  it returns 1 on success and 0 if at the end of
+  * the search path.  path should be a pointer to an unoccupied buffer
+- * PATH_MAX characters long.  either or both of sp/dsp may be empty,
++ * BOOT_PATH_MAX characters long.  either or both of sp/dsp may be empty,
+  * but neither may be null, i.e., (char *)0. */
+ static IBOOL next_path(char *path, const char *name, const char *ext,
+                        const char **sp, const char **dsp) {
+   char *p;
+   const char *s, *t;
+ 
+-#define setp(c) if (p >= path + PATH_MAX) { fprintf(stderr, "search path entry too long\n"); S_abnormal_exit(); } else *p++ = (c)
++#define setp(c) if (p >= path + BOOT_PATH_MAX) { fprintf(stderr, "search path entry too long\n"); S_abnormal_exit(); } else *p++ = (c)
+   for (;;) {
+     s = *sp;
+     p = path;
+@@ -532,10 +538,10 @@ static IBOOL next_path(char *path, const char *name, const char *ext,
+           switch (*s) {
+ #ifdef WIN32
+             case 'x': {
+-              wchar_t exepath[PATH_MAX]; DWORD n;
++              wchar_t exepath[BOOT_PATH_MAX]; DWORD n;
+               s += 1;
+-              n = GetModuleFileNameW(NULL, exepath, PATH_MAX);
+-              if (n == 0 || (n == PATH_MAX && GetLastError() == ERROR_INSUFFICIENT_BUFFER)) {
++              n = GetModuleFileNameW(NULL, exepath, BOOT_PATH_MAX);
++              if (n == 0 || (n == BOOT_PATH_MAX && GetLastError() == ERROR_INSUFFICIENT_BUFFER)) {
+                 fprintf(stderr, "warning: executable path is too long; ignoring %%x\n");
+               } else {
+                 char *tstart;
+@@ -608,7 +614,7 @@ typedef struct {
+   iptr len; /* 0 => unknown */
+   iptr offset;
+   IBOOL need_check, close_after;
+-  char path[PATH_MAX];
++  char path[BOOT_PATH_MAX];
+ } boot_desc;
+ 
+ #define MAX_BOOT_FILES 10
+@@ -695,14 +701,14 @@ static void finish_dependencies_header(int fd, const char *path, int c) {
+ static IBOOL find_boot(const char *name, const char *ext, IBOOL direct_pathp,
+                        int fd,
+                        IBOOL errorp) {
+-  char pathbuf[PATH_MAX], buf[PATH_MAX];
++  char pathbuf[BOOT_PATH_MAX], buf[BOOT_PATH_MAX];
+   uptr n = 0;
+   INT c;
+   const char *path;
+   char *expandedpath;
+ 
+   if ((fd != -1) || direct_pathp || S_fixedpathp(name)) {
+-    if (strlen(name) >= PATH_MAX) {
++    if (strlen(name) >= BOOT_PATH_MAX) {
+       fprintf(stderr, "boot-file path is too long %s\n", name);
+       S_abnormal_exit();
+     }
+@@ -776,7 +782,7 @@ static IBOOL find_boot(const char *name, const char *ext, IBOOL direct_pathp,
+     if (boot_count == 0) {
+       for (;;) {
+        /* try to load heap or boot file this boot file requires */
+-        if (get_string(fd, buf, PATH_MAX, &c) != 0) {
++        if (get_string(fd, buf, BOOT_PATH_MAX, &c) != 0) {
+           fprintf(stderr, "unexpected end of file on %s\n", path);
+           CLOSE(fd);
+           S_abnormal_exit();
+@@ -796,7 +802,7 @@ static IBOOL find_boot(const char *name, const char *ext, IBOOL direct_pathp,
+           c = get_u8(fd);
+           for (sep = " "; ; sep = "or ") {
+             if (c == ')') break;
+-            (void) get_string(fd, buf, PATH_MAX, &c);
++            (void) get_string(fd, buf, BOOT_PATH_MAX, &c);
+             fprintf(stderr, "%s%s.boot ", sep, buf);
+           }
+           fprintf(stderr, "required by %s\n", path);
+@@ -1090,7 +1096,7 @@ extern void Sregister_boot_file_fd_region(const char *name,
+                                           int close_after) {
+   check_boot_file_state("Sregister_boot_file_fd");
+ 
+-  if (strlen(name) >= PATH_MAX) {
++  if (strlen(name) >= BOOT_PATH_MAX) {
+     fprintf(stderr, "boot-file path is too long %s\n", name);
+     S_abnormal_exit();
+   }
+@@ -1141,14 +1147,14 @@ extern void Sbuild_heap(const char *kernel, void (*custom_init)(void)) {
+     }
+ 
+     name = path_last(kernel);
+-    if (strlen(name) >= PATH_MAX) {
++    if (strlen(name) >= BOOT_PATH_MAX) {
+       fprintf(stderr, "executable name too long: %s\n", name);
+       S_abnormal_exit();
+     }
+ 
+ #ifdef WIN32
+     { /* strip off trailing .exe, if any */
+-      static char buf[PATH_MAX];
++      static char buf[BOOT_PATH_MAX];
+       iptr n;
+ 
+       n = strlen(name) - 4;
+diff --git a/racket/src/ChezScheme/c/version.h b/racket/src/ChezScheme/c/version.h
+index a79d12621b..61751a9fad 100644
+--- a/racket/src/ChezScheme/c/version.h
++++ b/racket/src/ChezScheme/c/version.h
+@@ -80,7 +80,7 @@ FORCEINLINE void store_unaligned_uptr(uptr *addr, uptr val) {
+ /*****************************************/
+ /* Operating systems                     */
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__GNU__) /* Hurd */
+ #define NOBLOCK O_NONBLOCK
+ #define LOAD_SHARED_OBJECT
+ #define USE_MMAP
+@@ -91,7 +91,10 @@ FORCEINLINE void store_unaligned_uptr(uptr *addr, uptr val) {
+ #define GETPAGESIZE() getpagesize()
+ typedef char *memcpy_t;
+ #define MAKE_NAN(x) { x = 0.0; x = x / x; }
+-#define GETWD(x) getcwd((x),PATH_MAX)
++#ifndef __GNU__ /* Hurd: no PATH_MAX */
++/* n.b. don't test PATH_MAX directly: we have not yet included <limits.h>  */
++# define GETWD(x) getcwd((x),PATH_MAX)
++#endif
+ typedef int tputsputcchar;
+ #ifndef __ANDROID__
+ # define LOCKF
+diff --git a/racket/src/ChezScheme/configure b/racket/src/ChezScheme/configure
+index f64b639c3a..efdb6029cb 100755
+--- a/racket/src/ChezScheme/configure
++++ b/racket/src/ChezScheme/configure
+@@ -102,6 +102,11 @@ case "${CONFIG_UNAME}" in
+     installprefix=/usr
+     installmansuffix=share/man
+     ;;
++  GNU)
++    unixsuffix=gnu # the Hurd
++    installprefix=/usr
++    installmansuffix=share/man
++    ;;
+   QNX)
+     if uname -a | egrep 'x86' > /dev/null 2>&1 ; then
+       m32=i3qnx
+@@ -591,7 +596,7 @@ fi
+ 
+ # Infer flags needed for threads:
+ case "${flagsm}" in
+-  *le|*fb|*ob|*nb)
++  *le|*gnu|*fb|*ob|*nb)
+       threadFlags="-D_REENTRANT -pthread"
+       threadLibs="-lpthread"
+       ;;
+@@ -627,7 +632,7 @@ if [ "$cflagsset" = "no" ] ; then
+     a6*)
+         CFLAGS="-m64 ${optFlags}"
+         ;;
+-    i3le)
++    i3le) # intentionally not including i3gnu, which may not support sse2
+         CFLAGS="-m32 -msse2 -mfpmath=sse ${optFlags}"
+         ;;
+     i3nt)
+@@ -688,7 +693,7 @@ fi
+ # Add automatic linking flags, unless suppressed by --disable-auto-flags
+ if [ "$addflags" = "yes" ] ; then
+   case "${flagsm}" in
+-    *le)
++    *le|*gnu)
+         LDFLAGS="${LDFLAGS} -rdynamic"
+         ;;
+     *fb|*nb)
+@@ -702,7 +707,7 @@ if [ "$addflags" = "yes" ] ; then
+   esac
+ 
+   case "${flagsm}" in
+-    *le)
++    *le|*gnu)
+         LIBS="${LIBS} -lm -ldl ${ncursesLib} -lrt"
+         ;;
+     *fb|*ob)
+@@ -749,7 +754,7 @@ exeSuffix=
+ 
+ # compile flags for c/Mf-unix and mats/Mf-unix
+ case "${flagsmuni}" in
+-    *le)
++    *le|*gnu)
+         mdcflags="-fPIC -shared"
+         ;;
+     *fb|*ob)
+@@ -781,7 +786,7 @@ case "${flagsmuni}" in
+     i3le)
+         mdldflags="-melf_i386"
+         ;;
+-    *le)
++    *le|*gnu)
+         ;;
+     i3nb)
+         mdldflags="-m elf_i386"
+diff --git a/racket/src/ChezScheme/s/cmacros.ss b/racket/src/ChezScheme/s/cmacros.ss
+index ff2b09217b..2e79a4d8de 100644
+--- a/racket/src/ChezScheme/s/cmacros.ss
++++ b/racket/src/ChezScheme/s/cmacros.ss
+@@ -385,6 +385,7 @@
+   i3fb      ti3fb
+   i3ob      ti3ob
+   i3osx     ti3osx
++  i3gnu     ti3gnu
+   a6le      ta6le
+   a6osx     ta6osx
+   a6ob      ta6ob
+diff --git a/racket/src/cs/c/configure b/racket/src/cs/c/configure
+index 454d79e11a..dab545c0b4 100755
+--- a/racket/src/cs/c/configure
++++ b/racket/src/cs/c/configure
+@@ -4449,8 +4449,15 @@ case "$host_os" in
+     ;;
+   irix*)
+     ;;
+-  linux*)
+-    MACH_OS=le
++  linux*|gnu*)
++    case "$host_os" in
++      *linux*)
++        MACH_OS=le
++        ;;
++      *)
++        MACH_OS=gnu # Hurd
++        ;;
++    esac
+     case "$host_os" in
+       *linux-android*)
+         ;;
+@@ -4730,6 +4737,9 @@ if test "${build_os}_${build_cpu}" != "${host_os}_${host_cpu}" ; then
+     linux*)
+       BUILD_OS=le
+       ;;
++    gnu*) # Hurd: must come after linux*
++      BUILD_OS=gnu
++      ;;
+     *mingw*)
+       BUILD_OS=nt
+       ;;
+diff --git a/racket/src/cs/c/configure.ac b/racket/src/cs/c/configure.ac
+index 5bce979c92..43e7307b1b 100644
+--- a/racket/src/cs/c/configure.ac
++++ b/racket/src/cs/c/configure.ac
+@@ -272,8 +272,15 @@ case "$host_os" in
+     ;;
+   irix*)
+     ;;
+-  linux*)
+-    MACH_OS=le
++  linux*|gnu*)
++    case "$host_os" in
++      linux*)
++        MACH_OS=le
++        ;;
++      *)
++        MACH_OS=gnu # Hurd
++        ;;
++    esac
+     case "$host_os" in
+       *linux-android*)
+         ;;
+@@ -466,6 +473,9 @@ if test "${build_os}_${build_cpu}" != "${host_os}_${host_cpu}" ; then
+     linux*)
+       BUILD_OS=le
+       ;;
++    gnu*) # Hurd - must come after linux*
++      BUILD_OS=gnu
++      ;;
+     *mingw*)
+       BUILD_OS=nt
+       ;;
+diff --git a/racket/src/cs/rumble/system.ss b/racket/src/cs/rumble/system.ss
+index 2319cbe7a5..773eb79cf3 100644
+--- a/racket/src/cs/rumble/system.ss
++++ b/racket/src/cs/rumble/system.ss
+@@ -48,6 +48,8 @@
+            arm32le tarm32le arm64le tarm64le
+            ppc32le tppc32le)
+      'linux]
++    [(i3gnu ti3gnu)
++     'gnu-hurd]
+     [(a6fb ta6fb i3fb ti3fb
+            arm32fb tarm32fb arm64fb tarm64fb
+            ppc32fb tppc32fb)
+@@ -85,6 +87,7 @@
+             i3nb ti3nb
+             i3fb ti3fb
+             i3s2 ti3s2
++            i3gnu ti3gnu
+             i3qnx)
+      'i386]
+     [(arm32le tarm32le
+-- 
+2.32.0
+
+
+From 8653294b771c741d320aba31e692b4f0ed0c702f Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Thu, 4 Aug 2022 20:18:09 -0400
+Subject: [PATCH 2/3] BC: Fix build on GNU/Hurd
+
+(cherry picked from commit 5c05496afd6159c2f9cd52e7f23389fdc6b55f43)
+---
+ racket/src/bc/configure    |  2 +-
+ racket/src/bc/configure.ac |  2 +-
+ racket/src/bc/sconfig.h    | 14 +++++++++-----
+ 3 files changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/racket/src/bc/configure b/racket/src/bc/configure
+index 4ddb607b37..4ee346014d 100755
+--- a/racket/src/bc/configure
++++ b/racket/src/bc/configure
+@@ -5018,7 +5018,7 @@ case "$host_os" in
+       X_PRE_LIBS=""
+     fi
+     ;;
+-  linux*)
++  linux*,gnu*)
+     LIBS="$LIBS -ldl -lm -lrt -rdynamic"
+     DYN_CFLAGS="-fPIC"
+     curses_portable_link="/usr/lib/${host_cpu}-${host_os}/libncurses.a /usr/lib/${host_cpu}-${host_os}/libtermcap.a"
+diff --git a/racket/src/bc/configure.ac b/racket/src/bc/configure.ac
+index deef8f3077..866851236e 100644
+--- a/racket/src/bc/configure.ac
++++ b/racket/src/bc/configure.ac
+@@ -557,7 +557,7 @@ case "$host_os" in
+       X_PRE_LIBS=""
+     fi
+     ;;
+-  linux*)
++  linux*,gnu*)
+     LIBS="$LIBS -ldl -lm -lrt -rdynamic"
+     DYN_CFLAGS="-fPIC"
+     curses_portable_link="/usr/lib/${host_cpu}-${host_os}/libncurses.a /usr/lib/${host_cpu}-${host_os}/libtermcap.a"
+diff --git a/racket/src/bc/sconfig.h b/racket/src/bc/sconfig.h
+index 01ecb48158..8468942fcd 100644
+--- a/racket/src/bc/sconfig.h
++++ b/racket/src/bc/sconfig.h
+@@ -79,12 +79,14 @@
+ 
+ #endif
+ 
+-  /************** Linux with gcc ****************/
++  /************** Linux (or Hurd) with gcc ****************/
+ 
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__GNU__)
+ 
+ # ifdef __ANDROID__
+ #  define SCHEME_OS "android"
++# elif defined(__GNU__)
++#  define SCHEME_OS "gnu-hurd"
+ # else
+ #  define SCHEME_OS "linux"
+ # endif
+@@ -146,13 +148,15 @@
+ # define USE_IEEE_FP_PREDS
+ # define USE_EXPLICT_FP_FORM_CHECK
+ 
+-# define LINUX_FIND_STACK_BASE
++# define LINUX_FIND_STACK_BASE /* also ok for Hurd */
+ 
+ # define FLAGS_ALREADY_SET
+ 
+ #if defined(__i386__)
+-# define MZ_USE_JIT_I386
+-# define MZ_JIT_USE_MPROTECT
++# ifndef __GNU__ /* Hurd */
++#  define MZ_USE_JIT_I386
++#  define MZ_JIT_USE_MPROTECT
++# endif
+ # ifndef MZ_NO_UNWIND_SUPPORT
+ #  define MZ_USE_DWARF_LIBUNWIND
+ # endif
+-- 
+2.32.0
+
+
+From 1b0cd08557f58506c96f0ddd855bd9051a45a2f1 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Sat, 6 Aug 2022 22:48:40 -0400
+Subject: [PATCH 3/3] BC: repair configure script
+
+Hopefully this will fix the DrDr failures caused by 5c05496.
+
+Related to https://github.com/racket/racket/pull/4384
+
+(cherry picked from commit c3dd01055ed7589a18136904510fe4db557d6e77)
+---
+ racket/src/bc/configure    | 2 +-
+ racket/src/bc/configure.ac | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/racket/src/bc/configure b/racket/src/bc/configure
+index 4ee346014d..b1c5175b84 100755
+--- a/racket/src/bc/configure
++++ b/racket/src/bc/configure
+@@ -5018,7 +5018,7 @@ case "$host_os" in
+       X_PRE_LIBS=""
+     fi
+     ;;
+-  linux*,gnu*)
++  linux*|gnu*)
+     LIBS="$LIBS -ldl -lm -lrt -rdynamic"
+     DYN_CFLAGS="-fPIC"
+     curses_portable_link="/usr/lib/${host_cpu}-${host_os}/libncurses.a /usr/lib/${host_cpu}-${host_os}/libtermcap.a"
+diff --git a/racket/src/bc/configure.ac b/racket/src/bc/configure.ac
+index 866851236e..ecc3b0b579 100644
+--- a/racket/src/bc/configure.ac
++++ b/racket/src/bc/configure.ac
+@@ -557,7 +557,7 @@ case "$host_os" in
+       X_PRE_LIBS=""
+     fi
+     ;;
+-  linux*,gnu*)
++  linux*|gnu*)
+     LIBS="$LIBS -ldl -lm -lrt -rdynamic"
+     DYN_CFLAGS="-fPIC"
+     curses_portable_link="/usr/lib/${host_cpu}-${host_os}/libncurses.a /usr/lib/${host_cpu}-${host_os}/libtermcap.a"
+-- 
+2.32.0
+

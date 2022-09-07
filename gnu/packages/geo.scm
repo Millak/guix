@@ -2377,14 +2377,14 @@ growing set of geoscientific methods.")
 (define-public qgis
   (package
     (name "qgis")
-    (version "3.16.3")
+    (version "3.26.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://qgis.org/downloads/qgis-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "012dv8dcg7w4lf6k37i41wialwhi0kpkxw2dnq19yqqk35632mzx"))))
+        (base32 "1hsq3wchsf7db7134fgg9xzzap35q1s4r6649d0krbw80xw5asca"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules ((guix build cmake-build-system)
@@ -2405,7 +2405,7 @@ growing set of geoscientific methods.")
                (("sip_dir = cfg.default_sip_dir")
                 (string-append "sip_dir = \""
                                (assoc-ref inputs "python-pyqt+qscintilla")
-                               "/share/sip\""))
+                               "/share/sip\"")))
                ;; Fix building with python-sip@5.
                ;;
                ;; The reason for this is that python-sip@5 introduces some
@@ -2416,31 +2416,15 @@ growing set of geoscientific methods.")
                ;; are, messing up the build. The long term solution is to fully
                ;; upgrade SIP, use sip-build and fix all failing packages, but
                ;; for now I just want to get the build working.
-               ((".pyqt_sip_dir...os.path.join.*,")
-                (string-append "'pyqt_sip_dir': \""
+             (substitute* "cmake/FindPyQt5.cmake"
+               (("SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
+                (string-append "SET(PYQT5_SIP_DIR \""
                                (assoc-ref inputs "python-pyqt+qscintilla")
-                               "/share/sip"  "\",")))
-             (substitute* (list "scripts/prepare_commit.sh"
-                                "scripts/qstringfixup.sh"
-                                "scripts/release.pl"
-                                "scripts/runtests_local_travis_config.sh"
-                                "scripts/sip_include.sh"
-                                "scripts/sipdiff"
-                                "scripts/sipify_all.sh"
-                                "scripts/spell_check/check_spelling.sh"
-                                "scripts/spell_check/spell_test.sh"
-                                "scripts/verify_indentation.sh"
-                                "tests/code_layout/test_banned_keywords.sh"
-                                "tests/code_layout/test_licenses.sh"
-                                "tests/code_layout/test_shellcheck.sh"
-                                "tests/code_layout/test_sip_include.sh"
-                                "tests/code_layout/test_sipfiles.sh"
-                                "tests/code_layout/test_sipify.sh")
+                               "/share/sip\")")))
+             (substitute* (list "tests/code_layout/test_qt_imports.sh"
+                                "tests/code_layout/test_qgsscrollarea.sh")
                (("\\$\\(git rev-parse --show-toplevel\\)")
-                (getcwd)))
-             (substitute* "tests/code_layout/test_sip_include.sh"
-               (("^REV=.*") "REV=currentrev\n"))
-             #t))
+                (getcwd)))))
          (replace 'check
            (lambda* (#:key inputs tests? #:allow-other-keys)
              (when tests?
@@ -2454,113 +2438,85 @@ growing set of geoscientific methods.")
                            '(;; Disable tests that require network access
                              "qgis_filedownloader"
                              ;; TODO: Find why the following tests fail
-                             "ProcessingGdalAlgorithmsRasterTest"
-                             "ProcessingGdalAlgorithmsVectorTest"
-                             "ProcessingGrass7AlgorithmsImageryTest"
-                             "ProcessingGrass7AlgorithmsRasterTest"
-                             "ProcessingGrass7AlgorithmsVectorTest"
-                             "ProcessingOtbAlgorithmsTest"
                              "ProcessingQgisAlgorithmsTestPt1"
                              "ProcessingQgisAlgorithmsTestPt2"
                              "ProcessingQgisAlgorithmsTestPt3"
                              "ProcessingQgisAlgorithmsTestPt4"
-                             "PyCoreAdittions"
+                             "ProcessingGdalAlgorithmsVectorTest"
+                             "ProcessingGrass7AlgorithmsImageryTest"
+                             "ProcessingGrass7AlgorithmsRasterTestPt1"
+                             "ProcessingGrass7AlgorithmsRasterTestPt2"
+                             "ProcessingGrass7AlgorithmsVectorTest"
+                             "ProcessingOtbAlgorithmsTest"
+                             "test_core_authmanager"
+                             "test_core_compositionconverter"
+                             "test_core_gdalutils"
+                             "test_core_labelingengine"
+                             "test_core_layout"
+                             "test_core_layouthtml"
+                             "test_core_layoutlabel"
+                             "test_core_layoutmultiframe"
+                             "test_core_layoutpicture"
+                             "test_core_legendrenderer"
+                             "test_core_networkaccessmanager"
+                             "test_core_tiledownloadmanager"
+                             "test_gui_dualview"
+                             "test_gui_htmlwidgetwrapper"
+                             "test_gui_filedownloader"
+                             "test_gui_queryresultwidget"
+                             "test_analysis_processingalgspt2"
+                             "test_analysis_processing"
+                             "test_provider_wcsprovider"
+                             "qgis_grassprovidertest7"
+                             "test_app_gpsinformationwidget"
                              "PyQgsAnnotation"
-                             "PyQgsAppStartup"
-                             "PyQgsAuthBasicMethod"
+                             "PyQgsAttributeTableModel"
                              "PyQgsAuthenticationSystem"
-                             "PyQgsAuxiliaryStorage"
-                             "PyQgsDBManagerGpkg"
-                             "PyQgsDBManagerSpatialite"
-                             "PyQgsDataItem"
-                             "PyQgsFieldValidator"
+                             "PyQgsExternalStorageWebDAV"
+                             "PyQgsFieldFormattersTest"
                              "PyQgsFileUtils"
                              "PyQgsGeometryTest"
-                             "PyQgsImageCache"
-                             "PyQgsImportIntoPostGIS"
-                             "PyQgsLayerDependencies"
-                             "PyQgsLayerMetadata"
-                             "PyQgsLayout"
+                             "PyQgsGoogleMapsGeocoder"
+                             "PyQgsHashLineSymbolLayer"
                              "PyQgsLayoutExporter"
                              "PyQgsLayoutHtml"
-                             "PyQgsLayoutLegend"
-                             "PyQgsLayoutMapGrid"
-                             "PyQgsMapClippingUtils"
+                             "PyQgsLineSymbolLayers"
                              "PyQgsMapLayer"
-                             "PyQgsMetadataBase"
-                             "PyQgsOGRProvider"
+                             "PyQgsNetworkContentFetcherRegistry"
                              "PyQgsOGRProviderGpkg"
-                             "PyQgsOapifProvider"
+                             "PyQgsOGRProviderSqlite"
+                             "PyQgsPalLabelingCanvas"
                              "PyQgsPalLabelingLayout"
-                             "PyQgsProcessingInPlace"
-                             "PyQgsProject"
+                             "PyQgsPalLabelingPlacement"
+                             "PyQgsProcessExecutable"
                              "PyQgsProviderConnectionGpkg"
-                             "PyQgsProviderConnectionPostgres"
                              "PyQgsProviderConnectionSpatialite"
-                             "PyQgsPythonProvider"
-                             "PyQgsRasterLayer"
-                             "PyQgsRasterResampler"
-                             "PyQgsRulebasedRenderer"
-                             "PyQgsSelectiveMasking"
-                             "PyQgsSettings"
-                             "PyQgsShapefileProvider"
+                             "PyQgsOGRProvider"
                              "PyQgsSpatialiteProvider"
-                             "PyQgsSvgCache"
-                             "PyQgsSymbolExpressionVariables"
-                             "PyQgsTextRenderer"
                              "PyQgsVectorFileWriter"
-                             "PyQgsVectorLayer"
-                             "PyQgsVectorLayerUtils"
+                             "PyQgsVectorLayerEditBuffer"
+                             "PyQgsVectorLayerEditBufferGroup"
+                             "PyQgsVectorLayerProfileGenerator"
                              "PyQgsVirtualLayerProvider"
                              "PyQgsWFSProvider"
-                             "qgis_arcgisrestutilstest"
-                             "qgis_authmanagertest"
-                             "qgis_compositionconvertertest"
-                             "qgis_coordinatereferencesystemtest"
-                             "qgis_expressiontest"
-                             "qgis_fontmarkertest"
-                             "qgis_geometrycheckstest"
-                             "qgis_geometrytest"
-                             "qgis_gpsinformationwidget"
-                             "qgis_grassprovidertest7"
-                             "qgis_imagecachetest"
-                             "qgis_labelingenginetest"
-                             "qgis_layouthtmltest"
-                             "qgis_layoutlabeltest"
-                             "qgis_layoutmanualtabletest"
-                             "qgis_layoutmapgridtest"
-                             "qgis_layoutmapoverviewtest"
-                             "qgis_layoutmaptest"
-                             "qgis_layoutmultiframetest"
-                             "qgis_layoutpicturetest"
-                             "qgis_layouttabletest"
-                             "qgis_layouttest"
-                             "qgis_mapdevicepixelratiotest"
-                             "qgis_maprendererjobtest"
-                             "qgis_meshcontourstest"
-                             "qgis_ogrproviderguitest"
-                             "qgis_painteffecttest"
-                             "qgis_pallabelingtest"
-                             "qgis_processingtest"
-                             "qgis_rasterlayertest"
+                             "PyQgsWFSProviderGUI"
+                             "PyQgsOapifProvider"
+                             "PyQgsLayerDependencies"
+                             "PyQgsDBManagerGpkg"
+                             "PyQgsDBManagerSpatialite"
+                             "PyQgsAuxiliaryStorage"
+                             "PyQgsSelectiveMasking"
                              "qgis_shellcheck"
-                             "qgis_sip_include"
-                             "qgis_sip_uptodate"
                              "qgis_sipify"
-                             "qgis_styletest"
-                             "qgis_svgmarkertest"
-                             "qgis_taskmanagertest"
-                             "qgis_wcsprovidertest"
-                             "qgis_ziplayertest"
-                             "TestQgsRandomMarkerSymbolLayer")
+                             "qgis_sip_include"
+                             "qgis_sip_uptodate")
                            "|")))))
          (add-after 'install 'wrap-python
            (assoc-ref python:%standard-phases 'wrap))
          (add-after 'wrap-python 'wrap-qt
            (lambda* (#:key outputs inputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (wrap-qt-program "qgis" #:output out #:inputs inputs))
-             #t))
+               (wrap-qt-program "qgis" #:output out #:inputs inputs))))
          (add-after 'wrap-qt 'wrap-gis
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; TODO: Find if there is a way to get SAGA to work.
@@ -2578,10 +2534,10 @@ growing set of geoscientific methods.")
                (wrap-program (string-append out "/bin/qgis")
                  ;;`("PATH" ":" prefix (,saga))
                  `("QGIS_PREFIX_PATH" = (,out))
-                 `("GISBASE" = (,grass))))
-             #t)))))
+                 `("GISBASE" = (,grass)))))))))
     (inputs
-     (list exiv2
+     (list bash-minimal
+           exiv2
            expat
            gdal
            geos
@@ -2623,8 +2579,9 @@ growing set of geoscientific methods.")
            qtserialport
            qtsvg-5
            qwt
-           ;;("saga" ,saga)
-           sqlite))
+           ;; saga
+           sqlite
+           (list zstd "lib")))
     (native-inputs
      (list bison
            flex
@@ -2633,6 +2590,7 @@ growing set of geoscientific methods.")
            pkg-config
            python-mock
            python-nose2
+           python-pyqt-builder
            qttools-5
            shellcheck
            xorg-server-for-tests))

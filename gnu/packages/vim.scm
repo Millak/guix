@@ -639,6 +639,34 @@ various text editors which allow this file format to be read and used by those
 editors.")
     (license license:bsd-2)))
 
+(define-public neovim-packer
+  (let ((commit "3a9f9801f683946b9f1047d8f4bf9946c29e927d")
+        (revision "0"))
+    (package
+      (name "neovim-packer")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wbthomason/packer.nvim")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xn08z3a21mgfvp5i1nv57jnldwxwnl5nkryiff3zc99b1mizigp"))))
+      (build-system copy-build-system)
+      (arguments
+       (list #:install-plan
+             #~'(("lua" "share/nvim/site/pack/guix/start/packer.nvim/")
+                 ("doc" "share/nvim/site/pack/guix/start/packer.nvim/"))))
+      (home-page "https://github.com/wbthomason/packer.nvim")
+      (synopsis "Plugin manager for Neovim")
+      (description
+       "This package provides a plugin manager for Neovim, inspired by Emacs's
+@code{use-package}.  It's written in Lua, supports Luarocks dependencies, and
+is based on Vim's builtin plugin support.")
+      (license license:expat))))
+
 (define-public neovim-syntastic
   (package
     (inherit vim-syntastic)

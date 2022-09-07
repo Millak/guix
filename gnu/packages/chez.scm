@@ -37,6 +37,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages racket)
@@ -49,6 +50,7 @@
   #:use-module (srfi srfi-26)
   #:export (chez-scheme-for-system
             racket-cs-native-supported-system?
+            nix-system->pbarch-machine-type
             unpack-nanopass+stex))
 
 ;; Commentary:
@@ -115,7 +117,7 @@ in Chez Scheme machine types, or '#f' if none is defined."
    ((target-linux? system)
     "le")
    ((target-hurd? system)
-    #f)
+    "gnu")
    ((target-mingw? system)
     "nt")
    ;; missing (guix utils) predicates
@@ -131,6 +133,8 @@ in Chez Scheme machine types, or '#f' if none is defined."
    ;; Nix says "x86_64-solaris", but accommodate "-solaris2"
    ((string-contains system "solaris")
     "s2")
+   ((string-suffix? "-qnx" system)
+    "qnx")
    ;; unknown
    (else
     #f)))
@@ -167,6 +171,9 @@ in Chez Scheme machine types, or '#f' if none is defined."
      ("arm32" bootstrap-bootfiles)
      ("arm64" . #f)
      ("ppc32" threads))
+    ;; Hurd
+    ("gnu"
+     ("i3" . #f))
     ;; FreeBSD
     ("fb"
      ("i3" threads) ;; commented out
@@ -192,6 +199,9 @@ in Chez Scheme machine types, or '#f' if none is defined."
     ("s2"
      ("i3" threads) ;; commented out
      ("a6" threads)) ;; commented out
+    ;; QNX
+    ("qnx"
+     ("i3" . #f))
     ;; Windows
     ("nt"
      ("i3" threads bootstrap-bootfiles)
@@ -223,18 +233,41 @@ future."
     (and=> (assoc-ref %chez-features-table chez-os)
            (cut assoc-ref <> chez-arch))))
 
+(define* (nix-system->pbarch-machine-type #:optional
+                                          (system
+                                           (or (%current-target-system)
+                                               (%current-system)))
+                                          #:key (threads? #t))
+  "Return a string naming the pseudo–machine type used by Racket's variant of
+Chez Scheme to represent the appropriate ``pbarch'' backend for SYSTEM: that
+is, the ``portable bytecode'' backend specialized for SYSTEM's word size and
+endianness.  The result will name the threaded machine type unless THREADS? is
+provided and is #f."
+  (string-append (if threads?
+                     "t"
+                     "")
+                 "pb"
+                 (if (target-64bit? system)
+                     "64"
+                     "32")
+                 ;; missing (guix utils) predicate target-little-endian?
+                 (if (target-ppc32? system)
+                     "b"
+                     "l")))
+
 (define* (racket-cs-native-supported-system? #:optional
                                              (system
                                               (or (%current-target-system)
                                                   (%current-system))))
-  "Can Racket's variant of Chez Scheme generate native code for SYSTEM?
-Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
+  "Can Racket's variant of Chez Scheme generate native code for SYSTEM?  If
+so, return the applicable machine type as a string.  Otherwise, when SYSTEM
+can use only the ``portable bytecode'' backends, return #f."
   (let ((chez-arch (target-chez-arch system))
         (chez-os (target-chez-os system)))
     (and (and=> (assoc-ref %chez-features-table chez-os)
                 ;; NOT assoc-ref: supported even if cdr is #f
                 (cut assoc chez-arch <>))
-         #t)))
+         (string-append "t" chez-arch chez-os))))
 
 ;;
 ;; Chez Scheme:
@@ -269,6 +302,7 @@ Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
                (base32
                 "0xchqq8cm0ka5wgpn18sjs0hh15rc3nb7xrjqbbc9al3asq0d7gc"))
               (file-name (git-file-name name version))
+              (patches (search-patches "chez-scheme-bin-sh.patch"))
               (snippet #~(begin
                            (use-modules (guix build utils))
                            ;; TODO: consider putting this in a (guix ...) or
@@ -284,6 +318,7 @@ Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
     (build-system gnu-build-system)
     (inputs
      (list
+      chez-scheme-bootstrap-bootfiles
       `(,util-linux "lib") ;<-- libuuid
       zlib
       lz4
@@ -291,8 +326,7 @@ Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
       ;; for X11 clipboard support in expeditor:
       ;; https://github.com/cisco/ChezScheme/issues/9#issuecomment-222057232
       libx11))
-    (native-inputs (list chez-scheme-bootstrap-bootfiles
-                         chez-nanopass-bootstrap
+    (native-inputs (list chez-nanopass-bootstrap
                          stex-bootstrap))
     (native-search-paths
      (list (search-path-specification
@@ -329,7 +363,7 @@ Otherwise, SYSTEM can use only the ``portable bytecode'' backends."
               (when (directory-exists? "boot")
                 (delete-file-recursively "boot"))
               (copy-recursively
-               (search-input-directory (or native-inputs inputs)
+               (search-input-directory inputs
                                        "lib/chez-scheme-bootfiles")
                "boot")))
           ;; NOTE: The custom Chez 'configure' script doesn't allow
@@ -432,40 +466,118 @@ and 32-bit PowerPC architectures.")
   (package
     (inherit chez-scheme)
     (name "chez-scheme-for-racket")
-    (version "9.5.7.6")
+    (version "9.5.9.2")
     ;; The version should match `(scheme-fork-version-number)`.
     ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
     ;; It will always be different than the upstream version!
     ;; When updating, remember to also update %racket-version in racket.scm.
     (source #f) ; avoid problematic cycle with racket.scm
     (inputs
-     (modify-inputs (package-inputs chez-scheme)
-       (delete "libx11" "util-linux:lib")))
+     (let ((inputs (modify-inputs (package-inputs chez-scheme)
+                     (replace "chez-scheme-bootstrap-bootfiles"
+                       chez-scheme-for-racket-bootstrap-bootfiles)
+                     (delete "libx11" "util-linux:lib"))))
+       (if (racket-cs-native-supported-system?)
+           inputs
+           (modify-inputs inputs
+             (prepend libffi)))))
     (native-inputs
-     (modify-inputs (package-native-inputs chez-scheme)
-       (replace "chez-scheme-bootstrap-bootfiles"
-         chez-scheme-for-racket-bootstrap-bootfiles)))
+     (let ((native-inputs (modify-inputs (package-native-inputs chez-scheme)
+                            (prepend zuo))))
+       (if (%current-target-system)
+           (modify-inputs native-inputs
+             (prepend this-package))
+           native-inputs)))
     (arguments
      (substitute-keyword-arguments (package-arguments chez-scheme)
+       ((#:out-of-source? _ #f)
+        #t)
+       ((#:tests? _ #t)
+        ;; FIXME: There have been some flaky test failures. Some have been
+        ;; fixed upstream post-release but have proven non-trivial to
+        ;; backport; at least one issue remains. Re-enable tests once
+        ;; https://github.com/racket/racket/issues/4359 is fixed.
+        #f)
        ((#:configure-flags cfg-flags #~'())
-        #~(cons* "--disable-x11"
-                 "--threads" ;; ok to potentially duplicate
-                 #$cfg-flags))
+        #~`("--disable-x11"
+            "--threads" ;; ok to potentially duplicate
+            #$(string-append "-m=" (or (racket-cs-native-supported-system?)
+                                       (nix-system->pbarch-machine-type)))
+            ;; ^ could skip -m= for non-cross non-pbarch builds
+            #$@(if (racket-cs-native-supported-system?)
+                   #~()
+                   ;; not inferred on non-native platforms: see
+                   ;; https://racket.discourse.group/t/950/9
+                   #~("--enable-libffi"
+                      "CFLAGS=-g -O2 -D_REENTRANT -pthread"
+                      "LIBS=-lm -ldl -lrt -lffi -lncurses"))
+            #$@(if (%current-target-system)
+                   (list (string-append "--toolprefix="
+                                        (%current-target-system)
+                                        "-"))
+                   '())
+            ,@(let* ((chez+version (strip-store-file-name #$output))
+                     (doc-prefix (assoc-ref %outputs "doc"))
+                     (doc-dir (string-append doc-prefix
+                                             "/share/doc/"
+                                             chez+version)))
+                (list (string-append "--installcsug="
+                                     doc-dir
+                                     "/csug")
+                      (string-append "--installreleasenotes="
+                                     doc-dir
+                                     "/release_notes")))
+            ,@#$cfg-flags))
+       ((#:make-flags mk-flags #~'())
+        #~(cons* (string-append "ZUO="
+                                #+(this-package-native-input "zuo")
+                                "/bin/zuo")
+                 (string-append "STEXLIB="
+                                #+(this-package-native-input "stex")
+                                "/lib/stex")
+                 #$mk-flags))
        ((#:phases those-phases #~%standard-phases)
         #~(let* ((those-phases #$those-phases)
-                 (unpack (assoc-ref those-phases 'unpack)))
+                 (gnu:unpack (assoc-ref those-phases 'unpack))
+                 (gnu:build (assoc-ref those-phases 'build)))
             (modify-phases those-phases
+              (replace 'build
+                ;; need to override target for cross-compilation
+                ;; https://racket.discourse.group/t/950/19
+                (lambda* (#:key target (make-flags '()) (parallel-build? #t)
+                          #:allow-other-keys)
+                  (gnu:build #:make-flags (if target
+                                              (cons "kernel" make-flags)
+                                              make-flags)
+                             #:parallel-build? parallel-build?)))
+              (replace 'install-docs
+                (lambda* (#:key native-inputs (make-flags '())
+                          #:allow-other-keys)
+                  ;; The tests for 'native-inputs' are cross-compilation
+                  ;; workarounds that would be better to address upstream:
+                  ;; see <https://racket.discourse.group/t/950/20>.
+                  (when native-inputs
+                    (substitute* "Makefile"
+                      (("install-docs: build \\$[(]ZUO[)]")
+                       "install-docs: $(ZUO)")))
+                  (apply invoke
+                         "make"
+                         "install-docs"
+                         (if native-inputs
+                             (cons (string-append
+                                    "Scheme="
+                                    (search-input-file native-inputs
+                                                       "/bin/scheme"))
+                                   make-flags)
+                             make-flags))))
               (replace 'unpack
                 (lambda args
-                  (unpack #:source #$(or (package-source this-package)
-                                         (package-source racket-vm-bc)))))
+                  (gnu:unpack #:source #$(or (package-source this-package)
+                                             (package-source racket-vm-bc)))))
               (add-after 'unpack 'chdir
                 (lambda args
                   (chdir "racket/src/ChezScheme"))))))))
-    ;; TODO: How to build pbarch/pbchunks for other systems?
-    ;; See https://racket.discourse.group/t/950
-    (supported-systems (filter racket-cs-native-supported-system?
-                               %supported-systems))
+    (supported-systems %supported-systems)
     (home-page "https://github.com/racket/ChezScheme")
     ;; ^ This is downstream of https://github.com/racket/racket,
     ;; but it's designed to be a friendly landing place for people
@@ -478,12 +590,16 @@ supported by upstream Chez Scheme.
 Main additions to Chez Scheme in the Racket variant:
 @itemize @bullet
 @item
-AArch64 support
+AArch64 code generation
 @item
-Portable bytes (@code{pb}) support, which is mainly useful for bootstrapping
-a build on any supported platform
+Portable bytecode (@code{pb}) mode, which is mainly useful for bootstrapping a
+build on any platform, but can also be used on platforms without native-code
+generation, compiled via Emscripten, linked with @code{libffi}, or used with
+bytecode partially compiled to C
 @item
 Unboxed floating-point arithmetic and flvectors
+@item
+Faster multiplication and division for large exact numbers
 @item
 Type reconstruction during optimization (especially for safe code)
 @item
@@ -495,8 +611,6 @@ accounting
 @item
 Ordered finalization, immobile (but collectable) objects, weak/ephemeron
 generic hash tables, and reference bytevectors
-@item
-Faster multiplication and division for large exact numbers
 @end itemize")
     (license asl2.0)))
 
@@ -540,8 +654,12 @@ source.")))
     (name "chez-scheme-for-racket-bootstrap-bootfiles")
     (version (package-version chez-scheme-for-racket))
     (source #f) ; avoid problematic cycle with racket.scm
-    (native-inputs (list chez-nanopass-bootstrap racket-vm-bc))
-    ;; TODO: cross compilation
+    (native-inputs
+     (cons* chez-nanopass-bootstrap
+            (if (%current-target-system)
+                (list zuo
+                      chez-scheme-for-racket)
+                (list racket-vm-bc))))
     (arguments
      (substitute-keyword-arguments
          (package-arguments chez-scheme-bootstrap-bootfiles)
@@ -561,9 +679,27 @@ source.")))
                   #$unpack-nanopass+stex))
               (add-before 'install 'build
                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  (invoke (search-input-file (or native-inputs inputs)
-                                             "/opt/racket-vm/bin/racket")
-                          "rktboot/main.rkt"))))))))
+                  #$(cond
+                     ((%current-target-system)
+                      ;; cross-compiling
+                      #~(invoke
+                         (search-input-file (or native-inputs inputs)
+                                            "/bin/zuo")
+                         "makefiles/boot.zuo"
+                         (search-input-file (or native-inputs inputs)
+                                            "/bin/scheme")
+                         #$(or (racket-cs-native-supported-system?)
+                               (nix-system->pbarch-machine-type))))
+                     (else
+                      ;; bootstrapping
+                      #~(invoke
+                         (search-input-file (or native-inputs inputs)
+                                            "/opt/racket-vm/bin/racket")
+                         "rktboot/main.rkt"
+                         #$@(if (racket-cs-native-supported-system?)
+                                #~()
+                                (let ((m (nix-system->pbarch-machine-type)))
+                                  #~("--machine" #$m)))))))))))))
     (supported-systems
      (package-supported-systems chez-scheme-for-racket))
     (home-page "https://github.com/racket/ChezScheme")
@@ -594,8 +730,8 @@ Chez Scheme.")))
 (define-public stex-bootstrap
   ;; This commit includes a fix which we would otherwise want to use as
   ;; patch.  Let's revert to tagged releases as soon as one becomes available.
-  (let ((commit "54051494434a197772bf6ca5b4e6cf6be55f39a5")
-        (revision "1"))
+  (let ((commit "afa607564a5662ffd748e824801277a6b5a3d11c")
+        (revision "2"))
     (hidden-package
      (package
        (name "stex")
@@ -611,8 +747,11 @@ Chez Scheme.")))
                 (url "https://github.com/dybvig/stex")
                 (commit commit)))
           (sha256
-           (base32 "01jnvw8qw33gnpzwrakwhsr05h6b609lm180jnspcrb7lds2p23d"))
+           (base32 "0n6dryv5j7cw2qmsj55wqb0ph901h83a2hl4j891ppxp0xx18nkp"))
           (file-name (git-file-name name version))
+          (patches
+           ;; submitted upstream in https://github.com/dybvig/stex/pull/6
+           (search-patches "stex-copy-from-immutable-store.patch"))
           (snippet
            #~(for-each delete-file
                        '("sbin/install" "doc/stex.pdf" "doc/stex.html")))))

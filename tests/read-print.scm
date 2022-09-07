@@ -187,6 +187,9 @@ expressions."
                 xyz))))")
 
 (test-pretty-print "\
+(string-append \"a\\tb\" \"\\n\")")
+
+(test-pretty-print "\
 (description \"abcdefghijkl
 mnopqrstuvwxyz.\")"
                    #:max-width 30)

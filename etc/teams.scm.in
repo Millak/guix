@@ -185,6 +185,14 @@ and the maven-build-system."))
         "Taking care about Icecat and Icedove, built from Mozilla Firefox
 and Thunderbird."))
 
+(define-team racket
+  (team 'racket
+        #:name "Racket team"
+        #:description
+        "The Racket language and Racket-based languages, Racket packages,
+Racket's variant of Chez Scheme, and development of a Racket build system and
+importer."))
+
 
 (define-member (person "Thiago Jung Bauermann"
                        "bauermann@kolabnow.com")
@@ -229,6 +237,10 @@ and Thunderbird."))
 (define-member (person "Julien Lepiller"
                        "julien@lepiller.eu")
   java ocaml translations)
+
+(define-member (person "Philip McGrath"
+                       "philip@philipmcgrath.com")
+  racket)
 
 (define-member (person "Mathieu Othacehe"
                        "othacehe@gnu.org")

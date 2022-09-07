@@ -10,10 +10,24 @@
       . "\\(<https?://\\bugs\\.gnu\\.org/\\([0-9]+\\)>\\)")
      (bug-reference-url-format . "https://bugs.gnu.org/%s")
 
+     (eval . (add-to-list 'completion-ignored-extensions ".go"))
+
      ;; Emacs-Guix
      (eval . (setq-local guix-directory
                          (locate-dominating-file default-directory
                                                  ".dir-locals.el")))
+
+     ;; YASnippet
+     (eval . (with-eval-after-load
+                 'yasnippet
+               (let ((guix-yasnippets
+                      (expand-file-name
+                       "etc/snippets/yas"
+                       (locate-dominating-file default-directory
+                                               ".dir-locals.el"))))
+                 (unless (member guix-yasnippets yas-snippet-dirs)
+                   (add-to-list 'yas-snippet-dirs guix-yasnippets)
+                   (yas-reload-all)))))
 
      ;; Geiser
      ;; This allows automatically setting the `geiser-guile-load-path'

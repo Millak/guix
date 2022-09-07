@@ -26,6 +26,13 @@
 (channel-news
  (version 0)
 
+ (entry (commit "c188cf57f161c0c26e2d7c8516bd1ddd1492d686")
+        (title
+          (en "Linux-libre kernel updated to 5.19"))
+        (body
+          (en "The default version of the linux-libre kernel has been
+              updated to the 5.19 release series.")))
+
  (entry (commit "a15542d26df42dabdb5e2f76d150ae200230c3b0")
         (title
          (en "New @option{--whole-file} option for @command{guix style}")

@@ -104,7 +104,6 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages matrix)
-  #:use-module (gnu packages mono)
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
@@ -999,7 +998,6 @@ authentication.")
        ("libxslt" ,libxslt)
        ;; ("libzephyr" ,libzephyr)
        ("meanwhile" ,meanwhile)
-       ("mono" ,mono)
        ("ncurses" ,ncurses)
        ("network-manager" ,network-manager)
        ("nspr" ,nspr)
@@ -1024,7 +1022,6 @@ authentication.")
         "--disable-gtkspell"
         "--disable-gevolution"
         "--enable-cap"
-        "--enable-mono"
         "--enable-cyrus-sasl"
         (string-append "--with-ncurses-headers="
                        (assoc-ref %build-inputs "ncurses")

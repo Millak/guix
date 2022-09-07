@@ -1,0 +1,74 @@
+From 73d9b77a11b4516905caf579abb559736f715ea6 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Mon, 11 Apr 2022 20:43:18 -0400
+Subject: [PATCH] Zuo: patch zuo_process for "/bin/sh" on Guix
+
+If:
+
+    1. The nonstandard but ubiquitous macro `_PATH_BSHELL` from
+       <paths.h> is defined; and
+
+    2. `zuo_process` is called with the exact path "/bin/sh"; and
+
+    3. The path specified by `_PATH_BSHELL` exists;
+
+then `zuo_process` will execute the file specified by `_PATH_BSHELL`
+instead of "/bin/sh".
+
+Checking that the path specified by `_PATH_BSHELL` exists safeguards
+against obscure errors if attempting to use stand-alone executables
+built by the patched Racket in non-Guix envoronments.
+---
+ racket/src/zuo/zuo.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/racket/src/zuo/zuo.c b/racket/src/zuo/zuo.c
+index 17f161826d..c4fb3929bb 100644
+--- a/racket/src/zuo/zuo.c
++++ b/racket/src/zuo/zuo.c
+@@ -15,6 +15,7 @@
+ #include <string.h>
+ #include <ctype.h>
+ #ifdef ZUO_UNIX
++# include <paths.h> /* PATCHED for Guix */
+ # include <fcntl.h>
+ # include <unistd.h>
+ # include <errno.h>
+@@ -5730,7 +5731,10 @@ static void zuo_pipe(zuo_raw_handle_t *_r, zuo_raw_handle_t *_w)
+ zuo_t *zuo_process(zuo_t *command_and_args)
+ {
+   const char *who = "process";
+-  zuo_t *command = _zuo_car(command_and_args);
++  /* BEGIN PATCH for Guix */
++  zuo_t *_guix_orig_command = _zuo_car(command_and_args);
++  zuo_t *command;
++  /* END PATCH for Guix */
+   zuo_t *args = _zuo_cdr(command_and_args), *rev_args = z.o_null;
+   zuo_t *options = z.o_empty_hash, *opt;
+   zuo_t *dir, *l, *p_handle, *result;
+@@ -5741,7 +5745,19 @@ zuo_t *zuo_process(zuo_t *command_and_args)
+   void *env;
+   int as_child, exact_cmdline;
+ 
+-  check_path_string(who, command);
++  /* BEGIN PATCH for Guix */
++  check_path_string(who, _guix_orig_command);
++#if defined(_PATH_BSHELL)
++  command =
++    ((z.o_false == zuo_string_eql(_guix_orig_command, zuo_string("/bin/sh")))
++     || (z.o_false == zuo_stat(zuo_string(_PATH_BSHELL), z.o_false, z.o_true)))
++    ? _guix_orig_command
++    : zuo_string(_PATH_BSHELL);
++#else
++  command = _guix_orig_command;
++#endif
++  /* END PATCH for Guix */
++
+   for (l = args; l->tag == zuo_pair_tag; l = _zuo_cdr(l)) {
+     zuo_t *a = _zuo_car(l);
+     if (a == z.o_null) {
+
+base-commit: 87eee6e2adb8c6bc11e60619c706fa6295096085
+-- 
+2.32.0
+

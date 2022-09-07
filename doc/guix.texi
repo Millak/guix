@@ -98,7 +98,7 @@ Copyright @copyright{} 2021 pukkamustard@*
 Copyright @copyright{} 2021 Alice Brenon@*
 Copyright @copyright{} 2021, 2022 Josselin Poiret@*
 Copyright @copyright{} 2021 muradm@*
-Copyright @copyright{} 2021 Andrew Tropin@*
+Copyright @copyright{} 2021, 2022 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
 Copyright @copyright{} 2022 Remco van 't Veer@*
 Copyright @copyright{} 2022 Aleksandr Vityazev@*
@@ -7321,6 +7321,14 @@ unavailable to the build process, possibly leading to a build failure.
 @end itemize
 
 @xref{package Reference}, for a full description of possible fields.
+
+@quotation Going further
+@cindex Scheme programming language, getting started
+Intimidated by the Scheme language or curious about it?  The Cookbook
+has a short section to get started that recaps some of the things shown
+above and explains the fundamentals.  @xref{A Scheme Crash Course,,,
+guix-cookbook, GNU Guix Cookbook}, for more information.
+@end quotation
 
 Once a package definition is in place, the
 package may actually be built using the @code{guix build} command-line
@@ -22748,15 +22756,16 @@ Enable polling the kernel for battery level changes.
 @item @code{ignore-lid?} (default: @code{#f})
 Ignore the lid state, this can be useful if it's incorrect on a device.
 
-@item @code{use-percentage-for-policy?} (default: @code{#f})
-Whether battery percentage based policy should be used.  The default is to use
-the time left, change to @code{#t} to use the percentage.
+@item @code{use-percentage-for-policy?} (default: @code{#t})
+Whether a to use a policy based on battery percentage rather than on
+estimated time left.  A policy based on battery percentage is usually
+more reliable.
 
-@item @code{percentage-low} (default: @code{10})
+@item @code{percentage-low} (default: @code{20})
 When @code{use-percentage-for-policy?} is @code{#t}, this sets the percentage
 at which the battery is considered low.
 
-@item @code{percentage-critical} (default: @code{3})
+@item @code{percentage-critical} (default: @code{5})
 When @code{use-percentage-for-policy?} is @code{#t}, this sets the percentage
 at which the battery is considered critical.
 
@@ -28831,6 +28840,14 @@ types, or alternatively, a config file can be provided.
 @table @asis
 @item @code{nginx} (default: @code{nginx})
 The nginx package to use.
+
+@item @code{shepherd-requirement} (default: @code{'()})
+This is a list of symbols naming Shepherd services the nginx service
+will depend on.
+
+This is useful if you would like @command{nginx} to be started after a
+back-end web server or a logging service such as Anonip has been
+started.
 
 @item @code{log-directory} (default: @code{"/var/log/nginx"})
 The directory to which NGinx will write log files.

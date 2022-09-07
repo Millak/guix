@@ -1,0 +1,76 @@
+From f86370295c5bb14d4bb93d0ccfa37a2b79f19f25 Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Wed, 24 Aug 2022 19:55:14 -0400
+Subject: [PATCH] Chez Scheme: patch s_process for "/bin/sh" on Guix
+
+If:
+
+    1. The nonstandard but ubiquitous macro `_PATH_BSHELL` from
+       <paths.h> is defined; and
+
+    2. The path specified by `_PATH_BSHELL` exists;
+
+then `s_process` will call `execl` with the file specified by
+`_PATH_BSHELL` instead of "/bin/sh".
+
+Checking that the path specified by `_PATH_BSHELL` exists safeguards
+against obscure errors if attempting to use stand-alone executables
+built by the patched Racket in non-Guix envoronments.
+
+This patch does not change the behavior of `s_system`, which relies
+on `system` from the C library.
+---
+ racket/src/ChezScheme/c/prim5.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/racket/src/ChezScheme/c/prim5.c b/racket/src/ChezScheme/c/prim5.c
+index 82bbf8d687..be8f603447 100644
+--- a/racket/src/ChezScheme/c/prim5.c
++++ b/racket/src/ChezScheme/c/prim5.c
+@@ -27,6 +27,12 @@
+ #include <sys/resource.h>
+ #endif
+ 
++/* BEGIN PATCH for Guix */
++#ifndef WIN32
++# include <paths.h>
++#endif
++/* END PATCH for Guix */
++
+ /* locally defined functions */
+ static INT s_errno(void);
+ static IBOOL s_addr_in_heap(uptr x);
+@@ -861,6 +867,17 @@ static ptr s_process(char *s, IBOOL stderrp) {
+ 
+     INT tofds[2], fromfds[2], errfds[2];
+     struct sigaction act, oint_act;
++    /* BEGIN PATCH for Guix */
++#if defined(_PATH_BSHELL)
++    struct stat guix_stat_buf;
++    char *guix_sh =
++      (0 == stat(_PATH_BSHELL, &guix_stat_buf))
++      ? _PATH_BSHELL
++      : "/bin/sh";
++#else /* _PATH_BSHELL */
++    char *guix_sh = "/bin/sh";
++#endif
++    /* END PATCH for Guix */
+ 
+     if (pipe(tofds)) S_error("process","cannot open pipes");
+     if (pipe(fromfds)) {
+@@ -897,7 +914,9 @@ static ptr s_process(char *s, IBOOL stderrp) {
+           }
+         }
+ #endif /* __GNU__ Hurd */
+-        execl("/bin/sh", "/bin/sh", "-c", s, NULL);
++        /* BEGIN PATCH for Guix */
++        execl(guix_sh, guix_sh, "-c", s, NULL);
++        /* END PATCH for Guix */
+         _exit(1) /* only if execl fails */;
+         /*NOTREACHED*/
+     } else {
+
+base-commit: 87eee6e2adb8c6bc11e60619c706fa6295096085
+-- 
+2.32.0
+
