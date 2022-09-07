@@ -183,6 +183,7 @@ Weblate} (@pxref{Translating Guix}).
 * System Configuration::        Configuring the operating system.
 * Home Configuration::          Configuring the home environment.
 * Documentation::               Browsing software user manuals.
+* Platforms::                   Defining platforms.
 * Installing Debugging Files::  Feeding the debugger.
 * Using TeX and LaTeX::         Typesetting.
 * Security Updates::            Deploying security fixes quickly.
@@ -406,6 +407,11 @@ Defining Services
 * Service Reference::           API reference.
 * Shepherd Services::           A particular type of service.
 * Complex Configurations::      Defining bindings for complex configurations.
+
+Platforms
+
+* platform Reference::          Detail of platform declarations.
+* Supported Platforms::         Description of the supported platforms.
 
 Installing Debugging Files
 
@@ -41288,6 +41294,115 @@ reader,, info-stnd, Stand-alone GNU Info}) and its Emacs counterpart
 bindings to navigate manuals.  @xref{Getting Started,,, info, Info: An
 Introduction}, for an introduction to Info navigation.
 
+@node Platforms
+@chapter Platforms
+
+The packages and systems built by Guix are intended, like most computer
+programs, to run on a CPU with a specific instruction set, and under a
+specific operating system.  Those programs are often also targeting a
+specific kernel and system library.  Those constraints are captured by
+Guix in @code{platform} records.
+
+@menu
+* platform Reference::          Detail of platform declarations.
+* Supported Platforms::         Description of the supported platforms.
+@end menu
+
+@node platform Reference
+@section @code{platform} Reference
+
+The @code{platform} data type describes a @dfn{platform}: an
+@acronym{ISA, instruction set architecture}, combined with an operating
+system and possibly additional system-wide settings such as the
+@acronym{ABI, application binary interface}.
+
+@deftp {Data Type} platform
+This is the data type representing a platform.
+
+@table @asis
+@item @code{target}
+This field specifies the platform's GNU triplet as a string
+(@pxref{Specifying Target Triplets, GNU configuration triplets,,
+autoconf, Autoconf}).
+
+@item @code{system}
+This string is the system type as it is known to Guix and passed,
+for instance, to the @option{--system} option of most commands.
+
+It usually has the form @code{"@var{cpu}-@var{kernel}"}, where
+@var{cpu} is the target CPU and @var{kernel} the target operating
+system kernel.
+
+It can be for instance @code{"aarch64-linux"} or @code{"armhf-linux"}.
+You will encounter system types when you perform native builds
+(@pxref{Native Builds}).
+
+@item @code{linux-architecture} (default: @code{#false})
+This optional string field is only relevant if the kernel is Linux.  In
+that case, it corresponds to the ARCH variable used when building Linux,
+@code{"mips"} for instance.
+
+@item @code{glibc-dynamic-linker}
+This field is the name of the GNU C Library dynamic linker for the
+corresponding system, as a string.  It can be
+@code{"/lib/ld-linux-armhf.so.3"}.
+
+@end table
+@end deftp
+
+@node Supported Platforms
+@section Supported Platforms
+
+The @code{(guix platforms @dots{})} modules export the following
+variables, each of which is bound to a @code{platform} record.
+
+@defvr {Scheme Variable} armv7-linux
+Platform targeting ARM v7 CPU running GNU/Linux.
+@end defvr
+
+@defvr {Scheme Variable} aarch64-linux
+Platform targeting ARM v8 CPU running GNU/Linux.
+@end defvr
+
+@defvr {Scheme Variable} mips64-linux
+Platform targeting MIPS little-endian 64-bit CPU running GNU/Linux.
+@end defvr
+
+@defvr {Scheme Variable} powerpc-linux
+Platform targeting PowerPC big-endian 32-bit CPU running GNU/Linux.
+@end defvr
+
+@defvr {Scheme Variable} powerpc64le-linux
+Platform targeting PowerPC little-endian 64-bit CPU running GNU/Linux.
+@end defvr
+
+@defvr {Scheme Variable} riscv64-linux
+Platform targeting RISC-V 64-bit CPU running GNU/Linux.
+@end defvr
+
+@defvr {Scheme Variable} i686-linux
+Platform targeting x86 CPU running GNU/Linux.
+@end defvr
+
+@defvr {Scheme Variable} x86_64-linux
+Platform targeting x86 64-bit CPU running GNU/Linux.
+@end defvr
+
+@defvr {Scheme Variable} i686-mingw
+Platform targeting x86 CPU running Windows, with run-time support from
+MinGW.
+@end defvr
+
+@defvr {Scheme Variable} x86_64-mingw
+Platform targeting x86 64-bit CPU running Windows, with run-time support
+from MinGW.
+@end defvr
+
+@defvr {Scheme Variable} i586-gnu
+Platform targeting x86 CPU running GNU/Hurd (also referred to as
+``GNU'').
+@end defvr
+
 @node Installing Debugging Files
 @chapter Installing Debugging Files
 
@@ -42027,7 +42142,7 @@ connection between a GNU triplet (@pxref{Specifying Target Triplets, GNU
 configuration triplets,, autoconf, Autoconf}), the equivalent
 @var{system} in Nix notation, the name of the
 @var{glibc-dynamic-linker}, and the corresponding Linux architecture
-name if applicable.
+name if applicable (@pxref{Platforms}).
 
 Once the bootstrap tarball are built, the @code{(gnu packages
 bootstrap)} module needs to be updated to refer to these binaries on the
