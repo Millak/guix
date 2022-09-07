@@ -255,7 +255,9 @@ and the maven-build-system."))
 
 (define-team installer
   (team 'installer
-        #:name "Installer script and system installer"))
+        #:name "Installer script and system installer"
+        #:scope
+        (list (make-regexp "^guix/installer(\\.scm$|/)"))))
 
 (define-team home
   (team 'home
