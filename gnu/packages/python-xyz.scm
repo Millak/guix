@@ -129,6 +129,7 @@
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27166,6 +27167,29 @@ applications with variable CPU loads).")
     (description "This is a set of Python bindings for the DjVuLibre library.")
     (home-page "https://jwilk.net/software/python-djvulibre")
     (license license:gpl2)))
+
+(define-public python-version
+  ;; No version tags available in the git repo; just using bare commit instead.
+  (let ((commit "5232eea250ab72cc5cb72b0b75efb35d2192b906")
+        (revision "1"))
+    (package
+      (name "python-version")
+      (version (git-version "0.0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/halfak/python_version")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0w210559ypdynlj9yn40m9awzkaknwrf682i99hswl7h66sdgh0h"))))
+      (build-system python-build-system)
+      (home-page "https://gitlab.com/halfak/python_version")
+      (synopsis "Python version checking utility")
+      (description
+       "This package provides a simple utility for checking the python version.")
+      (license license:expat))))
 
 (define-public python-versioneer
   (package
