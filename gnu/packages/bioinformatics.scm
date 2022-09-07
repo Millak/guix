@@ -15518,6 +15518,8 @@ sequence motif analysis.")
         (base32
          "1023hadgcsgi53kz53ql45207hfizf9sw57z0qij3ay1bx68zbpm"))))
     (build-system python-build-system)
+    (arguments
+     '(#:tests? #false))                ;no tests
     (native-inputs
      (list python-cython python-nose2))
     ;; The package mainly consists of a command-line tool, but also has a
