@@ -26,6 +26,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4472,6 +4473,35 @@ sensitive completion, colors, and more.")
         ("ocaml-camomile" ,ocaml-camomile)
         ("ocaml-zed" ,ocaml-zed)))
      (properties '()))))
+
+(define-public ocaml-ansiterminal
+  (package
+    (name "ocaml-ansiterminal")
+    (version "0.8.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Chris00/ANSITerminal")
+                    (commit version)
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "052qnc23vmxp90yympjz9q6lhqw98gs1yvb3r15kcbi1j678l51h"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:test-target "tests"))
+    (home-page "https://github.com/Chris00/ANSITerminal")
+    (synopsis
+     "Basic control of ANSI compliant terminals and the windows shell")
+    (description
+     "ANSITerminal is a module allowing to use the colors and cursor
+movements on ANSI terminals.")
+    ;; Variant of the LGPL3+ which permits
+    ;; static and dynamic linking when producing binary files.
+    ;; In other words, it allows one to link to the library
+    ;; when compiling nonfree software.
+    (license (license:non-copyleft "LICENSE.md"))))
 
 (define-public ocaml-ptmap
   (package
