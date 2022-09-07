@@ -1612,6 +1612,7 @@ This package just includes the agent component.")))
                   (ice-9 rdelim)
                   (guix build utils)
                   (guix build gnu-build-system))
+       #:parallel-tests? #f         ;kernels.scm frequently breaks in parallel
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'sed-kernel-json
