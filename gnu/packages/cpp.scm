@@ -1023,7 +1023,7 @@ Google's C++ code base.")
   (let ((base abseil-cpp-20200923.3))
     (package/inherit base
       (name "abseil-cpp")
-      (version "20220623.0")
+      (version "20220623.1")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1032,7 +1032,7 @@ Google's C++ code base.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1kyvlpdkkh8spqrdh9yvq2d4ri46hwxljicy3i9mp7mk2rqcnyvj"))))
+                  "0vxh2a74g4s45yr8kdjqnzl64k10qdlc0hbnn987a4cnwdj4bp9r"))))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:configure-flags flags)
