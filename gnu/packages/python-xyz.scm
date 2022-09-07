@@ -19684,6 +19684,26 @@ point is the point of maximum curvature.")
      perform the operations required for synchronizing plain text.")
     (license license:asl2.0)))
 
+(define-public python-icdiff
+  (package
+    (name "python-icdiff")
+    (version "2.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jeffkaufman/icdiff")
+                    (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14gr9j2h7sfw47pwfzspm4zinywhqmzm4a0qz5c2k9wbixz120a4"))))
+    (build-system python-build-system)
+    (home-page "https://www.jefftk.com/icdiff")
+    (synopsis "Improved colored diff")
+    (description "This package provides colored diff functions that highlight
+parts of the lines that were modified.")
+    (license license:psfl)))
+
 (define-public python-dirsync
   (package
     (name "python-dirsync")
