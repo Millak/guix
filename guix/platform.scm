@@ -67,7 +67,7 @@
   (target               platform-target)
   (system               platform-system)
   (linux-architecture   platform-linux-architecture
-                        (default #f))
+                        (default #false))
   (glibc-dynamic-linker platform-glibc-dynamic-linker))
 
 
