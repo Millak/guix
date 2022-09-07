@@ -852,8 +852,7 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                            #$(and extra-version
                                   (string-append "-" extra-version)))
 
-                   (let ((build  (assoc-ref %standard-phases 'build))
-                         (config (assoc-ref inputs "kconfig")))
+                   (let ((config (assoc-ref inputs "kconfig")))
 
                      ;; Use a custom kernel configuration file or a default
                      ;; configuration file.
