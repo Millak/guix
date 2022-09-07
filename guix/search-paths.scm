@@ -74,7 +74,7 @@
    (variable "PATH")
    (files '("bin" "sbin"))))
 
-(define-public $GUIX_EXTENSIONS_PATH
+(define $GUIX_EXTENSIONS_PATH
   ;; 'GUIX_EXTENSIONS_PATH' is used by Guix to locate extension commands.
   ;; Like 'PATH', it's not attached to any package, so that users don't have
   ;; to install the 'guix' package (which is not supposed to be installed,
@@ -94,13 +94,13 @@
 ;; Additionally, the 'native-search-paths' field is not thunked,
 ;; so doing (package-native-search-paths openssl)
 ;; could cause import cycle issues.
-(define-public $SSL_CERT_DIR
+(define $SSL_CERT_DIR
   (search-path-specification
    (variable "SSL_CERT_DIR")
    (separator #f)              ;single entry
    (files '("etc/ssl/certs"))))
 
-(define-public $SSL_CERT_FILE
+(define $SSL_CERT_FILE
   (search-path-specification
    (variable "SSL_CERT_FILE")
    (file-type 'regular)
