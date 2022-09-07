@@ -6970,6 +6970,24 @@ They combine a comprehensive Unicode-based collection of mathematical symbols
 and alphabets with a set of text faces suitable for professional publishing.")
       (license license:silofl1.1))))
 
+(define-public texlive-latex-sidecap
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-sidecap"
+              (list "doc/latex/sidecap/"
+                    "tex/latex/sidecap/")
+              (base32 "1biyxvh7fm70pq1rxqrla2vs013bpsd1j8jvlyl3vjg433d5bly3")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sidecap")
+    (synopsis "Typeset captions sideways")
+    (description
+     "@code{sidecap} defines environments called @code{SCfigure} and
+@code{SCtable} (analogous to @code{figure} and @code{table}) to typeset
+captions sideways.  Options include @code{outercaption}, @code{innercaption},
+@code{leftcaption} and @code{rightcaption}.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-stmaryrd
   (let ((template (simple-texlive-package
                    "texlive-stmaryrd"
