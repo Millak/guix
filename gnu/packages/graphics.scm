@@ -2306,97 +2306,89 @@ a tetrahedral mesh, isovalue discretization and Lagrangian movement;
     (license license:lgpl3+)))
 
 (define-public f3d
-  ;; There have been many improvements since the last tagged version (1.2.1,
-  ;; released in December 2021), including support for the Alembic file
-  ;; format.
-  (let ((commit "46df21fe9409349917af5e6f7d1cb931f4c68e59")
-        (revision "0"))
-    (package
-      (name "f3d")
-      ;; F3D has not actually been tagged as 1.3.0-pre, but upstream commit
-      ;; 401d4d27b2094568378c07f400fbad48b7af3168 updated the version string
-      ;; to 1.3.0.
-      (version (git-version "1.3.0-pre" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/f3d-app/f3d")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0x0jw9vqf1b8pxh84xpr47hzcjynk07dp8q7r2xihh9cd00kglp1"))
-         (modules '((guix build utils)))
-         (snippet
-          '(begin
-             (delete-file "application/cxxopts.hpp")
-             (delete-file "application/json.hpp")
-             (substitute* "application/F3DOptionsParser.cxx"
-               (("^#include \"cxxopts\\.hpp\"")
-                "#include <cxxopts.hpp>")
-               (("^#include \"json\\.hpp\"")
-                "#include <nlohmann/json.hpp>"))))))
-      (build-system cmake-build-system)
-      ;; The package cannot easily be split into out and lib outputs because
-      ;; VTK's vtkModule.cmake complains, and also the CMake files in
-      ;; /lib/cmake/f3d expect the f3d executable and library to be available,
-      ;; as they set up targets for both of them.
-      (arguments
-       (list
-        ;; Many tests require files supplied by git-lfs.
-        ;; Also, some tests segfault (after an exception?) but the tested
-        ;; behavior, i.e., when the program is run manually, does not (for
-        ;; example, TestNonExistentConfigFile and TestInvalidConfigFile).
-        ;; Upstream is aware of occasionally flaky tests [1], but the tests
-        ;; run in CI seem to be passing.
-        ;; Anyway, the program runs and is able to open at least STL files
-        ;; without issue.
-        ;;
-        ;; [1]: https://github.com/f3d-app/f3d/issues/92
-        #:tests? #f
-        #:configure-flags
-        #~(list (string-append "-DCMAKE_INSTALL_DOCDIR=" #$output
-                               "/share/doc/" #$name "-" #$version)
-                "-DBUILD_TESTING=OFF"
-                "-DF3D_GENERATE_MAN=ON"
-                "-DF3D_INSTALL_DEFAULT_CONFIGURATION_FILE=ON"
-                "-DF3D_INSTALL_DEFAULT_CONFIGURATION_FILE_IN_PREFIX=ON"
-                "-DF3D_INSTALL_MIME_TYPES_FILE=ON"
-                "-DF3D_INSTALL_THUMBNAILER_FILES=ON"
-                "-DF3D_MODULE_ALEMBIC=ON"
-                "-DF3D_MODULE_ASSIMP=ON"
-                "-DF3D_MODULE_EXTERNAL_RENDERING=ON"
-                "-DF3D_MODULE_OCCT=ON")))
-      (native-inputs
-       (list cxxopts
-             help2man
-             json-modern-cxx))
-      (inputs
-       (list alembic
-             assimp
-             double-conversion
-             eigen
-             expat
-             fontconfig
-             freetype
-             glew
-             hdf5
-             imath
-             jsoncpp
-             libjpeg-turbo
-             libpng
-             libtiff
-             libx11
-             lz4
-             netcdf
-             opencascade-occt
-             vtk
-             zlib))
-      (home-page "https://f3d-app.github.io/f3d/")
-      (synopsis "VTK-based 3D viewer")
-      (description "F3D (pronounced @samp{/fɛd/}) is a VTK-based 3D viewer
-with simple interaction mechanisms and which is fully controllable using
-arguments on the command line.  It supports a range of file formats (including
-animated glTF, STL, STEP, PLY, OBJ, FBX), and provides numerous rendering and
-texturing options.")
-      (license license:bsd-3))))
+  (package
+    (name "f3d")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/f3d-app/f3d")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hdfgwf5d24ykab634xg4vv9r09nh96ss7hhnqnh5nmw4abhxzg7"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file "application/cxxopts.hpp")
+            (delete-file "application/json.hpp")
+            (substitute* "application/F3DOptionsParser.cxx"
+              (("^#include \"cxxopts\\.hpp\"")
+               "#include <cxxopts.hpp>")
+              (("^#include \"json\\.hpp\"")
+               "#include <nlohmann/json.hpp>"))))))
+    (build-system cmake-build-system)
+    ;; The package cannot easily be split into out and lib outputs because
+    ;; VTK's vtkModule.cmake complains, and also the CMake files in
+    ;; /lib/cmake/f3d expect the f3d executable and library to be available,
+    ;; as they set up targets for both of them.
+    (arguments
+     (list
+      ;; Many tests require files supplied by git-lfs.
+      ;; Also, some tests segfault (after an exception?) but the tested
+      ;; behavior, i.e., when the program is run manually, does not (for
+      ;; example, TestNonExistentConfigFile and TestInvalidConfigFile).
+      ;; Upstream is aware of occasionally flaky tests [1], but the tests
+      ;; run in CI seem to be passing.
+      ;; Anyway, the program runs and is able to open at least STL files
+      ;; without issue.
+      ;;
+      ;; [1]: https://github.com/f3d-app/f3d/issues/92
+      #:tests? #f
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_DOCDIR=" #$output
+                             "/share/doc/" #$name "-" #$version)
+              "-DBUILD_TESTING=OFF"
+              "-DF3D_GENERATE_MAN=ON"
+              "-DF3D_INSTALL_DEFAULT_CONFIGURATION_FILE=ON"
+              "-DF3D_INSTALL_DEFAULT_CONFIGURATION_FILE_IN_PREFIX=ON"
+              "-DF3D_INSTALL_MIME_TYPES_FILES=ON"
+              "-DF3D_INSTALL_THUMBNAILER_FILES=ON"
+              "-DF3D_MODULE_ALEMBIC=ON"
+              "-DF3D_MODULE_ASSIMP=ON"
+              "-DF3D_MODULE_EXTERNAL_RENDERING=ON"
+              "-DF3D_MODULE_OCCT=ON")))
+    (native-inputs
+     (list cxxopts
+           help2man
+           json-modern-cxx))
+    (inputs
+     (list alembic
+           assimp
+           double-conversion
+           eigen
+           expat
+           fontconfig
+           freetype
+           glew
+           hdf5
+           imath
+           jsoncpp
+           libjpeg-turbo
+           libpng
+           libtiff
+           libx11
+           lz4
+           netcdf
+           opencascade-occt
+           vtk
+           zlib))
+    (home-page "https://f3d-app.github.io/f3d/")
+    (synopsis "VTK-based 3D viewer")
+    (description "F3D (pronounced @samp{/fɛd/}) is a VTK-based 3D viewer with
+simple interaction mechanisms and which is fully controllable using arguments
+on the command line.  It supports a range of file formats (including animated
+glTF, STL, STEP, PLY, OBJ, FBX), and provides numerous rendering and texturing
+options.")
+    (license license:bsd-3)))
