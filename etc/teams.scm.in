@@ -4,6 +4,7 @@
 
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,23 +23,27 @@
 
 ;;; Commentary:
 
-;; This code defines development teams and team members.
+;; This code defines development teams and team members, as well as their
+;; scope.
 
 ;;; Code:
 
 (use-modules (srfi srfi-1)
              (srfi srfi-9)
+             (srfi srfi-26)
              (ice-9 format)
              (ice-9 match)
-             (guix ui))
+             (guix ui)
+             (git))
 
 (define-record-type <team>
-  (make-team id name description members)
+  (make-team id name description members scope)
   team?
   (id          team-id)
   (name        team-name)
   (description team-description)
-  (members     team-members set-team-members!))
+  (members     team-members set-team-members!)
+  (scope       team-scope))
 
 (define-record-type <person>
   (make-person name email)
@@ -49,11 +54,13 @@
 (define* (person name #:optional email)
   (make-person name email))
 
-(define* (team id #:key name description (members '()))
+(define* (team id #:key name description (members '())
+               (scope '()))
   (make-team id
              (or name (symbol->string id))
              description
-             members))
+             members
+             scope))
 
 (define %teams
   (make-hash-table))
@@ -276,6 +283,22 @@ importer."))
       (error (format #false
                            "no such team: ~a~%" name))))
 
+(define (find-team-by-scope files)
+  "Return the team(s) which scope matches at least one of the FILES, as list
+of file names as string."
+  (hash-fold
+   (lambda (key team acc)
+     (if (any (lambda (file)
+                (any (lambda (scope)
+                       ;; XXX: Add regex support?
+                       (string-prefix? scope file))
+                     (team-scope team)))
+              files)
+         (cons team acc)
+         acc))
+   '()
+   %teams))
+
 (define (cc . teams)
   "Return arguments for `git send-email' to notify the members of the given
 TEAMS when a patch is received by Debbugs."
@@ -297,7 +320,7 @@ TEAMS when a patch is received by Debbugs."
    (team-members team)))
 
 (define (list-teams)
-  "Print all teams and their members."
+  "Print all teams, their scope and their members."
   (define port* (current-output-port))
   (define width* (%text-width))
   (hash-for-each
@@ -307,7 +330,7 @@ TEAMS when a patch is received by Debbugs."
 id: ~a
 name: ~a
 description: ~a
-members:
+~amembers:
 "
              (team-id team)
              (team-name team)
@@ -316,15 +339,48 @@ members:
                           (string->recutils
                            (fill-paragraph text width*
                                            (string-length "description: ")))))
-                 "<none>"))
+                 "<none>")
+             (match (team-scope team)
+               (() "")
+               (scope (format #f "scope: ~{~s ~}~%" scope))))
      (list-members team port* "+ ")
      (newline))
    %teams))
 
+
+(define (diff-revisions rev-start rev-end)
+  "Return the list of added, modified or removed files between REV-START
+and REV-END, two git revision strings."
+  (let* ((repository (repository-open (getcwd)))
+         (commit1 (commit-lookup repository
+                                 (object-id
+                                  (revparse-single repository rev-start))))
+         (commit2 (commit-lookup repository
+                                 (object-id
+                                  (revparse-single repository rev-end))))
+         (diff (diff-tree-to-tree repository
+                                  (commit-tree commit1)
+                                  (commit-tree commit2)))
+         (files '()))
+    (diff-foreach
+     diff
+     (lambda (delta progress)
+       (set! files
+             (cons (diff-file-path (diff-delta-old-file delta)) files))
+       0)
+     (const 0)
+     (const 0)
+     (const 0))
+    files))
+
+
 (define (main . args)
   (match args
     (("cc" . team-names)
      (apply cc (map find-team team-names)))
+    (("cc-members" rev-start rev-end)
+     (apply cc (find-team-by-scope
+                (diff-revisions rev-start rev-end))))
     (("list-teams" . args)
      (list-teams))
     (("list-members" . team-names)
