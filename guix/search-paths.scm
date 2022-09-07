@@ -83,10 +83,10 @@
    (variable "GUIX_EXTENSIONS_PATH")
    (files '("share/guix/extensions"))))
 
-;; Two variables for certificates (see (guix)X.509 Certificates),
-;; respected by 'openssl', possibly GnuTLS in the future
+;; Two variables for certificates (info "(guix)X.509 Certificates"),
+;; respected by OpenSSL and possibly GnuTLS in the future
 ;; (https://gitlab.com/gnutls/gnutls/-/merge_requests/1541)
-;; and many of their dependents -- even some GnuTLS depepdents
+;; and many of their dependents -- even some GnuTLS dependents
 ;; like Guile.  As they are not tied to a single package, define
 ;; them here to avoid duplication.
 ;;
