@@ -1522,7 +1522,7 @@ map display.  Downloads map data from a number of websites, including
            libnova
            libpng
            openjpeg
-           proj
+           proj-7
            qtbase-5
            zlib))
     (native-search-paths
