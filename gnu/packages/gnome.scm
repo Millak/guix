@@ -1047,7 +1047,7 @@ between different kinds of computer systems.")
 (define-public tepl
   (package
     (name "tepl")
-    (version "6.00.0")
+    (version "6.1.2")
     (source
      (origin
        (method url-fetch)
@@ -1057,20 +1057,37 @@ between different kinds of computer systems.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0qvs7s86gqyyrzi0r5fbrj8zczlgv8xhdjswgbgc1afwjnl9fqx8"))))
+         "16x14j3nvsjj7jb2qmxpzygnlcy7sd7p6skv0sqshkwdlp4jxzha"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:tests? #f))                    ; FIX-ME: Requires gvfs
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'disable-problematic-tests
+                    (lambda _
+                      ;; Only keep unit tests, as the interactive tests have
+                      ;; other dependencies.
+                      (substitute* "tests/meson.build"
+                        ((".*'interactive-tests'.*") ""))))
+                  (add-before 'check 'start-xserver
+                    (lambda _
+                      (system "Xvfb :1 &")
+                      (setenv "DISPLAY" ":1"))))))
     (native-inputs
-     (list `(,glib "bin") gobject-introspection pkg-config))
+     (list `(,glib "bin")
+           gobject-introspection
+           gtk-doc
+           libxml2
+           pkg-config
+           xorg-server-for-tests))
     (inputs
+     (list uchardet))
+    (propagated-inputs
+     ;; These are all required by tepl6.pc.
      (list amtk
            glib
+           gsettings-desktop-schemas
            gtk+
-           gtksourceview-4
-           libxml2
-           uchardet))
+           gtksourceview-4))
     (synopsis "Text editor product line")
     (description "Tepl is a library that eases the development of
 GtkSourceView-based text editors and IDEs.")
