@@ -43,6 +43,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools) ;meson-next
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cdrom)
@@ -522,4 +523,38 @@ on albums instead of single tracks.  It is not intended to be a replacement
 for your favorite MPD client but an addition to get a better
 album-experience.")
     (home-page "https://gitlab.com/coderkun/mcg")
+    (license license:gpl3+)))
+
+(define-public mpdevil
+  (package
+    (name "mpdevil")
+    (version "1.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SoongNoonien/mpdevil")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1va8fqlz8qb68gvacnzmp4asnipi11316n1cv2wb41sml9d7v00j"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda _
+              (let ((prog (string-append #$output "/bin/mpdevil")))
+                (wrap-program prog
+                  `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
+    (inputs (list bash-minimal gtk+ python python-mpd2 python-pygobject))
+    (native-inputs (list `(,glib "bin")))
+    (home-page "https://github.com/SoongNoonien/mpdevil")
+    (synopsis "Music browser for the MPD")
+    (description "mpdevil is a music browser for the Music Player Daemon (MPD),
+which is focused on playing local music without the need of managing playlists.
+Instead of maintaining a client side database of your music library,
+mpdevil loads all tags and covers on demand.")
     (license license:gpl3+)))
