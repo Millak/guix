@@ -1332,36 +1332,52 @@ It has miners for Facebook, Flickr, Google, ownCloud and SkyDrive.")
 
 (define-public gssdp
   (package
-   (name "gssdp")
-   (version "1.2.3")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnome/sources/" name "/"
-                                (version-major+minor version) "/"
-                                name "-" version ".tar.xz"))
-            (sha256
-             (base32
-              "1s57i8a8wnnxnsfl27cq4503dkdlzbrhry5zpg23sfqfffvdqqx2"))))
-   (build-system meson-build-system)
-   (native-inputs
-    `(("gettext" ,gettext-minimal)
-      ("glib:bin" ,glib "bin")
-      ("gobject-introspection" ,gobject-introspection)
-      ("gtk-doc" ,gtk-doc/stable)
-      ("pkg-config" ,pkg-config)
-      ("vala" ,vala)))
-   (inputs
-    (list gtk+))
-   (propagated-inputs
-    ;; The .pc file "Requires" libsoup-2.4.
-    `(("libsoup" ,libsoup-minimal-2)))
-   (synopsis "GObject-based API over @acronym{SSDP, Simple Service Discovery
+    (name "gssdp")
+    (version "1.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "07hn2xma2yh17v7rlvcaibkn16bx4l9qig3mlb8hdp6qfiraqh7b"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           gi-docgen
+           gobject-introspection
+           pkg-config
+           vala))
+    (inputs
+     (list gtk))
+    (propagated-inputs
+     ;; The .pc file "Requires" libsoup.
+     (list libsoup))
+    (synopsis "GObject-based API over @acronym{SSDP, Simple Service Discovery
 Protocol} for GNOME")
-   (description "This package provides a library to handle resource discovery
+    (description "This package provides a library to handle resource discovery
 and announcement over @acronym{SSDP, Simple Service Discovery Protocol} and
 a debugging tool, @command{gssdp-device-sniffer}.")
-   (home-page "https://gitlab.gnome.org/GNOME/gssdp")
-   (license license:lgpl2.0+)))
+    (home-page "https://gitlab.gnome.org/GNOME/gssdp")
+    (license license:lgpl2.0+)))
+
+(define-public gssdp-1.4
+  (package
+    (inherit gssdp)
+    (name "gssdp")
+    (version "1.4.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "10hm8cgh2p8441xc83kswjgghrrqpzgblvc5523jp0pvayfq8xl6"))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs gssdp)
+              (replace "libsoup" libsoup-minimal-2)))))
 
 (define-public gupnp
   (package
