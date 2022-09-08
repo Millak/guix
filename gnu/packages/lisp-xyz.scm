@@ -23667,6 +23667,37 @@ model, thereby greatly simplifying the definition of class mixins.")
 (define-public ecl-compatible-metaclasses
   (sbcl-package->ecl-package sbcl-compatible-metaclasses))
 
+(define-public sbcl-class-options
+  (package
+    (name "sbcl-class-options")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/class-options")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-class-options" version))
+       (sha256
+        (base32 "1dkgr1vbrsra44jznzz2bvdf8nlpdrrkjcqrfs8aa7axksda3bqk"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-enhanced-boolean sbcl-parachute))
+    (inputs
+     (list sbcl-closer-mop sbcl-enhanced-find-class))
+    (home-page "https://www.hexstreamsoft.com/libraries/class-options/")
+    (synopsis "Accessing defining class and its options during modification")
+    (description
+     "This package provides easy access to the defining class and its options
+during initialization or reinitialization of its subcomponents.")
+    (license license:unlicense)))
+
+(define-public cl-class-options
+  (sbcl-package->cl-source-package sbcl-class-options))
+
+(define-public ecl-class-options
+  (sbcl-package->ecl-package sbcl-class-options))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
