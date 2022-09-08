@@ -10146,7 +10146,7 @@ existing databases over the internet.")
 (define-public gnome-tweaks
   (package
     (name "gnome-tweaks")
-    (version "40.0")
+    (version "40.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-tweaks/"
@@ -10156,41 +10156,40 @@ existing databases over the internet.")
                (list (search-patch "gnome-tweaks-search-paths.patch")))
               (sha256
                (base32
-                "0sn3xsjhnini0f2dyi1ymrr3fb8mi7w5j5lsyw11rc5h67h3ypzr"))))
+                "1z13xy804hld9q8k0vq5y4j5jk7m0ayqzkli8jxpymwrlcrkpzfg"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags '("-Dlocalstatedir=/tmp"
-                           "-Dsysconfdir=/tmp")
-       #:imported-modules ((guix build python-build-system)
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags #~(list "-Dlocalstatedir=/tmp"
+                                "-Dsysconfdir=/tmp")
+      #:imported-modules `((guix build python-build-system)
                            ,@%meson-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson-postinstall.py"
-               (("gtk-update-icon-cache") "true"))))
-         (add-after 'install 'wrap
-           (@@ (guix build python-build-system) wrap))
-         (add-after 'wrap 'wrap-gi-typelib-and-python
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out               (assoc-ref outputs "out"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
-               (let ((python-path
-                      (string-append out "/lib/python"
-                                     ,(version-major+minor
-                                       (package-version python))
-                                     "/site-packages")))
-                 (wrap-program (string-append out "/bin/gnome-tweaks")
-                   `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-                   `("GUIX_PYTHONPATH" ":" prefix (,python-path))))))))))
+      #:modules '((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson-postinstall.py"
+                (("gtk-update-icon-cache") "true"))))
+          (add-after 'install 'wrap
+            (assoc-ref python:%standard-phases 'wrap))
+          (add-after 'wrap 'wrap-gi-typelib-and-python
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/gnome-tweaks")
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))
+                `("GUIX_PYTHONPATH" ":" prefix
+                  (,(python:site-packages inputs outputs)))))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-compile-resources, etc.
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin")               ; for glib-compile-resources, etc.
+           gettext-minimal
+           pkg-config))
     (inputs
-     (list bash-minimal ; to execute the wrapper program
+     (list bash-minimal                 ; to execute the wrapper program
            gnome-desktop
            gtk+
            gobject-introspection
