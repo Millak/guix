@@ -23634,6 +23634,39 @@ definition objects.")
 (define-public ecl-cesdi
   (sbcl-package->ecl-package sbcl-cesdi))
 
+(define-public sbcl-compatible-metaclasses
+  (package
+    (name "sbcl-compatible-metaclasses")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/compatible-metaclasses")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-compatible-metaclasses" version))
+       (sha256
+        (base32 "17cf74j400cl6sjslfhkv13lir85k705v63mx3dd4y6dl5hvsdh6"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-class-options
+           sbcl-closer-mop
+           sbcl-enhanced-find-class))
+    (home-page "https://www.hexstreamsoft.com/libraries/compatible-metaclasses/")
+    (synopsis "Simplifies class mixins by validating superclasses")
+    (description
+     "This library validates superclasses according to a simple substitution
+model, thereby greatly simplifying the definition of class mixins.")
+    (license license:unlicense)))
+
+(define-public cl-compatible-metaclasses
+  (sbcl-package->cl-source-package sbcl-compatible-metaclasses))
+
+(define-public ecl-compatible-metaclasses
+  (sbcl-package->ecl-package sbcl-compatible-metaclasses))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
