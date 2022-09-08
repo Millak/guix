@@ -9624,63 +9624,66 @@ associations for GNOME.")
 
 (define-public gnome-weather
   (package
-   (name "gnome-weather")
-   (version "40.1")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnome/sources/" name "/"
-                                (version-major version) "/"
-                                name "-" version ".tar.xz"))
-            (sha256
-             (base32
-              "0k9wnyinvx6433r07kvjyahgqc605g7gbpf3d0h6vi4p8x61849x"))))
-   (build-system meson-build-system)
-   (native-inputs
-    `(("gettext" ,gettext-minimal)
-      ("glib:bin" ,glib "bin")
-      ("gobject-introspection" ,gobject-introspection)
-      ("gtk+:bin" ,gtk+ "bin")
-      ("pkg-config" ,pkg-config)))
-   (inputs
-    (list appstream-glib
-          geoclue
-          gjs
-          gnome-desktop
-          libgweather
-          libhandy))
-   (arguments
-    `(#:glib-or-gtk? #t
-      #:meson ,meson-0.60
+    (name "gnome-weather")
+    (version "42.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0rdl0ywdk8jlq819wr1sbdzdvsasz11pp30fylzvprakv28yd7jp"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
       #:phases
-      ,#~(modify-phases %standard-phases
-           (add-after 'unpack 'fix-service-file
-             (lambda _
-               (substitute* "data/org.gnome.Weather.service.in"
-                 (("Exec=[[:graph:]]+")
-                  (string-append "Exec=" #$output
-                                 "/bin/gnome-weather")))))
-           (add-after 'install 'fix-desktop-file
-             ;; FIXME: "gapplication launch org.gnome.Weather" fails for some
-             ;; reason.  See https://issues.guix.gnu.org/issue/39324.
-             (lambda _
-               (let ((applications
-                      (string-append #$output "/share/applications")))
-                 (substitute* (string-append applications
-                                             "/org.gnome.Weather.desktop")
-                   (("Exec=.*") "Exec=gnome-weather\n")))))
-           (add-after 'install 'wrap
-             (lambda _
-               (let ((gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
-                 ;; GNOME Weather needs the typelib files of GTK+, Pango etc
-                 ;; at runtime.
-                 (wrap-program (string-append #$output "/bin/gnome-weather")
-                   `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
-   (synopsis "Weather monitoring for GNOME desktop")
-   (description "GNOME Weather is a small application that allows you to
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-service-file
+            (lambda _
+              (substitute* "data/org.gnome.Weather.service.in"
+                (("Exec=[[:graph:]]+")
+                 (string-append "Exec=" #$output
+                                "/bin/gnome-weather")))))
+          (add-after 'unpack 'disable-gtk-update-icon-cache
+            (lambda _
+              (setenv "DESTDIR" "/")))
+          (add-after 'install 'fix-desktop-file
+            ;; FIXME: "gapplication launch org.gnome.Weather" fails for some
+            ;; reason.  See https://issues.guix.gnu.org/issue/39324.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* (search-input-file
+                            outputs
+                            "share/applications/org.gnome.Weather.desktop")
+                (("Exec=.*") "Exec=gnome-weather\n"))))
+          (add-after 'install 'wrap
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; GNOME Weather needs the typelib files of GTK+, Pango etc at
+              ;; runtime.
+              (wrap-program (search-input-file outputs "bin/gnome-weather")
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config))
+    (inputs
+     (list appstream-glib
+           bash-minimal
+           geoclue
+           gjs
+           gsettings-desktop-schemas-next
+           gtk
+           libadwaita
+           libgweather4))
+    (synopsis "Weather monitoring for GNOME desktop")
+    (description "GNOME Weather is a small application that allows you to
 monitor the current weather conditions for your city, or anywhere in the
 world.")
-   (home-page "https://wiki.gnome.org/Apps/Weather")
-   (license license:gpl2+)))
+    (home-page "https://wiki.gnome.org/Apps/Weather")
+    (license license:gpl2+)))
 
 (define-public gnome
   (package
