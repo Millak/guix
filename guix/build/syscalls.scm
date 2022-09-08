@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -549,50 +549,50 @@ the last argument of `mknod'."
 (define MNT_EXPIRE      4)
 (define UMOUNT_NOFOLLOW 8)
 
-(define-as-needed (mount source target type
-                         #:optional (flags 0) options
-                         #:key (update-mtab? #f))
-  "Mount device SOURCE on TARGET as a file system TYPE.
-Optionally, FLAGS may be a bitwise-or of the MS_* <sys/mount.h>
-constants, and OPTIONS may be a string.  When FLAGS contains
-MS_REMOUNT, SOURCE and TYPE are ignored.  When UPDATE-MTAB? is true,
-update /etc/mtab.  Raise a 'system-error' exception on error."
+(define-as-needed mount
   ;; XXX: '#:update-mtab?' is not implemented by core 'mount'.
   (let ((proc (syscall->procedure int "mount" `(* * * ,unsigned-long *))))
-    (let-values (((ret err)
-                  (proc (if source
-                            (string->pointer source)
-                            %null-pointer)
-                        (string->pointer target)
-                        (if type
-                            (string->pointer type)
-                            %null-pointer)
-                        flags
-                        (if options
-                            (string->pointer options)
-                            %null-pointer))))
-      (unless (zero? ret)
-        (throw 'system-error "mount" "mount ~S on ~S: ~A"
-               (list source target (strerror err))
-               (list err)))
-      (when update-mtab?
-        (augment-mtab source target type options)))))
+    (lambda* (source target type
+                     #:optional (flags 0) options
+                     #:key (update-mtab? #f))
+      "Mount device SOURCE on TARGET as a file system TYPE.
+Optionally, FLAGS may be a bitwise-or of the MS_* <sys/mount.h> constants, and
+OPTIONS may be a string.  When FLAGS contains MS_REMOUNT, SOURCE and TYPE are
+ignored.  When UPDATE-MTAB? is true, update /etc/mtab.  Raise a 'system-error'
+exception on error."
+      (let-values (((ret err)
+                    (proc (if source
+                              (string->pointer source)
+                              %null-pointer)
+                          (string->pointer target)
+                          (if type
+                              (string->pointer type)
+                              %null-pointer)
+                          flags
+                          (if options
+                              (string->pointer options)
+                              %null-pointer))))
+        (unless (zero? ret)
+          (throw 'system-error "mount" "mount ~S on ~S: ~A"
+                 (list source target (strerror err))
+                 (list err)))
+        (when update-mtab?
+          (augment-mtab source target type options))))))
 
-(define-as-needed (umount target
-                          #:optional (flags 0)
-                          #:key (update-mtab? #f))
-  "Unmount TARGET.  Optionally FLAGS may be one of the MNT_* or UMOUNT_*
-constants from <sys/mount.h>."
+(define-as-needed umount
   ;; XXX: '#:update-mtab?' is not implemented by core 'umount'.
-  (let ((proc (syscall->procedure int "umount2" `(* ,int))))
-    (let-values (((ret err)
-                  (proc (string->pointer target) flags)))
-      (unless (zero? ret)
-        (throw 'system-error "umount" "~S: ~A"
-               (list target (strerror err))
-               (list err)))
-      (when update-mtab?
-        (remove-from-mtab target)))))
+  (let ((proc (syscall->procedure int "umount2" `(* ,int)))) ;XXX
+    (lambda* (target #:optional (flags 0) #:key (update-mtab? #f))
+      "Unmount TARGET.  Optionally FLAGS may be one of the MNT_* or UMOUNT_*
+constants from <sys/mount.h>."
+      (let-values (((ret err)
+                    (proc (string->pointer target) flags)))
+        (unless (zero? ret)
+          (throw 'system-error "umount" "~S: ~A"
+                 (list target (strerror err))
+                 (list err)))
+        (when update-mtab?
+          (remove-from-mtab target))))))
 
 ;; Mount point information.
 (define-record-type <mount>
@@ -732,25 +732,27 @@ current process."
 (define-as-needed RB_SW_SUSPEND  #xd000fce2)
 (define-as-needed RB_KEXEC       #x45584543)
 
-(define-as-needed (reboot #:optional (cmd RB_AUTOBOOT))
+(define-as-needed reboot
   (let ((proc (syscall->procedure int "reboot" (list int))))
-    (let-values (((ret err) (proc cmd)))
-      (unless (zero? ret)
-        (throw 'system-error "reboot" "~S: ~A"
-               (list cmd (strerror err))
-               (list err))))))
+    (lambda* (#:optional (cmd RB_AUTOBOOT))
+      (let-values (((ret err) (proc cmd)))
+        (unless (zero? ret)
+          (throw 'system-error "reboot" "~S: ~A"
+                 (list cmd (strerror err))
+                 (list err)))))))
 
-(define-as-needed (load-linux-module data #:optional (options ""))
+(define-as-needed load-linux-module
   (let ((proc (syscall->procedure int "init_module"
                                   (list '* unsigned-long '*))))
-    (let-values (((ret err)
-                  (proc (bytevector->pointer data)
-                        (bytevector-length data)
-                        (string->pointer options))))
-      (unless (zero? ret)
-        (throw 'system-error "load-linux-module" "~A"
-               (list (strerror err))
-               (list err))))))
+    (lambda* (data #:optional (options ""))
+      (let-values (((ret err)
+                    (proc (bytevector->pointer data)
+                          (bytevector-length data)
+                          (string->pointer options))))
+        (unless (zero? ret)
+          (throw 'system-error "load-linux-module" "~A"
+                 (list (strerror err))
+                 (list err)))))))
 
 (define (kernel? pid)
   "Return #t if PID designates a \"kernel thread\" rather than a normal
