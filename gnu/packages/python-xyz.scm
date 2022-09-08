@@ -29,7 +29,7 @@
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017, 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016, 2017, 2018, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -10008,13 +10008,13 @@ function signatures.")
 (define-public python-sympy
   (package
     (name "python-sympy")
-    (version "1.10.1")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sympy" version))
        (sha256
-        (base32 "0yvqb2fhrm81skl8s9znbkkjfb1a09n64qqlc1r225cyvzzywfar"))))
+        (base32 "0n46x1rfy8c2a9za3yp2va5icigxj805f9fmiq8c1drwwvf808z3"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -30739,3 +30739,40 @@ platform using the ActivityPub protocol.")
      "@code{python-lief} is a cross platform library which can parse, modify
 and abstract ELF, PE and MachO formats.")
     (license license:asl2.0)))
+
+(define-public python-pymonad
+  (package
+    (name "python-pymonad")
+    (version "2.4.0")
+    ;; The tests are incomplete in the PyPI archive.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jasondelaat/pymonad")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ci1mpydldiyg9qv6d19ljhfh7wxlrl2k4mlvqd9bm7dqvpdjsx7"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "./run_tests.sh")))))))
+    (home-page "https://github.com/jasondelaat/pymonad")
+    (synopsis "Monadic style functional programming for Python")
+    (description "@code{python-pymonad} implements data structures typically
+available in purely functional or functional first programming languages such
+as Haskell and F#.  Included are
+
+@itemize
+@item Monad and Monoid data types with several common monads such as Maybe and
+State
+@item Useful tools such as the @code{@@curry} decorator for defining curried
+functions
+@item Type annotations to help ensure correct usage
+@end itemize")
+    (license license:bsd-3)))

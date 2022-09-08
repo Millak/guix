@@ -134,6 +134,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
@@ -476,7 +477,7 @@ playing your music.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.7")
+    (version "1.0.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -485,7 +486,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17mfavbbzx7hp7j5n9i7c3rajy16jicarabrl174p4gjv4zpy2sc"))
+                "0gm97sdz78s67rnyrs4ixg5dwv2haxdmb7s21yqb8axp624vvalp"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -542,6 +543,7 @@ playing your music.")
            gstreamer
            gst-plugins-base
            gst-plugins-good
+           icu4c
            libcdio
            libmtp
            protobuf

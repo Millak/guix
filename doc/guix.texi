@@ -36437,7 +36437,7 @@ This is the data type representing the configuration of rshiny.
 @item @code{package} (default: @code{r-shiny})
 The package to use.
 
-@item @code{binary} (defaunlt @code{"rshiny"})
+@item @code{binary} (default @code{"rshiny"})
 The name of the binary or shell script located at @code{package/bin/} to
 run when the service is run.
 

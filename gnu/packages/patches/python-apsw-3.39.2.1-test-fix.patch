@@ -1,0 +1,27 @@
+From 1111f902075169bd0d96cdd10607ef8499f0fed5 Mon Sep 17 00:00:00 2001
+From: Roger Binns <rogerb@rogerbinns.com>
+Date: Mon, 5 Sep 2022 07:12:25 -0700
+Subject: [PATCH] Deal with mismatched SQLITE_ENABLE_COLUMN_METADATA
+
+Address #363
+---
+ apsw/tests.py   | 2 +-
+ 1 files changed, 1 insertions(+), 1 deletion(-)
+
+diff --git a/apsw/tests.py b/apsw/tests.py
+index b4a94d3..256ead0 100644
+--- a/apsw/tests.py
++++ b/apsw/tests.py
+@@ -772,8 +772,8 @@ class APSW(unittest.TestCase):
+         c.execute("drop table foo; create table foo (%s)" % (", ".join(["[%s] %s" % (n, t) for n, t in cols]), ))
+         c.execute("insert into foo([x a space]) values(1)")
+         c.execute("create temp table two(fred banana); insert into two values(7); create temp view three as select fred as [a space] from two")
+-        has_full=any(o=="ENABLE_COLUMN_METADATA" or o.startswith("ENABLE_COLUMN_METADATA=") for o in apsw.compile_options)
++        has_full=any(o=="ENABLE_COLUMN_METADATA" or o.startswith("ENABLE_COLUMN_METADATA=") for o in apsw.compile_options) if apsw.using_amalgamation else hasattr(c, "description_full")
+         for row in c.execute("select * from foo"):
+             self.assertEqual(cols, c.getdescription())
+             self.assertEqual(has_full, hasattr(c, "description_full"))
+
+base-commit: f628374c5857d940067ef26c9ea4e85a08a94f76
+--
+2.37.2

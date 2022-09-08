@@ -1083,6 +1083,28 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
     (home-page "https://github.com/awslabs/aws-c-mqtt")
     (license license:asl2.0)))
 
+;; Note: there is another mimalloc embedded in rust-mimalloc (version 1.6.4).
+(define-public mimalloc
+  (package
+    (name "mimalloc")
+    (version "2.0.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/microsoft/mimalloc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05x2dl3zimflfj91ns3vrphmzpdlyyr230p9adqgfds101f16qmv"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:build-type "Release"))
+    (synopsis "General purpose memory allocator")
+    (description "@code{mimalloc} is a drop-in replacement for @code{malloc}.")
+    (home-page "https://microsoft.github.io/mimalloc/")
+    (license license:expat)))
+
 ;;; Factored out of the ck package so that it can be adjusted and called on
 ;;; the host side easily, without impacting the package definition.
 (define (gnu-triplet->ck-machine target)

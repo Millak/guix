@@ -282,7 +282,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
         (base32 "12vb15gs56g8wl5nqlm4llr508brh4m2lfknhq4lizbxzqzawkb1"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases (delete 'configure))
+     `(#:phases (modify-phases %standard-phases (delete 'configure))
 
        ;; The 'all' target depends on three targets that directly populate
        ;; $(MANDIR) based on its current contents.  Doing that in parallel
@@ -290,9 +290,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
        #:parallel-build? #f
 
        #:tests? #f
-       #:make-flags (list (string-append "mandir="
-                                         (assoc-ref %outputs "out")
-                                         "/share/man"))))
+       #:make-flags ,#~(list (string-append "mandir=" #$output "/share/man"))))
     (home-page "https://www.kernel.org/doc/man-pages/")
     (synopsis "Development manual pages from the Linux project")
     (description
@@ -301,6 +299,39 @@ Linux kernel and C library interfaces employed by user-space programs.")
 
     ;; Each man page has its own license; some are GPLv2+, some are MIT/X11.
     (license license:gpl2+)))
+
+(define-public man-pages-posix
+  (package
+    (name "man-pages-posix")
+    (version "2013-a")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kernel.org/linux/docs/man-pages/"
+                           "man-pages-posix/man-pages-posix-" version
+                           ".tar.xz"))
+       (sha256
+        (base32 "0258j05zdrxpgdj8nndbyi7bvrs8fxdksb0xbfrylzgzfmf3lqqr"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f
+       ;; The compress-documentation phase doesn't pick up on our manpages as
+       ;; its regex doesn't support trailing letters, so manually compress.
+       #:make-flags ,#~(list (string-append "prefix=" #$output) "gz")
+       #:license-file-regexp "POSIX-COPYRIGHT"
+       #:phases (modify-phases %standard-phases (delete 'configure))))
+    (home-page "https://www.kernel.org/doc/man-pages/")
+    (synopsis "Man pages from the POSIX.1-2013 standard")
+    (description
+     "This package provides excerpts from the POSIX.1-2008 and TC1 standards
+(collectively, POSIX.1-2013) in manual page form.  While the Linux man-pages
+project documents the system as it exists on Linux- and glibc-based systems,
+this package documents the portable software API as nominally implemented by
+many Unix-likes.")
+    (license (license:fsdg-compatible "file://POSIX-COPYRIGHT"
+                                      "Redistribution of this material is permitted so long as this
+notice and the corresponding notices within each POSIX manual page are retained
+on any distribution, and the nroff source is included."))))
 
 (define-public help2man
   ;; TODO: Manual pages for languages not available from the implicit

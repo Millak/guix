@@ -110,7 +110,7 @@
 (define-public ytfzf
   (package
     (name "ytfzf")
-    (version "2.3")
+    (version "2.4.1")
     (home-page "https://github.com/pystardust/ytfzf")
     (source
      (origin
@@ -121,7 +121,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01prcg6gfwy1r49v92pkzxay9iadqqhpaxvn8jmij2jm5l50iynd"))))
+        (base32 "198qhnjklrgrjs35ygym6sgx1ibwn6qrihfiginvmx38gdavdj4x"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -162,6 +162,7 @@
            libnotify
            mpv
            ncurses
+           perl                         ;for convert-ascii-escape.pl
            python-ueberzug
            sed
            util-linux

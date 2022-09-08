@@ -255,7 +255,7 @@
       ;; ^ This is downstream of https://github.com/racket/racket,
       ;; but it's designed to be a friendly landing place
       (synopsis "Tiny Racket for build scripts")
-      (description "Zuo (作) is a tiny Racket with primitives for dealing
+      (description "Zuo is a tiny Racket with primitives for dealing
 with files and running processes.  It comes with a @command{make}-like
 embedded DSL, which is used to build Racket itself.
 

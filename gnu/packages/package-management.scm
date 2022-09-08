@@ -63,6 +63,7 @@
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages file)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -1900,14 +1901,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.12.7")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "05lkpbjiwp69q924i1jfyk5frcqbdbv9kyzbqwm2hy723i9jmdbd"))
+        (base32 "05bqy9kwmaj32y7f94fydcz3k63bsgn4mbcp4pglv8hffxrnj9wf"))
        (patches
         (search-patches "flatpak-fix-path.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
@@ -1976,8 +1977,10 @@ cp -r /tmp/locale/*/en_US.*")))
            socat
            which))
     (inputs
-     (list appstream-glib
+     (list appstream
+           appstream-glib
            bubblewrap
+           curl
            dconf
            fuse
            gdk-pixbuf

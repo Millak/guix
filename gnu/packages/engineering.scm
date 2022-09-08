@@ -78,6 +78,7 @@
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages commencement)
@@ -2894,6 +2895,97 @@ and drilling of PCBs.  It takes Gerber files as input and outputs G-code files
 for the milling of PCBs.  It also includes an autoleveller for the automatic
 dynamic calibration of the milling depth.")
      (license license:gpl3+))))
+
+;; libdxfrw has no readme, no version release, no tags.  Initial commit says
+;; "libdxfrw-0.6.3 import", but it shares no git history with "upstream"
+;; https://github.com/codelibs/libdxfrw.  Both are difficult to package
+;; separately as they don't install properly.  Copying in-tree instead of
+;; #:recursive #t to avoid downloading the other bigger dependencies which
+;; aren't needed.
+(define libdxfrw-sources
+  (origin
+    (method git-fetch)
+    (uri (git-reference (url
+                         "https://github.com/solvespace/libdxfrw")
+                        (commit
+                         "0b7b7b709d9299565db603f878214656ef5e9ddf")))
+    (sha256 (base32
+             "0d2wjq81466m3hb5cffiy99vhx0irwwy47yfxp318k2q4cvd5z2a"))))
+
+(define-public solvespace
+  (let ((commit "70bde63cb32a7f049fa56cbdf924e2695fcb2916")
+        (version "3.1"))
+    (package
+      (name "solvespace")
+      (version version)
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/solvespace/solvespace")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1hbdln44k00a6vlklv2mq2c9zda3i9d5x0f7ks85w4v6zskhqnra"))))
+      (build-system cmake-build-system)
+      (native-inputs (list pkg-config gettext-minimal))
+      (arguments
+       (list
+        #:build-type "Release"
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'unpack-libdxfrw
+                       (lambda _
+                         (copy-recursively #$libdxfrw-sources
+                                           "extlib/libdxfrw")))
+                     (add-before 'configure 'embed-git-commit-hash
+                       (lambda _
+                         ;; `git describe` doesn't work here, so embed
+                         ;; the commit hash directly in CMakeLists.txt as
+                         ;; described instead.
+                         (substitute* "CMakeLists.txt"
+                           (("include\\(GetGitCommitHash\\)")
+                            (string-append "set(GIT_COMMIT_HASH "
+                                           #$commit ")")))))
+                     (add-before 'configure 'use-packaged-mimalloc
+                       (lambda _
+                         (substitute* "CMakeLists.txt"
+                           (("message\\(STATUS \"Using in-tree mimalloc\"\\)")
+                            "message(STATUS \"Using guix packaged mimalloc\")")
+                           (("add_subdirectory\\(extlib/mimalloc EXCLUDE_FROM_ALL\\)")
+                            "find_package(mimalloc REQUIRED)")))))))
+      (inputs (list cairo
+                    eigen
+                    freetype
+                    gtkmm-3
+                    json-c
+                    libpng
+                    libspnav            ;spaceware
+                    mimalloc
+                    mesa
+                    zlib))
+      (synopsis
+       "Parametric 2D/3D @acronym{CAD, computer-aided design} software")
+      (description
+       "SOLVESPACE is a parametric 3D @acronym{CAD,
+computer-aided design} tool.  Applications include:
+
+@itemize
+@item modeling 3D parts — draw with extrudes, revolves, helixes and
+      Boolean (union / difference / intersection) operations
+@item modeling 2D parts — draw the part as a single section,
+      and export DXF, PDF, SVG; use 3D assembly to verify fit
+@item 3D-printed parts — export the STL or other triangle mesh
+      expected by most 3D printers
+@item preparing CAM data — export 2D vector art for a waterjet
+      machine or laser cutter; or generate STEP or STL, for import into
+      third-party CAM software for machining
+@item mechanism design — use the constraint solver to simulate planar
+      or spatial linkages, with pin, ball, or slide joints
+@item plane and solid geometry — replace hand-solved trigonometry and spreadsheets
+      with a live dimensioned drawing
+@end itemize")
+      (home-page "https://solvespace.com/")
+      (license license:gpl3+))))
 
 (define-public syscall-intercept
   ;; Upstream provides no tag. Also, last version update is 4 years old.

@@ -11589,3 +11589,97 @@ within ‘words’ that contain non-alphabetic characters (e.g., that include
 underscores), and hyphenation of text typeset in monospaced (e.g., cmtt)
 fonts.")
     (license license:lppl1.3c+)))
+
+(define-public texlive-latex-lastpage
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-lastpage"
+              (list "doc/latex/lastpage/"
+                    "tex/latex/lastpage/")
+              (base32 "0q6x743b8fkw9r82lrxy49f9xsg81bffynwvpnvpnp3h4mkafvdb")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lastpage")
+    (synopsis "Reference last page for Page N of M type footers")
+    (description
+     "This package enables referencing the number of pages in a LaTeX document
+through the introduction of a new label which can be referenced like
+@code{\\pageref{LastPage}} to give a reference to the last page of a document.
+It is particularly useful in the page footer that says: Page N of M.")
+    (license license:lppl1.3c+)))
+
+(define-public texlive-latex-tabto-ltx
+  (package
+    (name "texlive-latex-tabto-ltx")
+    (version (number->string %texlive-revision))
+    (source (origin
+              (method svn-fetch)
+              (uri (svn-reference (url (string-append
+                                        "svn://www.tug.org/texlive/tags/"
+                                        %texlive-tag "/Master/texmf-dist/"
+                                        "/tex/latex/tabto-ltx"))
+                                  (revision %texlive-revision)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1vq9s3n0mdgx2w84bjdsqxp3vcasfb824agjy56713902li1g8vm"))))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder (begin
+                   (use-modules (guix build utils))
+                   (let ((target (string-append (assoc-ref %outputs "out")
+                                  "/share/texmf-dist/tex/latex/tabto")))
+                     (mkdir-p target)
+                     (copy-recursively (assoc-ref %build-inputs "source")
+                                       target) #t))))
+    (home-page "https://ctan.org/pkg/tabto-ltx")
+    (synopsis "``Tab'' to a measured position in the line")
+    (description
+     "This package provides @code{\\tabto{<length>}}, which moves the
+typesetting position to @code{<length>} from the left margin of the paragraph.
+If the typesetting position is already further along, @code{\\tabto} starts a
+new line; the command @code{\\tabto*} will move position backwards if
+necessary, so that previous text may be overwritten.  In addition, the command
+@code{\\TabPositions} may be used to define a set of tabbing positions, after
+which the command @code{\\tab} advances typesetting position to the next
+defined ``tab stop''.")
+    (license license:lppl1.3+)))
+
+(define-public texlive-generic-soul
+  (let ((template (simple-texlive-package
+                   "texlive-generic-soul"
+                   (list "/doc/generic/soul/"
+                         "/tex/generic/soul/")
+                   (base32
+                    "11jdgvfpcv10y5j898495lf29k2m03x39v9jzb4v79w4cgxcmfps")
+                   #:trivial? #t)))
+    (package
+      (inherit template)
+      (home-page "http://www.ctan.org/pkg/soul")
+      (synopsis "Hyphenation for letterspacing, underlining, and more")
+      (description
+       "@code{soul} enables hyphenatable spacing out (letterspacing),
+underlining, striking out, etc., using the TeX hyphenation algorithm to find
+the proper hyphens automatically.  The package also provides a mechanism that
+can be used to implement similar tasks, that have to treat text syllable by
+syllable.  The package itself does not support UTF-8 input in ordinary
+(PDF)LaTeX; some UTF-8 support is offered by package @code{soulutf8}.")
+      (license license:lppl))))
+
+(define-public texlive-latex-totcount
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-totcount"
+              (list "doc/latex/totcount/"
+                    "tex/latex/totcount/")
+              (base32 "0z4mijyk3z7555q8da41aiji602plis5z261z4rr1fl8sndhnhn1")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/totcount")
+    (synopsis "Find the last value of a counter")
+    (description
+     "This package records the value that was last set, for any counter of
+interest.  Since most such counters are simply incremented when they are
+changed, the recorded value will usually be the maximum value.")
+    (license license:lppl1.3c+)))

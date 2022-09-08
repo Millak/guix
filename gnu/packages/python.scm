@@ -865,7 +865,7 @@ ease from the desktop to a microcontroller or embedded system.")
                     (substitute* '("lib_pypy/_md5.py"
                                    "lib_pypy/_sha1.py")
                       ((shebang-match-python) shebang-pypy3))))
-                (copy-recursively dist-dir out)))))))
+                (copy-recursively dist-dir #$output)))))))
     (native-inputs
      (list gzip
            nss-certs                    ; For ssl tests

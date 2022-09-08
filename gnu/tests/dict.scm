@@ -63,7 +63,8 @@
   (define vm
     (virtual-machine
      (operating-system os)
-     (port-forwardings '((8000 . 2628)))))
+     (port-forwardings '((8000 . 2628)))
+     (memory-size 1024)))
 
   (define test
     (with-imported-modules '((gnu build marionette))
