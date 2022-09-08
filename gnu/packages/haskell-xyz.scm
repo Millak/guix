@@ -16100,6 +16100,24 @@ data Dec a
 @end example")
     (license license:bsd-3)))
 
+(define-public ghc-ansi2html
+  (package
+    (name "ghc-ansi2html")
+    (version "0.9")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "Ansi2Html" version))
+              (sha256
+               (base32
+                "1dqq1rnx1w0cn4w11knmxvn7qy4lg4m39dgw4rs6r2pjqzgrwarh"))))
+    (build-system haskell-build-system)
+    (home-page "http://janzzstimmpfle.de/~jens/software/Ansi2Html/")
+    (synopsis "Convert ANSI Terminal Sequences to nice HTML markup")
+    (description
+     "This package enables integration of terminal screen state in html
+pages.")
+    (license license:bsd-3)))
+
 (define-public ghc-singleton-bool
   (package
     (name "ghc-singleton-bool")
