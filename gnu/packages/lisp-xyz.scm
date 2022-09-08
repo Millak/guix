@@ -22917,6 +22917,41 @@ operator in portable Common Lisp.")
 (define-public ecl-amb
   (sbcl-package->ecl-package sbcl-amb))
 
+(define-public sbcl-quicklisp-stats
+  (let ((commit "953b45c2212ae513d48a611d3dd09c846a6102cd")
+        (revision "0"))
+    (package
+      (name "sbcl-quicklisp-stats")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/quicklisp-stats")
+               (commit commit)))
+         (file-name (git-file-name "cl-quicklisp-stats" version))
+         (sha256
+          (base32 "0v8dgmlgd283n1g486q4sj2mghgdvgywg2nqp43nnrfc04mkvgc0"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-drakma
+             sbcl-split-sequence))
+      (arguments
+       `(#:tests? #f)) ; There are no tests.
+      (synopsis "Fetches and operates on Quicklisp download statistics")
+      (description
+       "@code{cl-quicklisp-stats} is a system that fetches and performs basic
+operations on the Quicklisp download statistics.")
+      (home-page "https://github.com/phoe/quicklisp-stats/")
+      (license license:expat))))
+
+(define-public cl-quicklisp-stats
+  (sbcl-package->cl-source-package sbcl-quicklisp-stats))
+
+(define-public ecl-quicklisp-stats
+  (sbcl-package->ecl-package sbcl-quicklisp-stats))
+
 (define-public sbcl-sketch
   ;; No release in years.
   (let ((commit "4cc00b08e202c7adda41391463096cf9df1705c3"))
