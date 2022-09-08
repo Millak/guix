@@ -23729,6 +23729,40 @@ to classes.")
 (define-public ecl-enhanced-find-class
   (sbcl-package->ecl-package sbcl-enhanced-find-class))
 
+(define-public sbcl-definitions-systems
+  (package
+    (name "sbcl-definitions-systems")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/definitions-systems")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-definitions-systems" version))
+       (sha256
+        (base32 "009392mj0qdq4jy0dw5r41schnygwj286759yvyg7xja30a0psfq"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-canonicalized-initargs
+           sbcl-enhanced-defclass
+           sbcl-enhanced-find-class
+           sbcl-shared-preferences))
+    (home-page "https://www.hexstreamsoft.com/libraries/definitions-systems/")
+    (synopsis "Unified extensible way of processing named definitions")
+    (description
+     "@code{definitions-systems} provides a simple unified extensible way of
+processing named definitions.")
+    (license license:unlicense)))
+
+(define-public cl-definitions-systems
+  (sbcl-package->cl-source-package sbcl-definitions-systems))
+
+(define-public ecl-definitions-systems
+  (sbcl-package->ecl-package sbcl-definitions-systems))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
