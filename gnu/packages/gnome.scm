@@ -10196,7 +10196,7 @@ GNOME Shell appearance and extension, etc.")
 (define-public gnome-shell-extensions
   (package
     (name "gnome-shell-extensions")
-    (version "41.0")
+    (version "42.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10204,14 +10204,14 @@ GNOME Shell appearance and extension, etc.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0s7wcsa0ysdgh5zpxpa95id5rz4ajb2r1561v5szjf4b8k0slkyq"))))
+                "1z3k4bvq8f2s0q9q7i093w4hrz289lci7xlib20aqa4z5sivxhhf"))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags '("-Dextension_set=all")))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin")
+           gettext-minimal
+           pkg-config))
     (propagated-inputs
      (list glib))
     (synopsis "Extensions for GNOME Shell")
