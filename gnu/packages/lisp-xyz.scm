@@ -23698,6 +23698,37 @@ during initialization or reinitialization of its subcomponents.")
 (define-public ecl-class-options
   (sbcl-package->ecl-package sbcl-class-options))
 
+(define-public sbcl-enhanced-find-class
+  (package
+    (name "sbcl-enhanced-find-class")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/enhanced-find-class")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-enhanced-find-class" version))
+       (sha256
+        (base32 "1pf1mxb238zrmvgm9s0456s1x0m317ls23ls1d987riw69y3w9vx"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-closer-mop))
+    (home-page "https://www.hexstreamsoft.com/libraries/enhanced-find-class/")
+    (synopsis "Canonical way of converting class designators to classes")
+    (description
+     "This package provides a canonical way of converting class designators
+to classes.")
+    (license license:unlicense)))
+
+(define-public cl-enhanced-find-class
+  (sbcl-package->cl-source-package sbcl-enhanced-find-class))
+
+(define-public ecl-enhanced-find-class
+  (sbcl-package->ecl-package sbcl-enhanced-find-class))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
