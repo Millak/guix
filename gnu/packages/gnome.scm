@@ -10119,7 +10119,6 @@ to perfectly fit the GNOME desktop.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -10135,7 +10134,8 @@ to perfectly fit the GNOME desktop.")
            pkg-config
            libxml2))
     (inputs
-     (list gsettings-desktop-schemas gtk+))
+     (list gsettings-desktop-schemas
+           gtk+))
     (home-page "https://wiki.gnome.org/Apps/Dictionary")
     (synopsis "Look up words in dictionary sources")
     (description
