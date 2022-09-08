@@ -2732,6 +2732,7 @@ using third-party geocoders and other data sources.")
     (inputs
      (list boost
            cgal
+           curl
            gdal
            glew
            glu
