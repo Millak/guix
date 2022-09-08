@@ -37,6 +37,7 @@
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (guix utils)
+  #:use-module (guix deprecation)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-26))
 
@@ -61,14 +62,14 @@
 (define-public sqlite
   (package
    (name "sqlite")
-   (version "3.39.2")
+   (version "3.39.3")
    (source (origin
             (method url-fetch)
             (uri (sqlite-uri version 2022))
             (patches (search-patches "sqlite-hurd.patch"))
             (sha256
              (base32
-              "1pirla4d1z1lzkp3pgw3sbzmmamp01sgzfz0rr3vl5rs32kfhaw5"))))
+              "1f922kq16g7f4h3gpzim78lvrp5xw9nvlvqw97s2qgxyh8qgns3q"))))
    (build-system gnu-build-system)
    (inputs (list readline))
    (outputs '("out" "static"))
@@ -109,14 +110,5 @@ widely deployed SQL database engine in the world.  The source code for SQLite
 is in the public domain.")
    (license license:public-domain)))
 
-;; Newer version required for e.g. fossil.
-(define-public sqlite-next
-  (package
-    (inherit sqlite)
-    (version "3.39.3")
-    (source (origin
-              (method url-fetch)
-              (uri (sqlite-uri version 2022))
-              (sha256
-               (base32
-                "1f922kq16g7f4h3gpzim78lvrp5xw9nvlvqw97s2qgxyh8qgns3q"))))))
+(define-deprecated sqlite-next sqlite)
+(export sqlite-next)
