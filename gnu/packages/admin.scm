@@ -3815,13 +3815,13 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "1.0.2")
+    (version "1.4.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "HyFetch" version))
         (sha256
-          (base32 "1bfkycdhsyzkk6q24gdy1xwvyz0rvkr7xk2khbn74b3nk6kp83r2"))))
+          (base32 "18s8r63aqyah34vbahccgkiqw4008i2w5kvhqd9s8bdd4yvsrn4n"))))
     (build-system python-build-system)
     (inputs (list python-hypy-utils python-typing-extensions))
     (arguments `(#:phases (modify-phases %standard-phases
