@@ -23573,6 +23573,35 @@ addressing concerns about verbosity.")
 (define-public ecl-enhanced-eval-when
   (sbcl-package->ecl-package sbcl-enhanced-eval-when))
 
+(define-public sbcl-enhanced-boolean
+  (package
+    (name "sbcl-enhanced-boolean")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/enhanced-boolean")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-enhanced-boolean" version))
+       (sha256
+        (base32 "17l18lz07fk2kg835vs6c3189d230n1rm9vghk3ls4i356gbq0gy"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (home-page "https://www.hexstreamsoft.com/libraries/enhanced-boolean/")
+    (synopsis "Convert generalized booleans to booleans")
+    (description
+     "This package provides a canonical way of converting generalized booleans
+to booleans.")
+    (license license:unlicense)))
+
+(define-public cl-enhanced-boolean
+  (sbcl-package->cl-source-package sbcl-enhanced-boolean))
+
+(define-public ecl-enhanced-boolean
+  (sbcl-package->ecl-package sbcl-enhanced-boolean))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
