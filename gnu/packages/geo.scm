@@ -574,6 +574,27 @@ lets developers use the functionality of Proj in their own software.")
                    ;; src/geodesic.*, src/tests/geodtest.cpp
                    license:x11))))
 
+; This is the last version of proj that provides the old proj.4 API.
+(define-public proj-7
+  (package (inherit proj)
+    (version "7.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://download.osgeo.org/proj/proj-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "050apzdn0isxpsblys1shrl9ccli5vd32kgswlgx1imrbwpg915k"))))
+    (arguments
+     `(#:configure-flags '("-DUSE_EXTERNAL_GTEST=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-version
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("MAJOR 7 MINOR 2 PATCH 0") "MAJOR 7 MINOR 2 PATCH 1")))))))))
+
 (define-public proj.4
   (package
     (name "proj.4")
