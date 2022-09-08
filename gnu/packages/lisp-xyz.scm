@@ -23280,6 +23280,36 @@ especially in a multi-threaded context.")
 (define-public ecl-canonicalized-initargs
   (sbcl-package->ecl-package sbcl-canonicalized-initargs))
 
+(define-public sbcl-enhanced-typep
+  (package
+    (name "sbcl-enhanced-typep")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/enhanced-typep")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-enhanced-typep" version))
+       (sha256
+        (base32 "0b22gddkbxnhmi71wa2h51495737lrvsqxnri7g1qdsl1hraml21"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-enhanced-boolean sbcl-parachute))
+    (home-page "https://www.hexstreamsoft.com/libraries/enhanced-typep/")
+    (synopsis "Enhanced version of typep")
+    (description
+     "This package provides an enhanced version of @code{typep} that is exactly
+like the one in the Lisp spec, except it can also accept a single type argument,
+in which case it returns the appropriate closure.")
+      (license license:unlicense)))
+
+(define-public cl-enhanced-typep
+  (sbcl-package->cl-source-package sbcl-enhanced-typep))
+
+(define-public ecl-enhanced-typep
+  (sbcl-package->ecl-package sbcl-enhanced-typep))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
