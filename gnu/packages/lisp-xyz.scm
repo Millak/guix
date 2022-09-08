@@ -22821,6 +22821,37 @@ functionality similar to what was originally found in @code{sdl2kit}.
 (define-public ecl-glkit
   (sbcl-package->ecl-package sbcl-glkit))
 
+(define-public sbcl-doplus
+  (package
+    (name "sbcl-doplus")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alessiostalla/doplus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-doplus" version))
+       (sha256
+        (base32 "1yvda9psw9m08d3bzdb8a2drvhrnr07a0rhza5ibk30v1dkwfw7c"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-fiveam))
+    (inputs
+     (list sbcl-parse-declarations sbcl-fset))
+    (arguments
+     '(#:asd-systems '("doplus" "doplus-fset")))
+    (synopsis "Iteration macro for Common Lisp")
+    (description "@code{doplus} is an iteration macro for Common Lisp.")
+    (home-page "https://github.com/alessiostalla/doplus")
+    (license license:gpl3+)))
+
+(define-public cl-doplus
+  (sbcl-package->cl-source-package sbcl-doplus))
+
+(define-public ecl-doplus
+  (sbcl-package->ecl-package sbcl-doplus))
+
 (define-public sbcl-trees
   (let ((commit "7b06048af0248c4302088c758208276f9faf2beb"))
     (package
