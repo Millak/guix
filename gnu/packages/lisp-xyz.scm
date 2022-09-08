@@ -23245,6 +23245,41 @@ especially in a multi-threaded context.")
 (define-public ecl-ndebug
   (sbcl-package->ecl-package sbcl-ndebug))
 
+(define-public sbcl-canonicalized-initargs
+  (package
+    (name "sbcl-canonicalized-initargs")
+    (version "2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/canonicalized-initargs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-canonicalized-initargs" version))
+       (sha256
+        (base32 "0jmmjw86x9mmlfla4kdmdqf1fjrj0p2fmv1lc4k555mcf67mj2fq"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-cesdi
+           sbcl-closer-mop
+           sbcl-compatible-metaclasses
+           sbcl-enhanced-defclass
+           sbcl-enhanced-typep))
+    (home-page
+     "https://www.hexstreamsoft.com/libraries/canonicalized-initargs/")
+    (synopsis "Standard way to canonicalize slot values")
+    (description
+     "This package provides a standard way to canonicalize slot values.")
+    (license license:unlicense)))
+
+(define-public cl-canonicalized-initargs
+  (sbcl-package->cl-source-package sbcl-canonicalized-initargs))
+
+(define-public ecl-canonicalized-initargs
+  (sbcl-package->ecl-package sbcl-canonicalized-initargs))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
