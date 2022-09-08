@@ -23348,6 +23348,39 @@ detect the suitable metaclass by analyzing the @code{defclass} form.")
 (define-public ecl-enhanced-defclass
   (sbcl-package->ecl-package sbcl-enhanced-defclass))
 
+(define-public sbcl-object-class
+  (package
+    (name "sbcl-object-class")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/object-class")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-object-class" version))
+       (sha256
+        (base32 "0qagmd2mxbr8b60l0y3jccj0maxjchds96p935pd3q805ry50683"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-closer-mop
+           sbcl-compatible-metaclasses
+           sbcl-enhanced-find-class))
+    (home-page "https://www.hexstreamsoft.com/libraries/object-class/")
+    (synopsis "Cluster special subclasses of the standard-object")
+    (description
+     "This package ensures that special subclasses of standard-object cluster
+right in front of standard-object in the class precedence list.")
+    (license license:unlicense)))
+
+(define-public cl-object-class
+  (sbcl-package->cl-source-package sbcl-object-class))
+
+(define-public ecl-object-class
+  (sbcl-package->ecl-package sbcl-object-class))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
