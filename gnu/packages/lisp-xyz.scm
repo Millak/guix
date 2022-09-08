@@ -23542,6 +23542,37 @@ compile-time side-effects of forms.")
 (define-public ecl-evaled-when
   (sbcl-package->ecl-package sbcl-evaled-when))
 
+(define-public sbcl-enhanced-eval-when
+  (package
+    (name "sbcl-enhanced-eval-when")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/enhanced-eval-when")
+             (commit (string-append "v" version))))
+          (file-name (git-file-name "cl-enhanced-eval-when" version))
+          (sha256
+           (base32 "1ws1v297plcbqmcvckg7vqzzgnrwfyx5kd7281r1wrhc26998rx2"))))
+    (build-system asdf-build-system/sbcl)
+    ;; https://github.com/Hexstream/enhanced-eval-when/issues/1
+    (arguments
+     (list #:tests? #f)) ; There are no tests in version 1.0.
+    (home-page "https://www.hexstreamsoft.com/libraries/enhanced-eval-when/")
+    (synopsis "Shortcuts for EVAL-WHEN")
+    (description
+     "This package provides an enhanced @code{EVAL-WHEN} macro that supports a
+shorthand for @code{(eval-when (:compile-toplevel :load-toplevel :execute) ...)},
+addressing concerns about verbosity.")
+    (license license:unlicense)))
+
+(define-public cl-enhanced-eval-when
+  (sbcl-package->cl-source-package sbcl-enhanced-eval-when))
+
+(define-public ecl-enhanced-eval-when
+  (sbcl-package->ecl-package sbcl-enhanced-eval-when))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
