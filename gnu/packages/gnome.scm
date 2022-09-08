@@ -7211,7 +7211,8 @@ configuration program to choose applications starting on login.")
 (define-public gjs
   (package
     (name "gjs")
-    (version "1.72.2")
+    ;; Note: We use a pre-release for compatibility with recent LibFFI.
+    (version "1.73.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7219,7 +7220,7 @@ configuration program to choose applications starting on login.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0xrrv9lsi087yb9yf146a1aarf5yh6rf4jw9blx30zasvjdkgvnx"))
+                "0xfspsc1q4xm7p500lmy17b9csyaqps1kilylq8wjjd0fjqq8ayg"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -7250,7 +7251,7 @@ configuration program to choose applications starting on login.")
            xorg-server-for-tests))
     (propagated-inputs
      ;; These are all in the Requires.private field of gjs-1.0.pc.
-     (list cairo gobject-introspection mozjs-91))
+     (list cairo gobject-introspection mozjs))
     (inputs
      (list gtk+ readline))
     (synopsis "Javascript bindings for GNOME")
