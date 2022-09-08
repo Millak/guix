@@ -1875,6 +1875,44 @@ different tools.  It highlights errors and warnings inline in the buffer, and
 provides an optional IDE-like error list.")
     (license license:gpl3+)))                     ;+GFDLv1.3+ for the manual
 
+(define-public emacs-flymake-collection
+  (package
+    (name "emacs-flymake-collection")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mohkale/flymake-collection")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1dxy1bljvd8rar0pivdrfahmgnnjlxm0mlks8mzw3l7k7b7jar6k"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "src")))
+          (add-after 'chdir 'move-checkers
+            (lambda _
+              ;; Move checkers to the top level, which is in the
+              ;; EMACSLOADPATH.
+              (for-each (lambda (f)
+                          (rename-file f (basename f)))
+                        (find-files "./checkers" ".*\\.el$")))))))
+    (home-page "https://github.com/mohkale/flymake-collection/")
+    (synopsis "Collection of checkers for Flymake")
+    (description
+     "This package provides a comprehensive list of diagnostic-functions for
+use with Flymake, give users the tools to easily define new syntax checkers
+and help selectively enable or disable diagnostic functions based on major
+modes.")
+    (license license:expat)))
+
 (define-public emacs-flymake-flycheck
   (package
     (name "emacs-flymake-flycheck")
