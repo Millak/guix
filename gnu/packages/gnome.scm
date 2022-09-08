@@ -946,7 +946,7 @@ cloud integration is offered through GNOME Online Accounts.")
 (define-public gnome-music
   (package
     (name "gnome-music")
-    (version "42.0")
+    (version "42.1")
     (source
      (origin
        (method url-fetch)
@@ -956,11 +956,10 @@ cloud integration is offered through GNOME Online Accounts.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1l6536dv5g4qy2jbca0pnw632zc92al9cjsq6kwf1gajk27ijs4x"))))
+         "0w42xnp6xy3sfakb4s0wq7xfg7p507whz5gzss5b2mkbm2k7yx67"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.60
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
