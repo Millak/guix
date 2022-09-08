@@ -23412,6 +23412,38 @@ right in front of standard-object in the class precedence list.")
 (define-public ecl-shared-preferences
   (sbcl-package->ecl-package sbcl-shared-preferences))
 
+(define-public sbcl-inheriting-readers
+  (package
+    (name "sbcl-inheriting-readers")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/inheriting-readers")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-inheriting-readers" version))
+       (sha256
+        (base32 "0km3mq6vx1q9qv6j3r4sqqcsdbnb5jar66bl0mzzpaacfvzbx68p"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-class-options
+           sbcl-closer-mop
+           sbcl-compatible-metaclasses))
+    (home-page "https://www.hexstreamsoft.com/libraries/inheriting-readers/")
+    (synopsis "Simple yet powerful value inheritance scheme")
+    (description
+     "This package provides a simple yet powerful value inheritance scheme.")
+    (license license:unlicense)))
+
+(define-public cl-inheriting-readers
+  (sbcl-package->cl-source-package sbcl-inheriting-readers))
+
+(define-public ecl-inheriting-readers
+  (sbcl-package->ecl-package sbcl-inheriting-readers))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
