@@ -12754,44 +12754,43 @@ your data.")
 (define-public gtranslator
   (package
     (name "gtranslator")
-    (version "40.0")
-        (source (origin
+    (version "42.0")
+    (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
                                   (version-major version) "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0d48nc11z0m91scy21ah56ysxns82zvswx8lglvlkig1vqvblgpc"))))
+                "0fzi48s3wz9mf6c1ndpkby83bgshgn2116nqjq31n1j3wszvqrra"))))
     (build-system meson-build-system)
-    (inputs
-     `(("json-glib" ,json-glib)
-       ("jsonrpc-glib" ,jsonrpc-glib)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gspell" ,gspell)
-       ("libdazzle" ,libdazzle)
-       ("libgda" ,libgda)
-       ("libhandy" ,libhandy)
-       ("libsoup" ,libsoup-minimal-2)))
-    (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)))
-    (propagated-inputs
-     (list gtksourceview)) ; required for source view
     (arguments
-     `(#:build-type "release"
-       #:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             (substitute* "build-aux/meson/meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))
-             #t)))))
+     (list #:build-type "release"   ;otherwise it tries to fetch stuff via git
+           #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-gtk-update-icon-cache
+                 (lambda _
+                   (substitute* "build-aux/meson/meson_post_install.py"
+                     (("gtk-update-icon-cache") (which "true"))))))))
+    (native-inputs
+     (list `(,glib-next "bin")
+           gettext-minimal
+           itstool
+           pkg-config))
+    (inputs
+     (list json-glib
+           jsonrpc-glib
+           gettext-minimal
+           glib-next
+           gsettings-desktop-schemas
+           gspell
+           libgda
+           libhandy
+           libsoup
+           pango-next))
+    (propagated-inputs
+     (list gtksourceview-4))              ; required for source view
     (home-page "https://wiki.gnome.org/Apps/Gtranslator")
     (synopsis "Translation making program")
     (description
