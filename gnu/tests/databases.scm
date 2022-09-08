@@ -389,7 +389,11 @@ data double PRECISION NULL
 
 (define %mysql-os
   (simple-operating-system
-   (service mysql-service-type)))
+   (service mysql-service-type
+            (mysql-configuration
+             ;; Disable O_DIRECT since it's not supported on overlayfs.
+             ;; See <https://jira.mariadb.org/browse/MDEV-28751>.
+             (extra-content "innodb-flush-method = fsync")))))
 
 (define* (run-mysql-test)
   "Run tests in %MYSQL-OS."

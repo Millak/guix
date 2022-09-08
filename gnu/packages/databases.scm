@@ -132,6 +132,7 @@
   #:use-module (gnu packages perl-web)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -900,7 +901,7 @@ Language.")
 (define-public mariadb
   (package
     (name "mariadb")
-    (version "10.5.12")
+    (version "10.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.mariadb.com/MariaDB"
@@ -908,21 +909,11 @@ Language.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1gg4h9ahmk78cx01zyw0fqr6hhd78fsyhs0s34p3gi9hkak1qkxb"))
+                "1ciw7y08wms9g3hzhyria49r1b9n5wpbhkndazv95d925c8x1jsp"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  ;; Delete bundled snappy and xz.
-                  (delete-file-recursively "storage/tokudb/PerconaFT/third_party")
-                  (substitute* "storage/tokudb/PerconaFT/CMakeLists.txt"
-                    ;; This file checks that the bundled sources are present and
-                    ;; declares build procedures for them.
-                    (("^include\\(TokuThirdParty\\)") ""))
-                  (substitute* "storage/tokudb/PerconaFT/ft/CMakeLists.txt"
-                    ;; Don't attempt to use the procedures we just removed.
-                    ((" build_lzma build_snappy") ""))
-
-                  ;; Preserve CMakeLists.txt for these.
+                  ;; Delete bundled libraries, but preserve CMakeLists.txt.
                   (for-each (lambda (file)
                               (unless (string-suffix? "CMakeLists.txt" file)
                                 (delete-file file)))
@@ -934,21 +925,10 @@ Language.")
      `(#:configure-flags
        (list
          "-DBUILD_CONFIG=mysql_release"
-         ;; Linking with libarchive fails, like this:
-
-         ;; ld: /gnu/store/...-libarchive-3.2.2/lib/libarchive.a(archive_entry.o):
-         ;; relocation R_X86_64_32 against `.bss' can not be used when
-         ;; making a shared object; recompile with -fPIC
-
-         ;; For now, disable the features that that use libarchive (xtrabackup).
-         "-DWITH_LIBARCHIVE=OFF"
-
-         ;; Disable the TokuDB engine, because its test suite frequently fails,
-         ;; and loading it crashes the server: <https://bugs.gnu.org/35521>.
-         "-DTOKUDB_OK=OFF"
 
          ;; Ensure the system libraries are used.
          "-DWITH_JEMALLOC=yes"
+         "-DWITH_LIBFMT=system"
          "-DWITH_PCRE=system"
          "-DWITH_SSL=system"
          "-DWITH_ZLIB=system"
@@ -988,14 +968,6 @@ Language.")
        #:parallel-tests? ,(target-x86-64?)
        #:phases
        (modify-phases %standard-phases
-         ,@(if (target-ppc32?)
-             `((add-after 'unpack 'apply-libatomics-patch
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((patch-file
-                           (assoc-ref inputs
-                                               "mariadb-link-libatomic.patch")))
-                     (invoke "patch" "-p1" "-i" patch-file)))))
-             '())
          (add-after 'unpack 'adjust-output-references
            (lambda _
              ;; The build system invariably prepends $CMAKE_INSTALL_PREFIX
@@ -1031,6 +1003,9 @@ Language.")
                       "main.explain_non_select"
                       "main.upgrade_MDEV-19650"
                       "roles.acl_statistics"
+                      "main.stat_tables_innodb"
+                      "main.stat_tables"
+                      "main.mysql_upgrade"
 
                       ;; Probably same as above, test failure reported upstream:
                       ;; <https://jira.mariadb.org/browse/MDEV-26320>.
@@ -1057,36 +1032,19 @@ Language.")
                          disabled-tests)
                (close-port unstable-tests)
 
-               ;; XXX: These fail because they expect a latin1 charset and
-               ;; collation.  See <https://jira.mariadb.org/browse/MDEV-21264>.
-               (substitute* '("mysql-test/main/gis_notembedded.result"
-                              "mysql-test/main/system_mysql_db.result")
-                 (("latin1_swedish_ci") "utf8_general_ci")
-                 (("\tlatin1") "\tutf8"))
-
                (substitute* "mysql-test/suite/binlog/t/binlog_mysqlbinlog_stop_never.test"
                  (("/bin/bash")
                   (which "bash")))
 
-               (substitute* "mysql-test/mysql-test-run.pl"
+               (substitute* "mysql-test/mariadb-test-run.pl"
                  (("/bin/ls") (which "ls"))
                  (("/bin/sh") (which "sh"))))))
-         (add-before 'configure 'disable-plugins
-           (lambda _
-             (let ((disable-plugin (lambda (name)
-                                     (call-with-output-file
-                                         (string-append "plugin/" name
-                                                        "/CMakeLists.txt")
-                                       (lambda (port)
-                                         (format port "\n")))))
-                   (disabled-plugins '(;; XXX: Causes a test failure.
-                                       "disks")))
-               (for-each disable-plugin disabled-plugins))))
          (replace 'check
            (lambda* (#:key (tests? #t) parallel-tests? #:allow-other-keys)
              (if tests?
                  (with-directory-excursion "mysql-test"
-                   (invoke "./mtr" "--verbose"
+                   (invoke "./mariadb-test-run"
+                           "--verbose"
                            "--retry=3"
                            "--suite=main"
                            "--testcase-timeout=40"
@@ -1133,7 +1091,7 @@ Language.")
               (mkdir-p (string-append dev "/lib"))
               (rename-file (string-append lib "/lib/pkgconfig")
                            (string-append dev "/lib/pkgconfig"))
-              (rename-file (string-append lib "/bin/mariadb_config")
+              (rename-file (string-append out "/bin/mariadb_config")
                            (string-append dev "/bin/mariadb_config"))
               (rename-file (string-append out "/bin/mysql_config")
                            (string-append dev "/bin/mysql_config"))
@@ -1146,19 +1104,14 @@ Language.")
                 (("-lssl -lcrypto" all)
                  (string-append "-L" openssl "/lib " all)))))))))
     (native-inputs
-     (if (target-ppc32?)
-       `(("mariadb-link-libatomic.patch"
-          ,(search-patch "mariadb-link-libatomic.patch"))
-         ("patch" ,patch)
-         ("bison" ,bison)
-         ("perl" ,perl))
-       (list bison perl)))
+     (list bison perl))
     (inputs
-     `(("jemalloc" ,jemalloc)
+     `(("fmt" ,fmt)
+       ("jemalloc" ,jemalloc)
        ("libaio" ,libaio)
        ("libxml2" ,libxml2)
        ("ncurses" ,ncurses)
-       ("openssl" ,openssl-1.1)
+       ("openssl" ,openssl)
        ("pam" ,linux-pam)
        ("pcre2" ,pcre2)
        ("xz" ,xz)
