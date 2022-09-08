@@ -12101,7 +12101,7 @@ card sheets that you’ll find at most office supply stores.")
 (define-public gnome-latex
   (package
     (name "gnome-latex")
-    (version "3.38.0")
+    (version "3.41.2")
     (source
      (origin
        (method url-fetch)
@@ -12109,27 +12109,22 @@ card sheets that you’ll find at most office supply stores.")
                            (version-major+minor version)  "/"
                            "gnome-latex-" version ".tar.xz"))
        (sha256
-        (base32 "0xqd49pgi82dygqnxj08i1v22b0vwwhx3zvdinhrx4jny339yam8"))))
+        (base32 "0cynhmrn99f4f3kddczsc58ak4b9sv2zkfbcyz7z16848nhz047k"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
            gobject-introspection
            gtk-doc/stable
-           intltool
            itstool
            pkg-config
            vala))
     (inputs
-     (list amtk
-           dconf
+     (list dconf
            glib
-           gsettings-desktop-schemas
            gspell
-           gtk+
-           gtksourceview
            libgee
-           tepl-5
+           tepl
            uchardet))
     (home-page "https://wiki.gnome.org/Apps/GNOME-LaTeX")
     (synopsis "LaTeX editor for the GNOME desktop")
