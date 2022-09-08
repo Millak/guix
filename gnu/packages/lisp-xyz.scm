@@ -23509,6 +23509,39 @@ NIL means no value.")
 (define-public ecl-fakenil
   (sbcl-package->ecl-package sbcl-fakenil))
 
+(define-public sbcl-evaled-when
+  (let ((commit "c59f8ab20b846cac81d4be80d056a3d65676e8eb")
+        (revision "0"))
+    (package
+      (name "sbcl-evaled-when")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Hexstream/evaled-when")
+               (commit commit)))
+         (file-name (git-file-name "cl-evaled-when" version))
+         (sha256
+          (base32 "07g1a50aairvsj57issb18si5a9r3skpbk05nlixmlj0mva3gkl3"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-enhanced-boolean sbcl-parachute))
+      (inputs
+       (list sbcl-trivial-cltl2))
+      (home-page "https://www.hexstreamsoft.com/libraries/evaled-when/")
+      (synopsis "Extract and replicate the compile-time side-effects of forms")
+      (description
+       "This package provides a way of extracting and replicating the
+compile-time side-effects of forms.")
+      (license license:unlicense))))
+
+(define-public cl-evaled-when
+  (sbcl-package->cl-source-package sbcl-evaled-when))
+
+(define-public ecl-evaled-when
+  (sbcl-package->ecl-package sbcl-evaled-when))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
