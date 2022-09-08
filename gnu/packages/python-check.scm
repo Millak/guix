@@ -1249,19 +1249,21 @@ for the @code{pytest} framework.")
 (define-public python-pytest-benchmark
   (package
     (name "python-pytest-benchmark")
-    (version "3.2.3")
+    (version "3.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-benchmark" version))
        (sha256
         (base32
-         "0a4mpb4j73dsyk47hd1prrjpfk4r458s102cn80rf253jg818hxd"))))
+         "0ivvrnhax2xr62grlgw4hlyjmmjp6nc35431j7c82nny2bwn7qj0"))))
     (build-system python-build-system)
+    (arguments
+     '(#:test-target "check"))
     (propagated-inputs
      (list python-py-cpuinfo))
     (native-inputs
-     (list python-pathlib2 python-pytest))
+     (list python-pytest))
     (home-page "https://github.com/ionelmc/pytest-benchmark")
     (synopsis "Pytest fixture for benchmarking code")
     (description
