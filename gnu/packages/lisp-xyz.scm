@@ -23310,6 +23310,44 @@ in which case it returns the appropriate closure.")
 (define-public ecl-enhanced-typep
   (sbcl-package->ecl-package sbcl-enhanced-typep))
 
+(define-public sbcl-enhanced-defclass
+  (package
+    (name "sbcl-enhanced-defclass")
+    (version "2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/enhanced-defclass")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-enhanced-defclass" version))
+       (sha256
+        (base32 "142s5c3pl3x7xdawzsj8pdxiqp4wh6fcajf4la5msvnxgf66d8wg"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-cesdi
+           sbcl-closer-mop
+           sbcl-compatible-metaclasses
+           sbcl-enhanced-eval-when
+           sbcl-object-class
+           sbcl-shared-preferences
+           sbcl-simple-guess))
+    (home-page "https://www.hexstreamsoft.com/libraries/enhanced-defclass/")
+    (synopsis "Extensible implementation of defclass")
+    (description
+     "This package provides an extensible implementation of defclass that can
+accurately control the expansion according to the metaclass and automatically
+detect the suitable metaclass by analyzing the @code{defclass} form.")
+    (license license:unlicense)))
+
+(define-public cl-enhanced-defclass
+  (sbcl-package->cl-source-package sbcl-enhanced-defclass))
+
+(define-public ecl-enhanced-defclass
+  (sbcl-package->ecl-package sbcl-enhanced-defclass))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
