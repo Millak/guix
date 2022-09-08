@@ -23602,6 +23602,38 @@ to booleans.")
 (define-public ecl-enhanced-boolean
   (sbcl-package->ecl-package sbcl-enhanced-boolean))
 
+(define-public sbcl-cesdi
+  (package
+    (name "sbcl-cesdi")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/cesdi")
+             (commit version)))
+       (file-name (git-file-name "cl-cesdi" version))
+       (sha256
+        (base32 "02f2pz5rw79ljkkx1ywh8nkpjj4g3z3s1lyvzqb8krbnx11wl0q9"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-closer-mop))
+    (home-page "https://www.hexstreamsoft.com/libraries/cesdi/")
+    (synopsis "Ergonomic initialization of effective slot definition objects")
+    (description
+     "This package provides a @code{compute-effective-slot-definition-initargs}
+generic function that allows for more ergonomic initialization of effective slot
+definition objects.")
+    (license license:unlicense)))
+
+(define-public cl-cesdi
+  (sbcl-package->cl-source-package sbcl-cesdi))
+
+(define-public ecl-cesdi
+  (sbcl-package->ecl-package sbcl-cesdi))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
