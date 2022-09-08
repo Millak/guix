@@ -23480,6 +23480,35 @@ using advisors.")
 (define-public ecl-simple-guess
   (sbcl-package->ecl-package sbcl-simple-guess))
 
+(define-public sbcl-fakenil
+  (package
+    (name "sbcl-fakenil")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/fakenil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-fakenil" version))
+       (sha256
+        (base32 "0ipqax3sgcs1dsgxz8d2pmfg324k6l35pn0nz89w5jl02fia61l3"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (home-page "https://www.hexstreamsoft.com/libraries/fakenil/")
+    (synopsis "Provides a canonical stand-in for NIL")
+    (description
+     "This package provides a canonical stand-in for NIL for contexts where
+NIL means no value.")
+    (license license:unlicense)))
+
+(define-public cl-fakenil
+  (sbcl-package->cl-source-package sbcl-fakenil))
+
+(define-public ecl-fakenil
+  (sbcl-package->ecl-package sbcl-fakenil))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
