@@ -23381,6 +23381,37 @@ right in front of standard-object in the class precedence list.")
 (define-public ecl-object-class
   (sbcl-package->ecl-package sbcl-object-class))
 
+(define-public sbcl-shared-preferences
+  (package
+    (name "sbcl-shared-preferences")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hexstream/shared-preferences")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-shared-preferences" version))
+       (sha256
+        (base32 "12m4kaba2lxndkjw30a6y2rq16fflh5016lp74l7pf3v0y3j1ydf"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-inheriting-readers
+           sbcl-trivial-garbage))
+    (home-page "https://www.hexstreamsoft.com/libraries/shared-preferences/")
+    (synopsis "Flexible specification of package-local preferences")
+    (description
+     "This package allows flexible specification of package-local preferences.")
+    (license license:unlicense)))
+
+(define-public cl-shared-preferences
+  (sbcl-package->cl-source-package sbcl-shared-preferences))
+
+(define-public ecl-shared-preferences
+  (sbcl-package->ecl-package sbcl-shared-preferences))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
