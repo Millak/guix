@@ -593,6 +593,29 @@ pronounceable identifiers.")
 can read and write both the metadata and the cell data in a Sheet.")
     (license license:expat)))
 
+(define-public r-proj4
+  (package
+    (name "r-proj4")
+    (version "1.0-11")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "proj4" version))
+              (sha256
+               (base32
+                "07fil52jswbg2h807cd82m2wlm5j2fb891ifri9ms037099qdwf5"))))
+    (properties `((upstream-name . "proj4")))
+    (build-system r-build-system)
+    (inputs (list proj.4 zlib))
+    (native-inputs (list pkg-config))
+    (home-page "http://www.rforge.net/proj4/")
+    (synopsis "Simple interface to the PROJ.4 cartographic projections library")
+    (description
+     "This package provides a simple interface to lat/long projection and
+datum transformation of the PROJ.4 cartographic projections library.  It
+allows transformation of geographic coordinates from one projection and/or
+datum to another.")
+    (license license:gpl2)))
+
 (define-public r-waldo
   (package
     (name "r-waldo")
