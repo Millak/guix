@@ -11896,7 +11896,7 @@ integrate seamlessly with the GNOME desktop.")
 (define-public gnome-boxes
   (package
     (name "gnome-boxes")
-    (version "41.1")
+    (version "42.3")
     (source
      (origin
        (method url-fetch)
@@ -11904,34 +11904,35 @@ integrate seamlessly with the GNOME desktop.")
                            (version-major version) "/"
                            "gnome-boxes-" version ".tar.xz"))
        (sha256
-        (base32 "1wzhm8n485cqhbai4qshgrwl05ix881g8gjshilrj6vg8p1li79h"))
-       (patches
-        (search-patches "gnome-boxes-add-guix-logo.patch"))))
+        (base32 "1lv0bdh935qj6wkv3ixg2pcv8yrapj79z02gw4fal3rhz3xggvsn"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:meson ,meson-0.60
-       #:configure-flags (list "-Drdp=false"
-                               (string-append "-Dc_link_args=-Wl,-rpath="
-                                              (assoc-ref %outputs "out")
-                                              "/lib/gnome-boxes"))))
+     (list #:glib-or-gtk? #t
+           #:configure-flags #~(list "-Drdp=false"
+                                     (string-append "-Dc_link_args=-Wl,-rpath="
+                                                    #$output
+                                                    "/lib/gnome-boxes"))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'disable-gtk-update-icon-cache
+                          (lambda _
+                            (setenv "DESTDIR" "/"))))))
     (native-inputs
-     (list `(,glib "bin")               ;for glib-compile-resources
-           `(,gtk+ "bin")               ;for gtk-update-icon-cache
-           desktop-file-utils           ;for update-desktop-database
+     (list desktop-file-utils           ;for update-desktop-database
+           gettext-minimal
+           `(,glib "bin")               ;for glib-compile-resources
            itstool
-           intltool
-           vala
            pkg-config
-           python))
+           python
+           vala))
     (inputs
-     (list libarchive
-           glib-networking              ;for TLS support
+     (list glib-networking              ;for TLS support
            gsettings-desktop-schemas
            gtk+
            gtk-vnc
            gtksourceview
            json-glib
+           libarchive
+           libgudev
            libhandy
            libosinfo
            libsecret
@@ -11940,12 +11941,11 @@ integrate seamlessly with the GNOME desktop.")
            libvirt
            libvirt-glib
            libxml2
-           spice-gtk
            sparql-query
-           vte
-           webkitgtk-with-libsoup2      ;for webkit2gtk-4.0
+           spice-gtk
            tracker
-           libgudev))
+           vte
+           webkitgtk-with-libsoup2))    ;for webkit2gtk-4.0
     (home-page "https://wiki.gnome.org/Apps/Boxes")
     (synopsis "View, access, and manage remote and virtual systems")
     (description "GNOME Boxes is a simple application to view, access, and
