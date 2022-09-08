@@ -1183,46 +1183,48 @@ Library reference documentation.")
 
 (define-public phodav
   (package
-   (name "phodav")
-   (version "2.5")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnome/sources/" name "/"
-                                (version-major+minor version) "/"
-                                name "-" version ".tar.xz"))
-            (sha256
-             (base32
-              "045rdzf8isqmzix12lkz6z073b5qvcqq6ad028advm5gf36skw3i"))))
-   (build-system meson-build-system)
-   (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'fix-udev-rules-directory
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out   (assoc-ref outputs "out"))
-                   (rules (string-append out "/lib/udev/rules.d")))
-              (substitute* "data/meson.build"
-                (("udev\\.get_pkgconfig_variable\\('udevdir'\\)")
-                 (format #f "'~a'" rules))))))
-        (add-before 'check 'set-temporary-home
-          ;; Tests want to write into HOME.
-          (lambda _
-            (setenv "HOME" "/tmp"))))))
-   (native-inputs
-    `(("docbook-xml" ,docbook-xml-4.3)
-      ("gettext" ,gettext-minimal)
-      ("glib:bin" ,glib "bin")
-      ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-      ("gtk-doc" ,gtk-doc/stable)
-      ("pkg-config" ,pkg-config)))
-   (inputs
-    (list avahi libgudev libsoup-minimal-2))
-   (synopsis "WebDav server implementation using libsoup")
-   (description "PhoDav was initially developed as a file-sharing mechanism for Spice,
+    (name "phodav")
+    (version "3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1l9qs70yvwi9r8ph081mrsdy412kk0m9l9pgy77hsc2hdp8c4bir"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-udev-rules-directory
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out   (assoc-ref outputs "out"))
+                    (rules (string-append out "/lib/udev/rules.d")))
+               (substitute* "data/meson.build"
+                 (("udev\\.get_pkgconfig_variable\\('udevdir'\\)")
+                  (format #f "'~a'" rules))))))
+         (add-before 'check 'set-temporary-home
+           ;; Tests want to write into HOME.
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list docbook-xml-4.3
+           gettext-minimal
+           `(,glib "bin")
+           gsettings-desktop-schemas
+           gtk-doc/stable
+           pkg-config))
+    (inputs
+     (list avahi
+           libgudev
+           libsoup))
+    (synopsis "WebDav server implementation using libsoup")
+    (description "PhoDav was initially developed as a file-sharing mechanism for Spice,
 but it is generic enough to be reused in other projects,
 in particular in the GNOME desktop.")
-   (home-page "https://wiki.gnome.org/phodav")
-   (license license:lgpl2.1+)))
+    (home-page "https://wiki.gnome.org/phodav")
+    (license license:lgpl2.1+)))
 
 (define-public gnome-color-manager
   (package
