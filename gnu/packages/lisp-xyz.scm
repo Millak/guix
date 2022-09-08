@@ -117,6 +117,42 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-19))
 
+(define-public sbcl-alexandria-plus
+  (let ((commit "adafb09838a84895bedb119f8253b89b6a04a2c5")
+        (revision "0"))
+    (package
+      (name "sbcl-alexandria-plus")
+      ;; Version is stated in the ASD file.
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Symbolics/alexandria-plus")
+               (commit commit)))
+         (file-name (git-file-name "cl-alexandria-plus" version))
+         (sha256
+          (base32 "1w9r19610h599303gqlx2x5n8mmdynss2gyl7xilg5h6v8z3hkfl"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("alexandria+")))
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-alexandria))
+      (home-page "https://symbolics.github.io/alexandria-plus/")
+      (synopsis "Conservative set of extensions to Alexandria utilities")
+      (description
+       "@code{cl-alexandria-plus} is a conservative set of extensions to
+@code{cl-alexandria} utilities.")
+      (license license:ms-pl))))
+
+(define-public cl-alexandria-plus
+  (sbcl-package->cl-source-package sbcl-alexandria-plus))
+
+(define-public ecl-alexandria-plus
+  (sbcl-package->ecl-package sbcl-alexandria-plus))
+
 (define-public sbcl-alexandria
   (package
    (name "sbcl-alexandria")
