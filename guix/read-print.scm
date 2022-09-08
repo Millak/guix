@@ -386,6 +386,21 @@ particular newlines, is left as is."
                           str)
      #\")))
 
+(define %natural-whitespace-string-forms
+  ;; When a string has one of these forms as its parent, only double quotes
+  ;; and backslashes are escaped; newlines, tabs, etc. are left as-is.
+  '(synopsis description G_ N_))
+
+(define (printed-string str context)
+  "Return the read syntax for STR depending on CONTEXT."
+  (match context
+    (()
+     (object->string str))
+    ((head . _)
+     (if (memq head %natural-whitespace-string-forms)
+         (escaped-string str)
+         (object->string str)))))
+
 (define (string-width str)
   "Return the \"width\" of STR--i.e., the width of the longest line of STR."
   (apply max (map string-length (string-split str #\newline))))
@@ -427,26 +442,40 @@ each line except the first one (they're assumed to be already there)."
        (display (make-string indent #\space) port)
        (loop tail)))))
 
-(define %symbols-followed-by-octal-integers
-  ;; Symbols for which the following integer must be printed as octal.
-  '(chmod umask mkdir mkstemp))
-
-(define %symbols-followed-by-hexadecimal-integers
-  ;; Likewise, for hexadecimal integers.
-  '(logand logior logxor lognot))
+(define %integer-forms
+  ;; Forms that take an integer as their argument, where said integer should
+  ;; be printed in base other than decimal base.
+  (letrec-syntax ((vhashq (syntax-rules ()
+                            ((_) vlist-null)
+                            ((_ (key value) rest ...)
+                             (vhash-consq key value (vhashq rest ...))))))
+    (vhashq
+     ('chmod 8)
+     ('umask 8)
+     ('mkdir 8)
+     ('mkstemp 8)
+     ('logand 16)
+     ('logior 16)
+     ('logxor 16)
+     ('lognot 16))))
 
 (define (integer->string integer context)
   "Render INTEGER as a string using a base suitable based on CONTEXT."
+  (define (form-base form)
+    (match (vhash-assq form %integer-forms)
+      (#f 10)
+      ((_ . base) base)))
+
+  (define (octal? form)
+    (= 8 (form-base form)))
+
   (define base
     (match context
       ((head . tail)
-       (cond ((memq head %symbols-followed-by-octal-integers) 8)
-             ((memq head %symbols-followed-by-hexadecimal-integers)
-              (if (any (cut memq <> %symbols-followed-by-octal-integers)
-                       tail)
-                  8
-                  16))
-             (else 10)))
+       (match (form-base head)
+         (8 8)
+         (16 (if (any octal? tail) 8 16))
+         (10 10)))
       (_ 10)))
 
   (string-append (match base
@@ -691,7 +720,7 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
              (+ column 1)))))
       (_
        (let* ((str (cond ((string? obj)
-                          (escaped-string obj))
+                          (printed-string obj context))
                          ((integer? obj)
                           (integer->string obj context))
                          (else

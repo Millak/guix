@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-07-09 07:59+0000\n"
-"PO-Revision-Date: 2022-07-09 15:03+0000\n"
+"PO-Revision-Date: 2022-09-04 14:04+0000\n"
 "Last-Translator: Julien Lepiller <fedora-account@lepiller.eu>\n"
 "Language-Team: French <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 4.14\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -205,7 +205,7 @@ msgstr "--- Liste détaillée des nœuds ---"
 #: guix-git/doc/guix-cookbook.texi:116
 #, no-wrap
 msgid "A Scheme Crash Course"
-msgstr "Cours accéléré du language Scheme"
+msgstr "Cours accéléré du langage Scheme"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:87

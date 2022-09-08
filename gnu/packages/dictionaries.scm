@@ -156,14 +156,14 @@ work, such as sentence length and other readability measures.")
 (define-public ding
   (package
     (name "ding")
-    (version "1.8.1")
+    (version "1.9")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://ftp.tu-chemnitz.de/pub/Local/urz/" name
+              (uri (string-append "https://ftp.tu-chemnitz.de/pub/Local/urz/" name
                                   "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0chjqs3z9zs1w3l7b5lsaj682rgnkf9kibcbzhggqqcn1pbvl5sq"))))
+                "1rcqn04l6hvsf15mqqai533p31nc04r2yd9s0mn2hnkqrwgwi9k9"))))
     (build-system gnu-build-system)
     (inputs (list tk))
     (arguments

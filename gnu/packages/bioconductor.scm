@@ -4113,17 +4113,17 @@ global-scaling and full-quantile normalization.")
 (define-public r-edger
   (package
     (name "r-edger")
-    (version "3.38.1")
+    (version "3.38.4")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "edgeR" version))
               (sha256
                (base32
-                "1q933m76155gy30wgps2gdd8pxzsfhppydjqn0fhjrwj6kqz8mik"))))
+                "1ww69xrg9qrmq7dix2k48j6akgn58ss3340hm7pjvzx508x1j6n6"))))
     (properties `((upstream-name . "edgeR")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-limma r-locfit r-rcpp r-statmod)) ;for estimateDisp
+     (list r-limma r-locfit r-rcpp))
     (home-page "http://bioinf.wehi.edu.au/edgeR")
     (synopsis "EdgeR does empirical analysis of digital gene expression data")
     (description "This package can do differential expression analysis of
@@ -4355,13 +4355,13 @@ names in their natural, rather than lexicographic, order.")
 (define-public r-genomicalignments
   (package
     (name "r-genomicalignments")
-    (version "1.32.0")
+    (version "1.32.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicAlignments" version))
               (sha256
                (base32
-                "1ifmlc0488f5yzcf4p92dmdc7psxl5c0aa7qpxjk0a07gf7lldbi"))))
+                "09pg7822camyav5zvlpv360sj5gz8q1bhk528qa2da2qsz74a3cz"))))
     (properties
      `((upstream-name . "GenomicAlignments")))
     (build-system r-build-system)

@@ -275,15 +275,62 @@ file metadata operations that can be performed per second.")
 (define-public phoronix-test-suite
   (package
     (name "phoronix-test-suite")
-    (version "10.8.3")
+    (version "10.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://phoronix-test-suite.com/releases/"
                            name "-" version ".tar.gz"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (ice-9 regex)
+                  (srfi srfi-26)))
+       (snippet
+        '(begin
+           ;; Many test profiles have their license identified as "Free",
+           ;; while they are in fact non-free (see:
+           ;; https://github.com/phoronix-test-suite/phoronix-test-suite/issues/667).
+           (define problems             ;see:
+             '("bioshock-infinite-1"    ;mis-licensed as free
+               "firefox"                ;not FSDG-compliant
+               "dirt-rally"             ;mis-licensed as free
+               "dirt-showdown"          ;mis-licensed as free
+               "dota2"                  ;mis-licensed as free
+               "dow3"                   ;mis-licensed as free
+               "etqw-demo"              ;mis-licensed as free
+               "f12015"                 ;mis-licensed as free
+               "f12017"                 ;mis-licensed as free
+               "geexlab"                ;mis-licensed as free
+               "gfxbench"               ;mis-licensed as free
+               "gnupg"                  ;downloads ubuntu image
+               "hitman-1"               ;mis-licensed as free
+               "hl2lostcoast"           ;mis-licensed as free
+               "linux"                  ;contains blobs
+               "madmax"                 ;mis-licensed as free
+               "metro"                  ;mis-licensed as free
+               "minion"                 ;mis-licensed as free
+               "sam2017"                ;mis-licensed as free
+               "talos-principle"        ;mis-licensed as free
+               "tomb-raider"            ;mis-licensed as free
+               "tf2"                    ;mis-licensed as free
+               "ue4"                    ;mis-licensed as free
+               "unigine"                ;mis-licensed as free
+               "ut2004"))               ;mis-licensed as free
+
+           (define rx (format #f "(~a)" (string-join problems "|")))
+
+           (define (mark-as-non-free directory)
+             (format #t "Marking ~s as non-free...~%" directory)
+             (substitute* (find-files directory "^(test|suite)-definition.xml$")
+               (("Free")
+                "Non-free")))
+
+           (with-directory-excursion "ob-cache/test-profiles/pts"
+             (for-each (cut mark-as-non-free <>)
+                       (scandir "." (cut string-match rx <>))))))
        (sha256
         (base32
-         "105shk78jy46nwj6vnlmgp3y3lv9klar3dmcgasy4bslm4l2wx2b"))
+         "1x5pyzzn7ipi0ia1xlvq3bpw0rgf7h7sbr2kzhz1k8y06var480z"))
        (patches (search-patches "phoronix-test-suite-fsdg.patch"))))
     (arguments
      (list

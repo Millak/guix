@@ -114,6 +114,7 @@ numeric expression ~%") value 'field))))
 (define-record-type* <partition> partition make-partition
   partition?
   (size                 partition-size   ;size in bytes as integer or 'guess
+                        (default 'guess)
                         (sanitize validate-size))
   (offset               partition-offset
                         (default 0)   ;offset in bytes as integer
@@ -124,12 +125,12 @@ numeric expression ~%") value 'field))))
                         (default '()))  ;list of strings
   (label                partition-label)  ;string
   (uuid                 partition-uuid
-                        (default #f))  ;<uuid>
+                        (default #false))  ;<uuid>
   (flags                partition-flags
                         (default '())  ;list of symbols
                         (sanitize validate-partition-flags))
   (initializer          partition-initializer
-                        (default #f))) ;gexp | #f
+                        (default #false))) ;gexp | #false
 
 
 ;;;
@@ -161,11 +162,11 @@ that is not in SET, mentioning FIELD in the error message."
   image make-image
   image?
   (name               image-name ;symbol
-                      (default #f))
+                      (default #false))
   (format             image-format                ;symbol
                       (sanitize validate-image-format))
   (platform           image-platform ;<platform>
-                      (default #f))
+                      (default #false))
   (size               image-size  ;size in bytes as integer
                       (default 'guess)
                       (sanitize validate-size))
@@ -177,15 +178,15 @@ that is not in SET, mentioning FIELD in the error message."
   (partitions         image-partitions ;list of <partition>
                       (default '()))
   (compression?       image-compression? ;boolean
-                      (default #t))
+                      (default #true))
   (volatile-root?     image-volatile-root? ;boolean
-                      (default #t))
+                      (default #true))
   (shared-store?      image-shared-store? ;boolean
-                      (default #f))
+                      (default #false))
   (shared-network?    image-shared-network? ;boolean
-                      (default #f))
+                      (default #false))
   (substitutable?     image-substitutable? ;boolean
-                      (default #t)))
+                      (default #true)))
 
 
 ;;;

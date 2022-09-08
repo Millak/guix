@@ -180,7 +180,7 @@ multiple inheritance and public and private classes and variables.")
              #t)))
 
        #:test-target "test"))
-    (home-page "http://expect.sourceforge.net/")
+    (home-page "https://core.tcl-lang.org/expect/")
     (synopsis "Tool for automating interactive applications")
     (description
      "Expect is a tool for automating interactive applications such as

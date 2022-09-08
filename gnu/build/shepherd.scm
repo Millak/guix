@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
+;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -186,7 +187,7 @@ namespace, in addition to essential bind-mounts such /proc."
     (when log-file
       ;; Create LOG-FILE so we can map it in the container.
       (unless (file-exists? log-file)
-        (call-with-output-file log-file (const #t))
+        (close (open log-file (logior O_CREAT O_APPEND O_CLOEXEC) #o640))
         (when user
           (let ((pw (getpwnam user)))
             (chown log-file (passwd:uid pw) (passwd:gid pw))))))

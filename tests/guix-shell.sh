@@ -38,6 +38,16 @@ guix shell --bootstrap --pure guile-bootstrap -- guile --version
 # Rejecting unsupported packages.
 ! guix shell -s armhf-linux intelmetool -n
 
+# Test approximately that the child process does not inherit extra file
+# descriptors.  Ideally we'd check there's nothing more than 0, 1, and 2, but
+# we cannot do that because (1) we might be inheriting additional FDs, for
+# example due to <https://issues.guix.gnu.org/57567>, and (2) Bash itself
+# opens a couple of extra FDs.
+initial_fd_list="$(echo /proc/$$/fd/*)"
+fd_list="$(guix shell --bootstrap guile-bootstrap -- \
+		 "$SHELL" -c 'echo /proc/$$/fd/*')"
+test "$(echo $fd_list | wc -w)" -le "$(echo $initial_fd_list | wc -w)"
+
 # Ignoring unauthorized files.
 cat > "$tmpdir/guix.scm" <<EOF
 This is a broken guix.scm file.

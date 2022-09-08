@@ -1,0 +1,481 @@
+From 8761fc06b188b9ca2f4b7f2b7d1235075c44a321 Mon Sep 17 00:00:00 2001
+From: Matthew Flatt <mflatt@racket-lang.org>
+Date: Sat, 23 Jul 2022 17:10:58 -0600
+Subject: [PATCH 1/4] Zuo: support cross compilation via `configure` and
+ `CC_FOR_BUILD`
+
+(cherry picked from commit 798a989ba6d1a30c491a3120b2c2f1570ecab911)
+---
+ racket/src/zuo/Makefile.in  |  7 ++++++-
+ racket/src/zuo/README.md    | 10 ++++++++++
+ racket/src/zuo/configure    | 15 +++++++++++++++
+ racket/src/zuo/configure.ac | 11 +++++++++++
+ 4 files changed, 42 insertions(+), 1 deletion(-)
+
+diff --git a/racket/src/zuo/Makefile.in b/racket/src/zuo/Makefile.in
+index 5d16e145bf..747b584c5c 100644
+--- a/racket/src/zuo/Makefile.in
++++ b/racket/src/zuo/Makefile.in
+@@ -17,6 +17,11 @@ CPPFLAGS = @CPPFLAGS@
+ LDFLAGS = @LDFLAGS@
+ LIBS = @LIBS@
+ 
++CC_FOR_BUILD = @CC_FOR_BUILD@
++CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
++LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@
++LIBS_FOR_BUILD = @LIBS_FOR_BUILD@
++
+ EMBED_LIBS = @EMBED_LIBS@
+ 
+ .PHONY: zuos-to-run-and-install
+@@ -24,7 +29,7 @@ zuos-to-run-and-install: zuo
+ 	./zuo . zuos-to-run-and-install
+ 
+ zuo: $(srcdir)/zuo.c
+-	$(CC) $(CPPFLAGS) $(CFLAGS) -DZUO_LIB_PATH='"'"$(srcdir)/lib"'"' -o zuo $(srcdir)/zuo.c $(LDFLAGS) $(LIBS)
++	$(CC_FOR_BUILD) $(FLAGS_FOR_BUILD) -DZUO_LIB_PATH='"'"$(srcdir)/lib"'"' -o zuo $(srcdir)/zuo.c $(LDFLAGS_FOR_BUILD) $(LIBS_FOR_BUILD)
+ 
+ .PHONY: check
+ check: zuo
+diff --git a/racket/src/zuo/README.md b/racket/src/zuo/README.md
+index 17c88ee9ec..3aad504b7e 100644
+--- a/racket/src/zuo/README.md
++++ b/racket/src/zuo/README.md
+@@ -84,6 +84,16 @@ A boot image is machine-independent, whether in a stand-alone file or
+ embedded in `.c` source.
+ 
+ 
++Cross Compiling
++---------------
++
++If you use `./configure --host=...` to cross compile, then you will
++also need to add something like `CC_FOR_BUILD=cc` as a `./configure`
++argument to specify the compiler for a `zuo` to use on the build
++machine. If necessary, you can also specify `CFLAGS_FOR_BUILD`,
++`LDFLAGS_FOR_BUILD`, and/or `LIBS_FOR_BUILD`.
++
++
+ Embedding Zuo in Another Application
+ ------------------------------------
+ 
+diff --git a/racket/src/zuo/configure b/racket/src/zuo/configure
+index 1fa34a3fe8..575ce07d96 100755
+--- a/racket/src/zuo/configure
++++ b/racket/src/zuo/configure
+@@ -589,6 +589,10 @@ enable_embed="zuo"
+ ac_subst_vars='LTLIBOBJS
+ LIBOBJS
+ EMBED_LIBS
++LIBS_FOR_BUILD
++LDFLAGS_FOR_BUILD
++CFLAGS_FOR_BUILD
++CC_FOR_BUILD
+ OBJEXT
+ EXEEXT
+ ac_ct_CC
+@@ -2584,6 +2588,17 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
+ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+ 
+ 
++if test "${CC_FOR_BUILD}" = ""; then
++  CC_FOR_BUILD='$(CC) -O2'
++  CFLAGS_FOR_BUILD='$(CPPFLAGS) $(CFLAGS)'
++  LDFLAGS_FOR_BUILD='$(LDFLAGS)'
++  LIBS_FOR_BUILD='$(LIBS)'
++fi
++
++
++
++
++
+ 
+ { $as_echo "$as_me:${as_lineno-$LINENO}: zuo libraries to embed: \"${EMBED_LIBS}\"" >&5
+ $as_echo "$as_me: zuo libraries to embed: \"${EMBED_LIBS}\"" >&6;}
+diff --git a/racket/src/zuo/configure.ac b/racket/src/zuo/configure.ac
+index 89b3c6391d..598ff79629 100644
+--- a/racket/src/zuo/configure.ac
++++ b/racket/src/zuo/configure.ac
+@@ -25,6 +25,17 @@ AS_IF([test "x$enable_embed" = xno],
+ AC_PROG_MAKE_SET()
+ AC_PROG_CC
+ 
++if test "${CC_FOR_BUILD}" = ""; then
++  CC_FOR_BUILD='$(CC) -O2'
++  CFLAGS_FOR_BUILD='$(CPPFLAGS) $(CFLAGS)'
++  LDFLAGS_FOR_BUILD='$(LDFLAGS)'
++  LIBS_FOR_BUILD='$(LIBS)'
++fi
++AC_SUBST(CC_FOR_BUILD)
++AC_SUBST(CFLAGS_FOR_BUILD)
++AC_SUBST(LDFLAGS_FOR_BUILD)
++AC_SUBST(LIBS_FOR_BUILD)
++
+ AC_SUBST(EMBED_LIBS)
+ AC_MSG_NOTICE([zuo libraries to embed: "${EMBED_LIBS}"])
+ 
+-- 
+2.32.0
+
+
+From f65194ea41eb472fbdd45d5f6c13eabe5e681704 Mon Sep 17 00:00:00 2001
+From: Matthew Flatt <mflatt@racket-lang.org>
+Date: Sat, 23 Jul 2022 17:47:03 -0600
+Subject: [PATCH 2/4] Zuo: sort hash keys
+
+Printing in a sorted order is helpful to make things more
+deterministic independent of symbol inputs. Making `hash-keys`
+produce a sorted list generalizes that determinism.
+
+(cherry picked from commit 4e7ffd3b365d01c5d0993c0b3fd24c9623962edf)
+---
+ racket/src/zuo/build.zuo              |  5 ++-
+ racket/src/zuo/tests/hash.zuo         |  8 ++--
+ racket/src/zuo/zuo-doc/lang-zuo.scrbl | 18 +++++++--
+ racket/src/zuo/zuo.c                  | 57 ++++++++++++++++++++++++++-
+ 4 files changed, 78 insertions(+), 10 deletions(-)
+
+diff --git a/racket/src/zuo/build.zuo b/racket/src/zuo/build.zuo
+index c1b5e8ce66..129240120a 100644
+--- a/racket/src/zuo/build.zuo
++++ b/racket/src/zuo/build.zuo
+@@ -47,7 +47,10 @@
+     (target (at-dir (add-exe name))
+             (lambda (path token)
+               (rule (list image_zuo.c
+-                          (input-data-target 'config config)
++                          (input-data-target 'config (cons
++                                                      lib-path
++                                                      (map (lambda (key) (hash-ref config key))
++                                                           '(CC CPPFLAGS CFLAGS LDFLAGS LIBS))))
+                           (quote-module-path))
+                     (lambda ()
+                       (define l (split-path path))
+diff --git a/racket/src/zuo/tests/hash.zuo b/racket/src/zuo/tests/hash.zuo
+index a35741c730..0d3d7f3af6 100644
+--- a/racket/src/zuo/tests/hash.zuo
++++ b/racket/src/zuo/tests/hash.zuo
+@@ -35,9 +35,7 @@
+ 
+ (check (hash-keys (hash)) '())
+ (check (hash-keys (hash 'a 1)) '(a))
+-(check (let ([keys (hash-keys (hash 'a 1 'b 2))])
+-         (or (equal? keys '(a b))
+-             (equal? keys '(b a)))))
++(check (hash-keys (hash 'a 1 'b 2)) '(a b)) ; always in order
+ (check (length (hash-keys (hash 'a 1 'b 2 'c 3))) 3)
+ (check (length (hash-keys (hash 'a 1 'b 2 'a 3))) 2)
+ (check-arg-fail (hash-keys 0) "not a hash table")
+@@ -50,3 +48,7 @@
+ (check (hash-keys-subset? (hash 'a 1 'b 2) (hash 'b 1)) #f)
+ (check-arg-fail (hash-keys-subset? 0 (hash)) "not a hash table")
+ (check-arg-fail (hash-keys-subset? (hash) 0) "not a hash table")
++
++;; print sorts keys alphabetically:
++(check (~a (hash 'a 1 'b 2)) "#hash((a . 1) (b . 2))")
++(check (~a (hash 'b 2 'a 1)) "#hash((a . 1) (b . 2))")
+diff --git a/racket/src/zuo/zuo-doc/lang-zuo.scrbl b/racket/src/zuo/zuo-doc/lang-zuo.scrbl
+index 94641d041e..4605e47471 100644
+--- a/racket/src/zuo/zuo-doc/lang-zuo.scrbl
++++ b/racket/src/zuo/zuo-doc/lang-zuo.scrbl
+@@ -538,10 +538,20 @@ support to convert the textual form back into a hash table value.
+ 
+ Analogous to @realracket*[hash? hash hash-ref hash-set hash-remove
+ hash-keys hash-count hash-keys-subset?] from @racketmodname[racket].
+-Besides being constrained to symbol keys, there is one additional
+-difference: the third argument to @racket[hash-ref], when supplied,
+-is always used as a value to return if a key is missing, as
+-opposed to a failure thunk.}
++
++Besides being constrained to symbol keys, there are two additional
++differences:
++
++@itemlist[
++
++ @item{the third argument to @racket[hash-ref], when supplied, is
++       always used as a value to return if a key is missing, as
++       opposed to a failure thunk; and}
++
++ @item{the @racket[hash-keys] function returns interned keys sorted
++       alphabetically.}
++
++]}
+ 
+ 
+ @section{Procedures}
+diff --git a/racket/src/zuo/zuo.c b/racket/src/zuo/zuo.c
+index 2957d478af..88d5747326 100644
+--- a/racket/src/zuo/zuo.c
++++ b/racket/src/zuo/zuo.c
+@@ -1298,6 +1298,59 @@ static zuo_t *zuo_trie_keys(zuo_t *trie_in, zuo_t *accum) {
+   return accum;
+ }
+ 
++/*======================================================================*/
++/* symbol-list sorting                                                  */
++/*======================================================================*/
++
++/* merge sort used to make hash printing deterministic */
++static zuo_t *zuo_symbol_list_sort(zuo_t *l_in) {
++  zuo_t *l, *left, *right, *first, *last;
++  zuo_uint_t len = 0, i;
++
++  for (l = l_in, len = 0; l != z.o_null; l = _zuo_cdr(l))
++    len++;
++
++  if (len < 2)
++    return l_in;
++
++  left = z.o_null;
++  for (l = l_in, i = len >> 1; i > 0; l = _zuo_cdr(l), i--)
++    left = zuo_cons(_zuo_car(l), left);
++  right = l;
++
++  left = zuo_symbol_list_sort(left);
++  right = zuo_symbol_list_sort(right);
++
++  first = last = z.o_null;
++  while ((left != z.o_null) && (right != z.o_null)) {
++    zuo_t *p;
++
++    if (strcmp(ZUO_STRING_PTR(((zuo_symbol_t *)_zuo_car(left))->str),
++               ZUO_STRING_PTR(((zuo_symbol_t *)_zuo_car(right))->str))
++        < 1) {
++      p = zuo_cons(_zuo_car(left), z.o_null);
++      left = _zuo_cdr(left);
++    } else {
++      p = zuo_cons(_zuo_car(right), z.o_null);
++      right = _zuo_cdr(right);
++    }
++
++    if (first == z.o_null)
++      first = p;
++    else
++      ((zuo_pair_t *)last)->cdr = p;
++    last = p;
++  }
++
++  ((zuo_pair_t *)last)->cdr = ((left != z.o_null) ? left : right);
++
++  return first;
++}
++
++static zuo_t *zuo_trie_sorted_keys(zuo_t *trie_in, zuo_t *accum) {
++  return zuo_symbol_list_sort(zuo_trie_keys(trie_in, accum));
++}
++
+ /*======================================================================*/
+ /* terminal support                                                     */
+ /*======================================================================*/
+@@ -1571,7 +1624,7 @@ static void zuo_out(zuo_out_t *out, zuo_t *obj, zuo_print_mode_t mode) {
+         out_string(out, "opaque");
+       out_string(out, ">");
+     } else if (obj->tag == zuo_trie_node_tag) {
+-      zuo_t *keys = zuo_trie_keys(obj, z.o_null);
++      zuo_t *keys = zuo_trie_sorted_keys(obj, z.o_null);
+       if (mode == zuo_print_mode) {
+         out_string(out, "(hash");
+         if (keys != z.o_null)
+@@ -2587,7 +2640,7 @@ static zuo_t *zuo_hash_remove(zuo_t *ht, zuo_t *sym) {
+ 
+ static zuo_t *zuo_hash_keys(zuo_t *ht) {
+   check_hash("hash-keys", ht);
+-  return zuo_trie_keys(ht, z.o_null);
++  return zuo_trie_sorted_keys(ht, z.o_null);
+ }
+ 
+ static zuo_t *zuo_hash_keys_subset_p(zuo_t *ht, zuo_t *ht2) {
+-- 
+2.32.0
+
+
+From f2eecaa1dd875479d2cf51566223b3d0d7b9f738 Mon Sep 17 00:00:00 2001
+From: Matthew Flatt <mflatt@racket-lang.org>
+Date: Sat, 23 Jul 2022 18:06:41 -0600
+Subject: [PATCH 3/4] Zuo: check for nul characters in `string->symbol`
+
+(cherry picked from commit e20022ccfad40d0ba2e77aa75bc4f775018c781f)
+---
+ racket/src/zuo/tests/symbol.zuo       |  3 +++
+ racket/src/zuo/zuo-doc/lang-zuo.scrbl |  4 ++-
+ racket/src/zuo/zuo.c                  | 37 +++++++++++++++++----------
+ 3 files changed, 29 insertions(+), 15 deletions(-)
+
+diff --git a/racket/src/zuo/tests/symbol.zuo b/racket/src/zuo/tests/symbol.zuo
+index 7775aeeb04..5600a89755 100644
+--- a/racket/src/zuo/tests/symbol.zuo
++++ b/racket/src/zuo/tests/symbol.zuo
+@@ -19,3 +19,6 @@
+ (check (not (equal? 'apple (string->uninterned-symbol "apple"))))
+ (check-arg-fail (string->symbol 'apple) not-string)
+ (check-arg-fail (string->uninterned-symbol 'apple) not-string)
++
++(check-arg-fail (string->symbol "apple\0spice") "without a nul character")
++(check (symbol? (string->uninterned-symbol "apple\0spice")))
+diff --git a/racket/src/zuo/zuo-doc/lang-zuo.scrbl b/racket/src/zuo/zuo-doc/lang-zuo.scrbl
+index 4605e47471..07dd5815b0 100644
+--- a/racket/src/zuo/zuo-doc/lang-zuo.scrbl
++++ b/racket/src/zuo/zuo-doc/lang-zuo.scrbl
+@@ -500,7 +500,9 @@ back into Zuo.
+ )]{
+ 
+ Analogous to @realracket*[symbol? symbol->string string->symbol
+-string->uninterned-symbol] from @racketmodname[racket].}
++string->uninterned-symbol] from @racketmodname[racket], but
++@racket[string->symbol] accepts only strings that do not contain the
++null character.}
+ 
+ 
+ @section{Hash Tables (Persistent Maps)}
+diff --git a/racket/src/zuo/zuo.c b/racket/src/zuo/zuo.c
+index 88d5747326..17f161826d 100644
+--- a/racket/src/zuo/zuo.c
++++ b/racket/src/zuo/zuo.c
+@@ -1323,7 +1323,7 @@ static zuo_t *zuo_symbol_list_sort(zuo_t *l_in) {
+ 
+   first = last = z.o_null;
+   while ((left != z.o_null) && (right != z.o_null)) {
+-    zuo_t *p;
++    zuo_t *p, *s_left, *s_right;
+ 
+     if (strcmp(ZUO_STRING_PTR(((zuo_symbol_t *)_zuo_car(left))->str),
+                ZUO_STRING_PTR(((zuo_symbol_t *)_zuo_car(right))->str))
+@@ -2573,8 +2573,28 @@ static zuo_t *zuo_substring(zuo_t *obj, zuo_t *start_i, zuo_t *end_i) {
+   return zuo_sized_string((const char *)&((zuo_string_t *)obj)->s[s_idx], e_idx - s_idx);
+ }
+ 
++static int zuo_is_string_without_nul(zuo_t *obj) {
++  zuo_int_t i;
++
++  if ((obj->tag != zuo_string_tag)
++      || ZUO_STRING_LEN(obj) == 0)
++    return 0;
++
++  for (i = ZUO_STRING_LEN(obj); i--; ) {
++    if (((zuo_string_t *)obj)->s[i] == 0)
++      return 0;
++  }
++
++  return 1;
++}
++
+ static zuo_t *zuo_string_to_symbol(zuo_t *obj) {
+-  check_string("string->symbol", obj);
++  if (!zuo_is_string_without_nul(obj)) {
++    const char *who = "string->symbol";
++    check_string(who, obj);
++    zuo_fail_arg(who, "string without a nul character", obj);
++  }
++
+   return zuo_symbol_from_string(ZUO_STRING_PTR(obj), obj);
+ }
+ 
+@@ -3577,18 +3597,7 @@ static void *zuo_envvars_block(const char *who, zuo_t *envvars)
+ #endif
+ 
+ static int zuo_is_path_string(zuo_t *obj) {
+-  zuo_int_t i;
+-
+-  if ((obj->tag != zuo_string_tag)
+-      || ZUO_STRING_LEN(obj) == 0)
+-    return 0;
+-
+-  for (i = ZUO_STRING_LEN(obj); i--; ) {
+-    if (((zuo_string_t *)obj)->s[i] == 0)
+-      return 0;
+-  }
+-
+-  return 1;
++  return zuo_is_string_without_nul(obj);
+ }
+ 
+ static zuo_t *zuo_path_string_p(zuo_t *obj) {
+-- 
+2.32.0
+
+
+From de6618cb3819d25580e3cd400ea09c8cf4f673a9 Mon Sep 17 00:00:00 2001
+From: Matthew Flatt <mflatt@racket-lang.org>
+Date: Sat, 23 Jul 2022 19:50:46 -0600
+Subject: [PATCH 4/4] Zuo: CPPFLAGS_FOR_BUILD, too
+
+(cherry picked from commit cf82706c4b298f654a04c4bc8d98dff39b62a2ac)
+---
+ racket/src/zuo/Makefile.in  | 3 ++-
+ racket/src/zuo/configure    | 5 ++++-
+ racket/src/zuo/configure.ac | 4 +++-
+ 3 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/racket/src/zuo/Makefile.in b/racket/src/zuo/Makefile.in
+index 747b584c5c..0376c038a8 100644
+--- a/racket/src/zuo/Makefile.in
++++ b/racket/src/zuo/Makefile.in
+@@ -19,6 +19,7 @@ LIBS = @LIBS@
+ 
+ CC_FOR_BUILD = @CC_FOR_BUILD@
+ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
++CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
+ LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@
+ LIBS_FOR_BUILD = @LIBS_FOR_BUILD@
+ 
+@@ -29,7 +30,7 @@ zuos-to-run-and-install: zuo
+ 	./zuo . zuos-to-run-and-install
+ 
+ zuo: $(srcdir)/zuo.c
+-	$(CC_FOR_BUILD) $(FLAGS_FOR_BUILD) -DZUO_LIB_PATH='"'"$(srcdir)/lib"'"' -o zuo $(srcdir)/zuo.c $(LDFLAGS_FOR_BUILD) $(LIBS_FOR_BUILD)
++	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) $(CPPFLAGS_FOR_BUILD) -DZUO_LIB_PATH='"'"$(srcdir)/lib"'"' -o zuo $(srcdir)/zuo.c $(LDFLAGS_FOR_BUILD) $(LIBS_FOR_BUILD)
+ 
+ .PHONY: check
+ check: zuo
+diff --git a/racket/src/zuo/configure b/racket/src/zuo/configure
+index 575ce07d96..7ac453e3bc 100755
+--- a/racket/src/zuo/configure
++++ b/racket/src/zuo/configure
+@@ -591,6 +591,7 @@ LIBOBJS
+ EMBED_LIBS
+ LIBS_FOR_BUILD
+ LDFLAGS_FOR_BUILD
++CPPFLAGS_FOR_BUILD
+ CFLAGS_FOR_BUILD
+ CC_FOR_BUILD
+ OBJEXT
+@@ -2590,7 +2591,8 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+ 
+ if test "${CC_FOR_BUILD}" = ""; then
+   CC_FOR_BUILD='$(CC) -O2'
+-  CFLAGS_FOR_BUILD='$(CPPFLAGS) $(CFLAGS)'
++  CPPFLAGS_FOR_BUILD='$(CPPFLAGS)'
++  CFLAGS_FOR_BUILD='$(CFLAGS)'
+   LDFLAGS_FOR_BUILD='$(LDFLAGS)'
+   LIBS_FOR_BUILD='$(LIBS)'
+ fi
+@@ -2600,6 +2602,7 @@ fi
+ 
+ 
+ 
++
+ { $as_echo "$as_me:${as_lineno-$LINENO}: zuo libraries to embed: \"${EMBED_LIBS}\"" >&5
+ $as_echo "$as_me: zuo libraries to embed: \"${EMBED_LIBS}\"" >&6;}
+ 
+diff --git a/racket/src/zuo/configure.ac b/racket/src/zuo/configure.ac
+index 598ff79629..051ea0beb5 100644
+--- a/racket/src/zuo/configure.ac
++++ b/racket/src/zuo/configure.ac
+@@ -27,12 +27,14 @@ AC_PROG_CC
+ 
+ if test "${CC_FOR_BUILD}" = ""; then
+   CC_FOR_BUILD='$(CC) -O2'
+-  CFLAGS_FOR_BUILD='$(CPPFLAGS) $(CFLAGS)'
++  CPPFLAGS_FOR_BUILD='$(CPPFLAGS)'
++  CFLAGS_FOR_BUILD='$(CFLAGS)'
+   LDFLAGS_FOR_BUILD='$(LDFLAGS)'
+   LIBS_FOR_BUILD='$(LIBS)'
+ fi
+ AC_SUBST(CC_FOR_BUILD)
+ AC_SUBST(CFLAGS_FOR_BUILD)
++AC_SUBST(CPPFLAGS_FOR_BUILD)
+ AC_SUBST(LDFLAGS_FOR_BUILD)
+ AC_SUBST(LIBS_FOR_BUILD)
+ 
+-- 
+2.32.0
+

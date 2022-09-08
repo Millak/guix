@@ -35,6 +35,7 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
 
 (define-module (gnu packages password-utils)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -72,6 +74,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages file)
   #:use-module (gnu packages freedesktop)
@@ -1112,27 +1115,41 @@ your online accounts makes it necessary.")
 (define-public hashcat
   (package
     (name "hashcat")
-    (version "6.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://hashcat.net/files/hashcat-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "104z63m7lqbb0sdrxhf9yi15l4a9zwf9m6zs9dbb3gf0nfxl1h9r"))))
-    (native-inputs
-     (list opencl-headers))
+    (version "6.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://hashcat.net/files/hashcat-" version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "0sc96xcsc20xd4fyby3i45nm9as3hl4nhk9snkvmk5l9mpbrjs3g"))
+              (modules '((guix build utils)))
+              ;; Delete bundled libraries.
+              (snippet
+               ;; TODO: Unbundle LZMA-SDK as well
+               #~(for-each delete-file-recursively
+                           '("deps/zlib" "deps/xxHash" "deps/OpenCL-Headers")))))
+    (inputs (list minizip opencl-headers xxhash zlib))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ;no tests
-       #:make-flags (list (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:tests? #f ;no tests
+           #:make-flags #~(list (string-append "PREFIX=" #$output)
+                                (string-append "AR=" #$(ar-for-target))
+                                (string-append "CC=" #$(cc-for-target))
+                                (string-append "USE_SYSTEM_ZLIB=1")
+                                (string-append "USE_SYSTEM_OPENCL=1")
+                                (string-append "USE_SYSTEM_XXHASH=1"))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-reproducibility
+                          (lambda _
+                            (substitute* "src/Makefile"
+                              (("\\$\\(shell date \\+%s\\)")
+                               "0"))))
+                        (delete 'configure))))
     (home-page "https://hashcat.net/hashcat/")
     (synopsis "Advanced password recovery utility")
-    (description "Hashcat is an password recovery utility, supporting five
+    (description
+     "Hashcat is an password recovery utility, supporting five
 unique modes of attack for over 200 highly-optimized hashing algorithms.
 Hashcat currently supports CPUs, GPUs, and other hardware accelerators on
 Linux, Windows, and macOS, and has facilities to help enable distributed

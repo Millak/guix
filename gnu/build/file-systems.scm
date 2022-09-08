@@ -98,6 +98,18 @@ standard input is /dev/null."
              system*/console)
          program args))
 
+(define (call-with-input-file file proc)
+  "Like 'call-with-input-file', but pass O_CLOEXEC."
+  (let ((port #f))
+    (dynamic-wind
+      (lambda ()
+        (set! port (open file (logior O_RDONLY O_CLOEXEC))))
+      (lambda ()
+        (proc port))
+      (lambda ()
+        (close-port port)
+        (set! port #f)))))
+
 (define (bind-mount source target)
   "Bind-mount SOURCE at TARGET."
   (mount source target "" MS_BIND))
@@ -1183,7 +1195,8 @@ corresponds to the symbols listed in FLAGS."
                  (not (file-is-directory? source)))
             (unless (file-exists? target)
               (mkdir-p (dirname target))
-              (call-with-output-file target (const #t)))
+              (close-fdes
+               (open-fdes target (logior O_WRONLY O_CREAT O_CLOEXEC))))
             (mkdir-p target))
 
         (cond

@@ -26,6 +26,7 @@
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
+;;; Copyright © 2022 Cairn <cairn@pm.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
@@ -73,6 +75,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages image)
@@ -107,7 +110,7 @@
 (define-public ytfzf
   (package
     (name "ytfzf")
-    (version "2.3")
+    (version "2.4.1")
     (home-page "https://github.com/pystardust/ytfzf")
     (source
      (origin
@@ -118,7 +121,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01prcg6gfwy1r49v92pkzxay9iadqqhpaxvn8jmij2jm5l50iynd"))))
+        (base32 "198qhnjklrgrjs35ygym6sgx1ibwn6qrihfiginvmx38gdavdj4x"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -159,6 +162,7 @@
            libnotify
            mpv
            ncurses
+           perl                         ;for convert-ascii-escape.pl
            python-ueberzug
            sed
            util-linux
@@ -509,6 +513,35 @@ your images.  Among its features are:
      "Catimg is a little program that prints images in the terminal.
 It supports JPEG, PNG and GIF formats.")
     (license license:expat)))
+
+(define-public pixterm
+  (package
+    (name "pixterm")
+    (version "1.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/eliukblau/pixterm")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fm6c0mjz6zillqjirnjjf7mkrax1gyfcv6777i07ms3bnv0pcii"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/eliukblau/pixterm/cmd/pixterm"
+       #:unpack-path "github.com/eliukblau/pixterm"))
+    (inputs (list go-github-com-disintegration-imaging
+                  go-golang-org-colorful
+                  go-golang-org-x-crypto
+                  go-golang-org-x-image))
+    (home-page "https://github.com/eliukblau/pixterm")
+    (synopsis "Draw images in your ANSI terminal with true color")
+    (description "PIXterm shows images directly in your terminal, recreating
+the pixels through a combination of ANSI character background color and the
+unicode lower half block element.  It supports JPEG, PNG, GIF, BMP, TIFF
+and WebP.")
+    (license license:mpl2.0)))
 
 (define-public luminance-hdr
   (package

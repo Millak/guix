@@ -2,7 +2,7 @@
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -62,7 +62,7 @@ text editors.")
 (define-public lesspipe
   (package
     (name "lesspipe")
-    (version "2.04")
+    (version "2.06")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -71,7 +71,7 @@ text editors.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mwmwkmiyrpib18mli4wrh9n0i12cnf08ssrj6a0s6bgjcfxcjr2"))))
+                "0f67f45dznhnw99r4zxrzf1xvspzj2rpg2z8b905ixmzpnv86772"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -90,10 +90,10 @@ text editors.")
                 (("\\$\\(DESTDIR\\)/etc") "$(DESTDIR)$(PREFIX)/etc"))))
           (add-before 'install 'patch-command-paths
             ;; Depending on the content of the file to be displayed and some
-            ;; settings, lesspipe trees to use a large variety of external
+            ;; settings, lesspipe tries to use a large variety of external
             ;; commands, e.g. rpm, dpkg, vimcolor.  We only link the
             ;; essential ones to avoid this package to pull in all these
-            ;; dependencies which might never ever we used.
+            ;; dependencies which might never ever be used.
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((file (search-input-file inputs "/bin/file"))
                     (tput (search-input-file inputs "/bin/tput")))

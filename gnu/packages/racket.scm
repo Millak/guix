@@ -36,7 +36,6 @@
   #:use-module (ice-9 match)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
-  #:use-module (gnu packages bash)
   #:use-module (gnu packages chez)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
@@ -54,7 +53,7 @@
   #:use-module (gnu packages xorg)
   #:use-module ((guix licenses) #:prefix license:))
 
-;; Commentary:
+;; COMMENTARY:
 ;;
 ;; Anatomy of Racket:
 ;; ------------------
@@ -73,14 +72,16 @@
 ;;             ├── bc/
 ;;             ├── cs/
 ;;             ├── ChezScheme/
+;;             ├── zuo/
 ;;             └── ...
 ;;
 ;; The 'racket/src/' directory contains the source of the runtime system, core
 ;; compiler, and primitives for the major Racket implementations: this layer
-;; is called the ``Racket VM''. It is basically a normal autotools
-;; project. (Even when Racket VM implementations use components implemented in
-;; Racket, they are compiled in special modes to produce VM primitives.)
-;; (There are or have been experimental Racket VM implementations elsewhere,
+;; is called the ``Racket VM''.  It is basically a normal Autoconf project,
+;; except that the makefiles just run Zuo to do the real work. (Even when
+;; Racket VM implementations use components implemented in Racket, they are
+;; compiled in special modes to produce VM primitives.) (There are or have
+;; been experimental Racket VM implementations elsewhere,
 ;; e.g. <https://github.com/pycket/pycket>.)
 ;;
 ;; The 'racket/collects/' directory contains ``built in'' Racket libraries
@@ -101,10 +102,10 @@
 ;;
 ;; The top-level 'Makefile' is more like a directory of scripts: it has
 ;; convienience targets for developing Racket, and it cooperates with the
-;; 'distro-build' package to assemble custom Racket distributions. It is not
-;; part of Racket source distributions: the root of a source distribution is
-;; basically 'racket/src' with some extra package sources and configuration
-;; added.
+;; 'distro-build' package to assemble custom Racket distributions. (Again,
+;; the makefile just delegates to Zuo.) It is not part of Racket source
+;; distributions: the root of a source distribution is basically 'racket/src'
+;; with some extra package sources and configuration added.
 ;;
 ;; A ''minimal Racket'' installation includes two packages: 'base', which is a
 ;; sort of bridge between the current ``built-in'' collections and the package
@@ -127,15 +128,14 @@
 ;; This file defines the packages 'racket-vm-cgc', 'racket-vm-bc', and
 ;; 'racket-vm-cs'. All three are in-place builds of 'racket/src/' and
 ;; 'racket/collects/' and are installed to 'opt/racket-vm/' in the store
-;; output. The function 'racket-vm-for-system' returns the recomended Racket
-;; VM package for a given system.
+;; output.
 ;;
-;; The file 'racket.scm' builds on these packages to define 'racket-minimal'
-;; and 'racket' packages. These use Racket's support for ``layered
-;; installations'', which allow an immutable base layer to be extended with
-;; additional packages. They use the layer configuration directly provide
-;; ready-to-install FHS-like trees, rather than relying on the built in
-;; ``Unix-style install'' mechanism.
+;; Using 'racket-vm-cs', we then define the packages 'racket-minimal' and
+;; 'racket'. These use Racket's support for ``layered installations'', which
+;; allow an immutable base layer to be extended with additional packages.
+;; They use the layer configuration directly provide ready-to-install FHS-like
+;; trees, rather than relying on the built in ``Unix-style install''
+;; mechanism.
 ;;
 ;; Bootstrapping Racket:
 ;; ---------------------
@@ -178,29 +178,21 @@
 ;; However, other Racket subsystems implemented in Racket for Racket CS
 ;; use older C implementations for Racket BC, whereas the reader, expander,
 ;; and module system were completely replaced with the Racket implementation
-;; as of Racket 7.0.
+;; as of Racket 7.0. See also <https://racket.discourse.group/t/951/4>.
 ;;
 ;; For Racket BC, the compiled "linklet" s-expressions (primitive modules)
 ;; are embeded in C as a static string constant. Eventually, they are further
 ;; compiled by the C-implemented Racket BC bytecode and JIT compilers.
-;; (On platforms where Racket BC's JIT is not supported, yet another compiler
-;; instead compiles the linklets to C code, but this is not a bootstrapping
-;; issue.)
 ;;
-;; Code:
+;; Zuo is notably *not* a problem for bootstrapping. The implementation is a
+;; single hand-written C file designed to build with just `cc -o zuo zuo.c`,
+;; even with very old or limited compilers. (We use the Autoconf support for
+;; convienience.)
+;;
+;; CODE:
 
-(define* (racket-vm-for-system #:optional
-                               (system (or (%current-target-system)
-                                           (%current-system))))
-  "Return 'racket-vm-cs' if we are able to build it for SYSTEM; 'racket-vm-bc'
-otherwise."
-  ;; Once we figure out the issues in https://racket.discourse.group/t/950,
-  ;; we can use 'racket-vm-cs' everywhere.
-  (if (racket-cs-native-supported-system? system)
-      racket-vm-cs
-      racket-vm-bc))
-
-(define %racket-version "8.5") ; Remember to update chez-scheme-for-racket!
+(define %racket-version "8.6") ; Remember to update chez-scheme-for-racket!
+(define %zuo-version "1.0") ; defined in racket/src/zuo/zuo.c
 (define %racket-commit
   (string-append "v" %racket-version))
 (define %racket-origin
@@ -210,9 +202,15 @@ otherwise."
           (url "https://github.com/racket/racket")
           (commit %racket-commit)))
     (sha256
-     (base32 "0f9zyhdvbh4xsndrqjzl85j5ziz0rmqi676g9s1lw3h3skq2636h"))
+     (base32 "1lw6h70dk8zqpl96zz0hmhn8vjcc0c7gw4prkfz2wid5bkq4mhg4"))
     (file-name (git-file-name "racket" %racket-version))
-    (patches (search-patches "racket-minimal-sh-via-rktio.patch"))
+    (patches (search-patches "racket-backport-8.6-cross-install.patch"
+                             "racket-backport-8.6-docindex-write.patch"
+                             "racket-backport-8.6-hurd.patch"
+                             "racket-backport-8.6-zuo.patch"
+                             "racket-chez-scheme-bin-sh.patch"
+                             "racket-rktio-bin-sh.patch"
+                             "racket-zuo-bin-sh.patch"))
     (modules '((guix build utils)))
     (snippet
      #~(begin
@@ -232,8 +230,44 @@ otherwise."
          ;; Unbundle libffi.
          (delete-file-recursively "racket/src/bc/foreign/libffi")))))
 
-(define (racket-vm-common-configure-flags)
-  ;; under a lambda abstraction to avoid evaluating bash-minimal too early.
+
+(define-public zuo
+  (let ((revision #f))
+    (package
+      (name "zuo")
+      (version (string-append %zuo-version
+                              "-racket"
+                              %racket-version
+                              (if revision "-guix" "")
+                              (or revision "")))
+      (source %racket-origin)
+      (outputs '("out" "debug"))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:out-of-source? #t
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda args
+                (chdir "racket/src/zuo"))))))
+      (home-page "https://github.com/racket/zuo")
+      ;; ^ This is downstream of https://github.com/racket/racket,
+      ;; but it's designed to be a friendly landing place
+      (synopsis "Tiny Racket for build scripts")
+      (description "Zuo is a tiny Racket with primitives for dealing
+with files and running processes.  It comes with a @command{make}-like
+embedded DSL, which is used to build Racket itself.
+
+Zuo is a Racket variant in the sense that program files start with
+@code{#lang}, and the module path after @code{#lang} determines the parsing
+and expansion of the file content.  That's how the @command{make}-like DSL is
+defined, and even the base Zuo language is defined by layers of @code{#lang}s.
+One of the early layers implements macros.")
+      (license (list license:asl2.0 license:expat)))))
+
+
+(define racket-vm-common-configure-flags
   #~`(,@(cond
          ((false-if-exception
            (search-input-file %build-inputs "/bin/libtool"))
@@ -248,8 +282,6 @@ otherwise."
                (list (string-append "--enable-racket=" racket))))
          (else
           '()))
-      ,(string-append "CPPFLAGS=-DGUIX_RKTIO_PATCH_BIN_SH="
-                      #$(file-append bash-minimal "/bin/sh"))
       "--disable-strip"
       ;; Using --enable-origtree lets us distinguish the VM from subsequent
       ;; layers and produces a build with the shape expected by tools such as
@@ -267,16 +299,23 @@ otherwise."
      (version %racket-version)
      (source %racket-origin)
      (inputs (list ncurses ;; <- common to all variants (for #%terminal)
-                   bash-minimal ;; <- common to all variants (for `system`)
-                   libffi)) ;; <- only for BC variants
-     (native-inputs (list libtool)) ;; <- only for BC variants
+                   libffi)) ;; <- for BC and non-native CS variants
+     (native-inputs (cons* zuo ;; <- for all variants
+                           libtool ;; <- only for BC variants
+                           (if (%current-target-system)
+                               (list this-package)
+                               '())))
      (outputs '("out" "debug"))
      (build-system gnu-build-system)
      (arguments
       (list
        #:configure-flags
        #~(cons "--enable-cgcdefault"
-               #$(racket-vm-common-configure-flags))
+               #$racket-vm-common-configure-flags)
+       #:make-flags
+       #~(list (string-append "ZUO="
+                              #+(this-package-native-input "zuo")
+                              "/bin/zuo"))
        ;; Tests are in packages like racket-test-core and
        ;; main-distribution-test that aren't part of the main
        ;; distribution.
@@ -353,21 +392,34 @@ code to use the 3M garbage collector.")
     (inherit racket-vm-cgc)
     (name "racket-vm-bc")
     (native-inputs
-     (modify-inputs (package-native-inputs racket-vm-cgc)
-       (prepend racket-vm-cgc)))
+     (if (%current-target-system)
+         (package-native-inputs racket-vm-cgc)
+         (modify-inputs (package-native-inputs racket-vm-cgc)
+           (prepend racket-vm-cgc))))
     (arguments
      (substitute-keyword-arguments (package-arguments racket-vm-cgc)
        ((#:configure-flags _ '())
         #~(cons "--enable-bconly"
-                #$(racket-vm-common-configure-flags)))))
+                #$(cond
+                   ((target-ppc64le?)
+                    ;; Attempt to avoid a problem bootstrapping Chez Scheme:
+                    ;; see <https://issues.guix.gnu.org/57050#19>
+                    ;; and <https://racket.discourse.group/t/950/30>.
+                    #~(map
+                       (lambda (flag)
+                         (if (string-prefix? "CPPFLAGS=" flag)
+                             (string-append flag
+                                            " -DSTACK_SAFETY_MARGIN=2000000")
+                             flag))
+                       #$racket-vm-common-configure-flags))
+                   (else
+                    racket-vm-common-configure-flags))))))
     (synopsis "Racket BC [3M] implementation")
     (description "The Racket BC (``before Chez'' or ``bytecode'')
 implementation was the default before Racket 8.0.  It uses a compiler written
 in C targeting architecture-independent bytecode, plus a JIT compiler on most
-platforms.  Racket BC has a different C API and supports a slightly different
-set of architectures than the current default runtime system, Racket CS (based
-on ``Chez Scheme'').  It is the recommended implementation for architectures
-that Racket CS doesn't support.
+platforms.  Racket BC has a different C API than the current default runtime
+system, Racket CS (based on ``Chez Scheme'').
 
 This package is the normal implementation of Racket BC with a precise garbage
 collector, 3M (``Moving Memory Manager'').")
@@ -380,15 +432,24 @@ collector, 3M (``Moving Memory Manager'').")
     (inherit racket-vm-bc)
     (name "racket-vm-cs")
     (inputs
-     (modify-inputs (package-inputs racket-vm-cgc)
-       (prepend zlib lz4)
-       (delete "libffi")))
+     (let ((inputs (modify-inputs (package-inputs racket-vm-cgc)
+                     (prepend zlib lz4))))
+       (if (racket-cs-native-supported-system?)
+           (modify-inputs inputs
+             (delete "libffi"))
+           inputs)))
     (native-inputs
-     (modify-inputs (package-native-inputs racket-vm-cgc)
-       (delete "libtool")
-       (prepend chez-scheme-for-racket
-                chez-nanopass-bootstrap
-                racket-vm-bc)))
+     (let ((native-inputs (package-native-inputs racket-vm-cgc)))
+       (modify-inputs (if (%current-target-system)
+                          (modify-inputs native-inputs
+                            (delete "racket-vm-cgc"))
+                          native-inputs)
+         (delete "libtool")
+         (prepend chez-scheme-for-racket
+                  chez-nanopass-bootstrap
+                  (if (%current-target-system)
+                      racket-vm-cs
+                      racket-vm-bc)))))
     (arguments
      (substitute-keyword-arguments (package-arguments racket-vm-cgc)
        ((#:phases those-phases #~%standard-phases)
@@ -402,15 +463,22 @@ collector, 3M (``Moving Memory Manager'').")
                  "--enable-libz"
                  "--enable-lz4"
                  (string-append "--enable-scheme="
-                                #$(this-package-native-input
+                                #+(this-package-native-input
                                    "chez-scheme-for-racket")
                                 "/bin/scheme")
-                 #$(racket-vm-common-configure-flags)))))
+                 #$@(if (racket-cs-native-supported-system?)
+                        #~()
+                        #~(#$(string-append "--enable-mach="
+                                            (nix-system->pbarch-machine-type))
+                           "--enable-pb"))
+                 #$racket-vm-common-configure-flags))))
     (synopsis "Racket CS implementation")
     (description "The Racket CS implementation, which uses ``Chez Scheme'' as
 its core compiler and runtime system, has been the default Racket VM
 implementation since Racket 8.0.  It performs better than the Racket BC
-implementation for most programs.
+implementation for most programs.  On systems for which Racket CS cannot
+generate machine code, this package uses a variant of its ``portable
+bytecode'' backend specialized for word size and endianness.
 
 Using the Racket VM packages directly is not recommended: instead, install the
 @code{racket-minimal} or @code{racket} packages.")
@@ -486,7 +554,7 @@ used to build the name of the resulting store item."
     (inputs
      (list openssl
            sqlite
-           (racket-vm-for-system)
+           racket-vm-cs
            (racket-packages-origin
             "base" %racket-origin
             '(("base" "pkgs/base")
@@ -604,7 +672,7 @@ DrRacket IDE, are not included.")
       unixodbc
       libedit ;; TODO reconsider in light of expeditor and readline-gpl
       racket-minimal ;; <-- TODO non-tethered layer
-      (racket-vm-for-system)
+      racket-vm-cs
       (simple-racket-origin
        "2d" (base32 "0fb5v6058ls08xw3zbmqyr2ym0psm119gl9ffgmhm9w8rs9i4dq7")
        '("2d" "2d-doc" "2d-lib"))
@@ -636,25 +704,25 @@ DrRacket IDE, are not included.")
        "contract-profile" (base32 "1xm2z8g0dpv5d9h2sg680vx1a8ix9gbsdpxxb8qv1w7akp73paj3")
        '(("contract-profile" ".")))
       (simple-racket-origin
-       "data" (base32 "10iabgrk9alaggvksnyb0hdq7f1p30pq6pq2bcakvhzpxwiv1f55")
+       "data" (base32 "08sj4m0g0cp7gwb0nq90m770f0c21b7ydif7nljc8rxmcdprfisc")
        '("data" "data-doc" "data-enumerate-lib" "data-lib"))
       (simple-racket-origin
        "datalog" (base32 "0nf6cy4djpyhfvgpa6yn72apbz9s83gp0qg95pzjd0az4v6qwq1s")
        '(("datalog" ".")))
       (simple-racket-origin
-       "db" (base32 "1n02ja0yj3mjjhmz0yv04yfhyvrsznbljn8bjviyfxnm4xf9rcc5")
+       "db" (base32 "0jzsbfcdm3xj0g8xxw3ky2swrhiqqsq2aqa3r08m641dc981dmjq")
        '("db" "db-doc" "db-lib"))
       (simple-racket-origin
-       "deinprogramm" (base32 "0g8flr1qg3bcyhdinqhs4w7dyisaqyailbxrjgd2a7zlqmdyicfr")
+       "deinprogramm" (base32 "16ncs3ms3mmdavbk0mkhm2qi62vyyif9cch3sn1y64pij489x34v")
        '("deinprogramm" "deinprogramm-signature"))
       (simple-racket-origin
        "distributed-places" (base32 "1dajpkj9balqcpv6cdk9hwjz592h1vq8rrx5vncariiac4vbdpa0")
        '("distributed-places" "distributed-places-doc" "distributed-places-lib"))
       (simple-racket-origin
-       "draw" (base32 "1fpk85rs2crd63bxnmwj2pysisd62pxcqaip01si67dv1ri8ff92")
+       "draw" (base32 "00rq5y4ba6z1d6jh76kl8rwpxrlqqp81a875zyhk3k81i42635sm")
        '("draw" "draw-doc" "draw-lib"))
       (simple-racket-origin
-       "drracket" (base32 "0dipnz92c63zxys9z1kl5215rm7arc35g9r8bs8ivp96p75mljnz")
+       "drracket" (base32 "05d7wssi0ry13alb5hl3llpsg30dd0jhyfv5nb1nmg189fn42q62")
        '("drracket"
          "drracket-plugin-lib"
          "drracket-tool"
@@ -671,7 +739,7 @@ DrRacket IDE, are not included.")
        "eopl" (base32 "1fmiixj6rxsgzwvgva8lvrvv0gl49v2405mp3s0i7ipis5c4n27s")
        '(("eopl" ".")))
       (simple-racket-origin
-       "errortrace" (base32 "14m7rhaxngj36070iw15am434hm438pfgmwjfsiqhsglz4pcxhip")
+       "errortrace" (base32 "0r5630bb2d6hk0fbi95fmyfja54nnwdfcj2zjba124pp6xkjyavx")
        '("errortrace" "errortrace-doc" "errortrace-lib"))
       (simple-racket-origin
        "expeditor" (base32 "0mjfwb4wzwsg5xj3k6cmik0va432n56rp5h7rxx1c2yy3prh1j7q")
@@ -688,13 +756,13 @@ DrRacket IDE, are not included.")
        "games" (base32 "0kpn3izlx1ccd0pj0dnvmnrhny51b85xy418a7psj70lz8j8415d")
        '(("games" ".")))
       (simple-racket-origin
-       "gui" (base32 "0r3ck4gxdhnzr1a1fi0f1i7gwfip7akq10qgcxza66pp57hnl0wx")
+       "gui" (base32 "18pcnx3wi8f32i2frm8bn9pi08n4y3c5jgqs4gy21w6f84dv401w")
        '("gui" "gui-doc" "gui-lib" "tex-table"))
       (simple-racket-origin
        "gui-pkg-manager" (base32 "1ji9448d723nklqvycwdswj0ni28sabrncag14f9mx47did5myb5")
        '("gui-pkg-manager-lib"))
       (simple-racket-origin
-       "htdp" (base32 "19xqixrqbwdxph17w9jga19008j88harb5wgml4hpqj3x0apx9g3")
+       "htdp" (base32 "173xy6ks55npvwn6cykjs41s9qfb70hc2gfjiqvw91hdsbjykwir")
        '("htdp" "htdp-doc" "htdp-lib"))
       (simple-racket-origin
        "html" (base32 "18n1jnjgzfknc8nv8dppi85nb8q08gqdwkg6hfjk08x0p00anx2x")
@@ -718,7 +786,7 @@ DrRacket IDE, are not included.")
        "make" (base32 "10852fj30bz5r46c3d99s37fkgy5yh44gb01j29sf3kxnhi0g2sa")
        '(("make" ".")))
       (simple-racket-origin
-       "math" (base32 "02sqbnvxvmvslk33b44fx4v93zafcvhva0cx8z21jqbl5wp217ac")
+       "math" (base32 "00ld38in5jfshs1q4zf07w84cyv4yjr40kmw30pyd5wqgs2zq9ai")
        '("math" "math-doc" "math-lib"))
       (simple-racket-origin
        "mysterx" (base32 "11p9jzrafw0hizhl0cs4sxx7rv281185q8hryic2rpk0kzjdyr48")
@@ -753,16 +821,16 @@ DrRacket IDE, are not included.")
           (git-file-name "stamourv-optimization-coach" %racket-version)))
        '(("optimization-coach" ".")))
       (simple-racket-origin
-       "option-contract" (base32 "026b7n5l0c3024nymshz8zp1yhn493rdzgpflzfd52hj7awafqhk")
+       "option-contract" (base32 "07cncg9pi15cm19k7rzv54vx83wq7y42i2m6bgzaqja1h8vnj2ww")
        '("option-contract" "option-contract-doc" "option-contract-lib"))
       (simple-racket-origin
-       "parser-tools" (base32 "08pvz4zramirzm3j64hbhjm0mmh5zfy37iv4s3vmq0rj49cr8fl3")
+       "parser-tools" (base32 "04ycihliikh0c47ivp09gayxiql9d9wpl216czic19cj6f7rmcnj")
        '("parser-tools" "parser-tools-doc" "parser-tools-lib"))
       (simple-racket-origin
        "pconvert" (base32 "00czi0p399mmyrvxyrs5kniizpkqfxyz2ncxqi2jy79a7wk79pb1")
        '("pconvert-lib"))
       (simple-racket-origin
-       "pict" (base32 "0v7a3l77swsbh80mnb9rakdwgw7s66ji0mall7qcqfwyg1b4zmlv")
+       "pict" (base32 "1n0v7kynkiin1v8igs9m8k8vfwjn5cswanhq2imp1pxzjvdyq6sx")
        '("pict" "pict-doc" "pict-lib"))
       (simple-racket-origin
        "pict-snip" (base32 "081nwiy4a0n4f7xws16hqbhf0j3kz5alizndi3nnyr3chm4kng6x")
@@ -816,7 +884,7 @@ DrRacket IDE, are not included.")
        "racklog" (base32 "0fbq0fpfb3l6h7h772dvkmlzlk2dnq5f8296xx1qxhhwypibqzr9")
        '(("racklog" ".")))
       (simple-racket-origin
-       "rackunit" (base32 "0vfwcddzrgrdv5awjka7m0jzqhqvfc5wlkih83a670y96496a83n")
+       "rackunit" (base32 "1gpz9sgnm8hrc0cb3rii0wzbcwp9mgy5k1amnxidy7gyzl7prn81")
        '("rackunit"
          "rackunit-doc"
          "rackunit-gui"
@@ -829,10 +897,10 @@ DrRacket IDE, are not included.")
        "readline" (base32 "13kbcn2wchv82d709mw3r8n37bk8iwq0y4kpvm9dbzx0w2pxkfwn")
        '("readline" "readline-doc" "readline-lib"))
       (simple-racket-origin
-       "realm" (base32 "0hxcgla08iack54j8v40fj51811chpy66ym2zq76zb52c7kzn0hi")
+       "realm" (base32 "0rlvwyd6rpyl0zda4a5p8dp346fvqzc8555dgfnrhliymkxb6x4g")
        '(("realm" ".")))
       (simple-racket-origin
-       "redex" (base32 "18rn8ddsqh1s7hdlb2cb9wxln63bz0wysjssaf9v92r712xnnv8i")
+       "redex" (base32 "06dhyqmin0qdm6b6sdvgzpy3pa4svlw42ld9k2h1dxcr852czil7")
        '("redex"
          "redex-benchmark"
          "redex-doc"
@@ -847,7 +915,7 @@ DrRacket IDE, are not included.")
        "scheme-lib" (base32 "0pcf0y8rp4qyjhaz5ww5sr5diq0wpcdfrrnask7zapyklzx1jx8x")
        '(("scheme-lib" ".")))
       (simple-racket-origin
-       "scribble" (base32 "0fbb7xgz95y90247hfc1a19v7ry8m6blvv4y8irdgzhjvik70zb3")
+       "scribble" (base32 "0a11kvcnzp04mp4xxq68rkl09jv00hv81k2nmwkmwpfx9b2acvd3")
        '("scribble"
          "scribble-doc"
          "scribble-html-lib"
@@ -879,7 +947,7 @@ DrRacket IDE, are not included.")
        "snip" (base32 "01r9wc5xr3q3n4yyif6j0a37rgdzmpslxn05k13ksik73b3wj6hj")
        '("snip" "snip-lib"))
       (simple-racket-origin
-       "typed-racket" (base32 "0z6bagp6qiw0i3slhvq035y5hqgq664xw3bdlvdayad0bgbg0mdc")
+       "typed-racket" (base32 "03wsz647fi58brbg33fw1xavp100gzfvngdy8bk7bdc0jfg8a18l")
        '("source-syntax"
          "typed-racket"
          "typed-racket-compatibility"
@@ -890,13 +958,13 @@ DrRacket IDE, are not included.")
        "srfi" (base32 "0aqbcdv2dfc2xnk0h6zfi56p7bpwqji8s88qds3d03hhh9k28gvn")
        '("srfi" "srfi-doc" "srfi-lib" "srfi-lite-lib"))
       (simple-racket-origin
-       "string-constants" (base32 "0b1ji31pv6bjb0a2bh9sqp5abvf91gn2rai8r4c4nkar1fzfwfac")
+       "string-constants" (base32 "1kg3vxq2hcd0vl76brgpzdwbrb65a4nrrkc6hj4az5lfbbdvqz47")
        '("string-constants" "string-constants-doc" "string-constants-lib"))
       (simple-racket-origin
-       "swindle" (base32 "164gdsphjzdl2vv7zxz7dfk9jwax8njpmim6sidm8qz8a8589y67")
+       "swindle" (base32 "03n9ymjhrw45h7hxkw4nq8nidnvs9mfzb4228s2cjfaqbgqxvsyb")
        '(("swindle" ".")))
       (simple-racket-origin
-       "syntax-color" (base32 "17lb2403ymz6sflw4vs3gsh2y7kgsf0gn8sncsxjhi16rpj3a9vm")
+       "syntax-color" (base32 "02dcd4yvdnw35m3srvfd43csxffxw3j4rk6zi379b8dsvbbrjyq1")
        '("syntax-color" "syntax-color-doc" "syntax-color-lib"))
       (simple-racket-origin
        "trace" (base32 "070ihla5j796hdarn5wxdwn4xj0xnkm50shgh49jy994mribvhia")
@@ -905,7 +973,7 @@ DrRacket IDE, are not included.")
        "unix-socket" (base32 "02dfwas5ynbpyz74w9kwb4wgb37y5wys7svrlmir8k0n9ph9vq0y")
        '("unix-socket" "unix-socket-doc" "unix-socket-lib"))
       (simple-racket-origin
-       "web-server" (base32 "1g4x79ym3mgxv4f3z3z84j12355pf44pjlzlb7f0h6r0i7p0cbjd")
+       "web-server" (base32 "104lnzjykkd6f3gxpv7p14l94if6zac33nmb4sj5jxmd6r3fwcpf")
        '("web-server" "web-server-doc" "web-server-lib"))
       (simple-racket-origin
        "wxme" (base32 "1qp5gr9gqsakiq3alw6m4yyv5vw4i3hp4y4nhq8vl2nkjmirvn0b")

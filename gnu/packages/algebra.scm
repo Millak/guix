@@ -74,7 +74,8 @@
   #:use-module (guix hg-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
-  #:use-module (guix utils))
+  #:use-module (guix utils)
+  #:use-module (ice-9 match))
 
 
 (define-public mpfrcx
@@ -325,7 +326,7 @@ precision.")
 (define-public giac
   (package
     (name "giac")
-    (version "1.9.0-19")
+    (version "1.9.0-21")
     (source
      (origin
        (method url-fetch)
@@ -337,7 +338,7 @@ precision.")
                            "~parisse/debian/dists/stable/main/source/"
                            "giac_" version ".tar.gz"))
        (sha256
-        (base32 "1zl3wpw4mwsc2zm2mnxnajxql0df68mlfyivbkk4i300wjfqkdvb"))))
+        (base32 "1zh7bf0ag4vbyyj5n8lbvy2ivp0kshms40ra5lq1ff035rpx230j"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1009,10 +1010,39 @@ extends it by a set of algebraic capabilities.")
                   #t))))
     (build-system cmake-build-system)
     (arguments
-     '(;; Turn off debugging symbols to save space.
+     `(;; Turn off debugging symbols to save space.
        #:build-type "Release"
 
+       #:modules ((ice-9 match)
+                  (guix build utils)
+                  (guix build cmake-build-system))
+
        #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'disable-some-tests
+                    ;; Not all platforms are well supported by the test suite.
+                    (lambda _
+                      ,@(match (%current-system)
+                          ("i686-linux"
+                           `((substitute* "test/CMakeLists.txt"
+                               ((".*packetmath.*") ""))))
+                          ("aarch64-linux"
+                           `((substitute* "test/CMakeLists.txt"
+                               ((".*array_cwise.*") "")
+                               ((".*vectorization_logic.*") ""))))
+                          ("armhf-linux"
+                           `((substitute* "test/CMakeLists.txt"
+                               ((".*geo_quaternion.*") "")
+                               ((".*jacobisvd.*") "")
+                               ((".*packetmath.*") "")
+                               ((".*prec_inverse.*") "")
+                               ((".*qr_colpivoting.*") "")
+                               ((".*vectorization_logic.*") ""))))
+                          ("riscv64-linux"
+                           `((substitute* "test/CMakeLists.txt"
+                               ((".*array_cwise.*") "")
+                               ((".*geo_quaternion.*") ""))))
+                          (_
+                            '((display "No tests to disable on this architecture.\n"))))))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (let* ((cores  (parallel-job-count))
@@ -1101,6 +1131,11 @@ features, and more.")
                     (substitute* "unsupported/CMakeLists.txt"
                       (("add_subdirectory\\(test.*")
                        "# Do not build the tests for unsupported features.\n"))))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments eigen)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (delete 'disable-some-tests)))))
       (native-inputs
        (list gcc-7)))))
 
@@ -1129,7 +1164,12 @@ features, and more.")
                  '(begin
                     (substitute* "unsupported/CMakeLists.txt"
                       (("add_subdirectory\\(test.*")
-                       "# Do not build the tests for unsupported features.\n")))))))))
+                       "# Do not build the tests for unsupported features.\n"))))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments eigen)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (delete 'disable-some-tests))))))))
 
 (define-public xtensor
   (package

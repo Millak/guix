@@ -53,7 +53,6 @@
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages mono)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
@@ -656,43 +655,3 @@ interface.")
 
 (define-public guile3.0-sdl2
   (deprecated-package "guile3.0-sdl2" guile-sdl2))
-
-(define-public sdl2-cs
-  (let ((commit "1a3556441e1394eb0b5d46aeb514b8d1090b93f8"))
-    (package
-      (name "sdl2-cs")
-      (version (git-version "B1" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/flibitijibibo/SDL2-CS")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "007mzkqr9nmvfrvvhs2r6cm36lzgsww24kwshsz9c4fd97f9qk58"))))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:tests? #f  ; No tests.
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'build
-             (lambda _
-               (invoke "make" "release")))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (install-file "bin/Release/SDL2-CS.dll" (string-append out "/lib"))
-                 #t))))))
-      (native-inputs
-       (list mono))
-      (inputs
-       (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))
-      (home-page "https://dthompson.us/projects/guile-sdl2.html")
-      (synopsis "C# wrapper for SDL2")
-      (description
-       "SDL2-CS provides C# bindings for the SDL2 C shared library.
-The C# wrapper was written to be used for FNA's platform support.  However, this
-is written in a way that can be used for any general C# application.")
-      (license license:zlib))))

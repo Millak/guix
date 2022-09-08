@@ -3621,7 +3621,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
 (define-public opendht
   (package
     (name "opendht")
-    (version "2.4.9")
+    (version "2.4.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3630,7 +3630,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "150yxlhn8ykhck7gr1i2bppbqpfyhk0cscn5z7vyn94y5fnqkxsb"))))
+                "1kcc9vmi4swvahq2gikflgba9xfmix80dr9wa3v6xcj1ba2fjd6s"))))
     (outputs '("out" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments

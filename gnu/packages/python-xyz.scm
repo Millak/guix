@@ -29,7 +29,7 @@
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017, 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016, 2017, 2018, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -2574,20 +2574,25 @@ downloaded, or download a strip for a particular date or index, if possible.")
 (define-public python-et-xmlfile
   (package
     (name "python-et-xmlfile")
-    (version "1.0.1")
+    (version "1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "et_xmlfile" version))
+       ;; Use a checkout because the PyPI archive does not contain tests.
+       (method hg-fetch)
+       (uri (hg-reference
+             (url "https://foss.heptapod.net/openpyxl/et_xmlfile")
+             (changeset version)))
+       (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32
-         "0nrkhcb6jdrlb6pwkvd4rycw34y3s931hjf409ij9xkjsli9fkb1"))))
+        (base32 "09r8rjc5bhkqrm5c4n9jrlvad8vrvbyswl9g0wrc1qc7nzh9mpw7"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest python-lxml))   ;used for the tests
     (home-page "https://bitbucket.org/openpyxl/et_xmlfile")
@@ -3544,20 +3549,22 @@ version numbers.")
 (define-public python-jdcal
   (package
     (name "python-jdcal")
-    (version "1.4")
+    (version "1.4.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "jdcal" version))
         (sha256
           (base32
-            "1ja6j2xq97bsl6rv09mhdx7n0xnrsfx0mj5xqza0mxghqmkm02pa"))))
+            "1j6g19jf21qprjsr8h0r7nsbss366gy8j9izq8cz53gbjvh74a27"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/phn/jdcal")
@@ -7486,7 +7493,7 @@ a front-end for C compilers or analysis tools.")
 (define-public python-xlsxwriter
   (package
     (name "python-xlsxwriter")
-    (version "1.3.9")
+    (version "3.0.3")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -7496,7 +7503,7 @@ a front-end for C compilers or analysis tools.")
              (commit (string-append "RELEASE_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04idf331rp0iyhlnh7268jmim8ydw4jjb81hr5rh548sqnq4bhpl"))))
+        (base32 "1lr7mmik6r4zns069i4zfx1cnwhz6snmlh2zsiry0cwx8cv33wpm"))))
     (build-system python-build-system)
     (home-page "https://github.com/jmcnamara/XlsxWriter")
     (synopsis "Python module for creating Excel XLSX files")
@@ -7683,7 +7690,7 @@ support for Python 3 and PyPy.  It is based on cffi.")
 (define-public python-cairocffi
   (package
     (name "python-cairocffi")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        ;; The PyPI archive does not include the documentation, so use Git.
@@ -7694,7 +7701,7 @@ support for Python 3 and PyPy.  It is based on cffi.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ypw0c2lr43acn57hbmckk183zq4h477j7p4ig2zjvw0mcpvia50"))))
+         "0lylyxyyd8csjhn5kxwzrcr6ick6pvvm1wclpmb5ni28jznxn7lb"))))
     (build-system python-build-system)
     (outputs '("out" "doc"))
     (inputs
@@ -9993,13 +10000,13 @@ function signatures.")
 (define-public python-sympy
   (package
     (name "python-sympy")
-    (version "1.10.1")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sympy" version))
        (sha256
-        (base32 "0yvqb2fhrm81skl8s9znbkkjfb1a09n64qqlc1r225cyvzzywfar"))))
+        (base32 "0n46x1rfy8c2a9za3yp2va5icigxj805f9fmiq8c1drwwvf808z3"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -11247,13 +11254,13 @@ It has a flexible system of @samp{authorizers} able to manage both
 (define-public python-fs
   (package
     (name "python-fs")
-    (version "2.4.14")
+    (version "2.4.16")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fs" version))
        (sha256
-        (base32 "0v5kqzi0vd8ar4j4qf5440nzwa9dcagpxb3q6k0cln4cqlmxqmcm"))))
+        (base32 "04ykd7q49qgv13hl2n71lzihs2c9099r50lmd85vgx0k2bawg5xf"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -22547,7 +22554,7 @@ Let's Encrypt.")
 (define-public python-cfgv
   (package
     (name "python-cfgv")
-    (version "3.1.0")
+    (version "3.3.1")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -22557,16 +22564,17 @@ Let's Encrypt.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vvkkqw92sak4b28bpscpppq483amy52ch2yqy1i2m23q7xjkabx"))))
+        (base32 "1pci97cmn3v45sfch9s3lshidrl0309ls9byidic0l8drkwnkwcj"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-covdefaults python-coverage python-pytest))
+     (list python-pytest))
     (home-page "https://github.com/asottile/cfgv")
     (synopsis "Configuration validation library")
     (description
@@ -30715,3 +30723,40 @@ platform using the ActivityPub protocol.")
      "@code{python-lief} is a cross platform library which can parse, modify
 and abstract ELF, PE and MachO formats.")
     (license license:asl2.0)))
+
+(define-public python-pymonad
+  (package
+    (name "python-pymonad")
+    (version "2.4.0")
+    ;; The tests are incomplete in the PyPI archive.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jasondelaat/pymonad")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ci1mpydldiyg9qv6d19ljhfh7wxlrl2k4mlvqd9bm7dqvpdjsx7"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "./run_tests.sh")))))))
+    (home-page "https://github.com/jasondelaat/pymonad")
+    (synopsis "Monadic style functional programming for Python")
+    (description "@code{python-pymonad} implements data structures typically
+available in purely functional or functional first programming languages such
+as Haskell and F#.  Included are
+
+@itemize
+@item Monad and Monoid data types with several common monads such as Maybe and
+State
+@item Useful tools such as the @code{@@curry} decorator for defining curried
+functions
+@item Type annotations to help ensure correct usage
+@end itemize")
+    (license license:bsd-3)))

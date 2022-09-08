@@ -8741,3 +8741,36 @@ SHA384, SHA512, Blake2b, Blake2s and RIPEMD160.")
     (description "This package allows you to produce, from a set of
 bibliography files in BibTeX format, a bibliography in HTML format.")
     (license license:gpl2)))
+
+(define-public ocaml-guile
+  (package
+    (name "ocaml-guile")
+    (version "1.0")
+    (home-page "https://github.com/gopiandcode/guile-ocaml")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0yxdkrhrrbwvay5sn0p26rh3f11876k6kdharmpi4afxknml74ql"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:tests? #f)) ; no tests
+    (propagated-inputs
+     (list ocaml-sexplib
+           ocaml-ctypes
+           ocaml-stdio
+           ocaml-odoc))
+    (inputs (list guile-3.0 libffi))
+    (native-inputs
+     (list ocaml-odoc
+           pkg-config))
+    (synopsis "Bindings to GNU Guile Scheme for OCaml")
+    (description
+     "The OCaml guile library provides high-level OCaml bindings to GNU Guile
+3.0, supporting easy interop between OCaml and GNU Guile Scheme.")
+    (license license:gpl3+)))

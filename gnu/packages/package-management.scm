@@ -63,6 +63,7 @@
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages file)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -726,16 +727,7 @@ GTK icon cache for instance.")))
 module} command.  The @command{guix module create} sub-command creates
 @dfn{environment modules}, allowing you to manipulate software environments
 with the @command{module} command commonly found on @acronym{HPC,
-high-performance computing} clusters.
-
-To use this extension, set the @env{GUIX_EXTENSIONS_PATH} environment
-variable, along these lines:
-
-@example
-export GUIX_EXTENSIONS_PATH=\"$HOME/.guix-profile/share/guix/extensions\"
-@end example
-
-Replace @code{$HOME/.guix-profile} with the appropriate profile.")
+high-performance computing} clusters.")
     (license license:gpl3+)))
 
 
@@ -1374,8 +1366,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "cc884efa7ee8a481cd3dae1b93d27454ac8dfcd2")
-        (revision "59"))
+  (let ((commit "31b3ab65da2d9a02f0453d12a81816b25c8ad75d")
+        (revision "60"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1386,7 +1378,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "03yz8if282mvkgqn0pxlqj0h3nyjfag7a835v9s98nkqfbj1ixcl"))
+                  "1hh1qy3xqpani3zfbm3wi4zw7f8cnbfjk4q1z7ynailadlfrkblk"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1621,6 +1613,7 @@ This package just includes the agent component.")))
                   (ice-9 rdelim)
                   (guix build utils)
                   (guix build gnu-build-system))
+       #:parallel-tests? #f         ;kernels.scm frequently breaks in parallel
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'sed-kernel-json
@@ -1908,14 +1901,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.12.7")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "05lkpbjiwp69q924i1jfyk5frcqbdbv9kyzbqwm2hy723i9jmdbd"))
+        (base32 "05bqy9kwmaj32y7f94fydcz3k63bsgn4mbcp4pglv8hffxrnj9wf"))
        (patches
         (search-patches "flatpak-fix-path.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
@@ -1984,8 +1977,10 @@ cp -r /tmp/locale/*/en_US.*")))
            socat
            which))
     (inputs
-     (list appstream-glib
+     (list appstream
+           appstream-glib
            bubblewrap
+           curl
            dconf
            fuse
            gdk-pixbuf

@@ -3193,6 +3193,31 @@ the GNOME desktop environment.")
                                 (variable "GLADE_MODULE_SEARCH_PATH")
                                 (files '("lib/glade/modules")))))))
 
+(define-public blueprint-compiler
+  (let ((commit "87cedc2c7e48b01dc1b07aef937e2fe02111b18c"))
+    (package
+      (name "blueprint-compiler")
+      (version "0.2.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://gitlab.gnome.org/jwestman/blueprint-compiler")
+                      (commit commit)))
+                (file-name (string-append name "-" commit "-checkout"))
+                (sha256
+                 (base32
+                  "1mrj5dyjf5d325yc28fpph588qfsz6bm2nx5nnsgcv02bagplxid"))))
+      (build-system meson-build-system)
+      (native-inputs (list gobject-introspection gtk))
+      (inputs (list python))
+      (synopsis "Template markup language")
+      (description
+       "Blueprint is a markup language for GTK user interfaces.  Internally, it
+compiles to GTKBuilder XML.")
+      (home-page "https://gitlab.gnome.org/jwestman/blueprint-compiler")
+      (license license:lgpl3+))))
+
 (define-public cambalache
   (package
    (name "cambalache")
@@ -7033,7 +7058,7 @@ metadata in photo and video files of various formats.")
 (define-public shotwell
   (package
     (name "shotwell")
-    (version "0.30.12")
+    (version "0.30.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/shotwell/"
@@ -7041,7 +7066,7 @@ metadata in photo and video files of various formats.")
                                   "shotwell-" version ".tar.xz"))
               (sha256
                (base32
-                "1h5crjq59lqi8f8mdkadzi8pc3i9i2ik4lsx2nrhzq486fzdfhw6"))))
+                "1yhqfmz49qkls4i6xaznm5ybwzv19jxsqjdic60wn0ykvbxjr269"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -10650,7 +10675,7 @@ photo-booth-like software, such as Cheese.")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/" name "-"
+                                  (version-major version) "/" name "-"
                                   version ".tar.xz"))
               (sha256
                (base32
@@ -12353,7 +12378,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "0.40.0")
+    (version "0.41.0")
     (source
      (origin
        (method git-fetch)
@@ -12363,7 +12388,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "12l6qks4kwi75ss61yx1f515nb30d987qw3yhi4a36w5xz721p5z"))))
+         "17r059srxrx26w40swy47pdpyigyjdczp8550g4rfh86qs3ld4il"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t

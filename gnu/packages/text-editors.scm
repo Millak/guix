@@ -6,7 +6,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2014 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.org>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019, 2020, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020-2022 Marius Bakke <marius@gnu.org>
@@ -494,7 +494,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
 (define-public mg
   (package
     (name "mg")
-    (version "20210609")
+    (version "20220614")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -503,7 +503,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04c2vqxg31mk15cfrhzrivykis8fmf0m1d8h1qdjdmlfxd4qwaqf"))
+                "145qk4bzys4igv98645vikswv9hqym46chh6xb9d82ihsvjq1wjk"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (substitute* "GNUmakefile"
@@ -898,14 +898,14 @@ Octave.  TeXmacs is completely extensible via Guile.")
 (define-public scintilla
   (package
     (name "scintilla")
-    (version "5.2.4")
+    (version "5.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (let ((v (apply string-append (string-split version #\.))))
               (string-append "https://www.scintilla.org/scintilla" v ".tgz")))
        (sha256
-        (base32 "0rncbac9r9ahkxgmv7faj4dms4wy0ik2axmb0lp1ffx4r6419vsa"))))
+        (base32 "0ys0836qjljzqk0wj6y9pnmrcw7ydzn8c06rwbawjk74dpsn0lpx"))))
     (build-system gnu-build-system)
     (arguments
      (list

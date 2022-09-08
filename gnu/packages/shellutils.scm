@@ -38,6 +38,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
@@ -144,6 +145,30 @@ chart.")
      "This command-line filter program draws ASCII-art boxes around your input
 text.")
     (license license:gpl2)))
+
+(define-public zsh-autopair
+  (package
+    (name "zsh-autopair")
+    (version "1.0")
+    (home-page "https://github.com/hlissner/zsh-autopair")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hlissner/zsh-autopair.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h0vm2dgrmb8i2pvsgis3lshc5b0ad846836m62y8h3rdb3zmpy1"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("autopair.zsh"
+                         "/share/zsh/plugins/zsh-autopair/zsh-autopair.zsh"))))
+    (synopsis "Auto-close and delete matching delimiters in Zsh")
+    (description
+     "This Zsh plugin auto-closes, deletes, and skips over matching delimiters
+in Zsh intelligently.")
+    (license license:expat)))
 
 (define-public zsh-autosuggestions
   (package

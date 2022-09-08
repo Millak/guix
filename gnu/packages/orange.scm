@@ -137,7 +137,7 @@ GUI based workflow.  It is primarily used in the Orange framework.")
              (let ((out (assoc-ref outputs "out")))
                (wrap-program (string-append out "/bin/orange-canvas")
                  `("QT_PLUGIN_PATH" prefix
-                   ,(list (string-append (assoc-ref inputs "qtsvg-5")
+                   ,(list (string-append (assoc-ref inputs "qtsvg")
                                          "/lib/qt5/plugins/"))))))))))
     (native-inputs
      (list python-cython))

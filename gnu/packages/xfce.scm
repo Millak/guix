@@ -1246,7 +1246,7 @@ several different time zones.")
 (define-public xfce4-notifyd
   (package
     (name "xfce4-notifyd")
-    (version "0.6.3")
+    (version "0.6.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1254,7 +1254,7 @@ several different time zones.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "17w5j3cwxlza7p3clvm7sp3vfacyi4dbn2dy58ph8q6lmsaziaan"))))
+                "1xi0j4qk8hhcd3xj4wvzs170n2010z0bv8w1mm53g5gqj7q7ikhf"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool pkg-config))

@@ -1,0 +1,299 @@
+From c58cdb2b7fe72685f97dee5872336f32a40fa04a Mon Sep 17 00:00:00 2001
+From: DRC <information@virtualgl.org>
+Date: Tue, 23 Aug 2022 12:02:12 -0500
+Subject: [PATCH] Improve support for distribution-specific builds
+
+- Rename the DRI_DRIVER_PATH and SERVER_MISC_CONFIG_PATH CMake variables
+  to XORG_DRI_DRIVER_PATH and XORG_REGISTRY_PATH, respectively.
+
+- Introduce a new CMake variable (XORG_FONT_PATH) that allows the X.org
+  font path to be set statically for a particular build.
+
+- Remove the unused RGB_DB macro definition.  (That macro hasn't been
+  used since TurboVNC 1.2.x.)
+
+- Introduce a new CMake variable (TVNC_STATIC_XORG_PATHS) that forces
+  Xvnc and vncserver to honor the paths set using the
+  XKB_BASE_DIRECTORY, XKB_BIN_DIRECTORY, XORG_DRI_DRIVER_PATH,
+  XORG_FONT_PATH, and XORG_REGISTRY_PATH CMake variables rather than
+  trying to determine the appropriate values of those paths at run time.
+  If enabled, this option disables the TurboVNC-specific -dridir,
+  -registrydir, and -xkbcompdir Xvnc command-line arguments.
+---
+ BUILDING.md                                   | 25 +++++++++++++++++++
+ unix/CMakeLists.txt                           |  9 +++++++
+ unix/Xvnc/programs/Xserver/dix/CMakeLists.txt | 20 +++++++++------
+ unix/Xvnc/programs/Xserver/dix/registry.c     |  2 +-
+ unix/Xvnc/programs/Xserver/glx/CMakeLists.txt | 12 ++++-----
+ unix/Xvnc/programs/Xserver/glx/glxdricommon.c |  2 +-
+ unix/Xvnc/programs/Xserver/hw/vnc/init.c      | 10 +++++++-
+ unix/Xvnc/programs/Xserver/xkb/xkbInit.c      |  2 +-
+ unix/vncserver.in                             | 13 +++++++---
+ 9 files changed, 73 insertions(+), 22 deletions(-)
+
+diff --git a/BUILDING.md b/BUILDING.md
+index 99f190b2c..b11665f95 100644
+--- a/BUILDING.md
++++ b/BUILDING.md
+@@ -181,6 +181,31 @@ directly with libssl and libcrypto by adding `-DTVNC_DLOPENSSL=0` to the CMake
+ command line.
+ 
+ 
++### Distribution-Specific Build
++
++By default, the build system builds TurboVNC binaries that can run on multiple
++O/S distributions.  This involves building some of the X.org dependencies,
++which are included in the TurboVNC source tree, and statically linking TurboVNC
++with those and other dependencies.  Distribution-specific dynamically-linked
++TurboVNC binaries can instead be built by changing the values of the following
++CMake variables:
++
++- `TJPEG_INCLUDE_DIR`
++- `TJPEG_LIBRARY`
++- `TVNC_DLOPENSSL`
++- `TVNC_STATIC_XORG_PATHS`
++- `TVNC_SYSTEMLIBS`
++- `TVNC_SYSTEMX11`
++- `XKB_BASE_DIRECTORY`
++- `XKB_BIN_DIRECTORY`
++- `XORG_DRI_DRIVER_PATH`
++- `XORG_FONT_PATH`
++- `XORG_REGISTRY_PATH`
++
++Use `ccmake` or `cmake-gui`, as described below, to view documentation for
++those variables.
++
++
+ Build Recipes
+ -------------
+ 
+diff --git a/unix/CMakeLists.txt b/unix/CMakeLists.txt
+index 1db927c94..6ef830a8b 100644
+--- a/unix/CMakeLists.txt
++++ b/unix/CMakeLists.txt
+@@ -74,6 +74,15 @@ option(TVNC_SYSTEMLIBS
+ boolean_number(TVNC_SYSTEMLIBS)
+ report_option(TVNC_SYSTEMLIBS "System zlib/bzip2/FreeType")
+ 
++option(TVNC_STATIC_XORG_PATHS
++	"Force vncserver and Xvnc to use the XKB base directory, XKB binary directory, X.org DRI driver path, X.org font path, and X.org registry path specified in the XKB_BASE_DIRECTORY, XKB_BIN_DIRECTORY, XORG_DRI_DRIVER_PATH, XORG_FONT_PATH, and XORG_REGISTRY_PATH CMake variables rather than detecting the appropriate paths at run time"
++	OFF)
++boolean_number(TVNC_STATIC_XORG_PATHS)
++report_option(TVNC_STATIC_XORG_PATHS "Static X.org paths")
++if(TVNC_STATIC_XORG_PATHS)
++	add_definitions(-DTURBOVNC_STATIC_XORG_PATHS)
++endif()
++
+ if(NOT TVNC_SYSTEMLIBS)
+ 	add_subdirectory(${CMAKE_SOURCE_DIR}/common ${CMAKE_BINARY_DIR}/common)
+ endif()
+diff --git a/unix/Xvnc/programs/Xserver/dix/CMakeLists.txt b/unix/Xvnc/programs/Xserver/dix/CMakeLists.txt
+index 784fc48d2..19a7b28c4 100644
+--- a/unix/Xvnc/programs/Xserver/dix/CMakeLists.txt
++++ b/unix/Xvnc/programs/Xserver/dix/CMakeLists.txt
+@@ -1,18 +1,22 @@
+ include_directories(../Xi ../composite ../damageext ../mi ../miext/sync
+ 	../randr ../render ../xfixes)
+ 
+-add_definitions(-DRGB_DB=\"/usr/share/X11/rgb\"
+-	-DCOMPILEDDEFAULTFONTPATH=\"/usr/share/X11/fonts/misc/,/usr/share/X11/fonts/Type1/,/usr/share/X11/fonts/75dpi/,/usr/share/X11/fonts/100dpi/\")
++set(DEFAULT_XORG_FONT_PATH
++	"/usr/share/X11/fonts/misc/,/usr/share/X11/fonts/Type1/,/usr/share/X11/fonts/75dpi/,/usr/share/X11/fonts/100dpi/")
++set(XORG_FONT_PATH ${DEFAULT_XORG_FONT_PATH} CACHE STRING
++	"X.org font path (default: ${DEFAULT_XORG_FONT_PATH})")
++message(STATUS "XORG_FONT_PATH = ${XORG_FONT_PATH}")
++add_definitions(-DCOMPILEDDEFAULTFONTPATH=\"${XORG_FONT_PATH}\")
+ 
+ if(BITS EQUAL 64)
+-	set(DEFAULT_SERVER_MISC_CONFIG_PATH "/usr/lib64/xorg")
++	set(DEFAULT_XORG_REGISTRY_PATH "/usr/lib64/xorg")
+ else()
+-	set(DEFAULT_SERVER_MISC_CONFIG_PATH "/usr/lib/xorg")
++	set(DEFAULT_XORG_REGISTRY_PATH "/usr/lib/xorg")
+ endif()
+-set(SERVER_MISC_CONFIG_PATH ${DEFAULT_SERVER_MISC_CONFIG_PATH} CACHE PATH
+-	"Path to miscellaneous server config files (default: ${DEFAULT_SERVER_MISC_CONFIG_PATH})")
+-message(STATUS "SERVER_MISC_CONFIG_PATH = ${SERVER_MISC_CONFIG_PATH}")
+-add_definitions(-DSERVER_MISC_CONFIG_PATH=\"${SERVER_MISC_CONFIG_PATH}\")
++set(XORG_REGISTRY_PATH ${DEFAULT_XORG_REGISTRY_PATH} CACHE PATH
++	"X.org registry path, which contains protocol.txt (default: ${DEFAULT_XORG_REGISTRY_PATH})")
++message(STATUS "XORG_REGISTRY_PATH = ${XORG_REGISTRY_PATH}")
++add_definitions(-DSERVER_MISC_CONFIG_PATH=\"${XORG_REGISTRY_PATH}\")
+ 
+ disable_compiler_warnings()
+ 
+diff --git a/unix/Xvnc/programs/Xserver/dix/registry.c b/unix/Xvnc/programs/Xserver/dix/registry.c
+index de4bf8eaf..3e8039250 100644
+--- a/unix/Xvnc/programs/Xserver/dix/registry.c
++++ b/unix/Xvnc/programs/Xserver/dix/registry.c
+@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 
+ #ifdef X_REGISTRY_REQUEST
+ #define CORE "X11"
+-#ifdef TURBOVNC
++#if defined(TURBOVNC) && !defined(TURBOVNC_STATIC_XORG_PATHS)
+ char registry_path[PATH_MAX] = SERVER_MISC_CONFIG_PATH "/protocol.txt";
+ #define FILENAME registry_path
+ #else
+diff --git a/unix/Xvnc/programs/Xserver/glx/CMakeLists.txt b/unix/Xvnc/programs/Xserver/glx/CMakeLists.txt
+index 45f4b9635..ff8b84f6c 100644
+--- a/unix/Xvnc/programs/Xserver/glx/CMakeLists.txt
++++ b/unix/Xvnc/programs/Xserver/glx/CMakeLists.txt
+@@ -10,14 +10,14 @@ if(HAVE_BACKTRACE)
+ endif()
+ 
+ if(BITS EQUAL 64)
+-	set(DEFAULT_DRI_DRIVER_PATH "/usr/lib64/dri")
++	set(DEFAULT_XORG_DRI_DRIVER_PATH "/usr/lib64/dri")
+ else()
+-	set(DEFAULT_DRI_DRIVER_PATH "/usr/lib/dri")
++	set(DEFAULT_XORG_DRI_DRIVER_PATH "/usr/lib/dri")
+ endif()
+-set(DRI_DRIVER_PATH ${DEFAULT_DRI_DRIVER_PATH} CACHE PATH
+-	"Path to DRI drivers (default: ${DEFAULT_DRI_DRIVER_PATH})")
+-message(STATUS "DRI_DRIVER_PATH = ${DRI_DRIVER_PATH}")
+-add_definitions(-DDRI_DRIVER_PATH=\"${DRI_DRIVER_PATH}\")
++set(XORG_DRI_DRIVER_PATH ${DEFAULT_XORG_DRI_DRIVER_PATH} CACHE PATH
++	"X.org DRI driver path, which contains swrast_dri.so (default: ${DEFAULT_XORG_DRI_DRIVER_PATH})")
++message(STATUS "XORG_DRI_DRIVER_PATH = ${XORG_DRI_DRIVER_PATH}")
++add_definitions(-DDRI_DRIVER_PATH=\"${XORG_DRI_DRIVER_PATH}\")
+ 
+ disable_compiler_warnings()
+ 
+diff --git a/unix/Xvnc/programs/Xserver/glx/glxdricommon.c b/unix/Xvnc/programs/Xserver/glx/glxdricommon.c
+index be9352b5e..a16e1bcf9 100644
+--- a/unix/Xvnc/programs/Xserver/glx/glxdricommon.c
++++ b/unix/Xvnc/programs/Xserver/glx/glxdricommon.c
+@@ -258,7 +258,7 @@ glxConvertConfigs(const __DRIcoreExtension * core,
+     return head.next;
+ }
+ 
+-#ifdef TURBOVNC
++#if defined(TURBOVNC) && !defined(TURBOVNC_STATIC_XORG_PATH)
+ char *dri_driver_path = DRI_DRIVER_PATH;
+ #else
+ static const char dri_driver_path[] = DRI_DRIVER_PATH;
+diff --git a/unix/Xvnc/programs/Xserver/hw/vnc/init.c b/unix/Xvnc/programs/Xserver/hw/vnc/init.c
+index 81fbfe8b5..c8ba83772 100644
+--- a/unix/Xvnc/programs/Xserver/hw/vnc/init.c
++++ b/unix/Xvnc/programs/Xserver/hw/vnc/init.c
+@@ -103,7 +103,7 @@ from the X Consortium.
+ #ifdef GLXEXT
+ extern char *dri_driver_path;
+ #endif
+-#ifdef X_REGISTRY_REQUEST
++#if defined(X_REGISTRY_REQUEST) && !defined(TURBOVNC_STATIC_XORG_PATHS)
+ extern char registry_path[PATH_MAX];
+ #endif
+ 
+@@ -437,6 +437,7 @@ int ddxProcessArgument(int argc, char *argv[], int i)
+     return 2;
+   }
+ 
++#ifndef TURBOVNC_STATIC_XORG_PATHS
+   if (strcasecmp(argv[i], "-dridir") == 0) {
+ #ifdef GLXEXT
+     REQUIRE_ARG();
+@@ -444,6 +445,7 @@ int ddxProcessArgument(int argc, char *argv[], int i)
+ #endif
+     return 2;
+   }
++#endif
+ 
+   if (strcasecmp(argv[i], "-geometry") == 0) {
+     /* -geometry WxH or W0xH0+X0+Y0[,W1xH1+X1+Y1,...] */
+@@ -644,6 +646,7 @@ int ddxProcessArgument(int argc, char *argv[], int i)
+ 
+   /***** TurboVNC miscellaneous options *****/
+ 
++#ifndef TURBOVNC_STATIC_XORG_PATHS
+   if (strcasecmp(argv[i], "-registrydir") == 0) {
+ #ifdef X_REGISTRY_REQUEST
+     REQUIRE_ARG();
+@@ -651,6 +654,7 @@ int ddxProcessArgument(int argc, char *argv[], int i)
+ #endif
+     return 2;
+   }
++#endif
+ 
+   if (strcasecmp(argv[i], "-verbose") == 0) {
+     LogSetParameter(XLOG_VERBOSITY, X_DEBUG);
+@@ -1672,7 +1676,9 @@ void ddxUseMsg(void)
+   ErrorF("\nTurboVNC display options\n");
+   ErrorF("========================\n");
+   ErrorF("-depth D               set framebuffer depth\n");
++#ifndef TURBOVNC_STATIC_XORG_PATHS
+   ErrorF("-dridir dir            specify directory containing the swrast Mesa driver\n");
++#endif
+   ErrorF("-geometry WxH          set framebuffer width & height (single-screen)\n");
+   ErrorF("-geometry W0xH0+X0+Y0[,W1xH1+X1+Y1,...,WnxHn+Xn+Yn]\n");
+   ErrorF("                       set multi-screen geometry (see man page)\n");
+@@ -1730,7 +1736,9 @@ void ddxUseMsg(void)
+ 
+   ErrorF("\nTurboVNC miscellaneous options\n");
+   ErrorF("==============================\n");
++#ifndef TURBOVNC_STATIC_XORG_PATHS
+   ErrorF("-registrydir dir       specify directory containing protocol.txt\n");
++#endif
+   ErrorF("-verbose               print all X.org errors, warnings, and messages\n");
+   ErrorF("-version               report Xvnc version on stderr\n\n");
+ }
+diff --git a/unix/Xvnc/programs/Xserver/xkb/xkbInit.c b/unix/Xvnc/programs/Xserver/xkb/xkbInit.c
+index b63549f3d..ddd5ef7f2 100644
+--- a/unix/Xvnc/programs/Xserver/xkb/xkbInit.c
++++ b/unix/Xvnc/programs/Xserver/xkb/xkbInit.c
+@@ -767,7 +767,7 @@ XkbProcessArguments(int argc, char *argv[], int i)
+             return -1;
+         }
+     }
+-#ifdef TURBOVNC
++#if defined(TURBOVNC) && !defined(TURBOVNC_XORG_STATIC_PATHS)
+     else if (strncmp(argv[i], "-xkbcompdir", 11) == 0) {
+         if (++i < argc) {
+ #if !defined(WIN32) && !defined(__CYGWIN__)
+diff --git a/unix/vncserver.in b/unix/vncserver.in
+index 4ed8ef668..300ccbf88 100644
+--- a/unix/vncserver.in
++++ b/unix/vncserver.in
+@@ -38,6 +38,7 @@ if ($slashndx >= 0) {
+ 
+ $xauth = "xauth";
+ $buildWebServer = @TVNC_BUILDWEBSERVER@;
++$staticXorgPaths = @TVNC_STATIC_XORG_PATHS@;
+ 
+ &SanityCheck();
+ 
+@@ -98,6 +99,8 @@ unless ($xauthorityFile) {
+ chop($host = `uname -n`);
+ chop($os = `uname`);
+ 
++if (!$staticXorgPaths) {
++
+ if (-d "/etc/X11/fontpath.d") {
+   $fontPath = "catalogue:/etc/X11/fontpath.d";
+ }
+@@ -195,6 +198,8 @@ foreach $_registrydir (@registrydirs) {
+   }
+ }
+ 
++} # !$staticXorgPaths
++
+ # Check command line options
+ 
+ &ParseOptions("-geometry", 1, "-depth", 1, "-pixelformat", 1, "-name", 1,
+@@ -447,11 +452,11 @@ $cmd .= " -rfbport $vncPort";
+ $cmd .= " -fp $fontPath" if ($fontPath);
+ $cmd .= " -alr ".$autoLosslessRefresh if ($autoLosslessRefresh > 0.0);
+ $cmd .= " -deferupdate $deferUpdate";
+-$cmd .= " -xkbdir $xkbdir" if ($xkbdir);
+-$cmd .= " -xkbcompdir $xkbcompdir" if ($xkbcompdir);
++$cmd .= " -xkbdir $xkbdir" if ($xkbdir && !$staticXorgPaths);
++$cmd .= " -xkbcompdir $xkbcompdir" if ($xkbcompdir && !$staticXorgPaths);
+ $cmd .= " -pamsession" if ($pamSession);
+-$cmd .= " -dridir $dridir" if ($dridir);
+-$cmd .= " -registrydir $registrydir" if ($registrydir);
++$cmd .= " -dridir $dridir" if ($dridir && !$staticXorgPaths);
++$cmd .= " -registrydir $registrydir" if ($registrydir && !$staticXorgPaths);
+ $cmd .= " -nomt" if (!$multiThread);
+ $cmd .= " -nthreads $numThreads" if ($numThreads);
+ $cmd .= " $serverArgs" if ($serverArgs);

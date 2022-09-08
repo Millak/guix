@@ -49,6 +49,7 @@
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -125,6 +126,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages mercury)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
@@ -1506,6 +1508,77 @@ and search library.")
                  (string-append "version='" #$version "',"))))))))
     (synopsis "Pythonic bindings for the notmuch mail database using CFFI")
     (license license:gpl3+)))
+
+(define-public bower
+  (package
+    (name "bower")
+    (version "1.0")
+    (home-page "https://github.com/wangp/bower")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vcsbxlsvr2wv3c7sfr3yj21kbqy259skpxg00vf5bdkbc8qknq4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list "bower" "man"
+                           (string-append "CC=" #+(cc-for-target))
+                           (string-append "prefix=" #$output))
+      #:parallel-tests? #f              ;parallelism breaks test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-executables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/detect_mime_type.m"
+                (("\"file\"")
+                 (format #f "~s" (search-input-file inputs "bin/file"))))
+              (substitute* "src/compose.m"
+                (("\"base64\"")
+                 (format #f "~s" (search-input-file inputs "bin/base64"))))
+              (substitute* "src/prog_config.m"
+                (("shell_quoted\\(\"false\")")
+                 (format #f "shell_quoted(~s)"
+                         (search-input-file inputs "bin/false")))
+                (("shell_quoted\\(\"notmuch\")")
+                 (format #f "shell_quoted(~s)"
+                         (search-input-file inputs "bin/notmuch")))
+                (("/usr/bin/sendmail")
+                 (search-input-file inputs "/sbin/sendmail")))))
+          (replace 'check
+            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "-C" "tests"
+                        "-j" (if parallel-tests?
+                                 (number->string (parallel-job-count))
+                                 "1")))))
+          (replace 'install
+            (lambda* _
+              (install-file "bower" (string-append #$output "/bin"))
+              (install-file "bower.1" (string-append #$output
+                                                     "/share/man/man1")))))))
+    (native-inputs
+     (list diffutils
+           gawk
+           mercury
+           pandoc
+           util-linux))
+    (inputs
+     (list coreutils
+           gpgme
+           ncurses
+           notmuch
+           sendmail))
+    (synopsis "Terminal client for the Notmuch email system")
+    (description "@code{bower} is a curses front-end for the Notmuch email
+system, written in the Mercury language.")
+    (license license:gpl3+)
+    (properties `((cpe-name . "bower-cpe-refers-to-a-different-bower")))))
 
 (define-public muchsync
   (package

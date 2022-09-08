@@ -21,7 +21,7 @@
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
@@ -2162,65 +2162,64 @@ LLVM."))))
                 (patches (search-patches "cling-use-shared-library.patch"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:build-type "Release"         ;keep the build as lean as possible
-         #:tests? #f                    ;FIXME: 78 tests fail (out of ~200)
-         #:test-target "check-cling"
-         #:configure-flags
-         (list (string-append "-DCLING_CXX_PATH="
-                              (assoc-ref %build-inputs "gcc") "/bin/g++")
-               ;; XXX: The AddLLVM.cmake module expects LLVM_EXTERNAL_LIT to
-               ;; be a Python script, not a shell executable.
-               (string-append "-DLLVM_EXTERNAL_LIT="
-                              (assoc-ref %build-inputs "python-lit")
-                              "/bin/.lit-real"))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'set-version
-             (lambda _
-               (make-file-writable "VERSION")
-               (call-with-output-file "VERSION"
-                 (lambda (port)
-                   (format port "~a~%" ,version)))))
-           (add-after 'unpack 'patch-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "lib/Interpreter/CIFactory.cpp"
-                 (("\bsed\b")
-                  (which "sed"))
-                 ;; This ensures that the default C++ library used by Cling is
-                 ;; that of the compiler that was used to build it, rather
-                 ;; than that of whatever g++ happens to be on PATH.
-                 (("ReadCompilerIncludePaths\\(CLING_CXX_RLTV")
-                  (string-append "ReadCompilerIncludePaths(\""
-                                 (assoc-ref inputs "gcc") "/bin/g++\""))
-                 ;; Cling uses libclang's CompilerInvocation::GetResourcesPath
-                 ;; to resolve Clang's library prefix, but this fails on Guix
-                 ;; because it is relative to the output of cling rather than
-                 ;; clang (see:
-                 ;; https://github.com/root-project/cling/issues/434).  Fully
-                 ;; shortcut the logic in this method to return the correct
-                 ;; static location.
-                 (("static std::string getResourceDir.*" all)
-                  (string-append all
-                                 "    return std::string(\""
-                                 (assoc-ref inputs "clang-cling")
-                                 "/lib/clang/" ,(package-version clang-cling)
-                                 "\");")))
-               ;; Check for the 'lit' command for the tests, not 'lit.py'
-               ;; (see: https://github.com/root-project/cling/issues/432).
-               (substitute* "CMakeLists.txt"
-                 (("lit.py")
-                  "lit"))))
-           (add-after 'unpack 'adjust-lit.cfg
-             ;; See: https://github.com/root-project/cling/issues/435.
-             (lambda _
-               (substitute* "test/lit.cfg"
-                 (("config.llvm_tools_dir \\+ '")
-                  "config.cling_obj_root + '/bin"))))
-           (add-after 'install 'delete-static-libraries
-             ;; This reduces the size from 17 MiB to 5.4 MiB.
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (for-each delete-file (find-files out "\\.a$"))))))))
+       (list
+        #:build-type "Release"          ;keep the build as lean as possible
+        #:tests? #f                     ;FIXME: 78 tests fail (out of ~200)
+        #:test-target "check-cling"
+        #:configure-flags
+        #~(list (string-append "-DCLING_CXX_PATH="
+                               (search-input-file %build-inputs "bin/g++"))
+                ;; XXX: The AddLLVM.cmake module expects LLVM_EXTERNAL_LIT to
+                ;; be a Python script, not a shell executable.
+                (string-append "-DLLVM_EXTERNAL_LIT="
+                               (search-input-file %build-inputs "bin/.lit-real")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-version
+              (lambda _
+                (make-file-writable "VERSION")
+                (call-with-output-file "VERSION"
+                  (lambda (port)
+                    (format port "~a~%" #$version)))))
+            (add-after 'unpack 'patch-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "lib/Interpreter/CIFactory.cpp"
+                  (("\bsed\b")
+                   (which "sed"))
+                  ;; This ensures that the default C++ library used by Cling is
+                  ;; that of the compiler that was used to build it, rather
+                  ;; than that of whatever g++ happens to be on PATH.
+                  (("ReadCompilerIncludePaths\\(CLING_CXX_RLTV")
+                   (format #f "ReadCompilerIncludePaths(~s"
+                           (search-input-file inputs "bin/g++")))
+                  ;; Cling uses libclang's CompilerInvocation::GetResourcesPath
+                  ;; to resolve Clang's library prefix, but this fails on Guix
+                  ;; because it is relative to the output of cling rather than
+                  ;; clang (see:
+                  ;; https://github.com/root-project/cling/issues/434).  Fully
+                  ;; shortcut the logic in this method to return the correct
+                  ;; static location.
+                  (("static std::string getResourceDir.*" all)
+                   (string-append all
+                                  "    return std::string(\""
+                                  #$(this-package-input "clang-cling")
+                                  "/lib/clang/" #$(package-version clang-cling)
+                                  "\");")))
+                ;; Check for the 'lit' command for the tests, not 'lit.py'
+                ;; (see: https://github.com/root-project/cling/issues/432).
+                (substitute* "CMakeLists.txt"
+                  (("lit.py")
+                   "lit"))))
+            (add-after 'unpack 'adjust-lit.cfg
+              ;; See: https://github.com/root-project/cling/issues/435.
+              (lambda _
+                (substitute* "test/lit.cfg"
+                  (("config.llvm_tools_dir \\+ '")
+                   "config.cling_obj_root + '/bin"))))
+            (add-after 'install 'delete-static-libraries
+              ;; This reduces the size from 17 MiB to 5.4 MiB.
+              (lambda _
+                (for-each delete-file (find-files #$output "\\.a$")))))))
       (native-inputs
        (list python python-lit))
       (inputs

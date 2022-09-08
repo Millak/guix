@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2018 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2018, 2022 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -39,7 +39,7 @@ then
     fi
     guix describe -f channels
     case "`guix describe -f channels | grep url`" in
-	*"(url \"$abs_top_srcdir\")") true;;
+	*"(url \"$abs_top_srcdir/\")") true;;
 	*) false;;
     esac
 else

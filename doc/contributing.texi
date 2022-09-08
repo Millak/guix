@@ -1627,13 +1627,22 @@ git config commit.gpgsign true
 git config user.signingkey CABBA6EA1DC0FF33
 @end example
 
-You can prevent yourself from accidentally pushing unsigned commits to
-Savannah by using the pre-push Git hook located at
-@file{etc/git/pre-push}:
+To check that commits are signed with correct key, use:
+
+@example
+make authenticate
+@end example
+
+You can prevent yourself from accidentally pushing unsigned or signed
+with the wrong key commits to Savannah by using the pre-push Git hook
+located at @file{etc/git/pre-push}:
 
 @example
 cp etc/git/pre-push .git/hooks/pre-push
 @end example
+
+It additionally calls @code{make check-channel-news} to be sure
+@file{news.scm} file is correct.
 
 @subsection Commit Policy
 

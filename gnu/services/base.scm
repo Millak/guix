@@ -880,7 +880,7 @@ the message of the day, among other things."
                     (default #f))
   (no-hints?        agetty-no-hints?              ;Boolean
                     (default #f))
-  (no-hostname?     agetty-no hostname?           ;Boolean
+  (no-hostname?     agetty-no-hostname?           ;Boolean
                     (default #f))
   (long-hostname?   agetty-long-hostname?         ;Boolean
                     (default #f))

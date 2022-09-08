@@ -1733,28 +1733,30 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/artyom-poptsov/guile-ics")
-                    (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "11wv6qk8xd4sd8s97mnw383p098ffivk0na4jii76r5wbmg1wd7q"))
-              (modules '((guix build utils)))))
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/artyom-poptsov/guile-ics")
+             (commit (string-append "v" version))))
+       (file-name (string-append name "-" version "-checkout"))
+       (sha256
+        (base32
+         "1526kdzcn0qvf5hpb4x5q01vb9mph9gfw24p81inqgjvy7a57lf9"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (delete 'strip))))
     (native-inputs
      (list autoconf
            automake
            texinfo
-           ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
-           gettext-minimal
+           gettext-minimal ;Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'.
            help2man
            pkg-config))
     (inputs (list guile-3.0 which))
-    (propagated-inputs (list guile-lib))
+    (propagated-inputs (list guile-lib guile-smc))
     (home-page "https://github.com/artyom-poptsov/guile-ics")
     (synopsis "Guile parser library for the iCalendar format")
     (description
@@ -1768,9 +1770,8 @@ The library is shipped with documentation in Info format and usage examples.")
   (package
     (inherit guile-ics)
     (name "guile2.2-ics")
-    (inputs (modify-inputs (package-inputs guile-ics)
-              (replace "guile" guile-2.2)))
-    (propagated-inputs `(("guile-lib" ,guile2.2-lib)))))
+    (inputs (list guile-2.2 which))
+    (propagated-inputs (list guile2.2-lib guile2.2-smc))))
 
 (define-public guile-imanifest
   (let ((commit "ccd5a2111b008d778106f5595a3a585954d95d0")
@@ -4864,7 +4865,7 @@ GitLab instance.")
 (define-public guile-smc
   (package
     (name "guile-smc")
-    (version "0.3.0")
+    (version "0.5.2")
     (source
      (origin
        (method git-fetch)
@@ -4874,7 +4875,7 @@ GitLab instance.")
        (file-name (string-append name "-" version))
        (sha256
         (base32
-         "0szkjmasi70m1vppck7nhdxg4lnxzjq6mihi6r1552s8sxm5z008"))))
+         "05q20vi59whjs7jb8bgcxnnfy6c3wx26m5ps2fwlsz52nggarxzb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")     ;to prevent guild warnings
@@ -4886,23 +4887,6 @@ GitLab instance.")
        #:phases
        (modify-phases %standard-phases
          (delete 'strip)
-         (add-after 'configure 'patch
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "modules/smc/core/log.scm"
-               (("  #:use-module \\(logging logger\\)")
-                (string-append
-                 "  #:use-module (logging logger)\n"
-                 "  #:use-module (logging rotating-log)"))
-               (("#:init-value \"logger\"")
-                (format #f
-                        "#:init-value \"~a/bin/logger\""
-                        (assoc-ref inputs "inetutils")))
-             (("\\(add-handler! %logger %syslog\\)")
-              (string-append
-               "(add-handler! %logger\n"
-               "              (make <rotating-log>\n"
-               "                    #:file-name \"smc.log\"))\n")))
-             #t))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out       (assoc-ref outputs "out"))
@@ -4919,15 +4903,11 @@ GitLab instance.")
                     ,(string-append guile-lib scm)))
                  `("GUILE_LOAD_COMPILED_PATH" prefix
                    (,(string-append out go)
-                    ,(string-append guile-lib go)))))
-             #t)))))
+                    ,(string-append guile-lib go))))))))))
     (native-inputs
-     (list autoconf automake pkg-config texinfo))
+     (list autoconf automake pkg-config texinfo help2man which))
     (inputs
-     `(("bash"      ,bash-minimal)
-       ("guile"     ,guile-3.0)
-       ("guile-lib" ,guile-lib)
-       ("inetutils" ,inetutils)))
+     (list bash-minimal guile-3.0 guile-lib inetutils))
     (home-page "https://github.com/artyom-poptsov/guile-smc")
     (synopsis "GNU Guile state machine compiler")
     (description
@@ -4945,31 +4925,44 @@ format.  This tool is meant to be called on a PlantUML file when a program
 with a FSM is being built (for example, from a Makefile.)")
     (license license:gpl3)))
 
+(define-public guile2.2-smc
+  (package
+    (inherit guile-smc)
+    (name "guile2.2-smc")
+    (inputs (modify-inputs (package-inputs guile-smc)
+              (replace "guile" guile-2.2)
+              (replace "guile-lib" guile2.2-lib)))))
+
 (define-public guile-ini
   (package
     (name "guile-ini")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/artyom-poptsov/guile-ini")
-             (commit (string-append "v" version))))
-       (file-name (string-append name "-" version))
-       (sha256
-        (base32
-         "0injn60530valhx3gsmdp72g6z886yf0n08hscky21h3dafm14kc"))))
+    (version "0.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/artyom-poptsov/guile-ini")
+                    (commit (string-append "v" version))))
+              (file-name (string-append name "-" version))
+              (sha256
+               (base32
+                "0ky7sffxywc2p84q5kdsphr99q0g5gy45rj0vx7f77hwpfm2093x"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0")))     ;to prevent guild warnings
-    (native-inputs
-     (list autoconf automake pkg-config texinfo))
-    (inputs
-     `(("bash" ,bash-minimal)
-       ("guile" ,guile-3.0)
-       ("guile-lib" ,guile-lib)))
-    (propagated-inputs
-     (list guile-smc))
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
+       #:phases (modify-phases %standard-phases
+                  (delete 'strip)
+                  (add-before 'build 'generate-fsm-context
+                    ;; Make sure the intermediate FSM context is present
+                    ;; before the build.
+                    (lambda _
+                      (let ((cwd (getcwd)))
+                        (chdir "modules/ini/")
+                        (invoke "make" "GUILE_AUTO_COMPILE=0"
+                                "fsm-context.scm")
+                        (chdir cwd)))))))
+    (native-inputs (list autoconf automake pkg-config texinfo))
+    (inputs (list bash-minimal guile-3.0 guile-lib))
+    (propagated-inputs (list guile-smc))
     (home-page "https://github.com/artyom-poptsov/guile-ini")
     (synopsis "Guile library for INI format support")
     (description

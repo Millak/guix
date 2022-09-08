@@ -33,6 +33,7 @@
             search-path-specification-file-pattern
 
             $PATH
+            $GUIX_EXTENSIONS_PATH
             $SSL_CERT_DIR
             $SSL_CERT_FILE
 
@@ -73,23 +74,32 @@
    (variable "PATH")
    (files '("bin" "sbin"))))
 
-;; Two variables for certificates (see (guix)X.509 Certificates),
-;; respected by 'openssl', possibly GnuTLS in the future
+(define $GUIX_EXTENSIONS_PATH
+  ;; 'GUIX_EXTENSIONS_PATH' is used by Guix to locate extension commands.
+  ;; Unlike 'PATH', it is attached to a package, Guix; however, it is
+  ;; convenient to define it by default because the 'guix' package is not
+  ;; supposed to be installed in a profile.
+  (search-path-specification
+   (variable "GUIX_EXTENSIONS_PATH")
+   (files '("share/guix/extensions"))))
+
+;; Two variables for certificates (info "(guix)X.509 Certificates"),
+;; respected by OpenSSL and possibly GnuTLS in the future
 ;; (https://gitlab.com/gnutls/gnutls/-/merge_requests/1541)
-;; and many of their dependents -- even some GnuTLS depepdents
+;; and many of their dependents -- even some GnuTLS dependents
 ;; like Guile.  As they are not tied to a single package, define
 ;; them here to avoid duplication.
 ;;
 ;; Additionally, the 'native-search-paths' field is not thunked,
 ;; so doing (package-native-search-paths openssl)
 ;; could cause import cycle issues.
-(define-public $SSL_CERT_DIR
+(define $SSL_CERT_DIR
   (search-path-specification
    (variable "SSL_CERT_DIR")
    (separator #f)              ;single entry
    (files '("etc/ssl/certs"))))
 
-(define-public $SSL_CERT_FILE
+(define $SSL_CERT_FILE
   (search-path-specification
    (variable "SSL_CERT_FILE")
    (file-type 'regular)

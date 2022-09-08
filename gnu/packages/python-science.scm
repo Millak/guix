@@ -1226,7 +1226,7 @@ aggregated sum and more.")
 (define-public python-pyvista
   (package
     (name "python-pyvista")
-    (version "0.35.2")
+    (version "0.36.1")
     (source
      ;; The PyPI tarball does not contain the tests.
      ;; (However, we don't yet actually run the tests.)
@@ -1237,7 +1237,7 @@ aggregated sum and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qmxrhqm3ag736yb761jy1himwlr3p676xyqbry61h97dj11n6sq"))))
+        (base32 "1kjilcrz2cyh67n79r8dpxrans99mlviz2whc6g7j8hgn7v14z2n"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-appdirs

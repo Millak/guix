@@ -353,7 +353,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.19-version "5.19.5")
+(define-public linux-libre-5.19-version "5.19.7")
 (define-public linux-libre-5.19-gnu-revision "gnu")
 (define deblob-scripts-5.19
   (linux-libre-deblob-scripts
@@ -363,31 +363,16 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1ph67fvg5qvlkh4cynrrmvkngkb0sw6k90b1mwy9466s24khn05i")))
 (define-public linux-libre-5.19-pristine-source
   (let ((version linux-libre-5.19-version)
-        (hash (base32 "1g9p4m9w9y0y1gk6vzqvsxzwqspbm10mmhd8n1mhal1yz721qgwc")))
+        (hash (base32 "17qr061b617g64s60svw7lf9s5vn5zwd1y96cwckjpr5shcn1fxq")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.19)))
 
 
-(define-public linux-libre-5.18-version "5.18.19")
-(define-public linux-libre-5.18-gnu-revision "gnu")
-(define deblob-scripts-5.18
-  (linux-libre-deblob-scripts
-   linux-libre-5.18-version
-   linux-libre-5.18-gnu-revision
-   (base32 "09aikdhij4d89wqd8mmkdr0nrfwqz6dx3n74qm6wx815rfngd2dz")
-   (base32 "03w1p49rf7sqsxvwpdndqa0k9hc9748rplyqiiw1q6cbdjficwyw")))
-(define-public linux-libre-5.18-pristine-source
-  (let ((version linux-libre-5.18-version)
-        (hash (base32 "1mc8zhiw0v7fka64mydpdrxkrvy0jyqggq5lghw3pyqj2wjrpw6z")))
-   (make-linux-libre-source version
-                            (%upstream-linux-source version hash)
-                            deblob-scripts-5.18)))
-
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.63")
+(define-public linux-libre-5.15-version "5.15.65")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -397,12 +382,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1r189c704jvizk452zcsm9v3g27ybjcjchjwxazsy3nx0wdwx7si")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0hbkxgadz0vcslni4r46yc202wcnxblcfvkcph1017b2b8gcvlvd")))
+        (hash (base32 "150w5bahp78s12gq7n8gdmi1zn44pwv31qnb1nmzkz2d5wwgsi7v")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.139")
+(define-public linux-libre-5.10-version "5.10.141")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -412,12 +397,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1981axxswghza3iadp94q54y8w30h9w9vyq4cbjiiv9alvbv0pb8")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1wdyk1w8lr5l4d038bd44rdndxjvfcva2n51h2i38jd4fp12l00w")))
+        (hash (base32 "1wqf38nasmyzan83r0268bxixr0fddxvkg760zp2x0wnby9zsyi4")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.211")
+(define-public linux-libre-5.4-version "5.4.212")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -427,12 +412,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1vnjbdyssa7dwyjl9kg35alwvf7yh597cl74yr1wy2gk5bc9paw6")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "1v1dgsk66fi6x6v9k6hg9ik3f3b3pv7a3gk8mybmgm9cnx0k5d5z")))
+        (hash (base32 "1hngr4hsrcd6hmlyvc3msy5racniav2jagp5abmp7xsxv0yjxiq9")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.256")
+(define-public linux-libre-4.19-version "4.19.257")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -442,12 +427,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0jgm7ydha9achbcq3a6q85wq1nz4qg7phx122jzk0mqb1339bpk7")))
+        (hash (base32 "0izaldl2l2zsshkd07qsnr9x6ikipmj5jp7lxr8dyz7kf2m17pga")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.291")
+(define-public linux-libre-4.14-version "4.14.292")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -457,12 +442,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "15h76l81zn733g8dc6gsymf52nz325plhminv3m4x3klwhav34zc")))
+        (hash (base32 "0zc97qy62dhc5xkjnvsfn4lpl4dgrj23hlxvxcr4cr8sj0hxzx3h")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.326")
+(define-public linux-libre-4.9-version "4.9.327")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
@@ -472,7 +457,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0bib3641dbcqdkx3anna3caxnsg3nw9cnmhcklq0s93g3m57041h")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "0yw83a8nk5abjsvqrz8m2sj699c228j2f2wr5q8m95vgqzfw5wrb")))
+        (hash (base32 "1lh63viynf9f7vl0a52mnal8jack9lbqfsfammwkxi3kafpw30r2")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -507,11 +492,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 (define-public linux-libre-5.19-source
   (source-with-patches linux-libre-5.19-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
-
-(define-public linux-libre-5.18-source
-  (source-with-patches linux-libre-5.18-pristine-source
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
@@ -628,11 +608,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-5.19-version
                              linux-libre-5.19-gnu-revision
                              linux-libre-5.19-source))
-
-(define-public linux-libre-headers-5.18
-  (make-linux-libre-headers* linux-libre-5.18-version
-                             linux-libre-5.18-gnu-revision
-                             linux-libre-5.18-source))
 
 (define-public linux-libre-headers-5.15
   (make-linux-libre-headers* linux-libre-5.15-version
@@ -877,8 +852,7 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                            #$(and extra-version
                                   (string-append "-" extra-version)))
 
-                   (let ((build  (assoc-ref %standard-phases 'build))
-                         (config (assoc-ref inputs "kconfig")))
+                   (let ((config (assoc-ref inputs "kconfig")))
 
                      ;; Use a custom kernel configuration file or a default
                      ;; configuration file.
@@ -957,18 +931,11 @@ It has been modified to remove all non-free binary blobs.")
                      '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-5.18
-  (make-linux-libre* linux-libre-5.18-version
-                     linux-libre-5.18-gnu-revision
-                     linux-libre-5.18-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
-                     #:configuration-file kernel-config))
-
-(define-public linux-libre-version         linux-libre-5.18-version)
-(define-public linux-libre-gnu-revision    linux-libre-5.18-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-5.18-pristine-source)
-(define-public linux-libre-source          linux-libre-5.18-source)
-(define-public linux-libre                 linux-libre-5.18)
+(define-public linux-libre-version         linux-libre-5.19-version)
+(define-public linux-libre-gnu-revision    linux-libre-5.19-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-5.19-pristine-source)
+(define-public linux-libre-source          linux-libre-5.19-source)
+(define-public linux-libre                 linux-libre-5.19)
 
 (define-public linux-libre-5.15
   (make-linux-libre* linux-libre-5.15-version
@@ -1193,9 +1160,9 @@ It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-with-bpf
   (let ((base-linux-libre
          (make-linux-libre*
-          linux-libre-5.18-version
-          linux-libre-5.18-gnu-revision
-          linux-libre-5.18-source
+          linux-libre-5.19-version
+          linux-libre-5.19-gnu-revision
+          linux-libre-5.19-source
           '("x86_64-linux" "i686-linux" "armhf-linux"
             "aarch64-linux" "riscv64-linux")
           #:extra-version "bpf"
@@ -3040,7 +3007,7 @@ configuration and monitoring interfaces.")
 (define-public iw
   (package
     (name "iw")
-    (version "4.14")
+    (version "5.19")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3048,7 +3015,7 @@ configuration and monitoring interfaces.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "12ddd6vh6vs97135bnlyr0szv7hvpbnmfh48584frzab0z0725ph"))))
+                "0kjdrihc7ibnjdpjqkq8sv0kmmvavgsww78cpjgbnlyx8zlvnrzi"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libnl))
@@ -3560,14 +3527,14 @@ NUMA performance on your system.")
 (define-public kbd
   (package
     (name "kbd")
-    (version "2.4.0")
+    (version "2.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/utils/kbd/kbd-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "17wvrqz2kk0w87idinhyvd31ih1dp7ldfl2yfx7ailygb0279w2m"))
+                "10s608i4blprgy9nynlid0hglfdrrgln6wwjs9rhjf56hwilbpyc"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -6315,31 +6282,30 @@ from that to the system kernel's @file{/dev/random} machinery.")
     (source (package-source linux-libre))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'enter-subdirectory
-                    (lambda _
-                      (chdir "tools/power/cpupower")
-                      #t))
-                  (delete 'configure)
-                  (add-before 'build 'fix-makefiles
-                    (lambda _
-                      (substitute* "Makefile"
-                        (("/usr/") "/")
-                        (("/bin/(install|pwd)" _ command) command))
-                      (substitute* "bench/Makefile"
-                        (("\\$\\(CC\\) -o") "$(CC) $(LDFLAGS) -o"))
-                      #t)))
-       #:make-flags (let ((out (assoc-ref %outputs "out")))
-                      (list (string-append "DESTDIR=" out)
-                            (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
-                            "libdir=/lib"
-                            "docdir=/share/doc/cpupower"
-                            "confdir=$(docdir)/examples"
-                            ;; The Makefile recommends the following changes
-                            "DEBUG=false"
-                            "PACKAGE_BUGREPORT=bug-guix@gnu.org"))
-       #:tests? #f)) ;no tests
-    (native-inputs `(("gettext" ,gettext-minimal)))
+     (list #:make-flags
+           #~(list (string-append "DESTDIR=" #$output)
+                   (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+                   "libdir=/lib"
+                   "docdir=/share/doc/cpupower"
+                   "confdir=$(docdir)/examples"
+                   ;; The Makefile recommends the following changes
+                   "DEBUG=false"
+                   "PACKAGE_BUGREPORT=bug-guix@gnu.org")
+           #:tests? #f                  ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'enter-subdirectory
+                 (lambda _
+                   (chdir "tools/power/cpupower")))
+               (delete 'configure)      ; no configure script
+               (add-before 'build 'fix-makefiles
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("/usr/") "/")
+                     (("/bin/(install|pwd)" _ command) command))
+                   (substitute* "bench/Makefile"
+                     (("\\$\\(CC\\) -o") "$(CC) $(LDFLAGS) -o")))))))
+    (native-inputs (list gettext-minimal))
     (inputs (list pciutils))
     (home-page (package-home-page linux-libre))
     (synopsis "CPU frequency and voltage scaling tools for Linux")
@@ -6622,7 +6588,7 @@ the @code{mce-inject} module loaded if it exists.")
 (define-public mcelog
   (package
     (name "mcelog")
-    (version "187")
+    (version "188")
     (source
      (origin
        (method git-fetch)
@@ -6631,7 +6597,7 @@ the @code{mce-inject} module loaded if it exists.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zdlwbdqs4s72yrpz4irhp12c1wqzy8kmf4hxahk13dmafd6dbnj"))
+        (base32 "1pdh0fj12wrm7whi96ak7m1f5b8ivgklabwkhfcfxd8dg134qczf"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -6640,16 +6606,18 @@ the @code{mce-inject} module loaded if it exists.")
              (("\"unknown\"") (string-append "\"v" ,version "\"")))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'configure))  ; no configure script
-       #:make-flags (let ((out (assoc-ref %outputs "out")))
-                      (list (string-append "CC=" ,(cc-for-target))
-                            (string-append "prefix=" out)
-                            (string-append "DOCDIR=" out "/share/doc/"
-                                           ,name "-" ,version)
-                            "etcprefix=$(DOCDIR)/examples"))
-       ;; The tests will only run as root on certain supported CPU models.
-       #:tests? #f))
+     (list
+      ;; The tests will only run as root on certain supported CPU models.
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "prefix=" #$output)
+              (string-append "DOCDIR=" #$output "/share/doc/"
+                             #$name "-" #$version)
+              "etcprefix=$(DOCDIR)/examples")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))        ; no configure script
     (native-inputs
      (list python-wrapper))             ; to generate example mcelog.conf
     (supported-systems (list "i686-linux" "x86_64-linux"))
