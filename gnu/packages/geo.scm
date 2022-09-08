@@ -536,7 +536,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public proj
   (package
     (name "proj")
-    (version "7.2.1")
+    (version "9.0.1")
     (source
      (origin
        (method url-fetch)
@@ -544,16 +544,10 @@ fully fledged Spatial SQL capabilities.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "050apzdn0isxpsblys1shrl9ccli5vd32kgswlgx1imrbwpg915k"))))
+         "18x6v4iaphyyxyzdgf76r764qwswvjz9w39zyiphsvchwz5slzkk"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DUSE_EXTERNAL_GTEST=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("MAJOR 7 MINOR 2 PATCH 0") "MAJOR 7 MINOR 2 PATCH 1")))))))
+     `(#:configure-flags '("-DUSE_EXTERNAL_GTEST=ON")))
     (inputs
      (list curl libjpeg-turbo libtiff sqlite))
     (native-inputs
