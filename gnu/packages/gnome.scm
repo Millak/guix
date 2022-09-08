@@ -7501,7 +7501,7 @@ javascript engine and the GObject introspection framework.")
 (define-public gedit
   (package
     (name "gedit")
-    (version "40.1")
+    (version "42.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7509,86 +7509,60 @@ javascript engine and the GObject introspection framework.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "149ngl9qw6h59546lir1pa7hvw23ppsnqlj9mfqphmmn5jl99qsm"))))
+                "1jlgzihi4ywvlr4xj2vbnnxzar8j3mwj0jcn8jp6dh0a3w8jjqiw"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:meson ,meson-0.60
-       #:configure-flags
-       ;; Otherwise, the RUNPATH will lack the final path component.
-       (list (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib/gedit"))
-
-       ;; XXX: Generated .h files are sometimes used before being built.
-       #:parallel-build? #f
-
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "build-aux/meson/post_install.py"
-               (("gtk-update-icon-cache") (which "true")))
-             #t))
-         (add-after 'unpack 'patch-libgd-fetch
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libgd (assoc-ref inputs "libgd")))
-               ;; Calling git is unnecessary because libgd is fetched as a
-               ;; native input to this package.
-               (substitute* "meson.build"
-                 ((".*git.*") ""))
-               (copy-recursively libgd "subprojects/libgd")
-               #t)))
-         (add-after 'install 'wrap-gedit
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out               (assoc-ref outputs "out"))
-                   (gtksourceview     (assoc-ref inputs "gtksourceview"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
-                   (python-path       (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/gedit")
-                 ;; For plugins.
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-                 `("GUIX_PYTHONPATH" ":" prefix (,python-path))
-                 ;; For language-specs.
-                 `("XDG_DATA_DIRS" ":" prefix (,(string-append gtksourceview
-                                                               "/share")))))
-             #t)))))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      ;; Otherwise, the RUNPATH will lack the final path component.
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib/gedit"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "build-aux/meson/post_install.py"
+                (("gtk-update-icon-cache") (which "true")))))
+          (add-after 'unpack 'do-not-invoke-git
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "meson.build"
+                ((".*git.*") ""))))
+          (add-after 'install 'wrap-gedit
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/gedit")
+                ;; For plugins.
+                `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
+                `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+                ;; For language-specs.
+                `("XDG_DATA_DIRS" ":" prefix
+                  (,(string-append #$(this-package-input "gtksourceview")
+                                   "/share")))))))))
     (propagated-inputs
      (list dconf))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("glib:bin" ,glib "bin") ; for glib-mkenums, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("libgd"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://gitlab.gnome.org/GNOME/libgd")
-                 (commit "c7c7ff4e05d3fe82854219091cf116cce6b19de0")))
-           (file-name (git-file-name "libgd" version))
-           (sha256
-            (base32 "16yld0ap7qj1n96h4f2sqkjmibg7xx5xwkqxdfzam2nmyfdlrrrs"))))
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils           ;for update-desktop-database
+           `(,glib "bin")               ;for glib-mkenums, etc.
+           gobject-introspection
+           intltool
+           itstool
+           libxml2
+           pkg-config
+           python
+           vala))
     (inputs
-     (list amtk
+     (list adwaita-icon-theme
+           bash-minimal
            glib
+           gsettings-desktop-schemas
            gspell
            gtk+
-           gtksourceview
+           gtksourceview-4
            libpeas
-           libxml2
-           iso-codes
-           python-pygobject
-           python
-           tepl
-           gsettings-desktop-schemas
-           libx11
-           vala
-           adwaita-icon-theme
            libsoup
-           gnome-desktop))
+           python
+           python-pygobject))
     (home-page "https://wiki.gnome.org/Apps/Gedit")
     (synopsis "GNOME text editor")
     (description "While aiming at simplicity and ease of use, gedit is a
