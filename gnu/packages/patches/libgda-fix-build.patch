@@ -1,0 +1,131 @@
+Taken from upstream.
+
+From 4c2369083c5941ffada100e4a7e4702e681585e3 Mon Sep 17 00:00:00 2001
+From: taozuhong <taozuhong@gmail.com>
+Date: Tue, 11 Jan 2022 15:03:28 +0800
+Subject: [PATCH] fixed compile error
+
+---
+ libgda/Gda-6.0-custom.vala |  3 +++
+ libgda/sql-parser/lemon.c  | 39 +++++++++++++++++++-------------------
+ 2 files changed, 22 insertions(+), 20 deletions(-)
+
+diff --git a/libgda/Gda-6.0-custom.vala b/libgda/Gda-6.0-custom.vala
+index d046c5c24..4d1408648 100644
+--- a/libgda/Gda-6.0-custom.vala
++++ b/libgda/Gda-6.0-custom.vala
+@@ -92,7 +92,10 @@ namespace Gda {
+ 	[CCode (cheader_filename = "libgda.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "gda_sql_statement_get_type ()")]
+ 	[Compact]
+ 	public class SqlStatement {
++		#if VALA_0_50
++		#else
+ 		public static Gda.SqlStatementContentsInfo get_contents_infos (Gda.SqlStatementType type);
++		#endif
+ 	}
+ 
+ }
+diff --git a/libgda/sql-parser/lemon.c b/libgda/sql-parser/lemon.c
+index a6fe75bb9..a3c727777 100644
+--- a/libgda/sql-parser/lemon.c
++++ b/libgda/sql-parser/lemon.c
+@@ -11,6 +11,7 @@
+ #include <string.h>
+ #include <ctype.h>
+ #include <stdlib.h>
++#include <stdint.h>
+ #include <assert.h>
+ #include <gio/gio.h>
+ 
+@@ -40,7 +41,7 @@ static const char **made_files = NULL;
+ static int made_files_count = 0;
+ static int successful_exit = 0;
+ 
+-static char *msort(char*,char**,int(*)(const char*,const char*));
++static uintptr_t msort(uintptr_t, uintptr_t*, int(*)(const uintptr_t, const uintptr_t));
+ 
+ /*
+ ** Compilers are getting increasingly pedantic about type conversions
+@@ -396,8 +397,7 @@ static int actioncmp(
+ static struct action *Action_sort(
+   struct action *ap
+ ){
+-  ap = (struct action *)msort((char *)ap,(char **)&ap->next,
+-                              (int(*)(const char*,const char*))actioncmp);
++  ap = (struct action *)msort(ap, &ap->next, actioncmp);
+   return ap;
+ }
+ 
+@@ -1277,14 +1277,14 @@ void Configlist_closure(struct lemon *lemp)
+ 
+ /* Sort the configuration list */
+ void Configlist_sort(){
+-  current = (struct config *)msort((char *)current,(char **)&(current->next),Configcmp);
++  current = (struct config *)msort(current, &(current->next), Configcmp);
+   currentend = 0;
+   return;
+ }
+ 
+ /* Sort the basis configuration list */
+ void Configlist_sortbasis(){
+-  basis = (struct config *)msort((char *)current,(char **)&(current->bp),Configcmp);
++  basis = (struct config *)msort(current, &(current->bp), Configcmp);
+   basisend = 0;
+   return;
+ }
+@@ -1577,7 +1577,7 @@ int main(G_GNUC_UNUSED int argc, char **argv)
+ /*
+ ** Return a pointer to the next structure in the linked list.
+ */
+-#define NEXT(A) (*(char**)(((unsigned long)A)+offset))
++#define NEXT(A) (*(uintptr_t *)(((uintptr_t)A)+offset))
+ 
+ /*
+ ** Inputs:
+@@ -1594,13 +1594,13 @@ int main(G_GNUC_UNUSED int argc, char **argv)
+ **   The "next" pointers for elements in the lists a and b are
+ **   changed.
+ */
+-static char *merge(
+-  char *a,
+-  char *b,
+-  int (*cmp)(const char*,const char*),
+-  int offset
++static uintptr_t merge(
++  uintptr_t a,
++  uintptr_t b,
++  int (*cmp)(const uintptr_t, const uintptr_t),
++  uintptr_t offset
+ ){
+-  char *ptr, *head;
++  uintptr_t ptr, *head;
+ 
+   if( a==0 ){
+     head = b;
+@@ -1646,16 +1646,15 @@ static char *merge(
+ **   The "next" pointers for elements in list are changed.
+ */
+ #define LISTSIZE 30
+-static char *msort(
+-  char *list,
+-  char **next,
+-  int (*cmp)(const char*,const char*)
++static uintptr_t msort(
++  uintptr_t list,
++  uintptr_t *next,
++  int (*cmp)(const uintptr_t, const uintptr_t)
+ ){
+-  unsigned long offset;
+-  char *ep;
+-  char *set[LISTSIZE];
++  uintptr_t ep;
++  uintptr_t set[LISTSIZE];
+   int i;
+-  offset = (unsigned long)next - (unsigned long)list;
++  uintptr_t offset = (uintptr_t)next - (uintptr_t)list;
+   for(i=0; i<LISTSIZE; i++) set[i] = 0;
+   while( list ){
+     ep = list;
+-- 
+GitLab
+

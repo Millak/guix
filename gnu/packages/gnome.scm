@@ -12704,58 +12704,35 @@ developed with the aim of being used with the Librem 5 phone.")
 (define-public libgda
   (package
     (name "libgda")
-    (version "5.2.10")
+    (version "6.0.0")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.gnome.org/GNOME/libgda.git/")
-             (commit (string-append "LIBGDA_" (string-replace-substring
-                                               version "." "_")))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/" name "/"
+                           (version-major+minor version) "/"
+                           name "-" version ".tar.xz"))
        (sha256
-        (base32 "18rg773gq9v3cdywpmrp12c5xyp97ir9yqjinccpi22sksb1kl8a"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Remove the bundled sqlite, but keep its header because code relies
-        ;; on this header variant.
-        '(delete-file "libgda/sqlite/sqlite-src/sqlite3.c"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags '("--enable-system-sqlite" "--enable-vala")
-       ;; There's a race between check_cnc_lock and check_threaded_cnc
-       ;; in tests/multi-threading.
-       #:parallel-tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-glade-install
-           (lambda _
-             (substitute* "configure.ac"
-               (("`\\$PKG_CONFIG --variable=catalogdir gladeui-2\\.0`")
-                "${datadir}/glade/catalogs")
-               (("`\\$PKG_CONFIG --variable=pixmapdir gladeui-2\\.0`")
-                "${datadir}/glade/pixmaps"))
-             #t))
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Tests require a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t))
-         (add-after 'install 'symlink-glade-module
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((shlib "libgda-ui-5.0.so")
-                    (out (assoc-ref outputs "out"))
-                    (out/lib (string-append out "/lib"))
-                    (moduledir (string-append out/lib "/glade/modules")))
-               (mkdir-p moduledir)
-               (symlink (string-append out/lib "/" shlib)
-                        (string-append moduledir "/" shlib))
-               #t))))))
-    (propagated-inputs
-     (list libxml2))           ; required by libgda-5.0.pc
+        (base32 "0w564z7krgjk19r39mi5qn4kggpdg9ggbyn9pb4aavb61r14npwr"))
+       (patches (search-patches "libgda-cve-2021-39359.patch"
+                                "libgda-fix-build.patch"
+                                "libgda-fix-missing-initialization.patch"
+                                "libgda-skip-postgresql-tests.patch"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list intltool
+           iso-codes
+           `(,glib "bin")
+           gnome-common
+           gettext-minimal
+           gobject-introspection
+           gtk-doc/stable
+           pkg-config
+           python
+           vala
+           yelp-tools))
     (inputs
-     (list glib
+     (list json-glib
+           glib
            glade3
            gtk+
            libsecret
@@ -12763,21 +12740,8 @@ developed with the aim of being used with the Librem 5 phone.")
            openssl
            sqlite
            vala))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("autoconf-archive" ,autoconf-archive)
-       ("automake" ,automake)
-       ("glib:bin" ,glib "bin")
-       ("gnome-common" ,gnome-common)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ("which" ,which)
-       ("xorg-server" ,xorg-server-for-tests)
-       ("yelp-tools" ,yelp-tools)))
+    (propagated-inputs
+     (list libxml2))                    ; required by libgda-5.0.pc
     (home-page "https://gitlab.gnome.org/GNOME/libgda")
     (synopsis "Uniform data access")
     (description

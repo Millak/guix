@@ -1405,6 +1405,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/libcroco-CVE-2020-12825.patch		\
   %D%/packages/patches/libcyaml-libyaml-compat.patch		\
   %D%/packages/patches/libexpected-nofetch.patch                \
+  %D%/packages/patches/libgda-cve-2021-39359.patch		\
+  %D%/packages/patches/libgda-fix-build.patch			\
+  %D%/packages/patches/libgda-fix-missing-initialization.patch	\
+  %D%/packages/patches/libgda-skip-postgresql-tests.patch	\
   %D%/packages/patches/libgit2-mtime-0.patch			\
   %D%/packages/patches/libgnome-encoding.patch			\
   %D%/packages/patches/libgnomeui-utf8.patch			\
