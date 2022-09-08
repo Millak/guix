@@ -2209,6 +2209,7 @@ track your position right from your laptop.")
     (inputs
      `(("clipper" ,clipper)
        ("cups" ,cups)
+       ("curl" ,curl)
        ("gdal" ,gdal)
        ("proj" ,proj)
        ("qtbase" ,qtbase-5)
