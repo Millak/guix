@@ -4409,7 +4409,7 @@ engineering.")
 (define-public seahorse
   (package
     (name "seahorse")
-    (version "41.0")
+    (version "42.0")
     (source
      (origin
        (method url-fetch)
@@ -4417,7 +4417,7 @@ engineering.")
                            (version-major version) "/" name "-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1x99i7kdvd8hbxcs5rfrq7nw6r9bfzaw263zaigjjj04h6gc1vp6"))))
+        (base32 "0c6nafhn4gcjwd1xbs5bjq9785114fc0pbhxbwp7wynyz3msq365"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -4427,32 +4427,31 @@ engineering.")
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "build-aux/meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t))
+               (("gtk-update-icon-cache") "true"))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests require a writable HOME.
              (setenv "HOME" (getcwd)))))))
     (inputs
-     `(("gtk+" ,gtk+)
-       ("gcr" ,gcr)
-       ("gnupg" ,gnupg)
-       ("gpgme" ,gpgme)
-       ("openldap" ,openldap)
-       ("openssh" ,openssh)
-       ("avahi" ,avahi)
-       ("libhandy" ,libhandy)
-       ("libpwquality" ,libpwquality)
-       ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup-minimal-2)))
+     (list gtk+
+           gcr
+           gnupg
+           gpgme
+           openldap
+           openssh
+           avahi
+           libhandy
+           libpwquality
+           libsecret
+           libsoup-minimal-2))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("vala" ,vala)
-       ("xmllint" ,libxml2)))
+     (list gettext-minimal
+           `(,glib "bin")
+           itstool
+           pkg-config
+           python
+           vala
+           libxml2))
     (home-page "https://wiki.gnome.org/Apps/Seahorse")
     (synopsis "Manage encryption keys and passwords in the GNOME keyring")
     (description
