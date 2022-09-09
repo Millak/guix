@@ -7396,7 +7396,7 @@ to display dialog boxes from the commandline and shell scripts.")
 (define-public mutter
   (package
     (name "mutter")
-    (version "41.0")
+    (version "42.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7404,7 +7404,7 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "17pqrm48kddqrc3fl96n5knhaxyn0crg0zv7zpmqhk848jks307s"))))
+                "0h1ak3201mdc2qbf67fhcn801ddp33hm0f0c52zis1l7s6ipyb62"))))
     ;; NOTE: Since version 3.21.x, mutter now bundles and exports forked
     ;; versions of cogl and clutter.  As a result, many of the inputs,
     ;; propagated-inputs, and configure flags used in cogl and clutter are
@@ -7423,9 +7423,12 @@ to display dialog boxes from the commandline and shell scripts.")
       #~(list
          ;; Otherwise, the RUNPATH will lack the final path component.
          (string-append "-Dc_link_args=-Wl,-rpath="
-                        #$output "/lib:" #$output "/lib/mutter-9")
+                        #$output "/lib,-rpath="
+                        #$output "/lib/mutter-10")
          ;; Disable systemd support.
          "-Dsystemd=false"
+         ;; Don't install tests.
+         "-Dinstalled_tests=false"
          ;; The following flags are needed for the bundled clutter
          (string-append "-Dxwayland_path="
                         (search-input-file %build-inputs "/bin/Xwayland"))
@@ -7439,6 +7442,13 @@ to display dialog boxes from the commandline and shell scripts.")
       #:test-options ''("--verbose")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-RUNPATH-instead-of-RPATH
+            (lambda _
+              ;; The build system disables RUNPATH in favor of RPATH to work
+              ;; around a peculiarity of their CI system.  Ignore that.
+              (substitute* "meson.build"
+                (("disable-new-dtags")
+                 "enable-new-dtags"))))
           (add-after 'unpack 'patch-dlopen-calls
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/wayland/meta-wayland-egl-stream.c"
