@@ -6247,7 +6247,7 @@ such as OpenStreetMap, OpenCycleMap, OpenAerialMap, and Maps for free.")
 (define-public gom
   (package
     (name "gom")
-    (version "0.3.2")
+    (version "0.4")
     (source
      (origin
        (method url-fetch)
@@ -6256,14 +6256,29 @@ such as OpenStreetMap, OpenCycleMap, OpenAerialMap, and Maps for free.")
                            "gom-" version ".tar.xz"))
        (sha256
         (base32
-         "1zaqqwwkyiswib3v1v8wafpbifpbpak0nn2kp13pizzn9bwz1s5w"))))
-    (build-system gnu-build-system)
+         "17ca07hpg7dqxjn0jpqim3xqcmplk2a87wbwrrlq3dd3m8381l38"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%meson-build-system-modules
+                           (guix build python-build-system))
+      #:modules '((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:configure-flags
+      #~(list (string-append "-Dpygobject-override-dir="
+                             (python:site-packages %build-inputs %outputs)
+                             "/gi/overrides"))))
     (native-inputs
-     (list intltool pkg-config gobject-introspection))
+     (list gettext-minimal
+           gobject-introspection
+           pkg-config
+           python
+           python-pygobject))
     (inputs
-     (list glib gdk-pixbuf sqlite))
-    ;; XXX TODO: Figure out how to run the test suite.
-    (arguments `(#:tests? #f))
+     (list glib
+           gdk-pixbuf
+           sqlite))
     (home-page "https://wiki.gnome.org/Projects/Gom")
     (synopsis "Object mapper from GObjects to SQLite")
     (description
