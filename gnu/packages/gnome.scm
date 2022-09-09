@@ -6341,7 +6341,7 @@ GNOME Games, but it may be used by others.")
 (define-public gnome-klotski
   (package
     (name "gnome-klotski")
-    (version "3.34.0")
+    (version "3.38.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -6349,7 +6349,7 @@ GNOME Games, but it may be used by others.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0sbx0bzy32lh2c9jp8v7gz788wn9y1la8mr5a7gf7370szsl4d4f"))))
+                "1qm01hdd5yp8chig62bj10912vclbdvywwczs84sfg4zci2phqwi"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -6359,16 +6359,15 @@ GNOME Games, but it may be used by others.")
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "build-aux/meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))
-             #t)))))
+               (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("glib:bin" ,glib "bin") ; for glib-compile-resources
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ("xmllint" ,libxml2)))
+     (list desktop-file-utils
+           `(,glib "bin")               ; for glib-compile-resources
+           intltool
+           itstool
+           pkg-config
+           vala
+           libxml2))
     (inputs
      (list gtk+
            libgnome-games-support-1
