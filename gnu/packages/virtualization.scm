@@ -158,7 +158,7 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "6.2.0")
+    (version "7.1.0")
     (source
      (origin
        (method url-fetch)
@@ -166,7 +166,7 @@
                            version ".tar.xz"))
        (sha256
         (base32
-         "0iavlsy9hin8k38230j8lfmyipx3965zljls1dp34mmc8n75vqb8"))
+         "1rmvrgqjhrvcmchnz170dxvrrf14n6nm39y8ivrprmfydd9lwqx0"))
        (patches (search-patches "qemu-build-info-manual.patch"
                                 "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))
