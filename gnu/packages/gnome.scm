@@ -8359,7 +8359,7 @@ Compatible with Cisco VPN concentrators configured to use IPsec.")
 (define-public network-manager-openconnect
   (package
     (name "network-manager-openconnect")
-    (version "1.2.6")
+    (version "1.2.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8368,10 +8368,12 @@ Compatible with Cisco VPN concentrators configured to use IPsec.")
                     "/NetworkManager-openconnect-" version ".tar.xz"))
               (sha256
                (base32
-                "0nlp290nkawc4wqm978n4vhzg3xdqi8kpjjx19l855vab41rh44m"))))
+                "1k6d6cv2c9v8gf0f2js6cklr3ijhaanbz0nhvlwy5n42bmwamvax"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-absolute-paths" "--localstatedir=/var")
+     `(#:configure-flags '("--enable-absolute-paths"
+                           "--localstatedir=/var"
+                           "--with-gtk4=yes")
        #:phases
        (modify-phases %standard-phases
          (add-after 'configure 'patch-path
@@ -8382,19 +8384,23 @@ Compatible with Cisco VPN concentrators configured to use IPsec.")
                     (pretty-ovpn (string-append "\"" openconnect "\"")))
                (substitute* "src/nm-openconnect-service.c"
                  (("\"/usr(/local)?/s?bin/openconnect\"") pretty-ovpn)
-                 (("/sbin/modprobe") modprobe)))
-             #t)))))
+                 (("/sbin/modprobe") modprobe))))))))
     (native-inputs
-     (list intltool libnma pkg-config))
+     (list `(,glib "bin")
+           intltool
+           libnma
+           pkg-config))
     (inputs
      (list gcr
+           gtk
            gtk+
            kmod
            libsecret
            libxml2
            lz4
            network-manager
-           openconnect))
+           openconnect
+           pango-next))                 ;TODO: remove after it's the default
     (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
     (synopsis "OpenConnect plug-in for NetworkManager")
     (description
