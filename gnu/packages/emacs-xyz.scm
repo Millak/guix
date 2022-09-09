@@ -2705,7 +2705,7 @@ shine on top of your cursor so you know where it is.")
 (define-public emacs-counsel-bbdb
   (package
     (name "emacs-counsel-bbdb")
-    (version "0.0.4")
+    (version "0.0.5")
     (source
      (origin
        (method git-fetch)
@@ -2714,9 +2714,9 @@ shine on top of your cursor so you know where it is.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bki658mvlchqf3prkzxz4217a95cxm58c1qmf84yp2n8h6gd0d8"))))
+        (base32 "1jrj7hx6y518np3xcnarbj0c43lglcf9gww3fhfqp7lzxl9hvi8s"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-ivy))
+    (propagated-inputs (list emacs-bbdb emacs-ivy))
     (home-page "https://github.com/redguardtoo/counsel-bbdb")
     (synopsis "Ivy interface for BBDB")
     (description "This Ivy extension enables the use of @code{ivy-mode} to input
