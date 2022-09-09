@@ -15136,7 +15136,7 @@ in Emacs.")
 (define-public emacs-php-mode
   (package
     (name "emacs-php-mode")
-    (version "1.24.0")
+    (version "1.24.1")
     (source
      (origin
        (method git-fetch)
@@ -15145,7 +15145,7 @@ in Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bs9q62bd7885c39v7x1qz3w1fhpmpdgm72xwsk2yygw0ii425nn"))))
+        (base32 "06xgmlbvqhkrnk6390mdbpjij34msxxwzqmagi6zpwpsf38mn6qf"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
