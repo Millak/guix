@@ -7037,7 +7037,7 @@ a secret password store, an adblocker, and a modern UI.")
 (define-public epiphany
   (package
     (name "epiphany")
-    (version "42.2")
+    (version "42.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/epiphany/"
@@ -7045,7 +7045,7 @@ a secret password store, an adblocker, and a modern UI.")
                                   "epiphany-" version ".tar.xz"))
               (sha256
                (base32
-                "0b8rhns3b58f8dnp83mm1g933aqf88d8wrfyyp7jq3fihvw2rh4j"))))
+                "0q08ixzgp341g5pq6rfy5q75m9bvddvl8na3qa5v5vi056nkh29p"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -7073,33 +7073,37 @@ a secret password store, an adblocker, and a modern UI.")
       #:configure-flags
       ;; Otherwise, the RUNPATH will lack the final 'epiphany' path component.
       #~(list (string-append "-Dc_link_args=-Wl,-rpath="
-                             #$output "/lib/epiphany"))))
+                             #$output "/lib/epiphany")
+              "-Dsoup2=disabled")))     ;use libsoup 3
     (propagated-inputs (list dconf))
-    (native-inputs (list desktop-file-utils ; for update-desktop-database
-                         `(,glib "bin") ; for glib-mkenums
-                         intltool
-                         itstool
-                         pkg-config
-                         libxml2
-                         xorg-server-for-tests))
-    (inputs (list avahi
-                  gcr
-                  librsvg ; for loading SVG files
-                  glib-networking
-                  gnome-desktop
-                  gsettings-desktop-schemas
-                  json-glib
-                  iso-codes
-                  libarchive
-                  libdazzle
-                  libhandy
-                  libnotify
-                  libportal
-                  libsecret
-                  libxslt
-                  nettle ; for hogweed
-                  sqlite
-                  webkitgtk-with-libsoup2))
+    (native-inputs
+     (list desktop-file-utils           ; for update-desktop-database
+           gettext-minimal
+           `(,glib "bin")               ; for glib-mkenums
+           itstool
+           pkg-config
+           libxml2
+           xorg-server-for-tests))
+    (inputs
+     (list avahi
+           gcr
+           glib-networking
+           gnome-desktop
+           gsettings-desktop-schemas
+           iso-codes
+           json-glib
+           libarchive
+           libdazzle
+           libhandy
+           libnotify
+           libportal
+           librsvg                      ; for loading SVG files
+           libsecret
+           libsoup
+           libxslt
+           nettle                       ; for hogweed
+           sqlite
+           webkitgtk))
     (home-page "https://wiki.gnome.org/Apps/Web")
     (synopsis "GNOME web browser")
     (description
