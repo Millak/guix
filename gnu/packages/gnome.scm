@@ -8308,7 +8308,7 @@ to virtual private networks (VPNs) via OpenVPN.")
 (define-public network-manager-vpnc
   (package
     (name "network-manager-vpnc")
-    (version "1.2.6")
+    (version "1.2.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8317,14 +8317,12 @@ to virtual private networks (VPNs) via OpenVPN.")
                     "/NetworkManager-vpnc-" version ".tar.xz"))
               (sha256
                (base32
-                "1js5lwcsqws4klgypfxl4ikmakv7v7xgddij1fj6b0y0qicx0kyy"))))
+                "1k7vkalslzmz8zvfy76k7z10b9krm7da917gwzyw7zf8afm32pnn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-absolute-paths"
                            "--localstatedir=/var"
-                           ;; libnm-glib has been removed from network-manager
-                           ;; 1de8383ad9fdfc8f552117e5d109bdfa7005634b
-                           "--with-libnm-glib=no")
+                           "--with-gtk4=yes")
        #:phases
        (modify-phases %standard-phases
          (add-after 'configure 'patch-path
@@ -8336,17 +8334,20 @@ to virtual private networks (VPNs) via OpenVPN.")
                     (("\"/usr/local/sbin/vpnc\"") pretty-ovpn)
                     (("\"/usr/sbin/vpnc\"") pretty-ovpn)
                     (("\"/sbin/vpnc\"") pretty-ovpn)
-                    (("/sbin/modprobe") modprobe)))
-             #t)))))
+                    (("/sbin/modprobe") modprobe))))))))
     (native-inputs
-     (list pkg-config intltool))
+     (list `(,glib "bin")
+           intltool
+           pkg-config))
     (inputs
      (list gtk+
+           gtk
            kmod
            vpnc
            network-manager
            libnma
-           libsecret))
+           libsecret
+           pango-next))                 ;TODO: remove after it's the default
     (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
     (synopsis "VPNC plug-in for NetworkManager")
     (description
