@@ -8252,7 +8252,7 @@ services.")
 (define-public network-manager-openvpn
   (package
     (name "network-manager-openvpn")
-    (version "1.8.12")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8261,35 +8261,42 @@ services.")
                     "/NetworkManager-openvpn-" version ".tar.xz"))
               (sha256
                (base32
-                "062kh4zj7jfbwy4zzcwpq2m457bzbpm3l18s0ysnw3mgia3siz8f"))))
+                "00fiyjbp42pdv5h2vdkzxd2rw32ikcinjgxrzdxak61kgw8d8iap"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-absolute-paths" "--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-path
-           (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-             (let* ((ovpn (search-input-file inputs "/sbin/openvpn"))
-                    (modprobe (search-input-file inputs "/bin/modprobe"))
-                    (pretty-ovpn (string-append "\"" ovpn "\"")))
-               (for-each
-                (lambda (file)
-                  (substitute* file
-                    (("\"/usr/local/sbin/openvpn\"") pretty-ovpn)
-                    (("\"/usr/sbin/openvpn\"") pretty-ovpn)
-                    (("\"/sbin/openvpn\"") pretty-ovpn)
-                    (("/sbin/modprobe") modprobe)))
-                '("src/nm-openvpn-service.c" "properties/nm-openvpn-editor.c")))
-             #t)))))
+     (list
+      #:configure-flags #~(list "--enable-absolute-paths"
+                                "--localstatedir=/var"
+                                "--with-gtk4=yes")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'patch-path
+            (lambda* (#:key inputs #:allow-other-keys #:rest args)
+              (let* ((ovpn (search-input-file inputs "/sbin/openvpn"))
+                     (modprobe (search-input-file inputs "/bin/modprobe"))
+                     (pretty-ovpn (string-append "\"" ovpn "\"")))
+                (for-each
+                 (lambda (file)
+                   (substitute* file
+                     (("\"/usr/local/sbin/openvpn\"") pretty-ovpn)
+                     (("\"/usr/sbin/openvpn\"") pretty-ovpn)
+                     (("\"/sbin/openvpn\"") pretty-ovpn)
+                     (("/sbin/modprobe") modprobe)))
+                 '("src/nm-openvpn-service.c"
+                   "properties/nm-openvpn-editor.c"))))))))
     (native-inputs
-     (list pkg-config intltool))
+     (list intltool
+           `(,glib "bin")
+           pkg-config))
     (inputs
      (list gtk+
+           gtk
            kmod
-           openvpn
-           network-manager
            libnma
-           libsecret))
+           libsecret
+           network-manager
+           openvpn
+           pango-next))                 ;remove after it's the default
     (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
     (synopsis "OpenVPN plug-in for NetworkManager")
     (description
