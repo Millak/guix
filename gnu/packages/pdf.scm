@@ -833,7 +833,18 @@ line tools for batch rendering @command{pdfdraw}, rewriting files
                                   "/qpdf-" version ".tar.gz"))
               (sha256
                (base32
-                "049q94rzlcbdr09rvl8xfj3924mk7rfm35x8cg4nisl4lnr27z78"))))
+                "049q94rzlcbdr09rvl8xfj3924mk7rfm35x8cg4nisl4lnr27z78"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   ;; grep 3.8 emits a warning about 'egrep' being deprecated
+                   ;; which breaks some tests.  Adjust accordingly.
+                   ;; Try removing this for QPDF >= 11.
+                   (substitute* '("build-scripts/build-doc"
+                                  "qpdf/qtest/qpdf/diff-encrypted"
+                                  "qpdf/qtest/qpdf/diff-ignore-ID-version")
+                     (("egrep")
+                      "grep -E"))))))
     (build-system gnu-build-system)
     (arguments
      (list
