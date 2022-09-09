@@ -32,6 +32,7 @@
              (srfi srfi-9)
              (srfi srfi-26)
              (ice-9 format)
+             (ice-9 regex)
              (ice-9 match)
              (guix ui)
              (git))
@@ -289,9 +290,11 @@ of file names as string."
   (hash-fold
    (lambda (key team acc)
      (if (any (lambda (file)
-                (any (lambda (scope)
-                       ;; XXX: Add regex support?
-                       (string-prefix? scope file))
+                (any (match-lambda
+                       ((? string? scope)
+                        (string=? scope file))
+                       ((? regexp? scope)
+                        (regexp-exec scope file)))
                      (team-scope team)))
               files)
          (cons team acc)
