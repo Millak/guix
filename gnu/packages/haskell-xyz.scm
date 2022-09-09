@@ -30,6 +30,7 @@
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2021, 2022 Alice BRENON <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,6 +76,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system haskell)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
@@ -297,14 +299,13 @@ systems.")
          "042lrkn0dbpjn5ivj6j26jzb1fwrj8c1aj18ykxja89isg0hiali"))))
     (build-system haskell-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-check-variables
-           (lambda _
-             (setenv "PATH" (string-append (getcwd) "/dist/build/alex:"
-                                           (getenv "PATH")))
-             (setenv "alex_datadir" (string-append (getcwd) "/data"))
-             #t)))))
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (add-before 'check 'set-check-variables
+                  (lambda _
+                    (setenv "PATH" (string-append (getcwd) "/dist/build/alex:"
+                                                  (getenv "PATH")))
+                    (setenv "alex_datadir" (string-append (getcwd) "/data")))))))
     (inputs (list ghc-quickcheck))
     (native-inputs
      (list which))
