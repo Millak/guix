@@ -522,6 +522,31 @@ repositories through the
 server}.  The main advantage compared to @code{vc-hg} is speed.")
     (license license:gpl3+)))
 
+(define-public emacs-telephone-line
+  (let ((commit "6f3455a365912e8f0c45a2240ea79507dee45ade")
+        (revision "0"))
+    (package
+      (name "emacs-telephone-line")
+      (version (git-version "0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/dbordak/telephone-line")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hnd6wnc52sc0ckriqnhaz64pyjk027y0dpcmh2zhpd27i8d4hmq"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/dbordak/telephone-line")
+      (synopsis "Implementation of Powerline for Emacs")
+      (description
+       "Telephone Line is a new implementation of Powerline for Emacs with
+optional baked-in Evil support, antialiased separators, and an easy
+configuration language which makes it trivial to write your own themes.")
+      (license license:gpl3+))))
+
 (define-public emacs-terminal-here
   (package
     (name "emacs-terminal-here")
@@ -2680,7 +2705,7 @@ shine on top of your cursor so you know where it is.")
 (define-public emacs-counsel-bbdb
   (package
     (name "emacs-counsel-bbdb")
-    (version "0.0.4")
+    (version "0.0.5")
     (source
      (origin
        (method git-fetch)
@@ -2689,9 +2714,9 @@ shine on top of your cursor so you know where it is.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bki658mvlchqf3prkzxz4217a95cxm58c1qmf84yp2n8h6gd0d8"))))
+        (base32 "1jrj7hx6y518np3xcnarbj0c43lglcf9gww3fhfqp7lzxl9hvi8s"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-ivy))
+    (propagated-inputs (list emacs-bbdb emacs-ivy))
     (home-page "https://github.com/redguardtoo/counsel-bbdb")
     (synopsis "Ivy interface for BBDB")
     (description "This Ivy extension enables the use of @code{ivy-mode} to input
@@ -3306,7 +3331,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
 (define-public emacs-cape
   (package
     (name "emacs-cape")
-    (version "0.8")
+    (version "0.9")
     (source
      (origin
        (method git-fetch)
@@ -3315,7 +3340,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zv3hcnarwyhj4hhfk9kz4gzshks10vd5zfsmpv5nlbhvwp69j3p"))))
+        (base32 "09lzzhx438s9wlpmiyyx9bbb2hlscf415f080bkz6gyw4nsdh0g4"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/cape")
     (synopsis "Completion at point extensions for Emacs")
@@ -6698,14 +6723,14 @@ user.")
 (define-public emacs-subed
   (package
     (name "emacs-subed")
-    (version "1.0.7")
+    (version "1.0.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
                                   version ".tar"))
               (sha256
                (base32
-                "0js48yar8xgj3wjmlkv3k5208q1zvv74sg4lhk6asiy4cq3pqjia"))))
+                "05dx4ywma7n73d0cihf4v8ayihm7gmfqpzvdycq4yk0zkxb958z1"))))
     (arguments
      (list
       #:tests? #t
@@ -8871,7 +8896,7 @@ built-in custom themes.")
 (define-public emacs-gruvbox-theme
   (package
     (name "emacs-gruvbox-theme")
-    (version "1.30.0")
+    (version "1.30.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8880,7 +8905,7 @@ built-in custom themes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dzaivis9cpqzb53qmkmhijr5l4hl2l3yr2412jxrz2jmqi3q4c5"))))
+                "0dgjf86i8179l1nsjyc20chysqmy8yhphpd5lzv2ypx79l4z3jka"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-autothemer))
@@ -9230,7 +9255,7 @@ style, or as multiple word prefixes.")
 (define-public emacs-consult
   (package
     (name "emacs-consult")
-    (version "0.18")
+    (version "0.19")
     (source
      (origin
        (method git-fetch)
@@ -9238,7 +9263,7 @@ style, or as multiple word prefixes.")
              (url "https://github.com/minad/consult")
              (commit version)))
        (sha256
-        (base32 "0sy4rn1vjk1g50r8z14hzj8lds6s7ij2zkjqfi6mfash5il75wnq"))
+        (base32 "1lb7ci1kkgv07c4hcfxisr5zjx68hq15bqf4x3bhmnn13x38j7jw"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat))
@@ -9393,7 +9418,7 @@ expansion and overwriting the marked region with a new snippet completion.")
 (define-public emacs-marginalia
   (package
     (name "emacs-marginalia")
-    (version "0.13")
+    (version "0.14")
     (source
      (origin
        (method git-fetch)
@@ -9402,7 +9427,7 @@ expansion and overwriting the marked region with a new snippet completion.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qk6j7l39z92h4kvvbwcs85ilyx3d6y0l8zm33iar2pjnyks1kq3"))))
+        (base32 "1gbcjw447vxd3ivfjgnya2ix3w791kvbika1v9bzj8s7i996fb6f"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/marginalia")
     (synopsis "Marginalia in the minibuffer completions")
@@ -15136,7 +15161,7 @@ in Emacs.")
 (define-public emacs-php-mode
   (package
     (name "emacs-php-mode")
-    (version "1.24.0")
+    (version "1.24.1")
     (source
      (origin
        (method git-fetch)
@@ -15145,7 +15170,7 @@ in Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bs9q62bd7885c39v7x1qz3w1fhpmpdgm72xwsk2yygw0ii425nn"))))
+        (base32 "06xgmlbvqhkrnk6390mdbpjij34msxxwzqmagi6zpwpsf38mn6qf"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -15217,13 +15242,13 @@ containing words from the Rime project.")
 (define-public emacs-pyim
   (package
     (name "emacs-pyim")
-    (version "5.2.3")
+    (version "5.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/pyim-" version ".tar"))
        (sha256
-        (base32 "189r0qkd8nv5zjg2ljbzbj086jb8xbl4yd1jliz4azaprv8fhqv0"))))
+        (base32 "1dzl4xaf31nyjb5hnwwf29i75x0i8dakpmmagbn4ks5hi3jl2ig0"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-async emacs-popup emacs-posframe emacs-xr))
@@ -19046,7 +19071,7 @@ according to a parsing expression grammar.")
 (define-public emacs-eldev
   (package
     (name "emacs-eldev")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method git-fetch)
@@ -19055,7 +19080,7 @@ according to a parsing expression grammar.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zf3vrk9yw4f4fj31g3vphjd3rhr2hv3q2crkdsgi7z5xlb8frds"))))
+        (base32 "0d6wbfim0q81sm5m45fjc6n0v6nk32qrgas5nzrs0vslym4bfxna"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -20153,14 +20178,14 @@ or expressions with SVG rounded box labels that are fully customizable.")
 (define-public emacs-kind-icon
   (package
     (name "emacs-kind-icon")
-    (version "0.1.6")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/kind-icon-"
                            version ".tar"))
        (sha256
-        (base32 "0ac53qrz217b054z51244r7whvjmyrq4941ld0bgl9crssrhb588"))))
+        (base32 "02imi2qj329yrqvs23d4z7fv8bbaz0fvya6zdswb38blpdri4cn1"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-svg-lib))
     (home-page "https://github.com/jdtsmith/kind-icon")

@@ -234,6 +234,10 @@ importer."))
                        "jgart@dismail.de")
   python lisp mentors)
 
+(define-member (person "Guillaume Le Vaillant"
+                       "glv@posteo.net")
+  lisp)
+
 (define-member (person "Julien Lepiller"
                        "julien@lepiller.eu")
   java ocaml translations)

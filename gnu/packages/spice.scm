@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,6 +47,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix download)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils))
 
@@ -149,7 +150,7 @@ which allows users to view a desktop computing environment.")
             ;; These are required by the pkg-config files.
             gtk+
             pixman
-            openssl))
+            openssl-1.1))
     (inputs
       `(("glib-networking" ,glib-networking)
         ("gobject-introspection" ,gobject-introspection)
@@ -221,7 +222,7 @@ which allows users to view a desktop computing environment.")
                 "1xd0xffw0g5vvwbq4ksmm3jjfq45f9dw20xpmi82g1fj9f7wy85k"))))
     (build-system gnu-build-system)
     (propagated-inputs
-      (list openssl pixman spice-protocol))
+      (list openssl-1.1 pixman spice-protocol))
     (inputs
       (list cyrus-sasl
             glib
@@ -340,6 +341,13 @@ resolution scaling on graphical console window resize.")
                (base32
                 "1rrjlclm6ad63gah1fa4yfwrz4z6vgq2yrybbvzvvdbxrgl4vgzv"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags
+           ;; XXX: For some reason NSS is not automatically added on RUNPATH
+           ;; with newer versions of Meson (after 0.60).
+           #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                                  (search-input-directory
+                                   %build-inputs "lib/nss")))))
     (propagated-inputs
      (list glib ; Requires: in the pkg-config file
            nss ; Requires.private: in the pkg-config

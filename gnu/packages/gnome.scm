@@ -886,6 +886,7 @@ tomorrow, the rest of the week and for special occasions.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:meson ,meson-0.60
        #:configure-flags
        (list "-Ddogtail=false"     ; Not available
              ;; Required for RUNPATH validation.
@@ -957,6 +958,7 @@ cloud integration is offered through GNOME Online Accounts.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:meson ,meson-0.60
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-gnome-music
@@ -1556,6 +1558,7 @@ tour of all gnome components and allows the user to set them up.")
    (build-system meson-build-system)
    (arguments
     `(#:glib-or-gtk? #t
+      #:meson ,meson-0.60
       #:configure-flags
        `("-Dsystemduserunitdir=/tmp/empty"
          ;; Enable nautilus extension for file sharing.
@@ -2033,6 +2036,7 @@ to other formats.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:meson ,meson-0.60
        #:phases (modify-phases %standard-phases
                   (add-after 'install 'wrap
                     (lambda* (#:key outputs #:allow-other-keys)
@@ -2286,7 +2290,8 @@ The gnome-about program helps find which version of GNOME is installed.")
                 "0hpyi0sz3gcqqs9lkwyk8b6hr39m3n27432x98kxr436jj37dk6j"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
+     `(#:meson ,meson-0.60
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-post-install-script
            (lambda _
@@ -2330,7 +2335,8 @@ the font would look under various sizes.")
                 "00fsf82ycac8qi0kkiq759p6jrn63pyz4ksn4wnq7m4ax94zq289"))))
     (build-system meson-build-system)
     (arguments
-     '(#:phases
+     `(#:meson ,meson-0.60
+       #:phases
        (modify-phases %standard-phases
          ;; These fail because /var/lib/dbus/machine-id is not present in the
          ;; build environment.
@@ -2539,6 +2545,7 @@ forgotten when the session ends.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:meson ,meson-0.60
        #:build-type "release"
        #:configure-flags
        '("-Dnautilus=false"
@@ -3133,6 +3140,7 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
     (build-system meson-build-system)
     (arguments
      (list
+      #:meson meson-0.60
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -5644,6 +5652,7 @@ services for numerous locations.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:meson ,meson-0.60
        #:configure-flags
        (list (string-append "-Dudev_dir="
                             (assoc-ref %outputs "out") "/lib/udev")
@@ -6492,6 +6501,7 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
    (build-system meson-build-system)
    (arguments
     `(#:glib-or-gtk? #t
+      #:meson ,meson-0.60
       #:configure-flags
       ;; Otherwise, the RUNPATH will lack the final 'eog' path component.
       (list (string-append "-Dc_link_args=-Wl,-rpath="
@@ -6753,7 +6763,8 @@ USB transfers with your high-level application or system daemon.")
     (build-system meson-build-system)
     ;; TODO: Fix icons in home screen, About dialogue, and scan menu.
     (arguments
-     `(#:glib-or-gtk? #t))
+     `(#:glib-or-gtk? #t
+       #:meson ,meson-0.60))
     (native-inputs
      (list gettext-minimal
            itstool
@@ -7254,7 +7265,8 @@ such as gzip tarballs.")
                (base32
                 "02z0xr6sv9ibl7awbw9j4y05hf4jk1zgvsbbmh7n27hhjvsvc8pl"))))
     (arguments
-     `(#:glib-or-gtk? #t
+     `(#:meson ,meson-0.60
+       #:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-gnome-session
@@ -7368,6 +7380,7 @@ javascript engine and the GObject introspection framework.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:meson ,meson-0.60
        #:configure-flags
        ;; Otherwise, the RUNPATH will lack the final path component.
        (list (string-append "-Dc_link_args=-Wl,-rpath="
@@ -8580,6 +8593,8 @@ usage and information about running processes.")
                (base32
                 "1a9ynlwwkb3wpg293ym517vmrkk63y809mmcv9a21k5yr199x53c"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:meson meson-0.60))
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for gdbus-codegen, etc.
        ("gtk+" ,gtk+ "bin") ; gtk-update-icon-cache
@@ -8900,7 +8915,8 @@ like switching to windows and launching applications.")
         (base32 "0jmr6igyzcj2wmx5v5ywaazvdz3hx6a6rys26yb4l4s71l281bvs"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t))   ; To wrap binaries and/or compile schemas
+     `(#:meson ,meson-0.60
+       #:glib-or-gtk? #t))   ; To wrap binaries and/or compile schemas
     (native-inputs
      (append
       ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
@@ -9492,6 +9508,7 @@ associations for GNOME.")
           libhandy))
    (arguments
     `(#:glib-or-gtk? #t
+      #:meson ,meson-0.60
       #:phases
       ,#~(modify-phases %standard-phases
            (add-after 'unpack 'fix-service-file
@@ -9852,6 +9869,7 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:meson ,meson-0.60
        ;; gnome-calendar has to be installed before the tests can be run
        ;; https://bugzilla.gnome.org/show_bug.cgi?id=788224
        #:tests? #f
@@ -10775,6 +10793,7 @@ photo-booth-like software, such as Cheese.")
                 "1y92glc0d6w323x2bdbc0gdh1jdffvkbv6cwlwm1rx0wgvv1svqh"))))
     (arguments
      `(#:glib-or-gtk? #t
+       #:meson ,meson-0.60
        ;; Tests require GDK.
        #:tests? #f
        #:phases
@@ -11734,6 +11753,7 @@ integrate seamlessly with the GNOME desktop.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:meson ,meson-0.60
        #:configure-flags (list "-Drdp=false"
                                (string-append "-Dc_link_args=-Wl,-rpath="
                                               (assoc-ref %outputs "out")

@@ -8,53 +8,14 @@ manual.  The Texinfo format allows for more structure and info readers
 provide more advanced navigation capabilities compared to manpages
 readers.
 
-* configure (infodir): Add an --infodir option, which allows
-configuring the directory under which the info manuals are installed.
 * docs/meson.build (texi, info): New targets.
 
 Signed-off-by: Maxim Cournoyer <maxim.cournoyer@gmail.com>
 
-diff --git a/configure b/configure
---- a/configure
-+++ b/configure
-@@ -951,6 +951,8 @@ for opt do
-     static="yes"
-     QEMU_PKG_CONFIG_FLAGS="--static $QEMU_PKG_CONFIG_FLAGS"
-   ;;
-+  --infodir=*) infodir="$optarg"
-+  ;;
-   --mandir=*) mandir="$optarg"
-   ;;
-   --bindir=*) bindir="$optarg"
-@@ -978,7 +980,7 @@ for opt do
-   --host=*|--build=*|\
-   --disable-dependency-tracking|\
-   --sbindir=*|--sharedstatedir=*|\
--  --oldincludedir=*|--datarootdir=*|--infodir=*|\
-+  --oldincludedir=*|--datarootdir=*|\
-   --htmldir=*|--dvidir=*|--pdfdir=*|--psdir=*)
-     # These switches are silently ignored, for compatibility with
-     # autoconf-generated configure scripts. This allows QEMU's
-@@ -1599,6 +1601,7 @@ else
- fi
- mandir="${mandir:-$prefix/share/man}"
- datadir="${datadir:-$prefix/share}"
-+infodir="${infodir:-$datadir/info}"
- docdir="${docdir:-$prefix/share/doc}"
- sysconfdir="${sysconfdir:-$prefix/etc}"
- local_statedir="${local_statedir:-$prefix/var}"
-@@ -1736,6 +1739,7 @@ Advanced options (experts only):
-   --with-git-submodules=validate fail if git submodules are not up to date
-   --with-git-submodules=ignore   do not update or check git submodules (default if no .git dir)
-   --static                 enable static build [$static]
-+  --infodir=PATH           install info manual in PATH
-   --mandir=PATH            install man pages in PATH
-   --datadir=PATH           install firmware in PATH/$qemu_suffix
-   --localedir=PATH         install translation in PATH/$qemu_suffix
 diff --git a/docs/meson.build b/docs/meson.build
 --- a/docs/meson.build
 +++ b/docs/meson.build
-@@ -104,4 +104,25 @@ if build_docs
+@@ -92,4 +92,25 @@ if build_docs
    alias_target('sphinxdocs', sphinxdocs)
    alias_target('html', sphinxdocs)
    alias_target('man', sphinxmans)
@@ -83,7 +44,7 @@ diff --git a/docs/meson.build b/docs/meson.build
 diff --git a/meson.build b/meson.build
 --- a/meson.build
 +++ b/meson.build
-@@ -35,6 +35,7 @@ endif
+@@ -37,6 +37,7 @@ endif
  qemu_confdir = get_option('sysconfdir') / get_option('qemu_suffix')
  qemu_datadir = get_option('datadir') / get_option('qemu_suffix')
  qemu_docdir = get_option('docdir') / get_option('qemu_suffix')
@@ -91,11 +52,11 @@ diff --git a/meson.build b/meson.build
  qemu_moddir = get_option('libdir') / get_option('qemu_suffix')
  
  qemu_desktopdir = get_option('datadir') / 'applications'
-@@ -2433,6 +2434,7 @@ else
+@@ -3698,6 +3699,7 @@ else
    summary_info += {'local state directory': 'queried at runtime'}
  endif
- summary_info += {'Doc directory':     get_option('docdir')}
-+summary_info += {'Info directory':    get_option('infodir')}
+ summary_info += {'Doc directory':     get_option('prefix') / get_option('docdir')}
++summary_info += {'Info directory':    get_option('prefix') / get_option('infodir')}
  summary_info += {'Build directory':   meson.current_build_dir()}
  summary_info += {'Source path':       meson.current_source_dir()}
  summary_info += {'GIT submodules':    config_host['GIT_SUBMODULES']}

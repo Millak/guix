@@ -1938,7 +1938,7 @@ from streaming URLs.  It is a command-line wrapper for the libquvi library.")
         (base32 "1k47gbgpp52049andr28y28nbwh9m36bbb0g8p0aka3pqlhjv72l"))))
     (build-system scons-build-system)
     (propagated-inputs
-     (list apr apr-util openssl))
+     (list apr apr-util openssl-1.1))
     (inputs
      (list ;; TODO: Fix build with gss.
            ;;("gss" ,gss)
