@@ -1501,7 +1501,7 @@ and implementation of UPnP A/V profiles.")
 (define-public libmediaart
   (package
     (name "libmediaart")
-    (version "1.9.5")
+    (version "1.9.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1509,13 +1509,16 @@ and implementation of UPnP A/V profiles.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1mlw1qgj8nkd9ll6b6h54r1gfdy3zp8a8xqz7qfyfaj85jjgbph7"))))
+                "05vzcxm8fqizz77qzdxlsqb5lsqzc4681sy8z63haf6vswjm1g63"))))
     (build-system meson-build-system)
     (native-inputs
-     (list `(,glib "bin") pkg-config))
+     (list `(,glib "bin")
+           gettext-minimal
+           gobject-introspection
+           pkg-config
+           vala))
     (inputs
-     (list gdk-pixbuf gettext-minimal gobject-introspection
-           `(,gtk+ "doc") vala))
+     (list gdk-pixbuf))
     (synopsis "Media art library for the GNOME desktop")
     (description
      "The libmediaart library is the foundation for media art caching,
