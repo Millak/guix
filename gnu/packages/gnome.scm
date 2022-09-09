@@ -6431,7 +6431,7 @@ for application developers.")
 (define-public grilo-plugins
   (package
     (name "grilo-plugins")
-    (version "0.3.13")
+    (version "0.3.15")
     (source
      (origin
        (method url-fetch)
@@ -6439,33 +6439,31 @@ for application developers.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1y10nnd711qxwgpz6spzp1rnk50fyf11kk1n71a31ab4fgb0ahqw"))))
+        (base32 "0cxbxg7i9qd1pyfjj7c15x9lawvaw5608jk2apcrac7rakcw6645"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gtk+:bin" ,gtk+ "bin")
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)))
-    ;; TODO: ahavi, gstreamer
+     (list gettext-minimal
+           ;; Gstreamer plugins are required for tests.
+           gst-plugins-good
+           gst-plugins-bad
+           `(,glib "bin")
+           itstool
+           pkg-config))
     (inputs
-     `(("grilo" ,grilo)
-       ;("gmime" ,gmime) ; unused
-       ("gnome-online-accounts" ,gnome-online-accounts)
-       ("gom" ,gom)
-       ;("gssdp" ,gssdp) ; unused
-       ;("gupnp" ,gupnp) ; unused
-       ;("gupnp-av" ,gupnp-av) ; unused
-       ("json-glib" ,json-glib)
-       ("avahi" ,avahi)
-       ("libgdata" ,libgdata)
-       ("libmediaart" ,libmediaart)
-       ;("librest" ,rest) ; unused
-       ("libsoup" ,libsoup)
-       ("python-pygobject" ,python-pygobject)
-       ("totam-pl-parser" ,totem-pl-parser)
-       ("tracker" ,tracker)
-       ("tracker-miners" ,tracker-miners)))
+     (list avahi
+           grilo
+           gnome-online-accounts
+           gom
+           gstreamer
+           json-glib
+           avahi
+           libgdata
+           libmediaart
+           libsoup
+           python-pygobject
+           totem-pl-parser
+           tracker
+           tracker-miners))
     (arguments
      `(#:glib-or-gtk? #t
        ;;Disable lua-factory as it needs missing dependencies
