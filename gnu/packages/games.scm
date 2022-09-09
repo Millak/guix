@@ -1789,7 +1789,7 @@ destroying an ancient book using a special wand.")
                (("gtk-update-icon-cache") "true"))
              #t)))))
     (inputs
-     (list gtk+ clutter clutter-gtk libgee libgnome-games-support))
+     (list gtk+ clutter clutter-gtk libgee libgnome-games-support-1))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin") ; for desktop-file-validate and appstream-util

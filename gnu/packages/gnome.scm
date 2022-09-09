@@ -6290,36 +6290,53 @@ queries upon that data.")
 (define-public libgnome-games-support
   (package
     (name "libgnome-games-support")
-    (version "1.7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/libgnome-games-support/"
-                                  (version-major+minor version) "/"
-                                  "libgnome-games-support-" version ".tar.xz"))
-              (sha256
-               (base32
-                "11g1r3ppb9v8m3anks9gxf7fv1x38vmjiya3lr7zjjv328pb69d6"))))
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/libgnome-games-support/"
+                           (version-major+minor version) "/"
+                           "libgnome-games-support-" version ".tar.xz"))
+       (sha256
+        (base32
+         "196jaga70r16bzypv4z07mnwr0xcm93gc91kxygcpp9fwdpiz0jk"))))
     (build-system meson-build-system)
     (arguments
-      '(#:glib-or-gtk? #t
-        #:phases
-          (modify-phases %standard-phases
-            (add-before 'check 'pre-check
-              (lambda _
-                ;; Tests require a writable HOME.
-                (setenv "HOME" (getcwd))
-                #t)))))
+     '(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Tests require a writable HOME.
+             (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list intltool pkg-config vala))
     (propagated-inputs
      ;; Required by libgnome-games-support-1.0.pc
-     (list gtk+ libgee))
+     (list gtk libgee))
     (home-page "https://www.gnome.org/")
     (synopsis "Useful functionality shared among GNOME games")
     (description
      "libgnome-games-support is a small library intended for internal use by
 GNOME Games, but it may be used by others.")
     (license license:lgpl3+)))
+
+(define-public libgnome-games-support-1
+  (package
+    (inherit libgnome-games-support)
+    (version "1.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/libgnome-games-support/"
+                           (version-major+minor version) "/"
+                           "libgnome-games-support-" version ".tar.xz"))
+       (sha256
+        (base32
+         "0zggsg7h9nlcwwjcqc13pdjza17iiww325r3q0d76f5hlw24chr8"))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs
+                                       libgnome-games-support)
+                         (replace "gtk" gtk+)))))
 
 (define-public gnome-klotski
   (package
@@ -6353,7 +6370,9 @@ GNOME Games, but it may be used by others.")
        ("vala" ,vala)
        ("xmllint" ,libxml2)))
     (inputs
-     (list gtk+ libgnome-games-support librsvg))
+     (list gtk+
+           libgnome-games-support-1
+           librsvg))
     (home-page "https://wiki.gnome.org/Apps/Klotski")
     (synopsis "Sliding block puzzles")
     (description
