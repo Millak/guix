@@ -2292,6 +2292,7 @@ The gnome-about program helps find which version of GNOME is installed.")
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind=libelogind")
+       #:meson ,meson-0.60
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -9693,7 +9694,8 @@ can add your own files to the collection.")
          "15wmikwk62cdi93gas77nqh4fbhlrxrncyfmcd1gfa34jbn7vnsa"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t
+     `(#:meson ,meson-0.60
+       #:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -9735,6 +9737,8 @@ beautifying border effects.")
         (base32
          "1qvrxrk1h8bd75xwasxbvlkqrw6xkavjimvc7sslkw6lvb3z86jp"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:meson meson-0.60))
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, gio-2.0.
        ("gtk+-bin" ,gtk+ "bin") ; for gtk-update-icon-cache
