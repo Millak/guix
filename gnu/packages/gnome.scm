@@ -3407,7 +3407,7 @@ XML/CSS rendering engine.")
 (define-public libgsf
   (package
     (name "libgsf")
-    (version "1.14.47")
+    (version "1.14.50")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -3415,63 +3415,60 @@ XML/CSS rendering engine.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kbpp9ksl7977xiga37sk1gdw1r039v6zviqznl7alvvg39yp26i"))))
+                "0llf5rpg2rg9pdz8j38dl5z82zi9kmsn639wb2fhcfc3fz820v3f"))))
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "bin" "doc"))
     (arguments
-     `(#:configure-flags
-       (list
-        "--disable-static"
-        "--enable-introspection"
-        (string-append "--with-gir-dir="
-                       (assoc-ref %outputs "out")
-                       "/share/gir-"
-                       ,(version-major
-                         (package-version gobject-introspection))
-                       ".0")
-        (string-append "--with-typelib-dir="
-                       (assoc-ref %outputs "out")
-                       "/lib/girepository-"
-                       ,(version-major
-                         (package-version gobject-introspection))
-                       ".0")
-        (string-append "--with-html-dir="
-                       (assoc-ref %outputs "doc")
-                       "/share/gtk-doc/html")
-        "--with-zlib"
-        "--with-bz2")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "doc"
-               (substitute* "gsf-docs.xml"
-                 (("http://www.oasis-open.org/docbook/xml/4.5/")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list
+         "--disable-static"
+         "--enable-introspection"
+         (string-append "--with-gir-dir=" #$output
+                        "/share/gir-"
+                        #$(version-major
+                           (package-version gobject-introspection))
+                        ".0")
+         (string-append "--with-typelib-dir=" #$output
+                        "/lib/girepository-"
+                        #$(version-major
+                           (package-version gobject-introspection))
+                        ".0")
+         (string-append "--with-html-dir=" #$output
+                        "/share/gtk-doc/html")
+         "--with-zlib"
+         "--with-bz2")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-docbook-xml
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (with-directory-excursion "doc"
+                (substitute* "gsf-docs.xml"
+                  (("http://www.oasis-open.org/docbook/xml/4.5/")
+                   (search-input-directory (or native-inputs inputs)
+                                           "xml/dtd/docbook")))))))))
     (native-inputs
-     `(("docbook-xml" ,docbook-xml)
-       ("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)
-       ("perl" ,perl)
-       ("perl-xml-parser" ,perl-xml-parser)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list docbook-xml
+           gettext-minimal
+           gobject-introspection
+           perl
+           perl-xml-parser
+           pkg-config
+           python-wrapper))
     (inputs
-     (list bzip2 gdk-pixbuf zlib))
+     (list bzip2
+           gdk-pixbuf
+           zlib))
     (propagated-inputs
-     (list glib libxml2))
+     (list glib
+           libxml2))
     (synopsis "G Structured File Library")
     (description "Libgsf aims to provide an efficient extensible I/O abstraction
 for dealing with different structured file formats.")
     (home-page "https://gitlab.gnome.org/GNOME/libgsf")
     (license
-     (list
-      ;; Library
-      license:lgpl2.1+
-      ;; Others
-      license:lgpl2.0+))))
+     (list license:lgpl2.1+             ;library
+           license:lgpl2.0+))))         ;others
 
 (define-public librsvg
   (package
