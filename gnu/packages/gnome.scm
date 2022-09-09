@@ -1440,7 +1440,7 @@ for creating UPnP devices and control points, written in C using
 (define-public gupnp-dlna
   (package
    (name "gupnp-dlna")
-   (version "0.10.5")
+   (version "0.12.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1448,8 +1448,8 @@ for creating UPnP devices and control points, written in C using
                                 name "-" version ".tar.xz"))
             (sha256
              (base32
-              "0spzd2saax7w776p5laixdam6d7smyynr9qszhbmq7f14y13cghj"))))
-   (build-system gnu-build-system)
+              "1rj8j2nz835slqs09bfp6hmyyf6v5azwjzin7v9jhmmwhmpvjlrx"))))
+   (build-system meson-build-system)
    (native-inputs
     (list gettext-minimal
           `(,glib "bin")
