@@ -12899,7 +12899,7 @@ Document Analysis and Recognition program.")
 (define-public libadwaita
   (package
     (name "libadwaita")
-    (version "1.1.0")
+    (version "1.2.rc")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libadwaita/"
@@ -12907,7 +12907,7 @@ Document Analysis and Recognition program.")
                                   "libadwaita-" version ".tar.xz"))
               (sha256
                (base32
-                "03h14mrm453bn03f48rmpf85pvg5cnzzab27cs1c43417s09ixdg"))))
+                "1syg7fkpcsw0q6fy3g79myb9m9bvrnh3rjrm6g4bfg1pnlqf1w22"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -12918,15 +12918,14 @@ Document Analysis and Recognition program.")
              (system "Xvfb :1 &")
              (setenv "DISPLAY" ":1"))))))
     (native-inputs
-     `(("sassc" ,sassc)
-       ("glib:bin" ,glib "bin")
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ("xvfb" ,xorg-server-for-tests)
-       ("gettext" ,gettext-minimal)))
-    (inputs
-     (list gobject-introspection libportal))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gtk-doc/stable
+           pkg-config
+           sassc
+           vala
+           xorg-server-for-tests))
     (propagated-inputs
      (list gtk))                        ;libadwaita-1.pc 'Requires' it
     (home-page "https://gnome.pages.gitlab.gnome.org/libadwaita/")
