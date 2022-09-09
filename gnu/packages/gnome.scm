@@ -4183,24 +4183,26 @@ controls using the Bonobo component framework.")
 (define-public libwnck
   (package
     (name "libwnck")
-    (version "3.32.0")
+    (version "40.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
+                                  (version-major version) "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1jp3p1lnwnwi6fxl2rz3166cmwzwy9vqz896anpwc3wdy9f875cm"))))
+                "04b63mh2i7kpq0iymx6fkyzdx8laymw3da2s0wsbwgzg2jhly4q3"))))
     (build-system meson-build-system)
     (native-inputs
-     (list pkg-config
-           `(,glib "bin") ; for glib-mkenums
-           gobject-introspection ; for g-ir-scanner
-           intltool))
+     (list gettext-minimal
+           `(,glib "bin")               ;for glib-mkenums
+           gobject-introspection        ;for g-ir-scanner
+           pkg-config))
     (propagated-inputs
-     (list gtk+ libxres startup-notification))
-    (home-page "https://developer.gnome.org/libwnck/")
+     (list gtk+
+           libxres
+           startup-notification))
+    (home-page "https://gitlab.gnome.org/GNOME/libwnck/")
     (synopsis "Window Navigator Construction Kit")
     (description
      "Libwnck is the Window Navigator Construction Kit, a library for use in
