@@ -3104,42 +3104,45 @@ some form of information without getting in the user's way.")
 (define-public libpeas
   (package
     (name "libpeas")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnome/sources/" name "/"
-                          (version-major+minor version)  "/"
-                          name "-" version ".tar.xz"))
-      (sha256
-       (base32
-        "18xrk1c1ixlhkmykcfiafrl2am470ws687xqvjlq40zwkcp5dx8b"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/" name "/"
+                           (version-major+minor version)  "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "03ixrhfkywcb409dd0hybyb6i291phwy8si4kc17g29fl07m49fn"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'start-xserver
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xorg-server (assoc-ref inputs "xorg-server"))
-                   (disp ":1"))
+             (let ((disp ":1"))
                (setenv "DISPLAY" disp)
                (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache")
                (setenv "XDG_CONFIG_HOME" "/tmp")
                ;; Tests require a running X server.
-               (system (format #f "~a/bin/Xvfb ~a &" xorg-server disp))
-               #t))))))
+               (system (format #f "~a ~a &"
+                               (search-input-file inputs "bin/Xvfb")
+                               disp))))))))
     (inputs
-     (list gtk+ glade3 python python-pygobject))
+     (list gtk+
+           glade3
+           python
+           python-pygobject))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list pkg-config
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           xorg-server-for-tests))
     (propagated-inputs
      ;; The .pc file "Requires" gobject-introspection.
      (list gobject-introspection))
-    (home-page "https://wiki.gnome.org/Libpeas")
+    (home-page "https://wiki.gnome.org/Projects/Libpeas")
     (synopsis "GObject plugin system")
     (description
      "Libpeas is a gobject-based plugin engine, targeted at giving every
