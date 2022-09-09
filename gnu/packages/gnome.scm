@@ -6384,7 +6384,7 @@ as possible!")
 (define-public grilo
   (package
     (name "grilo")
-    (version "0.3.13")
+    (version "0.3.15")
     (source
      (origin
        (method url-fetch)
@@ -6392,11 +6392,18 @@ as possible!")
                            (version-major+minor version) "/"
                            "grilo-" version ".tar.xz"))
        (sha256
-        (base32 "0ywjvh7xw4ql1q4fvl0q5n06n08pga1g1nc9l7c3x5214gr3fj6i"))))
+        (base32 "0bbvaxw2das8826663z23y0acbdmcvggwdh64ws9jrk56vvsqlpk"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'unpack 'set-HOME
+                          (lambda _
+                            ;; Tests require write access to HOME.
+                            (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list `(,glib "bin") ; for glib-mkenums and glib-genmarshal
-           intltool
+           gettext-minimal
+           gsettings-desktop-schemas
            pkg-config
            gobject-introspection
            gtk-doc/stable
@@ -6405,9 +6412,9 @@ as possible!")
      (list cyrus-sasl
            glib
            gtk+
-           libxml2
            liboauth
-           libsoup-minimal-2
+           libsoup
+           libxml2
            totem-pl-parser))
     (native-search-paths
      (list (search-path-specification
