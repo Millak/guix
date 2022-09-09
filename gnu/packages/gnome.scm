@@ -7354,7 +7354,7 @@ metadata in photo and video files of various formats.")
 (define-public shotwell
   (package
     (name "shotwell")
-    (version "0.30.16")
+    (version "0.31.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/shotwell/"
@@ -7362,7 +7362,7 @@ metadata in photo and video files of various formats.")
                                   "shotwell-" version ".tar.xz"))
               (sha256
                (base32
-                "1yhqfmz49qkls4i6xaznm5ybwzv19jxsqjdic60wn0ykvbxjr269"))))
+                "06awlix23y1cd89n6v9vip48cg08fjq8v6zaw38k5clrrv38y11v"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -7372,31 +7372,32 @@ metadata in photo and video files of various formats.")
            (lambda _
              (substitute* "build-aux/meson/postinstall.py"
                (("gtk-update-icon-cache") (which "true"))
-               (("update-desktop-database") (which "true")))
-             #t)))))
+               (("update-desktop-database") (which "true"))))))))
     (propagated-inputs
      (list dconf))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("vala" ,vala)))
+     (list gettext-minimal
+           `(,glib "bin")
+           itstool
+           pkg-config
+           python
+           vala-next))
     (inputs
-     `(("gcr" ,gcr)
-       ("gexiv2" ,gexiv2)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gstreamer" ,gstreamer)
-       ("json-glib" ,json-glib)
-       ("libgdata" ,libgdata)
-       ("libgee" ,libgee)
-       ("libgphoto2" ,libgphoto2)
-       ("libgudev" ,libgudev)
-       ("libraw" ,libraw)
-       ("libxml2" ,libxml2)
-       ("sqlite" ,sqlite)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+     (list gcr
+           gexiv2
+           gst-plugins-base
+           gstreamer
+           json-glib
+           libgdata
+           libgee
+           libgphoto2
+           libgudev
+           libraw
+           libsecret
+           libwebp
+           libxml2
+           sqlite
+           webkitgtk))
     (home-page "https://wiki.gnome.org/Apps/Shotwell")
     (synopsis "Photo manager for GNOME 3")
     (description
