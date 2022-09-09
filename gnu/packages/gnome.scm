@@ -2762,7 +2762,7 @@ and how they are displayed (View).")
 (define-public gtg
   (package
     (name "gtg")
-    (version "0.5")
+    (version "0.6")
     (source
      (origin
        (method git-fetch)
@@ -2771,37 +2771,38 @@ and how they are displayed (View).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b2slm7kjq6q8c7v4m7aqc8m1ynjxn3bl7445srpv1xc0dilq403"))))
+        (base32 "1wcivqp4z3a2jdr2wdrldzwy9v6hlfp5sk0pmh80znlgvl7q3jiv"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/gtg"))
-                   (pylib (string-append (assoc-ref outputs "out")
-                                         "/lib/python"
-                                         ,(version-major+minor
-                                           (package-version python))
-                                         "/site-packages")))
-               (wrap-program prog
-                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-               #t))))))
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules `(,@%meson-build-system-modules
+                           (guix build python-build-system))
+      #:modules '((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/gtg")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                       ,(python:site-packages inputs outputs)))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           python))
     (inputs
-     (list librsvg
+     (list bash-minimal
+           librsvg
            gsettings-desktop-schemas
            gtk+
            pango
+           python
            python-dbus
            python-liblarch
            python-lxml
