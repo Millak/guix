@@ -4516,7 +4516,7 @@ targeting the GNOME stack simple.")
 (define-public vala-next
   (package
     (inherit vala)
-    (version "0.56.2")
+    (version "0.56.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/vala/"
@@ -4524,7 +4524,7 @@ targeting the GNOME stack simple.")
                                   "vala-" version ".tar.xz"))
               (sha256
                (base32
-                "0k0jj3xwjq222x0hbqqy5bykhgk1f1wsb85bqcdgsnbqn6dn3jb6"))))
+                "1gwrnr0d0bqkh6m4bgz39mh3pcswcj43hyijlwgwp2bvpwhn41p1"))))
     (arguments
      (list
       #:configure-flags #~(list "CC=gcc" "--enable-coverage")
