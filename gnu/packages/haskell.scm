@@ -763,7 +763,8 @@ interactive environment for the functional language Haskell.")
            (uri (string-append
                  "https://www.haskell.org/ghc/dist/"
                  version "/" name "-" version "-testsuite.tar.xz"))
-           (patches (search-patches "ghc-testsuite-dlopen-pie.patch"))
+           (patches (search-patches "ghc-testsuite-dlopen-pie.patch"
+                                    "ghc-testsuite-grep-compat.patch"))
            (sha256
             (base32
              "0pw9r91g2np3i806g2f4f8z4jfdd7mx226cmdizk4swa7av1qf91"))
@@ -844,7 +845,8 @@ interactive environment for the functional language Haskell.")
            (uri (string-append
                  "https://www.haskell.org/ghc/dist/"
                  version "/ghc-" version "-testsuite.tar.xz"))
-           (patches (search-patches "ghc-testsuite-dlopen-pie.patch"))
+           (patches (search-patches "ghc-testsuite-dlopen-pie.patch"
+                                    "ghc-testsuite-grep-compat.patch"))
            (sha256
             (base32
              "0c55pj2820q26rikhpf636sn4mjgqsxjrl94vsywrh79dxp3k14z"))
@@ -902,7 +904,8 @@ interactive environment for the functional language Haskell.")
            (uri (string-append
                  "https://www.haskell.org/ghc/dist/"
                  version "/ghc-" version "-testsuite.tar.xz"))
-           (patches (search-patches "ghc-testsuite-dlopen-pie.patch"))
+           (patches (search-patches "ghc-testsuite-dlopen-pie.patch"
+                                    "ghc-testsuite-grep-compat.patch"))
            (sha256
             (base32
              "1zl25gg6bpx5601k8h3cqnns1xfc0nqgwnh8jvn2s65ra3f2g1nz"))

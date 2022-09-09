@@ -1160,6 +1160,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghc-4.patch				\
   %D%/packages/patches/ghc-8.0-fall-back-to-madv_dontneed.patch	\
   %D%/packages/patches/ghc-testsuite-dlopen-pie.patch		\
+  %D%/packages/patches/ghc-testsuite-grep-compat.patch		\
   %D%/packages/patches/ghc-language-haskell-extract-ghc-8.10.patch	\
   %D%/packages/patches/ghostscript-no-header-id.patch		\
   %D%/packages/patches/ghostscript-no-header-uuid.patch		\
