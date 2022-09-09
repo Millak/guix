@@ -3224,18 +3224,14 @@ Python.")
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
-    (version "0.2.6")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hmmlearn" version))
        (sha256
         (base32
-         "1my0j3rzp17438idr32ssh0j969a98yjblx5igx5kgiiigr9qa1a"))
-       (snippet
-        #~(begin
-            (use-modules ((guix build utils)))
-            (delete-file "lib/hmmlearn/_hmmc.c")))))
+         "1qgnf1kdxicygy8nvpv866iqvwq0rc6xkd3s6slmvxvsy8h2fjvb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3247,7 +3243,11 @@ Python.")
                (with-directory-excursion (string-append (assoc-ref outputs "out") "/lib")
                  (invoke "python" "-m" "pytest"))))))))
     (propagated-inputs
-     (list python-cython python-numpy python-scikit-learn python-scipy
+     (list pybind11
+           python-cython
+           python-numpy
+           python-scikit-learn
+           python-scipy
            python-setuptools-scm))
     (native-inputs
      (list python-pytest))
