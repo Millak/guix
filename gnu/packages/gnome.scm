@@ -4606,7 +4606,7 @@ editors, IDEs, etc.")
   (package
     (inherit vte)
     (name "vte-ng")
-    (version "0.58.2.a")
+    (version "0.59.0")
     (home-page "https://github.com/thestinger/vte-ng")
     (source (origin
               (method git-fetch)
@@ -4614,7 +4614,7 @@ editors, IDEs, etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rnm5c6m3abbm81jsfdas0y80z299ny54gr4syn4bfrms3s4g19l"))))
+                "03ffhjc0fq9p25y1b2c0a51jn7y2bc0acxsgymhcb3pyijc8ykjm"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "-Ddocs=false")))
