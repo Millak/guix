@@ -1038,7 +1038,7 @@ Google's C++ code base.")
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:configure-flags flags)
-          `(cons* "-DBUILD_TESTING=ON"
+          `(cons* "-DABSL_BUILD_TESTING=ON"
                   (delete "-DABSL_RUN_TESTS=ON" ,flags))))))))
 
 (define-public pegtl
