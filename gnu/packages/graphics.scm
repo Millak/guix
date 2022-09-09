@@ -324,7 +324,8 @@ objects!")
                 "0fsg13pg72ac51l3fkzvyf7h9mzbvfxp9vfjfiwkyvx6hbm83apj"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:phases
+     (list #:configure-flags #~'("--disable-static")
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-pkg-config-file
                  (lambda _
