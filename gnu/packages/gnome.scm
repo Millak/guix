@@ -6583,92 +6583,89 @@ which can read a large number of file formats.")
     (license license:gpl2+)))
 
 (define-public rhythmbox
- (package
-   (name "rhythmbox")
-   (version "3.4.4")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnome/sources/rhythmbox/"
-                                (version-major+minor version) "/"
-                                "rhythmbox-" version ".tar.xz"))
-            (sha256
-             (base32
-              "142xcvw4l19jyr5i72nbnrihs953pvrrzcbijjn9dxmxszbv03pf"))))
-   (build-system glib-or-gtk-build-system)
-   (arguments
-    `(#:configure-flags
-      (list "--enable-lirc"
-            "--enable-python"
-            "--enable-vala"
-            "--with-brasero"
-            "--with-gudev"
-            "--with-libsecret")
+  (package
+    (name "rhythmbox")
+    (version "3.4.6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/rhythmbox/"
+                                  (version-major+minor version) "/"
+                                  "rhythmbox-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0d5hbsdk2p8w567mfzy4kk8xn4d227hrbyy857li3r2mrq884mpr"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
       #:phases
-      (modify-phases %standard-phases
-        (add-after
-         'install 'wrap-rhythmbox
-         (lambda* (#:key inputs outputs #:allow-other-keys)
-           (let ((out               (assoc-ref outputs "out"))
-                 (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
-                 (gst-plugin-path   (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                 (grl-plugin-path   (getenv "GRL_PLUGIN_PATH"))
-                 (python-path       (getenv "GUIX_PYTHONPATH")))
-             (wrap-program (string-append out "/bin/rhythmbox")
-               `("GI_TYPELIB_PATH"        ":" prefix (,gi-typelib-path))
-               `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-               `("GRL_PLUGIN_PATH"        ":" prefix (,grl-plugin-path))
-               `("GUIX_PYTHONPATH"             ":" prefix (,python-path))))
-           #t)))))
-   (propagated-inputs
-    (list dconf))
-   (native-inputs
-    `(("itstool" ,itstool)
-      ("intltool" ,intltool)
-      ("glib" ,glib "bin")
-      ("gobject-introspection" ,gobject-introspection)
-      ("desktop-file-utils" ,desktop-file-utils)
-      ("pkg-config" ,pkg-config)
-      ("xmllint" ,libxml2)))
-   (inputs
-    `(("json-glib" ,json-glib)
-      ("tdb" ,tdb)
-      ("gnome-desktop" ,gnome-desktop)
-      ("python" ,python)
-      ("python-pygobject" ,python-pygobject)
-      ("vala" ,vala)
-      ("gmime" ,gmime)
-      ("adwaita-icon-theme" ,adwaita-icon-theme)
-      ("grilo" ,grilo)
-      ("grilo-plugins" ,grilo-plugins)
-      ("gstreamer" ,gstreamer)
-      ("gst-plugins-base" ,gst-plugins-base)
-      ("gst-plugins-good" ,gst-plugins-good)
-      ("totem-pl-parser" ,totem-pl-parser)
-      ("libgudev" ,libgudev)
-      ;;("libmtp" ,libmtp) FIXME: Not detected
-      ("libsecret" ,libsecret)
-      ("libsoup" ,libsoup)
-      ("libnotify" ,libnotify)
-      ("libpeas" ,libpeas)
-      ("libsoup" ,libsoup-minimal-2)
-      ("lirc" ,lirc)
-      ;; TODO: clutter* only used by visualizer plugin, which also requires mx
-      ;;("clutter" ,clutter)
-      ;;("clutter-gtk" ,clutter-gtk)
-      ;;("clutter-gst" ,clutter-gst)
-      ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-      ("atk" ,atk)
-      ("pango" ,pango)
-      ("gtk+" ,gtk+)
-      ;; TODO:
-      ;;  * libgpod
-      ;;  * mx
-      ("brasero" ,brasero)))
-   (home-page "https://wiki.gnome.org/Apps/Rhythmbox")
-   (synopsis "Music player for GNOME")
-   (description "Rhythmbox is a music playing application for GNOME.  It
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (add-after 'install 'wrap-rhythmbox
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/rhythmbox")
+                `("GI_TYPELIB_PATH"        ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))
+                `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
+                `("GRL_PLUGIN_PATH"        ":" prefix
+                  (,(getenv "GRL_PLUGIN_PATH")))
+                `("GUIX_PYTHONPATH"             ":" prefix
+                  (,(getenv "GUIX_PYTHONPATH")))))))))
+    (propagated-inputs
+     (list dconf))
+    (native-inputs
+     (list desktop-file-utils
+           gettext-minimal
+           gobject-introspection
+           `(,glib "bin")
+           itstool
+           pkg-config
+           vala))
+    (inputs
+     ;; TODO:
+     ;;  * libgpod
+     ;;  * mx
+     ;; TODO: clutter* only used by visualizer plugin, which also requires mx
+     ;;clutter
+     ;;clutter-gtk
+     ;;clutter-gst
+     (list adwaita-icon-theme
+           atk
+           bash-minimal
+           brasero
+           json-glib
+           gmime
+           gnome-desktop
+           grilo
+           grilo-plugins
+           gsettings-desktop-schemas
+           gst-plugins-base
+           gst-plugins-good
+           gstreamer
+           gtk+
+           libgudev
+           libnotify
+           libpeas
+           libsecret
+           libmtp
+           libsoup-minimal-2
+           libxml2
+           lirc
+           pango
+           python
+           python-pygobject
+           tdb
+           totem-pl-parser))
+    (home-page "https://wiki.gnome.org/Apps/Rhythmbox")
+    (synopsis "Music player for GNOME")
+    (description "Rhythmbox is a music playing application for GNOME.  It
 supports playlists, song ratings, and any codecs installed through gstreamer.")
-   (license license:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public eog
   (package
