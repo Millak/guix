@@ -310,47 +310,53 @@ objects!")
     (license license:lgpl2.1+)))
 
 (define-public autotrace
-  (let ((commit "travis-20200219.65")
-        (version-base "0.40.0"))
-    (package
-      (name "autotrace")
-      (version (string-append version-base "-"
-                              (if (string-prefix? "travis-" commit)
-                                  (string-drop commit 7)
-                                  commit)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/autotrace/autotrace")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (patches (search-patches "autotrace-glib-compat.patch"))
-                (sha256
-                 (base32
-                  "1p9gy2vg0jzwjwz34lj95vvknnyswpc4qq63j83bh0m1gz09qh2w"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       (list which
-             pkg-config
-             autoconf
-             automake
-             intltool
-             libtool
-             gettext-minimal))
-      (inputs
-       (list glib
-             libjpeg-turbo
-             libpng
-             imagemagick
-             pstoedit))
-      (home-page "https://github.com/autotrace/autotrace")
-      (synopsis "Bitmap to vector graphics converter")
-      (description "AutoTrace is a utility for converting bitmap into vector
+  (package
+    (name "autotrace")
+    (version "0.31.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/autotrace/autotrace")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fsg13pg72ac51l3fkzvyf7h9mzbvfxp9vfjfiwkyvx6hbm83apj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-pkg-config-file
+                 (lambda _
+                   ;; autotrace can be built against either GraphicsMagick or
+                   ;; ImageMagick.  However the pkg-config file refers to
+                   ;; non-existent MAGICK_ variables instead of GRAPHICSMAGICK_
+                   ;; or IMAGEMAGICK_; fix that.
+                   (substitute* "autotrace.pc.in"
+                     (("@MAGICK_(LIBS|CFLAGS)@" _ var)
+                      (string-append "@IMAGEMAGICK_" var "@"))))))))
+    (native-inputs
+     (list which
+           autoconf
+           automake
+           libtool
+           intltool
+           pkg-config
+           procps))                     ;for tests
+    (inputs
+     (list glib
+           imagemagick
+           libjpeg-turbo
+           libpng
+           pstoedit))
+    (home-page "https://github.com/autotrace/autotrace")
+    (synopsis "Bitmap to vector graphics converter")
+    (description "AutoTrace is a utility for converting bitmap into vector
 graphics.  It can trace outlines and midlines, effect color reduction or
 despeckling and has support for many input and output formats.  It can be used
 with the @command{autotrace} utility or as a C library, @code{libautotrace}.")
-      (license (list license:gpl2+         ;for the utility itself
-                     license:lgpl2.1+))))) ;for use as a library
+    (license (list license:gpl2+        ;for the utility itself
+                   license:lgpl2.1+)))) ;for use as a library
 
 (define-public embree
   (package
