@@ -8095,7 +8095,7 @@ users.")
 (define-public network-manager
   (package
     (name "network-manager")
-    (version "1.40.0")
+    (version "1.41.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/NetworkManager/"
@@ -8105,7 +8105,7 @@ users.")
                                        "network-manager-meson.patch"))
               (sha256
                (base32
-                "00zwx7cvl8p8xv5h8yvlj2r5wycbvbqia7z4hjmmvjicpiby1rxf"))))
+                "0v5a5fw1zwa94ksz6d7hyj14wwdxzmswgm81ryhxmyn3nrcf1akg"))))
     (build-system meson-build-system)
     (outputs '("out"
                "doc"))                  ; 8 MiB of gtk-doc HTML
@@ -8193,47 +8193,47 @@ users.")
     (propagated-inputs
      (list glib))
     (native-inputs
-     (list `(,glib "bin")               ; for gdbus-codegen
-           gtk-doc/stable
-           gobject-introspection
-           docbook-xml
+     (list docbook-xml
            docbook-xsl
-           intltool
-           libxslt
+           gettext-minimal
+           `(,glib "bin")               ;for gdbus-codegen
+           gobject-introspection
+           gtk-doc/stable
            libxml2
+           libxslt
+           perl
            pkg-config
-           vala
-           ;; For testing.
-           python-wrapper
            python-dbus
-           python-pygobject))
+           python-pygobject
+           python-wrapper
+           vala))
     (inputs
-     (list curl
+     (list audit
+           curl
            cyrus-sasl
            dbus-glib
            dnsmasq
+           elogind
            eudev
            gnutls
            iptables
            isc-dhcp
-           iwd                 ; wpa_supplicant alternative
+           iwd                          ;wpa_supplicant alternative
            jansson
-           audit
            libgcrypt
            libgudev
            libndp
            libnl
+           libpsl
            libselinux
-           libsoup
            mobile-broadband-provider-info
            modem-manager
-           newt               ;for the 'nmtui' console interface
-           openresolv   ; alternative resolv.conf manager
+           newt                         ;for the 'nmtui' console interface
+           openresolv                   ;alternative resolv.conf manager
            polkit
            ppp
            readline
-           util-linux
-           elogind))
+           util-linux))
     (synopsis "Network connection manager")
     (home-page "https://wiki.gnome.org/Projects/NetworkManager")
     (description
