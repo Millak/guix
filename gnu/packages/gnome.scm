@@ -2721,32 +2721,27 @@ schemas for settings shared by various components of the GNOME desktop.")
 (define-public python-liblarch
   (package
     (name "python-liblarch")
-    (version "3.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/getting-things-gnome/liblarch")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0xv2mfvyzipbny3iz8vll77wsqxfwh28xj6bj1ff0l452waph45m"))))
+    (version "3.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/getting-things-gnome/liblarch")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "125rmrdbc84lapfh8c77zxnmwas20xdfamqmilhv1smkxn2q4sh3"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'start-xserver
-           (lambda* (#:key inputs #:allow-other-keys)
-             (system (format #f "~a/bin/Xvfb :1 &"
-                             (assoc-ref inputs "xorg-server")))
-             (setenv "DISPLAY" ":1")
-             #t)))))
-    (native-inputs
-     (list xorg-server-for-tests))
-    (inputs
-     (list gtk+))
-    (propagated-inputs
-     (list python-pygobject))
+     `(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'start-xserver
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (system (format #f "~a/bin/Xvfb :1 &"
+                                      (assoc-ref inputs "xorg-server")))
+                      (setenv "DISPLAY" ":1"))))))
+    (native-inputs (list xorg-server-for-tests))
+    (inputs (list gtk+))
+    (propagated-inputs (list python-pygobject))
     (home-page "https://wiki.gnome.org/Projects/liblarch")
     (synopsis "Library to easily handle complex data structures")
     (description
