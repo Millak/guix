@@ -7410,7 +7410,7 @@ share them with others via social networking and more.")
 (define-public file-roller
   (package
     (name "file-roller")
-    (version "3.40.0")
+    (version "3.42.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/file-roller/"
@@ -7418,22 +7418,27 @@ share them with others via social networking and more.")
                                   "file-roller-" version ".tar.xz"))
               (sha256
                (base32
-                "039w1dcpa5ypmv6sm634alk9vbcdkyvy595vkh5gn032jsiqca2a"))))
+                "1iq24g2z7kf1a6kn9asp96lc59r8pxxjvcmm5r7zy47cadnqwhqw"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'install 'disable-gtk-update-icon-cache
+                          (lambda _
+                            (setenv "DESTDIR" "/"))))))
     (native-inputs
-     (list desktop-file-utils ; for update-desktop-database
-           intltool
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
            itstool
            pkg-config
-           python
-           `(,gtk+ "bin") ; gtk-update-icon-cache
-           `(,glib "bin")))
+           python))
     ;; TODO: Add libnautilus.
     (inputs
      (list gtk+
-           gdk-pixbuf
            json-glib
            libarchive
+           libhandy
            libnotify
            nettle
            libxml2))
