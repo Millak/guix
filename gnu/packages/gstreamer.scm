@@ -897,7 +897,7 @@ model to base your own plug-in on, here it is.")
             openjpeg
             ;; openni2
             opensles
-            openssl
+            openssl-1.1
             opus
             orc
             pango
