@@ -3259,29 +3259,28 @@ the GNOME desktop environment.")
                                 (files '("lib/glade/modules")))))))
 
 (define-public blueprint-compiler
-  (let ((commit "87cedc2c7e48b01dc1b07aef937e2fe02111b18c"))
-    (package
-      (name "blueprint-compiler")
-      (version "0.2.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url
-                       "https://gitlab.gnome.org/jwestman/blueprint-compiler")
-                      (commit commit)))
-                (file-name (string-append name "-" commit "-checkout"))
-                (sha256
-                 (base32
-                  "1mrj5dyjf5d325yc28fpph588qfsz6bm2nx5nnsgcv02bagplxid"))))
-      (build-system meson-build-system)
-      (native-inputs (list gobject-introspection gtk))
-      (inputs (list python))
-      (synopsis "Template markup language")
-      (description
-       "Blueprint is a markup language for GTK user interfaces.  Internally, it
+  (package
+    (name "blueprint-compiler")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://gitlab.gnome.org/jwestman/blueprint-compiler")
+                    (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0hj7f4xhwjc4x32r3lswwclbw37fw3spy806g4plkmym25hz4ydy"))))
+    (build-system meson-build-system)
+    (native-inputs (list gtk python-pygobject python))
+    (inputs (list python))
+    (synopsis "Template markup language")
+    (description
+     "Blueprint is a markup language for GTK user interfaces.  Internally, it
 compiles to GTKBuilder XML.")
-      (home-page "https://gitlab.gnome.org/jwestman/blueprint-compiler")
-      (license license:lgpl3+))))
+    (home-page "https://gitlab.gnome.org/jwestman/blueprint-compiler")
+    (license license:lgpl3+)))
 
 (define-public cambalache
   (package
