@@ -6736,7 +6736,7 @@ supports image conversion, rotation, and slideshows.")
   ;; 'XDG_DATA_DIRS' appropriately set.
   (package
     (name "eog-plugins")
-    (version "3.26.8")
+    (version "42.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/eog-plugins/"
@@ -6744,30 +6744,22 @@ supports image conversion, rotation, and slideshows.")
                                   "eog-plugins-" version ".tar.xz"))
               (sha256
                (base32
-                "1dcxdjp7x092wn0iq7975f9b05ksb5kl5mxmyiqmydrja91ryw40"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'fix-plugins-path
-           ;; XXX: EOG looks its plugins in "share/eog/plugins", not in
-           ;; "lib/eog/plugins".
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (plugins (string-append out "/share/eog/plugins")))
-               (mkdir (dirname plugins))
-               (symlink (string-append out "/lib/eog/plugins") plugins)))))))
+                "0prymlrfh66p03va5aj30wazshp7bn80gzcsj9dgsmss2k512wlb"))))
+    (build-system meson-build-system)
     (home-page "https://wiki.gnome.org/Apps/EyeOfGnome/Plugins")
     (synopsis "Extensions for the Eye of GNOME image viewer")
     (native-inputs
-     (list pkg-config gettext-minimal))
+     (list gettext-minimal
+           pkg-config
+           python))
     (inputs
      (list eog
            glib
            gtk+
-           libpeas
+           libchamplain
            libexif
-           libchamplain))
+           libgdata
+           libpeas))
     (description
      "This package provides plugins for the Eye of GNOME (EOG) image viewer,
 notably:
