@@ -7274,7 +7274,7 @@ wraps things up in a developer-friendly way.")
 (define-public libgee
   (package
     (name "libgee")
-    (version "0.20.3")
+    (version "0.20.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libgee/"
@@ -7282,19 +7282,19 @@ wraps things up in a developer-friendly way.")
                                   "libgee-" version ".tar.xz"))
               (sha256
                (base32
-                "1pm525wm11dhwz24m8bpcln9547lmrigl6cxf3qsbg4cr3pyvdfh"))))
+                "060mbj6ihca315a6wqj47mfzm2881azwm5bl0vwjg9ymay4km1ii"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-introspection-install-dir
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-introspection-install-dir
+            (lambda _
               (substitute* "gee/Makefile.in"
                 (("@INTROSPECTION_GIRDIR@")
-                 (string-append out "/share/gir-1.0/"))
+                 (string-append #$output "/share/gir-1.0/"))
                 (("@INTROSPECTION_TYPELIBDIR@")
-                 (string-append out "/lib/girepository-1.0/")))))))))
+                 (string-append #$output "/lib/girepository-1.0/"))))))))
     (native-inputs
      (list `(,glib "bin") pkg-config))
     (inputs
