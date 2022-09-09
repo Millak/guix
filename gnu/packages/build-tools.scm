@@ -341,8 +341,7 @@ resembles Python.")
               (patches (search-patches
                         "meson-allow-dirs-outside-of-prefix.patch"))))))
 
-;; TODO: Bump this in the next rebuild cycle.
-(define-public meson meson-0.60)
+(define-public meson meson-0.63)
 
 (define-public meson-python
   (package
