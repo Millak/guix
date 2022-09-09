@@ -8418,7 +8418,7 @@ Cisco's AnyConnect SSL VPN.")
 (define-public mobile-broadband-provider-info
   (package
     (name "mobile-broadband-provider-info")
-    (version "20190116")
+    (version "20220725")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8427,10 +8427,11 @@ Cisco's AnyConnect SSL VPN.")
                     "mobile-broadband-provider-info-" version ".tar.xz"))
               (sha256
                (base32
-                "16y5lc7pfdvai9c8xwb825zc3v46039gghbip13fqslf5gw11fic"))))
+                "1k9acdnl4mr6aqh11xbklv2gyww82jddaqmw4aqdzwl7q80swia8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests
+    (native-inputs (list libxslt))
     (home-page "https://wiki.gnome.org/Projects/NetworkManager")
     (synopsis "Database of broadband connection configuration")
     (description "Database of broadband connection configuration.")
