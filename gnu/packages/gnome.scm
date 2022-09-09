@@ -5976,7 +5976,7 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
 (define-public devhelp
   (package
     (name "devhelp")
-    (version "41.2")
+    (version "41.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -5984,7 +5984,7 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1lk0gycjvs6gibhy0zs3ffkrkzrkyl5nkp7n60hgpa6syjq91apc"))))
+                "1rxn6kciyfdhnjrcjyf02cn3rki2xgwb4wrg5plbzjvpqasq66ml"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -5994,22 +5994,18 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "build-aux/meson/meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))))
-         (add-after 'unpack 'fix-devhelp-gir-inputs
-           ;; It still mentions webkitgtk 4.0
-           (lambda _
-             (substitute* "devhelp/meson.build"
-               (("'WebKit2-4.0'") "'WebKit2-4.1'")))))))
+               (("gtk-update-icon-cache") "true")))))))
     (propagated-inputs
      (list gsettings-desktop-schemas))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("gobject-introspection" ,gobject-introspection)
-       ("glib:bin" ,glib "bin") ; for glib-mkmenus
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           gobject-introspection
+           `(,glib "bin")               ; for glib-mkmenus
+           itstool
+           pkg-config))
     (inputs
-     (list amtk gsettings-desktop-schemas webkitgtk))
+     (list amtk
+           webkitgtk))
     (home-page "https://wiki.gnome.org/Apps/Devhelp")
     (synopsis "API documentation browser for GNOME")
     (description
@@ -6020,19 +6016,8 @@ throughout GNOME for API documentation).")
 
 (define-public devhelp-with-libsoup2
   (package/inherit devhelp
-    (arguments
-     (substitute-keyword-arguments (package-arguments devhelp)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases %standard-phases
-           (add-after 'unpack 'skip-gtk-update-icon-cache
-             ;; Don't create 'icon-theme.cache'.
-             (lambda _
-               (substitute* "build-aux/meson/meson_post_install.py"
-                 (("gtk-update-icon-cache") "true"))))))))
-    (inputs
-     `(("amtk" ,amtk)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))))
+    (inputs (modify-inputs (package-inputs devhelp)
+              (replace "webkitgtk" webkitgtk-with-libsoup2)))))
 
 (define-public cogl
   (package
