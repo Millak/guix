@@ -1497,89 +1497,85 @@ also walk each side of a merge and test those changes individually.")
         (base32 "05xw1pmagvkrbzga5pgl3xk9qyc6b5x73f842454f3w9ijspa8zy"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ; no tests
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (delete 'build)
-                  (add-before 'install 'patch-scripts
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((perl (search-input-file inputs "/bin/perl")))
-                        ;; This seems to take care of every shell script that
-                        ;; invokes Perl.
-                        (substitute* (find-files ".")
-                          ((" perl -")
-                           (string-append " " perl " -")))
+     (list #:tests? #f ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (delete 'build)
+               (add-before 'install 'patch-scripts
+                 (lambda* _
+                   ;; This seems to take care of every shell script that
+                   ;; invokes Perl.
+                   (substitute* (find-files ".")
+                     ((" perl -")
+                      (string-append " " #$perl "/bin/perl" " -")))
 
-                        (substitute* (find-files "src/triggers" ".*")
-                          ((" sed ")
-                           (string-append " " (which "sed") " ")))
+                   (substitute* (find-files "src/triggers" ".*")
+                     ((" sed ")
+                      (string-append " " #$sed "/bin/sed" " ")))
 
-                        (substitute*
-                            '("src/triggers/post-compile/update-gitweb-access-list"
-                              "src/triggers/post-compile/ssh-authkeys-split"
-                              "src/triggers/upstream")
-                          ((" grep ")
-                           (string-append " " (which "grep") " ")))
+                   (substitute*
+                       '("src/triggers/post-compile/update-gitweb-access-list"
+                         "src/triggers/post-compile/ssh-authkeys-split"
+                         "src/triggers/upstream")
+                     ((" grep ")
+                      (string-append " " #$grep "/bin/grep" " ")))
 
-                        ;; Avoid references to the store in authorized_keys.
-                        ;; This works because gitolite-shell is in the PATH.
-                        (substitute* "src/triggers/post-compile/ssh-authkeys"
-                          (("\\$glshell \\$user")
-                           "gitolite-shell $user")))))
-                  (add-before 'install 'patch-source
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; Gitolite uses cat to test the readability of the
-                      ;; pubkey
-                      (substitute* "src/lib/Gitolite/Setup.pm"
-                        (("\"cat ")
-                         (string-append "\"" (which "cat") " "))
-                        (("\"ssh-keygen")
-                         (string-append "\"" (which "ssh-keygen"))))
+                   ;; Avoid references to the store in authorized_keys.
+                   ;; This works because gitolite-shell is in the PATH.
+                   (substitute* "src/triggers/post-compile/ssh-authkeys"
+                     (("\\$glshell \\$user")
+                      "gitolite-shell $user"))))
+               (add-before 'install 'patch-source
+                 (lambda* _
+                   ;; Gitolite uses cat to test the readability of the
+                   ;; pubkey
+                   (substitute* "src/lib/Gitolite/Setup.pm"
+                     (("\"cat ")
+                      (string-append "\"" #$coreutils "/bin/cat" " "))
+                     (("\"ssh-keygen")
+                      (string-append "\"" #$openssh "/bin/ssh-keygen")))
 
-                      (substitute* '("src/lib/Gitolite/Hooks/PostUpdate.pm"
-                                     "src/lib/Gitolite/Hooks/Update.pm")
-                        (("/usr/bin/perl")
-                         (search-input-file inputs "/bin/perl")))
+                   (substitute* '("src/lib/Gitolite/Hooks/PostUpdate.pm"
+                                  "src/lib/Gitolite/Hooks/Update.pm")
+                     (("/usr/bin/perl")
+                      (string-append #$perl "/bin/perl")))
 
-                      (substitute* "src/lib/Gitolite/Common.pm"
-                        (("\"ssh-keygen")
-                         (string-append "\"" (which "ssh-keygen")))
-                        (("\"logger\"")
-                         (string-append "\""
-                                        (assoc-ref inputs "inetutils")
-                                        "/bin/logger\"")))
+                   (substitute* "src/lib/Gitolite/Common.pm"
+                     (("\"ssh-keygen")
+                      (string-append "\"" #$openssh "/bin/ssh-keygen"))
+                     (("\"logger\"")
+                      (string-append "\"" #$inetutils "/bin/logger\"")))
 
-                      (substitute* "src/lib/Gitolite/Cache.pm"
-                        (("/usr/sbin/redis-server") "redis-server"))
+                   (substitute* "src/lib/Gitolite/Cache.pm"
+                     (("/usr/sbin/redis-server") "redis-server"))
 
-                      (substitute* "src/commands/svnserve"
-                        (("/usr/bin/svnserve") "svnserve"))))
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((output (assoc-ref outputs "out"))
-                             (sharedir (string-append output "/share/gitolite"))
-                             (bindir (string-append output "/bin")))
-                        (mkdir-p sharedir)
-                        (mkdir-p bindir)
-                        (invoke "./install" "-to" sharedir)
-                        ;; Create symlinks for executable scripts in /bin.
-                        (for-each (lambda (script)
-                                    (symlink (string-append sharedir "/" script)
-                                             (string-append bindir "/" script)))
-                                  '("gitolite" "gitolite-shell")))))
-                  (add-after 'install 'wrap-scripts
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out"))
-                            (coreutils (assoc-ref inputs "coreutils"))
-                            (findutils (assoc-ref inputs "findutils"))
-                            (git (assoc-ref inputs "git")))
-                        (for-each (lambda (file-name)
-                                    (wrap-program (string-append out file-name)
-                                      `("PATH" ":" prefix
-                                        ,(map (lambda (dir)
-                                                (string-append dir "/bin"))
-                                              (list out coreutils findutils git)))))
-                                  '("/bin/gitolite" "/bin/gitolite-shell"))))))))
+                   (substitute* "src/commands/svnserve"
+                     (("/usr/bin/svnserve") "svnserve"))))
+               (replace 'install
+                 (lambda* _
+                   (let* ((sharedir (string-append #$output "/share/gitolite"))
+                          (bindir (string-append #$output "/bin")))
+                     (mkdir-p sharedir)
+                     (mkdir-p bindir)
+                     (invoke "./install" "-to" sharedir)
+                     ;; Create symlinks for executable scripts in /bin.
+                     (for-each (lambda (script)
+                                 (symlink (string-append sharedir "/" script)
+                                          (string-append bindir "/" script)))
+                               '("gitolite" "gitolite-shell")))))
+               (add-after 'install 'wrap-scripts
+                 (lambda* _
+                   (for-each (lambda (file-name)
+                               (wrap-program (string-append #$output file-name)
+                                 `("PATH" ":" prefix
+                                   ,(map (lambda (dir)
+                                           (string-append dir "/bin"))
+                                         (list #$output
+                                               #$coreutils
+                                               #$findutils
+                                               #$git)))))
+                             '("/bin/gitolite" "/bin/gitolite-shell")))))))
     (inputs
      (list bash-minimal coreutils findutils git inetutils openssh perl))
     (home-page "https://gitolite.com")
