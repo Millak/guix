@@ -27,6 +27,7 @@
 
 (define-module (gnu packages imagemagick)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
   #:use-module (guix download)
@@ -228,15 +229,16 @@ script.")
          "0x96wcspcqmkcy7jagfifgq2iamcf0ql9swvn6f2n79mb7dxj36n"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--with-frozenpaths"
-             "--enable-shared=yes"
-             "--with-x=yes"
-             "--with-quantum-depth=16" ; required by Octave
-             "--enable-quantum-library-names"
-             (string-append "--with-gs-font-dir="
-                            (search-input-directory
-                             %build-inputs "share/fonts/type1/ghostscript")))))
+     (list
+      #:configure-flags
+      #~(list "--with-frozenpaths"
+              "--enable-shared=yes"
+              "--with-x=yes"
+              "--with-quantum-depth=16" ;required by Octave
+              "--enable-quantum-library-names"
+              (string-append "--with-gs-font-dir="
+                             (search-input-directory
+                              %build-inputs "share/fonts/type1/ghostscript")))))
     (inputs
      (list bzip2
            font-ghostscript
