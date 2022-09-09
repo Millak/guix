@@ -328,7 +328,7 @@ resembles Python.")
 (define-public meson-0.63
   (package
     (inherit meson)
-    (version "0.63.1")
+    (version "0.63.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mesonbuild/meson/"
@@ -336,7 +336,7 @@ resembles Python.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1sb5rdra5zc6c3ni8x65zs7r7vsnbarammf5440zzmhkf8li7zh6"))))))
+                "1gwba75z47m2hv3w08gw8sgqgbknjr7rj1qwr510bgknxwbjy8hn"))))))
 
 (define-public premake4
   (package
