@@ -6670,7 +6670,7 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
 (define-public eog
   (package
     (name "eog")
-    (version "42.2")
+    (version "42.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -6678,7 +6678,7 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0ph4b05cjlkzbn8vil4hjkwvfr1cp819yi2qifp418p15rm4lk8f"))))
+                "0fpl8wz1j10r59m20d61b7wmp8ga48dd7svqv1a2ip66ig1b7h9h"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -6701,27 +6701,28 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
                 (wrap-program (search-input-file outputs "bin/eog")
                   `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (propagated-inputs
-     (list dconf))
+     (list dconf
+           libhandy))                   ;libhandy is required by eog.pc
     (native-inputs
      (list gettext-minimal
-           itstool
            `(,glib "bin")
            gobject-introspection
-           pkg-config
-           libxml2))
+           itstool
+           libxml2
+           pkg-config))
     (inputs
-     (list gnome-desktop
-           shared-mime-info
-           adwaita-icon-theme
+     (list adwaita-icon-theme
+           bash-minimal
            exempi
+           gnome-desktop
+           gtk
            lcms
            libexif
-           libhandy
+           libjpeg-turbo
            libpeas
            libportal
-           libjpeg-turbo
            librsvg
-           gtk))
+           shared-mime-info))
     (home-page "https://wiki.gnome.org/Apps/EyeOfGnome")
     (synopsis "GNOME image viewer")
     (description "Eye of GNOME is the GNOME image viewer.  It
