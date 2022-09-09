@@ -7309,7 +7309,7 @@ classes for commonly used data structures.")
 (define-public gexiv2
   (package
     (name "gexiv2")
-    (version "0.12.2")
+    (version "0.14.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7317,16 +7317,32 @@ classes for commonly used data structures.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0k4ljzzz5dwqndw8awvlw3ala8rh3b2rk9i4jzvywc53mi9ba8i3"))))
+                "17nnsslj2wpizpx742w5lxdzcz5mx6jmsqcrli7zddi0zyk7k0p5"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%meson-build-system-modules
+                           (guix build python-build-system))
+      #:modules '((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:configure-flags
+      #~(list (string-append "-Dpython3_girdir="
+                             (python:site-packages %build-inputs %outputs)
+                             "/gi/overrides"))))
     (native-inputs
      (list gcr
-           `(,glib "bin") pkg-config vala))
+           `(,glib "bin")
+           pkg-config
+           python
+           python-pygobject
+           vala))
     (propagated-inputs
      ;; Listed in "Requires" section of gexiv2.pc
      (list exiv2))
     (inputs
-     (list glib gobject-introspection))
+     (list glib
+           gobject-introspection))
     (home-page "https://wiki.gnome.org/Projects/gexiv2")
     (synopsis "GObject wrapper around the Exiv2 photo metadata library")
     (description
