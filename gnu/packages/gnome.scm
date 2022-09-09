@@ -1381,42 +1381,61 @@ a debugging tool, @command{gssdp-device-sniffer}.")
 
 (define-public gupnp
   (package
-   (name "gupnp")
-   (version "1.2.4")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnome/sources/" name "/"
-                                (version-major+minor version) "/"
-                                name "-" version ".tar.xz"))
-            (sha256
-             (base32
-              "1ld7mrpdv9cszmfzh7i19qx4li25j3fr7x1jp38l8phzlmz3187p"))))
-   (build-system meson-build-system)
-   (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (add-before 'check 'pre-check
-          (lambda _
-            ;; Tests require a writable HOME.
-            (setenv "HOME" (getcwd)))))))
-   (native-inputs
-    `(("gettext" ,gettext-minimal)
-      ("glib:bin" ,glib "bin")
-      ("gobject-introspection" ,gobject-introspection)
-      ("gtk-doc" ,gtk-doc/stable)
-      ("pkg-config" ,pkg-config)
-      ("vala" ,vala)))
-   (inputs
-    (list gssdp gtk+ libsoup))
-   (propagated-inputs
-    (list ;; For ‘org.gnome.system.proxy’.
-          gsettings-desktop-schemas))
-   (synopsis "PnP API for GNOME")
-   (description "This package provides GUPnP, an object-oriented framework
+    (name "gupnp")
+    (version "1.5.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0y0v0m6afnx879hjvhj2lrawp9qhpyp8mbds0yp544imghajk0wq"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Tests require a writable HOME.
+             (setenv "HOME" (getcwd)))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gtk-doc/stable
+           pkg-config
+           vala))
+    (propagated-inputs
+     ;; These libraries are required by the .pc file.
+     (list glib
+           gsettings-desktop-schemas    ;for ‘org.gnome.system.proxy’.
+           gssdp
+           libsoup
+           libxml2))
+    (synopsis "PnP API for GNOME")
+    (description "This package provides GUPnP, an object-oriented framework
 for creating UPnP devices and control points, written in C using
 @code{GObject} and @code{libsoup}.")
-   (home-page "https://gitlab.gnome.org/GNOME/gupnp")
-   (license license:lgpl2.0+)))
+    (home-page "https://gitlab.gnome.org/GNOME/gupnp")
+    (license license:lgpl2.0+)))
+
+(define-public gupnp-1.4
+  (package
+    (inherit gupnp)
+    (name "gupnp")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0vz3ifs8mi3zaz8zj8v27zfkf6xg82y39mcgqspa38jdp01gn3sr"))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs gupnp)
+              (replace "libsoup" libsoup-minimal-2)
+              (replace "gssdp" gssdp-1.4)))))
 
 (define-public gupnp-dlna
   (package
