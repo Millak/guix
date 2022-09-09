@@ -235,23 +235,23 @@ script.")
              "--with-quantum-depth=16" ; required by Octave
              "--enable-quantum-library-names"
              (string-append "--with-gs-font-dir="
-                            (assoc-ref %build-inputs "font-ghostscript")
-                            "/share/fonts/type1/ghostscript"))))
+                            (search-input-directory
+                             %build-inputs "share/fonts/type1/ghostscript")))))
     (inputs
-     `(("graphviz" ,graphviz)
-       ("ghostscript" ,ghostscript)
-       ("font-ghostscript" ,font-ghostscript)
-       ("lcms" ,lcms)
-       ("libx11" ,libx11)
-       ("libxml2" ,libxml2)
-       ("libtiff" ,libtiff)
-       ("libpng" ,libpng)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libwebp" ,libwebp)
-       ("freetype" ,freetype)
-       ("bzip2" ,bzip2)
-       ("xz" ,xz)
-       ("zlib" ,zlib)))
+     (list bzip2
+           font-ghostscript
+           freetype
+           ghostscript
+           graphviz
+           lcms
+           libjpeg-turbo
+           libpng
+           libtiff
+           libwebp
+           libxml2
+           libx11
+           xz
+           zlib))
     (native-inputs
      (list pkg-config))
     (outputs '("out"                  ; 13 MiB
