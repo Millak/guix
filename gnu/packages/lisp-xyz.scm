@@ -23444,6 +23444,42 @@ right in front of standard-object in the class precedence list.")
 (define-public ecl-inheriting-readers
   (sbcl-package->ecl-package sbcl-inheriting-readers))
 
+(define-public sbcl-simple-guess
+  (let ((commit "34744e3200a96e6aba285d70f91cdbd6c25508a6")
+        (revision "0"))
+    (package
+      (name "sbcl-simple-guess")
+      (version (git-version "1.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/Hexstream/simple-guess")
+                (commit commit)))
+          (file-name (git-file-name "cl-simple-guess" version))
+          (sha256
+           (base32 "0404vj7ln97x7rn9ypbw4rshs56nnpyjnh1z9k03s039s5q3kpv0"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fakenil sbcl-parachute))
+      (inputs
+       (list sbcl-cesdi
+             sbcl-closer-mop
+             sbcl-compatible-metaclasses
+             sbcl-evaled-when))
+      (home-page "https://www.hexstreamsoft.com/libraries/simple-guess/")
+      (synopsis "Extensible protocol for computing a guess using advisors")
+      (description
+       "This package defines a simple extensible protocol for computing a guess
+using advisors.")
+      (license license:unlicense))))
+
+(define-public cl-simple-guess
+  (sbcl-package->cl-source-package sbcl-simple-guess))
+
+(define-public ecl-simple-guess
+  (sbcl-package->ecl-package sbcl-simple-guess))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
