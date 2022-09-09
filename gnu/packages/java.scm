@@ -8168,6 +8168,38 @@ all events to System.err.  Only messages of level INFO and higher are
 printed.")
     (license license:expat)))
 
+(define-public java-slf4j-nop
+  (package
+    (name "java-slf4j-nop")
+    (version "1.7.25")
+    (source (package-source java-slf4j-api))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "slf4j-nop.jar"
+       #:source-dir "slf4j-nop/src/main"
+       #:test-dir "slf4j-nop/src/test"
+       #:phases (modify-phases %standard-phases
+                  ;; The tests need some test classes from slf4j-api
+                  (add-before 'check 'build-slf4j-api-test-helpers
+                    (lambda _
+                      ;; Add current dir to CLASSPATH ...
+                      (setenv "CLASSPATH"
+                              (string-append (getcwd) ":"
+                                             (getenv "CLASSPATH")))
+                      ;; ... and build test helper classes here:
+                      (apply invoke
+                             `("javac" "-d" "."
+                               ,@(find-files "slf4j-api/src/test" ".*\\.java")))))
+                  (replace 'install
+                    (install-from-pom "slf4j-nop/pom.xml")))))
+    (propagated-inputs (list java-slf4j-api))
+    (native-inputs (list java-junit java-hamcrest-core))
+    (home-page "https://www.slf4j.org/")
+    (synopsis "SLF4J binding that silently discards all logging messages")
+    (description "Binding/provider for NOP, an implementation that silently
+discards all logging messages.")
+    (license license:expat)))
+
 (define-public antlr2
   (package
     (name "antlr2")
