@@ -7114,7 +7114,7 @@ principles are simplicity and standards compliance.")
 (define-public d-feet
   (package
     (name "d-feet")
-    (version "0.3.14")
+    (version "0.3.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7122,47 +7122,39 @@ principles are simplicity and standards compliance.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1m8lwiwl5jhi0x7y6x5zmd3hjplgvdjrb8a8jg74rvkygslj1p7f"))))
-    (build-system glib-or-gtk-build-system)
+                "1jqw5ndpgyb0zxh0g21ai1911lfrm56vz18xbccfqm4sk95wwcw7"))))
+    (build-system meson-build-system)
     (arguments
-     '(#:out-of-source? #f ; tests need to run in the source directory.
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'check 'pre-check
-          (lambda _
-            ;; The test suite requires a running X server.
-            (system "Xvfb :1 &")
-            (setenv "DISPLAY" ":1")
-            ;; Don't fail on missing '/etc/machine-id'.
-            (setenv "DBUS_FATAL_WARNINGS" "0")
-            ;; tests.py and window.py don't meet E402:
-            ;;   E402 module level import not at top of file
-            (substitute* "src/tests/Makefile"
-              (("--ignore=E123") "--ignore=E123,E402"))
-            #t))
-         (add-after
-          'install 'wrap-program
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((prog (string-append (assoc-ref outputs "out")
-                                       "/bin/d-feet")))
-              (wrap-program prog
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; The test suite requires a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")))
+          (add-before 'install 'disable-gtk-update-icon-cache
+            (lambda _
+              (setenv "DESTDIR" "/")))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/d-feet")
                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-              #t))))))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("python-pep8" ,python-pep8)
-       ("xmllint" ,libxml2)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list `(,glib "bin")
+           intltool
+           itstool
+           libxml2
+           pkg-config
+           python-pep8
+           xorg-server-for-tests))
     (inputs
-     `(("gobject-introspection" ,gobject-introspection)
-       ("gtk+" ,gtk+)
-       ("python" ,python-wrapper)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("python-pygobject" ,python-pygobject)))
+     (list gobject-introspection
+           gtk+
+           python-wrapper
+           python-pygobject))
     (home-page "https://wiki.gnome.org/Apps/DFeet")
     (synopsis "D-Bus debugger")
     (description
