@@ -374,44 +374,57 @@ when booting a root file system on a Btrfs subvolume."
     (let ((label (menu-entry-label entry))
           (linux (menu-entry-linux entry))
           (device (menu-entry-device entry))
-          (device-mount-point (menu-entry-device-mount-point entry)))
-      (if linux
-          (let ((arguments (menu-entry-linux-arguments entry))
-                (linux (normalize-file linux
-                                       device-mount-point
-                                       store-directory-prefix))
-                (initrd (normalize-file (menu-entry-initrd entry)
-                                        device-mount-point
-                                        store-directory-prefix)))
-         ;; Here DEVICE is the store and DEVICE-MOUNT-POINT is its mount point.
-         ;; Use the right file names for LINUX and INITRD in case
-         ;; DEVICE-MOUNT-POINT is not "/", meaning that the store is on a
-         ;; separate partition.
+          (device-mount-point (menu-entry-device-mount-point entry))
+          (multiboot-kernel (menu-entry-multiboot-kernel entry))
+          (chain-loader (menu-entry-chain-loader entry)))
+      (cond
+       (linux
+        (let ((arguments (menu-entry-linux-arguments entry))
+              (linux (normalize-file linux
+                                     device-mount-point
+                                     store-directory-prefix))
+              (initrd (normalize-file (menu-entry-initrd entry)
+                                      device-mount-point
+                                      store-directory-prefix)))
+          ;; Here DEVICE is the store and DEVICE-MOUNT-POINT is its mount point.
+          ;; Use the right file names for LINUX and INITRD in case
+          ;; DEVICE-MOUNT-POINT is not "/", meaning that the store is on a
+          ;; separate partition.
 
-         ;; When BTRFS-SUBVOLUME-FILE-NAME is defined, prepend it the linux and
-         ;; initrd paths, to allow booting from a Btrfs subvolume.
-         #~(format port "menuentry ~s {
+          ;; When BTRFS-SUBVOLUME-FILE-NAME is defined, prepend it the linux and
+          ;; initrd paths, to allow booting from a Btrfs subvolume.
+          #~(format port "menuentry ~s {
   ~a
   linux ~a ~a
   initrd ~a
 }~%"
-                   #$label
-                   #$(grub-root-search device linux)
-                   #$linux (string-join (list #$@arguments))
-                   #$initrd))
-          (let ((kernel (menu-entry-multiboot-kernel entry))
-                (arguments (menu-entry-multiboot-arguments entry))
-                (modules (menu-entry-multiboot-modules entry))
-                (root-index 1))            ; XXX EFI will need root-index 2
-        #~(format port "
+                    #$label
+                    #$(grub-root-search device linux)
+                    #$linux (string-join (list #$@arguments))
+                    #$initrd)))
+       (multiboot-kernel
+        (let ((kernel (menu-entry-multiboot-kernel entry))
+              (arguments (menu-entry-multiboot-arguments entry))
+              (modules (menu-entry-multiboot-modules entry))
+              (root-index 1))            ; XXX EFI will need root-index 2
+          #~(format port "
 menuentry ~s {
   multiboot ~a root=device:hd0s~a~a~a
 }~%"
+                    #$label
+                    #$kernel
+                    #$root-index (string-join (list #$@arguments) " " 'prefix)
+                    (string-join (map string-join '#$modules)
+                                 "\n  module " 'prefix))))
+       (chain-loader
+        #~(format port "
+menuentry ~s {
+  ~a
+  chainloader ~a
+}~%"
                   #$label
-                  #$kernel
-                  #$root-index (string-join (list #$@arguments) " " 'prefix)
-                  (string-join (map string-join '#$modules)
-                               "\n  module " 'prefix))))))
+                  #$(grub-root-search device chain-loader)
+                  #$chain-loader)))))
 
   (define (crypto-devices)
     (define (crypto-device->cryptomount dev)

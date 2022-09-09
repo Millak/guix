@@ -27,6 +27,7 @@
 
 (define-module (gnu packages imagemagick)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
   #:use-module (guix download)
@@ -212,7 +213,7 @@ script.")
 (define-public graphicsmagick
   (package
     (name "graphicsmagick")
-    (version "1.3.36")
+    (version "1.3.38")
     (source
      (origin
        (method url-fetch)
@@ -225,33 +226,34 @@ script.")
                         "/GraphicsMagick-" version ".tar.xz")))
        (sha256
         (base32
-         "0ilg6fkppb4avzais1dvi3qf6ln7v3mzj7gjm83w7pwwfpg3ynsx"))))
+         "0x96wcspcqmkcy7jagfifgq2iamcf0ql9swvn6f2n79mb7dxj36n"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--with-frozenpaths"
-             "--enable-shared=yes"
-             "--with-x=yes"
-             "--with-quantum-depth=16" ; required by Octave
-             "--enable-quantum-library-names"
-             (string-append "--with-gs-font-dir="
-                            (assoc-ref %build-inputs "font-ghostscript")
-                            "/share/fonts/type1/ghostscript"))))
+     (list
+      #:configure-flags
+      #~(list "--with-frozenpaths"
+              "--enable-shared=yes"
+              "--with-x=yes"
+              "--with-quantum-depth=16" ;required by Octave
+              "--enable-quantum-library-names"
+              (string-append "--with-gs-font-dir="
+                             (search-input-directory
+                              %build-inputs "share/fonts/type1/ghostscript")))))
     (inputs
-     `(("graphviz" ,graphviz)
-       ("ghostscript" ,ghostscript)
-       ("font-ghostscript" ,font-ghostscript)
-       ("lcms" ,lcms)
-       ("libx11" ,libx11)
-       ("libxml2" ,libxml2)
-       ("libtiff" ,libtiff)
-       ("libpng" ,libpng)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libwebp" ,libwebp)
-       ("freetype" ,freetype)
-       ("bzip2" ,bzip2)
-       ("xz" ,xz)
-       ("zlib" ,zlib)))
+     (list bzip2
+           font-ghostscript
+           freetype
+           ghostscript
+           graphviz
+           lcms
+           libjpeg-turbo
+           libpng
+           libtiff
+           libwebp
+           libxml2
+           libx11
+           xz
+           zlib))
     (native-inputs
      (list pkg-config))
     (outputs '("out"                  ; 13 MiB

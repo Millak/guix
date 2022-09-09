@@ -3,6 +3,7 @@
 ;;; Copyright © 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -470,13 +471,15 @@ potential infinite waits blocking libvirt."))
 
 (define (libvirt-shepherd-service config)
   (let* ((config-file (libvirt-conf-file config))
-         (libvirt (libvirt-configuration-libvirt config)))
+         (libvirt (libvirt-configuration-libvirt config))
+         (listen-tcp? (libvirt-configuration-listen-tcp? config)))
     (list (shepherd-service
            (documentation "Run the libvirt daemon.")
            (provision '(libvirtd))
            (start #~(make-forkexec-constructor
                      (list (string-append #$libvirt "/sbin/libvirtd")
-                           "-f" #$config-file)
+                           "-f" #$config-file
+                           #$@(if listen-tcp? '("--listen") '()))
                      ;; For finding qemu and ip binaries.
                      #:environment-variables
                      (list (string-append

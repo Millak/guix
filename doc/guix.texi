@@ -37529,6 +37529,24 @@ The list of commands for loading Multiboot modules.  For example:
              @dots{}))
 @end lisp
 
+@item @code{chain-loader} (default: @code{#f})
+A string that can be accepted by @code{grub}'s @code{chainloader}
+directive. This has no effect if either @code{linux} or
+@code{multiboot-kernel} fields are specified. The following is an
+example of chainloading a different GNU/Linux system.
+
+@lisp
+(bootloader
+ (bootloader-configuration
+  ;; @dots{}
+  (menu-entries
+   (list
+    (menu-entry
+     (label "GNU/Linux")
+     (device (uuid "1C31-A17C" 'fat))
+     (chain-loader "/EFI/GNULinux/grubx64.efi"))))))
+@end lisp
+
 @end table
 @end deftp
 
