@@ -8853,21 +8853,21 @@ properties, screen resolution, and other GNOME parameters.")
 (define-public gnome-shell
   (package
     (name "gnome-shell")
-    (version "41.0")
+    (version "42.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
                                   (version-major version) "/"
                                   name "-" version ".tar.xz"))
-              (patches (search-patches "gnome-shell-polkit-autocleanup.patch"))
               (sha256
                (base32
-                "0ragmcln210zvzhc2br33yprbkj9drjzd7inp5sdxra0a7l73yaj"))))
+                "0kn5fclciybp2fs38wd39hdz85y91pas0ckfa02pmyx91sbz4pw7"))))
     (build-system meson-build-system)
     (arguments
      (let ((disallowed-references
             (list (gexp-input glib "bin")
                   (gexp-input libxslt)
+                  (gexp-input meson)
                   (gexp-input ruby-sass))))
        (list
         #:glib-or-gtk? #t
@@ -8880,7 +8880,8 @@ properties, screen resolution, and other GNOME parameters.")
         #:modules '((guix build meson-build-system)
                     (guix build utils)
                     (ice-9 match)
-                    (srfi srfi-1))
+                    (srfi srfi-1)
+                    (srfi srfi-26))
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'fix-keysdir
@@ -8894,8 +8895,9 @@ properties, screen resolution, and other GNOME parameters.")
             (add-after 'unpack 'skip-gtk-update-icon-cache
               ;; Don't create 'icon-theme.cache'.
               (lambda _
-                (substitute* "meson/postinstall.py"
-                  (("gtk-update-icon-cache") "true"))))
+                (substitute* "meson.build"
+                  (("gtk_update_icon_cache: true")
+                   "gtk_update_icon_cache: false"))))
             (add-before 'configure 'record-absolute-file-names
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((ibus-daemon (search-input-file inputs "bin/ibus-daemon"))
@@ -8916,7 +8918,13 @@ properties, screen resolution, and other GNOME parameters.")
             (add-after 'install 'wrap-programs
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((gi-typelib-path  (getenv "GI_TYPELIB_PATH"))
-                      (python-path      (getenv "GUIX_PYTHONPATH")))
+                      (python-path
+                       (string-join
+                        (filter (lambda (item)
+                                  (not (any (cut string-prefix? <> item)
+                                            '#$disallowed-references)))
+                                (string-split (getenv "GUIX_PYTHONPATH") #\:))
+                        ":")))
                   (for-each
                    (lambda (prog)
                      (wrap-program (string-append #$output "/bin/" prog)
@@ -8996,7 +9004,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            libcanberra
            libcroco
            libgnomekbd                  ;for gkbd-keyboard-display
-           libgweather
+           libgweather4
            libnma
            libsoup
            mesa-headers
