@@ -8815,19 +8815,20 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
          (replace 'glib-or-gtk-wrap
            (let ((wrap (assoc-ref %standard-phases 'glib-or-gtk-wrap)))
              (lambda* (#:key inputs outputs #:allow-other-keys #:rest rest)
-               ;; By default intltool et al. would end up in the XDG_DATA_DIRS
+               ;; By default glib:bin et al. would end up in the XDG_DATA_DIRS
                ;; settings of the wrappers created by the 'glib-or-gtk-wrap'
                ;; phase.  Fix that since we don't need these.
                (wrap #:inputs (fold alist-delete inputs
-                                    '("intltool" "glib:bin"))
+                                    '("glib:bin"))
                      #:outputs outputs)))))))
     (native-inputs
      `(("asciidoc" ,asciidoc)
+       ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
        ("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
        ("gobject-introspection" ,gobject-introspection)
        ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("intltool" ,intltool)
+       ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python)
        ("ruby-sass" ,ruby-sass)
