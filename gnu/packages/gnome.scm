@@ -10418,7 +10418,7 @@ GLib/GObject code.")
 (define-public libgnomekbd
   (package
     (name "libgnomekbd")
-    (version "3.28.0")
+    (version "3.28.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libgnomekbd/"
@@ -10426,7 +10426,7 @@ GLib/GObject code.")
                                   "libgnomekbd-" version ".tar.xz"))
               (sha256
                (base32
-                "1jarhq9crhq0wfnbcz7x3hgxbkan98ax3p2jwcgzj9jc7r27l1dk"))))
+                "0w78ix6f52xv0hw1h6fzqh47pk1fwr077agma19hdh3kdmb5kp12"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
