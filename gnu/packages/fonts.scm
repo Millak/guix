@@ -42,7 +42,7 @@
 ;;; Copyright © 2021 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
-;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2021, 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Kitzman <kitzman@disroot.org>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
@@ -1993,7 +1993,7 @@ formatting.")
 (define-public font-plemoljp
   (package
     (name "font-plemoljp")
-    (version "1.2.2")
+    (version "1.2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2001,7 +2001,7 @@ formatting.")
                     "v" version "/PlemolJP_v" version ".zip"))
               (sha256
                (base32
-                "03cwzkqg09c87lmsx9xfzdrlgjml93bhhp1dqq3qkpdfww30wkaw"))))
+                "0pkkys5kl5s79shd1jmwfyk469ih8cymqb4vjwdadj52kzq4m9z6"))))
     (build-system font-build-system)
     (home-page "https://github.com/yuru7/PlemolJP")
     (synopsis "Plex Mono Language JP")
