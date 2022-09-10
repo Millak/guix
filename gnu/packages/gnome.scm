@@ -9222,6 +9222,11 @@ easy, safe, and automatic.")
              "-Dsystemd_user_services=false")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "utils/trackertestutils/__main__.py"
+               (("/bin/bash")
+                (search-input-file inputs "bin/bash")))))
          (add-before 'configure 'set-shell
            (lambda _
              (setenv "SHELL" (which "bash"))))
@@ -9242,6 +9247,7 @@ easy, safe, and automatic.")
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
+           glibc-utf8-locales
            gobject-introspection
            docbook-xsl
            docbook-xml
@@ -9256,7 +9262,8 @@ easy, safe, and automatic.")
            python
            vala))
     (inputs
-     (list dbus
+     (list bash-minimal
+           dbus
            libsoup))
     (propagated-inputs
      ;; These are in Requires or Requires.private of tracker-sparql-3.0.pc.
