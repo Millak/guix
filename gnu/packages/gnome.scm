@@ -8729,113 +8729,117 @@ properties, screen resolution, and other GNOME parameters.")
                 "0ragmcln210zvzhc2br33yprbkj9drjzd7inp5sdxra0a7l73yaj"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:disallowed-references ,(list (gexp-input glib "bin")
-                                      (gexp-input libxslt)
-                                      (gexp-input ruby-sass))
-       #:configure-flags
-       (list "-Dsystemd=false"
-             ;; Otherwise, the RUNPATH will lack the final path component.
-             (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out")
-                            "/lib/gnome-shell"))
-
-       #:modules ((guix build meson-build-system)
-                  (guix build utils)
-                  (srfi srfi-1))
-
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-keysdir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out     (assoc-ref outputs "out"))
-                    (keysdir (string-append
-                              out "/share/gnome-control-center/keybindings")))
-               (substitute* "meson.build"
-                 (("keysdir =.*")
-                  (string-append "keysdir = '" keysdir "'\n"))))))
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson/postinstall.py"
-               (("gtk-update-icon-cache") "true"))))
-         (add-before 'configure 'record-absolute-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "js/misc/ibusManager.js"
-               (("'ibus-daemon'")
-                (string-append "'" (assoc-ref inputs "ibus")
-                               "/bin/ibus-daemon'")))
-             (substitute* "js/ui/status/keyboard.js"
-               (("'gkbd-keyboard-display'")
-                (string-append "'" (assoc-ref inputs "libgnomekbd")
-                               "/bin/gkbd-keyboard-display'")))))
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Tests require a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             (setenv "HOME" "/tmp")))   ;to avoid "fatal" warnings
-         (add-after 'install 'wrap-programs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out              (assoc-ref outputs "out"))
-                   (gi-typelib-path  (getenv "GI_TYPELIB_PATH"))
-                   (python-path      (getenv "GUIX_PYTHONPATH")))
-               (for-each
-                (lambda (prog)
-                  (wrap-program (string-append out "/bin/" prog)
-                    `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-                '("gnome-shell" "gnome-extensions-app"))
-               (substitute* (string-append out "/share/gnome-shell/"
-                                           "org.gnome.Shell.Extensions")
-                 (("imports\\.package\\.start" all)
-                  (string-append "'" gi-typelib-path "'.split(':').forEach("
-                                 "path => imports.gi.GIRepository.Repository."
-                                 "prepend_search_path(path));\n"
-                                 all)))
-               (for-each
-                (lambda (prog)
-                  (wrap-program (string-append out "/bin/" prog)
-                    `("GUIX_PYTHONPATH"      ":" prefix (,python-path))
-                    `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-                '("gnome-shell-perf-tool")))))
-         (add-after 'install 'rewire
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (for-each
-              (lambda (tool)
-                (call-with-output-file (string-append
-                                        (assoc-ref outputs "out")
-                                        "/bin/" tool)
-                  (lambda (port)
-                    (format port "#!~a
+     (let ((disallowed-references
+            (list (gexp-input glib "bin")
+                  (gexp-input libxslt)
+                  (gexp-input ruby-sass))))
+       (list
+        #:glib-or-gtk? #t
+        #:disallowed-references disallowed-references
+        #:configure-flags
+        #~(list "-Dsystemd=false"
+                ;; Otherwise, the RUNPATH will lack the final path component.
+                (string-append "-Dc_link_args=-Wl,-rpath="
+                               #$output "/lib/gnome-shell"))
+        #:modules '((guix build meson-build-system)
+                    (guix build utils)
+                    (ice-9 match)
+                    (srfi srfi-1))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-keysdir
+              (lambda _
+                (let ((keysdir
+                       (string-append #$output
+                                      "/share/gnome-control-center/keybindings")))
+                  (substitute* "meson.build"
+                    (("keysdir =.*")
+                     (string-append "keysdir = '" keysdir "'\n"))))))
+            (add-after 'unpack 'skip-gtk-update-icon-cache
+              ;; Don't create 'icon-theme.cache'.
+              (lambda _
+                (substitute* "meson/postinstall.py"
+                  (("gtk-update-icon-cache") "true"))))
+            (add-before 'configure 'record-absolute-file-names
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((ibus-daemon (search-input-file inputs "bin/ibus-daemon"))
+                      (gkbd-keyboard-display
+                       (search-input-file inputs "bin/gkbd-keyboard-display")))
+                  (substitute* "js/misc/ibusManager.js"
+                    (("'ibus-daemon'")
+                     (string-append "'" ibus-daemon "'")))
+                  (substitute* "js/ui/status/keyboard.js"
+                    (("'gkbd-keyboard-display'")
+                     (string-append "'" gkbd-keyboard-display "'"))))))
+            (add-before 'check 'pre-check
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Tests require a running X server.
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1")
+                (setenv "HOME" "/tmp"))) ;to avoid "fatal" warnings
+            (add-after 'install 'wrap-programs
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((gi-typelib-path  (getenv "GI_TYPELIB_PATH"))
+                      (python-path      (getenv "GUIX_PYTHONPATH")))
+                  (for-each
+                   (lambda (prog)
+                     (wrap-program (string-append #$output "/bin/" prog)
+                       `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
+                   '("gnome-shell" "gnome-extensions-app"))
+                  (substitute* (string-append #$output "/share/gnome-shell/"
+                                              "org.gnome.Shell.Extensions")
+                    (("imports\\.package\\.start" all)
+                     (string-append "'" gi-typelib-path "'.split(':').forEach("
+                                    "path => imports.gi.GIRepository.Repository."
+                                    "prepend_search_path(path));\n"
+                                    all)))
+                  (for-each
+                   (lambda (prog)
+                     (wrap-program (string-append #$output "/bin/" prog)
+                       `("GUIX_PYTHONPATH"      ":" prefix (,python-path))
+                       `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
+                   '("gnome-shell-perf-tool")))))
+            (add-after 'install 'rewire
+              (lambda* (#:key inputs #:allow-other-keys)
+                (for-each
+                 (lambda (tool)
+                   (call-with-output-file (string-append #$output
+                                                         "/bin/" tool)
+                     (lambda (port)
+                       (format port "#!~a
 printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
 \"gnome-extensions-app\" instead.\\n'"
-                            (search-input-file inputs "bin/bash")
-                            tool))))
-              '("gnome-shell-extension-tool" "gnome-shell-extension-prefs"))))
-         (replace 'glib-or-gtk-wrap
-           (let ((wrap (assoc-ref %standard-phases 'glib-or-gtk-wrap)))
-             (lambda* (#:key inputs outputs #:allow-other-keys #:rest rest)
-               ;; By default glib:bin et al. would end up in the XDG_DATA_DIRS
-               ;; settings of the wrappers created by the 'glib-or-gtk-wrap'
-               ;; phase.  Fix that since we don't need these.
-               (wrap #:inputs (fold alist-delete inputs
-                                    '("glib:bin"))
-                     #:outputs outputs)))))))
+                               (search-input-file inputs "bin/bash")
+                               tool))))
+                 '("gnome-shell-extension-tool" "gnome-shell-extension-prefs"))))
+            (replace 'glib-or-gtk-wrap
+              (let ((wrap (assoc-ref %standard-phases 'glib-or-gtk-wrap)))
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  ;; By default glib:bin et al. would end up in the XDG_DATA_DIRS
+                  ;; settings of the wrappers created by the 'glib-or-gtk-wrap'
+                  ;; phase.  Fix that since we don't need these.
+                  (wrap #:inputs
+                        (filter (match-lambda
+                                  ((label . output)
+                                   (not (member output
+                                                '#$disallowed-references))))
+                                inputs)
+                        #:outputs outputs))))))))
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
-       ("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("gobject-introspection" ,gobject-introspection)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("ruby-sass" ,ruby-sass)
-       ("sassc" ,sassc)
-       ("xsltproc" ,libxslt)
-       ;; For tests
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list asciidoc
+           gettext-minimal
+           `(,glib "bin")               ;for glib-compile-schemas, etc.
+           desktop-file-utils           ;for update-desktop-database
+           gobject-introspection
+           hicolor-icon-theme
+           libxslt
+           perl
+           pkg-config
+           python
+           ruby-sass
+           sassc
+           ;; For tests
+           xorg-server-for-tests))
     (inputs
      (list accountsservice
            caribou
@@ -8855,7 +8859,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            ibus
            libcanberra
            libcroco
-           libgnomekbd ;for gkbd-keyboard-display
+           libgnomekbd                  ;for gkbd-keyboard-display
            libgweather
            libnma
            libsoup
