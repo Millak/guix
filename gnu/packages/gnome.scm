@@ -7487,108 +7487,106 @@ to display dialog boxes from the commandline and shell scripts.")
     ;; needed here as well.
     (build-system meson-build-system)
     (arguments
-     `(#:imported-modules (,@%meson-build-system-modules
+     (list
+      #:imported-modules `(,@%meson-build-system-modules
                            (guix build syscalls))
-       #:modules ((guix build meson-build-system)
+      #:modules '((guix build meson-build-system)
                   (guix build syscalls)
                   (guix build utils)
                   (ice-9 match))
-       #:glib-or-gtk? #t
-       #:configure-flags
-       (list
-        ;; Otherwise, the RUNPATH will lack the final path component.
-        (string-append "-Dc_link_args=-Wl,-rpath="
-                       (assoc-ref %outputs "out") "/lib:"
-                       (assoc-ref %outputs "out") "/lib/mutter-9")
-        ;; Disable systemd support.
-        "-Dsystemd=false"
-        ;; The following flags are needed for the bundled clutter
-        (string-append "-Dxwayland_path="
-                       (search-input-file %build-inputs "/bin/Xwayland"))
-        ;; the remaining flags are needed for the bundled cogl
-        (string-append "-Dopengl_libname="
-                       (search-input-file %build-inputs "/lib/libGL.so"))
-        (string-append "-Dgles2_libname="
-                       (search-input-file %build-inputs "/lib/libGLESv2.so"))
-        "-Degl_device=true"             ;false by default
-        "-Dwayland_eglstream=true")     ;false by default
-       #:test-options
-       (list "--verbose")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-dlopen-calls
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/wayland/meta-wayland-egl-stream.c"
-               (("libnvidia-egl-wayland.so.1")
-                (search-input-file inputs
-                                   "/lib/libnvidia-egl-wayland.so.1")))))
-         (add-before 'configure 'set-udev-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "PKG_CONFIG_UDEV_UDEVDIR"
-                     (string-append (assoc-ref outputs "out")
-                                    "/lib/udev"))))
-         (add-after 'unpack 'disable-problematic-tests
-           (lambda _
-             ;; The native-headless test hangs due to attempting to use audio,
-             ;; unavailable in the container.
-             ;; Note: the following sed expression deletes the whole test(...)
-             ;; expression paragraph.  For an explanation, see: info '(sed)
-             ;; Multiline techniques'.
-             (invoke "sed" "/./{H;$!d} ; x ; s/^.*native-headless.*$//"
-                     "-i" "src/tests/meson.build")
-             ;; Timeline tests may unexpectedly fail on missed frames, so
-             ;; let's disable them as well.
-             ;; See <https://gitlab.gnome.org/GNOME/mutter/-/issues/2125>
-             (substitute* "src/tests/clutter/conform/meson.build"
-               (("'timeline.*',") ""))))
-         (replace 'check
-           (lambda* (#:key tests? test-options parallel-tests?
-                     #:allow-other-keys)
-             (when tests?
-               ;; Setup (see the 'test-mutter' CI target at
-               ;; https://gitlab.gnome.org/GNOME/mutter/-/raw/main/.gitlab-ci.yml).
-               (setenv "XDG_RUNTIME_DIR" "runtime-dir")
-               (setenv "GSETTINGS_SCHEMA_DIR" "data")
-               (setenv "MUTTER_DEBUG_DUMMY_MODE_SPECS" "800x600@10.0")
-               (setenv "PIPEWIRE_DEBUG" "2")
-               (setenv "PIPEWIRE_LOG" "meson-logs/pipewire.log")
-               (setenv "XVFB_SERVER_ARGS" "+iglx -noreset")
-               (setenv "G_SLICE" "always-malloc")
-               (setenv "MALLOC_CHECK" "3")
-               (setenv "NO_AT_BRIDGE" "1")
-               ;; This is needed, otherwise the "mutter:core+mutter/unit /
-               ;; anonymous-file" test would fail (see:
-               ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/2017).
-               (setenv "CI_JOB_ID" "1")
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list
+         ;; Otherwise, the RUNPATH will lack the final path component.
+         (string-append "-Dc_link_args=-Wl,-rpath="
+                        #$output "/lib:" #$output "/lib/mutter-9")
+         ;; Disable systemd support.
+         "-Dsystemd=false"
+         ;; The following flags are needed for the bundled clutter
+         (string-append "-Dxwayland_path="
+                        (search-input-file %build-inputs "/bin/Xwayland"))
+         ;; the remaining flags are needed for the bundled cogl
+         (string-append "-Dopengl_libname="
+                        (search-input-file %build-inputs "/lib/libGL.so"))
+         (string-append "-Dgles2_libname="
+                        (search-input-file %build-inputs "/lib/libGLESv2.so"))
+         "-Degl_device=true"            ;false by default
+         "-Dwayland_eglstream=true")    ;false by default
+      #:test-options ''("--verbose")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-dlopen-calls
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/wayland/meta-wayland-egl-stream.c"
+                (("libnvidia-egl-wayland.so.1")
+                 (search-input-file inputs
+                                    "/lib/libnvidia-egl-wayland.so.1")))))
+          (add-before 'configure 'set-udev-dir
+            (lambda _
+              (setenv "PKG_CONFIG_UDEV_UDEVDIR"
+                      (string-append #$output "/lib/udev"))))
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; The native-headless test hangs due to attempting to use audio,
+              ;; unavailable in the container.
+              ;; Note: the following sed expression deletes the whole test(...)
+              ;; expression paragraph.  For an explanation, see: info '(sed)
+              ;; Multiline techniques'.
+              (invoke "sed" "/./{H;$!d} ; x ; s/^.*native-headless.*$//"
+                      "-i" "src/tests/meson.build")
+              ;; Timeline tests may unexpectedly fail on missed frames, so
+              ;; let's disable them as well.
+              ;; See <https://gitlab.gnome.org/GNOME/mutter/-/issues/2125>
+              (substitute* "src/tests/clutter/conform/meson.build"
+                (("'timeline.*',") ""))))
+          (replace 'check
+            (lambda* (#:key tests? test-options parallel-tests?
+                      #:allow-other-keys)
+              (when tests?
+                ;; Setup (see the 'test-mutter' CI target at
+                ;; https://gitlab.gnome.org/GNOME/mutter/-/raw/main/.gitlab-ci.yml).
+                (setenv "XDG_RUNTIME_DIR" "runtime-dir")
+                (setenv "GSETTINGS_SCHEMA_DIR" "data")
+                (setenv "MUTTER_DEBUG_DUMMY_MODE_SPECS" "800x600@10.0")
+                (setenv "PIPEWIRE_DEBUG" "2")
+                (setenv "PIPEWIRE_LOG" "meson-logs/pipewire.log")
+                (setenv "XVFB_SERVER_ARGS" "+iglx -noreset")
+                (setenv "G_SLICE" "always-malloc")
+                (setenv "MALLOC_CHECK" "3")
+                (setenv "NO_AT_BRIDGE" "1")
+                ;; This is needed, otherwise the "mutter:core+mutter/unit /
+                ;; anonymous-file" test would fail (see:
+                ;; https://gitlab.gnome.org/GNOME/mutter/-/issues/2017).
+                (setenv "CI_JOB_ID" "1")
 
-               (invoke "glib-compile-schemas" (getenv "GSETTINGS_SCHEMA_DIR"))
-               (mkdir-p (getenv "XDG_RUNTIME_DIR"))
-               (chmod (getenv "XDG_RUNTIME_DIR") #o755)
-               (invoke "pipewire" "--version") ;check for pipewire
-               (system "pipewire &")    ;always returns 0 due to forking
+                (invoke "glib-compile-schemas" (getenv "GSETTINGS_SCHEMA_DIR"))
+                (mkdir-p (getenv "XDG_RUNTIME_DIR"))
+                (chmod (getenv "XDG_RUNTIME_DIR") #o755)
+                (invoke "pipewire" "--version") ;check for pipewire
+                (system "pipewire &")   ;always returns 0 due to forking
 
-               (setenv "MESON_TESTTHREADS"
-                       (if parallel-tests?
-                           (number->string (parallel-job-count))
-                           "1"))
-               (match (primitive-fork)
-                 (0                     ;child process
-                  (set-child-subreaper!)
-                  ;; Use tini so that signals are properly handled and
-                  ;; doubly-forked processes get reaped; otherwise,
-                  ;; python-dbusmock would waste time polling for the dbus
-                  ;; processes it spawns to be reaped, in vain.
-                  (apply execlp "tini" "--"
-                         "dbus-run-session" "--"
-                         "xvfb-run" "-a" "-s" (getenv "XVFB_SERVER_ARGS")
-                         "meson" "test" "-t" "0" "--print-errorlogs"
-                         test-options))
-                 (pid
-                  (match (waitpid pid)
-                    ((_ . status)
-                     (unless (zero? status)
-                       (error "`meson test' exited with status"
-                              status))))))))))))
+                (setenv "MESON_TESTTHREADS"
+                        (if parallel-tests?
+                            (number->string (parallel-job-count))
+                            "1"))
+                (match (primitive-fork)
+                  (0                    ;child process
+                   (set-child-subreaper!)
+                   ;; Use tini so that signals are properly handled and
+                   ;; doubly-forked processes get reaped; otherwise,
+                   ;; python-dbusmock would waste time polling for the dbus
+                   ;; processes it spawns to be reaped, in vain.
+                   (apply execlp "tini" "--"
+                          "dbus-run-session" "--"
+                          "xvfb-run" "-a" "-s" (getenv "XVFB_SERVER_ARGS")
+                          "meson" "test" "-t" "0" "--print-errorlogs"
+                          test-options))
+                  (pid
+                   (match (waitpid pid)
+                     ((_ . status)
+                      (unless (zero? status)
+                        (error "`meson test' exited with status"
+                               status))))))))))))
     (native-inputs
      (list desktop-file-utils           ; for update-desktop-database
            `(,glib "bin")               ; for glib-compile-schemas, etc.
