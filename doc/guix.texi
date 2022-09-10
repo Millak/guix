@@ -41476,6 +41476,8 @@ one or multiple partitions.
 
 @item @code{tarball}, a tar.gz image archive.
 
+@item @code{wsl2}, a WSL2 image.
+
 @end itemize
 
 @item @code{platform} (default: @code{#false})
@@ -41840,6 +41842,17 @@ kernel.  The MBR image contains a single ext2 partitions with specific
 @defvr {Scheme Variable} hurd-qcow2-image-type
 Build an image similar to the one built by the @code{hurd-image-type}
 but with the @code{format} set to @code{'compressed-qcow2}.
+@end defvr
+
+@defvr {Scheme Variable} wsl2-image-type
+Build an image for the @acronym{WSL2, Windows Subsystem for Linux 2}.
+It can be imported by running:
+
+@example
+wsl --import Guix ./guix ./wsl2-image.tar.gz
+wsl -d Guix
+@end example
+
 @end defvr
 
 So, if we get back to the @code{guix system image} command taking an
