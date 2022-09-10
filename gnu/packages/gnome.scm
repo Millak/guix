@@ -11095,10 +11095,10 @@ photo-booth-like software, such as Cheese.")
 apply fancy special effects and lets you share the fun with others.")
     (license license:gpl2+)))
 
-(define-public passwordsafe
+(define-public secrets
   (package
-    (name "passwordsafe")
-    (version "5.1")
+    (name "secrets")
+    (version "6.5")
     (source
      (origin
        (method git-fetch)
@@ -11107,48 +11107,58 @@ apply fancy special effects and lets you share the fun with others.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kd43j6i017wdsqj6d5gnxhfv4ijnh3xahlw7md2gh51i8p682j6"))))
+        (base32 "11jd9f0d3fyrs29p8cyzb6i2ib6mzhwwvjnznl55gkggrgnrcb8z"))))
     (build-system meson-build-system)
     (arguments
-     (list #:glib-or-gtk? #t
-           #:meson meson-0.59
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let ((prog (string-append #$output
-                                              "/bin/gnome-passwordsafe"))
-                         (pylib (string-append
-                                 #$output "/lib/python"
-                                 #$(version-major+minor
-                                    (package-version (this-package-input "python")))
-                                 "/site-packages")))
-                     (wrap-program prog
-                       `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                       `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules `(,@%meson-build-system-modules
+                           (guix build python-build-system))
+      #:modules '((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-postinstall-script
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))
+              (setenv "DESTDIR" "/")))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/secrets")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                       ,(python:site-packages inputs outputs)))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
-           `(,gtk+ "bin")
            pkg-config))
     (inputs
-     (list glib
+     (list bash-minimal
+           glib
            gsettings-desktop-schemas
-           gtk+
+           gtk
+           libadwaita
            libhandy
            libpwquality
            python
            python-pygobject
-           python-pykeepass))
-    (home-page "https://gitlab.gnome.org/World/PasswordSafe")
+           python-pykeepass
+           python-pyotp))
+    (home-page "https://gitlab.gnome.org/World/secrets")
     (synopsis "Password manager for the GNOME desktop")
     (description
-     "Password Safe is a password manager which makes use of the KeePass v4
+     "Secrets is a password manager which makes use of the KeePass v4
 format.  It integrates perfectly with the GNOME desktop and provides an easy
 and uncluttered interface for the management of password databases.")
     (license license:gpl3+)))
+
+(define-public passwordsafe
+  (deprecated-package "passwordsafe" secrets))
 
 (define-public sound-juicer
   (package
