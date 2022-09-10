@@ -1276,8 +1276,7 @@ with the Cygwin XWin server when running X11 in a rootless mode.")
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
-    (inputs
-      (list libbsd xorgproto))
+    (inputs (list xorgproto))
     (native-inputs
        (list pkg-config))
     (home-page "https://www.x.org/wiki/")
