@@ -369,13 +369,6 @@ extern std::shared_ptr<StoreAPI> store;
    and separated by commas). */
 string showPaths(const PathSet & paths);
 
-
-/* Export multiple paths in the format expected by ‘nix-store
-   --import’. */
-void exportPaths(StoreAPI & store, const Paths & paths,
-    bool sign, Sink & sink);
-
-
 MakeError(SubstError, Error)
 MakeError(BuildError, Error) /* denotes a permanent build failure */
 
