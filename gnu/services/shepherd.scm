@@ -387,7 +387,7 @@ as shepherd package."
             ;; call; this avoids situations where services wrongfully lead
             ;; PID 1 to read from stdin (the console), which users may not
             ;; have access to (see <https://bugs.gnu.org/23697>).
-            (redirect-port (open-input-file "/dev/null")
+            (redirect-port (open "/dev/null" (logior O_RDONLY O_CLOEXEC))
                            (current-input-port)))))
 
     (scheme-file "shepherd.conf" config)))
