@@ -12770,18 +12770,15 @@ profiler via Sysprof, debugging support, and more.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            (lambda _
              (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))
-             #t))
+               (("gtk-update-icon-cache") (which "true")))))
          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
           (lambda* (#:key outputs #:allow-other-keys)
-            (let ((prog (string-append (assoc-ref outputs "out")
-                                       "/bin/komikku")))
-              (wrap-program prog
-                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-              #t))))))
+            (wrap-program (search-input-file outputs "bin/komikku")
+              `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+              `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (inputs
-     (list gtk+
+     (list bash-minimal
+           gtk+
            libhandy
            libnotify
            libsecret
