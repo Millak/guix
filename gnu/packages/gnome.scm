@@ -9420,7 +9420,7 @@ shared object databases, search tools and indexing.")
 (define-public nautilus
   (package
     (name "nautilus")
-    (version "41.1")
+    (version "42.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9428,28 +9428,27 @@ shared object databases, search tools and indexing.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0bsqh241m43x3qb3z0mjakjic610ncl95zhjdgls649phnc30qry"))
+                "1cncyiyh79w1id6a6s2f0rxmgwl65lp4ml4afa0z35jrnwp2s8cr"))
               (patches
-               ;; This patch is already upstream and can be removed next
-               ;; release.
-               (search-patches "nautilus-add-libportal-gtk3.patch"))))
+               (search-patches "nautilus-disable-tracker-tests.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-extensible
-           (lambda _
-             (substitute* "src/nautilus-module.c"
-               (("static gboolean initialized = FALSE;" all)
-                (string-append all "
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-extensible
+            (lambda _
+              (substitute* "src/nautilus-module.c"
+                (("static gboolean initialized = FALSE;" all)
+                 (string-append all "
 const char *extension_path;
 char **extension_dirs, **d;
 ")
-                )
-               (("load_module_dir \\(NAUTILUS_EXTENSIONDIR\\);" all)
-                (string-append all
-                               "
+                 )
+                (("load_module_dir \\(NAUTILUS_EXTENSIONDIR\\);" all)
+                 (string-append all
+                                "
 extension_path = g_getenv (\"NAUTILUS_EXTENSION_PATH\");
 if (extension_path)
 {
@@ -9459,21 +9458,28 @@ if (extension_path)
     g_strfreev(extension_dirs);
 }
 ")))))
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "build-aux/meson/postinstall.py"
-               (("gtk-update-icon-cache") "true")))))
-       ;; XXX: FAIL: check-nautilus
-       ;;   Settings schema 'org.gnome.nautilus.preferences' is not installed
-       #:tests? #f))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "build-aux/meson/postinstall.py"
+                (("gtk-update-icon-cache") "true"))))
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")    ;some tests require a writable HOME
+              (setenv "XDG_DATA_DIRS"
+                      (string-append (getenv "XDG_DATA_DIRS")
+                                     ":" #$output "/share")))))))
     (native-inputs
-     (list desktop-file-utils     ; for update-desktop-database
-           `(,glib "bin")         ; for glib-mkenums, etc.
+     (list desktop-file-utils           ;for update-desktop-database
+           `(,glib "bin")               ;for glib-mkenums, etc.
+           gettext-minimal
            gobject-introspection
-           intltool
            pkg-config
-           python))
+           python
+           python-pygobject))
     (inputs
      (list dconf
            gexiv2
@@ -9487,7 +9493,6 @@ if (extension_path)
            libportal
            libseccomp
            libselinux
-           libsoup-minimal-2 ; to satisfy tracker dependencies
            tracker
            tracker-miners
            ;; XXX: gtk+ is required by libnautilus-extension.pc
