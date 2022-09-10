@@ -11034,7 +11034,7 @@ photo-booth-like software, such as Cheese.")
 (define-public cheese
   (package
     (name "cheese")
-    (version "41.0")
+    (version "41.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -11042,33 +11042,28 @@ photo-booth-like software, such as Cheese.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1y92glc0d6w323x2bdbc0gdh1jdffvkbv6cwlwm1rx0wgvv1svqh"))))
+                "0iz5cwndl65j13z5pmv0ansln2lyii0h82q775jgc3vk53560aaj"))))
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.60
-       ;; Tests require GDK.
-       #:tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
            (lambda _
              ;; Don't create 'icon-theme.cache'
              (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))
-             #t))
+               (("gtk-update-icon-cache") (which "true")))))
          (add-after 'install 'wrap-cheese
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out             (assoc-ref outputs "out"))
-                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program (string-append out "/bin/cheese")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))
-             #t)))))
+             (wrap-program (search-input-file outputs "bin/cheese")
+               `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                 (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
     (build-system meson-build-system)
     (native-inputs
      (list docbook-xsl
            docbook-xml-4.3
            gettext-minimal
            `(,glib "bin")
+           gobject-introspection
            gtk-doc/stable
            itstool
            libxml2
@@ -11076,7 +11071,8 @@ photo-booth-like software, such as Cheese.")
            pkg-config
            vala))
     (propagated-inputs
-     (list gnome-video-effects
+     (list bash-minimal
+           gnome-video-effects
            clutter
            clutter-gst
            clutter-gtk
@@ -11086,7 +11082,6 @@ photo-booth-like software, such as Cheese.")
            gstreamer))
     (inputs
      (list gnome-desktop
-           gobject-introspection
            gst-plugins-base
            gst-plugins-good
            gst-plugins-bad
