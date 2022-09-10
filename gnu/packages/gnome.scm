@@ -11949,7 +11949,7 @@ desktop environment.")
 (define-public polari
   (package
     (name "polari")
-    (version "41.0")
+    (version "42.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/polari/"
@@ -11957,7 +11957,7 @@ desktop environment.")
                                   "/polari-" version ".tar.xz"))
               (sha256
                (base32
-                "1ss0x8idwar1q9p9535kzqb8idy7k2r48vrbjiyccw03cs0mzc53"))))
+                "0gbbjs522a8vdps79m1h3krkizbld61h8r1hn9z41gpc904cz45g"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -11965,39 +11965,43 @@ desktop environment.")
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
            (lambda _
-             (substitute* "meson/meson-postinstall.sh"
-               (("gtk-update-icon-cache") (which "true")))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false"))))
          (add-after 'install 'fix-desktop-file
-           ;; Hardcode launcher to be on the safe side
+           ;; Hard-code launcher to be on the safe side.
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* (string-append out "/share/applications/"
-                                           "org.gnome.Polari.desktop")
-                 (("Exec=.*") (string-append "Exec=" out "/bin/polari\n"))))))
+             (substitute* (search-input-file
+                           outputs
+                           "share/applications/org.gnome.Polari.desktop")
+               (("Exec=.*")
+                (string-append "Exec=" (search-input-file outputs "bin/polari")
+                               "\n")))))
          (add-after 'glib-or-gtk-wrap 'wrap-typelib
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/polari")))
-               (wrap-program prog
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
+             (wrap-program (search-input-file outputs "bin/polari")
+               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+    (native-inputs
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           yelp-tools))
     (inputs
-     (list glib
+     (list bash-minimal
+           glib
            gsettings-desktop-schemas
            gspell
            gtk
            gjs
            libsecret
-           libsoup-minimal-2
+           libsoup
            telepathy-glib
            telepathy-logger))
-    (native-inputs
-     (list `(,glib "bin")
-           gobject-introspection
-           intltool
-           pkg-config
-           yelp-tools))
     (propagated-inputs
-     (list telepathy-idle telepathy-mission-control))
+     (list telepathy-idle
+           telepathy-mission-control))
     (synopsis "Simple IRC Client")
     (description
      "Polari is a simple Internet Relay Chat (IRC) client that is designed to
