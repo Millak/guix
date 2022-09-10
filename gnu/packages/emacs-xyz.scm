@@ -16545,33 +16545,31 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
     (license license:gpl3+)))
 
 (define-public emacs-ement
-  (let ((commit "02015eacf682b53baaddf26c8a4046e6ff84d4e8")
-        (revision "3"))
-    (package
-      (name "emacs-ement")
-      (version (git-version "0.1-pre" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/alphapapa/ement.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0xnhhzl1si09l7lgh5smgpmxgbkzi8p68dykdgsawqa960w6n1ks"))))
-      (build-system emacs-build-system)
-      (arguments
-       `(#:emacs ,emacs))               ;need libxml support
-      (propagated-inputs
-       (list emacs-plz
-             emacs-svg-lib
-             emacs-taxy
-             emacs-taxy-magit-section
-             emacs-ts))
-      (home-page "https://github.com/alphapapa/ement.el")
-      (synopsis "Matrix client for Emacs")
-      (description "Ement.el is a Matrix client for Emacs.")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-ement")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alphapapa/ement.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0khp1x8rip6kddkb7d6y14z1505zhk1gdxiaw0m26ksa1rw852nr"))))
+    (build-system emacs-build-system)
+    (arguments
+     `(#:emacs ,emacs))               ;need libxml support
+    (propagated-inputs
+     (list emacs-plz
+           emacs-svg-lib
+           emacs-taxy
+           emacs-taxy-magit-section
+           emacs-ts))
+    (home-page "https://github.com/alphapapa/ement.el")
+    (synopsis "Matrix client for Emacs")
+    (description "Ement.el is a Matrix client for Emacs.")
+    (license license:gpl3+)))
 
 (define-public emacs-rpm-spec-mode
   (let ((commit "c1c38050c48ea330c7cea632b8785d66daeefb2b")
