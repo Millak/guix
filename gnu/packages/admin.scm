@@ -325,14 +325,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-0.9
   (package
     (inherit shepherd)
-    (version "0.9.1")
+    (version "0.9.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0l2arn6gsyw88xk9phxnyplvv1mn8sqp3ipgyyb0nszdzvxlgd36"))
+                "0mcby3ygh3bpns44rb1vnk8bz2km4nlw092nrcgkm3nkqfmbp4p1"))
               (modules '((guix build utils)))
               (snippet
                ;; Avoid continuation barriers so (@ (fibers) sleep) can be
