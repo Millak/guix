@@ -11163,7 +11163,7 @@ and uncluttered interface for the management of password databases.")
 (define-public sound-juicer
   (package
     (name "sound-juicer")
-    (version "3.24.0")
+    (version "3.38.0")
     (source
      (origin
        (method url-fetch)
@@ -11172,18 +11172,31 @@ and uncluttered interface for the management of password databases.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "19qg4xv0f9rkq34lragkmhii1llxsa87llbl28i759b0ks4f6sny"))))
-    (build-system glib-or-gtk-build-system)
+         "08d5d81rz9sj3m5paw8fwbgxmhlbr7bcjdzpmzj832qvg8smydxf"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'disable-gtk-update-icon-cache
+                     (lambda _
+                       (setenv "DESTDIR" "/"))))))
     (native-inputs
-     (list desktop-file-utils intltool itstool pkg-config libxml2))
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           itstool
+           libxml2
+           pkg-config
+           python))
     (inputs
-     (list gtk+
+     (list brasero
            gsettings-desktop-schemas
-           gstreamer
            gst-plugins-base
            gst-plugins-good
+           gstreamer
+           gtk+
            iso-codes
-           brasero
            libcanberra
            libdiscid
            libmusicbrainz
