@@ -18825,21 +18825,20 @@ from the header, as well as section details and data available.")
 (define-public python-qrcode
   (package
     (name "python-qrcode")
-    (version "6.1")
+    (version "7.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qrcode" version))
        (sha256
-        (base32 "0sa3n298b9jpz6zn0birnjii3mg9sihjq28n9nzjlzv09y2m6ljh"))))
+        (base32 "0y35jlwfvkgn9341lzshyaqgpp61vysjh107vhdd96ya83r6ynip"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: Tests require packaging 'pymaging'.
      '(#:tests? #f))
     (propagated-inputs
      (list python-lxml ; for SVG output
-           python-pillow ; for PNG output
-           python-six))
+           python-pillow)) ; for PNG output
     (home-page "https://github.com/lincolnloop/python-qrcode")
     (synopsis "QR Code image generator")
     (description "This package provides a pure Python QR Code generator
