@@ -2751,13 +2751,12 @@ procedure calls (RPCs).")
        (modify-phases %standard-phases
          (add-after 'unpack 'use-absolute-/bin/sh
            (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((bash (assoc-ref inputs "bash-minimal")))
+             (let ((/bin/sh (search-input-file inputs "bin/sh")))
                (substitute* "ovsdb/ovsdb-server.c"
-                 (("/bin/sh") (string-append bash "/bin/sh"))))))
+                 (("/bin/sh") /bin/sh)))))
          (add-before 'check 'adjust-tests
            (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((bash (assoc-ref inputs "bash-minimal"))
-                    (/bin/sh (string-append bash "/bin/sh")))
+             (let ((/bin/sh (search-input-file inputs "bin/sh")))
                (with-fluids ((%default-port-encoding "ISO-8859-1"))
                  (substitute* (find-files "tests" ".*(run|testsuite)$")
                    (("#! /bin/sh")
@@ -2794,13 +2793,14 @@ ps --no-header -p $1 -o state= | grep -qv '^Z$'"
                      "DBDIR=/tmp"
                      "install"))))))
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ;; for testing
-       ("bash" ,bash)                   ;for 'compgen'
-       ("procps" ,procps)
-       ("util-linux" ,util-linux)))
+     (list perl
+           pkg-config
+           python-wrapper
+
+           ;; For testing.
+           bash                         ;for 'compgen'
+           procps
+           util-linux))
     (inputs
      (list bash-minimal libcap-ng openssl))
     (synopsis "Virtual network switch")
