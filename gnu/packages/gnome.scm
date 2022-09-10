@@ -11312,15 +11312,15 @@ micro-pauses and rest breaks, and restricts you to your daily limit.")
 (define-public ghex
   (package
     (name "ghex")
-    (version "3.18.4")
+    (version "42.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/ghex/"
-                                  (version-major+minor version) "/"
+                                  (version-major version) "/"
                                   "ghex-" version ".tar.xz"))
               (sha256
                (base32
-                "1h1pjrr9wynclfykizqd78dbi785wjz6b63p31k87kjvzy8w3nf2"))))
+                "1vsd6l78pymdrsgdgj7xhxyrf09j4w08zrbvs8qdn8a9na50zm5d"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -11329,20 +11329,19 @@ micro-pauses and rest breaks, and restricts you to your daily limit.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))
-             #t)))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin") ; for glib-compile-schemas
-       ("gnome-common" ,gnome-common)
-       ("which" ,which)
-       ("intltool" ,intltool)
-       ("yelp-tools" ,yelp-tools)
-       ("desktop-file-utils" ,desktop-file-utils))) ; for 'desktop-file-validate'
+     (list desktop-file-utils           ;for 'desktop-file-validate'
+           gettext-minimal
+           `(,glib "bin")               ;for glib-compile-schemas
+           gnome-common
+           pkg-config
+           yelp-tools))
     (inputs
-     `(("atk" ,atk)
-       ("gtk" ,gtk+)))
+     (list atk
+           gtk))
     (synopsis "GNOME hexadecimal editor")
     (description "The GHex program can view and edit files in two ways:
 hexadecimal or ASCII.  It is useful for editing binary files in general.")
