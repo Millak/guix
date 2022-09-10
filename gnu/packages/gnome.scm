@@ -12254,7 +12254,7 @@ and toolbars.")
 (define-public setzer
   (package
     (name "setzer")
-    (version "0.4.1")
+    (version "0.4.8")
     (source
      (origin
        (method git-fetch)
@@ -12263,45 +12263,42 @@ and toolbars.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rcx2c07jg1ij81pnvg3px49hfbjmkagn68d3gp79z3gcajbp2av"))))
+        (base32 "12w58v7qsd3xfmrxhij8dby9xnvd82hxqb4wc6di7lqz1ayg5lzc"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/setzer"))
-                   (pylib (string-append (assoc-ref outputs "out")
-                                         "/lib/python"
-                                         ,(version-major+minor
-                                           (package-version python))
-                                         "/site-packages")))
-               (wrap-program prog
-                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-               #t))))))
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules `(,@%meson-build-system-modules
+                           (guix build python-build-system))
+      #:modules '((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/setzer")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                       ,(python:site-packages inputs outputs)))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("python-wrapper" ,python-wrapper)))
+     (list gettext-minimal
+           python))
     (inputs
-     `(("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gspell" ,gspell)
-       ("gtk+" ,gtk+)
-       ("gtksourceview" ,gtksourceview)
-       ("pango" ,pango)
-       ("poppler" ,poppler)
-       ("python-pdfminer" ,python-pdfminer-six)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pyxdg" ,python-pyxdg)
-       ("webkitgtk" ,webkitgtk)
-       ("xdg-utils" ,xdg-utils)))
+     (list bash-minimal
+           gsettings-desktop-schemas
+           gspell
+           gtk+
+           gtksourceview-4
+           pango
+           poppler
+           python-pdfminer-six
+           python-pexpect
+           python-pycairo
+           python-pygobject
+           python-pyxdg
+           webkitgtk-with-libsoup2
+           xdg-utils))
     (home-page "https://www.cvfosammmm.org/setzer/")
     (synopsis "LaTeX editor written in Python with GTK+")
     (description
