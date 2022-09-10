@@ -2810,6 +2810,8 @@ ps --no-header -p $1 -o state= | grep -qv '^Z$'"
 massive network automation through programmatic extension, while still
 supporting standard management interfaces and protocols (e.g. NetFlow, sFlow,
 IPFIX, RSPAN, CLI, LACP, 802.1ag).")
+    (properties
+     '((release-monitoring-url . "https://www.openvswitch.org/download/")))
     (license                            ; see debian/copyright for detail
      (list license:lgpl2.1              ; xenserver and utilities/bugtool
            license:gpl2                 ; datapath
