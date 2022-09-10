@@ -9692,31 +9692,37 @@ associations for GNOME.")
 
 (define-public libgovirt
   (package
-   (name "libgovirt")
-   (version "0.3.8")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnome/sources/" name "/"
-                                (version-major+minor version) "/"
-                                name "-" version ".tar.xz"))
-            (sha256
-             (base32
-              "1y0x1wyakj3ya33hgj0w1jkbcn50q21gmn2zyalxysqp55i1ij8x"))))
-   (build-system glib-or-gtk-build-system)
-   (native-inputs
-    (list gettext-minimal
-          `(,glib "bin")
-          gobject-introspection
-          gsettings-desktop-schemas
-          `(,gtk+ "bin")
-          pkg-config))
-   (inputs
-    (list glib-networking ; GIO plugin--for the tests
-          rest))
-   (synopsis "GoVirt Library")
-   (description "GoVirt is a GObject wrapper for the oVirt REST API.")
-   (home-page "https://gitlab.gnome.org/GNOME/libgovirt")
-   (license license:gpl2+)))
+    (name "libgovirt")
+    (version "0.3.9")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0z118di7cg654f5zb8xn5w60ghgqngsc1p7izr1pw01dkxbw6bxi"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'set-home
+                          (lambda _
+                            ;; The tests require a writable HOME.
+                            (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           glib-networking              ; GIO plugin--for the tests
+           gobject-introspection
+           gsettings-desktop-schemas
+           pkg-config))
+    (inputs
+     (list rest-next))
+    (synopsis "GoVirt Library")
+    (description "GoVirt is a GObject wrapper for the oVirt REST API.")
+    (home-page "https://gitlab.gnome.org/GNOME/libgovirt")
+    (license license:gpl2+)))
 
 (define-public gnome-weather
   (package
