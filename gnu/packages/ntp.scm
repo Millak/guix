@@ -129,7 +129,17 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
                         (file-name "ntp-gcc-compat.patch")
                         (sha256
                          (base32
-                          "13d28sg45rflc7kqiv30asrhna8n69wlpwx16l65rravgpvp90h2")))))
+                          "13d28sg45rflc7kqiv30asrhna8n69wlpwx16l65rravgpvp90h2")))
+                      ;; And another one that fixes the build with glibc 2.34:
+                      ;; <https://bugs.ntp.org/show_bug.cgi?id=3741>.
+                      (origin
+                        (method url-fetch)
+                        (uri "https://bugs.ntp.org/attachment.cgi?id=1814\
+&action=diff&collapsed=&headers=1&format=raw")
+                        (file-name "ntp-glibc-compat.patch")
+                        (sha256
+                         (base32
+                          "0z8ndaw3l086mbm42v9gfgxild1yvg0anxf3724lsalvgqlndcj4")))))
        (modules '((guix build utils)))
        (snippet
         '(begin
