@@ -277,10 +277,4 @@ namespace nix {
 std::shared_ptr<StoreAPI> store;
 
 
-std::shared_ptr<StoreAPI> openStore(bool reserveSpace)
-{
-    return std::shared_ptr<StoreAPI>(new LocalStore(reserveSpace));
-}
-
-
 }
