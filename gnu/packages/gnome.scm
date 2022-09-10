@@ -7589,9 +7589,9 @@ to display dialog boxes from the commandline and shell scripts.")
                                status))))))))))))
     (native-inputs
      (list desktop-file-utils           ; for update-desktop-database
+           gettext-minimal
            `(,glib "bin")               ; for glib-compile-schemas, etc.
            gobject-introspection
-           intltool
            pkg-config
            xvfb-run
            ;; For git build
