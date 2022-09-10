@@ -9122,7 +9122,7 @@ like switching to windows and launching applications.")
 (define-public gtk-vnc
   (package
     (name "gtk-vnc")
-    (version "1.2.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
@@ -9131,11 +9131,10 @@ like switching to windows and launching applications.")
                        (version-major+minor version) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "0jmr6igyzcj2wmx5v5ywaazvdz3hx6a6rys26yb4l4s71l281bvs"))))
+        (base32 "1kpih1gnp3hmsx4l6pig10zn7gd3s5fwm0k6icax0n859sn669si"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.60
-       #:glib-or-gtk? #t))   ; To wrap binaries and/or compile schemas
+     `(#:glib-or-gtk? #t))   ; To wrap binaries and/or compile schemas
     (native-inputs
      (append
       ;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
@@ -9152,7 +9151,8 @@ like switching to windows and launching applications.")
              python-wrapper
              vala)))
     (inputs
-     (list cairo (librsvg-for-system)))
+     (list cairo
+           (librsvg-for-system)))
     (propagated-inputs
      ;; These are all in Requires or Requires.private of the .pc files.
      (list cyrus-sasl
