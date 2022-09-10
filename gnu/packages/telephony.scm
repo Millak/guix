@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2019 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -555,7 +555,7 @@ address of one of the participants.")
 (define-public mumble
   (package
     (name "mumble")
-    (version "1.4.230")
+    (version "1.4.274")
     (source (origin
               (method url-fetch)
               (uri
@@ -564,7 +564,7 @@ address of one of the participants.")
                 version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1c1lwj0cpyawr74adpdrsnxk8ra5kqrjbg65cnwk8n6cwss84zdn"))
+                "12rv61mmpgvcc1svq2y66r29sl47y9lfi9if0r09x4nqrkf7vj3y"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))

@@ -422,6 +422,49 @@ Gaussian quadrature for a numerical solution.")
 Distance (EMD).")
     (license license:expat)))
 
+(define-public r-ggalt
+  (package
+    (name "r-ggalt")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggalt" version))
+              (sha256
+               (base32
+                "0ssa274d41vhd6crzjz7jqzbwgnjimxwxl23p2cx35aqs5wdfjpc"))))
+    (properties `((upstream-name . "ggalt")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ash
+           r-dplyr
+           r-extrafont
+           r-ggplot2
+           r-gtable
+           r-kernsmooth
+           r-maps
+           r-mass
+           r-plotly
+           r-proj4
+           r-rcolorbrewer
+           r-scales
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/hrbrmstr/ggalt")
+    (synopsis
+     "Geometries, coordinate systems, fonts and more for ggplot2")
+    (description
+     "This package provides a compendium of new geometries, coordinate systems,
+statistical transformations, scales and fonts for ggplot2, including splines,
+1d and 2d densities, univariate average shifted histograms, a new map
+coordinate system based on the PROJ.4-library along with
+@code{geom_cartogram()} that mimics the original functionality of
+@code{geom_map()}, formatters for \"bytes\", a @code{stat_stepribbon()}
+function, increased @code{plotly} compatibility and the @code{StateFace} open
+source font ProPublica.  Further new functionality includes lollipop charts,
+dumbbell charts, the ability to encircle points and coordinate-system-based
+text annotations.")
+    (license license:agpl3)))
+
 (define-public r-glmpca
   (package
     (name "r-glmpca")
@@ -592,6 +635,29 @@ pronounceable identifiers.")
 @url{https://developers.google.com/sheets/api,Sheets API v4}.  This package
 can read and write both the metadata and the cell data in a Sheet.")
     (license license:expat)))
+
+(define-public r-proj4
+  (package
+    (name "r-proj4")
+    (version "1.0-11")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "proj4" version))
+              (sha256
+               (base32
+                "07fil52jswbg2h807cd82m2wlm5j2fb891ifri9ms037099qdwf5"))))
+    (properties `((upstream-name . "proj4")))
+    (build-system r-build-system)
+    (inputs (list proj.4 zlib))
+    (native-inputs (list pkg-config))
+    (home-page "http://www.rforge.net/proj4/")
+    (synopsis "Simple interface to the PROJ.4 cartographic projections library")
+    (description
+     "This package provides a simple interface to lat/long projection and
+datum transformation of the PROJ.4 cartographic projections library.  It
+allows transformation of geographic coordinates from one projection and/or
+datum to another.")
+    (license license:gpl2)))
 
 (define-public r-waldo
   (package
@@ -34503,3 +34569,9 @@ calculate a dimension's unknown value from other dimensions' measurements.")
      "Tools for integrating spatially-misaligned GIS datasets.  Part of the
 Sub-National Geospatial Data Archive System.")
     (license license:gpl2)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;
