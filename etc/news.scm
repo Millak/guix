@@ -29,11 +29,14 @@
  (entry (commit "c188cf57f161c0c26e2d7c8516bd1ddd1492d686")
         (title
           (en "Linux-libre kernel updated to 5.19")
+          (de "Linux-libre-Kernel wird auf 5.19 aktualisiert")
           (fr "Le noyau linux-libre est mis à jour vers la 5.19")
           (pt "Kernel linux-libre atualizado para 5.19"))
         (body
           (en "The default version of the linux-libre kernel has been
               updated to the 5.19 release series.")
+          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+              jetzt auf der 5.19-Versionsreihe.")
           (fr "La version par défaut du noyau linux-libre est mise à jour
               vers la série des 5.19.")
           (pt "A versão padrão do kernel linux-libre foi atualizada para a
