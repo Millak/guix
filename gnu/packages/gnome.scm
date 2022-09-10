@@ -10779,7 +10779,7 @@ accessibility infrastructure.")
 (define-public orca
   (package
     (name "orca")
-    (version "41.0")
+    (version "42.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -10788,7 +10788,7 @@ accessibility infrastructure.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1gflnsv6d5qn5rh1f16yfa0q0yv8yvd0l5lbwrsdg7z18lafb5vn"))))
+                "097pyav3z5ssic8vwd7v1s7vynpycdpyfr324rr6c7mfzq5vmp7s"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      '(#:phases
@@ -10801,22 +10801,21 @@ accessibility infrastructure.")
                  (("'xkbcomp'") (format #f "'~a'" xkbcomp))))))
          (add-after 'install 'wrap-orca
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (prog (string-append out "/bin/orca")))
-               (wrap-program prog
-                 `("GI_TYPELIB_PATH" ":" prefix
-                   (,(getenv "GI_TYPELIB_PATH")))
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
-                   (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
-                 `("GUIX_PYTHONPATH" ":" prefix
-                   (,(getenv "GUIX_PYTHONPATH"))))))))))
+             (wrap-program (search-input-file outputs "bin/orca")
+               `("GI_TYPELIB_PATH" ":" prefix
+                 (,(getenv "GI_TYPELIB_PATH")))
+               `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                 (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
+               `("GUIX_PYTHONPATH" ":" prefix
+                 (,(getenv "GUIX_PYTHONPATH")))))))))
     (native-inputs
-     (list intltool
+     (list gettext-minimal
            itstool
            pkg-config
            libxml2))
     (inputs
      (list at-spi2-atk
+           bash-minimal
            gsettings-desktop-schemas
            gstreamer
            gst-plugins-base
