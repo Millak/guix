@@ -40,6 +40,23 @@
     (arguments
      (list #:configure-flags #~'("--disable-static")
            #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'embed-absolute-libmd-references
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (let ((libmd (search-input-file inputs
+                                                            "lib/libmd.so")))
+                              ;; Add absolute references to libmd so it
+                              ;; does not need to be propagated.
+                              (with-directory-excursion #$output
+                                (substitute* "lib/libbsd.so"
+                                  (("^GROUP")
+                                   (string-append "SEARCH_DIR("
+                                                  (dirname libmd)
+                                                  ")\nGROUP")))
+                                (substitute* (find-files "lib/pkgconfig"
+                                                         "\\.pc$")
+                                  (("-lmd")
+                                   (string-append "-L" (dirname libmd)
+                                                  " -lmd")))))))
                         (add-before 'check 'disable-pwcache-test
                           (lambda _
                             ;; This test expects the presence of a root
