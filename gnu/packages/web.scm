@@ -408,6 +408,7 @@ the same, being completely separated from the Internet.")
               "--with-pcre-jit"
               "--with-debug"
               "--with-stream"
+              "--with-stream_ssl_module"
               ;; Even when not cross-building, we pass the
               ;; --crossbuild option to avoid customizing for the
               ;; kernel version on the build machine.
