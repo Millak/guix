@@ -11663,7 +11663,7 @@ for usage on small and big screens.")
 (define-public libgit2-glib
   (package
     (name "libgit2-glib")
-    (version "1.0.0.1")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -11671,7 +11671,7 @@ for usage on small and big screens.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0mrb21cgqmbhbxqxwx76yry1ifqj1k4vy6455n6s034m6rlms2j6"))))
+                "1wqypx0xv20vk0zfh20c474z6rdgbxbklcr2wkhl30dgbmbxg3f3"))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin") ;; For glib-mkenums
@@ -11681,10 +11681,9 @@ for usage on small and big screens.")
            python-wrapper
            vala))
     (inputs
-     (list glib libssh2))
+     (list libssh2))
     (propagated-inputs
-     (list ;; In Requires of libgit2-glib.pc.
-           libgit2))
+     (list glib libgit2)) ;; In Requires of libgit2-glib.pc.
     (synopsis "GLib wrapper around the libgit2 Git access library")
     (description "libgit2-glib is a GLib wrapper library around the libgit2 Git
 access library.  It only implements the core plumbing functions, not really the
