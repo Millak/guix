@@ -10838,7 +10838,7 @@ that support the Assistive Technology Service Provider Interface (AT-SPI).")
 (define-public gspell
   (package
     (name "gspell")
-    (version "1.8.2")
+    (version "1.11.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10846,13 +10846,18 @@ that support the Assistive Technology Service Provider Interface (AT-SPI).")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1miybm1z5cl91i25l7mfqlxhv7j8yy8rcgi0s1bgbb2vm71rb4dv"))
-              (patches (search-patches "gspell-dash-test.patch"))))
+                "14h2w0yzqwaw5dykmhh21sy2c96g17waahg2lxc52xqiyzis8spg"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      '(#:configure-flags (list "--enable-vala")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'disable-problematic-tests
+           (lambda _
+             (substitute* "testsuite/test-checker.c"
+               ;; This test is known to fail with Aspell, as a comment
+               ;; mentions it.  Disable it.
+               ((".*g_test_add_func.*test_dashes.*") ""))))
          (add-before 'check 'pre-check
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Tests require a running X server.
@@ -10869,18 +10874,20 @@ that support the Assistive Technology Service Provider Interface (AT-SPI).")
     (inputs
      (list iso-codes))
     (native-inputs
-     `(("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)                             ;for VAPI, needed by Geary
-       ("xmllint" ,libxml2)
+     (list `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           vala                         ;for VAPI, needed by Geary
+           libxml2
 
-       ;; For tests.
-       ("aspell-dict-en" ,aspell-dict-en)
-       ("xorg-server" ,xorg-server-for-tests)))
+           ;; For tests.
+           aspell-dict-en
+           xorg-server-for-tests))
     (propagated-inputs
      ;; Referred by .pc file.
-     (list enchant glib gtk+))
+     (list enchant
+           glib
+           gtk+))
     (home-page "https://wiki.gnome.org/Projects/gspell")
     (synopsis "GNOME's alternative spell checker")
     (description
