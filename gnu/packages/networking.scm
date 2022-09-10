@@ -2763,6 +2763,11 @@ procedure calls (RPCs).")
                    (("#! /bin/sh")
                     (string-append "#! " /bin/sh))
 
+                   ;; grep 3.8 emits a warning for 'egrep' which breaks
+                   ;; expected output; adjust accordingly.
+                   (("egrep")
+                    "grep -E")
+
                    ;; The tests use 'kill -0' to check whether a test has
                    ;; completed, but it does not work in the build container
                    ;; because zombies are not reaped automatically (PID 1 is
