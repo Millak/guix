@@ -8484,7 +8484,7 @@ the available networks and allows users to easily switch between them.")
 (define-public libxml++
   (package
     (name "libxml++")
-    (version "3.2.0")
+    (version "5.0.2")
     (source
      (origin
        (method git-fetch)
@@ -8493,37 +8493,41 @@ the available networks and allows users to easily switch between them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wjz591rjlgbah7dcq8i0yn0zw9d62b7g6r0pppx81ic0cx8n8ga"))))
+        (base32 "13jlhz57yjxapplflm8aarczxv6ll3d336y1446mr5n4ylkcc1xz"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-documentation
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
-                                          "/xml/dtd/docbook"))
-                   (xsldoc (string-append (assoc-ref inputs "docbook-xsl")
-                                          "/xml/xsl/docbook-xsl-"
-                                          ,(package-version docbook-xsl))))
-               (substitute* '("examples/dom_xpath/example.xml"
-                              "docs/manual/libxml++_without_code.xml")
-                 (("http://.*/docbookx\\.dtd")
-                  (string-append xmldoc "/docbookx.dtd")))
-               (setenv "SGML_CATALOG_FILES"
-                       (string-append xmldoc "/catalog.xml"))
-               (substitute* "docs/manual/docbook-customisation.xsl"
-                 (("http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl")
-                  (string-append xsldoc "/html/chunk.xsl")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-documentation
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (let* ((xsl-version #$(package-version docbook-xsl))
+                     (xsldoc (string-append "xml/xsl/docbook-xsl-"
+                                            xsl-version)))
+                (substitute* '("examples/dom_xpath/example.xml"
+                               "docs/manual/libxml++_without_code.xml")
+                  (("http://.*/docbookx\\.dtd")
+                   (search-input-file (or native-inputs inputs)
+                                      "xml/dtd/docbook/docbookx.dtd")))
+                (setenv "SGML_CATALOG_FILES"
+                        (search-input-file (or native-inputs inputs)
+                                           (string-append
+                                            xsldoc "/catalog.xml")))
+                (substitute* "docs/manual/docbook-customisation.xsl"
+                  (("http://docbook.sourceforge.net/release/xsl\
+/current/html/chunk.xsl")
+                   (search-input-file (or native-inputs inputs)
+                                      (string-append xsldoc
+                                                     "/html/chunk.xsl"))))))))))
     (propagated-inputs
-     ;; libxml++-3.0.pc refers to all these.
-     (list glibmm-2.64 libxml2))
+     (list libxml2))                    ;required by .pc file
     (native-inputs
      (list autoconf
            automake
            doxygen
            docbook-xml
            docbook-xsl
-           graphviz ; for dot
+           graphviz                     ;for dot
            libtool
            libxslt
            mm-common
@@ -8542,7 +8546,7 @@ library.")
   (package
     (inherit libxml++)
     (name "libxml++")
-    (version "2.40.1")
+    (version "2.42.2")
     (source
      (origin
        (method git-fetch)
@@ -8551,7 +8555,9 @@ library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gbfi4l88w828gmyc9br11l003ylyi4vigp5d1kfgsn0k4cig3y9"))))))
+        (base32 "05slsbhc25z7kwlc28ydl3dfyp7rgbmz1fxj9z6gcvpg3hkghj2m"))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs libxml++)
+                         (append glibmm-2.64)))))
 
 (define-public gdm
   (package
