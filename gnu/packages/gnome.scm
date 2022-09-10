@@ -12309,44 +12309,43 @@ GTK+.  It integrates well with the GNOME desktop environment.")
 (define-public apostrophe
   (package
     (name "apostrophe")
-    (version "2.5")
+    (version "2.6.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://gitlab.gnome.org/somas/apostrophe")
+                    (url "https://gitlab.gnome.org/World/apostrophe")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06yfiflmj3ip7ppcz41nb3xpgb5ggw5h74w0v87yaqqkq7qh31lp"))))
+                "0wsvq2434p650cf3vq5w7a6czbk8in0ra7nji45mvwyfahdyn6j4"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59              ;fails with 0.60
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-meson
-           (lambda _
-             (substitute* "build-aux/meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))))
-         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/apostrophe"))
-                   (pylib (string-append (assoc-ref outputs "out")
-                                         "/lib/python"
-                                         ,(version-major+minor
-                                           (package-version
-                                            (this-package-input "python")))
-                                         "/site-packages")))
-               (wrap-program prog
-                 `("PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
-                 `("PATH" prefix (,(dirname
-                                    (search-input-file inputs
-                                                       "/bin/pandoc")))))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules `(,@%meson-build-system-modules
+                           (guix build python-build-system))
+      #:modules '((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-meson
+            (lambda _
+              (substitute* "build-aux/meson_post_install.py"
+                (("gtk-update-icon-cache") "true"))))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/apostrophe")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                       ,(python:site-packages inputs outputs)))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
+                `("PATH" prefix (,(dirname
+                                   (search-input-file inputs
+                                                      "/bin/pandoc"))))))))))
     (inputs
-     (list glib
+     (list bash-minimal
+           glib
            gobject-introspection
            gspell
            gtk+
@@ -12366,7 +12365,7 @@ GTK+.  It integrates well with the GNOME desktop environment.")
            `(,glib "bin")
            pkg-config
            sassc))
-    (home-page "https://gitlab.gnome.org/somas/apostrophe")
+    (home-page "https://gitlab.gnome.org/World/apostrophe")
     (synopsis "Markdown editor written in Python with GTK+")
     (description "Apostrophe is a GTK+ based distraction-free Markdown editor.
 It uses pandoc as back-end for parsing Markdown.")
