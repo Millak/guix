@@ -15118,14 +15118,14 @@ of @acronym{REGEXPs, regular expressions}.")
 (define-public python-mako
   (package
     (name "python-mako")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Mako" version))
        (sha256
         (base32
-         "01q3gdqpxqcxdhacrzrwk6fjpd1krdr73i7cm4d2yja38zzsam7h"))))
+         "0gqnv9py1dqp01jmf5zxp0vj2dbhq1l9zy55fai319iv6sdqc91p"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
