@@ -7504,17 +7504,14 @@ to display dialog boxes from the commandline and shell scripts.")
         "-Dsystemd=false"
         ;; The following flags are needed for the bundled clutter
         (string-append "-Dxwayland_path="
-                       (assoc-ref %build-inputs "xorg-server-xwayland")
-                       "/bin/Xwayland")
+                       (search-input-file %build-inputs "/bin/Xwayland"))
         ;; the remaining flags are needed for the bundled cogl
         (string-append "-Dopengl_libname="
-                       (assoc-ref %build-inputs "mesa")
-                       "/lib/libGL.so")
+                       (search-input-file %build-inputs "/lib/libGL.so"))
         (string-append "-Dgles2_libname="
-                       (assoc-ref %build-inputs "mesa")
-                       "/lib/libGLESv2.so")
-        "-Degl_device=true"              ;false by default
-        "-Dwayland_eglstream=true")      ;false by default
+                       (search-input-file %build-inputs "/lib/libGLESv2.so"))
+        "-Degl_device=true"             ;false by default
+        "-Dwayland_eglstream=true")     ;false by default
        #:test-options
        (list "--verbose")
        #:phases
@@ -7523,10 +7520,10 @@ to display dialog boxes from the commandline and shell scripts.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/wayland/meta-wayland-egl-stream.c"
                (("libnvidia-egl-wayland.so.1")
-                (string-append (assoc-ref inputs "egl-wayland")
-                               "/lib/libnvidia-egl-wayland.so.1")))))
+                (search-input-file inputs
+                                   "/lib/libnvidia-egl-wayland.so.1")))))
          (add-before 'configure 'set-udev-dir
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key outputs #:allow-other-keys)
              (setenv "PKG_CONFIG_UDEV_UDEVDIR"
                      (string-append (assoc-ref outputs "out")
                                     "/lib/udev"))))
@@ -7593,71 +7590,71 @@ to display dialog boxes from the commandline and shell scripts.")
                        (error "`meson test' exited with status"
                               status))))))))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("glib:bin" ,glib "bin")         ; for glib-compile-schemas, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("xvfb-run" ,xvfb-run)
-       ;; For git build
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ;; For tests.
-       ;; Warnings are configured to be fatal during the tests; add an icon
-       ;; theme to please libxcursor.
-       ("adwaita-icon-theme" ,adwaita-icon-theme)
-       ("libxcursor" ,libxcursor)       ;for XCURSOR_PATH
-       ("pipewire" ,pipewire-0.3)
-       ("python" ,python)
-       ("python-dbus" ,python-dbus)
-       ("python-dbusmock" ,python-dbusmock)
-       ("tini" ,tini)))                 ;acting as init (zombie reaper)
+     (list desktop-file-utils           ; for update-desktop-database
+           `(,glib "bin")               ; for glib-compile-schemas, etc.
+           gobject-introspection
+           intltool
+           pkg-config
+           xvfb-run
+           ;; For git build
+           autoconf
+           automake
+           libtool
+           ;; For tests.
+           ;; Warnings are configured to be fatal during the tests; add an icon
+           ;; theme to please libxcursor.
+           adwaita-icon-theme
+           libxcursor                   ;for XCURSOR_PATH
+           pipewire-0.3
+           python
+           python-dbus
+           python-dbusmock
+           tini))                       ;acting as init (zombie reaper)
     (propagated-inputs
-     `( ;; libmutter.pc refers to these:
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ;; mutter-clutter-1.0.pc and mutter-cogl-1.0.pc refer to these:
-       ("atk" ,atk)
-       ("cairo" ,cairo)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("glib" ,glib)
-       ("json-glib" ,json-glib)
-       ("libinput" ,libinput)
-       ("libx11" ,libx11)
-       ("libxcomposite" ,libxcomposite)
-       ("libxcvt" ,libxcvt)
-       ("libxdamage" ,libxdamage)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxml2" ,libxml2)
-       ("libxrandr" ,libxrandr)
-       ("mesa" ,mesa)
-       ("pango" ,pango)
-       ("udev" ,eudev)
-       ("xinput" ,xinput)))
+     (list ;; libmutter.pc refers to these:
+      gsettings-desktop-schemas
+      gtk+
+      ;; mutter-clutter-1.0.pc and mutter-cogl-1.0.pc refer to these:
+      atk
+      cairo
+      gdk-pixbuf
+      glib
+      json-glib
+      libinput
+      libx11
+      libxcomposite
+      libxcvt
+      libxdamage
+      libxext
+      libxfixes
+      libxkbcommon
+      libxml2
+      libxrandr
+      mesa
+      pango
+      eudev
+      xinput))
     (inputs
-     `(("egl-wayland" ,egl-wayland)     ;for wayland-eglstream-protocols
-       ("elogind" ,elogind)
-       ("gnome-desktop" ,gnome-desktop)
-       ("gnome-settings-daemon" ,gnome-settings-daemon)
-       ("graphene" ,graphene)
-       ("libcanberra-gtk" ,libcanberra)
-       ("libgudev" ,libgudev)
-       ("libice" ,libice)
-       ("libsm" ,libsm)
-       ("libwacom" ,libwacom)
-       ("libxkbfile" ,libxkbfile)
-       ("libxrandr" ,libxrandr)
-       ("libxtst" ,libxtst)
-       ("pipewire" ,pipewire-0.3)
-       ("startup-notification" ,startup-notification)
-       ("sysprof" ,sysprof)
-       ("upower-glib" ,upower)
-       ("xkeyboard-config" ,xkeyboard-config)
-       ("xorg-server-xwayland" ,xorg-server-xwayland)
-       ("zenity" ,zenity)))
+     (list egl-wayland                  ;for wayland-eglstream-protocols
+           elogind
+           gnome-desktop
+           gnome-settings-daemon
+           graphene
+           libcanberra
+           libgudev
+           libice
+           libsm
+           libwacom
+           libxkbfile
+           libxrandr
+           libxtst
+           pipewire-0.3
+           startup-notification
+           sysprof
+           upower
+           xkeyboard-config
+           xorg-server-xwayland
+           zenity))
     (synopsis "Window and compositing manager")
     (home-page "https://www.gnome.org")
     (description
