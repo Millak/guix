@@ -4,6 +4,7 @@
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages patchutils)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix licenses)
@@ -40,6 +42,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages less)
   #:use-module (gnu packages mail)
@@ -439,6 +442,41 @@ if __name__ == \"__main__\":
 patches, and displays the patches along with comments and state information.
 Users can login allowing them to change the state of patches.")
     (home-page "http://jk.ozlabs.org/projects/patchwork/")
+    (license gpl2+)))
+
+(define-public wiggle
+  (package
+    (name "wiggle")
+    (version "1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/neilbrown/wiggle")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18ilzr9sbal1j8p1d94ilm1j5blac5cngvcvjpdmgmpw6diy2ldf"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list "CFLAGS=-I. -O3" "INSTALL=install" "STRIP=-s"
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "BINDIR=" #$output "/bin")
+              (string-append "MANDIR=" #$output "/share/man")
+              (string-append "PREFIX=" #$output))
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "http://neil.brown.name/wiggle/")
+    (inputs (list ncurses))
+    (native-inputs (list groff))
+    (synopsis "Apply patches with conflicts")
+    (description
+     "@code{wiggle} attempts to apply patches to a target file even if the
+patches do not match perfectly.")
     (license gpl2+)))
 
 (define-public pwclient
