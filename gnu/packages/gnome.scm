@@ -10388,7 +10388,7 @@ compiled.")
 (define-public gfbgraph
   (package
     (name "gfbgraph")
-    (version "0.2.4")
+    (version "0.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -10397,26 +10397,18 @@ compiled.")
                     "gfbgraph-" version ".tar.xz"))
               (sha256
                (base32
-                "0yck7dwvjk16a52nafjpi0a39rxwmg0w833brj45acz76lgkjrb0"))))
+                "1qq3cryhby50xms8zh4s6fmw5p0i7dpg1wvsz5ni78cbyyrq3cww"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:tests? #f                      ; tests appear to require the network
-       #:configure-flags '("--disable-static"
-                           "--enable-gtk-doc"
-                           "--enable-introspection")))
+     `(#:configure-flags '("--disable-static")))
     (native-inputs
      (list gobject-introspection
            gtk-doc/stable
-           pkg-config
-           ;; The 0.2.4 ‘release’ tarball isn't bootstrapped.
-           autoconf
-           automake
-           libtool
-           which))
+           pkg-config))
     (inputs
-     `(("json-glib" ,json-glib)
-       ("gnome-online-accounts" ,gnome-online-accounts)
-       ("rest" ,rest)))
+     (list gnome-online-accounts
+           json-glib
+           rest))
     (synopsis "GLib/GObject wrapper for the Facebook API")
     (description "This library allows you to use the Facebook API from
 GLib/GObject code.")
