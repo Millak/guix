@@ -11904,7 +11904,7 @@ index files needed for Adwaita to be used outside of GNOME.")
 (define-public gnote
   (package
     (name "gnote")
-    (version "41.2")
+    (version "42.1")
     (source
      (origin
        (method url-fetch)
@@ -11912,7 +11912,7 @@ index files needed for Adwaita to be used outside of GNOME.")
                            (version-major version)  "/"
                            "gnote-" version ".tar.xz"))
        (sha256
-        (base32 "0gs2j988rwfrxckb8qxlkyxnvqsv30q32myqish6hssfa51yzc11"))))
+        (base32 "0fam3v9na4ndqdc63866bvhcxrzj478jsx34vsh0777d4ixw883c"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -11924,9 +11924,9 @@ index files needed for Adwaita to be used outside of GNOME.")
                         (("gtk-update-icon-cache") "true")))))))
     (native-inputs
      (list desktop-file-utils
+           gettext-minimal
            `(,glib "bin")
            gobject-introspection
-           intltool
            itstool
            pkg-config
            python))
