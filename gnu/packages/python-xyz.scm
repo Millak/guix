@@ -12458,14 +12458,14 @@ responses, rather than doing any computation.")
 (define-public python-pip
   (package
     (name "python-pip")
-    (version "20.2.4")
+    (version "22.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pip" version))
        (sha256
         (base32
-         "18b4qcijwivvkj1g0hs4w8zjbks0bjzdjcrqybnhmyx0gs2rmjc5"))))
+         "0jwac0bhfp48w4fqibf1ysrs2grksdv92hwqm7bmdw2jn2fr5l9z"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f))          ; there are no tests in the pypi archive.
@@ -30763,3 +30763,9 @@ functions
 @item Type annotations to help ensure correct usage
 @end itemize")
     (license license:bsd-3)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

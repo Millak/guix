@@ -5200,3 +5200,9 @@ capability security designs.  Goblins is a general toolkit, and also
 the core layer of Spritely's work to support healthy distributed
 networked communities.")
     (license license:asl2.0)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

@@ -23906,3 +23906,9 @@ descent parsers without funky syntax or impenetrable macrology.")
 
 (define-public ecl-smug
   (sbcl-package->ecl-package sbcl-smug))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

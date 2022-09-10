@@ -8774,3 +8774,9 @@ bibliography files in BibTeX format, a bibliography in HTML format.")
      "The OCaml guile library provides high-level OCaml bindings to GNU Guile
 3.0, supporting easy interop between OCaml and GNU Guile Scheme.")
     (license license:gpl3+)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

@@ -11901,3 +11901,9 @@ It also allows manipulating ancillary data or so-called control
 information (cmsghdr).  This ancillary data may be used for file descriptor
 passing, IPv6 operations, and a host of implemenation-specific extensions.")
     (license license:perl-license)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

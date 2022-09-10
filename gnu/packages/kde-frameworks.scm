@@ -2203,7 +2203,7 @@ KCModules can be created with the KConfigWidgets framework.")
     (propagated-inputs
      (list kauth kcodecs kconfig kwidgetsaddons))
     (native-inputs
-     (list extra-cmake-modules kdoctools qttools))
+     (list extra-cmake-modules kdoctools qttools-5))
     (inputs
      (list kcoreaddons
            kguiaddons

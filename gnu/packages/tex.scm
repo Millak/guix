@@ -5386,6 +5386,27 @@ recent classes such as powerdot or beamer, both of which are tuned to
 
 (define-deprecated-package texlive-latex-seminar texlive-seminar)
 
+(define-public texlive-latex-seqsplit
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-seqsplit"
+              (list "doc/latex/seqsplit/"
+                    "tex/latex/seqsplit/")
+              (base32 "1vwzs90520qsk22djl6gs6gpqx83y4b19kziirwj2xwbivcfk1h4")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/seqsplit")
+    (synopsis "Split long sequences of characters in a neutral way")
+    (description
+     "@code{seqsplit} provides a command @code{\\seqsplit}, which makes its
+argument splittable anywhere, and then leaves the TeX paragraph-maker to do the
+splitting.  The package is suitable for situations when one needs to type long
+sequences of letters or of numbers in which there is no obvious break points to
+be found, such as in base-sequences in genes or calculations of transcendental
+numbers.  While the package may obviously be used to typeset DNA sequences, the
+user may consider the @code{dnaseq} as a rather more powerful alternative.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-latex-stackengine
   (package
     (inherit (simple-texlive-package
@@ -5815,6 +5836,25 @@ is like @code{\\newcommand} or @code{\\renewcommand} except it
 always (re)defines a command.  There is also @code{\\makeenvironment} and
 @code{\\provideenvironment} for environments.")
     (license license:lppl1.3c+)))
+
+(define-public texlive-latex-marginfix
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-marginfix"
+              (list "doc/latex/marginfix/"
+                    "tex/latex/marginfix/")
+              (base32 "1qinf42mjry8bi5h3kgbi6hcymnk8fw0w43527wm95nc365dq0mf")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/marginfix")
+    (synopsis "Patch \\marginpar to avoid overfull margins")
+    (description
+     "Authors using LaTeX to typeset books with significant margin material
+often run into the problem of long notes running off the bottom of the page.
+This package implements a solution to make marginpars ``just work'' by keeping
+a list of floating inserts and arranging them intelligently in the output
+routine.")
+    (license license:lppl)))
 
 (define-public texlive-metalogo
   (package
@@ -7065,6 +7105,22 @@ splines, and filled circles and ellipses.  The package uses @code{tpic}
 @code{\\special} commands.")
     (license license:public-domain)))
 
+(define-public texlive-latex-enotez
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-enotez"
+              (list "doc/latex/enotez/"
+                    "tex/latex/enotez/")
+              (base32 "1s1wyq6m5932gpbpvvkiw857q94jn1rp7xy9y7hysz9aafjqjyk2")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/enotez")
+    (synopsis "Support for end-notes")
+    (description
+     "This package allows nested endnotes, supports @code{hyperref} and
+provides means for easy customization of the list of notes.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-enumitem
   (package
     (inherit
@@ -7175,6 +7231,23 @@ positions; a grid for orientation is available.")
 that is untidy; this package (though it is no substitute for a properly
 designed class) helps alleviate this untidiness.")
     (license license:lppl)))
+
+(define-public texlive-latex-pbox
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-pbox"
+              (list "doc/latex/pbox/"
+                    "tex/latex/pbox/")
+              (base32 "0902snjidmhjml01zcppcpp4j6pidin1sdvfi7gnbb5v86zd5f0n")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pbox")
+    (synopsis "\\parbox with a variable width")
+    (description
+     "@code{pbox} defines a \\pbox{<max width>}{<text>} command which adjusts
+the box width to that of the enclosed text, up to the maximum width given.  The
+package also defines some associated length commands.")
+    (license license:gpl3+)))
 
 (define-public texlive-pdfpages
   (let ((template (simple-texlive-package
@@ -11353,6 +11426,29 @@ are valid as arguments for the macros.  The package may be used under
 LaTeX and plain TeX.")
     (license (license:fsf-free "file:/binhex.dtx"))))
 
+(define-public texlive-latex-translations
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-translations"
+              (list "doc/latex/translations/"
+                    "tex/latex/translations/")
+              (base32 "0vl7ckpbkjvz3a5snzppb96ncwgmhpwb2p6cg30grfyn421kap3v")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/translations")
+    (synopsis "Internationalisation of LaTeX2e packages")
+    (description
+     ;; Polish not mentioned on CTAN, but there is a
+     ;; translations-basic-dictionary-polish.trsl file.
+     "This package (once part of the @code{exsheets} package), provides a
+framework for providing multilingual features to a LaTeX package.  The package
+has its own basic dictionaries for English, Brazilian, Catalan, Dutch, French,
+German, Polish and Spanish.  It aims to use translation material for English,
+Dutch, French, German, Italian, Spanish, Catalan, Turkish, Croatian, Hungarian,
+Danish and Portuguese from babel or polyglossia if either is in use in the
+document.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-translator
   (package
     (inherit (simple-texlive-package
@@ -12374,3 +12470,9 @@ syllable.  The package itself does not support UTF-8 input in ordinary
 interest.  Since most such counters are simply incremented when they are
 changed, the recorded value will usually be the maximum value.")
     (license license:lppl1.3c+)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;
