@@ -10946,63 +10946,60 @@ views can be printed as PDF or PostScript files, or exported to HTML.")
 (define-public lollypop
   (package
     (name "lollypop")
-    (version "1.4.24")
+    (version "1.4.35")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://adishatz.org/lollypop/"
                            "lollypop-" version ".tar.xz"))
        (sha256
-        (base32 "10cw3x75siibmnbh4zhfmf2vd08fqjs3lj3l4wpk6zj9h22ncfxw"))))
+        (base32 "0rvwj18x1gs7fgvniijzvlmgmzcgr7il22zclzsn5nkl8xbwgzk0"))))
     (build-system meson-build-system)
     (arguments
-     `(#:imported-modules
-       (,@%meson-build-system-modules
-        (guix build python-build-system))
-       #:modules
-       ((guix build meson-build-system)
-        ((guix build python-build-system) #:prefix python:)
-        (guix build utils))
+     `(#:imported-modules (,@%meson-build-system-modules
+                           (guix build python-build-system))
+       #:modules ((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
        #:glib-or-gtk? #t
-       #:tests? #f                      ; no test suite
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'disable-gtk-update-icon-cache
+           (lambda _
+             (setenv "DESTDIR" "/")))
          (add-after 'install 'wrap-program
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out               (assoc-ref outputs "out"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
-               (wrap-program (string-append out "/bin/lollypop")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-             #t))
+             (wrap-program (search-input-file outputs "bin/lollypop")
+               `("GI_TYPELIB_PATH" ":" prefix
+                 (,(getenv "GI_TYPELIB_PATH"))))))
          (add-after 'install 'wrap-python
            (assoc-ref python:%standard-phases 'wrap)))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")         ; For glib-compile-resources
-       ("gtk+:bin" ,gtk+ "bin")         ; For gtk-update-icon-cache
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin")               ; For glib-compile-resources
+           pkg-config))
     (inputs
-     `(("glib-networking" ,glib-networking)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("libnotify" ,libnotify)
-       ("libsecret" ,libsecret)
-       ("libhandy" ,libhandy)
-       ("libsoup" ,libsoup-minimal-2)
-       ("python" ,python)
-       ("python-beautifulsoup4" ,python-beautifulsoup4)
-       ("python-gst" ,python-gst)
-       ("python-pil" ,python-pillow)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pylast" ,python-pylast)
-       ("totem-pl-parser" ,totem-pl-parser)
-       ("webkitgtk" ,webkitgtk)))
+     (list bash-minimal
+           glib-networking
+           gobject-introspection
+           gsettings-desktop-schemas
+           gst-plugins-base
+           libnotify
+           libsecret
+           libhandy
+           libsoup-minimal-2
+           python
+           python-beautifulsoup4
+           python-gst
+           python-pillow
+           python-pycairo
+           python-pygobject
+           python-pylast
+           totem-pl-parser
+           webkitgtk))
     (propagated-inputs
-     (list ;; gst-plugins-base is required to start Lollypop,
-           ;; the others are required to play streaming.
-           gst-plugins-good gst-plugins-ugly))
+     (list gst-plugins-good             ;required to start lollypop
+           gst-plugins-ugly))           ;required for streaming
     (home-page "https://wiki.gnome.org/Apps/Lollypop")
     (synopsis "GNOME music playing application")
     (description
