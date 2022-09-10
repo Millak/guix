@@ -23865,6 +23865,39 @@ processing named definitions.")
 (define-public ecl-definitions-systems
   (sbcl-package->ecl-package sbcl-definitions-systems))
 
+(define-public sbcl-draw-cons-tree
+  (let ((commit "04334f5885a85cd7127db8dda3f6d6686a0438b1")
+        (revision "0"))
+    (package
+      (name "sbcl-draw-cons-tree")
+      (version (git-version "1.0" revision commit))
+      ;; https://github.com/quicklisp/quicklisp-projects/issues/2149
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/draw-cons-tree")
+               (commit commit)))
+         (file-name (git-file-name "cl-draw-cons-tree" version))
+         (sha256
+          (base32 "1523bdkq8a5qn0qp9q7r16w47y6jb0hkfj7hbjfj6mg3xv001s3x"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam sbcl-split-sequence))
+      (inputs
+       (list sbcl-alexandria))
+      (synopsis "Draw an ascii picture of a cons tree")
+      (description
+       "@code{cl-draw-cons-tree} draws a cons tree in ASCII-art style.")
+      (home-page "https://github.com/phoe/draw-cons-tree/")
+      (license license:unlicense))))
+
+(define-public cl-draw-cons-tree
+  (sbcl-package->cl-source-package sbcl-draw-cons-tree))
+
+(define-public ecl-draw-cons-tree
+  (sbcl-package->ecl-package sbcl-draw-cons-tree))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
