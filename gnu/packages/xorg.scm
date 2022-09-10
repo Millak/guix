@@ -86,7 +86,6 @@
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
-  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -4818,8 +4817,7 @@ common definitions and porting layer.")
      '(#:configure-flags '("--disable-static")))
     (propagated-inputs
       (list xorgproto))
-    (inputs
-      (list libbsd xtrans))
+    (inputs (list xtrans))
     (native-inputs
       (list pkg-config))
     (home-page "https://www.x.org/wiki/")
