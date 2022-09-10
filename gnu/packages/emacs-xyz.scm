@@ -13399,23 +13399,24 @@ compatible with the Org stable version.")
     (license license:gpl3+)))
 
 (define-public emacs-org-contacts
-  ;;; XXX: Upstream made no release yet.
-  (let ((commit "3d2f39f62aefb0a32d10607703e8b1d4f43821fa")
-        (revision "0"))
+  ;; XXX: Upstream does not tag version bumps. Commit below matches latest
+  ;; version bump.
+  (let ((commit "217ba04c9d638067a6ccb0829cf1885f54c1d568"))
     (package
       (name "emacs-org-contacts")
-      (version (git-version "0" revision commit))
+      (version "1.1")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/stardiviner/org-contacts.el")
+               (url "https://repo.or.cz/org-contacts")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0a654406w8zd1hbp8ckc975jhl9mi14xzqizzwiki625dymiw5g5"))))
+          (base32 "0f0vjdvx0hffj2xvyrya8yfl77djmzmpxdxsx58ym4lmdvwyb6x3"))))
       (build-system emacs-build-system)
-      (home-page "https://github.com/stardiviner/org-contacts.el")
+      (propagated-inputs (list emacs-org))
+      (home-page "https://repo.or.cz/org-contacts")
       (synopsis "Contacts management system for Org mode")
       (description "Manage your contacts from Org mode.  You can auto
 complete email addresses, export contacts to a vCard file, put birthdays
