@@ -14159,6 +14159,34 @@ automatically using existing List-ID headers in your mu database.  Just press
 automatically discovered and presented in recency order.")
       (license license:gpl3+))))
 
+(define-public emacs-mentor
+  (package
+    (name "emacs-mentor")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.nongnu.org/nongnu/mentor-"
+                           version ".tar"))
+       (sha256
+        (base32
+         "01zrvfk2njzyzjzkvp5hv5cjl1k1qjrila1ab4bv26gf6bkq5xh3"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-async emacs-xml-rpc))
+    (home-page "https://elpa.nongnu.org/nongnu/mentor.html")
+    (synopsis "Emacs front-end for the rTorrent bittorrent client")
+    (description
+     "Mentor is a GNU Emacs frontend for the rTorrent bittorrent client.
+
+By default, it will start and run rTorrent from within Emacs but can also be
+configured to use an external rTorrent instance over XML-RPC.
+
+This project aims to provide a feature complete and customizable interface,
+that will feel familiar to Emacs users.  Key bindings are chosen to be as
+close to the vanilla rTorrent curses interface as possible.")
+    (license license:gpl3+)))
+
 (define-public emacs-message-view-patch
   (let ((commit "40bc2e554fc1d0b6f0c403192c0a3ceaa019a78d")
         (revision "2"))
