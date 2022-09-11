@@ -12708,7 +12708,7 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
 (define-public gnome-builder
   (package
     (name "gnome-builder")
-    (version "41.2")
+    (version "42.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -12716,20 +12716,12 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "04p031i999dccbnlbysmr6f93x7dji7b559j6yhdsqbqgxb7ncan"))
-              (patches
-               (search-patches "gnome-builder-update-libportal.patch"))))
+                "02k78mamp1yf9y6wixd864hdf9saw83wdw01f80lhnw60avm2kax"))))
     (build-system meson-build-system)
     (arguments
      (list
-      #:glib-or-gtk? #t ;To wrap binaries and compile schemas
-      #:configure-flags
-      #~(list "-Dnetwork_tests=false"
-              ;; TODO: Enable all plugins...
-              ;; Flatpak plugin wants libsoup 2
-              "-Dplugin_flatpak=false"
-              ;; ... except this one.
-              "-Dplugin_update_manager=false")
+      #:glib-or-gtk? #t                 ;To wrap binaries and compile schemas
+      #:configure-flags #~(list "-Dnetwork_tests=false")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-meson
@@ -12738,47 +12730,47 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
                 (("gtk-update-icon-cache") "true")
                 (("update-desktop-database") "true"))
               (substitute* "src/libide/meson.build"
-                (("/usr/lib") (string-append (assoc-ref inputs
-                                                        "python-pygobject")
-                                             "/lib")))))
-          (add-after 'configure 'fix-ninja
-            (lambda _
-              ;; #43296: meson(?) incorrectly assumes we want to link
-              ;; this PIE against a static libselinux.
-              (substitute* "build.ninja"
-                (("libselinux\\.a") "libselinux.so"))))
+                (("/usr/lib")
+                 (string-append #$(this-package-input "python-pygobject")
+                                "/lib")))))
           (add-before 'check 'pre-check
             (lambda _
               (system "Xvfb :1 &")
               (setenv "DISPLAY" ":1"))))))
-    (inputs (list cmark
-                  clang
-                  devhelp-with-libsoup2
-                  glade3
-                  gspell
-                  gtk+
-                  json-glib
-                  jsonrpc-glib
-                  libdazzle
-                  libgit2-glib
-                  libpeas
-                  libportal
-                  libsoup-minimal-2
-                  llvm
-                  python
-                  python-pygobject
-                  sysprof-3.44
-                  template-glib
-                  vte
-                  webkitgtk-with-libsoup2))
-    (propagated-inputs (list gtksourceview)) ; needed for settings
-    (native-inputs (list desktop-file-utils  ; for desktop-file-validate
-                         `(,glib "bin")
-                         gettext-minimal
-                         pkg-config
-                         python              ; for meson scripts
-                         vala
-                         xorg-server-for-tests))
+    (inputs
+     (list cmark
+           clang
+           devhelp-with-libsoup2
+           flatpak
+           glade3
+           gspell
+           gtk+
+           json-glib
+           jsonrpc-glib
+           libdazzle
+           libgit2-glib
+           libhandy
+           libpeas
+           libportal
+           libsoup-minimal-2
+           llvm
+           libostree
+           python
+           python-pygobject
+           sysprof-3.44
+           template-glib
+           vte
+           webkitgtk-with-libsoup2))
+    (propagated-inputs
+     (list gtksourceview-4))            ;needed for settings
+    (native-inputs
+     (list desktop-file-utils           ;for desktop-file-validate
+           `(,glib "bin")
+           gettext-minimal
+           pkg-config
+           python                       ;for meson scripts
+           vala
+           xorg-server-for-tests))
     (home-page "https://wiki.gnome.org/Apps/Builder")
     (synopsis "Toolsmith for GNOME-based applications")
     (description
@@ -12819,10 +12811,10 @@ profiler via Sysprof, debugging support, and more.")
              (substitute* "meson_post_install.py"
                (("gtk-update-icon-cache") (which "true")))))
          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-          (lambda* (#:key outputs #:allow-other-keys)
-            (wrap-program (search-input-file outputs "bin/komikku")
-              `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-              `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+           (lambda* (#:key outputs #:allow-other-keys)
+             (wrap-program (search-input-file outputs "bin/komikku")
+               `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (inputs
      (list bash-minimal
            gtk+
