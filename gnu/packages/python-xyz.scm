@@ -23555,7 +23555,7 @@ distribution.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-astunparse))
-    (home-page "https://pypi.org/project/gast/")
+    (home-page "https://github.com/serge-sans-paille/gast/")
     (synopsis "Generic Python AST that abstracts the underlying Python version")
     (description
      "GAST provides a compatibility layer between the AST of various Python
