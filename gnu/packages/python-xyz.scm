@@ -10535,20 +10535,7 @@ file (e.g. @file{PKG-INFO}).")
 
 ;; pep621 was renamed to pyproject-metadata.
 (define-public python-pep621
-  (package
-    (inherit python-pyproject-metadata)
-    (name "python-pep621")
-    (version "0.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/FFY00/python-pep621")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0nzig7bmzf0xx5svxlf065mrzihr0ci4p1yaxka9flqjba98flpr"))))))
+  (deprecated-package "python-pep621" python-pyproject-metadata))
 
 (define-public python-pyflakes
   (package
