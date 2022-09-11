@@ -31949,7 +31949,7 @@ for detecting and improve non-idiomatic Clojure source code.")
 (define-public emacs-mint-mode
   (package
     (name "emacs-mint-mode")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -31958,7 +31958,7 @@ for detecting and improve non-idiomatic Clojure source code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v8mp1k24lzvc0mh9l4k3fwzr4sr87f5p9ahpy7263pcbvcy11vl"))))
+        (base32 "19szk2dhsa0771kbg1ywp0zz8j6akysvwmmrx2bihq8h5j4y23pg"))))
     (build-system emacs-build-system)
     (arguments '(#:include '("\\.el$" "\\.txt$")))
     (home-page "https://github.com/creatorrr/emacs-mint-mode")
