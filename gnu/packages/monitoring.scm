@@ -12,6 +12,8 @@
 ;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +52,7 @@
   #:use-module (gnu packages django)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gnome)               ;libnotify
   #:use-module (gnu packages image)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages ncurses)
@@ -758,3 +761,46 @@ display resumes.
     (description "StatsD is a friendly front-end to Graphite.  This package
 provides a simple Python client for the StatsD daemon.")
     (license license:expat)))
+
+(define-public batsignal
+  (package
+    (name "batsignal")
+    (version "1.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/electrickite/batsignal")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b1j6mljnqgxwr3id3r9shzhsjk5r0qdh9cxkvy1dm4kzbyc4dxq"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-cross-compile
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("pkg-config")
+                      #$(pkg-config-for-target)))))
+               (delete 'configure)
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "./batsignal" "-v")))))))
+    (inputs (list libnotify))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/electrickite/batsignal")
+    (synopsis "Power monitoring tool")
+    (description
+     "This package provides a daemon that monitors device power levels,
+notifying the user and optionally running a command when it reaches
+user-configured power thresholds.  This can be used to force powering off a
+laptop when the battery gets below critical levels, instead of damaging the
+battery.")
+    (license license:isc)))
+
