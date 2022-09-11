@@ -1240,13 +1240,13 @@ Cinnamon, MATE, Unity, Xfce, LightDM, GDM, Chrome theme, etc.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))))             ; no configure script
+         (delete 'configure))))         ; no configure script
     (native-inputs
-     `(("glib:bin" ,glib "bin")             ; for glib-compile-schemas
-       ("gnome-shell" ,gnome-shell)
-       ("gtk+" ,gtk+)
-       ("xmllint" ,libxml2)
-       ("ruby-sass" ,ruby-sass)))
+     (list `(,glib "bin")               ; for glib-compile-schemas
+           gnome-shell
+           gtk+
+           libxml2
+           ruby-sass))
     (synopsis "Flat theme with light and dark elements")
     (description "Numix is a modern flat theme with a combination of light and
 dark elements.  It supports GNOME, Unity, Xfce, and Openbox.")
