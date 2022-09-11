@@ -8065,12 +8065,14 @@ more efficient storage-wise than an uncompressed bitmap (as implemented in the
     (name "java-slf4j-api")
     (version "1.7.25")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.slf4j.org/dist/slf4j-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/qos-ch/slf4j")
+                    (commit (string-append "v_" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "13j51sgzmhhdrfa74gkal5zpip7r1440dh7zsi2c8bpb2zs1v8kb"))
+                "15n42zq3k1iyn752nwdcbs44hxns2rmxhglwjfr4np7lxx56apjl"))
               (modules '((guix build utils)))
               ;; Delete bundled jars.
               (snippet
