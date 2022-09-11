@@ -28,6 +28,7 @@
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Evgenii Lepikhin <e.lepikhin@corp.mail.ru>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26387,6 +26388,32 @@ and loading crate.")
      "An impish, cross-platform, ELF, Mach-o, and PE binary parsing and
 loading crate.")
     (license license:expat)))
+
+(define-public rust-greetd-ipc-0.8
+  (package
+    (name "rust-greetd-ipc")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "greetd-ipc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1dscriv3adjyaxfaax3cmqrzx6q2vwwchbh86dhll783wjc4ivw0"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-async-trait" ,rust-async-trait-0.1)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-thiserror" ,rust-thiserror-1)
+             ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://kl.wtf/projects/greetd")
+    (synopsis "@command{greetd} IPC protocol library for Rust")
+    (description
+     "This package provides library that helps you use the
+@command{greetd} JSON-based IPC protocol from Rust.")
+    (license license:gpl3)))
 
 (define-public rust-grep-0.2
   (package
