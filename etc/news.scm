@@ -28,7 +28,8 @@
  (entry (commit "11a06d1e49f4d50d6789e05bbf35e2e145ff7838")
         (title
          (en "Emacs now supports native compilation")
-         (de "Emacs kann Pakete nun nativ kompilieren"))
+         (de "Emacs kann Pakete nun nativ kompilieren")
+         (pt "O Emacs agora suporta compilação nativa"))
         (body
          (en "Emacs can now compile packages natively.  Under the default
 configuration, this means that Emacs packages will now be just-in-time (JIT)
@@ -50,7 +51,18 @@ nativer Maschinenbefehle.  Beachten Sie jedoch, dass @code{emacs-minimal} --
 die Emacs-Variante, mit der normalerweise Emacs-Pakete erzeugt werden --
 weiterhin keine nativen Befehle generiert.  Um native Befehle für Ihre
 Emacs-Pakete schon im Voraus zu erzeugen, nutzen Sie eine Transformation, z.B.
-@option{--with-input=emacs-minimal=emacs}.")))
+@option{--with-input=emacs-minimal=emacs}.")
+         (pt "Agora o Emacs pode compilar pacotes nativamente.  Na
+configuração padrão os pacotes do Emacs serão compilados “just-in-time” (JIT)
+conforme forem usados, e os resultados armazenados em um subdiretório de
+@code{user-emacs-directory}.
+
+Além disso, o sistema de compilação para pacotes do Emacs suporta compilação
+nativa de forma transparente.  Note porém que o @code{emacs-minimal} --- a
+variante padrão do Emacs para compilar pacotes --- foi configurado sem
+compilação nativa.  Para pré-compilar nativamente seus pacotes do Emacs use
+uma transformação, como por exemplo
+@code{--with-input=emacs-minimal=emacs}.")))
 
  (entry (commit "c188cf57f161c0c26e2d7c8516bd1ddd1492d686")
         (title
