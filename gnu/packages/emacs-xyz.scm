@@ -13326,7 +13326,6 @@ passive voice.")
        #:test-command '("make" "test-dirty")
        #:phases
        (modify-phases %standard-phases
-         (delete 'build)
          (add-before 'check 'make
            (lambda _
              (invoke "make" (string-append "ORGVERSION=" ,version))))
