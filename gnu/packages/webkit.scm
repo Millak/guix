@@ -124,7 +124,7 @@ the WPE-flavored port of WebKit.")
 engine that uses Wayland for graphics output.")
     (license license:bsd-2)))
 
-(define %webkit-version "2.36.7")
+(define %webkit-version "2.36.7")       ;webkit2gtk4
 
 (define-public webkitgtk
   (package
@@ -276,6 +276,44 @@ propagated by default) such as @code{gst-plugins-good} and
                    license:lgpl2.1+
                    license:bsd-2
                    license:bsd-3))))
+
+(define-public webkitgtk-next
+  (package
+    (inherit webkitgtk)
+    (name "webkitgtk")
+    (version "2.37.91")                 ;webkit2gtk5
+    (source (origin
+              (inherit (package-source webkitgtk))
+              (method url-fetch)
+              (uri (string-append "https://www.webkitgtk.org/releases/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32 "0r2d1dbx6s8bad011dkmx7j34gcxlz9bs14pip1qn7n1rhgxb3qi"))))
+    (build-system cmake-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments webkitgtk)
+       ((#:configure-flags flags)
+        #~(cons* "-DENABLE_INTROSPECTION=ON"
+                 "-DUSE_GTK4=ON"
+                 (delete "-DENABLE_GTKDOC=ON" #$flags)))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'build 'set-CC
+              (lambda _
+                ;; Some Perl scripts check for the CC environment variable, else
+                ;; use /usr/bin/gcc.
+                (setenv "CC" "gcc")))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs webkitgtk)
+       (delete "docbook-xml" "gtk-doc")
+       (append gi-docgen)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs webkitgtk)
+       (replace "gtk+" gtk)))
+    (inputs
+     (modify-inputs (package-inputs webkitgtk)
+       (delete "gtk+-2" "libnotify")
+       (append pango-next)))))          ;TODO: remove after it's the default
 
 ;;; Required by e.g. emacs-next-pgtk, emacs-xwidgets, and some other GNOME
 ;;; packages for webkit2gtk-4.0.  See also the upstream tracker for libsoup 3:
