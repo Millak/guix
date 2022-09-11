@@ -42,6 +42,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages databases)
@@ -75,81 +76,86 @@
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.8.0")
+    (version "1.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "1gghkwn93niyasm36333xbqrnn3yiadq9d97wnc9mg14nzbg5m1i"))))
-    (outputs '("out" "doc"))
+        (base32 "1jcb94xal7w7ax80kaivqqics36v8smi4a3xngyxbrh0i538rli6"))))
     (build-system python-build-system)
     (arguments
      (list
-      #:modules '((guix build utils)
-                  (guix build python-build-system)
-                  (ice-9 format))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-pythran
+          (add-after 'unpack 'loosen-requirements
             (lambda _
-              (setenv "SCIPY_USE_PYTHRAN" "0")))
-          (add-before 'build 'change-home-dir
+              (substitute* "pyproject.toml"
+                (("numpy==") "numpy>=")
+                (("meson==") "meson>="))))
+          (replace 'build
             (lambda _
-              ;; Change from /homeless-shelter to /tmp for write permission.
-              (setenv "HOME" "/tmp")))
-          (add-before 'build 'configure-openblas
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
             (lambda _
-              (call-with-output-file "site.cfg"
-                (lambda (port)
-                  (format port
-                          "\
-[blas]
-libraries = openblas
-library_dirs = ~a/lib
-include_dirs = ~:*~a/include
-
-[atlas]
-library_dirs = ~:*~a/lib
-atlas_libs = openblas~%"  #$(this-package-input "openblas"))))))
-          (add-before 'build 'parallelize-build
-            (lambda _
-              (setenv "NPY_NUM_BUILD_JOBS"
-                      (number->string (parallel-job-count)))))
-          (add-before 'check 'install-doc
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
-                     (doc (string-append data "/doc/" #$name "-" #$version))
-                     (html (string-append doc "/html")))
-                (with-directory-excursion "doc"
-                  ;; Build doc.
-                  (invoke "make" "html"
-                          ;; Building the documentation takes a very long time.
-                          ;; Parallelize it.
-                          (string-append "SPHINXOPTS=-j"
-                                         (number->string (parallel-job-count))))
-                  ;; Install doc.
-                  (mkdir-p html)
-                  (copy-recursively "build/html" html)))))
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke "./runtests.py" "-vv" "--no-build" "--mode=fast"
-                        "-j" (number->string (parallel-job-count)))))))))
-    (propagated-inputs (list python-numpy python-matplotlib python-pyparsing))
+                ;; Step out of the source directory to avoid interference.
+                (with-directory-excursion "/tmp"
+                  (invoke "python" "-c"
+                          (string-append
+                           "import scipy; scipy.test('fast', parallel="
+                           (number->string (parallel-job-count))
+                           ", verbose=2)"))))))
+          (add-after 'check 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; FIXME: Documentation cannot be built because it requires
+              ;; a newer version of pydata-sphinx-theme, which currently
+              ;; cannot build without internet access:
+              ;; <https://github.com/pydata/pydata-sphinx-theme/issues/628>.
+              ;; Keep the phase for easy testing.
+              (let ((sphinx-build (false-if-exception
+                                   (search-input-file input "bin/sphinx-build"))))
+                (if sphinx-build
+                    (let* ((doc (assoc-ref outputs "doc"))
+                           (data (string-append doc "/share"))
+                           (docdir (string-append
+                                    data "/doc/"
+                                    #$(package-name this-package) "-"
+                                    #$(package-version this-package)))
+                           (html (string-append docdir "/html")))
+                      (with-directory-excursion "doc"
+                        ;; Build doc.
+                        (invoke "make" "html"
+                                ;; Building the documentation takes a very long time.
+                                ;; Parallelize it.
+                                (string-append "SPHINXOPTS=-j"
+                                               (number->string (parallel-job-count))))
+                        ;; Install doc.
+                        (mkdir-p html)
+                        (copy-recursively "build/html" html)))
+                    (format #t "sphinx-build not found, skipping~%"))))))))
+    (propagated-inputs
+     (list python-numpy python-matplotlib python-pyparsing python-pythran))
     (inputs (list openblas pybind11))
     (native-inputs
      (list gfortran
-           perl
+           ;; XXX: Adding gfortran shadows GCC headers, causing a compilation
+           ;; failure.  Somehow also providing GCC works around it ...
+           gcc
+           meson-python
+           pkg-config
            python-cython
-           python-numpydoc
-           python-pydata-sphinx-theme
+           python-pypa-build
            python-pytest
            python-pytest-xdist
-           python-sphinx
-           python-sphinx-panels
-           python-threadpoolctl
-           which))
+           python-threadpoolctl))
     (home-page "https://scipy.org/")
     (synopsis "The Scipy library provides efficient numerical routines")
     (description "The SciPy library is one of the core packages that make up
