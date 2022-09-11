@@ -25,6 +25,32 @@
 
 (channel-news
  (version 0)
+ (entry (commit "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        (title
+         (en "Emacs now supports native compilation")
+         (de "Emacs kann Pakete nun nativ kompilieren"))
+        (body
+         (en "Emacs can now compile packages natively.  Under the default
+configuration, this means that Emacs packages will now be just-in-time (JIT)
+compiled as you use them, and the results stored in a subdirectory of your
+@code{user-emacs-directory}.
+
+Furthermore, the build system for Emacs packages transparently supports native
+compilation, but note, that @code{emacs-minimal} -- the default Emacs for
+building packages -- has been configured without native compilation.
+To natively compile your emacs packages ahead of time, use a transformation
+like @option{--with-input=emacs-minimal=emacs}.")
+         (de "Emacs kann nun native Maschinenbefehle erzeugen.  Standardgemäß
+kompiliert es nun Pakete “just in time” während Sie diese laden und platziert
+die so erzeugten nativen Bibliotheken in einem Unterverzeichnis Ihres
+@code{user-emacs-directory}.
+
+Darüber hinaus unterstützt das Erzeugungssystem für Emacs-Pakete die Erzeugung
+nativer Maschinenbefehle.  Beachten Sie jedoch, dass @code{emacs-minimal} --
+die Emacs-Variante, mit der normalerweise Emacs-Pakete erzeugt werden --
+weiterhin keine nativen Befehle generiert.  Um native Befehle für Ihre
+Emacs-Pakete schon im Voraus zu erzeugen, nutzen Sie eine Transformation, z.B.
+@option{--with-input=emacs-minimal=emacs}.")))
 
  (entry (commit "c188cf57f161c0c26e2d7c8516bd1ddd1492d686")
         (title
