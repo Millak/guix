@@ -23553,6 +23553,14 @@ distribution.")
        (sha256
         (base32 "1sidaczriw54pfkj3523y9j9q2harrczc1qqgnfaylz641ca5gng"))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list python-pytest))
     (propagated-inputs
      (list python-astunparse))
     (home-page "https://github.com/serge-sans-paille/gast/")
