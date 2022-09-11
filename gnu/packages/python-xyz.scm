@@ -10483,21 +10483,20 @@ plugin for flake8 to check PEP-8 naming conventions.")
                           (invoke "pytest") #t))))))
     (native-inputs (list python-mock python-pytest python-testpath))))
 
-
-(define-public python-pep621
+(define-public python-pyproject-metadata
   (package
-    (name "python-pep621")
-    (version "0.4.0")
+    (name "python-pyproject-metadata")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/FFY00/python-pep621")
+             (url "https://github.com/FFY00/python-pyproject-metadata")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0nzig7bmzf0xx5svxlf065mrzihr0ci4p1yaxka9flqjba98flpr"))))
+         "00zahgw9zjfqwf0218bj5k732aibnn68cq1p8f0wmbirb7fy5k31"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -10525,7 +10524,7 @@ plugin for flake8 to check PEP-8 naming conventions.")
                         "install" "--no-deps" "--prefix" #$output whl)))))))
     (propagated-inputs (list python-packaging))
     (native-inputs (list python-pypa-build python-pytest python-tomli))
-    (home-page "https://github.com/FFY00/python-pep621")
+    (home-page "https://github.com/FFY00/python-pyproject-metadata")
     (synopsis "Dataclass for PEP 621 metadata")
     (description "This project does not implement the parsing of
 @file{pyproject.toml} containing PEP 621 metadata.  Instead, given a Python
@@ -10533,6 +10532,23 @@ data structure representing PEP 621 metadata (already parsed), it will
 validate this input and generate a PEP 643-compliant metadata
 file (e.g. @file{PKG-INFO}).")
     (license license:expat)))
+
+;; pep621 was renamed to pyproject-metadata.
+(define-public python-pep621
+  (package
+    (inherit python-pyproject-metadata)
+    (name "python-pep621")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FFY00/python-pep621")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0nzig7bmzf0xx5svxlf065mrzihr0ci4p1yaxka9flqjba98flpr"))))))
 
 (define-public python-pyflakes
   (package
