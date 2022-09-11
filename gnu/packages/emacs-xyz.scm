@@ -15842,8 +15842,8 @@ lines, and @code{gc} to comment out the target of a motion.")
 ;; Tests for emacs-ansi have a circular dependency with ert-runner, and
 ;; therefore cannot be run
 (define-public emacs-ansi
-  (let ((commit "a41d5cc719297515d85bb5256980cd1204a71b88")
-        (revision "1"))
+  (let ((commit "2367fba7b3b2340364a30cd6de7f3eb6bb9898a3")
+        (revision "2"))
     (package
       (name "emacs-ansi")
       (version (git-version "0.4.1" revision commit))
@@ -15855,10 +15855,8 @@ lines, and @code{gc} to comment out the target of a motion.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "051v8dmji90chwbsyqsqry7h35mksal2j6rgw1kpmjsni86d79y1"))))
+          (base32 "1n7h6l4icm6lks3zpvd83j1fzrnspw19rmz7c96vy7pdh1y4v3p3"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-dash emacs-s))
       (home-page "https://github.com/rejeep/ansi.el")
       (synopsis "Convert strings to ANSI")
       (description "@code{emacs-ansi} defines functions that turns simple
