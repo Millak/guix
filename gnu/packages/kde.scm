@@ -195,7 +195,7 @@ This package contains GUI widgets for baloo.")
            kontactinterface
            kpimcommon
            kpimtextedit
-           kqtquickcharts
+           kquickcharts
            ktexteditor
            kuserfeedback
            libkdepim
