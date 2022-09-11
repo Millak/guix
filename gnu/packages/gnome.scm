@@ -12569,7 +12569,7 @@ audio files.")
 (define-public jsonrpc-glib
   (package
     (name "jsonrpc-glib")
-    (version "3.34.0")
+    (version "3.42.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -12577,14 +12577,16 @@ audio files.")
                                    name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0j05x4xv2cp3cbmp30m68z8g4rdw7b030ip4wszyfj9ya15v5kni"))))
+                "0sr71110gwbv08qwjh410fnhq6v5swn849y4gm314am8gjjqj692"))))
     (build-system meson-build-system)
     (inputs
-     (list json-glib glib))
+     (list glib
+           json-glib))
     (native-inputs
-     (list pkg-config
-           `(,glib "bin") ; for glib-genmarshal, etc.
-           gobject-introspection vala))
+     (list `(,glib "bin") ; for glib-genmarshal, etc.
+           gobject-introspection
+           pkg-config
+           vala))
     (home-page "https://gitlab.gnome.org/GNOME/jsonrpc-glib")
     (synopsis "JSON-RPC library for GLib")
     (description "Jsonrpc-GLib is a library to communicate with JSON-RPC based
