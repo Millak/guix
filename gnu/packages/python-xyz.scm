@@ -4387,6 +4387,18 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
     ;; licensed under the PFSL, BSD 2-clause, and GPLv3+ licenses.
     (license (list license:public-domain license:psfl license:bsd-2 license:gpl3+))))
 
+;; TODO: Make this the default in the next rebuild cycle.
+(define-public python-docutils-0.19
+  (package
+    (inherit python-docutils)
+    (version "0.19")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "docutils" version))
+              (sha256
+               (base32
+                "1rprvir116g5rz2bgzkzgyn6mv0z8582rz7bgxbpy2y3adkmm69k"))))))
+
 ;; awscli refuses to be built with docutils < 0.16.
 (define-public python-docutils-0.15
   (package
