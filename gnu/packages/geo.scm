@@ -1973,7 +1973,8 @@ using the dataset of topographical information collected by
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
-     (list gdal
+     (list curl
+           gdal
            libjpeg-turbo
            proj
            qtbase-5
