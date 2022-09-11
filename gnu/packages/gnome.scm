@@ -12627,7 +12627,7 @@ GObject introspection bindings.")
 (define-public sysprof
   (package
     (name "sysprof")
-    (version "3.44.0")
+    (version "3.45.1")
     (source
      (origin
        (method url-fetch)
@@ -12635,7 +12635,7 @@ GObject introspection bindings.")
                            (version-major+minor version) "/"
                            "sysprof-" version ".tar.xz"))
        (sha256
-        (base32 "0nq0icbln0ryqzlybr7wyl19mhr3vkqzs6wasn430fwpf5drypdb"))))
+        (base32 "16nmr1qs7s2ylhwj58zj6b7in72nw7z72glaz746f2g7dbqs00k4"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -12643,26 +12643,29 @@ GObject introspection bindings.")
       #~(list (string-append "-Dsystemdunitdir=" #$output "/share/systemd"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-install-script
+          (add-after 'unpack 'disable-post-install
             (lambda _
-              (substitute* "build-aux/meson/post_install.sh"
-                (("gtk-update-icon-cache") "true")
-                (("update-desktop-database") "true")))))))
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false")))))))
     (propagated-inputs
      (list polkit))
     (inputs
-     (list glib
-           gtk+
+     (list glib-next
+           gtk
            json-glib
+           libadwaita
            libdazzle
            libunwind
            polkit))
     (native-inputs
      (list gettext-minimal
-           `(,glib "bin")               ;for gdbus-codegen, etc.
+           `(,glib-next "bin")          ;for gdbus-codegen, etc.
            itstool
-           pkg-config
-           libxml2))
+           libxml2
+           pkg-config))
     ;; This home page is so woefully out of date as to be essentially useless.
     ;; (home-page "http://www.sysprof.com")
     (home-page "https://wiki.gnome.org/Apps/Sysprof")
@@ -12675,6 +12678,32 @@ helps find the function(s) in which a program spends most of its time.
 It uses the kernel's built-in @code{ptrace} feature and handles shared
 libraries.  Applications do not need to be recompiled--or even restarted.")
     (license license:gpl3+)))
+
+(define-public sysprof-3.44
+  (package
+    (inherit sysprof)
+    (name "sysprof")
+    (version "3.44.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/sysprof/"
+                                  (version-major+minor version) "/"
+                                  "sysprof-" version ".tar.xz"))
+              (sha256
+               (base32 "0nq0icbln0ryqzlybr7wyl19mhr3vkqzs6wasn430fwpf5drypdb"))))
+    (inputs (modify-inputs (package-inputs sysprof)
+              (replace "glib" glib)
+              (replace "gtk" gtk+)))
+    (native-inputs (modify-inputs (package-native-inputs sysprof)
+                     (replace "glib" `(,glib "bin"))))
+    (arguments (substitute-keyword-arguments (package-arguments sysprof)
+                 ((#:phases phases '%standard-phases)
+                  #~(modify-phases #$phases
+                      (replace 'disable-post-install
+                        (lambda _
+                          (substitute* "build-aux/meson/post_install.sh"
+                            (("gtk-update-icon-cache") "true")
+                            (("update-desktop-database") "true"))))))))))
 
 (define-public gnome-builder
   (package
@@ -12738,7 +12767,7 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
                   llvm
                   python
                   python-pygobject
-                  sysprof
+                  sysprof-3.44
                   template-glib
                   vte
                   webkitgtk-with-libsoup2))
