@@ -31702,7 +31702,7 @@ and preferred services can easily be configured.")
 (define-public emacs-vertico
   (package
     (name "emacs-vertico")
-    (version "0.26")
+    (version "0.27")
     (source
      (origin
        (method git-fetch)
@@ -31711,7 +31711,7 @@ and preferred services can easily be configured.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16bv4pfc3k37dqyj1va3cb24db36pn8hsazk3ak4xhrgf2q5l548"))))
+        (base32 "17ip4v0hkv9q2fsnpja24jnf5d5zn4g91553n2s0l5c6gwwpilkp"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
