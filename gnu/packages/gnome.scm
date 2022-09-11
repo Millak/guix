@@ -5091,32 +5091,45 @@ and the GLib main loop, to integrate well with GNOME applications.")
 (define-public libsoup
   (package/inherit libsoup-minimal
     (name "libsoup")
+    (version "3.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/libsoup/"
+                                  (version-major+minor version) "/"
+                                  "libsoup-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0m5mf2ahb462jzr40d916swv3040h9500jcmr87vnilpr4zrj584"))))
     (outputs (cons "doc" (package-outputs libsoup-minimal)))
     (arguments
      (substitute-keyword-arguments (package-arguments libsoup-minimal)
        ((#:configure-flags configure-flags)
-        `(cons "-Dgtk_doc=true"
-               (delete "-Dgtk_doc=false" ,configure-flags)))
+        #~(delete "-Dgtk_doc=false" #$configure-flags))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'patch-docbook-xml
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
-                                            "/xml/dtd/docbook")))
-                 (substitute* (find-files "docs/reference")
-                   (("http://.*/docbookx\\.dtd")
-                    (string-append xmldoc "/docbookx.dtd"))))))
-           (add-after 'install 'move-doc
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (doc (assoc-ref outputs "doc")))
-                 (mkdir-p (string-append doc "/share"))
-                 (copy-recursively (string-append out "/share/gtk-doc")
-                                   (string-append doc "/share/gtk-doc"))
-                 (delete-file-recursively
-                  (string-append out "/share/gtk-doc")))))))))
+        #~(modify-phases #$phases
+            (replace 'adjust-tests
+              (lambda _
+                ;; This test fails due to missing /etc/nsswitch.conf
+                ;; in the build environment.
+                (substitute* "tests/unix-socket-test.c"
+                  ((".*/sockets/unconnected.*") ""))
+
+                ;; These fail because "subdomain.localhost" does not resolve in
+                ;; the build environment.  Moreover, the hsts-test suite fails on
+                ;; i686-linux because of errors from `session_get_uri' like
+                ;; "Unexpected status 200 OK (expected 301 Moved Permanently)"
+                ;; (see: https://gitlab.gnome.org/GNOME/libsoup/-/issues/239).
+                (substitute* "tests/meson.build"
+                  ((".*'name': 'hsts'.*") ""))
+                (substitute* "tests/hsts-db-test.c"
+                  ((".*/hsts-db/subdomains.*") ""))))
+            (add-after 'install 'move-doc
+              (lambda _
+                (mkdir-p (string-append #$output:doc "/share"))
+                (rename-file (string-append #$output "/share/doc")
+                             (string-append #$output:doc "/share/doc"))))))))
     (native-inputs (modify-inputs (package-native-inputs libsoup-minimal)
-                     (prepend docbook-xml-4.1.2 gtk-doc)))))
+                     (prepend gi-docgen)))))
 
 (define-public libsecret
   (package
