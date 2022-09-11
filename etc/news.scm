@@ -25,7 +25,7 @@
 
 (channel-news
  (version 0)
- (entry (commit "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+ (entry (commit "11a06d1e49f4d50d6789e05bbf35e2e145ff7838")
         (title
          (en "Emacs now supports native compilation")
          (de "Emacs kann Pakete nun nativ kompilieren"))
