@@ -23957,6 +23957,34 @@ processing named definitions.")
 (define-public ecl-draw-cons-tree
   (sbcl-package->ecl-package sbcl-draw-cons-tree))
 
+(define-public sbcl-cl-morse
+  (package
+    (name "sbcl-cl-morse")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/em7/cl-morse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-morse" version))
+       (sha256
+        (base32 "01sh34nhbsx2dsrb2r1vkd4j8lzm9gjd5jfi8a4cs4m3djjwhh5i"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list sbcl-cl-ppcre))
+    (native-inputs (list sbcl-fiveam))
+    (home-page "https://github.com/em7/cl-morse")
+    (synopsis "Morse code translation library for Common Lisp")
+    (description
+     "@code{cl-morse} is a Morse code translation library for Common Lisp.")
+    (license license:bsd-3)))
+
+(define-public cl-morse
+  (sbcl-package->cl-source-package sbcl-cl-morse))
+
+(define-public ecl-cl-morse
+  (sbcl-package->ecl-package sbcl-cl-morse))
+
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")
         (revision "0"))
