@@ -155,7 +155,7 @@ runtime (like runc or crun) for a single container.")
 (define-public libslirp
   (package
     (name "libslirp")
-    (version "4.6.1")
+    (version "4.7.0")
     (source
      (origin
        (method git-fetch)
@@ -163,10 +163,11 @@ runtime (like runc or crun) for a single container.")
              (url "https://gitlab.freedesktop.org/slirp/libslirp")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1b4cn51xvzbrxd63g6w1033prvbxfxsnsn1l0fa5i311xv28vkh0"))
+        (base32 "0dny8187a8qh6akaa37aa9b5pjxx88f02wh6achp4mygff0ipxba"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
-    (inputs
+    (propagated-inputs
+     ;; In Requires of slirp.pc.
      (list glib))
     (native-inputs
      (list pkg-config))
