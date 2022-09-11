@@ -23524,13 +23524,13 @@ source via the Abstract Syntax Tree.")
 (define-public python-astunparse
   (package
     (name "python-astunparse")
-    (version "1.6.2")
+    (version "1.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astunparse" version))
        (sha256
-        (base32 "0rzbc44xcvzjhhiy7wac96mgal5mcjz1mfq8rmvgswskf4kf9cys"))))
+        (base32 "0wh8jjvwafxc7rvbyb13cdwndkicm7cry1bd8p1q9l7has23mnas"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; there are none
     (propagated-inputs
