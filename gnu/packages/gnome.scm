@@ -12448,55 +12448,55 @@ your operating-system definition:
     (name "piper")
     (version "0.7")
     (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/libratbag/piper")
-             (commit version)))
-       (sha256
-        (base32 "0jsvfy0ihdcgnqljfgs41lys1nlz18qvsa0a8ndx3pyr41f8w8wf"))
-       (file-name (git-file-name name version))))
+     (origin (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/libratbag/piper")
+                   (commit version)))
+             (sha256
+              (base32 "0jsvfy0ihdcgnqljfgs41lys1nlz18qvsa0a8ndx3pyr41f8w8wf"))
+             (file-name (git-file-name name version))))
     (build-system meson-build-system)
+    (arguments
+     `(#:imported-modules ((guix build python-build-system)
+                           ,@%meson-build-system-modules)
+       #:modules (((guix build python-build-system) #:prefix python:)
+                  (guix build meson-build-system)
+                  (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'dont-update-gtk-icon-cache
+           (lambda _
+             (substitute* "meson.build"
+               (("meson.add_install_script\\('meson_install.sh')") ""))))
+         (add-after 'unpack 'do-not-require-flake8
+           (lambda _
+             (substitute* "meson.build"
+               (("find_program\\('flake8'" all)
+                (string-append all ", required : false")))))
+         (add-after 'install 'wrap-python
+           (assoc-ref python:%standard-phases 'wrap))
+         (add-after 'wrap-python 'wrap
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (wrap-script (search-input-file outputs "bin/piper")
+               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
+               `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                      ,(python:site-packages inputs outputs)))))))))
     (native-inputs
      (list appstream
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
-           pkg-config
-           python-flake8))
+           pkg-config))
     (inputs
      (list adwaita-icon-theme
            gtk+
-           `(,gtk+ "bin")
+           guile-3.0                    ;for wrap-script
            libratbag
            python
            python-evdev
            python-lxml
            python-pycairo
            python-pygobject))
-    (arguments
-     (list #:glib-or-gtk? #t
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'dont-update-gtk-icon-cache
-                 (lambda _
-                   (substitute* "meson.build"
-                     (("meson.add_install_script('meson_install.sh')") ""))))
-               (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-                 (lambda _
-                   (let ((pylib (string-append #$output
-                                               "/lib/python"
-                                               #$(version-major+minor
-                                                  (package-version python))
-                                               "/site-packages")))
-                     (wrap-program
-                         (string-append #$output "/bin/piper")
-                       `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                       `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))
-               (add-before 'check 'flake8-config
-                 (lambda _
-                   ;; Make sure the tests use the local flake8 config
-                   (symlink (string-append #$source "/.flake8") ".flake8"))))))
     (home-page "https://github.com/libratbag/piper/")
     (synopsis "Configure bindings and LEDs on gaming mice")
     (description "Piper is a GTK+ application for configuring gaming mice with
