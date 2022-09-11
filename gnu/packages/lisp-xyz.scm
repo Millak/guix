@@ -184,6 +184,34 @@ portable between implementations.")
 (define-public ecl-alexandria
   (sbcl-package->ecl-package sbcl-alexandria))
 
+(define-public sbcl-alea
+  (package
+    (name "sbcl-alea")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/eXodiquas/alea")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-alea" version))
+       (sha256
+        (base32 "0nd9fdjli22ygfw3c8k9nh7d36c92866hics5aij6x7ly1q781gz"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-fiveam))
+    (synopsis "Dice rolling library")
+    (description
+     "This package provides a Common Lisp library for dice rolling and working
+with dice-roll statistics.")
+    (home-page "https://github.com/eXodiquas/alea")
+    (license license:expat)))
+
+(define-public cl-alea
+  (sbcl-package->cl-source-package sbcl-alea))
+
+(define-public ecl-alea
+  (sbcl-package->ecl-package sbcl-alea))
+
 (define-public sbcl-map-bind
   (let ((commit "532d55d93540c632e22b2cd264b5daa5f9d3d900")
         (revision "0"))
