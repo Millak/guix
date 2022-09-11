@@ -292,6 +292,37 @@ collection.")
 (define-public cl-bodge-utilities
   (sbcl-package->cl-source-package sbcl-bodge-utilities))
 
+(define-public sbcl-meta
+  (let ((commit "74faea662139fbbfb9c99341aaed989f5b0e9da3")
+        (revision "0"))
+    (package
+      (name "sbcl-meta")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/frideau/meta")
+               (commit commit)))
+         (file-name (git-file-name "cl-meta" version))
+         (sha256
+          (base32 "08s53zj3mcx82kszp1bg2vsb4kydvkc70kj4hpq9h1l5a1wh44cy"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-named-readtables))
+      (home-page "https://gitlab.common-lisp.net/frideau/meta")
+      (synopsis "Recursive-descent parser DSL for Common Lisp")
+      (description
+       "This package provides a recursive-descent parser DSL for Common Lisp.
+It's intended as a simpler alternative to parser generators.")
+      (license license:bsd-2))))
+
+(define-public cl-meta
+  (sbcl-package->cl-source-package sbcl-meta))
+
+(define-public ecl-meta
+  (sbcl-package->ecl-package sbcl-meta))
+
 (define-public sbcl-bodge-queue
   (let ((commit "948c9a501dcd412689952d09eb7453ec2722336a")
         (revision "0"))
