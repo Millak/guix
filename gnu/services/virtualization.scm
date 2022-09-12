@@ -965,6 +965,7 @@ that will be listening to receive secret keys on port 1004, TCP."
                          (generate-host-keys? #f)))
              (guix-service-type
               config => (guix-configuration
+                         (inherit config)
                          (generate-substitute-key? #f))))))))
 
 
