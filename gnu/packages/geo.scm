@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -536,7 +537,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public proj
   (package
     (name "proj")
-    (version "9.0.1")
+    (version "9.1.0")
     (source
      (origin
        (method url-fetch)
@@ -544,14 +545,10 @@ fully fledged Spatial SQL capabilities.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "18x6v4iaphyyxyzdgf76r764qwswvjz9w39zyiphsvchwz5slzkk"))))
+         "0593vd9sac0c98j1f4rammd90d4xnhygbr6d49i8il6ajjdj7cl1"))))
     (build-system cmake-build-system)
-    (arguments
-     `(#:configure-flags '("-DUSE_EXTERNAL_GTEST=ON")))
-    (inputs
-     (list curl libjpeg-turbo libtiff sqlite))
-    (native-inputs
-     (list googletest pkg-config))
+    (native-inputs (list googletest pkg-config))
+    (propagated-inputs (list curl libtiff sqlite)) ;required by proj.pc
     (home-page "https://proj.org/")
     (synopsis "Coordinate transformation software")
     (description
