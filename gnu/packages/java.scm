@@ -1729,12 +1729,12 @@ new Date();"))
                (base32
                 "0zywq2203b4hx4jms9vbwvjcj1d3k2v3qpx4s33729fkpmid97r4"))
               (patches (search-patches
-                        "openjdk-10-idlj-reproducibility.patch"))
+                        "openjdk-10-idlj-reproducibility.patch"
+                        "openjdk-10-hotspot-pointer-comparison.patch"
+                        "openjdk-10-hotspot-stack-size.patch"))
               (modules '((guix build utils)))
               (snippet
-               `(begin
-                  (for-each delete-file (find-files "." ".*.(bin|exe|jar)$"))
-                  #t))))
+               '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk9)
        ((#:phases phases)
