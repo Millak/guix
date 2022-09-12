@@ -56,6 +56,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Elais Player <elais@fastmail.com>
+;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2254,6 +2255,29 @@ one in Emacs.")
     (synopsis "Screenshots for StumpWM")
     (description "This StumpWM module can take screenshots and store them as
 PNG files.")
+    (license license:gpl3+)))
+
+(define-public sbcl-stumpwm-notify
+  (package
+    (inherit stumpwm-contrib)
+    (name "sbcl-stumpwm-notify")
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-bordeaux-threads
+           sbcl-dbus
+           sbcl-xml-emitter
+           (list stumpwm "lib")))
+    (arguments
+     '(#:asd-systems '("notify")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "util/notify"))))))
+    (home-page "https://github.com/stumpwm/stumpwm-contrib")
+    (synopsis "Notifications server for StumpWM")
+    (description "This module implements org.freedesktop.Notifications
+interface[fn:dbus-spec].  It shows notifications using stumpwm:message
+by default.")
     (license license:gpl3+)))
 
 (define-public lemonbar
