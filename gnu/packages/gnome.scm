@@ -9015,7 +9015,8 @@ properties, screen resolution, and other GNOME parameters.")
         #~(list "-Dsystemd=false"
                 ;; Otherwise, the RUNPATH will lack the final path component.
                 (string-append "-Dc_link_args=-Wl,-rpath="
-                               #$output "/lib/gnome-shell"))
+                               #$output "/lib/gnome-shell")
+                "-Dsoup2=false")
         #:modules '((guix build meson-build-system)
                     (guix build utils)
                     (ice-9 match)
