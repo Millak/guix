@@ -903,15 +903,23 @@ supports sufficient parts of Java 7 to build Icedtea 2.x.")
                      "openjdk.src/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c")
                  (("#include <sys/sysctl.h>")
                   "#include <linux/sysctl.h>"))
+
+               ;; XXX 'ldd' in glibc 2.35 segfaults upon reading
+               ;;   openjdk.build-boot/lib/amd64/libnio.so (!).
+               ;; It is only used as a verification step, so ignore it;
+               ;; try removing this substitution for newer versions of glibc.
+               (substitute* "openjdk.src/jdk/make/common/shared/Defs-linux.gmk"
+                 (("\\$\\(LDD\\) \\$1 &&")
+                  ""))
+
                ;; It looks like the "h = 31 * h + c" line of the jsum()
                ;; function gets miscompiled. After a few iterations of the loop
                ;; the result of "31 * h" is always 0x8000000000000000.
-               ;; Bad optimization maybe...
-               ;; Transform "31 * h + c" into a convoluted "32 * h + c - h"
-               ;; as a workaround.
-               (substitute* "openjdk.src/hotspot/src/share/vm/memory/dump.cpp"
-                 (("h = 31 \\* h \\+ c;")
-                  "jlong h0 = h;\nfor(int i = 0; i < 5; i++) h += h;\nh += c - h0;"))))
+               ;; Disable optimizations of dump.cpp as a workaround.
+               (substitute* "openjdk.src/hotspot/make/linux/makefiles/gcc.make"
+                 (("OPT_CFLAGS/NOOPT.*" all)
+                  (string-append all "\n"
+                                 "OPT_CFLAGS/dump.o += -O0")))))
            (add-after 'unpack 'fix-x11-extension-include-path
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "openjdk.src/jdk/make/sun/awt/mawt.gmk"
@@ -1287,7 +1295,8 @@ supports sufficient parts of Java 7 to build Icedtea 2.x.")
               (base32
                "17bdv39n4lh8l5737c96f3xgamx4y305m067p01cywgp7zaddqws"))
              (patches (search-patches
-                       "icedtea-7-hotspot-aarch64-use-c++98.patch"))))
+                       "icedtea-7-hotspot-aarch64-use-c++98.patch"
+                       "icedtea-7-hotspot-pointer-comparison.patch"))))
          ("ant" ,ant-bootstrap)
          ("attr" ,attr)
          ("classpath" ,classpath-devel)

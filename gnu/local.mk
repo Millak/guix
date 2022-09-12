@@ -1295,7 +1295,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/icecat-use-older-reveal-hidden-html.patch	\
   %D%/packages/patches/icecat-use-system-graphite2+harfbuzz.patch	\
   %D%/packages/patches/icecat-use-system-media-libs.patch	\
-  %D%/packages/patches/icedtea-7-hotspot-aarch64-use-c++98.patch\
+  %D%/packages/patches/icedtea-7-hotspot-aarch64-use-c++98.patch	\
+  %D%/packages/patches/icedtea-7-hotspot-pointer-comparison.patch	\
   %D%/packages/patches/id3lib-CVE-2007-4460.patch			\
   %D%/packages/patches/id3lib-UTF16-writing-bug.patch			\
   %D%/packages/patches/idris-test-ffi008.patch			\
