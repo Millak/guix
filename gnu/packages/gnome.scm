@@ -11433,7 +11433,7 @@ generic enough to work for everyone.")
 (define-public evolution
   (package
     (name "evolution")
-    (version "3.42.1")
+    (version "3.45.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/evolution/"
@@ -11441,53 +11441,58 @@ generic enough to work for everyone.")
                                   "evolution-" version ".tar.xz"))
               (sha256
                (base32
-                "0igfzapdvgfx2gnpwfkjfkn7l5j186wk88ni39vqas1sl7ijlls6"))))
+                "1q4fa5l7k0rax39iwn2spmzxcr2l73mj3644lf8j9mnp5w774c96"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:imported-modules (,@%cmake-build-system-modules
+     (list
+      #:imported-modules `(,@%cmake-build-system-modules
                            (guix build glib-or-gtk-build-system))
-       #:modules ((guix build cmake-build-system)
+      #:modules '((guix build cmake-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils))
-       #:configure-flags
-       (list "-DENABLE_PST_IMPORT=OFF"    ; libpst is not packaged
-             "-DENABLE_LIBCRYPTUI=OFF")   ; libcryptui hasn't seen a release
-                                          ; in four years and cannot be built.
-       #:phases
-       (modify-phases %standard-phases
-         ;; The build system attempts to install user interface modules to the
-         ;; output directory of the "evolution-data-server" package.  This
-         ;; change redirects that change.
-         (add-after 'unpack 'patch-ui-module-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "src/modules/alarm-notify/CMakeLists.txt"
-               (("\\$\\{edsuimoduledir\\}")
-                (string-append (assoc-ref outputs "out")
-                               "/lib/evolution-data-server/ui-modules")))))
-         (add-after 'install 'glib-or-gtk-compile-schemas
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'install 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+      #:configure-flags
+      #~(list "-DENABLE_PST_IMPORT=OFF") ;libpst is not packaged
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The build system attempts to install user interface modules to
+          ;; the output directory of the "evolution-data-server" package;
+          ;; patch it to install to the same location under #$output prefix.
+          (add-after 'unpack 'patch-ui-module-dir
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "src/modules/alarm-notify/CMakeLists.txt"
+                (("\\$\\{edsuimoduledir\\}")
+                 (string-append
+                  #$output "/lib/evolution-data-server/ui-modules")))
+              (substitute* "src/modules/rss/camel/CMakeLists.txt"
+                (("\\$\\{camel_providerdir}")
+                 (string-append
+                  #$output "/lib/evolution-data-server/camel-providers")))))
+          (add-after 'install 'glib-or-gtk-compile-schemas
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+          (add-after 'install 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
-     (list `(,glib "bin") ; glib-mkenums
-           pkg-config intltool itstool))
+     (list `(,glib "bin")               ;glib-mkenums
+           intltool
+           itstool
+           pkg-config))
     (inputs
-     `(("enchant" ,enchant)
-       ("evolution-data-server" ,evolution-data-server) ; must be the same version
-       ("gcr" ,gcr)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gnome-autoar" ,gnome-autoar)
-       ("gnome-desktop" ,gnome-desktop)
-       ("gspell" ,gspell)
-       ("highlight" ,highlight)
-       ("libcanberra" ,libcanberra)
-       ("libgweather" ,libgweather)
-       ("libnotify" ,libnotify)
-       ("libsoup" ,libsoup)
-       ("nss" ,nss)
-       ("openldap" ,openldap)
-       ("webkitgtk" ,webkitgtk-with-libsoup2) ; because of evolution-data-server
-       ("ytnef" ,ytnef)))
+     (list cmark
+           enchant
+           evolution-data-server        ;must be the same version
+           gcr
+           gsettings-desktop-schemas
+           gnome-autoar
+           gnome-desktop
+           gspell
+           highlight
+           libcanberra
+           libgweather4
+           libsoup
+           nss
+           openldap
+           webkitgtk
+           ytnef))
     (home-page "https://gitlab.gnome.org/GNOME/evolution")
     (synopsis "Manage your email, contacts and schedule")
     (description "Evolution is a personal information management application
