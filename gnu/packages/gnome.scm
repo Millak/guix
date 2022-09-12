@@ -7957,7 +7957,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
 (define-public evolution-data-server
   (package
     (name "evolution-data-server")
-    (version "3.44.4")
+    (version "3.45.3")
     (source
      (origin
        (method url-fetch)
@@ -7965,7 +7965,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1sxjrjr31wqbp9g4pf6dwj8rc4mi7c5fbfd489ha92ym7246bin0"))))
+        (base32 "1zjg9b77qmfin9m16rqa6cpqp1rh63pg3bcnkh25vmklslwhvq7a"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -7981,7 +7981,8 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                 (string-append "-DCMAKE_INSTALL_RPATH=" lib ";"
                                (string-append lib "/evolution-data-server;")
                                (string-join runpaths ";"))
-                "-DENABLE_INTROSPECTION=ON" ;required for Vala bindings
+                "-DENABLE_INTROSPECTION=ON"      ;required for Vala bindings
+                "-DENABLE_OAUTH2_WEBKITGTK4=OFF" ;requires webkitgtk-next
                 "-DWITH_PHONENUMBER=ON"))
       #:phases
       #~(modify-phases %standard-phases
@@ -8013,14 +8014,17 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
            intltool
            pkg-config
            protobuf
-           vala
-           python-wrapper))
+           python-wrapper
+           vala))
     (propagated-inputs
      ;; These are all in the Requires field of .pc files.
-     (list gtk+
+     (list glib
+           gtk
+           gtk+
+           json-glib
            libical
            libsecret
-           libsoup-minimal-2
+           libsoup
            nss
            sqlite))
     (inputs
@@ -8030,11 +8034,12 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
            gnome-online-accounts
            json-glib
            libcanberra
-           libgweather
+           libgweather4
            libphonenumber
            mit-krb5
            openldap
-           webkitgtk-with-libsoup2))
+           pango-next                   ;remove after it's the default
+           webkitgtk))
     (synopsis "Store address books and calendars")
     (home-page "https://wiki.gnome.org/Apps/Evolution")
     (description
@@ -8042,6 +8047,30 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
 contacts, tasks, and calendar information.  It was originally developed for
 Evolution (hence the name), but is now used by other packages as well.")
     (license license:lgpl2.0)))
+
+;;; This version can be used for projects with dependencies stuck on libsoup2.
+(define-public evolution-data-server-3.44
+  (package
+    (inherit evolution-data-server)
+    (name "evolution-data-server")
+    (version "3.44.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/" name "/"
+                           (version-major+minor version) "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32 "1sxjrjr31wqbp9g4pf6dwj8rc4mi7c5fbfd489ha92ym7246bin0"))))
+    (inputs
+     (modify-inputs (package-inputs evolution-data-server)
+       (replace "gnome-online-accounts" gnome-online-accounts-3.44)
+       (replace "libgweather4" libgweather)
+       (replace "webkitgtk" webkitgtk-with-libsoup2)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs evolution-data-server)
+       (delete "gtk")
+       (replace "libsoup" libsoup-minimal-2)))))
 
 (define-public caribou
   (package
