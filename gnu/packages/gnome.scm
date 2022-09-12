@@ -5660,7 +5660,7 @@ services for numerous locations.")
   (package
     (inherit libgweather)
     (name "libgweather4")
-    (version "4.0.0")
+    (version "4.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libgweather/"
@@ -5668,38 +5668,64 @@ services for numerous locations.")
                                   "libgweather-" version ".tar.xz"))
               (sha256
                (base32
-                "0k43mr7vmcg14lkwjk6p9wwy3zlw23wkfpkfcy6b8wkg3f0483a4"))))
+                "1wh3asniv5yiqp0dsk96as2bkx72hamh3ij2md8k0is9yd7ppbjm"))))
     (arguments
      (list
-      ;; FIXME: multiple tests fails as such:
-      ;;   "GLib-GIO-FATAL-ERROR: Settings schema 'org.gnome.system.proxy'
-      ;;   is not installed"
-      #:tests? #f
       #:configure-flags
       #~(list (string-append "-Dzoneinfo_dir="
                              (search-input-directory %build-inputs
-                                                     "share/zoneinfo"))
-              ;; TODO: Requires 'gi-docgen'.
-              "-Dgtk_doc=false")
+                                                     "share/zoneinfo")))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
+          (add-after 'unpack 'set-HOME
             (lambda _
-              (setenv "HOME" "/tmp"))))))
+              (setenv "HOME" "/tmp")))
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "libgweather/tests/meson.build"
+                ;; The timezones test fails for unknown reasons (see:
+                ;; https://gitlab.gnome.org/GNOME/libgweather/-/issues/188).
+                ((".*'name': 'timezones'.*") "")
+                ;; The 'metar' test is known to fail, fixed but not yet released
+                ;; upstream (see:
+                ;; https://gitlab.gnome.org/GNOME/libgweather/-/issues/168).
+                ((".*'name': 'metar'.*") ""))))
+          (delete 'check)               ;move after the install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check)))))
     (native-inputs
      (list gettext-minimal
+           gi-docgen
            `(,glib "bin")               ;for glib-mkenums
            gobject-introspection
+           glibc-utf8-locales
+           gsettings-desktop-schemas
            pkg-config
            python
-           vala
-           python-pygobject))
+           python-pygobject
+           vala))
     ;; TODO: It would be good to make the package respect TZDIR instead
     ;; of using a "hard coded" version of tzdata.
     (inputs (list tzdata))
     (propagated-inputs
      ;; gweather4.pc refers to all of these.
-     (list glib libxml2 libsoup-minimal-2 geocode-glib))))
+     (list geocode-glib
+           glib
+           json-glib
+           libsoup
+           libxml2))))
+
+(define-public libgweather4-with-libsoup2
+  (package
+    (inherit libgweather4)
+    (name "libgweather4-with-libsoup2")
+    (arguments (substitute-keyword-arguments (package-arguments libgweather4)
+                 ((#:configure-flags flags)
+                  #~(cons "-Dsoup2=true" #$flags))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs libgweather4)
+       (replace "geocode-glib" geocode-glib-with-libsoup2)
+       (replace "libsoup" libsoup-minimal-2)))))
 
 (define-public gnome-settings-daemon
   (package
