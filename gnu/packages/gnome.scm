@@ -5730,7 +5730,11 @@ service via the system message bus.")
     (propagated-inputs
      ;; gweather-3.0.pc refers to GTK+, GDK-Pixbuf, GLib/GObject, libxml, and
      ;; libsoup.
-     (list gtk+ gdk-pixbuf libxml2 libsoup-minimal-2 geocode-glib))
+     (list gtk+
+           gdk-pixbuf
+           libxml2
+           libsoup-minimal-2
+           geocode-glib-with-libsoup2))
     (inputs
      (list tzdata))
     (home-page "https://wiki.gnome.org/action/show/Projects/LibGWeather")
