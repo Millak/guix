@@ -254,7 +254,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "42.2")
+    (version "43.rc")                   ;for libsoup 3 support
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -262,77 +262,56 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cb9s2zz1zib3f33c035lmgshpl679isbzdd3alrx4yclw61nvay"))))
+                "16a3j896fwxgnvrmx27jnrvhxzh3v22paaq87ad57yp8wkq946il"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))))
-         (add-after 'unpack 'patch-dbus-service
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "data/org.gnome.Maps.service.in"
-               (("@pkgdatadir@/org.gnome.Maps")
-                (string-append  (assoc-ref outputs "out")
-                                "/bin/gnome-maps")))))
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
-                   (geocode-glib-path (string-append
-                                       (assoc-ref inputs "geocode-glib")
-                                       "/lib"))
-                   (goa-path (string-append
-                              (assoc-ref inputs "gnome-online-accounts")
-                              "/lib"))
-                   (gdk-pixbuf-path (string-append
-                                     (assoc-ref inputs "gdk-pixbuf")
-                                     "/lib"))
-                   (webkitgtk-path (string-append
-                                    (assoc-ref inputs "webkitgtk")
-                                    "/lib")))
-               (wrap-program (string-append out "/bin/gnome-maps")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-
-                 ;; There seems to be no way to embed the path of
-                 ;; libgoa-1.0.so.0, libwebkit2gtk-4.0.so.37,
-                 ;; libgdk_pixbuf-2.0.so, libjavascriptcoregtk-4.0.so.18, and
-                 ;; libgeocode-glib.so.0
-                 `("LD_LIBRARY_PATH" ":" prefix (,goa-path
-                                                 ,webkitgtk-path
-                                                 ,gdk-pixbuf-path
-                                                 ,geocode-glib-path)))
-               #t))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") "true"))))
+          (add-after 'unpack 'patch-dbus-service
+            (lambda _
+              (substitute* "data/org.gnome.Maps.service.in"
+                (("@pkgdatadir@/org.gnome.Maps")
+                 (string-append #$output "/bin/gnome-maps")))))
+          (add-after 'install 'wrap
+            (lambda _
+              (wrap-program (string-append #$output "/bin/gnome-maps")
+                `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config))
     (inputs
-     `(("evolution-data-server" ,evolution-data-server)
-       ("folks" ,folks)
-       ("libchamplain" ,libchamplain)
-       ("libgee" ,libgee)
-       ("libhandy" ,libhandy)
-       ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup-minimal-2)
-       ("libgweather" ,libgweather4)
-       ("libxml2" ,libxml2)
-       ("librsvg" ,librsvg)
-       ("glib-networking" ,glib-networking)
-       ("geoclue" ,geoclue)
-       ("geocode-glib" ,geocode-glib)
-       ("gfbgraph" ,gfbgraph)
-       ("gjs" ,gjs)
-       ("glib" ,glib)
-       ("gnome-online-accounts" ,gnome-online-accounts)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ("rest" ,rest)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+     (list folks
+           evolution-data-server
+           geoclue
+           geocode-glib
+           gfbgraph
+           gjs
+           glib
+           glib-networking
+           gnome-online-accounts
+           gsettings-desktop-schemas
+           gtk+
+           libadwaita
+           libgee
+           libgweather4
+           libhandy
+           librsvg
+           libsecret
+           libshumate           
+           libsoup
+           libxml2
+           pango-next                   ;TODO: remove when it's the default
+           rest-next
+           webkitgtk))
     (synopsis "Graphical map viewer and wayfinding program")
     (description "GNOME Maps is a graphical map viewer.  It uses map data from
 the OpenStreetMap project.  It can provide directions for walking, bicycling,
