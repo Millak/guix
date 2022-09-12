@@ -253,42 +253,43 @@
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and compile schemas
-       #:configure-flags (list "-Dgtk_doc=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "doc"
-               (substitute* "gupnp-igd-docs.xml"
-                 (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                  (string-append (assoc-ref inputs "docbook-xml-4.1.2")
-                                 "/xml/dtd/docbook/"))))
-             #t))
-         (add-before 'check 'set-home
-           (lambda _
-             ;; A test using GIO expects ~/.config/glib-2.0/settings to be
-             ;; writable.
-             (setenv "HOME" (getcwd))))
-         (add-after 'install 'move-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share"))
-               (rename-file
-                (string-append out "/share/gtk-doc")
-                (string-append doc "/share/gtk-doc"))
-               #t))))))
+     (list
+      #:glib-or-gtk? #t                 ; To wrap binaries and compile schemas
+      #:configure-flags #~(list "-Dgtk_doc=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-docbook-xml
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "doc"
+                (substitute* "gupnp-igd-docs.xml"
+                  (("http://www.oasis-open.org/docbook/xml/4.1.2/")
+                   (string-append #$(this-package-native-input
+                                     "docbook-xml")
+                                  "/xml/dtd/docbook/"))))))
+          (add-before 'check 'set-home
+            (lambda _
+              ;; A test using GIO expects ~/.config/glib-2.0/settings to be
+              ;; writable.
+              (setenv "HOME" (getcwd))))
+          (add-after 'install 'move-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (mkdir-p (string-append #$output:doc "/share"))
+              (rename-file
+               (string-append #$output "/share/gtk-doc")
+               (string-append #$output:doc "/share/gtk-doc")))))))
     (native-inputs
-     `(("docbook-xml-4.1.2" ,docbook-xml-4.1.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)))
+     (list docbook-xml-4.1.2
+           docbook-xsl
+           `(,glib "bin")
+           gobject-introspection
+           gsettings-desktop-schemas
+           gtk-doc/stable
+           pkg-config))
     (propagated-inputs
-     (list glib glib-networking gssdp gupnp libsoup))
+     ;; These libraries are required by the .pc file.
+     (list glib
+           glib-networking
+           gupnp-1.4))
     (synopsis "UPnP IGD for GNOME")
     (description "GUPnP-IGD is a library to handle UPnP IGD port mapping.")
     (home-page "https://gitlab.gnome.org/GNOME/gupnp-igd")
