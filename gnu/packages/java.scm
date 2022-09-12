@@ -2063,6 +2063,7 @@ new Date();"))
               (sha256
                (base32
                 "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"))
+              (patches (search-patches "openjdk-10-hotspot-stack-size.patch"))
               (modules '((guix build utils)))
               (snippet
                `(begin
@@ -2115,6 +2116,7 @@ new Date();"))
                     (url "https://github.com/openjdk/jdk13u")
                     (commit (string-append "jdk-" version "-ga"))))
               (file-name (git-file-name name version))
+              (patches (search-patches "openjdk-10-hotspot-stack-size.patch"))
               (sha256
                (base32
                 "0wrrr0d7lz1v8qqm752mn4gz5l2vpl2kmx4ac3ysvk4mljc924hp"))
@@ -2159,6 +2161,7 @@ new Date();"))
                     (url "https://github.com/openjdk/jdk14u")
                     (commit (string-append "jdk-" version "-ga"))))
               (file-name (git-file-name name version))
+              (patches (search-patches "openjdk-10-hotspot-stack-size.patch"))
               (sha256
                (base32
                 "07k9bsbxwyf2z2n50z96nvhsdai916mxdxcr5lm44jz7f6xrwfq6"))
@@ -2211,7 +2214,8 @@ new Date();"))
                (base32
                 "168cr08nywp0q3vyj8njkhsmmnyd8rz9r58hk4xhzdzc6bdfkl1i"))
               (patches
-                (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
+               (search-patches "openjdk-15-xcursor-no-dynamic.patch"
+                               "openjdk-10-hotspot-stack-size.patch"))))
     (inputs
      (cons `("libxcursor" ,libxcursor) ; for our patch to work
            (package-inputs openjdk14)))
@@ -2238,8 +2242,8 @@ new Date();"))
               (sha256
                (base32
                 "1ggddsbsar4dj2fycfqqqagqil7prhb30afvq6933rz7pa9apm2f"))
-              (patches
-                (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
+              (patches (search-patches "openjdk-15-xcursor-no-dynamic.patch"
+                                       "openjdk-10-hotspot-stack-size.patch"))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("openjdk15:jdk" ,openjdk15 "jdk")
