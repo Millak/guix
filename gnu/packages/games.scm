@@ -1786,17 +1786,20 @@ destroying an ancient book using a special wand.")
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t)))))
+               (("gtk-update-icon-cache") "true")))))))
     (inputs
-     (list gtk+ clutter clutter-gtk libgee libgnome-games-support-1))
+     (list gtk+
+           clutter
+           clutter-gtk
+           libgee
+           libgnome-games-support-1))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin") ; for desktop-file-validate and appstream-util
-       ("itstool" ,itstool)
-       ("libxml2" ,libxml2)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list gettext-minimal
+           `(,glib "bin")       ; for desktop-file-validate and appstream-util
+           itstool
+           libxml2
+           pkg-config
+           vala))
     (home-page "https://wiki.gnome.org/Apps/2048")
     (synopsis "Move the tiles until you obtain the 2048 tile")
     (description "GNOME 2048 provides a 2D grid for playing 2048, a
