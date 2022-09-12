@@ -53,7 +53,6 @@
             %glibc-bootstrap-tarball
             %gcc-bootstrap-tarball
             %guile-bootstrap-tarball
-            %mescc-tools-bootstrap-tarball
             %mes-bootstrap-tarball
             %bootstrap-tarballs
 
@@ -592,43 +591,6 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                                     '("gcc" "g++" "cpp"))))))))))
 
 ;; Two packages: first build static, bare minimum content.
-(define %mescc-tools-static
-  ;; A statically linked MesCC Tools.
-  (package
-    (inherit mescc-tools)
-    (name "mescc-tools-static")
-    (arguments
-     `(#:system "i686-linux"
-       ,@(substitute-keyword-arguments (package-arguments mescc-tools)
-           ((#:make-flags flags)
-            `(cons "CC=gcc -static" ,flags)))))))
-
-;; ... next remove store references.
-(define %mescc-tools-static-stripped
-  ;; A statically linked Mescc Tools with store references removed, for
-  ;; bootstrap.
-  (package
-    (inherit %mescc-tools-static)
-    (name (string-append (package-name %mescc-tools-static) "-stripped"))
-    (build-system trivial-build-system)
-    (arguments
-     (list #:modules '((guix build utils))
-           #:builder
-           #~(begin
-               (use-modules (guix build utils))
-               (let* ((in  #$%mescc-tools-static)
-                      (out #$output)
-                      (bin (string-append out "/bin")))
-                 (mkdir-p bin)
-                 (for-each (lambda (file)
-                             (let ((target (string-append bin "/" file)))
-                               (format #t "copying `~a'...~%" file)
-                               (copy-file (string-append in "/bin/" file)
-                                          target)
-                               (remove-store-references target)))
-                           '( "M1" "blood-elf" "hex2"))))))))
-
-;; Two packages: first build static, bare minimum content.
 (define-public %mes-minimal
   ;; A minimal Mes without documentation.
   (package
@@ -857,10 +819,6 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 (define %guile-bootstrap-tarball
   ;; A tarball with the statically-linked, relocatable Guile.
   (tarball-package %guile-static-stripped))
-
-(define %mescc-tools-bootstrap-tarball
-  ;; A tarball with statically-linked MesCC binary seed.
-  (tarball-package %mescc-tools-static-stripped))
 
 (define %mes-bootstrap-tarball
   ;; A tarball with Mes binary seed.
