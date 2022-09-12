@@ -42,13 +42,13 @@ building packages---has been configured without native compilation.
 To natively compile your emacs packages ahead of time, use a transformation
 like @option{--with-input=emacs-minimal=emacs}.")
          (de "Emacs kann nun native Maschinenbefehle erzeugen.  Standardgemäß
-kompiliert es nun Pakete “just in time” während Sie diese laden und platziert
+kompiliert es nun Pakete „just in time“, während Sie diese laden, und platziert
 die so erzeugten nativen Bibliotheken in einem Unterverzeichnis Ihres
 @code{user-emacs-directory}.
 
-Darüber hinaus unterstützt das Erzeugungssystem für Emacs-Pakete die Erzeugung
-nativer Maschinenbefehle.  Beachten Sie jedoch, dass @code{emacs-minimal} ---
-die Emacs-Variante, mit der normalerweise Emacs-Pakete erzeugt werden ---
+Darüber hinaus unterstützt das Erstellungssystem für Emacs-Pakete die Erzeugung
+nativer Maschinenbefehle.  Beachten Sie jedoch, dass @code{emacs-minimal} –
+die Emacs-Variante, mit der normalerweise Emacs-Pakete erstellt werden –
 weiterhin keine nativen Befehle generiert.  Um native Befehle für Ihre
 Emacs-Pakete schon im Voraus zu erzeugen, nutzen Sie eine Transformation, z.B.
 @option{--with-input=emacs-minimal=emacs}.")
