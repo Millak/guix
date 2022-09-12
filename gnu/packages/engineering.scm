@@ -2952,7 +2952,15 @@ dynamic calibration of the milling depth.")
                            (("message\\(STATUS \"Using in-tree mimalloc\"\\)")
                             "message(STATUS \"Using guix packaged mimalloc\")")
                            (("add_subdirectory\\(extlib/mimalloc EXCLUDE_FROM_ALL\\)")
-                            "find_package(mimalloc REQUIRED)")))))))
+                            "find_package(mimalloc REQUIRED)"))))
+                     (add-after 'install 'wrap-program
+                       (lambda* (#:key inputs outputs #:allow-other-keys)
+                         (wrap-program (string-append (assoc-ref outputs "out")
+                                                      "/bin/solvespace")
+                           ;; For GtkFileChooserDialog.
+                           `("GSETTINGS_SCHEMA_DIR" =
+                             (,(string-append (assoc-ref inputs "gtk+")
+                                              "/share/glib-2.0/schemas")))))))))
       (inputs (list cairo
                     eigen
                     freetype
