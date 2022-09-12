@@ -1667,7 +1667,7 @@ modules for building a Wayland compositor.")
     (inputs (list cairo gdk-pixbuf libxkbcommon
                   ;("linux-pam" ,linux-pam) ; FIXME: Doesn't work.
                   wayland))
-    (native-inputs (list pango pkg-config scdoc wayland-protocols))
+    (native-inputs (list pango pkg-config scdoc wayland-protocols-next))
     (home-page "https://github.com/swaywm/sway")
     (synopsis "Screen locking utility for Wayland compositors")
     (description "Swaylock is a screen locking utility for Wayland compositors.")
