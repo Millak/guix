@@ -4999,6 +4999,50 @@ libxml to ease remote use of the RESTful API.")
        (replace "libsoup" libsoup)
        (append json-glib)))))
 
+(define-public libshumate
+  (package
+    (name "libshumate")
+    (version "1.0.0.beta")              ;no stable release yet
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "13xrc07fm0967gzbqab8k0l3dnknh00p0a6f2dm7k0aa56q41sda"))))
+    (build-system meson-build-system)
+    (arguments (list #:configure-flags #~(list "-Dlibsoup3=true")
+                     #:phases #~(modify-phases %standard-phases
+                                  (add-before 'check 'pre-check
+                                    (lambda _
+                                      ;; The 'coordinate' test requires a
+                                      ;; writable HOME.
+                                      (setenv "HOME" "/tmp")
+
+                                      ;; Tests require a running X server.
+                                      (system "Xvfb :1 &")
+                                      (setenv "DISPLAY" ":1"))))))
+    (native-inputs
+     (list gi-docgen
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           xorg-server-for-tests))
+    (propagated-inputs
+     ;; All the libraries are listed as "Requires' in the .pc file.
+     (list cairo
+           glib
+           gtk
+           libsoup
+           sqlite))
+    (home-page "https://wiki.gnome.org/Projects/libshumate")
+    (synopsis "GtkWidget C library for displaying maps")
+    (description "@code{libshumate} is a C library providing a
+@code{GtkWidget} to display maps.  It supports numerous free map sources such
+as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
+    (license license:lgpl2.1+)))
+
 ;;; A minimal version of libsoup used to prevent a cycle with Inkscape.
 (define-public libsoup-minimal
   (package
