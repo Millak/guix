@@ -1536,6 +1536,9 @@ new Date();"))
               (sha256
                (base32
                 "01ihmyf7k5z17wbr7xig7y40l9f01d5zjgkcmawn1102hw5kchpq"))
+              (patches (search-patches
+                        "openjdk-9-hotspot-pointer-comparison.patch"
+                        "openjdk-9-hotspot-stack-size.patch"))
               (modules '((guix build utils)))
               (snippet
                `(begin
