@@ -48,6 +48,7 @@
   #:use-module (guix scripts build)
   #:use-module (guix transformations)
   #:use-module ((guix self) #:select (make-config.scm))
+  #:use-module (gnu compression)
   #:use-module (gnu packages)
   #:use-module (gnu packages bootstrap)
   #:use-module ((gnu packages compression) #:hide (zip))
@@ -61,13 +62,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
   #:use-module (ice-9 match)
-  #:export (compressor?
-            compressor-name
-            compressor-extension
-            compressor-command
-            %compressors
-            lookup-compressor
-            self-contained-tarball
+  #:export (self-contained-tarball
             debian-archive
             docker-image
             squashfs-image
@@ -75,49 +70,12 @@
             %formats
             guix-pack))
 
-;; Type of a compression tool.
-(define-record-type <compressor>
-  (compressor name extension command)
-  compressor?
-  (name       compressor-name)      ;string (e.g., "gzip")
-  (extension  compressor-extension) ;string (e.g., ".lz")
-  (command    compressor-command))  ;gexp (e.g., #~(list "/gnu/store/…/gzip"
-                                    ;                    "-9n" ))
-
-(define %compressors
-  ;; Available compression tools.
-  (list (compressor "gzip"  ".gz"
-                    #~(list #+(file-append gzip "/bin/gzip") "-9n"))
-        (compressor "lzip"  ".lz"
-                    #~(list #+(file-append lzip "/bin/lzip") "-9"))
-        (compressor "xz"    ".xz"
-                    #~(append (list #+(file-append xz "/bin/xz")
-                                    "-e")
-                              (%xz-parallel-args)))
-        (compressor "bzip2" ".bz2"
-                    #~(list #+(file-append bzip2 "/bin/bzip2") "-9"))
-        (compressor "zstd" ".zst"
-                    ;; The default level 3 compresses better than gzip in a
-                    ;; fraction of the time, while the highest level 19
-                    ;; (de)compresses more slowly and worse than xz.
-                    #~(list #+(file-append zstd "/bin/zstd") "-3"))
-        (compressor "none" "" #f)))
-
 ;; This one is only for use in this module, so don't put it in %compressors.
 (define bootstrap-xz
   (compressor "bootstrap-xz" ".xz"
               #~(append (list #+(file-append %bootstrap-coreutils&co "/bin/xz")
                               "-e")
                         (%xz-parallel-args))))
-
-(define (lookup-compressor name)
-  "Return the compressor object called NAME.  Error out if it could not be
-found."
-  (or (find (match-lambda
-              (($ <compressor> name*)
-               (string=? name* name)))
-            %compressors)
-      (leave (G_ "~a: compressor not found~%") name)))
 
 (define not-config?
   ;; Select (guix …) and (gnu …) modules, except (guix config).
