@@ -10432,6 +10432,14 @@ compiled.")
     (home-page "https://wiki.gnome.org/Projects/Folks")
     (license license:lgpl2.1+)))
 
+(define-public folks-with-libsoup2
+  (package
+    (inherit folks)
+    (name "folks-with-libsoup2")
+    (inputs
+     (modify-inputs (package-inputs folks)
+       (replace "evolution-data-server" evolution-data-server-3.44)))))
+
 (define-public gfbgraph
   (package
     (name "gfbgraph")
