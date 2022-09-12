@@ -3,7 +3,7 @@
 ;;; Copyright © 2017, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2018, 2019, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -899,9 +899,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
      (append (list %guile-bootstrap-tarball)
          (match (or (%current-target-system) (%current-system))
            ((or "i686-linux" "x86_64-linux")
-            (list %mescc-tools-bootstrap-tarball
-                  %mes-bootstrap-tarball
-                  %linux-libre-headers-bootstrap-tarball))
+            (list %linux-libre-headers-bootstrap-tarball))
            (_
             (list %gcc-bootstrap-tarball
                   %binutils-bootstrap-tarball
