@@ -2805,10 +2805,10 @@ validating international phone numbers.")
    (license license:asl2.0)))
 
 (define-public chatty
- (package
-   (name "chatty")
-   (version "0.6.7")
-   (source (origin
+  (package
+    (name "chatty")
+    (version "0.6.7")
+    (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://source.puri.sm/Librem5/chatty.git")
@@ -2823,51 +2823,51 @@ validating international phone numbers.")
               (sha256
                (base32
                 "11q07vjrrjf3k00kk41vm79brpq0qigz7l328br3g0li979kz32v"))))
-   (build-system meson-build-system)
-   (arguments
-    '(#:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'skip-updating-desktop-database
-          (lambda _
-            (substitute* "meson.build"
-              (("meson.add_install_script.*") ""))))
-        (add-before 'check 'pre-check
-          (lambda* (#:key tests? #:allow-other-keys)
-            (when tests?
-              ;; One test requires a running Xorg server.  Start one.
-              (system "Xvfb :1 &")
-              (setenv "DISPLAY" ":1")
-              ;; HOME must be writable for writing configuration files.
-              (setenv "HOME" "/tmp")))))))
-   (native-inputs
-    (list gettext-minimal
-          `(,glib "bin")
-          pkg-config
-          protobuf
-          xorg-server-for-tests))
-   (inputs
-    (list feedbackd
-          folks
-          gnome-desktop
-          gsettings-desktop-schemas
-          gspell
-          json-glib
-          libgcrypt
-          libgee
-          libhandy
-          libolm
-          libphonenumber
-          modem-manager
-          pidgin
-          purple-mm-sms
-          sqlite))
-   (propagated-inputs
-    (list adwaita-icon-theme evolution-data-server))
-   (synopsis "Mobile client for XMPP and SMS messaging")
-   (description "Chatty is a chat program for XMPP and SMS.  It works on mobile
+    (build-system meson-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-updating-desktop-database
+           (lambda _
+             (substitute* "meson.build"
+               (("meson.add_install_script.*") ""))))
+         (add-before 'check 'pre-check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; One test requires a running Xorg server.  Start one.
+               (system "Xvfb :1 &")
+               (setenv "DISPLAY" ":1")
+               ;; HOME must be writable for writing configuration files.
+               (setenv "HOME" "/tmp")))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config
+           protobuf
+           xorg-server-for-tests))
+    (inputs
+     (list feedbackd
+           folks
+           gnome-desktop
+           gsettings-desktop-schemas
+           gspell
+           json-glib
+           libgcrypt
+           libgee
+           libhandy
+           libolm
+           libphonenumber
+           modem-manager
+           pidgin
+           purple-mm-sms
+           sqlite))
+    (propagated-inputs
+     (list adwaita-icon-theme evolution-data-server))
+    (synopsis "Mobile client for XMPP and SMS messaging")
+    (description "Chatty is a chat program for XMPP and SMS.  It works on mobile
 as well as on desktop platforms.  It's based on libpurple and ModemManager.")
-   (home-page "https://source.puri.sm/Librem5/chatty")
-   (license license:gpl3+)))
+    (home-page "https://source.puri.sm/Librem5/chatty")
+    (license license:gpl3+)))
 
 (define-public mosquitto
   (package
