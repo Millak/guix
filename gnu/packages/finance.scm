@@ -1639,7 +1639,7 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
 (define-public libofx
   (package
     (name "libofx")
-    (version "0.9.15")
+    (version "0.10.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1648,14 +1648,15 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jx56ma351p8af8dvavygjwf6ipa7qbgq7bpdsymwj27apdnixfy"))))
+                "1k3ygavyb9b3f1ra62dsa46iiia0a1588yn3zy7bh7w4vfcrbd6d"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:parallel-build? #f             ;fails with -j64
-       #:configure-flags
-       (list (string-append "--with-opensp-includes="
-                            (assoc-ref %build-inputs "opensp")
-                            "/include/OpenSP"))))
+     (list
+      #:parallel-build? #f              ;fails with -j64
+      #:configure-flags
+      #~(list (string-append "--with-opensp-includes="
+                             (search-input-directory %build-inputs
+                                                     "include/OpenSP")))))
     (native-inputs
      (list autoconf
            automake
@@ -1664,9 +1665,9 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
            libtool
            pkg-config))
     (inputs
-     `(("curl" ,curl)
-       ("libxml++-2" ,libxml++-2)
-       ("opensp" ,opensp)))
+     (list curl
+           libxml++-2
+           opensp))
     (home-page "http://libofx.sourceforge.net/")
     (synopsis "Library supporting the Open Financial Exchange format")
     (description
