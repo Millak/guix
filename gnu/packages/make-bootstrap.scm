@@ -53,7 +53,6 @@
             %glibc-bootstrap-tarball
             %gcc-bootstrap-tarball
             %guile-bootstrap-tarball
-            %mes-bootstrap-tarball
             %bootstrap-tarballs
 
             %guile-static-stripped))
@@ -590,55 +589,6 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                                               "--version"))
                                     '("gcc" "g++" "cpp"))))))))))
 
-;; Two packages: first build static, bare minimum content.
-(define-public %mes-minimal
-  ;; A minimal Mes without documentation.
-  (package
-    (inherit mes)
-    (name "mes-minimal")
-    (native-inputs (list guile-3.0))
-    (arguments
-     `(#:system "i686-linux"
-       #:strip-binaries? #f
-       #:configure-flags '("--mes")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'patch-shebangs)
-         (add-after 'install 'strip-install
-           (lambda _
-             (let* ((out (assoc-ref %outputs "out"))
-                    (share (string-append out "/share")))
-               (delete-file-recursively (string-append out "/lib/guile"))
-               (delete-file-recursively (string-append share "/guile"))
-
-               (for-each delete-file
-                         (find-files
-                          (string-append share "/mes/lib")
-                          "\\.(h|c)"))))))))))
-
-;; next remove store references.
-(define %mes-minimal-stripped
-  ;; A minimal Mes with store references removed, for bootstrap.
-  (package
-    (inherit %mes-minimal)
-    (name (string-append (package-name %mes-minimal) "-stripped"))
-    (build-system trivial-build-system)
-    (arguments
-     (list #:modules '((guix build utils))
-           #:allowed-references '()
-           #:builder
-           #~(begin
-               (use-modules (guix build utils))
-               (let ((in  #$%mes-minimal)
-                     (out #$output))
-
-                 (copy-recursively in out)
-                 (for-each (lambda (dir)
-                             (for-each remove-store-references
-                                       (find-files (string-append out "/" dir)
-                                                   ".*")))
-                           '("bin" "share/mes"))))))))
-
 (define* (make-guile-static guile patches)
   (package-with-relocatable-glibc
    (static-package
@@ -819,10 +769,6 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 (define %guile-bootstrap-tarball
   ;; A tarball with the statically-linked, relocatable Guile.
   (tarball-package %guile-static-stripped))
-
-(define %mes-bootstrap-tarball
-  ;; A tarball with Mes binary seed.
-  (tarball-package %mes-minimal-stripped))
 
 (define %bootstrap-tarballs
   ;; A single derivation containing all the bootstrap tarballs, for
