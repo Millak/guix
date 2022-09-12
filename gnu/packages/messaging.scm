@@ -2825,7 +2825,8 @@ validating international phone numbers.")
                 "11q07vjrrjf3k00kk41vm79brpq0qigz7l328br3g0li979kz32v"))))
     (build-system meson-build-system)
     (arguments
-     '(#:phases
+     '(#:glib-or-gtk? #t
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-updating-desktop-database
            (lambda _
@@ -2847,7 +2848,7 @@ validating international phone numbers.")
            xorg-server-for-tests))
     (inputs
      (list feedbackd
-           folks
+           folks-with-libsoup2
            gnome-desktop
            gsettings-desktop-schemas
            gspell
@@ -2862,7 +2863,7 @@ validating international phone numbers.")
            purple-mm-sms
            sqlite))
     (propagated-inputs
-     (list adwaita-icon-theme evolution-data-server))
+     (list adwaita-icon-theme evolution-data-server-3.44))
     (synopsis "Mobile client for XMPP and SMS messaging")
     (description "Chatty is a chat program for XMPP and SMS.  It works on mobile
 as well as on desktop platforms.  It's based on libpurple and ModemManager.")
