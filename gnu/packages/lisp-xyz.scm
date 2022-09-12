@@ -35,6 +35,7 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3857,6 +3858,37 @@ and designers will be able to understand the embedded HTML.")
 
 (define-public cl-markup-reader
   (sbcl-package->cl-source-package sbcl-markup-reader))
+
+(define-public sbcl-xml-emitter
+  (package
+    (name "sbcl-xml-emitter")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/VitoVan/xml-emitter")
+                    (commit version)))
+              (file-name (git-file-name "cl-xml-emitter" version))
+              (sha256
+               (base32
+                "1w9yx8gc4imimvjqkhq8yzpg3kjrp2y37rjix5c1lnz4s7bxvhk9"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-1am))
+    (inputs (list sbcl-cl-utilities))
+    (synopsis "Common lisp library for emitting XML output")
+    (description
+     "This package provides functions to emit XML, with some complexity for
+handling indentation.  It can be used to produce all sorts of useful XML
+output; it has an RSS 2.0 emitter built in, so you can make RSS feeds
+trivially.")
+    (home-page "https://www.cliki.net/xml-emitter")
+    (license license:expat)))
+
+(define-public cl-xml-emitter
+  (sbcl-package->cl-source-package sbcl-xml-emitter))
+
+(define-public ecl-xml-emitter
+  (sbcl-package->ecl-package sbcl-xml-emitter))
 
 (define-public sbcl-cl-mustache
   (package
