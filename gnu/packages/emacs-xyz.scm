@@ -29741,6 +29741,30 @@ It also provides original Helm commands: @command{helm-cider-spec},
 data format @code{edn}.  See @url{https://github.com/edn-format/edn}.")
       (license license:gpl3+))))
 
+(define-public emacs-ednc
+  (let ((commit "940a4adbbeb3b6b1a72270a814d52770dd89a997")
+        (revision "1"))
+    (package
+      (name "emacs-ednc")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sinic/ednc")
+               (commit commit)))
+         (sha256
+          (base32 "1gsx2qgv5xm9r0i0axd4hf31g2rq2m4a1hvnif48g4xb0llss73c"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/sinic/ednc")
+      (synopsis "Emacs Desktop Notification Center")
+      (description
+       "The Emacs Desktop Notification Center (EDNC) is an Emacs package written
+in pure Lisp that implements a Desktop Notifications service according to the
+freedesktop.org specification.  EDNC aspires to be a small, but flexible
+drop-in replacement of standalone daemons like Dunst.")
+      (license license:gpl3+))))
+
 (define-public emacs-helm-clojuredocs
   (let ((commit "5a7f0f2cb401be0b09e73262a1c18265ab9a3cea"))
     (package
