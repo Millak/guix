@@ -9685,9 +9685,7 @@ can add your own files to the collection.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "15wmikwk62cdi93gas77nqh4fbhlrxrncyfmcd1gfa34jbn7vnsa"))
-       (patches
-        (search-patches "gnome-screenshot-meson-0.60.patch"))))
+         "15wmikwk62cdi93gas77nqh4fbhlrxrncyfmcd1gfa34jbn7vnsa"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
