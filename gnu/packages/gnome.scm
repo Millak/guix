@@ -8897,7 +8897,7 @@ usage and information about running processes.")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-bluetooth/"
-                                  (version-major+minor version) "/"
+                                  (version-major version) "/"
                                   "gnome-bluetooth-" version ".tar.xz"))
               (sha256
                (base32
