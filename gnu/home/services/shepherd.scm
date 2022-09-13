@@ -54,19 +54,22 @@
             (default shepherd-0.9)) ; package
   (auto-start? home-shepherd-configuration-auto-start?
                (default #t))
+  (daemonize? home-shepherd-configuration-daemonize?
+              (default #t))
   (services home-shepherd-configuration-services
             (default '())))
 
-(define (home-shepherd-configuration-file services shepherd)
+(define (home-shepherd-configuration-file config)
   "Return the shepherd configuration file for SERVICES.  SHEPHERD is used
 as shepherd package."
-  (assert-valid-graph services)
-
-  (let ((files (map shepherd-service-file services))
-        ;; TODO: Add compilation of services, it can improve start
-        ;; time.
-        ;; (scm->go (cute scm->go <> shepherd))
-        )
+  (let* ((daemonize? (home-shepherd-configuration-daemonize? config))
+         (services (home-shepherd-configuration-services config))
+         (_ (assert-valid-graph services))
+         (files (map shepherd-service-file services))
+         ;; TODO: Add compilation of services, it can improve start
+         ;; time.
+         ;; (scm->go (cute scm->go <> shepherd))
+         )
     (define config
       #~(begin
           (use-modules (srfi srfi-34)
@@ -76,7 +79,11 @@ as shepherd package."
            (map
             (lambda (file) (load file))
             '#$files))
-          (action 'root 'daemonize)
+
+          #$@(if daemonize?
+                 `((action 'root 'daemonize))
+                 '())
+
           (format #t "Starting services...~%")
           (let ((services-to-start
                  '#$(append-map shepherd-service-provision
@@ -92,8 +99,7 @@ as shepherd package."
     (scheme-file "shepherd.conf" config)))
 
 (define (launch-shepherd-gexp config)
-  (let* ((shepherd (home-shepherd-configuration-shepherd config))
-         (services (home-shepherd-configuration-services config)))
+  (let* ((shepherd (home-shepherd-configuration-shepherd config)))
     (if (home-shepherd-configuration-auto-start? config)
         (with-imported-modules '((guix build utils))
           #~(unless (file-exists?
@@ -104,22 +110,22 @@ as shepherd package."
               (let ((log-dir (or (getenv "XDG_LOG_HOME")
                                  (format #f "~a/.local/var/log"
                                          (getenv "HOME")))))
+                ;; TODO: Remove it, 0.9.2 creates it automatically?
                 ((@ (guix build utils) mkdir-p) log-dir)
                 (system*
                  #$(file-append shepherd "/bin/shepherd")
                  "--logfile"
                  (string-append log-dir "/shepherd.log")
                  "--config"
-                 #$(home-shepherd-configuration-file services shepherd)))))
+                 #$(home-shepherd-configuration-file config)))))
         #~"")))
 
 (define (reload-configuration-gexp config)
-  (let* ((shepherd (home-shepherd-configuration-shepherd config))
-         (services (home-shepherd-configuration-services config)))
+  (let* ((shepherd (home-shepherd-configuration-shepherd config)))
     #~(system*
        #$(file-append shepherd "/bin/herd")
        "load" "root"
-       #$(home-shepherd-configuration-file services shepherd))))
+       #$(home-shepherd-configuration-file config))))
 
 (define (ensure-shepherd-gexp config)
   #~(if (file-exists?
@@ -131,10 +137,7 @@ as shepherd package."
         #$(launch-shepherd-gexp config)))
 
 (define (shepherd-xdg-configuration-files config)
-  (let* ((shepherd (home-shepherd-configuration-shepherd config))
-         (services (home-shepherd-configuration-services config)))
-    `(("shepherd/init.scm"
-       ,(home-shepherd-configuration-file services shepherd)))))
+  `(("shepherd/init.scm" ,(home-shepherd-configuration-file config))))
 
 (define-public home-shepherd-service-type
   (service-type (name 'home-shepherd)
