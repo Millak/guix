@@ -2625,8 +2625,7 @@ shell scripts.  Example of how to use @code{yad} can be consulted at
       #:make-flags
       (list (string-append "CC=" ,(cc-for-target))
             ;; makefile uses PREFIX for the binary location
-            (string-append "PREFIX=" (assoc-ref %outputs "out")
-                           "/bin"))
+            (string-append "PREFIX=" (assoc-ref %outputs "out")))
       #:phases
       (modify-phases %standard-phases
         (delete 'configure))))                    ; no configure script
