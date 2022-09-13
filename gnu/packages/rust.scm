@@ -565,13 +565,33 @@ safety and thread safety guarantees.")
    rust-1.57 "1.58.1" "1iq7kj16qfpkx8gvw50d8rf7glbm6s0pj2y1qkrz7mi56vfsyfd8"))
 
 (define rust-1.59
-  (rust-bootstrapped-package
-   ;; Verified that it *doesn't* build with 1.57. e.g.:
-   ;; * error: `doc(primitive)` should never have been stable
-   ;; * error[E0522]: definition of an unknown language item:
-   ;;   `generator_return`
-   ;; * error[E0206]: the trait `Copy` may not be implemented for this type
-   rust-1.58 "1.59.0" "1yc5bwcbmbwyvpfq7zvra78l0r8y3lbv60kbr62fzz2vx2pfxj57"))
+  (let ((base-rust
+          (rust-bootstrapped-package
+            ;; Verified that it *doesn't* build with 1.57. e.g.:
+            ;; * error: `doc(primitive)` should never have been stable
+            ;; * error[E0522]: definition of an unknown language item:
+            ;;   `generator_return`
+            ;; * error[E0206]: the trait `Copy` may not be implemented for this type
+            rust-1.58 "1.59.0" "1yc5bwcbmbwyvpfq7zvra78l0r8y3lbv60kbr62fzz2vx2pfxj57")))
+    (package
+      (inherit base-rust)
+        (arguments
+         (if (target-riscv64?)
+           (substitute-keyword-arguments (package-arguments base-rust)
+             ((#:phases phases)
+              `(modify-phases ,phases
+                 (add-after 'unpack 'revert-riscv-pause-instruction
+                   (lambda _
+                     ;; This fails with:
+                     ;; error: unknown directive, referring to '.insn'.
+                     ;; This is due to building with llvm < 14.
+                     ;; https://github.com/rust-lang/stdarch/issues/1291
+                     ;; Partial roll-back from this commit:
+                     ;; https://github.com/rust-lang/stdarch/pull/1271
+                     (substitute*
+                       "library/stdarch/crates/core_arch/src/riscv_shared/mod.rs"
+                       (("\\.insn i 0x0F, 0, x0, x0, 0x010") ".word 0x0100000F")))))))
+           (package-arguments base-rust))))))
 
 (define rust-1.60
   (rust-bootstrapped-package
