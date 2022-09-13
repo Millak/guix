@@ -25822,31 +25822,30 @@ utilities.")
           (base32 "1c85583r47yjbpzbjgjzrwzqdlmy229xx9az2r18smcyd9da92c3"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:tests? #f                    ;no test
-         #:modules ((guix build emacs-build-system)
+       (list
+        #:tests? #f                     ;no test
+        #:modules '((guix build emacs-build-system)
                     (guix build emacs-utils)
                     (guix build utils))
-         #:imported-modules (,@%emacs-build-system-modules
+        #:imported-modules `(,@%emacs-build-system-modules
                              (guix build gnu-build-system))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'substitute-libyaml-core-path
-             (lambda* (#:key outputs #:allow-other-keys)
-               (chmod "libyaml.el" #o644)
-               (substitute* "libyaml.el"
-                 (("^\\(require 'libyaml-core\\)")
-                  (string-append "(module-load \"" (assoc-ref outputs "out")
-                                 "/lib/libyaml-core.so\")")))
-               #t))
-           (add-after 'check 'make
-             ;; Run make.
-             (lambda* (#:key (make-flags '()) outputs #:allow-other-keys)
-               ;; Compile the shared object file.
-               (apply invoke "make" "all" "CPPFLAGS=" make-flags)
-               ;; Move the file into /lib.
-               (install-file "libyaml-core.so"
-                             (string-append (assoc-ref outputs "out") "/lib"))
-               #t)))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'substitute-libyaml-core-path
+              (lambda _
+                (make-file-writable "libyaml.el")
+                (substitute* "libyaml.el"
+                  (("^\\(require 'libyaml-core\\)")
+                   (string-append "(module-load \"" #$output
+                                  "/lib/libyaml-core.so\")")))))
+            (add-after 'check 'make
+              ;; Run make.
+              (lambda* (#:key (make-flags '()) #:allow-other-keys)
+                ;; Compile the shared object file.
+                (apply invoke "make" "all" "CPPFLAGS=" make-flags)
+                ;; Move the file into /lib.
+                (install-file "libyaml-core.so"
+                              (string-append #$output "/lib")))))))
       (native-inputs (list libyaml))
       (home-page "https://github.com/syohex/emacs-libyaml")
       (synopsis "Libyaml bindings for Emacs")
