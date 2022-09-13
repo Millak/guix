@@ -240,45 +240,46 @@ commit hash and its date rather than a proper release tag."
                          (substitutable? #t))
   "Cross-build NAME using GO, where TARGET is a GNU triplet and with INPUTS."
   (define builder
-    #~(begin
-        (use-modules #$@(sexp->gexp modules))
+    (with-imported-modules imported-modules
+      #~(begin
+          (use-modules #$@(sexp->gexp modules))
 
-        (define %build-host-inputs
-          #+(input-tuples->gexp build-inputs))
+          (define %build-host-inputs
+            #+(input-tuples->gexp build-inputs))
 
-        (define %build-target-inputs
-          (append #$(input-tuples->gexp host-inputs)
+          (define %build-target-inputs
+            (append #$(input-tuples->gexp host-inputs)
               #+(input-tuples->gexp target-inputs)))
 
-        (define %build-inputs
-          (append %build-host-inputs %build-target-inputs))
+          (define %build-inputs
+            (append %build-host-inputs %build-target-inputs))
 
-        (define %outputs
-          #$(outputs->gexp outputs))
+          (define %outputs
+            #$(outputs->gexp outputs))
 
-        (go-build #:name #$name
-                  #:source #+source
-                  #:system #$system
-                  #:phases #$phases
-                  #:outputs %outputs
-                  #:target #$target
-                  #:goarch #$goarch
-                  #:goos #$goos
-                  #:inputs %build-target-inputs
-                  #:native-inputs %build-host-inputs
-                  #:search-paths '#$(map search-path-specification->sexp
-                                         search-paths)
-                  #:native-search-paths '#$(map
-                                            search-path-specification->sexp
-                                            native-search-paths)
-                  #:install-source? #$install-source?
-                  #:import-path #$import-path
-                  #:unpack-path #$unpack-path
-                  #:build-flags #$build-flags
-                  #:tests? #$tests?
-                  #:make-dynamic-linker-cache? #f ;cross-compiling
-                  #:allow-go-reference? #$allow-go-reference?
-                  #:inputs %build-inputs)))
+          (go-build #:name #$name
+                    #:source #+source
+                    #:system #$system
+                    #:phases #$phases
+                    #:outputs %outputs
+                    #:target #$target
+                    #:goarch #$goarch
+                    #:goos #$goos
+                    #:inputs %build-target-inputs
+                    #:native-inputs %build-host-inputs
+                    #:search-paths '#$(map search-path-specification->sexp
+                                           search-paths)
+                    #:native-search-paths '#$(map
+                                              search-path-specification->sexp
+                                              native-search-paths)
+                    #:install-source? #$install-source?
+                    #:import-path #$import-path
+                    #:unpack-path #$unpack-path
+                    #:build-flags #$build-flags
+                    #:tests? #$tests?
+                    #:make-dynamic-linker-cache? #f ;cross-compiling
+                    #:allow-go-reference? #$allow-go-reference?
+                    #:inputs %build-inputs))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
