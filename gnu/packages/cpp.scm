@@ -456,12 +456,12 @@ operating on batches.")
 library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
     (license license:asl2.0)))
 
-(define-public xsmimd-benchmark
+(define-public xsimd-benchmark
   (package
     (inherit xsimd)
     (name "xsimd-benchmark")
     (arguments
-     `(#:configure-flags (list "-DBUILD_BENCHMARK=ON")
+     `(#:configure-flags (list "-DBUILD_BENCHMARK=ON" "-DBUILD_EXAMPLES=ON")
        #:tests? #f
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'remove-march=native
@@ -470,9 +470,11 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
                         (("-march=native") ""))))
                   (replace 'install
                     (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Install nothing but the executable.
+                      ;; Install nothing but the executables.
                       (let ((out (assoc-ref outputs "out")))
                         (install-file "benchmark/benchmark_xsimd"
+                                      (string-append out "/bin"))
+                        (install-file "examples/mandelbrot"
                                       (string-append out "/bin"))))))))
     (synopsis "Benchmark of the xsimd library")
 
