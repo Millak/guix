@@ -9311,15 +9311,14 @@ play with up to four players simultaneously.  It has network support.")
 (define-public hedgewars
   (package
     (name "hedgewars")
-    (version "1.0.0")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.hedgewars.org/download/releases/"
                                   "hedgewars-src-" version ".tar.bz2"))
-              (patches (search-patches "hedgewars-network-bsd.patch"))
               (sha256
                (base32
-                "0nqm9w02m0xkndlsj6ys3wr0ik8zc14zgilq7k6fwjrf3zk385i1"))))
+                "04pjpkjhpy720n803gv35iygmjdvsrmw13mih4ympjnqbgjfa7r0"))))
     (build-system cmake-build-system)
     (arguments
      ;; XXX: Engine is built as Pascal source code, requiring Free Pascal
