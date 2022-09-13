@@ -406,7 +406,7 @@ combination of these streams.")
 (define-public xsimd
   (package
     (name "xsimd")
-    (version "8.1.0")
+    (version "9.0.1")
     (source
      (origin
        (method git-fetch)
@@ -414,7 +414,7 @@ combination of these streams.")
              (url "https://github.com/QuantStack/xsimd")
              (commit version)))
        (sha256
-        (base32 "16b9fdvhhsbs93llbzccgpxjdkj8kfvac3wx0b30i306k5f3maq2"))
+        (base32 "1fcy0djwpwvls6yqxqa82s4l4gvwkqkr8i8bibbb3dm0lqvhnw52"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -422,7 +422,7 @@ combination of these streams.")
        #:test-target "xtest"))
     (native-inputs
      (list googletest))
-    (home-page "https://github.com/QuantStack/xsimd")
+    (home-page "https://github.com/xtensor-stack/xsimd")
     (synopsis "C++ wrappers for SIMD intrinsics and math implementations")
     (description
      "xsimd provides a unified means for using @acronym{SIMD, single instruction
