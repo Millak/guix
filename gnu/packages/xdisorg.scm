@@ -1593,17 +1593,17 @@ to an arbitrary balanced color.")
         (base32 "1rcciccnwhxh97wlr9gcirdxv33za369jsrgrfzcp3042824pm8i"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-python-and-typelib
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Gammastep GUI needs Typelib files from GTK and access
-             ;; to Python libraries.
-             (wrap-program (string-append (assoc-ref outputs "out")
-                                          "/bin/gammastep-indicator")
-               `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-               `("GI_TYPELIB_PATH" ":" prefix
-                 (,(getenv "GI_TYPELIB_PATH")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-python-and-typelib
+            (lambda _
+              ;; Gammastep GUI needs Typelib files from GTK and access to
+              ;; Python libraries.
+              (wrap-program (string-append #$output "/bin/gammastep-indicator")
+                `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
      (list autoconf
            automake
