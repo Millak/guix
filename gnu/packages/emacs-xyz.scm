@@ -25721,56 +25721,57 @@ processes for Emacs.")
     (inputs
      (list python))
     (arguments
-     `(#:tests? #t
-       #:test-command '("make" "-C" "../.." "test")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-makefile
-           (lambda _
-             (substitute* "Makefile"
-               (("@\\$\\(CASK\\) exec ") "")
-               ;; Guix does not need to prepare dependencies before testing.
-               (("test: prepare") "test:"))))
-         (add-after 'fix-makefile 'chdir-elisp
-           ;; Elisp directory is not in root of the source.
-           (lambda _
-             (chdir "src/elisp")))
-         (add-before 'check 'delete-failing-tests
-           ;; FIXME: 4 tests out of 254 are failing.
-           (lambda _
-             (emacs-batch-edit-file "../../test/treemacs-test.el"
-               `(progn
-                 (goto-char (point-min))
-                 (re-search-forward "describe \"treemacs--parent\"")
-                 (beginning-of-line)
-                 (kill-sexp)
-                 (basic-save-buffer)))))
-         (add-before 'install 'patch-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (with-directory-excursion "../.." ;treemacs root
-               (chmod "src/elisp/treemacs-core-utils.el" #o644)
-               (emacs-substitute-variables "src/elisp/treemacs-core-utils.el"
-                 ("treemacs-dir"
-                  (string-append (assoc-ref outputs "out") "/")))
-               (chmod "src/elisp/treemacs-icons.el" #o644)
-               (substitute* "src/elisp/treemacs-icons.el"
-                 (("icons/default") "share/emacs-treemacs/images"))
-               (chmod "src/elisp/treemacs-customization.el" #o644)
-               (emacs-substitute-variables "src/elisp/treemacs-customization.el"
-                 ("treemacs-python-executable"
-                  (search-input-file inputs "/bin/python3")))
-               (chmod "src/elisp/treemacs-async.el" #o644)
-               (substitute* "src/elisp/treemacs-async.el"
-                 (("src/scripts") (string-append "share/" ,name "/scripts"))))))
-         (add-after 'install 'install-data
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (with-directory-excursion "../.." ;treemacs root
-                 (copy-recursively "icons/default"
-                                   (string-append out "/share/" ,name "/images"))
-                 (copy-recursively
-                  "src/scripts"
-                  (string-append out "/share/" ,name "/scripts")))))))))
+     (list
+      #:tests? #t
+      #:test-command #~(list "make" "-C" "../.." "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-makefile
+            (lambda _
+              (substitute* "Makefile"
+                (("@\\$\\(CASK\\) exec ") "")
+                ;; Guix does not need to prepare dependencies before testing.
+                (("test: prepare") "test:"))))
+          (add-after 'fix-makefile 'chdir-elisp
+            ;; Elisp directory is not in root of the source.
+            (lambda _
+              (chdir "src/elisp")))
+          (add-before 'check 'delete-failing-tests
+            ;; FIXME: 4 tests out of 254 are failing.
+            (lambda _
+              (emacs-batch-edit-file "../../test/treemacs-test.el"
+                '(progn
+                  (goto-char (point-min))
+                  (re-search-forward "describe \"treemacs--parent\"")
+                  (beginning-of-line)
+                  (kill-sexp)
+                  (basic-save-buffer)))))
+          (add-before 'install 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (make-file-writable "treemacs-core-utils.el")
+              (emacs-substitute-variables "treemacs-core-utils.el"
+                ("treemacs-dir" (string-append #$output "/")))
+              (make-file-writable "treemacs-icons.el")
+              (substitute* "treemacs-icons.el"
+                (("icons/default")
+                 (string-append (elpa-directory #$output) "/icons/default")))
+              (make-file-writable "treemacs-customization.el")
+              (emacs-substitute-variables "treemacs-customization.el"
+                ("treemacs-python-executable"
+                 (search-input-file inputs "/bin/python3")))
+              (make-file-writable "treemacs-async.el")
+              (substitute* "treemacs-async.el"
+                (("src/scripts")
+                 (string-append (elpa-directory #$output) "/scripts")))))
+          (add-after 'install 'install-data
+            (lambda _
+              (with-directory-excursion "../.." ;treemacs root
+                (copy-recursively
+                 "icons/default"
+                 (string-append (elpa-directory #$output) "/icons/default"))
+                (copy-recursively
+                 "src/scripts"
+                 (string-append (elpa-directory #$output) "/scripts"))))))))
     (home-page "https://github.com/Alexander-Miller/treemacs")
     (synopsis "Emacs tree style file explorer")
     (description
