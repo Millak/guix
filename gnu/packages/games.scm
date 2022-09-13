@@ -9321,49 +9321,46 @@ play with up to four players simultaneously.  It has network support.")
                 "04pjpkjhpy720n803gv35iygmjdvsrmw13mih4ympjnqbgjfa7r0"))))
     (build-system cmake-build-system)
     (arguments
-     ;; XXX: Engine is built as Pascal source code, requiring Free Pascal
-     ;; Compiler, which we haven't packaged yet.  With the flag below, we use
-     ;; a Pascal to C translator and Clang instead.
-     `(#:configure-flags (list "-DBUILD_ENGINE_C=ON"
-                               "-Dhaskell_flags=-dynamic;-fPIC")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-sources
-           (lambda _
-             ;; Fix a missing 'include'.
-             (substitute* "QTfrontend/ui/page/pagegamestats.cpp"
-               (("#include <QSizePolicy>")
-                "#include <QSizePolicy>\n#include <QPainterPath>"))))
-         (replace 'check
-           (lambda _ (invoke "ctest")))
-         (add-after 'install 'install-icon
-           (lambda _
-             ;; Install icon for the desktop file.
-             (let* ((out (assoc-ref %outputs "out"))
-                    (icons (string-append out "/share/icons/hicolor/512x512/apps")))
-               (with-directory-excursion (string-append "../hedgewars-src-" ,version)
-                 (install-file "misc/hedgewars.png" icons)))
-             #t)))))
+     (list
+      ;; XXX: Engine is built as Pascal source code, requiring Free Pascal
+      ;; Compiler, which we haven't packaged yet.  With the flag below, we use
+      ;; a Pascal to C translator and Clang instead.
+      #:configure-flags #~(list "-DBUILD_ENGINE_C=ON"
+                                "-Dhaskell_flags=-dynamic;-fPIC")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest"))))
+          (add-after 'install 'install-icon
+            (lambda _
+              ;; Install icon for the desktop file.
+              (let ((icons (string-append #$output
+                                          "/share/icons/hicolor/512x512/apps")))
+                (with-directory-excursion
+                    (string-append "../hedgewars-src-" #$version)
+                  (install-file "misc/hedgewars.png" icons))))))))
     (inputs
-     `(("ffmpeg" ,ffmpeg)
-       ("freeglut" ,freeglut)
-       ("ghc-entropy" ,ghc-entropy)
-       ("ghc-hslogger" ,ghc-hslogger)
-       ("ghc-network" ,ghc-network)
-       ("ghc-random" ,ghc-random)
-       ("ghc-regex-tdfa" ,ghc-regex-tdfa)
-       ("ghc-sandi" ,ghc-sandi)
-       ("ghc-sha" ,ghc-sha)
-       ("ghc-utf8-string" ,ghc-utf8-string)
-       ("ghc-vector" ,ghc-vector)
-       ("ghc-zlib" ,ghc-zlib)
-       ("glew" ,glew)
-       ("libpng" ,libpng)
-       ("lua" ,lua-5.1)
-       ("physfs" ,physfs)
-       ("qtbase" ,qtbase-5)
-       ("sdl" ,(sdl-union
-                (list sdl2 sdl2-mixer sdl2-net sdl2-ttf sdl2-image)))))
+     (list ffmpeg
+           freeglut
+           ghc-entropy
+           ghc-hslogger
+           ghc-network
+           ghc-random
+           ghc-regex-tdfa
+           ghc-sandi
+           ghc-sha
+           ghc-utf8-string
+           ghc-vector
+           ghc-zlib
+           glew
+           libpng
+           lua-5.1
+           physfs
+           qtbase-5
+           (sdl-union
+            (list sdl2 sdl2-mixer sdl2-net sdl2-ttf sdl2-image))))
     (native-inputs
      (list clang-9 ghc pkg-config qttools-5))
     (home-page "https://hedgewars.org/")
