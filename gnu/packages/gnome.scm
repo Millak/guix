@@ -3201,7 +3201,6 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:meson meson-0.60
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'skip-gtk-update-icon-cache
