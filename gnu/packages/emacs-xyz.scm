@@ -25805,9 +25805,9 @@ utilities.")
 
 (define-public emacs-libyaml
   ;; Upstream made no release so far.
-  (let ((version "0")
+  (let ((version "0.1")
         (revision "1")
-        (commit "703e0d448c7ee24e25b513a3c65980c80e166805"))
+        (commit "961e0d8b9ef47464c049e07be7fcefd3903f8cbc"))
     (package
       (name "emacs-libyaml")
       (version (git-version version revision commit))
@@ -25819,7 +25819,7 @@ utilities.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "08l7pm9v50ykd3fkbm0bh2kcd57cadbc5i9r6rj51vd32w3pl2yl"))))
+          (base32 "1c85583r47yjbpzbjgjzrwzqdlmy229xx9az2r18smcyd9da92c3"))))
       (build-system emacs-build-system)
       (arguments
        `(#:tests? #f                    ;no test
