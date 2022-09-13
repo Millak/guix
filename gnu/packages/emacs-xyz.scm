@@ -15773,6 +15773,31 @@ functions which allows users to transpose windows arrangement in currently
 selected frame.")
     (license license:bsd-2)))
 
+(define-public emacs-transpose-mark
+  ;; XXX: Upstream made no release so far, and did not add a Version keyword.
+  (let ((commit "667327602004794de97214cf336ac61650ef75b7")
+        (revision "0"))
+    (package
+      (name "emacs-transpose-mark")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kwrooijen/transpose-mark")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03wc50vn1kmrgnzzhs06pwpap2p2rx84wwzxw0hawsg1f1l35m2x"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/kwrooijen/transpose-mark")
+      (synopsis "Library for transposing lines and regions")
+      (description "Transpose mark provides some commands that makes
+transposing lines and regions easier.  You can mark a line and transpose it
+with a line at point, or mark a region and transpose it with another region
+a point.  The plugin provides visual feedback for marked regions.")
+      (license license:gpl3+))))
+
 (define-public emacs-key-chord
   (package
     (name "emacs-key-chord")
