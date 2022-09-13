@@ -30680,6 +30680,34 @@ conventions.")
 snippets for Emacs.")
       (license license:expat))))
 
+(define-public emacs-orca
+  ;; XXX: Upstream did not tag any commit so far.  Base version is extracted
+  ;; from Version keyword.
+  (let ((commit "0687f416a5573f63b691d384454f5a793266ed97")
+        (revision "0"))
+    (package
+      (name "emacs-orca")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/abo-abo/orca")
+               (commit commit)))
+         (sha256
+          (base32 "00a363vkqvryw5s7pj0kh8pqq5vvbf1pmbzz0b1z1fckwr49sv0f"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-zoutline))
+      (home-page "https://github.com/abo-abo/orca")
+      (synopsis "Handler for Org Capture")
+      (description
+       "This package provides several convenient recipes for configuring Org
+Capture, mainly for capturing from a browser.  It can match URLs and inject
+the capture in a targeted Org file, under a targeted heading.  The more this
+package is configured, the less refiling is needed on your captures: they will
+go directly to where they belong.")
+      (license license:gpl3+))))
+
 (define-public emacs-org-roam
   (package
     (name "emacs-org-roam")
