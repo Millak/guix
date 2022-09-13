@@ -1581,7 +1581,7 @@ to an arbitrary balanced color.")
 (define-public gammastep
   (package
     (name "gammastep")
-    (version "2.0.8")
+    (version "2.0.9")
     (source
      (origin
        (method git-fetch)
@@ -1590,7 +1590,7 @@ to an arbitrary balanced color.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "071f3iqdbblb3awnx48j19kspk6l2g3658za80i2mf4gacgq9fm1"))))
+        (base32 "1rcciccnwhxh97wlr9gcirdxv33za369jsrgrfzcp3042824pm8i"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
