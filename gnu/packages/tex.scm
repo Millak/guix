@@ -11297,6 +11297,33 @@ Danish in @code{babel}.  It provides all the necessary macros, definitions and
 settings to typeset Danish documents.")
       (license license:lppl1.3c+))))
 
+(define-public texlive-babel-polish
+  (let ((template (simple-texlive-package
+                   "texlive-babel-polish"
+                   (list "/source/generic/babel-polish/")
+                   (base32
+                    "1jymxl98mwxmq0yq90mhrr7bq7c613rh1rnhl7l3bih36af55rwr"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/babel-polish")
+         ((#:build-targets _ '())
+          ''("polish.ins")) ; TODO: use dtx and build documentation
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'chdir
+               (lambda _
+                 (chdir "source/generic/babel-polish")))))))
+      (home-page "https://www.ctan.org/pkg/babel-polish")
+      (synopsis "Babel support for Polish")
+      (description
+       "This package provides the language definition file for support of
+Polish in @code{babel}.  Some shortcuts are defined, as well as translations to
+Polish of standard ``LaTeX names''.")
+      (license license:lppl1.3+))))
+
 (define-public texlive-mdframed
   (package
     (inherit
