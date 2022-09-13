@@ -12,6 +12,7 @@
 ;;; Copyright © 2020, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2022 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1539,6 +1540,26 @@ derivations of regular expressions.")
     (description
      "The Haskell XML Toolbox bases on the ideas of HaXml and HXML, but
 introduces a more general approach for processing XML with Haskell.")
+    (license license:expat)))
+
+(define-public ghc-hxt-xpath
+  (package
+    (name "ghc-hxt-xpath")
+    (version "9.1.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hxt-xpath" version))
+              (sha256
+               (base32
+                "0wlq9s01icalnvjkkilx5zaqp3ff4v5limj1xy8i18qpzjspqdsh"))))
+    (build-system haskell-build-system)
+    (inputs (list ghc-hxt))
+    (home-page "https://github.com/UweSchmidt/hxt")
+    (synopsis "The XPath modules for HXT.")
+    (description
+     "This extension for the Haskell XML Toolbox defines data types to
+represent XPath, navigation trees and primitives to select and edit subtrees
+from them.  Some primitives have both a functional and an arrow interface.")
     (license license:expat)))
 
 (define-public ghc-http-common
