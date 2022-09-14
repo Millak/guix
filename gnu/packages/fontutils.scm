@@ -164,6 +164,12 @@ them as it goes.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-c++17
+            (lambda _
+              ;; ANTLR4 4.10 and later require C++ 17.
+              (substitute* "CMakeLists.txt"
+                (("CMAKE_CXX_STANDARD 11")
+                 "CMAKE_CXX_STANDARD 17"))))
           (add-after 'unpack 'use-system-libxml2
             (lambda _
               ;; XXX: These horrifying substitutions revert this upstream
