@@ -851,6 +851,13 @@ of Pandas
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'loosen-requirements
+           (lambda _
+             (substitute* '("requirements.txt" "setup.py")
+               ;; Remove sklearn pinning since it works fine with 1.1.2:
+               ;; https://github.com/raphaelvallat/pingouin/pull/300
+               (("scikit-learn<1\\.1\\.0")
+                "scikit-learn"))))
          ;; On loading, Pingouin uses the outdated package to check if a newer
          ;; version is available on PyPI. This check adds an extra dependency
          ;; and is irrelevant to Guix users. So, disable it.
