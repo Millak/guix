@@ -22172,6 +22172,58 @@ mimicking Lisp ones, while using truth values of JSON-decoded data.
 (define-public ecl-njson
   (sbcl-package->ecl-package sbcl-njson))
 
+(define-public sbcl-nactivitypub
+  (package
+    (name "sbcl-nactivitypub")
+    (version "0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/atlas-engineer/nactivitypub")
+                    (commit version)))
+              (file-name (git-file-name "cl-nactivitypub" version))
+              (sha256
+               (base32
+                "07n8a9cfzc96kwsb6z4v5ns09ad2qyq45bjb779azcs7ds144a6r"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list sbcl-cl-str
+                  sbcl-dexador
+                  sbcl-local-time
+                  sbcl-lparallel
+                  sbcl-njson
+                  sbcl-quri
+                  sbcl-serapeum))
+    (home-page "https://github.com/atlas-engineer/nactivitypub")
+    (synopsis
+     "Common Lisp implementation of ActivityPub and ActivityStreams standards")
+    (description
+     "This package provides a Common Lisp implementation of ActivityPub and
+ActivityStreams standards for social networking.
+
+Features:
+@itemize
+
+@item Parsing and un-parsing ActivityStreams JSON-LD objects to/from CLOS
+objects with convenient accessors on those.
+
+@item Sending and fetching ActivityStreams objects to/from the
+ActivityStreams-enabled HTTP(S) URLs.
+
+@item Semantic info extraction with methods like @code{name*}, @code{url*},
+@code{author*}, and @code{published*}.
+
+@item No reliance on JSON parser.  @code{njson} is used for parser-independent
+JSON handling.  Load the parser backend you prefer!
+
+@end itemize")
+    (license license:bsd-3)))
+
+(define-public cl-nactivitypub
+  (sbcl-package->cl-source-package sbcl-nactivitypub))
+
+(define-public ecl-nactivitypub
+  (sbcl-package->ecl-package sbcl-nactivitypub))
+
 (define-public sbcl-utils-kt
   (let ((commit "4adfe2889036ab5ffdd3cc2182ca2cc692bf11ff"))
     (package
