@@ -2630,7 +2630,7 @@ forgotten when the session ends.")
            libspectre
            djvulibre
            ghostscript
-           poppler
+           poppler-next
            libtiff
            texlive-libkpathsea          ; for DVI support
            gnome-desktop
