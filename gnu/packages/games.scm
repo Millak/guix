@@ -73,6 +73,7 @@
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2683,6 +2684,35 @@ runnable=true
 available, as well as a single-player mode with AI-controlled ships.")
     (license (list license:expat         ; game
                    license:silofl1.1)))) ; fonts
+
+(define-public tetzle
+  (package
+    (name "tetzle")
+    (version "2.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://gottcode.org/"
+                                  name
+                                  "/"
+                                  name
+                                  "-"
+                                  version
+                                  "-src.tar.bz2"))
+              (sha256
+               (base32
+                "1m4j4lzqp8fnwmvyglmzcn3vh14ix4hhh52ycmcsjgrsgj1w4p6a"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ; no tests
+    (native-inputs (list qttools))
+    (inputs (list qtbase))
+    (home-page "https://gottcode.org/tetzle/")
+    (synopsis "Jigsaw puzzle game that uses tetrominoes for the pieces")
+    (description
+     "Tetzle is a jigsaw puzzle game that uses tetrominoes for the pieces.  Any image
+can be imported and used to create puzzles with a wide range of sizes.  Games are
+saved automatically, and you can select between currently in progress games.")
+    (license license:gpl3+)))
 
 (define %ufoai-commit "a542a87a891f96b1ab2c44d35b2f6f16859a5019")
 (define %ufoai-revision "0")
