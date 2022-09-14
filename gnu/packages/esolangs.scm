@@ -3,6 +3,7 @@
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Hendursaga <hendursaga@yahoo.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -98,6 +100,24 @@ whenever possible to the extent that the above points are not compromized.
 @end enumerate")
       (home-page "http://lolcode.org/")
       (license license:gpl3+))))
+
+(define-public folders
+  (package
+    (name "folders")
+    (version "0.0.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "Folders" version))
+        (sha256
+          (base32 "0qh80qx7sjx0zii1hf8fm853d9rcg4rginm6v4gpp0hgn2a4q4gh"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/SinaKhalili/Folders.py")
+    (synopsis "Structural programming language")
+    (description "Folders is a programming language, in which programs
+are encoded as (nested) directories.  Note that the switches you pass to
+@command{du} may affect your score when code golfing.")
+    (license license:expat)))
 
 (define-public shakespeare-spl
   (package
