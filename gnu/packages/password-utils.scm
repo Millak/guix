@@ -36,6 +36,7 @@
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,6 +59,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -109,8 +111,7 @@
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages xml)
-  #:use-module (guix build-system python))
+  #:use-module (gnu packages xml))
 
 (define-public pwgen
   (package
@@ -862,6 +863,39 @@ This package only contains the Browserpass native messaging host.  You must
 also install the browser extension for GNU IceCat or ungoogled-chromium
 separately.")
     (license license:isc)))
+
+(define-public cpass
+  (package
+    (name "cpass")
+    (version "0.9.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cpass" version))
+              (sha256
+               (base32
+                "1zp3a8mgqxn916fzj1v2yhgnl7v6s0vnd0qcghqs3qq648qmlwr5"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-pass-refs
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "cpass.py"
+                     (("'pass'")
+                      (string-append "'"
+                                     (search-input-file inputs
+                                                        "bin/pass")
+                                     "'"))
+                     (("\\.password_store")
+                      ".password-store")))))))
+    (inputs (list password-store))
+    (propagated-inputs (list python-urwid))
+    (home-page "https://github.com/OliverLew/cpass")
+    (synopsis "Textual interface for @command{pass}")
+    (description
+     "@command{cpass} is a terminal user interface for @command{pass}.
+It supports both vim-like keybindings and the mouse.")
+    (license license:expat)))
 
 (define-public argon2
   (package
