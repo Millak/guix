@@ -403,7 +403,7 @@ traditional Chinese characters.")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
 (define-public gsimplecal
-  (let ((version "2.2"))
+  (let ((version "2.4.1"))
     (package
       (name "gsimplecal")
       (version version)
@@ -413,16 +413,17 @@ traditional Chinese characters.")
                       (url "https://github.com/dmedvinsky/gsimplecal/")
                       (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
-                (sha256 (base32
-                         "1qyf65l088dqsz25hm6s1cv18j52yaias0llqvpqwjfnvssa5cxg"))
+                (sha256
+                 (base32
+                  "0ypnq9q6v2l8jg0ah31d8502jig1rk2bz749ljj97wk0rg1rixpi"))
                 (modules '((guix build utils)))))
       (build-system gnu-build-system)
       (inputs (list gtk+))
-      (native-inputs
-       (list autoconf automake pkg-config))
+      (native-inputs (list autoconf automake pkg-config))
       (home-page "https://dmedvinsky.github.io/gsimplecal/")
       (synopsis "Lightweight calendar applet")
-      (description "@command{gsimplecal} is a lightweight calendar application
+      (description
+       "@command{gsimplecal} is a lightweight calendar application
 written in C++ using GTK.  Launched once, it pops up a small calendar applet,
 launched again it closes the running instance.  It can additionally be
 configured to show the current time in different timezones.")
