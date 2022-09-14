@@ -1834,3 +1834,9 @@ library.")
     (synopsis "Rust binding for webkit-gtk library")
     (description "This crate provides Rust binding for webkit-gtk library.")
     (license license:expat)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

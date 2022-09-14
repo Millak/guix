@@ -11204,3 +11204,9 @@ and unsafe rides.  Which path will you take?")
        "This package provides a set of udev rules for game controllers and
 virtual reality devices.")
       (license license:expat))))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

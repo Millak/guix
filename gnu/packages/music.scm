@@ -6895,3 +6895,9 @@ sending MIDI, OSC, and UDP to your audio/visual interfaces like Ableton,
 Renoise, VCV Rack, or SuperCollider.")
       (home-page "https://100r.co/site/orca.html")
       (license license:expat))))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

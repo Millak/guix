@@ -3554,3 +3554,9 @@ the platform-specific getters provided by winit, or another library.")
     (arguments
      `(#:cargo-development-inputs
        (("rust-resize" ,rust-resize-0.3))))))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;
