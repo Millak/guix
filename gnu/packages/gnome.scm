@@ -5313,7 +5313,7 @@ documentation.")
            vala))
     (inputs
      (list gtk+
-           libgnome-games-support
+           libgnome-games-support-1
            librsvg
            yelp))
     (home-page "https://wiki.gnome.org/Apps/Mines")
