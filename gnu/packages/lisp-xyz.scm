@@ -7366,8 +7366,8 @@ cl-plumbing libraries.")
   (sbcl-package->ecl-package sbcl-cl-octet-streams))
 
 (define-public sbcl-lzlib
-  (let ((commit "c8102fc8c959b7c418eb60657bd6c8b875f10ba9")
-        (revision "1"))
+  (let ((commit "22767ca12d1c1bd59a7ae1f9c5ef7d2e937206bb")
+        (revision "2"))
     (package
       (name "sbcl-lzlib")
       (version (git-version "2.0" revision commit))
@@ -7379,7 +7379,7 @@ cl-plumbing libraries.")
                (commit commit)))
          (file-name (git-file-name "cl-lzlib" version))
          (sha256
-          (base32 "1glg1y1s1mqgypvxp0ss11cicrddri006wqwhy47lgq7mk5853zz"))))
+          (base32 "1dxzlkay7aqcs65h2f7j7rl4sdjija60dshlahzyllfw174p9d3m"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
