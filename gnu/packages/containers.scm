@@ -2,6 +2,7 @@
 ;;; Copyright © 2021 Timmy Douglas <mail@timmydouglas.com>
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -323,7 +324,11 @@ configure network interfaces in Linux containers.")
                 (("/usr/local/libexec/cni")
                  (string-append #$(this-package-input "cni-plugins")
                                 "/bin"))
-                (("/usr/bin/crun") (which "crun"))))))))
+                (("/usr/bin/crun") (which "crun")))))
+          (add-after 'install 'install-completions
+            (lambda _
+              (invoke "make" "install.completions"
+                      (string-append "PREFIX=" #$output)))))))
     (inputs
      (list btrfs-progs
            cni-plugins
