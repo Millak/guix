@@ -17951,7 +17951,9 @@ formatting rules for that language.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0r0lz2s6gvy04fwnafai668jsf4546h4k6zd6isx5wpk0n33pj5m"))))
+         "0r0lz2s6gvy04fwnafai668jsf4546h4k6zd6isx5wpk0n33pj5m"))
+       (patches
+        (search-patches "emacs-kv-fix-tests.patch"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
