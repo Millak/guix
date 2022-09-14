@@ -2621,14 +2621,13 @@ shell scripts.  Example of how to use @code{yad} can be consulted at
    (inputs (list gtk+))
    (native-inputs (list pkg-config))
    (arguments
-    `(#:tests? #f                       ; no check
-      #:make-flags
-      (list (string-append "CC=" ,(cc-for-target))
-            ;; makefile uses PREFIX for the binary location
-            (string-append "PREFIX=" (assoc-ref %outputs "out")))
-      #:phases
-      (modify-phases %standard-phases
-        (delete 'configure))))                    ; no configure script
+    (list
+     #:tests? #f                        ; no check target
+     #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                          (string-append "PREFIX=" #$output))
+     #:phases
+     #~(modify-phases %standard-phases
+         (delete 'configure))))         ; no configure script
    (synopsis "Drag and drop source/target for X")
    (description
     "Dragon is a lightweight drag-and-drop source for X where you can run:
