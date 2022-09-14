@@ -25793,7 +25793,8 @@ utilities.")
        ("emacs-magit" ,emacs-magit)
        ("emacs-projectile" ,emacs-projectile)
        ("emacs-perspective" ,emacs-perspective)
-       ("emacs-persp-mode" ,emacs-persp-mode)))
+       ("emacs-persp-mode" ,emacs-persp-mode)
+       ("mu" ,mu)))
     (arguments
      (substitute-keyword-arguments
          (package-arguments emacs-treemacs)
