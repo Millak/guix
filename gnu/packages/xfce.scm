@@ -1338,7 +1338,7 @@ of data to either CD/DVD/BD.")
            `(,glib "bin") ; for glib-compile-schemas.
            pkg-config))
     (inputs
-     (list gtk+ gtksourceview xfconf))
+     (list gtk+ gtksourceview-4 xfconf))
     (home-page "https://git.xfce.org/apps/mousepad/")
     (synopsis "Simple text editor for Xfce")
     (description
