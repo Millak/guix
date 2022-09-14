@@ -2703,7 +2703,7 @@ consumption.")
                (setenv "QT_QPA_PLATFORM" "offscreen")
                (setenv "DBUS_FATAL_WARNINGS" "0")
                (invoke "dbus-launch" "ctest"
-                       "-E" ; FIXME: 21/67 tests fail.
+                       "-E" ; FIXME: 19/67 tests fail.
                        (string-append "(kiocore-jobtest"
                                       "|fileitemtest"
                                       "|kiocore-kmountpointtest"
@@ -2712,7 +2712,6 @@ consumption.")
                                       "|kiocore-krecentdocumenttest"
                                       "|kiocore-http_jobtest"
                                       "|kiogui-openurljobtest"
-                                      "|kiocore-threadtest"
                                       "|applicationlauncherjob_forkingtest"
                                       "|applicationlauncherjob_scopetest"
                                       "|applicationlauncherjob_servicetest"
@@ -2721,7 +2720,6 @@ consumption.")
                                       "|commandlauncherjob_servicetest"
                                       "|kiowidgets-kdirlistertest"
                                       "|kiowidgets-kdirmodeltest"
-                                      "|kiowidgets-kfileitemactionstest"
                                       "|kiowidgets-kurifiltertest-colon-separator"
                                       "|kiowidgets-kurifiltertest-space-separator"
                                       "|kiofilewidgets-knewfilemenutest)")))))
