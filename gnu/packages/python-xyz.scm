@@ -20652,14 +20652,14 @@ ignoring formatting changes.")
 (define-public python-tqdm
   (package
     (name "python-tqdm")
-    (version "4.62.3")
+    (version "4.64.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "tqdm" version))
          (sha256
            (base32
-             "03cjj8jl8iybvfjbpvdql5qfslzfv043g7w6nx8rhv2h2xrdwnfk"))))
+             "1r7i9kswpnrx4ppfvzz6discb04j1rqkqxdwa2sc2la900m6hksz"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
