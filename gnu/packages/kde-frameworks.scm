@@ -1627,14 +1627,8 @@ integrated it into your application's other widgets.")
                (setenv "HOME" (getcwd))
                (system "Xvfb :1 -screen 0 640x480x24 &")
                (setenv "DISPLAY" ":1")
-               ;; testrounddrip fail inconsistently.
-               ;; addresstest produces wrong value:
-               ;;Actual   (address.formattedAddress(QStringLiteral("Jim Knopf"))):
-               ;;"Jim Knopf\nLummerlandstr. 1\n12345 Lummerstadt\n\nGERMANY"
-               ;;Expected (result)                                               :
-               ;;"Jim Knopf\nLummerlandstr. 1\n12345 Lummerstadt\n\nGERMANIA"
                (invoke "ctest" "-E"
-			   "(kcontacts-addresstest|kcontacts-emailtest|kcontacts-phonenumbertest|kcontacts-soundtest|kcontacts-secrecytest|kcontacts-geotest|kcontacts-keytest|kcontacts-testroundtrip|kcontacts-impptest|kcontacts-birthdaytest|kcontacts-addresseetest)")))))))
+                "(kcontacts-birthdaytest|kcontacts-testroundtrip|kcontacts-addresstest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "API for contacts/address book data following the vCard standard")
     (description "This library provides a vCard data model, vCard
