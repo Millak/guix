@@ -26,6 +26,7 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -35,6 +36,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -533,33 +535,33 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
                 "045889417506w2l25j7jxx7jfdpfljbirhm1s4whvhk83xap19zb"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-mpv-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "gfeeds/confManager.py"
-               (("mpv") (search-input-file inputs "/bin/mpv")))
-             #t))
-         (add-after 'unpack 'patch-webkit2-version
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "bin/gfeeds.in"
-               (("gi\\.require_version\\('WebKit2', '4\\.0'\\)")
-                "gi.require_version('WebKit2', '4.1')"))))
-         (add-after 'install 'wrap-gfeeds
-           (lambda* (#:key outputs #:allow-other-keys)
-             (wrap-program (string-append
-                            (assoc-ref outputs "out") "/bin/gfeeds")
-               `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-               `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
-               `("XDG_DATA_DIRS" ":" prefix (,(getenv "XDG_DATA_DIRS"))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-mpv-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "gfeeds/confManager.py"
+                (("mpv") (search-input-file inputs "/bin/mpv")))))
+          (add-after 'unpack 'patch-webkit2-version
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "bin/gfeeds.in"
+                (("gi\\.require_version\\('WebKit2', '4\\.0'\\)")
+                 "gi.require_version('WebKit2', '4.1')"))))
+          (add-after 'install 'wrap-gfeeds
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (string-append
+                             (assoc-ref outputs "out") "/bin/gfeeds")
+                `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+                `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
+                `("XDG_DATA_DIRS" ":" prefix (,(getenv "XDG_DATA_DIRS")))))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin")
+           `(,gtk+ "bin")
+           gobject-introspection
+           pkg-config))
     (inputs
-     (list glib
+     (list bash-minimal
+           glib
            gsettings-desktop-schemas
            gtk+
            hicolor-icon-theme
