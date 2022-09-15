@@ -1464,14 +1464,14 @@ definitions.")
 (define-public fontforge
   (package
    (name "fontforge")
-   (version "20201107")
+   (version "20220308")
    (source (origin
             (method url-fetch)
             (uri (string-append
                   "https://github.com/fontforge/fontforge/releases/download/"
                   version "/fontforge-" version ".tar.xz"))
             (sha256
-             (base32 "0y3c8x1i6yf6ak9m5dhr1nldgfmg7zhnwdfd57ffs698c27vmg38"))))
+             (base32 "0ncfc4ajwy4ng6b6h79w52jh9z3lngvf3f3ldi1wzkhcg9zh3r01"))))
    (build-system cmake-build-system)
    (native-inputs
     (list pkg-config))
@@ -1489,7 +1489,6 @@ definitions.")
              ("libspiro"        ,libspiro)
              ("libtiff"         ,libtiff)
              ("libungif"        ,libungif)
-             ("libuninameslist" ,libuninameslist)
              ("libxft"          ,libxft)
              ("libxml2"         ,libxml2)
              ("pango"           ,pango)
