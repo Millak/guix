@@ -4,7 +4,7 @@
 
 Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 Copyright © 2016, 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
-Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 
   Copying and distribution of this file, with or without modification,
   are permitted in any medium without royalty provided the copyright
@@ -18,6 +18,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** New ‘guix shell’ command, the successor to ‘guix environment’
 *** New ‘deb’ format for the ‘guix pack’ command
 *** New ‘guix import minetest’ command, to import Minetest extensions
+*** New 'guix style' command, to auto-format package definitions
 *** ‘guix import texlive’ rewritten to use the TLPDB as its source
 *** ‘guix import elpa’ now supports the non-GNU ELPA repository
 *** ‘guix import pypi’ can now import a specific version
@@ -30,6 +31,18 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** More control over boot-time file system checks and repairs
 *** XFS file systems can be created by the installer and mounted by label/UUID
 *** New interface for declaring swap space
+*** GNOME is now at version 42
+*** The Rust bootstrap now starts from 1.54 instead of 1.19
+*** Most Python 2 packages have been removed
+*** Guix now makes use of parallel xz compression
+*** Faster shared libraries discovery via a per-package dynamic linker cache
+*** Build phases are no longer required to return a boolean
+*** Package inputs can now be provided without explicit labels
+*** A package origin can now be a single file rather than an archive
+*** Multiple Tex Live trees can now be used via GUIX_TEXMF
+*** A new sanity-check phase detects packaging problems at build time
+*** G-Expressions can now be used to author build phases
+*** Fetching sources can now fall-back to use Disarchive
 ** Programming interfaces
 *** (guix records) now supports “field sanitizers”
 ** Noteworthy bug fixes
@@ -43,7 +56,13 @@ Please send Guix bug reports to bug-guix@gnu.org.
     (<https://issues.guix.gnu.org/24937>)
 *** File system flags are validated before system instantiation
     (<https://issues.guix.gnu.org/51425>)
-
+*** Fonts can now be discovered in any profile
+*** Python modules discovery no longer uses PYTHONPATH
+*** Various Python reproducibility fixes
+*** Installer now supports MSDOS disk labels on UEFI systems
+    (<https://issues.guix.gnu.org/47889>)
+*** Emacs handles major upgrades better without a re-login
+    (<https://bugs.gnu.org/47458>)
 * Changes in 1.3.0 (since 1.2.0)
 ** Package management
 *** POWER9 (powerpc64le-linux) is now supported as a technology preview
