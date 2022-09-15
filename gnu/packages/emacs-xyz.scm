@@ -17660,7 +17660,7 @@ languages while remaining inside the primary Org buffer.")
 (define-public eless
   (package
     (name "eless")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method git-fetch)
@@ -17669,7 +17669,7 @@ languages while remaining inside the primary Org buffer.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xif339wsc79hsab3l1nnwvy20jg7s1r4akfj4qqi6qxizfhmb52"))))
+        (base32 "01gpzg35v972ik4bimcyhqabjca6sjj41kw2i15xj1k33p4sjqpf"))))
     (build-system copy-build-system)
     (inputs
      (list bash emacs))
