@@ -19,7 +19,7 @@ system and user units.
  6 files changed, 66 insertions(+), 42 deletions(-)
 
 diff --git a/common/meson.build b/common/meson.build
-index 074dd92e1..bca58f7c4 100644
+index 074dd92e..bca58f7c 100644
 --- a/common/meson.build
 +++ b/common/meson.build
 @@ -11,7 +11,7 @@ libgdmcommon_src = files(
@@ -32,10 +32,10 @@ index 074dd92e1..bca58f7c4 100644
    gio_dep,
    gio_unix_dep,
 diff --git a/data/meson.build b/data/meson.build
-index 7c5222eaf..403336c31 100644
+index 2dec4c23..c3452e1c 100644
 --- a/data/meson.build
 +++ b/data/meson.build
-@@ -168,41 +168,53 @@ else
+@@ -164,41 +164,53 @@ else
    service_config.set('PLYMOUTH_QUIT_SERVICE', '')
  endif
  
@@ -115,7 +115,7 @@ index 7c5222eaf..403336c31 100644
  # XSession
  if get_option('gdm-xsession')
 diff --git a/libgdm/meson.build b/libgdm/meson.build
-index 3f8cafbb7..83e95151b 100644
+index 3f8cafbb..83e95151 100644
 --- a/libgdm/meson.build
 +++ b/libgdm/meson.build
 @@ -56,7 +56,7 @@ libgdm_deps = [
@@ -128,12 +128,12 @@ index 3f8cafbb7..83e95151b 100644
  ]
  
 diff --git a/meson.build b/meson.build
-index e6fcf4b8b..a86a486b7 100644
+index 845f673e..d0ca41ef 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -92,21 +92,30 @@ xdmcp_dep = cc.find_library('Xdmcp', required: get_option('xdmcp'))
+@@ -96,21 +96,30 @@ xdmcp_dep = cc.find_library('Xdmcp', required: get_option('xdmcp'))
  if xdmcp_dep.found() and get_option('tcp-wrappers')
-   libwrap_dep = cc.find_library('libwrap')
+   libwrap_dep = cc.find_library('wrap')
  endif
 -# systemd
 -systemd_dep = dependency('systemd')
@@ -175,7 +175,7 @@ index e6fcf4b8b..a86a486b7 100644
  # Plymouth
  plymouth_dep = dependency('ply-boot-client', required: get_option('plymouth'))
  # Check for Solaris auditing API (ADT)
-@@ -313,6 +322,7 @@ summary({
+@@ -319,6 +328,7 @@ summary({
      'PAM Syslog': have_pam_syslog,
      'Supports PAM Extensions': pam_extensions_supported,
      'SeLinux': libselinux_dep.found(),
@@ -184,7 +184,7 @@ index e6fcf4b8b..a86a486b7 100644
      'Use UserDisplayServer': get_option('user-display-server'),
      'Use SystemdJournal': get_option('systemd-journal'),
 diff --git a/meson_options.txt b/meson_options.txt
-index 14e0b908b..5135d7d66 100644
+index 14e0b908..5135d7d6 100644
 --- a/meson_options.txt
 +++ b/meson_options.txt
 @@ -12,6 +12,7 @@ option('initial-vt', type: 'integer', value: 1, description: 'Initial virtual te
@@ -206,6 +206,3 @@ index 14e0b908b..5135d7d66 100644
  option('tcp-wrappers', type: 'boolean', value: false, description: 'Use TCP wrappers.')
  option('udev-dir', type: 'string', value: '', description: 'Directory for udev rules file.')
  option('user', type: 'string', value: 'gdm', description: 'GDM\'s username.')
--- 
-GitLab
-

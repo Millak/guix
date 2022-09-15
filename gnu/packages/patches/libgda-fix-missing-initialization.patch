@@ -1,0 +1,26 @@
+Taken from upstream.
+
+From a4a3930ecfc4dc815b7a18dbb7338c165ea08f4e Mon Sep 17 00:00:00 2001
+From: Pavlo Solntsev <p.sun.fun@gmail.com>
+Date: Sun, 19 Sep 2021 22:54:33 -0500
+Subject: [PATCH] Test: Fixing missing initialization
+
+---
+ libgda/thread-wrapper/test-itsignaler.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/libgda/thread-wrapper/test-itsignaler.c b/libgda/thread-wrapper/test-itsignaler.c
+index d0c15ae17..7ac4e958a 100644
+--- a/libgda/thread-wrapper/test-itsignaler.c
++++ b/libgda/thread-wrapper/test-itsignaler.c
+@@ -203,6 +203,7 @@ test2 (void)
+ 	CbData cbdata;
+ 	cbdata.counter = 0;
+ 	cbdata.loop = loop;
++	cbdata.its = its;
+ 	itsignaler_add (its, NULL, (ITSignalerFunc) source_callback, &cbdata, NULL);
+ 	itsignaler_unref (its);
+   g_mutex_unlock (&mutex);
+-- 
+GitLab
+

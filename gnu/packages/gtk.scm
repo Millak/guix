@@ -567,109 +567,100 @@ printing and other features typical of a source code editor.")
     (home-page "https://developer.gnome.org/gtksourceview/")))
 
 (define-public gtksourceview
- (package
-   (name "gtksourceview")
-   (version "5.4.2")
-   (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnome/sources/gtksourceview/"
-                                 (version-major+minor version) "/"
-                                 "gtksourceview-" version ".tar.xz"))
-             (sha256
-              (base32
-               "1rwxnzq2vvck5ni5zsfnmnx2kgasi3a2n29w93g106c4xc3hw55d"))))
-   (build-system meson-build-system)
-   (arguments
-    (list
-     #:phases
-     #~(modify-phases %standard-phases
-         (add-after 'unpack 'patch-build
+  (package
+    (name "gtksourceview")
+    (version "5.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/gtksourceview/"
+                                  (version-major+minor version) "/"
+                                  "gtksourceview-" version ".tar.xz"))
+              (sha256
+               (base32
+                "068dqhacvs65gnmrryahm6qs0q050admlpqqi1gy8wgh2p6qrraa"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-gtk-update-icon-cache
            (lambda _
              (substitute* "meson.build"
-               (("gnome.post_install" all)
-                (string-append "# " all)))))
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false"))))
          (add-before 'check 'pre-check
-           (lambda* (#:key inputs native-inputs #:allow-other-kgeys)
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (let ((Xvfb (search-input-file (or native-inputs inputs)
-                                            "/bin/Xvfb")))
+                                            "bin/Xvfb")))
                ;; Tests require a running X server.
-               (system (format #f "~a :1 &" Xvfb))
+               (system (string-append Xvfb " :1 &"))
                (setenv "DISPLAY" ":1")
                ;; For the missing /etc/machine-id.
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               #t))))))
-   (native-inputs
-    (list `(,glib "bin") ; for glib-genmarshal, etc.
-          intltool
-          itstool
-          gobject-introspection
-          pkg-config
-          vala
-          ;; For testing.
-          xorg-server-for-tests
-          shared-mime-info))
-   (propagated-inputs
-    ;; gtksourceview-5.0.pc refers to all these.
-    (list glib gtk libxml2 pcre2))
-   (home-page "https://wiki.gnome.org/Projects/GtkSourceView")
-   (synopsis "GNOME source code widget")
-   (description "GtkSourceView is a text widget that extends the standard
+               (setenv "DBUS_FATAL_WARNINGS" "0")))))))
+    (native-inputs
+     (list `(,glib "bin")               ; for glib-genmarshal, etc.
+           gettext-minimal
+           gi-docgen
+           gobject-introspection-next
+           pkg-config
+           vala
+           ;; For testing.
+           xorg-server-for-tests
+           shared-mime-info))
+    (propagated-inputs
+     ;; gtksourceview-5.pc refers to all these.
+     (list fontconfig
+           fribidi
+           glib-next
+           gtk
+           libxml2
+           pango
+           pcre2))
+    (home-page "https://wiki.gnome.org/Projects/GtkSourceView")
+    (synopsis "GNOME source code widget")
+    (description "GtkSourceView is a text widget that extends the standard
 GTK+ text widget GtkTextView.  It improves GtkTextView by implementing syntax
 highlighting and other features typical of a source code editor.")
-   (license license:lgpl2.1+)))
+    (license license:lgpl2.1+)))
 
+;;; This older version is used by tepl.
 (define-public gtksourceview-4
- (package
-   (inherit gtksourceview)
-   (version "4.2.0")
-   (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnome/sources/gtksourceview/"
-                                 (version-major+minor version) "/"
-                                 "gtksourceview-" version ".tar.xz"))
-             (sha256
-              (base32
-               "0xgnjj7jd56wbl99s76sa1vjq9bkz4mdsxwgwlcphg689liyncf4"))))
-   (build-system gnu-build-system)
-   (arguments
-    '(#:phases
-      (modify-phases %standard-phases
-        (add-before
-         'check 'pre-check
-         (lambda* (#:key inputs #:allow-other-keys)
-           (let ((xorg-server (assoc-ref inputs "xorg-server")))
-             ;; Tests require a running X server.
-             (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
-             (setenv "DISPLAY" ":1")
-             ;; For the missing /etc/machine-id.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t))))))
-   (native-inputs
-    `(("glib:bin" ,glib "bin") ; for glib-genmarshal, etc.
-      ("intltool" ,intltool)
-      ("itstool" ,itstool)
-      ("gobject-introspection" ,gobject-introspection)
-      ("pkg-config" ,pkg-config)
-      ("vala" ,vala)
-      ;; For testing.
-      ("xorg-server" ,xorg-server-for-tests)
-      ("shared-mime-info" ,shared-mime-info)))
-   (propagated-inputs
-    ;; gtksourceview-3.0.pc refers to all these.
-    (list glib gtk+ libxml2))))
+  (package
+    (inherit gtksourceview)
+    (version "4.8.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/gtksourceview/"
+                                  (version-major+minor version) "/"
+                                  "gtksourceview-" version ".tar.xz"))
+              (sha256
+               (base32
+                "10n61sa0g447nx73yapb00z57shp48gfvk1lv1s29ji0cd81j063"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs gtksourceview)
+       (replace "gobject-introspection" gobject-introspection)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs gtksourceview)
+       (replace "gtk" gtk+)
+       (replace "glib" glib)))))
 
 (define-public gtksourceview-3
- (package (inherit gtksourceview-4)
-   (name "gtksourceview")
-   (version "3.24.10")
-   (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnome/sources/" name "/"
-                                 (version-major+minor version) "/"
-                                 name "-" version ".tar.xz"))
-             (sha256
-              (base32
-               "16ym7jwiki4s1pilwr4incx0yg7ll94f1cajrnpndkxxs36hcm5b"))))))
+  (package
+    (inherit gtksourceview-4)
+    (name "gtksourceview")
+    (version "3.24.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1zbpj283b5ycz767hqz5kdq02wzsga65pp4fykvhg8xj6x50f6v9"))))
+    (build-system gnu-build-system)
+    (arguments (substitute-keyword-arguments (package-arguments gtksourceview)
+                 ((#:phases phases)
+                  `(modify-phases ,phases
+                     (delete 'disable-gtk-update-icon-cache)))))))
 
 (define-public gdk-pixbuf
   (package
@@ -992,9 +983,7 @@ application suites.")
            fribidi
            fontconfig
            freetype
-           (if (target-x86-64?)
-               librsvg
-               librsvg-2.40)
+           (librsvg-for-system)
            glib
            libcloudproviders-minimal
            libepoxy
@@ -1103,7 +1092,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.6.7")
+    (version "4.8.0")
     (source
      (origin
        (method url-fetch)
@@ -1111,110 +1100,111 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1s0hn1mqw9zzr99bgc5bj90am2x6vr5g5q23mmzmqajy9dy2xzgg"))
+        (base32 "0zxxvjnbmaahvm9lwm007dzgc0yl8qamkp1467c5kqyi6ws21mn8"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
     (build-system meson-build-system)
     (outputs '("out" "bin" "doc"))
     (arguments
-     `(#:modules ((guix build utils)
+     (list
+      #:modules '((guix build utils)
                   (guix build meson-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
-       #:configure-flags
-       (list
-        "-Dbroadway-backend=true"       ;for broadway display-backend
-        "-Dcloudproviders=enabled"      ;for cloud-providers support
-        "-Dtracker=enabled"             ;for filechooser search support
-        "-Dcolord=enabled"              ;for color printing support
-        ,@(if (%current-target-system)
-              ;; If true, gtkdoc-scangobj will try to execute a
-              ;; cross-compiled binary.
-              '("-Dgtk_doc=false")
-              '("-Dgtk_doc=true"))
-        "-Dman-pages=true")
-       #:parallel-tests? #f             ;parallel tests are not supported
-       #:test-options '("--setup=x11"   ;defaults to wayland
-                        ;; Use the same test options as upstream uses for
-                        ;; their CI.
-                        "--suite=gtk"
-                        "--no-suite=gsk-compare-broadway")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
-           (assoc-ref glib-or-gtk:%standard-phases
-                      'generate-gdk-pixbuf-loaders-cache-file))
-         (add-after 'unpack 'patch-rst2man
-           (lambda _
-             (substitute* "docs/reference/gtk/meson.build"
-               (("find_program\\('rst2man'") "find_program('rst2man.py'"))))
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
-             ;; Correct DTD resources of docbook.
-             (substitute* (find-files "docs" "\\.xml$")
-               (("http://www.oasis-open.org/docbook/xml/4.3/")
-                (string-append
-                 (assoc-ref (or native-inputs inputs) "docbook-xml-4.3")
-                 "/xml/dtd/docbook/")))
-             ;; Disable building of icon cache.
-             (substitute* "meson.build"
-               (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false"))
-             ;; Disable failing tests.
-             (substitute* (find-files "testsuite" "meson.build")
-               (("[ \t]*'empty-text.node',") "")
-               (("[ \t]*'testswitch.node',") "")
-               (("[ \t]*'widgetfactory.node',") "")
-               ;; The unaligned-offscreen test fails for unknown reasons, also
-               ;; on different distributions (see:
-               ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/4889).
-               (("  'unaligned-offscreen',") ""))
-             (substitute* "testsuite/reftests/meson.build"
-               (("[ \t]*'label-wrap-justify.ui',") ""))))
-         (add-before 'build 'set-cache
-           (lambda _
-             (setenv "XDG_CACHE_HOME" (getcwd))))
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for those variables.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             ;; Required for the calendar test.
-             (setenv "TZDIR" (search-input-directory inputs
-                                                     "share/zoneinfo"))))
-         (add-after 'install 'move-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (assoc-ref outputs "bin"))
-                    (doc (assoc-ref outputs "doc")))
-               (for-each mkdir-p
-                         (list
-                          (string-append bin "/bin")
-                          (string-append bin "/share/applications")
-                          (string-append bin "/share/icons")
-                          (string-append bin "/share/man")
-                          (string-append bin "/share/metainfo")
-                          (string-append doc "/share/doc")))
-               ;; Move programs and related files to output 'bin'.
-               (for-each (lambda (dir)
-                           (rename-file
-                            (string-append out dir)
-                            (string-append bin dir)))
-                         (list
-                          "/bin"
-                          "/share/applications"
-                          "/share/icons"
-                          "/share/man"
-                          "/share/metainfo"))
-               ;; Move HTML documentation to output 'doc'.
-               (rename-file
-                (string-append out "/share/doc")
-                (string-append doc "/share/doc"))))))))
+      #:configure-flags
+      #~(list
+         "-Dbroadway-backend=true"      ;for broadway display-backend
+         "-Dcloudproviders=enabled"     ;for cloud-providers support
+         "-Dtracker=enabled"            ;for filechooser search support
+         "-Dcolord=enabled"             ;for color printing support
+         #$@(if (%current-target-system)
+                ;; If true, gtkdoc-scangobj will try to execute a
+                ;; cross-compiled binary.
+                '("-Dgtk_doc=false")
+                '("-Dgtk_doc=true"))
+         "-Dman-pages=true")
+      #:test-options '(list "--setup=x11" ;defaults to wayland
+                            ;; Use the same test options as upstream uses for
+                            ;; their CI.
+                            "--suite=gtk"
+                            "--no-suite=gsk-compare-broadway")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
+          (add-after 'unpack 'patch-rst2man
+            (lambda _
+              (substitute* "docs/reference/gtk/meson.build"
+                (("find_program\\('rst2man'")
+                 "find_program('rst2man.py'"))))
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
+              ;; Correct DTD resources of docbook.
+              (substitute* (find-files "docs" "\\.xml$")
+                (("http://www.oasis-open.org/docbook/xml/4.3/")
+                 (string-append #$(this-package-native-input "docbook-xml")
+                                "/xml/dtd/docbook/")))
+              ;; Disable building of icon cache.
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))
+              ;; Disable failing tests.
+              (substitute* (find-files "testsuite" "meson.build")
+                (("[ \t]*'empty-text.node',") "")
+                (("[ \t]*'testswitch.node',") "")
+                (("[ \t]*'widgetfactory.node',") "")
+                ;; The unaligned-offscreen test fails for unknown reasons, also
+                ;; on different distributions (see:
+                ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/4889).
+                (("  'unaligned-offscreen',") ""))
+              (substitute* "testsuite/reftests/meson.build"
+                (("[ \t]*'label-wrap-justify.ui',") "")
+                ;; The inscription-markup.ui fails due to /etc/machine-id
+                ;; related warnings (see:
+                ;; https://gitlab.gnome.org/GNOME/gtk/-/issues/5169).
+                (("[ \t]*'inscription-markup.ui',") ""))))
+          (add-before 'build 'set-cache
+            (lambda _
+              (setenv "XDG_CACHE_HOME" (getcwd))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; Tests write to $HOME.
+              (setenv "HOME" (getcwd))
+              ;; Tests look for those variables.
+              (setenv "XDG_RUNTIME_DIR" (getcwd))
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0")
+              ;; Required for the calendar test.
+              (setenv "TZDIR" (search-input-directory inputs
+                                                      "share/zoneinfo"))))
+          (add-after 'install 'move-files
+            (lambda _
+              (for-each mkdir-p
+                        (list
+                         (string-append #$output:bin "/bin")
+                         (string-append #$output:bin "/share/applications")
+                         (string-append #$output:bin "/share/icons")
+                         (string-append #$output:bin "/share/man")
+                         (string-append #$output:bin "/share/metainfo")
+                         (string-append #$output:doc "/share/doc")))
+              ;; Move programs and related files to output 'bin'.
+              (for-each (lambda (dir)
+                          (rename-file
+                           (string-append #$output dir)
+                           (string-append #$output:bin dir)))
+                        (list
+                         "/bin"
+                         "/share/applications"
+                         "/share/icons"
+                         "/share/man"
+                         "/share/metainfo"))
+              ;; Move HTML documentation to output 'doc'.
+              (rename-file
+               (string-append #$output "/share/doc")
+               (string-append #$output:doc "/share/doc")))))))
     (native-inputs
      (list docbook-xml-4.3
            docbook-xsl
@@ -1254,7 +1244,6 @@ application suites.")
            libgudev                     ;for gstreamer-gl
            libjpeg-turbo
            libpng
-           librsvg
            libtiff
            python
            rest
@@ -1263,7 +1252,7 @@ application suites.")
      ;; Following dependencies are referenced in .pc files.
      (list cairo
            fontconfig
-           librsvg
+           (librsvg-for-system)
            glib
            graphene
            libepoxy
@@ -2542,15 +2531,13 @@ shell scripts.  Example of how to use @code{yad} can be consulted at
    (inputs (list gtk+))
    (native-inputs (list pkg-config))
    (arguments
-    `(#:tests? #f                       ; no check
-      #:make-flags
-      (list (string-append "CC=" ,(cc-for-target))
-            ;; makefile uses PREFIX for the binary location
-            (string-append "PREFIX=" (assoc-ref %outputs "out")
-                           "/bin"))
-      #:phases
-      (modify-phases %standard-phases
-        (delete 'configure))))                    ; no configure script
+    (list
+     #:tests? #f                        ; no check target
+     #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                          (string-append "PREFIX=" #$output))
+     #:phases
+     #~(modify-phases %standard-phases
+         (delete 'configure))))         ; no configure script
    (synopsis "Drag and drop source/target for X")
    (description
     "Dragon is a lightweight drag-and-drop source for X where you can run:

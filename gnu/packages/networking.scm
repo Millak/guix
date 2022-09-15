@@ -24,7 +24,7 @@
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2018, 2020, 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2018, 2020, 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
@@ -2731,7 +2731,7 @@ procedure calls (RPCs).")
 (define-public openvswitch
   (package
     (name "openvswitch")
-    (version "2.16.1")
+    (version "3.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2739,7 +2739,7 @@ procedure calls (RPCs).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1x0k0pw6jykrfgb8rq56bp2ghxd433d55pmr8mxy9gbzw1nc1vbi"))))
+                "17hr7x9iahhmskp70pv59v4bsn86r2jmbaw37vs03jsz3k1a57gs"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -2751,17 +2751,21 @@ procedure calls (RPCs).")
        (modify-phases %standard-phases
          (add-after 'unpack 'use-absolute-/bin/sh
            (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((bash (assoc-ref inputs "bash-minimal")))
+             (let ((/bin/sh (search-input-file inputs "bin/sh")))
                (substitute* "ovsdb/ovsdb-server.c"
-                 (("/bin/sh") (string-append bash "/bin/sh"))))))
+                 (("/bin/sh") /bin/sh)))))
          (add-before 'check 'adjust-tests
            (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((bash (assoc-ref inputs "bash-minimal"))
-                    (/bin/sh (string-append bash "/bin/sh")))
+             (let ((/bin/sh (search-input-file inputs "bin/sh")))
                (with-fluids ((%default-port-encoding "ISO-8859-1"))
                  (substitute* (find-files "tests" ".*(run|testsuite)$")
                    (("#! /bin/sh")
                     (string-append "#! " /bin/sh))
+
+                   ;; grep 3.8 emits a warning for 'egrep' which breaks
+                   ;; expected output; adjust accordingly.
+                   (("egrep")
+                    "grep -E")
 
                    ;; The tests use 'kill -0' to check whether a test has
                    ;; completed, but it does not work in the build container
@@ -2789,13 +2793,14 @@ ps --no-header -p $1 -o state= | grep -qv '^Z$'"
                      "DBDIR=/tmp"
                      "install"))))))
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ;; for testing
-       ("bash" ,bash)                   ;for 'compgen'
-       ("procps" ,procps)
-       ("util-linux" ,util-linux)))
+     (list perl
+           pkg-config
+           python-wrapper
+
+           ;; For testing.
+           bash                         ;for 'compgen'
+           procps
+           util-linux))
     (inputs
      (list bash-minimal libcap-ng openssl))
     (synopsis "Virtual network switch")
@@ -2805,6 +2810,8 @@ ps --no-header -p $1 -o state= | grep -qv '^Z$'"
 massive network automation through programmatic extension, while still
 supporting standard management interfaces and protocols (e.g. NetFlow, sFlow,
 IPFIX, RSPAN, CLI, LACP, 802.1ag).")
+    (properties
+     '((release-monitoring-url . "https://www.openvswitch.org/download/")))
     (license                            ; see debian/copyright for detail
      (list license:lgpl2.1              ; xenserver and utilities/bugtool
            license:gpl2                 ; datapath
@@ -3090,8 +3097,9 @@ can be whipped up with little effort.")
        (sha256
         (base32 "0haanralbvd12pvkyihgkmx9ld74dnzm1s7mzparfandl416ibff"))))
     (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
     (inputs
-     (list libcap ncurses))
+     (list jansson libcap ncurses))
     (arguments
      `(#:tests? #f))                    ; tests require network access
     (home-page "https://www.bitwizard.nl/mtr/")

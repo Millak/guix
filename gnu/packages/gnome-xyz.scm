@@ -776,7 +776,7 @@ notebooks and tiling window managers.")
 (define-public gpaste
   (package
     (name "gpaste")
-    (version "3.42.2")
+    (version "42.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -785,19 +785,25 @@ notebooks and tiling window managers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k5qvgzwl357k72qfim5zfas2a0n6j24jnlm1v472l7h6gb6lssm"))
+                "1dlqa69zvzzdxyh21qfrx2nhpfy0fbihxpgkxqmramcgv3h5k4q3"))
               (patches
                (search-patches "gpaste-fix-paths.patch"))))
     (build-system meson-build-system)
     (native-inputs
-     (list autoconf automake gettext-minimal gobject-introspection
+     (list gettext-minimal
+           gobject-introspection
            (list glib "bin")            ; for glib-compile-resources
-           libtool pkg-config vala))
+           pkg-config
+           vala))
     (inputs
-     (list appstream-glib libarchive gjs mutter graphene))
+     (list appstream-glib
+           gjs
+           gtk
+           mutter
+           libadwaita
+           libarchive))
     (arguments
-     (list #:meson meson-0.59      ;positional arguments error with meson 0.60
-           #:glib-or-gtk? #true
+     (list #:glib-or-gtk? #true
            #:configure-flags
            #~(list
               (string-append "-Dcontrol-center-keybindings-dir="
@@ -809,12 +815,11 @@ notebooks and tiling window managers.")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-introspection-install-dir
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let ((out (assoc-ref outputs "out")))
-                     (substitute* '("src/gnome-shell/extension.js"
-                                    "src/gnome-shell/prefs.js")
-                       (("@typelibPath@")
-                        (string-append out "/lib/girepository-1.0/")))))))))
+                 (lambda _
+                   (substitute* '("src/gnome-shell/extension.js"
+                                  "src/gnome-shell/prefs.js")
+                     (("@typelibPath@")
+                      (string-append #$output "/lib/girepository-1.0/"))))))))
     (home-page "https://github.com/Keruspe/GPaste")
     (synopsis "Clipboard management system for GNOME Shell")
     (description "GPaste is a clipboard manager, a tool which allows you to
@@ -1084,7 +1089,7 @@ of windows.")
 (define-public arc-theme
   (package
     (name "arc-theme")
-    (version "20210412")
+    (version "20220405")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1093,7 +1098,7 @@ of windows.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zs44dagp6baiyszlr1kj5ncap43fg32dv07rl46nxbds2p65lh4"))))
+                "1gjwf75sg4xyfypb08qiy2cmqyr2mamjc4i46ifrq7snj15gy608"))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags
@@ -1102,8 +1107,7 @@ of windows.")
        (modify-phases %standard-phases
          (add-before 'build 'set-home   ;placate Inkscape
            (lambda _
-             (setenv "HOME" (getcwd))
-             #t)))))
+             (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list `(,glib "bin") ; for glib-compile-resources
            gnome-shell
@@ -1111,6 +1115,7 @@ of windows.")
            inkscape/stable
            optipng
            pkg-config
+           python
            sassc/libsass-3.5))
     (synopsis "Flat GTK+ theme with transparent elements")
     (description "Arc is a flat theme with transparent elements for GTK 3, GTK
@@ -1240,13 +1245,13 @@ Cinnamon, MATE, Unity, Xfce, LightDM, GDM, Chrome theme, etc.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))))             ; no configure script
+         (delete 'configure))))         ; no configure script
     (native-inputs
-     `(("glib:bin" ,glib "bin")             ; for glib-compile-schemas
-       ("gnome-shell" ,gnome-shell)
-       ("gtk+" ,gtk+)
-       ("xmllint" ,libxml2)
-       ("ruby-sass" ,ruby-sass)))
+     (list `(,glib "bin")               ; for glib-compile-schemas
+           gnome-shell
+           gtk+
+           libxml2
+           ruby-sass))
     (synopsis "Flat theme with light and dark elements")
     (description "Numix is a modern flat theme with a combination of light and
 dark elements.  It supports GNOME, Unity, Xfce, and Openbox.")

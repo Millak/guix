@@ -11965,7 +11965,8 @@ lines in a document.  Package options include @code{singlespacing},
 @code{onehalfspacing}, and @code{doublespacing}.  Alternatively the spacing
 can be changed as required with the @code{\\singlespacing},
 @code{\\onehalfspacing}, and @code{\\doublespacing} commands.  Other size
-spacings also available.")))
+spacings also available.")
+    (license license:lppl)))
 
 (define-public texlive-pgfgantt
   (package

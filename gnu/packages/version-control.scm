@@ -1734,7 +1734,7 @@ execution of any hook written in any language before every commit.")
 (define-public mercurial
   (package
     (name "mercurial")
-    (version "6.2.1")
+    (version "6.2.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://www.mercurial-scm.org/"
@@ -1743,7 +1743,14 @@ execution of any hook written in any language before every commit.")
                                       "mercurial-openssl-compat.patch"))
              (sha256
               (base32
-               "1nl2726szaxyrxlyssrsir5c6vb4ci0i6g969i6xaahw1nidgica"))))
+               "1pr00hdk3l9095fhq6302fgj0wmbqhqs93y4r457ba4pyjjrvyly"))
+             (modules '((guix build utils)))
+             (snippet
+              '(substitute* (find-files "tests" "\\.(t|sh)$")
+                 ;; grep 3.8 emits deprecation warnings for 'egrep' and
+                 ;; 'fgrep' which breaks expected test output.
+                 (("egrep") "grep -E")
+                 (("fgrep") "grep -F")))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

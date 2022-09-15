@@ -5,7 +5,7 @@
 ;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2021 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020, 2021, 2022 Simon South <simon@simonsouth.net>
@@ -1330,7 +1330,14 @@ these identified regions.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d10qxyghz66zp7iqpm8q8rfv9jz9n609gxmfcav1lssmf1dlyk3"))))
+                "1d10qxyghz66zp7iqpm8q8rfv9jz9n609gxmfcav1lssmf1dlyk3"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Make tests compatible with PyYAML 6 and later.
+               '(substitute* '("tests/test_program.py"
+                               "tests/test_fuzzing.py")
+                  (("yaml\\.load\\(test_file\\.read\\(\\)\\)")
+                   "yaml.load(test_file.read(), Loader=yaml.SafeLoader)")))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-pyserial python-pyusb python-tqdm))

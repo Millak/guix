@@ -3,6 +3,7 @@
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,14 +32,14 @@
 (define-public plantuml
   (package
     (name "plantuml")
-    (version "1.2022.3")
+    (version "1.2022.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/plantuml/"
                                   version "/plantuml-" version ".tar.gz"))
               (sha256
                (base32
-                "1k5c97iicdvamkcdaz7c2b79qaciz5gvgs7n67as7hcbm2q85q3b"))))
+                "0lcvp6hdlzgh6ia14zzdc6h9hn8xrm9w9dcx5jpzhs8nbygkazvj"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f                      ; no tests

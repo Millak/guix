@@ -57,6 +57,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages shells)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages tmux)
   #:use-module (gnu packages vim))
 
@@ -270,6 +271,38 @@ highlighting of commands whilst they are typed at a Zsh prompt into an
 interactive terminal.  This helps in reviewing commands before running them,
 particularly in catching syntax errors.")
     (license license:bsd-3)))
+
+(define-public grml-zsh-config
+  (package
+    (name "grml-zsh-config")
+    (version "0.19.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://deb.grml.org/pool/main/g/grml-etc-core/grml-etc-core_"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "05fri77028znjnvmh8mz3424rn8ilysj7hn8br2hk1qwkp4zzwp9"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases
+            %standard-phases
+          (add-before 'install 'make-doc
+            (lambda _ (with-directory-excursion "doc" (invoke "make")))))
+      #:install-plan
+      #~'(("etc/skel/.zshrc"  "etc/skel/.zshrc")
+          ("etc/zsh/keephack" "etc/zsh/keephack")
+          ("etc/zsh/zshrc"    "etc/zsh/zshrc")
+          ("doc/grmlzshrc.5"  "share/man/man5/grmlzshrc.5"))))
+    (native-inputs (list txt2tags))
+    (home-page "https://grml.org/zsh/")
+    (synopsis "Grml's zsh configuration")
+    (description "This package provides an interactive setup for zsh
+preconfigured by the Grml project.")
+    (license license:gpl2)))
 
 (define-public sh-z
   (package

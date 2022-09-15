@@ -179,11 +179,6 @@
 (define (fail2ban-jail-configuration-serialize-symbol field-name value)
   (fail2ban-jail-configuration-serialize-string field-name (symbol->string value)))
 
-(define (fail2ban-jail-configuration-serialize-extra-content field-name value)
-  (if (maybe-value-set? value)
-      (string-append "\n" value "\n")
-      ""))
-
 (define-maybe integer (prefix fail2ban-jail-configuration-))
 (define-maybe string (prefix fail2ban-jail-configuration-))
 (define-maybe boolean (prefix fail2ban-jail-configuration-))
@@ -204,7 +199,7 @@
    "Backend to use to detect changes in the @code{log-path}.  The default is
 'auto.  To consult the defaults of the jail configuration, refer to the
 @file{/etc/fail2ban/jail.conf} file of the @code{fail2ban} package."
-fail2ban-jail-configuration-serialize-backend)
+   fail2ban-jail-configuration-serialize-backend)
   (max-retry
    maybe-integer
    "The number of failures before a host get banned
@@ -273,7 +268,7 @@ names matching their filter name.")
    maybe-symbol
    "The encoding of the log files handled by the jail.
 Possible values are: @code{'ascii}, @code{'utf-8} and @code{'auto}."
-fail2ban-jail-configuration-serialize-log-encoding)
+   fail2ban-jail-configuration-serialize-log-encoding)
   (log-path
    (list-of-strings '())
    "The file names of the log files to be monitored.")
@@ -281,9 +276,10 @@ fail2ban-jail-configuration-serialize-log-encoding)
    (list-of-fail2ban-jail-actions '())
    "A list of @code{<fail2ban-jail-action-configuration>}.")
   (extra-content
-   maybe-string
-   "Extra content for the jail configuration."
-   fail2ban-jail-configuration-serialize-extra-content)
+   (text-config '())
+   "Extra content for the jail configuration, provided as a list of file-like
+objects."
+   serialize-text-config)
   (prefix fail2ban-jail-configuration-))
 
 (define list-of-fail2ban-jail-configurations?
@@ -312,8 +308,9 @@ extensions.")
    (list-of-fail2ban-jail-configurations '())
    "Instances of @code{<fail2ban-jail-configuration>} explicitly provided.")
   (extra-content
-   maybe-string
-   "Extra raw content to add to the end of the @file{jail.local} file."))
+   (text-config '())
+   "Extra raw content to add to the end of the @file{jail.local} file,
+provided as a list of file-like objects."))
 
 (define (serialize-fail2ban-configuration config)
   (let* ((jails (fail2ban-configuration-jails config))
@@ -322,9 +319,7 @@ extensions.")
     (interpose
      (append (map serialize-fail2ban-jail-configuration
                   (append jails extra-jails))
-             (list (if (maybe-value-set? extra-content)
-                       extra-content
-                       ""))))))
+             (list (serialize-text-config 'extra-content extra-content))))))
 
 (define (config->fail2ban-etc-directory config)
   (let* ((fail2ban (fail2ban-configuration-fail2ban config))

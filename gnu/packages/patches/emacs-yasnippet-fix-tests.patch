@@ -9,12 +9,13 @@ Content-Transfer-Encoding: 8bit
 - Emacs 28 has a new mode ‘lisp-data-mode’ for Lisp data.
 - A test that was temporarily broken passes again.
 - The default for ‘org-adapt-indentation’ has changed.
+- buffer-list may be called with arguments when native-comp is enabled.
 ---
- yasnippet-tests.el | 41 ++++++++++++++++++++++++++---------------
- 1 file changed, 26 insertions(+), 15 deletions(-)
+ yasnippet-tests.el | 45 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 17 deletions(-)
 
 diff --git a/yasnippet-tests.el b/yasnippet-tests.el
-index b8a7980f..9fadf00c 100644
+index f7ca2bb..7618ab7 100644
 --- a/yasnippet-tests.el
 +++ b/yasnippet-tests.el
 @@ -1,6 +1,6 @@
@@ -55,7 +56,21 @@ index b8a7980f..9fadf00c 100644
        ;; Some org-mode versions leave trailing whitespace, some don't.
        (delete-trailing-whitespace)
        (should (equal expected (buffer-string))))))
-@@ -1390,7 +1393,9 @@ hello ${1:$(when (stringp yas-text) (funcall func yas-text))} foo${1:$$(concat \
+@@ -1195,11 +1198,11 @@ hello ${1:$(when (stringp yas-text) (funcall func yas-text))} foo${1:$$(concat \
+   (let ((saved-sym (make-symbol "yas--buffer-list")))
+     `(let ((,saved-sym (symbol-function 'buffer-list)))
+        (cl-letf (((symbol-function 'buffer-list)
+-                  (lambda ()
++                  (lambda (&rest args)
+                     (cl-remove-if (lambda (buf)
+                                     (with-current-buffer buf
+                                       (eq major-mode 'lisp-interaction-mode)))
+-                                  (funcall ,saved-sym)))))
++                                  (funcall ,saved-sym args)))))
+          ,@body))))
+ 
+ 
+@@ -1356,7 +1359,9 @@ hello ${1:$(when (stringp yas-text) (funcall func yas-text))} foo${1:$$(concat \
                            ,@(if (fboundp 'prog-mode)
                                  '(prog-mode))
                            emacs-lisp-mode
@@ -66,7 +81,7 @@ index b8a7980f..9fadf00c 100644
                (observed (yas--modes-to-activate)))
           (should (equal major-mode (car observed)))
           (should (equal (sort expected #'string<) (sort observed #'string<))))))))
-@@ -1418,7 +1423,11 @@ hello ${1:$(when (stringp yas-text) (funcall func yas-text))} foo${1:$$(concat \
+@@ -1384,7 +1389,11 @@ hello ${1:$(when (stringp yas-text) (funcall func yas-text))} foo${1:$$(concat \
                                       '(prog-mode))
                                 emacs-lisp-mode
                                 and-also-this-one
@@ -79,7 +94,7 @@ index b8a7980f..9fadf00c 100644
                (observed (yas--modes-to-activate)))
           (should (equal expected-first
                          (cl-subseq observed 0 (length expected-first))))
-@@ -1691,9 +1700,11 @@ TODO: be meaner"
+@@ -1657,9 +1666,11 @@ TODO: be meaner"
    "Test expansion of snippets in org source blocks."
    ;; org 9+ no longer runs fontification for text-mode, so our hacks
    ;; don't work.  Note that old ert doesn't have skipping, so we have
@@ -93,3 +108,6 @@ index b8a7980f..9fadf00c 100644
                         :passed :failed)
    (let ((text-mode-hook #'yas-minor-mode))
      (do-yas-org-native-tab-in-source-block "text")))
+-- 
+2.37.2
+

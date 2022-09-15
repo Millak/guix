@@ -61,6 +61,7 @@
   #:use-module (gnu packages cluster)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages containers)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -172,8 +173,10 @@
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Delete the bundled meson copy.
-           (delete-file-recursively "meson")))))
+           ;; Delete bundled code that we provide externally.
+           ;; TODO: Unbundle SeaBIOS!
+           (for-each delete-file-recursively
+                     '("dtc" "meson" "slirp"))))))
     (outputs '("out" "static" "doc"))   ;5.3 MiB of HTML docs
     (build-system gnu-build-system)
     (arguments
@@ -190,6 +193,8 @@
                 (string-append "--host-cc=" gcc)
                 (string-append "--prefix=" out)
                 "--sysconfdir=/etc"
+                "--enable-slirp=system"
+                "--enable-fdt=system"
                 (string-append "--smbd=" out "/libexec/samba-wrapper")
                 "--disable-debug-info"  ;for space considerations
                 ;; The binaries need to be linked against -lrt.
@@ -329,6 +334,7 @@ exec smbd $@")))
     (inputs
      (list alsa-lib
            bash-minimal
+           dtc
            glib
            gtk+
            libaio
@@ -339,6 +345,7 @@ exec smbd $@")))
            libjpeg-turbo
            libpng
            libseccomp
+           libslirp
            liburing
            libusb                       ;USB pass-through support
            mesa

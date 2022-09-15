@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -253,7 +254,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "42.2")
+    (version "43.rc")                   ;for libsoup 3 support
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -261,77 +262,55 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cb9s2zz1zib3f33c035lmgshpl679isbzdd3alrx4yclw61nvay"))))
+                "16a3j896fwxgnvrmx27jnrvhxzh3v22paaq87ad57yp8wkq946il"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))))
-         (add-after 'unpack 'patch-dbus-service
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "data/org.gnome.Maps.service.in"
-               (("@pkgdatadir@/org.gnome.Maps")
-                (string-append  (assoc-ref outputs "out")
-                                "/bin/gnome-maps")))))
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
-                   (geocode-glib-path (string-append
-                                       (assoc-ref inputs "geocode-glib")
-                                       "/lib"))
-                   (goa-path (string-append
-                              (assoc-ref inputs "gnome-online-accounts:lib")
-                              "/lib"))
-                   (gdk-pixbuf-path (string-append
-                                     (assoc-ref inputs "gdk-pixbuf")
-                                     "/lib"))
-                   (webkitgtk-path (string-append
-                                    (assoc-ref inputs "webkitgtk")
-                                    "/lib")))
-               (wrap-program (string-append out "/bin/gnome-maps")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-
-                 ;; There seems to be no way to embed the path of
-                 ;; libgoa-1.0.so.0, libwebkit2gtk-4.0.so.37,
-                 ;; libgdk_pixbuf-2.0.so, libjavascriptcoregtk-4.0.so.18, and
-                 ;; libgeocode-glib.so.0
-                 `("LD_LIBRARY_PATH" ":" prefix (,goa-path
-                                                 ,webkitgtk-path
-                                                 ,gdk-pixbuf-path
-                                                 ,geocode-glib-path)))
-               #t))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") "true"))))
+          (add-after 'unpack 'patch-dbus-service
+            (lambda _
+              (substitute* "data/org.gnome.Maps.service.in"
+                (("@pkgdatadir@/org.gnome.Maps")
+                 (string-append #$output "/bin/gnome-maps")))))
+          (add-after 'install 'wrap
+            (lambda _
+              (wrap-program (string-append #$output "/bin/gnome-maps")
+                `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config))
     (inputs
-     `(("evolution-data-server" ,evolution-data-server)
-       ("folks" ,folks)
-       ("libchamplain" ,libchamplain)
-       ("libgee" ,libgee)
-       ("libhandy" ,libhandy)
-       ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup-minimal-2)
-       ("libgweather" ,libgweather4)
-       ("libxml2" ,libxml2)
-       ("librsvg" ,librsvg)
-       ("glib-networking" ,glib-networking)
-       ("geoclue" ,geoclue)
-       ("geocode-glib" ,geocode-glib)
-       ("gfbgraph" ,gfbgraph)
-       ("gjs" ,gjs)
-       ("glib" ,glib)
-       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ("rest" ,rest)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+     (list folks
+           evolution-data-server
+           geoclue
+           geocode-glib
+           gfbgraph
+           gjs
+           glib
+           glib-networking
+           gnome-online-accounts
+           gsettings-desktop-schemas
+           gtk+
+           libadwaita
+           libgee
+           libgweather4
+           libhandy
+           librsvg
+           libsecret
+           libshumate           
+           libsoup
+           libxml2
+           rest-next
+           webkitgtk))
     (synopsis "Graphical map viewer and wayfinding program")
     (description "GNOME Maps is a graphical map viewer.  It uses map data from
 the OpenStreetMap project.  It can provide directions for walking, bicycling,
@@ -536,7 +515,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public proj
   (package
     (name "proj")
-    (version "7.2.1")
+    (version "9.1.0")
     (source
      (origin
        (method url-fetch)
@@ -544,20 +523,10 @@ fully fledged Spatial SQL capabilities.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "050apzdn0isxpsblys1shrl9ccli5vd32kgswlgx1imrbwpg915k"))))
+         "0593vd9sac0c98j1f4rammd90d4xnhygbr6d49i8il6ajjdj7cl1"))))
     (build-system cmake-build-system)
-    (arguments
-     `(#:configure-flags '("-DUSE_EXTERNAL_GTEST=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("MAJOR 7 MINOR 2 PATCH 0") "MAJOR 7 MINOR 2 PATCH 1")))))))
-    (inputs
-     (list curl libjpeg-turbo libtiff sqlite))
-    (native-inputs
-     (list googletest pkg-config))
+    (native-inputs (list googletest pkg-config))
+    (propagated-inputs (list curl libtiff sqlite)) ;required by proj.pc
     (home-page "https://proj.org/")
     (synopsis "Coordinate transformation software")
     (description
@@ -573,6 +542,27 @@ lets developers use the functionality of Proj in their own software.")
                    license:asl2.0
                    ;; src/geodesic.*, src/tests/geodtest.cpp
                    license:x11))))
+
+; This is the last version of proj that provides the old proj.4 API.
+(define-public proj-7
+  (package (inherit proj)
+    (version "7.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://download.osgeo.org/proj/proj-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "050apzdn0isxpsblys1shrl9ccli5vd32kgswlgx1imrbwpg915k"))))
+    (arguments
+     `(#:configure-flags '("-DUSE_EXTERNAL_GTEST=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-version
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("MAJOR 7 MINOR 2 PATCH 0") "MAJOR 7 MINOR 2 PATCH 1")))))))))
 
 (define-public proj.4
   (package
@@ -627,14 +617,14 @@ projections.")
 (define-public python-pyproj
   (package
     (name "python-pyproj")
-    (version "3.2.1")
+    (version "3.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyproj" version))
         (sha256
           (base32
-            "0xrqpy708qlyd7nqjra0dl7nvkqzaj9w0v7wq4j5pxazha9n14sa"))))
+            "1gjg63irs44djyqbp9gg7s02d0y5i9cd1a83phyzp5fcj56y3n5k"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1073,13 +1063,13 @@ utilities for data translation and processing.")
   (package
     (name "python-cartopy")
     ;; This is a post-release fix that adds build_ext to setup.py.
-    (version "0.19.0.post1")
+    (version "0.20.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cartopy" version))
        (sha256
-        (base32 "0xnm8z3as3hriivdfd26s6vn5b63gb46x6vxw6gh1mwfm5rlg2sb"))))
+        (base32 "01lhnkhw22jp6hnrs5qvgkq4fqcni2sx7ydiyv8w8xxx5wpglq0d"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1097,11 +1087,16 @@ utilities for data translation and processing.")
      (list python-matplotlib
            python-numpy
            python-pykdtree
+           python-pyproj
            python-pyshp
            python-scipy
            python-shapely))
     (inputs
-     (list geos proj))
+     (list geos
+           ;; cartopy's setup.py looks for the proj executable.
+           ;; Not sure if it actually makes use of it since it
+           ;; probably uses proj only through pyproj.
+           proj))
     (native-inputs
      (list python-cython python-flufl-lock python-pytest))
     (home-page "https://scitools.org.uk/cartopy/docs/latest/")
@@ -1501,7 +1496,7 @@ map display.  Downloads map data from a number of websites, including
            libnova
            libpng
            openjpeg
-           proj
+           proj-7
            qtbase-5
            zlib))
     (native-search-paths
@@ -1953,7 +1948,8 @@ using the dataset of topographical information collected by
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
-     (list gdal
+     (list curl
+           gdal
            libjpeg-turbo
            proj
            qtbase-5
@@ -2189,6 +2185,7 @@ track your position right from your laptop.")
     (inputs
      `(("clipper" ,clipper)
        ("cups" ,cups)
+       ("curl" ,curl)
        ("gdal" ,gdal)
        ("proj" ,proj)
        ("qtbase" ,qtbase-5)
@@ -2450,6 +2447,7 @@ growing set of geoscientific methods.")
                              "ProcessingOtbAlgorithmsTest"
                              "test_core_authmanager"
                              "test_core_compositionconverter"
+                             "test_core_coordinatereferencesystem"
                              "test_core_gdalutils"
                              "test_core_labelingengine"
                              "test_core_layout"
@@ -2459,6 +2457,7 @@ growing set of geoscientific methods.")
                              "test_core_layoutpicture"
                              "test_core_legendrenderer"
                              "test_core_networkaccessmanager"
+                             "test_core_rasterfilewriter"
                              "test_core_tiledownloadmanager"
                              "test_gui_dualview"
                              "test_gui_htmlwidgetwrapper"
@@ -2711,6 +2710,7 @@ using third-party geocoders and other data sources.")
     (inputs
      (list boost
            cgal
+           curl
            gdal
            glew
            glu

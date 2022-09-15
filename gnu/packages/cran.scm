@@ -971,6 +971,28 @@ size and can be easily tested locally before being sent to a remote.")
 the system clipboards.")
     (license license:gpl3)))
 
+(define-public r-clvalid
+  (package
+    (name "r-clvalid")
+    (version "0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "clValid" version))
+              (sha256
+               (base32
+                "18aiyjhnh5mfdxbzns4cy0r8bymfikhwkybpn4g04qhli5ls8z83"))))
+    (properties `((upstream-name . "clValid")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-class r-cluster))
+    (home-page "https://cran.r-project.org/package=clValid")
+    (synopsis "Validation of clustering results")
+    (description
+     "Statistical and biological validation of clustering results.  This
+package implements Dunn Index, Silhouette, Connectivity, Stability, BHI and
+BSI.  Further information can be found in Brock, G et al. (2008) <doi:
+10.18637/jss.v025.i04>.")
+    (license license:lgpl3)))
+
 (define-public r-dlm
   (package
     (name "r-dlm")
@@ -6819,6 +6841,30 @@ Rscript front-end and facilitates turning an R script into an executable
 script.")
     (license license:gpl3+)))
 
+(define-public r-aricode
+  (package
+    (name "r-aricode")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "aricode" version))
+              (sha256
+               (base32
+                "0772l9gyrih48l1kymih0mb7szjqqnwcm4lzj0yzp4cs8l2mdf4f"))))
+    (properties `((upstream-name . "aricode")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-rcpp))
+    (home-page "https://github.com/jchiquet/aricode")
+    (synopsis "Efficient computations of standard clustering comparison measures")
+    (description
+     "This package implements an efficient O(n) algorithm based on
+bucket-sorting for fast computation of standard clustering comparison
+measures.  Available measures include @dfn{adjusted Rand index} (ARI),
+@dfn{normalized information distance} (NID), @dfn{normalized mutual
+information} (NMI), @dfn{adjusted mutual information} (AMI), @dfn{normalized
+variation information} (NVI) and entropy.")
+    (license license:gpl3+)))
+
 (define-public r-debugme
   (package
     (name "r-debugme")
@@ -7974,6 +8020,29 @@ sample Robust Rank-Order Distributional Test.")
 exponential, logarithm, square root, and related quantities.")
     (license license:gpl2+)))
 
+(define-public r-exposition
+  (package
+    (name "r-exposition")
+    (version "2.8.23")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ExPosition" version))
+              (sha256
+               (base32
+                "0x9400ggmgrnaish0cfgnyvw549g4ibfv9aj6vzq7j68n58vq405"))))
+    (properties `((upstream-name . "ExPosition")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-prettygraphs))
+    (home-page "https://cran.r-project.org/package=ExPosition")
+    (synopsis "Exploratory analysis with the singular value decomposition")
+    (description
+     "This package provides a variety of descriptive multivariate analyses
+with the singular value decomposition, such as principal components analysis,
+correspondence analysis, and multidimensional scaling.  See An ExPosition of
+the Singular Value Decomposition in R (Beaton et al 2014)
+<doi:10.1016/j.csda.2013.11.006>.")
+    (license license:gpl2)))
+
 (define-public r-complexplus
   (package
     (name "r-complexplus")
@@ -9063,6 +9132,30 @@ Data frames stored in the fst format have full random access, both in column
 and rows.  The fst format allows for random access of stored data and
 compression with the LZ4 and ZSTD compressors.")
     (license license:agpl3)))
+
+(define-public r-snftool
+  (package
+    (name "r-snftool")
+    (version "2.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "SNFtool" version))
+              (sha256
+               (base32
+                "05hz230aq5wbzhknxzr4iqv3nqjhbpf66n6bp1rc5h2jgz2yfbwq"))))
+    (properties `((upstream-name . "SNFtool")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-alluvial r-exposition))
+    (home-page "https://cran.r-project.org/package=SNFtool")
+    (synopsis "Similarity network fusion")
+    (description
+     "Similarity Network Fusion takes multiple views of a network and fuses
+them together to construct an overall status matrix.  The input to our
+algorithm can be feature vectors, pairwise distances, or pairwise
+similarities.  The learned status matrix can then be used for retrieval,
+clustering, and classification.")
+    ;; Any version of the GPL
+    (license license:gpl3+)))
 
 (define-public r-snowfall
   (package
@@ -10349,6 +10442,26 @@ currently supports common model types (e.g., @code{\"lm\"}, @code{\"glm\"})
 from the @code{stats} package, as well as numerous other model classes from
 other add-on packages.")
     (license license:expat)))
+
+(define-public r-prettygraphs
+  (package
+    (name "r-prettygraphs")
+    (version "2.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "prettyGraphs" version))
+              (sha256
+               (base32
+                "0yjpwxdy9mkj2k33zvd5klyv4ava46i19yls87n0bvf79y90ikpy"))))
+    (properties `((upstream-name . "prettyGraphs")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=prettyGraphs")
+    (synopsis "Publication-quality graphics")
+    (description
+     "This package provides simple and crisp publication-quality graphics for
+the ExPosition family of packages.  See An ExPosition of the Singular Value
+Decomposition in R (Beaton et al 2014) <doi:10.1016/j.csda.2013.11.006>.")
+    (license license:gpl2)))
 
 (define-public r-insight
   (package

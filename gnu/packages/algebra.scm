@@ -294,34 +294,33 @@ GP2C, the GP to C compiler, translates GP scripts to PARI programs.")
 
 (define-public cmh
   (package
-   (name "cmh")
-   (version "1.1.0")
-   (source (origin
-            (method url-fetch)
-            ;; Git repo at <https://gitlab.inria.fr/cmh/cmh>.
-            (uri (string-append "http://www.multiprecision.org/downloads/cmh-"
-                                version ".tar.gz"))
-            (sha256
-             (base32
-              "1ws2yhzxmm2l5xqqqcjcimmg40f9qq5l9i6d4i5434an9v9s8531"))
-             (patches (search-patches "cmh-support-fplll.patch"))))
-   (build-system gnu-build-system)
-   (inputs
-     (list gmp
-           mpfr
-           mpc
-           mpfrcx
-           fplll
-           pari-gp))
-   (synopsis "Igusa class polynomial computations")
-   (description
-    "The CMH software computes Igusa (genus 2) class polynomials, which
+    (name "cmh")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              ;; Git repo at <https://gitlab.inria.fr/cmh/cmh>.
+              (uri (string-append
+                    "https://www.multiprecision.org/downloads/cmh-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "0nadvqfmidgks1s7aljsf8dp32pz7vjaxyaym36m9bx4zr8msk91"))))
+    (build-system gnu-build-system)
+    (inputs (list gmp
+                  mpfr
+                  mpc
+                  mpfrcx
+                  fplll
+                  pari-gp))
+    (synopsis "Igusa class polynomial computations")
+    (description
+     "The CMH software computes Igusa (genus 2) class polynomials, which
 parameterize the CM points in the moduli space of 2-dimensional abelian
 varieties, i.e. Jacobians of hyperelliptic curves.
 It can also be used to compute theta constants at arbitrary
 precision.")
-   (license license:gpl3+)
-   (home-page "http://www.multiprecision.org/cmh/home.html")))
+    (license license:gpl3+)
+    (home-page "https://www.multiprecision.org/cmh/home.html")))
 
 (define-public giac
   (package

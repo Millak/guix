@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,9 +25,11 @@
   #:use-module (json)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (web uri)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 regex)
   #:export (%gnome-updater))
 
 ;;; Commentary:
@@ -60,18 +63,26 @@ not be determined."
   (define %not-dot
     (char-set-complement (char-set #\.)))
 
-  (define (even-minor-version? version)
-    (match (string-tokenize version %not-dot)
-      (((= string->number major) (= string->number minor) (= string->number micro))
-       ;; This is for things like GLib, with version strings like "2.72.3".
-       (and minor (even? minor) micro))
-      (((= string->number major) (= string->number minor))
-       ;; GNOME applications have version strings like "42.1" (only two
-       ;; integers) and are not subject to the odd/even policy.  MAJOR and
-       ;; MINOR should be valid numbers though; "43.alpha" is rejected.
-       (and major minor))
-      (_
-       #f)))
+  (define (pre-release-text? text)
+    (string-match "^(alpha|beta|rc)" text))
+
+  (define (release-version? version)
+    "Predicate to check if VERSION matches the format of a GNOME release
+version.  A release version can have more than one form, depending on the
+GNOME component, but typically it takes the form of a major-minor tuple, where
+minor can also be prefixed wih \"alpha\", \"beta\" or \"rc\".  For more
+information about the GNOME versioning scheme, see:
+https://discourse.gnome.org/t/new-gnome-versioning-scheme/4235"
+    (define components (string-tokenize version %not-dot))
+    (if (any pre-release-text? components)
+        #f                              ;ignore pre-releases
+        (match components
+          (((= string->number major) (= string->number minor) . _)
+           ;; Any other 3+ components versions such as "2.72.2".
+           (and major minor))
+          (((= string->number major) . _)
+           ;; A GNOME version strings like "42.1".
+           major))))
 
   (define upstream-name
     ;; Some packages like "NetworkManager" have camel-case names.
@@ -99,7 +110,7 @@ not be determined."
          (let* ((releases (assoc-ref releases upstream-name))
                 (latest   (fold (match-lambda*
                                   (((key . value) result)
-                                   (cond ((even-minor-version? key)
+                                   (cond ((release-version? key)
                                           (match result
                                             (#f
                                              (cons key value))

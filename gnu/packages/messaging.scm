@@ -24,7 +24,7 @@
 ;;; Copyright © 2020 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mason Hock <chaosmonk@riseup.net>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2022 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2020, 2021 Robert Karszniewicz <avoidr@posteo.de>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -2338,7 +2338,7 @@ QMatrixClient project.")
 (define-public mtxclient
   (package
     (name "mtxclient")
-    (version "0.8.0")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -2347,7 +2347,7 @@ QMatrixClient project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gkzgq6rzanvgyk47d25nqz7m0lwa3kz5pc0m4w0ada38xwhy2j9"))))
+        (base32 "041ckjvfxapv1q6x9xd8q70x43cz10x7p11aql58lnc0jp0kwry7"))))
     (arguments
      `(#:configure-flags
        (list
@@ -2383,7 +2383,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
@@ -2392,7 +2392,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n7czmv8mamaphpr2cnppddpgmb914pjd7msxng0fim6w7bhil14"))
+        (base32 "0a3wvv7vzh60hvyzy6776v6wa9d6n020684dqbcl4dw608mf4ahk"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2805,10 +2805,10 @@ validating international phone numbers.")
    (license license:asl2.0)))
 
 (define-public chatty
- (package
-   (name "chatty")
-   (version "0.6.7")
-   (source (origin
+  (package
+    (name "chatty")
+    (version "0.6.7")
+    (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://source.puri.sm/Librem5/chatty.git")
@@ -2823,51 +2823,52 @@ validating international phone numbers.")
               (sha256
                (base32
                 "11q07vjrrjf3k00kk41vm79brpq0qigz7l328br3g0li979kz32v"))))
-   (build-system meson-build-system)
-   (arguments
-    '(#:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'skip-updating-desktop-database
-          (lambda _
-            (substitute* "meson.build"
-              (("meson.add_install_script.*") ""))))
-        (add-before 'check 'pre-check
-          (lambda* (#:key tests? #:allow-other-keys)
-            (when tests?
-              ;; One test requires a running Xorg server.  Start one.
-              (system "Xvfb :1 &")
-              (setenv "DISPLAY" ":1")
-              ;; HOME must be writable for writing configuration files.
-              (setenv "HOME" "/tmp")))))))
-   (native-inputs
-    (list gettext-minimal
-          `(,glib "bin")
-          pkg-config
-          protobuf
-          xorg-server-for-tests))
-   (inputs
-    (list feedbackd
-          folks
-          gnome-desktop
-          gsettings-desktop-schemas
-          gspell
-          json-glib
-          libgcrypt
-          libgee
-          libhandy
-          libolm
-          libphonenumber
-          modem-manager
-          pidgin
-          purple-mm-sms
-          sqlite))
-   (propagated-inputs
-    (list adwaita-icon-theme evolution-data-server))
-   (synopsis "Mobile client for XMPP and SMS messaging")
-   (description "Chatty is a chat program for XMPP and SMS.  It works on mobile
+    (build-system meson-build-system)
+    (arguments
+     '(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-updating-desktop-database
+           (lambda _
+             (substitute* "meson.build"
+               (("meson.add_install_script.*") ""))))
+         (add-before 'check 'pre-check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; One test requires a running Xorg server.  Start one.
+               (system "Xvfb :1 &")
+               (setenv "DISPLAY" ":1")
+               ;; HOME must be writable for writing configuration files.
+               (setenv "HOME" "/tmp")))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config
+           protobuf
+           xorg-server-for-tests))
+    (inputs
+     (list feedbackd
+           folks-with-libsoup2
+           gnome-desktop
+           gsettings-desktop-schemas
+           gspell
+           json-glib
+           libgcrypt
+           libgee
+           libhandy
+           libolm
+           libphonenumber
+           modem-manager
+           pidgin
+           purple-mm-sms
+           sqlite))
+    (propagated-inputs
+     (list adwaita-icon-theme evolution-data-server-3.44))
+    (synopsis "Mobile client for XMPP and SMS messaging")
+    (description "Chatty is a chat program for XMPP and SMS.  It works on mobile
 as well as on desktop platforms.  It's based on libpurple and ModemManager.")
-   (home-page "https://source.puri.sm/Librem5/chatty")
-   (license license:gpl3+)))
+    (home-page "https://source.puri.sm/Librem5/chatty")
+    (license license:gpl3+)))
 
 (define-public mosquitto
   (package

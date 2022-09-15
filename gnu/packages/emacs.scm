@@ -45,6 +45,7 @@
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (gnu packages)
@@ -55,6 +56,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -80,6 +82,13 @@
   #:use-module (guix utils)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
+
+(define (%emacs-modules build-system)
+  (let ((which (build-system-name build-system)))
+    `((guix build ,(symbol-append which '-build-system))
+      (guix build utils)
+      (srfi srfi-1)
+      (ice-9 ftw))))
 
 (define-public emacs
   (package
@@ -129,11 +138,33 @@
     (arguments
      (list
       #:tests? #f                      ; no check target
+      #:modules (%emacs-modules build-system)
       #:configure-flags #~(list "--with-modules"
                                 "--with-cairo"
+                                "--with-native-compilation"
                                 "--disable-build-details")
+      #:make-flags #~(list "NATIVE_FULL_AOT=1")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'set-paths 'set-libgccjit-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (first-subdirectory/absolute directory)
+                (let ((files (scandir
+                              directory
+                              (lambda (file)
+                                (and (not (member file '("." "..")))
+                                     (file-is-directory? (string-append
+                                                          directory "/"
+                                                          file)))))))
+                  (and (not (null? files))
+                       (string-append directory "/" (car files)))))
+              (let* ((libgccjit-libdir
+                      (first-subdirectory/absolute ;; version
+                       (first-subdirectory/absolute ;; host type
+                        (search-input-directory inputs "lib/gcc")))))
+                (setenv "LIBRARY_PATH"
+                        (string-append (getenv "LIBRARY_PATH")
+                                       ":" libgccjit-libdir)))))
           (add-after 'unpack 'enable-elogind
             (lambda _
               (substitute* "configure.ac"
@@ -164,6 +195,20 @@
                 (("\\(tramp-compat-process-running-p \"(.*)\"\\)" all process)
                  (format #f "(or ~a (tramp-compat-process-running-p ~s))"
                          all (string-append "." process "-real"))))))
+          (add-after 'unpack 'patch-compilation-driver
+            (lambda _
+              (substitute* "lisp/emacs-lisp/comp.el"
+                (("\\(defcustom native-comp-driver-options nil")
+                 (format
+                  #f "(defcustom native-comp-driver-options '(~@{~s~^ ~})"
+                  (string-append
+                   "-B" #$(this-package-input "binutils") "/bin/")
+                  (string-append
+                   "-B" #$(this-package-input "glibc") "/lib/")
+                  (string-append
+                   "-B" #$(this-package-input "libgccjit") "/lib/")
+                  (string-append
+                   "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))
           (add-before 'configure 'fix-/bin/pwd
             (lambda _
               ;; Use `pwd', not `/bin/pwd'.
@@ -256,6 +301,14 @@
      (list gnutls
            ncurses
 
+           ;; To "unshadow" ld-wrapper in native builds
+           (make-ld-wrapper "ld-wrapper" #:binutils binutils)
+
+           ;; For native compilation
+           binutils
+           glibc
+           libgccjit
+
            ;; Required for "core" functionality, such as dired and compression.
            coreutils
            gzip
@@ -307,6 +360,9 @@
      (list (search-path-specification
             (variable "EMACSLOADPATH")
             (files '("share/emacs/site-lisp")))
+           (search-path-specification
+            (variable "EMACSNATIVELOADPATH")
+            (files '("lib/emacs/native-site-lisp")))
            (search-path-specification
             (variable "INFOPATH")
             (files '("share/info")))))
@@ -378,11 +434,14 @@ GTK and also enables xwidgets.")))
      (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags #~'())
         #~(list "--with-gnutls=no" "--disable-build-details"))
+       ((#:modules _) (%emacs-modules build-system))
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'restore-emacs-pdmp)
             (delete 'strip-double-wrap)))))
-    (inputs (list ncurses coreutils gzip))
+    (inputs (list ncurses coreutils gzip
+                  (make-ld-wrapper "ld-wrapper" #:binutils binutils)
+                  binutils glibc libgccjit zlib))
     (native-inputs (list autoconf pkg-config))))
 
 (define-public emacs-xwidgets
@@ -395,6 +454,7 @@ editor (with xwidgets support)")
      (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags #~'())
         #~(cons "--with-xwidgets" #$flags))
+       ((#:modules _) (%emacs-modules build-system))
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'restore-emacs-pdmp)
@@ -419,6 +479,7 @@ editor (console only)")
      (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags #~'())
         #~(delete "--with-cairo" #$flags))
+       ((#:modules _) (%emacs-modules build-system))
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'restore-emacs-pdmp)
@@ -437,6 +498,7 @@ editor (without an X toolkit)" )
      (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags #~'())
         #~(cons "--with-x-toolkit=no" #$flags))
+       ((#:modules _) (%emacs-modules build-system))
        ((#:phases phases)
         #~(modify-phases #$phases
            (delete 'restore-emacs-pdmp)

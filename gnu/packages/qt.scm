@@ -1381,7 +1381,7 @@ set of plugins for interacting with pulseaudio and GStreamer.")))
     (description "The @code{qtshadertools} module provides APIs and tools
 supporting shader pipeline functionality as offered in Qt Quick to operate on
 Vulkan, OpenGL and other main graphic APIs.")
-    (license (package-home-page qtbase))))
+    (license (package-license qtbase))))
 
 (define-public qtmultimedia
   (package
@@ -4233,3 +4233,9 @@ and import their menus over DBus.")
 services using the XML based SOAP protocol and without the need for a dedicated
 web server.")
     (license (list license:gpl2 license:gpl3))))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

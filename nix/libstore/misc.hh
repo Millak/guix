@@ -21,10 +21,6 @@ void computeFSClosure(StoreAPI & store, const Path & path,
     PathSet & paths, bool flipDirection = false,
     bool includeOutputs = false, bool includeDerivers = false);
 
-/* Return the path corresponding to the output identifier `id' in the
-   given derivation. */
-Path findOutput(const Derivation & drv, string id);
-
 bool willBuildLocally(const Derivation & drv);
 
 bool substitutesAllowed(const Derivation & drv);

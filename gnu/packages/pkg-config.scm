@@ -2,6 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -167,3 +168,26 @@ exec ~a \"$@\""
              (inherit original)
              (variable "PKG_CONFIG_PATH_FOR_BUILD")))
           (package-native-search-paths %pkg-config)))))
+
+(define-public pkgconf
+  (package
+    (name "pkgconf")
+    (version "1.9.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append  "https://distfiles.dereferenced.org/"
+                                   name "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "17b9cl2s99pzgblaj0yg49k3m0by5x78vwg4879vckymhys5bcsz"))))
+    (build-system gnu-build-system)
+    (arguments (list #:tests? #f))      ;TODO: package kyua
+    (home-page "http://pkgconf.org/")
+    (synopsis "Package compiler and linker metadata toolkit")
+    (description "@command{pkgconf} is a program which helps to configure
+compiler and linker flags for development libraries.  It is similar to
+pkg-config from freedesktop.org.  @code{libpkgconf} is a library which
+provides access to most of pkgconf's functionality, to allow other tooling
+such as compilers and IDEs to discover and use libraries configured by
+pkgconf.")
+    (license isc)))

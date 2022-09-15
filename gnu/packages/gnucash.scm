@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2020 Christopher Lam <christopher.lck@gmail.com>
@@ -26,12 +26,6 @@
 
 (define-module (gnu packages gnucash)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix utils)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix build-system cmake)
-  #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
@@ -42,9 +36,9 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages finance)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
-  #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages icu4c)
@@ -56,155 +50,146 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages)
+  #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix packages)
+  #:use-module (guix utils))
 
 (define-public gnucash
   ;; TODO: Unbundle libraries such as guile-json found under the "borrowed/"
   ;; directory.
   (package
     (name "gnucash")
-    (version "4.10")
+    (version "4.11")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
                            version "/gnucash-" version ".tar.bz2"))
        (sha256
-        (base32 "0fy9p5fgi2i0x7acg5fnkfdrxxd3dypi3ykvnj53hfbfky8vpm3z"))))
+        (base32 "069b216dkpjs9hp32s4bhi6f76lbc81qvbmjmz0dxq3v1piys57q"))))
+    (outputs '("out" "doc" "debug" "python"))
     (build-system cmake-build-system)
-    (inputs
-     `(("guile" ,guile-3.0)
-       ("boost" ,boost)
-       ("icu4c" ,icu4c)
-       ("glib" ,glib)
-       ("gtk" ,gtk+)
-       ("libdbi" ,libdbi)
-       ("libdbi-drivers" ,libdbi-drivers)
-       ("libofx" ,libofx)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)
-       ("aqbanking" ,aqbanking)
-       ("python" ,python)
-       ("perl-date-manip" ,perl-date-manip)
-       ("perl-finance-quote" ,perl-finance-quote)
-       ("tzdata" ,tzdata-for-tests)))
+    (arguments
+     (list
+      #:test-target "check"
+      #:configure-flags #~(list "-DWITH_PYTHON=ON")
+      #:make-flags #~(list "GUILE_AUTO_COMPILE=0")
+      #:imported-modules `(,@%gnu-build-system-modules
+                           (guix build cmake-build-system)
+                           (guix build glib-or-gtk-build-system))
+      #:modules '((guix build cmake-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-env-vars
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; At least one test is time-related and requires this
+              ;; environment variable.
+              (setenv "TZDIR" (search-input-directory inputs "share/zoneinfo"))
+              (substitute* "CMakeLists.txt"
+                (("set\\(SHELL /bin/bash\\)")
+                 (string-append "set(SHELL " (which "bash") ")")))))
+          ;; After wrapping gnc-fq-check and gnc-fq-helper we can no longer
+          ;; execute them with perl, so execute them directly instead.
+          (add-after 'unpack 'fix-finance-quote-check
+            (lambda _
+              (substitute* "gnucash/price-quotes.scm"
+                (("\"perl\" \"-w\" ") ""))))
+          ;; The qof test requires the en_US, en_GB, and fr_FR locales.
+          (add-before 'check 'install-locales
+            (lambda _
+              (setenv "LOCPATH" (getcwd))
+              (invoke "localedef" "-i" "en_US" "-f" "UTF-8" "./en_US.UTF-8")
+              (invoke "localedef" "-i" "en_GB" "-f" "UTF-8" "./en_GB.UTF-8")
+              (invoke "localedef" "-i" "fr_FR" "-f" "UTF-8" "./fr_FR.UTF-8")))
+          ;; There is about 100 MiB of documentation.
+          (add-after 'install 'install-docs
+            (lambda _
+              (mkdir-p (string-append #$output:doc "/share"))
+              (symlink (string-append
+                        #$(this-package-native-input "gnucash-docs")
+                        "/share/gnome")
+                       (string-append #$output:doc "/share/gnome"))))
+          (add-after 'install 'split-python-bindings
+            (lambda _
+              (let ((python-bindings (string-append
+                                      "lib/python"
+                                      #$(version-major+minor
+                                         (package-version python)))))
+                (mkdir-p (string-append #$output:python "/" python-bindings))
+                (copy-recursively
+                 (string-append #$output "/" python-bindings)
+                 (string-append #$output:python "/" python-bindings))
+                (delete-file-recursively
+                 (string-append #$output "/" python-bindings)))))
+          (add-after 'install-docs 'wrap-programs
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (for-each
+               (lambda (prog)
+                 (wrap-program (search-input-file
+                                outputs (string-append "bin/" prog))
+                   `("GNC_DBD_DIR" =
+                     (,(search-input-directory inputs "lib/dbd")))
+                   `("PERL5LIB" ":" prefix
+                     ,(map (lambda (o)
+                             (string-append o "/lib/perl5/site_perl/"
+                                            #$(package-version perl)))
+                           (if (string=? prog "gnc-fq-helper")
+                               (list
+                                #$@(transitive-input-references
+                                    'inputs
+                                    (map (lambda (l)
+                                           (assoc l (package-inputs this-package)))
+                                         '("perl-finance-quote"
+                                           "perl-date-manip"))))
+                               (list
+                                #$@(transitive-input-references
+                                    'inputs
+                                    (map (lambda (l)
+                                           (assoc l (package-inputs this-package)))
+                                         '("perl-finance-quote")))))))))
+               '("gnucash"
+                 "gnc-fq-check"
+                 "gnc-fq-helper"
+                 "gnc-fq-dump"))))
+          (add-after 'install 'glib-or-gtk-compile-schemas
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+          (add-after 'install 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
-     `(("glib" ,glib "bin")             ; glib-compile-schemas, etc.
-       ("intltool" ,intltool)
-       ("gmp" ,gmp)
-       ("googlemock" ,(package-source googletest))
-       ("googletest" ,googletest)
-       ("gnucash-docs" ,gnucash-docs)
-       ("swig" ,swig)
-       ("pkg-config" ,pkg-config)))
+     (list gmp
+           `(,glib "bin")               ;glib-compile-schemas, etc.
+           gnucash-docs
+           googletest
+           intltool
+           pkg-config
+           swig))
+    (inputs
+     (list aqbanking
+           boost
+           glib
+           gtk+
+           guile-3.0
+           icu4c
+           libdbi
+           libdbi-drivers
+           libofx
+           libxml2
+           libxslt
+           perl-date-manip
+           perl-finance-quote
+           python
+           tzdata-for-tests
+           webkitgtk-with-libsoup2))
     (propagated-inputs
      ;; dconf is required at runtime according to README.dependencies.
      (list dconf))
-    (outputs '("out" "doc" "debug" "python"))
-    (arguments
-     `(#:test-target "check"
-       #:configure-flags '("-DWITH_PYTHON=ON")
-       #:make-flags '("GUILE_AUTO_COMPILE=0")
-       #:modules ((guix build cmake-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  (guix build utils))
-       #:imported-modules (,@%gnu-build-system-modules
-                           (guix build cmake-build-system)
-                           (guix build glib-or-gtk-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-gmock
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir "gmock")
-             (copy-recursively (assoc-ref inputs "googlemock") "gmock")
-             (setenv "GMOCK_ROOT" (string-append (getcwd) "/gmock/googlemock"))
-             #t))
-         (add-after 'unpack 'set-env-vars
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((tzdata (assoc-ref inputs "tzdata")))
-               ;; At least one test is time-related and requires this
-               ;; environment variable.
-               (setenv "TZDIR"
-                       (string-append tzdata
-                                      "/share/zoneinfo"))
-               (substitute* "CMakeLists.txt"
-                 (("set\\(SHELL /bin/bash\\)")
-                  (string-append "set(SHELL " (which "bash") ")")))
-               #t)))
-         ;; After wrapping gnc-fq-check and gnc-fq-helper we can no longer
-         ;; execute them with perl, so execute them directly instead.
-         (add-after 'unpack 'fix-finance-quote-check
-           (lambda _
-             (substitute* "gnucash/price-quotes.scm"
-                (("\"perl\" \"-w\" ") ""))
-             #t))
-         ;; The qof test requires the en_US, en_GB, and fr_FR locales.
-         (add-before 'check 'install-locales
-           (lambda _
-             (setenv "LOCPATH" (getcwd))
-             (invoke "localedef" "-i" "en_US" "-f" "UTF-8" "./en_US.UTF-8")
-             (invoke "localedef" "-i" "en_GB" "-f" "UTF-8" "./en_GB.UTF-8")
-             (invoke "localedef" "-i" "fr_FR" "-f" "UTF-8" "./fr_FR.UTF-8")
-             #t))
-         ;; There are about 100 megabytes of documentation.
-         (add-after 'install 'install-docs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((docs (assoc-ref inputs "gnucash-docs"))
-                   (doc-output (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc-output "/share"))
-               (symlink (string-append docs "/share/gnome")
-                        (string-append doc-output "/share/gnome"))
-               #t)))
-         (add-after 'install 'split-python-bindings
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (python-output (assoc-ref outputs "python"))
-                    (python-bindings (string-append
-                                      "lib/python"
-                                      ,(version-major+minor
-                                        (package-version python)))))
-               (mkdir-p (string-append python-output "/" python-bindings))
-               (copy-recursively
-                (string-append out "/" python-bindings)
-                (string-append python-output "/" python-bindings))
-               (delete-file-recursively
-                (string-append out "/" python-bindings)))))
-         (add-after 'install-docs 'wrap-programs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (for-each (lambda (prog)
-                         (wrap-program (string-append (assoc-ref outputs "out")
-                                                      "/bin/" prog)
-                           `("GNC_DBD_DIR" =
-                             (,(string-append
-                                (assoc-ref inputs "libdbi-drivers")
-                                "/lib/dbd")))
-                           `("PERL5LIB" ":" prefix
-                             ,(map (lambda (o)
-                                     (string-append o "/lib/perl5/site_perl/"
-                                                    ,(package-version perl)))
-                                   (if (string=? prog "gnc-fq-helper")
-                                       (list
-                                        ,@(transitive-input-references
-                                           'inputs
-                                           (map (lambda (l)
-                                                  (assoc l (package-inputs this-package)))
-                                                '("perl-finance-quote"
-                                                  "perl-date-manip"))))
-                                       (list
-                                        ,@(transitive-input-references
-                                           'inputs
-                                           (map (lambda (l)
-                                                  (assoc l (package-inputs this-package)))
-                                                '("perl-finance-quote")))))))))
-                       '("gnucash"
-                         "gnc-fq-check"
-                         "gnc-fq-helper"
-                         "gnc-fq-dump"))))
-         (add-after 'install 'glib-or-gtk-compile-schemas
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'install 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (home-page "https://www.gnucash.org/")
     (synopsis "Personal and small business financial accounting software")
     (description
@@ -221,30 +206,31 @@ installed as well as Yelp, the Gnome help browser.")
 ;; This package is not public, since we use it to build the "doc" output of
 ;; the gnucash package (see above).  It would be confusing if it were public.
 (define gnucash-docs
-  (let ((revision ""))              ;set to the empty string when no revision
+  (let ((revision ""))               ;set to the empty string when no revision
     (package
       (name "gnucash-docs")
       (version (package-version gnucash))
       (source
        (origin
          (method url-fetch)
-         (uri (string-append "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
-                             version "/gnucash-docs-" version ".1" revision ".tar.gz"))
+         (uri (string-append
+               "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
+               version "/gnucash-docs-" version revision ".tar.gz"))
          (sha256
-          (base32 "0cf2m1lgpq6if89w8anz522nar5kwpfzi0kacymw17m42fzxz0cg"))))
+          (base32 "162qq8p76grczdnsd4qbpxn1d8ap6l2n1a00a601v5hij7rqwfx8"))))
       (build-system cmake-build-system)
       ;; These are native-inputs because they are only required for building the
       ;; documentation.
       (native-inputs
-       `(("libxml2" ,libxml2)
-         ;; The "check" target needs the docbook xml package for validating the
-         ;; DocBook XML during the tests.
-         ("docbook-xml" ,docbook-xml)
-         ("libxslt" ,libxslt)
-         ("docbook-xsl" ,docbook-xsl)
-         ("scrollkeeper" ,scrollkeeper)))
+       ;; The "check" target needs docbook-xml package to validate the DocBook
+       ;; XML during the tests.
+       (list docbook-xml
+             docbook-xsl
+             libxml2
+             libxslt
+             scrollkeeper))
       (arguments
-       `(#:tests? #f)) ;no test target
+       `(#:tests? #f))                  ;no test target
       (home-page "https://www.gnucash.org/")
       (synopsis "Documentation for GnuCash")
       (description

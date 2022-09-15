@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2017, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016, 2017, 2018, 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016-2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Frederick M. Muriithi <fredmanglis@gmail.com>
@@ -383,6 +383,33 @@ Blog, News or Announcements section to a Sphinx website.")
      "This package provides a sphinx extension for creating panels in a
 grid layout.  It is no longer maintained and users are encouraged to use
 @code{sphinx-design} instead.")
+    (license license:expat)))
+
+(define-public python-sphinx-tabs
+  (package
+    (name "python-sphinx-tabs")
+    (version "3.4.1")
+    (home-page "https://github.com/executablebooks/sphinx-tabs")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sphinx-tabs" version))
+              (sha256
+               (base32
+                "0cmqw5ck2jcxqyf5ibz543idspq0g0fdzxh3fpah1r0nhfg9z86j"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:tests? #f                ;TODO: requires sphinx-testing and rinohtype
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'loosen-docutils-requirement
+                    (lambda _
+                      (substitute* "setup.py"
+                        (("docutils~=0\\.18\\.0")
+                         "docutils>=0.17.0")))))))
+    (propagated-inputs
+     (list python-docutils python-pygments python-sphinx))
+    (synopsis "Tabbed views for Sphinx")
+    (description
+     "Create tabbed content in Sphinx documentation when building HTML.")
     (license license:expat)))
 
 (define-public python-sphinxcontrib-programoutput
@@ -986,7 +1013,7 @@ automated way to document command-line programs.  It scans
 (define-public python-sphinx-theme-builder
   (package
     (name "python-sphinx-theme-builder")
-    (version "0.2.0a14")
+    (version "0.2.0b1")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi archive
@@ -996,7 +1023,7 @@ automated way to document command-line programs.  It scans
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1brqp34q716gglliallbgq4m63hl3nk8j6w8wcl8f2vvnkch6v98"))))
+         "15gvwzd4l3wcmd6fns8xvv44yzxmamr1nfn28mp12sdw2y10v2ba"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -1023,7 +1050,7 @@ automated way to document command-line programs.  It scans
            python-click
            python-nodeenv
            python-packaging
-           python-pep621
+           python-pyproject-metadata
            python-rich
            python-sphinx-autobuild
            python-tomli))

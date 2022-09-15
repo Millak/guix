@@ -35,6 +35,8 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
+;;; Copyright © 2022 Artyom Bologov <mail@aartaka.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -184,6 +186,34 @@ portable between implementations.")
 (define-public ecl-alexandria
   (sbcl-package->ecl-package sbcl-alexandria))
 
+(define-public sbcl-alea
+  (package
+    (name "sbcl-alea")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/eXodiquas/alea")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-alea" version))
+       (sha256
+        (base32 "0nd9fdjli22ygfw3c8k9nh7d36c92866hics5aij6x7ly1q781gz"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-fiveam))
+    (synopsis "Dice rolling library")
+    (description
+     "This package provides a Common Lisp library for dice rolling and working
+with dice-roll statistics.")
+    (home-page "https://github.com/eXodiquas/alea")
+    (license license:expat)))
+
+(define-public cl-alea
+  (sbcl-package->cl-source-package sbcl-alea))
+
+(define-public ecl-alea
+  (sbcl-package->ecl-package sbcl-alea))
+
 (define-public sbcl-map-bind
   (let ((commit "532d55d93540c632e22b2cd264b5daa5f9d3d900")
         (revision "0"))
@@ -291,6 +321,37 @@ collection.")
 
 (define-public cl-bodge-utilities
   (sbcl-package->cl-source-package sbcl-bodge-utilities))
+
+(define-public sbcl-meta
+  (let ((commit "74faea662139fbbfb9c99341aaed989f5b0e9da3")
+        (revision "0"))
+    (package
+      (name "sbcl-meta")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/frideau/meta")
+               (commit commit)))
+         (file-name (git-file-name "cl-meta" version))
+         (sha256
+          (base32 "08s53zj3mcx82kszp1bg2vsb4kydvkc70kj4hpq9h1l5a1wh44cy"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-named-readtables))
+      (home-page "https://gitlab.common-lisp.net/frideau/meta")
+      (synopsis "Recursive-descent parser DSL for Common Lisp")
+      (description
+       "This package provides a recursive-descent parser DSL for Common Lisp.
+It's intended as a simpler alternative to parser generators.")
+      (license license:bsd-2))))
+
+(define-public cl-meta
+  (sbcl-package->cl-source-package sbcl-meta))
+
+(define-public ecl-meta
+  (sbcl-package->ecl-package sbcl-meta))
 
 (define-public sbcl-bodge-queue
   (let ((commit "948c9a501dcd412689952d09eb7453ec2722336a")
@@ -3807,6 +3868,37 @@ and designers will be able to understand the embedded HTML.")
 
 (define-public cl-markup-reader
   (sbcl-package->cl-source-package sbcl-markup-reader))
+
+(define-public sbcl-xml-emitter
+  (package
+    (name "sbcl-xml-emitter")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/VitoVan/xml-emitter")
+                    (commit version)))
+              (file-name (git-file-name "cl-xml-emitter" version))
+              (sha256
+               (base32
+                "1w9yx8gc4imimvjqkhq8yzpg3kjrp2y37rjix5c1lnz4s7bxvhk9"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-1am))
+    (inputs (list sbcl-cl-utilities))
+    (synopsis "Common lisp library for emitting XML output")
+    (description
+     "This package provides functions to emit XML, with some complexity for
+handling indentation.  It can be used to produce all sorts of useful XML
+output; it has an RSS 2.0 emitter built in, so you can make RSS feeds
+trivially.")
+    (home-page "https://www.cliki.net/xml-emitter")
+    (license license:expat)))
+
+(define-public cl-xml-emitter
+  (sbcl-package->cl-source-package sbcl-xml-emitter))
+
+(define-public ecl-xml-emitter
+  (sbcl-package->ecl-package sbcl-xml-emitter))
 
 (define-public sbcl-cl-mustache
   (package
@@ -7375,8 +7467,8 @@ cl-plumbing libraries.")
   (sbcl-package->ecl-package sbcl-cl-octet-streams))
 
 (define-public sbcl-lzlib
-  (let ((commit "c8102fc8c959b7c418eb60657bd6c8b875f10ba9")
-        (revision "1"))
+  (let ((commit "22767ca12d1c1bd59a7ae1f9c5ef7d2e937206bb")
+        (revision "2"))
     (package
       (name "sbcl-lzlib")
       (version (git-version "2.0" revision commit))
@@ -7388,7 +7480,7 @@ cl-plumbing libraries.")
                (commit commit)))
          (file-name (git-file-name "cl-lzlib" version))
          (sha256
-          (base32 "1glg1y1s1mqgypvxp0ss11cicrddri006wqwhy47lgq7mk5853zz"))))
+          (base32 "1dxzlkay7aqcs65h2f7j7rl4sdjija60dshlahzyllfw174p9d3m"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
@@ -22041,6 +22133,106 @@ instead of #'FOO.
 (define-public ecl-nkeymaps
   (sbcl-package->ecl-package sbcl-nkeymaps))
 
+(define-public sbcl-njson
+  (package
+    (name "sbcl-njson")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/atlas-engineer/njson")
+                    (commit version)))
+              (file-name (git-file-name "cl-njson" version))
+              (sha256
+               (base32
+                "0lv3q1841s4avii1jp89r91jq21sids2ycpy2id0kzhrljzhmy6j"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list sbcl-cl-json))
+    (native-inputs (list sbcl-lisp-unit2))
+    (home-page "https://github.com/atlas-engineer/njson")
+    (synopsis "JSON handling framework for Common Lisp")
+    (description
+     "NJSON aims to make it convenient for one to decode, encode,
+and process JSON data, in the minimum keystrokes/minutes possible.
+
+NJSON is parser-independent, with existing Common Lisp JSON parsers being
+loadable as additional system.  @code{cl-json} is included by default, though.
+Conveniences that NJSON provides are:
+
+@itemize
+
+@item @code{encode} and @code{decode} as single entry points for JSON reading
+and writing, be it from streams/string/files, or from those.
+
+@item @code{jget}, @code{jrem}, @code{jtruep}, and their aliases to
+access/delete the decoded objects' properties and check their truth value
+without the need to worry about the low-level details of how these values are
+decoded.
+
+@item @code{jif}, @code{jwhen}, @code{jor}, @code{jand}, and other macros
+mimicking Lisp ones, while using truth values of JSON-decoded data.
+
+@end itemize\n")
+    (license license:bsd-3)))
+
+(define-public cl-njson
+  (sbcl-package->cl-source-package sbcl-njson))
+
+(define-public ecl-njson
+  (sbcl-package->ecl-package sbcl-njson))
+
+(define-public sbcl-nactivitypub
+  (package
+    (name "sbcl-nactivitypub")
+    (version "0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/atlas-engineer/nactivitypub")
+                    (commit version)))
+              (file-name (git-file-name "cl-nactivitypub" version))
+              (sha256
+               (base32
+                "07n8a9cfzc96kwsb6z4v5ns09ad2qyq45bjb779azcs7ds144a6r"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list sbcl-cl-str
+                  sbcl-dexador
+                  sbcl-local-time
+                  sbcl-lparallel
+                  sbcl-njson
+                  sbcl-quri
+                  sbcl-serapeum))
+    (home-page "https://github.com/atlas-engineer/nactivitypub")
+    (synopsis
+     "Common Lisp implementation of ActivityPub and ActivityStreams standards")
+    (description
+     "This package provides a Common Lisp implementation of ActivityPub and
+ActivityStreams standards for social networking.
+
+Features:
+@itemize
+
+@item Parsing and un-parsing ActivityStreams JSON-LD objects to/from CLOS
+objects with convenient accessors on those.
+
+@item Sending and fetching ActivityStreams objects to/from the
+ActivityStreams-enabled HTTP(S) URLs.
+
+@item Semantic info extraction with methods like @code{name*}, @code{url*},
+@code{author*}, and @code{published*}.
+
+@item No reliance on JSON parser.  @code{njson} is used for parser-independent
+JSON handling.  Load the parser backend you prefer!
+
+@end itemize")
+    (license license:bsd-3)))
+
+(define-public cl-nactivitypub
+  (sbcl-package->cl-source-package sbcl-nactivitypub))
+
+(define-public ecl-nactivitypub
+  (sbcl-package->ecl-package sbcl-nactivitypub))
+
 (define-public sbcl-utils-kt
   (let ((commit "4adfe2889036ab5ffdd3cc2182ca2cc692bf11ff"))
     (package
@@ -23873,6 +24065,67 @@ processing named definitions.")
 
 (define-public ecl-definitions-systems
   (sbcl-package->ecl-package sbcl-definitions-systems))
+
+(define-public sbcl-draw-cons-tree
+  (let ((commit "04334f5885a85cd7127db8dda3f6d6686a0438b1")
+        (revision "0"))
+    (package
+      (name "sbcl-draw-cons-tree")
+      (version (git-version "1.0" revision commit))
+      ;; https://github.com/quicklisp/quicklisp-projects/issues/2149
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoe/draw-cons-tree")
+               (commit commit)))
+         (file-name (git-file-name "cl-draw-cons-tree" version))
+         (sha256
+          (base32 "1523bdkq8a5qn0qp9q7r16w47y6jb0hkfj7hbjfj6mg3xv001s3x"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam sbcl-split-sequence))
+      (inputs
+       (list sbcl-alexandria))
+      (synopsis "Draw an ascii picture of a cons tree")
+      (description
+       "@code{cl-draw-cons-tree} draws a cons tree in ASCII-art style.")
+      (home-page "https://github.com/phoe/draw-cons-tree/")
+      (license license:unlicense))))
+
+(define-public cl-draw-cons-tree
+  (sbcl-package->cl-source-package sbcl-draw-cons-tree))
+
+(define-public ecl-draw-cons-tree
+  (sbcl-package->ecl-package sbcl-draw-cons-tree))
+
+(define-public sbcl-cl-morse
+  (package
+    (name "sbcl-cl-morse")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/em7/cl-morse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-morse" version))
+       (sha256
+        (base32 "01sh34nhbsx2dsrb2r1vkd4j8lzm9gjd5jfi8a4cs4m3djjwhh5i"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list sbcl-cl-ppcre))
+    (native-inputs (list sbcl-fiveam))
+    (home-page "https://github.com/em7/cl-morse")
+    (synopsis "Morse code translation library for Common Lisp")
+    (description
+     "@code{cl-morse} is a Morse code translation library for Common Lisp.")
+    (license license:bsd-3)))
+
+(define-public cl-morse
+  (sbcl-package->cl-source-package sbcl-cl-morse))
+
+(define-public ecl-cl-morse
+  (sbcl-package->ecl-package sbcl-cl-morse))
 
 (define-public sbcl-smug
   (let ((commit "647a2428df297e1dd183ba7c19574bdb1320ae79")

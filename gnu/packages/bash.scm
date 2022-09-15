@@ -37,6 +37,8 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages less)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -439,3 +441,45 @@ in Bash, but you can use it to test any UNIX program.")
 function interface (FFI) directly in your shell.  In other words, it allows
 you to call routines in shared libraries from within Bash.")
     (license license:expat)))
+
+(define-public blesh
+  (package
+    (name "blesh")
+    (version "0.4.0-devel2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/akinomyoga/ble.sh")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02fdjyh4x6wr5hg3i86nsxhz8ysgjrvvxdmk6pqr0lm8ngw9p3sh"))))
+    (arguments
+     (list #:make-flags #~(list (string-append "PREFIX="
+                                               #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'pretend-contrib-.git-exists
+                          (lambda _
+                            (mkdir-p "contrib/.git")))
+                        (add-after 'unpack 'make-readlink-work
+                          (lambda _
+                            (substitute* "ble.pp"
+                              (("PATH=/bin:/usr/bin readlink")
+                               (search-input-file %build-inputs
+                                                  "/bin/readlink")))))
+                        (delete 'configure) ;no configure
+                        (add-before 'check 'use-LANG-for-tests
+                          (lambda _
+                            (setenv "LANG"
+                                    (getenv "LC_ALL"))
+                            (unsetenv "LC_ALL"))))))
+    (build-system gnu-build-system)
+    (native-inputs (list less))
+    (home-page "https://github.com/akinomyoga/ble.sh")
+    (synopsis "Bash Line Editor")
+    (description
+     "Bash Line Editor (ble.sh) is a command line editor written in pure Bash
+which replaces the default GNU Readline.  It adds syntax highlighting, auto
+suggestions, vim modes, and more to Bash interactive sessions.")
+    (license license:bsd-3)))

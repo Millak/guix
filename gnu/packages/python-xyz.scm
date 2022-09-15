@@ -4381,6 +4381,18 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
     ;; licensed under the PFSL, BSD 2-clause, and GPLv3+ licenses.
     (license (list license:public-domain license:psfl license:bsd-2 license:gpl3+))))
 
+;; TODO: Make this the default in the next rebuild cycle.
+(define-public python-docutils-0.19
+  (package
+    (inherit python-docutils)
+    (version "0.19")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "docutils" version))
+              (sha256
+               (base32
+                "1rprvir116g5rz2bgzkzgyn6mv0z8582rz7bgxbpy2y3adkmm69k"))))))
+
 ;; awscli refuses to be built with docutils < 0.16.
 (define-public python-docutils-0.15
   (package
@@ -10469,21 +10481,20 @@ plugin for flake8 to check PEP-8 naming conventions.")
                           (invoke "pytest") #t))))))
     (native-inputs (list python-mock python-pytest python-testpath))))
 
-
-(define-public python-pep621
+(define-public python-pyproject-metadata
   (package
-    (name "python-pep621")
-    (version "0.4.0")
+    (name "python-pyproject-metadata")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/FFY00/python-pep621")
+             (url "https://github.com/FFY00/python-pyproject-metadata")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0nzig7bmzf0xx5svxlf065mrzihr0ci4p1yaxka9flqjba98flpr"))))
+         "00zahgw9zjfqwf0218bj5k732aibnn68cq1p8f0wmbirb7fy5k31"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -10511,7 +10522,7 @@ plugin for flake8 to check PEP-8 naming conventions.")
                         "install" "--no-deps" "--prefix" #$output whl)))))))
     (propagated-inputs (list python-packaging))
     (native-inputs (list python-pypa-build python-pytest python-tomli))
-    (home-page "https://github.com/FFY00/python-pep621")
+    (home-page "https://github.com/FFY00/python-pyproject-metadata")
     (synopsis "Dataclass for PEP 621 metadata")
     (description "This project does not implement the parsing of
 @file{pyproject.toml} containing PEP 621 metadata.  Instead, given a Python
@@ -10519,6 +10530,10 @@ data structure representing PEP 621 metadata (already parsed), it will
 validate this input and generate a PEP 643-compliant metadata
 file (e.g. @file{PKG-INFO}).")
     (license license:expat)))
+
+;; pep621 was renamed to pyproject-metadata.
+(define-public python-pep621
+  (deprecated-package "python-pep621" python-pyproject-metadata))
 
 (define-public python-pyflakes
   (package
@@ -18813,21 +18828,20 @@ from the header, as well as section details and data available.")
 (define-public python-qrcode
   (package
     (name "python-qrcode")
-    (version "6.1")
+    (version "7.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qrcode" version))
        (sha256
-        (base32 "0sa3n298b9jpz6zn0birnjii3mg9sihjq28n9nzjlzv09y2m6ljh"))))
+        (base32 "0y35jlwfvkgn9341lzshyaqgpp61vysjh107vhdd96ya83r6ynip"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: Tests require packaging 'pymaging'.
      '(#:tests? #f))
     (propagated-inputs
      (list python-lxml ; for SVG output
-           python-pillow ; for PNG output
-           python-six))
+           python-pillow)) ; for PNG output
     (home-page "https://github.com/lincolnloop/python-qrcode")
     (synopsis "QR Code image generator")
     (description "This package provides a pure Python QR Code generator
@@ -20623,14 +20637,14 @@ ignoring formatting changes.")
 (define-public python-tqdm
   (package
     (name "python-tqdm")
-    (version "4.62.3")
+    (version "4.64.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "tqdm" version))
          (sha256
            (base32
-             "03cjj8jl8iybvfjbpvdql5qfslzfv043g7w6nx8rhv2h2xrdwnfk"))))
+             "1r7i9kswpnrx4ppfvzz6discb04j1rqkqxdwa2sc2la900m6hksz"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -23485,13 +23499,13 @@ source via the Abstract Syntax Tree.")
 (define-public python-astunparse
   (package
     (name "python-astunparse")
-    (version "1.6.2")
+    (version "1.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astunparse" version))
        (sha256
-        (base32 "0rzbc44xcvzjhhiy7wac96mgal5mcjz1mfq8rmvgswskf4kf9cys"))))
+        (base32 "0wh8jjvwafxc7rvbyb13cdwndkicm7cry1bd8p1q9l7has23mnas"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; there are none
     (propagated-inputs
@@ -23506,17 +23520,25 @@ distribution.")
 (define-public python-gast
   (package
     (name "python-gast")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gast" version))
        (sha256
-        (base32 "1xv77kzghiqfm4fnvlv0p878ma152dvcfkly3jij89lqigxcw7zq"))))
+        (base32 "1sidaczriw54pfkj3523y9j9q2harrczc1qqgnfaylz641ca5gng"))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list python-pytest))
     (propagated-inputs
      (list python-astunparse))
-    (home-page "https://pypi.org/project/gast/")
+    (home-page "https://github.com/serge-sans-paille/gast/")
     (synopsis "Generic Python AST that abstracts the underlying Python version")
     (description
      "GAST provides a compatibility layer between the AST of various Python

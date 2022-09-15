@@ -42,7 +42,7 @@
 ;;; Copyright © 2020 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
@@ -1344,28 +1344,39 @@ Escape key when Left Control is pressed and released on its own.")
 (define-public libwacom
   (package
     (name "libwacom")
-    (version "1.10")
+    (version "2.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://github.com/linuxwacom/libwacom/releases/download/"
-                    "libwacom-" version "/libwacom-" version ".tar.bz2"))
+                    "libwacom-" version "/libwacom-" version ".tar.xz"))
               (sha256
                (base32
-                "14aj4ss1chxxgaprs9sfriia2ch9wj9rqay0ndkzk1m7jx2qrjgn"))))
-    (build-system glib-or-gtk-build-system)
+                "056l5dndd8654bmwlxxhvx8082s7pp9bg0wm68zb56iz3rv25l6h"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("--disable-static")))
+     (list
+      #:configure-flags #~(list "--default-library=shared")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'fix-tests
+                     (lambda _
+                       ;; Do not attempt to run systemd-specific commands.
+                       (substitute* "test/test_udev_rules.py"
+                         (("(systemd-hwdb|systemctl)")
+                          "true")))))))
     (native-inputs
      (list pkg-config
            ;; For tests.
-           python))
+           python
+           python-evdev
+           python-libevdev
+           python-pytest
+           python-pyudev))
     (inputs
-     (list gtk+ libgudev eudev libxml2))
+     (list gtk+ eudev libxml2))
     (propagated-inputs
-     ;; libwacom includes header files that include GLib, and libinput uses
-     ;; those header files.
-     (list glib))
+     ;; libwacom.pc 'Requires' these:
+     (list glib libgudev))
     (home-page "https://linuxwacom.github.io/")
     (synopsis "Helper library for Wacom tablet settings")
     (description
@@ -1378,7 +1389,7 @@ Wacom tablet applet.")
 (define-public xf86-input-wacom
   (package
     (name "xf86-input-wacom")
-    (version "0.39.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
@@ -1387,25 +1398,19 @@ Wacom tablet applet.")
              "xf86-input-wacom-" version "/"
              "xf86-input-wacom-" version ".tar.bz2"))
        (sha256
-        (base32 "11qk58az6qwii774ga45h5yqzipwn56f0d74kdbajqdv45p85gqj"))))
+        (base32 "04ks577ag2yir7kssv8zhig4rx9xqj2wifmlrcmy4k9lgw379di3"))))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-sdkdir="
-                            (assoc-ref %outputs "out")
-                            "/include/xorg")
-             (string-append "--with-xorg-conf-dir="
-                            (assoc-ref %outputs "out")
-                            "/share/X11/xorg.conf.d"))))
+     (list #:configure-flags
+           #~(list (string-append "--with-sdkdir=" #$output "/include/xorg")
+                   (string-append "--with-xorg-conf-dir=" #$output
+                                  "/share/X11/xorg.conf.d"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list xorg-server libxrandr libxinerama libxi eudev))
+    (native-inputs (list pkg-config))
+    (inputs (list xorg-server libxrandr libxinerama libxi eudev))
     (home-page "https://linuxwacom.github.io/")
     (synopsis "Wacom input driver for X")
-    (description
-     "The xf86-input-wacom driver is the wacom-specific X11 input driver for
-the X.Org X Server version 1.7 and later (X11R7.5 or later).")
+    (description "The xf86-input-wacom driver is the wacom-specific X11 input
+driver for the X.Org X Server version 1.7 and later (X11R7.5 or later).")
     (license license:x11)))
 
 (define-public redshift
@@ -1576,7 +1581,7 @@ to an arbitrary balanced color.")
 (define-public gammastep
   (package
     (name "gammastep")
-    (version "2.0.8")
+    (version "2.0.9")
     (source
      (origin
        (method git-fetch)
@@ -1585,20 +1590,20 @@ to an arbitrary balanced color.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "071f3iqdbblb3awnx48j19kspk6l2g3658za80i2mf4gacgq9fm1"))))
+        (base32 "1rcciccnwhxh97wlr9gcirdxv33za369jsrgrfzcp3042824pm8i"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-python-and-typelib
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Gammastep GUI needs Typelib files from GTK and access
-             ;; to Python libraries.
-             (wrap-program (string-append (assoc-ref outputs "out")
-                                          "/bin/gammastep-indicator")
-               `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-               `("GI_TYPELIB_PATH" ":" prefix
-                 (,(getenv "GI_TYPELIB_PATH")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-python-and-typelib
+            (lambda _
+              ;; Gammastep GUI needs Typelib files from GTK and access to
+              ;; Python libraries.
+              (wrap-program (string-append #$output "/bin/gammastep-indicator")
+                `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
      (list autoconf
            automake

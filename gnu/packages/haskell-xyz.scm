@@ -30,6 +30,7 @@
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2021, 2022 Alice BRENON <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,6 +76,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system haskell)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
@@ -297,14 +299,13 @@ systems.")
          "042lrkn0dbpjn5ivj6j26jzb1fwrj8c1aj18ykxja89isg0hiali"))))
     (build-system haskell-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-check-variables
-           (lambda _
-             (setenv "PATH" (string-append (getcwd) "/dist/build/alex:"
-                                           (getenv "PATH")))
-             (setenv "alex_datadir" (string-append (getcwd) "/data"))
-             #t)))))
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (add-before 'check 'set-check-variables
+                  (lambda _
+                    (setenv "PATH" (string-append (getcwd) "/dist/build/alex:"
+                                                  (getenv "PATH")))
+                    (setenv "alex_datadir" (string-append (getcwd) "/data")))))))
     (inputs (list ghc-quickcheck))
     (native-inputs
      (list which))
@@ -16097,6 +16098,24 @@ data Dec a
     = Yes a
     | No (Neg a)
 @end example")
+    (license license:bsd-3)))
+
+(define-public ghc-ansi2html
+  (package
+    (name "ghc-ansi2html")
+    (version "0.9")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "Ansi2Html" version))
+              (sha256
+               (base32
+                "1dqq1rnx1w0cn4w11knmxvn7qy4lg4m39dgw4rs6r2pjqzgrwarh"))))
+    (build-system haskell-build-system)
+    (home-page "http://janzzstimmpfle.de/~jens/software/Ansi2Html/")
+    (synopsis "Convert ANSI Terminal Sequences to nice HTML markup")
+    (description
+     "This package enables integration of terminal screen state in html
+pages.")
     (license license:bsd-3)))
 
 (define-public ghc-singleton-bool

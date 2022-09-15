@@ -1097,7 +1097,7 @@ computing environments.")
 (define-public python-scikit-learn
   (package
     (name "python-scikit-learn")
-    (version "1.0.2")
+    (version "1.1.2")
     (source
      (origin
        (method git-fetch)
@@ -1107,7 +1107,7 @@ computing environments.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rli53544vlsnmx4v4xcb8fdqcy5n3zksl4plwp76gsmrppb2lig"))))
+         "0wcngyfm2fl3vgyi2aq6j5fvky5185xjzgip64968wqj1hmir5nv"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1128,10 +1128,14 @@ computing environments.")
                ;; Some tests require write access to $HOME.
                (setenv "HOME" "/tmp")
 
-               (invoke "pytest" "sklearn" "-m" "not network"
-                       "-n" (number->string (parallel-job-count))
-                       ;; This test tries to access the internet.
-                       "-k" "not test_load_boston_alternative")))))))
+               ;; Step out of the source directory to avoid interference;
+               ;; we want to run the installed code with extensions etc.
+               (with-directory-excursion "/tmp"
+                 (invoke "pytest" "-vv" "--pyargs" "sklearn"
+                         "-m" "not network"
+                         "-n" (number->string (parallel-job-count))
+                         ;; This test tries to access the internet.
+                         "-k" "not test_load_boston_alternative"))))))))
     (inputs (list openblas))
     (native-inputs
      (list python-cython

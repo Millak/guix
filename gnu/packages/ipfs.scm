@@ -2,7 +2,7 @@
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +22,7 @@
 (define-module (gnu packages ipfs)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix build-system go)
@@ -229,10 +230,28 @@ written in Go.")
        (file-name (string-append name "-" version "-source"))))
     (build-system go-build-system)
     (arguments
-     `(#:unpack-path "github.com/ipfs/go-ipfs"
-       #:import-path "github.com/ipfs/go-ipfs/cmd/ipfs"))
+     (list
+      #:unpack-path "github.com/ipfs/go-ipfs"
+      #:import-path "github.com/ipfs/go-ipfs/cmd/ipfs"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md
+          (add-after 'install 'install-bashcompletion
+            (lambda _
+              (let ((completiondir (string-append #$output
+                                                  "/etc/bash_completion.d")))
+                (mkdir-p completiondir)
+                (with-output-to-file (string-append completiondir "/ipfs")
+                  (lambda _
+                    (invoke #$(if (%current-target-system)
+                                  "ipfs"
+                                  #~(string-append #$output "/bin/ipfs"))
+                            "commands" "completion" "bash")))))))))
     (native-inputs
-     (list python-minimal-wrapper zsh))
+     (append (if (%current-target-system)
+                 (list this-package)
+                 '())
+             (list python-minimal-wrapper zsh)))
     (home-page "https://ipfs.io")
     (synopsis "Go implementation of IPFS, a peer-to-peer hypermedia protocol")
     (description "IPFS is a global, versioned, peer-to-peer file system.  It

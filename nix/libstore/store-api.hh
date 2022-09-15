@@ -365,21 +365,9 @@ Paths topoSortPaths(StoreAPI & store, const PathSet & paths);
 extern std::shared_ptr<StoreAPI> store;
 
 
-/* Factory method: open the Nix database, either through the local or
-   remote implementation. */
-std::shared_ptr<StoreAPI> openStore(bool reserveSpace = true);
-
-
 /* Display a set of paths in human-readable form (i.e., between quotes
    and separated by commas). */
 string showPaths(const PathSet & paths);
-
-
-/* Export multiple paths in the format expected by ‘nix-store
-   --import’. */
-void exportPaths(StoreAPI & store, const Paths & paths,
-    bool sign, Sink & sink);
-
 
 MakeError(SubstError, Error)
 MakeError(BuildError, Error) /* denotes a permanent build failure */

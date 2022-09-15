@@ -1786,17 +1786,20 @@ destroying an ancient book using a special wand.")
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t)))))
+               (("gtk-update-icon-cache") "true")))))))
     (inputs
-     (list gtk+ clutter clutter-gtk libgee libgnome-games-support))
+     (list gtk+
+           clutter
+           clutter-gtk
+           libgee
+           libgnome-games-support-1))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin") ; for desktop-file-validate and appstream-util
-       ("itstool" ,itstool)
-       ("libxml2" ,libxml2)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list gettext-minimal
+           `(,glib "bin")       ; for desktop-file-validate and appstream-util
+           itstool
+           libxml2
+           pkg-config
+           vala))
     (home-page "https://wiki.gnome.org/Apps/2048")
     (synopsis "Move the tiles until you obtain the 2048 tile")
     (description "GNOME 2048 provides a 2D grid for playing 2048, a
@@ -6610,7 +6613,7 @@ fish.  The whole game is accompanied by quiet, comforting music.")
 (define-public crawl
   (package
     (name "crawl")
-    (version "0.29.0")
+    (version "0.29.1")
     (source
      (origin
        (method git-fetch)
@@ -6619,7 +6622,7 @@ fish.  The whole game is accompanied by quiet, comforting music.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cx67ln5qr4bawidi48ss63wflx7x22901da683c9wvy6m41vks8"))
+        (base32 "17bl8hdv2z3mpdfmd5gnwg3r1p9dqjbisiql24pxs1d33qcw0h7x"))
        (patches (search-patches "crawl-upgrade-saves.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -9308,60 +9311,56 @@ play with up to four players simultaneously.  It has network support.")
 (define-public hedgewars
   (package
     (name "hedgewars")
-    (version "1.0.0")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.hedgewars.org/download/releases/"
                                   "hedgewars-src-" version ".tar.bz2"))
-              (patches (search-patches "hedgewars-network-bsd.patch"))
               (sha256
                (base32
-                "0nqm9w02m0xkndlsj6ys3wr0ik8zc14zgilq7k6fwjrf3zk385i1"))))
+                "04pjpkjhpy720n803gv35iygmjdvsrmw13mih4ympjnqbgjfa7r0"))))
     (build-system cmake-build-system)
     (arguments
-     ;; XXX: Engine is built as Pascal source code, requiring Free Pascal
-     ;; Compiler, which we haven't packaged yet.  With the flag below, we use
-     ;; a Pascal to C translator and Clang instead.
-     `(#:configure-flags (list "-DBUILD_ENGINE_C=ON"
-                               "-Dhaskell_flags=-dynamic;-fPIC")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-sources
-           (lambda _
-             ;; Fix a missing 'include'.
-             (substitute* "QTfrontend/ui/page/pagegamestats.cpp"
-               (("#include <QSizePolicy>")
-                "#include <QSizePolicy>\n#include <QPainterPath>"))))
-         (replace 'check
-           (lambda _ (invoke "ctest")))
-         (add-after 'install 'install-icon
-           (lambda _
-             ;; Install icon for the desktop file.
-             (let* ((out (assoc-ref %outputs "out"))
-                    (icons (string-append out "/share/icons/hicolor/512x512/apps")))
-               (with-directory-excursion (string-append "../hedgewars-src-" ,version)
-                 (install-file "misc/hedgewars.png" icons)))
-             #t)))))
+     (list
+      ;; XXX: Engine is built as Pascal source code, requiring Free Pascal
+      ;; Compiler, which we haven't packaged yet.  With the flag below, we use
+      ;; a Pascal to C translator and Clang instead.
+      #:configure-flags #~(list "-DBUILD_ENGINE_C=ON"
+                                "-Dhaskell_flags=-dynamic;-fPIC")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest"))))
+          (add-after 'install 'install-icon
+            (lambda _
+              ;; Install icon for the desktop file.
+              (let ((icons (string-append #$output
+                                          "/share/icons/hicolor/512x512/apps")))
+                (with-directory-excursion
+                    (string-append "../hedgewars-src-" #$version)
+                  (install-file "misc/hedgewars.png" icons))))))))
     (inputs
-     `(("ffmpeg" ,ffmpeg)
-       ("freeglut" ,freeglut)
-       ("ghc-entropy" ,ghc-entropy)
-       ("ghc-hslogger" ,ghc-hslogger)
-       ("ghc-network" ,ghc-network)
-       ("ghc-random" ,ghc-random)
-       ("ghc-regex-tdfa" ,ghc-regex-tdfa)
-       ("ghc-sandi" ,ghc-sandi)
-       ("ghc-sha" ,ghc-sha)
-       ("ghc-utf8-string" ,ghc-utf8-string)
-       ("ghc-vector" ,ghc-vector)
-       ("ghc-zlib" ,ghc-zlib)
-       ("glew" ,glew)
-       ("libpng" ,libpng)
-       ("lua" ,lua-5.1)
-       ("physfs" ,physfs)
-       ("qtbase" ,qtbase-5)
-       ("sdl" ,(sdl-union
-                (list sdl2 sdl2-mixer sdl2-net sdl2-ttf sdl2-image)))))
+     (list ffmpeg
+           freeglut
+           ghc-entropy
+           ghc-hslogger
+           ghc-network
+           ghc-random
+           ghc-regex-tdfa
+           ghc-sandi
+           ghc-sha
+           ghc-utf8-string
+           ghc-vector
+           ghc-zlib
+           glew
+           libpng
+           lua-5.1
+           physfs
+           qtbase-5
+           (sdl-union
+            (list sdl2 sdl2-mixer sdl2-net sdl2-ttf sdl2-image))))
     (native-inputs
      (list clang-9 ghc pkg-config qttools-5))
     (home-page "https://hedgewars.org/")
@@ -11169,3 +11168,45 @@ principle of prioritizing the guests' happiness with a well-maintained park.
 Should they go unwise, a theme park plunge into chaos with vandalizing guests
 and unsafe rides.  Which path will you take?")
     (license license:gpl2)))
+
+(define-public steam-devices-udev-rules
+  ;; Last release from 2019-04-10
+  (let ((commit "d87ef558408c5e7a1a793d738db4c9dc2cb5f8fa")
+        (revision "0"))
+    (package
+      (name "steam-devices-udev-rules")
+      (version (git-version "1.0.0.61" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ValveSoftware/steam-devices")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1yqigraz9f19018ma5n2pbx7naadh9960lia3z8ayg7vz1fjdl54"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("./" "lib/udev/rules.d"
+                           #:include-regexp ("rules$")))
+         #:phases (modify-phases %standard-phases
+                    (add-after 'unpack 'patch-paths
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (substitute* "60-steam-input.rules"
+                          (("/bin/sh")
+                           (search-input-file inputs "/bin/sh"))
+                          (("udevadm")
+                           (search-input-file inputs "/bin/udevadm"))))))))
+      (inputs (list eudev))
+      (home-page "https://github.com/ValveSoftware/steam-devices")
+      (synopsis "udev rules for game controllers and virtual reality devices")
+      (description
+       "This package provides a set of udev rules for game controllers and
+virtual reality devices.")
+      (license license:expat))))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above by existing packages with similar
+;;; functionality or similar names.
+;;;

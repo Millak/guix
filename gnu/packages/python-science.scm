@@ -835,7 +835,7 @@ of Pandas
 (define-public python-pingouin
   (package
     (name "python-pingouin")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
      ;; The PyPI tarball does not contain the tests.
      (origin
@@ -846,18 +846,25 @@ of Pandas
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "10v3mwcmyc7rd2957cbmfcw66yw2y0fz7zcfyx46q8slbmd1d8d4"))))
+         "0czy7cpn6xx9fs6wbz6rq2lpkb1a89bzxj1anf2f9in1m5qyrh83"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'loosen-requirements
+           (lambda _
+             (substitute* '("requirements.txt" "setup.py")
+               ;; Remove sklearn pinning since it works fine with 1.1.2:
+               ;; https://github.com/raphaelvallat/pingouin/pull/300
+               (("scikit-learn<1\\.1\\.0")
+                "scikit-learn"))))
          ;; On loading, Pingouin uses the outdated package to check if a newer
          ;; version is available on PyPI. This check adds an extra dependency
          ;; and is irrelevant to Guix users. So, disable it.
          (add-after 'unpack 'remove-outdated-check
            (lambda _
              (substitute* "setup.py"
-               (("'outdated',") ""))
+               (("\"outdated\",") ""))
              (substitute* "pingouin/__init__.py"
                (("^from outdated[^\n]*") "")
                (("^warn_if_outdated[^\n]*") ""))))

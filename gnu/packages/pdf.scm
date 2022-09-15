@@ -315,6 +315,25 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
     (license (list license:bsd-3
                    license:gpl2))))
 
+;; XXX: Remove it on core-updates.  It is only needed for evince 42.3 that
+;; requires a recent poppler.
+(define-public poppler-next
+  (package/inherit poppler
+    (name "poppler-next")
+    (version "22.09.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://poppler.freedesktop.org/poppler-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0bhyli95h3dkirjc0ibh08s4nim6rn7f38sbfzdwln8k454gga6p"))))
+    (native-inputs
+     (list pkg-config
+           `(,glib "bin") ; glib-mkenums, etc.
+           gobject-introspection
+           python)) ))
+
 (define-public poppler-qt5
   (package/inherit poppler
    (name "poppler-qt5")

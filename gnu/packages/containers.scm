@@ -2,6 +2,7 @@
 ;;; Copyright © 2021 Timmy Douglas <mail@timmydouglas.com>
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -155,7 +156,7 @@ runtime (like runc or crun) for a single container.")
 (define-public libslirp
   (package
     (name "libslirp")
-    (version "4.6.1")
+    (version "4.7.0")
     (source
      (origin
        (method git-fetch)
@@ -163,10 +164,11 @@ runtime (like runc or crun) for a single container.")
              (url "https://gitlab.freedesktop.org/slirp/libslirp")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1b4cn51xvzbrxd63g6w1033prvbxfxsnsn1l0fa5i311xv28vkh0"))
+        (base32 "0dny8187a8qh6akaa37aa9b5pjxx88f02wh6achp4mygff0ipxba"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
-    (inputs
+    (propagated-inputs
+     ;; In Requires of slirp.pc.
      (list glib))
     (native-inputs
      (list pkg-config))
@@ -180,7 +182,7 @@ containers or various tools.")
 (define-public slirp4netns
   (package
     (name "slirp4netns")
-    (version "1.1.12")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -188,7 +190,7 @@ containers or various tools.")
              (url "https://github.com/rootless-containers/slirp4netns")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "03llv4dlf7qqxwz4zdyk926g4bigfj2gb50glm70ciflpvzs8081"))
+        (base32 "1rlzwp5fx1x3q179j9s2jp02imjag5pgj333z110nrvi7azl22l8"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -322,7 +324,11 @@ configure network interfaces in Linux containers.")
                 (("/usr/local/libexec/cni")
                  (string-append #$(this-package-input "cni-plugins")
                                 "/bin"))
-                (("/usr/bin/crun") (which "crun"))))))))
+                (("/usr/bin/crun") (which "crun")))))
+          (add-after 'install 'install-completions
+            (lambda _
+              (invoke "make" "install.completions"
+                      (string-append "PREFIX=" #$output)))))))
     (inputs
      (list btrfs-progs
            cni-plugins

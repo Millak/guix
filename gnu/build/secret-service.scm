@@ -119,7 +119,7 @@ wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return
                 files)))
 
   (log "sending secrets to ~a~%" port)
-  (let ((sock (socket AF_INET SOCK_STREAM 0))
+  (let ((sock (socket AF_INET (logior SOCK_CLOEXEC SOCK_STREAM) 0))
         (addr (make-socket-address AF_INET INADDR_LOOPBACK port))
         (sleep (if (resolve-module '(fibers) #f)
                    (module-ref (resolve-interface '(fibers)) 'sleep)
@@ -177,7 +177,7 @@ and #f otherwise."
     ;; Wait for a TCP connection on PORT.  Note: We cannot use the
     ;; virtio-serial ports, which would be safer, because they are
     ;; (presumably) unsupported on GNU/Hurd.
-    (let ((sock (socket AF_INET SOCK_STREAM 0)))
+    (let ((sock (socket AF_INET (logior SOCK_CLOEXEC SOCK_STREAM) 0)))
       (bind sock AF_INET INADDR_ANY port)
       (listen sock 1)
       (log "waiting for secrets on port ~a...~%" port)

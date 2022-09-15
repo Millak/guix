@@ -8,7 +8,7 @@
 ;;; Copyright © 2017, 2018, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -330,6 +330,24 @@ and workspaces that can be used in the compiler environment of your choice.")
   (package
     (inherit cmake-minimal)
     (name "cmake")
+    (version "3.24.2")
+    (source (origin
+              (inherit (package-source cmake-minimal))
+              (method url-fetch)
+              (uri (string-append "https://cmake.org/files/v"
+                                  (version-major+minor version)
+                                  "/cmake-" version ".tar.gz"))
+              (snippet (match (origin-snippet (package-source cmake-minimal))
+                         (('begin ('define 'preserved-files ('quote x))
+                                  rest ...)
+                          `(begin (define preserved-files
+                                    ',(cons "Utilities/cmelf" x))
+                                  ,@rest))))
+              (sha256
+               (base32
+                "1ny8y2dzc6fww9gzb1ml0vjpx4kclphjihkxagxigprxdzq2140d"))
+              (patches (search-patches "cmake-curl-certificates-3.24.patch"))))
+    (outputs '("out" "doc"))
     (arguments
      (substitute-keyword-arguments (package-arguments cmake-minimal)
        ;; Use cmake-minimal this time.
@@ -367,8 +385,8 @@ and workspaces that can be used in the compiler environment of your choice.")
     ;; Extra inputs required to build the documentation.
     (native-inputs
      (modify-inputs (package-native-inputs cmake-minimal)
-       (append python-sphinx texinfo)))
-    (outputs '("out" "doc"))
+       (append python-sphinx
+               texinfo)))
     (properties (alist-delete 'hidden? (package-properties cmake-minimal)))))
 
 (define-public cmake-minimal-cross

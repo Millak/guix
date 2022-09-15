@@ -4984,12 +4984,17 @@ hard or impossible to fix in cssselect.")
                ;; The tests are prone to get stuck. Use pytest-timeout’s --timeout
                ;; flag to get a meaningful idea about where.
                (invoke "pytest" "-vv" "--timeout=300"
-                       "-k" ,(string-append
+                       "--timeout-method=thread"
+                       "-k" (string-append
                               ;; Timeout, because SIGINT cannot be sent to child.
                               "not test_signals_sigint_pycode_continue "
                               "and not test_signals_sigint_pycode_stop "
                               "and not test_signals_sigint_uvcode "
                               "and not test_signals_sigint_uvcode_two_loop_runs "
+                              ;; This test is racy and prone to get stuck on
+                              ;; various platforms, possibly a aiohttp issue:
+                              ;;  https://github.com/MagicStack/uvloop/issues/412
+                              "and not test_remote_shutdown_receives_trailing_data "
                               ;; It looks like pytest is preventing
                               ;; custom stdout/stderr redirection,
                               ;; even with -s.

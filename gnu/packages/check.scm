@@ -56,6 +56,7 @@
 
 (define-module (gnu packages check)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -2852,7 +2853,7 @@ provides a simple way to achieve this.")
 (define-public umockdev
   (package
     (name "umockdev")
-    (version "0.14.4")
+    (version "0.17.13")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/martinpitt/umockdev/"
@@ -2860,23 +2861,25 @@ provides a simple way to achieve this.")
                                   "umockdev-" version ".tar.xz"))
               (sha256
                (base32
-                "0xmi24ckpps32k7hc139psgbsnsf4g106sv4l9m445m46amkxggd"))))
-    (build-system gnu-build-system)
+                "1kqkraag5v1jl5qfv0mb3ckm8yq2im21mng08sbs9dh9c9pbyvkc"))))
+    (build-system meson-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-test
+               (add-after 'unpack 'skip-test-umockdev.c
+                 ;; This test depends on /sys being available, among other
+                 ;; things.
                  (lambda _
-                   (substitute* "tests/test-umockdev.c"
-                     (("/run") "/tmp"))))
+                   (call-with-output-file "tests/test-umockdev.c"
+                     (lambda (port)
+                       (format port "int main(void) { return 0; }")))))
                ;; Avoid having to set 'LD_LIBRARY_PATH' to use umockdev
                ;; via introspection.
                (add-after 'unpack 'absolute-introspection-library
-                 (lambda _
-                   (substitute* "Makefile.in"
-                     (("g-ir-compiler -l libumockdev")
-                      (string-append "g-ir-compiler -l " #$output
-                                     "/lib/libumockdev")))))
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* "meson.build"
+                     (("libumockdev.so.0" all)
+                      (string-append #$output "/lib/" all)))))
                (add-after 'install 'absolute-filenames
                  (lambda* (#:key inputs #:allow-other-keys)
                    ;; 'patch-shebangs' will take care of the shebang.
@@ -2885,17 +2888,19 @@ provides a simple way to achieve this.")
                      (("libumockdev")
                       (string-append #$output "/lib/libumockdev"))))))))
     (native-inputs
-     (list vala
-           gobject-introspection
+     (list gobject-introspection
            gtk-doc/stable
            pkg-config
-           ;; For tests.
            python
+           vala
            which))
     (inputs
-     (list bash-minimal ;for umockdev-wrapper
-           coreutils-minimal ;for bin/env
-           glib eudev libgudev))
+     (list bash-minimal                 ;for umockdev-wrapper
+           coreutils-minimal            ;for bin/env
+           eudev
+           glib
+           libgudev
+           libpcap))
     (home-page "https://github.com/martinpitt/umockdev/")
     (synopsis "Mock hardware devices for creating unit tests")
     (description "umockdev mocks hardware devices for creating integration
