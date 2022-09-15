@@ -778,7 +778,7 @@ OpenType variant of these fonts.")
                    (replace 'install
                      (assoc-ref font:%standard-phases 'install)))))
     (native-inputs
-     (list python-fonttools
+     (list python-fonttools-next
            python-pcpp
            python-opentype-sanitizer
            python-sfdlib

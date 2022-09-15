@@ -413,13 +413,13 @@ converts any cubic curves to quadratic.  The most useful function is probably
 (define-public python-ufo2ft
   (package
     (name "python-ufo2ft")
-    (version "2.26.0")
+    (version "2.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ufo2ft" version))
        (sha256
-        (base32 "0a6iq5g6qdxj7nvip8nnf0mf8y5wmpd3wwq0dv7d4nm9bjrh0r6m"))))
+        (base32 "068hm62s1iphyg66w96vgiif6ahpcsaf8fr44rk6jdf71f6fyqd5"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest python-pytest-runner python-setuptools-scm))
@@ -429,7 +429,7 @@ converts any cubic curves to quadratic.  The most useful function is probably
            python-compreffor
            python-cu2qu
            python-defcon
-           python-fonttools
+           python-fonttools-next
            python-skia-pathops
            python-ufolib2))
     (home-page "https://github.com/googlefonts/ufo2ft")
