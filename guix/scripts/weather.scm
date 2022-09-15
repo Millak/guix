@@ -205,7 +205,6 @@ In case ITEMS is an empty list, return 1 instead."
                     #:make-progress-reporter
                     (lambda* (total #:key url #:allow-other-keys)
                       (progress-reporter/bar total)))))
-    (format #t (highlight "~a~%") server)
     (let ((obtained  (length narinfos))
           (requested (length items))
           (missing   (lset-difference string=?
@@ -224,6 +223,15 @@ In case ITEMS is an empty list, return 1 instead."
                                 (coloring-procedure (color BOLD RED)))
                                (else
                                 highlight))))
+          (format #t (highlight "~a ~a~%") server
+                  ;; This requires a Unicode-capable encoding, which we
+                  ;; restrict to UTF-8 for simplicity.
+                  (if (string=? (port-encoding (current-output-port)) "UTF-8")
+                      (cond ((> ratio 0.80) "☀")
+                            ((< ratio 0.50) "⛈")
+                            (else           "⛅"))
+                      ""))
+
           (format #t
                   (colorize (G_ "  ~,1f% substitutes available (~h out of ~h)~%"))
                   (* 100. ratio)
