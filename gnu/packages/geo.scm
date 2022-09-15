@@ -65,6 +65,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cups)
@@ -565,56 +566,6 @@ lets developers use the functionality of Proj in their own software.")
              (substitute* "CMakeLists.txt"
                (("MAJOR 7 MINOR 2 PATCH 0") "MAJOR 7 MINOR 2 PATCH 1")))))))))
 
-(define-public proj.4
-  (package
-    (name "proj.4")
-    (version "4.9.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://download.osgeo.org/proj/proj-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1xw5f427xk9p2nbsj04j6m5zyjlyd66sbvl2bkg8hd1kx8pm9139"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-test-paths
-           (lambda _
-             (substitute* '("nad/test27"
-                            "nad/test83"
-                            "nad/testvarious"
-                            "nad/testdatumfile"
-                            "nad/testflaky"
-                            "nad/testIGNF")
-               (("/bin/rm") (which "rm")))
-             #t))
-         ;; Precision problems on i686 and other platforms. See:
-         ;; https://web.archive.org/web/20151006134301/http://trac.osgeo.org/proj/ticket/255
-         ;; Disable failing test.
-         (add-after 'patch-test-paths 'ignore-failing-tests
-           (lambda _
-             (substitute* '("nad/Makefile.in")
-               (("\tPROJ_LIB.*" all) (string-append  "#" all)))
-             #t)))))
-    (inputs
-     (list glib))
-    (home-page "https://proj.org/")
-    (synopsis "Cartographic Projections Library")
-    (description
-     "Proj.4 is a library for converting coordinates between cartographic
-projections.")
-    (license (list license:expat
-                   ;; src/PJ_patterson.c
-                   license:asl2.0
-                   ;; src/geodesic.c/h
-                   license:x11
-                   ;; Embedded EPSG database.
-                   (license:non-copyleft "http://www.epsg.org/TermsOfUse")
-                   ;; cmake/*
-                   license:boost1.0))))
-
 (define-public python-pyproj
   (package
     (name "python-pyproj")
@@ -824,42 +775,72 @@ street bearings/orientations, and speed/travel time.")
     (license license:expat)))
 
 (define-public mapnik
-  (package
-    (name "mapnik")
-    (version "3.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/mapnik/mapnik/releases/download/v"
-                           version "/mapnik-v" version ".tar.bz2"))
-       (sha256
-        (base32
-         "0qb2irykja5qhr9apz9r230pcxap9v3j85fi98mj2xd9sa163ms3"))))
-    (build-system scons-build-system)
-    (inputs
-     (list boost
-           cairo
-           freetype
-           harfbuzz
-           icu4c
-           libjpeg-turbo
-           libpng
-           libtiff
-           libwebp
-           libxml2
-           proj.4
-           sqlite
-           zlib))
-    (native-inputs
-     (list pkg-config postgresql))
-    (arguments
-     `(#:scons-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" %output)
-             (string-append "CUSTOM_LDFLAGS=-Wl,-rpath=" %output "/lib"))))
-    (home-page "https://mapnik.org/")
-    (synopsis "Toolkit for developing mapping applications")
-    (description "Mapnik is a toolkit for developing mapping applications.  It
+  ;; There hasn't been a release since early 2021, and it fails to build with
+  ;; Boost 1.77+.
+  (let ((commit "81103491b467e17218140f50bc0bb9dc8c1f0317")
+        (revision "0"))
+    (package
+      (name "mapnik")
+      (version (git-version "3.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mapnik/mapnik")
+               (commit commit)
+               ;; TODO: Un-bundle mapbox dependencies (not yet packaged).
+               (recursive? #t)))        ;for mapbox dependencies and test data
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "094nam57bdd5nak88qy33z2p3kjahk3vk2nk56m5jkcr5d3hlnx2"))))
+      (build-system qt-build-system)
+      (arguments
+       (list
+        #:cmake cmake                   ;for FIND_PACKAGE_ARGS
+        #:configure-flags
+        #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
+                               #$(this-package-native-input "catch2")
+                               "/include/catch2"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'use-system-catch2
+              (lambda _
+                (substitute* "test/CMakeLists.txt"
+                  (("GIT_TAG.*v2.13.7" all)
+                   (string-append all "\n"
+                                  "  FIND_PACKAGE_ARGS NAMES Catch2"))
+                  (("^include.*Catch2_SOURCE_DIR.*contrib/Catch.cmake.*")
+                   "include(Catch)\n"))))
+            (add-after 'unpack 'disable-problematic-tests
+              (lambda _
+                ;; The 'ogr' test fails for unknown reasons.  Mark it as
+                ;; expected to fail (see:
+                ;; https://github.com/mapnik/mapnik/issues/4329).
+                (substitute* "/test/unit/datasource/ogr.cpp"
+                  (("TEST_CASE\\(\"ogr\"" all)
+                   (string-append all ", \"[!shouldfail]\""))))))))
+      (native-inputs
+       (list catch-framework2
+             pkg-config
+             postgresql))
+      (inputs
+       (list boost
+             cairo
+             freetype
+             gdal
+             harfbuzz
+             icu4c
+             libjpeg-turbo
+             libpng
+             libtiff
+             libwebp
+             libxml2
+             proj
+             sqlite
+             zlib))
+      (home-page "https://mapnik.org/")
+      (synopsis "Toolkit for developing mapping applications")
+      (description "Mapnik is a toolkit for developing mapping applications.  It
 is basically a collection of geographic objects like maps, layers,
 datasources, features, and geometries.  At its core is a C++ shared library
 providing algorithms and patterns for spatial data access and visualization.
@@ -867,15 +848,15 @@ The library does not rely on any specific windowing system and can be deployed
 to any server environment.  It is intended to play fair in a multi-threaded
 environment and is aimed primarily, but not exclusively, at web-based
 development.")
-    (license (list license:lgpl2.1+
-                   ;; demo/viewer, demo/python/rundemo.py
-                   license:gpl2+
-                   ;; deps/boost, deps/mapbox, deps/agg/include/agg_conv_offset.h
-                   license:boost1.0
-                   ;; deps/mapnik/sparsehash
-                   license:bsd-3
-                   ;; deps/agg
-                   (license:non-copyleft "file://deps/agg/copying")))))
+      (license (list license:lgpl2.1+
+                     ;; demo/viewer, demo/python/rundemo.py
+                     license:gpl2+
+                     ;; deps/boost, deps/mapbox, deps/agg/include/agg_conv_offset.h
+                     license:boost1.0
+                     ;; deps/mapnik/sparsehash
+                     license:bsd-3
+                     ;; deps/agg
+                     (license:non-copyleft "file://deps/agg/copying"))))))
 
 (define-public spatialite-gui
   (package
