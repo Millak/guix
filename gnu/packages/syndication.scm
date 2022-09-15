@@ -524,14 +524,13 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
     (name "gfeeds")
     (version "0.16.2")
     (source (origin
-              (method url-fetch)
-              (uri
-               (string-append
-                "https://gitlab.gnome.org/World/gfeeds/-/archive/" version
-                "/gfeeds-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/World/gfeeds")
+                    (commit version)))
               (sha256
                (base32
-                "05gwwzqfz29m477imd5vh84jfla1wnklwpc2sdxnqli72wg08fli"))))
+                "045889417506w2l25j7jxx7jfdpfljbirhm1s4whvhk83xap19zb"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
