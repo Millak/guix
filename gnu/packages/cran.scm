@@ -6841,6 +6841,30 @@ Rscript front-end and facilitates turning an R script into an executable
 script.")
     (license license:gpl3+)))
 
+(define-public r-aricode
+  (package
+    (name "r-aricode")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "aricode" version))
+              (sha256
+               (base32
+                "0772l9gyrih48l1kymih0mb7szjqqnwcm4lzj0yzp4cs8l2mdf4f"))))
+    (properties `((upstream-name . "aricode")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-rcpp))
+    (home-page "https://github.com/jchiquet/aricode")
+    (synopsis "Efficient computations of standard clustering comparison measures")
+    (description
+     "This package implements an efficient O(n) algorithm based on
+bucket-sorting for fast computation of standard clustering comparison
+measures.  Available measures include @dfn{adjusted Rand index} (ARI),
+@dfn{normalized information distance} (NID), @dfn{normalized mutual
+information} (NMI), @dfn{adjusted mutual information} (AMI), @dfn{normalized
+variation information} (NVI) and entropy.")
+    (license license:gpl3+)))
+
 (define-public r-debugme
   (package
     (name "r-debugme")
