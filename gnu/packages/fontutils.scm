@@ -511,13 +511,13 @@ implementing the pen protocol for manipulating glyphs.")
   (hidden-package
    (package
      (name "python-fontparts-bootstrap")
-     (version "0.10.4")
+     (version "0.10.8")
      (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "fontParts" version ".zip"))
         (sha256
-         (base32 "1ic453q86s5hsw8mxnclk1vr4qp69fd67gywhv23zqwz9a7kb7lh"))))
+         (base32 "0i5ww6yl9m74wnjd7gyvjkdh7m56haql4gv7lasmppdipay2209g"))))
      (build-system python-build-system)
      (propagated-inputs
       (list python-booleanoperations
