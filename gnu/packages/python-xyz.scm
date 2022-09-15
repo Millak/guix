@@ -128,6 +128,7 @@
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
+;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10031,6 +10032,24 @@ function signatures.")
     (description
      "This package provides a YAML template engine with Python expressions.")
     (license license:expat)))
+
+(define-public python-syllables
+  (package
+    (name "python-syllables")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "syllables" version))
+              (sha256
+               (base32
+                "0wkl6h0rg6fbsxfp0a8fnibf3l4l6lbh6z12cvcilgb6qhxzpmv3"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/prosegrinder/python-syllables")
+    (synopsis "Package for estimating the number of syllables in a word")
+    (description
+     "This package provides a Python package for estimating the number of
+syllables in a word.")
+    (license license:gpl3)))
 
 (define-public python-sympy
   (package
