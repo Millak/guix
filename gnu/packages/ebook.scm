@@ -697,3 +697,25 @@ format documents, with the following features:
     (description
      "Ebook library which can handle EPUB2/EPUB3 and Kindle format.")
     (license license:agpl3+)))
+
+(define-public shirah
+  (package
+    (name "shirah")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "shirah_reader" version))
+              (sha256
+               (base32
+                "0j15v435lz68c1mj5clfx5dmfyjc6jvvz2q8hqvv799mb2faj42y"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-beautifulsoup4 python-ebooklib
+                             python-syllables python-termcolor))
+    (home-page "https://github.com/hallicopter/shirah-reader")
+    (synopsis "Terminal ebook reader with an optional RSVP mode")
+    (description
+     "@command{shirah} is a curses based terminal ebook reader that can
+display ebooks in the usual way or with Rapid Serial Visual Presentation, a
+method to enable speedreading by showing the text word by word at configurable
+speeds.")
+  (license license:gpl2+)))
