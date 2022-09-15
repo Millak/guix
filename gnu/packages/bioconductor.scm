@@ -16788,6 +16788,25 @@ with a nested autoregressive correlated error structure for the effect of
 interest on transformed methylation proportions.")
     (license license:expat)))
 
+(define-public r-omicade4
+  (package
+    (name "r-omicade4")
+    (version "1.36.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "omicade4" version))
+              (sha256
+               (base32
+                "1l7w3sczsimg640klq8navgdcwjj090wjqd40n4mw76pny2xj2lj"))))
+    (properties `((upstream-name . "omicade4")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ade4 r-biobase r-made4))
+    (home-page "https://bioconductor.org/packages/omicade4")
+    (synopsis "Multiple co-inertia analysis of omics datasets")
+    (description
+     "This package performes multiple co-inertia analysis of omics datasets.")
+    (license license:gpl2)))
+
 (define-public r-omnipathr
   (package
     (name "r-omnipathr")
