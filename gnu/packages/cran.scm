@@ -971,6 +971,28 @@ size and can be easily tested locally before being sent to a remote.")
 the system clipboards.")
     (license license:gpl3)))
 
+(define-public r-clvalid
+  (package
+    (name "r-clvalid")
+    (version "0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "clValid" version))
+              (sha256
+               (base32
+                "18aiyjhnh5mfdxbzns4cy0r8bymfikhwkybpn4g04qhli5ls8z83"))))
+    (properties `((upstream-name . "clValid")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-class r-cluster))
+    (home-page "https://cran.r-project.org/package=clValid")
+    (synopsis "Validation of clustering results")
+    (description
+     "Statistical and biological validation of clustering results.  This
+package implements Dunn Index, Silhouette, Connectivity, Stability, BHI and
+BSI.  Further information can be found in Brock, G et al. (2008) <doi:
+10.18637/jss.v025.i04>.")
+    (license license:lgpl3)))
+
 (define-public r-dlm
   (package
     (name "r-dlm")
