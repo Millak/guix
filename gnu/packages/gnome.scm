@@ -5886,7 +5886,10 @@ services for numerous locations.")
               "-Dsystemd=false"
               ;; Otherwise, the RUNPATH will lack the final path component.
               (string-append "-Dc_link_args=-Wl,-rpath=" #$output
-                             "/lib/gnome-settings-daemon-3.0"))
+                             "/lib/gnome-settings-daemon-3.0:"
+                             ;; Also add NSS because for some reason Meson
+                             ;; > 0.60 does not add it automatically (XXX).
+                             (search-input-directory %build-inputs "lib/nss")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'set-baobab-file-name
