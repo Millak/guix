@@ -138,13 +138,13 @@ them as it goes.")
 (define-public python-afdko
   (package
     (name "python-afdko")
-    (version "3.8.1")
+    (version "3.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "afdko" version))
        (sha256
-        (base32 "171r9f7n8fgz37dkcgpzj508lxfafcyzzx43ps12j1z2nk1sk905"))
+        (base32 "0k1204vykgx32saa495s1lgmz1dixcp8bjiv486imx77killvm02"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -164,6 +164,21 @@ them as it goes.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-libxml2
+            (lambda _
+              ;; XXX: These horrifying substitutions revert this upstream
+              ;; PR: <https://github.com/adobe-type-tools/afdko/pull/1527>.
+              ;; Hopefully it's only temporary..!
+              (substitute* (find-files "." "^CMakeLists.txt$")
+                (("\\(\\(NOT \\$\\{LibXml2_FOUND\\}\\) OR \
+\"\\$\\{CMAKE_SYSTEM\\}\" MATCHES \"Linux\"\\)")
+                 "(NOT ${LibXml2_FOUND})")
+                (("\\(\\(\\$\\{LibXml2_FOUND\\}\\) AND \
+\\(NOT \"\\$\\{CMAKE_SYSTEM\\}\" MATCHES \"Linux\"\\)\\)")
+                 "(${LibXml2_FOUND})"))
+                (substitute* "cmake/ExternalLibXML2.cmake"
+                  (("set\\(LIBXML2_STATIC_INCLUDE_DIR")
+                   "set(LIBXML2_INCLUDE_DIR)"))))
           (add-after 'unpack 'patch-problematic-requirements
             (lambda _
               (substitute* "requirements.txt"
@@ -183,7 +198,8 @@ them as it goes.")
                  (format #f "include_directories(SYSTEM ~a)"
                          (search-input-directory inputs
                                                  "include/antlr4-runtime"))))
-              (substitute* "c/makeotf/lib/hotconv/CMakeLists.txt"
+              (substitute* '("c/makeotf/lib/hotconv/CMakeLists.txt"
+                             "c/makeotf/lib/cffread/CMakeLists.txt")
                 (("antlr4_static")
                  "antlr4-runtime"))))
           (add-after 'unpack 'regenerate-hotconv-grammar
@@ -223,12 +239,16 @@ them as it goes.")
      (list antlr4
            openjdk                      ;required by antlr4
            ninja
+           pkg-config
            python-pytest
            python-pytest-xdist
            python-scikit-build
            python-setuptools-scm
            python-wheel))
-    (inputs (list java-antlr4-runtime-cpp `(,util-linux "lib")))
+    (inputs
+     (list java-antlr4-runtime-cpp
+           libxml2
+           `(,util-linux "lib")))
     (propagated-inputs
      (list psautohint
            python-booleanoperations
