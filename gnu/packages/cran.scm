@@ -9133,6 +9133,30 @@ and rows.  The fst format allows for random access of stored data and
 compression with the LZ4 and ZSTD compressors.")
     (license license:agpl3)))
 
+(define-public r-snftool
+  (package
+    (name "r-snftool")
+    (version "2.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "SNFtool" version))
+              (sha256
+               (base32
+                "05hz230aq5wbzhknxzr4iqv3nqjhbpf66n6bp1rc5h2jgz2yfbwq"))))
+    (properties `((upstream-name . "SNFtool")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-alluvial r-exposition))
+    (home-page "https://cran.r-project.org/package=SNFtool")
+    (synopsis "Similarity network fusion")
+    (description
+     "Similarity Network Fusion takes multiple views of a network and fuses
+them together to construct an overall status matrix.  The input to our
+algorithm can be feature vectors, pairwise distances, or pairwise
+similarities.  The learned status matrix can then be used for retrieval,
+clustering, and classification.")
+    ;; Any version of the GPL
+    (license license:gpl3+)))
+
 (define-public r-snowfall
   (package
    (name "r-snowfall")
