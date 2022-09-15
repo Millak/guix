@@ -10396,6 +10396,26 @@ from the @code{stats} package, as well as numerous other model classes from
 other add-on packages.")
     (license license:expat)))
 
+(define-public r-prettygraphs
+  (package
+    (name "r-prettygraphs")
+    (version "2.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "prettyGraphs" version))
+              (sha256
+               (base32
+                "0yjpwxdy9mkj2k33zvd5klyv4ava46i19yls87n0bvf79y90ikpy"))))
+    (properties `((upstream-name . "prettyGraphs")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=prettyGraphs")
+    (synopsis "Publication-quality graphics")
+    (description
+     "This package provides simple and crisp publication-quality graphics for
+the ExPosition family of packages.  See An ExPosition of the Singular Value
+Decomposition in R (Beaton et al 2014) <doi:10.1016/j.csda.2013.11.006>.")
+    (license license:gpl2)))
+
 (define-public r-insight
   (package
     (name "r-insight")
