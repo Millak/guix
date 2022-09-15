@@ -10100,7 +10100,8 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
            gettext-minimal
            `(,glib "bin")               ; for glib-compile-resources
            itstool
-           pkg-config))
+           pkg-config
+           vala))
     (inputs
      (list geoclue
            geocode-glib-with-libsoup2
