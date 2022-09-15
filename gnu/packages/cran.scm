@@ -21328,6 +21328,33 @@ using a lasso (L1) penalty.  Facilities are provided for estimates along a
 path of values for the regularization parameter.")
     (license license:gpl2)))
 
+(define-public r-gldex
+  (package
+    (name "r-gldex")
+    (version "2.0.0.9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "GLDEX" version))
+              (sha256
+               (base32
+                "1g0wg6z4ba1n6p2nw3kr734wlgmq0aw1a4spr6xw6djj7idsfi61"))))
+    (properties `((upstream-name . "GLDEX")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cluster r-spacefillr))
+    (home-page "https://cran.r-project.org/package=GLDEX")
+    (synopsis "Fitting single and mixture of generalised lambda distributions")
+    (description
+     "@code{GLDEX} offers fitting algorithms corresponding to two major
+objectives.  One is to provide a smoothing device to fit distributions to data
+using the weighted and unweighted discretised approach based on the bin width
+of the histogram.  The other is to provide a definitive fit to the data set
+using the maximum likelihood and quantile matching estimation.  Other methods
+such as moment matching, starship method, and L moment matching are also
+provided.  Diagnostics on goodness of fit can be done via qqplots, KS-resample
+tests and comparing mean, variance, skewness and kurtosis of the data with the
+fitted distribution.")
+    (license license:gpl3+)))
+
 (define-public r-rhpcblasctl
   (package
     (name "r-rhpcblasctl")
