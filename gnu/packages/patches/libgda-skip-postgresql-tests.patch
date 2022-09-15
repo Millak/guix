@@ -1,0 +1,91 @@
+Taken from upstream.
+
+From b0cd77e588620465b78f7c017d3f240e13936aa3 Mon Sep 17 00:00:00 2001
+From: Pavlo Solntsev <p.sun.fun@gmail.com>
+Date: Sun, 19 Sep 2021 22:51:38 -0500
+Subject: [PATCH] Test: Skip test if no server available
+
+Two variables will be checked. If they set
+and provide all needed information the test
+will be executed. If they are not set, the test
+will return TRUE and will terminate with
+termination status EXIT_SUCCESS.
+---
+ tests/db/check-db-catalog-postgresql.c   | 16 ++++++++++++++++
+ tests/test-server-operation-postgresql.c | 16 ++++++++++++++++
+ 2 files changed, 32 insertions(+)
+
+diff --git a/tests/db/check-db-catalog-postgresql.c b/tests/db/check-db-catalog-postgresql.c
+index 5b8e9395c..bf9a8942c 100644
+--- a/tests/db/check-db-catalog-postgresql.c
++++ b/tests/db/check-db-catalog-postgresql.c
+@@ -25,6 +25,9 @@
+ #include <libgda/libgda.h>
+ #include "../test-cnc-utils.h"
+ 
++#define PROVIDER_DB_CREATE_PARAMS "POSTGRESQL_DBCREATE_PARAMS"
++#define PROVIDER_CNC_PARAMS "POSTGRESQL_CNC_PARAMS"
++
+ typedef struct {
+   GdaDbCatalog *catalog;
+   GdaConnection *cnc;
+@@ -359,6 +362,19 @@ main (gint   argc,
+ {
+   setlocale (LC_ALL,"");
+ 
++  const gchar *db_create_str;
++  const gchar *cnc_params;
++
++  db_create_str = g_getenv (PROVIDER_DB_CREATE_PARAMS);
++  cnc_params = g_getenv (PROVIDER_CNC_PARAMS);
++
++  if (!db_create_str || !cnc_params) {
++      g_print ("Please set POSTGRESQL_DBCREATE_PARAMS and POSTGRESQL_CNC_PARAMS variable"
++	      "with dbname, host, user and port (usually 5432)\n");
++      g_print ("Test will not be performed\n");
++      return EXIT_SUCCESS;
++  }
++
+   g_test_init (&argc,&argv,NULL);
+ 
+   g_test_add ("/test-db-postgresql/meta-tables",
+diff --git a/tests/test-server-operation-postgresql.c b/tests/test-server-operation-postgresql.c
+index 37796c4be..860f41a18 100644
+--- a/tests/test-server-operation-postgresql.c
++++ b/tests/test-server-operation-postgresql.c
+@@ -38,9 +38,12 @@
+ #include <glib/gi18n.h>
+ #include <locale.h>
+ #include <libgda/libgda.h>
++/*#include <stdlib.h>*/
+ #include "test-cnc-utils.h"
+ 
+ #define PROVIDER_NAME "PostgreSQL"
++#define PROVIDER_DB_CREATE_PARAMS "POSTGRESQL_DBCREATE_PARAMS"
++#define PROVIDER_CNC_PARAMS "POSTGRESQL_CNC_PARAMS"
+ 
+ #define GDA_PGSQL_ERROR_HANDLE(e) (g_print("Error: %s: %s\n", G_STRLOC, e && e->message ? e->message : "No default"));
+ 
+@@ -1335,6 +1338,19 @@ main(gint argc, gchar *argv[])
+ {
+   setlocale (LC_ALL,"");
+ 
++  const gchar *db_create_str;
++  const gchar *cnc_params;
++
++  db_create_str = g_getenv (PROVIDER_DB_CREATE_PARAMS);
++  cnc_params = g_getenv (PROVIDER_CNC_PARAMS);
++
++  if (!db_create_str || !cnc_params) {
++      g_print ("Please set POSTGRESQL_DBCREATE_PARAMS and POSTGRESQL_CNC_PARAMS variable"
++	      "with dbname, host, user and port (usually 5432)\n");
++      g_print ("Test will not be performed\n");
++      return EXIT_SUCCESS;
++  }
++
+   g_test_init (&argc,&argv,NULL);
+ 
+   g_test_add ("/test-server-operation-sqlite/old-so-module",
+-- 
+GitLab
+

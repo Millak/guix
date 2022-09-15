@@ -108,13 +108,29 @@ environment variable\n" source-directory))
         (format #t "expanded load paths for ~{~a~^, ~}\n"
                 (map basename diff))))))
 
+(define* (add-install-to-native-load-path #:key outputs #:allow-other-keys)
+  "Append the native-site-lisp of OUTPUT to EMACSNATIVELOADPATH."
+  (let ((native-load-path (or (false-if-exception
+                               (string-split (getenv "EMACSNATIVELOADPATH") #\:))
+                              '()))
+        (install-directory (string-append (assoc-ref outputs "out")
+                                          "/lib/emacs/native-site-lisp")))
+    (setenv "EMACSNATIVELOADPATH"
+            ;; Emacs pushes these directories in reverse order, so the
+            ;; last one will be the first.
+            (string-join `(,@native-load-path ,install-directory)
+                         ":"))))
+
 (define* (build #:key outputs inputs #:allow-other-keys)
   "Compile .el files."
+  ;; Ensure that already compiled files in the working directory don't shadow
+  ;; the build.  Might happen, because check runs first.
+  (for-each delete-file (find-files "." "\\.el[cn]$"))
   (let* ((emacs (search-input-file inputs "/bin/emacs"))
          (out (assoc-ref outputs "out")))
     (setenv "SHELL" "sh")
     (parameterize ((%emacs emacs))
-      (emacs-byte-compile-directory (elpa-directory out)))))
+      (emacs-compile-directory (elpa-directory out)))))
 
 (define* (patch-el-files #:key outputs #:allow-other-keys)
   "Substitute the absolute \"/bin/\" directory with the right location in the
@@ -343,6 +359,8 @@ for libraries following the ELPA convention."
   (modify-phases gnu:%standard-phases
     (replace 'unpack unpack)
     (add-after 'unpack 'expand-load-path expand-load-path)
+    (add-after 'expand-load-path 'add-install-to-native-load-path
+      add-install-to-native-load-path)
     (delete 'bootstrap)
     (delete 'configure)
     (delete 'build)

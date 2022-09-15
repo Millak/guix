@@ -968,31 +968,43 @@ as the 'native-search-paths' field."
    (custom-gcc gcc-11 "gdc" '("d")
                %generic-search-paths)))
 
-(define-public libgccjit
+(define-public (make-libgccjit gcc)
   (package
-    (inherit gcc-9)
+    (inherit gcc)
     (name "libgccjit")
     (outputs (delete "lib" (package-outputs gcc)))
     (properties (alist-delete 'hidden? (package-properties gcc)))
     (arguments
-     (substitute-keyword-arguments `(#:modules ((guix build gnu-build-system)
-                                                (guix build utils)
-                                                (ice-9 regex)
-                                                (srfi srfi-1)
-                                                (srfi srfi-26))
-                                     ,@(package-arguments gcc))
+     (substitute-keyword-arguments (package-arguments gcc)
+       ((#:modules _ '())
+        '((guix build gnu-build-system)
+          (guix build utils)
+          (ice-9 regex)
+          (srfi srfi-1)
+          (srfi srfi-26)))
        ((#:configure-flags flags)
-        `(append `("--enable-host-shared"
-                   ,(string-append "--enable-languages=jit"))
+        #~(cons* "--disable-bootstrap"
+                 "--disable-libatomic"
+                 "--disable-libgomp"
+                 "--disable-libquadmath"
+                 "--disable-libssp"
+                 "--enable-host-shared"
+                 "--enable-checking=release"
+                 "--enable-languages=jit"
                  (remove (cut string-match "--enable-languages.*" <>)
-                         ,flags)))
+                         #$flags)))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'install 'remove-broken-or-conflicting-files
-             (lambda* (#:key outputs #:allow-other-keys)
-               (for-each delete-file
-                         (find-files (string-append (assoc-ref outputs "out") "/bin")
-                                     ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|gcc-.*)"))))))))
+        #~(modify-phases #$phases
+            (add-after 'install 'remove-broken-or-conflicting-files
+              (lambda* (#:key outputs #:allow-other-keys)
+                (for-each delete-file
+                          (find-files
+                           (string-append (assoc-ref outputs "out") "/bin")
+                           ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|gcc-.*)"))))))))
+    (inputs (modify-inputs (package-inputs gcc)
+              (delete "libstdc++")))
+    (native-inputs (modify-inputs (package-native-inputs gcc)
+                     (prepend gcc)))
     (synopsis "GCC library generating machine code on-the-fly at runtime")
     (description
      "This package is part of the GNU Compiler Collection and provides an
@@ -1002,6 +1014,13 @@ other such programs that want to generate machine code on-the-fly at run-time.
 It can also be used for ahead-of-time code generation for building standalone
 compilers.  The just-in-time (jit) part of the name is now something of a
 misnomer.")))
+
+(define-public libgccjit-9 (make-libgccjit gcc-9))
+(define-public libgccjit-10 (make-libgccjit gcc-10))
+(define-public libgccjit-11 (make-libgccjit gcc-11))
+(define-public libgccjit-12 (make-libgccjit gcc-12))
+
+(define-public libgccjit libgccjit-10)
 
 (define (make-gccgo gcc)
   "Return a gccgo package based on GCC."

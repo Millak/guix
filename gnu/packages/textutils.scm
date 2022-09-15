@@ -68,6 +68,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
@@ -971,6 +972,25 @@ source code.")
        "This library simply implements Levenshtein distance algorithm with C++
 and Cython.")
       (license license:expat))))
+
+(define-public txt2tags
+  (package
+    (name "txt2tags")
+    (version "3.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "txt2tags" version))
+              (sha256
+               (base32
+                "12hpnvdy7dgarq6ini9jp7dp2zcmvpax04zbl3jb84kd423r75i7"))))
+    (build-system python-build-system)
+    (native-inputs (list python-tox))
+    (home-page "https://txt2tags.org")
+    (synopsis "Convert between markup languages")
+    (description
+     "txt2tags is a document generator.  It reads a text file with minimal
+markup and converts it to multiple formats.")
+    (license license:gpl2)))
 
 (define-public go-github.com-mattn-go-runewidth
   (let ((commit "703b5e6b11ae25aeb2af9ebb5d5fdf8fa2575211")

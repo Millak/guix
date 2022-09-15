@@ -975,7 +975,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/cling-use-shared-library.patch		\
   %D%/packages/patches/clucene-pkgconfig.patch			\
   %D%/packages/patches/cmake-curl-certificates.patch		\
-  %D%/packages/patches/cmh-support-fplll.patch      		\
+  %D%/packages/patches/cmake-curl-certificates-3.24.patch	\
   %D%/packages/patches/coda-use-system-libs.patch		\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch		\
   %D%/packages/patches/containerd-create-pid-file.patch		\
@@ -1051,9 +1051,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-telega-test-env.patch		\
   %D%/packages/patches/emacs-wordnut-require-adaptive-wrap.patch	\
   %D%/packages/patches/emacs-yasnippet-fix-tests.patch	\
+  %D%/packages/patches/emacs-kv-fix-tests.patch	\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\
-  %D%/packages/patches/eog-update-libportal-usage.patch		\
   %D%/packages/patches/erlang-man-path.patch			\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
   %D%/packages/patches/eudev-rules-directory.patch		\
@@ -1208,14 +1208,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/gmp-arm-asm-nothumb.patch		\
   %D%/packages/patches/gmp-faulty-test.patch			\
   %D%/packages/patches/gnash-fix-giflib-version.patch	        \
-  %D%/packages/patches/gnome-boxes-add-guix-logo.patch		\
-  %D%/packages/patches/gnome-builder-update-libportal.patch		\
   %D%/packages/patches/gnome-control-center-libexecdir.patch	\
   %D%/packages/patches/gnome-online-miners-tracker-3.patch	\
-  %D%/packages/patches/gnome-screenshot-meson-0.60.patch	\
   %D%/packages/patches/gnome-settings-daemon-gc.patch		\
   %D%/packages/patches/gnome-session-support-elogind.patch	\
-  %D%/packages/patches/gnome-shell-polkit-autocleanup.patch	\
   %D%/packages/patches/gnome-todo-libportal.patch		\
   %D%/packages/patches/gnome-tweaks-search-paths.patch		\
   %D%/packages/patches/gnupg-CVE-2022-34903.patch		\
@@ -1225,7 +1221,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnutls-cross.patch			\
   %D%/packages/patches/gnutls-guile-eintr-eagain.patch		\
   %D%/packages/patches/gobject-introspection-absolute-shlib-path.patch \
+  %D%/packages/patches/gobject-introspection-absolute-shlib-path-1.72.patch \
   %D%/packages/patches/gobject-introspection-cc.patch		\
+  %D%/packages/patches/gobject-introspection-cc-1.72.patch	\
   %D%/packages/patches/gobject-introspection-girepository.patch	\
   %D%/packages/patches/go-fix-script-tests.patch			\
   %D%/packages/patches/go-github-com-golang-snappy-32bit-test.patch \
@@ -1243,7 +1241,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/groovy-add-exceptionutilsgenerator.patch	\
   %D%/packages/patches/grub-efi-fat-serial-number.patch		\
   %D%/packages/patches/grub-setup-root.patch			\
-  %D%/packages/patches/gspell-dash-test.patch			\
   %D%/packages/patches/guile-1.8-cpp-4.5.patch			\
   %D%/packages/patches/guile-2.2-skip-oom-test.patch            \
   %D%/packages/patches/guile-2.2-skip-so-test.patch             \
@@ -1288,7 +1285,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/hdf-eos5-remove-gctp.patch		\
   %D%/packages/patches/hdf-eos5-fix-szip.patch			\
   %D%/packages/patches/hdf-eos5-fortrantests.patch		\
-  %D%/packages/patches/hedgewars-network-bsd.patch		\
   %D%/packages/patches/helm-fix-gcc-9-build.patch		\
   %D%/packages/patches/http-parser-CVE-2020-8287.patch		\
   %D%/packages/patches/htslib-for-stringtie.patch		\
@@ -1397,6 +1393,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/libcroco-CVE-2020-12825.patch		\
   %D%/packages/patches/libcyaml-libyaml-compat.patch		\
   %D%/packages/patches/libexpected-nofetch.patch                \
+  %D%/packages/patches/libgda-cve-2021-39359.patch		\
+  %D%/packages/patches/libgda-fix-build.patch			\
+  %D%/packages/patches/libgda-fix-missing-initialization.patch	\
+  %D%/packages/patches/libgda-skip-postgresql-tests.patch	\
   %D%/packages/patches/libgit2-mtime-0.patch			\
   %D%/packages/patches/libgnome-encoding.patch			\
   %D%/packages/patches/libgnomeui-utf8.patch			\
@@ -1528,7 +1528,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/musl-cross-locale.patch			\
   %D%/packages/patches/mutt-store-references.patch		\
   %D%/packages/patches/m4-gnulib-libio.patch			\
-  %D%/packages/patches/nautilus-add-libportal-gtk3.patch	\
   %D%/packages/patches/ncompress-fix-softlinks.patch		\
   %D%/packages/patches/ncftp-reproducible.patch			\
   %D%/packages/patches/netcdf-date-time.patch			\

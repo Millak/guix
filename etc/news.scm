@@ -25,15 +25,56 @@
 
 (channel-news
  (version 0)
+ (entry (commit "11a06d1e49f4d50d6789e05bbf35e2e145ff7838")
+        (title
+         (en "Emacs now supports native compilation")
+         (de "Emacs kann Pakete nun nativ kompilieren")
+         (pt "O Emacs agora suporta compilação nativa"))
+        (body
+         (en "Emacs can now compile packages natively.  Under the default
+configuration, this means that Emacs packages will now be just-in-time (JIT)
+compiled as you use them, and the results stored in a subdirectory of your
+@code{user-emacs-directory}.
+
+Furthermore, the build system for Emacs packages transparently supports native
+compilation, but note, that @code{emacs-minimal}---the default Emacs for
+building packages---has been configured without native compilation.
+To natively compile your emacs packages ahead of time, use a transformation
+like @option{--with-input=emacs-minimal=emacs}.")
+         (de "Emacs kann nun native Maschinenbefehle erzeugen.  Standardgemäß
+kompiliert es nun Pakete „just in time“, während Sie diese laden, und platziert
+die so erzeugten nativen Bibliotheken in einem Unterverzeichnis Ihres
+@code{user-emacs-directory}.
+
+Darüber hinaus unterstützt das Erstellungssystem für Emacs-Pakete die Erzeugung
+nativer Maschinenbefehle.  Beachten Sie jedoch, dass @code{emacs-minimal} –
+die Emacs-Variante, mit der normalerweise Emacs-Pakete erstellt werden –
+weiterhin keine nativen Befehle generiert.  Um native Befehle für Ihre
+Emacs-Pakete schon im Voraus zu erzeugen, nutzen Sie eine Transformation, z.B.
+@option{--with-input=emacs-minimal=emacs}.")
+         (pt "Agora o Emacs pode compilar pacotes nativamente.  Na
+configuração padrão os pacotes do Emacs serão compilados “just-in-time” (JIT)
+conforme forem usados, e os resultados armazenados em um subdiretório de
+@code{user-emacs-directory}.
+
+Além disso, o sistema de compilação para pacotes do Emacs suporta compilação
+nativa de forma transparente.  Note porém que o @code{emacs-minimal} --- a
+variante padrão do Emacs para compilar pacotes --- foi configurado sem
+compilação nativa.  Para pré-compilar nativamente seus pacotes do Emacs use
+uma transformação, como por exemplo
+@code{--with-input=emacs-minimal=emacs}.")))
 
  (entry (commit "c188cf57f161c0c26e2d7c8516bd1ddd1492d686")
         (title
           (en "Linux-libre kernel updated to 5.19")
+          (de "Linux-libre-Kernel wird auf 5.19 aktualisiert")
           (fr "Le noyau linux-libre est mis à jour vers la 5.19")
           (pt "Kernel linux-libre atualizado para 5.19"))
         (body
           (en "The default version of the linux-libre kernel has been
               updated to the 5.19 release series.")
+          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+              jetzt auf der 5.19-Versionsreihe.")
           (fr "La version par défaut du noyau linux-libre est mise à jour
               vers la série des 5.19.")
           (pt "A versão padrão do kernel linux-libre foi atualizada para a

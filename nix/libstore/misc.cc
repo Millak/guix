@@ -59,14 +59,6 @@ void computeFSClosure(StoreAPI & store, const Path & path,
 }
 
 
-Path findOutput(const Derivation & drv, string id)
-{
-    foreach (DerivationOutputs::const_iterator, i, drv.outputs)
-        if (i->first == id) return i->second.path;
-    throw Error(format("derivation has no output `%1%'") % id);
-}
-
-
 static void dfsVisit(StoreAPI & store, const PathSet & paths,
     const Path & path, PathSet & visited, Paths & sorted,
     PathSet & parents)

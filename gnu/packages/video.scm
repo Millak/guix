@@ -2293,7 +2293,7 @@ the last played position, etc.")
 (define-public gallery-dl
   (package
     (name "gallery-dl")
-    (version "1.20.5")
+    (version "1.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mikf/gallery-dl"
@@ -2301,7 +2301,7 @@ the last played position, etc.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0149hd4nh7bk2yqjdnvrkvag5mwgsb6gxrgfcd88q4cv3k2ji42h"))))
+                "12rhzf8cwsvlg0vxzydgc7x04gmccxkjk8ghb5s8lk0gjp7ysqkh"))))
     (build-system python-build-system)
     (inputs (list python-requests ffmpeg))
     (home-page "https://github.com/mikf/gallery-dl")

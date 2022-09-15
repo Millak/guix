@@ -492,7 +492,7 @@ device-specific programs to convert and print many types of files.")
     (native-inputs
      (list intltool pkg-config `(,glib "bin")))
     (inputs
-     (list glib polkit cups-minimal))
+     (list glib polkit-duktape cups-minimal))
     (home-page "https://www.freedesktop.org/wiki/Software/cups-pk-helper/")
     (synopsis "PolicyKit helper to configure CUPS with fine-grained privileges")
     (description

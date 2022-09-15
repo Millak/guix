@@ -939,6 +939,48 @@ backends, PackageKit can perform these tasks using the appropriate package
 manager for the current system.")
     (license license:gpl2+)))
 
+(define-public python-libevdev
+  (package
+    (name "python-libevdev")
+    (version "0.11")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "libevdev" version))
+              (sha256
+               (base32
+                "03snix86j0angq0lydp29f8833clxq8h0x4spmh8lj7j9mm01jp9"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-dlopen-calls
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "libevdev/_clib.py"
+                (("libevdev.so.2")
+                 (search-input-file inputs "lib/libevdev.so.2")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "test")))))))
+    (native-inputs (list python-pytest))
+    (inputs (list libevdev))
+    (home-page "https://gitlab.freedesktop.org/libevdev/python-libevdev")
+    (synopsis "Python wrapper for libevdev")
+    (description "This package provides a Python wrapper around
+@code{libevdev}, taking advantage of @code{libevdev}'s advanced event
+handling.  Documentation is available at
+@url{https://python-libevdev.readthedocs.io/en/latest/}.
+@code{libevdev} makes it easy to:
+@itemize
+@item read and parse events from an input device;
+@item create a virtual input device and make it send events;
+@item duplicate an existing device and modify the event stream.
+@end itemize
+For information about libevdev, see:
+@url{https://freedesktop.org/wiki/Software/libevdev/}.")
+    (license license:expat)))
+
 (define-public python-pyxdg
   (package
     (name "python-pyxdg")
@@ -1079,7 +1121,6 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
         . "https://wayland.freedesktop.org/releases.html")))
     (license license:expat)))
 
-;;; This is just a temporary package that should be deleted
 (define-public wayland-protocols-next
   (package
     (inherit wayland-protocols)
@@ -1513,12 +1554,14 @@ message bus.")
            python-dbusmock
            python-pygobject))
     (inputs
-     (list coreutils-minimal
+     (list bash-minimal
+           coreutils-minimal
            dbus
            elogind
            shadow))
     (propagated-inputs
-     (list polkit))                     ; listed in Requires.private
+     ;; accountsservice.pc 'Requires' these:
+     (list glib polkit))
     (home-page "https://www.freedesktop.org/wiki/Software/AccountsService/")
     (synopsis "D-Bus interface for user account query and manipulation")
     (description
@@ -1605,18 +1648,17 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
       #:configure-flags
       #~(list (string-append "--with-udev-base-dir=" #$output "/lib/udev"))))
     (native-inputs
-     (list gettext-minimal
-           `(,glib "bin") ; for glib-mkenums
+     (list dbus
+           gettext-minimal
            gobject-introspection
+           `(,glib "bin")               ;for glib-mkenums
            pkg-config
-           vala
-           ;; For testing.
-           dbus
            python
            python-dbus
-           python-pygobject))
+           python-pygobject
+           vala))
     (propagated-inputs
-     (list glib)) ; required by mm-glib.pc
+     (list glib))                       ;required by mm-glib.pc
     (inputs
      (list libgudev libmbim libqmi polkit))
     (synopsis "Mobile broadband modems manager")
@@ -1728,27 +1770,37 @@ share connections to real-time communication services without conflicting.")
 (define-public colord-gtk
   (package
     (name "colord-gtk")
-    (version "0.1.26")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.freedesktop.org/software/colord"
                                   "/releases/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0i9y3bb5apj6a0f8cx36l6mjzs7xc0k7nf0magmf58vy2mzhpl18"))))
-    (build-system gnu-build-system)
-    (arguments '(#:tests? #f)) ; require the colord system service
+                "1l61ydb0zv2ffilwpapgz5mm3bznr28zl16xqbxnz6kdsrb6cimr"))))
+    (build-system meson-build-system)
+    (arguments '(#:tests? #f            ;require the colord system service
+                 ;; Building documentation fails with: "Cannot build man pages
+                 ;; without docbook-xsl-ns".
+                 #:configure-flags (list "-Ddocs=false" "-Dman=false")))
     (native-inputs
-     (list gobject-introspection intltool pkg-config vala))
+     (list gettext-minimal
+           gobject-introspection
+           pkg-config
+           vala))
+    (inputs
+     ;; TODO: remove pango-next after it's the default.
+     (list gtk+
+           pango-next))
     (propagated-inputs
      ;; colord-gtk.pc refers to all these.
-     (list colord gtk+))
+     (list colord gtk))
     (synopsis "GTK integration for libcolord")
     (home-page "https://www.freedesktop.org/software/colord/")
     (description
-     "This is a GTK+ convenience library for interacting with colord.  It is
-useful for both applications which need colour management and applications that
-wish to perform colour calibration.")
+     "This is a GTK convenience library for interacting with colord.  It is
+useful for both applications which need colour management and applications
+that wish to perform colour calibration.")
     (license license:lgpl2.1+)))
 
 (define-public libfprint

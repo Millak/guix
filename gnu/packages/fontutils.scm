@@ -9,11 +9,10 @@
 ;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;;
@@ -145,7 +144,15 @@ them as it goes.")
        (method url-fetch)
        (uri (pypi-uri "afdko" version))
        (sha256
-        (base32 "171r9f7n8fgz37dkcgpzj508lxfafcyzzx43ps12j1z2nk1sk905"))))
+        (base32 "171r9f7n8fgz37dkcgpzj508lxfafcyzzx43ps12j1z2nk1sk905"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (with-directory-excursion "c/makeotf/lib/hotconv"
+              ;; Delete ANTLR-generated code.
+              (for-each delete-file
+                        (find-files
+                         "." "Feat(Parser|Lexer).*\\.(h|cpp|interp|tokens)$")))))))
     (build-system python-build-system)
     (arguments
      (list
@@ -173,6 +180,17 @@ them as it goes.")
               (substitute* "c/makeotf/lib/hotconv/CMakeLists.txt"
                 (("antlr4_static")
                  "antlr4-runtime"))))
+          (add-after 'unpack 'regenerate-hotconv-grammar
+            (lambda _
+              (let ((antlr-version #$(package-version
+                                      (this-package-native-input "antlr4"))))
+                (with-directory-excursion "c/makeotf/lib/hotconv"
+                  (substitute* "BuildGrammar.py"
+                    (("antlr_version = .*")
+                     (string-append "antlr_version = \""
+                                    antlr-version
+                                    "\"")))
+                  (invoke "python" "BuildGrammar.py")))))
           ;; The test suite expects the commands to be Python rather than
           ;; shell scripts, so move the wrap phase after the tests.
           (delete 'wrap)
@@ -195,7 +213,12 @@ them as it goes.")
                               `("PATH" prefix (,bindir))))
                           commands)))))))
     (native-inputs
-     (list ninja python-pytest python-scikit-build python-setuptools-scm
+     (list antlr4
+           openjdk                      ;required by antlr4
+           ninja
+           python-pytest
+           python-scikit-build
+           python-setuptools-scm
            python-wheel))
     (inputs (list java-antlr4-runtime-cpp `(,util-linux "lib")))
     (propagated-inputs

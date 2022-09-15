@@ -236,17 +236,6 @@ string showPaths(const PathSet & paths)
     return s;
 }
 
-
-void exportPaths(StoreAPI & store, const Paths & paths,
-    bool sign, Sink & sink)
-{
-    foreach (Paths::const_iterator, i, paths) {
-        writeInt(1, sink);
-        store.exportPath(*i, sign, sink);
-    }
-    writeInt(0, sink);
-}
-
 Path readStorePath(Source & from)
 {
     Path path = readString(from);
@@ -275,12 +264,6 @@ namespace nix {
 
 
 std::shared_ptr<StoreAPI> store;
-
-
-std::shared_ptr<StoreAPI> openStore(bool reserveSpace)
-{
-    return std::shared_ptr<StoreAPI>(new LocalStore(reserveSpace));
-}
 
 
 }

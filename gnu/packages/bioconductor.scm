@@ -4708,6 +4708,35 @@ and the assessment of differential expression.  The analysis methods apply to
 different technologies, including microarrays, RNA-seq, and quantitative PCR.")
     (license license:gpl2+)))
 
+(define-public r-made4
+  (package
+    (name "r-made4")
+    (version "1.70.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "made4" version))
+              (sha256
+               (base32
+                "1wrv9d2mp799qzy1bsaj4w7wx12gdhfv9qvklz7z41vfz59d6bq5"))))
+    (properties `((upstream-name . "made4")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ade4
+           r-biobase
+           r-gplots
+           r-rcolorbrewer
+           r-scatterplot3d
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "http://www.hsph.harvard.edu/aedin-culhane/")
+    (synopsis "Multivariate analysis of microarray data using ADE4")
+    (description
+     "This is a package for multivariate data analysis and graphical display
+of microarray data.  Functions are included for supervised dimension
+reduction (between group analysis) and joint dimension reduction of two
+datasets (coinertia analysis).")
+    (license license:artistic2.0)))
+
 (define-public r-methylkit
   (package
     (name "r-methylkit")
@@ -16758,6 +16787,25 @@ obtained by fitting a @dfn{generalized least squares} (GLS) regression model
 with a nested autoregressive correlated error structure for the effect of
 interest on transformed methylation proportions.")
     (license license:expat)))
+
+(define-public r-omicade4
+  (package
+    (name "r-omicade4")
+    (version "1.36.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "omicade4" version))
+              (sha256
+               (base32
+                "1l7w3sczsimg640klq8navgdcwjj090wjqd40n4mw76pny2xj2lj"))))
+    (properties `((upstream-name . "omicade4")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ade4 r-biobase r-made4))
+    (home-page "https://bioconductor.org/packages/omicade4")
+    (synopsis "Multiple co-inertia analysis of omics datasets")
+    (description
+     "This package performes multiple co-inertia analysis of omics datasets.")
+    (license license:gpl2)))
 
 (define-public r-omnipathr
   (package

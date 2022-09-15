@@ -24,7 +24,7 @@
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -5331,7 +5331,7 @@ application-facing EGL functions.")
 (define-public egl-wayland
   (package
     (name "egl-wayland")
-    (version "1.1.9")
+    (version "1.1.10")
     (source
      (origin
        (method git-fetch)
@@ -5340,7 +5340,7 @@ application-facing EGL functions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iz86cpc4v7izckrcslllnw0vvvgsxg1sr65yb8s9d0f8xa8djdd"))))
+        (base32 "13hdczhsicp4bfkcjg2npslwjaqrajjv867gxjnmvk77scr09dvm"))))
     (build-system meson-build-system)
     (native-inputs
      (list libglvnd ;needed for headers
@@ -6715,66 +6715,68 @@ box, and a calendar.  It uses GTK+, and will match your desktop theme.")
 (define-public xvfb-run
   (package
     (name "xvfb-run")
-    (version "1.20.10-3")
+    (version "1.20.11-1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://debian/pool/main/x/xorg-server/"
                            "xorg-server_" version ".diff.gz"))
        (sha256
-        (base32 "08gs9ni8ss8rw4n9cql1s8q05mj517vk1vm1varj1dsx75k4j25v"))))
+        (base32 "0hq8a2rw2ginxsifrpj3rsf2shxl69ylkc1650ij5vwjhxdr82hh"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           ;; Apply the source patch to an empty directory.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((source (assoc-ref inputs "source"))
-                    (diff.gz (basename source))
-                    (diff (substring diff.gz 0 (string-rindex diff.gz #\.))))
-               (mkdir "source")
-               (chdir "source")
-               (copy-file source diff.gz)
-               (invoke "gunzip" diff.gz)
-               (invoke "patch" "-Np1" "-i" diff)
-               (chdir "debian/local"))))
-         (delete 'configure)            ; nothing to configure
-         (replace 'build
-           (lambda _
-             (chmod "xvfb-run" #o755)
-             (substitute* "xvfb-run"
-               (("(\\(| )(fmt|stty|awk|cat|kill|getopt|mktemp|touch|rm|mcookie)"
-                 _ prefix command)
-                (string-append prefix (which command)))
-               ;; These also feature in UI messages, so be more strict.
-               (("(AUTHFILE |command -v |exec )(Xvfb|xauth)"
-                 _ prefix command)
-                (string-append prefix (which command))))))
-         (replace 'check
-           ;; There are no tests included.  Here we test whether we can run
-           ;; a simple client and whether xvfb-run --help succeeds
-           ;; without xvfb-run itself relying on $PATH.
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (let ((old-PATH (getenv "PATH"))
-                     (xterm (which "xterm")))
-                 (unsetenv "PATH")
-                 (invoke "./xvfb-run" xterm "-e" "true")
-                 (invoke "./xvfb-run" "--help")
-                 (setenv "PATH" old-PATH)))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man (string-append out "/share/man/man1")))
-               (install-file "xvfb-run" bin)
-               (install-file "xvfb-run.1" man)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            ;; Apply the source patch to an empty directory.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let*  ((diff.gz (basename #$source))
+                      (diff (substring diff.gz 0 (string-rindex diff.gz #\.))))
+                (mkdir "source")
+                (chdir "source")
+                (copy-file #$source diff.gz)
+                (invoke "gunzip" diff.gz)
+                (invoke "patch" "-Np1" "-i" diff)
+                (chdir "debian/local"))))
+          (delete 'configure)           ; nothing to configure
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (chmod "xvfb-run" #o755)
+              (substitute* "xvfb-run"
+                (("(\\(| )(fmt|stty|awk|cat|kill|getopt|mktemp|touch|rm|mcookie)"
+                  _ prefix command)
+                 (string-append prefix (which command)))
+                ;; These also feature in UI messages, so be more strict.
+                (("(AUTHFILE |command -v |exec )(Xvfb|xauth)"
+                  _ prefix command)
+                 (string-append prefix
+                                (search-input-file
+                                 inputs (string-append "bin/" command)))))))
+          (replace 'check
+            ;; There are no tests included.  Here we test whether we can run
+            ;; a simple client and whether xvfb-run --help succeeds
+            ;; without xvfb-run itself relying on $PATH.
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (let ((old-PATH (getenv "PATH"))
+                      (xterm (which "xterm")))
+                  (unsetenv "PATH")
+                  (invoke "./xvfb-run" xterm "-e" "true")
+                  (invoke "./xvfb-run" "--help")
+                  (setenv "PATH" old-PATH)))))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (man (string-append #$output "/share/man/man1")))
+                (install-file "xvfb-run" bin)
+                (install-file "xvfb-run.1" man)))))))
     (inputs
-     (list util-linux ; for getopt
-           xauth xorg-server))
+     (list util-linux                   ; for getopt
+           xauth
+           xorg-server))
     (native-inputs
-     (list xterm))               ; for the test
+     (list xterm))                      ; for the test
     ;; This script is not part of the upstream xorg-server.  It is provided only
     ;; as a patch added to Debian's package.
     (home-page "https://packages.debian.org/sid/xorg-server-source")
@@ -6785,7 +6787,7 @@ within a virtual X server environment.  It sets up an X authority file or uses
 an existing user-specified one, writes a cookie to it, and then starts the
 @command{Xvfb} X server as a background process.  It also takes care of killing
 the server and cleaning up before returning the exit status of the command.")
-    (license (list license:x11                    ; the script
+    (license (list license:x11          ; the script
                    license:gpl2+))))              ; the man page
 
 (define-public setroot

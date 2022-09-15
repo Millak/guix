@@ -209,8 +209,8 @@ fractional-second-digits-append-item.js")
     (propagated-inputs
      (list nspr))                ; in the Requires.private field of mozjs-*.pc
     (home-page
-     "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey")
-    (synopsis "Mozilla javascript engine")
+     "https://spidermonkey.dev/")
+    (synopsis "Mozilla JavaScript engine")
     (description "SpiderMonkey is Mozilla's JavaScript engine written
 in C/C++.")
     (license license:mpl2.0))) ; and others for some files

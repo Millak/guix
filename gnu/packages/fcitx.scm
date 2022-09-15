@@ -2,6 +2,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +23,7 @@
   #:use-module ((guix licenses) #:select (gpl2+ bsd-3))
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
@@ -150,55 +152,55 @@ by the different predictive algorithms.")
 (define-public fcitx
   (package
     (name "fcitx")
-    (version "4.2.9.8")
+    (version "4.2.9.9")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://download.fcitx-im.org/fcitx/"
+              (uri (string-append "https://download.fcitx-im.org/fcitx/"
                                   "fcitx-" version "_dict.tar.xz"))
               (sha256
                (base32
-                "1iik80l7g8yk9iwsls6nl9whwgm0sj8i7s6s0bz4c5anl35iaddw"))))
+                "0x5980l7ry34scvfdwc330d9nxv3id9jj9wcl7bvqjkp32gz3aj5"))))
     (build-system cmake-build-system)
     (outputs '("out" "gtk2" "gtk3"))
     (arguments
-     `(#:configure-flags
-       (list "-DENABLE_TEST=ON"
-             (string-append "-DXKB_RULES_XML_FILE="
-                            (assoc-ref %build-inputs "xkeyboard-config")
-                            "/share/X11/xkb/rules/evdev.xml")
-             "-DENABLE_GTK2_IM_MODULE=ON"
-             "-DENABLE_GTK3_IM_MODULE=ON"
-             (string-append "-DGTK2_IM_MODULEDIR="
-                            (assoc-ref %outputs "gtk2")
-                            "/lib/gtk-2.0/2.10.0/immodules")
-             (string-append "-DGTK3_IM_MODULEDIR="
-                            (assoc-ref %outputs "gtk3")
-                            "/lib/gtk-3.0/3.0.0/immodules")
-             ;; XXX: Enable GObject Introspection and Qt4 support.
-             "-DENABLE_GIR=OFF"
-             "-DENABLE_QT=OFF"
-             "-DENABLE_QT_IM_MODULE=OFF")))
+     (list
+      #:configure-flags
+      #~(list "-DENABLE_TEST=ON"
+              (string-append "-DXKB_RULES_XML_FILE="
+                             (search-input-file
+                              %build-inputs "share/X11/xkb/rules/evdev.xml"))
+              "-DENABLE_GTK2_IM_MODULE=ON"
+              "-DENABLE_GTK3_IM_MODULE=ON"
+              (string-append "-DGTK2_IM_MODULEDIR="
+                             #$output:gtk2
+                             "/lib/gtk-2.0/2.10.0/immodules")
+              (string-append "-DGTK3_IM_MODULEDIR="
+                             #$output:gtk3
+                             "/lib/gtk-3.0/3.0.0/immodules")
+              ;; XXX: Enable GObject Introspection and Qt4 support.
+              "-DENABLE_GIR=OFF"
+              "-DENABLE_QT=OFF"
+              "-DENABLE_QT_IM_MODULE=OFF")))
     (native-inputs
-     `(("doxygen"    ,doxygen)
-       ("extra-cmake-modules"
-        ;; XXX: We can't simply #:use-module due to a cycle somewhere.
-        ,(module-ref
-          (resolve-interface '(gnu packages kde-frameworks))
-          'extra-cmake-modules))
-       ("glib:bin"   ,glib "bin")       ; for glib-genmarshal
-       ("pkg-config" ,pkg-config)))
+     (list doxygen
+           ;; XXX: We can't simply #:use-module due to a cycle somewhere.
+           (module-ref
+            (resolve-interface '(gnu packages kde-frameworks))
+            'extra-cmake-modules)
+           `(,glib "bin")               ; for glib-genmarshal
+           pkg-config))
     (inputs
-     `(("dbus"             ,dbus)
-       ("enchant"          ,enchant-1.6)
-       ("gettext"          ,gettext-minimal)
-       ("gtk2"             ,gtk+-2)
-       ("gtk3"             ,gtk+)
-       ("icu4c"            ,icu4c)
-       ("iso-codes"        ,iso-codes)
-       ("json-c"           ,json-c)
-       ("libxkbfile"       ,libxkbfile)
-       ("libxml2"          ,libxml2)
-       ("xkeyboard-config" ,xkeyboard-config)))
+     (list dbus
+           enchant-1.6
+           gettext-minimal
+           gtk+-2
+           gtk+
+           icu4c
+           iso-codes
+           json-c
+           libxkbfile
+           libxml2
+           xkeyboard-config))
     (home-page "https://fcitx-im.org")
     (synopsis "Input method framework")
     (description

@@ -56,6 +56,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Elais Player <elais@fastmail.com>
+;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1653,7 +1654,7 @@ modules for building a Wayland compositor.")
 (define-public swaylock
   (package
     (name "swaylock")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method git-fetch)
@@ -1662,12 +1663,12 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r95p4w11dwm5ra614vddz83r8j7z6gd120z2vcchy7m9b0f15kf"))))
+        (base32 "1ihdvx6gdinzabvnazjmkk3ajrp7ngg0jzfwcjqn4hcjv64s0lam"))))
     (build-system meson-build-system)
     (inputs (list cairo gdk-pixbuf libxkbcommon
                   ;("linux-pam" ,linux-pam) ; FIXME: Doesn't work.
                   wayland))
-    (native-inputs (list pango pkg-config scdoc wayland-protocols))
+    (native-inputs (list pango pkg-config scdoc wayland-protocols-next))
     (home-page "https://github.com/swaywm/sway")
     (synopsis "Screen locking utility for Wayland compositors")
     (description "Swaylock is a screen locking utility for Wayland compositors.")
@@ -1729,7 +1730,7 @@ display a clock or apply image manipulation techniques to the background image."
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.9")
+    (version "0.9.13")
     (source
      (origin
        (method git-fetch)
@@ -1738,7 +1739,7 @@ display a clock or apply image manipulation techniques to the background image."
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bp9ygqv3kawwxf53j1r98r0xxg81cx00jsmymmlrd8psgsd6yy9"))))
+        (base32 "15fy21cipih80amv78g7g4k2gylf107phbv0fjacn3w3n0i3cf2k"))))
     (build-system meson-build-system)
     (inputs (list date
                   fmt
@@ -2254,6 +2255,29 @@ one in Emacs.")
     (synopsis "Screenshots for StumpWM")
     (description "This StumpWM module can take screenshots and store them as
 PNG files.")
+    (license license:gpl3+)))
+
+(define-public sbcl-stumpwm-notify
+  (package
+    (inherit stumpwm-contrib)
+    (name "sbcl-stumpwm-notify")
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-bordeaux-threads
+           sbcl-dbus
+           sbcl-xml-emitter
+           (list stumpwm "lib")))
+    (arguments
+     '(#:asd-systems '("notify")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "util/notify"))))))
+    (home-page "https://github.com/stumpwm/stumpwm-contrib")
+    (synopsis "Notifications server for StumpWM")
+    (description "This module implements org.freedesktop.Notifications
+interface[fn:dbus-spec].  It shows notifications using stumpwm:message
+by default.")
     (license license:gpl3+)))
 
 (define-public lemonbar

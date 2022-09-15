@@ -391,7 +391,7 @@ many popular formats.")
            mesa
            netcdf
            libpng
-           proj
+           proj-7
            python
            ;("pugixml" ,pugixml)
            sqlite

@@ -48,6 +48,7 @@
   #:use-module (gnu packages enlightenment)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages graphviz)
@@ -379,46 +380,105 @@ functions for strings and common data structures.")
     (license license:lgpl2.1+)
     (properties '((hidden? . #t)))))
 
+(define-public glib-next
+  (package
+    (inherit glib)
+    (name "glib")
+    (version "2.73.3")
+    (source
+     (origin
+       (inherit (package-source glib))
+       (uri
+        (string-append "mirror://gnome/sources/"
+                       name "/" (string-take version 4) "/"
+                       name "-" version ".tar.xz"))
+       (snippet
+        '(substitute* "glib/tests/spawn-test.c"
+           (("/bin/sh") "sh")))
+       (sha256
+        (base32 "1bgfch7zj1pq4rkqcibfky1470ijljyrx5pn5s5v9mk72s22n6nz"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments glib)
+       ((#:test-options test-options ''())
+        ;; Skip flaky or slow tests.
+        `(cons* "--no-suite=slow" "--no-suite=flaky" ,test-options))
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (replace 'disable-failing-tests
+             (lambda _
+               (with-directory-excursion "glib/tests"
+                 (substitute* '("unix.c" "utils.c")
+                   (("[ \t]*g_test_add_func.*;") "")))
+               ;; The "glib:gio / file" test fails with the error "No
+               ;; application is registered as handling this file" (see:
+               ;; https://gitlab.gnome.org/GNOME/glib/-/issues/2742).
+               (with-directory-excursion "gio/tests"
+                 (substitute* '("appinfo.c"
+                                "contenttype.c"
+                                "desktop-app-info.c"
+                                "file.c"
+                                "gdbus-address-get-session.c"
+                                "gdbus-peer.c")
+                   (("[ \t]*g_test_add_func.*;") "")))
+
+               ,@(if (target-x86-32?)
+                     ;; Comment out parts of timer.c that fail on i686 due to
+                     ;; excess precision when building with GCC 10:
+                     ;; <https://gitlab.gnome.org/GNOME/glib/-/issues/820>.
+                     '((substitute* "glib/tests/timer.c"
+                         (("^  g_assert_cmpuint \\(micros.*" all)
+                          (string-append "//" all "\n"))
+                         (("^  g_assert_cmpfloat \\(elapsed, ==.*" all)
+                          (string-append "//" all "\n"))))
+                     '())))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs glib)
+       (append desktop-file-utils)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs glib)
+       (replace "pcre" pcre2)))))
+
 (define-public glib-with-documentation
   ;; glib's doc must be built in a separate package since it requires gtk-doc,
   ;; which in turn depends on glib.
-  (package/inherit glib
-    (properties (alist-delete 'hidden? (package-properties glib)))
-    (outputs (cons "doc" (package-outputs glib))) ; 20 MiB of GTK-Doc reference
-    (native-inputs
-     `(("docbook-xml-4.2" ,docbook-xml-4.2)
-       ("docbook-xml-4.5" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("gtk-doc" ,gtk-doc)
-       ("libxml2" ,libxml2)
-       ("xsltproc" ,libxslt)
-       ,@(package-native-inputs glib)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments glib)
-       ((#:configure-flags flags ''())
-        #~(cons "-Dgtk_doc=true"
-                (delete "-Dman=false" #$flags)))
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'patch-docbook-xml
-             (lambda* (#:key inputs #:allow-other-keys)
-               (with-directory-excursion "docs"
-                 (substitute* (find-files "." "\\.xml$")
-                   (("http://www.oasis-open.org/docbook/xml/4\\.5/")
-                    (string-append (assoc-ref inputs "docbook-xml-4.5")
-                                   "/xml/dtd/docbook/"))
-                   (("http://www.oasis-open.org/docbook/xml/4\\.2/")
-                    (string-append (assoc-ref inputs "docbook-xml-4.2")
-                                   "/xml/dtd/docbook/"))))))
-           (add-after 'install 'move-doc
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (doc (assoc-ref outputs "doc"))
-                      (html (string-append "/share/gtk-doc")))
-                 (mkdir-p (string-append doc "/share"))
-                 (rename-file
-                  (string-append out html)
-                  (string-append doc html)))))))))))
+  (let ((base glib-next))
+    (package/inherit base
+      (properties (alist-delete 'hidden? (package-properties base)))
+      (outputs (cons "doc" (package-outputs base))) ; 20 MiB of GTK-Doc reference
+      (native-inputs
+       `(("docbook-xml-4.2" ,docbook-xml-4.2)
+         ("docbook-xml-4.5" ,docbook-xml)
+         ("docbook-xsl" ,docbook-xsl)
+         ("gtk-doc" ,gtk-doc)
+         ("libxml2" ,libxml2)
+         ("xsltproc" ,libxslt)
+         ,@(package-native-inputs base)))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:configure-flags flags ''())
+          #~(cons "-Dgtk_doc=true"
+                  (delete "-Dman=false" #$flags)))
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'patch-docbook-xml
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (with-directory-excursion "docs"
+                   (substitute* (find-files "." "\\.xml$")
+                     (("http://www.oasis-open.org/docbook/xml/4\\.5/")
+                      (string-append (assoc-ref inputs "docbook-xml-4.5")
+                                     "/xml/dtd/docbook/"))
+                     (("http://www.oasis-open.org/docbook/xml/4\\.2/")
+                      (string-append (assoc-ref inputs "docbook-xml-4.2")
+                                     "/xml/dtd/docbook/"))))))
+             (add-after 'install 'move-doc
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let* ((out (assoc-ref outputs "out"))
+                        (doc (assoc-ref outputs "doc"))
+                        (html (string-append "/share/gtk-doc")))
+                   (mkdir-p (string-append doc "/share"))
+                   (rename-file
+                    (string-append out html)
+                    (string-append doc html))))))))))))
 
 (define (python-extension-suffix python triplet)
   "Determine the suffix for C extensions for PYTHON when compiled
@@ -545,6 +605,26 @@ provide bindings to call into the C library.")
       license:lgpl2.0+
       ;; For tools.
       license:gpl2+))))
+
+(define-public gobject-introspection-next
+  (package
+    (inherit gobject-introspection)
+    (name "gobject-introspection")
+    (version "1.73.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/"
+                                  "gobject-introspection/" (version-major+minor version)
+                                  "/gobject-introspection-" version ".tar.xz"))
+              (sha256
+               (base32 "1gkbx32as3v2286w7k3j24fwhkxj6brr49881m2zavxamfwxdm34"))
+              (patches (search-patches
+                        "gobject-introspection-cc-1.72.patch"
+                        "gobject-introspection-girepository.patch"
+                        "gobject-introspection-absolute-shlib-path-1.72.patch"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs gobject-introspection)
+       (replace "glib" glib-next)))))
 
 (define intltool
   (package

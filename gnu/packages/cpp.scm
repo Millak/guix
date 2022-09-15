@@ -406,7 +406,7 @@ combination of these streams.")
 (define-public xsimd
   (package
     (name "xsimd")
-    (version "8.1.0")
+    (version "9.0.1")
     (source
      (origin
        (method git-fetch)
@@ -414,7 +414,7 @@ combination of these streams.")
              (url "https://github.com/QuantStack/xsimd")
              (commit version)))
        (sha256
-        (base32 "16b9fdvhhsbs93llbzccgpxjdkj8kfvac3wx0b30i306k5f3maq2"))
+        (base32 "1fcy0djwpwvls6yqxqa82s4l4gvwkqkr8i8bibbb3dm0lqvhnw52"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -422,7 +422,7 @@ combination of these streams.")
        #:test-target "xtest"))
     (native-inputs
      (list googletest))
-    (home-page "https://github.com/QuantStack/xsimd")
+    (home-page "https://github.com/xtensor-stack/xsimd")
     (synopsis "C++ wrappers for SIMD intrinsics and math implementations")
     (description
      "xsimd provides a unified means for using @acronym{SIMD, single instruction
@@ -456,12 +456,12 @@ operating on batches.")
 library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
     (license license:asl2.0)))
 
-(define-public xsmimd-benchmark
+(define-public xsimd-benchmark
   (package
     (inherit xsimd)
     (name "xsimd-benchmark")
     (arguments
-     `(#:configure-flags (list "-DBUILD_BENCHMARK=ON")
+     `(#:configure-flags (list "-DBUILD_BENCHMARK=ON" "-DBUILD_EXAMPLES=ON")
        #:tests? #f
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'remove-march=native
@@ -470,9 +470,11 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
                         (("-march=native") ""))))
                   (replace 'install
                     (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Install nothing but the executable.
+                      ;; Install nothing but the executables.
                       (let ((out (assoc-ref outputs "out")))
                         (install-file "benchmark/benchmark_xsimd"
+                                      (string-append out "/bin"))
+                        (install-file "examples/mandelbrot"
                                       (string-append out "/bin"))))))))
     (synopsis "Benchmark of the xsimd library")
 

@@ -170,7 +170,7 @@ and the maven-build-system."))
 
 (define-team home
   (team 'home
-        #:name "Team for \"guix home\""))
+        #:name "Team for \"Guix Home\""))
 
 (define-team mentors
   (team 'mentors
@@ -265,6 +265,10 @@ importer."))
 (define-member (person "Christopher Baines"
                        "mail@cbaines.net")
   core mentors ruby)
+
+(define-member (person "Andrew Tropin"
+                       "andrew@trop.in")
+  home emacs)
 
 
 (define (find-team name)

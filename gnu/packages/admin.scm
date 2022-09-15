@@ -325,14 +325,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-0.9
   (package
     (inherit shepherd)
-    (version "0.9.1")
+    (version "0.9.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0l2arn6gsyw88xk9phxnyplvv1mn8sqp3ipgyyb0nszdzvxlgd36"))
+                "0mcby3ygh3bpns44rb1vnk8bz2km4nlw092nrcgkm3nkqfmbp4p1"))
               (modules '((guix build utils)))
               (snippet
                ;; Avoid continuation barriers so (@ (fibers) sleep) can be
@@ -3815,13 +3815,13 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "1.0.2")
+    (version "1.4.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "HyFetch" version))
         (sha256
-          (base32 "1bfkycdhsyzkk6q24gdy1xwvyz0rvkr7xk2khbn74b3nk6kp83r2"))))
+          (base32 "18s8r63aqyah34vbahccgkiqw4008i2w5kvhqd9s8bdd4yvsrn4n"))))
     (build-system python-build-system)
     (inputs (list python-hypy-utils python-typing-extensions))
     (arguments `(#:phases (modify-phases %standard-phases

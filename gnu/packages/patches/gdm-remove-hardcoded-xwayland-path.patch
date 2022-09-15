@@ -1,22 +1,28 @@
 Remove check for hardcoded Xwayland path in gdm.
 
----
- daemon/gdm-local-display-factory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
 diff --git a/daemon/gdm-local-display-factory.c b/daemon/gdm-local-display-factory.c
-index da1093bb..37355c06 100644
+index 7de7b99c..065325f4 100644
 --- a/daemon/gdm-local-display-factory.c
 +++ b/daemon/gdm-local-display-factory.c
-@@ -203,7 +203,7 @@ gdm_local_display_factory_use_wayland (void)
+@@ -245,9 +245,9 @@ struct GdmDisplayServerConfiguration {
+         const char *session_type;
+ } display_server_configuration[] = {
  #ifdef ENABLE_WAYLAND_SUPPORT
-         gboolean wayland_enabled = FALSE;
-         if (gdm_settings_direct_get_boolean (GDM_KEY_WAYLAND_ENABLE, &wayland_enabled)) {
--                if (wayland_enabled && g_file_test ("/usr/bin/Xwayland", G_FILE_TEST_IS_EXECUTABLE) )
-+                if (wayland_enabled)
-                         return TRUE;
-         }
+-        { "wayland", GDM_KEY_WAYLAND_ENABLE, "/usr/bin/Xwayland", "wayland" },
++        { "wayland", GDM_KEY_WAYLAND_ENABLE, "", "wayland" },
  #endif
---
-2.33.0
-
+-        { "xorg", GDM_KEY_XORG_ENABLE, "/usr/bin/Xorg", "x11" },
++        { "xorg", GDM_KEY_XORG_ENABLE, "", "x11" },
+         { NULL, NULL, NULL },
+ };
+ 
+@@ -269,9 +269,6 @@ display_server_enabled (GdmLocalDisplayFactory *factory,
+                 if (!gdm_settings_direct_get_boolean (key, &enabled) || !enabled)
+                         return FALSE;
+ 
+-                if (!g_file_test (binary, G_FILE_TEST_IS_EXECUTABLE))
+-                        return FALSE;
+-
+                 return TRUE;
+         }
+ 

@@ -36628,8 +36628,9 @@ extensions.
 @item @code{extra-jails} (default: @code{()}) (type: list-of-fail2ban-jail-configurations)
 Instances of @code{<fail2ban-jail-configuration>} explicitly provided.
 
-@item @code{extra-content} (type: maybe-string)
-Extra raw content to add to the end of the @file{jail.local} file.
+@item @code{extra-content} (default: @code{()}) (type: text-config)
+Extra raw content to add to the end of the @file{jail.local} file,
+provided as a list of file-like objects.
 
 @end table
 
@@ -36756,8 +36757,9 @@ The file names of the log files to be monitored.
 @item @code{action} (default: @code{()}) (type: list-of-fail2ban-jail-actions)
 A list of @code{<fail2ban-jail-action-configuration>}.
 
-@item @code{extra-content} (type: maybe-string)
-Extra content for the jail configuration.
+@item @code{extra-content} (default: @code{()}) (type: text-config)
+Extra content for the jail configuration, provided as a list of file-like
+objects.
 
 @end table
 
