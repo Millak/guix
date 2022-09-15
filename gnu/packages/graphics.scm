@@ -2202,6 +2202,75 @@ Features include:
 ")
     (license license:gpl3+)))
 
+(define-public discregrid
+  (let ((commit "4c27e1cc88be828c6ac5b8a05759ac7e01cf79e9")
+        (revision "0"))
+    (package
+      (name "discregrid")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/InteractiveComputerGraphics/Discregrid")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01cwfpw19rc9k5glx9dhnqpihd0is28a9b53qvzp5kgjmdq2v1p0"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+              (delete-file-recursively "extern/cxxopts")
+              (substitute* '("cmd/discrete_field_to_bitmap/main.cpp"
+                             "cmd/generate_density_map/main.cpp"
+                             "cmd/generate_sdf/main.cpp")
+                (("^#include <cxxopts/cxxopts\\.hpp>")
+                 "#include <cxxopts.hpp>"))))))
+      (build-system cmake-build-system)
+      (outputs '("out" "bin"))
+      (arguments
+       (list #:tests? #f                ; No tests
+             #:configure-flags
+             #~(list (string-append "-DCMAKE_INSTALL_BINDIR="
+                                    #$output:bin "/bin")
+                     ;; Bespoke version of BUILD_SHARED_LIBS.
+                     "-DBUILD_AS_SHARED_LIBS=ON")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-cmake
+                   (lambda _
+                     (let ((port (open-file "cmd/CMakeLists.txt" "a")))
+                       (display "install(TARGETS
+  DiscreteFieldToBitmap
+  GenerateDensityMap
+  GenerateSDF)
+"
+                                port)
+                       (close-port port)))))))
+      (inputs
+       (list cxxopts eigen))
+      (home-page "https://github.com/InteractiveComputerGraphics/Discregrid")
+      (synopsis "Discretize functions on regular grids")
+      (description "Discregrid is a C++ library for the parallel discretization
+of (preferably smooth) functions on regular grids.  It generates a (cubic)
+polynomial discretization given a box-shaped domain, a grid resolution, and a
+3D scalar field.  The library can also serialize and deserialize the generated
+discrete grid, and compute and discretize the signed distance field
+corresponding to a triangle mesh.  The following programs are included with
+Discregrid:
+
+@itemize
+@item @code{GenerateSDF}: Computes a discrete (cubic) signed distance field
+from a triangle mesh in OBJ format.
+
+@item @code{DiscreteFieldToBitmap}: Generates an image in bitmap format of a
+two-dimensional slice of a previously computed discretization.
+
+@item @code{GenerateDensityMap}: Generates a density map from a previously
+generated discrete signed distance field using the cubic spline kernel.
+@end itemize")
+      (license license:expat))))
+
 (define-public mmg
   (package
     (name "mmg")
