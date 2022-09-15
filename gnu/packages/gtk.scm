@@ -434,8 +434,8 @@ handling for GTK+-2.x.")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/pango/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
+                                  (version-major+minor version)
+                                  "/pango-" version ".tar.xz"))
               (patches (search-patches "pango-skip-libthai-test.patch"))
               (sha256
                (base32
