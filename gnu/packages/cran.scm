@@ -8020,6 +8020,29 @@ sample Robust Rank-Order Distributional Test.")
 exponential, logarithm, square root, and related quantities.")
     (license license:gpl2+)))
 
+(define-public r-exposition
+  (package
+    (name "r-exposition")
+    (version "2.8.23")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ExPosition" version))
+              (sha256
+               (base32
+                "0x9400ggmgrnaish0cfgnyvw549g4ibfv9aj6vzq7j68n58vq405"))))
+    (properties `((upstream-name . "ExPosition")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-prettygraphs))
+    (home-page "https://cran.r-project.org/package=ExPosition")
+    (synopsis "Exploratory analysis with the singular value decomposition")
+    (description
+     "This package provides a variety of descriptive multivariate analyses
+with the singular value decomposition, such as principal components analysis,
+correspondence analysis, and multidimensional scaling.  See An ExPosition of
+the Singular Value Decomposition in R (Beaton et al 2014)
+<doi:10.1016/j.csda.2013.11.006>.")
+    (license license:gpl2)))
+
 (define-public r-complexplus
   (package
     (name "r-complexplus")
