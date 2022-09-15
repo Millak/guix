@@ -178,7 +178,18 @@ QEMU monitor and to the guest's backdoor REPL."
     (($ <marionette> command pid monitor (= force repl))
      (write exp repl)
      (newline repl)
-     (read repl))))
+     (with-exception-handler
+         (lambda (exn)
+           (simple-format
+            (current-error-port)
+            "error reading marionette response: ~A
+  remaining response: ~A\n"
+            exn
+            (get-line repl))
+           (raise-exception exn))
+       (lambda ()
+         (read repl))
+       #:unwind? #t))))
 
 (define* (wait-for-file file marionette
                         #:key (timeout 10) (read 'read))
