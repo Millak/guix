@@ -1653,13 +1653,13 @@ API-compatible with defcon.")
 (define-public python-defcon-bootstrap
   (package
     (name "python-defcon-bootstrap")
-    (version "0.10.0")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "defcon" version ".zip"))
        (sha256
-        (base32 "0g0bjwzdj6sskyh8snbxsxza3czdmvb807qv38mizx631cm8c2d0"))))
+        (base32 "0i1a306b8c42dpbplwxj6ili2aac5lwq2ir6r1jswicysvk9dqxf"))))
     (build-system python-build-system)
     (propagated-inputs (list python-fontpens-bootstrap python-fonttools-full))
     (native-inputs
