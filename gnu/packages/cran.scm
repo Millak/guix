@@ -34733,6 +34733,30 @@ analyses.")
 for rendering equations in the HTML help files.")
     (license (list license:asl2.0 license:gpl3))))
 
+(define-public r-spacefillr
+  (package
+    (name "r-spacefillr")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "spacefillr" version))
+              (sha256
+               (base32
+                "0c4yasc1zizjmhd2ciyz86lg76fsrxvl19yjkb2fmkda9rmnc0bf"))))
+    (properties `((upstream-name . "spacefillr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/tylermorganwall/spacefillr")
+    (synopsis "Space-Filling Random and Quasi-Random Sequences")
+    (description
+     "@code{spacefillr} enables generation of random and quasi-random
+space-filling sequences.  It supports the following sequences: Halton, Sobol,
+Owen-scrambled Sobol, Owen-scrambled Sobol with errors distributed as blue
+noise, progressive jittered, progressive multi-jittered (PMJ), PMJ with blue
+noise, PMJ02, and PMJ02 with blue noise.  The package also includes a C++
+API.")
+    (license license:expat)))
+
 (define-public r-spacetime
   (package
     (name "r-spacetime")
