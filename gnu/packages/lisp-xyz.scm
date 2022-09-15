@@ -36,6 +36,7 @@
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
+;;; Copyright © 2022 Artyom Bologov <mail@aartaka.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22122,6 +22123,54 @@ instead of #'FOO.
 
 (define-public ecl-nkeymaps
   (sbcl-package->ecl-package sbcl-nkeymaps))
+
+(define-public sbcl-njson
+  (package
+    (name "sbcl-njson")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/atlas-engineer/njson")
+                    (commit version)))
+              (file-name (git-file-name "cl-njson" version))
+              (sha256
+               (base32
+                "0lv3q1841s4avii1jp89r91jq21sids2ycpy2id0kzhrljzhmy6j"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list sbcl-cl-json))
+    (native-inputs (list sbcl-lisp-unit2))
+    (home-page "https://github.com/atlas-engineer/njson")
+    (synopsis "JSON handling framework for Common Lisp")
+    (description
+     "NJSON aims to make it convenient for one to decode, encode,
+and process JSON data, in the minimum keystrokes/minutes possible.
+
+NJSON is parser-independent, with existing Common Lisp JSON parsers being
+loadable as additional system.  @code{cl-json} is included by default, though.
+Conveniences that NJSON provides are:
+
+@itemize
+
+@item @code{encode} and @code{decode} as single entry points for JSON reading
+and writing, be it from streams/string/files, or from those.
+
+@item @code{jget}, @code{jrem}, @code{jtruep}, and their aliases to
+access/delete the decoded objects' properties and check their truth value
+without the need to worry about the low-level details of how these values are
+decoded.
+
+@item @code{jif}, @code{jwhen}, @code{jor}, @code{jand}, and other macros
+mimicking Lisp ones, while using truth values of JSON-decoded data.
+
+@end itemize\n")
+    (license license:bsd-3)))
+
+(define-public cl-njson
+  (sbcl-package->cl-source-package sbcl-njson))
+
+(define-public ecl-njson
+  (sbcl-package->ecl-package sbcl-njson))
 
 (define-public sbcl-utils-kt
   (let ((commit "4adfe2889036ab5ffdd3cc2182ca2cc692bf11ff"))
