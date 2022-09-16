@@ -603,6 +603,40 @@ process.  FontParts is the successor of RoboFab.")
 to UFOs and DesignSpace files via @code{defcon} and @code{designspaceLib}.")
     (license license:asl2.0)))
 
+(define-public python-glyphsets
+ (package
+  (name "python-glyphsets")
+  (version "0.5.2")
+  (source (origin
+            (method url-fetch)
+            (uri (pypi-uri "glyphsets" version))
+            (sha256
+             (base32
+              "1dc24i0hkd85gkkg3bqjhagjyw3xsqxazd86yh2l60c1wr5n9y6g"))))
+  (build-system python-build-system)
+  (arguments
+   (list #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'loosen-version-constraints
+               (lambda _
+                 (substitute* "setup.py"
+                   (("setuptools_scm>=4,<6\\.1")
+                    "setuptools_scm>=4"))))
+             (replace 'check
+               (lambda* (#:key tests? #:allow-other-keys)
+                 (when tests?
+                   (invoke "pytest" "-vv" "tests/testglyphdata.py")
+                   (invoke "pytest" "-vv" "tests/testusage.py")))))))
+  (native-inputs (list python-pytest python-setuptools-scm))
+  (propagated-inputs
+   (list python-defcon python-fonttools python-glyphslib))
+  (home-page "https://github.com/googlefonts/glyphsets/")
+  (synopsis "Evaluate coverage of glyph sets")
+  (description
+   "This package provides an API with data about glyph sets for many
+different scripts and languages.")
+  (license license:asl2.0)))
+
 (define-public python-opentype-sanitizer
   (package
     (name "python-opentype-sanitizer")
