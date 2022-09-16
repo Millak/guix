@@ -845,41 +845,17 @@ line tools for batch rendering @command{pdfdraw}, rewriting files
 (define-public qpdf
   (package
     (name "qpdf")
-    (version "10.6.3")
+    (version "11.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/qpdf/qpdf/" version
                                   "/qpdf-" version ".tar.gz"))
               (sha256
                (base32
-                "049q94rzlcbdr09rvl8xfj3924mk7rfm35x8cg4nisl4lnr27z78"))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   ;; grep 3.8 emits a warning about 'egrep' being deprecated
-                   ;; which breaks some tests.  Adjust accordingly.
-                   ;; Try removing this for QPDF >= 11.
-                   (substitute* '("build-scripts/build-doc"
-                                  "qpdf/qtest/qpdf/diff-encrypted"
-                                  "qpdf/qtest/qpdf/diff-ignore-ID-version")
-                     (("egrep")
-                      "grep -E"))))))
-    (build-system gnu-build-system)
+                "0bg2d4585nxss2zakq105ibhzzsa1bhwpmr0k8752fg2qqxcz9rl"))))
+    (build-system cmake-build-system)
     (arguments
-     (list
-      #:disallowed-references (list perl)
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'patch-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "make/libtool.mk"
-                (("SHELL=/bin/bash")
-                 (string-append "SHELL="
-                                (search-input-file inputs "/bin/bash"))))
-              (substitute*
-                  (append '("qtest/bin/qtest-driver")
-                      (find-files "." "\\.test"))
-                (("/usr/bin/env") (which "env"))))))))
+     (list #:configure-flags #~'("-DBUILD_STATIC_LIBS=OFF")))
     (native-inputs
      (list perl pkg-config))
     (propagated-inputs
