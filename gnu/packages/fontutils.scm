@@ -755,7 +755,7 @@ suite of the @code{psautohint} package.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "pytest" "-vv")))))))
-    (propagated-inputs (list python-fonttools))
+    (propagated-inputs (list python-fonttools-next))
     (native-inputs
      (list psautohint-font-data
            python-fs
