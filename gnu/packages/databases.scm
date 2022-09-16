@@ -1879,14 +1879,14 @@ changes.")
 (define-public tdb
   (package
     (name "tdb")
-    (version "1.4.5")
+    (version "1.4.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.samba.org/ftp/tdb/tdb-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0h8fkblws3d4vf37yhbrbw2nfxg5vk2v3i5mk04hhcbh9y4fvz5w"))))
+                "03n2hz4sv003gpkyp57hk5kiw4xk9f2dkxq75kzk2gskxy6idyx4"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
