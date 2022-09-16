@@ -1082,7 +1082,8 @@ supplies a generic doubly-linked list and some string functions.")
                      "LibJXR" "LibWebP" "OpenEXR" "ZLib"))))
               (patches
                (append
-                (search-patches "freeimage-unbundle.patch")
+                (search-patches "freeimage-unbundle.patch"
+                                "freeimage-libtiff-compat.patch")
                 ;; Take one patch from Arch Linux that adds LibRaw 0.20 compatibility.
                 (list (origin
                         (method url-fetch)
