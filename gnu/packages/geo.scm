@@ -816,7 +816,7 @@ street bearings/orientations, and speed/travel time.")
                 ;; The 'ogr' test fails for unknown reasons.  Mark it as
                 ;; expected to fail (see:
                 ;; https://github.com/mapnik/mapnik/issues/4329).
-                (substitute* "/test/unit/datasource/ogr.cpp"
+                (substitute* "test/unit/datasource/ogr.cpp"
                   (("TEST_CASE\\(\"ogr\"" all)
                    (string-append all ", \"[!shouldfail]\""))))))))
       (native-inputs
