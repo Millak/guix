@@ -531,7 +531,7 @@ functions, class methods, and stl containers.
               (modules '((guix build utils)))
               (snippet '(delete-file-recursively "./test/thirdparty"))))
     (inputs
-     (list catch-framework2-1))
+     (list catch2-1))
     (build-system cmake-build-system)
     (arguments
      '(#:phases
@@ -1264,7 +1264,7 @@ services including database, analytic, and machine learning technologies.")
            (lambda _
              (invoke "./tests"))))))
     (native-inputs
-     (list catch-framework2))
+     (list catch2))
     (synopsis "C++11/14/17 std::expected with functional-style extensions")
     (description "@code{std::expected} is proposed as the preferred way to
 represent objects which will either have an expected value, or an unexpected

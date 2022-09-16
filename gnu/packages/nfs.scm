@@ -116,7 +116,6 @@
     (inputs
      `(("keyutils" ,keyutils)
        ("libevent" ,libevent)
-       ("libnfsidmap" ,libnfsidmap)
        ("rpcsvc-proto" ,rpcsvc-proto)   ;for 'rpcgen'
        ("sqlite" ,sqlite)
        ("lvm2" ,lvm2)

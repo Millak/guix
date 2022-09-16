@@ -441,7 +441,7 @@ PyUnit and others.")
 multi-paradigm automated test framework for C++ and Objective-C.")
     (license license:boost1.0)))
 
-(define-public catch-framework2-1
+(define-public catch2-1
   (package
     (name "catch2")
     (version "1.12.2")
@@ -470,7 +470,7 @@ multi-paradigm automated test framework for C++ and Objective-C.")
 a multi-paradigm automated test framework for C++ and Objective-C.")
     (license license:boost1.0)))
 
-(define-public catch-framework2
+(define-public catch2
   (package
     (name "catch2")
     (version "2.13.8")

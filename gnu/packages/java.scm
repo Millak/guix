@@ -8717,7 +8717,7 @@ actual rendering.")
 (define-public java-antlr4-runtime
   (package
     (name "java-antlr4-runtime")
-    (version "4.8")
+    (version "4.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8726,10 +8726,9 @@ actual rendering.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qal3add26qxskm85nk7r758arladn5rcyjinmhlhznmpbbv9j8m"))
+                "0ldvd9jm4nrivaw7i7wh1q40q6xgzmzirsywiakbhg8sppagqlv7"))
               (patches
-                (search-patches "java-antlr4-Add-standalone-generator.patch"
-                                "java-antlr4-fix-code-too-large.java"))))
+                (search-patches "java-antlr4-Add-standalone-generator.patch"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "java-antlr4-runtime.jar"
@@ -8759,6 +8758,8 @@ sources by ANTLR.")
       ;; TODO: try to run the tests under
       ;; runtime-testsuite/test/org/antlr/v4/test/runtime/cpp with antlr4.
       #:tests? #f                       ;no CMake test target
+      ;; TODO: Building the tests wants to download googletest.
+      #:configure-flags #~'("-DANTLR_BUILD_CPP_TESTS=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
@@ -8787,10 +8788,12 @@ generated sources by ANTLR.")))
     (arguments
      `(#:jar-name "antlr4.jar"
        #:source-dir "tool/src"
-       #:test-dir "tool-testsuite/test:runtime-testsuite/test:runtime-testsuite/annotations/src"
+       #:test-dir "tool-testsuite/test:runtime-testsuite/test"
        #:test-include (list "**/Test*.java")
        #:test-exclude (list
-                        ;; no runnable method
+                       ;; These have no runnable methods and fail because
+                       ;; test-include above is too broad.
+                        "**/TestContext.java"
                         "**/TestOutputReading.java"
                         ;; no @Test methods
                         "**/TestParserErrors.java"
@@ -8808,9 +8811,7 @@ generated sources by ANTLR.")))
                         "**/TestFullContextParsing.java"
                         "**/TestCompositeLexers.java"
                         ;; Null pointer exception
-                        "**/TestCompositeGrammars.java"
-                        ;; Wrong assumption on emoji
-                        "**/TestUnicodeData.java")
+                        "**/TestCompositeGrammars.java")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'fix-build.xml
@@ -8824,7 +8825,6 @@ generated sources by ANTLR.")))
          (add-after 'bin-install 'check
            (lambda _
              (invoke "ant" "compile-tests")
-             (invoke "ant" "check" "-Dtest.home=runtime-testsuite/annotations/src")
              (invoke "ant" "check" "-Dtest.home=runtime-testsuite/test")
              (invoke "ant" "check" "-Dtest.home=tool-testsuite/test")
              #t))

@@ -2893,7 +2893,7 @@ create layout indicator widgets.")
                 "1gxpgifzy0hnpd0ymw3r32amzr32z3bgb90ldjzl438p6h1q0i26"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list catch-framework2))
+     (list catch2))
     (arguments
      `(#:configure-flags '("-DWITH_GIT_CATCH=off")
        #:phases

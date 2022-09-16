@@ -784,9 +784,15 @@ old-fashioned output methods with powerful ascii-art renderer.")
                            "/celluloid-" version ".tar.xz"))
        (sha256
         (base32 "0ns9xh582c8kajw4v2x5ap5jfiba3gxywqc2klc0v6fc3id1gqii"))))
-    (build-system glib-or-gtk-build-system)
+    (build-system meson-build-system)
     (native-inputs
-     (list intltool pkg-config))
+     (list
+      desktop-file-utils           ; for update-desktop-database
+      intltool
+      `(,glib "bin")               ; for glib-compile-resources
+      `(,gtk "bin")                ; for gtk-update-icon-cache
+      pkg-config
+      python-wrapper))             ; for generate-authors.py
     (inputs
      (list gtk libadwaita libepoxy mpv))
     (home-page "https://github.com/celluloid-player/celluloid")

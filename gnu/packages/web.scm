@@ -5717,14 +5717,14 @@ on the fly.")
 (define-public hitch
   (package
     (name "hitch")
-    (version "1.7.2")
+    (version "1.7.3")
     (home-page "https://hitch-tls.org/")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "source/hitch-" version ".tar.gz"))
               (sha256
                (base32
-                "118p3a8wjvr0yhldpd1zm7d2cmgaw4vmyz9ib8m64z18qsz5rmnw"))))
+                "11wp50zs5irb5bj5xyanm060nlvna6ha328wqf6p2nvpbnaz86qs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases

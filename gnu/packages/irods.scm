@@ -154,7 +154,7 @@
        ("unixodbc" ,unixodbc)
        ("zeromq" ,zeromq)))
     (native-inputs
-     `(("catch2" ,catch-framework2)
+     `(("catch2" ,catch2)
        ("clang" ,clang-toolchain-6)
        ("clang-runtime" ,clang-runtime-6)
        ("libcxx+libcxxabi" ,libcxx+libcxxabi-6)))

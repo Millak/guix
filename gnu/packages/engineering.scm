@@ -3218,7 +3218,7 @@ perform various useful functions such as:
     ;;      with all of these.
     (inputs
      `(("boost" ,boost)
-       ("catch2" ,catch-framework2)
+       ("catch2" ,catch2)
        ("cgal" ,cgal)
        ("eigen" ,eigen)
        ("embree" ,embree)

@@ -1517,7 +1517,7 @@ virtualization library.")
      (list dconf
            gtk+
            gtk-vnc
-           gtksourceview
+           gtksourceview-4
            libvirt
            libvirt-glib
            libosinfo

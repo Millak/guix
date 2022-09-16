@@ -178,7 +178,18 @@ QEMU monitor and to the guest's backdoor REPL."
     (($ <marionette> command pid monitor (= force repl))
      (write exp repl)
      (newline repl)
-     (read repl))))
+     (with-exception-handler
+         (lambda (exn)
+           (simple-format
+            (current-error-port)
+            "error reading marionette response: ~A
+  remaining response: ~A\n"
+            exn
+            (get-line repl))
+           (raise-exception exn))
+       (lambda ()
+         (read repl))
+       #:unwind? #t))))
 
 (define* (wait-for-file file marionette
                         #:key (timeout 10) (read 'read))
@@ -187,7 +198,14 @@ FILE has not shown up after TIMEOUT seconds, raise an error."
   (match (marionette-eval
           `(let loop ((i ,timeout))
              (cond ((file-exists? ,file)
-                    (cons 'success (call-with-input-file ,file ,read)))
+                    (cons 'success
+                          (let ((content
+                                 (call-with-input-file ,file ,read)))
+                            (if (eof-object? content)
+                                ;; #<eof> can't be read, so convert to the
+                                ;; empty string
+                                ""
+                                content))))
                    ((> i 0)
                     (sleep 1)
                     (loop (- i 1)))

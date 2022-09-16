@@ -128,6 +128,7 @@
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
+;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10030,6 +10031,24 @@ function signatures.")
      "This package provides a YAML template engine with Python expressions.")
     (license license:expat)))
 
+(define-public python-syllables
+  (package
+    (name "python-syllables")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "syllables" version))
+              (sha256
+               (base32
+                "0wkl6h0rg6fbsxfp0a8fnibf3l4l6lbh6z12cvcilgb6qhxzpmv3"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/prosegrinder/python-syllables")
+    (synopsis "Package for estimating the number of syllables in a word")
+    (description
+     "This package provides a Python package for estimating the number of
+syllables in a word.")
+    (license license:gpl3)))
+
 (define-public python-sympy
   (package
     (name "python-sympy")
@@ -11558,6 +11577,40 @@ reading and writing MessagePack data.")
       "A Python library for representing and manipulating IPv4, IPv6, CIDR, EUI
 and MAC network addresses.")
     (license license:bsd-3)))
+
+(define-public python-openstep-plist
+ (package
+  (name "python-openstep-plist")
+  (version "0.3.0")
+  (home-page "https://github.com/fonttools/openstep-plist")
+  (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "1rxjgzh0p069ncsr2986rn32vhdqyq35irbqg2559jh18456mkca"))))
+  (build-system python-build-system)
+  (arguments
+   (list #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'pretend-version
+               (lambda _
+                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                         #$(package-version this-package))))
+             (replace 'check
+               (lambda* (#:key tests? #:allow-other-keys)
+                 (when tests?
+                   (invoke "pytest" "-vv")))))))
+  (native-inputs
+   (list python-cython python-pytest python-setuptools-scm))
+  (synopsis "OpenStep plist parser and writer")
+  (description
+   "This package provides a parser for the \"old style\" OpenStep property
+list format (also known as ASCII plist), written in Cython.")
+  (license license:expat)))
 
 (define-public python-wrapt
   (package
@@ -22283,7 +22336,7 @@ user-space file systems in Python.")
 
        ;; The following dependencies are used for tests.
        ("python-pytest" ,python-pytest)
-       ("catch" ,catch-framework2-1)
+       ("catch" ,catch2-1)
        ("eigen" ,eigen)))
     (arguments
      `(#:configure-flags

@@ -1378,7 +1378,7 @@ between different versions of ØMQ.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list catch-framework2 zeromq))
+     (list catch2 zeromq))
     (home-page "https://zeromq.org")
     (synopsis "C++ bindings for the ØMQ messaging library")
     (description
@@ -3603,7 +3603,7 @@ communication over HTTP.")
     (build-system cmake-build-system)
     (inputs                             ; TODO: Need to force-keep references on some inputs, e.g. boost.
      (list zlib
-           catch-framework2
+           catch2
            openssl
            boost
            pcre

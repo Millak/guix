@@ -387,7 +387,7 @@ Telegram project, for its use in telegram desktop client.")
     (inputs
      `(("alsa" ,alsa-lib)
        ("c++-gsl" ,c++-gsl)
-       ("catch" ,catch-framework2)
+       ("catch" ,catch2)
        ("codegen-source"
         ,(origin
            (method git-fetch)
