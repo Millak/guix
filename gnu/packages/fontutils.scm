@@ -198,7 +198,8 @@ them as it goes.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (setenv "HOME" "/tmp")
-                (invoke "pytest" "-vv"))))
+                (invoke "pytest" "-vv" "--dist" "loadfile" "-n"
+                        (number->string (parallel-job-count))))))
           (add-after 'check 'wrap
             (assoc-ref %standard-phases 'wrap))
           (add-before 'wrap 'wrap-PATH
@@ -217,6 +218,7 @@ them as it goes.")
            openjdk                      ;required by antlr4
            ninja
            python-pytest
+           python-pytest-xdist
            python-scikit-build
            python-setuptools-scm
            python-wheel))
