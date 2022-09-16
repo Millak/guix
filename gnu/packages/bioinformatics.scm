@@ -3792,7 +3792,7 @@ comment or quality sections.")
     (inputs
      (list gsl openblas zlib))
     (native-inputs
-     `(("catch" ,catch-framework2-1)
+     `(("catch" ,catch2-1)
        ("perl" ,perl)
        ("shunit2" ,shunit2)
        ("which" ,which)))

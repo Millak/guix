@@ -3615,7 +3615,7 @@ stretching and pitch scaling of audio.  This package contains the library.")
         (base32 "0nvhdzy0m3bchk3dpnspv2f518p2v9fjcrv36z1sva1pv9a2g35w"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list catch-framework2))
+     (list catch2))
     (inputs
      (list fftw))
     (home-page "https://mixxxdj.github.io/libkeyfinder/")

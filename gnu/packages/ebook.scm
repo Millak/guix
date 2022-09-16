@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021 Mathieu Laparie <mlaparie@disr.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -678,3 +679,43 @@ format documents, with the following features:
 @item handling encrypted documents
 @end itemize\n")
     (license license:lgpl3+)))
+
+(define-public python-ebooklib
+  (package
+    (name "python-ebooklib")
+    (version "0.17.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "EbookLib" version))
+              (sha256
+               (base32
+                "1w972g0kmh9cdxf3kjr7v4k99wvv4lxv3rxkip39c08550nf48zy"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-lxml python-six))
+    (home-page "https://github.com/aerkalov/ebooklib")
+    (synopsis "Ebook library which can handle EPUB2/EPUB3 and Kindle format")
+    (description
+     "Ebook library which can handle EPUB2/EPUB3 and Kindle format.")
+    (license license:agpl3+)))
+
+(define-public shirah
+  (package
+    (name "shirah")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "shirah_reader" version))
+              (sha256
+               (base32
+                "0j15v435lz68c1mj5clfx5dmfyjc6jvvz2q8hqvv799mb2faj42y"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-beautifulsoup4 python-ebooklib
+                             python-syllables python-termcolor))
+    (home-page "https://github.com/hallicopter/shirah-reader")
+    (synopsis "Terminal ebook reader with an optional RSVP mode")
+    (description
+     "@command{shirah} is a curses based terminal ebook reader that can
+display ebooks in the usual way or with Rapid Serial Visual Presentation, a
+method to enable speedreading by showing the text word by word at configurable
+speeds.")
+  (license license:gpl2+)))

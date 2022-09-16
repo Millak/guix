@@ -45,9 +45,11 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
@@ -62,7 +64,7 @@
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages ninja)
+  #:use-module (gnu packages version-control)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python))
 
@@ -341,6 +343,81 @@ resembles Python.")
 
 ;; TODO: Bump this in the next rebuild cycle.
 (define-public meson meson-0.60)
+
+(define-public meson-python
+  (package
+    (name "meson-python")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "meson_python" version))
+              (sha256
+               (base32
+                "0k2yn0iws1n184sdznzmfw4xgbqgq5cn02hpc7m0xdaxryj1ybs4"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'avoid-ninja-dependency
+                 (lambda _
+                   ;; Avoid dependency on the "ninja" PyPI distribution,
+                   ;; which is a meta-package that simply downloads and
+                   ;; installs ninja from the web ...
+                   (substitute* "pyproject.toml"
+                     (("'ninja',")
+                      ""))))
+               (replace 'build
+                 (lambda _
+                   ;; ZIP does not support timestamps before 1980.
+                   (setenv "SOURCE_DATE_EPOCH" "315532800")
+                   (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+               (replace 'install
+                 (lambda _
+                   (let ((whl (car (find-files "dist" "\\.whl$"))))
+                     (invoke "pip" "--no-cache-dir" "--no-input"
+                             "install" "--no-deps" "--prefix" #$output whl))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv" "tests" "-k"
+                             (string-append
+                              "not "
+                              ;; These tests require a git checkout.
+                              (string-join '("test_contents_unstaged"
+                                             "test_no_pep621"
+                                             "test_pep621"
+                                             "test_dynamic_version"
+                                             "test_contents"
+                                             "test_contents_subdirs")
+                                           " and not ")))))))))
+    (propagated-inputs
+     (list meson-0.63                   ;>=0.62 required
+           ninja
+           ;; XXX: python-meson forcefully sets the RUNPATH of binaries
+           ;; for vendoring purposes, and uses PatchELF for that(!).  This
+           ;; functionality is not useful in Guix, but removing this
+           ;; dependency is tricky.  There is discussion upstream about making
+           ;; it optional, but for now we'll just carry it:
+           ;; https://github.com/FFY00/meson-python/issues/125
+           patchelf
+           python-colorama
+           python-pyproject-metadata
+           python-tomli
+           python-wheel))
+    (native-inputs
+     (list python-pypa-build
+           python-wheel
+
+           ;; For tests.
+           pkg-config
+           python-gitpython
+           python-pytest
+           python-pytest-mock))
+    (home-page "https://github.com/FFY00/mesonpy")
+    (synopsis "Meson-based build backend for Python")
+    (description
+     "meson-python is a PEP 517 build backend for Meson projects.")
+    (license license:expat)))
 
 (define-public premake4
   (package

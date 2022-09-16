@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
+;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages django)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
@@ -45,6 +47,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages image)
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages kde)
@@ -1075,3 +1078,75 @@ machine, and more.")
     (description "Commandline client for exercism.io, a free service providing
 mentored learning for programming languages.")
     (license license:expat)))
+
+(define-public mazo
+  (package
+    (name "mazo")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/luis-felipe/mazo.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06246380i5rxycniwg5syn0aldd2zy10cbqk1lgyc0qfqb2lyrwj"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:use-setuptools? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'build)
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (let* ((out (assoc-ref outputs "out"))
+                      (home (string-append out "/tmp")))
+                 (add-installed-pythonpath inputs outputs)
+                 (setenv "HOME" home)
+                 (invoke "python3" "manage.py" "test")))))
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (script (string-append bin "/mazo"))
+                    (share (string-append out "/share"))
+                    (help (string-append share "/help/C/mazo"))
+                    (icons (string-append
+                            share
+                            "/icons/hicolor/scalable/apps"))
+                    (apps (string-append share "/applications"))
+                    (site (string-append
+                           (site-packages inputs outputs)
+                           "/mazo")))
+               (mkdir-p help)
+               (mkdir-p bin)
+               (copy-file "mazo.py" script)
+               (chmod script #o555)
+               (install-file "icons/mazo.svg" icons)
+               (install-file "lugare.ulkeva.Mazo.desktop" apps)
+               (copy-recursively "help/C/mazo" help)
+               (copy-recursively "mazo" site)))))))
+    (native-inputs
+     (list python-django
+           python-django-cleanup
+           python-django-svg-image-form-field
+           python-pillow
+           python-pycairo))
+    (propagated-inputs
+     (list gstreamer
+           gtk+
+           python
+           python-django
+           python-django-cleanup
+           python-django-svg-image-form-field
+           python-pillow
+           python-pycairo
+           python-pygobject
+           yelp))
+    (home-page "https://luis-felipe.gitlab.io/mazo/")
+    (synopsis "Memorize concepts using multimedia flash cards")
+    (description "Mazo is a learning application that helps you memorize
+simple concepts using multimedia flash cards and spaced reviews.")
+    (license license:public-domain)))

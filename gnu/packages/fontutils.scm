@@ -138,16 +138,22 @@ them as it goes.")
 (define-public python-afdko
   (package
     (name "python-afdko")
-    (version "3.8.1")
+    (version "3.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "afdko" version))
        (sha256
-        (base32 "171r9f7n8fgz37dkcgpzj508lxfafcyzzx43ps12j1z2nk1sk905"))
+        (base32 "0k1204vykgx32saa495s1lgmz1dixcp8bjiv486imx77killvm02"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
+            (substitute*
+                "tests/buildcff2vf_data/expected_output/SHSansJPVFTest.ttx"
+              ;; Adjust expected output to match newer fonttools.  Taken from:
+              ;; https://github.com/adobe-type-tools/afdko/commit/7c526390a10e
+              (("FDSelect format=\"3\"")
+               "FDSelect format=\"0\""))
             (with-directory-excursion "c/makeotf/lib/hotconv"
               ;; Delete ANTLR-generated code.
               (for-each delete-file
@@ -158,6 +164,27 @@ them as it goes.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-c++17
+            (lambda _
+              ;; ANTLR4 4.10 and later require C++ 17.
+              (substitute* "CMakeLists.txt"
+                (("CMAKE_CXX_STANDARD 11")
+                 "CMAKE_CXX_STANDARD 17"))))
+          (add-after 'unpack 'use-system-libxml2
+            (lambda _
+              ;; XXX: These horrifying substitutions revert this upstream
+              ;; PR: <https://github.com/adobe-type-tools/afdko/pull/1527>.
+              ;; Hopefully it's only temporary..!
+              (substitute* (find-files "." "^CMakeLists.txt$")
+                (("\\(\\(NOT \\$\\{LibXml2_FOUND\\}\\) OR \
+\"\\$\\{CMAKE_SYSTEM\\}\" MATCHES \"Linux\"\\)")
+                 "(NOT ${LibXml2_FOUND})")
+                (("\\(\\(\\$\\{LibXml2_FOUND\\}\\) AND \
+\\(NOT \"\\$\\{CMAKE_SYSTEM\\}\" MATCHES \"Linux\"\\)\\)")
+                 "(${LibXml2_FOUND})"))
+                (substitute* "cmake/ExternalLibXML2.cmake"
+                  (("set\\(LIBXML2_STATIC_INCLUDE_DIR")
+                   "set(LIBXML2_INCLUDE_DIR)"))))
           (add-after 'unpack 'patch-problematic-requirements
             (lambda _
               (substitute* "requirements.txt"
@@ -177,7 +204,8 @@ them as it goes.")
                  (format #f "include_directories(SYSTEM ~a)"
                          (search-input-directory inputs
                                                  "include/antlr4-runtime"))))
-              (substitute* "c/makeotf/lib/hotconv/CMakeLists.txt"
+              (substitute* '("c/makeotf/lib/hotconv/CMakeLists.txt"
+                             "c/makeotf/lib/cffread/CMakeLists.txt")
                 (("antlr4_static")
                  "antlr4-runtime"))))
           (add-after 'unpack 'regenerate-hotconv-grammar
@@ -198,7 +226,8 @@ them as it goes.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (setenv "HOME" "/tmp")
-                (invoke "pytest" "-vv"))))
+                (invoke "pytest" "-vv" "--dist" "loadfile" "-n"
+                        (number->string (parallel-job-count))))))
           (add-after 'check 'wrap
             (assoc-ref %standard-phases 'wrap))
           (add-before 'wrap 'wrap-PATH
@@ -216,11 +245,16 @@ them as it goes.")
      (list antlr4
            openjdk                      ;required by antlr4
            ninja
+           pkg-config
            python-pytest
+           python-pytest-xdist
            python-scikit-build
            python-setuptools-scm
            python-wheel))
-    (inputs (list java-antlr4-runtime-cpp `(,util-linux "lib")))
+    (inputs
+     (list java-antlr4-runtime-cpp
+           libxml2
+           `(,util-linux "lib")))
     (propagated-inputs
      (list psautohint
            python-booleanoperations
@@ -349,13 +383,13 @@ Kit for OpenType (AFDKO) @command{tx} tool.")
 (define-public python-compreffor
   (package
     (name "python-compreffor")
-    (version "0.5.1.post1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "compreffor" version))
        (sha256
-        (base32 "1r3wqd67qnz8p6irv68mvadqv1nklgzw53376iarw3pq4gxrma36"))))
+        (base32 "0r6vlxrm73j719f5q3n6sy737p2424n7qam52am83p55j0fb9h5f"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -405,13 +439,13 @@ converts any cubic curves to quadratic.  The most useful function is probably
 (define-public python-ufo2ft
   (package
     (name "python-ufo2ft")
-    (version "2.26.0")
+    (version "2.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ufo2ft" version))
        (sha256
-        (base32 "0a6iq5g6qdxj7nvip8nnf0mf8y5wmpd3wwq0dv7d4nm9bjrh0r6m"))))
+        (base32 "068hm62s1iphyg66w96vgiif6ahpcsaf8fr44rk6jdf71f6fyqd5"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest python-pytest-runner python-setuptools-scm))
@@ -421,7 +455,7 @@ converts any cubic curves to quadratic.  The most useful function is probably
            python-compreffor
            python-cu2qu
            python-defcon
-           python-fonttools
+           python-fonttools-next
            python-skia-pathops
            python-ufolib2))
     (home-page "https://github.com/googlefonts/ufo2ft")
@@ -436,13 +470,13 @@ to generate OpenType font binaries from Unified Font Objects (UFOs).")
 (define-public python-fontmath
   (package
     (name "python-fontmath")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fontMath" version ".zip"))
        (sha256
-        (base32 "001756zxn2386dm4svgqjgw5026hvyacxl09b2qlk7s06phpcphw"))))
+        (base32 "014407hpvqdx123g06i664qrfq86bf9l621x7jllpgqw3rqir2sc"))))
     (build-system python-build-system)
     (propagated-inputs (list python-fonttools))
     (native-inputs
@@ -509,13 +543,13 @@ implementing the pen protocol for manipulating glyphs.")
   (hidden-package
    (package
      (name "python-fontparts-bootstrap")
-     (version "0.10.4")
+     (version "0.10.8")
      (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "fontParts" version ".zip"))
         (sha256
-         (base32 "1ic453q86s5hsw8mxnclk1vr4qp69fd67gywhv23zqwz9a7kb7lh"))))
+         (base32 "0i5ww6yl9m74wnjd7gyvjkdh7m56haql4gv7lasmppdipay2209g"))))
      (build-system python-build-system)
      (propagated-inputs
       (list python-booleanoperations
@@ -539,6 +573,101 @@ process.  FontParts is the successor of RoboFab.")
     (properties
      (alist-delete 'hidden?
                    (package-properties python-fontparts-bootstrap)))))
+
+(define-public python-glyphslib
+  (package
+    (name "python-glyphslib")
+    (version "6.0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "glyphsLib" version))
+              (sha256
+               (base32
+                "0mkkwd09g76hvif603ij5aqicxh47zvhgyyd0pjcjmpdy6dr70yw"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              ;; The Zip format does not support pre-1980 time stamps.
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (setenv "SOURCE_DATE_EPOCH" (number->string circa-1980))
+                (invoke "python" "-m" "build" "--wheel" "--no-isolation" "."))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "GUIX_PYTHONPATH"
+                        (string-append (getcwd) ":" (getenv "GUIX_PYTHONPATH")))
+                (invoke "pytest" "-vv"
+                        ;; These fail because the test data has not yet been
+                        ;; updated for newer FontTools:
+                        ;;   https://github.com/googlefonts/glyphsLib/issues/787
+                        ;; Re-enable for versions > 6.0.7.
+                        "--ignore=tests/builder/designspace_gen_test.py"
+                        "--ignore=tests/builder/interpolation_test.py"
+                        )))))))
+    (native-inputs
+     (list python-pypa-build
+           python-setuptools-scm
+           python-wheel
+
+           ;; For tests.
+           python-pytest
+           python-xmldiff))
+    (propagated-inputs
+     (list python-defcon
+           python-fonttools-next
+           python-openstep-plist
+           python-ufolib2
+           python-ufo2ft
+           python-ufonormalizer))
+    (home-page "https://github.com/googlefonts/glyphsLib")
+    (synopsis "Bridge Glyphs source files to UFOs")
+    (description
+     "This package provides a bridge from Glyphs source files (@file{.glyphs})
+to UFOs and DesignSpace files via @code{defcon} and @code{designspaceLib}.")
+    (license license:asl2.0)))
+
+(define-public python-glyphsets
+ (package
+  (name "python-glyphsets")
+  (version "0.5.2")
+  (source (origin
+            (method url-fetch)
+            (uri (pypi-uri "glyphsets" version))
+            (sha256
+             (base32
+              "1dc24i0hkd85gkkg3bqjhagjyw3xsqxazd86yh2l60c1wr5n9y6g"))))
+  (build-system python-build-system)
+  (arguments
+   (list #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'loosen-version-constraints
+               (lambda _
+                 (substitute* "setup.py"
+                   (("setuptools_scm>=4,<6\\.1")
+                    "setuptools_scm>=4"))))
+             (replace 'check
+               (lambda* (#:key tests? #:allow-other-keys)
+                 (when tests?
+                   (invoke "pytest" "-vv" "tests/testglyphdata.py")
+                   (invoke "pytest" "-vv" "tests/testusage.py")))))))
+  (native-inputs (list python-pytest python-setuptools-scm))
+  (propagated-inputs
+   (list python-defcon python-fonttools python-glyphslib))
+  (home-page "https://github.com/googlefonts/glyphsets/")
+  (synopsis "Evaluate coverage of glyph sets")
+  (description
+   "This package provides an API with data about glyph sets for many
+different scripts and languages.")
+  (license license:asl2.0)))
 
 (define-public python-opentype-sanitizer
   (package
@@ -652,7 +781,7 @@ suite of the @code{psautohint} package.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "pytest" "-vv")))))))
-    (propagated-inputs (list python-fonttools))
+    (propagated-inputs (list python-fonttools-next))
     (native-inputs
      (list psautohint-font-data
            python-fs
@@ -1493,7 +1622,7 @@ generate bitmaps.")
     (propagated-inputs
      (list python-attrs
            python-cattrs
-           python-fonttools))
+           python-fonttools-next))
     (home-page "https://github.com/daltonmaag/statmake")
     (synopsis "Apply OpenType STAT information to a variable font")
     (description
@@ -1556,13 +1685,13 @@ API-compatible with defcon.")
 (define-public python-defcon-bootstrap
   (package
     (name "python-defcon-bootstrap")
-    (version "0.10.0")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "defcon" version ".zip"))
        (sha256
-        (base32 "0g0bjwzdj6sskyh8snbxsxza3czdmvb807qv38mizx631cm8c2d0"))))
+        (base32 "0i1a306b8c42dpbplwxj6ili2aac5lwq2ir6r1jswicysvk9dqxf"))))
     (build-system python-build-system)
     (propagated-inputs (list python-fontpens-bootstrap python-fonttools-full))
     (native-inputs

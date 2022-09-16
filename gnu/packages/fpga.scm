@@ -58,7 +58,8 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages algebra)
-  #:use-module (gnu packages libftdi))
+  #:use-module (gnu packages libftdi)
+  #:use-module (gnu packages libusb))
 
 (define-public abc
  (let ((commit "5ae4b975c49c")
@@ -584,3 +585,29 @@ libraries, optionally encrypted, into other simulators.")
 hardware designs in Verilog.")
       (home-page "https://zipcpu.com/")
       (license license:lgpl3+))))
+
+(define-public openfpgaloader
+  (package
+    (name "openfpgaloader")
+    (version "0.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/trabucayre/openFPGALoader.git")
+                     (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1v3bwzhsrnsn304cqhd5azn68cl847qv8w8cb8bl7372jiqz5wqq"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libftdi libusb hidapi zlib))
+    (arguments
+     `(#:tests? #f)) ; No tests exist
+    (synopsis "Utility for programming FPGA")
+    (description "This package provides a program to transfer a bitstream
+to an FPGA.")
+    (home-page "https://f4pga.org/")
+    (license license:asl2.0)))

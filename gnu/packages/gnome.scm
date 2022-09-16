@@ -9830,8 +9830,10 @@ associations for GNOME.")
            gobject-introspection
            gsettings-desktop-schemas
            pkg-config))
-    (inputs
-     (list rest-next))
+    (propagated-inputs
+     ;; These dependencies are required by govirt-1.0.pc.
+     (list glib
+           rest-next))
     (synopsis "GoVirt Library")
     (description "GoVirt is a GObject wrapper for the oVirt REST API.")
     (home-page "https://gitlab.gnome.org/GNOME/libgovirt")

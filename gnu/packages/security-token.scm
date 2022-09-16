@@ -739,7 +739,7 @@ an unprivileged user.")
     (arguments
      ;; These tests do not require any device to be connected
      '(#:configure-flags (list "-DCOMPILE_OFFLINE_TESTS=ON")))
-    (native-inputs (list catch-framework2 doxygen graphviz pkg-config))
+    (native-inputs (list catch2 doxygen graphviz pkg-config))
     (inputs (list hidapi libusb))
     (home-page "https://github.com/Nitrokey/libnitrokey")
     (synopsis "Communication library for Nitrokey")
@@ -763,7 +763,7 @@ an unprivileged user.")
     (arguments
      '(#:configure-flags (list "-DBUILD_TESTING=on")))
     (native-inputs (list pkg-config qttools-5))
-    (inputs (list catch-framework2))
+    (inputs (list catch2))
     (home-page "https://github.com/tplgy/cppcodec")
     (synopsis "Header library to encode/decode base64, base64url, etc.")
     (description "This package provides library to encode/decode base64,
