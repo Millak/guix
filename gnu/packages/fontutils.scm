@@ -1596,7 +1596,7 @@ generate bitmaps.")
     (propagated-inputs
      (list python-attrs
            python-cattrs
-           python-fonttools))
+           python-fonttools-next))
     (home-page "https://github.com/daltonmaag/statmake")
     (synopsis "Apply OpenType STAT information to a variable font")
     (description
