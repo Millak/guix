@@ -820,7 +820,7 @@ street bearings/orientations, and speed/travel time.")
                   (("TEST_CASE\\(\"ogr\"" all)
                    (string-append all ", \"[!shouldfail]\""))))))))
       (native-inputs
-       (list catch-framework2
+       (list catch2
              pkg-config
              postgresql))
       (inputs

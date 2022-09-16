@@ -465,7 +465,7 @@ FFC is part of the FEniCS Project.")
        ("sundials" ,sundials-openmpi)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("catch" ,catch-framework2-1)
+     `(("catch" ,catch2-1)
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
      `(("ffc" ,python-fenics-ffc)

@@ -559,7 +559,7 @@ symmetries written in C.  Spglib can be used to:
            glm
            netcdf))
     (native-inputs
-     (list catch-framework2 python-setuptools))
+     (list catch2 python-setuptools))
     (home-page "https://pymol.org")
     (synopsis "Molecular visualization system")
     (description "PyMOL is a capable molecular viewer and renderer.  It can be

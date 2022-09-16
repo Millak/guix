@@ -58,7 +58,7 @@
         (base32 "0wbb6dwmzlsyy224y0liis0azgzwbjdvcyzc31pw1aw6vbp36na6"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list catch-framework2
+     (list catch2
            git-minimal
            perl
            ;;FIX-ME: Building with ronn fails.

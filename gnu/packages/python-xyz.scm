@@ -22305,7 +22305,7 @@ user-space file systems in Python.")
 
        ;; The following dependencies are used for tests.
        ("python-pytest" ,python-pytest)
-       ("catch" ,catch-framework2-1)
+       ("catch" ,catch2-1)
        ("eigen" ,eigen)))
     (arguments
      `(#:configure-flags
