@@ -497,7 +497,7 @@ matching them against regular expressions.")
 (define-public xfce4-pulseaudio-plugin
   (package
     (name "xfce4-pulseaudio-plugin")
-    (version "0.4.3")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
@@ -506,21 +506,8 @@ matching them against regular expressions.")
                            (version-major+minor version) "/"
                            "xfce4-pulseaudio-plugin-" version ".tar.bz2"))
        (sha256
-        (base32 "0nv1lbkshfzar87f6xq1ib120pjja24r7135rbc42wqkw8vq4las"))))
+        (base32 "05f12fzn8q1y7jkzanxy82pzl00km66gngb5j6d5k8kbx9ykj9a4"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       ;; For dbus/dbus-glib.h in pulseaudio-config.h.
-       (modify-phases %standard-phases
-         (add-after 'set-paths 'augment-cflags
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "C_INCLUDE_PATH"
-                     (string-append (assoc-ref inputs "dbus-glib")
-                                    "/include/dbus-1.0" ":"
-                                    (assoc-ref inputs "dbus")
-                                    "/include/dbus-1.0" ":"
-                                    (or (getenv "C_INCLUDE_PATH") "")))
-             #t)))))
     (native-inputs
      (list intltool pkg-config dbus-glib dbus))
     (inputs
