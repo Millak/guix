@@ -15755,7 +15755,7 @@ gnugo-image-display-mode}.")
 (define-public emacs-transpose-frame
   (package
     (name "emacs-transpose-frame")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -15764,7 +15764,7 @@ gnugo-image-display-mode}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01j4ci0c52r2c31hc9r4p7nsb6s8blmvg50g9n5v5h3afjl1c35v"))))
+        (base32 "0m9jmfwwhgkwxbq3y000ymx7parbgqr7gq3yjm2wh1ll747gv51y"))))
     (build-system emacs-build-system)
     (home-page "https://www.emacswiki.org/emacs/TransposeFrame")
     (synopsis "Transpose window arrangement in current frame")
