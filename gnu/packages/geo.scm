@@ -566,6 +566,56 @@ lets developers use the functionality of Proj in their own software.")
              (substitute* "CMakeLists.txt"
                (("MAJOR 7 MINOR 2 PATCH 0") "MAJOR 7 MINOR 2 PATCH 1")))))))))
 
+(define-public proj.4
+  (package
+    (name "proj.4")
+    (version "4.9.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://download.osgeo.org/proj/proj-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1xw5f427xk9p2nbsj04j6m5zyjlyd66sbvl2bkg8hd1kx8pm9139"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-test-paths
+           (lambda _
+             (substitute* '("nad/test27"
+                            "nad/test83"
+                            "nad/testvarious"
+                            "nad/testdatumfile"
+                            "nad/testflaky"
+                            "nad/testIGNF")
+               (("/bin/rm") (which "rm")))
+             #t))
+         ;; Precision problems on i686 and other platforms. See:
+         ;; https://web.archive.org/web/20151006134301/http://trac.osgeo.org/proj/ticket/255
+         ;; Disable failing test.
+         (add-after 'patch-test-paths 'ignore-failing-tests
+           (lambda _
+             (substitute* '("nad/Makefile.in")
+               (("\tPROJ_LIB.*" all) (string-append  "#" all)))
+             #t)))))
+    (inputs
+     (list glib))
+    (home-page "https://proj.org/")
+    (synopsis "Cartographic Projections Library")
+    (description
+     "Proj.4 is a library for converting coordinates between cartographic
+projections.")
+    (license (list license:expat
+                   ;; src/PJ_patterson.c
+                   license:asl2.0
+                   ;; src/geodesic.c/h
+                   license:x11
+                   ;; Embedded EPSG database.
+                   (license:non-copyleft "http://www.epsg.org/TermsOfUse")
+                   ;; cmake/*
+                   license:boost1.0))))
+
 (define-public python-pyproj
   (package
     (name "python-pyproj")
