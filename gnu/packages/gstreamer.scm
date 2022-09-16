@@ -479,7 +479,21 @@ the GStreamer multimedia framework.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               #$@%common-gstreamer-phases)))
+               #$@%common-gstreamer-phases
+               #$@(if (string-prefix? "i686" (or (%current-target-system)
+                                                 (%current-system)))
+                      ;; FIXME: These tests consistently fail in the Guix CI:
+                      ;;   https://issues.guix.gnu.org/57868
+                      '((add-after 'unpack 'disable-systemclock-test
+                          (lambda _
+                            (substitute* "tests/check/gst/gstsystemclock.c"
+                              (("tcase_add_test \\(tc_chain, \
+test_stress_cleanup_unschedule.*")
+                               "")
+                              (("tcase_add_test \\(tc_chain, \
+test_stress_reschedule.*")
+                               "")))))
+                      '()))))
     (propagated-inputs
      ;; In gstreamer-1.0.pc:
      ;;   Requires: glib-2.0, gobject-2.0
