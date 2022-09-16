@@ -471,8 +471,9 @@ to @code{cabal repl}).")
            ghc-yesod-core
            ghc-yesod-form
            ghc-yesod-static
-           git
            rsync))
+    (propagated-inputs
+     (list git))
     (native-inputs
      (list ghc-tasty ghc-tasty-hunit ghc-tasty-quickcheck ghc-tasty-rerun
            perl))
