@@ -152,7 +152,7 @@ using the CMake build system.")
 (define-public cmake-bootstrap
   (package
     (name "cmake-bootstrap")
-    (version "3.24.1")
+    (version "3.24.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://cmake.org/files/v"
@@ -160,8 +160,8 @@ using the CMake build system.")
                                   "/cmake-" version ".tar.gz"))
               (sha256
                (base32
-                "0ax83yfis1n74llqhckrbgzcp82pfwx039xs2dgq06nvlivy4ca9"))
-              (patches (search-patches "cmake-curl-certificates.patch"))))
+                "1ny8y2dzc6fww9gzb1ml0vjpx4kclphjihkxagxigprxdzq2140d"))
+              (patches (search-patches "cmake-curl-certificates-3.24.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -330,23 +330,6 @@ and workspaces that can be used in the compiler environment of your choice.")
   (package
     (inherit cmake-minimal)
     (name "cmake")
-    (version "3.24.2")
-    (source (origin
-              (inherit (package-source cmake-minimal))
-              (method url-fetch)
-              (uri (string-append "https://cmake.org/files/v"
-                                  (version-major+minor version)
-                                  "/cmake-" version ".tar.gz"))
-              (snippet (match (origin-snippet (package-source cmake-minimal))
-                         (('begin ('define 'preserved-files ('quote x))
-                                  rest ...)
-                          `(begin (define preserved-files
-                                    ',(cons "Utilities/cmelf" x))
-                                  ,@rest))))
-              (sha256
-               (base32
-                "1ny8y2dzc6fww9gzb1ml0vjpx4kclphjihkxagxigprxdzq2140d"))
-              (patches (search-patches "cmake-curl-certificates-3.24.patch"))))
     (outputs '("out" "doc"))
     (arguments
      (substitute-keyword-arguments (package-arguments cmake-minimal)
