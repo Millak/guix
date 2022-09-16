@@ -409,6 +409,10 @@ languages.")
   (package
     (inherit emacs-next)
     (name "emacs-next-pgtk")
+    (source
+     (origin
+       (inherit (package-source emacs-next))
+       (patches (search-patches "emacs-pgtk-super-key-fix.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next)
        ((#:configure-flags flags #~'())

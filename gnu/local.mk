@@ -1052,6 +1052,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-wordnut-require-adaptive-wrap.patch	\
   %D%/packages/patches/emacs-yasnippet-fix-tests.patch	\
   %D%/packages/patches/emacs-kv-fix-tests.patch	\
+  %D%/packages/patches/emacs-pgtk-super-key-fix.patch	\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\
   %D%/packages/patches/erlang-man-path.patch			\

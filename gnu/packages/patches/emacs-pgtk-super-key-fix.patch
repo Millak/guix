@@ -1,0 +1,49 @@
+From a897516fc5ec380938115ad42023f279d128fc1e Mon Sep 17 00:00:00 2001
+From: Andrew Tropin <andrew@trop.in>
+Date: Fri, 16 Sep 2022 15:24:19 +0300
+Subject: [PATCH] Workaround gtk bug for superkey handling
+
+https://gitlab.gnome.org/GNOME/gtk/-/issues/4913
+https://debbugs.gnu.org/cgi/bugreport.cgi?bug=55362
+Patch based on Thomas Jost's suggestion.
+
+---
+ src/pgtkterm.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/src/pgtkterm.c b/src/pgtkterm.c
+index 491ba33882..d5a9970693 100644
+--- a/src/pgtkterm.c
++++ b/src/pgtkterm.c
+@@ -5051,7 +5051,7 @@ pgtk_gtk_to_emacs_modifiers (struct pgtk_display_info *dpyinfo, int state)
+     mod |= mod_ctrl;
+   if (state & GDK_META_MASK || state & GDK_MOD1_MASK)
+     mod |= mod_meta;
+-  if (state & GDK_SUPER_MASK)
++  if (state & GDK_SUPER_MASK || state & GDK_MOD4_MASK)
+     mod |= mod_super;
+   if (state & GDK_HYPER_MASK)
+     mod |= mod_hyper;
+@@ -5184,7 +5184,7 @@ key_press_event (GtkWidget *widget, GdkEvent *event, gpointer *user_data)
+       /* While super is pressed, the input method will always always
+ 	 resend the key events ignoring super.  As a workaround, don't
+ 	 filter key events with super or hyper pressed.  */
+-      if (!(event->key.state & (GDK_SUPER_MASK | GDK_HYPER_MASK)))
++      if (!(event->key.state & (GDK_SUPER_MASK | GDK_MOD4_MASK | GDK_HYPER_MASK)))
+ 	{
+ 	  if (pgtk_im_filter_keypress (f, &event->key))
+ 	    return TRUE;
+@@ -5199,8 +5199,9 @@ key_press_event (GtkWidget *widget, GdkEvent *event, gpointer *user_data)
+       /* make_lispy_event turns chars into control chars.
+          Don't do it here because XLookupString is too eager.  */
+       state &= ~GDK_CONTROL_MASK;
+-      state &= ~(GDK_META_MASK
+-		 | GDK_SUPER_MASK | GDK_HYPER_MASK | GDK_MOD1_MASK);
++      state &= ~(GDK_META_MASK | GDK_MOD1_MASK
++		 | GDK_SUPER_MASK | GDK_MOD4_MASK
++		 | GDK_HYPER_MASK);
+ 
+       nbytes = event->key.length;
+       if (nbytes > copy_bufsiz)
+-- 
+2.37.3
