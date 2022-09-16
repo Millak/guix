@@ -210,14 +210,14 @@ with the script @command{flamegraph.pl} and many stackcollapse scripts.")
 (define-public lttng-modules
   (package
     (name "lttng-modules")
-    (version "2.13.4")
+    (version "2.13.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-modules/"
                                   "lttng-modules-" version ".tar.bz2"))
               (sha256
                (base32
-                "1vm9nnjvid7acsvgwnjyxd60ih9rmbhnfjldxip58n8x9q7d0nb1"))))
+                "0277yfp57psnvn5g40mk09zryp0r4saynns213qak18fv0l39szc"))))
     (build-system linux-module-build-system)
     (arguments
      `(#:tests? #f ; no tests
