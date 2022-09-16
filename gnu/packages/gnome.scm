@@ -4903,7 +4903,7 @@ libxml to ease remote use of the RESTful API.")
     (inputs (list gtksourceview json-glib libadwaita))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs rest)
-       (replace "libsoup" libsoup)
+       (replace "libsoup-minimal" libsoup)
        (append json-glib)))))
 
 (define-public libshumate
