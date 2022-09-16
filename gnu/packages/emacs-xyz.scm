@@ -19619,7 +19619,7 @@ that it can display an error message showing how the parser fails.")
 (define-public emacs-move-text
   (package
     (name "emacs-move-text")
-    (version "2.0.8")
+    (version "2.0.10")
     (source
      (origin
        (method git-fetch)
@@ -19628,7 +19628,7 @@ that it can display an error message showing how the parser fails.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06jxk5g23822gfmwrxhc34zand3dr8p2wjh1zs3j61ibz6n0nmz1"))))
+        (base32 "0pxvipjp9xvr9zwiwij943jgpy7fk8pxphbdj0vrg8ar5avlqiam"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/emacsfodder/move-text")
     (synopsis "Move current line or region with M-up or M-down")
