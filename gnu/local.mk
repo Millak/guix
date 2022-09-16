@@ -1416,6 +1416,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libtgvoip-disable-sse2.patch 		\
   %D%/packages/patches/libtgvoip-disable-webrtc.patch 		\
   %D%/packages/patches/libtheora-config-guess.patch		\
+  %D%/packages/patches/libtiff-CVE-2022-34526.patch		\
   %D%/packages/patches/libtirpc-CVE-2021-46828.patch		\
   %D%/packages/patches/libtirpc-hurd.patch			\
   %D%/packages/patches/libtommath-fix-linkage.patch		\

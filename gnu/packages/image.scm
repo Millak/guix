@@ -575,6 +575,7 @@ extracting icontainer icon files.")
        (method url-fetch)
        (uri (string-append "https://download.osgeo.org/libtiff/tiff-"
                            version ".tar.xz"))
+       (patches (search-patches "libtiff-CVE-2022-34526.patch"))
        (sha256
         (base32
          "1h8xrcpbyf9id2hw2ms0cmpgx0li8gladjzj82ycgk28018pnc29"))))
