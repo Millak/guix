@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Jacob Hrbek <kreyren@rixotstudio.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system python)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages java)
@@ -338,6 +340,28 @@ computer.  It also creates a transparent CircuitPython Bridge, allowing
 unmodified CircuitPython code to run on the host computer and interact with
 I2C and SPI devices attached to the USB Hub.")
     (license license:expat)))
+
+(define-public ideviceinstaller
+  (package
+    (name "ideviceinstaller")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/libimobiledevice/ideviceinstaller")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xp0sjgfx2z19x9mxihn18ybsmrnrcfc55zbh5a44g3vrmagmlzz"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list libimobiledevice libzip))
+    (home-page "https://libimobiledevice.org/")
+    (synopsis "CLI Tool to manage apps and app archives on iOS devices")
+    (description "This package provides an interface to manage IPA format
+files and applications for iOS devices, it's written in C")
+    (license license:gpl2)))
 
 (define-public libplist
   (package
