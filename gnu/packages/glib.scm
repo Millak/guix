@@ -397,35 +397,35 @@ functions for strings and common data structures.")
        ((#:test-options test-options ''())
         ;; Skip flaky or slow tests.
         `(cons* "--no-suite=slow" "--no-suite=flaky" ,test-options))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (replace 'disable-failing-tests
-             (lambda _
-               (with-directory-excursion "glib/tests"
-                 (substitute* '("unix.c" "utils.c")
-                   (("[ \t]*g_test_add_func.*;") "")))
-               ;; The "glib:gio / file" test fails with the error "No
-               ;; application is registered as handling this file" (see:
-               ;; https://gitlab.gnome.org/GNOME/glib/-/issues/2742).
-               (with-directory-excursion "gio/tests"
-                 (substitute* '("appinfo.c"
-                                "contenttype.c"
-                                "desktop-app-info.c"
-                                "file.c"
-                                "gdbus-address-get-session.c"
-                                "gdbus-peer.c")
-                   (("[ \t]*g_test_add_func.*;") "")))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'disable-failing-tests
+              (lambda _
+                (with-directory-excursion "glib/tests"
+                  (substitute* '("unix.c" "utils.c")
+                    (("[ \t]*g_test_add_func.*;") "")))
+                ;; The "glib:gio / file" test fails with the error "No
+                ;; application is registered as handling this file" (see:
+                ;; https://gitlab.gnome.org/GNOME/glib/-/issues/2742).
+                (with-directory-excursion "gio/tests"
+                  (substitute* '("appinfo.c"
+                                 "contenttype.c"
+                                 "desktop-app-info.c"
+                                 "file.c"
+                                 "gdbus-address-get-session.c"
+                                 "gdbus-peer.c")
+                    (("[ \t]*g_test_add_func.*;") "")))
 
-               ,@(if (target-x86-32?)
-                     ;; Comment out parts of timer.c that fail on i686 due to
-                     ;; excess precision when building with GCC 10:
-                     ;; <https://gitlab.gnome.org/GNOME/glib/-/issues/820>.
-                     '((substitute* "glib/tests/timer.c"
-                         (("^  g_assert_cmpuint \\(micros.*" all)
-                          (string-append "//" all "\n"))
-                         (("^  g_assert_cmpfloat \\(elapsed, ==.*" all)
-                          (string-append "//" all "\n"))))
-                     '())))))))
+                #$@(if (target-x86-32?)
+                       ;; Comment out parts of timer.c that fail on i686 due to
+                       ;; excess precision when building with GCC 10:
+                       ;; <https://gitlab.gnome.org/GNOME/glib/-/issues/820>.
+                       '((substitute* "glib/tests/timer.c"
+                           (("^  g_assert_cmpuint \\(micros.*" all)
+                            (string-append "//" all "\n"))
+                           (("^  g_assert_cmpfloat \\(elapsed, ==.*" all)
+                            (string-append "//" all "\n"))))
+                       '())))))))
     (native-inputs
      (modify-inputs (package-native-inputs glib)
        (append desktop-file-utils)))
