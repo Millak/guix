@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
+;;; Copyright © 2022 Simen Endsjø <simendsjo@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -646,8 +647,12 @@ of index files."
      "      server_name " (config-domain-strings server-name) ";\n"
      (and/l ssl-certificate     "      ssl_certificate " <> ";\n")
      (and/l ssl-certificate-key "      ssl_certificate_key " <> ";\n")
-     "      root " root ";\n"
-     "      index " (config-index-strings index) ";\n"
+     (if (not (equal? "" root))
+         (list "      root " root ";\n")
+         "")
+     (if (not (null? index))
+         (list "      index " (config-index-strings index) ";\n")
+         "")
      (if (not (nil? try-files))
          (and/l (config-index-strings try-files) "      try_files " <> ";\n")
          "")
