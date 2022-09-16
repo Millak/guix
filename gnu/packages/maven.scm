@@ -27,6 +27,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system ant)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
@@ -3013,6 +3014,50 @@ Maven project dependencies.")
            maven-enforcer-rules
            maven-plugin-annotations
            maven-enforcer-parent-pom))))
+
+(define-public maven-sisu-plugin
+  (package
+    (name "maven-sisu-plugin")
+    (version "0.3.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/eclipse/sisu.mojos/")
+                    (commit (string-append "releases/" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00hb7v6hz8jg0mgkj3cl0nmqz49za4k2a0rbjr4gdhy2m7f34sq3"))))
+    (build-system ant-build-system)
+    (arguments
+     (list #:jar-name "maven-sisu-plugin.jar"
+           #:source-dir "src"
+           #:tests? #f ;no tests
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'generate-plugin.xml
+                          (generate-plugin.xml "pom.xml" "sisu"
+                           "src/main/java/org/eclipse/sisu/mojos/"
+                           (list (list "IndexMojo.java")
+                                 (list "MainIndexMojo.java")
+                                 (list "TestIndexMojo.java"))))
+                        (replace 'install
+                          (install-from-pom "pom.xml")))))
+    (propagated-inputs (list java-sonatype-oss-parent-pom-9))
+    (inputs (list maven-artifact
+                  maven-plugin-api
+                  maven-plugin-annotations
+                  maven-core
+                  maven-common-artifact-filters
+                  java-slf4j-nop
+                  java-eclipse-sisu-inject
+                  java-plexus-utils
+                  java-plexus-build-api
+                  java-slf4j-api))
+    (home-page "https://www.eclipse.org/sisu/")
+    (synopsis "Maven plugin that generates annotation indexes for Sisu")
+    (description "Maven plugin that generates annotation indexes for Sisu to
+avoid classpath scanning at runtime.")
+    (license license:epl1.0)))
 
 (define-public maven-artifact-transfer
   (package
