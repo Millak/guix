@@ -1034,7 +1034,7 @@ include the @command{udisksctl} command, part of UDisks, and GNOME Disks."
     '(ignore poweroff reboot halt kexec suspend hibernate hybrid-sleep lock))
   (define (handle-action x)
     (if (unspecified? x)
-        ""                              ;empty serializer
+        x                               ;let the unspecified value go through
         (enum x handle-actions)))
   (define (sleep-list tokens)
     (unless (valid-list? tokens char-set:user-name)
@@ -1042,10 +1042,18 @@ include the @command{udisksctl} command, part of UDisks, and GNOME Disks."
     (string-join tokens " "))
   (define-syntax ini-file-clause
     (syntax-rules ()
+      ;; Produce an empty line when encountering an unspecified value.  This
+      ;; is better than an empty string value, which can, in some cases, cause
+      ;; warnings such as "Failed to parse handle action setting".
       ((_ config (prop (parser getter)))
-       (string-append prop "=" (parser (getter config)) "\n"))
+       (let ((value (parser (getter config))))
+         (if (unspecified? value)
+             ""
+             (string-append prop "=" value "\n"))))
       ((_ config str)
-       (string-append str "\n"))))
+       (if (unspecified? str)
+           ""
+           (string-append str "\n")))))
   (define-syntax-rule (ini-file config file clause ...)
     (plain-file file (string-append (ini-file-clause config clause) ...)))
   (ini-file
