@@ -7791,7 +7791,7 @@ to display dialog boxes from the commandline and shell scripts.")
            autoconf
            automake
            libtool
-           wayland-protocols-next
+           wayland-protocols
            ;; For tests.
            ;; Warnings are configured to be fatal during the tests; add an icon
            ;; theme to please libxcursor.

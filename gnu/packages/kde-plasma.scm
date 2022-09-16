@@ -358,7 +358,7 @@ with a ksysguardd daemon, which may also run on a remote system.")
            qtwayland
            kwayland
            wayland
-           wayland-protocols-next))
+           wayland-protocols))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
