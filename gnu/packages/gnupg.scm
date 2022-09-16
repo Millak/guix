@@ -178,18 +178,18 @@ Daemon and possibly more in the future.")
      `(#:configure-flags
        (list (string-append "--with-libgpg-error-prefix="
                             (assoc-ref %build-inputs "libgpg-error-host"))
+             ;; libgcrypt is transitioning from gpg-error-config to
+             ;; gpgrt-config, and in the process the
+             ;; --with-libgpg-error-config prefix defined above is
+             ;; not respected.  See <https://dev.gnupg.org/T5365>.
+             ;; TODO: transition to pkg-config instead of these scripts.
+             (string-append "ac_cv_path_GPGRT_CONFIG="
+                            (assoc-ref %build-inputs
+                                       "libgpg-error-host")
+                            "/bin/gpgrt-config")
              ,@(if (%current-target-system)
                    ;; When cross-compiling, _gcry_mpih_lshift etc are undefined.
-                   `("--disable-asm"
-                     ;; libgcrypt is transitioning from gpg-error-config to
-                     ;; gpgrt-config, and in the process the
-                     ;; --with-libgpg-error-config prefix defined above is
-                     ;; not respected.  See <https://dev.gnupg.org/T5365>.
-                     ;; TODO: transition to pkg-config instead of these scripts.
-                     (string-append "ac_cv_path_GPGRT_CONFIG="
-                                    (assoc-ref %build-inputs
-                                               "libgpg-error-host")
-                                    "/bin/gpgrt-config"))
+                   `("--disable-asm")
                    '()))))
     (outputs '("out" "debug"))
     (home-page "https://gnupg.org/")
