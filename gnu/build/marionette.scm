@@ -198,7 +198,14 @@ FILE has not shown up after TIMEOUT seconds, raise an error."
   (match (marionette-eval
           `(let loop ((i ,timeout))
              (cond ((file-exists? ,file)
-                    (cons 'success (call-with-input-file ,file ,read)))
+                    (cons 'success
+                          (let ((content
+                                 (call-with-input-file ,file ,read)))
+                            (if (eof-object? content)
+                                ;; #<eof> can't be read, so convert to the
+                                ;; empty string
+                                ""
+                                content))))
                    ((> i 0)
                     (sleep 1)
                     (loop (- i 1)))
