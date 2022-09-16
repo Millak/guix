@@ -351,13 +351,13 @@ Kit for OpenType (AFDKO) @command{tx} tool.")
 (define-public python-compreffor
   (package
     (name "python-compreffor")
-    (version "0.5.1.post1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "compreffor" version))
        (sha256
-        (base32 "1r3wqd67qnz8p6irv68mvadqv1nklgzw53376iarw3pq4gxrma36"))))
+        (base32 "0r6vlxrm73j719f5q3n6sy737p2424n7qam52am83p55j0fb9h5f"))))
     (build-system python-build-system)
     (arguments
      (list
