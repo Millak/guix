@@ -3871,22 +3871,18 @@ extension to the X11 protocol.  It includes:
 (define-public xkeyboard-config
   (package
     (name "xkeyboard-config")
-    (version "2.34")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-              "ftp://ftp.freedesktop.org/pub/xorg//individual/data/xkeyboard-config/xkeyboard-config-"
-              version
-              ".tar.bz2"))
-        (sha256
-          (base32
-            "1kmq2ykwmh10sd6155gml4jhdxmvsll6xdg7zw86czpfhrvd48dk"))))
-    (build-system gnu-build-system)
-    (inputs
-      (list libx11 xkbcomp-intermediate))
-    (native-inputs
-      (list gettext-minimal libxslt perl pkg-config python))
+    (version "2.36")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://xorg/individual/data/xkeyboard-config/"
+                    "xkeyboard-config-" version ".tar.xz"))
+              (sha256
+               (base32
+                "158m7r6ga7w12ry35q6d0z6hilbpj9h7ilw56h55478n58lv26qz"))))
+    (build-system meson-build-system)
+    (inputs (list libx11 xkbcomp-intermediate))
+    (native-inputs (list gettext-minimal libxslt perl pkg-config python))
     (home-page "https://www.x.org/wiki/")
     (synopsis "Xorg XKB configuration files")
     (description
