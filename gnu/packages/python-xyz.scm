@@ -11407,14 +11407,14 @@ from an XML-based format.")
 (define-public python-fonttools-next
   (package
     (inherit python-fonttools-full)
-    (version "4.32.0")
+    (version "4.37.1")
     (source (origin
               (inherit (package-source python-fonttools-full))
               (method url-fetch)
               (uri (pypi-uri "fonttools" version ".zip"))
               (sha256
                (base32
-                "14nk43z0dmznypm3zp4sdc04x1y608jawlnmwdkk32a947khvaar"))))))
+                "1ryc1wca2v92wn24baryj5fr32lspl8rbsig32fnkxp1islf21j6"))))))
 
 (define-public python-ly
   (package

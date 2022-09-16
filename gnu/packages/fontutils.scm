@@ -148,6 +148,12 @@ them as it goes.")
        (modules '((guix build utils)))
        (snippet
         #~(begin
+            (substitute*
+                "tests/buildcff2vf_data/expected_output/SHSansJPVFTest.ttx"
+              ;; Adjust expected output to match newer fonttools.  Taken from:
+              ;; https://github.com/adobe-type-tools/afdko/commit/7c526390a10e
+              (("FDSelect format=\"3\"")
+               "FDSelect format=\"0\""))
             (with-directory-excursion "c/makeotf/lib/hotconv"
               ;; Delete ANTLR-generated code.
               (for-each delete-file
