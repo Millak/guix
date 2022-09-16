@@ -260,20 +260,17 @@ to ring buffers shared with a consumer daemon.")
 (define-public lttng-tools
   (package
     (name "lttng-tools")
-    (version "2.13.7")
+    (version "2.13.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-tools/"
                                   "lttng-tools-" version ".tar.bz2"))
               (sha256
                (base32
-                "13gh4bvlgbh82h9vb80aw8l1cfmdj3xyvjg30cscz9vqy7l04yni"))))
+                "1h9x6mmqrxrbgivll3g81l7a9f7ggjmcgwr01f9r01r6kdbmksdi"))))
     (build-system gnu-build-system)
     (arguments
-     `( ;; FIXME - Currently there's a segmentation fault by swig when enabling
-       ;; Python's bindings.  Thus, bindings are disable here.  Replace
-       ;; `disable` by `enable` in #:configure-flags when this is fixed.
-       #:configure-flags '("--disable-python-bindings")
+     `(#:configure-flags '("--enable-python-bindings")
        ;; FIXME - Tests are disabled for now because one test hangs
        ;; indefinetely.  Also, parallel testing is not possible because of how
        ;; the lttng-daemon handles sessions.  Thus, keep parallel testing
