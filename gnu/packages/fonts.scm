@@ -756,7 +756,7 @@ OpenType variant of these fonts.")
 (define-public font-amiri
   (package
     (name "font-amiri")
-    (version "0.114")
+    (version "0.117")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -765,7 +765,7 @@ OpenType variant of these fonts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01d54i68pmy37fhvxv8kld3iqlc1m0vr871zd66y5y4c7kn2v7as"))))
+                "1z2hdmny52bapakf96y5xfr29f8ax7q6nj651zrihnnhfdriqfx1"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -779,6 +779,7 @@ OpenType variant of these fonts.")
                      (assoc-ref font:%standard-phases 'install)))))
     (native-inputs
      (list python-fonttools-next
+           python-glyphsets
            python-pcpp
            python-opentype-sanitizer
            python-sfdlib
