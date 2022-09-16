@@ -186,16 +186,16 @@ external dependencies.")
 (define-public samba
   (package
     (name "samba")
-    (version "4.17.0rc3")             ;4.16.4 doesn't build with mit-krb5 1.20
+    (version "4.17.0")
     (source
      ;; For updaters: the current PGP fingerprint is
      ;; 81F5E2832BD2545A1897B713AA99442FB680B620.
      (origin
        (method url-fetch)
-       (uri (string-append "https://download.samba.org/pub/samba/rc/"
+       (uri (string-append "https://download.samba.org/pub/samba/stable/"
                            "samba-" version ".tar.gz"))
        (sha256
-        (base32 "1vi5vxv9cmy00wyrrr01xsdf4yc0fa96vj7980l51lnn90fgvj60"))))
+        (base32 "0fl2y5avmyxjadh6zz0fwz35akd6c4j9lldzp2kyvjrgm36qx1h4"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -293,14 +293,14 @@ Desktops into Active Directory environments using the winbind daemon.")
   ;; Version that rarely changes, depended on by libsoup.
   (hidden-package
    (package/inherit samba
-     (version "4.17.0rc3")            ;4.16.4 doesn't build with mit-krb5 1.20
+     (version "4.17.0")
      (source
       (origin
         (method url-fetch)
-        (uri (string-append "https://download.samba.org/pub/samba/rc/"
+        (uri (string-append "https://download.samba.org/pub/samba/stable/"
                             "samba-" version ".tar.gz"))
         (sha256
-         (base32 "1vi5vxv9cmy00wyrrr01xsdf4yc0fa96vj7980l51lnn90fgvj60")))))))
+         (base32 "0fl2y5avmyxjadh6zz0fwz35akd6c4j9lldzp2kyvjrgm36qx1h4")))))))
 
 (define-public talloc
   (package
