@@ -542,6 +542,67 @@ process.  FontParts is the successor of RoboFab.")
      (alist-delete 'hidden?
                    (package-properties python-fontparts-bootstrap)))))
 
+(define-public python-glyphslib
+  (package
+    (name "python-glyphslib")
+    (version "6.0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "glyphsLib" version))
+              (sha256
+               (base32
+                "0mkkwd09g76hvif603ij5aqicxh47zvhgyyd0pjcjmpdy6dr70yw"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              ;; The Zip format does not support pre-1980 time stamps.
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (setenv "SOURCE_DATE_EPOCH" (number->string circa-1980))
+                (invoke "python" "-m" "build" "--wheel" "--no-isolation" "."))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "GUIX_PYTHONPATH"
+                        (string-append (getcwd) ":" (getenv "GUIX_PYTHONPATH")))
+                (invoke "pytest" "-vv"
+                        ;; These fail because the test data has not yet been
+                        ;; updated for newer FontTools:
+                        ;;   https://github.com/googlefonts/glyphsLib/issues/787
+                        ;; Re-enable for versions > 6.0.7.
+                        "--ignore=tests/builder/designspace_gen_test.py"
+                        "--ignore=tests/builder/interpolation_test.py"
+                        )))))))
+    (native-inputs
+     (list python-pypa-build
+           python-setuptools-scm
+           python-wheel
+
+           ;; For tests.
+           python-pytest
+           python-xmldiff))
+    (propagated-inputs
+     (list python-defcon
+           python-fonttools-next
+           python-openstep-plist
+           python-ufolib2
+           python-ufo2ft
+           python-ufonormalizer))
+    (home-page "https://github.com/googlefonts/glyphsLib")
+    (synopsis "Bridge Glyphs source files to UFOs")
+    (description
+     "This package provides a bridge from Glyphs source files (@file{.glyphs})
+to UFOs and DesignSpace files via @code{defcon} and @code{designspaceLib}.")
+    (license license:asl2.0)))
+
 (define-public python-opentype-sanitizer
   (package
     (name "python-opentype-sanitizer")
