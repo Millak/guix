@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
+;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -524,7 +525,7 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
 (define-public gfeeds
   (package
     (name "gfeeds")
-    (version "0.16.2")
+    (version "1.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -532,7 +533,7 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
                     (commit version)))
               (sha256
                (base32
-                "045889417506w2l25j7jxx7jfdpfljbirhm1s4whvhk83xap19zb"))))
+                "1lkvhff7pl1y4brqsix6sar5yl8flyhfp3w96fx0klhk3586bvhg"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -542,11 +543,10 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "gfeeds/confManager.py"
                 (("mpv") (search-input-file inputs "/bin/mpv")))))
-          (add-after 'unpack 'patch-webkit2-version
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "bin/gfeeds.in"
-                (("gi\\.require_version\\('WebKit2', '4\\.0'\\)")
-                 "gi.require_version('WebKit2', '4.1')"))))
+          (add-after 'unpack 'skip-icon-cache
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") "true"))))
           (add-after 'install 'wrap-gfeeds
             (lambda* (#:key outputs #:allow-other-keys)
               (wrap-program (string-append
@@ -556,31 +556,34 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
                 `("XDG_DATA_DIRS" ":" prefix (,(getenv "XDG_DATA_DIRS")))))))))
     (native-inputs
      (list `(,glib "bin")
-           `(,gtk+ "bin")
+           blueprint-compiler
            gobject-introspection
            pkg-config))
     (inputs
      (list bash-minimal
            glib
            gsettings-desktop-schemas
-           gtk+
+           gtk
            hicolor-icon-theme
-           libhandy
+           libadwaita
            mpv
            python
            python-beautifulsoup4
            python-dateutil
            python-feedparser
            python-html5lib
+           python-humanize
            python-listparser
            python-lxml
+           python-magic
            python-pillow
            python-pygments
+           python-pygobject
            python-pytz
-           python-readability
+           python-readability-lxml
            python-requests
-           webkitgtk
-           python-pygobject))
+           syndication-domination
+           webkitgtk-next))
     (home-page "https://gfeeds.gabmus.org/")
     (synopsis "Easy-to-use GTK+ RSS/Atom feed reader")
     (description "Feeds is an RSS/Atom feed reader made with GTK+
