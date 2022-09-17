@@ -2594,6 +2594,30 @@ light user interface.")
 within a specified width.  It is useful for displaying long track titles.")
     (license license:gpl3+)))
 
+(define-public emacs-emprise
+  (package
+    (name "emacs-emprise")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~plattfot/emprise")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "0yddvvpjdcgsiwv24jbddkgl5r1lxgz037akjln6z9acx9qrc8px"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (home-page "https://sr.ht/~plattfot/emprise")
+    (synopsis "Control MPRIS supported media players from Emacs")
+    (description "This package provides a set of commands to control media
+players that supports the Media Player Remote Interfacing
+Specification (MPRIS) protocol from Emacs.  It uses Emacs' Completing Read
+framework as the user interface, which integrates well with Vertico or
+Selectrum.")
+    (license license:gpl3+)))
+
 
 ;;;
 ;;; Miscellaneous.
