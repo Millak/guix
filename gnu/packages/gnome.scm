@@ -44,7 +44,7 @@
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2019, 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2019, 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2019, 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2019-2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 raingloom <raingloom@riseup.net>
@@ -13010,7 +13010,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "0.41.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -13020,11 +13020,12 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17r059srxrx26w40swy47pdpyigyjdczp8550g4rfh86qs3ld4il"))))
+         "0k0s644ylbyq3a4vhdn9ymmk7kb0jgcpxxrhpr1g2nrcq7fqn116"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
+      #:meson meson-0.63
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-sources
@@ -13036,8 +13037,12 @@ profiler via Sysprof, debugging support, and more.")
                  "return data_dir_path"))))
           (add-after 'unpack 'skip-gtk-update-icon-cache
             (lambda _
-              (substitute* "meson_post_install.py"
-                (("gtk-update-icon-cache") (which "true")))))
+              (substitute* "meson.build"
+                (("([a-z_]*): true" all option)
+                 (cond                ; cond rather than match saves an import
+                  ((string=? option "gtk_update_icon_cache")
+                   (string-append option ": false"))
+                  (else all))))))
           (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
             (lambda* (#:key outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/komikku")
@@ -13045,8 +13050,8 @@ profiler via Sysprof, debugging support, and more.")
                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (inputs
      (list bash-minimal
-           gtk+
-           libhandy
+           gtk
+           libadwaita
            libnotify
            libsecret
            python
@@ -13064,7 +13069,7 @@ profiler via Sysprof, debugging support, and more.")
            python-pygobject
            python-requests
            python-unidecode
-           webkitgtk-with-libsoup2))
+           webkitgtk-next))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal
