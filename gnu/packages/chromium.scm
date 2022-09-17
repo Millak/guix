@@ -613,11 +613,12 @@
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-stuff
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((openjpeg (search-input-directory
-                               inputs "include/openjpeg-2.4")))
+              (let* ((libopenjp2 (search-input-file inputs "lib/libopenjp2.so"))
+                     (openjpeg (dirname (dirname libopenjp2))))
                 (substitute* "third_party/pdfium/BUILD.gn"
                   ;; This include path is added by Debians openjpeg patch.
-                  (("/usr/include/openjpeg-2.4") openjpeg))
+                  (("/usr/include/openjpeg-")
+                   (string-append openjpeg "/include/openjpeg-")))
 
                 ;; Adjust minizip header inclusions.
                 (substitute* (find-files "third_party/tflite_support\
