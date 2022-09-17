@@ -1348,6 +1348,28 @@ color scheme used by Visual Studio Code.")
 Apprentice and Sourcerer.")
       (license license:gpl3+))))
 
+(define-public emacs-suneater-theme
+  (package
+    (name "emacs-suneater-theme")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~plattfot/suneater-theme")
+             (commit version)))
+       (sha256
+        (base32
+         "0nlam8f8ly86y7p2dn10y9ixnm7bhmigsx7si4cjynh6aiyczyds"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (home-page "https://git.sr.ht/~plattfot/suneater-theme")
+    (synopsis "Minimalistic dark theme for Emacs")
+    (description
+     "Suneater is a dark, minimalistic Emacs theme.  It was based on Sunburst
+theme but now takes more inspiration from the Nano theme.")
+    (license license:gpl3+)))
+
 (define-public emacs-treepy
   (package
     (name "emacs-treepy")
