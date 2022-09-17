@@ -1786,8 +1786,8 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
          (add-after 'unpack 'unpack-slf4j
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir-p "generated-sources")
+             (copy-recursively (assoc-ref inputs "java-slf4j-simple-source") "generated-sources")
              (with-directory-excursion "generated-sources"
-               (invoke "tar" "xf" (assoc-ref inputs "java-slf4j-simple-source"))
                (for-each delete-file (find-files "." "StaticLoggerBinder.java")))
              (for-each
                (lambda (simple)
