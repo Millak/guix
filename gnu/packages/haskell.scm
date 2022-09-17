@@ -701,7 +701,13 @@ interactive environment for the functional language Haskell.")
                  version "/" name "-" version "-testsuite.tar.xz"))
            (sha256
             (base32
-             "0s8lf9sxj7n89pjagi58b3fahnp34qvmwhnn0j1fbg6955vbrfj6"))))))
+             "0s8lf9sxj7n89pjagi58b3fahnp34qvmwhnn0j1fbg6955vbrfj6"))
+           (modules '((guix build utils)))
+           (snippet
+            ;; collections.Iterable was moved to collections.abc in Python 3.10.
+            '(substitute* "testsuite/driver/testlib.py"
+               (("collections\\.Iterable")
+                "collections.abc.Iterable")))))))
     (arguments
      (substitute-keyword-arguments (package-arguments ghc-8.0)
        ((#:phases phases)
