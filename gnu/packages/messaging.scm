@@ -1273,7 +1273,7 @@ of xmpppy.")
            gstreamer
            gst-plugins-base
            gtk+
-           gtksourceview
+           gtksourceview-4
            gupnp-igd
            libappindicator
            libnice
