@@ -11217,6 +11217,23 @@ checksums.  It implement more than a hundred checksum routines.")
 blocks or callables with two context managers and two decorators.")
     (license license:expat)))
 
+(define-public python-timeout-decorator
+  (package
+    (name "python-timeout-decorator")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "timeout-decorator" version))
+              (sha256
+               (base32
+                "1mxk2qyydhzncm93z08kvj5ssxq3fr2n7pkrrji28nqwvdc2ybva"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/pnpnpn/timeout-decorator")
+    (synopsis "Timeout decorator")
+    (description "This package provides a decorator that raises an error
+when an operation takes longer than expected.")
+    (license license:expat)))
+
 (define-public python-straight-plugin
   (package
     (name "python-straight-plugin")
