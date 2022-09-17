@@ -1557,8 +1557,9 @@ generate bitmaps.")
         `(modify-phases ,phases
            (delete 'do-not-override-RPATH)))))
     (inputs
-     `(("python" ,python-2)
-       ,@(alist-delete "python" (package-inputs fontforge))))))
+     (modify-inputs (package-inputs fontforge)
+       (prepend libuninameslist)
+       (replace "python" python-2)))))
 
 (define-public python-statmake
   (package
