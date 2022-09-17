@@ -30795,6 +30795,34 @@ as a plug-and-play solution for anyone already using Org mode for their
 personal wiki.")
     (license license:gpl3+)))
 
+(define-public emacs-org-roam-ui
+  (let ((commit "c75fc7506ee7f03840a9a93ed9336d7ed24551aa")
+        (revision "0"))
+    (package
+      (name "emacs-org-roam-ui")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/org-roam/org-roam-ui")
+               (commit commit)))
+         (sha256
+          (base32 "0mkcd2622np8s5qz2zvx7lch6dc586xqmn6914gi4ym7nvklf3zy"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:include #~(cons "^out" %default-include)))
+      (propagated-inputs
+       (list emacs-org-roam emacs-simple-httpd emacs-websocket))
+      (home-page "https://github.com/org-roam/org-roam-ui")
+      (synopsis "Web User Interface for Org Roam")
+      (description
+       "Org Roam UI is meant as a successor of Org Roam server that extends
+functionality of Org Roam with a web app that runs side-by-side with Emacs,
+providing a web interface for navigating around notes created within Org
+Roam.")
+      (license license:gpl3+))))
+
 (define-public emacs-org-roam-bibtex
   (package
     (name "emacs-org-roam-bibtex")
