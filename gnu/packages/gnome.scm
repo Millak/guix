@@ -3276,6 +3276,25 @@ the GNOME desktop environment.")
                (base32
                 "0hj7f4xhwjc4x32r3lswwclbw37fw3spy806g4plkmym25hz4ydy"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:imported-modules
+      `(,@%meson-build-system-modules
+        (guix build python-build-system))
+      #:modules
+      `((guix build meson-build-system)
+        ((guix build python-build-system) #:prefix python:)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'wrap-python
+            (assoc-ref python:%standard-phases 'wrap))
+          (add-after 'wrap-python 'wrap-gi
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out               (assoc-ref outputs "out"))
+                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
+                (wrap-program (string-append out "/bin/blueprint-compiler")
+                  `("GI_TYPELIB_PATH" ":" suffix (,gi-typelib-path)))))))))
     (native-inputs (list gtk python-pygobject python))
     (inputs (list python))
     (synopsis "Template markup language")
