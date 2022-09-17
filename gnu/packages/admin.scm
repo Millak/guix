@@ -319,12 +319,9 @@ interface and is based on GNU Guile.")
     (license license:gpl3+)
     (home-page "https://www.gnu.org/software/shepherd/")))
 
-;; Update on the next rebuild cycle.
-(define-public shepherd shepherd-0.8)
-
 (define-public shepherd-0.9
   (package
-    (inherit shepherd)
+    (inherit shepherd-0.8)
     (version "0.9.2")
     (source (origin
               (method url-fetch)
@@ -366,6 +363,8 @@ interface and is based on GNU Guile.")
     (native-inputs (list pkg-config guile-3.0
                          guile-fibers-1.1))       ;for cross-compilation
     (inputs (list guile-3.0 guile-fibers-1.1))))
+
+(define-public shepherd shepherd-0.9)
 
 (define-public guile2.2-shepherd
   (package
