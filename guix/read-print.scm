@@ -367,10 +367,9 @@ surrounding SYMBOL."
 (define (newline-form? symbol context)
   "Return true if parenthesized expressions starting with SYMBOL must be
 followed by a newline."
-  (match (vhash-assq symbol %newline-forms)
-    (#f #f)
-    ((_ . prefix)
-     (prefix? prefix context))))
+  (let ((matches (vhash-foldq* cons '() symbol %newline-forms)))
+    (find (cut prefix? <> context)
+          matches)))
 
 (define (escaped-string str)
   "Return STR with backslashes and double quotes escaped.  Everything else, in
