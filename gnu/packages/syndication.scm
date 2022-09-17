@@ -35,7 +35,9 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
@@ -48,6 +50,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
@@ -490,6 +493,31 @@ a simple interface that makes it easy to organize and browse feeds.")
      "Tuir provides a simple terminal viewer for Reddit (Terminal UI for Reddit).")
     (license (list license:expat
                    license:gpl3+))))    ; tuir/packages/praw
+
+(define-public syndication-domination
+  (let ((revision "1")
+        (commit "f64caabd6f46be14fdb92085971a7f2d6fa5e61e"))
+    (package
+      (name "syndication-domination")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/gabmus/syndication-domination")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1i0llzzm3lc2kw7rjhb46c7wlknsb6r9bdrf61chi2pk6hpjyscv"))))
+      (build-system meson-build-system)
+      (arguments
+       (list #:meson meson-0.63))
+      (inputs (list fmt tidy-html pybind11 python pugixml))
+      (native-inputs (list cmake pkg-config)) ; need cmake to find pybind11
+      (home-page "https://gitlab.com/gabmus/syndication-domination")
+      (synopsis "RSS/Atom feed parser")
+      (description "This package provides an experimental RSS/Atom feed
+parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
+      (license license:agpl3))))
 
 (define-public gfeeds
   (package
