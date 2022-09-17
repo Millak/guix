@@ -516,110 +516,110 @@ fractional-second-digits-append-item.js")
   (mozilla-locales
    ;;                      sha256                            changeset    locale
    ;;---------------------------------------------------------------------------
-   ("0f2lkv79gqf46f74905mab3zwyz1532chxlf9d28s548p1hw6lv9" "8312cd2e0777" "ach")
-   ("1v5jpmd0b04mizm9pjffp4r9q121vpq3yzkkxcgmrcwj4gc5jb2y" "21bf766c19d8" "af")
-   ("1fqjiq2la543z5pbbvd9kfs0wdc2phmqjbxascfsak854qy1z9f9" "34b6a4f0790d" "an")
-   ("0pl6j99xnali25glyr3g9fmj67v9vqmhd9k74i97f8q5n4xmv3ym" "513c3e8dac97" "ar")
-   ("0d1fbk9jcai19pi8b7i4y4r0gscqi1inr9dbahd6h0xbxfwc0zif" "19ca0cd0d1bf" "ast")
-   ("08f9b63wxxy28zaimjn1ab9w51bvrarc3pp75s7v6kzm5bk1jwic" "44aa0dad7964" "az")
-   ("15pksy9bgaxcbcnvvp8jwqnqxvvhq9vnljpai6jlh52yyrsglbwi" "5e4499355167" "be")
-   ("0gdg84jp1i4il4nc6gwaswdhc4ljbb9inyip7vhkng09v3pmwm0h" "98d006107851" "bg")
-   ("0i6vl0ag74phj4l38cvds1ds3jjdal1c8d7hy6pf4aqrp4ai32mh" "2ca52cbb680a" "bn")
-   ("16yavargwq8rhipzpmrrvyh68g3a6disz9g5m8xbhxvixhcsi5fr" "ce92556a0a90" "br")
-   ("1512dzp394pj66i13nsz76qh6fmjpz7r7fmvk8d0h7pjk0d6n0dy" "1c79dabdb120" "bs")
-   ("19wg0kbr2ihbn4lscsxg9agz04r8bsih4692vfgb6nyn1z8vx2i0" "a22912c01617" "ca")
-   ("1ixpzjb7caq1d9c7c044rxg3ymxs3hjw120kq85v004jrrb4d9c6" "34bf3fd631d4" "ca-valencia")
-   ("1abizdmd1c56syni1aanwwrfvmgzz25fmimbj2324bcw801ma9h0" "e2e4ba2c37bc" "cak")
-   ("0wgrg2wiz1jcj52nd4zl4shfkjhbngfj6p1gw1ywj266hk8g6pvw" "a60792bff6ff" "cs")
-   ("132f29111jd2z9yxpakkyri80mi2ggnik6zxaxqrp4vlcrd1fxd2" "66369fcad8c7" "cy")
-   ("04lpic3cxdj1imcwjkbk81avp9dpa1c9b1zcchrr1a4vyy4yfjpy" "af198d43f7d6" "da")
-   ("1h0rkwlsqls8k1qi1y68plw6xk0z2c5xc2y4nqywiirl71yz7fi5" "816fcef20c05" "de")
-   ("11lzdyl1h42zb1x2yxiv3r0wih8jy1gr0gzs5d1isdq53sa9cqnq" "962e5a544415" "dsb")
-   ("146jgrhl41k6zbxg58hxh1s088padsjz7ny8nm59i9i8d00jpv0a" "e7c49fd88463" "el")
-   ("1qppr44hdnrb1z1igcd1p0w5sy9vpihzilkl2w44y0v0v9rigppv" "5a0e35b08a48" "en-CA")
-   ("1v2irfms24cx9g5s6r1glmp2c000wi91axyca1pn37s7c01r0n4b" "72f8c5d8305d" "en-GB")
-   ("1y0rbbmax1w6jy4jacy27xgy4aqnd43izysw8qjwm0qhhfjvf3xh" "40994fca693d" "eo")
-   ("0kmjvinqpb3y81mqda1qq8k202aa36as9z1z775745bx6sbvkggz" "6cf3c836995d" "es-AR")
-   ("06rvd1z3l0r7hwnsnw90i0f5j2ysbv6wd3cl64g0bgifmwjk75hi" "8727dda3935e" "es-CL")
-   ("0gzw1rn9nzpgcrrc10indnbqqpax87azczrfxv8mn5n56j734hc0" "5351aba49895" "es-ES")
-   ("0bnmgisxfkb6rb12avhipbsj1yr0dyv56qjj9471gnc2ppq7k3c9" "dd834a4af402" "es-MX")
-   ("1951975h9w813qxanbk3frjz7c8knzx5rvq9i82j9i6x6a3fh6fi" "1f2150796079" "et")
-   ("1vkb5rd0k6vh9dbll3fhyzg8rfpkxxkd2rxwf66b8l3hg4fqd7f2" "2911663f4a7c" "eu")
-   ("1cj9zblfp94h86m7zd762bfmcfz0yxc1q4ra35s4wnnlqajarzwj" "04ec3c3bbe92" "fa")
-   ("1ininsyzaj7xd8ppmklm3zglgw1i0nhdy43iiyva32hb592zxy4m" "0cf866f9bc4e" "ff")
-   ("1hc308d71iygarrpliv7pxjz49gxwqg10d0pv8j4sbb2pw39bprl" "04a600fc54a4" "fi")
-   ("02nl54db9130rg59wmrrnh0z726fg5ir1njfcnhxagb4g5b7s69f" "64a3576df276" "fr")
-   ("1qbby23qlkxjz3vwlk8pd2w1w4cxdff8cq7j0ipk44mijkxkry0c" "c84177dfa254" "fy-NL")
-   ("1x23pg36ld5qnrmdn149rkl85ia8lmiqbzcac2bm0iqprnjdszii" "31590cffac56" "ga-IE")
-   ("005fpyr1lvw23dja3yrzx4y8wdih7vx6ljjpisf4pd3k5zai4x81" "ba4f274ac4a1" "gd")
-   ("0kdlb5q74n0fl5fxfy873s392kry69dmdl8b4gvqdyh5sy66vsqm" "56b41bdcd401" "gl")
-   ("0v8r8b0nrk1l4xipzhq16klmh0pinzcrma0s0gyhgzqqli6z7aym" "59e2afb65c08" "gn")
-   ("1grb1lq1f9p5jxgh9v78jl1wswxmsqxkcssm35l30k6y24pglr0m" "33b4409fb615" "gu-IN")
-   ("172fg55y8l90ix4c8s5x7f8mg6rc7779p6l852cnnkfqjgqa5a5f" "92f9f8238189" "he")
-   ("0i52nmg0yv3y1y3rkinxcyh51mgjksk7c3jlc8014801m3zvyxj7" "00090f7a2a3f" "hi-IN")
-   ("074q8n00yq54kzk632dwbs64r0sygvybbvwpd6hbvfpn38lz8hxf" "6e4a3fdc01f3" "hr")
-   ("1jxiz8zyxbpnwgk5xkwfxlr5f1zfyc88jcsajy8wcaifdkld3cwn" "7fd9bc25e49d" "hsb")
-   ("0ca11pmkzyd9ccrnrbmk0jrpcb03k88v4zivxblnxj4w03g0hyhq" "ce3b378ce950" "hu")
-   ("1yszljbh8f7w6lckfw22jwximy3yhis4430lfynfb8lh9nm0fw59" "c91a4a3e8821" "hy-AM")
-   ("0hhl8b8szqlhjdxhsa81zmgr303kr0jx5d6rzbi840qwf01h12sz" "4f235acc839e" "ia")
-   ("063yfk3nz3kignbri7r9sr3jwr5p9yyqc6sckgqs94hx6lvc355p" "fface86a34e4" "id")
-   ("1qszxkgliall4haaq6v0xayxikq43ddcdsn1d4m1mwyp7gdpbry5" "5978ae767b44" "is")
-   ("1fsfz9iz5pdd5r9ckdal6grvddchsc4r3r8gn4w6f2bja6vpbs05" "0c7d2a0e1304" "it")
-   ("1phkw0apiicgbw2nq3g392xncw1v2c4yac595h3nchs4q6rp9pd9" "1c923f3e88b9" "ja")
-   ("1y4gc4l6g72nphhsw4aqhcl80a7wi9qdy61h66c6jc6h14i7278d" "66f700940cfa" "ja-JP-mac")
-   ("0iqwj0y19zqcdclnn92z490s1g9vh2qr9gmkyfnpsz69llxidx1j" "49b4a7c6bb2c" "ka")
-   ("111nm2khff0zxnqqfc68rbi3j0b1nx5r4xai7b8yymyv1i0qbsxd" "4854facbd60b" "kab")
-   ("12p7lg2p6pcqdlb4bqbz5isxilw2r9vb8344sh8zrvv9cb9jq04f" "d2fda8a1b287" "kk")
-   ("142vpw9npqgc8b5zcg5cy2lh07s4mg8xfbaymg44fb4j3s6agw88" "3a5a1cae9b93" "km")
-   ("00v1sd2byj2ksxw1020z142cdlxa7ri2v1rzjrhay9l465bj3k8x" "6ed122b33cac" "kn")
-   ("1s07yhwzpxj0l5vj5lzbvgw115sjx1g2zgbqca5wln95dds39npl" "49bc07645a47" "ko")
-   ("1b4brfww0w7x1h3ff19i6xi8xq2cb1hxysilira6yq4rb6vhlmly" "93f04df12616" "lij")
-   ("1i30my0bbgm9z02rxxi7x4vc69bs3bnjs9l2q6jd8xvs1ga3vc7n" "e1f4e0d87509" "lt")
-   ("1bjh4xlx6562hxq527cqcn4b5295dsdpwn4c4y5ci902nlh6fc8l" "daea4ba4e7f4" "lv")
-   ("0vig42slcx6bhpisyc1bnyklr95lbv7vqd1ckiywp5c5qzfa9afi" "0c4ca0f4fc17" "mk")
-   ("10qfnkqi2snmgvm4vcrmp2489klchv3hn2c4rmkdhi5bilfk42jx" "9be8d5951976" "mr")
-   ("1bkn8ds3fyz710ck4gg4g5vpv23bi573ssm9xbiyl8y59pvbig9b" "0f44d0bcfda2" "ms")
-   ("1j9af3axbijn0s8y96310mvgaq5a36m0r3ij550jv5bv52862crj" "ccbf0c4355d6" "my")
-   ("0lspnp9jn3rrgz3djnmc0qrb6ymigvqnr3fb0jbhmf83r4yfs8z1" "a6cf2c6e3594" "nb-NO")
-   ("1xp2884m9gqm9gaakc747bd9j55wssrh3qsf4y4k02ijh08sfmwb" "c1636a1a7507" "ne-NP")
-   ("0y1fxp9pxia6x2wxdharh2ynvzdqcmzpya1gdb89pcv5qyrzqgcl" "60ed1c2397a6" "nl")
-   ("1nbp924p7fp2c76ym71wp34vk96z89i4g2rfgpsi54cgv42a6vgq" "a7f9a3d35875" "nn-NO")
-   ("1yrmhyvb6skypcyvi6j3py51sdkq9vn35zkryx6rdp8ygqwm1va7" "9ac29828960e" "oc")
-   ("0rn2414ji1icar627arf5rjwl9r9vxhznbfsyxgrmrf0p6dp72fv" "87720cc32205" "pa-IN")
-   ("09lam6yaprc8zyisq0pcdj4afpg930c2x3x47gdxnqfyhmcfygs7" "56b2c592ffba" "pl")
-   ("0mbc1a8wvjs3k928qh0k800d230251i0rw0myhdpc6mk3xjna7i5" "89f1b173c9b1" "pt-BR")
-   ("1v1qa5slllz78222rlqr4b8k7c8dapmx8d7s5nb90wdffic0zcqy" "27adc5dad781" "pt-PT")
-   ("04k6h5d7c740lz1hx1vavj6p0fmhgn9mm3nwvk4p9iccy5nw5pmf" "83e2e4833fc3" "rm")
-   ("0f0hz792wr17mgi6n190dliqx67479aqg3y2ak0jg0fiz2c8qr7p" "69cdc288966f" "ro")
-   ("17yngj0v30687m7fa1ls0g86vjg8jzxs7bnsca91jpxf3ij44xp6" "03046775600f" "ru")
-   ("1fvz23nphs9i4gdkx9fcy5ahdk2f879281pchclwi0qlciq7digr" "61ea93a50fff" "sco")
-   ("0yc1iwqbnpnf1i7yz3zqrx6g8pinc7l53pvbczywfkq3rz6wmmf5" "2b134d24c046" "si")
-   ("0kizljksn2vn4yw7qlv7c8h2m75f7n9ddg6n6ag3hwxxip83hn4y" "6d69c24dc8db" "sk")
-   ("1ll936b18wy464623jc5smf3c6dpimh0qwn28a991h7zcw31n3kp" "29e195d1d160" "sl")
-   ("14w9n994z9gf0wx7vrqisyxkngvhmmnayx8r0vwiq8k7jy81sxlm" "60a3b235fe1d" "son")
-   ("0z7bcfvq6x6dxf4d4bbjsg36r5npkr89087b0j360ljampk6c2fn" "8588cbc89847" "sq")
-   ("1fcq9g89lhzckzr2qb6x0w0z6q486n9jdqfi6h70dx8b069b3jfj" "198f7e89f10d" "sr")
-   ("0ap3m1sbibnaj9s2l139m7l8cc8s2ky4jlxwgzbxdzvqxfz7n954" "b098e2ebc049" "sv-SE")
-   ("0k93gnwfs5mahb9vz1c65ddcbkav0cwhxnrww3qk7gcmn7q88gqk" "25951b964d5b" "szl")
-   ("0b0v5pcwvhvhg8vlzy26g3j0m1r8svrpq07hq0q7lxldwlb48phz" "94659c83c9d8" "ta")
-   ("1v35cl6m3ikzsriq6zkjzjs3p9bhl8zmbp2gl14mga1f1zy4kcah" "eb59646a5d36" "te")
-   ("0y3r30mjgxngjraqmf5cm00kgqx2pvhbvy8sfxb3fhypv9vda3yr" "10d257301a2d" "th")
-   ("1inyqk495py20jwjvs4yl0n5ncf3hhb896bs1lwfsgpvbvr5hbq1" "9be6adca0e51" "tl")
-   ("0vsirjs655cia9n8dys2r84bvg303hcxkk2w6a9j3dkbifq5ymk6" "51354c936bf6" "tr")
-   ("050x882c0ywil290k4g861njw70ffw2y55dqk3w0kffi972mm909" "d7510f2d01dc" "trs")
-   ("001ykwxkwibavbi1k42b1hmysb3gmrwcs68zmw96m1vc80p29nz1" "4d1fa878042b" "uk")
-   ("0lsz6jlmmsqdg47pdx8b1djjvcavi0wlyr0mkpyhjgpginag21zx" "ad3035f28183" "ur")
-   ("0d3ggm3q76pkpg4n3lz2ji4pbb47n885byqxbp7sk6n9vlgzir7l" "8ea7a5a051db" "uz")
-   ("0v7d8y6xsr6yf2s1sjxnsjmw0hdnj91f0w2da6spkifb52lmbv6v" "67fe2acb306f" "vi")
-   ("0j8l09vzqlw4zlkyp6wkh44c5gr1xgbcmnawks1zj7xz02ambwii" "abc22dfb6d84" "xh")
-   ("1c01pbyswixkjg42714fvfy33b09mpdbf4d8f8kcs88c86jpf07z" "d6d6f9bb6113" "zh-CN")
-   ("0yq8fqdz862pnlbvfsqfc152rhpsqgncvp8bqkd653mdfv4qkwr4" "0cbdc5f1a048" "zh-TW")))
+   ("1y562h0dg33vhhhwfk6jl7xbr67gng21vcf3rpm96zzcgbnf8rjj" "503a7baec899" "ach")
+   ("1cqixlk9f8p63jz20wzsvnfb7xa82ba725gzdydlwz2axgp09c26" "4e2c7d1ddbed" "af")
+   ("19r1yhmfxqasyslc8gr9as5w1scscz1xr8iqy9zi4b90fdjzs0ac" "06897e40a7ea" "an")
+   ("0nfknb1p03j9fgmkwlm1mzdyh10g0l33x34ab39kc072apziyv0n" "9272819b09e2" "ar")
+   ("11qqblqfffbmkdr5b6mxzq02i8rj1hjq3iy6xv5i5xxy311b3vpb" "f706d22e6910" "ast")
+   ("0q2p1a437qr2nshdd4934qkv2sblmykiwzir149c8p9m5sjk0dyw" "f5c2a9800add" "az")
+   ("0gxxm3lv18kj0922bw0g897azc4nkrszm5irgwdkgmkbyr97li83" "98ba7d51484f" "be")
+   ("10vrbbaabjns824ndya6c09znm815pak2xpvqgjydl3r5qvacx65" "5c79c77311cd" "bg")
+   ("1il7yyifx5xzj0v2lna315mppl5pk1vi4m9r66hdz1lzc485m1wp" "c80c87ef7193" "bn")
+   ("1p1ig4v9pczzrnnxzr20r61g7xk85k5lgnxhzgn1rx518p85xrkm" "6a1bcb9851b2" "br")
+   ("08q33bk9kdvbyc4ib58bsn2b67ki3d2yzskkf5r2n5zlglblksa2" "939779cb58d6" "bs")
+   ("1bdkywrqah85fh8kfnz163qnc02ffx0a4vlnx5pq1wg9j4f1gznf" "9a45ccf144f1" "ca")
+   ("0hhmp5dzc0rssykl0b2n9h0vfy4svwhxmhpsr3rcfpbg2s0r5h6l" "4f60e18fc248" "ca-valencia")
+   ("18phbl9raqsbys9wa8z0gq0h0pw3b55v6ngn67r4373lfc0s9cxv" "b4ef404c7de8" "cak")
+   ("0147qyw1y97mgqhkb46wblxv61lq2mvvm5n5ihwf49l5cyizi0jg" "f56ef18f05df" "cs")
+   ("08sbhnsxndlsaijnxndc367qcbrzb29m7bpkcawinz9fg6mz3573" "4f9d92f04f5e" "cy")
+   ("09cm5kk1sh2a6ws1fj185jrknhfa6n4bhj7nfnr4lsk339n0kvv9" "902503567e30" "da")
+   ("0r630bki5d4ylicq6lzh6s2mvsq225933szswmm0sap507rj75cm" "6000baf7a412" "de")
+   ("0749qjsfv3rn94rnci3ydgndw27qlr3w3w97kfwma2gmsf3m3r0p" "4a948952d1f4" "dsb")
+   ("0yc64i7mpxhs4qlyyh59i2aiz0vpap0bn8slcsk8b71wd1d7cy5m" "153a16a13733" "el")
+   ("0d4m5ji6ii10yap8y24cxx3fr60ba1jqi10hy3j1cq6ni7hzavga" "7ce17ae529ac" "en-CA")
+   ("12jzqcfbgdhfm8f2gqp15bdnin62li07jwicjc8ynn4cl9a19xiz" "a25d9eea7c23" "en-GB")
+   ("0gbb8hfc5yvjah63mapjxm53wxrf98srbrbg43b9g734zfi4n8y5" "4ed3471dad5d" "eo")
+   ("19lw7zmqx2irjmv5y6r7nncp6nysn06abf10n3dzj5nzgays6sln" "853fe7acb415" "es-AR")
+   ("0rq4pa380b77rkv6dq7sqx8a8i33jk3vs5rgcl8fv7slqvsw23kd" "921b67bf27a5" "es-CL")
+   ("1dyxzab9hln5spch66wmfagfzmfdiaxgpq7qlzvdfg98wkqdj25n" "c9a210ea496c" "es-ES")
+   ("1gwpmfl37wxl7rynqswgj41liljflgxydvljd4zdhk3jzqn605fb" "ddd35183d81c" "es-MX")
+   ("0c3blniddklapifnjbz03f2frw24jjgwgwn6swl5mwm2z0y6wa9f" "82d23ffaa7d3" "et")
+   ("05mq2df6n6fr8m5m2xwl0f6n1q3zgjrnk465ldx1nfr9agrhd36c" "13975626d549" "eu")
+   ("1l1jyqqiy551903j6yzh9ayg1pf26q2hr9h3jj4l51xzp7x4ms2q" "039e1fdb7c71" "fa")
+   ("091l05y9sggxznv0y11b9zy5qf146p0hb5faw4ix7yn5p5kca2f5" "7bd3722d82de" "ff")
+   ("1lllwjvmbl5dx44fcvsqg08fbflkc8dx5as9n6nf4xlkzydx6izm" "39808e88c9d1" "fi")
+   ("10ha955vvyf5vbciricm72kplj9j0s00g2333lmg46jiwi7aviiv" "426d373db6a7" "fr")
+   ("11zdfk8jvdy1k9z1q162cwapplcbz35l3dq4mv45brdin3v0x8kr" "96cd93d18389" "fy-NL")
+   ("1l5xr25gmssyachwmfprlnp2v2xj4b0hp8gxrf7fi5bvv9c2fynb" "de3daf7d3f9d" "ga-IE")
+   ("06h9ijfsn1cgz5fvxxbisk7fvqhgsw99id92575hgyg1p8xb1n69" "f04aea656d9e" "gd")
+   ("19913i5n8yyfhz9j21krlk7wqsyy89vggxc1m1swv94y2ix8rpaj" "1b8cdb87bf69" "gl")
+   ("0k5x31bfl2l0r9b5dkn03frm1gd8n6igai7ch2f1kj0skflynwww" "82df570c4241" "gn")
+   ("03rygnj9xhfvykark7dls117kwhid13ghvrsqiial0vp8m7ymx79" "e2e41d7beaa5" "gu-IN")
+   ("0vyraplj1x7b5im15anhzdaq03k2gqfyybgklrd4f9ry6msh5jhx" "de724e943805" "he")
+   ("1zqps586jrgxpf7xx2l3qw3ch3fr31r9a25y861fpxrpvh7ygw7g" "898598e1a5c6" "hi-IN")
+   ("0czq68l3qdhdc0mgazlrh8x83a6d5qrjwgjv8xvsmmzi7h68ww0l" "2711d1515af0" "hr")
+   ("1wwvrnm38gk2rnw4vmcranh8hk61gjcj9292pck3ckiv6mq7kd4s" "03e02f3d0676" "hsb")
+   ("0yvgdxlbyhhg3lk43hxx9gx66rcm7gaj02zzzx5zni8dhvlk2v6m" "d423ada9dc00" "hu")
+   ("1kjm7bg4990jhfbxwc38r4lqm2fbcxc82nc2d4qkqwikr4aah4b9" "06836af0bd6e" "hy-AM")
+   ("1dla7r3snvagb7m985xxqyi7gl498cr5xsz8msw0zpg6xmi05rlx" "299bd950d538" "ia")
+   ("0w8w9xn93akir7nqcp5iwr3kqvba5gbirg7gmzlzg7mgrhw8pcsa" "dee087477b99" "id")
+   ("10iakv1c1d20ihxg1s7c3zc1zfw18vr2kspcw7bk5k02rmrffgcn" "320095d063ed" "is")
+   ("1xn5pa3rc7l6k2migm3c0dx71q1hk7mjls045xpv9cy8gvirnj94" "4722680fb5bf" "it")
+   ("0va9zfj3wqh1yvbgh3x808yvdyxkg780vazjg887wbxpfk1n6hxa" "cb3cfe294621" "ja")
+   ("0qvjc3fhk6jg2c3g6mymmnslg1rkkxmv9gi3whf2bc5mzfgyc5zw" "7efe92bd7780" "ja-JP-mac")
+   ("0zfiwwz0axbd219ar32c7a6b8h816sf04ajx6jl74s5kyij79y82" "4c1fe3a18da9" "ka")
+   ("1aiik4758r5df76q2a132y5fjdjrsxshjylk7irwsr7yy0c7f63g" "acdf76048aa0" "kab")
+   ("0icxh4sgv6m1yykycb9d9c43k3r6w02f9c6jr04wm8hvqq5icfl5" "9b418ff7936b" "kk")
+   ("1cqlhggf46lr7w399k7qb7a1hc56f32w1dy26i2racpppzza5plc" "9771ada0b5f8" "km")
+   ("0p04irnb7x7y37m6lz388x9dynn8rnk000avpp296barajnhs5i8" "645aa37a2112" "kn")
+   ("1lbc1fxr5i0ccymlsd8axz3633cqggg5k8ak5yqwi704g7kvv9g2" "1cd68952d119" "ko")
+   ("11b55bxg73zqfdn5gy9nn5imab2mv0hxr603whggp7vymllgb7kb" "26bb83959bfe" "lij")
+   ("15jsijm6d26i0105gz0f7sh2yh2v4pmw4j95cwkdrb1d8m935jlz" "b9829891f153" "lt")
+   ("0liwwv13fgyw97nizhsyy53xrbf8jks5ics7qkkxfccawjrg5rlb" "e5f09d03d959" "lv")
+   ("0w420yf3hdnl7dp9mn9ghc20cq79k24fn9adn3syk723ppl6mkb0" "7884845e94f3" "mk")
+   ("13wkr7rgqsv9w3d9w7k8lnxdzgfixsq4bmc27zsyc770l6062ml6" "030db7412202" "mr")
+   ("06nsadcnxx0ssdp67x47dj9crihn1ycgd5mwvn5m7lkb97r4ch9f" "40a7703e875c" "ms")
+   ("0mlnjdzck6dp9p59ajj3sr63r36fn0qi8r9scrqrqcisgfclw9sg" "daca40056531" "my")
+   ("0z1hgx9d5i9w20f9k9azzng1y3lmm5d6hdjkj7rf6r5710bhhzh5" "664bd049e105" "nb-NO")
+   ("1466qvrs13g2iix1k35cknb2pia9b66li2ncvdyqf0jsd92z9k8x" "eaa6ae781ba0" "ne-NP")
+   ("0jgmz2lkzj0aspd9mabygzic6li5s2b25y0r6vjg8mv3jm5pi86j" "5ef8f1c9739e" "nl")
+   ("1m46x0h20vdfbzjxlz0ac43dbaq40xnyldr2yzbf7pk5di9pzxa6" "f08e15466d5d" "nn-NO")
+   ("0r3zvihqh6iya3z1qm7if0m3zfgf81s9qp7x7qc701h2q357wkgf" "6712c0e12ec2" "oc")
+   ("102j89jm28c223yhhkrj76xxj4kmy58hcs2r0jn15xa1qkqv1fdk" "8f36cc819e00" "pa-IN")
+   ("1j9za6s0i46abn8dsrlkpck3qxxw35rhfcg1xs1vp8sc4ckg8qwi" "c3b0c1c02b94" "pl")
+   ("1k9lbsvckpwl4xax8kxp5yxsfkspq2mhqm77jh5nl9aw88dsn55b" "cc32bf9630fe" "pt-BR")
+   ("0f0jyvbn2sa5m66wqdzh4607g4gd0270xq37ipd9ls52b4764bd8" "5478d7242086" "pt-PT")
+   ("19znkkialh1d4np7qcp80xkagrf1j2xah2s1xxzsh854p3d30zs7" "dd934a76fb01" "rm")
+   ("1xn26r8g8zzkb5myfgmnjbk8k4i0brkvbrvnhp7k5nkrnsin25di" "d57ab3dee73d" "ro")
+   ("04rhkxlmpp5pyzw85ldbfkmiigqr2p9y5cbns5dqs6sz1633ccxp" "7aea98f33a20" "ru")
+   ("1zzkkxl7ayxh5gx9snyvp5czflsvi77hp48li613h3c2fii4n9qk" "7c986f4b5044" "sco")
+   ("1219i0ghhqj3s1i0rm68jjkvivh6y40938wav7z4ifck527sq6r1" "bc9e55d4e3ea" "si")
+   ("05i5p3n3a6hgl6rf10yjs4vag7y3rn2jwgxsddcdcqiv6405zn81" "8814afd7f67e" "sk")
+   ("1wcqdbm1py1ldq6cj2g201m715nql79r6szr71jvrxacb711c62a" "20013dc06e96" "sl")
+   ("0g2izkaa4ipwgwyhy77ciyrxxpf4pxzj9mjqvxriy5prmkhm3zjs" "d86d5d2b6eef" "son")
+   ("1cc99m6srjg8698dkc3il70crby0mdv43v3ijwy069k4w50hyjjg" "49bb5fae5d9b" "sq")
+   ("13kfssq4fhq9mb36as6sxiaffl17qyg1wdw8kpz3ilqm86bsjrgl" "d6a0ab79b06f" "sr")
+   ("1wx9snbm0431q97i0q0nv4wbsqcv9nhllwfr88crlp7bfj5w8czw" "4bab04993da3" "sv-SE")
+   ("0laglkfl8ml0ip5vmm3z2q790hgwax9gfqwq3wm68a2nnsyck8fw" "4b3316c4aa48" "szl")
+   ("15pnlic4q7m48y0mc5yh8w5yscjwzx0mmfrbj3f2b9jxxa44nx4h" "48c7aab86db8" "ta")
+   ("16qar5y0wns75ryi8bfv7yln3mjsyn7qi4345zcniz3ydgkczh46" "7bbb3dac8f47" "te")
+   ("112g7x8h0qz16r5faam386x4a0rgwd4zy02d5agmg9m0kbficdfx" "009fd0852454" "th")
+   ("1l80kh9byqxnz5vkz357rb39g4y9sgn9pr0v29ywp6d009img1qg" "dad9caecd7a9" "tl")
+   ("1nalvjlxxsa9wldhhdb93bgfc7dl084xayh7i7mgg93yjgrym93x" "0c48082d37cd" "tr")
+   ("0wkxqcfgsra2ljws28kiwajv73w9aa8drsc4fqlg9krbicnjl2n8" "f6d105faedcc" "trs")
+   ("18jf4ysrfv3635fyxc1vwr970dr2r05bl3h8v599pwp2g7jzyjpm" "e1011388a55e" "uk")
+   ("1ihmksjsz54yii23qda5iv8cxrj9144afy75hzhvfi6m182kj4h8" "c4e927eab511" "ur")
+   ("0d42dhfa2vcw24wsvwf95pw20np0pz8c0is6p4307n981n8s207y" "7063df917cb3" "uz")
+   ("04khnkrg8css55hyna01jqay9c2ppxk5znbx2zj9i25knhvvx1lq" "1753054e6ab8" "vi")
+   ("0fi5kxn78xp7s15svkqlf4748j4pzxh941nm52n6kbbrhyi3qcqn" "93bc595dc32e" "xh")
+   ("0jg676vd37wqgzjnm0yynj7xrvm6fsgdwg296h78wnyc33zc4ads" "edd4e468bc31" "zh-CN")
+   ("1y4wldm3z95mfjlficp994jyqg0lj07wi35b79dy1s8ljy3jilil" "0bad1f7d2b2d" "zh-TW")))
 
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "91.13.0-guix0-preview1")
-(define %icecat-build-id "20220823000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "102.3.0-guix0-preview1")
+(define %icecat-build-id "20220920000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -641,11 +641,11 @@ fractional-second-digits-append-item.js")
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0qh7j960wdp5zcfqhkj8ki47spp9i9ms12xx0v0kxvmmw36jpgjk"))))
+              "0nmm861p4zakdvi9lj0ac8dkf9v17250rzcmrx1f6r7rvjv273ih"))))
 
-         (upstream-icecat-base-version "91.13.0") ; maybe older than base-version
+         (upstream-icecat-base-version "102.3.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
-         (gnuzilla-commit "4a87716686104266a9cccc2d83cc249e312f3673")
+         (gnuzilla-commit "f82b5b40943fe7723486fadccb48d454ee3e9dad")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -657,13 +657,10 @@ fractional-second-digits-append-item.js")
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "070j78al04xzchfl5xj1w300hmw17a3iqcw7mnlxf6b8rqlgj20p"))))
+              "1d7lfvwi9mvaxcfiqcgch3idhyxpdf56r9b71r54yiifv6xlr7x9"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
-         (gnuzilla-fixes-patch
-          (local-file (assume-valid-file-name
-                       (search-patch "icecat-use-older-reveal-hidden-html.patch"))))
          (makeicecat-patch
           (local-file (assume-valid-file-name
                        (search-patch "icecat-makeicecat.patch")))))
@@ -719,8 +716,6 @@ fractional-second-digits-append-item.js")
 
                 (with-directory-excursion "/tmp/gnuzilla"
                   (make-file-writable "makeicecat")
-                  (invoke "patch" "--force" "--no-backup-if-mismatch"
-                          "-p1" "--input" #+gnuzilla-fixes-patch)
                   (invoke "patch" "--force" "--no-backup-if-mismatch"
                           "-p1" "--input" #+makeicecat-patch)
                   (patch-shebang "makeicecat")
@@ -836,7 +831,7 @@ fractional-second-digits-append-item.js")
            libffi
            ffmpeg
            libvpx
-           icu4c
+           icu4c-71  ; TODO: Change to 'icu4c' when its version is >= 71.
            pixman
            pulseaudio
            mesa
@@ -860,18 +855,19 @@ fractional-second-digits-append-item.js")
      ;; a tarball suitable for compilation on any system that IceCat supports.
      ;; (Bug fixes and security fixes, however, should go in 'source').
      (list
-      ;; XXX TODO: Adapt these patches to IceCat 91.
+      ;; XXX TODO: Adapt these patches to IceCat 102.
       ;; ("icecat-avoid-bundled-libraries.patch"
       ;;  ,(search-patch "icecat-avoid-bundled-libraries.patch"))
       ;; ("icecat-use-system-graphite2+harfbuzz.patch"
       ;;  ,(search-patch "icecat-use-system-graphite2+harfbuzz.patch"))
       ;; ("icecat-use-system-media-libs.patch"
       ;;  ,(search-patch "icecat-use-system-media-libs.patch"))
-      rust
-      `(,rust "cargo")
-      rust-cbindgen-0.19
-      llvm-11
-      clang-11
+      ;; TODO: Change the following lines to use 'rust' when it's >= 1.59.
+      (force rust-1.59-promise)
+      `(,(force rust-1.59-promise) "cargo")
+      (force rust-cbindgen-0.23-promise)
+      llvm
+      clang
       perl
       node
       python-wrapper
@@ -927,6 +923,9 @@ fractional-second-digits-append-item.js")
 
          ;; Hack to work around missing "unofficial" branding in icecat.
          "--enable-official-branding"
+
+         ;; TODO: Add support for wasm sandboxed libraries.
+         "--without-wasm-sandboxed-libraries"
 
          ;; Avoid bundled libraries.
          "--with-system-jpeg"           ;must be libjpeg-turbo
@@ -1091,6 +1090,13 @@ fractional-second-digits-append-item.js")
                             "servo"
                             "security/manager/ssl"
                             "build")))))
+          (add-after 'patch-cargo-checksums 'remove-cargo-frozen-flag
+            (lambda _
+              ;; Remove --frozen flag from cargo invokation, otherwise it'll
+              ;; complain that it's not able to change Cargo.lock.
+              ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1726373
+              (substitute* "build/RunCbindgen.py"
+                           (("\"--frozen\",") ""))))
           (delete 'bootstrap)
           (replace 'configure
             ;; configure does not work followed by both "SHELL=..." and
@@ -1112,9 +1118,17 @@ fractional-second-digits-append-item.js")
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath="
                                                  #$output "/lib/icecat"))
 
-                (setenv "MACH_USE_SYSTEM_PYTHON" "1")
-                (setenv "MOZ_NOSPAM" "1")
+                (setenv "MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE" "system")
                 (setenv "MOZ_BUILD_DATE" #$%icecat-build-id) ; avoid timestamp
+
+                ;; XXX TODO: Fix this to work on systems other than x86_64-linux.
+                (setenv "GUIX_PYTHONPATH"
+                        (string-append (getcwd)
+                                       "/obj-x86_64-pc-linux-gnu/_virtualenvs/build"))
+
+                (mkdir ".mozbuild")
+                (setenv "MOZBUILD_STATE_PATH"
+                        (string-append (getcwd) "/.mozbuild"))
 
                 (format #t "build directory: ~s~%" (getcwd))
                 (format #t "configure flags: ~s~%" flags)
@@ -1190,7 +1204,9 @@ fractional-second-digits-append-item.js")
                   (("IceCat")           "GNU IceCat")
                   (("Icon=.*")          "Icon=icecat\n")
                   (("NewWindow")        "new-window")
-                  (("NewPrivateWindow") "new-private-window"))
+                  (("NewPrivateWindow") "new-private-window")
+                  (("StartupNotify=true")
+                   "StartupNotify=true\nStartupWMClass=Navigator"))
                 (install-file desktop-file applications))))
           (add-after 'install-desktop-entry 'install-icons
             (lambda _
@@ -1214,7 +1230,7 @@ features built-in privacy-protecting features.  This package also includes the
 @command{geckodriver} command, which can be useful for automated web
 testing.
 
-WARNING: IceCat 91 has not yet been released by the upstream IceCat project.
+WARNING: IceCat 102 has not yet been released by the upstream IceCat project.
 This is a preview release, and does not currently meet the privacy-respecting
 standards of the IceCat project.")
     (license license:mpl2.0)     ;and others, see toolkit/content/license.html
@@ -1223,13 +1239,293 @@ standards of the IceCat project.")
        (cpe-name . "firefox_esr")
        (cpe-version . ,(first (string-split version #\-)))))))
 
+(define all-mozilla-91-locales
+  (mozilla-locales
+   ;;                      sha256                            changeset    locale
+   ;;---------------------------------------------------------------------------
+   ("0f2lkv79gqf46f74905mab3zwyz1532chxlf9d28s548p1hw6lv9" "8312cd2e0777" "ach")
+   ("1v5jpmd0b04mizm9pjffp4r9q121vpq3yzkkxcgmrcwj4gc5jb2y" "21bf766c19d8" "af")
+   ("1fqjiq2la543z5pbbvd9kfs0wdc2phmqjbxascfsak854qy1z9f9" "34b6a4f0790d" "an")
+   ("0pl6j99xnali25glyr3g9fmj67v9vqmhd9k74i97f8q5n4xmv3ym" "513c3e8dac97" "ar")
+   ("0d1fbk9jcai19pi8b7i4y4r0gscqi1inr9dbahd6h0xbxfwc0zif" "19ca0cd0d1bf" "ast")
+   ("08f9b63wxxy28zaimjn1ab9w51bvrarc3pp75s7v6kzm5bk1jwic" "44aa0dad7964" "az")
+   ("15pksy9bgaxcbcnvvp8jwqnqxvvhq9vnljpai6jlh52yyrsglbwi" "5e4499355167" "be")
+   ("0gdg84jp1i4il4nc6gwaswdhc4ljbb9inyip7vhkng09v3pmwm0h" "98d006107851" "bg")
+   ("0i6vl0ag74phj4l38cvds1ds3jjdal1c8d7hy6pf4aqrp4ai32mh" "2ca52cbb680a" "bn")
+   ("16yavargwq8rhipzpmrrvyh68g3a6disz9g5m8xbhxvixhcsi5fr" "ce92556a0a90" "br")
+   ("1512dzp394pj66i13nsz76qh6fmjpz7r7fmvk8d0h7pjk0d6n0dy" "1c79dabdb120" "bs")
+   ("19wg0kbr2ihbn4lscsxg9agz04r8bsih4692vfgb6nyn1z8vx2i0" "a22912c01617" "ca")
+   ("1ixpzjb7caq1d9c7c044rxg3ymxs3hjw120kq85v004jrrb4d9c6" "34bf3fd631d4" "ca-valencia")
+   ("1abizdmd1c56syni1aanwwrfvmgzz25fmimbj2324bcw801ma9h0" "e2e4ba2c37bc" "cak")
+   ("0wgrg2wiz1jcj52nd4zl4shfkjhbngfj6p1gw1ywj266hk8g6pvw" "a60792bff6ff" "cs")
+   ("132f29111jd2z9yxpakkyri80mi2ggnik6zxaxqrp4vlcrd1fxd2" "66369fcad8c7" "cy")
+   ("04lpic3cxdj1imcwjkbk81avp9dpa1c9b1zcchrr1a4vyy4yfjpy" "af198d43f7d6" "da")
+   ("1h0rkwlsqls8k1qi1y68plw6xk0z2c5xc2y4nqywiirl71yz7fi5" "816fcef20c05" "de")
+   ("11lzdyl1h42zb1x2yxiv3r0wih8jy1gr0gzs5d1isdq53sa9cqnq" "962e5a544415" "dsb")
+   ("146jgrhl41k6zbxg58hxh1s088padsjz7ny8nm59i9i8d00jpv0a" "e7c49fd88463" "el")
+   ("1qppr44hdnrb1z1igcd1p0w5sy9vpihzilkl2w44y0v0v9rigppv" "5a0e35b08a48" "en-CA")
+   ("1v2irfms24cx9g5s6r1glmp2c000wi91axyca1pn37s7c01r0n4b" "72f8c5d8305d" "en-GB")
+   ("1y0rbbmax1w6jy4jacy27xgy4aqnd43izysw8qjwm0qhhfjvf3xh" "40994fca693d" "eo")
+   ("0kmjvinqpb3y81mqda1qq8k202aa36as9z1z775745bx6sbvkggz" "6cf3c836995d" "es-AR")
+   ("06rvd1z3l0r7hwnsnw90i0f5j2ysbv6wd3cl64g0bgifmwjk75hi" "8727dda3935e" "es-CL")
+   ("0gzw1rn9nzpgcrrc10indnbqqpax87azczrfxv8mn5n56j734hc0" "5351aba49895" "es-ES")
+   ("0bnmgisxfkb6rb12avhipbsj1yr0dyv56qjj9471gnc2ppq7k3c9" "dd834a4af402" "es-MX")
+   ("1951975h9w813qxanbk3frjz7c8knzx5rvq9i82j9i6x6a3fh6fi" "1f2150796079" "et")
+   ("1vkb5rd0k6vh9dbll3fhyzg8rfpkxxkd2rxwf66b8l3hg4fqd7f2" "2911663f4a7c" "eu")
+   ("1cj9zblfp94h86m7zd762bfmcfz0yxc1q4ra35s4wnnlqajarzwj" "04ec3c3bbe92" "fa")
+   ("1ininsyzaj7xd8ppmklm3zglgw1i0nhdy43iiyva32hb592zxy4m" "0cf866f9bc4e" "ff")
+   ("1hc308d71iygarrpliv7pxjz49gxwqg10d0pv8j4sbb2pw39bprl" "04a600fc54a4" "fi")
+   ("02nl54db9130rg59wmrrnh0z726fg5ir1njfcnhxagb4g5b7s69f" "64a3576df276" "fr")
+   ("1qbby23qlkxjz3vwlk8pd2w1w4cxdff8cq7j0ipk44mijkxkry0c" "c84177dfa254" "fy-NL")
+   ("1x23pg36ld5qnrmdn149rkl85ia8lmiqbzcac2bm0iqprnjdszii" "31590cffac56" "ga-IE")
+   ("005fpyr1lvw23dja3yrzx4y8wdih7vx6ljjpisf4pd3k5zai4x81" "ba4f274ac4a1" "gd")
+   ("0kdlb5q74n0fl5fxfy873s392kry69dmdl8b4gvqdyh5sy66vsqm" "56b41bdcd401" "gl")
+   ("0v8r8b0nrk1l4xipzhq16klmh0pinzcrma0s0gyhgzqqli6z7aym" "59e2afb65c08" "gn")
+   ("1grb1lq1f9p5jxgh9v78jl1wswxmsqxkcssm35l30k6y24pglr0m" "33b4409fb615" "gu-IN")
+   ("172fg55y8l90ix4c8s5x7f8mg6rc7779p6l852cnnkfqjgqa5a5f" "92f9f8238189" "he")
+   ("0i52nmg0yv3y1y3rkinxcyh51mgjksk7c3jlc8014801m3zvyxj7" "00090f7a2a3f" "hi-IN")
+   ("074q8n00yq54kzk632dwbs64r0sygvybbvwpd6hbvfpn38lz8hxf" "6e4a3fdc01f3" "hr")
+   ("1jxiz8zyxbpnwgk5xkwfxlr5f1zfyc88jcsajy8wcaifdkld3cwn" "7fd9bc25e49d" "hsb")
+   ("0ca11pmkzyd9ccrnrbmk0jrpcb03k88v4zivxblnxj4w03g0hyhq" "ce3b378ce950" "hu")
+   ("1yszljbh8f7w6lckfw22jwximy3yhis4430lfynfb8lh9nm0fw59" "c91a4a3e8821" "hy-AM")
+   ("0hhl8b8szqlhjdxhsa81zmgr303kr0jx5d6rzbi840qwf01h12sz" "4f235acc839e" "ia")
+   ("063yfk3nz3kignbri7r9sr3jwr5p9yyqc6sckgqs94hx6lvc355p" "fface86a34e4" "id")
+   ("1qszxkgliall4haaq6v0xayxikq43ddcdsn1d4m1mwyp7gdpbry5" "5978ae767b44" "is")
+   ("1fsfz9iz5pdd5r9ckdal6grvddchsc4r3r8gn4w6f2bja6vpbs05" "0c7d2a0e1304" "it")
+   ("1phkw0apiicgbw2nq3g392xncw1v2c4yac595h3nchs4q6rp9pd9" "1c923f3e88b9" "ja")
+   ("1y4gc4l6g72nphhsw4aqhcl80a7wi9qdy61h66c6jc6h14i7278d" "66f700940cfa" "ja-JP-mac")
+   ("0iqwj0y19zqcdclnn92z490s1g9vh2qr9gmkyfnpsz69llxidx1j" "49b4a7c6bb2c" "ka")
+   ("111nm2khff0zxnqqfc68rbi3j0b1nx5r4xai7b8yymyv1i0qbsxd" "4854facbd60b" "kab")
+   ("12p7lg2p6pcqdlb4bqbz5isxilw2r9vb8344sh8zrvv9cb9jq04f" "d2fda8a1b287" "kk")
+   ("142vpw9npqgc8b5zcg5cy2lh07s4mg8xfbaymg44fb4j3s6agw88" "3a5a1cae9b93" "km")
+   ("00v1sd2byj2ksxw1020z142cdlxa7ri2v1rzjrhay9l465bj3k8x" "6ed122b33cac" "kn")
+   ("1s07yhwzpxj0l5vj5lzbvgw115sjx1g2zgbqca5wln95dds39npl" "49bc07645a47" "ko")
+   ("1b4brfww0w7x1h3ff19i6xi8xq2cb1hxysilira6yq4rb6vhlmly" "93f04df12616" "lij")
+   ("1i30my0bbgm9z02rxxi7x4vc69bs3bnjs9l2q6jd8xvs1ga3vc7n" "e1f4e0d87509" "lt")
+   ("1bjh4xlx6562hxq527cqcn4b5295dsdpwn4c4y5ci902nlh6fc8l" "daea4ba4e7f4" "lv")
+   ("0vig42slcx6bhpisyc1bnyklr95lbv7vqd1ckiywp5c5qzfa9afi" "0c4ca0f4fc17" "mk")
+   ("10qfnkqi2snmgvm4vcrmp2489klchv3hn2c4rmkdhi5bilfk42jx" "9be8d5951976" "mr")
+   ("1bkn8ds3fyz710ck4gg4g5vpv23bi573ssm9xbiyl8y59pvbig9b" "0f44d0bcfda2" "ms")
+   ("1j9af3axbijn0s8y96310mvgaq5a36m0r3ij550jv5bv52862crj" "ccbf0c4355d6" "my")
+   ("0lspnp9jn3rrgz3djnmc0qrb6ymigvqnr3fb0jbhmf83r4yfs8z1" "a6cf2c6e3594" "nb-NO")
+   ("1xp2884m9gqm9gaakc747bd9j55wssrh3qsf4y4k02ijh08sfmwb" "c1636a1a7507" "ne-NP")
+   ("0y1fxp9pxia6x2wxdharh2ynvzdqcmzpya1gdb89pcv5qyrzqgcl" "60ed1c2397a6" "nl")
+   ("1nbp924p7fp2c76ym71wp34vk96z89i4g2rfgpsi54cgv42a6vgq" "a7f9a3d35875" "nn-NO")
+   ("1yrmhyvb6skypcyvi6j3py51sdkq9vn35zkryx6rdp8ygqwm1va7" "9ac29828960e" "oc")
+   ("0rn2414ji1icar627arf5rjwl9r9vxhznbfsyxgrmrf0p6dp72fv" "87720cc32205" "pa-IN")
+   ("09lam6yaprc8zyisq0pcdj4afpg930c2x3x47gdxnqfyhmcfygs7" "56b2c592ffba" "pl")
+   ("0mbc1a8wvjs3k928qh0k800d230251i0rw0myhdpc6mk3xjna7i5" "89f1b173c9b1" "pt-BR")
+   ("1v1qa5slllz78222rlqr4b8k7c8dapmx8d7s5nb90wdffic0zcqy" "27adc5dad781" "pt-PT")
+   ("04k6h5d7c740lz1hx1vavj6p0fmhgn9mm3nwvk4p9iccy5nw5pmf" "83e2e4833fc3" "rm")
+   ("0f0hz792wr17mgi6n190dliqx67479aqg3y2ak0jg0fiz2c8qr7p" "69cdc288966f" "ro")
+   ("17yngj0v30687m7fa1ls0g86vjg8jzxs7bnsca91jpxf3ij44xp6" "03046775600f" "ru")
+   ("1fvz23nphs9i4gdkx9fcy5ahdk2f879281pchclwi0qlciq7digr" "61ea93a50fff" "sco")
+   ("0yc1iwqbnpnf1i7yz3zqrx6g8pinc7l53pvbczywfkq3rz6wmmf5" "2b134d24c046" "si")
+   ("0kizljksn2vn4yw7qlv7c8h2m75f7n9ddg6n6ag3hwxxip83hn4y" "6d69c24dc8db" "sk")
+   ("1ll936b18wy464623jc5smf3c6dpimh0qwn28a991h7zcw31n3kp" "29e195d1d160" "sl")
+   ("14w9n994z9gf0wx7vrqisyxkngvhmmnayx8r0vwiq8k7jy81sxlm" "60a3b235fe1d" "son")
+   ("0z7bcfvq6x6dxf4d4bbjsg36r5npkr89087b0j360ljampk6c2fn" "8588cbc89847" "sq")
+   ("1fcq9g89lhzckzr2qb6x0w0z6q486n9jdqfi6h70dx8b069b3jfj" "198f7e89f10d" "sr")
+   ("0ap3m1sbibnaj9s2l139m7l8cc8s2ky4jlxwgzbxdzvqxfz7n954" "b098e2ebc049" "sv-SE")
+   ("0k93gnwfs5mahb9vz1c65ddcbkav0cwhxnrww3qk7gcmn7q88gqk" "25951b964d5b" "szl")
+   ("0b0v5pcwvhvhg8vlzy26g3j0m1r8svrpq07hq0q7lxldwlb48phz" "94659c83c9d8" "ta")
+   ("1v35cl6m3ikzsriq6zkjzjs3p9bhl8zmbp2gl14mga1f1zy4kcah" "eb59646a5d36" "te")
+   ("0y3r30mjgxngjraqmf5cm00kgqx2pvhbvy8sfxb3fhypv9vda3yr" "10d257301a2d" "th")
+   ("1inyqk495py20jwjvs4yl0n5ncf3hhb896bs1lwfsgpvbvr5hbq1" "9be6adca0e51" "tl")
+   ("0vsirjs655cia9n8dys2r84bvg303hcxkk2w6a9j3dkbifq5ymk6" "51354c936bf6" "tr")
+   ("050x882c0ywil290k4g861njw70ffw2y55dqk3w0kffi972mm909" "d7510f2d01dc" "trs")
+   ("001ykwxkwibavbi1k42b1hmysb3gmrwcs68zmw96m1vc80p29nz1" "4d1fa878042b" "uk")
+   ("0lsz6jlmmsqdg47pdx8b1djjvcavi0wlyr0mkpyhjgpginag21zx" "ad3035f28183" "ur")
+   ("0d3ggm3q76pkpg4n3lz2ji4pbb47n885byqxbp7sk6n9vlgzir7l" "8ea7a5a051db" "uz")
+   ("0v7d8y6xsr6yf2s1sjxnsjmw0hdnj91f0w2da6spkifb52lmbv6v" "67fe2acb306f" "vi")
+   ("0j8l09vzqlw4zlkyp6wkh44c5gr1xgbcmnawks1zj7xz02ambwii" "abc22dfb6d84" "xh")
+   ("1c01pbyswixkjg42714fvfy33b09mpdbf4d8f8kcs88c86jpf07z" "d6d6f9bb6113" "zh-CN")
+   ("0yq8fqdz862pnlbvfsqfc152rhpsqgncvp8bqkd653mdfv4qkwr4" "0cbdc5f1a048" "zh-TW")))
+
+(define %icecat-91-version "91.13.0-guix0-preview1")
+
+(define icecat-91-source
+  (let* ((base-version (first (string-split %icecat-91-version #\-)))
+
+         (major-version (first  (string-split base-version #\.)))
+         (minor-version (second (string-split base-version #\.)))
+         (sub-version   (third  (string-split base-version #\.)))
+
+         (upstream-firefox-version (string-append base-version "esr"))
+         (upstream-firefox-source
+          (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://ftp.mozilla.org/pub/firefox/releases/"
+                  upstream-firefox-version "/source/"
+                  "firefox-" upstream-firefox-version ".source.tar.xz"))
+            (sha256
+             (base32
+              "0qh7j960wdp5zcfqhkj8ki47spp9i9ms12xx0v0kxvmmw36jpgjk"))))
+
+         (upstream-icecat-base-version "91.13.0") ; maybe older than base-version
+         ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
+         (gnuzilla-commit "4a87716686104266a9cccc2d83cc249e312f3673")
+         (gnuzilla-source
+          (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "git://git.savannah.gnu.org/gnuzilla.git")
+                  (commit gnuzilla-commit)))
+            (file-name (git-file-name "gnuzilla"
+                                      ;;upstream-icecat-base-version
+                                      (string-take gnuzilla-commit 8)))
+            (sha256
+             (base32
+              "070j78al04xzchfl5xj1w300hmw17a3iqcw7mnlxf6b8rqlgj20p"))))
+
+         ;; 'search-patch' returns either a valid file name or #f, so wrap it
+         ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
+         (gnuzilla-fixes-patch
+          (local-file (assume-valid-file-name
+                       (search-patch "icecat-use-older-reveal-hidden-html.patch"))))
+         (makeicecat-patch
+          (local-file (assume-valid-file-name
+                       (search-patch "icecat-makeicecat.patch")))))
+
+    (origin
+      (method computed-origin-method)
+      (file-name (string-append "icecat-" %icecat-91-version ".tar.xz"))
+      (sha256 #f)
+      (uri
+       (delay
+        (with-imported-modules '((guix build utils))
+          #~(begin
+              (use-modules (guix build utils))
+              (let ((firefox-dir
+                     (string-append "firefox-" #$base-version))
+                    (icecat-dir
+                     (string-append "icecat-" #$%icecat-91-version)))
+
+                (set-path-environment-variable
+                 "PATH" '("bin")
+                 (list #+rename
+                       #+python
+                       #+(canonical-package bash)
+                       #+(canonical-package coreutils)
+                       #+(canonical-package findutils)
+                       #+(canonical-package patch)
+                       #+(canonical-package xz)
+                       #+(canonical-package sed)
+                       #+(canonical-package grep)
+                       #+(canonical-package bzip2)
+                       #+(canonical-package gzip)
+                       #+(canonical-package tar)))
+
+                (set-path-environment-variable
+                 "PYTHONPATH"
+                 (list #+(format #f "lib/python~a/site-packages"
+                                 (version-major+minor
+                                  (package-version python))))
+                 '#+(cons python-jsonschema
+                          (map second
+                               (package-transitive-propagated-inputs
+                                python-jsonschema))))
+
+                ;; Needed by the 'makeicecat' script.
+                (setenv "RENAME_CMD" "rename")
+
+                ;; We copy the gnuzilla source directory because it is
+                ;; read-only in 'gnuzilla-source', and the makeicecat script
+                ;; uses "cp -a" to copy parts of it and assumes that the
+                ;; copies will be writable.
+                (copy-recursively #+gnuzilla-source "/tmp/gnuzilla"
+                                  #:log (%make-void-port "w"))
+
+                (with-directory-excursion "/tmp/gnuzilla"
+                  (make-file-writable "makeicecat")
+                  (invoke "patch" "--force" "--no-backup-if-mismatch"
+                          "-p1" "--input" #+gnuzilla-fixes-patch)
+                  (invoke "patch" "--force" "--no-backup-if-mismatch"
+                          "-p1" "--input" #+makeicecat-patch)
+                  (patch-shebang "makeicecat")
+                  (substitute* "makeicecat"
+                    (("^readonly FFMAJOR=(.*)" all ffmajor)
+                     (unless (string=? #$major-version
+                                       (string-trim-both ffmajor))
+                       ;; The makeicecat script cannot be expected to work
+                       ;; properly on a different version of Firefox, even if
+                       ;; no errors occur during execution.
+                       (error "makeicecat major version mismatch"))
+                     (string-append "readonly FFMAJOR=" #$major-version "\n"))
+                    (("^readonly FFMINOR=.*")
+                     (string-append "readonly FFMINOR=" #$minor-version "\n"))
+                    (("^readonly FFSUB=.*")
+                     (string-append "readonly FFSUB=" #$sub-version "\n"))
+                    (("^readonly DATADIR=.*")
+                     "readonly DATADIR=/tmp/gnuzilla/data\n")
+                    (("^readonly SOURCEDIR=.*")
+                     (string-append "readonly SOURCEDIR=" icecat-dir "\n"))
+                    (("/bin/sed")
+                     #+(file-append (canonical-package sed) "/bin/sed"))))
+
+                (format #t "Unpacking upstream firefox tarball...~%")
+                (force-output)
+                (invoke "tar" "xf" #+upstream-firefox-source)
+                (rename-file firefox-dir icecat-dir)
+
+                (with-directory-excursion icecat-dir
+                  (format #t "Populating l10n directory...~%")
+                  (force-output)
+                  (mkdir "l10n")
+                  (with-directory-excursion "l10n"
+                    (for-each
+                     (lambda (locale-dir)
+                       (let ((locale
+                              (string-drop (basename locale-dir)
+                                           (+ 32  ; length of hash
+                                              (string-length "-mozilla-locale-")))))
+                         (format #t "  ~a~%" locale)
+                         (force-output)
+                         (copy-recursively locale-dir locale
+                                           #:log (%make-void-port "w"))
+                         (for-each make-file-writable (find-files locale))
+                         (with-directory-excursion locale
+                           (when (file-exists? ".hgtags")
+                             (delete-file ".hgtags"))
+                           (mkdir-p "browser/chrome/browser/preferences")
+                           (call-with-output-file
+                               "browser/chrome/browser/preferences/advanced-scripts.dtd"
+                             (lambda (port) #f)))))
+                     '#+all-mozilla-91-locales)
+                    (copy-recursively #+mozilla-compare-locales
+                                      "compare-locales"
+                                      #:log (%make-void-port "w"))
+                    (delete-file "compare-locales/.gitignore")
+                    (delete-file "compare-locales/.hgignore")
+                    (delete-file "compare-locales/.hgtags")))
+
+                (format #t "Running makeicecat script...~%")
+                (force-output)
+                (invoke "bash" "/tmp/gnuzilla/makeicecat")
+
+                (format #t "Packing IceCat source tarball...~%")
+                (force-output)
+                (setenv "XZ_DEFAULTS" (string-join (%xz-parallel-args)))
+                (invoke "tar" "cfa" #$output
+                        ;; Avoid non-determinism in the archive.  We set the
+                        ;; mtime of files in the archive to early 1980 because
+                        ;; the build process fails if the mtime of source
+                        ;; files is pre-1980, due to the creation of zip
+                        ;; archives.
+                        "--mtime=@315619200" ; 1980-01-02 UTC
+                        "--owner=root:0"
+                        "--group=root:0"
+                        "--sort=name"
+                        icecat-dir)))))))))
+
 ;; Update this together with icecat!
 (define %icedove-build-id "20220726000000") ;must be of the form YYYYMMDDhhmmss
 (define-public icedove
   (package
     (name "icedove")
     (version "91.12.0")
-    (source icecat-source)
+    (source icecat-91-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
     (build-system gnu-build-system)
