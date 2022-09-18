@@ -714,27 +714,31 @@ into a single panel, similar to that found in KDE Plasma and Windows 7+.")
     (license license:gpl2+)))
 
 (define-public gnome-shell-extension-noannoyance
-  (package
-    (name "gnome-shell-extension-noannoyance")
-    (version "5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/BjoernDaase/noannoyance")
-                    (commit "e37b5b3c31f577b4698bc6659bc9fec5ea9ac5d4")))
-              (sha256
-               (base32
-                "0fa8l3xlh8kbq07y4385wpb908zm6x53z81q16xlmin97dln32hh"))
-              (file-name (git-file-name name version))))
-    (build-system copy-build-system)
-    (arguments
-     '(#:install-plan
-       '(("." "share/gnome-shell/extensions/noannoyance@daase.net"))))
-    (synopsis "Remove 'Window is ready' annotation")
-    (description "One of the many extensions that remove this message.
+  (let ((revision "1")
+        (commit "b759d10fd2799bc084007fdd927b62637c3dbd2c"))
+    (package
+      (name "gnome-shell-extension-noannoyance")
+      ;; XXX: There is no version noted anywhere in the source.  Thus, infer it
+      ;;      from <https://extensions.gnome.org/extension/2182/noannoyance/>.
+      (version (git-version "16" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bdaase/noannoyance")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0hh7fdqvx54h9j41ia2jl0nq1d5i66k7blw41ya6hkh7201r4anp"))
+                (file-name (git-file-name name version))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan
+         '(("." "share/gnome-shell/extensions/noannoyance@daase.net"))))
+      (synopsis "Remove 'Window is ready' annotation")
+      (description "One of the many extensions that remove this message.
 It uses ES6 syntax and claims to be more actively maintained than others.")
-    (home-page "https://extensions.gnome.org/extension/2182/noannoyance/")
-    (license license:gpl2)))
+      (home-page "https://extensions.gnome.org/extension/2182/noannoyance/")
+      (license license:gpl2))))
 
 (define-public gnome-shell-extension-paperwm
   (package
