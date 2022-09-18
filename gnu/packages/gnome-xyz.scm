@@ -678,7 +678,7 @@ certain elements or change animation speeds.")
 (define-public gnome-shell-extension-dash-to-panel
   (package
     (name "gnome-shell-extension-dash-to-panel")
-    (version "45")
+    (version "51")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -686,7 +686,7 @@ certain elements or change animation speeds.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "05bfd3b1g9zd86pl1rpgfqsmip271lasyfj8phpqf1gdds5yz6f6"))
+                "103pl77dhafi2ayds5yma2smv3b58zcysnd6vl5m5zavjvk35sz7"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
