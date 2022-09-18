@@ -148,7 +148,7 @@ joystick, and graphics hardware.")
                eudev                    ;for discovering input devices
                fcitx                    ;helps with CJK input
                glib
-               ibus
+               ibus-minimal
                libxkbcommon
                libxcursor               ;enables X11 cursor support
                wayland
