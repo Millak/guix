@@ -17621,7 +17621,10 @@ contexts.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18ssl2h861dm2jkd3df6wkfr48p8zk337dbvpq5522kia7fq1lbn"))))
+        (base32 "18ssl2h861dm2jkd3df6wkfr48p8zk337dbvpq5522kia7fq1lbn"))
+       (patches
+        ;; XXX: Cherry-picked from upstream, remove when bumping to 0.2.3.
+        (search-patches "emacs-polymode-fix-lexical-variable-error.patch"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/polymode/polymode")
     (synopsis "Framework for multiple Emacs modes based on indirect buffers")
