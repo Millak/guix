@@ -239,6 +239,11 @@ may also simplify input method development.")
 
 (define-public ibus
   (package/inherit ibus-minimal
+    (arguments (substitute-keyword-arguments (package-arguments ibus-minimal)
+                 ((#:configure-flags flags)
+                  #~(cons* "--enable-gtk4" #$flags))))
+    (inputs (modify-inputs (package-inputs ibus-minimal)
+              (prepend gtk pango-next)))
     (properties (alist-delete 'hidden? (package-properties ibus-minimal)))))
 
 (define-public ibus-libpinyin
