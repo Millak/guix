@@ -6789,7 +6789,9 @@ streaming audio server.")
                           "--ignore=tests/test_browsers_iradio.py"
                           ;; broken upstream
                           "--disable-warnings"
-                          "--ignore=tests/quality")
+                          "--ignore=tests/quality"
+                          ;; missing legacy icons in adwaita-icon-theme
+                          "--ignore=tests/plugin/test_trayicon.py")
                   (format #t "test suite not run~%"))))
           (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
