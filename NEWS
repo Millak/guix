@@ -71,6 +71,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** The installer now has a crash dump upload mechanism
 *** Emacs now supports native compilation
 *** GRUB bootloader now supports chain-loading
+*** The GNU Shepherd was upgraded to 0.9.2
 
 ** Programming interfaces
 *** (guix records) now supports “field sanitizers”
