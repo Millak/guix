@@ -66,7 +66,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
-(define %jami-version "20220726.1515.da8d1da")
+(define %jami-version "20220825.0828.c10f01f")
 
 (define %jami-sources
   ;; Return an origin object of the tarball release sources archive of the
@@ -90,8 +90,8 @@
                                             "plugins"))))
     (sha256
      (base32
-      "1zx0i9aw8jsba3bjc5r4pkkybm8c0lyz420ciq89vsswd48gfdhg"))
-    (patches (search-patches "jami-fix-esc-bug.patch"))))
+      "1iv06jb66g206qxm75v7rc3mqvrml1028avflsj11chj8jh63j14"))
+    (patches (search-patches "jami-fix-crash-on-block-contact.patch"))))
 
 ;; Jami maintains a set of patches for some key dependencies (currently
 ;; pjproject and ffmpeg) of Jami that haven't yet been integrated upstream.
