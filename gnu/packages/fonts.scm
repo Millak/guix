@@ -19,7 +19,7 @@
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2017, 2018, 2019, 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2018, 2019, 2020, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Mohammed Sadiq <sadiq@sadiqpk.org>
 ;;; Copyright © 2018 Charlie Ritter <chewzerita@posteo.net>
 ;;; Copyright © 2018 Gabriel Hondet <gabrielhondet@gmail.com>
@@ -117,7 +117,7 @@ titling.")
 (define-public font-ibm-plex
   (package
     (name "font-ibm-plex")
-    (version "5.1.3")
+    (version "6.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -125,7 +125,7 @@ titling.")
                     "v" version "/OpenType.zip"))
               (sha256
                (base32
-                "0zlz8kxx54i4hpgaip9690bilvn5w14gp7jjkk6cz4h9p3xml231"))))
+                "1z9nxac9ha6gqz5yvfy5lp6hyl39f8f8hdrw3llcp89rdpjfqdn9"))))
     (build-system font-build-system)
     (home-page "https://github.com/IBM/plex")
     (synopsis "IBM Plex typeface")
