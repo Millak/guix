@@ -1210,28 +1210,39 @@ Python's @code{random.seed}.")
 (define-public python-pytest-runner
   (package
     (name "python-pytest-runner")
-    (version "5.2")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-runner" version))
        (sha256
         (base32
-         "0awll1bva5zy8cspsxcpv7pjcrdf5c6pf56nqn4f74vvmlzfgiwn"))))
+         "11dnhxnjmh4nf1j8rnvx944ha3wg8ggrgrwdcx4c7d19xmi57n5l"))))
     (build-system python-build-system)
     (arguments
-     '(;; FIXME: The test suite requires 'python-flake8' and 'python-black',
-       ;; but that introduces a circular dependency.
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "pytest" "-vv")
-                          (format #t "test suite not run~%"))
-                      #t)))))
+     (list
+      ;; FIXME: The test suite requires 'python-flake8' and 'python-black',
+      ;; but that introduces a circular dependency.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (setenv "SOURCE_DATE_EPOCH" (number->string circa-1980))
+                (invoke "python" "-m" "build" "--wheel" "--no-isolation" "."))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "pytest" "-vv")
+                  (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-pypa-build python-setuptools-scm python-wheel))
     (home-page "https://github.com/pytest-dev/pytest-runner")
     (synopsis "Invoke py.test as a distutils command")
     (description
