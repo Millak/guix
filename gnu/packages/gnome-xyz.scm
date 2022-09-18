@@ -449,7 +449,7 @@ easier to keep track of applications running in the background.")
 (define-public gnome-shell-extension-dash-to-dock
   (package
     (name "gnome-shell-extension-dash-to-dock")
-    (version "71")
+    (version "73")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -458,7 +458,7 @@ easier to keep track of applications running in the background.")
                                            version))))
               (sha256
                (base32
-                "12b6ljzs5071zs0kcf5yj4jfhq10b1gnldv0hmbksnqzz5g719wf"))
+                "1l0isbrgfc8v46l1yc5l4myz7qnlxzyfyiifipp86z9d79d8klzw"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
