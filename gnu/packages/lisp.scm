@@ -1359,7 +1359,7 @@ executable Common Lisp image.  It is similar to cl-launch and hu.dwim.build.")
 (define-public eisl
   (package
     (name "eisl")
-    (version "2.62")
+    (version "2.63")
     (source
      (origin
        (method git-fetch)
@@ -1368,7 +1368,7 @@ executable Common Lisp image.  It is similar to cl-launch and hu.dwim.build.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yqzj64h9z4dlf2jz5chy6l6lggd4scgsd06crvfi9h1j1cxjvgi"))))
+        (base32 "01fwffk71c1cvq7pf50xwpl2a32rbghcymllg67wvm07yfw3gi0q"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal freeglut gdbm libiconv ncurses tcl tk))
