@@ -1253,45 +1253,45 @@ of xmpppy.")
           "3.9"
           "/site-packages"))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("python-distutils-extra" ,python-distutils-extra)
-       ("python-setuptools" ,python-setuptools)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           python-distutils-extra
+           python-setuptools
+           xorg-server-for-tests))
     (inputs
-     `(("avahi" ,avahi)
-       ("dbus" ,dbus)
-       ("farstream" ,farstream)
-       ("geoclue" ,geoclue)
-       ("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gsound",gsound)
-       ("gspell" ,gspell)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gtk+" ,gtk+)
-       ("gtksourceview" ,gtksourceview-4)
-       ("gupnp-igd" ,gupnp-igd)
-       ("libappindicator" ,libappindicator)
-       ("libnice" ,libnice)
-       ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup)
-       ("libxss" ,libxscrnsaver)
-       ("network-manager" ,network-manager)
-       ("python-css-parser" ,python-css-parser)
-       ("python-dbus" ,python-dbus)
-       ("python-gssapi" ,python-gssapi)
-       ("python-keyring" ,python-keyring)
-       ("python-nbxmpp" ,python-nbxmpp)
-       ("python-packaging" ,python-packaging)
-       ("python-pillow" ,python-pillow)
-       ("python-precis-i18n" ,python-precis-i18n)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pyopenssl" ,python-pyopenssl)))
+     (list avahi
+           dbus
+           farstream
+           geoclue
+           glib
+           glib-networking
+           gsettings-desktop-schemas
+           gsound
+           gspell
+           gstreamer
+           gst-plugins-base
+           gtk+
+           gtksourceview-4
+           gupnp-igd
+           libappindicator
+           libnice
+           libsecret
+           libsoup
+           libxscrnsaver
+           network-manager
+           python-css-parser
+           python-dbus
+           python-gssapi
+           python-keyring
+           python-nbxmpp
+           python-packaging
+           python-pillow
+           python-precis-i18n
+           python-pycairo
+           python-pygobject
+           python-pyopenssl))
     (propagated-inputs
      (list dconf))
     (synopsis "Fully-featured XMPP client")

@@ -1,0 +1,37 @@
+From 8b83fa772a71efc9dc030c43db2cba944e4338c1 Mon Sep 17 00:00:00 2001
+From: Kien Nguyen <kien.n.quang@gmail.com>
+Date: Wed, 19 May 2021 23:15:01 +0900
+Subject: [PATCH] Fix using of temporary lexical variable causes error in
+ native compiling
+
+---
+ polymode-core.el | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/polymode-core.el b/polymode-core.el
+index e7d40be..ef316f8 100644
+--- a/polymode-core.el
++++ b/polymode-core.el
+@@ -2088,14 +2088,14 @@ Elements of LIST can be either strings or symbols."
+                              (stringp pm--output-file)
+                              (pm--file-mod-time pm--output-file)))
+                    (imt (and omt (pm--file-mod-time pm--input-file)))
+-                   (action (if is-exporter "exporting" "weaving"))
+                    (ofile (if (and imt (time-less-p imt omt))
+                               (progn
+                                 (message "Not re-%s as input file '%s' hasn't changed"
+-                                         (file-name-nondirectory ifile) action)
++                                         (if is-exporter "exporting" "weaving")
++                                         (file-name-nondirectory ifile))
+                                 pm--output-file)
+                             (message "%s '%s' with '%s' ..."
+-                                     (capitalize action)
++                                     (if is-exporter "EXPORTING" "WEAVING")
+                                      (file-name-nondirectory ifile)
+                                      (eieio-object-name processor))
+                             (let ((fn (with-no-warnings
+
+base-commit: 44265e35161d77f6eaa09388ea2256b89bd5dcc8
+-- 
+2.37.2
+

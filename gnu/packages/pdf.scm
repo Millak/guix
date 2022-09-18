@@ -22,6 +22,7 @@
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -385,36 +386,37 @@ Poppler PDF rendering library.")
 
 (define-public libharu
   (package
-   (name "libharu")
-   (version "2.3.0")
-   (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/libharu/libharu")
-                   (commit (string-append
-                            "RELEASE_"
-                            (string-join (string-split version #\.) "_")))))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "15s9hswnl3qqi7yh29jyrg0hma2n99haxznvcywmsp8kjqlyg75q"))))
-   (build-system gnu-build-system)
-   (arguments
-    `(#:configure-flags
-      (list (string-append "--with-zlib="
-                           (assoc-ref %build-inputs "zlib"))
-            (string-append "--with-png="
-                           (assoc-ref %build-inputs "libpng")))))
-   (inputs
-    (list zlib libpng))
-   (native-inputs
-    (list autoconf automake libtool))
-   (home-page "http://libharu.org/")
-   (synopsis "Library for generating PDF files")
-   (description
-    "libHaru is a library for generating PDF files.  libHaru does not support
+    (name "libharu")
+    (version "2.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libharu/libharu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jwzqvv81zf5f7zssyixhyjirlp9ddwkbaabd177syb1bxljlsdc"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                  ; No tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-cmake
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("^install\\(FILES (README\\.md CHANGES) INSTALL DESTINATION .*\\)"
+                       _ files)
+                      (format #f "install(FILES ~a DESTINATION ~a/share/doc/~a-~a)"
+                              files #$output #$name #$version))))))))
+    (inputs
+     (list libpng zlib))
+    (home-page "http://libharu.org/")
+    (synopsis "Library for generating PDF files")
+    (description
+     "libHaru is a library for generating PDF files.  libHaru does not support
 reading and editing of existing PDF files.")
-   (license license:zlib)))
+    (license license:zlib)))
 
 (define-public xpdf
   (package

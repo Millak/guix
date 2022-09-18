@@ -2366,7 +2366,14 @@ visualization.")
                            (version-major version) "/SAGA%20-%20" version
                            "/saga-" version ".tar.gz"))
        (sha256
-        (base32 "008izjs6gvj09abxf16ssl1xy0ay3ljq4jswbggp6wiiq459minv"))))
+        (base32 "008izjs6gvj09abxf16ssl1xy0ay3ljq4jswbggp6wiiq459minv"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* "saga-gis/src/tools/docs/docs_pdf/doc_pdf.cpp"
+           (("^#include <hpdf\\.h>\n" all)
+            (string-append all "#include <hpdf_version.h>\n"))
+           (("\\bHPDF_PROJECTING_SCUARE_END\\b")
+            "HPDF_PROJECTING_SQUARE_END")))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config swig))

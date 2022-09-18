@@ -3,6 +3,7 @@
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,22 @@
   "{
   \"name\": \"foo\",
   \"version\": \"1.0.0\",
+  \"sha\": \"f3676eafca9987cb5fe263df1edf2538bf6dafc712b30e17be3543a9680547a8\",
+  \"info\": \"A cool gem\",
+  \"homepage_uri\": \"https://example.com\",
+  \"dependencies\": {
+    \"runtime\": [
+      { \"name\": \"bundler\" },
+      { \"name\": \"bar\" }
+    ]
+  },
+  \"licenses\": [\"MIT\", \"Apache 2.0\"]
+}")
+
+(define test-foo-v2-json
+  "{
+  \"name\": \"foo\",
+  \"version\": \"2.0.0\",
   \"sha\": \"f3676eafca9987cb5fe263df1edf2538bf6dafc712b30e17be3543a9680547a8\",
   \"info\": \"A cool gem\",
   \"homepage_uri\": \"https://example.com\",
@@ -103,6 +120,35 @@
       (x
        (pk 'fail x #f)))))
 
+(test-assert "gem->guix-package with a specific version"
+  ;; Replace network resources with sample data.
+  (mock ((guix http-client) http-fetch
+         (lambda (url . rest)
+           (match url
+             ("https://rubygems.org/api/v2/rubygems/foo/versions/2.0.0.json"
+              (values (open-input-string test-foo-v2-json)
+                      (string-length test-foo-v2-json)))
+             (_ (error "Unexpected URL: " url)))))
+    (match (gem->guix-package "foo" #:version "2.0.0")
+      (('package
+         ('name "ruby-foo")
+         ('version "2.0.0")
+         ('source ('origin
+                    ('method 'url-fetch)
+                    ('uri ('rubygems-uri "foo" 'version))
+                    ('sha256
+                     ('base32
+                      "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+         ('build-system 'ruby-build-system)
+         ('propagated-inputs ('list 'bundler 'ruby-bar))
+         ('synopsis "A cool gem")
+         ('description "This package provides a cool gem")
+         ('home-page "https://example.com")
+         ('license ('list 'license:expat 'license:asl2.0)))
+       #t)
+      (x
+       (pk 'fail x #f)))))
+
 (test-assert "gem-recursive-import"
   ;; Replace network resources with sample data.
   (mock ((guix http-client) http-fetch
@@ -153,6 +199,73 @@
             ('package
               ('name "ruby-foo")
               ('version "1.0.0")
+              ('source
+               ('origin
+                 ('method 'url-fetch)
+                 ('uri ('rubygems-uri "foo" 'version))
+                 ('sha256
+                  ('base32
+                   "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+              ('build-system 'ruby-build-system)
+              ('propagated-inputs ('list 'bundler 'ruby-bar))
+              ('synopsis "A cool gem")
+              ('description "This package provides a cool gem")
+              ('home-page "https://example.com")
+              ('license ('list 'license:expat 'license:asl2.0))))
+           #t)
+          (x
+           (pk 'fail x #f)))))
+
+(test-assert "gem-recursive-import with a specific version"
+  ;; Replace network resources with sample data.
+  (mock ((guix http-client) http-fetch
+         (lambda (url . rest)
+           (match url
+             ("https://rubygems.org/api/v2/rubygems/foo/versions/2.0.0.json"
+              (values (open-input-string test-foo-v2-json)
+                      (string-length test-foo-v2-json)))
+             ("https://rubygems.org/api/v1/gems/bar.json"
+              (values (open-input-string test-bar-json)
+                      (string-length test-bar-json)))
+             ("https://rubygems.org/api/v1/gems/bundler.json"
+              (values (open-input-string test-bundler-json)
+                      (string-length test-bundler-json)))
+             (_ (error "Unexpected URL: " url)))))
+        (match (gem-recursive-import "foo" "2.0.0")
+          ((('package
+              ('name "ruby-bar")
+              ('version "1.0.0")
+              ('source
+               ('origin
+                 ('method 'url-fetch)
+                 ('uri ('rubygems-uri "bar" 'version))
+                 ('sha256
+                  ('base32
+                   "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+              ('build-system 'ruby-build-system)
+              ('propagated-inputs ('list 'bundler))
+              ('synopsis "Another cool gem")
+              ('description "Another cool gem")
+              ('home-page "https://example.com")
+              ('license #f))                      ;no licensing info
+            ('package
+              ('name "ruby-bundler")
+              ('version "1.14.2")
+              ('source
+               ('origin
+                 ('method 'url-fetch)
+                 ('uri ('rubygems-uri "bundler" 'version))
+                 ('sha256
+                  ('base32
+                   "1446xiz7zg0bz7kgx9jv84y0s4hpsg61dj5l3qb0i00avc1kxd9v"))))
+              ('build-system 'ruby-build-system)
+              ('synopsis "Ruby gem bundler")
+              ('description "Ruby gem bundler")
+              ('home-page "https://bundler.io/")
+              ('license 'license:expat))
+            ('package
+              ('name "ruby-foo")
+              ('version "2.0.0")
               ('source
                ('origin
                  ('method 'url-fetch)

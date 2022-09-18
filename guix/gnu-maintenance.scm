@@ -2,6 +2,7 @@
 ;;; Copyright © 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -499,6 +500,12 @@ are unavailable."
              (base-url (string-append base-url directory))
              (url  (cond ((and=> (string->uri url) uri-scheme) ;full URL?
                           url)
+                         ;; full URL, except for URI scheme.  Reuse the URI
+                         ;; scheme of the document that contains the link.
+                         ((string-prefix? "//" url)
+                          (string-append
+                           (symbol->string (uri-scheme (string->uri base-url)))
+                           ":" url))
                          ((string-prefix? "/" url) ;absolute path?
                           (let ((uri (string->uri base-url)))
                             (uri->string

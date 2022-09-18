@@ -155,7 +155,7 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
            #t))))
    (native-inputs (list which pkg-config))
    (inputs
-    `(("openssl" ,openssl)
+    `(("openssl" ,openssl-1.1)
       ("libevent" ,libevent)
       ;; Build with POSIX capabilities support on GNU/Linux.  This allows 'ntpd'
       ;; to run as non-root (when invoked with '-u'.)

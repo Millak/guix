@@ -52,6 +52,7 @@
 # Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 # Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 # Copyright © 2022 muradm <mail@muradm.net>
+# Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 #
 # This file is part of GNU Guix.
 #
@@ -1038,12 +1039,14 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-highlight-stages-add-gexp.patch	\
   %D%/packages/patches/emacs-libgit-use-system-libgit2.patch    \
   %D%/packages/patches/emacs-lispy-fix-thread-last-test.patch   \
+  %D%/packages/patches/emacs-polymode-fix-lexical-variable-error.patch  \
   %D%/packages/patches/emacs-source-date-epoch.patch		\
   %D%/packages/patches/emacs-telega-path-placeholder.patch	\
   %D%/packages/patches/emacs-telega-test-env.patch		\
   %D%/packages/patches/emacs-wordnut-require-adaptive-wrap.patch	\
   %D%/packages/patches/emacs-yasnippet-fix-tests.patch	\
   %D%/packages/patches/emacs-kv-fix-tests.patch	\
+  %D%/packages/patches/emacs-pgtk-super-key-fix.patch	\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\
   %D%/packages/patches/erlang-man-path.patch			\

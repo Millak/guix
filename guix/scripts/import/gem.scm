@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,6 +32,7 @@
   #:use-module (srfi srfi-37)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
+  #:use-module (ice-9 receive)
   #:export (guix-import-gem))
 
 
@@ -42,8 +44,9 @@
   '())
 
 (define (show-help)
-  (display (G_ "Usage: guix import gem PACKAGE-NAME
-Import and convert the RubyGems package for PACKAGE-NAME.\n"))
+  (display (G_ "Usage: guix import gem PACKAGE-NAME[@VERSION] Import and
+convert the RubyGems package for PACKAGE-NAME.  Optionally, a version can be
+specified after the at-sign (@) character.\n"))
   (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
@@ -86,21 +89,23 @@ Import and convert the RubyGems package for PACKAGE-NAME.\n"))
                              (_ #f))
                            (reverse opts))))
     (match args
-      ((package-name)
-       (let ((code (if (assoc-ref opts 'recursive)
-                       (map (match-lambda
-                              ((and ('package ('name name) . rest) pkg)
-                               `(define-public ,(string->symbol name)
-                                  ,pkg))
-                              (_ #f))
-                            (gem-recursive-import package-name 'rubygems))
-                       (let ((sexp (gem->guix-package package-name)))
-                         (if sexp sexp #f)))))
-         (match code
-           ((or #f '(#f))
-            (leave (G_ "failed to download meta-data for package '~a'~%")
-                   package-name))
-           (_ code))))
+      ((spec)
+       (receive (package-name package-version)
+           (package-name->name+version spec)
+         (let ((code (if (assoc-ref opts 'recursive)
+                         (map (match-lambda
+                                ((and ('package ('name name) . rest) pkg)
+                                 `(define-public ,(string->symbol name)
+                                    ,pkg))
+                                (_ #f))
+                              (gem-recursive-import package-name package-version))
+                         (let ((sexp (gem->guix-package package-name #:version package-version)))
+                           (if sexp sexp #f)))))
+           (match code
+             ((or #f '(#f))
+              (leave (G_ "failed to download meta-data for package '~a'~%")
+                     package-name))
+             (_ code)))))
       (()
        (leave (G_ "too few arguments~%")))
       ((many ...)

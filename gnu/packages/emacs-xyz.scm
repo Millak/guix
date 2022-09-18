@@ -1348,6 +1348,28 @@ color scheme used by Visual Studio Code.")
 Apprentice and Sourcerer.")
       (license license:gpl3+))))
 
+(define-public emacs-suneater-theme
+  (package
+    (name "emacs-suneater-theme")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~plattfot/suneater-theme")
+             (commit version)))
+       (sha256
+        (base32
+         "0nlam8f8ly86y7p2dn10y9ixnm7bhmigsx7si4cjynh6aiyczyds"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (home-page "https://git.sr.ht/~plattfot/suneater-theme")
+    (synopsis "Minimalistic dark theme for Emacs")
+    (description
+     "Suneater is a dark, minimalistic Emacs theme.  It was based on Sunburst
+theme but now takes more inspiration from the Nano theme.")
+    (license license:gpl3+)))
+
 (define-public emacs-treepy
   (package
     (name "emacs-treepy")
@@ -2572,6 +2594,30 @@ light user interface.")
 within a specified width.  It is useful for displaying long track titles.")
     (license license:gpl3+)))
 
+(define-public emacs-emprise
+  (package
+    (name "emacs-emprise")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~plattfot/emprise")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "0yddvvpjdcgsiwv24jbddkgl5r1lxgz037akjln6z9acx9qrc8px"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (home-page "https://sr.ht/~plattfot/emprise")
+    (synopsis "Control MPRIS supported media players from Emacs")
+    (description "This package provides a set of commands to control media
+players that supports the Media Player Remote Interfacing
+Specification (MPRIS) protocol from Emacs.  It uses Emacs' Completing Read
+framework as the user interface, which integrates well with Vertico or
+Selectrum.")
+    (license license:gpl3+)))
+
 
 ;;;
 ;;; Miscellaneous.
@@ -2604,6 +2650,31 @@ one you want.  This is an O(N) operation, where the N is the amount of links.
 This package turns this into an O(1) operation.  It does so by assigning a
 letter to each link using avy.")
     (license license:gpl3+)))
+
+(define-public emacs-app-launcher
+  ;; XXX: Upstream did not tag any commit so far.  Base version is extracted
+  ;; from Version keyword.
+  (let ((commit "d5015e394b0a666a8c7c4d4bdf786266e773b145")
+        (revision "0"))
+    (package
+      (name "emacs-app-launcher")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/SebastienWae/app-launcher")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0l97ajy27awydyd4gc6323wyhpm5vm2db6i0lp5gqaxi9fp7jivp"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/SebastienWae/app-launcher")
+      (synopsis "Use Emacs standard completion to launch applications")
+      (description "This package defines the @code{app-launcher-run-app}
+command, which uses Emacs standard completion to select an application
+installed on your machine and launch it.")
+      (license license:gpl3+))))
 
 (define-public emacs-auto-sudoedit
   (package
@@ -6162,6 +6233,64 @@ and retrieving information using the SQLite program through Elisp programming.
 It is not intended as a user interface.")
       (license license:gpl3+))))
 
+(define-public emacs-sqlite3-api
+  (package
+    (name "emacs-sqlite3-api")
+    (version "0.16")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pekingduck/emacs-sqlite3-api")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yrfwb3yvhp1ib4izxh1ds68b3zw8gjkjhlk1kivarxnfjnjnly2"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? (not (%current-target-system))
+      #:test-command #~(list "make" "test" "EMACS=emacs")
+      #:modules '((guix build emacs-build-system)
+                  (guix build emacs-utils)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-module-load
+            (lambda _
+              (make-file-writable "sqlite3.el")
+              (emacs-substitute-sexps "sqlite3.el"
+                ("(require 'sqlite3-api nil t)"
+                 (string-append
+                  "(module-load \"" #$output "/lib/sqlite3-api.so\")")))))
+          (add-before 'check 'build-emacs-module
+            (lambda _
+              ;; Remove code that fetches constants from the SQLite website
+              ;; and the call to generate a timestamp.
+              (invoke "sed" "--in-place" "3,4d;24,28d;31d" "tools/gen-consts.sh")
+              ;; Remove filter logic from the script that generates the constants.
+              (invoke "sed" "--in-place" "7,11d;18,22d" "tools/gen-consts.py")
+              ;; Generate the consts.c file.
+              (invoke "make" "--directory=tools")
+              ;; Remove the SQLITE_STATIC and SQLITE_TRANSIENT
+              ;; constants. They cause a compilation warning and would have
+              ;; been removed by the original script.
+              (invoke "sed" "--in-place" "/ifdef SQLITE_STATIC/,+2d" "consts.c")
+              (invoke "sed" "--in-place" "/ifdef SQLITE_TRANSIENT/,+2d" "consts.c")
+              ;; Compile the shared object file.
+              (invoke "make" #$(string-append "CC=" (cc-for-target)))
+              ;; Move the shared object file into /lib.
+              (install-file "sqlite3-api.so"
+                            (string-append #$output "/lib")))))))
+    (native-inputs (list python sed))
+    (inputs (list sqlite))
+    (home-page "https://github.com/pekingduck/emacs-sqlite3-api")
+    (synopsis "Dynamic module for Emacs to access the SQLite C interface")
+    (description "This package provides a dynamic module for Emacs that allows
+direct access to the SQLite C interface.  It only exposes a subset of the full
+SQLite C interface, but should satisfy most user's needs.")
+    (license license:gpl3+)))
+
 (define-public emacs-sr-speedbar
   (let ((commit "77a83fb50f763a465c021eca7343243f465b4a47")
         (revision "0"))
@@ -6725,14 +6854,14 @@ user.")
 (define-public emacs-subed
   (package
     (name "emacs-subed")
-    (version "1.0.8")
+    (version "1.0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
                                   version ".tar"))
               (sha256
                (base32
-                "05dx4ywma7n73d0cihf4v8ayihm7gmfqpzvdycq4yk0zkxb958z1"))))
+                "192m7pg8hiqx7ppr1sk6n5qjcbz78dmcg6m14syq12ll07zfpcm0"))))
     (arguments
      (list
       #:tests? #t
@@ -15755,7 +15884,7 @@ gnugo-image-display-mode}.")
 (define-public emacs-transpose-frame
   (package
     (name "emacs-transpose-frame")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -15764,7 +15893,7 @@ gnugo-image-display-mode}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01j4ci0c52r2c31hc9r4p7nsb6s8blmvg50g9n5v5h3afjl1c35v"))))
+        (base32 "0m9jmfwwhgkwxbq3y000ymx7parbgqr7gq3yjm2wh1ll747gv51y"))))
     (build-system emacs-build-system)
     (home-page "https://www.emacswiki.org/emacs/TransposeFrame")
     (synopsis "Transpose window arrangement in current frame")
@@ -15772,6 +15901,31 @@ gnugo-image-display-mode}.")
 functions which allows users to transpose windows arrangement in currently
 selected frame.")
     (license license:bsd-2)))
+
+(define-public emacs-transpose-mark
+  ;; XXX: Upstream made no release so far, and did not add a Version keyword.
+  (let ((commit "667327602004794de97214cf336ac61650ef75b7")
+        (revision "0"))
+    (package
+      (name "emacs-transpose-mark")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kwrooijen/transpose-mark")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03wc50vn1kmrgnzzhs06pwpap2p2rx84wwzxw0hawsg1f1l35m2x"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/kwrooijen/transpose-mark")
+      (synopsis "Library for transposing lines and regions")
+      (description "Transpose mark provides some commands that makes
+transposing lines and regions easier.  You can mark a line and transpose it
+with a line at point, or mark a region and transpose it with another region
+a point.  The plugin provides visual feedback for marked regions.")
+      (license license:gpl3+))))
 
 (define-public emacs-key-chord
   (package
@@ -16574,7 +16728,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
 (define-public emacs-ement
   (package
     (name "emacs-ement")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method git-fetch)
@@ -16583,7 +16737,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "075mwlc616rr86zgli36n6r8w09c5cvlk43by0f1xzla5rmiza8r"))))
+        (base32 "1kms6l14h6ig8kphzpkxv16z7gpvcwvcfsp5ljssdnrx0c7dzz16"))))
     (build-system emacs-build-system)
     (arguments
      `(#:emacs ,emacs))               ;need libxml support
@@ -17525,7 +17679,10 @@ contexts.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18ssl2h861dm2jkd3df6wkfr48p8zk337dbvpq5522kia7fq1lbn"))))
+        (base32 "18ssl2h861dm2jkd3df6wkfr48p8zk337dbvpq5522kia7fq1lbn"))
+       (patches
+        ;; XXX: Cherry-picked from upstream, remove when bumping to 0.2.3.
+        (search-patches "emacs-polymode-fix-lexical-variable-error.patch"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/polymode/polymode")
     (synopsis "Framework for multiple Emacs modes based on indirect buffers")
@@ -19292,7 +19449,7 @@ files to be expanded upon opening them.")
 (define-public emacs-parsebib
   (package
     (name "emacs-parsebib")
-    (version "4.2")
+    (version "4.3")
     (source
      (origin
        (method git-fetch)
@@ -19301,7 +19458,7 @@ files to be expanded upon opening them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0da4b6d65bq9xhyhq7h9g315zg6g5q9435vz870la966rgav5szd"))))
+        (base32 "0vcl2wvxwpr62c9ym0fm3qaxzhjcrpk4r6r0zaqhkvlf8qr3rg8y"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/joostkremers/parsebib")
     (synopsis "Library for parsing @file{.bib} files")
@@ -19619,7 +19776,7 @@ that it can display an error message showing how the parser fails.")
 (define-public emacs-move-text
   (package
     (name "emacs-move-text")
-    (version "2.0.8")
+    (version "2.0.10")
     (source
      (origin
        (method git-fetch)
@@ -19628,7 +19785,7 @@ that it can display an error message showing how the parser fails.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06jxk5g23822gfmwrxhc34zand3dr8p2wjh1zs3j61ibz6n0nmz1"))))
+        (base32 "0pxvipjp9xvr9zwiwij943jgpy7fk8pxphbdj0vrg8ar5avlqiam"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/emacsfodder/move-text")
     (synopsis "Move current line or region with M-up or M-down")
@@ -21005,7 +21162,7 @@ and doesn't require memorisation of commands.
 (define-public emacs-logview
   (package
     (name "emacs-logview")
-    (version "0.15")
+    (version "0.15.1")
     (source
      (origin
        (method git-fetch)
@@ -21014,7 +21171,7 @@ and doesn't require memorisation of commands.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08bn7fj336krlrsf7flk0fgx9mdkd44vq8sxyx6s1c1q5bc0hqnk"))))
+        (base32 "1khri5632pjirj191x3ps94s4pyrwapf1pbrkmqqp0d26b50d3s2"))))
     (propagated-inputs
      (list emacs-datetime emacs-extmap))
     (build-system emacs-build-system)
@@ -30320,14 +30477,14 @@ detected language.")
 (define-public emacs-persist
   (package
     (name "emacs-persist")
-    (version "0.4")
+    (version "0.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "persist-" version ".tar"))
        (sha256
-        (base32 "0gpxy41qawzss2526j9a7lys60vqma1lvamn4bfabwza7gfhac0q"))))
+        (base32 "090n4479zs82by7a3vb551gyjvv8lpfcylk43ywr2lfyssc9xiq0"))))
     (build-system emacs-build-system)
     (home-page "http://elpa.gnu.org/packages/persist.html")
     (synopsis "Persist variables between Emacs sessions")
@@ -30655,6 +30812,34 @@ conventions.")
 snippets for Emacs.")
       (license license:expat))))
 
+(define-public emacs-orca
+  ;; XXX: Upstream did not tag any commit so far.  Base version is extracted
+  ;; from Version keyword.
+  (let ((commit "0687f416a5573f63b691d384454f5a793266ed97")
+        (revision "0"))
+    (package
+      (name "emacs-orca")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/abo-abo/orca")
+               (commit commit)))
+         (sha256
+          (base32 "00a363vkqvryw5s7pj0kh8pqq5vvbf1pmbzz0b1z1fckwr49sv0f"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-zoutline))
+      (home-page "https://github.com/abo-abo/orca")
+      (synopsis "Handler for Org Capture")
+      (description
+       "This package provides several convenient recipes for configuring Org
+Capture, mainly for capturing from a browser.  It can match URLs and inject
+the capture in a targeted Org file, under a targeted heading.  The more this
+package is configured, the less refiling is needed on your captures: they will
+go directly to where they belong.")
+      (license license:gpl3+))))
+
 (define-public emacs-org-roam
   (package
     (name "emacs-org-roam")
@@ -30716,6 +30901,34 @@ by tags.  Notes can be found and created quickly.  Org Roam should also work
 as a plug-and-play solution for anyone already using Org mode for their
 personal wiki.")
     (license license:gpl3+)))
+
+(define-public emacs-org-roam-ui
+  (let ((commit "c75fc7506ee7f03840a9a93ed9336d7ed24551aa")
+        (revision "0"))
+    (package
+      (name "emacs-org-roam-ui")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/org-roam/org-roam-ui")
+               (commit commit)))
+         (sha256
+          (base32 "0mkcd2622np8s5qz2zvx7lch6dc586xqmn6914gi4ym7nvklf3zy"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:include #~(cons "^out" %default-include)))
+      (propagated-inputs
+       (list emacs-org-roam emacs-simple-httpd emacs-websocket))
+      (home-page "https://github.com/org-roam/org-roam-ui")
+      (synopsis "Web User Interface for Org Roam")
+      (description
+       "Org Roam UI is meant as a successor of Org Roam server that extends
+functionality of Org Roam with a web app that runs side-by-side with Emacs,
+providing a web interface for navigating around notes created within Org
+Roam.")
+      (license license:gpl3+))))
 
 (define-public emacs-org-roam-bibtex
   (package
@@ -31575,14 +31788,14 @@ work on alists, hash-table and arrays.  All functions are prefixed with
 (define-public emacs-xref
   (package
     (name "emacs-xref")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/xref-"
                            version ".tar"))
        (sha256
-        (base32 "0xl6aiwkjbgs44c3wxk6s85diydm3y5lsd7znb0dhbqb7milid2d"))))
+        (base32 "131jxsc1sl8q3r9drhylwyfig9qjjkj3hilv3npidp868pr7xdna"))))
     (build-system emacs-build-system)
     (home-page "http://elpa.gnu.org/packages/xref.html")
     (synopsis "Cross-referencing commands")
@@ -32155,14 +32368,14 @@ are prefixed with @code{seq-} and work on lists, strings, and vectors.")
 (define-public emacs-setup
   (package
     (name "emacs-setup")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://elpa.gnu.org/packages/setup-"
                             version ".tar"))
         (sha256
-          (base32 "0r13ry73jm31j8fq7v1sh0k113fr4blfkiz85696bdpah2pnca87"))))
+          (base32 "0n9zjclf4b2sr8c8zd37fs45p25p3856frm419c9hch69hhcsv3a"))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~pkal/setup")
     (synopsis "Helpful configuration macro")
