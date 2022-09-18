@@ -13965,6 +13965,41 @@ library and the API is similar.")
 parse command line options/arguments in your CUI application.")
     (license license:expat)))
 
+(define-public java-argparse4j
+  (package
+    (name "java-argparse4j")
+    (version "0.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/argparse4j/argparse4j")
+                    (commit (string-append "argparse4j-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i0j3zs1ln48n0g8a90vqbv6528mcswhzys6252yp0c8w1ai64fb"))))
+    (build-system ant-build-system)
+    (arguments
+     (list #:jar-name "java-argparse4j.jar"
+           #:source-dir "main/src/main/"
+           #:test-dir "main/src/test/"
+           #:jdk openjdk11
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'copy-resources
+                          (lambda _
+                            (copy-recursively "main/src/test/resources"
+                                              "target/test-classes")
+                            (copy-recursively "main/src/main/resources"
+                                              "build/classes")))
+                        (replace 'install
+                          (install-from-pom "pom.xml")))))
+    (inputs (list java-junit))
+    (home-page "https://argparse4j.github.io/")
+    (synopsis "Java command-line argument parser library")
+    (description "Argparse4j is a command line argument parser library for
+Java based on Python's @code{argparse} module.")
+    (license license:expat)))
+
 (define-public java-metadata-extractor
   (package
     (name "java-metadata-extractor")
