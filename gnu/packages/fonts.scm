@@ -118,14 +118,18 @@ titling.")
   (package
     (name "font-ibm-plex")
     (version "6.1.1")
+    ;; We prefer git-fetch since it lets us get the opentype, truetype and web
+    ;; fonts all in one download. The zip archive releases separate the
+    ;; opentype, truetype and web fonts into three separate archives.
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/IBM/plex/releases/download/"
-                    "v" version "/OpenType.zip"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/IBM/plex")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1z9nxac9ha6gqz5yvfy5lp6hyl39f8f8hdrw3llcp89rdpjfqdn9"))))
+                "1jxyd0zl7jssn7mwz8x5xvjmw59x4mn82s2kywf9583k1pg949k1"))))
     (build-system font-build-system)
     (home-page "https://github.com/IBM/plex")
     (synopsis "IBM Plex typeface")
