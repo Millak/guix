@@ -1165,18 +1165,18 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
 (define-public weston
   (package
     (name "weston")
-    (version "9.0.0")
+    (version "10.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://wayland.freedesktop.org/releases/"
-                    "weston-" version ".tar.xz"))
+                    "https://gitlab.freedesktop.org/wayland/weston/-/releases/"
+                    version "/downloads/weston-" version ".tar.xz"))
               (sha256
                (base32
-                "1zlql0xgiqc3pvgbpnnvj4xvpd91pwva8qf83xfb23if377ddxaw"))))
+                "1rs92p7sfkw9lqlkfnqh5af19ym3x8l3hp3yfv117m7qv6h6qr49"))))
     (build-system meson-build-system)
     (native-inputs
-     (list mscgen pkg-config xorg-server))
+     (list mscgen pkg-config python-3 xorg-server))
     (inputs
      `(("cairo" ,cairo-xcb)
        ("colord" ,colord)
@@ -1203,8 +1203,8 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
        ("mtdev" ,mtdev)
        ("linux-pam" ,linux-pam)
        ("pango" ,pango)
-       ("pipewire" ,pipewire)
-       ("wayland-protocols" ,wayland-protocols)
+       ("pipewire" ,pipewire-0.3)
+       ("wayland-protocols" ,wayland-protocols-next)
        ("xorg-server-xwayland" ,xorg-server-xwayland)))
     (propagated-inputs
      (list libxkbcommon pixman wayland))
