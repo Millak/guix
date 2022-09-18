@@ -383,8 +383,9 @@ use '--no-offload' instead~%")))
                           (format #f (G_ "Did you mean @code{~a}?
 Try @option{--list-targets} to view available targets.~%")
                                   closest))
-                         (display-hint (G_ "\
-Try @option{--list-targets} to view available targets.~%")))
+                         (display-hint
+                          (format #f (G_ "\
+Try @option{--list-targets} to view available targets.~%"))))
                      (exit 1))))))))
 
 (define %standard-native-build-options
@@ -409,8 +410,9 @@ Try @option{--list-targets} to view available targets.~%")))
                           (format #f (G_ "Did you mean @code{~a}?
 Try @option{--list-systems} to view available system types.~%")
                                   closest))
-                         (display-hint (G_ "\
-Try @option{--list-systems} to view available system types.~%")))
+                         (display-hint
+                          (format #f (G_ "\
+Try @option{--list-systems} to view available system types.~%"))))
                      (exit 1))))))))
 
 
