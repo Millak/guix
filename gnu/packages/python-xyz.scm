@@ -5612,6 +5612,18 @@ programming language and the extended Cython programming language.  It makes
 writing C extensions for Python as easy as Python itself.")
     (license license:asl2.0)))
 
+;; Newer version required for Pandas.
+(define-public python-cython-0.29.32
+  (package
+    (inherit python-cython)
+    (version "0.29.32")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Cython" version))
+              (sha256
+               (base32
+                "1xqsihpqnfal29nb5kmw8z71nd4jbsnbz7p3lkr094xpb13wycw7"))))))
+
 (define-public python-cython-3
   (package
     (inherit python-cython)
