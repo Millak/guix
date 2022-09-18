@@ -67,9 +67,10 @@
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages unicode)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages xdisorg))
+  #:use-module (gnu packages xdisorg)
+  #:use-module (srfi srfi-1))
 
-(define-public ibus
+(define-public ibus-minimal
   (package
     (name "ibus")
     (version "1.5.27")
@@ -233,7 +234,12 @@
 input method user interface.  It comes with multilingual input support.  It
 may also simplify input method development.")
     (home-page "https://github.com/ibus/ibus/wiki")
-    (license lgpl2.1+)))
+    (license lgpl2.1+)
+    (properties '((hidden? . #t)))))
+
+(define-public ibus
+  (package/inherit ibus-minimal
+    (properties (alist-delete 'hidden? (package-properties ibus-minimal)))))
 
 (define-public ibus-libpinyin
   (package
