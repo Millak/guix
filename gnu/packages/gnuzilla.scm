@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -84,6 +85,7 @@
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages icu4c)
@@ -344,6 +346,148 @@ fractional-second-digits-append-item.js")
       (rust-bootstrapped-package
        (force rust-1.58-promise)
        "1.59.0" "1yc5bwcbmbwyvpfq7zvra78l0r8y3lbv60kbr62fzz2vx2pfxj57"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Temporary packaging of rust-cbindgen-0.23 and its dependencies
+;; follow, pending their inclusion into (gnu packages rust-apps)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define rust-textwrap-0.15-promise
+  (delay
+    (package
+     (inherit rust-textwrap-0.12)
+     (name "rust-textwrap")
+     (version "0.15.0")
+     (source (origin
+              (method url-fetch)
+              (uri (crate-uri "textwrap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yw513k61lfiwgqrfvsjw1a5wpvm0azhpjr2kr0jhnq9c56is55i"))))
+     (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs (("rust-hyphenation" ,rust-hyphenation-0.8)
+                        ("rust-smawk" ,rust-smawk-0.3)
+                        ("rust-terminal-size" ,rust-terminal-size-0.1)
+                        ("rust-unicode-linebreak" ,rust-unicode-linebreak-0.1)
+                        ("rust-unicode-width" ,rust-unicode-width-0.1)))))))
+
+(define rust-clap-lex-0.2
+  (package
+    (name "rust-clap-lex")
+    (version "0.2.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap_lex" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ib1a9v55ybnaws11l63az0jgz5xiy24jkdgsmyl7grcm3sz4l18"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-os-str-bytes" ,rust-os-str-bytes-6))))
+    (home-page "https://github.com/clap-rs/clap/tree/master/clap_lex")
+    (synopsis "Minimal, flexible command line parser")
+    (description "Minimal, flexible command line parser")
+    (license (list license:expat license:asl2.0))))
+
+(define rust-clap-derive-3.2.15-promise
+  (delay
+    (package
+     (inherit rust-clap-derive-3)
+     (name "rust-clap-derive")
+     (version "3.2.15")
+     (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap_derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1d2c4vs345fwihkd8cc7m6acbiydcwramkd5mnp36p0a7g6jm9cv"))))
+     (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                        ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                        ("rust-proc-macro2" ,rust-proc-macro2-1)
+                        ("rust-quote" ,rust-quote-1)
+                        ("rust-syn" ,rust-syn-1)))))))
+
+(define rust-clap-3.2.16-promise
+  (delay
+    (package
+     (inherit rust-clap-3)
+     (name "rust-clap")
+     (version "3.2.16")
+     (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1af06z8z7m3327yz1xvzxfjanclgpvvy3lssb745rig7adkbpnx3"))))
+     (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs (("rust-atty" ,rust-atty-0.2)
+                        ("rust-backtrace" ,rust-backtrace-0.3)
+                        ("rust-bitflags" ,rust-bitflags-1)
+                        ("rust-clap-derive" ,(force rust-clap-derive-3.2.15-promise))
+                        ("rust-clap-lex" ,rust-clap-lex-0.2)
+                        ("rust-indexmap" ,rust-indexmap-1)
+                        ("rust-once-cell" ,rust-once-cell-1)
+                        ("rust-regex" ,rust-regex-1)
+                        ("rust-strsim" ,rust-strsim-0.10)
+                        ("rust-termcolor" ,rust-termcolor-1)
+                        ("rust-terminal-size" ,rust-terminal-size-0.1)
+                        ("rust-textwrap" ,(force rust-textwrap-0.15-promise))
+                        ("rust-unicase" ,rust-unicase-2)
+                        ("rust-yaml-rust" ,rust-yaml-rust-0.4)))))))
+
+(define rust-cbindgen-0.24-promise
+  (delay
+    (package
+     (inherit rust-cbindgen-0.19)
+     (name "rust-cbindgen")
+     (version "0.24.3")
+     (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cbindgen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yqxqsz2d0cppd8zwihk2139g5gy38wqgl9snj6rnk8gyvnqsdd6"))))
+     (arguments
+      `(#:cargo-inputs (("rust-clap" ,(force rust-clap-3.2.16-promise))
+                        ("rust-heck" ,rust-heck-0.4)
+                        ("rust-indexmap" ,rust-indexmap-1)
+                        ("rust-log" ,rust-log-0.4)
+                        ("rust-proc-macro2" ,rust-proc-macro2-1)
+                        ("rust-quote" ,rust-quote-1)
+                        ("rust-serde" ,rust-serde-1)
+                        ("rust-serde-json" ,rust-serde-json-1)
+                        ("rust-syn" ,rust-syn-1)
+                        ("rust-tempfile" ,rust-tempfile-3)
+                        ("rust-toml" ,rust-toml-0.5))
+        #:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.5)))))))
+
+;; Bug with IceCat 102 with cbindgen-0.24, see
+;; https://bugzilla.mozilla.org/show_bug.cgi?id=1773259#c5 for
+;; possible patch (untested)
+(define rust-cbindgen-0.23-promise
+  (delay
+    (package
+     (inherit (force rust-cbindgen-0.24-promise))
+     (name "rust-cbindgen")
+     (version "0.23.0")
+     (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cbindgen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav")))))))
+
 
 (define mozilla-compare-locales
   (origin
