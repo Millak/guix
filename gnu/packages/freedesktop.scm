@@ -983,32 +983,37 @@ with localed.  This package is extracted from the broader systemd package.")
 (define-public packagekit
   (package
     (name "packagekit")
-    (version "1.1.13")
+    (version "1.2.5")
     (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://www.freedesktop.org/software/"
-                   "PackageKit/releases/"
-                   "PackageKit-" version ".tar.xz"))
-             (sha256
-              (base32
-               "1dr1laic65ld95abp2yxbwvijnngh0dwyb1x49x4wjm5rhq43dl8"))))
-    (build-system gnu-build-system)
+              (method url-fetch)
+              (uri (string-append "https://www.freedesktop.org/software/"
+                                  "PackageKit/releases/" "PackageKit-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "09md23m4fw87x264mls1f5isrswk6iw7y9g4hr1nib008wbbk370"))))
+    (build-system meson-build-system)
     (arguments
      (list #:tests? #f
-           #:make-flags
-           #~(list (string-append "BASH_COMPLETIONS_DIR="
-                                  #$output "/etc/bash_completion.d"))
-           #:configure-flags #~'("--disable-systemd")))
+           #:configure-flags #~'("-Dsystemd=false" "-Doffline_update=false")))
     (native-inputs
-     (list intltool
+     (list bash-completion
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt
            pkg-config
            python-wrapper
-           `(,glib "bin")))
+           vala))
     (inputs
-     (list glib bash-completion polkit))
-    (propagated-inputs
-     (list sqlite))
+     (list glib
+           gstreamer
+           gst-plugins-base
+           gtk+
+           polkit))
+    (propagated-inputs (list sqlite))
     (home-page "https://www.freedesktop.org/software/PackageKit/")
     (synopsis "API for package management, through D-Bus")
     (description
