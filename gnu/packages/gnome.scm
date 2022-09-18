@@ -12104,6 +12104,7 @@ desktop environment.")
            gspell
            gtk
            gjs
+           libadwaita
            libsecret
            libsoup
            telepathy-glib
