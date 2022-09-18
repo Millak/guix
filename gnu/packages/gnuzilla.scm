@@ -324,6 +324,27 @@ fractional-second-digits-append-item.js")
                      (replace "python" python-wrapper)
                      (append m4)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Temporary packaging of rust-1.59, pending inclusion in (gnu packages rust)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define rust-1.58-promise
+  (delay
+    (let ((rust-bootstrapped-package
+           (@@ (gnu packages rust)
+               rust-bootstrapped-package)))
+      (rust-bootstrapped-package
+       rust "1.58.1" "1iq7kj16qfpkx8gvw50d8rf7glbm6s0pj2y1qkrz7mi56vfsyfd8"))))
+
+(define rust-1.59-promise
+  (delay
+    (let ((rust-bootstrapped-package
+           (@@ (gnu packages rust)
+               rust-bootstrapped-package)))
+      (rust-bootstrapped-package
+       (force rust-1.58-promise)
+       "1.59.0" "1yc5bwcbmbwyvpfq7zvra78l0r8y3lbv60kbr62fzz2vx2pfxj57"))))
+
 (define mozilla-compare-locales
   (origin
     (method hg-fetch)
