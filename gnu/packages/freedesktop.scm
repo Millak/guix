@@ -995,16 +995,16 @@ with localed.  This package is extracted from the broader systemd package.")
                "1dr1laic65ld95abp2yxbwvijnngh0dwyb1x49x4wjm5rhq43dl8"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags (list (string-append "BASH_COMPLETIONS_DIR="
-                                         %output "/etc/bash_completion.d"))
-       #:configure-flags
-       '("--disable-systemd")))
+     (list #:tests? #f
+           #:make-flags
+           #~(list (string-append "BASH_COMPLETIONS_DIR="
+                                  #$output "/etc/bash_completion.d"))
+           #:configure-flags #~'("--disable-systemd")))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("glib:bin" ,glib "bin")))
+     (list intltool
+           pkg-config
+           python-wrapper
+           `(,glib "bin")))
     (inputs
      (list glib bash-completion polkit))
     (propagated-inputs
