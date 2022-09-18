@@ -113,12 +113,12 @@
          patches))))
 
 (define-public pjproject-jami
-  (let ((commit "e1f389d0b905011e0cb62cbdf7a8b37fc1bcde1a")
+  (let ((commit "5e478bbf8692f43059de9c6ad654b377359baaa0")
         (revision "0"))
     (package
       (inherit pjproject)
       (name "pjproject-jami")
-      (version (git-version "2.11" revision commit))
+      (version (git-version "2.12" revision commit))
       (source (origin
                 (inherit (package-source pjproject))
                 ;; The Jami development team regularly issues patches to
@@ -133,7 +133,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0inpmyb6mhrzr0g309d6clkc99lddqdvyf9xajz0igvgp9pvgpza"))))
+                  "0n9hyqr57hhbmq35iqq5ihavj22gxzsspv0f8i6ajxwd4029nmcl"))))
       (arguments
        (substitute-keyword-arguments (package-arguments pjproject)
          ((#:phases phases '%standard-phases)
