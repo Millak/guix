@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,6 +19,10 @@
 
 (define-module (test-gnu-maintenance)
   #:use-module (guix gnu-maintenance)
+  #:use-module (guix tests)
+  #:use-module (guix tests http)
+  #:use-module (guix upstream)
+  #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64)
   #:use-module (ice-9 match))
@@ -54,5 +59,29 @@
              ("exiv2-0.27.3-Source.tar.gz" "0.27.3")
              ("mpg321_0.3.2.orig.tar.gz" "0.3.2")
              ("bvi-1.4.1.src.tar.gz" "1.4.1")))))
+
+(test-assert "latest-html-release, scheme-less URIs"
+  (with-http-server
+      `((200 "<html xmlns=\"http://www.w3.org/1999/xhtml\">
+<head>
+<title>Releases (on another domain)!</title>
+</head>
+<body
+<a href=\"//another-site/foo-2.tar.gz\">version 1</a>
+</body>
+</html>"))
+    (let ()
+      (define package
+        (dummy-package "foo"
+          (source
+           (dummy-origin
+            (uri (string-append (%local-url) "/foo-1.tar.gz"))))
+          (properties
+           `((release-monitoring-url . ,(%local-url))))))
+      (define update ((upstream-updater-latest %generic-html-updater) package))
+      (define expected-new-url "http://another-site/foo-2.tar.gz")
+      (and (pk 'u update)
+           (equal? (upstream-source-version update) "2")
+           (equal? (list expected-new-url) (upstream-source-urls update))))))
 
 (test-end)

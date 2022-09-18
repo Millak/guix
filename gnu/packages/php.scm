@@ -381,7 +381,7 @@
        ("libzip" ,libzip)
        ("oniguruma" ,oniguruma)
        ("openldap" ,openldap)
-       ("openssl" ,openssl)
+       ("openssl" ,openssl-1.1)
        ("pcre" ,pcre2)
        ("postgresql" ,postgresql)
        ("readline" ,readline)

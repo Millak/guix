@@ -2292,6 +2292,7 @@ The gnome-about program helps find which version of GNOME is installed.")
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind=libelogind")
+       #:meson ,meson-0.60
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -5904,7 +5905,10 @@ services for numerous locations.")
               "-Dsystemd=false"
               ;; Otherwise, the RUNPATH will lack the final path component.
               (string-append "-Dc_link_args=-Wl,-rpath=" #$output
-                             "/lib/gnome-settings-daemon-3.0"))
+                             "/lib/gnome-settings-daemon-3.0:"
+                             ;; Also add NSS because for some reason Meson
+                             ;; > 0.60 does not add it automatically (XXX).
+                             (search-input-directory %build-inputs "lib/nss")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'set-baobab-file-name
@@ -9712,7 +9716,8 @@ can add your own files to the collection.")
          "15wmikwk62cdi93gas77nqh4fbhlrxrncyfmcd1gfa34jbn7vnsa"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t
+     `(#:meson ,meson-0.60
+       #:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -9754,6 +9759,8 @@ beautifying border effects.")
         (base32
          "1qvrxrk1h8bd75xwasxbvlkqrw6xkavjimvc7sslkw6lvb3z86jp"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:meson meson-0.60))
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, gio-2.0.
        ("gtk+-bin" ,gtk+ "bin") ; for gtk-update-icon-cache
@@ -11857,7 +11864,7 @@ higher level porcelain stuff.")
            gsettings-desktop-schemas
            gspell
            gtk+
-           gtksourceview
+           gtksourceview-4
            json-glib
            libdazzle
            libgee
@@ -12123,6 +12130,7 @@ desktop environment.")
            gspell
            gtk
            gjs
+           libadwaita
            libsecret
            libsoup
            telepathy-glib

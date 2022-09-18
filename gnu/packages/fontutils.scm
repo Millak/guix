@@ -447,8 +447,15 @@ converts any cubic curves to quadratic.  The most useful function is probably
        (sha256
         (base32 "068hm62s1iphyg66w96vgiif6ahpcsaf8fr44rk6jdf71f6fyqd5"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-pytest python-pytest-runner python-setuptools-scm))
+     (list python-pytest python-setuptools-scm))
     (propagated-inputs
      (list python-booleanoperations
            python-cffsubr

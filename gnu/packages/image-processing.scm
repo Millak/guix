@@ -324,14 +324,18 @@ many popular formats.")
               (snippet
                '(begin
                   (for-each
-                    (lambda (dir)
-                      (delete-file-recursively
-                        (string-append "ThirdParty/" dir "/vtk" dir)))
-                    ;; pugixml depended upon unconditionally
-                    '("doubleconversion" "eigen" "expat" "freetype" "gl2ps"
-                      "glew" "hdf5" "jpeg" "jsoncpp" "libproj" "libxml2" "lz4"
-                      "netcdf" "ogg" "png" "sqlite" "theora" "tiff" "zlib"))
-                  #t))))
+                   (lambda (dir)
+                     (delete-file-recursively
+                      (string-append "ThirdParty/" dir "/vtk" dir)))
+                   ;; pugixml depended upon unconditionally
+                   '("doubleconversion" "eigen" "expat" "freetype" "gl2ps"
+                     "glew" "hdf5" "jpeg" "jsoncpp" "libharu" "libproj"
+                     "libxml2" "lz4" "netcdf" "ogg" "png" "sqlite" "theora"
+                     "tiff" "zlib"))
+                  (substitute* "IO/ExportPDF/vtkPDFContextDevice2D.cxx"
+                    (("\\bHPDF_UINT16 (noPen|dash|dot|denseDot|dashDot|dashDotDot)\\b"
+                      _ var)
+                     (string-append "HPDF_REAL " var)))))))
     (properties `((release-monitoring-url . "https://vtk.org/download/")))
     (build-system cmake-build-system)
     (arguments
@@ -348,6 +352,7 @@ many popular formats.")
                            "-DVTK_MODULE_USE_EXTERNAL_VTK_hdf5=ON"
                            "-DVTK_MODULE_USE_EXTERNAL_VTK_jpeg=ON"
                            "-DVTK_MODULE_USE_EXTERNAL_VTK_jsoncpp=ON"
+                           "-DVTK_MODULE_USE_EXTERNAL_VTK_libharu=ON"
                            "-DVTK_MODULE_USE_EXTERNAL_VTK_libproj=ON"
                            "-DVTK_MODULE_USE_EXTERNAL_VTK_libxml2=ON"
                            "-DVTK_MODULE_USE_EXTERNAL_VTK_lz4=ON"
@@ -381,6 +386,7 @@ many popular formats.")
            glew
            glu
            hdf5
+           libharu
            libjpeg-turbo
            jsoncpp
            libtheora
