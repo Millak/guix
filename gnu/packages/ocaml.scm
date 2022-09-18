@@ -2701,7 +2701,7 @@ module Unix.")
 (define-public ocaml-lwt-log
   (package
     (name "ocaml-lwt-log")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2710,7 +2710,7 @@ module Unix.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n12i1rmn9cjn6p8yr6qn5dwbrwvym7ckr7bla04a1xnq8qlcyj7"))))
+                "0mbv5l9gj09jd1c4lr2axcl4v043ipmhjd9xrk27l4hylzfc6d1q"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f)); require lwt_ppx
