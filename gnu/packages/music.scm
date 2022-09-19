@@ -6282,7 +6282,7 @@ as JACK standalone applications.")
 (define-public zplugins
   (package
     (name "zplugins")
-    (version "0.1.7")
+    (version "0.2.4")
     (source
      (origin
        (method git-fetch)
@@ -6293,7 +6293,7 @@ as JACK standalone applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rkm2xajmyik6289b20rp5a5br9f3sh1xk8nb1bs6qpmcrfirgbs"))))
+         "0l6cm6y8j1417mwspraldzixpnps8scx81wd36n2xpx60v4iqss0"))))
     (build-system meson-build-system)
     (inputs
       (list guile-2.2 libsndfile lv2 ztoolkit-rsvg))
