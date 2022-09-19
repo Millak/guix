@@ -24535,19 +24535,23 @@ Visualizations are also available for most of these settings.")
     (arguments
      (list
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'link-libraries
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((deps (string-append #$output "/site-library/torch/deps")))
-                (mkdir-p deps)
-                (symlink
-                 (search-input-file
-                  inputs "/lib/python3.9/site-packages/torch/lib/libtorch.so")
-                 (string-append deps "/libtorch.so"))
-                (symlink
-                 (search-input-file
-                  inputs "/lib/liblantern.so")
-                 (string-append deps "/liblantern.so"))))))))
+      (let ((python-version (version-major+minor (package-version python))))
+        #~(modify-phases %standard-phases
+            (add-after 'install 'link-libraries
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((deps (string-append #$output "/site-library/torch/deps"))
+                      (site-packages (string-append "/lib/python"
+                                                    #$python-version
+                                                    "/site-packages")))
+                  (mkdir-p deps)
+                  (symlink
+                   (search-input-file
+                    inputs (string-append site-packages "/torch/lib/libtorch.so"))
+                   (string-append deps "/libtorch.so"))
+                  (symlink
+                   (search-input-file
+                    inputs "/lib/liblantern.so")
+                   (string-append deps "/liblantern.so")))))))))
     (inputs
      (list python-pytorch-for-r-torch
            liblantern))
