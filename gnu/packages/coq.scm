@@ -345,7 +345,7 @@ assistant.")
 (define-public coq-mathcomp
   (package
     (name "coq-mathcomp")
-    (version "1.14.0")
+    (version "1.15.0")
     (source
      (origin
        (method git-fetch)
@@ -354,7 +354,7 @@ assistant.")
              (commit (string-append "mathcomp-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rqg47dg84wr6d9v2pzna54dm62awcm8xdwx4dqwdwhf58fjxa9i"))))
+        (base32 "158zl36zbvi5qx2nqbfnrg00jpgp6hjr5hmls7d8d0421ar6b67i"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml which coq))
