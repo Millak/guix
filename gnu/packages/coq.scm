@@ -52,7 +52,7 @@
 (define-public coq-core
   (package
     (name "coq-core")
-    (version "8.15.2")
+    (version "8.16.0")
     (source
      (origin
        (method git-fetch)
@@ -62,7 +62,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1m6dilfbp9q8j8sya4ap82q72m3a4mq6m96gzvi6vgv04cr6r33c"))
+         "1rp4m2yjldsz0kj7p2fsc312n740fr8kg99jlsk8aq3h524qz2h8"))
        (patches (search-patches "coq-fix-envvars.patch"))))
     (native-search-paths
      (list (search-path-specification
@@ -315,7 +315,9 @@ inside Coq.")
     (arguments
      `(#:configure-flags
        (list (string-append "COQUSERCONTRIB=" (assoc-ref %outputs "out")
-                            "/lib/coq/user-contrib"))
+                            "/lib/coq/user-contrib")
+             (string-append "OCAMLFIND_DESTDIR=" (assoc-ref %outputs "out")
+                            "/lib/ocaml/site-lib"))
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'fix-remake
@@ -431,7 +433,7 @@ theorems between the two libraries.")
 (define-public coq-bignums
   (package
     (name "coq-bignums")
-    (version "8.15.0")
+    (version "8.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -440,7 +442,7 @@ theorems between the two libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "093klwlhclgyrba1iv18dyz1qp5f0lwiaa7y0qwvgmai8rll5fns"))))
+                "07ndnm7pndmai3a2bkcmwjfjzfaqyq19c5an15hmhgmd0rdy4z8c"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml coq))
@@ -450,7 +452,9 @@ theorems between the two libraries.")
      `(#:tests? #f ; No test target.
        #:make-flags
        (list (string-append "COQLIBINSTALL=" (assoc-ref %outputs "out")
-                            "/lib/coq/user-contrib"))
+                            "/lib/coq/user-contrib")
+             (string-append "COQPLUGININSTALL=" (assoc-ref %outputs "out")
+                            "/lib/ocaml/site-lib/"))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))
@@ -559,11 +563,11 @@ uses Ltac to synthesize the substitution operation.")
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/mattam82/Coq-Equations")
-                    (commit (string-append "v" version "-8.15"))))
+                    (commit (string-append "v" version "-8.16"))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vfcfpsp9zyj0sw0cwibk76nj6n0r6gwh8m1aa3lbvc0b1kbm32k"))))
+                "08f756vgdd1wklkarg0b93j4n5mhkqm5ixxrhyb23dcv2dwhc8yg"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml coq camlp5))
@@ -573,7 +577,10 @@ uses Ltac to synthesize the substitution operation.")
      `(#:test-target "test-suite"
        #:make-flags (list (string-append "COQLIBINSTALL="
                                          (assoc-ref %outputs "out")
-                                         "/lib/coq/user-contrib"))
+                                         "/lib/coq/user-contrib")
+                          (string-append "COQPLUGININSTALL="
+                                         (assoc-ref %outputs "out")
+                                         "/lib/ocaml/site-lib/"))
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
