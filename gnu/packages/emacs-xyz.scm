@@ -32602,26 +32602,41 @@ hacker.")
 (define-public emacs-osm
   (package
     (name "emacs-osm")
-    (version "0.6")
+    (version "0.8")
     (home-page "https://github.com/minad/osm")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference (url home-page) (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0aiq2z9vv4jsl0s0x9vpjgp0mnn27wanhirzj3h80ivgiphzs7l5"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "039ac364f00slx1dxxgsgfcr4x47v9ymn8arcs0fyhdhw7jnky5j"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'set-curl-file-name
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "osm.el"
-                        (("\"curl( ?)\"" _ space)
-                         (string-append "\""
-                                        (search-input-file inputs "/bin/curl")
-                                        space "\""))))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'set-curl-file-name
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (substitute* "osm.el"
+                              (("\"curl( ?)\"" _ space)
+                               (string-append "\""
+                                              (search-input-file inputs
+                                                                 "/bin/curl")
+                                              space "\"")))))
+                        (add-after 'install 'makeinfo
+                          (lambda _
+                            (invoke "emacs"
+                             "--batch"
+                             "--eval=(require 'ox-texinfo)"
+                             "--eval=(setq org-export-with-broken-links t)"
+                             "--eval=(find-file \"README.org\")"
+                             "--eval=(org-texinfo-export-to-info)")
+                            (install-file "osm.info"
+                                          (string-append #$output
+                                                         "/share/info")))))))
     (inputs (list curl))
+    (native-inputs (list texinfo))
     (synopsis "OpenStreetMap viewer for Emacs")
     (description
      "This package provides an OpenStreetMap viewer for Emacs, featuring
