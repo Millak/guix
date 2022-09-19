@@ -29195,6 +29195,34 @@ function that determines the current environment and returns the appropriate
 value.")
     (license license:gpl3)))
 
+(define-public r-confintr
+  (package
+    (name "r-confintr")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "confintr" version))
+              (sha256
+               (base32
+                "06c42jhqp7gp9062jf8f9py1lh34vx38q0g7b6l5kyf7a310ixr6"))))
+    (properties `((upstream-name . "confintr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-boot))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/mayer79/confintr")
+    (synopsis "Confidence intervals")
+    (description
+     "This package calculates classic and/or bootstrap confidence intervals
+for many parameters such as the population mean, variance, @dfn{interquartile
+range} (IQR), @dfn{median absolute deviation} (MAD), skewness, kurtosis,
+Cramer's V, odds ratio, R-squared, quantiles (including median), proportions,
+different types of correlation measures, difference in means, quantiles and
+medians.  Many of the classic confidence intervals are described in Smithson,
+M. (2003, ISBN: 978-0761924999).  Bootstrap confidence intervals are
+calculated with the R package @code{boot}.  Both one- and two-sided intervals
+are supported.")
+    (license license:gpl2+)))
+
 (define-public r-adaptivesparsity
   (package
     (name "r-adaptivesparsity")
