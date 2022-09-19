@@ -24523,13 +24523,13 @@ Visualizations are also available for most of these settings.")
 (define-public r-torch
   (package
     (name "r-torch")
-    (version "0.8.0")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "torch" version))
        (sha256
-        (base32 "0n2rmv2mwfp4y002x46fd278kssmhi54zcyj37558k4r1kazzfxp"))))
+        (base32 "1dncf5njdzw1hf98knlv94rxcxnc5gl3cmk2cvlbn1z8mri86rlc"))))
     (properties `((upstream-name . "torch")))
     (build-system r-build-system)
     (arguments
