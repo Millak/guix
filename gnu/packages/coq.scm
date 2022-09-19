@@ -463,7 +463,7 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
 (define-public coq-interval
   (package
     (name "coq-interval")
-    (version "4.4.0")
+    (version "4.5.2")
     (source
      (origin
        (method git-fetch)
@@ -473,7 +473,7 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rlcbv1nqm7zv60n63lca6nnxcq3c18akgzl72s1n3h89gvhs87z"))))
+         "138vgb0bq6wkygrhkahjgb9spwpzc6x6kkycj2qnf5naxx1z412w"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake ocaml which coq))
@@ -486,7 +486,9 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
     (arguments
      `(#:configure-flags
        (list (string-append "COQUSERCONTRIB=" (assoc-ref %outputs "out")
-                            "/lib/coq/user-contrib"))
+                            "/lib/coq/user-contrib")
+             (string-append "OCAMLFIND_DESTDIR=" (assoc-ref %outputs "out")
+                            "/lib/ocaml/site-lib"))
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'fix-remake
