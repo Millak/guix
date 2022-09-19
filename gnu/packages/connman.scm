@@ -53,7 +53,10 @@
         (uri (string-append "mirror://kernel.org/linux/network/connman/"
                             "connman-" version ".tar.xz"))
         (sha256
-         (base32 "12g5ilcnymx6i45z3359yds3cgd2dfqjyncfm92hqlymzps41yvr"))))
+         (base32 "12g5ilcnymx6i45z3359yds3cgd2dfqjyncfm92hqlymzps41yvr"))
+        (patches (search-patches "connman-CVE-2022-32292.patch"
+                                 "connman-CVE-2022-32293-pt1.patch"
+                                 "connman-CVE-2022-32293-pt2.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags

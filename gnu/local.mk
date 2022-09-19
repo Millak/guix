@@ -979,9 +979,12 @@ dist_patch_DATA =						\
   %D%/packages/patches/cmake-curl-certificates-3.24.patch	\
   %D%/packages/patches/coda-use-system-libs.patch		\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch		\
-  %D%/packages/patches/containerd-create-pid-file.patch		\
   %D%/packages/patches/combinatorial-blas-awpm.patch		\
   %D%/packages/patches/combinatorial-blas-io-fix.patch		\
+  %D%/packages/patches/connman-CVE-2022-32292.patch		\
+  %D%/packages/patches/connman-CVE-2022-32293-pt1.patch	\
+  %D%/packages/patches/connman-CVE-2022-32293-pt2.patch	\
+  %D%/packages/patches/containerd-create-pid-file.patch	\
   %D%/packages/patches/cool-retro-term-wctype.patch		\
   %D%/packages/patches/coreutils-gnulib-tests.patch		\
   %D%/packages/patches/coq-fix-envvars.patch			\
