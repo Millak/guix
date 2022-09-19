@@ -1219,7 +1219,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnome-online-miners-tracker-3.patch	\
   %D%/packages/patches/gnome-settings-daemon-gc.patch		\
   %D%/packages/patches/gnome-session-support-elogind.patch	\
-  %D%/packages/patches/gnome-todo-libportal.patch		\
   %D%/packages/patches/gnome-tweaks-search-paths.patch		\
   %D%/packages/patches/gnupg-CVE-2022-34903.patch		\
   %D%/packages/patches/gnupg-default-pinentry.patch		\

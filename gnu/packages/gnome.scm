@@ -10252,19 +10252,18 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
 desktop.  It supports multiple calendars, month, week and year view.")
     (license license:gpl3+)))
 
-(define-public gnome-todo
+(define-public endeavour
   (package
-    (name "gnome-todo")
-    (version "41.0")
+    (name "endeavour")
+    (version "42.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major version) "/"
-                                  name "-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/World/Endeavour")
+                    (commit (string-append "v" version))))
               (sha256
                (base32
-                "1r94880d4khbjhhfnhaba3y3d4hv2bri82rzfzxn27s5iybpqras"))
-              (patches (search-patches "gnome-todo-libportal.patch"))))
+                "0d6by7aq8db35zavzvckcxxxcdi6qnv0mkjndhb0syc8ih15dpak"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -10308,6 +10307,9 @@ desktop.  It supports multiple calendars, month, week and year view.")
     (description "GNOME To Do is a simplistic personal task manager designed
 to perfectly fit the GNOME desktop.")
     (license license:gpl3+)))
+
+(define-public gnome-todo
+  (deprecated-package "gnome-todo" endeavour))
 
 (define-public gnome-dictionary
   (package
