@@ -8862,7 +8862,10 @@ library.")
                                   "gdm_session_set_environment_variable "
                                   "(self, \"" name "\","
                                   "g_getenv (\"" name "\"));\n"))
-                               propagate)))))
+                               propagate)))
+                  ;; This is used by remote sessions, such as when using VNC.
+                  (("\\(GDMCONFDIR \"/Xsession \\\\\"%s\\\\\"\", command)")
+                   "(\"%s \\\"%s\\\"\", g_getenv (\"GDM_X_SESSION\"), command)")))
               ;; Find the configuration file using an environment variable.
               (substitute* '("common/gdm-settings.c")
                 (("GDM_CUSTOM_CONF")
