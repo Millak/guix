@@ -7998,7 +7998,7 @@ support for Mparser.")))
 (define-public lablgtk3
   (package
     (name "lablgtk")
-    (version "3.1.1")
+    (version "3.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8007,10 +8007,11 @@ support for Mparser.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11qfc39cmwfwfpwmjh6wh98zwdv6p73bv8hqwcsss869vs1r7gmn"))))
+                "0b17w9qb1f02h3313cm62mrqlhwxficppzm72n7sf8mmwrylxbm7"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
+     `(#:package "lablgtk3"
+       #:test-target "."
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'make-writable
@@ -8026,7 +8027,7 @@ support for Mparser.")))
     (propagated-inputs
      (list ocaml-cairo2))
     (inputs
-     (list camlp5 gtk+ gtksourceview-3 gtkspell3))
+     (list camlp5 gtk+))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/garrigue/lablgtk")

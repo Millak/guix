@@ -5764,17 +5764,14 @@ Linux / Mac OS X servers, and an auto mapper with a VT100 map display.")
              (patches (search-patches "laby-make-install.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("lablgtk3" ,lablgtk3)
-       ("ocaml" ,ocaml)
-       ("ocaml-findlib" ,ocaml-findlib)
-       ("ocamlbuild" ,ocamlbuild)))
+     (list lablgtk3 ocaml-lablgtk3-sourceview3 ocaml ocaml-findlib ocamlbuild))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (delete 'configure)
          (add-before 'build 'set-library-path
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((lablgtk (assoc-ref inputs "lablgtk3")))
+             (let ((lablgtk (assoc-ref inputs "lablgtk")))
                (setenv "LD_LIBRARY_PATH"
                        (string-append lablgtk "/lib/ocaml/stublibs"))))))
        #:tests? #f ; no 'check' target

@@ -148,7 +148,7 @@ It is developed using Objective Caml and Camlp5.")
     (propagated-inputs
      (list coq coq-ide-server))
     (inputs
-     `(("lablgtk3" ,lablgtk3)))))
+     (list lablgtk3 ocaml-lablgtk3-sourceview3))))
 
 (define-public proof-general
   ;; The latest release is from 2016 and there has been more than 450 commits
