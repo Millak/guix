@@ -1340,7 +1340,9 @@ application suites.")
      ;; Following dependencies are referenced in .pc files.
      (list cairo
            fontconfig
-           librsvg-bootstrap
+           (if (target-x86-64?)
+             librsvg-bootstrap
+             librsvg-2.40)
            glib
            graphene
            libepoxy
