@@ -31,6 +31,7 @@
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Benjamin Slade <slade@lambda-y.net>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1340,7 +1341,9 @@ application suites.")
      ;; Following dependencies are referenced in .pc files.
      (list cairo
            fontconfig
-           librsvg-bootstrap
+           (if (target-x86-64?)
+               librsvg-bootstrap
+               librsvg-2.40)
            glib
            graphene
            libepoxy
