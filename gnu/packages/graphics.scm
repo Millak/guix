@@ -1118,29 +1118,29 @@ graphics.")
   (package
     (name "openexr")
     (version "3.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/AcademySoftwareFoundation/openexr")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0c9vla0kbsbbhkk42jlbf94nzfb1anqh7dy9b0b3nna1qr6v4bh6"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/AcademySoftwareFoundation/openexr")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0c9vla0kbsbbhkk42jlbf94nzfb1anqh7dy9b0b3nna1qr6v4bh6"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; /var/tmp does not exist in the Guix build environment
-         (add-after 'unpack 'patch-test-directory
-           (lambda _
-             (substitute* '("src/test/OpenEXRUtilTest/tmpDir.h"
-                            "src/test/OpenEXRFuzzTest/tmpDir.h"
-                            "src/test/OpenEXRTest/tmpDir.h"
-                            "src/test/OpenEXRCoreTest/main.cpp")
-               (("/var/tmp") "/tmp")))))))
-    (inputs
-     (list imath zlib))
+     '(#:phases (modify-phases %standard-phases
+                  ;; /var/tmp does not exist in the Guix build environment
+                  (add-after 'unpack 'patch-test-directory
+                    (lambda _
+                      (substitute* '("src/test/OpenEXRUtilTest/tmpDir.h"
+                                     "src/test/OpenEXRFuzzTest/tmpDir.h"
+                                     "src/test/OpenEXRTest/tmpDir.h"
+                                     "src/test/OpenEXRCoreTest/main.cpp")
+                        (("/var/tmp")
+                         "/tmp")))))))
+    (inputs (list imath zlib))
     (home-page "https://www.openexr.com/")
     (synopsis "High-dynamic-range file format library")
     (description
