@@ -52,6 +52,7 @@
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Andreas Rammhold <andreas@rammhold.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2150,14 +2151,16 @@ command.")
      (substitute-keyword-arguments (package-arguments wpa-supplicant-minimal)
        ((#:phases phases)
         `(modify-phases ,phases
-           (add-after 'configure 'configure-for-dbus
+           (add-after 'configure 'set-config-options
              (lambda _
                (let ((port (open-file ".config" "al")))
+                 ;; Enable Opportunistic Wireless Encryption (OWE) and D-Bus
+                 ;; support.
                  (display "
+      CONFIG_OWE=y
       CONFIG_CTRL_IFACE_DBUS_NEW=y
       CONFIG_CTRL_IFACE_DBUS_INTRO=y\n" port)
-                 (close-port port))
-               #t))
+                 (close-port port))))
           (add-after 'install-documentation 'install-dbus-conf
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
