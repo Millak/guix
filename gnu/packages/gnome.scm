@@ -12224,7 +12224,13 @@ integrate seamlessly with the GNOME desktop.")
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'disable-gtk-update-icon-cache
                           (lambda _
-                            (setenv "DESTDIR" "/"))))))
+                            (setenv "DESTDIR" "/")))
+                        (add-before 'configure 'set-qemu-file-name
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (substitute* "src/installed-media.vala"
+                              (("qemu-img")
+                               (search-input-file inputs
+                                                  "/bin/qemu-img"))))))))
     (native-inputs
      (list desktop-file-utils           ;for update-desktop-database
            gettext-minimal
@@ -12250,6 +12256,7 @@ integrate seamlessly with the GNOME desktop.")
            libvirt
            libvirt-glib
            libxml2
+           qemu-minimal                           ;for qemu-img
            sparql-query
            spice-gtk
            tracker
