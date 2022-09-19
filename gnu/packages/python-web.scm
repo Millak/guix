@@ -5671,6 +5671,12 @@ files.")
         (base32
          "1vk7g5z977mi89hamwiqawpmibwvv9ghrf3pqva1waxmyc7gyjb5"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'extend-test-timeout
+                 (lambda _
+                   (setenv "WEBSOCKETS_TESTS_TIMEOUT_FACTOR" "10"))))))
     (home-page "https://github.com/aaugustin/websockets")
     (synopsis
      "Python implementation of the WebSocket Protocol (RFC 6455 & 7692)")
