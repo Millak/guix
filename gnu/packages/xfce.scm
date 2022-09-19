@@ -1834,7 +1834,7 @@ interfaces of your choice in the panel.")
 (define-public xfce4-places-plugin
   (package
    (name "xfce4-places-plugin")
-   (version "1.8.1")
+   (version "1.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1843,7 +1843,7 @@ interfaces of your choice in the panel.")
                                   "/xfce4-places-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1chac4ki70axgvkmhw94m0srsv0pwiwqrqbh8di0y9n90fgj24gj"))))
+                "00bh7d91vzk6s38djlpnihvjvymxgrnx3nh6sm2y3mnx2jmb4chy"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool desktop-file-utils pkg-config))
