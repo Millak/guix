@@ -71,7 +71,7 @@
 (define-public efl
   (package
     (name "efl")
-    (version "1.26.2")
+    (version "1.26.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -79,7 +79,7 @@
                     version ".tar.xz"))
               (sha256
                (base32
-                "071h0pscbd8g341yy5rz9mk1xn8yhryldhl6mmr1y6lafaycyy99"))))
+                "05bxc58hj0z6pkp6yy5cmy1lc575q0nrbr5lxr6z8d4kznh3my6r"))))
     (build-system meson-build-system)
     (native-inputs
      `(("check" ,check)
