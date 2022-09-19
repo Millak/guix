@@ -32,6 +32,7 @@
   #:use-module (guix download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages bison)
@@ -278,39 +279,40 @@ to @code{IOStreams}.")
     (native-inputs
      (list bison flex))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-boost="
-                            (assoc-ref %build-inputs "boost")))
-       #:parallel-tests? #f             ;There appear to be race conditions
-       #:phases
-       (modify-phases %standard-phases
-         ,@(if (%current-target-system)
-               ;; 'doc/Makefile.am' tries to run stuff even when
-               ;; cross-compiling.  Explicitly skip it.
-               ;; XXX: Inline this on next rebuild cycle.
-               `((add-before 'build 'skip-doc-directory
-                   (lambda _
-                     (substitute* "Makefile"
-                       (("^SUBDIRS = (.*) doc(.*)$" _ before after)
-                        (string-append "SUBDIRS = " before
-                                       " " after "\n")))
-                     #t)))
-               '())
-         (add-before 'check 'patch-test-files
-           (lambda _
-             ;; Unpatch shebangs in test input so that source-highlight
-             ;; is still able to infer input language
-             (substitute* '("tests/test.sh"
-                            "tests/test2.sh"
-                            "tests/test.tcl")
-               (((string-append "#! *" (which "sh"))) "#!/bin/sh"))
-             ;; Initial patching unrecoverably removes whitespace, so
-             ;; remove it also in the comparison output.
-             (substitute* '("tests/test.sh.html"
-                            "tests/test2.sh.html"
-                            "tests/test.tcl.html")
-               (("#! */bin/sh") "#!/bin/sh"))
-             #t)))))
+     (list #:configure-flags
+           #~(list (string-append "--with-boost=" (assoc-ref %build-inputs "boost")))
+           #:parallel-tests? #f ;There appear to be race conditions
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'rename-lesspipe-to-lesspipe.sh.in
+                 (lambda _
+                   (substitute* "src/src-hilite-lesspipe.sh.in"
+                     (("lesspipe") "lesspipe.sh"))))
+           #$@(if (%current-target-system)
+                  ;; 'doc/Makefile.am' tries to run stuff even when
+                  ;; cross-compiling.  Explicitly skip it.
+                  ;; XXX: Inline this on next rebuild cycle.
+                  #~((add-before 'build 'skip-doc-directory
+                       (lambda _
+                         (substitute* "Makefile"
+                           (("^SUBDIRS = (.*) doc(.*)$" _ before after)
+                            (string-append "SUBDIRS = " before
+                                           " " after "\n"))))))
+                  '())
+               (add-before 'check 'patch-test-files
+                  (lambda _
+                    ;; Unpatch shebangs in test input so that source-highlight
+                    ;; is still able to infer input language
+                    (substitute* '("tests/test.sh"
+                                   "tests/test2.sh"
+                                   "tests/test.tcl")
+                      (((string-append "#! *" (which "sh"))) "#!/bin/sh"))
+                    ;; Initial patching unrecoverably removes whitespace, so
+                    ;; remove it also in the comparison output.
+                    (substitute* '("tests/test.sh.html"
+                                   "tests/test2.sh.html"
+                                   "tests/test.tcl.html")
+                      (("#! */bin/sh") "#!/bin/sh")))))))
     (home-page "https://www.gnu.org/software/src-highlite/")
     (synopsis "Produce a document with syntax highlighting from a source file")
     (description
