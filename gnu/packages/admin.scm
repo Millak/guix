@@ -51,6 +51,7 @@
 ;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -696,6 +697,30 @@ or via the @code{facter} Ruby library.")
 console.")
       ;; This package uses a modified version of the "ISC License".
       (license (license:non-copyleft "file://LICENSE")))))
+
+(define-public btop
+  (package
+    (name "btop")
+    (version "1.2.9")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/aristocratos/btop/archive/refs/tags/v"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0cb5q7hrb9y378i98km9s6jbi5c50i7wra8m8jik5hf4m4s3930g"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;no test suite
+           #:make-flags #~(list (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
+    (home-page "https://github.com/aristocratos/btop")
+    (synopsis "Resource monitor")
+    (description "Btop++ provides unified monitoring of CPU, memory, network
+and processes.")
+    (license license:asl2.0)))
 
 (define-public htop
   (package
