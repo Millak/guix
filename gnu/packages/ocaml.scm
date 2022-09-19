@@ -8040,6 +8040,19 @@ generate OCaml code from .glade files), libpanel, librsvg and quartz.")
     ;; Version 2 only, with linking exception.
     (license license:lgpl2.0)))
 
+(define-public ocaml-lablgtk3-sourceview3
+  (package
+    (inherit lablgtk3)
+    (name "ocaml-lablgtk3-sourceview3")
+    (propagated-inputs (list lablgtk3))
+    (native-inputs (list gtksourceview-3 pkg-config))
+    (arguments
+     `(#:package "lablgtk3-sourceview3"
+       #:test-target "."))
+    (synopsis "OCaml interface to GTK+ gtksourceview library")
+    (description "This package provides the lablgtk interface to the
+GTK+ gtksourceview library.")))
+
 (define-public ocaml-reactivedata
   (package
     (name "ocaml-reactivedata")
