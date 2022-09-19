@@ -153,14 +153,11 @@ implementation detail used to identify the accounts in Jami."
         (error message username))))
 
 (define (account->username account)
-  "Return USERNAME, the registered username associated with ACCOUNT, else its
-public key fingerprint."
-  (or (assoc-ref account "Account.registeredName")
-      (assoc-ref account "Account.username")))
+  "Return the public key fingerprint of ACCOUNT."
+  (assoc-ref account "Account.username"))
 
 (define (id->username id)
-  "Return USERNAME, the registered username associated with ID, else its
-public key fingerprint, else #f."
+  "Return the public key fingerprint corresponding to account with ID, else #f."
   (account->username (id->account id)))
 
 (define (get-accounts)
