@@ -826,7 +826,8 @@ model to base your own plug-in on, here it is.")
            xorg-server-for-tests))
     (inputs
      (append
-      (if (target-x86?) (list mediasdk svt-hevc) '())
+      (if (target-x86?) (list mediasdk) '())
+      (if (target-x86-64?) (list svt-hevc) '())
       (list bluez
             bzip2
             cairo
