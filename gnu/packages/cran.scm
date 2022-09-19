@@ -20324,14 +20324,14 @@ colored by the number of neighboring points.  This is useful to visualize the
 (define-public r-arrow
   (package
     (name "r-arrow")
-    (version "8.0.0")
+    (version "9.0.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "arrow" version))
        (sha256
         (base32
-         "1b85vc5ld7nibqgsdkl5kbzc0rm5jh5lqfdrssvrrcxpd26a16kc"))))
+         "1vbjny6v1d4fdf01rphg4wg8ljs0bzrjyxlsjwjq58pd6g2qcdgc"))))
     (properties `((upstream-name . "arrow")))
     (build-system r-build-system)
     (inputs
