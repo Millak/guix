@@ -2510,7 +2510,7 @@ characters can be replaced as well, as can UTF-8 characters.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "http://mama.indstate.edu/users/ice/tree/src/tree-"
+                    "https://mama.indstate.edu/users/ice/tree/src/tree-"
                     version ".tgz"))
               (sha256
                (base32 "0x7s9wxvf83fw4qah16kapswl2277pybw3d514zrlms9g0cr5smh"))))
@@ -2533,7 +2533,7 @@ characters can be replaced as well, as can UTF-8 characters.")
      "Tree is a recursive directory listing command that produces a depth
 indented listing of files, which is colorized ala dircolors if the LS_COLORS
 environment variable is set and output is to tty.")
-    (home-page "http://mama.indstate.edu/users/ice/tree/")
+    (home-page "https://mama.indstate.edu/users/ice/tree/")
     (license license:gpl2+)))
 
 (define-public lr
