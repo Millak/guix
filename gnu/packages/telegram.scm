@@ -506,10 +506,10 @@ Telegram project, for its use in telegram desktop client.")
            #~(list
               ;; Client applications must provide their own API-ID and API-HASH,
               ;; see also <https://core.telegram.org/api/obtaining_api_id>.
-              ;; In case, that the credentials below fail to work, contact
-              ;;   Raghav Gururajan <rg@raghavgururajan.name>
-              "-DTDESKTOP_API_ID=2791056"
-              "-DTDESKTOP_API_HASH=582d6d0b44f7a2de949e99271fd8b3f2"
+              ;; Here, we snarf the keys from the official Snaps, which are
+              ;; also stored in <#$source/snap/snapcraft.yaml>.
+              "-DTDESKTOP_API_ID=611335"
+              "-DTDESKTOP_API_HASH=d524b414d21f4d37f08684c1df41ac9c"
               ;; Disable WebkitGTK support as it fails to link
               "-DDESKTOP_APP_DISABLE_WEBKITGTK=ON"
               ;; Use bundled fonts as fallback.
