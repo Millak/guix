@@ -11124,7 +11124,7 @@ Tree::Simple::Visitor::* objects.")
 (define-public perl-try-tiny
   (package
     (name "perl-try-tiny")
-    (version "0.30")
+    (version "0.31")
     (source
      (origin
        (method url-fetch)
@@ -11132,7 +11132,7 @@ Tree::Simple::Visitor::* objects.")
                            "Try-Tiny-" version ".tar.gz"))
        (sha256
         (base32
-         "0szgvlz19yz3mq1lbzmwh8w5dh6agg5s16xv22zrnl83r7ax0nys"))))
+         "1ghidhh2wasxbmjsdsyfcy20wgli3m58dkj6ixnv4xa0i8fx601k"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Try-Tiny")
     (synopsis "Minimal try/catch with proper preservation of $@@")
