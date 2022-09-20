@@ -34157,13 +34157,13 @@ parsing.")
 (define-public r-wordspace
   (package
     (name "r-wordspace")
-    (version "0.2-7")
+    (version "0.2-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "wordspace" version))
        (sha256
-        (base32 "0hrjv5mag7gwl4wj7np248sdyns5i623wl37b11hlgalhbmlypyf"))))
+        (base32 "17fqd4zrsklv2ik3lg00x66yasfh1kyhs3k9ri6lrk56wwv6hzb2"))))
     (properties `((upstream-name . "wordspace")))
     (build-system r-build-system)
     (propagated-inputs
