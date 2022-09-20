@@ -1954,7 +1954,7 @@ ocaml-migrate-parsetree")
 (define-public ocaml-linenoise
   (package
     (name "ocaml-linenoise")
-    (version "1.3.1")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1963,7 +1963,7 @@ ocaml-migrate-parsetree")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s98695skz1wvrak0rdlh80w3cv6piic1dxqpn9rv1yymbklafg4"))))
+                "1gk11pflal08kg2dz1b5zrlpnhbxpg2rwf8cknw3vzmq6gsmk2kc"))))
     (build-system dune-build-system)
     (arguments
      ;; No tests
