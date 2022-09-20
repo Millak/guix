@@ -14854,14 +14854,14 @@ giving it a description in the specific format.")
 (define-public r-sparsesvd
   (package
     (name "r-sparsesvd")
-    (version "0.2")
+    (version "0.2-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sparsesvd" version))
        (sha256
         (base32
-         "1xm969fjq3fv1p2sqza2apz8picibj4s2agpwf1sx9nwn3b587qs"))))
+         "0yz0mgayxriyrz6bbrd41cck0s56b916xvyh13hw86gydd6kpl5k"))))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix))
     (home-page "http://tedlab.mit.edu/~dr/SVDLIBC/")
