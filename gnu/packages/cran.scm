@@ -382,13 +382,13 @@ visualization of their differences.")
 (define-public r-dixontest
   (package
     (name "r-dixontest")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dixonTest" version))
        (sha256
-        (base32 "1a3yc30g5rbb0jhm2b0iir5i1dy4jyl67spkhx4yysg4snz131wv"))))
+        (base32 "0gz39s1z987bg56vwrpcs14wzyf7p07s7l7z9napz0i38564wsdq"))))
     (properties `((upstream-name . "dixonTest")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
