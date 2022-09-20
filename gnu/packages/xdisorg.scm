@@ -505,13 +505,13 @@ avoiding password prompts when X11 forwarding has already been setup.")
     (native-inputs
      (list bison doxygen pkg-config python))
     (arguments
-     `(#:configure-flags
-       (list (string-append "-Dxkb-config-root="
-                            (assoc-ref %build-inputs "xkeyboard-config")
-                            "/share/X11/xkb")
-             (string-append "-Dx-locale-root="
-                            (assoc-ref %build-inputs "libx11")
-                            "/share/X11/locale"))))
+     (list #:configure-flags
+           #~(list (string-append "-Dxkb-config-root="
+                                  (search-input-directory %build-inputs
+                                   "share/X11/xkb"))
+                   (string-append "-Dx-locale-root="
+                                  (search-input-directory %build-inputs
+                                   "share/X11/locale")))))
     (home-page "https://xkbcommon.org/")
     (synopsis "Library to handle keyboard descriptions")
     (description "Xkbcommon is a library to handle keyboard descriptions,
