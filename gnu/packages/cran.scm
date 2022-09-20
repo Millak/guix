@@ -14500,13 +14500,13 @@ Tabelow (2007) <DOI:10.18637/jss.v019.i01>.")
 (define-public r-admisc
   (package
     (name "r-admisc")
-    (version "0.29")
+    (version "0.30")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "admisc" version))
        (sha256
-        (base32 "02vl2k58ijqd30d7y01x0ap2b2vh1is3xg14g3cpvm5gflyxyinf"))))
+        (base32 "01b2qjxz0qicqjm1swvm04qkiwhr7zjn7lhqv26l6rj4yb43y339"))))
     (properties `((upstream-name . "admisc")))
     (build-system r-build-system)
     (home-page "https://github.com/dusadrian/admisc")
