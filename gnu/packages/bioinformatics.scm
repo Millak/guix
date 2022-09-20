@@ -6296,7 +6296,7 @@ accessed/downloaded on demand across HTTP.")
      (origin
        (method url-fetch)
        (uri (string-append
-             "http://pngu.mgh.harvard.edu/~purcell/plink/dist/plink-"
+             "https://zzz.bwh.harvard.edu/plink/dist/plink-"
              version "-src.zip"))
        (sha256
         (base32 "0as8gxm4pjyc8dxmm1sl873rrd7wn5qs0l29nqfnl31x8i467xaa"))
