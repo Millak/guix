@@ -30587,17 +30587,18 @@ distributed as independent packages.")
 (define-public r-phangorn
   (package
     (name "r-phangorn")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "phangorn" version))
        (sha256
         (base32
-         "08ys4vgmsp070v3119wzl1nrgx359427gb6lcxj67p5y0bhdnqij"))))
+         "1kjxp352jdk1amxpk9jrql490d0qy79zm65y8szyxrm1adqghlyi"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape
+           r-digest
            r-fastmatch
            r-generics
            r-igraph
