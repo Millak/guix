@@ -5411,6 +5411,47 @@ possible while still providing features that make playing difficult Sudoku
 more fun.")
     (license license:gpl2+)))
 
+(define-public gnome-console
+  (package
+    (name "gnome-console")
+    (version "42.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/gnome-console/"
+                                  (version-major version) "/"
+                                  "gnome-console-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0jbh8g3hmc35fy5fbscqf0831xpg1kv66ci9hykpbia4hz0yc9kx"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:configure-flags #~(list "-Dtests=true"
+                                     "-Dnautilus=enabled")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-nautilus-extension-path
+                          (lambda _
+                            (substitute* "nautilus/meson.build"
+                              (("'extensions-[0-9.]*'")
+                               "'site-extensions'")))))))
+    (native-inputs (list `(,glib "bin")
+                         gettext-minimal
+                         sassc
+                         pkg-config
+                         `(,gtk+ "bin")
+                         desktop-file-utils))
+    (inputs (list gtk+
+                  libhandy
+                  nautilus
+                  vte
+                  libgtop
+                  gsettings-desktop-schemas))
+    (home-page "https://gitlab.gnome.org/GNOME/console")
+    (synopsis "GNOME terminal emulator")
+    (description
+     "Console is a simple terminal emulator for GNOME desktop")
+    (license license:gpl3+)))
+
 (define-public gnome-terminal
   (package
     (name "gnome-terminal")
