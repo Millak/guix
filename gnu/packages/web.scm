@@ -3462,16 +3462,18 @@ object knows about.")
 (define-public perl-http-daemon
   (package
     (name "perl-http-daemon")
-    (version "6.01")
+    (version "6.14")
     (source (origin
              (method url-fetch)
              (uri (string-append
-                   "mirror://cpan/authors/id/G/GA/GAAS/HTTP-Daemon-"
+                   "mirror://cpan/authors/id/O/OA/OALDERS/HTTP-Daemon-"
                    version ".tar.gz"))
              (sha256
               (base32
-               "1hmd2isrkilf0q0nkxms1q64kikjmcw9imbvrjgky6kh89vqdza3"))))
+               "079fkcq2vdrzdf0bml52kz73n9gdv1xg0qf72c9v505v7izpwxph"))))
     (build-system perl-build-system)
+    (native-inputs
+     (list perl-module-build perl-test-needs))
     (propagated-inputs
      (list perl-http-message perl-lwp-mediatypes))
     (license license:perl-license)
