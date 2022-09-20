@@ -15643,14 +15643,14 @@ library.")
 (define-public r-ontologyindex
   (package
     (name "r-ontologyindex")
-    (version "2.7")
+    (version "2.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ontologyIndex" version))
        (sha256
         (base32
-         "0j3h1spqwjhh1wbmwivmqcyi042yy7d565c3kxgn70xrmy693x1k"))))
+         "0hisb9scxyyqkxhxhvgsgwix54pkq0zma3xq3ywczyazvzcxd5f9"))))
     (properties `((upstream-name . "ontologyIndex")))
     (build-system r-build-system)
     (native-inputs
