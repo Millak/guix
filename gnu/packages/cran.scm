@@ -1532,13 +1532,13 @@ available as companion packages.")
 (define-public r-scales
   (package
     (name "r-scales")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scales" version))
        (sha256
-        (base32 "1pq2rrix6a5gsi8xw38viiydp1bsxxmcmyy7dv9q8gkb1qj50p8q"))))
+        (base32 "027daznawr9dy0z9s99lh64i4am691hdir01n7gr7vmgpmnkwiar"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-farver
