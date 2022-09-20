@@ -540,6 +540,76 @@ one of the APIs mentioned above.")
 management system and its Plasma integration components.")
     (license license:lgpl2.0+)))
 
+(define-public kalendar
+  (package
+    (name "kalendar")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/" name "-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "0slk9z7p1z5m2kbb8kq05afslxad8w5pjsajxawckcx0mlsd3apj"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f ;All 2 tests fail
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-script
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (wrap-program (string-append #$output
+                                                "/bin/kalendar")
+                     `("PATH" ":" prefix
+                       (,(string-append #$(this-package-input "akonadi")
+                                        "/bin"))))))
+               (delete 'check)
+               (add-after 'wrap-script 'check-again
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "dbus-launch" "ctest")))))))
+    (native-inputs (list dbus extra-cmake-modules))
+    (inputs (list akonadi
+                  akonadi-contacts
+                  breeze-icons
+                  grantlee
+                  grantleetheme
+                  kio
+                  kirigami
+                  kdbusaddons
+                  ki18n
+                  kcalendarcore
+                  kcalendarsupport
+                  kconfigwidgets
+                  kwindowsystem
+                  kcoreaddons
+                  kcontacts
+                  kitemmodels
+                  kmime
+                  kidentitymanagement
+                  kpimtextedit
+                  ktextwidgets
+                  akonadi-calendar
+                  keventviews
+                  kcalutils
+                  kxmlgui
+                  kiconthemes
+                  qtbase-5
+                  qtdeclarative-5
+                  qtquickcontrols2-5
+                  qtsvg-5
+                  qtquickcontrols-5
+                  qtgraphicaleffects
+                  qtlocation
+                  qqc2-desktop-style))
+    (home-page "https://apps.kde.org/kalendar/")
+    (synopsis "Calendar application")
+    (description
+     "Kalendar is a calendar application using Akonadi to sync with
+external services.")
+    (license license:gpl3+)))
+
 (define-public kcalendarsupport
   (package
     (name "kcalendarsupport")
