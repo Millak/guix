@@ -7933,14 +7933,14 @@ chaotic time series analysis.")
 (define-public r-urca
   (package
     (name "r-urca")
-    (version "1.3-0")
+    (version "1.3-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "urca" version))
        (sha256
         (base32
-         "1akaqwf3fvvvx4sgfn641fd4sj51s0701pvfl6s5hnz2k0iwh732"))))
+         "1wg9f691pif59xds43gnnw77mmzc9xpnhhvaksk2b0szffvaifj3"))))
     (build-system r-build-system)
     (propagated-inputs (list r-nlme))
     (native-inputs (list gfortran))
