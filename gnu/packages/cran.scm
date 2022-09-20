@@ -28110,14 +28110,14 @@ incremented as outlined at @url{http://semver.org}.")
 (define-public r-binman
   (package
     (name "r-binman")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "binman" version))
         (sha256
           (base32
-            "00l7m98h41r67gf0qxqis3vx63j7wylnk9vlgcyk41szkrz8ikkc"))))
+            "1xz9ky3axidm0fp518rj80ma6q14ybyvashil79hhkk3iqmx0lhw"))))
     (properties `((upstream-name . "binman")))
     (build-system r-build-system)
     (propagated-inputs
