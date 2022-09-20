@@ -27665,14 +27665,14 @@ including means, variances, intervals, and highest density regions.")
 (define-public r-posterior
   (package
     (name "r-posterior")
-    (version "1.2.2")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "posterior" version))
        (sha256
         (base32
-         "0frm7p6cjkjfl4gviixaa7448qaac8n9ilkr5c02fa9vnisys5fn"))))
+         "0yjdjdr4ifssnml1niqyxs6jsqpci8rx8va0pinyhjx2j017h03h"))))
     (properties `((upstream-name . "posterior")))
     (build-system r-build-system)
     (propagated-inputs
