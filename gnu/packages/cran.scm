@@ -27592,14 +27592,14 @@ here.")
 (define-public r-projpred
   (package
     (name "r-projpred")
-    (version "2.1.2")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "projpred" version))
        (sha256
         (base32
-         "1c6gnmknd3vb0fb5h6gd372dk27nzif90b4c1snql49wacg6b2m8"))))
+         "1a5hsqwcmn1w9lwjhsqw06av7cmqhwyxsil9zfrnv1396zfkpxhy"))))
     (properties `((upstream-name . "projpred")))
     (build-system r-build-system)
     (propagated-inputs
