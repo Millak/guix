@@ -64858,6 +64858,23 @@ Fireball''.")
 tinyobjloader.")
     (license license:expat)))
 
+(define-public rust-tobj-2
+  (package
+    (inherit rust-tobj-3)
+    (name "rust-tobj")
+    (version "2.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "tobj" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06w8ix9nk38wli0pjfl22hiyy07byhdcz18nkwhzg775x1dzas14"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ;tests are incomplete
+       #:cargo-inputs (("rust-log" ,rust-log-0.4))))))
+
 (define-public rust-tokio-1
   (package
     (name "rust-tokio")
