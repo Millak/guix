@@ -13279,14 +13279,14 @@ repositories.")
 (define-public r-gh
   (package
     (name "r-gh")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gh" version))
        (sha256
         (base32
-         "077drbxz3rx7idv6w24ipj1p6jnzv86a3iyryab699cc9q2kjh54"))))
+         "1vqjhqlhvvqq8w2cqbgrkqphj0ga5s6fbl4zhcl3vc6fvsms5bpv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-gitcreds r-httr r-ini r-jsonlite))
