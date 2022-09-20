@@ -21380,14 +21380,14 @@ guaranteeing well-connected communities.\" <arXiv:1810.08473>.")
 (define-public r-patchwork
   (package
     (name "r-patchwork")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "patchwork" version))
        (sha256
         (base32
-         "10glgkf58lcykcwda1hj6xdps02m3i247qynk6s2jmwljagps3fg"))))
+         "0xw9mh1qakj131nw98icxrxwvdlwy2ngwvmagrqr3m84sz9dbffs"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-gtable))
