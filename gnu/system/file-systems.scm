@@ -434,7 +434,7 @@ TARGET in the other system."
 (define %pseudo-file-system-types
   ;; List of know pseudo file system types.  This is used when validating file
   ;; system definitions.
-  '("binfmt_misc" "cgroup" "debugfs" "devpts" "devtmpfs" "efivarfs" "fusectl"
+  '("binfmt_misc" "cgroup" "cgroup2" "debugfs" "devpts" "devtmpfs" "efivarfs" "fusectl"
     "hugetlbfs" "overlay" "proc" "securityfs" "sysfs" "tmpfs"))
 
 (define %fuse-control-file-system
