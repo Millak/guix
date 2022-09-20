@@ -13255,14 +13255,14 @@ package works as intended.")
 (define-public r-gitcreds
   (package
     (name "r-gitcreds")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gitcreds" version))
        (sha256
         (base32
-         "1snzn7nxy0rwz0bzjsg6k04c0n811dgn8gn9cmn2v78aj57ayjmi"))))
+         "0pf70g4a2kxjcid5rc4ppmgcl3kpjhkszdgz4fqn4l33lp6apij1"))))
     (properties `((upstream-name . "gitcreds")))
     (build-system r-build-system)
     (inputs (list git-minimal))
