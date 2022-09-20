@@ -28202,14 +28202,14 @@ you can automate browsers locally or remotely.")
 (define-public r-conquer
   (package
     (name "r-conquer")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "conquer" version))
        (sha256
         (base32
-         "1ynmaf7lgqjb8grsifx5dzy29cd5kz4x3yh0abnl2vxdr4c4wddc"))))
+         "1mdwm0aanq4rx3042djvs0l2vkdx6zbzvrjfyfb9dhv0gfs8mhhl"))))
     (properties `((upstream-name . "conquer")))
     (build-system r-build-system)
     (propagated-inputs
