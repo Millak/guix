@@ -33945,14 +33945,14 @@ neighborhood graphs, and relatives.")
 (define-public r-crul
   (package
     (name "r-crul")
-    (version "1.2.0")
+    (version "1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "crul" version))
        (sha256
         (base32
-         "133g0skz4lifl8hm8pqdryd2m2drbrm6mdfzbbsrw8fg46di86my"))))
+         "0b8y12wb5kjylr8b4a2iarb5rpw1ydinw3lxp2ssq91pidyn2n40"))))
     (properties `((upstream-name . "crul")))
     (build-system r-build-system)
     (propagated-inputs
