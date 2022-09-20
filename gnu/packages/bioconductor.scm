@@ -6993,14 +6993,14 @@ fitting of some classes of graphical Markov models.")
 (define-public r-perfmeas
   (package
     (name "r-perfmeas")
-    (version "1.2.1")
+    (version "1.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PerfMeas" version))
        (sha256
         (base32
-         "1x7ancmb41zd1js24rx94plgbssyc71z2bvpic6mg34xjkwdjw93"))))
+         "13yjk0kwpbsqwl056hzf0zj2br1mk4faqcn1whdfxmq348c14hjb"))))
     (properties `((upstream-name . "PerfMeas")))
     (build-system r-build-system)
     (propagated-inputs
