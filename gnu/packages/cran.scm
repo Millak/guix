@@ -4756,13 +4756,13 @@ curve to a data matrix in arbitrary dimensions.")
 (define-public r-prismatic
   (package
     (name "r-prismatic")
-    (version "1.1.0")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "prismatic" version))
               (sha256
                (base32
-                "1f6k11hcll33g2wbadjhm91pm5h4khg4zd8g9fzs3m9xlqpfaywh"))))
+                "013i0mq4n8s2zbzvfrz1vjcn2a6l98bamslkcv1a3cn70gpphja9"))))
     (properties `((upstream-name . "prismatic")))
     (build-system r-build-system)
     (propagated-inputs (list r-farver))
