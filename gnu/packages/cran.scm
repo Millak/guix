@@ -13705,14 +13705,14 @@ algorithms, clusterings, and individual clusters.")
 (define-public r-tweedie
   (package
     (name "r-tweedie")
-    (version "2.3.3")
+    (version "2.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tweedie" version))
        (sha256
         (base32
-         "1nfhaqblvm62j8gfkyrgba5ai0pb2fsnrxp63637mhys2bawlcm0"))))
+         "0ghwggdx6d391m7nay9n5li2xjqh3kmw416xx130sy2sxrgp8g4q"))))
     (build-system r-build-system)
     (native-inputs (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/tweedie/")
