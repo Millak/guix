@@ -19982,22 +19982,22 @@ each of the legends).")
 (define-public r-gridtext
   (package
     (name "r-gridtext")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gridtext" version))
        (sha256
         (base32
-         "131kw7nkfwksviwfifd2kk7lyvhxzzzv1nnj8rahkr3dik3akk61"))))
+         "0f7i2qb8fawi8agy2iz2c173kfwj7cbb5ikjix64nmzqc5j7363d"))))
     (properties `((upstream-name . "gridtext")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-jpeg
+     (list r-curl
+           r-jpeg
            r-markdown
            r-png
            r-rcpp
-           r-rcurl
            r-rlang
            r-stringr
            r-xml2))
