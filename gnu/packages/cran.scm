@@ -1023,13 +1023,13 @@ known as Dynamic Linear Models.")
 (define-public r-zoo
   (package
     (name "r-zoo")
-    (version "1.8-10")
+    (version "1.8-11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "zoo" version))
               (sha256
                (base32
-                "0izd66dywq6qd62hdp64apncainrrb9mgmm19wf6a8jc03c858n9"))))
+                "19cw09bhwj2qyd72765ym1cm2wmhh801ccif889nzq5gfpw513l4"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
