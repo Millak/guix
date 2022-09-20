@@ -29807,14 +29807,14 @@ final SQL translation of the algorithm.  It currently supports @code{lm()},
 (define-public r-janeaustenr
   (package
     (name "r-janeaustenr")
-    (version "0.1.5")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "janeaustenr" version))
        (sha256
         (base32
-         "1wyn4qc28a3sval8shmyi2d7s4nl3jh96s8pzq871brxcmrncbwr"))))
+         "1ap8p1lpbj2wz90mpf1vbyzhv2spzv03bi8lwzpsir2y77hjxhxl"))))
     (properties `((upstream-name . "janeaustenr")))
     (build-system r-build-system)
     (home-page "https://github.com/juliasilge/janeaustenr")
