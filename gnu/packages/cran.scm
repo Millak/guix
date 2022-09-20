@@ -28170,23 +28170,20 @@ and to manage processes involving them.")
 (define-public r-rselenium
   (package
     (name "r-rselenium")
-    (version "1.7.7")
+    (version "1.7.9")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "RSelenium" version))
         (sha256
           (base32
-            "1xn5fdbzmq7b1f5fc9ls23g177bmnd8bn4p4d8aafr6z3jwkmfir"))))
+            "18hd0gfpblg9ij99ik7ccc60q9dxha89n5rrwrrzx498c5sscjg2"))))
     (properties `((upstream-name . "RSelenium")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-binman
-            r-catools
-            r-httr
-            r-openssl
-            r-wdman
-            r-xml))
+     (list r-catools
+           r-httr
+           r-wdman))
     (native-inputs (list r-knitr))
     (home-page "https://docs.ropensci.org/RSelenium/")
     (synopsis "R bindings for Selenium WebDriver")
