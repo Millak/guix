@@ -32920,14 +32920,14 @@ C API for topology operations on geometries.")
 (define-public r-tfruns
   (package
     (name "r-tfruns")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tfruns" version))
        (sha256
         (base32
-         "04lfckg1if3kfwcl4s4fcc9aw04crwk4m1qr55ag22j2x2jlb2l9"))))
+         "1xk7dl51xd1h54798xwycvxmn77jv80in61hanm36zk0024wpxg8"))))
     (properties `((upstream-name . "tfruns")))
     (build-system r-build-system)
     (propagated-inputs
