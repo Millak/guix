@@ -3346,9 +3346,8 @@ using the multicore functionality of the parallel package.")
            ("https://cdn.datatables.net/buttons/1.6.1/js/buttons.bootstrap4.js"
             "0hfclipg43wr9p7irrcn9vp5wji8z7gz6y5mclkq88z1mlpwklzf"
             "datatables-extensions/Buttons")
-           ;; It is not clear what version the bundled file corresponds to.
-           ("https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.js"
-            "18hpj9vwgki56ijb20l5gwmqa5p1d0xprn57z2mlg3ph6ll0bdkd"
+           ("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.js"
+            "01l5lw49jz2qn6k9i63dk4llar4lvvpd6xp6i45mpwfk49fbxqg2"
             "datatables-extensions/Buttons")
            ("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.js"
             "1sfw80az2cgzin5wk7q1p2n9zm66c35cz0m6isdygml81i594wia"
@@ -3564,13 +3563,13 @@ using the multicore functionality of the parallel package.")
             "datatables-extensions/Select"))))
     (package
       (name "r-dt")
-      (version "0.23")
+      (version "0.25")
       (source (origin
                 (method url-fetch)
                 (uri (cran-uri "DT" version))
                 (sha256
                  (base32
-                  "0w6wgiwa3zgldp175a3q7zfw853xqc7mfj34n6hja48ln7yf42in"))
+                  "0as43h4minnz5c09nvbvq8b1d9506mzkcdl98bhf87rf0q9qgz0d"))
                 (modules '((guix build utils)))
                 (snippet
                  '(for-each delete-file
