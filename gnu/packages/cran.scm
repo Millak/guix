@@ -32537,14 +32537,14 @@ complex functions.")
 (define-public r-gganimate
   (package
     (name "r-gganimate")
-    (version "1.0.7")
+    (version "1.0.8")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "gganimate" version))
         (sha256
           (base32
-            "046v6j92xxgaghsnh88dy5h8x040qsfa8csvhp4dmsfmrrf0dz0f"))))
+            "1jabs9qr0319w508kdsk5nmzfhl6nzykpp1by7l639yfvrfqcbd1"))))
     (properties `((upstream-name . "gganimate")))
     (build-system r-build-system)
     (arguments
@@ -32561,7 +32561,6 @@ complex functions.")
     (propagated-inputs
       (list r-ggplot2
             r-glue
-            r-plyr
             r-progress
             r-rlang
             r-scales
