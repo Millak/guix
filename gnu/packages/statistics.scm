@@ -2851,15 +2851,17 @@ variety of formats.")
 (define-public r-gtable
   (package
     (name "r-gtable")
-    (version "0.3.0")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gtable" version))
               (sha256
                (base32
-                "1lyncxf2dqdjgw1071cn9c8zwzkz6sldnd5cgmicf70bc726qf7x"))))
+                "1dbwxhxawwbmaixwxxglazv5bici56qvmjk7sqa8j66m49bjrmlb"))))
     (properties `((upstream-name . "gtable")))
     (build-system r-build-system)
+    (native-inputs
+     (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/gtable")
     (synopsis "R library to arrange grobs in tables")
     (description
