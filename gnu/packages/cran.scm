@@ -714,17 +714,24 @@ for authoring journal articles and conference submissions.")
 (define-public r-babelwhale
   (package
     (name "r-babelwhale")
-    (version "1.0.3")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "babelwhale" version))
        (sha256
-        (base32 "0ph825dwvr48fhamy1l5564linz7cj7b9sj511as77f1yqycv4a2"))))
+        (base32 "01l8vwyz3bx0iks6cjs5y9ifdsnc1p1yqp4i0kzqd1gjhycizv6y"))))
     (properties `((upstream-name . "babelwhale")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-crayon r-dplyr r-dynutils r-processx r-purrr))
+     (list r-crayon
+           r-digest
+           r-dplyr
+           r-dynutils
+           r-fs
+           r-glue
+           r-processx
+           r-purrr))
     (home-page "https://github.com/dynverse/babelwhale")
     (synopsis "Talking to Docker and Singularity containers")
     (description
