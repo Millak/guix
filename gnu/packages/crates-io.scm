@@ -32666,6 +32666,25 @@ libraries have.
      "Efficiently insert line separators.")
     (license license:asl2.0)))
 
+(define-public rust-linecount-0.1
+  (package
+    (name "rust-linecount")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "linecount" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1n2733qcmvxl3fra3924yj8sf21vr6f6g6dg6wnhbkxr8fia9mfm"))))
+    (build-system cargo-build-system)
+    (arguments '(#:skip-build? #t))
+    (home-page "https://github.com/eclarke/linecount")
+    (synopsis "Quickly count lines in a file")
+    (description "This package provides a function @code{count_lines}
+to count the number of lines in a file.")
+    (license license:expat)))
+
 (define-public rust-link-cplusplus-1
   (package
     (name "rust-link-cplusplus")
