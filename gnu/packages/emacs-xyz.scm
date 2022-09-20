@@ -32340,14 +32340,14 @@ are prefixed with @code{seq-} and work on lists, strings, and vectors.")
 (define-public emacs-setup
   (package
     (name "emacs-setup")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://elpa.gnu.org/packages/setup-"
                             version ".tar"))
         (sha256
-          (base32 "0n9zjclf4b2sr8c8zd37fs45p25p3856frm419c9hch69hhcsv3a"))))
+          (base32 "1sr514w4mn0fbdawjb5p0fd6i6q2zi9737rbwcgakb1l9cqvb5qy"))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~pkal/setup")
     (synopsis "Helpful configuration macro")
