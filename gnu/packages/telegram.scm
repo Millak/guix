@@ -106,8 +106,7 @@
                   (for-each delete-file-recursively
                             (lset-difference string=?
                                              (scandir ".")
-                                             (cons* "." ".." keep))))
-                #t)))))
+                                             (cons* "." ".." keep)))))))))
        (build-system cmake-build-system)
        (arguments
         `(#:tests? #f                   ; No target
@@ -126,8 +125,7 @@
                        (libyuv-to (string-append (getcwd)
                                                  "/src/third_party/libyuv")))
                   (copy-recursively libvpx-from libvpx-to)
-                  (copy-recursively libyuv-from libyuv-to))
-                #t)))))
+                  (copy-recursively libyuv-from libyuv-to)))))))
        (native-inputs
         `(("perl" ,perl)
           ("pkg-config" ,pkg-config)
