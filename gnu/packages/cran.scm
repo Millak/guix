@@ -2393,16 +2393,16 @@ Zucchini.")
 (define-public r-httpuv
   (package
     (name "r-httpuv")
-    (version "1.6.5")
+    (version "1.6.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httpuv" version))
               (sha256
                (base32
-                "0mlilxh2mlrsbbrncla2rg02crr8nnajv649d8whx7ayr8lkdxpm"))
+                "14qjf7bpl7pay89b7vi2vccl342q8xs6101a9x6qijy54k9myfa1"))
               ;; Unvendor bundled libraries. As of 1.5.4 the vendored libuv
               ;; only contains fixes for building on Solaris.
-              (patches (search-patches "r-httpuv-1.5.5-unvendor-libuv.patch"))
+              (patches (search-patches "r-httpuv-1.6.6-unvendor-libuv.patch"))
               (modules '((guix build utils)))
               ;; Cannot unbundle http-parser, because it contains local
               ;; modifications.
