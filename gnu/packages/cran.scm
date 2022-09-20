@@ -34424,18 +34424,24 @@ be efficient and easy to use.")
 (define-public r-ggh4x
   (package
     (name "r-ggh4x")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggh4x" version))
        (sha256
         (base32
-         "1r49yfm5fqv5s7jb92ad6rf8hd9plcry6f500czjhnhhrp16cqfp"))))
+         "11mskrby3gyjhkvnkcwl2ar1bdh4h45y48dfnm4kzgc7nwvdl3ia"))))
     (properties `((upstream-name . "ggh4x")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-gtable r-rlang r-scales r-vctrs))
+     (list r-cli
+           r-ggplot2
+           r-gtable
+           r-lifecycle
+           r-rlang
+           r-scales
+           r-vctrs))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/teunbrand/ggh4x")
