@@ -21812,14 +21812,14 @@ atmospheric physics.")
 (define-public r-lifecycle
   (package
     (name "r-lifecycle")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lifecycle" version))
        (sha256
         (base32
-         "183v1z1h037pvsgrj6vakpwhnhsr29hsw8p16k59dgpi00f6x9qx"))))
+         "0qssl9lmfn94kmvcg1xpd4md17jx31i3sdbb77dwas60z673qgvv"))))
     (properties `((upstream-name . "lifecycle")))
     (build-system r-build-system)
     (propagated-inputs
