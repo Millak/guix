@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -442,6 +442,10 @@ return the exit status."
   "Like 'container-excursion', but return the return value of THUNK."
   (match (pipe)
     ((in . out)
+     ;; Make sure IN and OUT are not inherited if THUNK forks + execs.
+     (fcntl in F_SETFD FD_CLOEXEC)
+     (fcntl out F_SETFD FD_CLOEXEC)
+
      (match (container-excursion pid
               (lambda ()
                 (close-port in)
