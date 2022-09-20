@@ -14712,14 +14712,14 @@ Processing.")
 (define-public r-waveslim
   (package
     (name "r-waveslim")
-    (version "1.8.3")
+    (version "1.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "waveslim" version))
        (sha256
         (base32
-         "0yxkwgdq1xqh027l2akwb4zji4li3sgpmyxlmfq1rhz15kjxr2wq"))))
+         "1510xpkgrhdw394m5anxccdczjikcxazyd09ix2z73i15akyx3j0"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
