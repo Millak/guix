@@ -3068,7 +3068,7 @@ string values and to directly encode characters in OCaml Buffer.t values.")
 (define-public ocaml-uunf
   (package
     (name "ocaml-uunf")
-    (version "14.0.0")
+    (version "15.0.0")
     (source
      (origin
        (method url-fetch)
@@ -3076,13 +3076,18 @@ string values and to directly encode characters in OCaml Buffer.t values.")
                            version".tbz"))
        (sha256
         (base32
-         "17wv0nm3vvwcbzb1b09akw8jblmigyhbfmh1sy9lkb5756ni94a2"))))
+         "1s5svvdqfbzw16rf1h0zm9n92xfdr0qciprd7lcjza8z1hy6pyh7"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:build-flags (list "build" "--tests" "true")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
+         ;; reported and fixed upstream, will be available in next version.
+         (add-before 'build 'fix-test
+           (lambda _
+             (substitute* "test/test.ml"
+               (("test/NormalizationTest.txt") "-"))))
          (add-before 'check 'check-data
            (lambda* (#:key inputs #:allow-other-keys)
              (copy-file (assoc-ref inputs "NormalizationTest.txt")
@@ -3101,7 +3106,7 @@ string values and to directly encode characters in OCaml Buffer.t values.")
                                "/ucd/NormalizationTest.txt"))
            (file-name (string-append "NormalizationTest-" version ".txt"))
            (sha256
-              (base32 "0c93pqdkksf7b7zw8y2w0h9i5kkrsdjmh2cr5clrrhp6mg10rcvw"))))))
+              (base32 "09pkawfqpgy2xnv2nkkgmxv53rx4anprg65crbbcm02a2p6ci6pv"))))))
     (propagated-inputs (list ocaml-uutf))
     (home-page "https://erratique.ch/software/uunf")
     (synopsis "Unicode text normalization for OCaml")
