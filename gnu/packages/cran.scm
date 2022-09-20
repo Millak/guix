@@ -32871,14 +32871,14 @@ package.")
 (define-public r-qs
   (package
     (name "r-qs")
-    (version "0.25.3")
+    (version "0.25.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qs" version))
        (sha256
         (base32
-         "0sxy497v5arjv6lwxng7chkbzrn703waqmgsxv77i7y12ahzdbai"))))
+         "0cx5k0mzn6bm8ff58yrqz3hjidxcawxgqbpijnynvin1m4395i4j"))))
     (properties `((upstream-name . "qs")))
     (build-system r-build-system)
     (inputs (list zlib))
