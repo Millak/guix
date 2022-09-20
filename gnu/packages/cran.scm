@@ -603,14 +603,14 @@ pronounceable identifiers.")
 (define-public r-googlesheets4
   (package
     (name "r-googlesheets4")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "googlesheets4" version))
        (sha256
         (base32
-         "0yncqwv9l5knyrv88ys5gwcv44hl1j0mbklpins6v7f9m9v7s40a"))))
+         "14b5lzn6vjn72mw7vf3lzm2ppbjf0wr0n6sw0v5r6h4lk37cnki8"))))
     (properties `((upstream-name . "googlesheets4")))
     (build-system r-build-system)
     (propagated-inputs
