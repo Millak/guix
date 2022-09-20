@@ -29491,7 +29491,7 @@ current buffer.")
 (define-public emacs-repl-toggle
   (package
     (name "emacs-repl-toggle")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -29500,7 +29500,7 @@ current buffer.")
              (commit version)))
        (sha256
         (base32
-         "0nycm8a4wwkkaif958z4m89slayp17k20lp2h7lvddjx8prn6yfp"))
+         "18dpy7a7yrn7m7qifrjk5zcr6zbd3kwp9pb55la9052vwipxxvfk"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
