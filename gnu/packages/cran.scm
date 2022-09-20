@@ -30646,14 +30646,14 @@ rate speciation and extinction.")
 (define-public r-calculus
   (package
     (name "r-calculus")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "calculus" version))
        (sha256
         (base32
-         "1fhvr0l2mqik3d95v0vanafxmiab147g5a87q956g2i945wc5f22"))))
+         "0hpibnbxl3ngfgzxq8cp9hxsn1yv03dnxyycm3gkr5iv5gkbbpw9"))))
     (properties `((upstream-name . "calculus")))
     (build-system r-build-system)
     (propagated-inputs
