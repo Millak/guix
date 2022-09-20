@@ -29899,14 +29899,14 @@ consistent interface, and the package is built on the @code{stringi} and
 (define-public r-hunspell
   (package
     (name "r-hunspell")
-    (version "3.0.1")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hunspell" version))
        (sha256
         (base32
-         "0ql6y05d4xxpm468rslb0wxdp1x9l3flxzmb5w6pjg617f8vpv8z"))))
+         "0kij39rhsx7s4lfddy6745f1zjyi003srj14ckjpbhkcyxamk8jy"))))
     (properties `((upstream-name . "hunspell")))
     (build-system r-build-system)
     (propagated-inputs
