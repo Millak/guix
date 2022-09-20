@@ -3775,14 +3775,14 @@ and IPv6 sockets, intended as a replacement for IO::Socket::INET.")
 (define-public perl-io-socket-ssl
   (package
     (name "perl-io-socket-ssl")
-    (version "2.068")
+    (version "2.075")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/S/SU/SULLR/"
                                   "IO-Socket-SSL-" version ".tar.gz"))
               (sha256
                (base32
-                "1ycgzg1l7p07y5wc0vzgnj122vm51p5aqpi4s56pp0piaq0gq824"))))
+                "135fvlvqcnmf0m0s8xqk015k7pyas1hiij5visb1l60y1cif43n3"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-net-ssleay
