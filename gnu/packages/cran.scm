@@ -18280,18 +18280,18 @@ univariate class intervals for mapping or other graphics purposes.")
 (define-public r-spdata
   (package
     (name "r-spdata")
-    (version "2.0.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spData" version))
        (sha256
         (base32
-         "1z4hp5ivwzyvl8mkp98j2ng1cl1xksqbjxv85vdlqfqjwpia6df6"))))
+         "07whxr039cxvk2nn65jada3i8vqqw34lgca9j17ah8chy9r0m73f"))))
     (properties `((upstream-name . "spData")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-raster r-sp))
+     (list r-sp))
     (home-page "https://github.com/Nowosad/spData")
     (synopsis "Datasets for spatial analysis")
     (description
