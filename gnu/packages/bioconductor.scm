@@ -13147,14 +13147,14 @@ rate} (FDR).")
 (define-public r-activedriverwgs
   (package
     (name "r-activedriverwgs")
-    (version "1.1.2")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ActiveDriverWGS" version))
        (sha256
         (base32
-         "13b5yazgv9kckcp6gck183mh1m0q8lc5ixagmcy9s8kv2wz7wq45"))))
+         "0xnplgwxd197a4d422bsxg753q158i12ils16awd1cw30wafdxkk"))))
     (properties
      `((upstream-name . "ActiveDriverWGS")))
     (build-system r-build-system)
