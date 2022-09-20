@@ -30129,7 +30129,7 @@ mercury-mode provided by Emacs as a wrapper around prolog-mode.")
 (define-public emacs-boxquote
   (package
     (name "emacs-boxquote")
-    (version "2.2")
+    (version "2.3")
     (source
      (origin
        (method git-fetch)
@@ -30138,7 +30138,7 @@ mercury-mode provided by Emacs as a wrapper around prolog-mode.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wwjawgylaaifdsszqxcfsyhfzgxbjkzqhzrnxnr9b16wghb7xf7"))))
+        (base32 "0d7m9kcwhbgv4pikaa2dzlg9zkmwdhyx2ksn68di6xzbh838892q"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/davep/boxquote.el")
     (synopsis "Quote text with different kinds of boxes")
