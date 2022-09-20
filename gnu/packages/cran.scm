@@ -26900,14 +26900,14 @@ opponents' vessels.")
 (define-public r-zseq
   (package
     (name "r-zseq")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Zseq" version))
        (sha256
         (base32
-         "06dndi2b1q79bmxax11bv0l5ifcz1mhpvbn90y6a6xymrgcq0ivi"))))
+         "0xp7qi5kjg8xmci9wrfvmygjmz8gbhq60fl9bvk8rnka6s4ppkrc"))))
     (properties `((upstream-name . "Zseq")))
     (build-system r-build-system)
     (propagated-inputs
