@@ -20013,14 +20013,14 @@ wrap.")
 (define-public r-ggtext
   (package
     (name "r-ggtext")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggtext" version))
        (sha256
         (base32
-         "0n19dlcys8v7myfyckr6dnq0kx79k3sbh8nwx1jsx8pgzfbi8a2b"))))
+         "10vrrxviv4yp9lqsanqvwsvbj64vn66hwm1w7860x1g58hf1g0l7"))))
     (properties `((upstream-name . "ggtext")))
     (build-system r-build-system)
     (propagated-inputs
