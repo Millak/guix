@@ -33281,18 +33281,24 @@ fully reproducible.")
 (define-public r-paws-common
   (package
     (name "r-paws-common")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.common" version))
        (sha256
         (base32
-         "1zlv0ahv633z1fwx1syajzqg49zd9hs537df53gm2qch8b66y4bh"))))
+         "12dz3giv1xajdqq79s5gin9kw4x74w2iaw62ha6ssf8whrc3wmh5"))))
     (properties `((upstream-name . "paws.common")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-base64enc r-curl r-digest r-httr r-jsonlite r-xml2))
+     (list r-base64enc
+           r-curl
+           r-digest
+           r-httr
+           r-jsonlite
+           r-rcpp
+           r-xml2))
     (home-page "https://cran.r-project.org/package=paws.common")
     (synopsis "Paws low-level Amazon Web Services API")
     (description
