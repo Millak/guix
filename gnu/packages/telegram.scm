@@ -292,8 +292,7 @@ Telegram project, for its use in telegram desktop client.")
                (for-each delete-file-recursively
                          (lset-difference string=?
                                           (scandir ".")
-                                          (cons* "." ".." keep))))
-             #t)))))
+                                          (cons* "." ".." keep)))))))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -322,8 +321,7 @@ Telegram project, for its use in telegram desktop client.")
        (modify-phases %standard-phases
          (add-after 'unpack 'make-writable
            (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t))
+             (for-each make-file-writable (find-files "."))))
          (add-after 'make-writable 'copy-inputs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (for-each
@@ -350,14 +348,10 @@ Telegram project, for its use in telegram desktop client.")
                 ("Telegram/lib_waylandshells" ,(assoc-ref inputs "lib-waylandshells-source"))
                 ("Telegram/lib_webrtc" ,(assoc-ref inputs "lib-webrtc-source"))
                 ("Telegram/lib_webview" ,(assoc-ref inputs "lib-webview-source"))
-                ("Telegram/ThirdParty/tgcalls"
-                 ,(assoc-ref inputs "tgcalls-source"))))
-             #t))
+                ("Telegram/ThirdParty/tgcalls" ,(assoc-ref inputs "tgcalls-source"))))))
          (add-before 'configure 'patch-cxx-flags
            (lambda _
-             (substitute* "cmake/options_linux.cmake"
-               (("class-memaccess") "all"))
-             #t))
+             (substitute* "cmake/options_linux.cmake" (("class-memaccess") "all"))))
          (add-after 'install 'glib-or-gtk-compile-schemas
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
          (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
