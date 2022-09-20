@@ -2280,14 +2280,14 @@ mixture models.")
 (define-public r-readxl
   (package
     (name "r-readxl")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "readxl" version))
        (sha256
         (base32
-         "1xwi4k5si48hwkgfc59icfmp9dzlvfri59k5fsgn96zp9713k4mb"))))
+         "1ym11mldwj31lgk5av264v8b2zn7fmq5nd30rnm1pchgjizvpgpn"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cellranger r-cpp11 r-progress r-tibble))
