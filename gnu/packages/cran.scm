@@ -7163,14 +7163,14 @@ estimated from a given sample.")
 (define-public r-pillar
   (package
     (name "r-pillar")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pillar" version))
        (sha256
         (base32
-         "0vxkg451s5kwkg0m8d9dnr8gl5s0pgi8mxcm39ry5vgdj8v47ijj"))))
+         "1v47dm2v4nlswd1gmgcx5c7yrgn1ksdfr9lqkc63jf2nkv6af1ig"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
