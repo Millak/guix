@@ -30961,8 +30961,8 @@ resampled, benchmarked, and tuned.")
     (license license:lgpl3)))
 
 (define-public r-mlr3ordinal
-  (let ((commit "9febac983b11b7b1f477e5cf0212e5999cd2ed44")
-        (revision "0"))
+  (let ((commit "736e3a39be6b7088b650297cc6d90208ec58c0d7")
+        (revision "1"))
     (package
       (name "r-mlr3ordinal")
       (version (git-version "0.1.0-9000" revision commit))
@@ -30974,7 +30974,7 @@ resampled, benchmarked, and tuned.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1icfhz1pjm0mlsn2y60gsrbk31b2p7xmpx3xsg7639rcgdb5f9gl"))))
+                  "0ipf6n4m6giicn0x7f3lrfmbqkhw8zkz32hzq2xf209wndkqhqm1"))))
       (build-system r-build-system)
       (propagated-inputs
        (list r-checkmate
