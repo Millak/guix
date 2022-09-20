@@ -4071,14 +4071,14 @@ a streamlined API.")
 (define-public r-palmerpenguins
   (package
     (name "r-palmerpenguins")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "palmerpenguins" version))
        (sha256
         (base32
-         "0q1k3cdkliq7kwrg1n0vs9b6cjwyfarhlgdijhp9c6riy6y5ik7x"))))
+         "1d1h3bfx750is4qqj4w00rcigk9rrdy69bvd5bgqz5y7ls5x8h1a"))))
     (properties
      `((upstream-name . "palmerpenguins")))
     (build-system r-build-system)
