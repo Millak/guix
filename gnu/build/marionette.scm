@@ -22,6 +22,7 @@
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-64)
+  #:use-module (srfi srfi-71)
   #:use-module (rnrs io ports)
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
@@ -311,18 +312,20 @@ Monitor\")."
 
 (define* (marionette-screen-text marionette #:key (ocr "ocrad"))
   "Take a screenshot of MARIONETTE, perform optical character
-recognition (OCR), and return the text read from the screen as a string.  Do
-this by invoking OCR, which should be the file name of GNU Ocrad's
-@command{ocrad} or Tesseract OCR's @command{tesseract} command."
+recognition (OCR), and return the text read from the screen as a string, along
+the screen dump image used.  Do this by invoking OCR, which should be the file
+name of GNU Ocrad's@command{ocrad} or Tesseract OCR's @command{tesseract}
+command.  The screen dump image returned as the second value should be deleted
+if it is not needed."
   (define image (string-append (tmpnam) ".ppm"))
   ;; Use the QEMU Monitor to save an image of the screen to the host.
   (marionette-control (string-append "screendump " image) marionette)
   ;; Process it via the OCR.
   (cond
    ((string-contains ocr "ocrad")
-    (invoke-ocrad-ocr image #:ocrad ocr))
+    (values (invoke-ocrad-ocr image #:ocrad ocr) image))
    ((string-contains ocr "tesseract")
-    (invoke-tesseract-ocr image #:tesseract ocr))
+    (values (invoke-tesseract-ocr image #:tesseract ocr) image))
    (else (error "unsupported ocr command"))))
 
 (define* (wait-for-screen-text marionette predicate
@@ -330,21 +333,34 @@ this by invoking OCR, which should be the file name of GNU Ocrad's
                                (ocr "ocrad")
                                (timeout 30))
   "Wait for TIMEOUT seconds or until the screen text on MARIONETTE matches
-PREDICATE, whichever comes first.  Raise an error when TIMEOUT is exceeded."
+PREDICATE, whichever comes first.  Raise an error when TIMEOUT is exceeded.
+The error contains the recognized text along the preserved file name of the
+screen dump, which is relative to the current working directory."
   (define start
     (car (gettimeofday)))
 
   (define end
     (+ start timeout))
 
-  (let loop ((last-text #f))
+  (let loop ((last-text #f)
+             (last-screendump #f))
     (if (> (car (gettimeofday)) end)
-        (error "'wait-for-screen-text' timeout" 'ocr-text: last-text)
-        (let ((text (marionette-screen-text marionette #:ocr ocr)))
-          (or (predicate text)
-              (begin
-                (sleep 1)
-                (loop text)))))))
+        (let ((screendump-backup (string-drop last-screendump 5)))
+          ;; Move the file from /tmp/fileXXXXXX.pmm to the current working
+          ;; directory, so that it is preserved in the test derivation output.
+          (copy-file last-screendump screendump-backup)
+          (delete-file last-screendump)
+          (error "'wait-for-screen-text' timeout"
+                 'ocr-text: last-text
+                 'screendump: screendump-backup))
+        (let* ((text screendump (marionette-screen-text marionette #:ocr ocr))
+               (result (predicate text)))
+          (cond (result
+                 (delete-file screendump)
+                 result)
+                (else
+                 (sleep 1)
+                 (loop text screendump)))))))
 
 (define %qwerty-us-keystrokes
   ;; Maps "special" characters to their keystrokes.
