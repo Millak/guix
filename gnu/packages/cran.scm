@@ -27629,20 +27629,19 @@ vignette for more information and examples.")
 (define-public r-distributional
   (package
     (name "r-distributional")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "distributional" version))
        (sha256
         (base32
-         "1mji8xlhwrw8msih5wdpbzwv4g59kly0xkdklhn8yzb18rrnrczs"))))
+         "0pr34yq6igb7ciqss2ldwa7gc55xvla040x8rkd8m2hcrz5mczkj"))))
     (properties
      `((upstream-name . "distributional")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-digest
-           r-ellipsis
            r-farver
            r-generics
            r-ggplot2
