@@ -2336,14 +2336,14 @@ the personalised models.")
 (define-public r-modelr
   (package
     (name "r-modelr")
-    (version "0.1.8")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "modelr" version))
        (sha256
         (base32
-         "1i31nff7bqibk6r4hhd4j1vzwbyaf8493v0bjaagn36njmysfnw2"))))
+         "1jd9vxirj5ii4ac0ka07g0rcq1c8yqv06jg27nmvp5a6kvlgvs8h"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
