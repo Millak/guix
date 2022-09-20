@@ -30043,14 +30043,14 @@ expressive statistical grammar that coheres with the Tidy design framework.")
 (define-public r-modeldata
   (package
     (name "r-modeldata")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "modeldata" version))
        (sha256
         (base32
-         "16ad8g86alahirgmp8bhb6v1ghayw965bdz5mrpnq7nnncazaqcm"))))
+         "0ik4r25l69brkf0l248bln1kicy7dpi6mziwn19by8rq3f8fylhy"))))
     (properties `((upstream-name . "modeldata")))
     (build-system r-build-system)
     (propagated-inputs
