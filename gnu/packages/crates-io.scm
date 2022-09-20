@@ -64834,6 +64834,30 @@ to a style defined by John Gruber for post titles on his website ``Daring
 Fireball''.")
     (license license:expat)))
 
+(define-public rust-tobj-3
+  (package
+    (name "rust-tobj")
+    (version "3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "tobj" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1q9hxhdzbqcrpnmja98mnd5890jf3x1njg0q1lgpj8yg5j29ryc9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ;tests are incomplete
+       #:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.7)
+        ("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/Twinklebear/tobj")
+    (synopsis "Lightweight OBJ loader in the spirit of tinyobjloader")
+    (description
+     "This package provides a lightweight OBJ loader in the spirit of
+tinyobjloader.")
+    (license license:expat)))
+
 (define-public rust-tokio-1
   (package
     (name "rust-tokio")
