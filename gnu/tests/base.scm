@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -509,18 +510,18 @@ info --version")
                 (file-exists? capture))))
 
           (test-assert "screen text"
-            (let ((text (marionette-screen-text marionette
-                                                #:ocr
-                                                #$(file-append ocrad
-                                                               "/bin/ocrad"))))
-              ;; Check whether the welcome message and shell prompt are
-              ;; displayed.  Note: OCR confuses "y" and "V" for instance, so
-              ;; we cannot reliably match the whole text.
-              (and (string-contains text "This is the GNU")
-                   (string-contains text
-                                    (string-append
-                                     "root@"
-                                     #$(operating-system-host-name os))))))
+            (wait-for-screen-text
+             marionette
+             (lambda (text)
+               ;; Check whether the welcome message and shell prompt are
+               ;; displayed.  Note: OCR confuses "y" and "V" for instance, so
+               ;; we cannot reliably match the whole text.
+               (and (string-contains text "This is the GNU")
+                    (string-contains text
+                                     (string-append
+                                      "root@"
+                                      #$(operating-system-host-name os)))))
+             #:ocr #$(file-append ocrad "/bin/ocrad")))
 
           (test-end))))
 

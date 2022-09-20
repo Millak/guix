@@ -33,7 +33,6 @@
             wait-for-tcp-port
             wait-for-unix-socket
             marionette-control
-            marionette-screen-text
             wait-for-screen-text
             %qwerty-us-keystrokes
             marionette-type
