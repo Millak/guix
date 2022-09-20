@@ -11762,48 +11762,39 @@ Processing of very large files is supported.")
 
 (define-public r-mosaic
   (package
-   (name "r-mosaic")
-   (version "1.8.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (cran-uri "mosaic" version))
-     (sha256
-      (base32 "1y0isqbva0vi5zlx1xvixbq87n4xp66ljh43qnd0cpzaz0mn21cg"))))
-   (build-system r-build-system)
-   (propagated-inputs
-    (list r-broom
-          r-dplyr
-          r-ggdendro
-          r-ggformula
-          r-ggplot2
-          r-ggrepel
-          r-ggridges
-          r-ggstance
-          r-glue
-          r-gridextra
-          r-lattice
-          r-latticeextra
-          r-leaflet
-          r-mass
-          r-matrix
-          r-mosaiccore
-          r-mosaicdata
-          r-readr
-          r-rlang
-          r-tidyr))
-   (native-inputs
-    (list r-knitr))
-   (home-page "https://github.com/ProjectMOSAIC/mosaic/")
-   (synopsis "Mathematics, statistics, and computation teaching utilities")
-   (description
-    "This package contain data sets and utilities from
+    (name "r-mosaic")
+    (version "1.8.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mosaic" version))
+       (sha256
+        (base32 "0ix9c4rpa1h7cya9mqzqph9ain1ng61px5v4wwvlaf76zdr51c0i"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dplyr
+           r-ggformula
+           r-ggplot2
+           r-lattice
+           r-mass
+           r-matrix
+           r-mosaiccore
+           r-mosaicdata
+           r-purrr
+           r-rlang
+           r-tidyr))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://github.com/ProjectMOSAIC/mosaic/")
+    (synopsis "Mathematics, statistics, and computation teaching utilities")
+    (description
+     "This package contain data sets and utilities from
 @url{http://mosaic-web.org, Project MOSAIC} used to teach mathematics,
 statistics, computation and modeling.  Project MOSAIC is a community of
 educators working to tie together aspects of quantitative work that students
 in science, technology, engineering and mathematics will need in their
 professional lives, but which are usually taught in isolation, if at all.")
-   (license license:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public r-abd
   (package
