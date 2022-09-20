@@ -34106,14 +34106,14 @@ configuration of status code, short description, and verbose message.")
 (define-public r-webmockr
   (package
     (name "r-webmockr")
-    (version "0.8.0")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "webmockr" version))
        (sha256
         (base32
-         "0j40srwi0yasmllb9wsww4m6zkiyzqd549cis4dxd7c7p24hak8j"))))
+         "06lqv3v095i51xsac8bvkjgd58l6a5azamchiip8m2y7q0nm4iw9"))))
     (properties `((upstream-name . "webmockr")))
     (build-system r-build-system)
     (propagated-inputs
