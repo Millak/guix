@@ -2506,20 +2506,24 @@ characters can be replaced as well, as can UTF-8 characters.")
 (define-public tree
   (package
     (name "tree")
-    (version "2.0.3")
+    (version "2.0.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://mama.indstate.edu/users/ice/tree/src/tree-"
                     version ".tgz"))
               (sha256
-               (base32 "079vda37d5i3nfx12wx81z6r6bxynv2jww1z1hjziiwxbxxyf55s"))))
+               (base32 "0x7s9wxvf83fw4qah16kapswl2277pybw3d514zrlms9g0cr5smh"))))
     (build-system gnu-build-system)
     (arguments
      (list
        #:phases
        #~(modify-phases %standard-phases
-           (delete 'configure))         ; No configure script.
+           (delete 'configure)          ; No configure script.
+           (add-after 'unpack 'fix-manpage-version
+             (lambda _
+               (substitute* "doc/tree.1"
+                 (("Tree 2\\.0\\.0") (string-append "Tree " #$version))))))
        #:tests? #f                      ; No check target.
        #:make-flags
        #~(list (string-append "PREFIX=" #$output)
