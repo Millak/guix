@@ -21523,13 +21523,13 @@ function and interfaces to external frameworks.")
 (define-public r-covr
   (package
     (name "r-covr")
-    (version "3.5.1")
+    (version "3.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "covr" version))
        (sha256
-        (base32 "0v5cv3cw2kpdr6wxmkbd3wclavr17zipypdcb10hhmpa4cvgqk55"))))
+        (base32 "0mqiqmbwq5f083lda208nqd4ya0f912bkkya2i62fkqsii1ibgpz"))))
     (properties `((upstream-name . "covr")))
     (build-system r-build-system)
     (propagated-inputs
