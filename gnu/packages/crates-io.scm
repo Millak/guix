@@ -59437,6 +59437,7 @@ OIDs)")
 
 (define-public rust-sprs-0.10
   (package
+    (inherit rust-sprs-0.11)
     (name "rust-sprs")
     (version "0.10.0")
     (source (origin
@@ -59448,7 +59449,7 @@ OIDs)")
                 "18qwm1wnc1jbzdpl0wfrrybb6rak74zv8jmfg87id7ksb6crkz6r"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t ;8 test failures due to "No such file or directory"
+     `(#:skip-build? #t    ;8 test failures due to "No such file or directory"
        #:cargo-inputs
        (("rust-alga" ,rust-alga-0.9)
         ("rust-approx" ,rust-approx-0.3)
@@ -59462,12 +59463,7 @@ OIDs)")
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
         ("rust-bincode" ,rust-bincode-1)
-        ("rust-tobj" ,rust-tobj-2))))
-    (home-page "https://github.com/vbarrielle/sprs")
-    (synopsis "Sparse matrix library")
-    (description "This package provides a sparse matrix library.")
-    ;; Either license can be chosen
-    (license (list license:expat license:asl2.0))))
+        ("rust-tobj" ,rust-tobj-2))))))
 
 (define-public rust-rspotify-0.10
   (package
