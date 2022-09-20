@@ -15546,14 +15546,14 @@ Life Sciences\" by Ron Wehrens, Springer (2011).")
 (define-public r-als
   (package
     (name "r-als")
-    (version "0.0.6")
+    (version "0.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ALS" version))
        (sha256
         (base32
-         "1swrn39vy50fazkpf97r7c542gkj6mlvy8gmcxllg7mf2mqx546a"))))
+         "184d6xr4mgs78jvi7xa4njrq6p625i9sx69wak6mdn53qpl9b8ap"))))
     (properties `((upstream-name . "ALS")))
     (build-system r-build-system)
     (propagated-inputs
