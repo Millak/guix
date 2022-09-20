@@ -603,6 +603,44 @@ computer's hardware.")
     (home-page "https://invent.kde.org/plasma/kmenuedit")
     (license license:gpl2+)))
 
+(define-public kongress
+  (package
+    (name "kongress")
+    (version "22.09")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma-mobile/" version
+                                  "/kongress-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0pjp2s774sgw2dklqib8alm1a9fkixy3s92i2v8v00znx08zf2jz"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    ;; NOTE: Reporting bugs is linked to web browser, better not link it and let
+    ;; it reslove through xdg-open in the run time
+    (inputs (list kirigami
+                  kdbusaddons
+                  ki18n
+                  kcalendarcore
+                  kconfigwidgets
+                  kwindowsystem
+                  kcoreaddons
+                  kcontacts
+                  kitemmodels
+                  knotifications
+                  kxmlgui
+                  kiconthemes
+                  qtbase-5
+                  qtdeclarative-5
+                  qtquickcontrols2-5
+                  qtgraphicaleffects
+                  qtsvg-5))
+    (home-page "https://apps.kde.org/kongress/")
+    (synopsis "Companion application for conferences")
+    (description "This application provides list of upcoming conferences with
+the schedule and venue information.")
+    (license license:gpl3+)))
+
 (define-public kscreen
   (package
     (name "kscreen")
