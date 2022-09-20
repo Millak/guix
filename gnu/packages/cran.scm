@@ -11637,13 +11637,13 @@ subsequence} (LCS) using a dynamic programming algorithm.")
 (define-public r-mosaiccore
   (package
     (name "r-mosaiccore")
-    (version "0.9.0")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mosaicCore" version))
        (sha256
-        (base32 "1h3ixzna4xy42rdnd89jj0v9q0riy3fnkd33z6l5c0zaidzm58fz"))))
+        (base32 "0mnizi1y7jn2z8v066b6kv08az7vss6avips740pjhgvi8frhsag"))))
     (properties `((upstream-name . "mosaicCore")))
     (build-system r-build-system)
     (propagated-inputs
