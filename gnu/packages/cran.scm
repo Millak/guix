@@ -19440,14 +19440,14 @@ packages with Rcpp.")
 (define-public r-tweenr
   (package
     (name "r-tweenr")
-    (version "1.0.2")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tweenr" version))
        (sha256
         (base32
-         "17znizh4yabh2zs9mzyr0sl6p0pw49961i61br7cl1b7v9sza18q"))))
+         "1wqzcsxlz1isb1j0v5g6dgvd40q3q9qlahvgcgiq0j4d87nzvfv4"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -19459,7 +19459,7 @@ packages with Rcpp.")
                (("BASEDATETIME <- Sys.time.*")
                 "BASEDATETIME <- structure(0, class = c(\"POSIXct\", \"POSIXt\"))\n")))))))
     (propagated-inputs
-     (list r-farver r-magrittr r-rcpp r-rlang))
+     (list r-cpp11 r-farver r-magrittr r-rlang r-vctrs))
     (home-page "https://github.com/thomasp85/tweenr")
     (synopsis "Interpolate data for smooth animations")
     (description
