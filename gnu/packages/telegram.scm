@@ -62,6 +62,7 @@
   #:use-module (gnu packages xorg)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
@@ -70,6 +71,36 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt))
+
+(define libvpx-for-telegram-desktop
+  (let ((commit "5b63f0f821e94f8072eb483014cfc33b05978bb9")
+        (revision "112"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://chromium.googlesource.com/webm/libvpx")
+            (commit commit)))
+      (file-name (git-file-name
+                  "libvpx-for-telegram-desktop"
+                  (git-version "1.9.0" revision commit)))
+      (sha256
+       (base32
+        "1psvxaddihlw1k5n0anxif3qli6zyw2sa2ywn6mkb8six9myrp68")))))
+
+(define libyuv-for-telegram-desktop
+  (let ((commit "ad890067f661dc747a975bc55ba3767fe30d4452")
+        (revision "2211"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://chromium.googlesource.com/libyuv/libyuv")
+            (commit commit)))
+      (file-name (git-file-name
+                  "libyuv-for-telegram-desktop"
+                  (git-version "0" revision commit)))
+      (sha256
+       (base32
+        "01knnk4h247rq536097n9n3s3brxlbby3nv3ppdgsqfda3k159ll")))))
 
 (define-public webrtc-for-telegram-desktop
   (let ((commit "91d836dc84a16584c6ac52b36c04c0de504d9c34")
@@ -94,82 +125,54 @@
                      (ice-9 ftw)
                      (srfi srfi-1)))
           (snippet
-           `(begin
-              (let ((keep
-                     '( ;; Custom forks which are incompatible with the ones in Guix.
-                       "abseil-cpp" "libsrtp" "openh264" "rnnoise"
-                       ;; Not available in Guix.
-                       "pffft" "usrsctp"
-                       ;; Has cmake support files for libvpx input.
-                       "libvpx")))
-                (with-directory-excursion "src/third_party"
-                  (for-each delete-file-recursively
-                            (lset-difference string=?
-                                             (scandir ".")
-                                             (cons* "." ".." keep)))))))))
+           #~(begin
+               (let ((keep
+                      '( ;; Custom forks which are incompatible with the ones in Guix.
+                        "abseil-cpp" "libsrtp" "openh264" "rnnoise"
+                        ;; Not available in Guix.
+                        "pffft" "usrsctp"
+                        ;; Has cmake support files for libvpx input.
+                        "libvpx")))
+                 (with-directory-excursion "src/third_party"
+                   (for-each delete-file-recursively
+                             (lset-difference string=?
+                                              (scandir ".")
+                                              (cons* "." ".." keep)))))))))
        (build-system cmake-build-system)
        (arguments
-        `(#:tests? #f                   ; No target
-          #:configure-flags
-          (list
-           "-DCMAKE_C_FLAGS=-fPIC"
-           "-DCMAKE_CXX_FLAGS=-fPIC")
-          #:phases
-          (modify-phases %standard-phases
-            (add-after 'unpack 'copy-inputs
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (let* ((libvpx-from (assoc-ref inputs "libvpx"))
-                       (libyuv-from (assoc-ref inputs "libyuv"))
-                       (libvpx-to (string-append (getcwd)
-                                                 "/src/third_party/libvpx/source/libvpx"))
-                       (libyuv-to (string-append (getcwd)
-                                                 "/src/third_party/libyuv")))
-                  (copy-recursively libvpx-from libvpx-to)
-                  (copy-recursively libyuv-from libyuv-to)))))))
-       (native-inputs
-        `(("perl" ,perl)
-          ("pkg-config" ,pkg-config)
-          ("python" ,python-wrapper)
-          ("yasm" ,yasm)))
+        (list
+         #:tests? #f                    ; No target
+         #:configure-flags #~(list "-DCMAKE_C_FLAGS=-fPIC"
+                                   "-DCMAKE_CXX_FLAGS=-fPIC")
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'copy-inputs
+               (lambda _
+                 (let* ((third-party (string-append (getcwd) "/src/third_party"))
+                        (libvpx-to (string-append third-party
+                                                  "/libvpx/source/libvpx"))
+                        (libyuv-to (string-append third-party "/libyuv")))
+                   (copy-recursively #$libvpx-for-telegram-desktop libvpx-to)
+                   (copy-recursively #$libyuv-for-telegram-desktop
+                                     libyuv-to)))))))
+       (native-inputs (list perl pkg-config python-wrapper yasm))
        (inputs
-        `(("alsa" ,alsa-lib)
-          ("ffmpeg" ,ffmpeg)
-          ("libjpeg" ,libjpeg-turbo)
-          ("glib" ,glib)
-          ("libvpx"
-           ,(origin
-              (method git-fetch)
-              (uri
-               (git-reference
-                (url "https://chromium.googlesource.com/webm/libvpx")
-                (commit "5b63f0f821e94f8072eb483014cfc33b05978bb9")))
-              (file-name
-               (git-file-name "libvpx-for-webrtc-for-telegram-desktop" version))
-              (sha256
-               (base32 "1psvxaddihlw1k5n0anxif3qli6zyw2sa2ywn6mkb8six9myrp68"))))
-          ("libyuv"
-           ,(origin
-              (method git-fetch)
-              (uri
-               (git-reference
-                (url "https://chromium.googlesource.com/libyuv/libyuv")
-                (commit "ad890067f661dc747a975bc55ba3767fe30d4452")))
-              (file-name
-               (git-file-name "libyuv-for-webrtc-for-telegram-desktop" version))
-              (sha256
-               (base32 "01knnk4h247rq536097n9n3s3brxlbby3nv3ppdgsqfda3k159ll"))))
-          ("libxcomposite" ,libxcomposite)
-          ("libxdamage" ,libxdamage)
-          ("libxrender" ,libxrender)
-          ("libxrandr" ,libxrandr)
-          ("openssl" ,openssl)
-          ("opus" ,opus)
-          ("pipewire" ,pipewire)
-          ("protobuf" ,protobuf)
-          ("pulseaudio" ,pulseaudio)
-          ("x11" ,libx11)
-          ("xext" ,libxext)
-          ("xtst" ,libxtst)))
+        (list alsa-lib
+              ffmpeg
+              libjpeg-turbo
+              glib
+              libxcomposite
+              libxdamage
+              libxrender
+              libxrandr
+              openssl
+              opus
+              pipewire
+              protobuf
+              pulseaudio
+              libx11
+              libxext
+              libxtst))
        (synopsis "WebRTC support for Telegram Desktop")
        (description "WebRTC-for-Telegram-Desktop is a custom WebRTC fork by
 Telegram project, for its use in telegram desktop client.")
