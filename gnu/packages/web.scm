@@ -3534,7 +3534,7 @@ processing of request data as it arrives.")
 (define-public perl-http-message
   (package
     (name "perl-http-message")
-    (version "6.18")
+    (version "6.37")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -3542,10 +3542,10 @@ processing of request data as it arrives.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "04lih0fn89jpyk74c4aq1rzq18h8v4zd3x0lik2r9dl8sdqd2q6h"))))
+               "00nq0xnpdba4valzgvzy3fgvck1ijrksdyzb4w9q6j72hl5dln8f"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-try-tiny))
+     (list perl-test-needs perl-try-tiny))
     (propagated-inputs
      (list perl-encode-locale perl-http-date perl-io-html
            perl-lwp-mediatypes perl-uri))
