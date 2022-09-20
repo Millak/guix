@@ -24878,22 +24878,19 @@ finding peaks in spectra, converting humidity measures.")
 (define-public r-qqconf
   (package
     (name "r-qqconf")
-    (version "1.2.3")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "qqconf" version))
               (sha256
                (base32
-                "0qnfzq2zb776kmvbwmyj9di4nlzx7dg0nz4097hfcllfx9160nwv"))))
+                "11sh0q5bwmqdygqd1gspx7xc5mysj18whz11afnz6s1m820snhhw"))))
     (properties `((upstream-name . "qqconf")))
     (build-system r-build-system)
     (inputs (list fftw))
     (propagated-inputs
-     (list r-dplyr
-           r-magrittr
-           r-mass
+     (list r-mass
            r-rcpp
-           r-rlang
            r-robustbase))
     (native-inputs (list pkg-config r-knitr))
     (home-page "https://github.com/eweine/qqconf")
