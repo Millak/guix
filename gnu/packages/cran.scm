@@ -4049,13 +4049,13 @@ Docstrings (PEP-0257) and Julia's Triple-Quoted String Literals.")
 (define-public r-paletteer
   (package
     (name "r-paletteer")
-    (version "1.4.0")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "paletteer" version))
               (sha256
                (base32
-                "1m0h1p0cbmmi0rk157qyrgcz57pw0syadskrnfa4vs7hm1rndp3m"))))
+                "0vj945cgpfhmbd98mcj167mgshghv32dxh8m4ngxs6i4q4y5blm7"))))
     (properties `((upstream-name . "paletteer")))
     (build-system r-build-system)
     (propagated-inputs (list r-prismatic r-rematch2 r-rlang r-rstudioapi))
