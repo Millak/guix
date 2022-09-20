@@ -4451,14 +4451,14 @@ following problems:
 (define-public r-base64
   (package
     (name "r-base64")
-    (version "2.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "base64" version))
        (sha256
         (base32
-         "1labh0ycdm2xcjssj8bhnyjvbk44mcdsi0rb2p8rfqa428mrq9cf"))))
+         "1w9m4n29xmj7px8fbmha04vq146bxfqi7ipj1ag09hlm05y6h8jd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-openssl))
