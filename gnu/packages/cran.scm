@@ -28141,14 +28141,14 @@ repositories to be added.")
 (define-public r-wdman
   (package
     (name "r-wdman")
-    (version "0.2.5")
+    (version "0.2.6")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "wdman" version))
         (sha256
           (base32
-            "1yf41lsrr9dbf5n4f5hv9mlmzl736fhnp9gxkm2g9apws6gsig02"))))
+            "0n0wwb9ip6qc8qzdxn4dsqfbc8b3f607n8l6jigryd7g83ibnbp6"))))
     (properties `((upstream-name . "wdman")))
     (build-system r-build-system)
     (propagated-inputs
