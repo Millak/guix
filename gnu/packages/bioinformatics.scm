@@ -7273,6 +7273,39 @@ sequence.")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license license:bsd-3)))
 
+(define-public r-gutils
+  (let ((commit "10e36c7b580aacb2d952140a3fdd82418aaddea6")
+        (revision "1"))
+    (package
+      (name "r-gutils")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/gUtils")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1wq9kd1afzy7ii510r20c4n9fkykj6p15q5c85ws27h1q5w4ghxy"))))
+      (properties `((upstream-name . "gUtils")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biocgenerics
+             r-data-table
+             r-genomeinfodb
+             r-genomicranges
+             r-iranges
+             r-matrix
+             r-s4vectors
+             r-stringr))
+      (home-page "https://github.com/mskilab/gUtils")
+      (synopsis "Additional capabilities and speed for GenomicRanges operations")
+      (description
+       "This is an R package providing additional capabilities and speed for
+@code{GenomicRanges} operations.")
+      (license license:gpl2))))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
