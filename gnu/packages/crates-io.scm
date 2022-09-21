@@ -3428,7 +3428,7 @@ structures.")
 (define-public rust-arrayvec-0.7
   (package
     (name "rust-arrayvec")
-    (version "0.7.0")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
@@ -3437,7 +3437,7 @@ structures.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1xza6jbs8x51yhh4qnwjw1crm33bhl975r965fpq1hqhpfq5hbss"))))
+         "1mjl8jjqxpl0x7sm9cij61cppi7yi38cdrd1l8zjw7h7qxk2v9cd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
