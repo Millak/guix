@@ -3381,6 +3381,29 @@ that runs on Argon2.")
 @code{arr_macro}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-arr-macro-0.1
+  (package
+    (name "rust-arr-macro")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "arr_macro" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "199086q8zva66lbg9bpz6fa67s81ra7yfa8148cwy1w7lkymn43a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arr-macro-impl" ,rust-arr-macro-impl-0.1)
+        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5))))
+    (home-page "https://github.com/JoshMcguigan/arr_macro")
+    (synopsis "Initialize arrays with ease")
+    (description "Array macro helps initialize arrays. It is useful when
+initializing large arrays (greater than 32 elements), or arrays of types which
+do not implement the copy or default traits.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-array-macro-1
   (package
     (name "rust-array-macro")
