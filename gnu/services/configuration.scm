@@ -410,7 +410,7 @@ If NEGATE? is @code{#t}, retrieve all fields except FIELDS."
 
 
 (define* (interpose ls  #:optional (delimiter "\n") (grammar 'infix))
-  "Same as @code{string-join}, but without join and string, returns an
+  "Same as @code{string-join}, but without join and string, returns a
 DELIMITER interposed LS.  Support 'infix and 'suffix GRAMMAR values."
   (when (not (member grammar '(infix suffix)))
     (raise
@@ -442,6 +442,7 @@ the list result in @code{#t} when applying PRED? on them."
 
 (define (text-config? config)
   (list-of file-like?))
+
 (define (serialize-text-config field-name val)
   #~(string-append
      #$@(interpose
