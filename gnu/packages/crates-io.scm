@@ -35232,6 +35232,30 @@ and XXH3 algorithms.")
     (description "This package provides macros for the metrics crate.")
     (license license:expat)))
 
+(define-public rust-metrics-0.14
+  (package
+    (name "rust-metrics")
+    (version "0.14.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "metrics" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0lf80vznlh0p06nchj08nlqgf3bajnwr6w3syflg7ffg3mh8bqjq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-metrics-macros" ,rust-metrics-macros-0.2)
+        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/metrics-rs/metrics")
+    (synopsis "Lightweight metrics facade")
+    (description "This package provides a lightweight metrics facade.")
+    (license license:expat)))
+
 (define-public rust-metrohash-1
   (package
     (name "rust-metrohash")
