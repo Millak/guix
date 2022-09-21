@@ -7375,6 +7375,40 @@ BAM files.")
 file formats, and ffTrack objects in multi-track panels.")
       (license license:gpl2))))
 
+(define-public r-gchain
+  (let ((commit "dc393e8dd0d8efaf36270c04d7112db8553db36a")
+        (revision "1"))
+    (package
+      (name "r-gchain")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/gChain/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "105wgi5w2fhwq1grsvj6zjigwg0sny3z7zr577q8ki3qffjwdkj0"))))
+      (properties `((upstream-name . "gChain")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-bamutils
+             r-biostrings
+             r-data-table
+             r-genomicalignments
+             r-genomicranges
+             r-gtrack
+             r-gutils
+             r-matrix
+             r-rtracklayer))
+      (home-page "https://github.com/mskilab/gChain/")
+      (synopsis "Additional capabilities and speed for GenomicRanges operations")
+      (description
+       "This R package provides additional capabilities and speed for
+GenomicRanges operations.")
+      (license license:gpl2))))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
