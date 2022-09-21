@@ -7456,6 +7456,45 @@ manipulation, debugging, visualization, lsf management, and common mskilab
 tasks.")
       (license license:expat))))
 
+(define-public r-chromunity
+  (let ((commit "09fce8bc12cb84b45a6ea25bf8db6e5b75113d4f")
+        (revision "1"))
+    (package
+      (name "r-chromunity")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/chromunity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0lp0h614k8fq6h9gpbylk4chh7q6w4qda8lx03ajrpppxmg7al2d"))))
+      (properties `((upstream-name . "chromunity")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-arrow
+             r-biocgenerics
+             r-data-table
+             r-gchain
+             r-genomicranges
+             r-gutils
+             r-igraph
+             r-magrittr
+             r-mass
+             r-matrix
+             r-pbmcapply
+             r-plyr
+             r-r6
+             r-skitools
+             r-zoo))
+      (home-page "https://github.com/mskilab/chromunity")
+      (synopsis "Discovery of communities in Pore-C concatemers")
+      (description "This is a package for the discovery of communities in
+Pore-C concatemers.")
+      (license license:gpl3))))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
