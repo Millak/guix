@@ -32734,6 +32734,29 @@ libraries have.
      "Efficiently insert line separators.")
     (license license:asl2.0)))
 
+(define-public rust-linear-map-1
+  (package
+    (name "rust-linear-map")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "linear-map" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1vh3sczl4xb5asdlpafdf3y4g9bp63fgs8y2a2sjgmcsn7v21bmz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/contain-rs/linear-map")
+    (synopsis "Map implemented by searching linearly in a vector")
+    (description
+     "This package provides a map implemented by searching linearly in a
+vector.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-linecount-0.1
   (package
     (name "rust-linecount")
