@@ -7306,6 +7306,38 @@ sequence.")
 @code{GenomicRanges} operations.")
       (license license:gpl2))))
 
+(define-public r-bamutils
+  (let ((commit "639dba901f16944fa1b7a8d7048701ba86a2cdb8")
+        (revision "1"))
+    (package
+      (name "r-bamutils")
+      (version (git-version "0.0.0.9000" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/bamutils/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0qwby2v5rydnipvf1iv1wz9nf02yq98k0xbc4inf9mqc54jwacs0"))))
+      (properties `((upstream-name . "bamUtils")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-abind
+             r-biocgenerics
+             r-data-table
+             r-genomicalignments
+             r-genomicranges
+             r-gutils
+             r-rsamtools
+             r-variantannotation))
+      (home-page "https://github.com/mskilab/bamutils/")
+      (synopsis "Utility functions for manipulating BAMs")
+      (description "This package provides utility functions for manipulating
+BAM files.")
+      (license license:gpl2))))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
