@@ -14722,14 +14722,14 @@ message passing.")
 (define-public rust-crossbeam-queue-0.3
   (package
     (name "rust-crossbeam-queue")
-    (version "0.3.1")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam-queue" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mk790w2y7cn9zqj6cn1kl8vvgaamlkj6fmpxg1iprdqyp3v6v0g"))))
+        (base32 "19ram1wp87i57w834hwl95mzz9g53qlzkraq6lvab629n21jbm0w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
