@@ -7338,6 +7338,43 @@ sequence.")
 BAM files.")
       (license license:gpl2))))
 
+(define-public r-gtrack
+  (let ((commit "a694fa36cedafca2658da79fc8e5b673535b15e5")
+        (revision "1"))
+    (package
+      (name "r-gtrack")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/gTrack/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "070qlrbqsbj9max2vx740zigqh0ymvnw2pm1ia5la3wb4dbfwh2b"))))
+      (properties `((upstream-name . "gTrack")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biocgenerics
+             r-data-table
+             r-genomeinfodb
+             r-genomicranges
+             r-gutils
+             r-iranges
+             r-matrix
+             r-rcolorbrewer
+             r-rcpp
+             r-rcurl
+             r-rtracklayer
+             r-s4vectors))
+      (home-page "https://github.com/mskilab/gTrack/")
+      (synopsis "Plot tracks of complex genomic data across multiple genomic windows")
+      (description
+       "This package provides an object for plotting GRanges, RleList, UCSC
+file formats, and ffTrack objects in multi-track panels.")
+      (license license:gpl2))))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
