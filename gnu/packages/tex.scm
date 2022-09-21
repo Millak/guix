@@ -11196,6 +11196,33 @@ mechanism.  Line numbering may be extended to footnote lines, using the
 fnlineno package.")
     (license license:lppl1.3a+)))
 
+(define-public texlive-babel-czech
+  (let ((template (simple-texlive-package
+                   "texlive-babel-czech"
+                   (list "/source/generic/babel-czech/")
+                   (base32
+                    "1274pzgdya7gkvxjmdm3v5rb7hc0sj6mqn9pd8y9418yx5449spg"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/babel-czech")
+         ((#:build-targets _ '())
+          ''("czech.ins")) ; TODO: use dtx and build documentation
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'chdir
+               (lambda _
+                 (chdir "source/generic/babel-czech")))))))
+      (home-page "https://www.ctan.org/pkg/babel-czech")
+      (synopsis "Babel support for Czech")
+      (description
+       "This package provides the language definition file for support of
+Czech in @code{babel}.  Some shortcuts are defined, as well as translations to
+Czech of standard ``LaTeX names''.")
+      (license license:lppl1.3+))))
+
 (define-public texlive-babel-dutch
   (let ((template (simple-texlive-package
                    "texlive-babel-dutch"
