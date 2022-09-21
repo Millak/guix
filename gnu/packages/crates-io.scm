@@ -14507,14 +14507,14 @@ criterion.")
 (define-public rust-crossbeam-channel-0.5
   (package
     (name "rust-crossbeam-channel")
-    (version "0.5.0")
+    (version "0.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam-channel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xfplw54pskl3kyf2q6kw8y2phnq6wn8pqxx003n8qfkz3hnx8nw"))))
+        (base32 "08f5f043rljl82a06d1inda6nl2b030s7yfqp31ps8w8mzfh9pf2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
