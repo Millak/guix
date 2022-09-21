@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2022 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,7 @@
   #:autoload   (gnu services sddm) (sddm-service-type)
   #:use-module (gnu artwork)
   #:use-module (gnu services)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system pam)
   #:use-module (gnu system setuid)
@@ -113,6 +115,13 @@
             localed-configuration
             localed-configuration?
             localed-service-type
+
+            dconf-keyfile
+            dconf-profile
+            dconf-profile-name
+            dconf-profile-content
+            dconf-profile-keyfile
+            dconf-service-type
 
             gdm-configuration
             gdm-service-type
@@ -802,6 +811,106 @@ makes the good ol' XlockMore usable."
 to control the system locale and keyboard mapping from user programs such as
 the GNOME desktop environment.")
                   (default-value (localed-configuration)))))
+
+
+;;;
+;;; Dconf.
+;;;
+
+(define-maybe text-config)
+
+(define-configuration/no-serialization dconf-keyfile
+  (name string
+        "The file name of the associated keyfile, e.g. \"00-login-screen\".")
+  (content text-config "The content of the associated keyfile."))
+
+(define-configuration/no-serialization dconf-profile
+  (name string "The file name of the dconf system profile, which should match
+the name of a user for which the profile is to be used with.  To have the
+profile used, the environment variable \"DCONF_PROFILE\" should be set to the
+profile file, e.g.:
+@example
+ export DCONF_PROFILE=/etc/dconf/profile/gdm
+@end example")
+  (content maybe-text-config "The content of the Dconf profile.  Unless
+provided, it defaults to include the user database (\"user-db:NAME\") as well
+as the system database (\"system-db:NAME\"), which corresponds to the
+generated database, @file{/etc/dconf/db/NAME}.")
+  (keyfile dconf-keyfile "The keyfile associated with the profile"))
+
+(define dconf-profiles?
+  (list-of dconf-profile?))
+
+(define-configuration/no-serialization dconf-configuration
+  (profiles dconf-profiles "The list of <dconf-profile> objects to populate."))
+
+(define (dconf-profile->profile-file profile)
+  "Given PROFILE, a <dconf-profile> object, return a dconf profile file."
+  (let ((name (dconf-profile-name profile))
+        (content (dconf-profile-content profile)))
+    (apply mixed-text-file
+           name
+           (if (maybe-value-set? content)
+               (interpose content "\n" 'suffix)
+               (interpose (list (string-append "user-db:" name)
+                                (string-append "system-db:" name))
+                          "\n" 'suffix)))))
+
+(define (dconf-profile->db-keyfile profile)
+  "Given PROFILE, a <dconf-profile> object, return a dconf profile file."
+  (let ((keyfile (dconf-profile-keyfile profile)))
+    (apply mixed-text-file (dconf-keyfile-name keyfile)
+           (interpose (dconf-keyfile-content keyfile) "\n" 'suffix))))
+
+(define (dconf-profile->db-keyfile-dir profile)
+  "Wrap the keyfile in a directory, to satisfy 'dconf compile'."
+  (let ((name (dconf-profile-name profile))
+        (keyfile-name (dconf-keyfile-name (dconf-profile-keyfile profile))))
+    (computed-file name
+                   #~(begin
+                       (mkdir #$output)
+                       (symlink #$(dconf-profile->db-keyfile profile)
+                                (string-append #$output "/" #$keyfile-name))))))
+
+(define (dconf-profile->db profile)
+  "Compile the a <dconf-profile> object into a GVariant Database file."
+  (let ((name (dconf-profile-name profile)))
+    (computed-file
+     name
+     (with-imported-modules '((guix build utils))
+       #~(begin
+           (use-modules (guix build utils))
+           (setenv "DCONF_PROFILE" #$(dconf-profile->profile-file profile))
+           (invoke #$(file-append dconf "/bin/dconf") "compile"
+                   #$output #$(dconf-profile->db-keyfile-dir profile)))))))
+
+(define (dconf-profile->files profile)
+  "Given PROFILE, a <dconf-profile> object, return a dconf directory
+containing the associated profile, keyfile and database files to be assembled
+under /etc."
+  (let ((name (dconf-profile-name profile))
+        (keyfile-name (dconf-keyfile-name (dconf-profile-keyfile profile))))
+    (list (list (string-append "dconf/profile/" name)
+                (dconf-profile->profile-file profile))
+          (list (string-append "dconf/db/" name ".d/" keyfile-name)
+                (dconf-profile->db-keyfile profile))
+          (list (string-append "dconf/db/" name)
+                (dconf-profile->db profile)))))
+
+(define dconf-service-type
+  (service-type
+   (name 'dconf-profile)
+   (extensions
+    (list (service-extension etc-service-type
+                             (lambda (dconf-profiles)
+                               (append-map dconf-profile->files
+                                           dconf-profiles)))))
+   (compose concatenate)
+   (extend append)
+   (default-value '())
+   (description "Extend the @code{etc-service-type} to populate the file
+hierarchy under @file{/etc/dconf} with the <dconf-profile> objects provided as
+argument.")))
 
 
 ;;;
