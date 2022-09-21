@@ -75205,6 +75205,34 @@ for @code{uint} and @code{fixed_hash}.")
 a trait for tuples.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-indicatif-0.16
+  (package
+    (name "rust-indicatif")
+    (version "0.16.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "indicatif" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06xyjs0kzqiqkjn60n1miwm2l87sa9p2lmzz0ymq18y72z37s81d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-console" ,rust-console-0.15)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-number-prefix" ,rust-number-prefix-0.4)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/console-rs/indicatif")
+    (synopsis "Progress bar and cli reporting library for Rust")
+    (description
+     "This package provides a progress bar and cli reporting library for
+Rust.")
+    (license license:expat)))
+
 (define-public rust-inflections-1
   (package
     (name "rust-inflections")
