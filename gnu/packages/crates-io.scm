@@ -28967,6 +28967,27 @@ with hyper.")
        (("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-rustc-test" ,rust-rustc-test-0.3))))))
 
+(define-public rust-ieee754-0.2
+  (package
+    (name "rust-ieee754")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ieee754" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1771d2kvw1wga65yrg9m7maky0fzsaq9hvhkv91n6gmxmjfdl1wh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.2))))
+    (home-page "https://github.com/huonw/ieee754")
+    (synopsis "Low-level manipulations of IEEE754 floating-point numbers")
+    (description "This is a package for low-level manipulations of IEEE754
+floating-point numbers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-if-chain-1
   (package
     (name "rust-if-chain")
