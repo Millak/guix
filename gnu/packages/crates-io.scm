@@ -23263,6 +23263,29 @@ helpful error messages.")
 process and much more.")
     (license license:expat)))
 
+(define-public rust-fs-utils-1
+  (package
+    (name "rust-fs-utils")
+    (version "1.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fs-utils" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "14r5wl14mz227v0lpy89lvjzfnxgdxigvrrmm6c4r52w03fakivg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-quick-error" ,rust-quick-error-1))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/fs-utils-rs")
+    (synopsis "Utilities to help working with the filesytem")
+    (description "This package provides a bunch of utilities to help working
+with the filesytem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fs2-0.2
   (package
     (name "rust-fs2")
