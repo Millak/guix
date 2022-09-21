@@ -95,7 +95,7 @@
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021, 2022 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Eugene Klimov <lipklim@mailbox.org>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
@@ -12865,7 +12865,7 @@ using package inferred style.")
      `(#:tests? #t
        #:test-command '("buttercup" "-l" "lua-mode.el")))
     (native-inputs
-     (list emacs-buttercup lua))
+     (list emacs-buttercup-1.25 lua))
     (synopsis "Major mode for lua")
     (description
      "This Emacs package provides a mode for @uref{https://www.lua.org/,
@@ -24743,6 +24743,23 @@ testing Emacs Lisp code.  It groups related tests so they can share
 common set-up and tear-down code, and allows the programmer to \"spy\" on
 functions to ensure they are called with the right arguments during testing.")
     (license license:gpl3+)))
+
+;;; Required by emacs-lua-mode
+(define emacs-buttercup-1.25
+  (package
+    (inherit emacs-buttercup)
+    (name "emacs-buttercup")
+    (version "1.25")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jorgenschaefer/emacs-buttercup")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0fsysvsypda6b7azc15bpaprq3bwx4gb6rlq2mj6f8rgwdqc8153"))))))
 
 (define-public emacs-cort
   (package
