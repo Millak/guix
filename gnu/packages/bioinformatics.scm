@@ -12736,6 +12736,12 @@ fasta subsequences.")
              (substitute* '("requirements.txt"
                             "cooler.egg-info/requires.txt")
                (("cytoolz.*<.*0.11") "cytoolz"))))
+         ;; This version of flake8 just won't work with this version of
+         ;; pytest, because of dependency pinning.
+         (add-after 'unpack 'do-not-use-flake8
+           (lambda _
+             (substitute* "setup.cfg"
+               (("addopts = --flake8") "addopts = "))))
          (add-after 'unpack 'patch-tests
            (lambda _
              (substitute* "tests/test_create.py"
