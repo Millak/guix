@@ -47811,6 +47811,33 @@ integers, floats, tuples, booleans, lists, strings, options and results.")
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.8))))))
 
+(define-public rust-quickersort-3
+  (package
+    (name "rust-quickersort")
+    (version "3.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "quickersort" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "02r7wplnw7m1dhjah8p89inxn9g4nwb7ga7xdn95cffwpwn88z1h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nodrop" ,rust-nodrop-0.1)
+        ("rust-unreachable" ,rust-unreachable-1))
+       #:cargo-development-inputs
+       (("rust-itertools" ,rust-itertools-0.7)
+        ("rust-num-traits" ,rust-num-traits-0.2))))
+    (home-page "https://github.com/notriddle/quickersort")
+    (synopsis "Fast sorting")
+    (description
+     "This package implements fast sorting compatible with stable Rust.  It
+also has (optional) support for efficient and robust sorting of floating point
+numbers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quine-mc-cluskey-0.2
   (package
     (name "rust-quine-mc-cluskey")
