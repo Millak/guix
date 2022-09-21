@@ -7039,6 +7039,34 @@ A minor mode @code{debbugs-browse-mode} let you browse URLs to the GNU Bug
 Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
     (license license:gpl3+)))
 
+(define-public emacs-piem
+  (package
+    (name "emacs-piem")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.kyleam.com/piem")
+             (commit (string-append "v" version))))
+       (file-name (string-append name "-" version "-checkout"))
+       (sha256
+        (base32 "0wr6n6wvznngjdp4c0pmdr4xz05dark0kxi5svzhzxsg3rdaql3z"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list b4
+           emacs-elfeed
+           emacs-notmuch
+           emacs-transient))
+    (home-page "https://docs.kyleam.com/piem")
+    (synopsis "Glue for working with public-inbox archives")
+    (description "This packages provides a collection of Emacs libraries for
+working with public-inbox archives.  As much of the hard work here is already
+done by other Emacs libraries—things like mail clients, news readers, Git
+interfaces, and even web browsers—piem is mostly about bridging some of these
+parts for convenience.")
+    (license license:gpl3)))
+
 (define-public emacs-ert-expectations
   (package
     (name "emacs-ert-expectations")
