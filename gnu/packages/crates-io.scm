@@ -61940,6 +61940,28 @@ a syntax tree of Rust source code.")
      "This package provides the features between \"full\" and \"derive\" of syn.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-synchronoise-1
+  (package
+    (name "rust-synchronoise")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "synchronoise" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1szasv8xl6z3gxfq8h8wllw2mq53d71nn29achxsnfcxzh7fs5yp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam-queue" ,rust-crossbeam-queue-0.1))))
+    (home-page "https://github.com/QuietMisdreavus/synchronoise")
+    (synopsis "Synchronization primitives")
+    (description
+     "This package provides synchronization primitives that build upon the
+standard library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-synom-0.11
   (package
     (name "rust-synom")
