@@ -7409,6 +7409,53 @@ file formats, and ffTrack objects in multi-track panels.")
 GenomicRanges operations.")
       (license license:gpl2))))
 
+(define-public r-skitools
+  (let ((commit "22d107d32f063eb891eb5e7fb36996d1c0b0d2bc")
+        (revision "1"))
+    (package
+      (name "r-skitools")
+      (version (git-version "0.0.0.9000" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/skitools/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1977d9bkdk9l2n6niahfj9vksh9l1ga4g7c3b3x27lj1gc0qgr4z"))))
+      (properties `((upstream-name . "skitools")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biostrings
+             r-complexheatmap
+             r-data-table
+             r-devtools
+             r-dt
+             r-gchain
+             r-genomeinfodb
+             r-genomicranges
+             r-ggplot2
+             r-gplots
+             r-gutils
+             r-htmlwidgets
+             r-hwriter
+             r-igraph
+             r-iranges
+             r-plotly
+             r-rcolorbrewer
+             r-reshape2
+             r-s4vectors
+             r-stringr
+             r-variantannotation))
+      (home-page "https://github.com/mskilab/skitools/")
+      (synopsis "Various mskilab R utilties")
+      (description
+       "This package provides R miscellaneous utilities for basic data
+manipulation, debugging, visualization, lsf management, and common mskilab
+tasks.")
+      (license license:expat))))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
