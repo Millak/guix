@@ -148,7 +148,7 @@
                         (default #f))
   (crypt-label          user-partition-crypt-label
                         (default #f))
-  (crypt-password       user-partition-crypt-password
+  (crypt-password       user-partition-crypt-password ; <secret>
                         (default #f))
   (fs-type              user-partition-fs-type
                         (default 'ext4))
@@ -1183,7 +1183,7 @@ USER-PARTITION if it is encrypted, or the plain file-name otherwise."
   "Format and open the encrypted partition pointed by USER-PARTITION."
   (let* ((file-name (user-partition-file-name user-partition))
          (label (user-partition-crypt-label user-partition))
-         (password (user-partition-crypt-password user-partition)))
+         (password (secret-content (user-partition-crypt-password user-partition))))
     (call-with-luks-key-file
      password
      (lambda (key-file)

@@ -188,7 +188,7 @@ encryption of partition ~a (label: ~a).") file-name crypt-label)
                    (if (string=? password confirmation)
                        (user-partition
                         (inherit user-part)
-                        (crypt-password password))
+                        (crypt-password (make-secret password)))
                        (begin
                          (run-error-page
                           (G_ "Password mismatch, please try again.")
