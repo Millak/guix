@@ -21107,6 +21107,12 @@ When @code{auto-login?} is false, GDM presents a log-in screen.
 When @code{auto-login?} is true, GDM logs in directly as
 @code{default-user}.
 
+@item @code{auto-suspend?} (default @code{#t})
+When true, GDM will automatically suspend to RAM when nobody is
+physically connected.  When a machine is used via remote desktop or SSH,
+this should be set to false to avoid GDM interrupting remote sessions or
+rendering the machine unavailable.
+
 @item @code{debug?} (default: @code{#f})
 When true, GDM writes debug messages to its log.
 

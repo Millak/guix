@@ -986,6 +986,7 @@ argument.")))
   (gdm gdm-configuration-gdm (default gdm))
   (allow-empty-passwords? gdm-configuration-allow-empty-passwords? (default #t))
   (auto-login? gdm-configuration-auto-login? (default #f))
+  (auto-suspend? gdm-configuration-auto-suspend? (default #t))
   (dbus-daemon gdm-configuration-dbus-daemon (default dbus-daemon-wrapper))
   (debug? gdm-configuration-debug? (default #f))
   (default-user gdm-configuration-default-user (default #f))
@@ -1000,6 +1001,30 @@ argument.")))
   (wayland? gdm-configuration-wayland? (default #f))
   (wayland-session gdm-configuration-wayland-session
                    (default gdm-wayland-session-wrapper)))
+
+(define (gdm-dconf-profiles config)
+  (if (gdm-configuration-auto-suspend? config)
+      '()
+      ;; This custom gconf profile works around a lack of configuration option
+      ;; to disable auto-suspend when no users are physically logged in (see:
+      ;; https://gitlab.gnome.org/GNOME/gnome-control-center/-/issues/22).
+      (list (dconf-profile
+             (name "gdm")
+             (content (list #~(begin
+                                (use-modules (ice-9 textual-ports))
+                                (string-trim
+                                 (call-with-input-file
+                                     #$(file-append gdm "/share/dconf/profile/gdm")
+                                   get-string-all)))
+                            "system-db:gdm"))
+             (keyfile (dconf-keyfile
+                       (name "00-disable-suspend")
+                       (content
+                        (list "[org/gnome/settings-daemon/plugins/power]"
+                              "sleep-inactive-ac-type='nothing'"
+                              "sleep-inactive-battery-type='nothing'"
+                              "sleep-inactive-ac-timeout=0"
+                              "sleep-inactive-battery-timeout=0"))))))))
 
 (define (gdm-configuration-file config)
   (mixed-text-file "gdm-custom.conf"
@@ -1073,7 +1098,10 @@ argument.")))
                      (list #$(file-append (gdm-configuration-gdm config)
                                           "/bin/gdm"))
                      #:environment-variables
-                     (list (string-append
+                     (list #$@(if (gdm-configuration-auto-suspend? config)
+                                  #~()
+                                  #~("DCONF_PROFILE=/etc/dconf/profile/gdm"))
+                           (string-append
                             "GDM_CUSTOM_CONF="
                             #$(gdm-configuration-file config))
                            (string-append
@@ -1152,6 +1180,8 @@ polkit.addRule(function(action, subject) {
                                             gdm-shepherd-service)
                          (service-extension account-service-type
                                             (const %gdm-accounts))
+                         (service-extension dconf-service-type
+                                            gdm-dconf-profiles)
                          (service-extension pam-root-service-type
                                             gdm-pam-service)
                          (service-extension polkit-service-type
