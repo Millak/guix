@@ -575,7 +575,7 @@ testing.  It is an extension of the library written by Chris Riesbeck.")
   ;; See https://github.com/AccelerationNet/symbol-munger/issues/4
   (package
     (name "sbcl-lisp-unit2")
-    (version "0.9.3")
+    (version "0.9.4")
     (source
      (origin
        (method git-fetch)
@@ -584,7 +584,7 @@ testing.  It is an extension of the library written by Chris Riesbeck.")
              (commit version)))
        (file-name (git-file-name "cl-lisp-unit2" version))
        (sha256
-        (base32 "0y7k6fd4mf7ggc8kdrbg8flkj5j7i7ki1350wnj6hqax7cmh4xv5"))))
+        (base32 "0dnq0qvbsn7ciknvmwzfjnimlzq1gdkv5xd87agmhxm1cpm1ksz0"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria sbcl-cl-interpol sbcl-iterate
