@@ -36,6 +36,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Giovanni Biscuolo <g@xelera.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2684,6 +2685,20 @@ from almost any programming language with a C-FFI and features first-class
 support for high performance Telegram Bot creation.")
     (home-page "https://core.telegram.org/tdlib")
     (license license:boost1.0)))
+
+(define-public tdlib-1.8.0
+  (package
+    (inherit tdlib)
+    (name "tdlib-1.8.0")
+    (version "1.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tdlib/td")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "19psqpyh9a2kzfdhgqkirpif4x8pzy89phvi59dq155y30a3661q"))))))
 
 (define-public purple-mm-sms
   (package
