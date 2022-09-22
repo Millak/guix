@@ -711,7 +711,7 @@ decode and default on encode.
 (define-public python-cfn-lint
   (package
     (name "python-cfn-lint")
-    (version "0.54.3")
+    (version "0.65.0")
     (home-page "https://github.com/aws-cloudformation/cfn-lint")
     (source (origin
               (method git-fetch)
@@ -721,11 +721,16 @@ decode and default on encode.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "106qf19n2k6sdjkb4006aidibd24qqiw901c1613xgjpnyw4dyl6"))))
+                "1rfacp39jssrbchrzb49vwrqyzhx5v7jfcgngqnb9r7qfs4bwi3w"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-network-test
+           (lambda _
+             ;; This test requires networking.
+             (substitute* "test/unit/module/formatters/test_formatters.py"
+               (("def test_sarif_formatter") "def _test_sarif_formatter"))))
          (replace 'check
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (when tests?
@@ -745,11 +750,14 @@ decode and default on encode.
      (list python-pydot python-mock))
     (propagated-inputs
      (list python-aws-sam-translator
+           python-importlib-resources
+           python-jschema-to-python
            python-jsonpatch
            python-jsonschema
            python-junit-xml
            python-networkx
            python-pyyaml
+           python-sarif-om
            python-six))
     (synopsis "Validate CloudFormation templates")
     (description
