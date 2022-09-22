@@ -795,13 +795,13 @@ by pressing the Exit button.~%~%")))
          (user-partitions (run-page eligible-devices))
          (user-partitions-with-pass (prompt-luks-passwords
                                      user-partitions))
-         (form (draw-formatting-page user-partitions)))
+         (form (draw-formatting-page user-partitions-with-pass)))
     ;; Make sure the disks are not in use before proceeding to formatting.
     (free-parted eligible-devices)
     (format-user-partitions user-partitions-with-pass)
     (installer-log-line "formatted ~a user partitions"
             (length user-partitions-with-pass))
-    (installer-log-line "user-partitions: ~a" user-partitions)
+    (installer-log-line "user-partitions: ~a" user-partitions-with-pass)
 
     (destroy-form-and-pop form)
-    user-partitions))
+    user-partitions-with-pass))
