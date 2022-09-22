@@ -16229,6 +16229,43 @@ BigWig files, as well as efficient region coverage summary over intervals from
 both types of files.")
     (license license:expat)))
 
+(define-public mudskipper
+  (package
+    (name "mudskipper")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mudskipper" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1y7fnlz6irmxdmv6bxzm95w4ws4vzldlrh8npvgxmdnrz9pgb1dv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #false    ;fail because the "mudskipper" crate cannot be found
+       #:cargo-inputs
+       (("rust-bio" ,rust-bio-0.39)
+        ("rust-bio-types" ,rust-bio-types-0.12)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-coitrees" ,rust-coitrees-0.2)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-indicatif" ,rust-indicatif-0.16)
+        ("rust-libradicl" ,rust-libradicl-0.4)
+        ("rust-linecount" ,rust-linecount-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-rust-htslib" ,rust-rust-htslib-0.38))))
+    (native-inputs
+     (list cmake pkg-config))
+    (inputs
+     (list zlib xz))
+    (home-page "https://github.com/OceanGenomics/mudskipper")
+    (synopsis "Convert genomic alignments to transcriptomic BAM/RAD files.")
+    (description "Mudskipper is a tool for projecting genomic alignments to
+transcriptomic coordinates.")
+    (license license:bsd-3)))
+
 (define-public r-ascat
   (package
    (name "r-ascat")
