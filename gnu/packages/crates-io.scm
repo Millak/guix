@@ -37688,6 +37688,45 @@ general elements and for numerics.")
     (description "This package provides FFI bindings for the Android NDK.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-needletail-0.4
+  (package
+    (name "rust-needletail")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "needletail" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1k535wlg0khac2gz3q84rlcqc5r89jyw73ww25vfgc04plzc9d3z"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Two tests fail due to missing files.
+     ;; - parser::fastq::test::test_bad_headers
+     ;; - parser::fastq::test::test_fastq_with_random_tsv_inside
+     `(#:tests? #false
+       #:cargo-inputs
+       (("rust-bio" ,rust-bio-0.33)
+        ("rust-buf-redux" ,rust-buf-redux-0.8)
+        ("rust-bytecount" ,rust-bytecount-0.6)
+        ("rust-bzip2" ,rust-bzip2-0.4)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-pyo3" ,rust-pyo3-0.13)
+        ("rust-xz2" ,rust-xz2-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-1)
+        ("rust-escargot" ,rust-escargot-0.5)
+        ("rust-predicates" ,rust-predicates-1)
+        ("rust-seq-io" ,rust-seq-io-0.3))))
+    (inputs (list xz))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/onecodex/needletail")
+    (synopsis "FASTX parsing and k-mer methods")
+    (description "Needletail is a minimal-copying FASTA/FASTQ parser and k-mer
+processing library for Rust.")
+    (license license:expat)))
+
 (define-public rust-neli-0.4
   (package
     (name "rust-neli")
