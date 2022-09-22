@@ -618,6 +618,9 @@ Unix-style DSV format and RFC 4180 format.")
                (search-patches "guile-fibers-wait-for-io-readiness.patch"
                                "guile-fibers-epoll-instance-is-dead.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list "GUILE_AUTO_COMPILE=0")))
     (native-inputs
      (list texinfo pkg-config autoconf automake libtool
            guile-3.0            ;for 'guild compile
