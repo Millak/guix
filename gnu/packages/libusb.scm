@@ -43,6 +43,7 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages java)
@@ -385,6 +386,28 @@ files and applications for iOS devices, it's written in C")
     (description "Libirecovery is a cross-platform library which implements
 communication to iBoot/iBSS found on Apple's iOS devices via USB.")
     (license license:lgpl2.1)))
+
+(define-public idevicerestore
+  (package
+    (name "idevicerestore")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/libimobiledevice/idevicerestore")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w7ywp77xc6v4hifi3j9ywrj447vv7fkwg2w26w0lq95f3bkblqr"))))
+    (build-system gnu-build-system)
+    (inputs (list libusb libirecovery libimobiledevice libzip curl zlib))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (home-page "https://libimobiledevice.org/")
+    (synopsis "CLI tool to restore firmware files to iOS devices")
+    (description "This utility is used to restore bricked or otherwise
+broken iOS devices.")
+    (license license:lgpl3+)))
 
 (define-public libplist
   (package
