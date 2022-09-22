@@ -634,19 +634,20 @@ by using the poppler rendering engine.")
               (sha256
                (base32
                 "1c8vmfpghqlq5kdnq92bzzp2grym3x3kxxxqgs51178s4z7639lq"))))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("gettext" ,gettext-minimal)
-                     ("glib:bin" ,glib "bin")
+    (native-inputs
+     (list pkg-config
+           gettext-minimal
+           (list glib "bin")
 
-                     ;; For building documentation.
-                     ("python-sphinx" ,python-sphinx)
+           ;; For building documentation.
+           python-sphinx
 
-                     ;; For building icons.
-                     ("librsvg" ,(librsvg-for-system))
+           ;; For building icons.
+           (librsvg-for-system)
 
-                     ;; For tests.
-                     ("check" ,check)
-                     ("xorg-server" ,xorg-server-for-tests)))
+           ;; For tests.
+           check
+           xorg-server-for-tests))
     (inputs (list sqlite))
     ;; Listed in 'Requires.private' of 'zathura.pc'.
     (propagated-inputs (list cairo girara))
@@ -660,8 +661,7 @@ by using the poppler rendering engine.")
                   (add-before 'check 'start-xserver
                     ;; Tests require a running X server.
                     (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((xorg-server (assoc-ref inputs "xorg-server"))
-                            (display ":1"))
+                      (let ((display ":1"))
                         (setenv "DISPLAY" display)
 
                         ;; On busy machines, tests may take longer than
@@ -670,8 +670,9 @@ by using the poppler rendering engine.")
 
                         ;; Don't fail due to missing '/etc/machine-id'.
                         (setenv "DBUS_FATAL_WARNINGS" "0")
-                        (zero? (system (string-append xorg-server "/bin/Xvfb "
-                                                      display " &")))))))))
+                        (zero? (system (string-append
+                                         (search-input-file inputs "/bin/Xvfb")
+                                         " " display " &")))))))))
     (home-page "https://pwmt.org/projects/zathura/")
     (synopsis "Lightweight keyboard-driven PDF viewer")
     (description "Zathura is a customizable document viewer.  It provides a
