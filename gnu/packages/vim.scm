@@ -823,7 +823,7 @@ and support for fonts with ligatures.")
 (define-public vifm
   (package
     (name "vifm")
-    (version "0.12")
+    (version "0.12.1")
     (source
       (origin
         (method url-fetch)
@@ -834,7 +834,7 @@ and support for fonts with ligatures.")
                               "vifm-" version ".tar.bz2")))
         (sha256
          (base32
-          "1h5j4y704nciyzg3aaav8sl3r5h9mpwq8f28cj65nnxk6a7n3a9k"))))
+          "122ncp319xisxjxcy33bshjib6905bb0aaz0xjdfkkycplz83qlg"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-build-timestamp")
@@ -849,8 +849,7 @@ and support for fonts with ligatures.")
                (("/bin/bash") (which "bash")))
              ;; This test segfaults
              (substitute* "tests/Makefile"
-               (("misc") ""))
-             #t))
+               (("misc") ""))))
           (add-after 'install 'install-vim-plugin-files
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
@@ -861,8 +860,7 @@ and support for fonts with ligatures.")
                 (copy-recursively (string-append vifm "/vim")
                                   vimfiles)
                 (delete-file-recursively (string-append vifm "/colors"))
-                (delete-file-recursively (string-append vifm "/vim")))
-              #t)))))
+                (delete-file-recursively (string-append vifm "/vim"))))))))
     (native-inputs
      (list groff)) ; for the documentation
     (inputs
