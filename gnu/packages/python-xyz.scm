@@ -9498,13 +9498,13 @@ interfaces in an easy and portable manner.")
 (define-public python-networkx
   (package
     (name "python-networkx")
-    (version "2.6.2")
+    (version "2.8.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "networkx" version))
        (sha256
-        (base32 "1fqrq7gc0nn4rd4zqibw96cap75vb5nlixapkajwawp71jaz21i3"))))
+        (base32 "19h18f5j79l7kmwm5cvm75fadjgmkzw5m3pyvb9cnq0860q7faxx"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
