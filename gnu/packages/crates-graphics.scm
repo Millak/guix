@@ -3313,7 +3313,10 @@ the platform-specific getters provided by winit, or another library.")
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-web-sys" ,rust-web-sys-0.3)
         ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-x11-dl" ,rust-x11-dl-2))))
+        ("rust-x11-dl" ,rust-x11-dl-2))
+       #:cargo-development-inputs
+       (("rust-console-log" ,rust-console-log-0.2)
+        ("rust-simple-logger" ,rust-simple-logger-1))))
     (inputs
      (list rust-wayland-client-0.28))))
 
