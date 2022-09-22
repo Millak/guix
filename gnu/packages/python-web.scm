@@ -758,6 +758,25 @@ the CloudFormation spec and additional checks.  Includes checking valid values
 for resource properties and best practices.")
     (license license:expat)))
 
+(define-public python-jschema-to-python
+  (package
+    (name "python-jschema-to-python")
+    (version "1.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jschema_to_python" version))
+              (sha256
+               (base32
+                "14cvaiwm56g0v6p7zviikaa5i9ln3yqy910jmp60hirhbpz19zvn"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-attrs python-jsonpickle python-pbr))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/microsoft/jschema-to-python")
+    (synopsis "Generate Python classes from a JSON schema.")
+    (description "This package generates source code for Python classes from a
+@url{http://jschema.org,JSchema} JSON schema.")
+    (license license:expat)))
+
 (define-public python-falcon
   (package
     (name "python-falcon")
