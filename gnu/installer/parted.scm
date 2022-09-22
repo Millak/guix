@@ -1194,6 +1194,20 @@ USER-PARTITION if it is encrypted, or the plain file-name otherwise."
        ((run-command-in-installer) "cryptsetup" "open" "--type" "luks"
         "--key-file" key-file file-name label)))))
 
+(define (luks-ensure-open user-partition)
+  "Ensure partition pointed by USER-PARTITION is opened."
+  (unless (file-exists? (user-partition-upper-file-name user-partition))
+    (let* ((file-name (user-partition-file-name user-partition))
+           (label (user-partition-crypt-label user-partition))
+           (password (secret-content (user-partition-crypt-password user-partition))))
+      (call-with-luks-key-file
+       password
+       (lambda (key-file)
+         (installer-log-line "opening LUKS entry ~s at ~s"
+                             label file-name)
+         ((run-command-in-installer) "cryptsetup" "open" "--type" "luks"
+          "--key-file" key-file file-name label))))))
+
 (define (luks-close user-partition)
   "Close the encrypted partition pointed by USER-PARTITION."
   (let ((label (user-partition-crypt-label user-partition)))
@@ -1278,6 +1292,8 @@ respective mount-points."
                         (user-fs-type->mount-type fs-type))
                        (file-name
                         (user-partition-upper-file-name user-partition)))
+                  (when crypt-label
+                    (luks-ensure-open user-partition))
                   (mkdir-p target)
                   (installer-log-line "mounting ~s on ~s" file-name target)
                   (mount file-name target mount-type)))
