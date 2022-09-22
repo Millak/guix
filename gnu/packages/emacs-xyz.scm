@@ -29796,7 +29796,7 @@ other @code{helm-type-file} sources such as @code{helm-locate}.")
             (lambda _ (chdir ".."))))
       #:test-target "test"))
     (inputs
-     (list tdlib libappindicator))
+     (list tdlib-1.8.0 libappindicator))
     (native-inputs
      (list python pkg-config))
     (home-page "https://zevlg.github.io/telega.el/")
