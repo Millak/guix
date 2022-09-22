@@ -39886,6 +39886,26 @@ obfuscation for Rust.  The string constant itself is embedded in obfuscated
 form and deobfuscated locally.")
     (license license:expat)))
 
+(define-public rust-obj-0.10
+  (package
+    (name "rust-obj")
+    (version "0.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "obj" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jks8qzjn59na40dv9m0q2j540i04cddbkbq02scgk9qawj9b705"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-genmesh" ,rust-genmesh-0.6))))
+    (home-page "https://github.com/kvark/obj")
+    (synopsis "Package for loading Wavefront .obj files")
+    (description
+     "This package provides a package for loading Wavefront @code{.obj} files.")
+    (license license:asl2.0)))
+
 (define-public rust-obj-0.9
   (package
     (name "rust-obj")
