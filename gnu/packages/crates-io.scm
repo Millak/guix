@@ -54250,6 +54250,33 @@ encodable types.")
      "This package provides a simple scanf()-like input for Rust")
     (license license:expat)))
 
+(define-public rust-sce-0.1
+  (package
+    (name "rust-sce")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sce" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1fv0nbx6r44rcqfy6881gin30d92zgxl0jrx4hfl725h0425i74j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-num" ,rust-num-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-sprs" ,rust-sprs-0.11))))
+    (home-page "https://github.com/parazodiac/SingleCellExperiment")
+    (synopsis "Import and manage various single-cell matrices")
+    (description
+     "This package provides a library for importing and managing various
+single-cell matrices.")
+    (license license:bsd-3)))
+
 (define-public rust-schannel-0.1
   (package
     (name "rust-schannel")
