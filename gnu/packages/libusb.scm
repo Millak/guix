@@ -51,6 +51,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xiph))
 
@@ -362,6 +363,28 @@ I2C and SPI devices attached to the USB Hub.")
     (description "This package provides an interface to manage IPA format
 files and applications for iOS devices, it's written in C")
     (license license:gpl2)))
+
+(define-public libirecovery
+  (package
+    (name "libirecovery")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/libimobiledevice/libirecovery")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0p9ncqnz5kb7qisw00ynvasw1hax5qx241h9nwppi2g544i9lbnr"))))
+    (build-system gnu-build-system)
+    (inputs (list readline libusb))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (home-page "https://libimobiledevice.org/")
+    (synopsis "Communication library with iBoot/iBSS of iOS devices via USB")
+    (description "Libirecovery is a cross-platform library which implements
+communication to iBoot/iBSS found on Apple's iOS devices via USB.")
+    (license license:lgpl2.1)))
 
 (define-public libplist
   (package
