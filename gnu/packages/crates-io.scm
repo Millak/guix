@@ -25934,7 +25934,11 @@ graphics.")
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-takeable-option" ,rust-takeable-option-0.5))
        #:cargo-development-inputs
-       (("rust-gl-generator" ,rust-gl-generator-0.14))))
+       (("rust-cgmath" ,rust-cgmath-0.18)
+        ("rust-genmesh" ,rust-genmesh-0.6)
+        ("rust-gl-generator" ,rust-gl-generator-0.14)
+        ("rust-obj" ,rust-obj-0.10)
+        ("rust-ouroboros" ,rust-ouroboros-0.14))))
     (home-page "https://github.com/glium/glium")
     (synopsis "OpenGL wrapper")
     (description
