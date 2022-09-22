@@ -707,7 +707,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.18.1.0")
+    (version "0.18.1.1")
     (source
      (origin
        (method git-fetch)
@@ -725,7 +725,7 @@ blockchain.")
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "18yj44pki7x8ir6wg02g1h6yxp1hnqb0nrx9x5dvv94rda48cy66"))))
+        (base32 "050rf4c1i42d0vhcb3hqrrndr2l45w1qg4h62cagk0nmq5va6xj7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
