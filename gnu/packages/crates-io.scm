@@ -39903,7 +39903,8 @@ form and deobfuscated locally.")
                 "0jks8qzjn59na40dv9m0q2j540i04cddbkbq02scgk9qawj9b705"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-genmesh" ,rust-genmesh-0.6))))
+     `(#:tests? #false ;missing files
+       #:cargo-inputs (("rust-genmesh" ,rust-genmesh-0.6))))
     (home-page "https://github.com/kvark/obj")
     (synopsis "Package for loading Wavefront .obj files")
     (description
