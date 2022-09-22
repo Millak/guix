@@ -4742,33 +4742,39 @@ and RDP protocols.")
                (base32
                 "0cs5nayg080y8pb9b7qccm1ni8wkicdmqp1jsgc22110r6j24zyg"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      ;; Configure sysconfdir to /etc so that gconf profiles can be written
+      ;; there and loaded without having to set GCONF_PROFILE, which cannot be
+      ;; safely set globally (as a gconf profile is a per-user thing).
+      #:configure-flags #~(list "--sysconfdir=/etc"
+                                "-Dgtk_doc=true")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'increase-test-timeout
+                     (lambda _
+                       ;; On big-memory systems, the engine test may take
+                       ;; much longer than the default of 30 seconds.
+                       (substitute* "tests/meson.build"
+                         (("test\\(unit_test\\[0\\], exe" all)
+                          (string-append all ", timeout: 300"))))))))
+    (native-inputs
+     (list bash-completion
+           libxslt                      ;for xsltproc
+           libxml2                      ;for XML_CATALOG_FILES
+           docbook-xml-4.2
+           docbook-xsl
+           `(,glib "bin")
+           gtk-doc/stable
+           pkg-config
+           python
+           vala))
+    (inputs
+     (list gtk+
+           dbus))
     (propagated-inputs
      ;; In Requires of dconf.pc.
      (list glib))
-    (inputs
-     (list gtk+ dbus))
-    (native-inputs
-     `(("bash-completion" ,bash-completion)
-       ("libxslt" ,libxslt)                     ;for xsltproc
-       ("libxml2" ,libxml2)                     ;for XML_CATALOG_FILES
-       ("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("glib:bin" ,glib "bin")
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("vala" ,vala)))
-    (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags '("-Dgtk_doc=true")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'increase-test-timeout
-                    (lambda _
-                      ;; On big-memory systems, the engine test may take
-                      ;; much longer than the default of 30 seconds.
-                      (substitute* "tests/meson.build"
-                        (("test\\(unit_test\\[0\\], exe" all)
-                         (string-append all ", timeout: 300"))))))))
     (home-page "https://developer.gnome.org/dconf/")
     (synopsis "Low-level GNOME configuration system")
     (description "Dconf is a low-level configuration system.  Its main purpose
