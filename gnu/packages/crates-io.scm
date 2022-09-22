@@ -21310,6 +21310,40 @@ You can use this crate to turn non-blocking data structures into async or
 blocking data structures.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-executors-0.9
+  (package
+    (name "rust-executors")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "executors" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0z8gn5vcr0x1db1bvahhmby9mpr1jgzd4qfvm25mja5js3agk51a"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; TODO: build needs metrics_printer
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-arr-macro" ,rust-arr-macro-0.1)
+        ("rust-async-task" ,rust-async-task-4)
+        ("rust-core-affinity" ,rust-core-affinity-0.5)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-metrics" ,rust-metrics-0.14)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-synchronoise" ,rust-synchronoise-1)
+        ("rust-threadpool" ,rust-threadpool-1))))
+    (home-page "https://github.com/Bathtor/rust-executors")
+    (synopsis "Collection of high-performance task executors")
+    (description
+     "This package provides a collection of high-performance task executors.")
+    (license license:expat)))
+
 (define-public rust-exitcode-1
   (package
     (name "rust-exitcode")
