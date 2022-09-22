@@ -32622,6 +32622,63 @@ library.")
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-libradicl-0.4
+  (package
+    (name "rust-libradicl")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libradicl" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "10j2f2iv4037315fiqppk7x2bx1mnw6gns3qqwyhcyh4sgbz3ka4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #false                  ;fail to compile InternalVersionInfo
+       #:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.7)
+        ("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-bincode" ,rust-bincode-1)
+        ("rust-bio-types" ,rust-bio-types-0.12)
+        ("rust-bstr" ,rust-bstr-0.2)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-crossbeam-queue" ,rust-crossbeam-queue-0.3)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-dashmap" ,rust-dashmap-4)
+        ("rust-executors" ,rust-executors-0.9)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-indicatif" ,rust-indicatif-0.16)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-needletail" ,rust-needletail-0.4)
+        ("rust-num" ,rust-num-0.4)
+        ("rust-num-format" ,rust-num-format-0.4)
+        ("rust-petgraph" ,rust-petgraph-0.6)
+        ("rust-quickersort" ,rust-quickersort-3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rust-htslib" ,rust-rust-htslib-0.38)
+        ("rust-sce" ,rust-sce-0.1)
+        ("rust-scroll" ,rust-scroll-0.10)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-slog" ,rust-slog-2)
+        ("rust-slog-async" ,rust-slog-async-2)
+        ("rust-slog-term" ,rust-slog-term-2)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-snap" ,rust-snap-1)
+        ("rust-sprs" ,rust-sprs-0.10)
+        ("rust-statrs" ,rust-statrs-0.15))))
+    (inputs
+     (list xz zlib))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://github.com/COMBINE-lab/alevin-fry")
+    (synopsis "Support library for alevin-fry")
+    (description "This package provides a support library for alevin-fry, a
+suite of tools for the rapid, accurate and memory-frugal processing
+single-cell and single-nucleus sequencing data.")
+    (license license:bsd-3)))
+
 (define-public rust-libsqlite3-sys-0.23
   (package
     (name "rust-libsqlite3-sys")
