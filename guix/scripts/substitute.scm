@@ -437,20 +437,13 @@ server certificates."
   "Bind PORT with EXP... to a socket connected to URI."
   (call-with-cached-connection uri (lambda (port) exp ...)))
 
-(define* (process-substitution port store-item destination
-                               #:key cache-urls acl
-                               deduplicate? print-build-trace?)
-  "Substitute STORE-ITEM (a store file name) from CACHE-URLS, and write it to
-DESTINATION as a nar file.  Verify the substitute against ACL, and verify its
-hash against what appears in the narinfo.  When DEDUPLICATE? is true, and if
-DESTINATION is in the store, deduplicate its files.  Print a status line to
-PORT."
-  (define narinfo
-    (lookup-narinfo cache-urls store-item
-                    (if (%allow-unauthenticated-substitutes?)
-                        (const #t)
-                        (cut valid-narinfo? <> acl))))
-
+(define* (download-nar narinfo destination
+                       #:key status-port
+                       deduplicate? print-build-trace?)
+  "Download the nar prescribed in NARINFO, which is assumed to be authentic
+and authorized, and write it to DESTINATION.  When DEDUPLICATE? is true, and
+if DESTINATION is in the store, deduplicate its files.  Print a status line to
+STATUS-PORT."
   (define destination-in-store?
     (string-prefix? (string-append (%store-prefix) "/")
                     destination))
@@ -489,10 +482,6 @@ PORT."
       (else
        (leave (G_ "unsupported substitute URI scheme: ~a~%")
               (uri->string uri)))))
-
-  (unless narinfo
-    (leave (G_ "no valid substitute for '~a'~%")
-           store-item))
 
   (let ((uri compression file-size
              (narinfo-best-uri narinfo
@@ -575,13 +564,36 @@ PORT."
       (let ((actual (get-hash)))
         (if (bytevector=? actual expected)
             ;; Tell the daemon that we're done.
-            (format port "success ~a ~a~%"
+            (format status-port "success ~a ~a~%"
                     (narinfo-hash narinfo) (narinfo-size narinfo))
             ;; The actual data has a different hash than that in NARINFO.
-            (format port "hash-mismatch ~a ~a ~a~%"
+            (format status-port "hash-mismatch ~a ~a ~a~%"
                     (hash-algorithm-name algorithm)
                     (bytevector->nix-base32-string expected)
                     (bytevector->nix-base32-string actual)))))))
+
+(define* (process-substitution port store-item destination
+                               #:key cache-urls acl
+                               deduplicate? print-build-trace?)
+  "Substitute STORE-ITEM (a store file name) from CACHE-URLS, and write it to
+DESTINATION as a nar file.  Verify the substitute against ACL, and verify its
+hash against what appears in the narinfo.  When DEDUPLICATE? is true, and if
+DESTINATION is in the store, deduplicate its files.  Print a status line to
+PORT."
+  (define narinfo
+    (lookup-narinfo cache-urls store-item
+                    (if (%allow-unauthenticated-substitutes?)
+                        (const #t)
+                        (cut valid-narinfo? <> acl))))
+
+  (unless narinfo
+    (leave (G_ "no valid substitute for '~a'~%")
+           store-item))
+
+  (download-nar narinfo destination
+                #:status-port port
+                #:deduplicate? deduplicate?
+                #:print-build-trace? print-build-trace?))
 
 
 ;;;
