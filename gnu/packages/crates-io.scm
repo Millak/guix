@@ -51742,6 +51742,49 @@ please consider using @code{async-std} or @code{tokio}.")
     (inputs
      (list sqlite))))
 
+(define-public rust-rust-htslib-0.38
+  (package
+    (name "rust-rust-htslib")
+    (version "0.38.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rust-htslib" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "070sihnvyiyqcw8yjkdl8hvav598bsw36m722phgd2b394k6djia"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; TODO: cannot find openssl_src
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bio-types" ,rust-bio-types-0.12)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-custom-derive" ,rust-custom-derive-0.1)
+        ("rust-derive-new" ,rust-derive-new-0.5)
+        ("rust-hts-sys" ,rust-hts-sys-2)
+        ("rust-ieee754" ,rust-ieee754-0.2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-linear-map" ,rust-linear-map-1)
+        ("rust-newtype-derive" ,rust-newtype-derive-0.1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
+    (inputs (list openssl))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/rust-bio/rust-htslib.git")
+    (synopsis "HTSlib bindings and API for reading and writing BAM files")
+    (description
+     "This library provides HTSlib bindings and a high level Rust API for
+reading and writing BAM files.")
+    (license license:expat)))
+
 (define-public rust-rustsec-0.25
   (package
     (name "rust-rustsec")
