@@ -12230,6 +12230,32 @@ diagnostics easy and relatively painless for everyone!")
         ("rust-structopt" ,rust-structopt-0.3)
         ("rust-unindent" ,rust-unindent-0.1))))))
 
+(define-public rust-coitrees-0.2
+  (package
+    (name "rust-coitrees")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "coitrees" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1l2ybr8n02vm08wq9mrix7r07bgwm85i6fyachlm8d626w9w9d3f"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Check phase fails with:
+     ;; no function or associated item named `with_name` found for struct
+     ;; `Arg` in the current scope
+     `(#:tests? #false
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-3))))
+    (home-page "https://github.com/dcjones/coitrees")
+    (synopsis "Data structure for overlap queries on sets of intervals")
+    (description
+     "This package provides a very fast data structure for overlap queries on
+sets of intervals.")
+    (license license:expat)))
+
 (define-public rust-color-backtrace-0.5
   (package
     (name "rust-color-backtrace")
