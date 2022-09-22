@@ -11877,6 +11877,27 @@ syllable.  The package itself does not support UTF-8 input in ordinary
 (PDF)LaTeX; some UTF-8 support is offered by package @code{soulutf8}.")
       (license license:lppl))))
 
+(define-public texlive-generic-xstring
+  (let ((template (simple-texlive-package
+                   "texlive-generic-xstring"
+                   (list "/doc/generic/xstring/"
+                         "/tex/generic/xstring/")
+                   (base32
+                    "1azpq855kq1l4686bjp8haxim5c8wycz1b6lcg5q7x8kb4g9sppn")
+                   #:trivial? #t)))
+    (package
+      (inherit template)
+      (home-page "http://www.ctan.org/pkg/xstring")
+      (synopsis "String manipulation for (La)TeX")
+      (description
+       "@code{xstring} package provides macros for manipulating strings --
+testing a string's contents, extracting substrings, substitution of substrings
+and providing numbers such as string length, position of, or number of
+recurrences of, a substring.  The package works equally in Plain TeX and LaTeX
+(though e-TeX is always required).  The strings to be processed may contain
+(expandable) macros.")
+      (license license:lppl1.3c))))
+
 (define-public texlive-latex-totcount
   (package
     (inherit (simple-texlive-package
