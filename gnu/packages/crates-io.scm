@@ -28168,6 +28168,48 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
 characters in HTML, decoding and unescaping HTML entities as well.")
     (license license:expat)))
 
+(define-public rust-hts-sys-2
+  (package
+    (name "rust-hts-sys")
+    (version "2.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "hts-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qn1qz2xa69x2dj1fbh91avm9943rbcykr37zs68pb2bdy847i3j"))
+              (modules '((guix build utils)))
+              (snippet
+               '(substitute* "Cargo.toml"
+                  ;; Do not use zlib-ng; just use zlib.
+                  (("features = \\[\"zlib-ng\", \"static\"\\]") "")
+                  ;; No static libraries please.
+                  (("\"static-curl\", \"static-ssl\",") "")
+                  ((", \"static\"") "")
+                  (("\\[\"static\"\\]") "[]")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.53)
+        ("rust-bzip2-sys" ,rust-bzip2-sys-0.1)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-curl-sys" ,rust-curl-sys-0.4)
+        ("rust-fs-utils" ,rust-fs-utils-1)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-libdeflate-sys" ,rust-libdeflate-sys-0.5)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-lzma-sys" ,rust-lzma-sys-0.1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9))))
+    (inputs
+     (list curl openssl xz zlib))
+    (native-inputs
+     (list cmake-minimal pkg-config))
+    (home-page "https://github.com/samtools/htslib.git")
+    (synopsis "Rust bindings to HTSlib")
+    (description "This library provides Rust bindings to HTSlib.")
+    (license license:expat)))
+
 (define-public rust-http-0.2
   (package
     (name "rust-http")
