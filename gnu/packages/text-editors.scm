@@ -65,6 +65,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
@@ -898,6 +899,64 @@ can also act as an interface to external mathematical programs such as R and
 Octave.  TeXmacs is completely extensible via Guile.")
     (license license:gpl3+)
     (home-page "https://www.texmacs.org/tmweb/home/welcome.en.html")))
+
+(define-public textpieces
+  (package
+    (name "textpieces")
+    (version "3.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/liferooter/textpieces")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14zq2c7js80m4cq8wpdb3kyz5sw96l8znbz027w8s94gqhm632ff"))))
+    (arguments
+     '(;; The test suite fails to validate appstream file due to lack of
+       ;; network access
+       #:tests? #f
+       #:glib-or-gtk? #t))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config
+           vala
+           desktop-file-utils
+           appstream-glib
+           gettext-minimal
+           blueprint-compiler
+           `(,glib "bin")
+           `(,gtk "bin")))
+    (inputs
+     (list json-glib
+           libadwaita
+           libgee
+           python
+           python-pygobject
+           python-pyyaml
+           gtk
+           gtksourceview))
+    (home-page "https://github.com/liferooter/textpieces")
+    (synopsis "Quick text processor")
+    (description
+     "Text Pieces tool for quick text transformations such as checksums,
+encoding, decoding and so on.
+
+The basic features of Text Pieces are:
+@itemize
+@item Base64 encoding and decoding
+@item SHA-1, SHA-2 and MD5 checksums
+@item Prettify and minify JSON
+@item Covert JSON to YAML and vice versa
+@item Count lines, symbols and words
+@item Escape and unescape string, URL and HTML
+@item Remove leading and trailing whitespaces
+@item Sort and reverse sort lines
+@item Reverse lines and whole text
+@item You can write your own scripts and create custom tools
+@end itemize")
+    (license license:gpl3)))
 
 (define-public scintilla
   (package
