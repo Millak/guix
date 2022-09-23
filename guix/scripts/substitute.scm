@@ -460,25 +460,20 @@ STATUS-PORT."
        (let ((port (open-file (uri-path uri) "r0b")))
          (values port (stat:size (stat port)))))
       ((http https)
-       (guard (c ((http-get-error? c)
-                  (leave (G_ "download from '~a' failed: ~a, ~s~%")
-                         (uri->string (http-get-error-uri c))
-                         (http-get-error-code c)
-                         (http-get-error-reason c))))
-         ;; Test this with:
-         ;;   sudo tc qdisc add dev eth0 root netem delay 1500ms
-         ;; and then cancel with:
-         ;;   sudo tc qdisc del dev eth0 root
-         (with-timeout %fetch-timeout
-           (begin
-             (warning (G_ "while fetching ~a: server is somewhat slow~%")
-                      (uri->string uri))
-             (warning (G_ "try `--no-substitutes' if the problem persists~%")))
-           (with-cached-connection uri port
-             (http-fetch uri #:text? #f
-                         #:port port
-                         #:keep-alive? #t
-                         #:buffered? #f)))))
+       ;; Test this with:
+       ;;   sudo tc qdisc add dev eth0 root netem delay 1500ms
+       ;; and then cancel with:
+       ;;   sudo tc qdisc del dev eth0 root
+       (with-timeout %fetch-timeout
+         (begin
+           (warning (G_ "while fetching ~a: server is somewhat slow~%")
+                    (uri->string uri))
+           (warning (G_ "try `--no-substitutes' if the problem persists~%")))
+         (with-cached-connection uri port
+           (http-fetch uri #:text? #f
+                       #:port port
+                       #:keep-alive? #t
+                       #:buffered? #f))))
       (else
        (leave (G_ "unsupported substitute URI scheme: ~a~%")
               (uri->string uri)))))
@@ -572,6 +567,68 @@ STATUS-PORT."
                     (bytevector->nix-base32-string expected)
                     (bytevector->nix-base32-string actual)))))))
 
+(define system-error?
+  (let ((kind-and-args? (exception-predicate &exception-with-kind-and-args)))
+    (lambda (exception)
+      "Return true if EXCEPTION is a Guile 'system-error exception."
+      (and (kind-and-args? exception)
+           (eq? 'system-error (exception-kind exception))))))
+
+(define network-error?
+  (let ((kind-and-args? (exception-predicate &exception-with-kind-and-args)))
+    (lambda (exception)
+      "Return true if EXCEPTION denotes a networking error."
+      (or (and (system-error? exception)
+               (let ((errno (system-error-errno
+                             (cons 'system-error (exception-args exception)))))
+                 (memv errno (list ECONNRESET ECONNABORTED
+                                   ECONNREFUSED EHOSTUNREACH
+                                   ENOENT))))     ;for "file://"
+          (and (kind-and-args? exception)
+               (memq (exception-kind exception)
+                     '(gnutls-error getaddrinfo-error)))
+          (and (http-get-error? exception)
+               (begin
+                 (warning (G_ "download from '~a' failed: ~a, ~s~%")
+                          (uri->string (http-get-error-uri exception))
+                          (http-get-error-code exception)
+                          (http-get-error-reason exception))
+                 #t))))))
+
+(define* (process-substitution/fallback port narinfo destination
+                                        #:key cache-urls acl
+                                        deduplicate? print-build-trace?)
+  "Attempt to substitute NARINFO, which is assumed to be authorized or
+equivalent, by trying to download its nar from each entry in CACHE-URLS.
+
+This can be less efficient than 'lookup-narinfo', which stops at the first
+entry that provides a valid narinfo, but it makes sure we eventually find a
+way to download the nar."
+  ;; Note: Keep NARINFO's uri-base in CACHE-URLS: that lets us retry in case
+  ;; this was a transient issue.
+  (let loop ((cache-urls cache-urls))
+    (match cache-urls
+      (()
+       (leave (G_ "failed to find alternative substitute for '~a'~%")
+              (narinfo-path narinfo)))
+      ((cache-url rest ...)
+       (match (lookup-narinfos cache-url
+                               (list (narinfo-path narinfo))
+                               #:open-connection
+                               open-connection-for-uri/cached)
+         ((alternate)
+          (if (or (equivalent-narinfo? narinfo alternate)
+                  (valid-narinfo? alternate acl)
+                  (%allow-unauthenticated-substitutes?))
+              (guard (c ((network-error? c) (loop rest)))
+                (download-nar alternate destination
+                              #:status-port port
+                              #:deduplicate? deduplicate?
+                              #:print-build-trace? print-build-trace?))
+              (loop rest)))
+         (()
+          (loop rest)))))))
+
 (define* (process-substitution port store-item destination
                                #:key cache-urls acl
                                deduplicate? print-build-trace?)
@@ -590,10 +647,20 @@ PORT."
     (leave (G_ "no valid substitute for '~a'~%")
            store-item))
 
-  (download-nar narinfo destination
-                #:status-port port
-                #:deduplicate? deduplicate?
-                #:print-build-trace? print-build-trace?))
+  (guard (c ((network-error? c)
+             (format (current-error-port)
+                     (G_ "retrying download of '~a' with other substitute URLs...~%")
+                     store-item)
+             (process-substitution/fallback port narinfo destination
+                                            #:cache-urls cache-urls
+                                            #:acl acl
+                                            #:deduplicate? deduplicate?
+                                            #:print-build-trace?
+                                            print-build-trace?)))
+    (download-nar narinfo destination
+                  #:status-port port
+                  #:deduplicate? deduplicate?
+                  #:print-build-trace? print-build-trace?)))
 
 
 ;;;

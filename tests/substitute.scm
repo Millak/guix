@@ -523,6 +523,119 @@ System: mips64el-linux\n")))
         (lambda ()
           (false-if-exception (delete-file "substitute-retrieved")))))))
 
+(test-equal "substitute, first URL has narinfo but lacks nar, second URL unauthorized"
+  "Substitutable data."
+  (with-narinfo*
+      (string-append %narinfo "Signature: "
+                     (signature-field
+                      %narinfo
+                      #:public-key %wrong-public-key))
+      %alternate-substitute-directory
+
+    (with-narinfo* (string-append %narinfo "Signature: "
+                                  (signature-field %narinfo))
+        %main-substitute-directory
+
+      (dynamic-wind
+        (const #t)
+        (lambda ()
+          ;; Remove this file so that the substitute can only be retrieved
+          ;; from %ALTERNATE-SUBSTITUTE-DIRECTORY.
+          (delete-file (string-append %main-substitute-directory
+                                      "/example.nar"))
+
+          (parameterize ((substitute-urls
+                          (map (cut string-append "file://" <>)
+                               (list %main-substitute-directory
+                                     %alternate-substitute-directory))))
+            (request-substitution (string-append (%store-prefix)
+                                                 "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+                                  "substitute-retrieved"))
+          (call-with-input-file "substitute-retrieved" get-string-all))
+        (lambda ()
+          (false-if-exception (delete-file "substitute-retrieved")))))))
+
+(test-equal "substitute, first URL has narinfo but nar is 404, both URLs authorized"
+  "Substitutable data."
+  (with-narinfo*
+      (string-append %narinfo "Signature: "
+                     (signature-field %narinfo))
+      %main-substitute-directory
+
+    (with-http-server `((200 ,(string-append %narinfo "Signature: "
+                                             (signature-field %narinfo)))
+                        (404 "Sorry, nar is missing!"))
+      (dynamic-wind
+        (const #t)
+        (lambda ()
+          (parameterize ((substitute-urls
+                          (list (%local-url)
+                                (string-append "file://"
+                                               %main-substitute-directory))))
+            (request-substitution (string-append (%store-prefix)
+                                                 "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+                                  "substitute-retrieved"))
+          (call-with-input-file "substitute-retrieved" get-string-all))
+        (lambda ()
+          (false-if-exception (delete-file "substitute-retrieved")))))))
+
+(test-equal "substitute, first URL has narinfo but nar is 404, one URL authorized"
+  "Substitutable data."
+  (with-narinfo*
+      (string-append %narinfo "Signature: "
+                     (signature-field
+                      %narinfo
+                      #:public-key %wrong-public-key))
+      %main-substitute-directory
+
+    (with-http-server `((200 ,(string-append %narinfo "Signature: "
+                                             (signature-field
+                                              %narinfo
+                                              #:public-key %wrong-public-key)))
+                        (404 "Sorry, nar is missing!"))
+      (let ((url1 (%local-url)))
+        (parameterize ((%http-server-port 0))
+          (with-http-server `((200 ,(string-append %narinfo "Signature: "
+                                                   (signature-field %narinfo)))
+                              (404 "Sorry, nar is missing!"))
+            (let ((url2 (%local-url)))
+              (dynamic-wind
+                (const #t)
+                (lambda ()
+                  (parameterize ((substitute-urls
+                                  (list url1 url2
+                                        (string-append "file://"
+                                                       %main-substitute-directory))))
+                    (request-substitution (string-append (%store-prefix)
+                                                         "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+                                          "substitute-retrieved"))
+                  (call-with-input-file "substitute-retrieved" get-string-all))
+                (lambda ()
+                  (false-if-exception (delete-file "substitute-retrieved")))))))))))
+
+(test-quit "substitute, narinfo is available but nar is missing"
+    "failed to find alternative substitute"
+  (with-narinfo*
+      (string-append %narinfo "Signature: "
+                     (signature-field
+                      %narinfo
+                      #:public-key %wrong-public-key))
+      %main-substitute-directory
+
+    (with-http-server `((200 ,(string-append %narinfo "Signature: "
+                                             (signature-field %narinfo)))
+                        (404 "Sorry, nar is missing!"))
+      (parameterize ((substitute-urls
+                      (list (%local-url)
+                            (string-append "file://"
+                                           %main-substitute-directory))))
+        (delete-file (string-append %main-substitute-directory
+                                    "/example.nar"))
+        (request-substitution (string-append (%store-prefix)
+                                             "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+                              "substitute-retrieved")
+        (not (file-exists? "substitute-retrieved"))))))
+
 (test-equal "substitute, first narinfo is unsigned and has wrong hash"
   "Substitutable data."
   (with-narinfo* (regexp-substitute #f
