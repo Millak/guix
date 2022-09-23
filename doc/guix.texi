@@ -12364,14 +12364,15 @@ one provided by the distribution.  The example below downloads
 the @code{ed} package:
 
 @example
-guix build ed --with-source=mirror://gnu/ed/ed-1.7.tar.gz
+guix build ed --with-source=mirror://gnu/ed/ed-1.4.tar.gz
 @end example
 
 As a developer, @option{--with-source} makes it easy to test release
-candidates:
+candidates, and even to test their impact on packages that depend on
+them:
 
 @example
-guix build guile --with-source=../guile-2.0.9.219-e1bb7.tar.xz
+guix build elogind --with-source=@dots{}/shepherd-0.9.0rc1.tar.gz 
 @end example
 
 @dots{} or to build from a checkout in a pristine environment:

@@ -129,42 +129,46 @@ the new package's version number from URI."
 ;;; Transformations.
 ;;;
 
-(define (transform-package-source sources)
-  "Return a transformation procedure that replaces package sources with the
-matching URIs given in SOURCES."
-  (define new-sources
-    (map (lambda (uri)
-           (match (string-index uri #\=)
-             (#f
-              ;; Determine the package name and version from URI.
-              (call-with-values
-                  (lambda ()
-                    (hyphen-package-name->name+version
-                     (tarball-base-name (basename uri))))
-                (lambda (name version)
-                  (list name version uri))))
-             (index
-              ;; What's before INDEX is a "PKG@VER" or "PKG" spec.
-              (call-with-values
-                  (lambda ()
-                    (package-name->name+version (string-take uri index)))
-                (lambda (name version)
-                  (list name version
-                        (string-drop uri (+ 1 index))))))))
-         sources))
+(define (evaluate-source-replacement-specs specs)
+  "Parse SPECS, a list of strings like \"guile=/tmp/guile-4.2.tar.gz\" or just
+\"/tmp/guile-4.2.tar.gz\" and return a list of package spec/procedure pairs as
+expected by 'package-input-rewriting/spec'.  Raise an error if an element of
+SPECS uses invalid syntax."
+  (define not-equal
+    (char-set-complement (char-set #\=)))
 
-  (lambda (obj)
-    (let loop ((sources  new-sources)
-               (result   '()))
-      (match obj
-        ((? package? p)
-         (match (assoc-ref sources (package-name p))
-           ((version source)
-            (package-with-source p source version))
-           (#f
-            p)))
-        (_
-         obj)))))
+  (map (lambda (spec)
+         (match (string-tokenize spec not-equal)
+           ((uri)
+            (let* ((base (tarball-base-name (basename uri)))
+                   (name (hyphen-package-name->name+version base)))
+              (cons name
+                    (lambda (old)
+                      (package-with-source old uri)))))
+           ((spec uri)
+            (let-values (((name version)
+                          (package-name->name+version spec)))
+              ;; Note: Here VERSION is used as the version string of the new
+              ;; package rather than as part of the spec of the package being
+              ;; targeted.
+              (cons name
+                    (lambda (old)
+                      (package-with-source old uri version)))))
+           (_
+            (raise (formatted-message
+                    (G_ "invalid source replacement specification: ~s")
+                    spec)))))
+       specs))
+
+(define (transform-package-source replacement-specs)
+  "Return a transformation procedure that replaces package sources with the
+matching URIs given in REPLACEMENT-SPECS."
+  (let* ((replacements (evaluate-source-replacement-specs replacement-specs))
+         (rewrite      (package-input-rewriting/spec replacements)))
+    (lambda (obj)
+      (if (package? obj)
+          (rewrite obj)
+          obj))))
 
 (define (evaluate-replacement-specs specs proc)
   "Parse SPECS, a list of strings like \"guile=guile@2.1\" and return a list
