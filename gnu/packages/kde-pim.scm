@@ -37,6 +37,7 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages openldap)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages search)
   #:use-module (gnu packages sqlite)
@@ -59,7 +60,7 @@
                  "akonadi-not-relocatable.patch"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules qttools-5 shared-mime-info))
+     (list dbus extra-cmake-modules qttools-5 shared-mime-info pkg-config))
     (inputs
      (list boost
            kconfig
