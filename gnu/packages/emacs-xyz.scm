@@ -17626,8 +17626,8 @@ through them using @key{C-c C-SPC}.")
     (license license:gpl3+)))
 
 (define-public emacs-slack
-  (let ((commit "1f6a40faec0d8d9c9de51c444508d05a3e995ccd")
-        (revision "9"))
+  (let ((commit "ff46d88726482211e3ac3d0b9c95dd4fdffe11c2")
+        (revision "10"))
     (package
       (name "emacs-slack")
       (version (git-version "0.0.2" revision commit))
@@ -17639,7 +17639,7 @@ through them using @key{C-c C-SPC}.")
                 (file-name (git-file-name name commit))
                 (sha256
                  (base32
-                  "19lan9nd8qfw2ws7mx814vrin04c892yn5c8g3nad7lpnzszgr1r"))))
+                  "15g4dmy4iqqpk8ivhkpsngzllbw0nc5d2sc9j36sdnhwkajzhidj"))))
       (build-system emacs-build-system)
       (arguments
        `(#:phases
