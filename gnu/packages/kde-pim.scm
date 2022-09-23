@@ -496,6 +496,34 @@ modern blogging web application that provides an XML data interface supports
 one of the APIs mentioned above.")
     (license license:lgpl2.0+)))
 
+(define-public kaccounts-integration
+  (package
+    (name "kaccounts-integration")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1q1d2a1qknfkgm63gji6ijji35d0b1jy1kvf10a7ac4l1z1fvnpl"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kcmutils
+                  ki18n
+                  kcoreaddons
+                  kdbusaddons
+                  kdeclarative
+                  kwallet
+                  kio
+                  libaccounts-qt
+                  signond))
+    (home-page "https://invent.kde.org/network/kaccounts-integration")
+    (synopsis "Online account management system")
+    (description "The Kaccounts Integration library provides online account
+management system and its Plasma integration components.")
+    (license license:lgpl2.0+)))
+
 (define-public kcalendarsupport
   (package
     (name "kcalendarsupport")
