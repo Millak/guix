@@ -140,6 +140,7 @@
   #:use-module (guix download)
   #:use-module (guix bzr-download)
   #:use-module (guix gexp)
+  #:use-module (guix i18n)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module (guix build-system gnu)
@@ -241,6 +242,8 @@
   #:use-module (gnu packages photo)
   #:use-module (gnu packages uml)
   #:use-module (gnu packages finance)
+  #:use-module (gnu packages ocaml)
+  #:use-module (gnu packages erlang)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
@@ -27464,6 +27467,94 @@ line or region to an appropriately configured shell.  This package provides
 just the core of @code{eval-in-repl}---for the languages themselves, see their
 respective packages.")
     (license license:expat)))
+
+(define* (make-emacs-eval-in-repl repl #:key
+                                  (eval-in-repl-package emacs-eval-in-repl)
+                                  (language (string-capitalize repl))
+                                  (inputs '()))
+  "Construct an emacs-eval-in-repl package for REPL, which interprets LANGUAGE.
+Optionally propagate INPUTS or use a different EVAL-IN-REPL-PACKAGE."
+  (package
+    (inherit eval-in-repl-package)
+    (name (string-append "emacs-eval-in-repl-" repl))
+    (arguments
+     (list #:include
+           #~(list #$(string-append "eval-in-repl-" repl "\\.el"))))
+    (propagated-inputs (cons* eval-in-repl-package
+                              (cond
+                               ((procedure? inputs) (inputs))
+                               ((promise? inputs) (force inputs))
+                               (else inputs))))
+    (description
+     (format #f (G_ "This package provides an ESS-like binding to send lines
+or regions to a REPL from ~a buffers.") language))))
+
+(define-public emacs-eval-in-repl-cider
+  (make-emacs-eval-in-repl "cider" #:language "Clojure"
+                           #:inputs (list emacs-cider)))
+
+(define-public emacs-eval-in-repl-elm
+  (make-emacs-eval-in-repl "elm" #:inputs (list emacs-elm-mode)))
+
+(define-public emacs-eval-in-repl-erlang
+  (make-emacs-eval-in-repl "erlang" #:inputs (list emacs-erlang)))
+
+(define-public emacs-eval-in-repl-geiser
+  (make-emacs-eval-in-repl "geiser" #:language "Scheme"
+                           #:inputs (list emacs-geiser)))
+
+(define-public emacs-eval-in-repl-hy
+  (make-emacs-eval-in-repl "hy" #:inputs (list emacs-hy-mode)))
+
+(define-public emacs-eval-in-repl-ielm
+  (make-emacs-eval-in-repl "ielm" #:language "Emacs Lisp"))
+
+(define-public emacs-eval-in-repl-iex
+  (make-emacs-eval-in-repl
+   "iex" #:language "Elixir"
+   #:inputs (delay
+              (list emacs-elixir-mode emacs-alchemist))))
+
+(define-public emacs-eval-in-repl-javascript
+  (make-emacs-eval-in-repl "javascript"
+                           #:inputs (list emacs-js2-mode emacs-js-comint)))
+
+(define-public emacs-eval-in-repl-lua
+  (make-emacs-eval-in-repl "lua" #:inputs (list emacs-lua-mode)))
+
+(define-public emacs-eval-in-repl-ocaml
+  (make-emacs-eval-in-repl "ocaml" #:language "OCaml"
+                           #:inputs (delay (list emacs-tuareg))))
+
+(define-public emacs-eval-in-repl-prolog
+  (make-emacs-eval-in-repl "prolog"))
+
+(define-public emacs-eval-in-repl-python
+  (make-emacs-eval-in-repl "python"))
+
+(define-public emacs-eval-in-repl-racket
+  (make-emacs-eval-in-repl "racket" #:inputs (list emacs-racket-mode)))
+
+(define-public emacs-eval-in-repl-ruby
+  (make-emacs-eval-in-repl "ruby" #:inputs (list emacs-inf-ruby)))
+
+(define-public emacs-eval-in-repl-scheme
+  (make-emacs-eval-in-repl "scheme"))
+
+(define-public emacs-eval-in-repl-shell
+  (make-emacs-eval-in-repl "shell"))
+
+(define-public emacs-eval-in-repl-slime
+  (make-emacs-eval-in-repl "slime" #:language "Common Lisp"
+                           #:inputs (list emacs-slime)))
+
+(define-public emacs-eval-in-repl-sly
+  (make-emacs-eval-in-repl "sly" #:language "Common Lisp"
+                           #:inputs (list emacs-sly)))
+
+(define-public emacs-eval-in-repl-sml
+  (make-emacs-eval-in-repl "sml" #:language "Standard ML"
+                           #:inputs (list emacs-sml-mode)))
 
 (define-public emacs-eval-sexp-fu-el
   (package
