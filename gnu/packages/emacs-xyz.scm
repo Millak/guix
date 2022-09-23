@@ -16406,7 +16406,7 @@ highlighting.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0005n150ibkdn2i3p8q3d1ag5jnikfc988f3hz2yfdk4z0ajj536"))))
+           "0srwb171dxha1nfzppk6x9v4bdj3lk74pksqnhalw8jw9c67b72y"))))
       (build-system emacs-build-system)
       (arguments
        (list #:phases
