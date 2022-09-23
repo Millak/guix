@@ -331,11 +331,15 @@ if it is not needed."
 (define* (wait-for-screen-text marionette predicate
                                #:key
                                (ocr "ocrad")
-                               (timeout 30))
+                               (timeout 30)
+                               pre-action
+                               post-action)
   "Wait for TIMEOUT seconds or until the screen text on MARIONETTE matches
 PREDICATE, whichever comes first.  Raise an error when TIMEOUT is exceeded.
 The error contains the recognized text along the preserved file name of the
-screen dump, which is relative to the current working directory."
+screen dump, which is relative to the current working directory.  If
+PRE-ACTION is provided, it should be a thunk to call before each OCR attempt.
+Likewise for POST-ACTION, except it runs at the end of a successful OCR."
   (define start
     (car (gettimeofday)))
 
@@ -353,7 +357,9 @@ screen dump, which is relative to the current working directory."
           (error "'wait-for-screen-text' timeout"
                  'ocr-text: last-text
                  'screendump: screendump-backup))
-        (let* ((text screendump (marionette-screen-text marionette #:ocr ocr))
+        (let* ((_ (and (procedure? pre-action) (pre-action)))
+               (text screendump (marionette-screen-text marionette #:ocr ocr))
+               (_ (and (procedure? post-action) (post-action)))
                (result (predicate text)))
           (cond (result
                  (delete-file screendump)
