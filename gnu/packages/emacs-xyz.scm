@@ -116,6 +116,7 @@
 ;;; Copyright © 2022 Haider Mirza <haider@haider.gq>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27391,6 +27392,34 @@ to be examined using Ediff.")
 outline-enabled table of contents, additional metadata association for Info
 nodes, and more.")
       (license license:gpl2+))))
+
+(define-public emacs-eval-in-repl
+  (package
+    (name "emacs-eval-in-repl")
+    (version "0.9.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kaz-yos/eval-in-repl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mrssbl0wyc6iij8zk1y3h9bd3rv53nnrxsij7fn67l1m4z0clyn"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:include
+           #~(list "eval-in-repl\\.el" "eval-in-repl-test\\.el" "README\\.md")))
+    (propagated-inputs (list emacs-dash emacs-paredit emacs-ace-window))
+    (home-page "https://github.com/kaz-yos/eval-in-repl")
+    (synopsis "One keybinding to communicate with REPLs")
+    (description
+     "@code{eval-in-repl} provides a consistent ESS-like evaluation interface
+for various REPLs.  In particular, it mimics ESS' C-RET binding, which sends a
+line or region to an appropriately configured shell.  This package provides
+just the core of @code{eval-in-repl}---for the languages themselves, see their
+respective packages.")
+    (license license:expat)))
 
 (define-public emacs-eval-sexp-fu-el
   (package
