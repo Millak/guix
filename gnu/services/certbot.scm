@@ -154,6 +154,7 @@
 
 (define (certbot-activation config)
   (let* ((certbot-directory "/var/lib/certbot")
+         (certbot-cert-directory "/etc/letsencrypt/live")
          (script (in-vicinity certbot-directory "renew-certificates"))
          (message (format #f (G_ "~a may need to be run~%") script)))
     (match config
@@ -164,6 +165,7 @@
              (use-modules (guix build utils))
              (mkdir-p #$webroot)
              (mkdir-p #$certbot-directory)
+             (mkdir-p #$certbot-cert-directory)
              (copy-file #$(certbot-command config) #$script)
              (display #$message)))))))
 
