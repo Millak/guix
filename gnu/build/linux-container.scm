@@ -233,7 +233,7 @@ that host UIDs (respectively GIDs) map to in the namespace."
   ;; The parent process must initialize the user namespace for the child
   ;; before it can boot.  To negotiate this, a pipe is used such that the
   ;; child process blocks until the parent writes to it.
-  (match (socketpair PF_UNIX SOCK_STREAM 0)
+  (match (socketpair PF_UNIX (logior SOCK_CLOEXEC SOCK_STREAM) 0)
     ((child . parent)
      (let ((flags (namespaces->bit-mask namespaces)))
        (match (clone flags)
