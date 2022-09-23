@@ -11115,6 +11115,27 @@ errors and strict-mode warnings, smart line-wrapping within comments and
 strings, and code folding.")
     (license license:gpl3+)))
 
+(define-public emacs-js-comint
+  (package
+    (name "emacs-js-comint")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://stable.melpa.org/packages/"
+                           "js-comint-" version ".el"))
+       (sha256
+        (base32 "1qin0hclm3ly62nl5ddiim64bcd2k74b1yqsqqc61cf9k2q8k287"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/redguardtoo/js-comint")
+    (synopsis "Interacting with a JavaScript interpeter")
+    (description
+     "This program is a comint mode for Emacs which allows you to run a
+compatible JavaScript REPL, such as node, SpiderMonkey or Rhino.
+It also defines a few functions for sending JavaScript input to this REPL from
+an Emacs buffer.")
+    (license license:gpl3+)))
+
 (define-public emacs-nodejs-repl
   (package
     (name "emacs-nodejs-repl")
