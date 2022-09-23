@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;;
@@ -209,7 +209,8 @@ No authentication and authorization checks are performed here!"
 
 (define* (valid-narinfo? narinfo #:optional (acl (current-acl))
                          #:key verbose?)
-  "Return #t if NARINFO's signature is not valid."
+  "Return #t if NARINFO's signature is valid and made by one of the keys in
+ACL."
   (let ((hash      (narinfo-sha256 narinfo))
         (signature (narinfo-signature narinfo))
         (uri       (uri->string (first (narinfo-uris narinfo)))))
