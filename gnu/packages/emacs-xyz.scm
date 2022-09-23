@@ -244,6 +244,7 @@
   #:use-module (gnu packages finance)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages erlang)
+  #:use-module (gnu packages statistics)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
@@ -27578,6 +27579,30 @@ or regions to a REPL from ~a buffers.") language))))
       (description
        "This package adds support to Org-Babel for evaluating Elm code.")
       (license license:gpl3+))))
+
+(define-public emacs-org-babel-eval-in-repl
+  (package
+    (name "emacs-org-babel-eval-in-repl")
+    (version "1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://stable.melpa.org/packages/"
+                           "org-babel-eval-in-repl-" version ".tar"))
+       (sha256
+        (base32 "0bdnps6m3kcvsagz8cfm3kf2rvxzl2p252pfggwbdbl43kzvl35h"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin (delete-file "eval-in-repl-matlab.el")))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-eval-in-repl emacs-ess))
+    (home-page "https://github.com/diadochos/org-babel-eval-in-repl")
+    (synopsis "Eval org-mode babel code blocks in various REPLs")
+    (description
+     "This package allows you to execute org-mode source code blocks with
+@code{eval-in-repl}.  It can execute code blocks asynchronously, without
+needing to write the result into the buffer.")
+    (license license:expat)))
 
 (define-public emacs-eval-sexp-fu-el
   (package
