@@ -203,4 +203,23 @@
                  ("license" . #f))))
     (package-native-inputs (alist->package meta))))
 
+(test-assert "alist->package with properties"
+  (let* ((meta '(("name" . "hello")
+                 ("version" . "2.10")
+                 ("source" .
+                  ;; Use a 'file://' URI so that we don't cause a download.
+                  ,(string-append "file://"
+                                  (search-path %load-path "guix.scm")))
+                 ("build-system" . "gnu")
+                 ("properties" . (("hidden?" . #t)
+                                  ("upstream-name" . "hello-upstream")))
+                 ("home-page" . "https://gnu.org")
+                 ("synopsis" . "Say hi")
+                 ("description" . "This package says hi.")
+                 ("license" . "GPL-3.0+")))
+         (pkg (alist->package meta)))
+    (and (package? pkg)
+         (equal? (package-upstream-name pkg) "hello-upstream")
+         (hidden-package? pkg))))
+
 (test-end "import-utils")

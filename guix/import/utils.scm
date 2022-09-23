@@ -444,10 +444,20 @@ specifications to look up and replace them with plain symbols instead."
                   ((key . value)
                    (list (symbol->keyword (string->symbol key)) value)))
                 arguments))
+  (define (process-properties properties)
+    (map (match-lambda
+           ((key . value)
+            (cons (string->symbol key) value)))
+         properties))
+
   (package
     (name (assoc-ref meta "name"))
     (version (assoc-ref meta "version"))
     (source (source-spec->object (assoc-ref meta "source")))
+    (properties
+     (or (and=> (assoc-ref meta "properties")
+                process-properties)
+         '()))
     (build-system
       (lookup-build-system-by-name
        (string->symbol (assoc-ref meta "build-system"))))
