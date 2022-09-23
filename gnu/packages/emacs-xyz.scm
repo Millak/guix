@@ -2677,6 +2677,29 @@ command, which uses Emacs standard completion to select an application
 installed on your machine and launch it.")
       (license license:gpl3+))))
 
+(define-public emacs-alchemist
+  (package
+    (name "emacs-alchemist")
+    (version "1.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://stable.melpa.org/packages/"
+                           "alchemist-" version ".tar"))
+       (sha256
+        (base32 "0ygwf9d739zqc8dcckw0j0bqkipw7cmxbrx3l281x237a3d384yw"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-elixir-mode emacs-dash emacs-company emacs-pkg-info))
+    (home-page "http://www.github.com/tonini/alchemist.el")
+    (synopsis "Elixir tooling integration into Emacs")
+    (description
+     "This package brings you all the Elixir tooling and power inside your Emacs
+editor.  It comes with commands to compile, execute and test your code, spawn
+an interactive shell, and look up definitions and documentation as well as
+code completion and project management support.")
+    (license license:gpl3+)))
+
 (define-public emacs-auto-sudoedit
   (package
     (name "emacs-auto-sudoedit")
