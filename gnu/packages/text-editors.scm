@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +46,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
@@ -62,6 +64,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
@@ -81,6 +84,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
@@ -1260,3 +1264,39 @@ scriptable rc file, macros, search and replace (PCRE), window
 splitting, multiple cursors, and integration with various shell
 commands.")
     (license license:asl2.0)))
+
+(define-public lite-xl
+  (package
+    (name "lite-xl")
+    (version "2.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lite-xl/lite-xl")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0l2i9mvbkc4kqkwk2p17zd1rlm5v41acdyp2xivi53p2hkj4x6pf"))
+              (modules '((guix build utils)))
+              (snippet '(substitute* "meson.build"
+                          (("dependency\\('lua5\\.2',")
+                           "dependency('lua-5.2',")))))
+    (build-system meson-build-system)
+    (inputs (list agg
+                  freetype
+                  lua-5.2
+                  pcre2
+                  reproc
+                  sdl2))
+    (native-inputs (list pkg-config))
+    (home-page "https://lite-xl.com")
+    (synopsis "Lightweight text editor written in Lua")
+    (description
+     "Lite XL is derived from lite.  It is a lightweight text editor written
+mostly in Lua.  It aims to provide something practical, pretty, small and fast
+easy to modify and extend, or to use without doing either.
+
+The aim of Lite XL compared to lite is to be more user-friendly, improve the
+quality of font rendering, and reduce CPU usage.")
+    (license license:expat)))
