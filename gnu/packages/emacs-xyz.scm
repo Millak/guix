@@ -27556,6 +27556,29 @@ or regions to a REPL from ~a buffers.") language))))
   (make-emacs-eval-in-repl "sml" #:language "Standard ML"
                            #:inputs (list emacs-sml-mode)))
 
+(define-public emacs-ob-elm
+  (let ((commit "d3a9fbc2f56416894c9aed65ea9a20cc1d98f15d")
+        (revision "0"))
+    (package
+      (name "emacs-ob-elm")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/BonfaceKilz/ob-elm")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1wdlr0cbsb2drdmcn2bnivjkj1f2v52l6yizwsnjgi4xq3w6k56h"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/BonfaceKilz/ob-elm")
+      (synopsis "Org-Babel support for Elm code")
+      (description
+       "This package adds support to Org-Babel for evaluating Elm code.")
+      (license license:gpl3+))))
+
 (define-public emacs-eval-sexp-fu-el
   (package
     (name "emacs-eval-sexp-fu-el")
