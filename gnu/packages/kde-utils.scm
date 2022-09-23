@@ -24,6 +24,7 @@
   #:use-module (guix build-system qt)
   #:use-module (guix gexp)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages)
@@ -33,6 +34,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages glib) ; dbus for tests
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages kde)
@@ -182,6 +184,58 @@ Kate's features include:
 @end itemize")
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0))))
+
+(define-public kirogi
+  (let ((commit "73b009f1fc5ac159c2faba720b302c704f89a806") ; no releases yet
+        (revision "1"))
+    (package
+      (name "kirogi")
+      (version (git-version "0.1-pre" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://invent.kde.org/utilities/kirogi")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gncfnwadh11ipynfcrsh1vnk2g02c7scd5wanphi8i95jzak9jd"))))
+      (build-system qt-build-system)
+      (arguments
+       (list #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'fix-gstreamer
+                            (lambda* _
+                              (substitute* "CMakeLists.txt"
+                                (("gstreamer-video-1.0")
+                                 "")))))))
+      (native-inputs (list extra-cmake-modules pkg-config))
+      (inputs (list kconfigwidgets
+                    kcoreaddons
+                    ki18n
+                    kirigami
+                    kcrash
+                    kdnssd
+                    qtquickcontrols2-5
+                    qtgraphicaleffects
+                    qtdeclarative-5
+                    qtgamepad
+                    qtlocation))
+      (propagated-inputs (list gstreamer))
+      (home-page "https://apps.kde.org/kirogi/")
+      (synopsis "Ground control application for drones")
+      (description "Kirogi is a ground control application for drones.
+@itemize
+@item Direct flight controls
+@item Fly by touch on a Navigation Map
+@item Trigger vehicle actions (e.g. flips, trim)
+@item Gamepad/joypad support
+@item Live video
+@item Take photo and record video
+@item Configure flight parameters (speed, altitude limits)
+@item Support for Parrot (Anafi, Bebop 2) and Ryze Tello drones
+@end itemize")
+      (license ;GPL for programs, LGPL for libraries
+               (list license:gpl2+ license:lgpl2.0)))))
 
 (define-public wacomtablet
   (package
