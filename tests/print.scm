@@ -139,6 +139,25 @@
     (description "This is a dummy package.")
     (license license:gpl3+)))
 
+(define-with-source pkg-with-properties pkg-with-properties-source
+  (package
+    (name "test")
+    (version "1.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "file:///tmp/test-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "070pwb7brdcn1mfvplkd56vjc7lbz4iznzkqvfsakvgbv68k71ah"))))
+    (properties
+     `((hidden? . #t) (upstream-name "test-upstream")))
+    (build-system (@ (guix build-system gnu) gnu-build-system))
+    (home-page "http://gnu.org")
+    (synopsis "Dummy")
+    (description "This is a dummy package.")
+    (license license:gpl3+)))
+
 (test-equal "simple package"
   `(define-public test ,pkg-source)
   (package->code pkg))
@@ -158,5 +177,9 @@
 (test-equal "package with arguments"
   `(define-public test ,pkg-with-arguments-source)
   (package->code pkg-with-arguments))
+
+(test-equal "package with properties"
+  `(define-public test ,pkg-with-properties-source)
+  (package->code pkg-with-properties))
 
 (test-end "print")
