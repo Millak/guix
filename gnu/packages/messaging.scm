@@ -3196,7 +3196,7 @@ designed for experienced users.")
 (define-public matterbridge
   (package
     (name "matterbridge")
-    (version "1.24.0")
+    (version "1.25.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3205,7 +3205,7 @@ designed for experienced users.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cd70x9685162c0imdici1ipl9lziq700wzyb5bsg610wfak3ms7"))))
+                "0csvxsgl62fjkrmk0wy64h2qaiy16m0wh6pqfbhz0kfacq16p9an"))))
     ;; Using the go-build-system results in the same error message
     ;; than in the bug 1551[1]. So we fix it by running go build
     ;; manually in the git repository as-is as this is the solution
