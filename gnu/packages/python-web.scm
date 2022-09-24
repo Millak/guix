@@ -57,6 +57,7 @@
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 msimonin <matthieu.simonin@inria.fr>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3261,6 +3262,26 @@ supports url redirection and retries, and also gzip and deflate decoding.")
     (description "AWS CLI provides a unified command line interface to the
 Amazon Web Services (AWS) API.")
     (license license:asl2.0)))
+
+(define-public awscli-2
+  (package
+    (inherit awscli)
+    (name "awscli")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri (string-append name "v2") version))
+       (sha256
+        (base32
+         "0g1icsy2l4n540gnhliypy830dfp08hpfc3rk12dlxgc9v3ra4wl"))))
+    (arguments
+     ;; FIXME: The 'pypi' release does not contain tests.
+     '(#:tests? #f))
+    (inputs
+     (list python-importlib-resources
+           python-executor))))
+
 
 (define-public python-wsgiproxy2
   (package
