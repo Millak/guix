@@ -1292,6 +1292,36 @@ conjunction with the KDE Plasma Desktop.")
      "This package provides a daemon that listens to system notifications.")
     (license license:gpl2+)))
 
+(define-public lightly
+  (package
+    (name "lightly")
+    (version "0.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Luwx/Lightly")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qkjzgjplgwczhk6959iah4ilvazpprv7yb809jy75kkp1jw8mwk"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kdecoration
+                  kcoreaddons
+                  kguiaddons
+                  kconfigwidgets
+                  kwindowsystem
+                  ki18n
+                  kiconthemes
+                  qtx11extras))
+    (home-page "https://github.com/Luwx/Lightly")
+    (synopsis "Modern style for Qt applications")
+    (description
+     "Lightly is a fork of the Breeze theme that aims to be visually modern
+and minimalistic.")
+    (license license:gpl2+)))
+
 (define-public milou
   (package
     (name "milou")
