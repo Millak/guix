@@ -258,17 +258,17 @@ ElasticSearch server")
 (define-public firebird
   (package
     (name "firebird")
-    (version "3.0.7")
+    (version "3.0.10")
     (source
-     (let ((revision "33374-0"))
+     (let ((revision "33601-0"))
        (origin
          (method url-fetch)
          (uri (string-append "https://github.com/FirebirdSQL/"
-                             "firebird/releases/download/R"
-                             (string-replace-substring version "." "_") "/"
+                             "firebird/releases/download/v"
+                             version "/"
                              "Firebird-" version "." revision ".tar.bz2"))
          (sha256
-          (base32 "0xpy1bncz36c6n28y7kllm1dkrdkn4vb4gw2n43f2351mznmrf5c"))
+          (base32 "0h033xj1kxwgvdv4ncm6kk0mqybvvn203gf88xcv3avys9hbnf4i"))
          (modules '((guix build utils)))
          (snippet
           `(begin
@@ -290,8 +290,7 @@ ElasticSearch server")
                     "doc/Firebird-3-QuickStart.pdf"
                     (string-append "doc/Firebird-" ,version
                                    "-ReleaseNotes.pdf")
-                    "doc/README.SecureRemotePassword.html"))
-             #t)))))
+                    "doc/README.SecureRemotePassword.html")))))))
     (build-system gnu-build-system)
     (outputs (list "debug" "out"))
     (arguments
@@ -329,8 +328,7 @@ ElasticSearch server")
              (substitute* "src/include/firebird/Message.h"
                (("\"\\./impl/boost/preprocessor/seq/for_each_i\\.hpp\"")
                 "<boost/preprocessor/seq/for_each_i.hpp>")
-               (("FB_BOOST_") "BOOST_"))
-             #t))
+               (("FB_BOOST_") "BOOST_"))))
          (add-after 'unpack 'patch-installation
            (lambda _
              (substitute*
@@ -358,27 +356,23 @@ ElasticSearch server")
 
              ;; These promote proprietary workflows not relevant on Guix.
              (for-each delete-file-recursively
-                       (find-files "doc" "README\\.(build\\.msvc|NT|Win)"))
-             #t))
+                       (find-files "doc" "README\\.(build\\.msvc|NT|Win)"))))
          (add-after 'configure 'delete-init-scripts
            (lambda _
-             (delete-file-recursively "gen/install/misc")
-             #t))
+             (delete-file-recursively "gen/install/misc")))
          (add-before 'build 'set-build-environment-variables
            (lambda _
              ;; ‘isql’ needs to run & find libfbclient.so during the build.
              ;; This doubles as a rudimentary test in lieu of a test suite.
              (setenv "LD_LIBRARY_PATH"
-                     (string-append (assoc-ref %build-inputs "icu4c") "/lib"))
-             #t))
+                     (string-append (assoc-ref %build-inputs "icu4c") "/lib"))))
          (add-before 'install 'keep-embedded-debug-symbols
            (lambda _
              ;; Let the gnu-build-system separate & deal with them later.
              ;; XXX Upstream would use ‘--strip-unneeded’, shaving a whole
              ;; megabyte off Guix's 7.7M libEngine12.so, for example.
              (substitute* "gen/Makefile.install"
-               (("readelf") "false"))
-             #t))
+               (("readelf") "false"))))
          (add-after 'install 'prune-undesirable-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -389,12 +383,11 @@ ElasticSearch server")
                  ;; Delete (now-)empty directories.
                  (for-each rmdir
                            (list "include/firebird/impl"
-                                 "lib/firebird/plugins/udr"))
-                 #t)))))))
+                                 "lib/firebird/plugins/udr")))))))))
     (inputs
      (list boost
            editline
-           icu4c-67
+           icu4c
            libtommath
            ncurses
            zlib))
@@ -417,8 +410,6 @@ Firebird can also be embedded into stand-alone applications that don't want or
 need a full client & server.  Used in this manner, it offers richer SQL support
 than SQLite as well as the option to seamlessly migrate to a client/server
 database later.")
-    (properties
-     `((lint-hidden-cve . ("CVE-2017-6369"))))
     (license
      ;; See doc/license/README.license.usage.txt for rationale & details.
      (list license:bsd-3                ; src/common/sha2/
