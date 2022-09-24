@@ -23,6 +23,7 @@
 (define-module (gnu packages kde-pim)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -47,22 +48,26 @@
   (package
     (name "akonadi")
     (version "22.08.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/akonadi-" version ".tar.xz"))
-       (sha256
-        (base32 "1yfy0b6kyiq82zkfkx9ldgjlbwg3lgg4di53fqjllmqhzaj1xy91"))
-       (patches (search-patches
-                 "akonadi-paths.patch"
-                 "akonadi-timestamps.patch"
-                 "akonadi-not-relocatable.patch"))))
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/akonadi-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1yfy0b6kyiq82zkfkx9ldgjlbwg3lgg4di53fqjllmqhzaj1xy91"))
+              (patches (search-patches "akonadi-paths.patch"
+                                       "akonadi-timestamps.patch"
+                                       "akonadi-not-relocatable.patch"))))
     (build-system qt-build-system)
     (native-inputs
-     (list dbus extra-cmake-modules qttools-5 shared-mime-info pkg-config))
+     (list dbus
+           extra-cmake-modules
+           qttools-5
+           shared-mime-info
+           pkg-config))
     (inputs
      (list boost
+           libaccounts-qt
            kconfig
            kconfigwidgets
            kcoreaddons
@@ -80,33 +85,39 @@
            ;; Do NOT add mysql or postgresql to the inputs. Otherwise the binaries
            ;; and wrapped files will refer to them, even if the user choices none
            ;; of these.  Executables are searched on $PATH then.
-           qtbase-5
-           sqlite))
+           signond
+           qtbase-5))
+    (propagated-inputs (list sqlite kaccounts-integration))
     (arguments
-     `(#:tests? #f ;; TODO 135/167 tests fail
-       #:configure-flags '("-DDATABASE_BACKEND=SQLITE") ; lightweight
-       #:modules ((ice-9 textual-ports)
-                  ,@%qt-build-system-modules)
-       #:phases
-       (modify-phases (@ (guix build qt-build-system) %standard-phases)
-         (add-before 'configure 'add-definitions
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((out   (assoc-ref outputs "out")))
-               (with-output-to-file "CMakeLists.txt.new"
-                 (lambda _
-                   (display
-                    (string-append
-                     "add_compile_definitions(\n"
-                     "NIX_OUT=\"" out "\"\n"
-                     ;; pin binaries for mysql backend
-                     ")\n\n"))
-                   (display
-                    (call-with-input-file "CMakeLists.txt"
-                      get-string-all))))
-               (rename-file "CMakeLists.txt.new" "CMakeLists.txt")))))))
+     (list #:tests? #f
+           #:configure-flags #~'("-DDATABASE_BACKEND=SQLITE") ;lightweight
+           #:modules `((ice-9 textual-ports)
+                       ,@%qt-build-system-modules)
+           #:phases
+           #~(modify-phases (@ (guix build qt-build-system) %standard-phases)
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "PATH"
+                             (string-append (getcwd) "/bin" ":"
+                                            (getenv "PATH")))
+                     (invoke "dbus-launch" "ctest" "-E"
+                             "(AkonadiServer-dbconfigtest|mimetypecheckertest|entitytreemodeltest|akonadi-sqlite-testenvironmenttest|akonadi-sqlite-autoincrementtest|akonadi-sqlite-attributefactorytest|akonadi-sqlite-collectionpathresolvertest|akonadi-sqlite-collectionattributetest|akonadi-sqlite-itemfetchtest|akonadi-sqlite-itemappendtest|akonadi-sqlite-itemstoretest|akonadi-sqlite-itemdeletetest|akonadi-sqlite-entitycachetest|akonadi-sqlite-monitortest|akonadi-sqlite-changerecordertest|akonadi-sqlite-resourcetest|akonadi-sqlite-subscriptiontest|akonadi-sqlite-transactiontest|akonadi-sqlite-itemcopytest|akonadi-sqlite-itemmovetest|akonadi-sqlite-invalidatecachejobtest|akonadi-sqlite-collectioncreatetest|akonadi-sqlite-collectioncopytest|akonadi-sqlite-collectionmovetest|akonadi-sqlite-collectionsynctest|akonadi-sqlite-itemsynctest)"))))
+               (add-before 'configure 'add-definitions
+                 (lambda* (#:key outputs inputs #:allow-other-keys)
+                   (with-output-to-file "CMakeLists.txt.new"
+                     (lambda _
+                       (display (string-append
+                                 "add_compile_definitions(\n"
+                                 "NIX_OUT=\""
+                                 #$output "\"\n" ")\n\n"))
+                       (display (call-with-input-file "CMakeLists.txt"
+                                  get-string-all))))
+                   (rename-file "CMakeLists.txt.new" "CMakeLists.txt"))))))
     (home-page "https://kontact.kde.org/components/akonadi/")
     (synopsis "Extensible cross-desktop storage service for PIM")
-    (description "Akonadi is an extensible cross-desktop Personal Information
+    (description
+     "Akonadi is an extensible cross-desktop Personal Information
 Management (PIM) storage service.  It provides a common framework for
 applications to store and access mail, calendars, addressbooks, and other PIM
 data.
