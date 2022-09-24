@@ -269,6 +269,8 @@ ElasticSearch server")
                              "Firebird-" version "." revision ".tar.bz2"))
          (sha256
           (base32 "0h033xj1kxwgvdv4ncm6kk0mqybvvn203gf88xcv3avys9hbnf4i"))
+         (patches (search-patches "firebird-riscv64-support-pt1.patch"
+                                  "firebird-riscv64-support-pt2.patch"))
          (modules '((guix build utils)))
          (snippet
           `(begin
@@ -323,6 +325,13 @@ ElasticSearch server")
                   (srfi srfi-26))
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-riscv64?)
+             `((add-before 'bootstrap 'force-bootstrap
+                 (lambda _
+                   (delete-file "configure")
+                   ;; This file prevents automake from running.
+                   (delete-file "autogen.sh"))))
+             '())
          (add-after 'unpack 'use-system-boost
            (lambda _
              (substitute* "src/include/firebird/Message.h"
@@ -384,6 +393,10 @@ ElasticSearch server")
                  (for-each rmdir
                            (list "include/firebird/impl"
                                  "lib/firebird/plugins/udr")))))))))
+    (native-inputs
+     (if (target-riscv64?)
+       (list autoconf automake libtool)
+       '()))
     (inputs
      (list boost
            editline

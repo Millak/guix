@@ -1,0 +1,42 @@
+https://salsa.debian.org/firebird-team/firebird3.0/-/raw/master/debian/patches/out/riscv64-prefix.patch
+
+Description: add builds/posix/prefix.linux_riscv64, missing upstream
+ It appears the commit adding RiscV64 support
+ (1e8e7858db84750a77006d307bf28e9686f9414e) misses the build prefix file
+ Here's one submitted by Manuel A. Fernandez Montecelo
+Author: Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>
+Bug: http://tracker.firebirdsql.org/browse/CORE-5851
+Bug-Debian: https://bugs.debian.org/895257
+Author: Manuel A. Fernandez Montecelo <manuel.montezelo@gmail.com>
+
+--- /dev/null
++++ b/builds/posix/prefix.linux_riscv64
+@@ -0,0 +1,28 @@
++# The contents of this file are subject to the Interbase Public
++# License Version 1.0 (the "License"); you may not use this file
++# except in compliance with the License. You may obtain a copy
++# of the License at http://www.Inprise.com/IPL.html
++#
++# Software distributed under the License is distributed on an
++# "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
++# or implied. See the License for the specific language governing
++# rights and limitations under the License.
++#
++# The Original Code was created by Inprise Corporation
++# and its predecessors. Portions created by Inprise Corporation are
++# Copyright (C) Inprise Corporation.
++#
++# All Rights Reserved.
++# Contributor(s): ______________________________________.
++# Start of file prefix.linux:  $(VERSION)  $(PLATFORM)
++#      14 Apr 2008     Alan Barclay    alan AT escribe.co.uk
++#      2018, "Manuel A. Fernandez Montecelo" <manuel.montezelo@gmail.com>
++
++
++#LD=@CXX@
++
++#PROD_FLAGS=-ggdb -O3 -fno-omit-frame-pointer -DLINUX -pipe -MMD -fPIC
++#DEV_FLAGS=-ggdb -DLINUX -DDEBUG_GDS_ALLOC -pipe -MMD -p -fPIC -Wall -Wno-switch
++
++PROD_FLAGS=-O3 -DLINUX -DRISCV64 -pipe -p -MMD -fPIC -fsigned-char -fmessage-length=0 -std=gnu++03 -fno-delete-null-pointer-checks
++DEV_FLAGS=-ggdb -DLINUX -DRISCV64 -pipe -p -MMD -fPIC -Wall -fsigned-char -fmessage-length=0 -Wno-non-virtual-dtor
