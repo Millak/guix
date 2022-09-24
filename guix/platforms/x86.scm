@@ -23,7 +23,7 @@
             x86_64-linux
             i686-mingw
             x86_64-mingw
-            hurd))
+            i586-gnu))
 
 (define i686-linux
   (platform
@@ -51,7 +51,7 @@
    (system #f)
    (glibc-dynamic-linker #f)))
 
-(define hurd
+(define i586-gnu
   (platform
    (target "i586-pc-gnu")
    (system "i586-gnu")
