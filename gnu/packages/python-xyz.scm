@@ -130,6 +130,7 @@
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
+;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7296,6 +7297,30 @@ def customize_build(EXTENSIONS, OPTIONS):
 buffer transformation, compression, and decompression functions for use in the
 tifffile, czifile, and other scientific image input/output modules.")
     (license license:bsd-3)))
+
+(define-public python-property-manager
+  (package
+    (name "python-property-manager")
+    (version "3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "property-manager" version))
+       (sha256
+        (base32 "0m3w4spr8f39xnm65naw29ncal4r453kn7ndqb63rwbsmslnvrwk"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest-cov))
+    (propagated-inputs
+     (list python-verboselogs
+           python-humanfriendly
+           python-coloredlogs))
+    (home-page "https://github.com/xolox/python-property-manager")
+    (synopsis "Useful property variants for Python programming")
+    (description "The @code{property-manager} package defines several custom
+property variants for Python programming including required properties,
+writable properties, cached properties, etc.")
+    (license license:expat))) ; MIT license
 
 (define-public python-executing
   (package
