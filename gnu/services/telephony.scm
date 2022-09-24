@@ -685,13 +685,11 @@ argument, either a registered username or the fingerprint of the account.")
 
                     ;; Finally, return the PID of the daemon process.
                     daemon-pid))
-               (stop
-                #~(lambda (pid . args)
-                    (kill pid SIGKILL)
-                    ;; Wait for the process to exit; this prevents overlapping
-                    ;; processes when issuing 'herd restart'.
-                    (waitpid pid)
-                    #f))))))))
+               ;; XXX: jamid takes some time to terminate, and GNU Shepherd
+               ;; doesn't block when calling waitpid (see:
+               ;; https://issues.guix.gnu.org/57922).  Using SIGKILL instead
+               ;; of SIGTERM works around that.
+               (stop #~(make-kill-destructor SIGKILL))))))))
 
 (define jami-service-type
   (service-type
