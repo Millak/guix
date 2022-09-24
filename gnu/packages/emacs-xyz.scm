@@ -7065,7 +7065,7 @@ working with public-inbox archives.  As much of the hard work here is already
 done by other Emacs libraries—things like mail clients, news readers, Git
 interfaces, and even web browsers—piem is mostly about bridging some of these
 parts for convenience.")
-    (license license:gpl3)))
+    (license license:gpl3+)))
 
 (define-public emacs-ert-expectations
   (package
