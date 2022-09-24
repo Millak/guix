@@ -27,11 +27,13 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages glib) ; dbus for tests
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gstreamer)
@@ -349,6 +351,36 @@ Kate's features include:
     (description
      "This package allows to select which QLoggingCategory are displayed.")
     (license license:lgpl2.0+)))
+
+(define-public keysmith
+  (package
+    (name "keysmith")
+    (version "22.09")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma-mobile/"
+                                  (version-major+minor version) "/keysmith-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0w3vvmp9rn6ahly2fm9n6f4glfr7d84bfvj33mrs5pn7n99h7jgy"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config))
+    (inputs (list kdbusaddons
+                  kirigami
+                  ki18n
+                  kwindowsystem
+                  libsodium
+                  qtdeclarative-5
+                  qtgraphicaleffects
+                  qtquickcontrols2-5
+                  qtsvg-5))
+    (home-page "https://invent.kde.org/utilities/keysmith")
+    (synopsis "OTP client for Plasma Mobile and Desktop")
+    (description
+     "This package provides OTP client for Plasma Mobile and Desktop
+with support for QR scanning.")
+    (license license:gpl3+)))
 
 (define-public kirogi
   (let ((commit "73b009f1fc5ac159c2faba720b302c704f89a806") ; no releases yet
