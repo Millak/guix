@@ -237,6 +237,31 @@ Kate's features include:
       (license ;GPL for programs, LGPL for libraries
                (list license:gpl2+ license:lgpl2.0)))))
 
+(define-public libatcore
+  (let ((commit "0de6393ed3e721537dec50b0ad174d83f1207eb6")
+        (revision "1"))
+    (package
+      (name "libatcore")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://invent.kde.org/libraries/atcore")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1830r6ylpn3l7y2frl8cih5cpjgbkfrib9jq7jklf8aszhlsihf2"))))
+      (build-system qt-build-system)
+      (native-inputs (list extra-cmake-modules))
+      (inputs (list qtcharts qtdeclarative-5 qtserialport))
+      (home-page "https://invent.kde.org/libraries/atcore")
+      (synopsis "Library for connection and management of 3D printers")
+      (description
+       "This package provides a API to manage the serial connection between
+the computer and 3D Printers.")
+      (license (list license:lgpl2.1 license:lgpl3)))))
+
 (define-public wacomtablet
   (package
     (name "wacomtablet")
