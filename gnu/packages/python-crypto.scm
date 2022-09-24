@@ -50,6 +50,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system python)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages crates-io)
@@ -393,6 +394,86 @@ make them available for those who wish to employ them, but are discouraged for
 general production use.  Include this module and use its backends at your own
 risk.")
     (license license:expat)))
+
+(define-public python-blake3
+  (package
+    (name "python-blake3")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "blake3" version))
+       (sha256
+        (base32 "1p6z6jfk8n1lshz4cp6dgz2i8zmqdxwr8d9m86ypp3m1kp70k5xk"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'build-python-module
+            (lambda _
+              ;; We don't use maturin.
+              (delete-file "pyproject.toml")
+              (call-with-output-file "pyproject.toml"
+                (lambda (port)
+                  (format port "\
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools']
+")))
+              (call-with-output-file "setup.cfg"
+                (lambda (port)
+                  (format port "\
+
+[metadata]
+name = blake3
+version = '~a'
+
+[options]
+packages = find:
+
+[options.packages.find]
+exclude =
+  src*
+  c_impl*
+  tests*
+  Cargo.toml
+" #$version)))
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (add-after 'build-python-module 'install-python-module
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (add-after 'install-python-module 'install-python-library
+            (lambda _
+              (let ((site (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages")))
+                (mkdir-p site)
+                (copy-file "target/release/libblake3.so"
+                           (string-append site "/blake3.so"))))))
+      #:cargo-inputs
+      `(("rust-blake3" ,rust-blake3-1)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
+        ("rust-pyo3" ,rust-pyo3-0.15)
+        ("rust-rayon" ,rust-rayon-1))))
+    (inputs (list rust-blake3-1))
+    (native-inputs
+     (list python-wrapper
+           python-pypa-build
+           python-wheel))
+    (home-page "https://github.com/oconnor663/blake3-py")
+    (synopsis "Python bindings for the Rust blake3 crate")
+    (description "This package provides Python bindings for the Rust crate of
+blake3, a cryptographic hash function.")
+    ;; This work is released into the public domain with CC0
+    ;; 1.0. Alternatively, it is licensed under the Apache License 2.0.
+    (license (list license:asl2.0 license:cc0))))
 
 (define-public python-certauth
   (package
