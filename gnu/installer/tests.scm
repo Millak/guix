@@ -281,7 +281,7 @@ instrumented for further testing."
 
   (let ((content (call-with-input-file file read-expressions)))
     ;; XXX: Remove the file before re-writing it, to be sure there are no
-    ;; leftovers.  We shouldn't have to to that as CALL-WITH-OUTPUT-FILE uses
+    ;; leftovers.  We shouldn't have to do that as CALL-WITH-OUTPUT-FILE uses
     ;; the O_TRUNC flag by default.
     (delete-file file)
     (call-with-output-file file
