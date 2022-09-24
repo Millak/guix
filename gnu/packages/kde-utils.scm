@@ -165,6 +165,35 @@ well as CD-ROM images.")
       (description "This package provides simple note taking and to-do app.")
       (license license:gpl2+))))
 
+(define-public filelight
+  (package
+    (name "filelight")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/filelight-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1fqgmpq5dznbn5lalx1j6dyynhylijrcqw3x9hrwxcqwr275h9iw"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kirigami
+                  kquickcharts
+                  kxmlgui
+                  kio
+                  ki18n
+                  kdeclarative
+                  qqc2-desktop-style
+                  qtgraphicaleffects
+                  qtquickcontrols2-5
+                  qtsvg-5))
+    (home-page "https://apps.kde.org/filelight/")
+    (synopsis "Visualize the disk usage")
+    (description "Filelight is an application to visualize the disk usage on
+your computer.")
+    (license license:lgpl2.1+)))
+
 (define-public kate
   (package
     (name "kate")
