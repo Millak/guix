@@ -64,6 +64,7 @@
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1340,6 +1341,31 @@ Interface} platform driver for the @acronym{EC, Embedded Controller} firmware
 on Purism Librem laptop computers.  It allows user-space control over the
 battery charging thresholds, keyboard backlight, fans and thermal monitors,
 and the notification, WiFi, and Bluetooth LED.")
+    (license license:gpl2)))
+
+(define-public ec
+  (package
+    (name "ec")
+    (version (package-version linux-libre))
+    (source (package-source linux-libre))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "sbindir="
+                                               #$output "/sbin")
+                                "INSTALL=install" "STRIPCMD=true")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'enter-subdirectory
+                          (lambda _
+                            (chdir "tools/power/acpi/tools/ec")))
+                        (delete 'configure)) ;no configure script
+           #:tests? #f)) ;no tests
+    (home-page (package-home-page linux-libre))
+    (synopsis
+     "Utility for reading or writing @acronym{EC, Embedded Controller} registers")
+    (description
+     "This utility can read or write specific registers or all the available
+registers of the @acronym{EC, Embedded Controller} supported by the
+@code{ec_sys} Linux driver.")
     (license license:gpl2)))
 
 (define-public lkrg
