@@ -603,20 +603,17 @@ propagate their changes to their respective configuration files.")
                  ;; being interleaved.
                  (display "[test_channels]\n*\n")
                  ;; This fails with ENOSPC because of too many inotify watches.
-                 (display "[benchNotifyWatcher]\n*\n")))
-             #t))
+                 (display "[benchNotifyWatcher]\n*\n")))))
          ;; See upstream commit ee424e9b62368485bba4193053cabb553a1d268e
          (add-after 'unpack 'fix-broken-test
            (lambda _
              (substitute* "autotests/kdirwatch_unittest.cpp"
                (("QVERIFY\\(waitForRecreationSignal\\(watch, existingFile\\)\\);" m)
-                (string-append m "\nwaitUntilNewSecond();")))
-             #t))
+                (string-append m "\nwaitUntilNewSecond();")))))
          (add-before 'check 'check-setup
            (lambda _
              (setenv "HOME" (getcwd))
-             (setenv "TMPDIR" (getcwd))
-             #t)))))
+             (setenv "TMPDIR" (getcwd)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Qt addon library with a collection of non-GUI utilities")
     (description "KCoreAddons provides classes built on top of QtCore to
