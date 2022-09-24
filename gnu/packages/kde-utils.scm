@@ -323,6 +323,33 @@ Kate's features include:
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0))))
 
+(define-public kdebugsettings
+  (package
+    (name "kdebugsettings")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kdebugsettings-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "0l9q7cmzc93zz2zc5ncq3q7q6jil6ai36n2vh70s2wsi8b0gsms8"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kcoreaddons
+                  kconfig
+                  kdbusaddons
+                  ki18n
+                  kwidgetsaddons
+                  kitemviews
+                  kcompletion))
+    (home-page "https://invent.kde.org/utilities/kdebugsettings")
+    (synopsis "Choose which QLoggingCategory are displayed")
+    (description
+     "This package allows to select which QLoggingCategory are displayed.")
+    (license license:lgpl2.0+)))
+
 (define-public kirogi
   (let ((commit "73b009f1fc5ac159c2faba720b302c704f89a806") ; no releases yet
         (revision "1"))
