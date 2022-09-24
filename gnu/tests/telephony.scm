@@ -358,7 +358,7 @@ jami account used as part of the jami configuration are left *unspecified*."
   (gexp->derivation (if provisioning?
                         (if partial?
                             "jami-provisioning-partial-test"
-                            "jami-provisioning-partial")
+                            "jami-provisioning-test")
                         "jami-test")
     test))
 
