@@ -114,17 +114,9 @@
                                (permit-root-login #t)
                                (allow-empty-passwords? #t)))
                      %base-services))
-    ;; Extra packages for debugging purposes.
-    (packages (cons (specification->package+output "libjami:debug")
-                    (append (map specification->package
-                                 '("gdb"
-                                   "guile"
-                                   "guile-ac-d-bus"
-                                   "guile-readline"
-                                   "guile-fibers"
-                                   "screen"
-                                   "strace"))
-                            %base-packages)))))
+    (packages (cons* (specification->package "recutils")
+                     (specification->package "strace")
+                     %base-packages))))
 
 (define %jami-os
   (make-jami-os))
@@ -281,7 +273,6 @@ jami account used as part of the jami configuration are left *unspecified*."
               (marionette-eval
                '(begin
                   (use-modules (gnu services herd)
-                               (ice-9 match)
                                (rnrs base)
                                (srfi srfi-1))
 
