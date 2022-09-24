@@ -123,14 +123,14 @@ This package contains GUI widgets for baloo.")
 (define-public grantleetheme
   (package
     (name "grantleetheme")
-    (version "22.04.3")
+    (version "22.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/grantleetheme-" version ".tar.xz"))
        (sha256
-        (base32 "50c6s1g3vp5sdhpiciz1j6rsryld7hcc6lvmxdlsvms2bbcmnj7l"))))
+        (base32 "01ls16x6ngi43lcwffav9qig3afakrs04v4wvyfb8lm7sd65hgf9"))))
     (build-system qt-build-system)
     (arguments `(#:tests? #f))  ; unexpected error in the test suite.
     (native-inputs
