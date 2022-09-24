@@ -7343,6 +7343,32 @@ writable properties, cached properties, etc.")
 currently doing, particularly the AST node being executed.")
     (license license:expat)))
 
+(define-public python-executor
+  (package
+    (name "python-executor")
+    (version "23.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "executor" version))
+       (sha256
+        (base32 "0g83yr54j0vcwhy6h7n0jsd7q0q630kwa6v9kqzlzrm9xj6c3ip1"))))
+    (build-system python-build-system)
+    (arguments
+    `(#:tests? #f)) ; TODO: tests require root/sudo
+    (propagated-inputs
+     (list python-six
+           python-property-manager
+           python-fasteners
+           python-virtualenv))
+    (home-page "https://github.com/xolox/python-executor")
+    (synopsis "Programmer friendly subprocess wrapper")
+    (description "The @code{executor} package is a simple wrapper for Python’s
+subprocess module that makes it very easy to handle subprocesses on UNIX
+systems with proper escaping of arguments and error checking currently doing,
+particularly the AST node being executed.")
+    (license license:expat))) ; MIT license
+
 (define-public python-roifile
   (package
     (name "python-roifile")
