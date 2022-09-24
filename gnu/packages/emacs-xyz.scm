@@ -7053,9 +7053,18 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
        (sha256
         (base32 "0wr6n6wvznngjdp4c0pmdr4xz05dark0kxi5svzhzxsg3rdaql3z"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'configure
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (emacs-substitute-variables "piem-b4.el"
+                     ("piem-b4-b4-executable"
+                      (search-input-file inputs "/bin/b4"))))))))
+    (inputs
+     (list b4))
     (propagated-inputs
-     (list b4
-           emacs-elfeed
+     (list emacs-elfeed
            emacs-notmuch
            emacs-transient))
     (home-page "https://docs.kyleam.com/piem")
