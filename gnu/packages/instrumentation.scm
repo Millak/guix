@@ -22,6 +22,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages commencement)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -30,6 +31,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
@@ -206,6 +208,65 @@ with a handful of C++ libraries.")
 interactive SVGs out of traces genated from various tracing tools.  It comes
 with the script @command{flamegraph.pl} and many stackcollapse scripts.")
       (license license:cddl1.0))))
+
+(define-public libpatch
+  (package
+    (name "libpatch")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~old/libpatch")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1sx1sichnnqfi84z37gd04h41vpr8i2vg6yg0jkqxlrv3dys489a"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list
+        (string-append
+         "--target="
+         ,(platform-linux-architecture
+           (lookup-platform-by-target-or-system
+            (or
+             (%current-target-system)
+             (%current-system))))))))
+    ;;; Add lttng-ust to the inputs if you want tracepoints within libpatch
+    ;;; for debugging.
+    (inputs
+     (list capstone
+           elfutils
+           libunwind
+           liburcu))
+    (native-inputs
+     (list coreutils
+           ;; test-ftrace.scm
+           (list coreutils "debug")
+           (list guile-3.0 "debug")
+           (list gnu-make "debug")
+
+           ;; For eu-nm in test-ftrace.scm.
+           (list elfutils "bin")
+
+           guile-3.0
+           gnu-make
+           pkg-config
+           ;; zlib is required by libdw.  This can be removed if zlib is put
+           ;; as a propagated-input of elfutils.
+           zlib))
+    (synopsis "Dynamic binary patcher")
+    (description
+     "libpatch is a lightweight C library that can be used by tracers,
+debuggers and other tools for insertion of probes in a program at runtime.  It
+has many strategies to minimize probe overhead and maximize possible
+coverage.")
+    (home-page "https://git.sr.ht/~old/libpatch")
+    (license (list license:lgpl2.1 license:expat license:gpl3+))
+    ;; Libpatch only supports instrumentation for x86_64 right now.  Augment
+    ;; that list in further version.
+    (supported-systems (list "x86_64-linux"))))
 
 (define-public lttng-modules
   (package
