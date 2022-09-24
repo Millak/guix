@@ -22421,6 +22421,26 @@ library: to minimize boilerplate code in traditional extension modules by
 inferring type information using compile-time introspection.")
     (license license:bsd-3)))
 
+;; This is needed for python-vaex-core.
+(define-public pybind11-2.3
+  (package
+    (inherit pybind11)
+    (name "pybind11")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pybind/pybind11")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "11b6dniri8m05spfd2a19irz82shf4sdca73566bniggrf3zclnf"))
+              (file-name (git-file-name name version))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments pybind11)
+       ((#:tests? tests? #false)
+        #false)))))
+
 (define-public python-pooch
   (package
     (name "python-pooch")
