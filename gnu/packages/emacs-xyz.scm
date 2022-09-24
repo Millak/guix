@@ -14378,7 +14378,7 @@ automatically discovered and presented in recency order.")
 (define-public emacs-mentor
   (package
     (name "emacs-mentor")
-    (version "0.3.5")
+    (version "0.4")
     (source
      (origin
        (method url-fetch)
@@ -14386,7 +14386,7 @@ automatically discovered and presented in recency order.")
                            version ".tar"))
        (sha256
         (base32
-         "01zrvfk2njzyzjzkvp5hv5cjl1k1qjrila1ab4bv26gf6bkq5xh3"))))
+         "1n51yabm4npx62fpfn8rhky09x4y779ismdxa026fycy7va7ynzz"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-async emacs-xml-rpc))
