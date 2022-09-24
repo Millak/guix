@@ -2,7 +2,7 @@
 #+TITLE: Guix NEWS – history of user-visible changes
 #+STARTUP: content hidestars
 
-Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 Copyright © 2016, 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
@@ -48,6 +48,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** New interface for declaring swap space
 *** GNOME is now at version 42
 *** TeX Live is now at version 2021
+*** Multiple TeX Live trees can now be used via GUIX_TEXMF
 *** Python is now faster thanks to being built with optimizations
 *** The Rust bootstrap now starts from 1.54 instead of 1.19
 *** Most Python 2 packages have been removed
@@ -55,8 +56,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** Faster shared libraries discovery via a per-package dynamic linker cache
 *** Package inputs can now be plain package lists
 *** A package origin can now be a single file rather than an archive
-*** Multiple Tex Live trees can now be used via GUIX_TEXMF
-*** A new sanity-check phase detects packaging problems at build time
+*** New sanity-check phase to detect Python packaging problems at build time
 *** Fetching sources can now fall-back to use Disarchive
 *** Improved CI and infrastructure
 *** Multiple cross-compilation tooling addition and fixes
@@ -72,14 +72,15 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** Emacs now supports native compilation
 *** GRUB bootloader now supports chain-loading
 *** The GNU Shepherd was upgraded to 0.9.2
-*** The init RAM disk honors more arguments, e.g. ‘root’ and ‘rootflags’
+*** The init RAM disk honors more arguments—e.g. ‘root’ and ‘rootflags’
 ** Programming interfaces
-*** (guix records) now supports “field sanitizers”
-*** Build phases are no longer required to return a boolean
-*** G-Expressions can now be used to author build phases
-*** Various improvements to the helpers in (gnu service configuration)
+*** Package input fields can now plain package lists
+*** G-expressions can now be used in build phases
 *** New ‘modify-inputs’ macro to ease customizing a list of package inputs
 *** New ‘this-package-input’ and ‘this-package-native-input’ macros
+*** Build phases are no longer required to return a boolean
+*** (guix records) now supports “field sanitizers”
+*** Various improvements to the helpers in (gnu service configuration)
 *** ‘texlive-union’ is now deprecated in favor of ‘texlive-updmap.cfg’
 *** New (guix cpu) module
 *** New (guix least-authority) module
@@ -113,7 +114,7 @@ nar-herder, opendht, rasdaemon, seatd, strongswan
     (<https://issues.guix.gnu.org/51425>)
 *** Fonts can now be discovered in any profile via XDG_DATA_DIRS
     (<https://issues.guix.gnu.org/31403>)
-*** Python modules discovery no longer uses PYTHONPATH
+*** Python modules are searched in GUIX_PYTHONPATH instead of PYTHONPATH
 *** Various Python reproducibility fixes
 *** The installer now supports MSDOS disk labels on UEFI systems
     (<https://issues.guix.gnu.org/47889>)
