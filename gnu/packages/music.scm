@@ -3524,7 +3524,7 @@ event-based scripts for scrobbling, notifications, etc.")
 (define-public picard
   (package
     (name "picard")
-    (version "2.4.4")
+    (version "2.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3532,30 +3532,35 @@ event-based scripts for scrobbling, notifications, etc.")
                     "picard/picard-" version ".tar.gz"))
               (sha256
                (base32
-                "1c5l7i43jaj3s4wklc0cba6nn2x9cmpcggk4q4h9m1bci2xilsiy"))
-              (patches (search-patches "picard-fix-id3-rename-test.patch"))))
+                "0h4yk1y4k23hkfk7k2in27rd34ani857m0vvn7xa8vxizz951dka"))))
     (build-system python-build-system)
     (arguments
-     '(#:use-setuptools? #f
-       #:configure-flags
-       (list "--root=/"
-             ;; Don't phone home or show ‘Check for Update…’ in the Help menu.
-             "--disable-autoupdate")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "picard/const/__init__.py"
-               (("pyfpcalc")
-                (string-append
-                 "pyfpcalc', '"
-                 (assoc-ref inputs "chromaprint") "/bin/fpcalc")))
-             #t)))))
+     (list
+      #:use-setuptools? #f
+      #:configure-flags
+      #~(list "--root=/"
+              ;; Don't phone home or show ‘Check for Update…’ in the Help menu.
+              "--disable-autoupdate")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "picard/const/__init__.py"
+                (("pyfpcalc")
+                 (string-append
+                  "pyfpcalc', '"
+                  (assoc-ref inputs "chromaprint") "/bin/fpcalc"))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("python-dateutil" ,python-dateutil)))
+     (list gettext-minimal python-dateutil))
     (inputs
-     (list chromaprint python-discid python-pyqt python-mutagen))
+     (list chromaprint
+           python-discid
+           python-pyqt-without-qtwebkit
+           python-mutagen
+           python-fasteners
+           python-pyyaml
+           python-markdown
+           python-pyjwt))
     (home-page "https://picard.musicbrainz.org/")
     (synopsis "Graphical music tagging application")
     (description

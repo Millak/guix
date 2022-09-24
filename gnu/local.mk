@@ -1653,7 +1653,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/phoronix-test-suite-fsdg.patch		\
   %D%/packages/patches/php-bug-74093-test.patch			\
   %D%/packages/patches/php-curl-compat.patch			\
-  %D%/packages/patches/picard-fix-id3-rename-test.patch		\
   %D%/packages/patches/picprog-non-intel-support.patch		\
   %D%/packages/patches/pidgin-add-search-path.patch		\
   %D%/packages/patches/pinball-system-ltdl.patch		\
