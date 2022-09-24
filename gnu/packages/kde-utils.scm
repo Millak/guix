@@ -119,6 +119,52 @@ with support for multiple formats, including tar, gzip, bzip2, rar and zip, as
 well as CD-ROM images.")
     (license license:gpl2+)))
 
+(define-public basket
+  (let ((commit "e23a8b3b1198d51f770523c7fb4652750810359a")
+        (revision "1"))
+    (package
+      (name "basket")
+      (version (git-version "2.49" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://invent.kde.org/utilities/basket")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1i7hrrlwyzzh7mm9xc8hjix24rvy1b2cvvbkhxh9mmdbmphwdhhd"))))
+      (build-system qt-build-system)
+      (native-inputs (list extra-cmake-modules))
+      (inputs (list breeze-icons
+                    karchive
+                    kcompletion
+                    kconfig
+                    kconfigwidgets
+                    kcoreaddons
+                    kcrash
+                    kdbusaddons
+                    kdoctools
+                    kfilemetadata
+                    kglobalaccel
+                    kguiaddons
+                    ki18n
+                    kiconthemes
+                    kcmutils
+                    kio
+                    knotifications
+                    kparts
+                    kservice
+                    ktextwidgets
+                    kwidgetsaddons
+                    kwindowsystem
+                    kxmlgui
+                    phonon))
+      (home-page "https://invent.kde.org/utilities/basket")
+      (synopsis "Notes and to-dos organizer")
+      (description "This package provides simple note taking and to-do app.")
+      (license license:gpl2+))))
+
 (define-public kate
   (package
     (name "kate")
