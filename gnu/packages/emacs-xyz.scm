@@ -16401,7 +16401,7 @@ highlighting.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/emacs.git/")
+               (url "https://git.savannah.gnu.org/git/emacs.git")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
