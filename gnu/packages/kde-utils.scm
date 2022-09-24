@@ -352,6 +352,36 @@ Kate's features include:
      "This package allows to select which QLoggingCategory are displayed.")
     (license license:lgpl2.0+)))
 
+(define-public keurocalc
+  (let ((commit "a760d8a7e58b36eb72d15e847f96599c93785194") ; just one release
+        (revision "1"))
+    (package
+      (name "keurocalc")
+      (version (git-version "1.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://invent.kde.org/utilities/keurocalc")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0gh5vwl38hwf1405c980j1fj06g5c52am140lf4mxhrjvnmry7kd"))))
+      (build-system qt-build-system)
+      (native-inputs (list extra-cmake-modules kdoctools))
+      (inputs (list kconfig
+                    kconfigwidgets
+                    kcoreaddons
+                    ki18n
+                    kio
+                    kwidgetsaddons
+                    kxmlgui))
+      (home-page "https://invent.kde.org/utilities/keurocalc")
+      (synopsis "Currency conversion tool")
+      (description "This package provides a utility to handle currency
+conversions between European currencies.")
+      (license license:gpl2+))))
+
 (define-public keysmith
   (package
     (name "keysmith")
