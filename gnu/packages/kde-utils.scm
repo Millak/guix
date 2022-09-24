@@ -194,6 +194,38 @@ well as CD-ROM images.")
 your computer.")
     (license license:lgpl2.1+)))
 
+(define-public francis
+  (let ((commit "d2c762ad94170430a667ee57f81ec9dbe498642c") ; no release yet
+        (revision "1"))
+    (package
+      (name "francis")
+      (version (git-version "0.1-pre" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://invent.kde.org/utilities/francis")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "15bk5iq127mp34n9fzq4d5r3qss3ihk93lqy86z2q3lgwid26s0h"))))
+      (build-system qt-build-system)
+      (native-inputs (list extra-cmake-modules))
+      (inputs (list kirigami
+                    kcoreaddons
+                    kconfig
+                    ki18n
+                    kdbusaddons
+                    knotifications
+                    qtdeclarative-5
+                    qtgraphicaleffects
+                    qtquickcontrols2-5
+                    qtsvg-5))
+      (home-page "https://invent.kde.org/utilities/francis")
+      (synopsis "Track your time")
+      (description "This package provides time tracking.")
+      (license license:lgpl2.1+))))
+
 (define-public kate
   (package
     (name "kate")
