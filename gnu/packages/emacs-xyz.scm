@@ -967,6 +967,8 @@ on stdout instead of using a socket as the Emacsclient does.")
                  (install #:outputs outputs
                           #:include (cons "\\.so$"
                                           emacs:%default-include)))))
+           (add-after 'unpack 'emacs-add-install-to-native-load-path
+             (assoc-ref emacs:%standard-phases 'add-install-to-native-load-path))
            (add-after 'install 'make-autoloads
              (assoc-ref emacs:%standard-phases 'make-autoloads))
            (add-after 'make-autoloads 'enable-autoloads-compilation
