@@ -23579,6 +23579,31 @@ from Emacs for C/C++ code that needs to be build against multiple incompatible
 versions of third party libraries or @code{C++} standards.")
    (license license:gpl3+)))
 
+(define-public emacs-cpreproc-openvdb
+  (package
+   (name "emacs-cpreproc-openvdb")
+   (version "3.0.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://git.sr.ht/~plattfot/cpreproc-openvdb")
+           (commit version)))
+     (sha256
+      (base32
+       "0n1y8cxx6xipvip8y6nk9ig1dpjdksz77956wlql3lhqcrcn5hzg"))
+     (file-name (git-file-name name version))))
+   (build-system emacs-build-system)
+   (propagated-inputs
+    (list emacs-cpreproc))
+   (home-page "https://sr.ht/~plattfot/cpreproc")
+   (synopsis "Create preprocessor macros for C++ that uses OpenVDB.")
+   (description
+    "This project makes it easier to generate preprocessor macros from Emacs
+for C++ code that uses OpenVDB and needs to be build against multiple
+incompatible versions of it.")
+   (license license:gpl3+)))
+
 (define-public emacs-org-brain
   (package
     (name "emacs-org-brain")
