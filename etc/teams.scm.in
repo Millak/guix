@@ -99,7 +99,18 @@
         #:name "Haskell team"
         #:description
         "GHC, Hugs, Haskell packages, the \"hackage\" and \"stackage\" importers, and
-the haskell-build-system."))
+the haskell-build-system."
+        #:scope
+        (list "gnu/packages/dhall.scm"
+              ;; Match haskell.scm and haskell-*.scm.
+              (make-regexp "^gnu/packages/haskell(-.+|)\\.scm$")
+              "gnu/packages/purescript.scm"
+              "guix/build/haskell-build-system.scm"
+              "guix/build-system/haskell.scm"
+              "guix/import/cabal.scm"
+              "guix/import/hackage.scm"
+              "guix/import/stackage.scm"
+              "guix/scripts/import/hackage.scm")))
 
 (define-team r
   (team 'r
