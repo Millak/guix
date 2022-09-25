@@ -857,6 +857,33 @@ in the style of communicating sequential processes (@dfn{CSP}).")
         (base32
          "1s2xwgd3mfbjdf7ls9gyj7n1lbqc4276qkr3znyq9694isj1ak20"))))))
 
+(define-public go-1.19
+  (package
+    (inherit go-1.18)
+    (name "go")
+    (version "1.19.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1gah4zhbkgbwrrryfmzdv2qwi1rgxk10q2r3hnlcb1dybf9c1i1w"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.18)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install-doc-files
+              (lambda _
+                (for-each (lambda (file)
+                            (install-file file (string-append
+                                                #$output "/share/doc/go")))
+                          '("CONTRIBUTING.md" "PATENTS" "README.md"
+                            "SECURITY.md"))))))))))
+
 (define-public go go-1.17)
 
 (define make-go-std
@@ -897,6 +924,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.16 (make-go-std go-1.16))
 (define-public go-std-1.17 (make-go-std go-1.17))
 (define-public go-std-1.18 (make-go-std go-1.18))
+(define-public go-std-1.19 (make-go-std go-1.19))
 
 (define-public go-0xacab-org-leap-shapeshifter
   (let ((commit "0aa6226582efb8e563540ec1d3c5cfcd19200474")
