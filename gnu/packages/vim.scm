@@ -1375,30 +1375,29 @@ files for reading or editing, and perform basic file system operations.")
     (license license:wtfpl2)))
 
 (define-public vim-nerdcommenter
-  (let ((commit "a65465d321f2f8a74b2ffa540b9b87563f7e12e8")
-        (revision "1"))
-    (package
-      (name "vim-nerdcommenter")
-      (version (git-version "2.5.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/preservim/nerdcommenter")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "00ir65iv8jfbgzjmj7332fmydh0qhabbhx8zbvd3j6pgfxqpaafw"))))
-      (build-system copy-build-system)
-      (arguments
-       '(#:install-plan
-         '(("autoload" "share/vim/vimfiles/")
-           ("doc" "share/vim/vimfiles/")
-           ("plugin" "share/vim/vimfiles/"))))
-      (home-page "https://github.com/preservim/nerdcommenter")
-      (synopsis "Vim plugin for easy commenting of code")
-      (description
-       "NERD commenter is a Vim plugin that provides many different commenting
+  (package
+    (name "vim-nerdcommenter")
+    (version "2.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/preservim/nerdcommenter")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ka2rqn7rby55aps3iblh1dcqxm7m7qx72mpkz6y2aaj8mkj0zyd"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~`(("autoload" "share/vim/vimfiles/")
+          ("doc" "share/vim/vimfiles/")
+          ("plugin" "share/vim/vimfiles/"))))
+    (home-page "https://github.com/preservim/nerdcommenter")
+    (synopsis "Vim plugin for easy commenting of code")
+    (description
+     "NERD commenter is a Vim plugin that provides many different commenting
 operations and styles which are invoked via key mappings and a menu.  These
 operations are available for most filetypes.")
-      (license license:cc0))))
+    (license license:cc0)))
