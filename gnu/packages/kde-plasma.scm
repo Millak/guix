@@ -47,14 +47,14 @@
 (define-public breeze
   (package
     (name "breeze")
-    (version "5.25.3")
+    (version "5.25.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0za75ckgfcdxrh2qxgyl2c1273g2xqwmd55njsis1yvwryadypqw"))))
+                "0m3ggv5znzfcp25afgl7v5w7m27v5hdvv6jw9vrvwbqj8lzq1hlx"))))
     (build-system qt-build-system)
     ;; TODO: Warning at /gnu/store/…-kpackage-5.34.0/…/KF5PackageMacros.cmake:
     ;;   warnings during generation of metainfo for org.kde.breezedark.desktop:
@@ -94,7 +94,7 @@ the Plasma Desktop.  Breeze is the default theme for the KDE Plasma desktop.")
 (define-public breeze-gtk
   (package
     (name "breeze-gtk")
-    (version "5.19.5")
+    (version "5.25.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -102,7 +102,7 @@ the Plasma Desktop.  Breeze is the default theme for the KDE Plasma desktop.")
                                   "-" version ".tar.xz"))
               (sha256
                (base32
-                "1j2nq9yw1ragmgwrz9f6ca4ifpi86qv1bbprdgd2qm2yh7vb44sj"))))
+                "0wj8qzy2104ggczxagxm45zwsvvpwd6jjnbv1893mhlr6f2zrbmh"))))
     (build-system qt-build-system)
     (arguments
      '(#:tests? #f))                              ;no 'test' target
@@ -118,14 +118,14 @@ Breeze is the default theme for the KDE Plasma desktop.")
 (define-public kdecoration
   (package
     (name "kdecoration")
-    (version "5.25.3")
+    (version "5.25.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/kdecoration-" version ".tar.xz"))
               (sha256
                (base32
-                "0b6ynqkndmlac89hv339k365m7wykp9y238df62jlq4vpr1r9x9y"))))
+                "1x3scszz5nfwqciwc3bv0r04wgqlxs0c9j1090zvn6mjjg2nsyb7"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -141,14 +141,14 @@ manager which re-parents a Client window to a window decoration frame.")
 (define-public ksshaskpass
   (package
     (name "ksshaskpass")
-    (version "5.25.3")
+    (version "5.25.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/ksshaskpass-" version ".tar.xz"))
               (sha256
                (base32
-                "0sfl77szvfq9c7v0gsv5nnf7h5kxigyy2z2p1cwmhm1pq4n606nk"))))
+                "0z8pp2mh4s98jh8jkf6r8v014gb6svapmp0m1npzw7zcmr6jvpn6"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -165,14 +165,14 @@ call it if it is not associated to a terminal.")
 (define-public layer-shell-qt
   (package
     (name "layer-shell-qt")
-    (version "5.25.3")
+    (version "5.25.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/layer-shell-qt-" version ".tar.xz"))
               (sha256
                (base32
-                "06rxqm4wh4mcszrwb2dbgpxj3dqfx0rccyyjp091lbsncqm1gib0"))))
+                "1mvhklq7n9hhjing704jr3ybq58ixwr9fdg3phnqhmdnqc2q3w0l"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
@@ -191,14 +191,14 @@ call it if it is not associated to a terminal.")
 (define-public kscreenlocker
   (package
     (name "kscreenlocker")
-    (version "5.25.3")
+    (version "5.25.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/kscreenlocker-" version ".tar.xz"))
               (sha256
                (base32
-                "1kii3r3j89avwyb00wrw80k5sj0q4wqgmy1q0yxfps9jk729k3wc"))))
+                "0mivx0l266310iy52qi94b6wi8w2a8nl7cjn5750x66dz81jl3yj"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f ;; TODO: make tests pass
@@ -256,14 +256,14 @@ call it if it is not associated to a terminal.")
 (define-public libkscreen
   (package
     (name "libkscreen")
-    (version "5.25.4")
+    (version "5.25.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "17ib0sgrhmmf3f8w3fni0825xz5581av5vnz8gca41vyf12css25"))))
+        (base32 "17f2pbbkpmw3a32nsqlwd0x5xb71l6dzrh7ldwcqv46nvb54yhfa"))))
     (build-system qt-build-system)
     (arguments
      '(#:phases
@@ -294,14 +294,14 @@ basic needs and easy to configure for those who want special setups.")
 (define-public libksysguard
   (package
     (name "libksysguard")
-    (version "5.25.4")
+    (version "5.25.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version
                            "/libksysguard-" version ".tar.xz"))
        (sha256
-        (base32 "1kzpimhkagsmqj0cky4cfav1kbzyfjaj2l5xdapnmaygbm6r8086"))))
+        (base32 "1gqsjsdkp25abqqp4f6cv6ih199q9ad7q1a4lkhjgsh4h8jq1856"))))
     (native-inputs
      (list bash-minimal extra-cmake-modules pkg-config qttools-5))
     (inputs
@@ -395,4 +395,3 @@ wayland-server API.")
     (license (list license:lgpl2.1 license:lgpl3
                    ;; src/server/drm_fourcc.h carries the MIT license.
                    license:expat))))
-
