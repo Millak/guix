@@ -424,6 +424,32 @@ Kate's features include:
      "This package allows to select which QLoggingCategory are displayed.")
     (license license:lgpl2.0+)))
 
+(define-public kdialog
+  (package
+    (name "kdialog")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kdialog-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1lqzhfn5g16qr6ada9i0i3kshna1zxp1y20ylwmmsa82bgmyblhx"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules kdoctools))
+    (inputs (list ktextwidgets
+                  knotifications
+                  kguiaddons
+                  kiconthemes
+                  kwindowsystem
+                  kio
+                  kdbusaddons))
+    (home-page "https://invent.kde.org/utilities/kdialog")
+    (synopsis "Show dialog boxes from shell scripts")
+    (description "This package provides tool to show nice dialog boxes from
+shell scripts.")
+    (license license:gpl2+)))
+
 (define-public keurocalc
   (let ((commit "a760d8a7e58b36eb72d15e847f96599c93785194") ; just one release
         (revision "1"))
