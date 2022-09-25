@@ -1036,7 +1036,7 @@ you login.")
 (define-public kwayland-server
   (package
     (name "kwayland-server")
-    (version "5.24.4")
+    (version "5.24.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1044,7 +1044,7 @@ you login.")
                     "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1279nqhy1qyz84dkn23rvzak8bg71hbrp09jlhv9mkjdb3bhnyfi"))))
+                "1wwgb1p177g6vvyf4l5jisigwvy5756ray1x355mlp7bi1pfs664"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
