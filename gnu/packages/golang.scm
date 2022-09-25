@@ -841,6 +841,22 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (alist-replace "go" (list go-1.16) (package-native-inputs go-1.16))
        (package-native-inputs go-1.16)))))
 
+(define-public go-1.18
+  (package
+    (inherit go-1.17)
+    (name "go")
+    (version "1.18.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1s2xwgd3mfbjdf7ls9gyj7n1lbqc4276qkr3znyq9694isj1ak20"))))))
+
 (define-public go go-1.17)
 
 (define make-go-std
@@ -880,6 +896,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.14 (make-go-std go-1.14))
 (define-public go-std-1.16 (make-go-std go-1.16))
 (define-public go-std-1.17 (make-go-std go-1.17))
+(define-public go-std-1.18 (make-go-std go-1.18))
 
 (define-public go-0xacab-org-leap-shapeshifter
   (let ((commit "0aa6226582efb8e563540ec1d3c5cfcd19200474")
