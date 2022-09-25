@@ -25,6 +25,31 @@
 
 (channel-news
  (version 0)
+ (entry (commit "c8112f3bd95269ce4aca12dedbfe61bb6b37acae")
+        (title
+         (en "WSL system images support")
+         (fr "Support pour les images système WSL"))
+        (body
+         (en "The @command{guix system image} command can now generate system
+images for the Windows Subsystem for Linux.  To get started, you can for
+instance run from a Guix checkout:
+
+@command{guix system image gnu/system/images/wsl2.scm},
+
+and import the resulting image this way:
+
+@command{wsl --import Guix ./guix ./wsl2-image.tar.gz}
+@command{wsl -d Guix}.")
+         (fr "La commande @command{guix system image} peut désormais générer
+des images système pour le Windows Subystem for Linux.  Vous pouvez par
+exemple lancer la commande suivante depuis un répertoire de sources Guix :
+
+@command{guix system image gnu/system/images/wsl2.scm},
+
+et importer l'image obtenue de cette manière :
+
+@command{wsl --import Guix ./guix ./wsl2-image.tar.gz}
+@command{wsl -d Guix}.")))
  (entry (commit "11a06d1e49f4d50d6789e05bbf35e2e145ff7838")
         (title
          (en "Emacs now supports native compilation")
