@@ -6052,6 +6052,18 @@ their original location with another.")
          "1hvxha0ih9jhvwj07l6jnpf2vzhgvb6ii73g49c8saxld61l0frf"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'configure
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "orgmdb.el"
+                     (("\"fd ")
+                      (string-append "\""
+                                     (search-input-file inputs "/bin/fd")
+                                     " "))))))))
+    (inputs
+     (list fd))
     (propagated-inputs
      (list emacs-dash emacs-org emacs-s))
     (home-page "https://github.com/isamert/orgmdb.el")
