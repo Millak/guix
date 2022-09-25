@@ -20730,7 +20730,7 @@ expansions for debugging with Edebug as normal.")
          (sha256
           (base32 "1gz2kypyrb4k76dn4j02c8s6a3dqb1la5jcrdcifv8saa8lvqyli"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-macrostep emacs-geiser))
+      (propagated-inputs (list emacs-geiser emacs-macrostep))
       (home-page "https://github.com/nbfalcon/macrostep-geiser")
       (synopsis "Macrostep for Geiser and Cider")
       (description
