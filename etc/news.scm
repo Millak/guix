@@ -25,6 +25,21 @@
 
 (channel-news
  (version 0)
+ (entry (commit "a13f5ead0265cf0fe11e60150547c09dfc8c45b0")
+        (title
+         (en "Guix System image creation is now documented")
+         (fr "La création d'images pour Guix System est à présent documentée"))
+        (body
+         (en "The Guix System image API that allows you to create customized
+system images and turn them into actual bootable images is now documented in
+the @code{Creating System Images} chapter of the Guix documentation.  This
+should be particularly useful for people trying to port Guix System to new
+hardware.")
+         (fr "L'interface de programmation d'images pour Guix System,
+permettant de créer des images personnalisées et de les transformer en images
+amorçables est désormais documentée dans le chapitre @code{Création d'images
+système}.  Cette interface devrait être particulièrement utile aux personnes
+qui essaient de faire fonctionner Guix sur de nouvelles machines.")))
  (entry (commit "c8112f3bd95269ce4aca12dedbfe61bb6b37acae")
         (title
          (en "WSL system images support")
