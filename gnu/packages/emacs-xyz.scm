@@ -6010,6 +6010,29 @@ heading, other headings can be refiled to it with one command, and back to
 their original location with another.")
       (license license:gpl3+))))
 
+(define-public emacs-orgmdb
+  (package
+    (name "emacs-orgmdb")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/isamert/orgmdb.el")
+             (commit "66c13abdb84e0f0a31bae6cfda27478771d58d8e")))
+       (sha256
+        (base32
+         "1hvxha0ih9jhvwj07l6jnpf2vzhgvb6ii73g49c8saxld61l0frf"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-dash emacs-org emacs-s))
+    (home-page "https://github.com/isamert/orgmdb.el")
+    (synopsis "Emacs' Org mode watchlist manager and OMDb API client")
+    (description "This package adds tools for managing your watchlist in Emacs'
+Org mode and some functions for interacting with the OMDb API.")
+    (license license:gpl3+)))
+
 (define-public emacs-rich-minority
   (package
     (name "emacs-rich-minority")
