@@ -206,6 +206,39 @@ well as CD-ROM images.")
       (description "This package provides simple note taking and to-do app.")
       (license license:gpl2+))))
 
+(define-public fielding
+  (let ((commit "6b3c5d67b308e9e7e2043dc6072bfd265ec9f3e1")
+        ;; no releases yet
+        (revision "1"))
+    (package
+      (name "fielding")
+      (version (git-version "0.1-pre" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://invent.kde.org/utilities/fielding")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1l16am7il7kprmy8irpzj04rb8wbfr84y49wp4i74hspp9xkfick"))))
+      (build-system qt-build-system)
+      (native-inputs (list extra-cmake-modules))
+      (inputs (list kirigami
+                    kcoreaddons
+                    kconfig
+                    ki18n
+                    kdbusaddons
+                    ksyntaxhighlighting
+                    qtdeclarative-5
+                    qtquickcontrols2-5
+                    qtsvg-5))
+      (home-page "https://invent.kde.org/utilities/fielding")
+      (synopsis "REST API testing tool")
+      (description
+       "This package provides a tool for testing REST APIs.")
+      (license license:lgpl2.1+))))
+
 (define-public filelight
   (package
     (name "filelight")
