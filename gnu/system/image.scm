@@ -715,10 +715,11 @@ output file."
                                #:substitutable? ,substitutable?))))
 
 
-;;
-;; Tarball image.
-;;
+;;;
+;;; Tarball image.
+;;;
 
+;; TODO: Some bits can be factorized with (guix scripts pack).
 (define* (system-tarball-image image
                                #:key
                                (name "image")
