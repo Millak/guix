@@ -510,6 +510,31 @@ conversions between European currencies.")
 with support for QR scanning.")
     (license license:gpl3+)))
 
+(define-public kfind
+  (package
+    (name "kfind")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kfind-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0py6ygnj7qxbwrldf2a3hqc1cqd5yvyfi1l0nji0hwn8lvidnjhc"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules kdoctools))
+    (inputs (list karchive
+                  kcoreaddons
+                  kfilemetadata
+                  ki18n
+                  kio
+                  kwidgetsaddons))
+    (home-page "https://apps.kde.org/kfind/")
+    (synopsis "File search utility")
+    (description
+     "This package provides a file search utility for KDE.")
+    (license license:gpl2+)))
+
 (define-public kirogi
   (let ((commit "73b009f1fc5ac159c2faba720b302c704f89a806") ; no releases yet
         (revision "1"))
