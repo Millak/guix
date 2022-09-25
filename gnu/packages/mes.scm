@@ -98,14 +98,14 @@ extensive examples, including parsers for the Javascript and C99 languages.")
 (define-public nyacc
   (package
     (inherit nyacc-0.99)
-    (version "1.07.0")
+    (version "1.07.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/nyacc/nyacc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "01qb6h6bk684z8xda5d71q5f5l2z3q9jjz36if3jbpjc7b8dxjap"))
+                "1kr3b88sx0g9zy52algxqpvnkjm76qdyld7pasbbajkph2zhcj92"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "configure"
