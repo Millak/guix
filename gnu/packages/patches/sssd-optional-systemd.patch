@@ -2,7 +2,7 @@ Allow running sss_analyze without Python modules for systemd.
 Upstream PR: https://github.com/SSSD/sssd/pull/6125
 
 diff --git a/src/tools/analyzer/modules/request.py b/src/tools/analyzer/modules/request.py
-index b96a23c05..28ac2f194 100644
+index b9fe3caf8..51ec3a151 100644
 --- a/src/tools/analyzer/modules/request.py
 +++ b/src/tools/analyzer/modules/request.py
 @@ -1,8 +1,6 @@
@@ -14,7 +14,7 @@ index b96a23c05..28ac2f194 100644
  from sssd.parser import SubparsersAction
  from sssd.parser import Option
  
-@@ -77,8 +75,10 @@ class RequestAnalyzer:
+@@ -76,8 +74,10 @@ class RequestAnalyzer:
              Instantiated source object
          """
          if args.source == "journald":
@@ -25,7 +25,7 @@ index b96a23c05..28ac2f194 100644
              source = Files(args.logdir)
          return source
  
-@@ -143,7 +143,7 @@ class RequestAnalyzer:
+@@ -142,7 +142,7 @@ class RequestAnalyzer:
              self.consumed_logs.append(line.rstrip(line[-1]))
          else:
              # files source includes newline
@@ -34,12 +34,12 @@ index b96a23c05..28ac2f194 100644
                  print(line, end='')
              else:
                  print(line)
-@@ -225,7 +225,7 @@ class RequestAnalyzer:
-         source.set_component(component, False)
-         self.done = ""
-         for line in self.matched_line(source, patterns):
--            if isinstance(source, Journald):
-+            if type(source).__name__ == 'Journald':
-                 print(line)
-             else:
-                 self.print_formatted(line, args.verbose)
+@@ -240,7 +240,7 @@ class RequestAnalyzer:
+             self.print_formatted_verbose(source, patterns)
+         else:
+             for line in self.matched_line(source, patterns):
+-                if isinstance(source, Journald):
++                if type(source).__name__ == 'Journald':
+                     print(line)
+                 else:
+                     self.print_formatted(line)

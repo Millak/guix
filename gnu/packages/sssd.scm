@@ -154,7 +154,7 @@ fundamental object types for C.")
 (define-public sssd
   (package
     (name "sssd")
-    (version "2.7.3")
+    (version "2.7.4")
     (source
      (origin
        (method git-fetch)
@@ -163,7 +163,7 @@ fundamental object types for C.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18kcg82gcf5wgmaq5w9fszv9sg3d93yqm39p1npr8kw8b9203n4r"))
+        (base32 "1946pfwyv1ci0m4flrhwkksq42p14n7kcng6fbq6sy4lcn5g3yml"))
        (patches (search-patches "sssd-optional-systemd.patch"
                                 "sssd-system-directories.patch"))))
     (build-system gnu-build-system)
