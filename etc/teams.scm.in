@@ -142,7 +142,17 @@ and the r-build-system."))
         #:name "OCaml and Dune team"
         #:description
         "The OCaml language, the Dune build system, OCaml packages, the \"opam\"
-importer, and the ocaml-build-system."))
+importer, and the ocaml-build-system."
+        #:scope
+        (list "gnu/packages/ocaml.scm"
+              "gnu/packages/coq.scm"
+              "guix/build/ocaml-build-system.scm"
+              "guix/build/dune-build-system.scm"
+              "guix/build-system/ocaml.scm"
+              "guix/build-system/dune.scm"
+              "guix/import/opam.scm"
+              "guix/scripts/import/opam.scm"
+              "tests/opam.scm")))
 
 (define-team java
   (team 'java
