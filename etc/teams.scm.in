@@ -179,7 +179,13 @@ and the maven-build-system."
 
 (define-team emacs
   (team 'emacs
-        #:name "Emacs team"))
+        #:name "Emacs team"
+        #:description "The extensible, customizable text editor and its
+ecosystem."
+        #:scope (list (make-regexp "^gnu/packages/emacs(-.+|)\\.scm$")
+                      "guix/build/emacs-build-system.scm"
+                      "guix/build/emacs-utils.scm"
+                      "guix/build-system/emacs.scm")))
 
 (define-team lisp
   (team 'lisp
