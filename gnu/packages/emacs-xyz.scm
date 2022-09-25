@@ -23722,7 +23722,7 @@ versions of third party libraries or @code{C++} standards.")
    (propagated-inputs
     (list emacs-cpreproc))
    (home-page "https://sr.ht/~plattfot/cpreproc")
-   (synopsis "Create preprocessor macros for C++ that uses OpenVDB.")
+   (synopsis "Create preprocessor macros for C++ that uses OpenVDB")
    (description
     "This project makes it easier to generate preprocessor macros from Emacs
 for C++ code that uses OpenVDB and needs to be build against multiple
