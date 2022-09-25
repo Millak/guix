@@ -92,7 +92,19 @@
   (team 'python
         #:name "Python team"
         #:description
-        "Python, Python packages, the \"pypi\" importer, and the python-build-system."))
+        "Python, Python packages, the \"pypi\" importer, and the python-build-system."
+        #:scope
+        (list "gnu/packages/django.scm"
+              "gnu/packages/jupyter.scm"
+              ;; Match haskell.scm and haskell-*.scm.
+              (make-regexp "^gnu/packages/python(-.+|)\\.scm$")
+              "gnu/packages/sphinx.scm"
+              "gnu/packages/tryton.scm"
+              "guix/build/python-build-system.scm"
+              "guix/build-system/python.scm"
+              "guix/import/pypi.scm"
+              "guix/scripts/import/pypi.scm"
+              "tests/pypi.scm")))
 
 (define-team haskell
   (team 'haskell
