@@ -14365,6 +14365,33 @@ stuff (words, region, lines) around in Emacs.")
 @uref{https://bazel.build/} for background on Bazel.")
       (license license:asl2.0))))
 
+(define-public emacs-clue
+  ;; There are no releases so far.
+  (let ((commit "41895da52cf76f964d97cb8204406ab9828c4839")
+        (revision "0"))
+    (package
+      (name "emacs-clue")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/AmaiKinono/clue")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "08xpdpac82v5vwqqqgbh5imakl4pys6bpfacfk05pk88lw925ql8"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/AmaiKinono/clue/")
+      (synopsis "Connecting clues while reading code")
+      (description
+       "Clue is a tool for helping you take notes while reading code.
+
+Code reading is all about finding connections between different locations in
+a project.  With Clue, you can take notes about these connections in plain
+text (or your favorite markup language), and insert links to take you to these
+locations.")
+      (license license:gpl3+))))
+
 (define-public emacs-gntp
   (package
     (name "emacs-gntp")
