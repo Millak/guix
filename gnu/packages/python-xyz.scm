@@ -16041,6 +16041,50 @@ is made as zipfile like as possible.")
 syntax highlighting, markdown and more to the terminal.")
     (license license:expat)))
 
+(define-public python-textual
+  (package
+    (name "python-textual")
+    (version "0.1.18")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "textual" version))
+              (sha256
+               (base32
+                "08yg5a51hz1axfj5hx28hx31gq5apcj6vpkkmawmiplisa73z25j"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key inputs tests? #:allow-other-keys)
+               (when tests?
+                 (copy-recursively (string-append
+                                    (assoc-ref inputs "tests") "/tests")
+                                   "tests")
+                 (invoke "python" "-m" "pytest" "-vv")))))))
+    (propagated-inputs
+     (list python-rich python-typing-extensions))
+    (native-inputs
+     `(("python-pytest" ,python-pytest)
+       ("tests"
+        ;; The release on pypi comes without tests.  We can't build from this
+        ;; checkout, though, because installation requires an invocation of
+        ;; poetry.
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/Textualize/textual")
+                 (commit (string-append "v" version))))
+           (file-name (git-file-name name version))
+           (sha256
+            (base32
+             "0b3ycwqhp21mg9fvmadgxhgbvkwq6fd784l2xcmvy77rravrnnax"))))))
+    (home-page "https://github.com/Textualize/textual")
+    (synopsis "Build text user interfaces in Python")
+    (description "Textual is a @acronym{TUI, Text User Interface} framework
+for Python inspired by modern web development.")
+    (license license:expat)))
+
 (define-public python-magic
   (package
     (name "python-magic")
