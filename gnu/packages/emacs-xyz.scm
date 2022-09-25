@@ -2623,6 +2623,29 @@ framework as the user interface, which integrates well with Vertico or
 Selectrum.")
     (license license:gpl3+)))
 
+(define-public emacs-marginalia-emprise
+  (package
+    (name "emacs-marginalia-emprise")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~plattfot/marginalia-emprise")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "1kbk3kgvv1k5zdysvpgcsbxiwn4la3vvnmv3sbzxq7q5v5cr4a54"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-emprise emacs-marginalia))
+    (home-page "https://sr.ht/~plattfot/emprise/")
+    (synopsis "Annotate Emprise with Marginalia")
+    (description "This package provides an annotation function to show
+playback status, artist name and title for Emprise using Marginalia.")
+    (license license:gpl3+)))
+
 
 ;;;
 ;;; Miscellaneous.
