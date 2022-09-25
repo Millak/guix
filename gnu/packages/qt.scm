@@ -821,6 +821,69 @@ developers using C++ or QML, a CSS & JavaScript like language.")
             (variable "XDG_CONFIG_DIRS")
             (files '("etc/xdg")))))))
 
+(define-public qt3d-5
+  (package
+    (inherit qtbase-5)
+    (name "qt3d")
+    (version "5.15.5")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "1m3y7d58crn0qgfwkimxcggssn2pbs8nj5b9diwns6rwqg4aqk20"))))
+    (propagated-inputs `())
+    (native-inputs (list perl))
+    (inputs (list mesa qtbase-5 vulkan-headers zlib))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'configure 'configure-qmake
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (let* ((tmpdir (string-append (getenv "TMPDIR")))
+                                   (qmake (string-append tmpdir "/qmake"))
+                                   (qt.conf (string-append tmpdir "/qt.conf")))
+                              (symlink (which "qmake") qmake)
+                              (setenv "PATH"
+                                      (string-append tmpdir ":"
+                                                     (getenv "PATH")))
+                              (with-output-to-file qt.conf
+                                (lambda ()
+                                  (format #t "[Paths]
+Prefix=~a
+ArchData=lib/qt5
+Data=share/qt5
+Documentation=share/doc/qt5
+Headers=include/qt5
+Libraries=lib
+LibraryExecutables=lib/qt5/libexec
+Binaries=bin
+Tests=tests
+Plugins=lib/qt5/plugins
+Imports=lib/qt5/imports
+Qml2Imports=lib/qt5/qml
+Translations=share/qt5/translations
+Settings=etc/xdg
+Examples=share/doc/qt5/examples
+HostPrefix=~a
+HostData=lib/qt5
+HostBinaries=bin
+HostLibraries=lib
+
+[EffectiveSourcePaths]
+HostPrefix=~a
+HostData=lib/qt5"
+                                          #$output #$output #$(this-package-input
+                                                               "qtbase")))))))
+                        (replace 'configure
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (invoke "qmake"
+                                    "QT_BUILD_PARTS = libs tools tests")))
+                        (add-before 'check 'set-display
+                          (lambda _
+                            (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (synopsis "Qt module for 3D")
+    (description "The Qt3d module provides classes for displaying 3D.")))
+
 (define-public qt5compat
   (package
     (name "qt5compat")
