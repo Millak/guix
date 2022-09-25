@@ -41711,7 +41711,7 @@ A Docker image that can be used to spawn a Docker container.
 Using the @code{efi-disk-image} we can simplify our previous
 @code{image} declaration this way:
 
-@example
+@lisp
 (use-modules (gnu)
              (gnu image)
              (gnu tests)
@@ -41740,7 +41740,7 @@ Using the @code{efi-disk-image} we can simplify our previous
   (match (image-partitions efi-disk-image)
     ((esp root)
      (list esp data root)))))
-@end example
+@end lisp
 
 This will give the exact same @code{image} instantiation but the
 @code{image} declaration is simpler.
@@ -41902,12 +41902,12 @@ Now, thanks to the @code{pine64-image-type} record declaring the
 @code{'pine64-raw} @code{image-type}, one could also prepare a
 @code{my-pine.scm} file with the following content:
 
-@example
+@lisp
 (use-modules (gnu system images pine64))
 (operating-system
   (inherit pine64-barebones-os)
   (timezone "Europe/Athens"))
-@end example
+@end lisp
 
 to customize the @code{pine64-barebones-os}, and run:
 
