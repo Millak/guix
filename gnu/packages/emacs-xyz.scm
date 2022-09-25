@@ -20658,6 +20658,30 @@ collapse macro forms one step at a time, and evaluate or instrument the
 expansions for debugging with Edebug as normal.")
       (license license:gpl3+))))
 
+(define-public emacs-macrostep-geiser
+  ;; XXX: Upstream does not tag commits (yet).  The commit below matches the
+  ;; version bump.
+  (let ((commit "7927651b188cac07113bce5b2cd0de12b2b082f7"))
+    (package
+      (name "emacs-macrostep-geiser")
+      (version "0.2.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nbfalcon/macrostep-geiser")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gz2kypyrb4k76dn4j02c8s6a3dqb1la5jcrdcifv8saa8lvqyli"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-macrostep emacs-geiser))
+      (home-page "https://github.com/nbfalcon/macrostep-geiser")
+      (synopsis "Macrostep for Geiser and Cider")
+      (description
+       "This plug-in implements a Macrostep back-end powered by Geiser.")
+      (license license:gpl3+))))
+
 (define-public emacs-parent-mode
   (package
     (name "emacs-parent-mode")
