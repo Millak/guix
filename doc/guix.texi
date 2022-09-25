@@ -41412,7 +41412,7 @@ Platform targeting x86 CPU running GNU/Hurd (also referred to as
 @end defvr
 
 @node System Images
-@chapter Creating System Images.
+@chapter Creating System Images
 
 @cindex system images
 When it comes to installing Guix System for the first time on a new
