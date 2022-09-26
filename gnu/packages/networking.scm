@@ -867,14 +867,14 @@ systems with no further dependencies.")
 (define-public blueman
   (package
     (name "blueman")
-    (version "2.2.3")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/blueman-project/blueman/releases"
                            "/download/" version "/blueman-" version ".tar.xz"))
        (sha256
-        (base32 "1s86w4mklzr8hvbgl3nkg8jycl6grww533dhzw8gdn5glqfpkpbf"))))
+        (base32 "1bjh0cx9j2akygiqyxm7g0q74jyx9hpgf186gv3m31vks5zpvkw4"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags (list "--enable-polkit"
@@ -942,30 +942,30 @@ systems with no further dependencies.")
                  (map (lambda (prog) (string-append libexec prog))
                       '("mechanism" "rfcomm-watcher"))))))))))
     (native-inputs
-     `(("cython" ,python-cython)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list python-cython
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           intltool
+           pkg-config))
     (inputs
-     `(("bluez" ,bluez)
-       ("dbus" ,dbus)
-       ("librsvg" ,librsvg)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("iproute2" ,iproute)
-       ("iptables" ,iptables)
-       ("net-tools" ,net-tools)
-       ("pango" ,pango)
-       ("polkit" ,polkit)
-       ("ppp" ,ppp)
-       ("pulseaudio" ,pulseaudio)
-       ("pycairo" ,python-pycairo)
-       ("pygobject" ,python-pygobject)
-       ("python" ,python-wrapper)
-       ("libappindicator" ,libappindicator)
-       ("libnm" ,network-manager)))
+     (list bluez
+           dbus
+           librsvg
+           glib
+           gtk+
+           iproute
+           iptables
+           net-tools
+           pango
+           polkit
+           ppp
+           pulseaudio
+           python-pycairo
+           python-pygobject
+           python-wrapper
+           libappindicator
+           network-manager))
     (synopsis "GTK+ Bluetooth manager")
     (description "Blueman is a Bluetooth management utility using the Bluez
 D-Bus backend.  It is designed to be easy to use for most common Bluetooth
