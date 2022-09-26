@@ -345,21 +345,19 @@ http://freedesktop.org/wiki/Specifications/open-collaboration-services/")
     (native-inputs
      (list dbus extra-cmake-modules))
     (inputs
-     ;; TODO: qtdeclarative-5 (yields one failing test)
-     (list qtbase-5))
+     (list qtdeclarative-5
+           qtbase-5))
     (arguments
      (list #:configure-flags
            #~(list (string-append
                     "-DUDEV_RULES_INSTALL_DIR=" #$output "/lib/udev/rules.d"))
-           ;; TODO: Make tests pass: DBUS_FATAL_WARNINGS=0 still yields 7/8 tests
-           ;; failing.  When running after install, tests hang.
-           #:phases
-            '(modify-phases %standard-phases
-              (replace 'check
-                (lambda* (#:key tests? #:allow-other-keys)
-                  (when tests?
-                    (setenv "DBUS_FATAL_WARNINGS" "0")
-                    (invoke "dbus-launch" "ctest")))))))
+	#:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "DBUS_FATAL_WARNINGS" "0")
+                  (invoke "dbus-launch" "ctest" "-E" "bluezqt-qmltests")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "QML wrapper for BlueZ")
     (description "bluez-qt is a Qt-style library for accessing the bluez
