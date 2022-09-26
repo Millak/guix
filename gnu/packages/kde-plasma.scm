@@ -2139,6 +2139,45 @@ sensors, process information and other system resources.")
     (home-page "https://invent.kde.org/plasma/plasma-systemmonitor")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public plasma-welcome
+(let ((commit "dac7569078782a96f122782c15d34e51737d2b89") ; no tags
+      (revision "1"))
+  (package
+    (name "plasma-welcome")
+    (version (git-version "0.1-pre" revision commit))
+    (home-page "https://invent.kde.org/plasma/plasma-welcome")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1x7ra699r5a9kpa3isdnx6af4j6778kw2pmprnx4s8f1rwk2idhh"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     (list kcoreaddons
+           kdbusaddons
+           kdeclarative
+           ki18n
+           kio
+           kirigami
+           knotifications
+           kservice
+           kwindowsystem
+           networkmanager-qt
+           plasma-framework
+           qtdeclarative-5
+           qtgraphicaleffects
+           qtsvg-5
+           qtquickcontrols2-5
+           system-settings))
+    (synopsis "Plasma welcome screen")
+    (description
+     "This package provides a wizard for Plasma to configure settings.")
+    (license (list license:gpl2 license:gpl3)))))
+
 (define-public plasma-workspace
   (package
     (name "plasma-workspace")
