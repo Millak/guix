@@ -357,24 +357,24 @@
        (inputs
         (list abseil-cpp-cxxstd17
               ffmpeg
-              libjpeg-turbo
               glib
               libdrm
               libglvnd
+              libjpeg-turbo
               libvpx
               libxcomposite
               libxdamage
-              libxrender
-              libxrandr
+              libxext
               libxfixes
+              libxrandr
+              libxrender
+              libxtst
               mesa
               openh264
               openssl
               opus
               pipewire-0.3
-              protobuf
-              libxext
-              libxtst))
+              protobuf))
        (synopsis "WebRTC support for Telegram Desktop")
        (description "WebRTC-for-Telegram-Desktop is a custom WebRTC fork by
 Telegram project, for its use in telegram desktop client.")
