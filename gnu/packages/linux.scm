@@ -8729,7 +8729,11 @@ of Linux application development.")
       #:configure-flags
       #~(list (string-append "-Dudevrulesdir=" #$output "/lib/udev/rules.d")
               "-Dsystemd=disabled"
-              "-Dsession-managers=[]")))
+              "-Dsession-managers=[]"
+              "-Dman=enabled")))
+    (native-inputs
+     (modify-inputs (package-native-inputs pipewire)
+       (prepend python-docutils)))
     (inputs (modify-inputs (package-inputs pipewire)
               (prepend avahi
                        bluez
