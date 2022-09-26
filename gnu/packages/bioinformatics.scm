@@ -16425,6 +16425,29 @@ integration, exploration, and analysis of high-dimensional single-cell
 cytometry and imaging data.")
       (license license:expat))))
 
+(define-public r-compgenomrdata
+  (let ((commit "24484cb77631e1123ead6c329b9d62c160e600c6")
+        (revision "1"))
+    (package
+      (name "r-compgenomrdata")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/compgenomr/compGenomRData")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "06gdvz4m4qlb1ylv10qfx09zv4c95cm7nps4y2s67m946kv8czv8"))))
+      (properties `((upstream-name . "compGenomRData")))
+      (build-system r-build-system)
+      (home-page "https://github.com/compgenomr/compGenomRData")
+      (synopsis "Data for Computational Genomics with R book")
+      (description "This package provides data for the book \"Computational
+Genomics with R\".")
+      (license license:gpl3))))
+
 (define-public r-cytonorm
   (let ((commit "e4b9d343ee65db3c422800f1db3e77c25abde987")
         (revision "1"))
