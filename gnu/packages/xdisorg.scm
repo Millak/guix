@@ -3168,3 +3168,24 @@ that support @samp{wlr-gamma-control-unstable-v1}.  It is also known as a blue
 light filter or night light.")
     (license license:expat)))
 
+(define-public ydotool
+  (package
+    (name "ydotool")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ReimuNotMoe/ydotool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h19dh7kai0iikssr7sq0wfkh0sb18dylyfg7c3dkwc158cdg9cr"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #f))          ; no tests
+    (native-inputs (list scdoc))
+    (home-page "https://github.com/ReimuNotMoe/ydotool")
+    (synopsis "Generic Linux command-line automation tool (no X!)")
+    (description "@code{ydotool} is a Linux command-line tool that simulates
+keyboard input, mouse actions, etc.  programmatically or manually.")
+    (license license:agpl3+)))
