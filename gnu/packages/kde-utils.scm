@@ -425,6 +425,41 @@ Kate's features include:
      "This package allows to select which QLoggingCategory are displayed.")
     (license license:lgpl2.0+)))
 
+(define-public kbackup
+  (package
+    (name "kbackup")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kbackup-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0c0zdk00j9qssjdb5dg5hwc5mx7h5kvriyszia2xizqjq2m53c3k"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kguiaddons
+                  knotifications
+                  ki18n
+                  kio
+                  kxmlgui
+                  kiconthemes
+                  karchive
+                  kwidgetsaddons
+                  shared-mime-info))
+    (home-page "https://apps.kde.org/kbackup/")
+    (synopsis "Backup program with an easy-to-use interface")
+    (description
+     "This package provides tool to backup your data.
+@itemize
+@item profile for directories and files to be included or excluded from the
+backup
+@item The backup target can be either a locally mounted device like a ZIP
+drive, USB stick, etc
+@item Running automated backups without using a graphical user interface
+@end itemize")
+    (license license:gpl2+)))
+
 (define-public kdialog
   (package
     (name "kdialog")
