@@ -490,6 +490,30 @@ drive, USB stick, etc
      "This package provides a scientific calculator.")
     (license license:gpl2+)))
 
+(define-public kcharselect
+  (package
+    (name "kcharselect")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kcharselect-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "1gs9jkq76dkhjgjqpl5dcsx0l2qi6i0pk122y1qmwgyd6f8af35b"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kbookmarks kcoreaddons kcrash ki18n kwidgetsaddons kxmlgui))
+    (home-page "https://apps.kde.org/kcharselect/")
+    (synopsis "Select and copy special characters from installed fonts")
+    (description
+     "This package provides a tool to display various information
+about the selected character.  This includes not only the Unicode character
+name, but also aliases, general notes and cross references to similar
+characters.")
+    (license license:gpl2+)))
+
 (define-public kdialog
   (package
     (name "kdialog")
