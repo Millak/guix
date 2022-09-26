@@ -28,6 +28,7 @@
  (entry (commit "a13f5ead0265cf0fe11e60150547c09dfc8c45b0")
         (title
          (en "Guix System image creation is now documented")
+         (de "Es gibt eine Dokumentation, wie Sie Guix-System-Abbilder („Images“) erzeugen")
          (fr "La création d'images pour Guix System est à présent documentée"))
         (body
          (en "The Guix System image API that allows you to create customized
@@ -35,6 +36,11 @@ system images and turn them into actual bootable images is now documented in
 the @code{Creating System Images} chapter of the Guix documentation.  This
 should be particularly useful for people trying to port Guix System to new
 hardware.")
+         (de "Sie können nun im Kapitel @code{Creating System Images} der
+Dokumentation nachlesen, wie Sie mit der Schnittstelle für Guix-System-Abbilder
+anpassbare, bootfähige Systemabbilder erzeugen können.  Das sollte vor allem
+Personen unterstützen, die versuchen, Guix System auf neuer Hardware zum Laufen
+zu bringen.")
          (fr "L'interface de programmation d'images pour Guix System,
 permettant de créer des images personnalisées et de les transformer en images
 amorçables est désormais documentée dans le chapitre @code{Création d'images
