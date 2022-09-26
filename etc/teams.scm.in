@@ -189,7 +189,14 @@ ecosystem."
 
 (define-team lisp
   (team 'lisp
-        #:name "Lisp team"))
+        #:name "Lisp team"
+        #:description
+        "Common Lisp and similar languages, Common Lisp packages and the
+asdf-build-system."
+        #:scope (list (make-regexp "^gnu/packages/lisp(-.+|)\\.scm$")
+                      "guix/build/asdf-build-system.scm"
+                      "guix/build/lisp-utils.scm"
+                      "guix/build-system/asdf.scm")))
 
 (define-team ruby
   (team 'ruby
