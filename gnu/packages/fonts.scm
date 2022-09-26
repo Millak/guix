@@ -2801,7 +2801,7 @@ prevalent typefaces in Traditional Chinese regions.")
   (package
     (inherit font-chiron-sung-hk)
     (name "font-chiron-hei-hk")
-    (version "2.503")
+    (version "2.504")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2810,7 +2810,7 @@ prevalent typefaces in Traditional Chinese regions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00av598lcsvbwfxabs8m1bfvlk3zq98nziynsrg5p2s5mhz2pkvk"))))
+                "0d0k88sbhgr597sv2jzz2rcg8g4k60lcjka1xlnkv08n3bdgvmhr"))))
     (synopsis "Traditional Chinese Gothic typeface")
     (description
      "Chiron Hei HK is a Traditional Chinese Gothic typeface based on the Hong
