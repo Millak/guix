@@ -39,6 +39,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
@@ -458,6 +459,35 @@ backup
 drive, USB stick, etc
 @item Running automated backups without using a graphical user interface
 @end itemize")
+    (license license:gpl2+)))
+
+(define-public kcalc
+  (package
+    (name "kcalc")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kcalc-" version ".tar.xz"))
+              (sha256
+               (base32
+                "01rn6qy40q4b90i5mysrygkqh5fzq885dgcd11l6r8s59ijjcjlk"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules kdoctools))
+    (inputs (list gmp
+                  kcoreaddons
+                  kcrash
+                  kconfig
+                  kconfigwidgets
+                  kguiaddons
+                  ki18n
+                  knotifications
+                  kxmlgui
+                  mpfr))
+    (home-page "https://apps.kde.org/kcalc/")
+    (synopsis "Scientific calculator")
+    (description
+     "This package provides a scientific calculator.")
     (license license:gpl2+)))
 
 (define-public kdialog
