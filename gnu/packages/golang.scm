@@ -1261,6 +1261,83 @@ proxy protocol.")
 configuration file.")
     (license license:isc)))
 
+(define-public go-github-com-savsgio-gotils
+  (let ((commit "52f3993e8d6d2629f18e7b7383b7f54a3d3f1d1f")
+        (revision "0"))
+    (package
+      (name "go-github-com-savsgio-gotils")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/savsgio/gotils")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0qr7i62h53frcig26vj027r2hn9zxsjzd7113wvbxy7qpprjjbjb"))))
+      (build-system go-build-system)
+      (native-inputs
+       (list go-github-com-google-uuid
+             go-github-com-valyala-bytebufferpool))
+      (arguments
+       '(#:import-path "github.com/savsgio/gotils"
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'build
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'build)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "github.com/savsgio/gotils/bytes"
+                 "github.com/savsgio/gotils/encoding/base64"
+                 "github.com/savsgio/gotils/math"
+                 "github.com/savsgio/gotils/nocopy"
+                 "github.com/savsgio/gotils/strconv"
+                 "github.com/savsgio/gotils/strings"
+                 "github.com/savsgio/gotils/sync"
+                 "github.com/savsgio/gotils/time"
+                 "github.com/savsgio/gotils/uuid"))))
+           (replace 'check
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'check)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "github.com/savsgio/gotils/bytes"
+                 "github.com/savsgio/gotils/encoding/base64"
+                 "github.com/savsgio/gotils/math"
+                 "github.com/savsgio/gotils/nocopy"
+                 "github.com/savsgio/gotils/strconv"
+                 "github.com/savsgio/gotils/strings"
+                 "github.com/savsgio/gotils/sync"
+                 "github.com/savsgio/gotils/time"
+                 "github.com/savsgio/gotils/uuid"))))
+           (replace 'install
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'install)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "github.com/savsgio/gotils/bytes"
+                 "github.com/savsgio/gotils/encoding/base64"
+                 "github.com/savsgio/gotils/math"
+                 "github.com/savsgio/gotils/nocopy"
+                 "github.com/savsgio/gotils/strconv"
+                 "github.com/savsgio/gotils/strings"
+                 "github.com/savsgio/gotils/sync"
+                 "github.com/savsgio/gotils/time"
+                 "github.com/savsgio/gotils/uuid")))))))
+      (home-page "https://github.com/savsgio/gotils")
+      (synopsis "Golang utlities")
+      (description
+       "Golang utlities to make your life easier with zero allocations.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-riobard-go-bloom
   (let ((commit "cdc8013cb5b3eb0efebec85f0e904efccac42df9")
         (revision "0"))
