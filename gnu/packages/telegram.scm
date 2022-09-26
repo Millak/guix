@@ -168,18 +168,6 @@
      (base32
       "0hmwqj7a9vcy8wq7pd1qprl68im3zl5f1wzcn2zzk2wvi0389k9f"))))
 
-(define lib-rlottie-for-telegram-desktop
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-          (url "https://github.com/desktop-app/lib_rlottie.git")
-          (commit "0671bf70547381effcf442ec9618e04502a8adbc")))
-    (file-name
-     (git-file-name "lib-rlottie-for-telegram-desktop" %telegram-version))
-    (sha256
-     (base32
-      "05qnza7j15356s8jq16pkbyp4zr586lssmd86lz5jq23lcb3raxv"))))
-
 (define lib-rpl-for-telegram-desktop
   (origin
     (method git-fetch)
@@ -239,18 +227,6 @@
     (sha256
      (base32
       "0kyrgxi202xwy14mnx62h1kny0434f5fxqns1ydp24q2c2cr1cxn"))))
-
-(define lib-waylandshells-for-telegram-desktop
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-          (url "https://github.com/desktop-app/lib_waylandshells.git")
-          (commit "59b0ee55a68976d27f1bf7cec0e11d5939e185e7")))
-    (file-name
-     (git-file-name "lib-waylandshells-for-telegram-desktop" %telegram-version))
-    (sha256
-     (base32
-      "0l2xrpc5mvvdlsj333pmkgfvn9wi1ijfdaaz8skfnw9icw52faaf"))))
 
 (define lib-webrtc-for-telegram-desktop
   (origin
@@ -405,47 +381,6 @@ Telegram project, for its use in telegram desktop client.")
            #~(begin
                (substitute* "meson.build"
                  (("werror=true") "werror=false"))))))))))
-
-(define-public libtgvoip-for-telegram-desktop
-  (let ((commit "13a5fcb16b04472d808ce122abd695dbf5d206cd")
-        (revision "88"))
-    (hidden-package
-     (package
-       (inherit libtgvoip)
-       (version
-        (git-version "2.4.4" revision commit))
-       (source
-        (origin
-          (method git-fetch)
-          (uri
-           (git-reference
-            (url "https://github.com/telegramdesktop/libtgvoip.git")
-            (commit commit)))
-          (file-name
-           (git-file-name "libtgvoip-for-telegram-desktop" version))
-          (sha256
-           (base32 "12p6s7vxkf1gh1spdckkdxrx7bjzw881ds9bky7l5fw751cwb3xd"))))
-       (arguments
-        `(#:configure-flags
-          (list
-           "--disable-static"
-           "--disable-dsp"              ; FIXME
-           "--enable-audio-callback"
-           "--with-alsa"
-           "--with-pulse")
-          #:phases
-          (modify-phases %standard-phases
-            (add-after 'unpack 'patch-linkers
-              (lambda _
-                (substitute* "Makefile.am"
-                  (("\\$\\(CRYPTO_LIBS\\) \\$\\(OPUS_LIBS\\)")
-                   "$(CRYPTO_LIBS) $(OPUS_LIBS) $(ALSA_LIBS) $(PULSE_LIBS)"))
-                (substitute* "tgvoip.pc.in"
-                  (("libcrypto opus")
-                   "libcrypto opus alsa libpulse"))
-                #t)))))
-       (native-inputs
-        (list autoconf automake libtool pkg-config))))))
 
 (define-public telegram-desktop
   (package
