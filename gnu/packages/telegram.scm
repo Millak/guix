@@ -77,21 +77,6 @@
 
 (define %telegram-version "2.9.3")
 
-(define libvpx-for-telegram-desktop
-  (let ((commit "5b63f0f821e94f8072eb483014cfc33b05978bb9")
-        (revision "112"))
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://chromium.googlesource.com/webm/libvpx")
-            (commit commit)))
-      (file-name (git-file-name
-                  "libvpx-for-telegram-desktop"
-                  (git-version "1.9.0" revision commit)))
-      (sha256
-       (base32
-        "1psvxaddihlw1k5n0anxif3qli6zyw2sa2ywn6mkb8six9myrp68")))))
-
 (define libyuv-for-telegram-desktop
   (let ((commit "ad890067f661dc747a975bc55ba3767fe30d4452")
         (revision "2211"))
