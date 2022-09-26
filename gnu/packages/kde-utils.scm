@@ -34,6 +34,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages cups)
   #:use-module (gnu packages glib) ; dbus for tests
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gstreamer)
@@ -931,6 +932,41 @@ filter tool.  All modifications to the data loaded can be endlessly undone or
 redone.")
     (license ;; GPL for programs, LGPL for libraries, FDL for documentation
      (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
+
+(define-public print-manager
+  (package
+    (name "print-manager")
+    (version "22.08.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/print-manager-" version ".tar.xz"))
+       (sha256
+        (base32 "1abwj1ccm70adzx07ykqjlb4f6y55k2rv1j861dl0822187vl799"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list cups
+           kcmutils
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kdbusaddons
+           kiconthemes
+           ki18n
+           kio
+           knotifications
+           kwidgetsaddons
+           kwindowsystem
+           plasma-framework
+           qtdeclarative-5))
+    (home-page "https://invent.kde.org/utilities/print-manager")
+    (synopsis "Manage print jobs and printers")
+    (description
+     "This package provides printing management for KDE.")
+    (license license:gpl2+)))
 
 (define-public rsibreak
   (package
