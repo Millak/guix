@@ -63,6 +63,7 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kerberos)
@@ -370,21 +371,30 @@ Bluetooth stack.  It is used by the KDE Bluetooth stack, BlueDevil.")
     (version "5.98.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/"
-                    name "-" version ".tar.xz"))
+              (uri (string-append "mirror://kde/stable/frameworks/"
+                                  (version-major+minor version)
+                                  "/" name "-" version ".tar.xz"))
               (sha256
                (base32
                 "0a3zvmhcfsnxv0jpyjny3sl769p99psadl1872v0qlkax47pvsjp"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules fdupes
-           python python-lxml)) ;; For 24x24 icon generation
-    (inputs
-     (list qtbase-5))
-    (arguments ;; fails because duplicate icons exist. TODO: try fix this.
-     `(#:tests? #f))
+     (list extra-cmake-modules
+           fdupes
+           `(,gtk+ "bin")
+           python
+           python-lxml))                ;for 24x24 icon generation
+    (inputs (list qtbase-5))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'update-cache
+                          (lambda* _
+                            (invoke "gtk-update-icon-cache"
+                                    (string-append #$output
+                                                   "/share/icons/breeze"))
+                            (invoke "gtk-update-icon-cache"
+                                    (string-append #$output
+                                                   "/share/icons/breeze-dark")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Default KDE Plasma 5 icon theme")
     (description "Breeze provides a freedesktop.org compatible icon theme.
