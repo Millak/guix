@@ -273,6 +273,7 @@ jami account used as part of the jami configuration are left *unspecified*."
               (marionette-eval
                '(begin
                   (use-modules (gnu services herd)
+                               (ice-9 match)
                                (rnrs base)
                                (srfi srfi-1))
 
