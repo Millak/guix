@@ -30,6 +30,8 @@
   #:use-module (gnu packages digest)
   #:use-module (gnu packages fcitx)
   #:use-module (gnu packages fcitx5)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
@@ -58,6 +60,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
   #:use-module ((guix licenses) #:prefix license:)
@@ -297,8 +300,8 @@
       "0fvad87hyxli83xn19mgf8jjrrh6y6iaig14pckpbkg33vf4wqkj"))))
 
 (define-public webrtc-for-telegram-desktop
-  (let ((commit "91d836dc84a16584c6ac52b36c04c0de504d9c34")
-        (revision "166"))
+  (let ((commit "621f3da55331733bf0d1b223786b96b68c03dca1")
+        (revision "327"))
     (hidden-package
      (package
        (name "webrtc-for-telegram-desktop")
@@ -314,57 +317,62 @@
           (file-name
            (git-file-name name version))
           (sha256
-           (base32 "0plwdp6xgxi27hif5j7kpq425cidxyxbbga3z2f64dsninwy5p1x"))
+           (base32 "1ks1572k1jj7pmzwm79p2gdgi31dd4bs761bphnx32zyq4c6skxk"))
+          (patches
+           (search-patches
+            ;; https://github.com/desktop-app/tg_owt/pull/101
+            "webrtc-for-telegram-desktop-fix-gcc12-cstdint.patch"))
           (modules '((guix build utils)
                      (ice-9 ftw)
                      (srfi srfi-1)))
           (snippet
            #~(begin
                (let ((keep
-                      '( ;; Custom forks which are incompatible with the ones in Guix.
-                        "abseil-cpp" "libsrtp" "openh264" "rnnoise"
+                      '("abseil-cpp" "libsrtp" "rnnoise"
                         ;; Not available in Guix.
-                        "pffft" "usrsctp"
-                        ;; Has cmake support files for libvpx input.
-                        "libvpx")))
+                        "pffft")))
                  (with-directory-excursion "src/third_party"
                    (for-each delete-file-recursively
                              (lset-difference string=?
                                               (scandir ".")
-                                              (cons* "." ".." keep)))))))))
+                                              (cons* "." ".." keep)))))
+               ;; Unbundle openh264.
+               (substitute* "CMakeLists.txt"
+                 (("\\include\\(cmake\\/libopenh264\\.cmake\\)")""))))))
        (build-system cmake-build-system)
        (arguments
         (list
          #:tests? #f                    ; No target
-         #:configure-flags #~(list "-DCMAKE_C_FLAGS=-fPIC"
-                                   "-DCMAKE_CXX_FLAGS=-fPIC")
          #:phases
          #~(modify-phases %standard-phases
-             (add-after 'unpack 'copy-inputs
+             (add-after 'unpack 'unpack-additional-sources
                (lambda _
                  (let* ((third-party (string-append (getcwd) "/src/third_party"))
-                        (libvpx-to (string-append third-party
-                                                  "/libvpx/source/libvpx"))
+                        (crc32c-to (string-append third-party "/crc32c/src"))
                         (libyuv-to (string-append third-party "/libyuv")))
-                   (copy-recursively #$libvpx-for-telegram-desktop libvpx-to)
+                   (copy-recursively #$(package-source crc32c) crc32c-to)
                    (copy-recursively #$libyuv-for-telegram-desktop
                                      libyuv-to)))))))
-       (native-inputs (list perl pkg-config python-wrapper yasm))
+       (native-inputs (list pkg-config python-wrapper yasm))
        (inputs
-        (list alsa-lib
+        (list abseil-cpp-cxxstd17
               ffmpeg
               libjpeg-turbo
               glib
+              libdrm
+              libglvnd
+              libvpx
               libxcomposite
               libxdamage
               libxrender
               libxrandr
+              libxfixes
+              mesa
+              openh264
               openssl
               opus
-              pipewire
+              pipewire-0.3
               protobuf
-              pulseaudio
-              libx11
               libxext
               libxtst))
        (synopsis "WebRTC support for Telegram Desktop")
@@ -377,13 +385,11 @@ Telegram project, for its use in telegram desktop client.")
          license:asl2.0
          ;; LibYuv
          (license:non-copyleft "file:///src/third_party/libyuv/LICENSE")
-         ;; OpenH264
-         license:bsd-2
          ;; PFFFT
          (license:non-copyleft "file:///src/third_party/pffft/LICENSE")
          ;; RnNoise
          license:gpl3
-         ;; LibSRTP, LibVPx, UsrSCTP and Others
+         ;; LibSRTP, Crc32c and Others
          license:bsd-3))))))
 
 (define-public rlottie-for-telegram-desktop

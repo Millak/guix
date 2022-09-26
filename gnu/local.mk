@@ -1975,6 +1975,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/warsow-qfusion-fix-bool-return-type.patch	\
   %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\
   %D%/packages/patches/webrtc-audio-processing-big-endian.patch	\
+  %D%/packages/patches/webrtc-for-telegram-desktop-fix-gcc12-cstdint.patch   \
   %D%/packages/patches/websocketpp-fix-for-cmake-3.15.patch	\
   %D%/packages/patches/widelands-add-missing-map-include.patch	\
   %D%/packages/patches/widelands-system-wide_minizip.patch	\
