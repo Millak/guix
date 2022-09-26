@@ -426,6 +426,10 @@ importer."))
                        "andrew@trop.in")
   home emacs)
 
+(define-member (person "Josselin Poiret"
+                       "dev@jpoiret.xyz")
+  core installer)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
