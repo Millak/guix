@@ -588,6 +588,33 @@ with support for QR scanning.")
       (license ;GPL for programs, LGPL for libraries
                (list license:gpl2+ license:lgpl2.0)))))
 
+(define-public kontrast
+  (package
+    (name "kontrast")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kontrast-" version ".tar.xz"))
+              (sha256
+               (base32
+                "03y3y5p29zx4nmqi7hp3abxq2n2bgwbz2knhn9vhl3im3ghp7lmp"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list kirigami
+                  ki18n
+                  kcoreaddons
+                  qtdeclarative-5
+                  qtgraphicaleffects
+                  qtquickcontrols2-5
+                  qtsvg-5))
+    (home-page "https://apps.kde.org/kontrast/")
+    (synopsis "Color contrast checker")
+    (description
+     "Kontrast is a color contrast checker and tells you if your color
+combinations are distinct enough to be readable and accessible.")
+    (license license:gpl3+)))
+
 (define-public libatcore
   (let ((commit "0de6393ed3e721537dec50b0ad174d83f1207eb6")
         (revision "1"))
