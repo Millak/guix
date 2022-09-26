@@ -487,17 +487,17 @@ faster window switching.")
 (define-public gnome-shell-extension-gsconnect
   (package
     (name "gnome-shell-extension-gsconnect")
-    (version "48")
+    (version "50")       ; See GNOME Shell supported versions in metadata.json
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url (string-append "https://github.com/andyholmes"
+                    (url (string-append "https://github.com/GSConnect"
                                         "/gnome-shell-extension-gsconnect.git"))
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15agblnm7k1wqnnz6gwhwym992fzqkdz8mkm04805783bx60b8bh"))))
+                "0vg87fdihs5kp7apgyd32ldjmwzmrxaimsc005yjyy8m3f65sjmr"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f ;; every test fails
@@ -568,7 +568,7 @@ faster window switching.")
        ("gobject-introspection" ,gobject-introspection)
        ("libxml2" ,libxml2)
        ("pkg-config" ,pkg-config)))
-    (home-page "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki")
+    (home-page "https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki")
     (synopsis "Connect GNOME Shell with your Android phone")
     (description "GSConnect is a complete implementation of KDE Connect
 especially for GNOME Shell, allowing devices to securely share content, like
