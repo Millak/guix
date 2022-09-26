@@ -1877,6 +1877,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/teensy-loader-cli-help.patch		\
   %D%/packages/patches/tensorflow-c-api-fix.patch		\
   %D%/packages/patches/texinfo-5-perl-compat.patch		\
+  %D%/packages/patches/telegram-desktop-allow-disable-libtgvoip.patch   \
   %D%/packages/patches/telegram-purple-adjust-test.patch	\
   %D%/packages/patches/texi2html-document-encoding.patch	\
   %D%/packages/patches/texi2html-i18n.patch			\
