@@ -5620,37 +5620,43 @@ output devices.")
 (define-public colord
   (package/inherit colord-minimal
     (name "colord")
+    (version "1.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.freedesktop.org/software/colord/releases/"
+                           "colord-" version ".tar.xz"))
+       (sha256
+        (base32 "0vwfx06k1in8hci3kdxpc3c0bh81f1vl5bp7favd3rdz4wd661vl"))))
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments colord-minimal)
+     (substitute-keyword-arguments (package-arguments colord-minimal)
        ((#:configure-flags flags)
-        `(begin
-           (use-modules (srfi srfi-1))
-           (append '("-Dbash_completion=true"
-                     "-Ddocs=true"
-                     "-Dman=true"
-                     "-Dvapi=true")
-               (fold delete ,flags '("-Dbash_completion=false"
-                                     "-Ddocs=false"
-                                     "-Dman=false")))))
+        #~(begin
+            (use-modules (srfi srfi-1))
+            (append '("-Dbash_completion=true"
+                      "-Ddocs=true"
+                      "-Dman=true"
+                      "-Dvapi=true")
+                    (fold delete #$flags '("-Dbash_completion=false"
+                                           "-Ddocs=false"
+                                           "-Dman=false")))))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'fix-bash-completion-dir
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "data/meson.build"
-                 (("bash_completion.get_pkgconfig_variable\
+        #~(modify-phases #$phases
+            (add-after 'unpack 'fix-bash-completion-dir
+              (lambda _
+                (substitute* "data/meson.build"
+                  (("bash_completion.get_pkgconfig_variable\
 \\('completionsdir'\\)")
-                  (string-append "'" (assoc-ref outputs "out")
-                                 "/etc/bash_completion.d'")))))))))
+                   (string-append "'" #$output
+                                  "/etc/bash_completion.d'")))))))))
     (native-inputs
-     (append
-         `(("bash-completion" ,bash-completion)
-           ("docbook-xsl" ,docbook-xsl-1.79.1)
-           ("gtk-doc" ,gtk-doc/stable)
-           ("libxml2" ,libxml2)         ;for XML_CATALOG_FILES
-           ("libxslt" ,libxslt)
-           ("vala" ,vala))              ;for VAPI, needed by simple-scan
-         (package-native-inputs colord-minimal)))))
+     (modify-inputs (package-native-inputs colord-minimal)
+       (append bash-completion
+               docbook-xsl-1.79.1
+               gtk-doc/stable
+               libxml2                  ;for XML_CATALOG_FILES
+               libxslt
+               vala)))))                ;for VAPI, needed by simple-scan
 
 (define-public geoclue
   (package
