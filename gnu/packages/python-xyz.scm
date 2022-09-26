@@ -3092,6 +3092,24 @@ other Python program.")
      "This package provides a Doxygen input filter for QML files.")
     (license license:bsd-3)))
 
+(define-public python-doxypypy
+  (package
+    (name "python-doxypypy")
+    (version "0.8.8.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "doxypypy" version))
+              (sha256
+               (base32
+                "06z0vbh975g42z5szbfvn9i3bif3xwr5pncqd4fvjzjkbi2p2xb2"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))          ;no test suite
+    (home-page "https://github.com/Feneric/doxypypy")
+    (synopsis "Doxygen filter for Python")
+    (description
+     "This package provides a Doxygen filter for Python.")
+    (license license:gpl2+)))
+
 (define-public python-empy
   (package
     (name "python-empy")
