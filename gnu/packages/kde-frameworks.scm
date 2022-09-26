@@ -450,23 +450,27 @@ documentation.")
     (version "5.98.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/"
-                    name "-" version ".tar.xz"))
+              (uri (string-append "mirror://kde/stable/frameworks/"
+                                  (version-major+minor version)
+                                  "/" name "-" version ".tar.xz"))
               (sha256
                (base32
                 "1ipj7j1iw6g56z0qppji38h6qwbs05piiqqbsw8hdbf96l6cdiq2"))))
     (build-system cmake-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "ctest" "-E" "karchivetest")))))))
     (native-inputs
-     (list extra-cmake-modules))
-           ;; pkg-config ;; For zstd
+     (list extra-cmake-modules pkg-config))
     (inputs
-     (list bzip2 qtbase-5 xz zlib))
-           ;; `(,zstd "lib")  ;; FIXME: Tests fail with zstd
+     (list bzip2 qtbase-5 xz zlib `(,zstd "lib")))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Qt 5 addon providing access to numerous types of archives")
-    (description "KArchive provides classes for easy reading, creation and
+    (description
+     "KArchive provides classes for easy reading, creation and
 manipulation of @code{archive} formats like ZIP and TAR.
 
 It also provides transparent compression and decompression of data, like the
