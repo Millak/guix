@@ -43,6 +43,7 @@ qui essaient de faire fonctionner Guix sur de nouvelles machines.")))
  (entry (commit "c8112f3bd95269ce4aca12dedbfe61bb6b37acae")
         (title
          (en "WSL system images support")
+         (de "WSL-Systemabbilder werden unterstützt")
          (fr "Support pour les images système WSL"))
         (body
          (en "The @command{guix system image} command can now generate system
@@ -52,6 +53,17 @@ instance run from a Guix checkout:
 @command{guix system image gnu/system/images/wsl2.scm},
 
 and import the resulting image this way:
+
+@command{wsl --import Guix ./guix ./wsl2-image.tar.gz}
+@command{wsl -d Guix}.")
+         (de "Mit dem Befehl @command{guix system image} können Sie
+Systemabbilder erzeugen, die auf dem Windows-Subsystem für Linux laufen.  Wenn
+Sie das ausprobieren möchten, führen Sie zum Beispiel Folgendes aus einem
+Guix-Checkout heraus aus:
+
+@command{guix system image gnu/system/images/wsl2.scm},
+
+Das resultierende Abbild können Sie so importieren:
 
 @command{wsl --import Guix ./guix ./wsl2-image.tar.gz}
 @command{wsl -d Guix}.")
