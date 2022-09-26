@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Andrew Whatson <whatson@gmail.com>
@@ -37,6 +37,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages xml)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -229,55 +230,58 @@ by no means limited to these applications.)  This package provides XML DTDs.")
      "This package provides XSL style sheets for DocBook.")
     (license (license:x11-style "" "See 'COPYING' file."))))
 
-(define-public docbook-xsl-ns
+(define-public docbook-xsl-1.79.1
   (package
-    (name "docbook-xsl-ns")
+    (name "docbook-xsl")
     (version "1.79.1")
     (source (origin
               (method url-fetch)
+              ;; At the time, the non namespaced version was still the
+              ;; default; our latest docbook-xsl is namespaced, so for
+              ;; consistency preserves this property for older versions too.
               (uri (string-append "mirror://sourceforge/docbook/"
-                                  name "/" version "/"
-                                  name "-" version ".tar.bz2"))
+                                  name "-ns/" version "/"
+                                  name "-ns-" version ".tar.bz2"))
               (sha256
                (base32
                 "170ggf5dgjar65kkn5n33kvjr3pdinpj66nnxfx8b2avw0k91jin"))))
     (build-system copy-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; XXX: The copy-build-system doesn't seem to allow installing to a
-         ;; different output.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (xml (string-append out "/xml/xsl/" ,name "-" ,version))
-                    (doc (string-append (assoc-ref %outputs "doc")
-                                        "/share/doc/" ,name "-" ,version))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: The copy-build-system doesn't seem to allow installing to a
+          ;; different output.
+          (replace 'install
+            (lambda _
+              (let ((xml (string-append #$output "/xml/xsl/" #$name "-" #$version))
+                    (doc (string-append #$output:doc
+                                        "/share/doc/" #$name "-" #$version))
                     (select-rx (make-regexp
                                 "(\\.xml$|\\.xsl$|\\.dtd$|\\.ent$)")))
-               ;; Install catalog.
-               (install-file "catalog.xml" xml)
-               (install-file "VERSION.xsl" xml)
-               (substitute* (string-append xml "/catalog.xml")
-                 (("rewritePrefix=\"./")
-                  (string-append "rewritePrefix=\"file://" xml "/")))
-               ;; Install style sheets.
-               (for-each (lambda (dir)
-                           (for-each (lambda (f)
-                                       (install-file
-                                        f (string-append xml "/" (dirname f))))
-                                     (find-files dir select-rx)))
-                         '("assembly" "common" "eclipse" "epub" "epub3" "fo"
-                           "highlighting" "html" "htmlhelp" "javahelp" "lib"
-                           "manpages" "params" "profiling" "roundtrip"
-                           "template" "website"
-                           "xhtml" "xhtml-1_1" "xhtml5"))
-               ;; Install documentation.
-               (install-file "NEWS" doc)
-               (install-file "RELEASE-NOTES.html" doc)
-               (copy-recursively "slides" doc)
-               (copy-recursively "webhelp" doc)))))))
+                ;; Install catalog.
+                (install-file "catalog.xml" xml)
+                (install-file "VERSION.xsl" xml)
+                (substitute* (string-append xml "/catalog.xml")
+                  (("rewritePrefix=\"./")
+                   (string-append "rewritePrefix=\"file://" xml "/")))
+                ;; Install style sheets.
+                (for-each (lambda (dir)
+                            (for-each (lambda (f)
+                                        (install-file
+                                         f (string-append xml "/" (dirname f))))
+                                      (find-files dir select-rx)))
+                          '("assembly" "common" "eclipse" "epub" "epub3" "fo"
+                            "highlighting" "html" "htmlhelp" "javahelp" "lib"
+                            "manpages" "params" "profiling" "roundtrip"
+                            "template" "website"
+                            "xhtml" "xhtml-1_1" "xhtml5"))
+                ;; Install documentation.
+                (install-file "NEWS" doc)
+                (install-file "RELEASE-NOTES.html" doc)
+                (copy-recursively "slides" doc)
+                (copy-recursively "webhelp" doc)))))))
     (home-page "https://docbook.org")
     (synopsis "DocBook XSL namespaced style sheets for document authoring")
     (description "This package provides the @emph{namespaced} XSL style sheets

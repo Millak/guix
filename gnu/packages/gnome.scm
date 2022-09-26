@@ -5645,7 +5645,7 @@ output devices.")
     (native-inputs
      (append
          `(("bash-completion" ,bash-completion)
-           ("docbook-xsl-ns" ,docbook-xsl-ns)
+           ("docbook-xsl" ,docbook-xsl-1.79.1)
            ("gtk-doc" ,gtk-doc/stable)
            ("libxml2" ,libxml2)         ;for XML_CATALOG_FILES
            ("libxslt" ,libxslt)
