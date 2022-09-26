@@ -1041,6 +1041,15 @@ Google's C++ code base.")
           `(cons* "-DBUILD_TESTING=ON"
                   (delete "-DABSL_RUN_TESTS=ON" ,flags))))))))
 
+(define-public abseil-cpp-cxxstd17
+  (let ((base abseil-cpp))
+    (hidden-package
+     (package/inherit base
+       (arguments
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:configure-flags flags)
+           #~(cons* "-DCMAKE_CXX_STANDARD=17" #$flags))))))))
+
 (define-public pegtl
   (package
     (name "pegtl")
