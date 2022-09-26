@@ -1788,7 +1788,11 @@ new Date();"))
      (list
       #:imported-modules `((guix build syscalls)
                            ,@%gnu-build-system-modules)
-
+      #:modules `((guix build gnu-build-system)
+                  (guix build utils)
+                  (ice-9 match)
+                  (srfi srfi-1)
+                  (srfi srfi-26))
       #:disallowed-references (list (gexp-input openjdk10)
                                     (gexp-input openjdk10 "jdk"))
 
@@ -1934,7 +1938,19 @@ new Date();"))
                 (with-directory-excursion dir
                   (let ((files (find-files "." ".*" #:directories? #t)))
                     (apply invoke "zip" "-0" "-X" archive files))))))
-          (add-after 'strip-character-data-timestamps 'strip-archive-timestamps
+          (add-after 'strip-character-data-timestamps 'remove-extraneous-files
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Remove the *.diz and src.zip files for space considerations.
+              ;; The former are compressed debuginfo files not typically
+              ;; shipped with Java distributions, while the later corresponds
+              ;; to Java core API source files.
+              (for-each delete-file
+                        (append-map (cut find-files <> "(^src\\.zip|\\.diz)$")
+                                    (map (match-lambda
+                                           ((name . dir)
+                                            dir))
+                                         outputs)))))
+          (add-after 'remove-diz-file 'strip-archive-timestamps
             (lambda _
               (use-modules (guix build syscalls)
                            (ice-9 binary-ports)
@@ -1961,7 +1977,7 @@ new Date();"))
                 (for-each repack-archive
                           (find-files #$output:doc "\\.zip$"))
                 (for-each repack-archive
-                          (find-files #$output:jdk "\\.(zip|jar|diz)$"))
+                          (find-files #$output:jdk "\\.(zip|jar)$"))
                 (repack-archive (string-append #$output:jdk "/lib/ct.sym"))
                 (let ((repack-jmod
                        (lambda (file-name)
