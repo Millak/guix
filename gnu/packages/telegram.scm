@@ -538,10 +538,9 @@ Telegram project, for its use in telegram desktop client.")
            pkg-config
            python-wrapper))
     (inputs
-     (list alsa-lib
-           abseil-cpp-cxxstd17
+     (list abseil-cpp-cxxstd17
+           alsa-lib
            c++-gsl
-           libexpected
            fcitx-qt5
            fcitx5-qt
            ffmpeg
@@ -553,8 +552,10 @@ Telegram project, for its use in telegram desktop client.")
            jemalloc
            kcoreaddons
            libdispatch
+           libexpected
            libjpeg-turbo
            libvpx
+           libxcb
            lz4
            minizip
            nimf
@@ -564,8 +565,8 @@ Telegram project, for its use in telegram desktop client.")
            pulseaudio
            qrcodegen-cpp
            qtbase-5
-           qtsvg-5
            qtimageformats
+           qtsvg-5
            qtwayland
            range-v3
            rlottie-for-telegram-desktop
@@ -573,7 +574,6 @@ Telegram project, for its use in telegram desktop client.")
            wayland
            webkitgtk
            webrtc-for-telegram-desktop
-           libxcb
            xcb-util-keysyms
            xxhash
            zlib))
