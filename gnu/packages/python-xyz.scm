@@ -104,7 +104,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
-;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2021, 2022 Pradana Aumars <paumars@courrier.dev>
@@ -3074,6 +3074,23 @@ It uses Accessibility (a11y) technologies to communicate with desktop
 applications. dogtail scripts are written in Python and executed like any
 other Python program.")
     (license license:gpl2+)))
+
+(define-public python-doxyqml
+  (package
+    (name "python-doxyqml")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "doxyqml" version))
+              (sha256
+               (base32
+                "1f0jjqvamly4hn7f1palvq27z6yr694rfzyxrb6g0ysbbawxkvq9"))))
+    (build-system python-build-system)
+    (home-page "http://agateau.com/projects/doxyqml")
+    (synopsis "Doxygen input filter for QML files")
+    (description
+     "This package provides a Doxygen input filter for QML files.")
+    (license license:bsd-3)))
 
 (define-public python-empy
   (package
