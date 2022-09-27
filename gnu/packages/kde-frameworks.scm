@@ -2563,16 +2563,17 @@ window does not need focus for them to be activated.")
            qtdeclarative-5
            qtsvg-5))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "XDG_DATA_DIRS"
-                     (string-append (assoc-ref inputs "shared-mime-info")
-                                    "/share"))
-             (setenv "HOME" (getcwd))
-             ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "XDG_DATA_DIRS"
+                           (string-append #$(this-package-native-input
+                                             "shared-mime-info")
+                                          "/share"))
+                   (setenv "HOME" (getcwd))
+                   ;; make Qt render "offscreen", required for tests
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Icon GUI utilities")
     (description "This library contains classes to improve the handling of icons
