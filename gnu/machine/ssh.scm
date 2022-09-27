@@ -339,9 +339,13 @@ by MACHINE."
   "Raise a '&message' error condition if it is clear that deploying MACHINE's
 'system' declaration would fail."
   (define assertions
-    (append (machine-check-file-system-availability machine)
-            (machine-check-initrd-modules machine)
-            (list (machine-check-forward-update machine))))
+    (parameterize ((%current-system
+                    (machine-ssh-configuration-system
+                     (machine-configuration machine)))
+                   (%current-target-system #f))
+      (append (machine-check-file-system-availability machine)
+              (machine-check-initrd-modules machine)
+              (list (machine-check-forward-update machine)))))
 
   (define aggregate-exp
     ;; Gather all the expressions so that a single round-trip is enough to
@@ -453,6 +457,10 @@ the 'should-roll-back' field set to SHOULD-ROLL-BACK?"
 (define (deploy-managed-host machine)
   "Internal implementation of 'deploy-machine' for MACHINE instances with an
 environment type of 'managed-host."
+  (define config (machine-configuration machine))
+  (define host   (machine-ssh-configuration-host-name config))
+  (define system (machine-ssh-configuration-system config))
+
   (maybe-raise-unsupported-configuration-error machine)
   (when (machine-ssh-configuration-authorize?
          (machine-configuration machine))
@@ -466,50 +474,54 @@ have you run 'guix archive --generate-key?'")
                                        (get-string-all port))))
                                   (machine-ssh-session machine)
                                   (machine-become-command machine)))
+
   (mlet %store-monad ((_ (check-deployment-sanity machine))
                       (boot-parameters (machine-boot-parameters machine)))
-    (let* ((os (machine-operating-system machine))
-           (host (machine-ssh-configuration-host-name
-                  (machine-configuration machine)))
-           (eval (cut machine-remote-eval machine <>))
-           (menu-entries (map boot-parameters->menu-entry boot-parameters))
-           (bootloader-configuration (operating-system-bootloader os))
-           (bootcfg (operating-system-bootcfg os menu-entries)))
-      (define-syntax-rule (eval/error-handling condition handler ...)
-        ;; Return a wrapper around EVAL such that HANDLER is evaluated if an
-        ;; exception is raised.
-        (lambda (exp)
-          (lambda (store)
-            (guard (condition ((inferior-exception? condition)
-                               (values (begin handler ...) store)))
-              (values (run-with-store store (eval exp))
-                      store)))))
+    ;; Make sure code that check %CURRENT-SYSTEM, such as
+    ;; %BASE-INITRD-MODULES, gets to see the right value.
+    (parameterize ((%current-system system)
+                   (%current-target-system #f))
+      (let* ((os (machine-operating-system machine))
+             (eval (cut machine-remote-eval machine <>))
+             (menu-entries (map boot-parameters->menu-entry boot-parameters))
+             (bootloader-configuration (operating-system-bootloader os))
+             (bootcfg (operating-system-bootcfg os menu-entries)))
+        (define-syntax-rule (eval/error-handling condition handler ...)
+          ;; Return a wrapper around EVAL such that HANDLER is evaluated if an
+          ;; exception is raised.
+          (lambda (exp)
+            (lambda (store)
+              (guard (condition ((inferior-exception? condition)
+                                 (values (begin handler ...) store)))
+                (values (run-with-store store (eval exp)
+                                        #:system system)
+                        store)))))
 
-      (mbegin %store-monad
-        (with-roll-back #f
-          (switch-to-system (eval/error-handling c
-                              (raise (formatted-message
-                                      (G_ "\
+        (mbegin %store-monad
+          (with-roll-back #f
+            (switch-to-system (eval/error-handling c
+                                (raise (formatted-message
+                                        (G_ "\
 failed to switch systems while deploying '~a':~%~{~s ~}")
-                                      host
-                                      (inferior-exception-arguments c))))
-                            os))
-        (with-roll-back #t
-          (mbegin %store-monad
-            (upgrade-shepherd-services (eval/error-handling c
-                                         (warning (G_ "\
+                                        host
+                                        (inferior-exception-arguments c))))
+                              os))
+          (with-roll-back #t
+            (mbegin %store-monad
+              (upgrade-shepherd-services (eval/error-handling c
+                                           (warning (G_ "\
 an error occurred while upgrading services on '~a':~%~{~s ~}~%")
-                                                  host
-                                                  (inferior-exception-arguments
-                                                   c)))
-                                       os)
-            (install-bootloader (eval/error-handling c
-                                  (raise (formatted-message
-                                          (G_ "\
+                                                    host
+                                                    (inferior-exception-arguments
+                                                     c)))
+                                         os)
+              (install-bootloader (eval/error-handling c
+                                    (raise (formatted-message
+                                            (G_ "\
 failed to install bootloader on '~a':~%~{~s ~}~%")
-                                          host
-                                          (inferior-exception-arguments c))))
-                                bootloader-configuration bootcfg)))))))
+                                            host
+                                            (inferior-exception-arguments c))))
+                                  bootloader-configuration bootcfg))))))))
 
 
 ;;;

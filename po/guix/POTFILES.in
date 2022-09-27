@@ -6,6 +6,7 @@ gnu/services.scm
 gnu/system.scm
 gnu/services/configuration.scm
 gnu/services/shepherd.scm
+gnu/services/samba.scm
 gnu/home/services.scm
 gnu/home/services/ssh.scm
 gnu/home/services/symlink-manager.scm

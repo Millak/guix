@@ -23,6 +23,7 @@
   #:use-module (guix build utils)
   #:use-module (guix packages)
   #:use-module (ice-9 match)
+  #:use-module ((guix read-print) #:select (blank?))
   #:use-module ((guix profiles) #:hide (manifest->code))
   #:use-module ((guix build syscalls) #:select (mkdtemp!))
   #:use-module ((guix scripts package)
@@ -85,13 +86,21 @@ corresponding file."
               ((file . content) (create-file file content)))
             files-alist))
 
+(define (remove-recursively pred sexp)
+  "Like SRFI-1 'remove', but recurse within SEXP."
+  (let loop ((sexp sexp))
+    (match sexp
+      ((lst ...)
+       (map loop (remove pred lst)))
+      (x x))))
+
 (define (eval-test-with-home-environment files-alist manifest matcher)
   (create-temporary-home files-alist)
   (setenv "HOME" %temporary-home-directory)
   (mkdir-p %temporary-home-directory)
   (let* ((home-environment (manifest+configuration-files->code
                             manifest %destination-directory))
-         (result (matcher home-environment)))
+         (result (matcher (remove-recursively blank? home-environment))))
     (delete-file-recursively %temporary-home-directory)
     result))
 

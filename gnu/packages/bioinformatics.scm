@@ -7273,6 +7273,228 @@ sequence.")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license license:bsd-3)))
 
+(define-public r-gutils
+  (let ((commit "10e36c7b580aacb2d952140a3fdd82418aaddea6")
+        (revision "1"))
+    (package
+      (name "r-gutils")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/gUtils")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1wq9kd1afzy7ii510r20c4n9fkykj6p15q5c85ws27h1q5w4ghxy"))))
+      (properties `((upstream-name . "gUtils")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biocgenerics
+             r-data-table
+             r-genomeinfodb
+             r-genomicranges
+             r-iranges
+             r-matrix
+             r-s4vectors
+             r-stringr))
+      (home-page "https://github.com/mskilab/gUtils")
+      (synopsis "Additional capabilities and speed for GenomicRanges operations")
+      (description
+       "This is an R package providing additional capabilities and speed for
+@code{GenomicRanges} operations.")
+      (license license:gpl2))))
+
+(define-public r-bamutils
+  (let ((commit "639dba901f16944fa1b7a8d7048701ba86a2cdb8")
+        (revision "1"))
+    (package
+      (name "r-bamutils")
+      (version (git-version "0.0.0.9000" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/bamutils/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0qwby2v5rydnipvf1iv1wz9nf02yq98k0xbc4inf9mqc54jwacs0"))))
+      (properties `((upstream-name . "bamUtils")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-abind
+             r-biocgenerics
+             r-data-table
+             r-genomicalignments
+             r-genomicranges
+             r-gutils
+             r-rsamtools
+             r-variantannotation))
+      (home-page "https://github.com/mskilab/bamutils/")
+      (synopsis "Utility functions for manipulating BAMs")
+      (description "This package provides utility functions for manipulating
+BAM files.")
+      (license license:gpl2))))
+
+(define-public r-gtrack
+  (let ((commit "a694fa36cedafca2658da79fc8e5b673535b15e5")
+        (revision "1"))
+    (package
+      (name "r-gtrack")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/gTrack/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "070qlrbqsbj9max2vx740zigqh0ymvnw2pm1ia5la3wb4dbfwh2b"))))
+      (properties `((upstream-name . "gTrack")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biocgenerics
+             r-data-table
+             r-genomeinfodb
+             r-genomicranges
+             r-gutils
+             r-iranges
+             r-matrix
+             r-rcolorbrewer
+             r-rcpp
+             r-rcurl
+             r-rtracklayer
+             r-s4vectors))
+      (home-page "https://github.com/mskilab/gTrack/")
+      (synopsis "Plot tracks of complex genomic data across multiple genomic windows")
+      (description
+       "This package provides an object for plotting GRanges, RleList, UCSC
+file formats, and ffTrack objects in multi-track panels.")
+      (license license:gpl2))))
+
+(define-public r-gchain
+  (let ((commit "dc393e8dd0d8efaf36270c04d7112db8553db36a")
+        (revision "1"))
+    (package
+      (name "r-gchain")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/gChain/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "105wgi5w2fhwq1grsvj6zjigwg0sny3z7zr577q8ki3qffjwdkj0"))))
+      (properties `((upstream-name . "gChain")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-bamutils
+             r-biostrings
+             r-data-table
+             r-genomicalignments
+             r-genomicranges
+             r-gtrack
+             r-gutils
+             r-matrix
+             r-rtracklayer))
+      (home-page "https://github.com/mskilab/gChain/")
+      (synopsis "Additional capabilities and speed for GenomicRanges operations")
+      (description
+       "This R package provides additional capabilities and speed for
+GenomicRanges operations.")
+      (license license:gpl2))))
+
+(define-public r-skitools
+  (let ((commit "22d107d32f063eb891eb5e7fb36996d1c0b0d2bc")
+        (revision "1"))
+    (package
+      (name "r-skitools")
+      (version (git-version "0.0.0.9000" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/skitools/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1977d9bkdk9l2n6niahfj9vksh9l1ga4g7c3b3x27lj1gc0qgr4z"))))
+      (properties `((upstream-name . "skitools")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biostrings
+             r-complexheatmap
+             r-data-table
+             r-devtools
+             r-dt
+             r-gchain
+             r-genomeinfodb
+             r-genomicranges
+             r-ggplot2
+             r-gplots
+             r-gutils
+             r-htmlwidgets
+             r-hwriter
+             r-igraph
+             r-iranges
+             r-plotly
+             r-rcolorbrewer
+             r-reshape2
+             r-s4vectors
+             r-stringr
+             r-variantannotation))
+      (home-page "https://github.com/mskilab/skitools/")
+      (synopsis "Various mskilab R utilties")
+      (description
+       "This package provides R miscellaneous utilities for basic data
+manipulation, debugging, visualization, lsf management, and common mskilab
+tasks.")
+      (license license:expat))))
+
+(define-public r-chromunity
+  (let ((commit "09fce8bc12cb84b45a6ea25bf8db6e5b75113d4f")
+        (revision "1"))
+    (package
+      (name "r-chromunity")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mskilab/chromunity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0lp0h614k8fq6h9gpbylk4chh7q6w4qda8lx03ajrpppxmg7al2d"))))
+      (properties `((upstream-name . "chromunity")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-arrow
+             r-biocgenerics
+             r-data-table
+             r-gchain
+             r-genomicranges
+             r-gutils
+             r-igraph
+             r-magrittr
+             r-mass
+             r-matrix
+             r-pbmcapply
+             r-plyr
+             r-r6
+             r-skitools
+             r-zoo))
+      (home-page "https://github.com/mskilab/chromunity")
+      (synopsis "Discovery of communities in Pore-C concatemers")
+      (description "This is a package for the discovery of communities in
+Pore-C concatemers.")
+      (license license:gpl3))))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
@@ -12514,6 +12736,12 @@ fasta subsequences.")
              (substitute* '("requirements.txt"
                             "cooler.egg-info/requires.txt")
                (("cytoolz.*<.*0.11") "cytoolz"))))
+         ;; This version of flake8 just won't work with this version of
+         ;; pytest, because of dependency pinning.
+         (add-after 'unpack 'do-not-use-flake8
+           (lambda _
+             (substitute* "setup.cfg"
+               (("addopts = --flake8") "addopts = "))))
          (add-after 'unpack 'patch-tests
            (lambda _
              (substitute* "tests/test_create.py"
@@ -12522,10 +12750,13 @@ fasta subsequences.")
                                 "access to genome.ucsc.edu\")\n"
                                 "def test_roundtrip")))
              (substitute* "tests/test_util.py"
-              (("def test_fetch_chromsizes")
-                 (string-append "@pytest.mark.skip(reason=\"requires network "
-                                "access to genome.ucsc.edu\")\n"
-                                "def test_fetch_chromsizes")))
+               (("def test_fetch_chromsizes")
+                (string-append "@pytest.mark.skip(reason=\"requires network "
+                               "access to genome.ucsc.edu\")\n"
+                               "def test_fetch_chromsizes"))
+               ;; See https://github.com/open2c/cooler/issues/287
+               (("skipif\\(six.PY2, reason=\"Scipy on Py2 is too old\"")
+                "skip(reason=\"Scipy is too new\""))
              ;; This test depends on ipytree, which contains a lot of minified
              ;; JavaScript.
              (substitute* "tests/test_fileops.py"
@@ -15541,47 +15772,49 @@ for the analysis and visualization of raw nanopore signal.")
     (license license:mpl2.0)))
 
 (define-public python-pyvcf
-  (package
-    (name "python-pyvcf")
-    (version "0.6.8")
-    ;; Use git, because the PyPI tarballs lack test data.
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
+  (let ((commit "476169cd457ba0caa6b998b301a4d91e975251d9")
+        (revision "0"))
+    (package
+      (name "python-pyvcf")
+      (version (git-version "0.6.8" revision commit))
+      ;; Use git, because the PyPI tarballs lack test data.
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
                (url "https://github.com/jamescasbon/PyVCF.git")
                ;; Latest release is not tagged.
-               (commit "bfcedb9bad1a14074ac4526ffdb610611e073810")))
-        (file-name (git-file-name name version))
-        (sha256
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
           (base32
-            "0c7lsssns3zp8fh2ibllzzra003srg9vbxqzmq6654akbzdb7lrf"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'patch-sample-script
-            (lambda _
-              ;; Add Python 3 compatibility to this sample script.
-              (substitute* "scripts/vcf_sample_filter.py"
-                (("print (.*)\n" _ arg)
-                 (string-append "print(" arg ")\n")))))
-          (add-after 'install 'remove-installed-tests
-            ;; Do not install test files.
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (delete-file-recursively (string-append
+           "0qf9lwj7r2hjjp4bd4vc7nayrhblfm4qcqs4dbd43a6p4bj2jv5p"))))
+      (build-system python-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-sample-script
+             (lambda _
+               ;; Add Python 3 compatibility to this sample script.
+               (substitute* "scripts/vcf_sample_filter.py"
+                 (("print (.*)\n" _ arg)
+                  (string-append "print(" arg ")\n")))))
+           (add-after 'install 'remove-installed-tests
+             ;; Do not install test files.
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (delete-file-recursively (string-append
                                          (site-packages inputs outputs)
                                          "/vcf/test")))))))
-    (native-inputs
-     ;; Older setuptools is needed for use_2to3.
-     (list python-cython python-setuptools))
-    (propagated-inputs
-     (list python-pysam python-rpy2))
-    (home-page "https://github.com/jamescasbon/PyVCF")
-    (synopsis "Variant Call Format parser for Python")
-    (description "This package provides a @acronym{VCF,Variant Call Format}
+      (native-inputs
+       ;; Older setuptools is needed for use_2to3.
+       (list python-cython python-setuptools-for-tensorflow))
+      (propagated-inputs
+       (list python-pysam python-rpy2))
+      (home-page "https://github.com/jamescasbon/PyVCF")
+      (synopsis "Variant Call Format parser for Python")
+      (description "This package provides a @acronym{VCF,Variant Call Format}
 parser for Python.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public nanosv
   (package
@@ -15996,6 +16229,43 @@ BigWig files, as well as efficient region coverage summary over intervals from
 both types of files.")
     (license license:expat)))
 
+(define-public mudskipper
+  (package
+    (name "mudskipper")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mudskipper" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1y7fnlz6irmxdmv6bxzm95w4ws4vzldlrh8npvgxmdnrz9pgb1dv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #false    ;fail because the "mudskipper" crate cannot be found
+       #:cargo-inputs
+       (("rust-bio" ,rust-bio-0.39)
+        ("rust-bio-types" ,rust-bio-types-0.12)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-coitrees" ,rust-coitrees-0.2)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-indicatif" ,rust-indicatif-0.16)
+        ("rust-libradicl" ,rust-libradicl-0.4)
+        ("rust-linecount" ,rust-linecount-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-rust-htslib" ,rust-rust-htslib-0.38))))
+    (native-inputs
+     (list cmake pkg-config))
+    (inputs
+     (list zlib xz))
+    (home-page "https://github.com/OceanGenomics/mudskipper")
+    (synopsis "Convert genomic alignments to transcriptomic BAM/RAD files.")
+    (description "Mudskipper is a tool for projecting genomic alignments to
+transcriptomic coordinates.")
+    (license license:bsd-3)))
+
 (define-public r-ascat
   (package
    (name "r-ascat")
@@ -16154,6 +16424,29 @@ value of physical insulation between neighboring domains.")
 integration, exploration, and analysis of high-dimensional single-cell
 cytometry and imaging data.")
       (license license:expat))))
+
+(define-public r-compgenomrdata
+  (let ((commit "24484cb77631e1123ead6c329b9d62c160e600c6")
+        (revision "1"))
+    (package
+      (name "r-compgenomrdata")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/compgenomr/compGenomRData")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "06gdvz4m4qlb1ylv10qfx09zv4c95cm7nps4y2s67m946kv8czv8"))))
+      (properties `((upstream-name . "compGenomRData")))
+      (build-system r-build-system)
+      (home-page "https://github.com/compgenomr/compGenomRData")
+      (synopsis "Data for Computational Genomics with R book")
+      (description "This package provides data for the book \"Computational
+Genomics with R\".")
+      (license license:gpl3))))
 
 (define-public r-cytonorm
   (let ((commit "e4b9d343ee65db3c422800f1db3e77c25abde987")

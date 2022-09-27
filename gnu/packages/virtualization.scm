@@ -169,6 +169,7 @@
         (base32
          "1rmvrgqjhrvcmchnz170dxvrrf14n6nm39y8ivrprmfydd9lwqx0"))
        (patches (search-patches "qemu-build-info-manual.patch"
+                                "qemu-disable-aarch64-migration-test.patch"
                                 "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))
        (snippet

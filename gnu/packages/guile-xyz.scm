@@ -4951,7 +4951,7 @@ with a FSM is being built (for example, from a Makefile.)")
 (define-public guile-ini
   (package
     (name "guile-ini")
-    (version "0.5.1")
+    (version "0.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4960,21 +4960,12 @@ with a FSM is being built (for example, from a Makefile.)")
               (file-name (string-append name "-" version))
               (sha256
                (base32
-                "0ky7sffxywc2p84q5kdsphr99q0g5gy45rj0vx7f77hwpfm2093x"))))
+                "17fbys3gsfyx4f77a2fswirx76dlr57il2z27z77wljaz777jk36"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
        #:phases (modify-phases %standard-phases
-                  (delete 'strip)
-                  (add-before 'build 'generate-fsm-context
-                    ;; Make sure the intermediate FSM context is present
-                    ;; before the build.
-                    (lambda _
-                      (let ((cwd (getcwd)))
-                        (chdir "modules/ini/")
-                        (invoke "make" "GUILE_AUTO_COMPILE=0"
-                                "fsm-context.scm")
-                        (chdir cwd)))))))
+                  (delete 'strip))))
     (native-inputs (list autoconf automake pkg-config texinfo))
     (inputs (list bash-minimal guile-3.0 guile-lib))
     (propagated-inputs (list guile-smc))

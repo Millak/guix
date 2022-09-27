@@ -29,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -1054,6 +1055,29 @@ attempting to maintain ISTP compliance
 @end itemize\n")
     (license license:expat)))
 
+(define-public python-ephem
+  (package
+    (name "python-ephem")
+    (version "4.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ephem" version))
+              (sha256
+               (base32
+                "0smmm3l8csnw9rrimh8mpyjrm80jaafjl184spnji98vk22qd8bz"))))
+    (build-system python-build-system)
+    (native-inputs (list tzdata))
+    (home-page "https://rhodesmill.org/pyephem/")
+    (synopsis "Compute positions of the planets and stars")
+    (description
+     "PyEphem provides an @code{ephem} Python package for performing
+high-precision astronomy computations.
+
+The name ephem is short for the word ephemeris, which is the traditional term
+for a table giving the position of a planet, asteroid, or comet for a series
+of dates.")
+    (license license:expat)))
+
 (define-public python-photutils
   (package
     (name "python-photutils")
@@ -1822,6 +1846,27 @@ N-Chilada and RAMSES AMR outputs.")
     (propagated-inputs
      (modify-inputs (package-inputs libsep)
        (prepend python-numpy)))))
+
+(define-public python-suntime
+  (package
+    (name "python-suntime")
+    (version "1.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "suntime" version))
+              (sha256
+               (base32
+                "0ja64w293wjx76q3z18ikx4rdihwkbj6pnjpbs82ycyyzhfnbpz4"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-dateutil))
+    (home-page "https://github.com/SatAgro/suntime")
+    (synopsis "Sunset and sunrise time calculation python library")
+    (description
+     "Python library doing sunrise and sunset time calculation.
+
+Takes a WGS84 (GPS) latitude/longitude as input as well as an UTC or local
+datetime object.")
+    (license license:lgpl3+)))
 
 (define-public python-asdf
   (package

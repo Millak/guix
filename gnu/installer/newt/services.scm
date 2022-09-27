@@ -99,10 +99,8 @@ non-graphical system.")
       #:item->text (compose G_ system-service-name)
       #:checkbox-tree-height 5
       #:exit-button-callback-procedure
-      (lambda ()
-        (raise
-          (condition
-            (&installer-step-abort)))))))
+      (lambda _
+        (abort-to-prompt 'installer-step 'abort)))))
 
 (define (run-network-management-page)
   "Run a page to select among several network management methods."

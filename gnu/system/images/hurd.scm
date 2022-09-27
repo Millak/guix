@@ -74,9 +74,9 @@
                            #:wal-mode? #f)))))
 
 (define hurd-disk-image
-  (image
+  (image-without-os
    (format 'disk-image)
-   (platform hurd)
+   (platform i586-gnu)
    (partitions
     (list (partition
            (size 'guess)
@@ -104,14 +104,14 @@
 (define hurd-barebones-disk-image
   (image
    (inherit
-    (os+platform->image hurd-barebones-os hurd
+    (os+platform->image hurd-barebones-os i586-gnu
                         #:type hurd-image-type))
    (name 'hurd-barebones-disk-image)))
 
 (define hurd-barebones-qcow2-image
   (image
    (inherit
-    (os+platform->image hurd-barebones-os hurd
+    (os+platform->image hurd-barebones-os i586-gnu
                         #:type hurd-qcow2-image-type))
    (name 'hurd-barebones.qcow2)))
 

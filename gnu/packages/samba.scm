@@ -35,6 +35,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system copy)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -274,7 +275,7 @@ external dependencies.")
            python-pyasn1                ;for krb5 tests
            ;; For generating man pages.
            docbook-xml-4.2
-           docbook-xsl
+           docbook-xsl-next             ;otherwise the man pages are corrupted
            libxslt
            libxml2))                    ;for XML_CATALOG_FILES
     (home-page "https://www.samba.org/")
@@ -505,3 +506,30 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
                    license:bsd-4
                    license:gpl2+
                    license:public-domain))))
+
+(define-public wsdd
+  (package
+    (name "wsdd")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://github.com/christgau/wsdd")
+                           (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04an2w6hamnai668ag4vq8x0i09fsg2jrayb4a7ar0x6bn837k7m"))))
+    (build-system copy-build-system)
+    (inputs
+     `(("python" ,python)))
+    (arguments
+     '(#:install-plan
+       '(("src/wsdd.py" "bin/wsdd")
+         ("man/wsdd.1" "share/man/man1/"))))
+    (home-page "https://github.com/christgau/wsdd")
+    (synopsis "A Web Service Discovery host daemon")
+    (description "This daemon allows (Samba) hosts to be found by Web
+Service Dicovery Clients.  It also implements the client side of the
+discovery protocol which allows to search for devices implementing
+WSD.")
+    (license license:expat)))

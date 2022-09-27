@@ -2,6 +2,7 @@
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 LuHui <luhux76@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,66 +46,74 @@
                 "0jfm9fik7nv4w21zqdg830pddgkdjmplmna9yjn9ck1lwn4vsps1"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'disable-timestamps
-           (lambda _
-             (setenv "KCONFIG_NOTIMESTAMP" "1")))
-         (add-before 'configure 'disable-taskset
-           ;; This feature fails its tests in the build environment,
-           ;; was default 'n' until after 1.26.2.
-           (lambda _
-             (substitute* "util-linux/taskset.c"
-               (("default y") "default n"))))
-         (replace 'configure
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "defconfig" make-flags)))
-         (add-after 'configure 'dont-install-to-usr
-           (lambda _
-             (substitute* ".config"
-               (("# CONFIG_INSTALL_NO_USR is not set")
-                "CONFIG_INSTALL_NO_USR=y"))))
-         (replace 'check
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (substitute* '("testsuite/du/du-s-works"
-                            "testsuite/du/du-works")
-               (("/bin") "/etc"))  ; there is no /bin but there is a /etc
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'disable-timestamps
+                 (lambda _
+                   (setenv "KCONFIG_NOTIMESTAMP" "1")))
+               (add-before 'configure 'disable-taskset
+                 ;; This feature fails its tests in the build environment,
+                 ;; was default 'n' until after 1.26.2.
+                 (lambda _
+                   (substitute* "util-linux/taskset.c"
+                     (("default y") "default n"))))
+               (replace 'configure
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "defconfig" make-flags)))
+               (add-after 'configure 'dont-install-to-usr
+                 (lambda _
+                   (substitute* ".config"
+                     (("# CONFIG_INSTALL_NO_USR is not set")
+                      "CONFIG_INSTALL_NO_USR=y"))))
+               (replace 'check
+                 (lambda* (#:key tests? make-flags #:allow-other-keys)
+                   (substitute* '("testsuite/du/du-s-works"
+                                  "testsuite/du/du-works")
+                     (("/bin") "/etc")) ; there is no /bin but there is a /etc
 
-             ;; There is no /usr/bin or /bin - replace it with /gnu/store
-             (substitute* "testsuite/cpio.tests"
-               (("/usr/bin") (%store-directory))
-               (("usr") (car (filter (negate string-null?)
-                                     (string-split (%store-directory) #\/)))))
+                   ;; There is no /usr/bin or /bin - replace it with
+                   ;; /gnu/store.
+                   (substitute* "testsuite/cpio.tests"
+                     (("/usr/bin") (%store-directory))
+                     (("usr") (car (filter (negate string-null?)
+                                           (string-split (%store-directory) #\/)))))
 
-             (substitute* "testsuite/date/date-works-1"
-               (("/bin/date") (which "date")))
+                   (substitute* "testsuite/date/date-works-1"
+                     (("/bin/date") (which "date")))
 
-             (substitute* "testsuite/start-stop-daemon.tests"
-              (("/bin/false") (which "false")))
+                   (substitute* "testsuite/start-stop-daemon.tests"
+                     (("/bin/false") (which "false")))
 
-             ;; The pidof tests assume that pid 1 is called "init" but that is not
-             ;; true in guix build environment
-             (substitute* "testsuite/pidof.tests"
-               (("-s init") "-s $(cat /proc/1/comm)"))
+                   ;; The pidof tests assume that pid 1 is called "init" but
+                   ;; that is not true in guix build environment
+                   (substitute* "testsuite/pidof.tests"
+                     (("-s init") "-s $(cat /proc/1/comm)"))
 
-             ;; This test cannot possibly pass.
-             ;; It is trying to test that "which ls" returns "/bin/ls" when PATH is not set.
-             ;; However, this relies on /bin/ls existing.  Which it does not in guix.
-             (delete-file "testsuite/which/which-uses-default-path")
-             (rmdir "testsuite/which")
+                   ;; This test cannot possibly pass.  It is trying to test
+                   ;; that "which ls" returns "/bin/ls" when PATH is not set.
+                   ;; However, this relies on /bin/ls existing.  Which it does
+                   ;; not in guix.
+                   (delete-file "testsuite/which/which-uses-default-path")
+                   (rmdir "testsuite/which")
 
-             (apply invoke "make"
-                     ;; "V=1"
-                     "SKIP_KNOWN_BUGS=1"
-                     "SKIP_INTERNET_TESTS=1"
-                     "check" make-flags)))
-         (replace 'install
-           (lambda* (#:key outputs make-flags #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (apply invoke "make"
-                       (string-append "CONFIG_PREFIX=" out)
-                       "install" make-flags)))))))
-    (native-inputs (list perl ; needed to generate the man pages (pod2man)
+                   (when tests?
+                     (apply invoke "make"
+                            ;; "V=1"
+                            "SKIP_KNOWN_BUGS=1"
+                            "SKIP_INTERNET_TESTS=1"
+                            "check" make-flags))))
+               (replace 'install
+                 (lambda* (#:key outputs make-flags #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (apply invoke "make"
+                            (string-append "CONFIG_PREFIX=" out)
+                            "install" make-flags)))))
+           #:make-flags
+           #~(let ((target #$(%current-target-system)))
+               (if target
+                   (list (string-append "CROSS_COMPILE=" target "-"))
+                   '()))))
+    (native-inputs (list perl     ; needed to generate the man pages (pod2man)
                          ;; The following are needed by the tests.
                          inetutils
                          (@ (gnu packages base) which)

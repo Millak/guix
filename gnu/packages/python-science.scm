@@ -45,12 +45,14 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -1490,6 +1492,62 @@ routines.  Optimized einsum is agnostic to the backend and can handle NumPy,
 Dask, PyTorch, Tensorflow, CuPy, Sparse, Theano, JAX, and Autograd arrays as
 well as potentially any library which conforms to a standard API. See the
 documentation for more information.")
+    (license license:expat)))
+
+(define-public python-vaex-core
+  (package
+    (name "python-vaex-core")
+    (version "4.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vaex-core" version))
+       (sha256
+        (base32 "0ni862x5njhfsldjy49xmasd34plrs7yrmkyss6z1b6sgkbw9fsb"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled libraries
+        '(for-each delete-file-recursively
+                   (list "vendor/boost"
+                         "vendor/pcre"
+                         "vendor/pybind11")))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false ;require vaex.server and others, which require vaex-core.
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" )))))))
+    (inputs
+     (list boost pcre pybind11-2.3))
+    (propagated-inputs
+     (list python-aplus
+           python-blake3
+           python-cloudpickle
+           python-dask
+           python-filelock
+           python-frozendict
+           python-future
+           python-nest-asyncio
+           python-numpy
+           python-pandas
+           python-progressbar2
+           python-pyarrow
+           python-pydantic
+           python-pyyaml
+           python-requests
+           python-rich
+           python-six
+           python-tabulate))
+    (native-inputs
+     (list python-pytest python-cython))
+    (home-page "https://www.github.com/maartenbreddels/vaex")
+    (synopsis "Core of Vaex library for exploring tabular datasets")
+    (description "Vaex is a high performance Python library for lazy
+Out-of-Core DataFrames (similar to Pandas), to visualize and explore big
+tabular datasets.  This package provides the core modules of Vaex.")
     (license license:expat)))
 
 ;;;

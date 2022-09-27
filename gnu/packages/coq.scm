@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Robin Green <greenrd@greenrd.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ocaml)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -52,7 +54,7 @@
 (define-public coq-core
   (package
     (name "coq-core")
-    (version "8.15.2")
+    (version "8.16.0")
     (source
      (origin
        (method git-fetch)
@@ -62,7 +64,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1m6dilfbp9q8j8sya4ap82q72m3a4mq6m96gzvi6vgv04cr6r33c"))
+         "1rp4m2yjldsz0kj7p2fsc312n740fr8kg99jlsk8aq3h524qz2h8"))
        (patches (search-patches "coq-fix-envvars.patch"))))
     (native-search-paths
      (list (search-path-specification
@@ -148,7 +150,7 @@ It is developed using Objective Caml and Camlp5.")
     (propagated-inputs
      (list coq coq-ide-server))
     (inputs
-     `(("lablgtk3" ,lablgtk3)))))
+     (list lablgtk3 ocaml-lablgtk3-sourceview3))))
 
 (define-public proof-general
   ;; The latest release is from 2016 and there has been more than 450 commits
@@ -240,7 +242,7 @@ provers.")
 (define-public coq-flocq
   (package
     (name "coq-flocq")
-    (version "4.0.0")
+    (version "4.1.0")
     (source
      (origin
        (method git-fetch)
@@ -250,7 +252,7 @@ provers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "159ykkhxz7zms28r4v8jjccapl5vv00csdz29mfy83lwrv5b6rwk"))))
+         "1yscj1120wch6myakaia03j11qji416v78ylx842d23hrbaqwmw5"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake ocaml which coq))
@@ -287,7 +289,7 @@ inside Coq.")
 (define-public coq-gappa
   (package
     (name "coq-gappa")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method git-fetch)
@@ -297,7 +299,7 @@ inside Coq.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18y4mv44mcgyam77rf4xs7l06mg7pxx1qli3yvs0kklmnnvwa463"))))
+         "0l65ah81yj9vabgkwqh47c02qvscvl8nl60gqn1qrs47dx1pi80q"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -315,7 +317,9 @@ inside Coq.")
     (arguments
      `(#:configure-flags
        (list (string-append "COQUSERCONTRIB=" (assoc-ref %outputs "out")
-                            "/lib/coq/user-contrib"))
+                            "/lib/coq/user-contrib")
+             (string-append "OCAMLFIND_DESTDIR=" (assoc-ref %outputs "out")
+                            "/lib/ocaml/site-lib"))
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'fix-remake
@@ -345,7 +349,7 @@ assistant.")
 (define-public coq-mathcomp
   (package
     (name "coq-mathcomp")
-    (version "1.14.0")
+    (version "1.15.0")
     (source
      (origin
        (method git-fetch)
@@ -354,7 +358,7 @@ assistant.")
              (commit (string-append "mathcomp-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rqg47dg84wr6d9v2pzna54dm62awcm8xdwx4dqwdwhf58fjxa9i"))))
+        (base32 "158zl36zbvi5qx2nqbfnrg00jpgp6hjr5hmls7d8d0421ar6b67i"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml which coq))
@@ -431,7 +435,7 @@ theorems between the two libraries.")
 (define-public coq-bignums
   (package
     (name "coq-bignums")
-    (version "8.15.0")
+    (version "8.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -440,7 +444,7 @@ theorems between the two libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "093klwlhclgyrba1iv18dyz1qp5f0lwiaa7y0qwvgmai8rll5fns"))))
+                "07ndnm7pndmai3a2bkcmwjfjzfaqyq19c5an15hmhgmd0rdy4z8c"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml coq))
@@ -450,7 +454,9 @@ theorems between the two libraries.")
      `(#:tests? #f ; No test target.
        #:make-flags
        (list (string-append "COQLIBINSTALL=" (assoc-ref %outputs "out")
-                            "/lib/coq/user-contrib"))
+                            "/lib/coq/user-contrib")
+             (string-append "COQPLUGININSTALL=" (assoc-ref %outputs "out")
+                            "/lib/ocaml/site-lib/"))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))
@@ -463,7 +469,7 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
 (define-public coq-interval
   (package
     (name "coq-interval")
-    (version "4.4.0")
+    (version "4.5.2")
     (source
      (origin
        (method git-fetch)
@@ -473,7 +479,7 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rlcbv1nqm7zv60n63lca6nnxcq3c18akgzl72s1n3h89gvhs87z"))))
+         "138vgb0bq6wkygrhkahjgb9spwpzc6x6kkycj2qnf5naxx1z412w"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake ocaml which coq))
@@ -486,7 +492,9 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
     (arguments
      `(#:configure-flags
        (list (string-append "COQUSERCONTRIB=" (assoc-ref %outputs "out")
-                            "/lib/coq/user-contrib"))
+                            "/lib/coq/user-contrib")
+             (string-append "OCAMLFIND_DESTDIR=" (assoc-ref %outputs "out")
+                            "/lib/ocaml/site-lib"))
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'fix-remake
@@ -557,11 +565,11 @@ uses Ltac to synthesize the substitution operation.")
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/mattam82/Coq-Equations")
-                    (commit (string-append "v" version "-8.15"))))
+                    (commit (string-append "v" version "-8.16"))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vfcfpsp9zyj0sw0cwibk76nj6n0r6gwh8m1aa3lbvc0b1kbm32k"))))
+                "08f756vgdd1wklkarg0b93j4n5mhkqm5ixxrhyb23dcv2dwhc8yg"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml coq camlp5))
@@ -571,7 +579,10 @@ uses Ltac to synthesize the substitution operation.")
      `(#:test-target "test-suite"
        #:make-flags (list (string-append "COQLIBINSTALL="
                                          (assoc-ref %outputs "out")
-                                         "/lib/coq/user-contrib"))
+                                         "/lib/coq/user-contrib")
+                          (string-append "COQPLUGININSTALL="
+                                         (assoc-ref %outputs "out")
+                                         "/lib/ocaml/site-lib/"))
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
@@ -685,3 +696,78 @@ for goals involving set operations.
 @end itemize")
     (home-page "https://gitlab.mpi-sws.org/iris/stdpp")
     (license license:bsd-3)))
+
+(define-public coq-mathcomp-finmap
+  (package
+    (name "coq-mathcomp-finmap")
+    (version "1.5.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/math-comp/finmap")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1k72wpp15xa5ag358jl8a71gschng0bgbaqjx0l5a0in6x5adafh"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(;; No tests supplied in Makefile.common.
+       ;; The project doesn't appear to have plans to include tests in
+       ;; the future.
+       #:tests? #f
+       #:make-flags (list (string-append "COQLIBINSTALL="
+                                         (assoc-ref %outputs "out")
+                                         "/lib/coq/user-contrib"))
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
+    (inputs (list coq coq-stdlib coq-mathcomp which))
+    (synopsis "Finite sets and finite types for coq-mathcomp")
+    (description
+     "This library is an extension of coq-mathcomp which supports finite sets
+and finite maps on choicetypes (rather than finite types).  This includes
+support for functions with finite support and multisets.  The library also
+contains a generic order and set libary, which will eventually be used to
+subsume notations for finite sets.")
+    (home-page "https://math-comp.github.io/")
+    (license license:cecill-b)))
+
+(define-public coq-mathcomp-bigenough
+  (package
+    (name "coq-mathcomp-bigenough")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/math-comp/bigenough")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02f4dv4rz72liciwxb2k7acwx6lgqz4381mqyq5854p3nbyn06aw"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(;; No references to tests in Makefile.common.
+       ;; It doesn't appear as though tests will be included
+       ;; by the packaged project in the future.
+       #:tests? #f
+       #:make-flags ,#~(list (string-append "COQBIN="
+                                            #$(this-package-input "coq-core")
+                                            "/bin/")
+                             (string-append "COQMF_COQLIB="
+                                            (assoc-ref %outputs "out")
+                                            "/lib/ocaml/site-lib/coq")
+                             (string-append "COQLIBINSTALL="
+                                            (assoc-ref %outputs "out")
+                                            "/lib/coq/user-contrib"))
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
+    (propagated-inputs (list coq coq-core coq-mathcomp which))
+    (home-page "https://math-comp.github.io/")
+    (synopsis "Small library to do epsilon - N reasoning")
+    (description
+     "The package is used for reasoning with big enough objects (mostly
+natural numbers).  This package is essentially for backward compatibility
+purposes as @code{bigenough} will be subsumed by the near tactics.  The
+formalization is based on the Mathematical Components library.")
+    (license license:cecill-b)))

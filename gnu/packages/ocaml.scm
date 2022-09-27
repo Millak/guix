@@ -26,6 +26,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1078,54 +1079,52 @@ the OCaml core distribution.")
     (license license:lgpl2.1+))); with linking exception
 
 (define-public emacs-tuareg
-  ;; Last upstream release on Sept., 14th, 2018, since then "Package cl
-  ;; deprecated" or 'lexical-binding' and others had been fixed.
-  (let ((commit "ccde45bbc292123ec20617f1af7f7e19f7481545")
-        (revision "0"))
-    (package
-      (name "emacs-tuareg")
-      (version (git-version "2.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/ocaml/tuareg")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1yxv4bnqarilnpg5j7wywall8170hwvm0q4xx06yqjgcn8pq1lac"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       `(("emacs" ,emacs-minimal)
-         ("opam" ,opam)))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'make-git-checkout-writable
-             (lambda _
-               (for-each make-file-writable (find-files "."))
-               #t))
-           (delete 'configure)
-           (add-before 'install 'fix-install-path
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "Makefile"
-                 (("/emacs/site-lisp")
-                  (string-append (assoc-ref %outputs "out")
-                                 "/share/emacs/site-lisp/")))
-               #t))
-           (add-after 'install 'post-install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (symlink "tuareg.el"
-                        (string-append (assoc-ref outputs "out")
-                                       "/share/emacs/site-lisp/"
-                                       "tuareg-autoloads.el"))
-               #t)))))
-      (home-page "https://github.com/ocaml/tuareg")
-      (synopsis "OCaml programming mode, REPL, debugger for Emacs")
-      (description "Tuareg helps editing OCaml code, to highlight important
+  (package
+    (name "emacs-tuareg")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ocaml/tuareg")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "115vm0hq4xkwfd3w0j8xqhkdgcirlxpnwzwxv02c27583hj056is"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%gnu-build-system-modules
+                           (guix build emacs-build-system)
+                           (guix build emacs-utils))
+      #:modules '((guix build gnu-build-system)
+                  ((guix build emacs-build-system) #:prefix emacs:)
+                  (guix build emacs-utils)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-git-checkout-writable
+            (lambda _
+              (for-each make-file-writable (find-files "."))))
+          (delete 'configure)
+          (add-before 'install 'fix-install-path
+            (lambda _
+              (substitute* "Makefile"
+                (("/emacs/site-lisp")
+                 (emacs:elpa-directory #$output)))))
+          (add-after 'install 'post-install
+            (lambda _
+              (symlink "tuareg.el"
+                       (string-append (emacs:elpa-directory #$output)
+                                      "/tuareg-autoloads.el")))))))
+    (native-inputs
+     (list emacs-minimal opam))
+    (home-page "https://github.com/ocaml/tuareg")
+    (synopsis "OCaml programming mode, REPL, debugger for Emacs")
+    (description "Tuareg helps editing OCaml code, to highlight important
 parts of the code, to run an OCaml REPL, and to run the OCaml debugger within
 Emacs.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public ocaml-menhir
   (package
@@ -1954,7 +1953,7 @@ ocaml-migrate-parsetree")
 (define-public ocaml-linenoise
   (package
     (name "ocaml-linenoise")
-    (version "1.3.1")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1963,7 +1962,7 @@ ocaml-migrate-parsetree")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s98695skz1wvrak0rdlh80w3cv6piic1dxqpn9rv1yymbklafg4"))))
+                "1gk11pflal08kg2dz1b5zrlpnhbxpg2rwf8cknw3vzmq6gsmk2kc"))))
     (build-system dune-build-system)
     (arguments
      ;; No tests
@@ -2701,7 +2700,7 @@ module Unix.")
 (define-public ocaml-lwt-log
   (package
     (name "ocaml-lwt-log")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2710,7 +2709,7 @@ module Unix.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1n12i1rmn9cjn6p8yr6qn5dwbrwvym7ckr7bla04a1xnq8qlcyj7"))))
+                "0mbv5l9gj09jd1c4lr2axcl4v043ipmhjd9xrk27l4hylzfc6d1q"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f)); require lwt_ppx
@@ -3068,7 +3067,7 @@ string values and to directly encode characters in OCaml Buffer.t values.")
 (define-public ocaml-uunf
   (package
     (name "ocaml-uunf")
-    (version "14.0.0")
+    (version "15.0.0")
     (source
      (origin
        (method url-fetch)
@@ -3076,13 +3075,18 @@ string values and to directly encode characters in OCaml Buffer.t values.")
                            version".tbz"))
        (sha256
         (base32
-         "17wv0nm3vvwcbzb1b09akw8jblmigyhbfmh1sy9lkb5756ni94a2"))))
+         "1s5svvdqfbzw16rf1h0zm9n92xfdr0qciprd7lcjza8z1hy6pyh7"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:build-flags (list "build" "--tests" "true")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
+         ;; reported and fixed upstream, will be available in next version.
+         (add-before 'build 'fix-test
+           (lambda _
+             (substitute* "test/test.ml"
+               (("test/NormalizationTest.txt") "-"))))
          (add-before 'check 'check-data
            (lambda* (#:key inputs #:allow-other-keys)
              (copy-file (assoc-ref inputs "NormalizationTest.txt")
@@ -3101,7 +3105,7 @@ string values and to directly encode characters in OCaml Buffer.t values.")
                                "/ucd/NormalizationTest.txt"))
            (file-name (string-append "NormalizationTest-" version ".txt"))
            (sha256
-              (base32 "0c93pqdkksf7b7zw8y2w0h9i5kkrsdjmh2cr5clrrhp6mg10rcvw"))))))
+              (base32 "09pkawfqpgy2xnv2nkkgmxv53rx4anprg65crbbcm02a2p6ci6pv"))))))
     (propagated-inputs (list ocaml-uutf))
     (home-page "https://erratique.ch/software/uunf")
     (synopsis "Unicode text normalization for OCaml")
@@ -4467,6 +4471,35 @@ sensitive completion, colors, and more.")
         ("ocaml-camomile" ,ocaml-camomile)
         ("ocaml-zed" ,ocaml-zed)))
      (properties '()))))
+
+(define-public ocaml-ansiterminal
+  (package
+    (name "ocaml-ansiterminal")
+    (version "0.8.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Chris00/ANSITerminal")
+                    (commit version)
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "052qnc23vmxp90yympjz9q6lhqw98gs1yvb3r15kcbi1j678l51h"))))
+    (build-system dune-build-system)
+    (arguments
+     `(#:test-target "tests"))
+    (home-page "https://github.com/Chris00/ANSITerminal")
+    (synopsis
+     "Basic control of ANSI compliant terminals and the windows shell")
+    (description
+     "ANSITerminal is a module allowing to use the colors and cursor
+movements on ANSI terminals.")
+    ;; Variant of the LGPL3+ which permits
+    ;; static and dynamic linking when producing binary files.
+    ;; In other words, it allows one to link to the library
+    ;; when compiling nonfree software.
+    (license (license:non-copyleft "LICENSE.md"))))
 
 (define-public ocaml-ptmap
   (package
@@ -7998,7 +8031,7 @@ support for Mparser.")))
 (define-public lablgtk3
   (package
     (name "lablgtk")
-    (version "3.1.1")
+    (version "3.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8007,10 +8040,11 @@ support for Mparser.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11qfc39cmwfwfpwmjh6wh98zwdv6p73bv8hqwcsss869vs1r7gmn"))))
+                "0b17w9qb1f02h3313cm62mrqlhwxficppzm72n7sf8mmwrylxbm7"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
+     `(#:package "lablgtk3"
+       #:test-target "."
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'make-writable
@@ -8026,7 +8060,7 @@ support for Mparser.")))
     (propagated-inputs
      (list ocaml-cairo2))
     (inputs
-     (list camlp5 gtk+ gtksourceview-3 gtkspell3))
+     (list camlp5 gtk+))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/garrigue/lablgtk")
@@ -8039,6 +8073,19 @@ LablGL), gnomecanvas, gnomeui, gtksourceview, gtkspell, libglade (and it can
 generate OCaml code from .glade files), libpanel, librsvg and quartz.")
     ;; Version 2 only, with linking exception.
     (license license:lgpl2.0)))
+
+(define-public ocaml-lablgtk3-sourceview3
+  (package
+    (inherit lablgtk3)
+    (name "ocaml-lablgtk3-sourceview3")
+    (propagated-inputs (list lablgtk3))
+    (native-inputs (list gtksourceview-3 pkg-config))
+    (arguments
+     `(#:package "lablgtk3-sourceview3"
+       #:test-target "."))
+    (synopsis "OCaml interface to GTK+ gtksourceview library")
+    (description "This package provides the lablgtk interface to the
+GTK+ gtksourceview library.")))
 
 (define-public ocaml-reactivedata
   (package
@@ -8071,7 +8118,7 @@ client chooses the concrete timeline.")
 (define-public ocaml-uucd
   (package
     (name "ocaml-uucd")
-    (version "14.0.0")
+    (version "15.0.0")
     (source
      (origin
        (method url-fetch)
@@ -8079,7 +8126,7 @@ client chooses the concrete timeline.")
                            "uucd-" version ".tbz"))
        (sha256
         (base32
-         "0fc737v5gj3339jx4x9xr096lxrpwvp6vaiylhavcvsglcwbgm30"))))
+         "1g26237yqmxr7sd1n9fg65qm5mxz66ybk7hr336zfyyzl25h6jqf"))))
     (build-system ocaml-build-system)
     (arguments
      '(#:build-flags '("build" "--tests" "true")
@@ -8101,7 +8148,7 @@ representations can be extracted.")
 (define-public ocaml-uucp
   (package
     (name "ocaml-uucp")
-    (version "14.0.0")
+    (version "15.0.0")
     (source
      (origin
        (method url-fetch)
@@ -8109,7 +8156,7 @@ representations can be extracted.")
                            "uucp-" version ".tbz"))
        (sha256
         (base32
-         "1yx9nih3d9prb9zizq8fzmmqylf24a6yifhf81h33znrj5xn1mpj"))))
+         "0c2k9gkg442l7hnc8rn1vqzn6qh68w9fx7h3nj03n2x90ps98ixc"))))
     (build-system ocaml-build-system)
     (arguments
      '(#:build-flags '("build" "--tests" "true")

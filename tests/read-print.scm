@@ -294,6 +294,11 @@ mnopqrstuvwxyz.\")"
   ;; page break above
   end)")
 
+(test-pretty-print "\
+(home-environment
+  (services
+   (list (service-type home-bash-service-type))))")
+
 (test-pretty-print/sequence "\
 ;;; This is a top-level comment.
 

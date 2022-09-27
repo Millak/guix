@@ -38,10 +38,10 @@
 ;;; create separate debug files (info "(gdb) Separate Debug Files").
 ;;;
 ;;; The main facility of this module is 'graft-debug-links', which allows us
-;;; to update the CRC that appears in '.gnu_debuglink' sections when grafting,
-;;; such that separate debug files remain usable after grafting.  Failing to
-;;; do that, GDB would complain about CRC mismatch---see
-;;; <https://bugs.gnu.org/19973>.
+;;; to update the cyclic redundancy check (CRC) that appears in
+;;; '.gnu_debuglink' sections when grafting, such that separate debug files
+;;; remain usable after grafting.  Failing to do that, GDB would complain
+;;; about CRC mismatch---see <https://issues.guix.gnu.org/19973>.
 ;;;
 ;;; Code:
 
