@@ -5339,6 +5339,47 @@ possible while still providing features that make playing difficult Sudoku
 more fun.")
     (license license:gpl2+)))
 
+(define-public gnome-console
+  (package
+    (name "gnome-console")
+    (version "42.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/gnome-console/"
+                                  (version-major version) "/"
+                                  "gnome-console-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0jbh8g3hmc35fy5fbscqf0831xpg1kv66ci9hykpbia4hz0yc9kx"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:configure-flags #~(list "-Dtests=true"
+                                     "-Dnautilus=enabled")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-nautilus-extension-path
+                          (lambda _
+                            (substitute* "nautilus/meson.build"
+                              (("'extensions-[0-9.]*'")
+                               "'site-extensions'")))))))
+    (native-inputs (list `(,glib "bin")
+                         gettext-minimal
+                         sassc
+                         pkg-config
+                         `(,gtk+ "bin")
+                         desktop-file-utils))
+    (inputs (list gtk+
+                  libhandy
+                  nautilus
+                  vte
+                  libgtop
+                  gsettings-desktop-schemas))
+    (home-page "https://gitlab.gnome.org/GNOME/console")
+    (synopsis "GNOME terminal emulator")
+    (description
+     "Console is a simple terminal emulator for GNOME desktop")
+    (license license:gpl3+)))
+
 (define-public gnome-terminal
   (package
     (name "gnome-terminal")
@@ -5400,6 +5441,39 @@ your system.
 
 It supports several profiles, multiple tabs and implements several
 keyboard shortcuts.")
+    (license license:gpl3+)))
+
+(define-public gnome-text-editor
+  (package
+    (name "gnome-text-editor")
+    (version "42.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/gnome-text-editor/"
+                                  (version-major version) "/"
+                                  "gnome-text-editor-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1nn53iv2a82kkqkg5jy0bqh2b2wzg7g4a6w8q3qsis5wvj64lvg5"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t))
+    (native-inputs (list pkg-config
+                         cmake
+                         gettext-minimal
+                         desktop-file-utils
+                         appstream-glib
+                         `(,glib "bin")
+                         `(,gtk "bin")
+                         itstool))
+    (inputs (list gtk gtksourceview libadwaita enchant))
+    (home-page "https://gitlab.gnome.org/GNOME/gnome-text-editor")
+    (synopsis "GNOME text editor")
+    (description
+     "GNOME Text Editor is a simple text editor that focuses on session
+management.  It keeps track of changes and state even if you quit the
+application.  You can come back to your work even if you've never saved it to a
+file.")
     (license license:gpl3+)))
 
 (define-public colord-minimal
@@ -5477,9 +5551,16 @@ output devices.")
 (define-public colord
   (package/inherit colord-minimal
     (name "colord")
+    (version "1.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.freedesktop.org/software/colord/releases/"
+                           "colord-" version ".tar.xz"))
+       (sha256
+        (base32 "0vwfx06k1in8hci3kdxpc3c0bh81f1vl5bp7favd3rdz4wd661vl"))))
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments colord-minimal)
+     (substitute-keyword-arguments (package-arguments colord-minimal)
        ((#:configure-flags flags)
         #~(begin
             (use-modules (srfi srfi-1))
@@ -5493,7 +5574,7 @@ output devices.")
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'fix-bash-completion-dir
-              (lambda* (#:key outputs #:allow-other-keys)
+              (lambda _
                 (substitute* "data/meson.build"
                   (("bash_completion.get_pkgconfig_variable\
 \\('completionsdir'\\)")
@@ -5502,7 +5583,7 @@ output devices.")
     (native-inputs
      (modify-inputs (package-native-inputs colord-minimal)
        (append bash-completion
-               docbook-xsl-ns
+               docbook-xsl-1.79.1
                gtk-doc/stable
                libxml2                  ;for XML_CATALOG_FILES
                libxslt
@@ -7936,7 +8017,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
 (define-public evolution-data-server
   (package
     (name "evolution-data-server")
-    (version "3.45.3")
+    (version "3.46.0")
     (source
      (origin
        (method url-fetch)
@@ -7944,7 +8025,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1zjg9b77qmfin9m16rqa6cpqp1rh63pg3bcnkh25vmklslwhvq7a"))))
+        (base32 "1aydynpc9qx2a5xlrvc3xzfq3d3rhf15mqr8m6splgqqb84jiyp5"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -10170,19 +10251,18 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
 desktop.  It supports multiple calendars, month, week and year view.")
     (license license:gpl3+)))
 
-(define-public gnome-todo
+(define-public endeavour
   (package
-    (name "gnome-todo")
-    (version "41.0")
+    (name "endeavour")
+    (version "42.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major version) "/"
-                                  name "-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/World/Endeavour")
+                    (commit (string-append "v" version))))
               (sha256
                (base32
-                "1r94880d4khbjhhfnhaba3y3d4hv2bri82rzfzxn27s5iybpqras"))
-              (patches (search-patches "gnome-todo-libportal.patch"))))
+                "0d6by7aq8db35zavzvckcxxxcdi6qnv0mkjndhb0syc8ih15dpak"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -10226,6 +10306,9 @@ desktop.  It supports multiple calendars, month, week and year view.")
     (description "GNOME To Do is a simplistic personal task manager designed
 to perfectly fit the GNOME desktop.")
     (license license:gpl3+)))
+
+(define-public gnome-todo
+  (deprecated-package "gnome-todo" endeavour))
 
 (define-public gnome-dictionary
   (package
@@ -11420,7 +11503,7 @@ generic enough to work for everyone.")
 (define-public evolution
   (package
     (name "evolution")
-    (version "3.45.3")
+    (version "3.46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/evolution/"
@@ -11428,7 +11511,7 @@ generic enough to work for everyone.")
                                   "evolution-" version ".tar.xz"))
               (sha256
                (base32
-                "1q4fa5l7k0rax39iwn2spmzxcr2l73mj3644lf8j9mnp5w774c96"))))
+                "0gwi89bqk20ggcxsq7xgd97my0hxx8z82kisml6vz6kbpiv957p0"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -12066,7 +12149,13 @@ integrate seamlessly with the GNOME desktop.")
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'disable-gtk-update-icon-cache
                           (lambda _
-                            (setenv "DESTDIR" "/"))))))
+                            (setenv "DESTDIR" "/")))
+                        (add-before 'configure 'set-qemu-file-name
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (substitute* "src/installed-media.vala"
+                              (("qemu-img")
+                               (search-input-file inputs
+                                                  "/bin/qemu-img"))))))))
     (native-inputs
      (list desktop-file-utils           ;for update-desktop-database
            gettext-minimal
@@ -12092,6 +12181,7 @@ integrate seamlessly with the GNOME desktop.")
            libvirt
            libvirt-glib
            libxml2
+           qemu-minimal                           ;for qemu-img
            sparql-query
            spice-gtk
            tracker

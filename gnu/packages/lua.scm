@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 Raimon Grau <raimonster@gmail.com>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2017, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 doncatnip <gnopap@gmail.com>
 ;;; Copyright © 2016, 2017, 2019 Clément Lassieur <clement@lassieur.org>
@@ -61,7 +61,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module (srfi srfi-1))
 
 (define-public lua
   (package
@@ -177,7 +178,8 @@ for configuration, scripting, and rapid prototyping.")
     (synopsis "Just in time compiler for Lua programming language version 5.1")
     ;; On powerpc64le-linux, the build fails with an error: "No support for
     ;; PowerPC 64 bit mode (yet)".  See: https://issues.guix.gnu.org/49220
-    (supported-systems (delete "powerpc64le-linux" %supported-systems))
+    (supported-systems (fold delete %supported-systems
+                             (list "powerpc64le-linux" "riscv64-linux")))
     (description
      "LuaJIT is a Just-In-Time Compiler (JIT) for the Lua
 programming language.  Lua is a powerful, dynamic and light-weight programming

@@ -6542,6 +6542,45 @@ that also takes care of the involved internal macros.")
 
 (define-deprecated-package texlive-latex-letltxmacro texlive-letltxmacro)
 
+(define-public texlive-latex-frankenstein
+  (package
+    (name "texlive-latex-frankenstein")
+    (version (number->string %texlive-revision))
+    (source (origin
+              (method svn-fetch)
+              (uri (svn-reference (url (string-append
+                                        "svn://www.tug.org/texlive/tags/"
+                                        %texlive-tag "/Master/texmf-dist/"
+                                        "/tex/latex/frankenstein"))
+                                  (revision %texlive-revision)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1zhdvn3zgdarlzfcyq8nzilvw0v0bqgl4m0y7j233cbqw8wiil4z"))))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder (begin
+                   (use-modules (guix build utils))
+                   (let ((target (string-append (assoc-ref %outputs "out")
+                                  "/share/texmf-dist/tex/latex/frankenstein")))
+                     (mkdir-p target)
+                     (copy-recursively (assoc-ref %build-inputs "source")
+                                       target) #t))))
+    (home-page "https://ctan.org/pkg/frankenstein")
+    (synopsis "Collection of unrelated LaTeX packages")
+    (description
+     "Frankenstein is a bundle of LaTeX packages serving various purposes and a
+BibTeX bibliography style.  The individual packages are: @code{abbrevs},
+@code{achicago}, @code{achicago} bibstyle, @code{attrib}, @code{blkcntrl},
+@code{compsci}, @code{dialogue}, @code{lips}, @code{moredefs}, @code{newclude},
+@code{slemph} and @code{titles}.  Note: The installation follows the suboptimal
+``Quick and dirty'' recipe, rendering some features unavailable.")
+    ;; README mentions an unspecified version of GNU GPL and points to COPYING,
+    ;; which is missing. However, the individual files mention LPPL 1.2 or
+    ;; later.
+    (license license:lppl1.2+)))
+
 (define-public texlive-listings
   (let ((template
          (simple-texlive-package
@@ -7329,6 +7368,24 @@ printers, and others working in the scientific, medical, and technical fields.
 They combine a comprehensive Unicode-based collection of mathematical symbols
 and alphabets with a set of text faces suitable for professional publishing.")
       (license license:silofl1.1))))
+
+(define-public texlive-latex-sidecap
+  (package
+    (inherit (simple-texlive-package
+              "texlive-latex-sidecap"
+              (list "doc/latex/sidecap/"
+                    "tex/latex/sidecap/")
+              (base32 "1biyxvh7fm70pq1rxqrla2vs013bpsd1j8jvlyl3vjg433d5bly3")
+              #:trivial? #t))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sidecap")
+    (synopsis "Typeset captions sideways")
+    (description
+     "@code{sidecap} defines environments called @code{SCfigure} and
+@code{SCtable} (analogous to @code{figure} and @code{table}) to typeset
+captions sideways.  Options include @code{outercaption}, @code{innercaption},
+@code{leftcaption} and @code{rightcaption}.")
+    (license license:lppl1.0+)))
 
 (define-public texlive-stmaryrd
   (let ((template (simple-texlive-package
@@ -11928,6 +11985,33 @@ to Norsk of standard “LaTeX names”.")
 Danish in @code{babel}.  It provides all the necessary macros, definitions and
 settings to typeset Danish documents.")
       (license license:lppl1.3c+))))
+
+(define-public texlive-babel-polish
+  (let ((template (simple-texlive-package
+                   "texlive-babel-polish"
+                   (list "/source/generic/babel-polish/")
+                   (base32
+                    "1jymxl98mwxmq0yq90mhrr7bq7c613rh1rnhl7l3bih36af55rwr"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/babel-polish")
+         ((#:build-targets _ '())
+          ''("polish.ins")) ; TODO: use dtx and build documentation
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'chdir
+               (lambda _
+                 (chdir "source/generic/babel-polish")))))))
+      (home-page "https://www.ctan.org/pkg/babel-polish")
+      (synopsis "Babel support for Polish")
+      (description
+       "This package provides the language definition file for support of
+Polish in @code{babel}.  Some shortcuts are defined, as well as translations to
+Polish of standard ``LaTeX names''.")
+      (license license:lppl1.3+))))
 
 (define-public texlive-mdframed
   (package

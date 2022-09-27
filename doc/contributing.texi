@@ -1406,6 +1406,47 @@ for more information.  You can install @command{git send-email} with
 @command{guix install git:send-email}.
 @c Debbugs bug: https://debbugs.gnu.org/db/15/15361.html
 
+To maximize the chances that you patch series is reviewed, the preferred
+submission way is to use the @code{etc/teams.scm} script to notify the
+appropriate team members (@pxref{Teams}).
+
+@unnumberedsubsec Teams
+@anchor{Teams}
+@cindex teams
+
+There are several teams mentoring different parts of the Guix source
+code.  To list all those teams, you can run from a Guix checkout:
+
+@example
+$ ./etc/teams.scm list-teams
+id: mentors
+name: Mentors
+description: A group of mentors who chaperone contributions by newcomers.
+members:
++ Christopher Baines <mail@@cbaines.net>
++ Ricardo Wurmus <rekado@@elephly.net>
++ Mathieu Othacehe <othacehe@@gnu.org>
++ jgart <jgart@@dismail.de>
++ Ludovic Courtès <ludo@@gnu.org>
+@dots{}
+@end example
+
+You can run the following command to have the @code{Mentors} team put in
+CC of a patch series:
+
+@example
+$ git send-email --to XXX@@debbugs.gnu.org $(./etc/teams.scm cc mentors) *.patch
+@end example
+
+The appropriate team or teams can also be inferred from the modified
+files.  For instance, if you want to send the two latest commits of the
+current Git repository to review, you can run:
+
+@example
+$ guix shell -D guix
+[env]$ git send-email --to XXX@@debbugs.gnu.org $(./etc/teams.scm cc-members HEAD~2 HEAD) *.patch
+@end example
+
 @node Tracking Bugs and Patches
 @section Tracking Bugs and Patches
 

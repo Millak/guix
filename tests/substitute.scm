@@ -137,6 +137,12 @@ version identifier.."
   (string-append (dirname %main-substitute-directory)
                  "/substituter-alt-data"))
 
+(define %unroutable-substitute-url
+  ;; Substitute URL with an unroutable server address, as per
+  ;; <https://www.rfc-editor.org/rfc/rfc5737>.
+  "http://203.0.113.1")
+
+
 (define %narinfo
   ;; Skeleton of the narinfo used below.
   (string-append "StorePath: " (%store-prefix)
@@ -305,6 +311,24 @@ Deriver: " (%store-prefix) "/foo.drv")
            (lambda ()
              (guix-substitute "--query"))))))))
 
+(test-equal "query narinfo signed with authorized key, unroutable URL first"
+  (string-append (%store-prefix) "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+
+  (with-narinfo (string-append %narinfo "Signature: "
+                               (signature-field %narinfo)
+                               "\n")
+    (string-trim-both
+     (with-output-to-string
+       (lambda ()
+         (with-input-from-string (string-append "have " (%store-prefix)
+                                                "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+           (lambda ()
+             (parameterize ((substitute-urls
+                             (list %unroutable-substitute-url
+                                   (string-append "file://"
+                                                  %main-substitute-directory))))
+               (guix-substitute "--query")))))))))
+
 (test-equal "query narinfo signed with unauthorized key"
   ""                                              ; not substitutable
 
@@ -414,6 +438,28 @@ System: mips64el-linux\n")))
         (list (call-with-input-file "substitute-retrieved" get-string-all)
               (stat:mtime (lstat "substitute-retrieved"))
               (stat:perms (lstat "substitute-retrieved"))))
+      (lambda ()
+        (false-if-exception (delete-file "substitute-retrieved"))))))
+
+(test-equal "substitute, authorized key, first substitute URL is unroutable"
+  '("Substitutable data." 1 #o444)
+  (with-narinfo (string-append %narinfo "Signature: "
+                               (signature-field %narinfo))
+    (dynamic-wind
+      (const #t)
+      (lambda ()
+        ;; Pick an unroutable URL as the first one.  This shouldn't be a
+        ;; problem.
+        (parameterize ((substitute-urls
+                        (list %unroutable-substitute-url
+                              (string-append "file://"
+                                             %main-substitute-directory))))
+          (request-substitution (string-append (%store-prefix)
+                                               "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+                                "substitute-retrieved")
+          (list (call-with-input-file "substitute-retrieved" get-string-all)
+                (stat:mtime (lstat "substitute-retrieved"))
+                (stat:perms (lstat "substitute-retrieved")))))
       (lambda ()
         (false-if-exception (delete-file "substitute-retrieved"))))))
 

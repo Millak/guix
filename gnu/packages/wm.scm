@@ -1987,6 +1987,41 @@ productive, customizable lisp based systems.")
     (description "This package provides a StumpWM interactive shell.")
     (license (list license:gpl2+ license:gpl3+ license:bsd-2))))
 
+(define-public sbcl-stumpwm-pamixer
+  (let ((commit "aa820533c80ea1af5a0e107cea25eaf34e69dc24")
+        (revision "1"))
+    (package
+      (name "sbcl-stumpwm-pamixer")
+      (version (git-version "0.1.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Junker/stumpwm-pamixer")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0djcrr16bx40l7b60d4j507vk5l42fdgmjpgrnk86z1ba8wlqim8"))))
+      (inputs (list pamixer `(,stumpwm "lib")))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:asd-systems ''("pamixer")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-pamixer
+                   (lambda _
+                     (substitute* "pamixer.lisp"
+                       (("\"pamixer \"")
+                        (string-append "\""
+                                       #$(this-package-input "pamixer")
+                                       "/bin/pamixer \""))))))))
+      (home-page "https://github.com/Junker/stumpwm-pamixer")
+      (synopsis "StumpWM Pamixer Module")
+      (description
+       "This package provides a minimalistic Pulseaudio volume and microphone
+control module for StumpWM.")
+      (license license:gpl3))))
+
 (define-public sbcl-stumpwm+slynk
   (deprecated-package "sbcl-stumpwm-with-slynk" stumpwm+slynk))
 
@@ -2814,7 +2849,7 @@ Type=Application~%"
 (define-public avizo
   (package
     (name "avizo")
-    (version "1.2")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2823,7 +2858,7 @@ Type=Application~%"
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02h2jbgrbl2hyq6bzwryc1r47mipgdqrdh7zi44skc25w045s6q5"))))
+                "0ddv5ssxfjbzhqskbbhi9qj1yqkraiv3r8svfmp9s5nnfpid8aba"))))
     (build-system meson-build-system)
     (inputs (list gtk+))
     (native-inputs

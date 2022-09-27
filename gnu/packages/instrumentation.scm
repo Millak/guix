@@ -22,6 +22,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages commencement)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -30,6 +31,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
@@ -207,17 +209,76 @@ interactive SVGs out of traces genated from various tracing tools.  It comes
 with the script @command{flamegraph.pl} and many stackcollapse scripts.")
       (license license:cddl1.0))))
 
+(define-public libpatch
+  (package
+    (name "libpatch")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~old/libpatch")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1sx1sichnnqfi84z37gd04h41vpr8i2vg6yg0jkqxlrv3dys489a"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list
+        (string-append
+         "--target="
+         ,(platform-linux-architecture
+           (lookup-platform-by-target-or-system
+            (or
+             (%current-target-system)
+             (%current-system))))))))
+    ;;; Add lttng-ust to the inputs if you want tracepoints within libpatch
+    ;;; for debugging.
+    (inputs
+     (list capstone
+           elfutils
+           libunwind
+           liburcu))
+    (native-inputs
+     (list coreutils
+           ;; test-ftrace.scm
+           (list coreutils "debug")
+           (list guile-3.0 "debug")
+           (list gnu-make "debug")
+
+           ;; For eu-nm in test-ftrace.scm.
+           (list elfutils "bin")
+
+           guile-3.0
+           gnu-make
+           pkg-config
+           ;; zlib is required by libdw.  This can be removed if zlib is put
+           ;; as a propagated-input of elfutils.
+           zlib))
+    (synopsis "Dynamic binary patcher")
+    (description
+     "libpatch is a lightweight C library that can be used by tracers,
+debuggers and other tools for insertion of probes in a program at runtime.  It
+has many strategies to minimize probe overhead and maximize possible
+coverage.")
+    (home-page "https://git.sr.ht/~old/libpatch")
+    (license (list license:lgpl2.1 license:expat license:gpl3+))
+    ;; Libpatch only supports instrumentation for x86_64 right now.  Augment
+    ;; that list in further version.
+    (supported-systems (list "x86_64-linux"))))
+
 (define-public lttng-modules
   (package
     (name "lttng-modules")
-    (version "2.13.4")
+    (version "2.13.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-modules/"
                                   "lttng-modules-" version ".tar.bz2"))
               (sha256
                (base32
-                "1vm9nnjvid7acsvgwnjyxd60ih9rmbhnfjldxip58n8x9q7d0nb1"))))
+                "0277yfp57psnvn5g40mk09zryp0r4saynns213qak18fv0l39szc"))))
     (build-system linux-module-build-system)
     (arguments
      `(#:tests? #f ; no tests
@@ -234,14 +295,14 @@ many probes which instrument numerous interesting parts of Linux.")
 (define-public lttng-ust
   (package
     (name "lttng-ust")
-    (version "2.13.3")
+    (version "2.13.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-ust/"
                                   "lttng-ust-" version ".tar.bz2"))
               (sha256
                (base32
-                "0vwgxp027pgwm0a4xr6bdibday7xjlnv6wmbqh546l2h2i8jzi1c"))))
+                "165kz3zsklynkxdkcbkwhw7cccdgmgmld35h1cf9hvn5bpn853v9"))))
     (build-system gnu-build-system)
     (inputs
      (list numactl))
@@ -260,20 +321,17 @@ to ring buffers shared with a consumer daemon.")
 (define-public lttng-tools
   (package
     (name "lttng-tools")
-    (version "2.13.7")
+    (version "2.13.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-tools/"
                                   "lttng-tools-" version ".tar.bz2"))
               (sha256
                (base32
-                "13gh4bvlgbh82h9vb80aw8l1cfmdj3xyvjg30cscz9vqy7l04yni"))))
+                "1h9x6mmqrxrbgivll3g81l7a9f7ggjmcgwr01f9r01r6kdbmksdi"))))
     (build-system gnu-build-system)
     (arguments
-     `( ;; FIXME - Currently there's a segmentation fault by swig when enabling
-       ;; Python's bindings.  Thus, bindings are disable here.  Replace
-       ;; `disable` by `enable` in #:configure-flags when this is fixed.
-       #:configure-flags '("--disable-python-bindings")
+     `(#:configure-flags '("--enable-python-bindings")
        ;; FIXME - Tests are disabled for now because one test hangs
        ;; indefinetely.  Also, parallel testing is not possible because of how
        ;; the lttng-daemon handles sessions.  Thus, keep parallel testing

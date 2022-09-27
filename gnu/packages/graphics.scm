@@ -1153,13 +1153,13 @@ with strong support for multi-part, multi-channel use cases.")
                (("/var/tmp") "/tmp"))))
          (add-after 'change-directory 'increase-test-timeout
            (lambda _
-             ;; On armhf-linux, we need to override the CTest default
+             ;; On some architectures, we need to override the CTest default
              ;; timeout of 1500 seconds for the OpenEXR.IlmImf test.
              (substitute* "IlmImfTest/CMakeLists.txt"
                (("add_test\\(NAME OpenEXR\\.IlmImf.*" all)
                 (string-append
                  all
-                 "set_tests_properties(OpenEXR.IlmImf PROPERTIES TIMEOUT 2000)")))
+                 "set_tests_properties(OpenEXR.IlmImf PROPERTIES TIMEOUT 15000)")))
              #t))
          ,@(if (not (target-64bit?))
                `((add-after 'change-directory 'disable-broken-test

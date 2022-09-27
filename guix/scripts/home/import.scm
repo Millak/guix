@@ -26,9 +26,9 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:autoload   (guix scripts package) (manifest-entry-version-prefix)
+  #:use-module (guix read-print)
   #:use-module (gnu packages)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 pretty-print)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 popen)
@@ -170,8 +170,19 @@ user's files to CONFIGURATION-DIRECTORY; the generated sexp refers to them."
                         (gnu services)
                         ,@(delete-duplicates (concatenate modules)))
 
+           ,(vertical-space 1)
+
            (home-environment
-            (packages (specifications->packages ,packages))
+            ,(comment (G_ "\
+;; Below is the list of packages that will show up in your
+;; Home profile, under ~/.guix-home/profile.\n"))
+            (packages
+             (specifications->packages ,packages))
+
+            ,(vertical-space 1)
+            ,(comment (G_ "\
+;; Below is the list of Home services.  To search for available
+;; services, run 'guix home search KEYWORD' in a terminal.\n"))
             (services (list ,@services)))))))))
 
 (define* (import-manifest
@@ -187,7 +198,5 @@ user's files to CONFIGURATION-DIRECTORY; the generated sexp refers to them."
 ;; specifies package names.  To reproduce the exact same profile, you also
 ;; need to capture the channels being used, as returned by \"guix describe\".
 ;; See the \"Replicating Guix\" section in the manual.\n"))
-     (for-each (lambda (exp)
-                 (newline port)
-                 (pretty-print exp port))
-               exp))))
+     (newline port)
+     (pretty-print-with-comments/splice port exp))))

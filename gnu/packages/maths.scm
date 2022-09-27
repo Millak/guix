@@ -7598,6 +7598,7 @@ of C, Java, or Ada programs.")
            ocaml-graph
            ocaml-yojson
            ocaml-zarith
+           ocaml-lablgtk3-sourceview3
            lablgtk3
            why3))
     (native-search-paths

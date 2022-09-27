@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -723,7 +723,7 @@ your calls and messages.")
 (define-public pjproject
   (package
     (name "pjproject")
-    (version "2.11.1")
+    (version "2.12.1")
     (source
      (origin
        (method git-fetch)
@@ -733,7 +733,7 @@ your calls and messages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "04s4bgr2d22ym2ajjk6q507hyqss1p59yp8avyyyf5f8032nbaws"))
+         "0xrj4sznbaip22y9hclff6y81l285bzkkj1smzifskpk3kiwp00w"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -742,99 +742,100 @@ your calls and messages.")
            (substitute* "aconfigure.ac"
              (("third_party/build/os-auto.mak") ""))
            (substitute* "Makefile"
-             (("third_party/build") ""))))
-       (patches (search-patches "pjproject-install-libpjsua2.patch"))))
+             (("third_party/build") ""))))))
     (build-system gnu-build-system)
     (outputs '("out" "debug" "static"))
     (arguments
-     `(#:test-target "selftest"
-       #:configure-flags
-       (list "--enable-shared"
-             "--with-external-speex"
-             "--with-external-gsm"
-             "--with-external-srtp"
-             "--with-external-pa"
-             ;; The following flag is Linux specific.
-             ,@(if (string-contains (or (%current-system)
-                                        (%current-target-system)) "linux")
-                   '("--enable-epoll")
-                   '())
-             "--with-gnutls"            ;disable OpenSSL checks
-             "--disable-libyuv"         ;TODO: add missing package
-             "--disable-silk"           ;TODO: add missing package
-             "--disable-libwebrtc"      ;TODO: add missing package
-             "--disable-ilbc-codec"     ;cannot be unbundled
-             "--disable-g7221-codec"    ;TODO: add missing package
-             "--enable-libsamplerate"
-             ;; -DNDEBUG is set to prevent pjproject from raising
-             ;; assertions that aren't critical, crashing
-             ;; applications as the result.
-             "CFLAGS=-DNDEBUG"
-             ;; Specify a runpath reference to itself, which is missing and
-             ;; causes the validate-runpath phase to fail.
-             (string-append "LDFLAGS=-Wl,-rpath=" (assoc-ref %outputs "out")
-                            "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-dep
-           (lambda _ (invoke "make" "dep")))
-         ;; The check phases is moved after the install phase so to
-         ;; use the installed shared libraries for the tests.
-         (delete 'check)
-         (add-after 'install 'move-static-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (s (string-append (assoc-ref outputs "static") "/lib")))
-               (mkdir-p s)
-               (with-directory-excursion out
-                 (for-each (lambda (f)
-                             (rename-file f (string-append s "/" (basename f))))
-                           (find-files "." "\\.a$"))))))
-         (add-after 'install 'check
-           (assoc-ref %standard-phases 'check))
-         (add-before 'patch-source-shebangs 'autoconf
-           (lambda _
-             (invoke "autoconf" "-v" "-f" "-i" "-o"
-                     "aconfigure" "aconfigure.ac")))
-         (add-before 'autoconf 'disable-some-tests
-           (lambda _
-             (substitute* "pjlib/src/pjlib-test/test.h"
-               ;; Disable network tests which are slow and/or require an
-               ;; actual network.
-               (("#define GROUP_NETWORK.*")
-                "#define GROUP_NETWORK 0\n"))
-             (substitute* "self-test.mak"
-               ;; Fails with: pjlib-util-test-x86_64-unknown-linux-gnu:
-               ;; ../src/pjlib-util-test/resolver_test.c:1501: action2_1:
-               ;; Assertio n `pj_strcmp2(&pkt->q[0].name, "_sip._udp."
-               ;; "domain2.com")==0' failed.
-               ((" pjlib_util_test ") ""))
-             (substitute* "pjsip/src/test/test.h"
-               ;; Fails with: Error: unable to acquire TCP transport:
-               ;; [pj_status_t=120101] Network is unreachable.
-               (("#define INCLUDE_TCP_TEST.*")
-                "#define INCLUDE_TCP_TEST 0\n")
-               ;; The TSX tests takes a very long time to run; skip them.
-               (("#define INCLUDE_TSX_GROUP.*")
-                "#define INCLUDE_TSX_GROUP 0\n"))
-             (substitute* "pjsip/src/test/dns_test.c"
-               ;; The round_robin_test fails non-deterministically (depending
-               ;; on load); skip it (see:
-               ;; https://github.com/pjsip/pjproject/issues/2500).
-               (("round_robin_test(pool)") 0))
-             (substitute* "pjmedia/src/test/test.h"
-               ;; The following tests require a sound card.
-               (("#define HAS_MIPS_TEST.*")
-                "#define HAS_MIPS_TEST 0\n")
-               (("#define HAS_JBUF_TEST.*")
-                "#define HAS_JBUF_TEST 0\n"))
-             (substitute* "Makefile"
-               ;; Disable the pjnath and pjsua tests, which require an actual
-               ;; network and an actual sound card, respectively.
-               (("pjnath-test pjmedia-test pjsip-test pjsua-test")
-                "pjmedia-test pjsip-test")))))))
+     (list
+      #:test-target "selftest"
+      #:configure-flags
+      #~(list "--enable-shared"
+              "--with-external-speex"
+              "--with-external-gsm"
+              "--with-external-srtp"
+              "--with-external-pa"
+              ;; The following flag is Linux specific.
+              #$@(if (string-contains (or (%current-system)
+                                          (%current-target-system)) "linux")
+                     #~("--enable-epoll")
+                     #~())
+              "--with-gnutls"           ;disable OpenSSL checks
+              "--disable-libyuv"        ;TODO: add missing package
+              "--disable-silk"          ;TODO: add missing package
+              "--disable-libwebrtc"     ;TODO: add missing package
+              "--disable-ilbc-codec"    ;cannot be unbundled
+              "--disable-g7221-codec"   ;TODO: add missing package
+              "--enable-libsamplerate"
+              ;; -DNDEBUG is set to prevent pjproject from raising
+              ;; assertions that aren't critical, crashing
+              ;; applications as the result.
+              "CFLAGS=-DNDEBUG"
+              ;; Specify a runpath reference to itself, which is missing and
+              ;; causes the validate-runpath phase to fail.
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'build-dep
+            (lambda _ (invoke "make" "dep")))
+          ;; The check phases is moved after the install phase so to
+          ;; use the installed shared libraries for the tests.
+          (delete 'check)
+          (add-after 'install 'move-static-libraries
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((s (string-append #$output:static "/lib")))
+                (mkdir-p s)
+                (with-directory-excursion #$output
+                  (for-each (lambda (f)
+                              (rename-file f (string-append s "/" (basename f))))
+                            (find-files "." "\\.a$"))))))
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'patch-source-shebangs 'autoconf
+            (lambda _
+              (invoke "autoconf" "-v" "-f" "-i" "-o"
+                      "aconfigure" "aconfigure.ac")))
+          (add-before 'autoconf 'disable-some-tests
+            (lambda _
+              (substitute* "pjlib/src/pjlib-test/test.h"
+                ;; Disable network tests which are slow and/or require an
+                ;; actual network.
+                (("#define GROUP_NETWORK.*")
+                 "#define GROUP_NETWORK 0\n"))
+              (substitute* "self-test.mak"
+                ;; Fails with: pjlib-util-test-x86_64-unknown-linux-gnu:
+                ;; ../src/pjlib-util-test/resolver_test.c:1501: action2_1:
+                ;; Assertio n `pj_strcmp2(&pkt->q[0].name, "_sip._udp."
+                ;; "domain2.com")==0' failed.
+                ((" pjlib_util_test ") ""))
+              (substitute* "pjsip/src/test/test.h"
+                ;; Fails with: Error: unable to acquire TCP transport:
+                ;; [pj_status_t=120101] Network is unreachable.
+                (("#define INCLUDE_TCP_TEST.*")
+                 "#define INCLUDE_TCP_TEST 0\n")
+                ;; The TSX tests takes a very long time to run; skip them.
+                (("#define INCLUDE_TSX_GROUP.*")
+                 "#define INCLUDE_TSX_GROUP 0\n"))
+              (substitute* "pjsip/src/test/dns_test.c"
+                ;; The round_robin_test fails non-deterministically (depending
+                ;; on load); skip it (see:
+                ;; https://github.com/pjsip/pjproject/issues/2500).
+                (("round_robin_test(pool)") 0))
+              (substitute* "pjmedia/src/test/test.h"
+                ;; The following tests require a sound card.
+                (("#define HAS_MIPS_TEST.*")
+                 "#define HAS_MIPS_TEST 0\n")
+                (("#define HAS_JBUF_TEST.*")
+                 "#define HAS_JBUF_TEST 0\n"))
+              (substitute* "Makefile"
+                ;; Disable the pjnath and pjsua tests, which require an actual
+                ;; network and an actual sound card, respectively.
+                (("pjnath-test pjmedia-test pjsip-test pjsua-test")
+                 "pjmedia-test pjsip-test")))))))
     (native-inputs
-     (list autoconf automake libtool pkg-config))
+     (list autoconf
+           automake
+           libtool
+           pkg-config))
     (inputs
      (list bcg729
            gnutls

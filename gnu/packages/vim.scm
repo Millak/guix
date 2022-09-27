@@ -77,7 +77,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.0325")
+    (version "9.0.0509")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -86,7 +86,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "18m3lhp7d8a0n3bx0kqn082gqrh7lyar1ndvwq79gj73fz5c19vh"))))
+               "0affh0q6r5cvf01f4m5nr94bq1k23bzhiwa4xlpqim21yipafamm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -95,14 +95,11 @@
        (modify-phases %standard-phases
          (add-after 'configure 'patch-absolute-paths
            (lambda _
-             (substitute* '("runtime/autoload/context.vim"
-                            "src/testdir/Makefile"
+             (substitute* '("src/testdir/Makefile"
                             "src/testdir/test_filetype.vim"
                             "src/testdir/test_normal.vim"
                             "src/testdir/test_popupwin.vim"
-                            "src/testdir/test_prompt_buffer.vim"
                             "src/testdir/test_shell.vim"
-                            "src/testdir/test_suspend.vim"
                             "src/testdir/test_terminal.vim"
                             "src/testdir/test_terminal2.vim")
                (("/bin/sh") (which "sh")))
@@ -826,7 +823,7 @@ and support for fonts with ligatures.")
 (define-public vifm
   (package
     (name "vifm")
-    (version "0.12")
+    (version "0.12.1")
     (source
       (origin
         (method url-fetch)
@@ -837,7 +834,7 @@ and support for fonts with ligatures.")
                               "vifm-" version ".tar.bz2")))
         (sha256
          (base32
-          "1h5j4y704nciyzg3aaav8sl3r5h9mpwq8f28cj65nnxk6a7n3a9k"))))
+          "122ncp319xisxjxcy33bshjib6905bb0aaz0xjdfkkycplz83qlg"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-build-timestamp")
@@ -852,8 +849,7 @@ and support for fonts with ligatures.")
                (("/bin/bash") (which "bash")))
              ;; This test segfaults
              (substitute* "tests/Makefile"
-               (("misc") ""))
-             #t))
+               (("misc") ""))))
           (add-after 'install 'install-vim-plugin-files
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
@@ -864,8 +860,7 @@ and support for fonts with ligatures.")
                 (copy-recursively (string-append vifm "/vim")
                                   vimfiles)
                 (delete-file-recursively (string-append vifm "/colors"))
-                (delete-file-recursively (string-append vifm "/vim")))
-              #t)))))
+                (delete-file-recursively (string-append vifm "/vim"))))))))
     (native-inputs
      (list groff)) ; for the documentation
     (inputs
@@ -1380,30 +1375,29 @@ files for reading or editing, and perform basic file system operations.")
     (license license:wtfpl2)))
 
 (define-public vim-nerdcommenter
-  (let ((commit "a65465d321f2f8a74b2ffa540b9b87563f7e12e8")
-        (revision "1"))
-    (package
-      (name "vim-nerdcommenter")
-      (version (git-version "2.5.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/preservim/nerdcommenter")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "00ir65iv8jfbgzjmj7332fmydh0qhabbhx8zbvd3j6pgfxqpaafw"))))
-      (build-system copy-build-system)
-      (arguments
-       '(#:install-plan
-         '(("autoload" "share/vim/vimfiles/")
-           ("doc" "share/vim/vimfiles/")
-           ("plugin" "share/vim/vimfiles/"))))
-      (home-page "https://github.com/preservim/nerdcommenter")
-      (synopsis "Vim plugin for easy commenting of code")
-      (description
-       "NERD commenter is a Vim plugin that provides many different commenting
+  (package
+    (name "vim-nerdcommenter")
+    (version "2.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/preservim/nerdcommenter")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ka2rqn7rby55aps3iblh1dcqxm7m7qx72mpkz6y2aaj8mkj0zyd"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~`(("autoload" "share/vim/vimfiles/")
+          ("doc" "share/vim/vimfiles/")
+          ("plugin" "share/vim/vimfiles/"))))
+    (home-page "https://github.com/preservim/nerdcommenter")
+    (synopsis "Vim plugin for easy commenting of code")
+    (description
+     "NERD commenter is a Vim plugin that provides many different commenting
 operations and styles which are invoked via key mappings and a menu.  These
 operations are available for most filetypes.")
-      (license license:cc0))))
+    (license license:cc0)))

@@ -84,4 +84,66 @@
            (equal? (upstream-source-version update) "2")
            (equal? (list expected-new-url) (upstream-source-urls update))))))
 
+(test-assert "latest-html-release, no signature"
+  (with-http-server
+      `((200 "<html xmlns=\"http://www.w3.org/1999/xhtml\">
+<head>
+<title>Releases!</title>
+</head>
+<body>
+<a href=\"bar/foo-1.tar.gz\">version 1</a>
+<a href=\"bar/foo-2.tar.gz\">version 2</a>
+</body>
+</html>"))
+    (let ()
+      (define package
+        (dummy-package "foo"
+          (source
+           (dummy-origin
+            (uri (string-append (%local-url) "/foo-1.tar.gz"))))
+          (properties
+           `((release-monitoring-url . ,(%local-url))))))
+      (define update ((upstream-updater-latest %generic-html-updater) package))
+      (define expected-new-url
+        (string-append (%local-url) "/foo-2.tar.gz"))
+      (and (pk 'u update)
+           (equal? (upstream-source-version update) "2")
+           (equal? (list expected-new-url)
+                   (upstream-source-urls update))
+           (null? ;; both #false and the empty list are acceptable
+            (or (upstream-source-signature-urls update) '()))))))
+
+(test-assert "latest-html-release, signature"
+  (with-http-server
+      `((200 "<html xmlns=\"http://www.w3.org/1999/xhtml\">
+<head>
+<title>Signed releases!</title>
+</head>
+<body>
+<a href=\"bar/foo-1.tar.gz\">version 1</a>
+<a href=\"bar/foo-2.tar.gz\">version 2</a>
+<a href=\"bar/foo-1.tar.gz.sig\">version 1 signature</a>
+<a href=\"bar/foo-2.tar.gz.sig\">version 2 signature</a>
+</body>
+</html>"))
+    (let ()
+      (define package
+        (dummy-package "foo"
+          (source
+           (dummy-origin
+            (uri (string-append (%local-url) "/foo-1.tar.gz"))))
+          (properties
+           `((release-monitoring-url . ,(%local-url))))))
+      (define update ((upstream-updater-latest %generic-html-updater) package))
+      (define expected-new-url
+        (string-append (%local-url) "/foo-2.tar.gz"))
+      (define expected-signature-url
+        (string-append (%local-url) "/foo-2.tar.gz.sig"))
+      (and (pk 'u update)
+           (equal? (upstream-source-version update) "2")
+           (equal? (list expected-new-url)
+                   (upstream-source-urls update))
+           (equal? (list expected-signature-url)
+                   (upstream-source-signature-urls update))))))
+
 (test-end)

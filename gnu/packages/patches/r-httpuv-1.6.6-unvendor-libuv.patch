@@ -1,7 +1,7 @@
 Removes references to bundled libuv.
 
---- a/src/Makevars	2020-07-31 11:53:30.576484531 +0200
-+++ b/src/Makevars	2020-07-31 11:54:19.369863118 +0200
+--- a/src/Makevars	2022-09-19 23:37:55.067810741 +0200
++++ b/src/Makevars	2022-09-19 23:39:20.984859770 +0200
 @@ -5,7 +5,7 @@
  
  UNAME := $(shell uname)
@@ -20,13 +20,12 @@ Removes references to bundled libuv.
  
  # To avoid spurious warnings from `R CMD check --as-cran`, about compiler
  # warning flags like -Werror.
-@@ -43,49 +43,5 @@
+@@ -43,50 +43,4 @@
  # PKG_CPPFLAGS += -D_GLIBCXX_ASSERTIONS
  
  
 -$(SHLIB): libuv/.libs/libuv.a http-parser/http_parser.o sha1/sha1.o base64/base64.o
-+$(SHLIB): http-parser/http_parser.o sha1/sha1.o base64/base64.o
- 
+-
 -# We needed to rename lt~obsolete.m4 because the name causes problems with R
 -# CMD check. Here we rename it back.
 -libuv/m4/lt~obsolete.m4: libuv/m4/lt_obsolete.m4
@@ -59,7 +58,8 @@ Removes references to bundled libuv.
 -		touch aclocal.m4; \
 -		touch -r aclocal.m4 configure Makefile.in; \
 -	else \
--		echo "automake found. Running autogen.sh."; \
+-		echo "automake found. Running autoupdate and autogen.sh."; \
+-		autoupdate; \
 -		sh autogen.sh; \
 -	fi; \
 -	chmod +x configure; \
@@ -71,3 +71,4 @@ Removes references to bundled libuv.
 -
 -clean:
 -	$(MAKE) --directory=libuv distclean
++$(SHLIB): http-parser/http_parser.o sha1/sha1.o base64/base64.o

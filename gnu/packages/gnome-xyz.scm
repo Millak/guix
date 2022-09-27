@@ -330,7 +330,7 @@ GNOME Shell.")
 (define-public gnome-shell-extension-clipboard-indicator
   (package
     (name "gnome-shell-extension-clipboard-indicator")
-    (version "39")
+    (version "42")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -342,7 +342,7 @@ GNOME Shell.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kq6bzxki7lwmw690f4qml8pvfwafpqpsfnq2kyjhrp8nh39axwi"))
+                "0wf2k33pbwjdf8i4y3aw32fgvjbh751qh7504lwhnl02rcq5dc88"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove pre-compiled settings schemas and translations from
@@ -449,7 +449,7 @@ easier to keep track of applications running in the background.")
 (define-public gnome-shell-extension-dash-to-dock
   (package
     (name "gnome-shell-extension-dash-to-dock")
-    (version "71")
+    (version "73")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -458,7 +458,7 @@ easier to keep track of applications running in the background.")
                                            version))))
               (sha256
                (base32
-                "12b6ljzs5071zs0kcf5yj4jfhq10b1gnldv0hmbksnqzz5g719wf"))
+                "1l0isbrgfc8v46l1yc5l4myz7qnlxzyfyiifipp86z9d79d8klzw"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -487,17 +487,17 @@ faster window switching.")
 (define-public gnome-shell-extension-gsconnect
   (package
     (name "gnome-shell-extension-gsconnect")
-    (version "48")
+    (version "50")       ; See GNOME Shell supported versions in metadata.json
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url (string-append "https://github.com/andyholmes"
+                    (url (string-append "https://github.com/GSConnect"
                                         "/gnome-shell-extension-gsconnect.git"))
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15agblnm7k1wqnnz6gwhwym992fzqkdz8mkm04805783bx60b8bh"))))
+                "0vg87fdihs5kp7apgyd32ldjmwzmrxaimsc005yjyy8m3f65sjmr"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f ;; every test fails
@@ -568,7 +568,7 @@ faster window switching.")
        ("gobject-introspection" ,gobject-introspection)
        ("libxml2" ,libxml2)
        ("pkg-config" ,pkg-config)))
-    (home-page "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki")
+    (home-page "https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki")
     (synopsis "Connect GNOME Shell with your Android phone")
     (description "GSConnect is a complete implementation of KDE Connect
 especially for GNOME Shell, allowing devices to securely share content, like
@@ -627,7 +627,7 @@ currently focused application in the top panel of the GNOME shell.")
 (define-public gnome-shell-extension-just-perfection
   (package
     (name "gnome-shell-extension-just-perfection")
-    (version "20.0")
+    (version "22.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -636,7 +636,7 @@ currently focused application in the top panel of the GNOME shell.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b1hzibgryn861av2bjnfh5bmzs2bxfcsyl0ardkaj97228xsjzy"))))
+                "0r4rflppcp05kwhzmh07dzi7znc4kch4nc8mzw61arj3qsfq2qqj"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
@@ -678,7 +678,7 @@ certain elements or change animation speeds.")
 (define-public gnome-shell-extension-dash-to-panel
   (package
     (name "gnome-shell-extension-dash-to-panel")
-    (version "45")
+    (version "51")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -686,7 +686,7 @@ certain elements or change animation speeds.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "05bfd3b1g9zd86pl1rpgfqsmip271lasyfj8phpqf1gdds5yz6f6"))
+                "103pl77dhafi2ayds5yma2smv3b58zcysnd6vl5m5zavjvk35sz7"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -714,27 +714,31 @@ into a single panel, similar to that found in KDE Plasma and Windows 7+.")
     (license license:gpl2+)))
 
 (define-public gnome-shell-extension-noannoyance
-  (package
-    (name "gnome-shell-extension-noannoyance")
-    (version "5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/BjoernDaase/noannoyance")
-                    (commit "e37b5b3c31f577b4698bc6659bc9fec5ea9ac5d4")))
-              (sha256
-               (base32
-                "0fa8l3xlh8kbq07y4385wpb908zm6x53z81q16xlmin97dln32hh"))
-              (file-name (git-file-name name version))))
-    (build-system copy-build-system)
-    (arguments
-     '(#:install-plan
-       '(("." "share/gnome-shell/extensions/noannoyance@daase.net"))))
-    (synopsis "Remove 'Window is ready' annotation")
-    (description "One of the many extensions that remove this message.
+  (let ((revision "1")
+        (commit "b759d10fd2799bc084007fdd927b62637c3dbd2c"))
+    (package
+      (name "gnome-shell-extension-noannoyance")
+      ;; XXX: There is no version noted anywhere in the source.  Thus, infer it
+      ;;      from <https://extensions.gnome.org/extension/2182/noannoyance/>.
+      (version (git-version "16" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bdaase/noannoyance")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0hh7fdqvx54h9j41ia2jl0nq1d5i66k7blw41ya6hkh7201r4anp"))
+                (file-name (git-file-name name version))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan
+         '(("." "share/gnome-shell/extensions/noannoyance@daase.net"))))
+      (synopsis "Remove 'Window is ready' annotation")
+      (description "One of the many extensions that remove this message.
 It uses ES6 syntax and claims to be more actively maintained than others.")
-    (home-page "https://extensions.gnome.org/extension/2182/noannoyance/")
-    (license license:gpl2)))
+      (home-page "https://extensions.gnome.org/extension/2182/noannoyance/")
+      (license license:gpl2))))
 
 (define-public gnome-shell-extension-paperwm
   (package
@@ -833,7 +837,7 @@ copies you now want to paste.")
 (define-public gnome-shell-extension-vertical-overview
   (package
     (name "gnome-shell-extension-vertical-overview")
-    (version "8")
+    (version "9")
     (source
      (origin
        (method git-fetch)
@@ -842,7 +846,7 @@ copies you now want to paste.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "01vz48p3bh7p3ybdyw0s0ahs18lk2kzk9x4ad46s0dnwmmsyhww9"))
+         "0pkby00rjipj04z68d6i3rr7mzm01dckf2vl3iz6yvbl39602icl"))
        (file-name (git-file-name name version))
        (snippet
         '(begin (delete-file "schemas/gschemas.compiled")))))
@@ -914,7 +918,7 @@ position when the mouse is moved rapidly.")
 (define-public gnome-shell-extension-burn-my-windows
   (package
     (name "gnome-shell-extension-burn-my-windows")
-    (version "15")
+    (version "21")
     (source
      (origin
        (method git-fetch)
@@ -923,7 +927,7 @@ position when the mouse is moved rapidly.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1gabnqdk11n6345jzv9sc4yjmfrdgg0lsz6zc29gc5afzgirkhm5"))
+         "07ckfl47pq83nhb77v230zfxlz3imga3s8nn3sr9cq4zxvbkj2r4"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments

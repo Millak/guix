@@ -71,7 +71,7 @@
 (define-public efl
   (package
     (name "efl")
-    (version "1.26.2")
+    (version "1.26.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -79,7 +79,7 @@
                     version ".tar.xz"))
               (sha256
                (base32
-                "071h0pscbd8g341yy5rz9mk1xn8yhryldhl6mmr1y6lafaycyy99"))))
+                "05bxc58hj0z6pkp6yy5cmy1lc575q0nrbr5lxr6z8d4kznh3my6r"))))
     (build-system meson-build-system)
     (native-inputs
      `(("check" ,check)
@@ -289,7 +289,7 @@ Libraries with some extra bells and whistles.")
 (define-public enlightenment
   (package
     (name "enlightenment")
-    (version "0.25.3")
+    (version "0.25.4")
     (source (origin
               (method url-fetch)
               (uri
@@ -297,7 +297,7 @@ Libraries with some extra bells and whistles.")
                               "enlightenment/enlightenment-" version ".tar.xz"))
               (sha256
                (base32
-                "1xngwixp0cckfq3jhrdmmk6zj67125amr7g6xwc6l89pnpmlkz9p"))
+                "18mp4ggfy7n0yz6kzx56ali0piqa84z72vnj6649l6w2dch5vnsn"))
               (patches (search-patches "enlightenment-fix-setuid-path.patch"))))
     (build-system meson-build-system)
     (arguments

@@ -17,17 +17,13 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu installer user)
+  #:use-module (gnu installer utils)
   #:use-module (guix records)
   #:use-module (guix read-print)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)
-  #:export (<secret>
-            secret?
-            make-secret
-            secret-content
-
-            <user>
+  #:export (<user>
             user
             make-user
             user-name
@@ -37,16 +33,6 @@
             user-password
 
             users->configuration))
-
-(define-record-type <secret>
-  (make-secret content)
-  secret?
-  (content secret-content))
-
-(set-record-type-printer!
- <secret>
- (lambda (secret port)
-   (format port "<secret>")))
 
 (define-record-type* <user>
   user make-user

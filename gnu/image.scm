@@ -152,7 +152,7 @@ that is not in SET, mentioning FIELD in the error message."
 
 ;; The supported image formats.
 (define-set-sanitizer validate-image-format format
-  (disk-image compressed-qcow2 docker iso9660))
+  (disk-image compressed-qcow2 docker iso9660 tarball wsl2))
 
 ;; The supported partition table types.
 (define-set-sanitizer validate-partition-table-type partition-table-type
@@ -170,8 +170,7 @@ that is not in SET, mentioning FIELD in the error message."
   (size               image-size  ;size in bytes as integer
                       (default 'guess)
                       (sanitize validate-size))
-  (operating-system   image-operating-system  ;<operating-system>
-                      (default #f))
+  (operating-system   image-operating-system)  ;<operating-system>
   (partition-table-type image-partition-table-type ; 'mbr or 'gpt
                       (default 'mbr)
                       (sanitize validate-partition-table-type))

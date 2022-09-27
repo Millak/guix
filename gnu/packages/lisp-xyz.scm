@@ -214,6 +214,38 @@ with dice-roll statistics.")
 (define-public ecl-alea
   (sbcl-package->ecl-package sbcl-alea))
 
+(define-public sbcl-bubble-operator-upwards
+  (let ((commit "846275a318b960de81b62caecb1e31930f70aef6")
+        (revision "0"))
+    (package
+      (name "sbcl-bubble-operator-upwards")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Hexstream/bubble-operator-upwards")
+               (commit commit)))
+         (file-name (git-file-name "cl-bubble-operator-upwards" version))
+         (sha256
+          (base32 "0ybsy29ms3yrxgr7f2146lr6z4vm070dvdyzvwwxjh4dgm9na7bi"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (home-page "https://www.hexstreamsoft.com/libraries/bubble-operator-upwards/")
+      (synopsis "Function that bubbles an operator upwards in a form")
+      (description
+       "@code{bubble-operator-upwards} is a function that bubbles an operator
+upwards in a form, demultiplexing all alternative branches by way of
+cartesian product.")
+      (license license:unlicense))))
+
+(define-public cl-bubble-operator-upwards
+  (sbcl-package->cl-source-package sbcl-bubble-operator-upwards))
+
+(define-public ecl-bubble-operator-upwards
+  (sbcl-package->ecl-package sbcl-bubble-operator-upwards))
+
 (define-public sbcl-map-bind
   (let ((commit "532d55d93540c632e22b2cd264b5daa5f9d3d900")
         (revision "0"))

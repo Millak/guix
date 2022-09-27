@@ -6313,14 +6313,14 @@ of gene-level counts.")
 (define-public r-valr
   (package
     (name "r-valr")
-    (version "0.6.4")
+    (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "valr" version))
        (sha256
         (base32
-         "0dd41irvibh6rwi52bw4zg4m7wpyihlp1kdkb8fdji3csw2fiz4k"))))
+         "1674sqclgi4l5r544pjjsblzl1ix2cy961jpkncb3ym47y6c1msw"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
@@ -6993,14 +6993,14 @@ fitting of some classes of graphical Markov models.")
 (define-public r-perfmeas
   (package
     (name "r-perfmeas")
-    (version "1.2.1")
+    (version "1.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PerfMeas" version))
        (sha256
         (base32
-         "1x7ancmb41zd1js24rx94plgbssyc71z2bvpic6mg34xjkwdjw93"))))
+         "13yjk0kwpbsqwl056hzf0zj2br1mk4faqcn1whdfxmq348c14hjb"))))
     (properties `((upstream-name . "PerfMeas")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7976,14 +7976,14 @@ abnormal copy number.")
 (define-public r-htscluster
   (package
     (name "r-htscluster")
-    (version "2.0.8")
+    (version "2.0.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "HTSCluster" version))
        (sha256
         (base32
-         "0wnbfh6hdx8692jilgmv8sys1zm6fqc6mim7vvjhyqlmpm8gm0kg"))))
+         "0scn4fsfmlkzxibfhsh6krm2cl9c8hsmyjgn48k9dyjf0ylyxg9n"))))
     (properties `((upstream-name . "HTSCluster")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13147,14 +13147,14 @@ rate} (FDR).")
 (define-public r-activedriverwgs
   (package
     (name "r-activedriverwgs")
-    (version "1.1.2")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ActiveDriverWGS" version))
        (sha256
         (base32
-         "13b5yazgv9kckcp6gck183mh1m0q8lc5ixagmcy9s8kv2wz7wq45"))))
+         "0xnplgwxd197a4d422bsxg753q158i12ils16awd1cw30wafdxkk"))))
     (properties
      `((upstream-name . "ActiveDriverWGS")))
     (build-system r-build-system)

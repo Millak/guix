@@ -64,6 +64,7 @@
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -353,7 +354,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.19-version "5.19.9")
+(define-public linux-libre-5.19-version "5.19.11")
 (define-public linux-libre-5.19-gnu-revision "gnu")
 (define deblob-scripts-5.19
   (linux-libre-deblob-scripts
@@ -363,7 +364,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "092myqjixvy1k3ylcj0hfc4whfxapjvxsxm4gk30a3jv5dnh7mly")))
 (define-public linux-libre-5.19-pristine-source
   (let ((version linux-libre-5.19-version)
-        (hash (base32 "0dvzjbyknzlx4ndz77fsm6v28fj2chxbq1z85fbc3bckcscbbm8a")))
+        (hash (base32 "0wyrwdqm4dypx2jbb7d8c3b7fl7q5j434d6g9x2v6sw01gwx4m2m")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.19)))
@@ -372,7 +373,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.68")
+(define-public linux-libre-5.15-version "5.15.70")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -382,12 +383,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "048r4synfax2ajyzlmp672b68yshxwlfccdah2vz1kh88rqfmgsc")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0zlb44bwpc0hwfynzz5v5b3lkv4aha7w5737ns1qb8cvbk5v7fqp")))
+        (hash (base32 "0xhdjz7aqq13pkh1yr7ax3msqdb2xvrcpj464wibn1rl4pq2cz0s")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.143")
+(define-public linux-libre-5.10-version "5.10.145")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -397,12 +398,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1981axxswghza3iadp94q54y8w30h9w9vyq4cbjiiv9alvbv0pb8")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "14af0lsvgh1k0fh283d0nrm1pkrk2kaf2mz0ab59vlvjybg9wb7s")))
+        (hash (base32 "0qdcqmwvc70hfgj8hb8ccwmnvwl41dvdffqrmyg3cyblwprr0ngw")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.213")
+(define-public linux-libre-5.4-version "5.4.214")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -412,12 +413,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1vnjbdyssa7dwyjl9kg35alwvf7yh597cl74yr1wy2gk5bc9paw6")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "1wdssqmac66zqsnq5lx2z8ampa0rd3qswg0gm1sh6n3y8xlf2z76")))
+        (hash (base32 "1ny57g5agk8sq6cbp2crjiay5bfkwqy32i4a5yw7x0lch2s7kg4s")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.258")
+(define-public linux-libre-4.19-version "4.19.259")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -427,12 +428,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "002sw8b272dzkp3vff0x89sbj5p3vrrikqygfdgrsxv7k3w4459x")))
+        (hash (base32 "1ska6v95zjjj44h53gi34rnbsrm4507jwxi3kklnky6d0aykiy1z")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.293")
+(define-public linux-libre-4.14-version "4.14.294")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -442,12 +443,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "047gl9nqrvpi9jaxlmhfnx848qvnrhf13710ka8fwn3lyv22k342")))
+        (hash (base32 "069i11hv4fhwc9dirqbag1g1k3fn21wzpfggah4f1a41whf98apy")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.328")
+(define-public linux-libre-4.9-version "4.9.329")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
@@ -457,7 +458,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0bib3641dbcqdkx3anna3caxnsg3nw9cnmhcklq0s93g3m57041h")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "1px2np3k796cjwq1sp9gfxyql6hqyqya82vq9cb5y0canq6fqmg8")))
+        (hash (base32 "168hy7vhgw2sfknflhhf6ykhkp4xs8v0igii6ivjlvs3dmwm21sj")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -1340,6 +1341,31 @@ Interface} platform driver for the @acronym{EC, Embedded Controller} firmware
 on Purism Librem laptop computers.  It allows user-space control over the
 battery charging thresholds, keyboard backlight, fans and thermal monitors,
 and the notification, WiFi, and Bluetooth LED.")
+    (license license:gpl2)))
+
+(define-public ec
+  (package
+    (name "ec")
+    (version (package-version linux-libre))
+    (source (package-source linux-libre))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "sbindir="
+                                               #$output "/sbin")
+                                "INSTALL=install" "STRIPCMD=true")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'enter-subdirectory
+                          (lambda _
+                            (chdir "tools/power/acpi/tools/ec")))
+                        (delete 'configure)) ;no configure script
+           #:tests? #f)) ;no tests
+    (home-page (package-home-page linux-libre))
+    (synopsis
+     "Utility for reading or writing @acronym{EC, Embedded Controller} registers")
+    (description
+     "This utility can read or write specific registers or all the available
+registers of the @acronym{EC, Embedded Controller} supported by the
+@code{ec_sys} Linux driver.")
     (license license:gpl2)))
 
 (define-public lkrg
@@ -8659,7 +8685,11 @@ of Linux application development.")
       #:configure-flags
       #~(list (string-append "-Dudevrulesdir=" #$output "/lib/udev/rules.d")
               "-Dsystemd=disabled"
-              "-Dsession-managers=[]")))
+              "-Dsession-managers=[]"
+              "-Dman=enabled")))
+    (native-inputs
+     (modify-inputs (package-native-inputs pipewire)
+       (prepend python-docutils)))
     (inputs (modify-inputs (package-inputs pipewire)
               (prepend avahi
                        bluez

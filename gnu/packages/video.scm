@@ -335,7 +335,8 @@ the SVT-HEVC encoder, it is possible to spread video encoding processing across
 multiple Intel's Xeon processors to achieve a real advantage of processing
 efficiency.")
     (home-page "https://01.org/svt")
-    (supported-systems '("x86_64-linux" "i686-linux"))
+    ;; Specifically targets x86_64 Intel hardware.
+    (supported-systems '("x86_64-linux"))
     (license (license:non-copyleft "file:///LICENSE.md"))))
 
 (define-public mediasdk

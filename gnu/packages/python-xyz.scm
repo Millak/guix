@@ -129,6 +129,7 @@
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19675,6 +19676,26 @@ point is the point of maximum curvature.")
      perform the operations required for synchronizing plain text.")
     (license license:asl2.0)))
 
+(define-public python-icdiff
+  (package
+    (name "python-icdiff")
+    (version "2.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jeffkaufman/icdiff")
+                    (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14gr9j2h7sfw47pwfzspm4zinywhqmzm4a0qz5c2k9wbixz120a4"))))
+    (build-system python-build-system)
+    (home-page "https://www.jefftk.com/icdiff")
+    (synopsis "Improved colored diff")
+    (description "This package provides colored diff functions that highlight
+parts of the lines that were modified.")
+    (license license:psfl)))
+
 (define-public python-dirsync
   (package
     (name "python-dirsync")
@@ -22384,6 +22405,26 @@ C++ code.  Its goals and syntax are similar to the @code{Boost.Python}
 library: to minimize boilerplate code in traditional extension modules by
 inferring type information using compile-time introspection.")
     (license license:bsd-3)))
+
+;; This is needed for python-vaex-core.
+(define-public pybind11-2.3
+  (package
+    (inherit pybind11)
+    (name "pybind11")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pybind/pybind11")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "11b6dniri8m05spfd2a19irz82shf4sdca73566bniggrf3zclnf"))
+              (file-name (git-file-name name version))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments pybind11)
+       ((#:tests? tests? #false)
+        #false)))))
 
 (define-public python-pooch
   (package
@@ -27145,6 +27186,29 @@ applications with variable CPU loads).")
     (description "This is a set of Python bindings for the DjVuLibre library.")
     (home-page "https://jwilk.net/software/python-djvulibre")
     (license license:gpl2)))
+
+(define-public python-version
+  ;; No version tags available in the git repo; just using bare commit instead.
+  (let ((commit "5232eea250ab72cc5cb72b0b75efb35d2192b906")
+        (revision "1"))
+    (package
+      (name "python-version")
+      (version (git-version "0.0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/halfak/python_version")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0w210559ypdynlj9yn40m9awzkaknwrf682i99hswl7h66sdgh0h"))))
+      (build-system python-build-system)
+      (home-page "https://gitlab.com/halfak/python_version")
+      (synopsis "Python version checking utility")
+      (description
+       "This package provides a simple utility for checking the python version.")
+      (license license:expat))))
 
 (define-public python-versioneer
   (package

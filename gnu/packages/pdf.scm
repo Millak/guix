@@ -629,7 +629,7 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.4.9")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -637,20 +637,21 @@ by using the poppler rendering engine.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "0msy7s57mlx0wya99qpia4fpcy40pbj253kmx2y97nb0sqnc8c7w"))))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("gettext" ,gettext-minimal)
-                     ("glib:bin" ,glib "bin")
+                "1c8vmfpghqlq5kdnq92bzzp2grym3x3kxxxqgs51178s4z7639lq"))))
+    (native-inputs
+     (list pkg-config
+           gettext-minimal
+           (list glib "bin")
 
-                     ;; For building documentation.
-                     ("python-sphinx" ,python-sphinx)
+           ;; For building documentation.
+           python-sphinx
 
-                     ;; For building icons.
-                     ("librsvg" ,(librsvg-for-system))
+           ;; For building icons.
+           (librsvg-for-system)
 
-                     ;; For tests.
-                     ("check" ,check)
-                     ("xorg-server" ,xorg-server-for-tests)))
+           ;; For tests.
+           check
+           xorg-server-for-tests))
     (inputs (list sqlite))
     ;; Listed in 'Requires.private' of 'zathura.pc'.
     (propagated-inputs (list cairo girara))
@@ -664,8 +665,7 @@ by using the poppler rendering engine.")
                   (add-before 'check 'start-xserver
                     ;; Tests require a running X server.
                     (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((xorg-server (assoc-ref inputs "xorg-server"))
-                            (display ":1"))
+                      (let ((display ":1"))
                         (setenv "DISPLAY" display)
 
                         ;; On busy machines, tests may take longer than
@@ -674,8 +674,9 @@ by using the poppler rendering engine.")
 
                         ;; Don't fail due to missing '/etc/machine-id'.
                         (setenv "DBUS_FATAL_WARNINGS" "0")
-                        (zero? (system (string-append xorg-server "/bin/Xvfb "
-                                                      display " &")))))))))
+                        (zero? (system (string-append
+                                         (search-input-file inputs "/bin/Xvfb")
+                                         " " display " &")))))))))
     (home-page "https://pwmt.org/projects/zathura/")
     (synopsis "Lightweight keyboard-driven PDF viewer")
     (description "Zathura is a customizable document viewer.  It provides a

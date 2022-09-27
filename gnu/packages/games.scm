@@ -73,6 +73,7 @@
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2683,6 +2684,35 @@ runnable=true
 available, as well as a single-player mode with AI-controlled ships.")
     (license (list license:expat         ; game
                    license:silofl1.1)))) ; fonts
+
+(define-public tetzle
+  (package
+    (name "tetzle")
+    (version "2.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://gottcode.org/"
+                                  name
+                                  "/"
+                                  name
+                                  "-"
+                                  version
+                                  "-src.tar.bz2"))
+              (sha256
+               (base32
+                "1m4j4lzqp8fnwmvyglmzcn3vh14ix4hhh52ycmcsjgrsgj1w4p6a"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ; no tests
+    (native-inputs (list qttools))
+    (inputs (list qtbase))
+    (home-page "https://gottcode.org/tetzle/")
+    (synopsis "Jigsaw puzzle game that uses tetrominoes for the pieces")
+    (description
+     "Tetzle is a jigsaw puzzle game that uses tetrominoes for the pieces.  Any image
+can be imported and used to create puzzles with a wide range of sizes.  Games are
+saved automatically, and you can select between currently in progress games.")
+    (license license:gpl3+)))
 
 (define %ufoai-commit "a542a87a891f96b1ab2c44d35b2f6f16859a5019")
 (define %ufoai-revision "0")
@@ -5764,17 +5794,14 @@ Linux / Mac OS X servers, and an auto mapper with a VT100 map display.")
              (patches (search-patches "laby-make-install.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("lablgtk3" ,lablgtk3)
-       ("ocaml" ,ocaml)
-       ("ocaml-findlib" ,ocaml-findlib)
-       ("ocamlbuild" ,ocamlbuild)))
+     (list lablgtk3 ocaml-lablgtk3-sourceview3 ocaml ocaml-findlib ocamlbuild))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (delete 'configure)
          (add-before 'build 'set-library-path
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((lablgtk (assoc-ref inputs "lablgtk3")))
+             (let ((lablgtk (assoc-ref inputs "lablgtk")))
                (setenv "LD_LIBRARY_PATH"
                        (string-append lablgtk "/lib/ocaml/stublibs"))))))
        #:tests? #f ; no 'check' target
@@ -5892,101 +5919,63 @@ throwing people around in pseudo-randomly generated buildings.")
 (define-public hyperrogue
   (package
     (name "hyperrogue")
-    (version "11.3a")
-    ;; When updating this package, be sure to update the "hyperrogue-data"
-    ;; origin in native-inputs.
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://www.roguetemple.com/z/hyper/hyperrogue"
-                    (string-join (string-split version #\.) "")
-                    "-src.tgz"))
-              (sha256
-               (base32
-                "1yxabbswq02fc5frigvs43f83m5vlxybc7n5mynkwzj2c70lfp2k"))))
+    (version "12.1a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zenorogue/hyperrogue")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1l09d1r3jdwp54zq071fk09hpggif5phjn0gsapzrjy3i289jran"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no check target
-       #:make-flags '("HYPERROGUE_USE_GLEW=1"
-                      "HYPERROGUE_USE_PNG=1")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'set-paths 'set-sdl-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CPATH"
-                     (string-append (or (getenv "CPATH") "") ":"
-                                    (assoc-ref inputs "sdl-union")
-                                    "/include/SDL"))))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share-dir (string-append out "/share/hyperrogue"))
-                    (dejavu-dir (string-append
-                                 (assoc-ref inputs "font-dejavu")
-                                 "/share/fonts/truetype"))
-                    (dejavu-font "DejaVuSans-Bold.ttf")
-                    (music-file "hyperrogue-music.txt"))
-               ;; Fix font and music paths.
-               (substitute* "basegraph.cpp"
-                 ((dejavu-font)
-                  (string-append dejavu-dir "/" dejavu-font)))
-               (substitute* music-file
-                 (("\\*/")
-                  (string-append share-dir "/sounds/")))
-               (substitute* "sound.cpp"
-                 (("musicfile = \"\"")
-                  (string-append "musicfile = \""
-                                 share-dir "/" music-file "\"")))
-               ;; Disable build machine CPU optimizations and warnings treated
-               ;; as errors.
-               (substitute* "Makefile"
-                 (("-march=native") "")
-                 (("-Werror") "")))
-             #t))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (share-dir (string-append out "/share/hyperrogue")))
-               (mkdir-p bin)
-               (install-file "hyperrogue" bin)
-               (install-file "hyperrogue-music.txt" share-dir))
-             #t))
-         (add-after 'install 'install-data
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((data (assoc-ref inputs "hyperrogue-data"))
-                    (out (assoc-ref outputs "out"))
-                    (sounds (string-append out "/share/hyperrogue/sounds"))
-                    (unzip (search-input-file inputs "/bin/unzip")))
-               ;; Extract media license information into sounds directory.
-               (invoke unzip "-j" data
-                       (string-append
-                        "hyperrogue"
-                        (string-join (string-split ,version #\.) "")
-                        "/sounds/credits.txt") "-d" sounds)
-               ;; Extract sounds and music into sounds directory.
-               (invoke "unzip" "-j" data
-                       (string-append
-                        "hyperrogue"
-                        (string-join (string-split ,version #\.) "")
-                        "/*.ogg") "-d" sounds)))))))
-    (native-inputs
-     `(("hyperrogue-data"
-        ,(origin
-           (method url-fetch)
-           (uri
-            (string-append
-             "https://www.roguetemple.com/z/hyper/hyperrogue"
-             (string-join (string-split version #\.) "")
-             "-win.zip"))
-           (sha256
-            (base32
-             "11yhbia45f1w9z0j67h9nynwjqmvakr9l6rnrmdrdkzin6lvzzj4"))))
-       ("unzip" ,unzip)))
+     (list
+      #:tests? #f                       ; no check target
+      #:make-flags #~(list "HYPERROGUE_USE_GLEW=1"
+                           "HYPERROGUE_USE_PNG=1")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'set-paths 'set-sdl-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CPATH"
+                      (string-append (or (getenv "CPATH") "") ":"
+                                     (search-input-directory inputs
+                                                             "/include/SDL")))))
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((share-dir (string-append #$output "/share/hyperrogue/"))
+                    (fonts-dir (dirname
+                                (search-input-file inputs
+                                                   "DejaVuSans-Bold.ttf"))))
+                ;; Set fonts and music path.
+                (substitute* "sysconfig.h"
+                  (("(#define HYPERPATH ).*" _ lead)
+                   (string-append lead "\"" share-dir "\"\n"))
+                  (("(#define HYPERFONTPATH ).*" _ lead)
+                   (string-append lead "\"" fonts-dir "/\"\n")))
+                ;; Disable build machine CPU optimizations and warnings treated
+                ;; as errors.
+                (substitute* "Makefile"
+                  (("-march=native") "")
+                  (("-Werror") "")))))
+          (replace 'install
+            (lambda _
+              (install-file "hyperrogue" (string-append #$output "/bin"))
+              (let ((share-dir (string-append #$output "/share/hyperrogue/")))
+                (install-file "hyperrogue-music.txt" share-dir)
+                (for-each (lambda (dir)
+                            (copy-recursively dir
+                                              (string-append share-dir dir)))
+                          '("music" "sounds"))))))))
     (inputs
-     (list font-dejavu glew libpng
+     (list font-dejavu
+           glew
+           libpng
            (sdl-union (list sdl sdl-gfx sdl-mixer sdl-ttf))))
-    (home-page "https://www.roguetemple.com/z/hyper/")
+    (home-page "https://roguetemple.com/z/hyper")
     (synopsis "Non-euclidean graphical rogue-like game")
     (description
      "HyperRogue is a game in which the player collects treasures and fights
@@ -5999,9 +5988,9 @@ are home to particular creatures and may be subject to their own rules of
 
 While the game can use ASCII characters to display the the classical rogue
 symbols, it still needs graphics to render the non-euclidean world.")
-    (license (list license:bsd-3         ; glew.c, mtrand.*
-                   license:cc-by-sa3.0   ; music
-                   license:cc-by-sa4.0   ; sounds
+    (license (list license:bsd-3        ; glew.c, mtrand.*
+                   license:cc-by-sa3.0  ; music
+                   license:cc-by-sa4.0  ; sounds
                    license:cc0
                    license:public-domain ; direntx.*, some sounds
                    license:zlib          ; savepng.*

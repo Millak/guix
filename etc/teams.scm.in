@@ -4,6 +4,7 @@
 
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,23 +23,28 @@
 
 ;;; Commentary:
 
-;; This code defines development teams and team members.
+;; This code defines development teams and team members, as well as their
+;; scope.
 
 ;;; Code:
 
 (use-modules (srfi srfi-1)
              (srfi srfi-9)
+             (srfi srfi-26)
              (ice-9 format)
+             (ice-9 regex)
              (ice-9 match)
-             (guix ui))
+             (guix ui)
+             (git))
 
 (define-record-type <team>
-  (make-team id name description members)
+  (make-team id name description members scope)
   team?
   (id          team-id)
   (name        team-name)
   (description team-description)
-  (members     team-members set-team-members!))
+  (members     team-members set-team-members!)
+  (scope       team-scope))
 
 (define-record-type <person>
   (make-person name email)
@@ -49,11 +55,13 @@
 (define* (person name #:optional email)
   (make-person name email))
 
-(define* (team id #:key name description (members '()))
+(define* (team id #:key name description (members '())
+               (scope '()))
   (make-team id
              (or name (symbol->string id))
              description
-             members))
+             members
+             scope))
 
 (define %teams
   (make-hash-table))
@@ -84,14 +92,37 @@
   (team 'python
         #:name "Python team"
         #:description
-        "Python, Python packages, the \"pypi\" importer, and the python-build-system."))
+        "Python, Python packages, the \"pypi\" importer, and the python-build-system."
+        #:scope
+        (list "gnu/packages/django.scm"
+              "gnu/packages/jupyter.scm"
+              ;; Match haskell.scm and haskell-*.scm.
+              (make-regexp "^gnu/packages/python(-.+|)\\.scm$")
+              "gnu/packages/sphinx.scm"
+              "gnu/packages/tryton.scm"
+              "guix/build/python-build-system.scm"
+              "guix/build-system/python.scm"
+              "guix/import/pypi.scm"
+              "guix/scripts/import/pypi.scm"
+              "tests/pypi.scm")))
 
 (define-team haskell
   (team 'haskell
         #:name "Haskell team"
         #:description
         "GHC, Hugs, Haskell packages, the \"hackage\" and \"stackage\" importers, and
-the haskell-build-system."))
+the haskell-build-system."
+        #:scope
+        (list "gnu/packages/dhall.scm"
+              ;; Match haskell.scm and haskell-*.scm.
+              (make-regexp "^gnu/packages/haskell(-.+|)\\.scm$")
+              "gnu/packages/purescript.scm"
+              "guix/build/haskell-build-system.scm"
+              "guix/build-system/haskell.scm"
+              "guix/import/cabal.scm"
+              "guix/import/hackage.scm"
+              "guix/import/stackage.scm"
+              "guix/scripts/import/hackage.scm")))
 
 (define-team r
   (team 'r
@@ -111,14 +142,36 @@ and the r-build-system."))
         #:name "OCaml and Dune team"
         #:description
         "The OCaml language, the Dune build system, OCaml packages, the \"opam\"
-importer, and the ocaml-build-system."))
+importer, and the ocaml-build-system."
+        #:scope
+        (list "gnu/packages/ocaml.scm"
+              "gnu/packages/coq.scm"
+              "guix/build/ocaml-build-system.scm"
+              "guix/build/dune-build-system.scm"
+              "guix/build-system/ocaml.scm"
+              "guix/build-system/dune.scm"
+              "guix/import/opam.scm"
+              "guix/scripts/import/opam.scm"
+              "tests/opam.scm")))
 
 (define-team java
   (team 'java
         #:name "Java and Maven team"
         #:description
         "The JDK and JRE, the Maven build system, Java packages, the ant-build-system,
-and the maven-build-system."))
+and the maven-build-system."
+        #:scope
+        (list ;; Match java.scm and java-*.scm.
+              (make-regexp "^gnu/packages/java(-.+|)\\.scm$")
+              ;; Match maven.scm and maven-*.scm
+              (make-regexp "^gnu/packages/maven(-.+|)\\.scm$")
+              "guix/build/ant-build-system.scm"
+              "guix/build/java-utils.scm"
+              "guix/build/maven-build-system.scm"
+              ;; The maven directory
+              (make-regexp "^guix/build/maven/")
+              "guix/build-system/ant.scm"
+              "guix/build-system/maven.scm")))
 
 (define-team science
   (team 'science
@@ -126,11 +179,24 @@ and the maven-build-system."))
 
 (define-team emacs
   (team 'emacs
-        #:name "Emacs team"))
+        #:name "Emacs team"
+        #:description "The extensible, customizable text editor and its
+ecosystem."
+        #:scope (list (make-regexp "^gnu/packages/emacs(-.+|)\\.scm$")
+                      "guix/build/emacs-build-system.scm"
+                      "guix/build/emacs-utils.scm"
+                      "guix/build-system/emacs.scm")))
 
 (define-team lisp
   (team 'lisp
-        #:name "Lisp team"))
+        #:name "Lisp team"
+        #:description
+        "Common Lisp and similar languages, Common Lisp packages and the
+asdf-build-system."
+        #:scope (list (make-regexp "^gnu/packages/lisp(-.+|)\\.scm$")
+                      "guix/build/asdf-build-system.scm"
+                      "guix/build/lisp-utils.scm"
+                      "guix/build-system/asdf.scm")))
 
 (define-team ruby
   (team 'ruby
@@ -154,11 +220,99 @@ and the maven-build-system."))
 
 (define-team core
   (team 'core
-        #:name "Core / Tools / Internals"))
+        #:name "Core / Tools / Internals"
+        #:scope
+        (list "guix/avahi.scm"
+              "guix/base16.scm"
+              "guix/base32.scm"
+              "guix/base64.scm"
+              "guix/bzr-download.scm"
+              "guix/cache.scm"
+              "guix/channels.scm"
+              "guix/ci.scm"
+              "guix/colors.scm"
+              "guix/combinators.scm"
+              "guix/config.scm"
+              "guix/cpio.scm"
+              "guix/cpu.scm"
+              "guix/cve.scm"
+              "guix/cvs-download.scm"
+              "guix/deprecation.scm"
+              "guix/derivations.scm"
+              "guix/describe.scm"
+              "guix/diagnostics.scm"
+              "guix/discovery.scm"
+              "guix/docker.scm"
+              "guix/download.scm"
+              "guix/elf.scm"
+              "guix/ftp-client.scm"
+              "guix/gexp.scm"
+              "guix/git-authenticate.scm"
+              "guix/git-download.scm"
+              "guix/git.scm"
+              "guix/glob.scm"
+              "guix/gnu-maintenance.scm"
+              "guix/gnupg.scm"
+              "guix/grafts.scm"
+              "guix/graph.scm"
+              "guix/hash.scm"
+              "guix/hg-download.scm"
+              "guix/http-client.scm"
+              "guix/i18n.scm"
+              "guix/inferior.scm"
+              "guix/ipfs.scm"
+              "guix/least-authority.scm"
+              "guix/licenses.scm"
+              "guix/lint.scm"
+              "guix/man-db.scm"
+              "guix/memoization.scm"
+              "guix/modules.scm"
+              "guix/monad-repl.scm"
+              "guix/monads.scm"
+              "guix/narinfo.scm"
+              "guix/nar.scm"
+              "guix/openpgp.scm"
+              "guix/packages.scm"
+              "guix/pki.scm"
+              "guix/platform.scm"
+              "guix/profiles.scm"
+              "guix/profiling.scm"
+              "guix/progress.scm"
+              "guix/quirks.scm"
+              "guix/read-print.scm"
+              "guix/records.scm"
+              "guix/remote.scm"
+              "guix/repl.scm"
+              "guix/search-paths.scm"
+              "guix/self.scm"
+              "guix/serialization.scm"
+              "guix/sets.scm"
+              "guix/ssh.scm"
+              "guix/status.scm"
+              "guix/store.scm"
+              "guix/substitutes.scm"
+              "guix/svn-download.scm"
+              "guix/swh.scm"
+              "guix/tests.scm"
+              "guix/transformations.scm"
+              "guix/ui.scm"
+              "guix/upstream.scm"
+              "guix/utils.scm"
+              "guix/workers.scm"
+              (make-regexp "^guix/platforms/")
+              (make-regexp "^guix/scripts/")
+              (make-regexp "^guix/store/"))))
 
 (define-team games
   (team 'games
-        #:name "Games and Videos"))
+        #:name "Games and Toys"
+        #:description "Packaging programs for amusement."
+        #:scope (list "gnu/packages/games.scm"
+                      "gnu/packages/game-development.scm"
+                      "gnu/packages/minetest.scm"
+                      "gnu/packages/esolangs.scm" ; granted, rather niche
+                      "gnu/packages/motti.scm"
+                      "guix/build/minetest-build-system.scm")))
 
 (define-team translations
   (team 'translations
@@ -166,7 +320,9 @@ and the maven-build-system."))
 
 (define-team installer
   (team 'installer
-        #:name "Installer script and system installer"))
+        #:name "Installer script and system installer"
+        #:scope
+        (list (make-regexp "^guix/installer(\\.scm$|/)"))))
 
 (define-team home
   (team 'home
@@ -270,11 +426,37 @@ importer."))
                        "andrew@trop.in")
   home emacs)
 
+(define-member (person "pukkamustard"
+                       "pukkamustard@posteo.net")
+  ocaml)
+
+(define-member (person "Josselin Poiret"
+                       "dev@jpoiret.xyz")
+  core installer)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
       (error (format #false
                            "no such team: ~a~%" name))))
+
+(define (find-team-by-scope files)
+  "Return the team(s) which scope matches at least one of the FILES, as list
+of file names as string."
+  (hash-fold
+   (lambda (key team acc)
+     (if (any (lambda (file)
+                (any (match-lambda
+                       ((? string? scope)
+                        (string=? scope file))
+                       ((? regexp? scope)
+                        (regexp-exec scope file)))
+                     (team-scope team)))
+              files)
+         (cons team acc)
+         acc))
+   '()
+   %teams))
 
 (define (cc . teams)
   "Return arguments for `git send-email' to notify the members of the given
@@ -297,7 +479,7 @@ TEAMS when a patch is received by Debbugs."
    (team-members team)))
 
 (define (list-teams)
-  "Print all teams and their members."
+  "Print all teams, their scope and their members."
   (define port* (current-output-port))
   (define width* (%text-width))
   (hash-for-each
@@ -307,7 +489,7 @@ TEAMS when a patch is received by Debbugs."
 id: ~a
 name: ~a
 description: ~a
-members:
+~amembers:
 "
              (team-id team)
              (team-name team)
@@ -316,15 +498,48 @@ members:
                           (string->recutils
                            (fill-paragraph text width*
                                            (string-length "description: ")))))
-                 "<none>"))
+                 "<none>")
+             (match (team-scope team)
+               (() "")
+               (scope (format #f "scope: ~{~s ~}~%" scope))))
      (list-members team port* "+ ")
      (newline))
    %teams))
 
+
+(define (diff-revisions rev-start rev-end)
+  "Return the list of added, modified or removed files between REV-START
+and REV-END, two git revision strings."
+  (let* ((repository (repository-open (getcwd)))
+         (commit1 (commit-lookup repository
+                                 (object-id
+                                  (revparse-single repository rev-start))))
+         (commit2 (commit-lookup repository
+                                 (object-id
+                                  (revparse-single repository rev-end))))
+         (diff (diff-tree-to-tree repository
+                                  (commit-tree commit1)
+                                  (commit-tree commit2)))
+         (files '()))
+    (diff-foreach
+     diff
+     (lambda (delta progress)
+       (set! files
+             (cons (diff-file-path (diff-delta-old-file delta)) files))
+       0)
+     (const 0)
+     (const 0)
+     (const 0))
+    files))
+
+
 (define (main . args)
   (match args
     (("cc" . team-names)
      (apply cc (map find-team team-names)))
+    (("cc-members" rev-start rev-end)
+     (apply cc (find-team-by-scope
+                (diff-revisions rev-start rev-end))))
     (("list-teams" . args)
      (list-teams))
     (("list-members" . team-names)

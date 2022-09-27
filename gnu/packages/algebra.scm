@@ -221,7 +221,7 @@ the real span of the lattice.")
 (define-public pari-gp
   (package
     (name "pari-gp")
-    (version "2.13.4")
+    (version "2.15.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -229,11 +229,10 @@ the real span of the lattice.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "11g1pkrj12dmggj1n6r00ijpnmk3f3dpqsf1h51q34hmmv79xpmw"))))
+                "11anfn2lmixi83208p8qxjhwkrrad9s2qqfrl3wy9m0n1lg8ax74"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg
-                    (list texlive-amsfonts)))))
+    (native-inputs (list (texlive-updmap.cfg
+                          (list texlive-amsfonts))))
     (inputs (list gmp libx11 perl readline))
     (arguments
      '(#:make-flags '("all")
@@ -261,7 +260,7 @@ PARI is also available as a C library to allow for faster computations.")
 (define-public gp2c
   (package
    (name "gp2c")
-   (version "0.0.12")
+   (version "0.0.13")
    (source (origin
             (method url-fetch)
             (uri (string-append
@@ -269,7 +268,7 @@ PARI is also available as a C library to allow for faster computations.")
                   version ".tar.gz"))
             (sha256
               (base32
-                "039ip7qkwwv46wrcdrz7y12m30kazzkjr44kqbc0h137g4wzd7zf"))))
+                "0dlxlrwwvhmjljjzsq95fsm14j5n5353snd92b0pdg9ylzn784r6"))))
    (build-system gnu-build-system)
    (native-inputs (list perl))
    (inputs (list pari-gp))

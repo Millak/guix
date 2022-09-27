@@ -70,7 +70,7 @@
     (name (string-append (package-name p) "-cross-" target))
     (arguments
      (substitute-keyword-arguments (package-arguments p)
-       ((#:configure-flags flags)
+       ((#:configure-flags flags ''())
         `(cons ,(string-append "--target=" target)
                ,flags))))))
 

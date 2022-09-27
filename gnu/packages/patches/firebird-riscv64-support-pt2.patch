@@ -1,0 +1,108 @@
+https://salsa.debian.org/firebird-team/firebird3.0/-/raw/master/debian/patches/upstream/riscv64-support.patch
+
+1e8e7858db84750a77006d307bf28e9686f9414e Patch for CORE-5779: support for riscv64, also some code fixes related with prior ports
+ Minor corrections compared to the commit above due to whitespace/spelling
+ differences with 3.0 version
+Bug-Debian: https://bugs.debian.org/895257
+Bug: http://tracker.firebirdsql.org/browse/CORE-5779
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -251,6 +251,18 @@ dnl CPU_TYPE=ppc64
+     libdir=/usr/lib64
+     ;;
+ 
++  riscv64*-*-linux*)
++    MAKEFILE_PREFIX=linux_riscv64
++    INSTALL_PREFIX=linux
++    PLATFORM=LINUX
++    AC_DEFINE(LINUX, 1, [Define this if OS is Linux])
++    EDITLINE_FLG=Y
++    SHRLIB_EXT=so
++    STD_EDITLINE=true
++    STD_ICU=true
++    libdir=/usr/lib64
++    ;;
++
+   powerpc64le-*-linux*)
+     MAKEFILE_PREFIX=linux_powerpc64el
+     INSTALL_PREFIX=linux
+--- a/src/common/classes/DbImplementation.cpp
++++ b/src/common/classes/DbImplementation.cpp
+@@ -49,6 +49,7 @@ static const UCHAR CpuAlpha = 14;
+ static const UCHAR CpuArm64 = 15;
+ static const UCHAR CpuPowerPc64el = 16;
+ static const UCHAR CpuM68k = 17;
++static const UCHAR CpuRiscV64 = 18;
+ 
+ static const UCHAR OsWindows = 0;
+ static const UCHAR OsLinux = 1;
+@@ -89,7 +90,8 @@ const char* hardware[] = {
+ 	"Alpha",
+ 	"ARM64",
+ 	"PowerPC64el",
+-	"M68k"
++	"M68k",
++	"RiscV64"
+ };
+ 
+ const char* operatingSystem[] = {
+@@ -116,22 +118,22 @@ const char* compiler[] = {
+ // This table lists pre-fb3 implementation codes
+ const UCHAR backwardTable[FB_NELEM(hardware) * FB_NELEM(operatingSystem)] =
+ {
+-//				Intel	AMD		Sparc	PPC		PPC64	MIPSEL	MIPS	ARM		IA64	s390	s390x	SH		SHEB	HPPA	Alpha	ARM64	PowerPC64el
+-/* Windows */	50,		68,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+-/* Linux */		60,		66,		65,		69,		86,		71,		72,		75, 	76,		79, 	78,		80,		81,		82,		83,		84,		85,
+-/* Darwin */	70,		73,		0,		63,		77,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+-/* Solaris */	0,		0,		30,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+-/* HPUX */		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		31,		0,		0,		0,
+-/* AIX */			0,		0,		0,		35,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+-/* MVS */			0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+-/* FreeBSD */	61,		67,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
+-/* NetBSD */	62,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0
++//				Intel	AMD		Sparc	PPC		PPC64	MIPSEL	MIPS	ARM		IA64	s390	s390x	SH		SHEB	HPPA	Alpha	ARM64	PPC64el	M68k	RiscV64
++/* Windows */	50,		68,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
++/* Linux */		60,		66,		65,		69,		86,		71,		72,		75, 	76,		79, 	78,		80,		81,		82,		83,		84,		85,		87,		88,
++/* Darwin */	70,		73,		0,		63,		77,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
++/* Solaris */	0,		0,		30,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
++/* HPUX */		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		31,		0,		0,		0,		0,		0,
++/* AIX */		0,		0,		0,		35,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
++/* MVS */		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
++/* FreeBSD */	61,		67,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,
++/* NetBSD */	62,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0
+ };
+ 
+ const UCHAR backEndianess[FB_NELEM(hardware)] =
+ {
+-//	Intel	AMD		Sparc	PPC		PPC64	MIPSEL	MIPS	ARM		IA64	s390	s390x	SH		SHEB	HPPA	Alpha	ARM64	PowerPC64el	M68k
+-	0,		0,		1,		1,		1,		0,		1,		0,		0,		1,		1,		0,		1,		1,		0,		0,		0,		1
++//	Intel	AMD		Sparc	PPC		PPC64	MIPSEL	MIPS	ARM		IA64	s390	s390x	SH		SHEB	HPPA	Alpha	ARM64	PPC64el	M68k	RiscV64
++	0,		0,		1,		1,		1,		0,		1,		0,		0,		1,		1,		0,		1,		1,		0,		0,		0,		1,		0,
+ };
+ 
+ } // anonymous namespace
+--- a/src/common/common.h
++++ b/src/common/common.h
+@@ -135,6 +135,10 @@
+ #define FB_CPU CpuArm64
+ #endif /* ARM64 */
+ 
++#ifdef RISCV64
++#define FB_CPU CpuRiscV64
++#endif /* RISCV64 */
++
+ #ifdef sparc
+ #define FB_CPU CpuUltraSparc
+ #define RISC_ALIGNMENT
+--- a/src/jrd/inf_pub.h
++++ b/src/jrd/inf_pub.h
+@@ -247,7 +247,7 @@ enum  info_db_implementations
+ 	isc_info_db_impl_linux_ppc64el = 85,
+ 	isc_info_db_impl_linux_ppc64 = 86,
+ 	isc_info_db_impl_linux_m68k = 87,
+-
++	isc_info_db_impl_linux_riscv64 = 88,
+ 
+ 	isc_info_db_impl_last_value   // Leave this LAST!
+ };

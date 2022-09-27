@@ -497,7 +497,7 @@ matching them against regular expressions.")
 (define-public xfce4-pulseaudio-plugin
   (package
     (name "xfce4-pulseaudio-plugin")
-    (version "0.4.3")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
@@ -506,21 +506,8 @@ matching them against regular expressions.")
                            (version-major+minor version) "/"
                            "xfce4-pulseaudio-plugin-" version ".tar.bz2"))
        (sha256
-        (base32 "0nv1lbkshfzar87f6xq1ib120pjja24r7135rbc42wqkw8vq4las"))))
+        (base32 "05f12fzn8q1y7jkzanxy82pzl00km66gngb5j6d5k8kbx9ykj9a4"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       ;; For dbus/dbus-glib.h in pulseaudio-config.h.
-       (modify-phases %standard-phases
-         (add-after 'set-paths 'augment-cflags
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "C_INCLUDE_PATH"
-                     (string-append (assoc-ref inputs "dbus-glib")
-                                    "/include/dbus-1.0" ":"
-                                    (assoc-ref inputs "dbus")
-                                    "/include/dbus-1.0" ":"
-                                    (or (getenv "C_INCLUDE_PATH") "")))
-             #t)))))
     (native-inputs
      (list intltool pkg-config dbus-glib dbus))
     (inputs
@@ -1530,7 +1517,7 @@ each time a new earthquake occurs.")
 (define-public xfce4-datetime-plugin
   (package
    (name "xfce4-datetime-plugin")
-   (version "0.8.1")
+   (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1539,7 +1526,7 @@ each time a new earthquake occurs.")
                                   "/xfce4-datetime-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "0h15mxq5lawlxyr6h1vxc60rkf0rpmnv81l0f52mrswww9dz3xp9"))))
+                "0dz0syl9dm55pqcqywbnjpi14z2xh7pg2ipmxjgn4pq1az28qf3c"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -1847,7 +1834,7 @@ interfaces of your choice in the panel.")
 (define-public xfce4-places-plugin
   (package
    (name "xfce4-places-plugin")
-   (version "1.8.1")
+   (version "1.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1856,7 +1843,7 @@ interfaces of your choice in the panel.")
                                   "/xfce4-places-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1chac4ki70axgvkmhw94m0srsv0pwiwqrqbh8di0y9n90fgj24gj"))))
+                "00bh7d91vzk6s38djlpnihvjvymxgrnx3nh6sm2y3mnx2jmb4chy"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool desktop-file-utils pkg-config))

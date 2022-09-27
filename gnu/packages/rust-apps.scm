@@ -18,6 +18,7 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -768,6 +769,31 @@ your current directory for a regex pattern while respecting your
 gitignore rules.")
     (license (list license:unlicense license:expat))))
 
+(define-public rot8
+  (package
+    (name "rot8")
+    (version "0.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rot8" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1m5kzpqq9pgc19lbnh20iaq654lzlmc1m5fc9f73w2vpwqdiw1qf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-2)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/efernau/rot8/")
+    (synopsis "Automatic display rotation using built-in accelerometer")
+    (description "@command{rot8} is a daemon that automates rotating screen and
+associated input devices using the built-in accelerometer; handy for convertible
+touchscreen devices.")
+    (license license:expat)))
+                
 (define-public git-interactive-rebase-tool
   (package
     (name "git-interactive-rebase-tool")

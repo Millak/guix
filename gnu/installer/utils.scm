@@ -23,6 +23,8 @@
   #:use-module (guix build utils)
   #:use-module (guix i18n)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-9 gnu)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -33,7 +35,12 @@
   #:use-module (ice-9 regex)
   #:use-module (ice-9 format)
   #:use-module (ice-9 textual-ports)
-  #:export (read-lines
+  #:export (<secret>
+            secret?
+            make-secret
+            secret-content
+
+            read-lines
             read-all
             nearest-exact-integer
             read-percentage
@@ -57,6 +64,16 @@
             send-to-clients
 
             with-silent-shepherd))
+
+(define-record-type <secret>
+  (make-secret content)
+  secret?
+  (content secret-content))
+
+(set-record-type-printer!
+ <secret>
+ (lambda (secret port)
+   (format port "<secret>")))
 
 (define* (read-lines #:optional (port (current-input-port)))
   "Read lines from PORT and return them as a list."

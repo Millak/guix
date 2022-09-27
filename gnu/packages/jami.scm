@@ -66,7 +66,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
-(define %jami-version "20220726.1515.da8d1da")
+(define %jami-version "20220825.0828.c10f01f")
 
 (define %jami-sources
   ;; Return an origin object of the tarball release sources archive of the
@@ -90,8 +90,8 @@
                                             "plugins"))))
     (sha256
      (base32
-      "1zx0i9aw8jsba3bjc5r4pkkybm8c0lyz420ciq89vsswd48gfdhg"))
-    (patches (search-patches "jami-fix-esc-bug.patch"))))
+      "1iv06jb66g206qxm75v7rc3mqvrml1028avflsj11chj8jh63j14"))
+    (patches (search-patches "jami-fix-crash-on-block-contact.patch"))))
 
 ;; Jami maintains a set of patches for some key dependencies (currently
 ;; pjproject and ffmpeg) of Jami that haven't yet been integrated upstream.
@@ -113,12 +113,12 @@
          patches))))
 
 (define-public pjproject-jami
-  (let ((commit "e1f389d0b905011e0cb62cbdf7a8b37fc1bcde1a")
+  (let ((commit "5e478bbf8692f43059de9c6ad654b377359baaa0")
         (revision "0"))
     (package
       (inherit pjproject)
       (name "pjproject-jami")
-      (version (git-version "2.11" revision commit))
+      (version (git-version "2.12" revision commit))
       (source (origin
                 (inherit (package-source pjproject))
                 ;; The Jami development team regularly issues patches to
@@ -133,7 +133,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0inpmyb6mhrzr0g309d6clkc99lddqdvyf9xajz0igvgp9pvgpza"))))
+                  "0n9hyqr57hhbmq35iqq5ihavj22gxzsspv0f8i6ajxwd4029nmcl"))))
       (arguments
        (substitute-keyword-arguments (package-arguments pjproject)
          ((#:phases phases '%standard-phases)
@@ -374,16 +374,21 @@
           '())))
 
 (define-public ffmpeg-jami
-  (package/inherit ffmpeg
+  (package
+    (inherit ffmpeg-5)
     (name "ffmpeg-jami")
+    ;; XXX: Use a slightly older version, otherwise the
+    ;; 'libopusdec-enable-FEC' patch doesn't apply.
+    (version "5.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0yq0jcdc4qm5znrzylj3dsicrkk2n3n8bv28vr0a506fb7iglbpg"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg)
-       ((#:tests? _ #f)
-        ;; The "rtp_ext_abs_send_time" patch causes the 'lavf-mov_rtphint'
-        ;; test to fail (see:
-        ;; https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/685).
-        ;; TODO: Try to disable just this test.
-        #f)
+     (substitute-keyword-arguments (package-arguments ffmpeg-5)
        ((#:configure-flags '())
         (ffmpeg-compose-configure-flags))
        ((#:phases phases)
@@ -399,7 +404,16 @@
                              "rtp_ext_abs_send_time"
                              "libopusdec-enable-FEC"
                              "libopusenc-reload-packet-loss-at-encode"
-                             "screen-sharing-x11-fix"))))))))))
+                             "screen-sharing-x11-fix"))))
+            (add-after 'apply-patches 'disable-problematic-tests
+              (lambda _
+                ;; The "rtp_ext_abs_send_time" patch causes the 'lavf-mov_rtphint'
+                ;; test to fail (see:
+                ;; https://git.jami.net/savoirfairelinux/jami-daemon/-/issues/685).
+                (substitute* "tests/fate/lavf-container.mak"
+                  (("mov mov_rtphint ismv")
+                   "mov ismv")
+                  (("fate-lavf-mov_rtphint:.*") ""))))))))))
 
 (define-public libjami
   (package

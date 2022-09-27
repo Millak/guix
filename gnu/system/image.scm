@@ -3,6 +3,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,17 +33,20 @@
   #:use-module ((guix self) #:select (make-config.scm))
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader grub)
+  #:use-module (gnu compression)
   #:use-module (gnu image)
   #:use-module (guix platform)
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu system)
+  #:use-module (gnu system accounts)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system linux-container)
   #:use-module (gnu system uuid)
   #:use-module (gnu system vm)
   #:use-module (guix packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages compression)
@@ -65,6 +69,7 @@
   #:use-module (ice-9 match)
   #:export (root-offset
             root-label
+            image-without-os
 
             esp-partition
             esp32-partition
@@ -73,6 +78,8 @@
             efi-disk-image
             iso9660-image
             docker-image
+            tarball-image
+            wsl2-image
             raw-with-offset-disk-image
 
             image-with-os
@@ -82,6 +89,8 @@
             iso-image-type
             uncompressed-iso-image-type
             docker-image-type
+            tarball-image-type
+            wsl2-image-type
             raw-with-offset-image-type
 
             image-with-label
@@ -101,6 +110,12 @@
 
 ;; Generic root partition label.
 (define root-label "Guix_image")
+
+(define-syntax-rule (image-without-os . fields)
+    "Return an image record with the mandatory operating-system field set to
+#false.  This is useful when creating an image record that will serve as a
+parent image record."
+   (image (operating-system #false) . fields))
 
 (define esp-partition
   (partition
@@ -127,17 +142,17 @@
    (initializer (gexp initialize-root-partition))))
 
 (define efi-disk-image
-  (image
+  (image-without-os
    (format 'disk-image)
    (partitions (list esp-partition root-partition))))
 
 (define efi32-disk-image
-  (image
+  (image-without-os
    (format 'disk-image)
    (partitions (list esp32-partition root-partition))))
 
 (define iso9660-image
-  (image
+  (image-without-os
    (format 'iso9660)
    (partitions
     (list (partition
@@ -146,11 +161,19 @@
            (flags '(boot)))))))
 
 (define docker-image
-  (image
+  (image-without-os
    (format 'docker)))
 
+(define tarball-image
+  (image-without-os
+   (format 'tarball)))
+
+(define wsl2-image
+  (image-without-os
+   (format 'wsl2)))
+
 (define* (raw-with-offset-disk-image #:optional (offset root-offset))
-  (image
+  (image-without-os
    (format 'disk-image)
    (partitions
     (list (partition
@@ -210,6 +233,16 @@ set to the given OS."
   (image-type
    (name 'docker)
    (constructor (cut image-with-os docker-image <>))))
+
+(define tarball-image-type
+  (image-type
+   (name 'tarball)
+   (constructor (cut image-with-os tarball-image <>))))
+
+(define wsl2-image-type
+  (image-type
+   (name 'wsl2)
+   (constructor (cut image-with-os wsl2-image <>))))
 
 (define raw-with-offset-image-type
   (image-type
@@ -682,6 +715,88 @@ output file."
                                #:substitutable? ,substitutable?))))
 
 
+;;;
+;;; Tarball image.
+;;;
+
+;; TODO: Some bits can be factorized with (guix scripts pack).
+(define* (system-tarball-image image
+                               #:key
+                               (name "image")
+                               (compressor (srfi-1:first %compressors))
+                               (wsl? #f))
+  "Build a tarball of IMAGE.  NAME is the base name to use for the
+output file."
+  (let* ((os (image-operating-system image))
+         (substitutable? (image-substitutable? image))
+         (schema (local-file (search-path %load-path
+                                          "guix/store/schema.sql")))
+         (name (string-append name ".tar" (compressor-extension compressor)))
+         (graph "system-graph")
+         (root (srfi-1:find (lambda (user)
+                              (and=> (user-account-uid user) zero?))
+                            (operating-system-users os)))
+         (root-shell (or (and=> root user-account-shell)
+                         (file-append bash "/bin/bash"))))
+    (define builder
+      (with-extensions gcrypt-sqlite3&co          ;for (guix store database)
+        (with-imported-modules `(,@(source-module-closure
+                                    '((guix build pack)
+                                      (guix build store-copy)
+                                      (guix build utils)
+                                      (guix store database)
+                                      (gnu build image))
+                                    #:select? not-config?)
+                                 ((guix config) => ,(make-config.scm)))
+          #~(begin
+              (use-modules (guix build pack)
+                           (guix build store-copy)
+                           (guix build utils)
+                           (guix store database)
+                           (gnu build image))
+
+              ;; Set the SQL schema location.
+              (sql-schema #$schema)
+
+              ;; Allow non-ASCII file names--e.g., 'nss-certs'--to be decoded.
+              (setenv "GUIX_LOCPATH"
+                      #+(file-append glibc-utf8-locales "/lib/locale"))
+              (setlocale LC_ALL "en_US.utf8")
+
+              (let ((image-root (string-append (getcwd) "/tmp-root"))
+                    (tar #+(file-append tar "/bin/tar")))
+
+                (mkdir-p image-root)
+                (initialize-root-partition image-root
+                                           #:references-graphs '(#$graph)
+                                           #:deduplicate? #f
+                                           #:system-directory #$os)
+
+                (with-directory-excursion image-root
+                  #$@(if wsl?
+                         #~(;; WSL requires /bin/sh.  Will be overwritten by
+                            ;; system activation.
+                            (symlink #$root-shell "./bin/sh")
+
+                            ;; WSL requires /bin/mount to access the host fs.
+                            (symlink #$(file-append util-linux "/bin/mount")
+                                     "./bin/mount"))
+                         #~())
+
+                  (apply invoke tar "-cvf" #$output "."
+                         (tar-base-options
+                          #:tar tar
+                          #:compressor
+                          #+(and=> compressor compressor-command)))))))))
+
+    (computed-file name builder
+                   ;; Allow offloading so that this I/O-intensive process
+                   ;; doesn't run on the build farm's head node.
+                   #:local-build? #f
+                   #:options `(#:references-graphs ((,graph ,os))
+                               #:substitutable? ,substitutable?))))
+
+
 ;;
 ;; Image creation.
 ;;
@@ -690,7 +805,7 @@ output file."
   "Return the IMAGE root partition file-system type."
   (case (image-format image)
     ((iso9660) "iso9660")
-    ((docker) "dummy")
+    ((docker tarball wsl2) "dummy")
     (else
      (partition-file-system (find-root-partition image)))))
 
@@ -827,6 +942,10 @@ image, depending on IMAGE format."
                                        ("bootcfg" ,bootcfg))))
        ((memq image-format '(docker))
         (system-docker-image image*))
+       ((memq image-format '(tarball))
+        (system-tarball-image image*))
+       ((memq image-format '(wsl2))
+        (system-tarball-image image* #:wsl? #t))
        ((memq image-format '(iso9660))
          (system-iso9660-image
           image*

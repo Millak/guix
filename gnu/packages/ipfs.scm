@@ -3,6 +3,7 @@
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,7 +29,8 @@
   #:use-module (guix build-system go)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages shells))
+  #:use-module (gnu packages shells)
+  #:use-module (gnu packages syncthing))
 
 (define-public go-github-com-ipfs-go-ipfs-cmdkit-files
   (let ((commit
@@ -227,7 +229,55 @@ written in Go.")
              "/go-ipfs-source.tar.gz"))
        (sha256
         (base32 "13pmj83hwpz6mk7x52qn0cjnfqxqw2qri3r0k4b270w3bafcccwm"))
-       (file-name (string-append name "-" version "-source"))))
+       (file-name (string-append name "-" version "-source"))
+       (modules '((guix build utils)))
+       (snippet '(for-each delete-file-recursively
+                           ;; TODO: unbundle the rest as well
+                           '("vendor/github.com/alecthomas"
+                             ;; "vendor/github.com/blang"
+                             "vendor/github.com/cespare"
+                             ;; TODO: Go files not found
+                             ;; "vendor/github.com/cheggaaa"
+                             "vendor/github.com/davecgh"
+                             "vendor/github.com/dustin"
+                             "vendor/github.com/flynn"
+                             "vendor/github.com/francoispqt"
+                             "vendor/github.com/fsnotify"
+                             "vendor/github.com/gogo"
+                             "vendor/github.com/golang/groupcache"
+                             "vendor/github.com/golang/snappy"
+                             "vendor/github.com/google/uuid"
+                             "vendor/github.com/gorilla"
+                             ;; These should be fine, they are part of
+                             ;; the IPFS project
+                             ;; "vendor/github.com/ipfs"
+                             ;; "vendor/github.com/ipld"
+                             "vendor/github.com/jackpal"
+                             "vendor/github.com/klauspost"
+                             ;; TODO: Go files not found
+                             ;; "vendor/github.com/lucas-clemente"
+                             "vendor/github.com/mattn"
+                             "vendor/github.com/mgutz"
+                             "vendor/github.com/minio"
+                             "vendor/github.com/mitchellh"
+                             "vendor/github.com/mr-tron"
+                             "vendor/github.com/opentracing"
+                             "vendor/github.com/pkg"
+                             "vendor/github.com/pmezard"
+                             "vendor/github.com/prometheus/client_golang"
+                             "vendor/github.com/prometheus/client_model"
+                             "vendor/github.com/prometheus/common"
+                             "vendor/github.com/prometheus/procfs"
+                             "vendor/github.com/spaolacci"
+                             "vendor/github.com/stretchr"
+                             "vendor/github.com/syndtr"
+                             "vendor/golang.org/x"
+                             "vendor/gopkg.in/yaml.v2"
+                             "vendor/gopkg.in/yaml.v3"
+                             "vendor/go.uber.org/atomic"
+                             "vendor/go.uber.org/multierr"
+                             "vendor/go.uber.org/zap"
+                             "vendor/lukechampine.com")))))
     (build-system go-build-system)
     (arguments
      (list
@@ -247,6 +297,60 @@ written in Go.")
                                   "ipfs"
                                   #~(string-append #$output "/bin/ipfs"))
                             "commands" "completion" "bash")))))))))
+    (inputs (list go-github-com-alecthomas-units
+                  ;; TODO: needs to be updated first
+                  ;; go-github-com-blang-semver
+                  go-github-com-cespare-xxhash
+                  go-github-com-cheekybits-genny
+                  go-github-com-cheggaaa-pb-v3
+                  go-github-com-davecgh-go-spew
+                  go-github-com-dustin-go-humanize
+                  go-github-com-flynn-noise
+                  go-github-com-francoispqt-gojay
+                  go-github-com-fsnotify-fsnotify
+                  go-github-com-gogo-protobuf
+                  go-github-com-google-uuid
+                  go-github-com-golang-groupcache-lru
+                  go-github-com-golang-snappy
+                  go-github-com-gorilla-websocket
+                  go-github-com-jackpal-go-nat-pmp
+                  go-github-com-klauspost-compress
+                  go-github-com-klauspost-cpuid
+                  go-github-com-lucas-clemente-quic-go
+                  go-github-com-mattn-go-colorable
+                  go-github-com-mattn-go-isatty
+                  go-github-com-mattn-go-runewidth
+                  go-github-com-mgutz-ansi
+                  go-github-com-minio-blake2b-simd
+                  go-github-com-minio-sha256-simd
+                  go-github-com-mitchellh-go-homedir
+                  go-github-com-mr-tron-base58
+                  go-github-com-opentracing-opentracing-go
+                  go-github-com-pkg-errors
+                  go-github-com-pmezard-go-difflib
+                  go-github-com-prometheus-client-golang
+                  go-github-com-prometheus-client-model
+                  go-github-com-prometheus-common
+                  go-github-com-prometheus-procfs
+                  go-github-com-spaolacci-murmur3
+                  go-github-com-stretchr-testify
+                  go-github-com-syndtr-goleveldb
+                  go-gopkg-in-yaml-v2
+                  go-gopkg-in-yaml-v3
+                  go-go-uber-org-atomic
+                  go-go-uber-org-multierr
+                  go-go-uber-org-zap
+                  go-golang-org-x-crypto
+                  go-golang-org-x-lint
+                  go-golang-org-x-mod
+                  go-golang-org-x-net
+                  go-golang-org-x-oauth2
+                  go-golang-org-x-sync
+                  go-golang-org-x-sys
+                  go-golang-org-x-term
+                  go-golang-org-x-tools
+                  go-golang-org-x-xerrors
+                  go-lukechampine-com-blake3))
     (native-inputs
      (append (if (%current-target-system)
                  (list this-package)

@@ -295,19 +295,36 @@ training, HMM clustering, HMM mixtures.")
 (define-public guile-aiscm
   (package
     (name "guile-aiscm")
-    (version "0.23.1")
+    (version "0.24.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/wedesoft/aiscm")
-                    (commit "c78b91edb7c17c6fbf3b294452f44e91d75e3c67")))
+                    (commit "2e16e38391bf1638f1dd9a1cf4b25a25f6626078")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09rdbcr8dinzijyx9h940ann91yjlbg0fangx365llhvy354n840"))))
+                "1gwqpzl6irpaszkpxaf5wliwq19280632hlgxs3ikjkfg8mkqql0"))))
     (build-system gnu-build-system)
     (arguments
      (list
+      #:configure-flags
+      #~(list (string-append "OPENCV_CFLAGS=-I" #$(this-package-input "opencv")
+                             "/include/opencv4")
+              (let ((modules
+                     (list "aruco" "barcode" "bgsegm" "bioinspired"
+                           "calib3d" "ccalib" "core" "datasets" "dnn"
+                           "dnn_objdetect" "dnn_superres" "dpm" "face"
+                           "features2d" "flann" "freetype" "fuzzy" "hdf"
+                           "hfs" "highgui" "img_hash" "imgcodecs" "imgproc"
+                           "intensity_transform" "line_descriptor" "mcc"
+                           "ml" "objdetect" "optflow" "phase_unwrapping"
+                           "photo" "plot" "quality" "rapid" "reg" "rgbd"
+                           "saliency" "shape" "stereo" "stitching"
+                           "structured_light" "superres" "surface_matching"
+                           "text" "tracking" "video" "videoio" "videostab"
+                           "wechat_qrcode" "ximgproc" "xobjdetect" "xphoto")))
+                (format #false "OPENCV_LIBS=~{-lopencv_~a~^ ~}" modules)))
       #:make-flags
       #~(list (string-append "GUILE_CACHE=" #$output "/lib/guile/3.0/site-ccache")
               (string-append "GUILE_EXT=" #$output "/lib/guile/3.0/extensions")
@@ -318,10 +335,23 @@ training, HMM clustering, HMM mixtures.")
            (lambda _
              (substitute* "doc/Makefile.am"
                (("\\$\\(DATE\\)") "1970-01-01"))))
+         (add-after 'unpack 'find-clearsilver
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "configure.ac"
+               (("/usr/local/include/ClearSilver")
+                (string-append (assoc-ref inputs "clearsilver")
+                               "/include/ClearSilver")))
+             (substitute* "aiscm/Makefile.am"
+               (("-lneo_utl" m)
+                (string-append m " -lstreamhtmlparser")))
+             (setenv "C_INCLUDE_PATH"
+                     (string-append (assoc-ref inputs "clearsilver")
+                                    "/include/ClearSilver:"
+                                    (or (getenv "C_INCLUDE_PATH") "")))))
          (add-after 'unpack 'use-llvm-config
            (lambda _
              (substitute* "m4/ax_llvmc.m4"
-               (("llvm-config-13") "llvm-config")
+               (("llvm-config-11") "llvm-config")
                ;; For some reason this library is not on the link list.
                (("(LLVM_LIBS=\"\\$\\(\\$ac_llvm_config_path --libs \\$1\\))\"" _ m)
                 (string-append m " -lLLVMMCJIT\"")))
@@ -329,10 +359,17 @@ training, HMM clustering, HMM mixtures.")
              ;; Because of this message:
              ;; symbol lookup error: ./.libs/libguile-aiscm-core.so: undefined symbol: LLVMInitializeX86TargetInfo
              ;; This probably needs to differ when building on architectures
-             ;; other than x86_64p
+             ;; other than x86_64.
              (substitute* "aiscm/Makefile.am"
                (("LLVM_LIBS\\)") "LLVM_LIBS) \
 -lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMX86Desc -lLLVMX86Info"))))
+         ;; This test fails because our version of tensorflow is too old
+         ;; to provide tf-string-length.
+         (add-after 'unpack 'disable-broken-test
+           (lambda _
+             (substitute* "tests/test_tensorflow.scm"
+               (("\\(test-eqv \"determine string length" m)
+                (string-append "#;" m)))))
          ;; Use Clang instead of GCC.
          (add-before 'configure 'prepare-build-environment
            (lambda _
@@ -341,10 +378,12 @@ training, HMM clustering, HMM mixtures.")
              (setenv "CC" "clang")
              (setenv "CXX" "clang++"))))))
     (inputs
-     (list ffmpeg
+     (list clearsilver
+           ffmpeg-4
            freeglut
            guile-3.0
            imagemagick
+           libgc
            libjpeg-turbo
            libomp
            libxi
@@ -354,12 +393,15 @@ training, HMM clustering, HMM mixtures.")
            libxv
            mesa
            mjpegtools
+           opencv
            pandoc
-           pulseaudio))
+           pulseaudio
+           tensorflow))
     (native-inputs
-     (list clang-13
-           llvm-13
+     (list clang-11
+           llvm-11
            pkg-config
+           protobuf-c
            autoconf
            automake
            gettext-minimal
@@ -372,68 +414,7 @@ Performance is achieved by using the LLVM JIT compiler.")
     (license license:gpl3+)))
 
 (define-public guile-aiscm-next
-  (let ((commit "b17ed538c303badc419a7c358d91f266d2a8c354")
-        (revision "1"))
-    (package
-      (inherit guile-aiscm)
-      (name "guile-aiscm-next")
-      (version (git-version "0.23.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/wedesoft/aiscm")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0px7r7lfskbp1prdrfrcvrsc4wjrk3ahkigsw4pqvny6zs7jnvc0"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments guile-aiscm)
-         ((#:configure-flags flags '())
-          #~(list (string-append "OPENCV_CFLAGS=-I" #$(this-package-input "opencv")
-                                 "/include/opencv4")
-                  (let ((modules
-                         (list "aruco" "barcode" "bgsegm" "bioinspired"
-                               "calib3d" "ccalib" "core" "datasets" "dnn"
-                               "dnn_objdetect" "dnn_superres" "dpm" "face"
-                               "features2d" "flann" "freetype" "fuzzy" "hdf"
-                               "hfs" "highgui" "img_hash" "imgcodecs" "imgproc"
-                               "intensity_transform" "line_descriptor" "mcc"
-                               "ml" "objdetect" "optflow" "phase_unwrapping"
-                               "photo" "plot" "quality" "rapid" "reg" "rgbd"
-                               "saliency" "shape" "stereo" "stitching"
-                               "structured_light" "superres" "surface_matching"
-                               "text" "tracking" "video" "videoio" "videostab"
-                               "wechat_qrcode" "ximgproc" "xobjdetect" "xphoto")))
-                    (format #false "OPENCV_LIBS=~{-lopencv_~a~^ ~}" modules))))
-         ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'find-clearsilver
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (substitute* "configure.ac"
-                   (("/usr/local/include/ClearSilver")
-                    (string-append (assoc-ref inputs "clearsilver")
-                                   "/include/ClearSilver")))
-                 (substitute* "aiscm/Makefile.am"
-                   (("-lneo_utl" m)
-                    (string-append m " -lstreamhtmlparser")))
-                 (setenv "C_INCLUDE_PATH"
-                         (string-append (assoc-ref inputs "clearsilver")
-                                        "/include/ClearSilver:"
-                                        (or (getenv "C_INCLUDE_PATH") "")))))
-             ;; This test fails because our version of tensorflow is too old
-             ;; to provide tf-string-length.
-             (add-after 'unpack 'disable-broken-test
-               (lambda _
-                 (substitute* "tests/test_tensorflow.scm"
-                   (("\\(test-eqv \"determine string length" m)
-                    (string-append "#;" m)))))))))
-      (inputs
-       (modify-inputs (package-inputs guile-aiscm)
-         (append clearsilver opencv tensorflow libgc)))
-      (native-inputs
-       (modify-inputs (package-native-inputs guile-aiscm)
-         (append protobuf-c))))))
+  (deprecated-package "guile-aiscm-next" guile-aiscm))
 
 (define-public mcl
   (package
@@ -3165,7 +3146,7 @@ of Hidden Markov Models.")
 (define-public liblantern
   (package
     (name "liblantern")
-    (version "0.8.0")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -3174,48 +3155,53 @@ of Hidden Markov Models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xkqyj1clj1r70yrp5qpbpyf0xmh9c128005idshi7vk883wfp77"))))
+        (base32 "1q57jsqzv9b70svr6whf04yd08np3x15qq1zm06fbl0sqf0kfn7p"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #false                   ;no test target
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _ (chdir "lantern")))
-          (add-after 'chdir 'do-not-download-binaries
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "CMakeLists.txt"
-                (("find_package\\(Torch.*") "set(TORCH_CXX_FLAGS \"-ltorch\")\n")
-                (("retrieve_lib\\(.*") ""))
-              (setenv "LIBRARY_PATH"
-                      (string-append
-                       (search-input-directory
-                        inputs "/lib/python3.10/site-packages/torch/lib")
-                       ":" (or (getenv "LIBRARY_PATH") "")))
-              (setenv "CPLUS_INCLUDE_PATH"
-                      (string-append
-                       (search-input-directory
-                        inputs "lib/python3.10/site-packages/torch/include/torch/csrc/api/include/")
-                       ":"
-                       (search-input-directory
-                        inputs "lib/python3.10/site-packages/torch/include/")
-                       ":"
-                       (or (getenv "CPLUS_INCLUDE_PATH") "")))
-              (setenv "C_INCLUDE_PATH"
-                      (string-append
-                       (search-input-directory
-                        inputs "lib/python3.10/site-packages/torch/include/")
-                       ":"
-                       (or (getenv "C_INCLUDE_PATH") "")))))
-          (replace 'install
-            (lambda _
-              (install-file
-               "../build/liblantern.so"
-               (string-append #$output "/lib"))
-              (copy-recursively
-               "../lantern/include"
-               (string-append #$output "/include")))))))
+      (let ((python-version (version-major+minor (package-version python))))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "lantern")))
+            (add-after 'chdir 'do-not-download-binaries
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "CMakeLists.txt"
+                  (("find_package\\(Torch.*") "set(TORCH_CXX_FLAGS \"-ltorch\")\n")
+                  (("retrieve_lib\\(.*") ""))
+                (let ((site-packages (string-append "/lib/python"
+                                                    #$python-version
+                                                    "/site-packages")))
+                  (setenv "LIBRARY_PATH"
+                          (string-append
+                           (search-input-directory
+                            inputs (string-append site-packages "/torch/lib"))
+                           ":" (or (getenv "LIBRARY_PATH") "")))
+                  (setenv "CPLUS_INCLUDE_PATH"
+                          (string-append
+                           (search-input-directory
+                            inputs (string-append
+                                    site-packages "/torch/include/torch/csrc/api/include/"))
+                           ":"
+                           (search-input-directory
+                            inputs (string-append site-packages "/torch/include/"))
+                           ":"
+                           (or (getenv "CPLUS_INCLUDE_PATH") "")))
+                  (setenv "C_INCLUDE_PATH"
+                          (string-append
+                           (search-input-directory
+                            inputs (string-append site-packages "/torch/include/"))
+                           ":"
+                           (or (getenv "C_INCLUDE_PATH") ""))))))
+            (replace 'install
+              (lambda _
+                (install-file
+                 "../build/liblantern.so"
+                 (string-append #$output "/lib"))
+                (copy-recursively
+                 "../lantern/include"
+                 (string-append #$output "/include"))))))))
     (inputs (list python-pytorch-for-r-torch))
     (home-page "https://github.com/mlverse/torch/")
     (synopsis "C API to libtorch")

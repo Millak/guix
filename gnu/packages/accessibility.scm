@@ -4,6 +4,7 @@
 ;;; Copyright © 2018, 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Andrew Miloradovsky <andrew@interpretmath.pw>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system meson)
   #:use-module (gnu packages)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages ocaml)
@@ -316,3 +318,34 @@ works with every X Window System based GUI (depends only on libX11); or as an
 assistant for graphic designers, who need to select individual pixels.")
     ;; Licensed either under Expat or GPLv2+.
     (license (list license:expat license:gpl2+))))
+
+(define-public espeakup
+  (package
+    (name "espeakup")
+    (version "0.90")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/linux-speakup/espeakup")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lmjwafvfxy07zn18v3dzjwwpnid2xffgvy2dzlwkbns8gb60ds2"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list espeak-ng alsa-lib))
+    (license license:gpl3+)
+    (synopsis "Bridge for espeak and speakup")
+    (description
+     "Espeakup is a bridge between the speakup driver implemented in
+the Linux kernel and the espeak-ng text to speach synthesizer.
+In order for this package to work, you need to have the following
+kernel modules built:
+@itemize @bullet
+@item
+CONFIG_SPEAKUP=m
+@item
+CONFIG_SPEAKUP_SOFT=m
+@end itemize")
+    (home-page "ttps://github.com/linux-speakup/espeakup")))

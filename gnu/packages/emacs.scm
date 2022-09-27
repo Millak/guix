@@ -412,7 +412,9 @@ languages.")
     (source
      (origin
        (inherit (package-source emacs-next))
-       (patches (search-patches "emacs-pgtk-super-key-fix.patch"))))
+       (patches
+        (append (search-patches "emacs-pgtk-super-key-fix.patch")
+                (origin-patches (package-source emacs-next))))))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next)
        ((#:configure-flags flags #~'())
