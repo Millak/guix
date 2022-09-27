@@ -3581,9 +3581,8 @@ workspace.")
              (with-output-to-file "autotests/BLACKLIST"
                (lambda _
                  (display "[testSmb]\n*\n")))
-             ;; kuniqueapptest hangs. FIXME: Make this test pass.
              (invoke "dbus-launch" "ctest"
-                     "-E" "kstandarddirstest|kuniqueapptest"))))))
+                     "-E" "kstandarddirstest"))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE Frameworks 5 porting aid from KDELibs4")
     (description "This framework provides code and utilities to ease the
