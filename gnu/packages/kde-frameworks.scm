@@ -2585,15 +2585,17 @@ in applications using the KDE Frameworks.")
               (patches (search-patches "kinit-kdeinit-extra_libs.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Set patched-in values:
-             (substitute* "src/kdeinit/kinit.cpp"
-               (("GUIX_PKGS_KF5_KIO") (assoc-ref inputs "kio"))
-               (("GUIX_PKGS_KF5_PARTS") (assoc-ref inputs "kparts"))
-               (("GUIX_PKGS_KF5_PLASMA") (assoc-ref inputs "plasma-framework"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Set patched-in values:
+              (substitute* "src/kdeinit/kinit.cpp"
+                (("GUIX_PKGS_KF5_KIO") #$(this-package-input "kio"))
+                (("GUIX_PKGS_KF5_PARTS") #$(this-package-input "kparts"))
+                (("GUIX_PKGS_KF5_PLASMA")
+                 #$(this-package-input "plasma-framework"))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "KDEINIT5_LIBRARY_PATH")
