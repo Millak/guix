@@ -2113,48 +2113,8 @@ blacklisted.certs.pem"
                   "#! java BlacklistedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk13
-  (package
-    (inherit openjdk12)
-    (name "openjdk")
-    (version "13.0.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/openjdk/jdk13u")
-                    (commit (string-append "jdk-" version "-ga"))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
+  (make-openjdk openjdk12 "13.0.7"
                 "0wrrr0d7lz1v8qqm752mn4gz5l2vpl2kmx4ac3ysvk4mljc924hp"))
-              (modules '((guix build utils)))
-              (snippet
-               `(begin
-                  (for-each delete-file (find-files "." ".*.(bin|exe|jar)$"))
-                  #t))))
-    (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("cups" ,cups)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("giflib" ,giflib)
-       ("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxt" ,libxt)
-       ("libxtst" ,libxtst)))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("openjdk12:jdk" ,openjdk12 "jdk")
-       ("make@4.2" ,gnu-make-4.2)
-       ("pkg-config" ,pkg-config)
-       ("unzip" ,unzip)
-       ("which" ,which)
-       ("zip" ,zip)))
-    (home-page "https://openjdk.java.net/projects/jdk/13")))
 
 (define-public openjdk14
   (package
