@@ -2758,7 +2758,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
   (package
     (inherit font-lxgw-wenkai)
     (name "font-lxgw-wenkai-tc")
-    (version "0.922")
+    (version "0.922.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2766,7 +2766,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
                     version "/lxgw-wenkai-tc-v" version ".tar.gz"))
               (sha256
                (base32
-                "0kb12sfb8ihsj14yzk5ib657xvswqy0hy5gr1vfbn1n05vzy8wyk"))))
+                "0a1n0yfnh3sc3ldgjxxglw4xyg82i2pk432sk8hfdzrrl4zzjyz3"))))
     (home-page "https://github.com/lxgw/LxgwWenKaitc")
     (synopsis "Traditional Chinese Imitation Song typeface")
     (description
