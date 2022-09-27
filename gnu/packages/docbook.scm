@@ -187,71 +187,16 @@ by no means limited to these applications.)  This package provides XML DTDs.")
                    (string-append dtd "/docbookx.dtd") catalog.xml)))))
     (native-inputs (list libxml2 unzip))))
 
+;;; There's an issue in docbook-xsl 1.79.2 that causes manpages to be
+;;; generated incorrectly and embed raw nroff syntax such as '.PP' when there
+;;; is a namespace/non-namespace mismatch between the sources and the
+;;; stylesheets used (see:
+;;; https://github.com/docbook/xslt10-stylesheets/issues/109).
 (define-public docbook-xsl
-  (package
-    (name "docbook-xsl")
-    (version "1.79.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/docbook/xslt10-stylesheets"
-                                  "/releases/download/release%2F" version
-                                  "/docbook-xsl-" version ".tar.bz2"))
-              (patches (search-patches "docbook-xsl-support-old-url.patch"
-                                       "docbook-xsl-nonrecursive-string-subst.patch"))
-              (sha256
-               (base32
-                "0wd33z41kdsybyx3ay21w6bdlmgpd9kyn3mr5y520lsf8km28r9i"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (for-each delete-file (find-files "." "\\.jar$"))
-                  #t))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:builder (begin
-                   (use-modules (guix build utils))
-
-                   (define name-version
-                     (string-append ,name "-" ,version))
-
-                   (let* ((bzip2  (assoc-ref %build-inputs "bzip2"))
-                          (xz     (assoc-ref %build-inputs "xz"))
-                          (tar    (assoc-ref %build-inputs "tar"))
-                          (source (assoc-ref %build-inputs "source"))
-                          (out    (assoc-ref %outputs "out"))
-                          (xsl    (string-append out "/xml/xsl")))
-                     (setenv "PATH" (string-append bzip2 "/bin" ":" xz "/bin"))
-                     (invoke (string-append tar "/bin/tar") "xvf" source)
-
-                     (mkdir-p xsl)
-                     (copy-recursively name-version
-                                       (string-append xsl "/" name-version))
-
-                     (substitute* (string-append xsl "/" name-version "/catalog.xml")
-                       (("rewritePrefix=\"./")
-                        (string-append "rewritePrefix=\"file://" xsl "/"
-                                       name-version "/")))
-                     #t))
-       #:modules ((guix build utils))))
-    (native-inputs (list bzip2 xz ;needed for repacked tarballs
-                         tar))
-    (home-page "https://docbook.org")
-    (synopsis "DocBook XSL style sheets for document authoring")
-    (description
-     "This package provides XSL style sheets for DocBook.")
-    (license (license:x11-style "" "See 'COPYING' file."))))
-
-;;; TODO: Make this the default docbook-xsl on core-updates.  There's an issue
-;;; in docbook-xsl 1.79.2 that causes manpages to be generated incorrectly and
-;;; embed raw nroff syntax such as '.PP' when there is a
-;;; namespace/non-namespace mismatch between the sources and the stylesheets
-;;; used (see: https://github.com/docbook/xslt10-stylesheets/issues/109).
-(define-public docbook-xsl-next
   (let ((commit "fe16c90013b64e316c3e21ef92d1e8813c10f88c")
         (revision "0")
-        (base-version (package-version docbook-xsl)))
+        (base-version "1.79.2"))
     (package
-      (inherit docbook-xsl)
       (name "docbook-xsl")
       (version (git-version base-version revision commit))
       (source (origin
@@ -333,7 +278,12 @@ by no means limited to these applications.)  This package provides XML DTDs.")
       (native-inputs (list libxml2
                            libxslt
                            perl
-                           perl-xml-xpath)))))
+                           perl-xml-xpath))
+      (home-page "https://docbook.org")
+      (synopsis "DocBook XSL style sheets for document authoring")
+      (description
+       "This package provides XSL style sheets for DocBook.")
+      (license (license:x11-style "" "See 'COPYING' file.")))))
 
 (define-public docbook-xsl-1.79.1
   (package
