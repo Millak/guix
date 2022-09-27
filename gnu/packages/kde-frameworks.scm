@@ -1171,13 +1171,6 @@ configuration pages, message boxes, and password requests.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-before 'check 'blacklist-failing-tests
-           (lambda _
-             ;; Blacklist a failing test-functions. FIXME: Make it pass.
-             (with-output-to-file "autotests/BLACKLIST"
-               (lambda _
-                 (display "[testGroupLeader]\n*\n")
-                 (display "[testClientMachine]\n*\n"))))) ;; requires network
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              ;; The test suite requires a running window anager
@@ -1189,8 +1182,7 @@ configuration pages, message boxes, and password requests.")
                (system "openbox &")
                (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
                (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest" "-E"
-                       "kwindowsystem-kwindowsystemplatformwaylandtest")))))))
+               (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "KDE access to the windowing system")
     (description "KWindowSystem provides information about and allows
