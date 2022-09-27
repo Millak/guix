@@ -84,6 +84,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
@@ -3054,7 +3055,7 @@ types or handled by application specific code.")
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list ;; TODO: editor-config
+     (list editorconfig-core-c
            karchive
            kauth
            kbookmarks
@@ -3069,6 +3070,7 @@ types or handled by application specific code.")
            kitemviews
            ki18n
            kjobwidgets
+           kparts
            kservice
            ktextwidgets
            kwidgetsaddons
@@ -3082,23 +3084,23 @@ types or handled by application specific code.")
            solid
            sonnet))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list #:phases
+       #~(modify-phases %standard-phases
          (add-after 'unpack 'setup
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "XDG_DATA_DIRS" ; FIXME build phase doesn't find parts.desktop
-                     (string-append (assoc-ref inputs "kparts") "/share"))))
+                     (string-append #$(this-package-input "kparts") "/share"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests? ;; Maybe locale issues with tests?
                (setenv "QT_QPA_PLATFORM" "offscreen")
-               (invoke "ctest" "-E" "(completion_test|kateview_test|movingrange_test)"))))
+               (invoke "ctest" "-E" "(kateview_test|movingrange_test)"))))
          (add-after 'install 'add-symlinks
            ;; Some package(s) (e.g. plasma-sdk) refer to these service types
            ;; by the wrong name.  I would prefer to patch those packages, but
            ;; I cannot find the files!
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((kst5 (string-append (assoc-ref outputs "out")
+             (let ((kst5 (string-append #$output
                                         "/share/kservicetypes5/")))
                (symlink (string-append kst5 "ktexteditorplugin.desktop")
                         (string-append kst5 "ktexteditor-plugin.desktop"))))))))
