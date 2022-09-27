@@ -2150,41 +2150,8 @@ blacklisted.certs.pem"
       (append `(,openjdk14 "jdk"))))))
 
 (define-public openjdk16
-  (package
-    (inherit openjdk15)
-    (name "openjdk")
-    (version "16.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/openjdk/jdk16u")
-                    (commit (string-append "jdk-" version "-ga"))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
+  (make-openjdk openjdk15 "16.0.1"
                 "1ggddsbsar4dj2fycfqqqagqil7prhb30afvq6933rz7pa9apm2f"))
-              (patches
-                (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("openjdk15:jdk" ,openjdk15 "jdk")
-       ("pkg-config" ,pkg-config)
-       ("unzip" ,unzip)
-       ("which" ,which)
-       ("zip" ,zip)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments openjdk15)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'make-templates-writable
-             (lambda _
-               ;; The build system copies a few .template files from the
-               ;; source directory into the build directory and then modifies
-               ;; them in-place.  So these files have to be writable.
-               (for-each make-file-writable
-                (find-files "src/java.base/share/classes/jdk/internal/misc/"
-                            "\\.template$"))))))))
-    (home-page "https://openjdk.java.net/projects/jdk/16")))
 
 (define-public openjdk17
   (package
@@ -2192,6 +2159,7 @@ blacklisted.certs.pem"
     (name "openjdk")
     (version "17.0.3")
     (source (origin
+              (inherit (package-source openjdk16))
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/openjdk/jdk17u")
@@ -2212,14 +2180,50 @@ blacklisted.certs.pem"
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk16)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'fix-java-shebangs
-             (lambda _
-               ;; This file was "fixed" by patch-source-shebangs, but it requires
-               ;; this exact first line.
-               (substitute* "make/data/blockedcertsconverter/blocked.certs.pem"
-                 (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))
+        #~(modify-phases #$phases
+            (replace 'fix-java-shebangs
+              (lambda _
+                ;; This file was "fixed" by patch-source-shebangs, but it
+                ;; requires this exact first line.
+                (substitute* "make/data/blockedcertsconverter/blocked.certs.pem"
+                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs openjdk16)
+       (replace "openjdk" openjdk16)))
     (home-page "https://openjdk.java.net/projects/jdk/17")))
+
+;; (define-public openjdk18
+;;   (package
+;;     (inherit openjdk17)
+;;     (name "openjdk")
+;;     (version "18")
+;;     (source (origin
+;;               (method git-fetch)
+;;               (uri (git-reference
+;;                     (url "https://github.com/openjdk/jdk18u")
+;;                     (commit (string-append "jdk-" version "-ga"))))
+;;               (file-name (git-file-name name version))
+;;               (sha256
+;;                (base32
+;;                 "1bv6bdhkmwvn10l0xy8yi9xibds640hs5zsvx0jp7wrxa3qw4qy8"))))
+;;     (native-inputs
+;;      `(("autoconf" ,autoconf)
+;;        ("openjdk17:jdk" ,openjdk17 "jdk")
+;;        ("pkg-config" ,pkg-config)
+;;        ("unzip" ,unzip)
+;;        ("which" ,which)
+;;        ("zip" ,zip)))
+;;     (arguments
+;;      (substitute-keyword-arguments (package-arguments openjdk16)
+;;        ((#:phases phases)
+;;         `(modify-phases ,phases
+;;            (replace 'fix-java-shebangs
+;;              (lambda _
+;;                ;; This file was "fixed" by patch-source-shebangs, but it requires
+;;                ;; this exact first line.
+;;                (substitute* "make/data/blockedcertsconverter/blocked.certs.pem"
+;;                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))
+;;     (home-page "https://openjdk.java.net/projects/jdk/18")))
 
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk17)
