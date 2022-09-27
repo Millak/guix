@@ -2641,7 +2641,8 @@ consumption.")
               (patches (search-patches "kio-search-smbd-on-PATH.patch"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     (list kbookmarks
+     (list acl
+           kbookmarks
            kconfig
            kcompletion
            kcoreaddons
@@ -2653,14 +2654,14 @@ consumption.")
            solid))
     (native-inputs
      (list extra-cmake-modules dbus kdoctools qttools-5))
-    (inputs (list ;; TODO:  LibACL , <ftp://oss.sgi.com/projects/xfs/cmd_tars>
-                  mit-krb5
+    (inputs (list mit-krb5
                   karchive
                   kauth
                   kcodecs
                   kconfigwidgets
                   kcrash
                   kdbusaddons
+                  kded
                   kguiaddons
                   kiconthemes
                   ki18n
@@ -2671,14 +2672,15 @@ consumption.")
                   libxml2
                   libxslt
                   qtbase-5
+                  qtdeclarative-5
                   qtscript
                   qtx11extras
                   sonnet
                   `(,util-linux "lib") ; libmount
                   zlib))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list #:phases
+       #~(modify-phases %standard-phases
          (add-after 'unpack 'patch
            (lambda _
              ;; Better error message (taken from NixOS)
@@ -2693,10 +2695,10 @@ consumption.")
                (setenv "QT_QPA_PLATFORM" "offscreen")
                (setenv "DBUS_FATAL_WARNINGS" "0")
                (invoke "dbus-launch" "ctest"
-                       "-E" ; FIXME: 19/67 tests fail.
+                       "-E" ; FIXME: 17/69 tests fail.
                        (string-append "(kiocore-jobtest"
-                                      "|fileitemtest"
                                       "|kiocore-kmountpointtest"
+                                      "|kiocore-kfileitemtest"
                                       "|kiocore-ktcpsockettest"
                                       "|kiocore-mimetypefinderjobtest"
                                       "|kiocore-krecentdocumenttest"
@@ -2708,18 +2710,15 @@ consumption.")
                                       "|commandlauncherjob_forkingtest"
                                       "|commandlauncherjob_scopetest"
                                       "|commandlauncherjob_servicetest"
-                                      "|kiowidgets-kdirlistertest"
                                       "|kiowidgets-kdirmodeltest"
                                       "|kiowidgets-kurifiltertest-colon-separator"
-                                      "|kiowidgets-kurifiltertest-space-separator"
-                                      "|kiofilewidgets-knewfilemenutest)")))))
+                                      "|kiowidgets-kurifiltertest-space-separator)")))))
          (add-after 'install 'add-symlinks
            ;; Some package(s) (e.g. bluedevil) refer to these service types by
            ;; the wrong name.  I would prefer to patch those packages, but I
            ;; cannot find the files!
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((kst5 (string-append (assoc-ref outputs "out")
-                                        "/share/kservicetypes5/")))
+             (let ((kst5 (string-append #$output "/share/kservicetypes5/")))
                (symlink (string-append kst5 "kfileitemactionplugin.desktop")
                         (string-append kst5 "kfileitemaction-plugin.desktop"))))))))
     (home-page "https://community.kde.org/Frameworks")
