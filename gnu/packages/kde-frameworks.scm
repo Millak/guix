@@ -51,6 +51,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages ebook)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -65,6 +66,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libreoffice)
@@ -1735,9 +1737,11 @@ from DocBook files.")
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs
      (list attr
-           ;; TODO: EPub http://sourceforge.net/projects/ebook-tools
+           ebook-tools
            karchive
+           kconfig
            kcoreaddons
+           kdegraphics-mobipocket
            ki18n
            qtmultimedia-5
            qtbase-5
