@@ -2940,7 +2940,8 @@ to easily extend the contacts collection.")
            ;; For tests.
            dbus))
     (inputs
-     (list kauth
+     (list kactivities
+           kauth
            kbookmarks
            kcodecs
            kcompletion
@@ -2961,26 +2962,24 @@ to easily extend the contacts collection.")
            solid
            threadweaver))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths-for-test
-           ;; This test tries to access paths like /home, /usr/bin and /bin/ls
-           ;; which don't exist in the build-container. Change to existing paths.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "autotests/runnercontexttest.cpp"
-               (("/home\"") "/tmp\"") ;; single path-part
-               (("//usr/bin\"") (string-append (getcwd) "\"")) ;; multiple path-parts
-               (("/bin/ls")
-                (search-input-file inputs "/bin/ls")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (setenv "QT_QPA_PLATFORM" "offscreen")
-               (invoke "dbus-launch" "ctest"
-                       "-E" ;; Some tests fail
-                       "(runnercontexttest|dbusrunnertest|\
-runnermanagersinglerunnermodetest|runnermanagertest)")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths-for-test
+            ;; This test tries to access paths like /home, /usr/bin and /bin/ls
+            ;; which don't exist in the build-container. Change to existing paths.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "autotests/runnercontexttest.cpp"
+                (("/home\"") "/tmp\"") ;; single path-part
+                (("//usr/bin\"") (string-append (getcwd) "\"")) ;; multiple path-parts
+                (("/bin/ls")
+                 (search-input-file inputs "/bin/ls")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" (getcwd))
+                (setenv "QT_QPA_PLATFORM" "offscreen")
+                (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Framework for Plasma runners")
     (description "The Plasma workspace provides an application called KRunner
