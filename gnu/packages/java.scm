@@ -2167,41 +2167,12 @@ blacklisted.certs.pem"
                (substitute* "make/data/blockedcertsconverter/blocked.certs.pem"
                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
 
-;; (define-public openjdk18
-;;   (package
-;;     (inherit openjdk17)
-;;     (name "openjdk")
-;;     (version "18")
-;;     (source (origin
-;;               (method git-fetch)
-;;               (uri (git-reference
-;;                     (url "https://github.com/openjdk/jdk18u")
-;;                     (commit (string-append "jdk-" version "-ga"))))
-;;               (file-name (git-file-name name version))
-;;               (sha256
-;;                (base32
-;;                 "1bv6bdhkmwvn10l0xy8yi9xibds640hs5zsvx0jp7wrxa3qw4qy8"))))
-;;     (native-inputs
-;;      `(("autoconf" ,autoconf)
-;;        ("openjdk17:jdk" ,openjdk17 "jdk")
-;;        ("pkg-config" ,pkg-config)
-;;        ("unzip" ,unzip)
-;;        ("which" ,which)
-;;        ("zip" ,zip)))
-;;     (arguments
-;;      (substitute-keyword-arguments (package-arguments openjdk16)
-;;        ((#:phases phases)
-;;         `(modify-phases ,phases
-;;            (replace 'fix-java-shebangs
-;;              (lambda _
-;;                ;; This file was "fixed" by patch-source-shebangs, but it requires
-;;                ;; this exact first line.
-;;                (substitute* "make/data/blockedcertsconverter/blocked.certs.pem"
-;;                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))
-;;     (home-page "https://openjdk.java.net/projects/jdk/18")))
+(define-public openjdk18
+  (make-openjdk openjdk17 "18"
+                "1bv6bdhkmwvn10l0xy8yi9xibds640hs5zsvx0jp7wrxa3qw4qy8"))
 
 ;;; Convenience alias to point to the latest version of OpenJDK.
-(define-public openjdk openjdk17)
+(define-public openjdk openjdk18)
 
 (define-public icedtea icedtea-8)
 
