@@ -41,6 +41,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -229,6 +230,100 @@ by no means limited to these applications.)  This package provides XML DTDs.")
     (description
      "This package provides XSL style sheets for DocBook.")
     (license (license:x11-style "" "See 'COPYING' file."))))
+
+;;; TODO: Make this the default docbook-xsl on core-updates.  There's an issue
+;;; in docbook-xsl 1.79.2 that causes manpages to be generated incorrectly and
+;;; embed raw nroff syntax such as '.PP' when there is a
+;;; namespace/non-namespace mismatch between the sources and the stylesheets
+;;; used (see: https://github.com/docbook/xslt10-stylesheets/issues/109).
+(define-public docbook-xsl-next
+  (let ((commit "fe16c90013b64e316c3e21ef92d1e8813c10f88c")
+        (revision "0")
+        (base-version (package-version docbook-xsl)))
+    (package
+      (inherit docbook-xsl)
+      (name "docbook-xsl")
+      (version (git-version base-version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/docbook/xslt10-stylesheets")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                ;; Multiple .jar files are bundled with the sources.
+                (modules '((guix build utils)))
+                (snippet '(for-each delete-file (find-files "." "\\.jar$")))
+                (sha256
+                 (base32
+                  "1bl8dwrcy7skrlh80fpsmiw045bv2j0aym231ikcv3hvm2pi98dj"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags #~(list "XSLTENGINE=xsltproc")
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'configure
+              (lambda _
+                ;; The build systems insist on a ~/.xmlc, and it is simpler to
+                ;; create a dummy config file than to patch it into
+                ;; submission.
+                (setenv "HOME" "/tmp")
+                (call-with-output-file "/tmp/.xmlc"
+                  (lambda (port)
+                    (format port "\
+<?xml version='1.0' encoding='utf-8'?> <!-- -*- nxml -*- -->
+<config>
+  <java xml:id=\"bigmem\">
+    <java-option name=\"Xmx512m\"/>
+  </java>
+  <xsltproc xml:id=\"xsltproc\" exec=\"xsltproc\"></xsltproc>
+  <xmllint xml:id=\"xmllint\" exec=\"xmllint\"></xmllint>
+</config>\n")))
+                (substitute* "xsl/Makefile"
+                  ;; Do not build webhelp files, as they require a Saxon from
+                  ;; 2005, which is not packaged in Guix.
+                  ((" webhelp") ""))))
+            (add-before 'install 'generate-catalog.xml
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "-C" "xsl" "catalog.xml" make-flags)))
+            (replace 'install
+              (lambda _
+                (let ((xml (string-append #$output "/xml/xsl/"
+                                          #$name "-" #$version))
+                      (select-rx (make-regexp
+                                  "(\\.xml$|\\.xsl$|\\.dtd$|\\.ent$)")))
+                  ;; Install catalog.
+                  (chdir "xsl")
+                  (install-file "catalog.xml" xml)
+                  (install-file "VERSION.xsl" xml)
+                  (substitute* (string-append xml "/catalog.xml")
+                    ;; Re-add the no longer present compatibility entries.
+                    ((".*</catalog>.*" anchor)
+                     (string-append "\
+  <!-- Also support old URI of v1.79.1 or earlier -->
+  <rewriteURI uriStartString=\"http://docbook.sourceforge.net\
+/release/xsl/current/\" rewritePrefix=\"./\"/>
+  <rewriteSystem systemIdStartString=\"http://docbook.sourceforge.net\
+/release/xsl/current/\" rewritePrefix=\"./\"/>\n" anchor))
+                    (("/snapshot/")
+                     (string-append "/" #$base-version "/"))
+                    (("rewritePrefix=\"./")
+                     (string-append "rewritePrefix=\"file://" xml "/")))
+                  ;; Install style sheets.
+                  (for-each (lambda (dir)
+                              (for-each (lambda (f)
+                                          (install-file
+                                           f (string-append xml "/" (dirname f))))
+                                        (find-files dir select-rx)))
+                            '("assembly" "common" "eclipse" "epub" "epub3" "fo"
+                              "highlighting" "html" "htmlhelp" "javahelp" "lib"
+                              "manpages" "params" "profiling" "roundtrip"
+                              "template" "website"
+                              "xhtml" "xhtml-1_1" "xhtml5"))))))))
+      (native-inputs (list libxml2
+                           libxslt
+                           perl
+                           perl-xml-xpath)))))
 
 (define-public docbook-xsl-1.79.1
   (package
