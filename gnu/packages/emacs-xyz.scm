@@ -16996,7 +16996,7 @@ multiplexer.")
 (define-public emacs-plz
   (package
     (name "emacs-plz")
-    (version "0.2")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -17005,7 +17005,7 @@ multiplexer.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "170pbqiywk1zyhd0ig4f25qnjf7r1gwy0c6h343bcnl6qxvkvlv2"))))
+        (base32 "0p0xd532xa8icysyxwqk481lr9xanmp68gf97fd9n2936gp12chv"))))
     (build-system emacs-build-system)
     (inputs (list curl))
     (home-page "https://github.com/alphapapa/plz.el")
