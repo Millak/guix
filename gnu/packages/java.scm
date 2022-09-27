@@ -2045,58 +2045,72 @@ new Date();"))
      "This package provides the Java development kit OpenJDK.")
     (license license:gpl2+)))
 
+(define-syntax make-openjdk
+  ;; Return an OpenJDK package at VERSION with checksum HASH, using BOOTSTRAP,
+  ;; the bootstrap package.  One or more FIELD can be provided to further
+  ;; refine the package definition; for convenience, the BASE, NAME and
+  ;; VERSION are defined in their scope.
+  (lambda (x)
+    (syntax-case x ()
+      ((_ bootstrap version* hash field ...)
+       (with-syntax ((base (datum->syntax x 'base))
+                     (name (datum->syntax x 'name))
+                     (version (datum->syntax x 'version)))
+         #'(let ((base (package
+                         (inherit bootstrap)
+                         (name "openjdk")
+                         (version version*)
+                         (source
+                          (origin
+                            (inherit (package-source bootstrap))
+                            (method git-fetch)
+                            (uri (git-reference
+                                  (url (format
+                                        #f "https://github.com/openjdk/jdk~au"
+                                        (version-major version*)))
+                                  (commit (string-append "jdk-" version*
+                                                         "-ga"))))
+                            (file-name (git-file-name name version))
+                            (sha256 (base32 hash))))
+                         (native-inputs
+                          (modify-inputs (package-native-inputs bootstrap)
+                            (replace "openjdk" bootstrap)))
+                         (home-page (string-append
+                                     "https://openjdk.java.net/projects/jdk/"
+                                     (version-major version)))))
+                 (name "openjdk")
+                 (version version*))
+             (package
+               (inherit base)
+               field
+               ...)))))))
+
 (define-public openjdk12
-  (package
-    (inherit openjdk11)
-    (name "openjdk")
-    (version "12.33")
-    (source (origin
-              (method url-fetch)
-              (uri "http://hg.openjdk.java.net/jdk/jdk/archive/0276cba45aac.tar.bz2")
-              (file-name (string-append name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"))
-              (modules '((guix build utils)))
-              (snippet
-               `(begin
-                  (for-each delete-file (find-files "." ".*.(bin|exe|jar)$"))
-                  #t))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments openjdk11)
-       ((#:phases phases)
-        `(modify-phases ,phases
+  (make-openjdk
+   openjdk11 "12.33" "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"
+   (source
+    (origin
+      (method url-fetch)
+      (uri "http://hg.openjdk.java.net/jdk/jdk/archive/0276cba45aac.tar.bz2")
+      (file-name (string-append name "-" version ".tar.bz2"))
+      (sha256
+       (base32
+        "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"))
+      (modules '((guix build utils)))
+      (snippet
+       '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))))
+   (arguments
+    (substitute-keyword-arguments (package-arguments openjdk11)
+      ((#:phases phases)
+       #~(modify-phases #$phases
            (replace 'fix-java-shebangs
              (lambda _
-               ;; This file was "fixed" by patch-source-shebangs, but it requires
-               ;; this exact first line.
-               (substitute* "make/data/blacklistedcertsconverter/blacklisted.certs.pem"
-                 (("^#!.*") "#! java BlacklistedCertsConverter SHA-256\n"))))))))
-    (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("cups" ,cups)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("giflib" ,giflib)
-       ("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxt" ,libxt)
-       ("libxtst" ,libxtst)))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("openjdk11" ,openjdk11)
-       ("openjdk11:jdk" ,openjdk11 "jdk")
-       ("make@4.2" ,gnu-make-4.2)
-       ("pkg-config" ,pkg-config)
-       ("unzip" ,unzip)
-       ("which" ,which)
-       ("zip" ,zip)))
-    (home-page "https://openjdk.java.net/projects/jdk/12")))
+               ;; 'blocked' was renamed to 'blacklisted' in this version for
+               ;; some reason.
+               (substitute* "make/data/blacklistedcertsconverter/\
+blacklisted.certs.pem"
+                 (("^#!.*")
+                  "#! java BlacklistedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk13
   (package
