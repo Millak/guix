@@ -1946,7 +1946,7 @@ new Date();"))
                               (invoke "unzip" archive))
                             (delete-file archive)
                             (for-each (compose repack-archive canonicalize-path)
-                                      (find-files dir "(ct.sym|.*.jar)$"))
+                                      (find-files dir "(ct.sym|\\.jar)$"))
                             (let ((reset-file-timestamp
                                    (lambda (file)
                                      (let ((s (lstat file)))
@@ -1959,9 +1959,9 @@ new Date();"))
                               (let ((files (find-files "." ".*" #:directories? #t)))
                                 (apply invoke "zip" "-0" "-X" archive files)))))))
                 (for-each repack-archive
-                          (find-files #$output:doc ".*.zip$"))
+                          (find-files #$output:doc "\\.zip$"))
                 (for-each repack-archive
-                          (find-files #$output:jdk ".*.(zip|jar|diz)$"))
+                          (find-files #$output:jdk "\\.(zip|jar|diz)$"))
                 (repack-archive (string-append #$output:jdk "/lib/ct.sym"))
                 (let ((repack-jmod
                        (lambda (file-name)
@@ -1992,7 +1992,7 @@ new Date();"))
                                               file temp-file
                                               (stat:size (stat temp-file)) 0)))))))))))))
                   (for-each repack-jmod
-                            (find-files #$output:jdk ".*.jmod$"))))))
+                            (find-files #$output:jdk "\\.jmod$"))))))
           (add-after 'install 'remove-timestamp-from-api-summary
             (lambda _
               (substitute* (string-append #$output:doc
