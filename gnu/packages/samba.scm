@@ -293,6 +293,8 @@ Samba is an important component to seamlessly integrate Linux/Unix Servers and
 Desktops into Active Directory environments using the winbind daemon.")
     (license license:gpl3+)))
 
+;;; FIXME: Invert inheritance relationship; the "fixed" package shouldn't be
+;;; susceptible to changes in the free one.
 (define-public samba/fixed
   ;; Version that rarely changes, depended on by libsoup.
   (hidden-package
@@ -304,7 +306,21 @@ Desktops into Active Directory environments using the winbind daemon.")
         (uri (string-append "https://download.samba.org/pub/samba/stable/"
                             "samba-" version ".tar.gz"))
         (sha256
-         (base32 "0fl2y5avmyxjadh6zz0fwz35akd6c4j9lldzp2kyvjrgm36qx1h4")))))))
+         (base32 "1nrp85aya0pbbqdqjaqcw82cnzzys16yls37hi2h6mci8d09k4si"))))
+     (native-inputs
+      (list perl-parse-yapp
+            pkg-config
+            python-cryptography         ;for krb5 tests
+            python-dnspython
+            python-iso8601
+            python-markdown
+            rpcsvc-proto                ;for 'rpcgen'
+            python-pyasn1               ;for krb5 tests
+            ;; For generating man pages.
+            docbook-xml-4.2
+            docbook-xsl
+            libxslt
+            libxml2)))))
 
 (define-public talloc
   (package
