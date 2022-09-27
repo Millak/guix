@@ -1079,54 +1079,50 @@ the OCaml core distribution.")
     (license license:lgpl2.1+))); with linking exception
 
 (define-public emacs-tuareg
-  ;; Last upstream release on Sept., 14th, 2018, since then "Package cl
-  ;; deprecated" or 'lexical-binding' and others had been fixed.
-  (let ((commit "ccde45bbc292123ec20617f1af7f7e19f7481545")
-        (revision "0"))
-    (package
-      (name "emacs-tuareg")
-      (version (git-version "2.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/ocaml/tuareg")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1yxv4bnqarilnpg5j7wywall8170hwvm0q4xx06yqjgcn8pq1lac"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       `(("emacs" ,emacs-minimal)
-         ("opam" ,opam)))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'make-git-checkout-writable
-             (lambda _
-               (for-each make-file-writable (find-files "."))
-               #t))
-           (delete 'configure)
-           (add-before 'install 'fix-install-path
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "Makefile"
-                 (("/emacs/site-lisp")
-                  (string-append (assoc-ref %outputs "out")
-                                 "/share/emacs/site-lisp/")))
-               #t))
-           (add-after 'install 'post-install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (symlink "tuareg.el"
-                        (string-append (assoc-ref outputs "out")
-                                       "/share/emacs/site-lisp/"
-                                       "tuareg-autoloads.el"))
-               #t)))))
-      (home-page "https://github.com/ocaml/tuareg")
-      (synopsis "OCaml programming mode, REPL, debugger for Emacs")
-      (description "Tuareg helps editing OCaml code, to highlight important
+  (package
+    (name "emacs-tuareg")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ocaml/tuareg")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "115vm0hq4xkwfd3w0j8xqhkdgcirlxpnwzwxv02c27583hj056is"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("emacs" ,emacs-minimal)
+       ("opam" ,opam)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'make-git-checkout-writable
+           (lambda _
+             (for-each make-file-writable (find-files "."))
+             #t))
+         (delete 'configure)
+         (add-before 'install 'fix-install-path
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "Makefile"
+               (("/emacs/site-lisp")
+                (string-append (assoc-ref %outputs "out")
+                               "/share/emacs/site-lisp/")))
+             #t))
+         (add-after 'install 'post-install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (symlink "tuareg.el"
+                      (string-append (assoc-ref outputs "out")
+                                     "/share/emacs/site-lisp/"
+                                     "tuareg-autoloads.el"))
+             #t)))))
+    (home-page "https://github.com/ocaml/tuareg")
+    (synopsis "OCaml programming mode, REPL, debugger for Emacs")
+    (description "Tuareg helps editing OCaml code, to highlight important
 parts of the code, to run an OCaml REPL, and to run the OCaml debugger within
 Emacs.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public ocaml-menhir
   (package
