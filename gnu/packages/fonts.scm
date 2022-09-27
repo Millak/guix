@@ -2736,7 +2736,7 @@ and readability.  This package bundles those icons into a font.")
 (define-public font-lxgw-wenkai
   (package
     (name "font-lxgw-wenkai")
-    (version "1.240")
+    (version "1.245")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2744,7 +2744,7 @@ and readability.  This package bundles those icons into a font.")
                     version "/lxgw-wenkai-v" version ".tar.gz"))
               (sha256
                (base32
-                "1rg6i6fqs1b0b2g4kijimkyqbxfn6n8ac74rppsizq65n6crvfib"))))
+                "01x5nfw0cy7v8vsjw32zayc0ryskiwj22yzqi28252896073mm9k"))))
     (build-system font-build-system)
     (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
     (synopsis "Simplified Chinese Imitation Song typeface")
