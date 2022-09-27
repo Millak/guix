@@ -1092,31 +1092,33 @@ the OCaml core distribution.")
        (sha256
         (base32 "115vm0hq4xkwfd3w0j8xqhkdgcirlxpnwzwxv02c27583hj056is"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("emacs" ,emacs-minimal)
-       ("opam" ,opam)))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t))
-         (delete 'configure)
-         (add-before 'install 'fix-install-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("/emacs/site-lisp")
-                (string-append (assoc-ref %outputs "out")
-                               "/share/emacs/site-lisp/")))
-             #t))
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (symlink "tuareg.el"
-                      (string-append (assoc-ref outputs "out")
-                                     "/share/emacs/site-lisp/"
-                                     "tuareg-autoloads.el"))
-             #t)))))
+     (list
+      #:imported-modules `(,@%gnu-build-system-modules
+                           (guix build emacs-build-system)
+                           (guix build emacs-utils))
+      #:modules '((guix build gnu-build-system)
+                  ((guix build emacs-build-system) #:prefix emacs:)
+                  (guix build emacs-utils)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-git-checkout-writable
+            (lambda _
+              (for-each make-file-writable (find-files "."))))
+          (delete 'configure)
+          (add-before 'install 'fix-install-path
+            (lambda _
+              (substitute* "Makefile"
+                (("/emacs/site-lisp")
+                 (emacs:elpa-directory #$output)))))
+          (add-after 'install 'post-install
+            (lambda _
+              (symlink "tuareg.el"
+                       (string-append (emacs:elpa-directory #$output)
+                                      "/tuareg-autoloads.el")))))))
+    (native-inputs
+     (list emacs-minimal opam))
     (home-page "https://github.com/ocaml/tuareg")
     (synopsis "OCaml programming mode, REPL, debugger for Emacs")
     (description "Tuareg helps editing OCaml code, to highlight important
