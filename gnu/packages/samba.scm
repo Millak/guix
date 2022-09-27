@@ -275,7 +275,7 @@ external dependencies.")
            python-pyasn1                ;for krb5 tests
            ;; For generating man pages.
            docbook-xml-4.2
-           docbook-xsl-next             ;otherwise the man pages are corrupted
+           docbook-xsl
            libxslt
            libxml2))                    ;for XML_CATALOG_FILES
     (home-page "https://www.samba.org/")
