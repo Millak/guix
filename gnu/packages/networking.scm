@@ -40,6 +40,7 @@
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2020 Hamzeh Nasajpour <h.nasajpour@pantherx.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2021 Fakhri Sajadi <f.sajadi@pantherx.org>
 ;;; Copyright © 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
@@ -48,9 +49,11 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Simon South <simon@simonsouth.net>
+;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
+;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,6 +83,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -115,6 +119,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
@@ -972,6 +977,33 @@ D-Bus backend.  It is designed to be easy to use for most common Bluetooth
 tasks.")
     (home-page "https://github.com/blueman-project/blueman")
     (license license:gpl3+)))
+
+(define-public nm-tray
+  (package
+    (name "nm-tray")
+    (version "0.5.0")
+    (home-page "https://github.com/palinek/nm-tray")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (sha256
+               (base32
+                "14i8sl0hrnyidlvqnxza0v4018f7p685ksn8419i2w7f9yqpvpiw"))
+              (file-name (git-file-name name version))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f)) ;There are no tests upstream
+    (inputs (list qtbase-5 networkmanager-qt))
+    (native-inputs (list qttools-5 pkg-config))
+    (synopsis
+     "NetworkManager front-end with information icon residing in system tray")
+    (description
+     "nm-tray is a network connection management tool (NetworkManager
+front-end) with an information icon residing in the system tray.  Unlike
+nm-applet, which is part of GNOME, this application is desktop-unaware.")
+    (license license:gpl2+)))
 
 ;; The gnu.org ‘home’ for this GNU project is a directory listing with 1.6.0 as
 ;; the latest version.  The author's git repository, mentioned in the 1.6.0
