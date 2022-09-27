@@ -2131,32 +2131,23 @@ blacklisted.certs.pem"
                  (for-each delete-file (find-files "." "\\.(bin|exe|jar)$"))))))))
 
 (define-public openjdk15
-  (package
-    (inherit openjdk14)
-    (name "openjdk")
-    (version "15.0.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/openjdk/jdk15u")
-                    (commit (string-append "jdk-" version "-ga"))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "168cr08nywp0q3vyj8njkhsmmnyd8rz9r58hk4xhzdzc6bdfkl1i"))
-              (patches
-                (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
-    (inputs
-     (cons `("libxcursor" ,libxcursor) ; for our patch to work
-           (package-inputs openjdk14)))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("openjdk14:jdk" ,openjdk14 "jdk")
-       ("pkg-config" ,pkg-config)
-       ("unzip" ,unzip)
-       ("which" ,which)
-       ("zip" ,zip)))
-    (home-page "https://openjdk.java.net/projects/jdk/15")))
+  (make-openjdk
+   openjdk14 "15.0.3"
+   "168cr08nywp0q3vyj8njkhsmmnyd8rz9r58hk4xhzdzc6bdfkl1i"
+   (source (origin
+             (inherit (package-source base))
+             (modules '())
+             (snippet #f)
+             (patches
+              (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
+   (inputs
+    (modify-inputs (package-inputs base)
+      (append libxcursor)))             ;for our patch to work
+   (native-inputs
+    (modify-inputs (package-native-inputs base)
+      (delete "make"                    ;remove old gnu-make-4.2
+              "openjdk")                ;to remove non-jdk output
+      (append `(,openjdk14 "jdk"))))))
 
 (define-public openjdk16
   (package
