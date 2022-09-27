@@ -2154,43 +2154,18 @@ blacklisted.certs.pem"
                 "1ggddsbsar4dj2fycfqqqagqil7prhb30afvq6933rz7pa9apm2f"))
 
 (define-public openjdk17
-  (package
-    (inherit openjdk16)
-    (name "openjdk")
-    (version "17.0.3")
-    (source (origin
-              (inherit (package-source openjdk16))
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/openjdk/jdk17u")
-                    (commit (string-append "jdk-" version "-ga"))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0slmd6ww947gxpp4yr2wmr5z975bg86qh7zqfp2radf2q77ql65b"))
-              (patches
-                (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("openjdk16:jdk" ,openjdk16 "jdk")
-       ("pkg-config" ,pkg-config)
-       ("unzip" ,unzip)
-       ("which" ,which)
-       ("zip" ,zip)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments openjdk16)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'fix-java-shebangs
-              (lambda _
-                ;; This file was "fixed" by patch-source-shebangs, but it
-                ;; requires this exact first line.
-                (substitute* "make/data/blockedcertsconverter/blocked.certs.pem"
-                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))
-    (native-inputs
-     (modify-inputs (package-native-inputs openjdk16)
-       (replace "openjdk" openjdk16)))
-    (home-page "https://openjdk.java.net/projects/jdk/17")))
+  (make-openjdk
+   openjdk16 "17.0.3"
+   "0slmd6ww947gxpp4yr2wmr5z975bg86qh7zqfp2radf2q77ql65b"
+   (arguments
+    (substitute-keyword-arguments (package-arguments openjdk16)
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (replace 'fix-java-shebangs
+             (lambda _
+               ;; 'blacklisted' was renamed back to 'blocked'.
+               (substitute* "make/data/blockedcertsconverter/blocked.certs.pem"
+                 (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
 
 ;; (define-public openjdk18
 ;;   (package
