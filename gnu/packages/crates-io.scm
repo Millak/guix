@@ -40072,10 +40072,10 @@ mathematics.")
 giga, kibi.")
     (license license:expat)))
 
-(define-public rust-number-prefix-0.4
+(define-public rust-number-prefix-0.3
   (package
     (name "rust-number-prefix")
-    (version "0.4.0")
+    (version "0.3.0")
     (source
       (origin
         (method url-fetch)
@@ -40084,7 +40084,7 @@ giga, kibi.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1wvh13wvlajqxkb1filsfzbrnq0vrmrw298v2j3sy82z1rm282w3"))))
+          "0slm4mqmpgs6hvz22ycny9lvyvl9ivs80a1lncslp7lszz02zc0p"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/ogham/rust-number-prefix")
     (synopsis "Format numeric prefixes: kilo, giga, kibi")
@@ -40092,19 +40092,6 @@ giga, kibi.")
      "This package provides a library for formatting numeric prefixes: kilo,
 giga, kibi.")
     (license license:expat)))
-
-(define-public rust-number-prefix-0.3
-  (package
-    (inherit rust-number-prefix-0.4)
-    (name "rust-number-prefix")
-    (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "number_prefix" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0slm4mqmpgs6hvz22ycny9lvyvl9ivs80a1lncslp7lszz02zc0p"))))))
 
 (define-public rust-numtoa-0.1
   (package
