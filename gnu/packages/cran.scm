@@ -20034,6 +20034,31 @@ complex formatted plot labels (titles, subtitles, facet labels, axis labels,
 etc.).  Text boxes with automatic word wrap are also supported.")
     (license license:gpl2)))
 
+(define-public r-ggthemeassist
+  (package
+    (name "r-ggthemeassist")
+    (version "0.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggThemeAssist" version))
+              (sha256
+               (base32
+                "1biw91a8p13h62v4w3yim6ghr98khmyhb3qd0h04asf91vvmpxbv"))))
+    (properties `((upstream-name . "ggThemeAssist")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-formatr
+           r-ggplot2
+           r-miniui
+           r-rstudioapi
+           r-shiny))
+    (home-page "https://github.com/calligross/ggthemeassist")
+    (synopsis "Add-in to customize ggplot2 themes")
+    (description
+     "This package provides an Rstudio add-in that delivers a graphical
+interface for editing @code{ggplot2} theme elements.")
+    (license license:gpl3)))
+
 ;; This package includes minified JavaScript files.  When upgrading please
 ;; check that there are no new minified JavaScript files.
 (define-public r-flexdashboard
