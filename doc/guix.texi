@@ -31397,17 +31397,17 @@ Enable the @code{winbindd} daemon.
 @end table
 @end deftp
 
-@cindex wsdd
+@cindex wsdd, Web service discovery daemon
 @subsubheading Web Service Discovery Daemon
 
-Web Service Discovery Daemon implements
+The @acronym{WSDD, Web Service Discovery daemon} implements the
 @uref{http://docs.oasis-open.org/ws-dd/discovery/1.1/os/wsdd-discovery-1.1-spec-os.html,
-Web Services Dynamic Discovery} protocol that enables host discovery --
-similar to Avahi -- over Multicast DNS.  It is a drop-in replacement for
-SMB hosts that have had SMBv1 disabled for security reasons.
+Web Services Dynamic Discovery} protocol that enables host discovery
+over Multicast DNS, similar to what Avahi does.  It is a drop-in
+replacement for SMB hosts that have had SMBv1 disabled for security
+reasons.
 
 @defvr {Scheme Variable} wsdd-service-type
-
 Service type for the WSD host daemon.  The value for
 this service type is a @code{wsdd-configuration} record.  The details
 for the @code{wsdd-configuration} record type are given below.
