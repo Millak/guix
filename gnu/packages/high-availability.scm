@@ -55,9 +55,7 @@
 (define-public libqb
   (package
     (name "libqb")
-    ;; NOTE: We are using a Release Candidate version (for 2.0) here because
-    ;; of the linker issues with the previous release.
-    (version "1.9.1")
+    (version "2.0.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -65,13 +63,14 @@
                     version "/libqb-" version ".tar.xz"))
               (sha256
                (base32
-                "008vvw504kh40br5v2xkqavnp9vpmjvf768faqzv1d00fd53ingn"))))
+                "071k916vz9ppyb69rpk792fzjs3nf3chakn10i496scgiqh49rzi"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config libxml2))
+    (native-inputs (list autoconf automake libtool libxml2 pkg-config))
     (home-page "https://clusterlabs.github.io/libqb/")
-    (synopsis "Library providing high performance logging, tracing, ipc, and poll")
-    (description "Libqb is a library with the primary purpose of providing
+    (synopsis
+     "Library providing high performance logging, tracing, ipc, and poll")
+    (description
+     "Libqb is a library with the primary purpose of providing
 high-performance, reusable features for client-server architecture, such as
 logging, tracing, inter-process communication (IPC), and polling.  Libqb is
 not intended to be an all-encompassing library, but instead provide focused
