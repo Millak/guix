@@ -31413,8 +31413,8 @@ this service type is a @code{wsdd-configuration} record.  The details
 for the @code{wsdd-configuration} record type are given below.
 @end defvr
 
-@deftp{Data Type} wsdd-configuration This data type represents the
-configuration for the wsdd service.
+@deftp {Data Type} wsdd-configuration
+This data type represents the configuration for the wsdd service.
 
 @table @asis
 
