@@ -3209,7 +3209,7 @@ the passwords on KDE work spaces.")
     (propagated-inputs
      (list kconfig kconfigwidgets))
     (native-inputs
-     (list extra-cmake-modules qttools-5))
+     (list extra-cmake-modules qttools-5 xorg-server-for-tests))
     (inputs
      (list attica
            kauth
@@ -3226,14 +3226,15 @@ the passwords on KDE work spaces.")
            qtbase-5
            sonnet))
     (arguments
-     `(#:tests? #f ; FIXME: 1/5 tests fail.
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'check-setup
-           (lambda _
-             (setenv "HOME" (getcwd))
-             ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list #:phases
+       #~(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd))
+               (setenv "QT_QPA_PLATFORM" "offscreen") ;; These tests fail
+               (invoke "ctest" "-E"
+			   "(ktoolbar_unittest|kxmlgui_unittest)")))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Framework for managing menu and toolbar actions")
     (description "KXMLGUI provides a framework for managing menu and toolbar
