@@ -31379,7 +31379,8 @@ Configuration record for the Samba suite.
 The samba package to use.
 
 @item @code{config-file} (default: @code{#f})
-The config file to use.
+The config file to use.  To learn about its syntax, run @samp{man
+smb.conf}.
 
 @item @code{enable-samba?} (default: @code{#f})
 Enable the @code{samba} daemon.
