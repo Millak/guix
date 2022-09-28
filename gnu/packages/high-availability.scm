@@ -77,3 +77,63 @@ not intended to be an all-encompassing library, but instead provide focused
 APIs that are highly tuned for maximum performance for client-server
 applications.")
     (license license:lgpl2.1)))
+
+(define-public kronosnet
+  (package
+    (name "kronosnet")
+    (version "1.24")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kronosnet/kronosnet")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b8rz7f2h3scrq0xcqz58ckzsvv08g31j5jgy2v4i6w87r9c75lw"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; XXX: Multiple tests failed. Tests
+     ;; require very complex environment and for some of them root privileges to
+     ;; set network configuration. It has it's own CI based on Jenkis
+     ;; https://ci.kronosnet.org/.
+     (list #:tests? #f
+           #:configure-flags #~'("--disable-static")
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'bootstrap 'fix-version-gen
+                          (lambda _
+                            (call-with-output-file ".tarball-version"
+                              (lambda (port)
+                                (display #$version port))))))))
+    (native-inputs (list autoconf
+                         automake
+                         doxygen
+                         libtool
+                         net-tools
+                         pkg-config))
+    (inputs (list lksctp-tools
+                  libnl
+                  libqb
+                  libxml2
+                  lz4
+                  lzo
+                  nss
+                  nspr
+                  openssl
+                  xz
+                  zlib
+                  `(,zstd "lib")))
+    (home-page "https://kronosnet.org/")
+    (synopsis "Network abstraction layer designed for High Availability")
+    (description
+     "Kronosnet, often referred to as @code{knet}, is a network
+ abstraction layer designed for High Availability use cases, where redundancy,
+ security, fault tolerance and fast fail-over are the core requirements of
+ your application.
+
+ Kronosnet is the new underlying network protocol for Linux HA components
+ (Corosync), that features ability to use multiple links between nodes,
+ active/active and active/passive link failover policies, automatic link
+ recovery, FIPS compliant encryption (nss and/or openssl), automatic PMTUd and
+ in general better performances compared to the old network protocol.")
+    (license (list license:gpl2+ license:lgpl2.1+))))
