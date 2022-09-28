@@ -2925,7 +2925,7 @@ escape codes.")
 (define-public rust-anyhow-1
   (package
     (name "rust-anyhow")
-    (version "1.0.46")
+    (version "1.0.65")
     (source
      (origin
        (method url-fetch)
@@ -2934,12 +2934,15 @@ escape codes.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0w0zm1bqk5kbk834r4xszlzqiln4vw5k1lnlswyjkh24khi2ia1s"))))
+         "00jnbylbji1wxvgpk6fcpcxyh4firn223w0lpdvxm1117r71l5lq"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
+     `(#:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3))
+       #:cargo-development-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-syn" ,rust-syn-1)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/dtolnay/anyhow")
