@@ -468,6 +468,26 @@ controls for certain tuners which may be paired with an audio device.")
      "This package provides RTL-SDR devices support to the SoapySDR library.")
     (license license:expat)))
 
+(define-public python-simplesoapy
+  (package
+    (name "python-simplesoapy")
+    (version "1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "SimpleSoapy" version))
+       (sha256
+        (base32 "0bh02m5zj82mp7sxpvwr24ylmrbp3p4r9q7psqcfnxl628w3b4hl"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-numpy soapysdr))
+    (home-page "https://github.com/xmikos/simplesoapy")
+    (synopsis "Python wrapper for SoapySDR")
+    (description
+     "This package provide a simple pythonic wrapper for the SoapySDR
+library.")
+    (license license:expat)))
+
 (define-public aptdec
   ;; No release since 2013, use commit directly.
   (let ((commit "51405971fd4e97714d1e987269e49c6edfe4e0da")
