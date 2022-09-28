@@ -53689,7 +53689,7 @@ font rendering.")
 (define-public rust-rustversion-1
   (package
     (name "rust-rustversion")
-    (version "1.0.2")
+    (version "1.0.9")
     (source
      (origin
        (method url-fetch)
@@ -53698,13 +53698,11 @@ font rendering.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1xkr1g792w728py2qpg2zj0vfviv2xzmxkkd9w6035l9d5ss3fxk"))))
+         "1a6nlrrnfbacn5pzg3m3311anhngcxs8kbvsbynh71ngni47wiwp"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+     `(#:cargo-development-inputs
+       (("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/dtolnay/rustversion")
     (synopsis "Conditional compilation according to rustc compiler version")
     (description
