@@ -64623,8 +64623,39 @@ one body with different resource input parameters.  A test is generated for
 each resource matching the specific resource location pattern.")
     (license license:asl2.0)))
 
+(define-public rust-tester-0.9
+  (package
+    (name "rust-tester")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tester" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1svnlmaynfvfqmy7zjvbh2xwzdxxz50cyxbjlliz45a6iw6x2f86"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-getopts" ,rust-getopts-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-term" ,rust-term-0.7))))
+    (home-page
+     "https://github.com/messense/rustc-test")
+    (synopsis
+     "Fork of Rust's test crate")
+    (description
+     "This package provides a fork of Rust's test crate that doesn't require
+unstable language features.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tester-0.5
   (package
+    (inherit rust-tester-0.9)
     (name "rust-tester")
     (version "0.5.0")
     (source
@@ -64636,21 +64667,12 @@ each resource matching the specific resource location pattern.")
        (sha256
         (base32
          "1xkgapz2i4j977f6kh1zp6sa5llbhy5vbnr6kfj8czsrdjr2r0ay"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-getopts" ,rust-getopts-0.2)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-term" ,rust-term-0.4))))
-    (home-page
-     "https://github.com/messense/rustc-test")
-    (synopsis
-     "Fork of Rust's test crate")
-    (description
-     "This package provides a fork of Rust's test crate that doesn't require
-unstable language features.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-term" ,rust-term-0.4))))))
 
 (define-public rust-text-size-1
   (package
