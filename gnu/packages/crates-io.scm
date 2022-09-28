@@ -17047,6 +17047,34 @@ type.")
 the Debug trait manually.")
     (license license:expat)))
 
+(define-public rust-debugger-test-0.1
+  (package
+    (name "rust-debugger-test")
+    (version "0.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "debugger-test" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "182j5sk71yhbn7f5qkx509bdcjz83n1nshpfgfa8dfrgb5gvanyr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+        #:cargo-development-inputs
+        (("rust-debugger-test-parser" ,rust-debugger-test-parser-0.1)
+         ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/microsoft/rust_debugger_test")
+    (synopsis "Proc macro for writing tests with a debugger")
+    (description
+     "This package provides a proc macro for writing tests that launch a
+debugger and run commands while verifying the output.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-debugger-test-parser-0.1
   (package
     (name "rust-debugger-test-parser")
