@@ -10003,8 +10003,8 @@ world.")
           gnome-menus
           gnome-session
           gnome-settings-daemon
-          gnome-shell-extensions
           gnome-shell
+          gnome-shell-extensions
           gnome-themes-extra
           gnome-user-docs
           gnome-user-share
@@ -10025,6 +10025,7 @@ world.")
           gnome-calendar
           gnome-characters
           gnome-clocks
+          gnome-console
           gnome-contacts
           gnome-disk-utility
           gnome-font-viewer
@@ -10034,7 +10035,6 @@ world.")
           gnome-screenshot
           gnome-system-monitor
           gnome-text-editor
-          gnome-console
           gnome-weather
           nautilus
           simple-scan
@@ -10042,18 +10042,18 @@ world.")
           tracker-miners
           yelp
           ;; Others.
-          hicolor-icon-theme
           gnome-online-accounts
+          hicolor-icon-theme
 
           ;; Packages not part of GNOME proper but that are needed for a good
           ;; experience.  See <https://bugs.gnu.org/39646>.
           ;; XXX: Find out exactly which ones are needed and why.
-          font-abattis-cantarell
-          font-dejavu
           at-spi2-core-minimal
           dbus
           dconf
           desktop-file-utils
+          font-abattis-cantarell
+          font-dejavu
           gnome-default-applications
           gst-plugins-base
           gst-plugins-good
