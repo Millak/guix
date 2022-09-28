@@ -311,6 +311,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/haxe.scm				\
   %D%/packages/heads.scm			\
   %D%/packages/hexedit.scm			\
+  %D%/packages/high-availability.scm			\
   %D%/packages/hugs.scm				\
   %D%/packages/hunspell.scm				\
   %D%/packages/hurd.scm				\

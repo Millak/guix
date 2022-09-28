@@ -56,6 +56,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages high-availability)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lxqt)
@@ -1116,33 +1117,6 @@ supported by the Linux kernel.")
        "Rkdeveloptool can read from and write to RockChip devices over USB, such
 as the Pinebook Pro.")
       (license license:gpl2+))))
-
-(define-public libqb
-  (package
-    (name "libqb")
-    ;; NOTE: We are using a Release Candidate version (for 2.0) here because
-    ;; of the linker issues with the previous release.
-    (version "1.9.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/ClusterLabs/libqb/releases/download/v"
-                    version "/libqb-" version ".tar.xz"))
-              (sha256
-               (base32
-                "008vvw504kh40br5v2xkqavnp9vpmjvf768faqzv1d00fd53ingn"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config libxml2))
-    (home-page "https://clusterlabs.github.io/libqb/")
-    (synopsis "Library providing high performance logging, tracing, ipc, and poll")
-    (description "Libqb is a library with the primary purpose of providing
-high-performance, reusable features for client-server architecture, such as
-logging, tracing, inter-process communication (IPC), and polling.  Libqb is
-not intended to be an all-encompassing library, but instead provide focused
-APIs that are highly tuned for maximum performance for client-server
-applications.")
-    (license license:lgpl2.1)))
 
 (define-public usbguard
   (package
