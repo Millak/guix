@@ -186,3 +186,57 @@ lost.
 
 @end itemize")
     (license (list license:bsd-0 license:gpl3+))))
+
+(define-public pacemaker
+  (package
+    (name "pacemaker")
+    (version "2.1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ClusterLabs/pacemaker")
+                    (commit (string-append "Pacemaker-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04gfd7i3w0zbzv7vi7728lgbyjq7cbqpr7jsp501piwg3z5j4mvb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~(list "--with-corosync" "--disable-static"
+                                     (string-append "--with-initdir="
+                                                    #$output "/etc/init.d")
+                                     (string-append "--with-ocfdir="
+                                                    #$output "/lib"))))
+    (native-inputs (list autoconf
+                         automake
+                         cmocka
+                         gettext-minimal
+                         libtool
+                         pkg-config
+                         rsync
+                         util-linux
+                         valgrind))
+    (inputs (list dbus
+                  corosync
+                  glib
+                  gnutls
+                  libqb
+                  libxml2
+                  libxslt
+                  python
+                  `(,util-linux "lib")))
+    (home-page "https://www.clusterlabs.org/pacemaker/")
+    (synopsis "Scalable High-Availability cluster resource manager")
+    (description
+     "Pacemaker is a high-availability cluster resource manager.
+
+It achieves maximum availability for your cluster services (a.k.a. resources) by
+detecting and recovering from node- and resource-level failures by making use of
+the messaging and membership capabilities provided by Corosync.
+
+It can do this for clusters of practically any size and comes with a powerful
+dependency model that allows the administrator to accurately express the
+relationships (both ordering and location) between the cluster resources.
+
+Virtually anything that can be scripted can be managed as part of a Pacemaker cluster.")
+    (license (list license:cc-by4.0 license:gpl2+ license:lgpl2.1+))))
