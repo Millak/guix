@@ -403,20 +403,26 @@ Features include:
        #:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-manual
-           (lambda _
-             (map (lambda (page)
-                    (system (string-append
-                             "pandoc --standalone -f markdown -t man man/"
-                             page ".md > " page)))
-                  `("exa.1" "exa_colors.5"))))
+           (lambda* (#:key inputs #:allow-other-keys)
+             (when (assoc-ref inputs "pandoc")
+               (map (lambda (page)
+                      (with-output-to-file page
+                        (lambda _
+                          (invoke "pandoc" "--standalone"
+                                  "-f" "markdown"
+                                  "-t" "man"
+                                  (string-append "man/" page ".md")))))
+                    (list "exa.1" "exa_colors.5")))))
          (add-after 'install 'install-extras
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
                     (share (string-append out "/share"))
                     (man1  (string-append share "/man/man1"))
                     (man5  (string-append share "/man/man5")))
-               (install-file "exa.1" man1)
-               (install-file "exa_colors.5" man5)
+               (when (file-exists? "exa.1")
+                 (install-file "exa.1" man1))
+               (when (file-exists? "exa_colors.5")
+                 (install-file "exa_colors.5" man5))
                (mkdir-p (string-append out "/etc/bash_completion.d"))
                (mkdir-p (string-append share "/fish/vendor_completions.d"))
                (mkdir-p (string-append share "/zsh/site-functions"))
@@ -429,7 +435,13 @@ Features include:
                           (string-append
                             share "/zsh/site-functions/_exa"))))))))
     (inputs (list libgit2 zlib))
-    (native-inputs (list pkg-config pandoc))
+    (native-inputs
+     (append
+       (list pkg-config)
+       (if (member (%current-system)
+                   (package-transitive-supported-systems pandoc))
+         (list pandoc)
+         '())))
     (home-page "https://the.exa.website/")
     (synopsis "Modern replacement for ls")
     (description "@code{exa} is a modern replacement for the command-line
