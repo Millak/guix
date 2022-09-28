@@ -29,7 +29,8 @@
         (title
          (en "Guix System image creation is now documented")
          (de "Es gibt eine Dokumentation, wie Sie Guix-System-Abbilder („Images“) erzeugen")
-         (fr "La création d'images pour Guix System est à présent documentée"))
+         (fr "La création d'images pour Guix System est à présent documentée")
+         (pt "A criação de imagens do Guix System agora está documentada"))
         (body
          (en "The Guix System image API that allows you to create customized
 system images and turn them into actual bootable images is now documented in
@@ -45,12 +46,18 @@ zu bringen.")
 permettant de créer des images personnalisées et de les transformer en images
 amorçables est désormais documentée dans le chapitre @code{Création d'images
 système}.  Cette interface devrait être particulièrement utile aux personnes
-qui essaient de faire fonctionner Guix sur de nouvelles machines.")))
+qui essaient de faire fonctionner Guix sur de nouvelles machines.")
+         (pt "A API de imagens do Guix System que permite criar imagens de
+sistema customizadas e torná-las inicializáveis agora está documentada no
+capítulo @code{Creating System Images} da documentação do Guix.  Isso é
+particularmente útil para pessoas tentando portar o Guix System para um novo
+hardware.")))
  (entry (commit "c8112f3bd95269ce4aca12dedbfe61bb6b37acae")
         (title
          (en "WSL system images support")
          (de "WSL-Systemabbilder werden unterstützt")
-         (fr "Support pour les images système WSL"))
+         (fr "Support pour les images système WSL")
+         (pt "Suporte a imagens de sistema WSL"))
         (body
          (en "The @command{guix system image} command can now generate system
 images for the Windows Subsystem for Linux.  To get started, you can for
@@ -80,6 +87,16 @@ exemple lancer la commande suivante depuis un répertoire de sources Guix :
 @command{guix system image gnu/system/images/wsl2.scm},
 
 et importer l'image obtenue de cette manière :
+
+@command{wsl --import Guix ./guix ./wsl2-image.tar.gz}
+@command{wsl -d Guix}.")
+         (pt "Agora o comando @command{guix system image} pode gerar imagens
+de sistema para o Subsistema do Windows para Linux.  Para começar, você pode
+por exemplo rodar a partir de um checkout do repositório do Guix:
+
+@command{guix system image gnu/system/images/wsl2.scm},
+
+e importar a imagem resultante da seguinte maneira:
 
 @command{wsl --import Guix ./guix ./wsl2-image.tar.gz}
 @command{wsl -d Guix}.")))
