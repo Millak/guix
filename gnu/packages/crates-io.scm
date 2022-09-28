@@ -23235,19 +23235,18 @@ implementation that is more efficient for smaller hash keys.")
 (define-public rust-form-urlencoded-1
   (package
     (name "rust-form-urlencoded")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "form_urlencoded" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "005yi1319k5bz8g5ylbdiakq5jp5jh90yy6k357zm11fr4aqvrpc"))))
+        (base32 "1y3bwavygjzv7b0yqsjqk33yi6wz25b7q2aaq9h54vqmc7qq9hx9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-matches" ,rust-matches-0.1)
-        ("rust-percent-encoding" ,rust-percent-encoding-2))))
+       (("rust-percent-encoding" ,rust-percent-encoding-2))))
     (home-page "https://github.com/servo/rust-url")
     (synopsis "Parser and serializer for the urlencoded syntax")
     (description
