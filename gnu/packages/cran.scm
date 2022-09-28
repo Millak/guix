@@ -31954,6 +31954,34 @@ split, combine, and compress.  This package interfaces directly to the
 data you need the @code{pdftools} package.")
     (license license:asl2.0)))
 
+(define-public r-pbdmpi
+  (package
+    (name "r-pbdmpi")
+    (version "0.4-4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "pbdMPI" version))
+              (sha256
+               (base32
+                "006pm2yn4mdrpwhfflqcybzv41lz7zssrjrcpq5g98zf60p9c07a"))))
+    (properties `((upstream-name . "pbdMPI")))
+    (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'mpi-setup
+           ,%openmpi-setup))))
+    (inputs (list openmpi))
+    (propagated-inputs (list r-float r-rlecuyer))
+    (native-inputs (list pkg-config))
+    (home-page "https://pbdr.org/")
+    (synopsis "Programming with Big Data -- Interface to MPI")
+    (description
+     "This package provides an efficient interface to MPI by utilizing S4
+classes and methods with a focus on @dfn{Single Program/Multiple Data} (SPMD)
+parallel programming style, which is intended for batch parallel execution.")
+    (license license:mpl2.0)))
+
 (define-public r-pdftools
   (package
     (name "r-pdftools")
