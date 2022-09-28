@@ -1915,12 +1915,12 @@ coloring, and many more.")))
     (native-inputs
      (list perl pkg-config))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libxrender" ,libxrender)
-       ("sdl2" ,sdl2)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative-5" ,qtdeclarative-5)))
+     (list fontconfig
+           freetype
+           libxrender
+           sdl2
+           qtbase-5
+           qtdeclarative-5))
     (synopsis "Qt Gamepad module")
     (description "The Qt Gamepad module is an add-on library that enables Qt
 applications to support the use of gamepad hardware and in some cases remote
