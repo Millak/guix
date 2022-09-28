@@ -367,6 +367,14 @@ empty list when the FIELD cannot be found."
         "xcode"
         "xquartz"))
 
+(define (transform-sysname sysname)
+  "Return a Guix package name for the common package name SYSNAME."
+  (match sysname
+    ("java" "openjdk")
+    ("fftw3" "fftw")
+    ("tcl/tk" "tcl")
+    (_ sysname)))
+
 (define cran-guix-name (cut guix-name "r-" <>))
 
 (define (tarball-needs-fortran? tarball)
@@ -561,7 +569,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                     `((properties ,`(,'quasiquote ((,'upstream-name . ,name)))))
                     '())
               (build-system r-build-system)
-              ,@(maybe-inputs sysdepends)
+              ,@(maybe-inputs (map transform-sysname sysdepends))
               ,@(maybe-inputs (map cran-guix-name propagate) 'propagated-inputs)
               ,@(maybe-inputs
                  `(,@(if (needs-fortran? source (not (or git? hg?)))
