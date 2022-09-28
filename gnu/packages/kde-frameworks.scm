@@ -3340,11 +3340,6 @@ setUrl, setUserAgent and call.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-	   ;; Fix based on https://invent.kde.org/frameworks/plasma-framework/-/issues/13
-	     (add-after 'unpack 'apply-fix
-		  (lambda* _
-		   (substitute* "src/scriptengines/qml/CMakeLists.txt"
-		   (("KF5::ConfigQml") ""))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
