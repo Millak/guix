@@ -26802,6 +26802,28 @@ Yue-Pilon's (Yue, 2002) pre-whitening approaches to determining trends in
 climate data.")
     (license license:lgpl2.1)))
 
+(define-public r-rlecuyer
+  (package
+    (name "r-rlecuyer")
+    (version "0.3-5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rlecuyer" version))
+              (sha256
+               (base32
+                "09mniai7v8gapr6hd3zm8sm3vi1zcyhgym389904ykb2yx7l68s7"))))
+    (properties `((upstream-name . "rlecuyer")))
+    (build-system r-build-system)
+    (home-page
+     "https://www.iro.umontreal.ca/~lecuyer/myftp/papers/streams00.pdf")
+    (synopsis "R interface to RNG with multiple streams")
+    (description
+     "This package provides an interface to the C implementation of the random
+number generator with multiple independent streams developed by L'Ecuyer et
+al (2002).  The main purpose of this package is to enable the use of this
+random number generator in parallel R applications.")
+    (license license:gpl2+)))
+
 (define-public r-rlinsolve
   (package
     (name "r-rlinsolve")
