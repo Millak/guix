@@ -140,8 +140,7 @@
          (modify-phases %standard-phases
            (add-after 'unpack 'chdir
              (lambda _
-               (chdir "libqite")
-               #t)))))
+               (chdir "libqite"))))))
       (inputs
        (list qtbase-5 qtmultimedia-5))
       (home-page "https://github.com/Ri0n/qite/")
@@ -254,8 +253,7 @@ applications on Wayland.")
          (add-before 'check 'check-setup
            (lambda _
              ;; make Qt render "offscreen", required for tests
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (home-page "https://github.com/steveire/grantlee")
     (synopsis "Libraries for text templating with Qt")
     (description "Grantlee Templates can be used for theming and generation of
@@ -2941,8 +2939,7 @@ system libraries.")
                      (string-append source "/" file)
                      (string-append out "/include")))
                   '("SingleApplication"
-                    "singleapplication.h" "singleapplication_p.h"))
-                 #t))))))
+                    "singleapplication.h" "singleapplication_p.h"))))))))
       (inputs
        (list qtbase-5))
       (home-page "https://github.com/itay-grudev/SingleApplication")
@@ -3088,9 +3085,7 @@ module provides support functions to the automatically generated code.")
              (let* ((qtbase (assoc-ref inputs "qtbase"))
                     (qtprinter.h (string-append "\"" qtbase "/include/qt5/QtPrintSupport/qprinter.h\"")))
                (substitute* "sip/QtPrintSupport/qprinter.sip"
-                 (("<qprinter.h>")
-                  qtprinter.h))
-               #t)))
+                 (("<qprinter.h>") qtprinter.h)))))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -3215,8 +3210,7 @@ contain over 620 classes.")
                  (lambda _ (display "
 from pkgutil import extend_path
 __path__ = extend_path(__path__, __name__)
-")))
-               #t))))))
+")))))))))
     (home-page "https://www.riverbankcomputing.com/software/pyqtwebengine/intro")
     (synopsis "Python bindings for QtWebEngine")
     (description
@@ -3376,8 +3370,7 @@ indicators, code completion and call tips.")
                   (string-append out "/lib")))
                ;; And fix the installed.txt file
                (substitute* "installed.txt"
-                 (("/gnu/store/[^/]+") out)))
-             #t)))))
+                 (("/gnu/store/[^/]+") out))))))))
     (inputs
      `(("qscintilla" ,qscintilla)
        ("python" ,python)
@@ -3405,8 +3398,7 @@ This package provides the Python bindings.")))
                    (match %build-inputs
                      (((names . directories) ...)
                       (union-build (assoc-ref %outputs "out")
-                                   directories)
-                      #t)))))
+                                   directories))))))
     (inputs
      `(("python-pyqt" ,python-pyqt)
        ("python-qscintilla" ,python-qscintilla)))
@@ -3484,8 +3476,7 @@ securely.  It will not store any data unencrypted unless explicitly requested.")
                    (("#include \"qtlockedfile.*\\.cpp\"") "")
                    ;; Unwrap namespace added in the vendoring process.
                    (("QtLP_Private::QtLockedFile")
-                    "QtLockedFile")))
-             #t))))
+                    "QtLockedFile")))))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f                    ; No target
@@ -3509,8 +3500,7 @@ securely.  It will not store any data unencrypted unless explicitly requested.")
                  (("SUBDIRS\\+=examples") ""))
                ;; Fix deprecated functions.
                (substitute* "qtsoap/src/qtsoap.cpp"
-                 (("toAscii") "toUtf8"))
-               #t))
+                 (("toAscii") "toUtf8"))))
            (replace 'configure
              (lambda _
                (for-each (lambda (solution)
@@ -3518,16 +3508,14 @@ securely.  It will not store any data unencrypted unless explicitly requested.")
                              (invoke "./configure" "-library")
                              (invoke "qmake")))
                          '("qtlockedfile" "qtpropertybrowser" "qtservice"
-                           "qtsingleapplication" "qtsoap"))
-               #t))
+                           "qtsingleapplication" "qtsoap"))))
            (replace 'build
              (lambda _
                (for-each (lambda (solution)
                            (with-directory-excursion solution
                              (invoke "make")))
                          '("qtlockedfile" "qtpropertybrowser" "qtservice"
-                           "qtsingleapplication" "qtsoap"))
-               #t))
+                           "qtsingleapplication" "qtsoap"))))
            (replace 'install
              (lambda args
                (for-each (lambda (solution)
@@ -3607,8 +3595,7 @@ that can be only started once per user.
              ;; Remove some incomplete manual pages.
              (for-each delete-file (find-files "doc/man/man3" "^_tmp.*"))
              (mkdir-p man)
-             (copy-recursively "doc/man" man)
-             #t))))))
+             (copy-recursively "doc/man" man)))))))
   (home-page "http://qwt.sourceforge.net")
   (synopsis "Qt widgets for plots, scales, dials and other technical software
 GUI components")
@@ -3850,7 +3837,7 @@ color-related widgets.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-shiboken-dir-only
-            (lambda _ (chdir "sources/shiboken2") #t))
+            (lambda _ (chdir "sources/shiboken2")))
           (add-before 'configure 'make-files-writable-and-update-timestamps
             (lambda _
               ;; The build scripts need to modify some files in
@@ -3861,13 +3848,11 @@ color-related widgets.")
                 (for-each (lambda (file)
                             (make-file-writable file)
                             (utime file circa-1980 circa-1980))
-                          (find-files ".")))
-              #t))
+                          (find-files ".")))))
           (add-before 'configure 'set-build-env
             (lambda _
               (let ((llvm #$(this-package-input "clang-toolchain")))
-                (setenv "CLANG_INSTALL_DIR" llvm)
-                #t))))))
+                (setenv "CLANG_INSTALL_DIR" llvm)))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "Shiboken generates bindings for C++ libraries using CPython source code")
@@ -3905,7 +3890,7 @@ color-related widgets.")
        ((#:phases p)
         #~(modify-phases #$p
             (replace 'use-shiboken-dir-only
-              (lambda _ (chdir "sources/shiboken6") #t))))
+              (lambda _ (chdir "sources/shiboken6")))))
        ((#:configure-flags flags)
         #~(cons*
            ;; The RUNPATH of shibokenmodule contains the entry in build
@@ -3959,7 +3944,7 @@ color-related widgets.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'go-to-source-dir
-            (lambda _ (chdir "sources/pyside2") #t))
+            (lambda _ (chdir "sources/pyside2")))
           (add-after 'go-to-source-dir 'fix-qt-module-detection
             (lambda _
               ;; Activate qt module support even if it not in the same
@@ -4054,7 +4039,7 @@ generate Python bindings for your C or C++ code.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'go-to-source-dir
-            (lambda _ (chdir "sources/pyside6") #t))
+            (lambda _ (chdir "sources/pyside6")))
           (add-after 'go-to-source-dir 'fix-qt-module-detection
             (lambda _
               (substitute* "cmake/PySideHelpers.cmake"
@@ -4114,7 +4099,7 @@ generate Python bindings for your C or C++ code.")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'go-to-source-dir
-            (lambda _ (chdir "sources/pyside2-tools") #t)))))
+            (lambda _ (chdir "sources/pyside2-tools"))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "Command line tools for PySide2")
@@ -4291,8 +4276,7 @@ and import their menus over DBus.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "ctest" "-E" ;; These tests try connect to the internet.
-                       "(kdsoap-webcalls|kdsoap-webcalls_wsdl|kdsoap-test_calc)"))
-             #t)))))
+                       "(kdsoap-webcalls|kdsoap-webcalls_wsdl|kdsoap-test_calc)")))))))
     (home-page "https://www.kdab.com/development-resources/qt-tools/kd-soap/")
     (synopsis "Qt SOAP component")
     (description "KD SOAP is a tool for creating client applications for web
