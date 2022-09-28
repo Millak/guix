@@ -31337,6 +31337,38 @@ The service type to enable the samba services @code{samba}, @code{nmbd},
 @code{smbd} and @code{winbindd}.  By default this service type does not
 run any of the Samba daemons; they must be enabled individually.
 
+Below is a basic example that configures a simple, anonymous
+(unauthenticated) Samba file share exposing the @file{/public}
+directory.
+
+@quotation Tip
+The @file{/public} directory and its contents must be world
+readable/writable, so you'll want to run @samp{chmod -R 777 /public} on
+it.
+@end quotation
+
+@quotation Caution
+Such a Samba configuration should only be used in controlled
+environments, and you should not share any private files using it, as
+anyone connecting to your network would be able to access them.
+@end quotation
+
+@lisp
+(service samba-service-type (samba-configuration
+                             (enable-smbd? #t)
+                             (config-file (plain-file "smb.conf" "\
+[global]
+map to guest = Bad User
+logging = syslog@@1
+
+[public]
+browsable = yes
+path = /public
+read only = no
+guest ok = yes
+guest only = yes\n"))))
+@end lisp
+
 @end defvar
 
 @deftp{Data Type} samba-service-configuration
