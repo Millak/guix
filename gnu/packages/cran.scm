@@ -26144,6 +26144,25 @@ uses a trans-dimensional @dfn{Markov Chain Monte Carlo} (MCMC) approach based
 on a continuous-time birth-death process.")
     (license license:gpl2+)))
 
+(define-public r-bundesligr
+  (package
+    (name "r-bundesligr")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "bundesligR" version))
+              (sha256
+               (base32
+                "0dnhbh9jh7dfbk7mfh8msq4ys5kakalr0kwkycycrb2q8rd049vp"))))
+    (properties `((upstream-name . "bundesligR")))
+    (build-system r-build-system)
+    (home-page "https://github.com/ottlngr/bundesligR")
+    (synopsis "All final tables of the Bundesliga")
+    (description
+     "This package provides all final tables of Germany's highest football
+league, the Bundesliga.  It contains data from 1964 to 2016.")
+    (license license:gpl3)))
+
 (define-public r-d3network
   (package
     (name "r-d3network")
