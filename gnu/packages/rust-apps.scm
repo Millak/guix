@@ -378,7 +378,8 @@ Features include:
          "1dd7waq2bnxc1xwygqphi8k1g2qzykr6fk0q4rgrhhxp2jd09f04"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-datetime" ,rust-datetime-0.5)
         ("rust-env-logger" ,rust-env-logger-0.6)
