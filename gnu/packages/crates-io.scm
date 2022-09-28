@@ -29213,8 +29213,36 @@ with hyper.")
      "Utility for applying case rules to Rust identifiers.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-idna-0.3
+  (package
+    (name "rust-idna")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "idna" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rh9f9jls0jy3g8rh2bfpjhvvhh4q80348jc4jr2s844133xykg1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-unicode-bidi" ,rust-unicode-bidi-0.3)
+        ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-bencher" ,rust-bencher-0.1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tester" ,rust-tester-0.9))))
+    (home-page "https://github.com/servo/rust-url/")
+    (synopsis "Internationalizing Domain Names in Applications and Punycode")
+    (description
+     "IDNA (Internationalizing Domain Names in Applications) and Punycode.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-idna-0.2
   (package
+    (inherit rust-idna-0.3)
     (name "rust-idna")
     (version "0.2.3")
     (source
@@ -29224,18 +29252,12 @@ with hyper.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1y7ca2w5qp9msgl57n03zqp78gq1bk2crqzg6kv7a542mdphm2j1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-matches" ,rust-matches-0.1)
         ("rust-unicode-bidi" ,rust-unicode-bidi-0.3)
-        ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))
-    (home-page "https://github.com/servo/rust-url/")
-    (synopsis "Internationalizing Domain Names in Applications and Punycode")
-    (description
-     "IDNA (Internationalizing Domain Names in Applications) and Punycode.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))))
 
 (define-public rust-idna-0.1
   (package
