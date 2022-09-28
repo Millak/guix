@@ -488,6 +488,28 @@ controls for certain tuners which may be paired with an audio device.")
 library.")
     (license license:expat)))
 
+(define-public soapy-power
+  (package
+    (name "soapy-power")
+    (version "1.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "soapy_power" version))
+       (sha256
+        (base32 "1rajmygcqvv5ph7yk65r4w581lfszrz0f48csvfmma1ami0lirdm"))))
+    (build-system python-build-system)
+    (inputs
+     (list python-numpy
+           python-scipy
+           python-simplesoapy
+           python-simplespectral))
+    (home-page "https://github.com/xmikos/soapy_power")
+    (synopsis "Obtain power spectrum from SDR devices")
+    (description "The @code{soapy_power} obtains the power spectrum from SDR
+devices that are supported by the SoapySDR library.")
+    (license license:expat)))
+
 (define-public aptdec
   ;; No release since 2013, use commit directly.
   (let ((commit "51405971fd4e97714d1e987269e49c6edfe4e0da")
