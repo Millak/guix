@@ -1520,12 +1520,12 @@ standards of the IceCat project.")
                         icecat-dir)))))))))
 
 ;; Update this together with icecat!
-(define %icedove-build-id "20220919000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-build-id "20220920000000") ;must be of the form YYYYMMDDhhmmss
 (define-public icedove
   (package
     (name "icedove")
-    (version "91.13.1")
-    (source icecat-91-source)
+    (version "102.3.0")
+    (source icecat-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
     (build-system gnu-build-system)
@@ -1557,6 +1557,13 @@ standards of the IceCat project.")
                (for-each generate-all-checksums
                          '("third_party/rust"
                            "toolkit/library/rust")))))
+         (add-after 'patch-cargo-checksums 'remove-cargo-frozen-flag
+            (lambda _
+              ;; Remove --frozen flag from cargo invokation, otherwise it'll
+              ;; complain that it's not able to change Cargo.lock.
+              ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1726373
+              (substitute* "build/RunCbindgen.py"
+                (("\"--frozen\",") ""))))
          ;; Fixes issue where each installation directory generates its own profile.
          ;; See e.g. https://trac.torproject.org/projects/tor/ticket/31457
          (add-after 'patch-source-shebangs 'fix-profile-setting
@@ -1709,7 +1716,7 @@ standards of the IceCat project.")
                      "ac_add_options --with-system-nspr\n"
                      ;"ac_add_options --with-system-nss\n"
                      "ac_add_options --with-system-zlib\n"
-                     "ac_add_options --with-user-appdir=\\.icedove\n"
+                     "ac_add_options --without-wasm-sandboxed-libraries\n"
                      "mk_add_options MOZ_MAKE_FLAGS=-j"
                      (number->string (parallel-job-count)) "\n"))))
                (display (getcwd))
@@ -1759,7 +1766,8 @@ standards of the IceCat project.")
                  `("XDG_DATA_DIRS" prefix (,gtk-share))
                  `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib)))))))))
     (inputs
-     (list bzip2
+     (list alsa-lib
+           bzip2
            cairo
            cups
            dbus-glib
@@ -1770,7 +1778,7 @@ standards of the IceCat project.")
            gtk+
            gtk+-2
            hunspell
-           icu4c
+           icu4c-71
            libcanberra
            libevent
            libffi
@@ -1803,17 +1811,17 @@ standards of the IceCat project.")
         ;; in the Thunderbird release tarball.  We don't use the release
         ;; tarball because it duplicates the Icecat sources and only adds the
         ;; "comm" directory, which is provided by this repository.
-        ,(let ((changeset "2f9b465346ceb38b4ab79ccc1bfe8d8ad0bc8743"))
+        ,(let ((changeset "04f60827c1b53ab86121c7d122d3a8216219ff9f"))
            (origin
              (method hg-fetch)
              (uri (hg-reference
-                   (url "https://hg.mozilla.org/releases/comm-esr91")
+                   (url "https://hg.mozilla.org/releases/comm-esr102")
                    (changeset changeset)))
              (file-name (string-append "thunderbird-" version "-checkout"))
              (sha256
               (base32
-               "10vsbwlh5imq7iljwzq3r4y80wzsmj6s2gsi1n64l0wmfq2m6ilb")))))
-       ("cargo" ,rust "cargo")
+               "078jrxpzqj45l84i39a9fq023j71ngca5gs2ngpjsbily51bzx09")))))
+       ("cargo" ,(force rust-1.59-promise) "cargo")
        ("clang" ,clang)
        ("llvm" ,llvm)
        ("m4" ,m4)
@@ -1822,8 +1830,8 @@ standards of the IceCat project.")
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
-       ("rust" ,rust)
-       ("rust-cbindgen" ,rust-cbindgen-0.19)
+       ("rust" ,(force rust-1.59-promise))
+       ("rust-cbindgen" ,(force rust-cbindgen-0.23-promise))
        ("which" ,which)
        ("yasm" ,yasm)))
     (home-page "https://www.thunderbird.net")
