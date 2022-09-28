@@ -218,14 +218,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.26")
+    (version "2.29")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "061w86jffyi49m4d9n974a3pd1svbw3azmh0qx8h2v7h0178791l"))))
+        (base32 "0szx4pivkaja8v399m6v7ycp1xprm4cz7n5z929g4j191hg81f8q"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -252,6 +252,7 @@ cards.")
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-curl-sys" ,rust-curl-sys-0.4)
         ("rust-cxx" ,rust-cxx-1)
+        ("rust-cxx-build" ,rust-cxx-build-1)
         ("rust-fastrand" ,rust-fastrand-1)
         ("rust-gettext-rs" ,rust-gettext-rs-0.7)
         ("rust-lexopt" ,rust-lexopt-0.2)
@@ -265,8 +266,7 @@ cards.")
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
-       (("rust-cxx-build" ,rust-cxx-build-1)
-        ("rust-tempfile" ,rust-tempfile-3)
+       (("rust-tempfile" ,rust-tempfile-3)
         ("rust-proptest" ,rust-proptest-1)
         ("rust-section-testing" ,rust-section-testing-0.0))
        #:phases
