@@ -18640,14 +18640,14 @@ standard locations of directories for config, cache and other data.")
   (package
     (inherit rust-dirs-4)
     (name "rust-dirs")
-    (version "3.0.1")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dirs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zxrb3anxsh80mnp2il7awccv0s5gvy7djn6gis18nbm0bnraa8l"))))))
+        (base32 "028kqy0vrbfgrk1yc1flq2fqh8snyg17qlygawm0r79w211s1fih"))))))
 
 (define-public rust-dirs-2
   (package
