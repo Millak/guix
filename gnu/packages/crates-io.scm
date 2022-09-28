@@ -48251,7 +48251,7 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
 (define-public rust-quote-1
   (package
     (name "rust-quote")
-    (version "1.0.9")
+    (version "1.0.21")
     (source
       (origin
         (method url-fetch)
@@ -48259,7 +48259,7 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "19rjmfqzk26rxbgxy5j2ckqc2v12sw2xw8l4gi8bzpn2bmsbkl63"))))
+          "0yai5cyd9h95n7hkwjcx8ig3yv0hindmz5gm60g9dmm7fzrlir5v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
