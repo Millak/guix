@@ -137,3 +137,52 @@ applications.")
  recovery, FIPS compliant encryption (nss and/or openssl), automatic PMTUd and
  in general better performances compared to the old network protocol.")
     (license (list license:gpl2+ license:lgpl2.1+))))
+
+(define-public corosync
+  (package
+    (name "corosync")
+    (version "3.1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/corosync/corosync")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03g3qnm5acmk7jry6kspvkssbiv8k39749bic2f0cj3ckkwy2li4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~'("--disable-static")
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'bootstrap 'fix-version-gen
+                          (lambda _
+                            (call-with-output-file ".tarball-version"
+                              (lambda (port)
+                                (display #$version port))))))))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list kronosnet libqb))
+    (home-page "https://corosync.github.io/corosync/")
+    (synopsis
+     "Group communication system for implementing High Availability in applications")
+    (description
+     "The Corosync Cluster Engine is a Group Communication System with additional
+features for implementing high availability within applications.  The project
+provides four C Application Programming Interface features:
+
+@itemize
+
+@item A closed process group communication model with extended virtual synchrony
+guarantees for creating replicated state machines.
+
+@item A simple availability manager that restarts the application process when
+it has failed.
+
+@item A configuration and statistics in-memory database that provide the ability
+to set, retrieve, and receive change notifications of information.
+
+@item A quorum system that notifies applications when quorum is achieved or
+lost.
+
+@end itemize")
+    (license (list license:bsd-0 license:gpl3+))))
