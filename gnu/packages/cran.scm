@@ -24783,6 +24783,61 @@ Mardia, K.V. (2016).  Statistical shape analysis, with Applications in R (2nd
 Edition), John Wiley and Sons.")
     (license license:gpl2)))
 
+(define-public r-animation
+  (package
+    (name "r-animation")
+    (version "2.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "animation" version))
+              (sha256
+               (base32
+                "0sg4sz5lkn85yzpcg22xkr7921cbnh7g74nlp9imjy7c0hdqyhc8"))
+              (snippet
+               '(for-each delete-file
+                          '("inst/misc/scianimator/js/jquery.scianimator.min.js"
+                            "inst/misc/scianimator/js/jquery-1.4.4.min.js")))))
+    (properties `((upstream-name . "animation")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/misc/"
+               (symlink (search-input-file
+                         inputs
+                         "share/javascript/jquery.scianimator.min.js")
+                        "scianimator/js/jquery.scianimator.min.js")
+               (invoke "esbuild" (assoc-ref inputs "js-jquery")
+                       "--minify"
+                       (string-append "--outfile="
+                                      "scianimator/js/jquery-1.4.4.min.js"))))))))
+    (propagated-inputs (list r-magick))
+    (inputs (list js-scianimator))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("js-jquery"
+        ,(origin
+           (method url-fetch)
+           (uri "https://code.jquery.com/jquery-1.4.4.js")
+           (sha256
+            (base32
+             "10nl4smq63vrfb0c3n0fknm1zw7ss8gicy6wc6jb6l3rmyad075k"))))))
+    (home-page "https://yihui.org/animation/")
+    (synopsis "Gallery of animations and utilities to create animations")
+    (description
+     "This package provides functions for animations in statistics, covering
+topics in probability theory, mathematical statistics, multivariate
+statistics, non-parametric statistics, sampling survey, linear models, time
+series, computational statistics, data mining and machine learning.  These
+functions may be helpful in teaching statistics and data analysis.  Also
+provided in this package are a series of functions to save animations to
+various formats, e.g. GIF, HTML pages, PDF, and videos.  PDF animations can be
+inserted into Sweave / @code{knitr} easily.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-anthropometry
   (package
     (name "r-anthropometry")
