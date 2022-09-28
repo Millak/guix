@@ -360,8 +360,11 @@ empty list when the FIELD cannot be found."
 (define invalid-packages
   (list "c++11"
         "c++14"
-        "linux"
         "getopt::long"
+        "linux"
+        "none"
+        "windows"
+        "xcode"
         "xquartz"))
 
 (define cran-guix-name (cut guix-name "r-" <>))
