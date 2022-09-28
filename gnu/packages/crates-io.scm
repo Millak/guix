@@ -70411,7 +70411,7 @@ boundaries according to Unicode Standard Annex #29 rules.")
 (define-public rust-unicode-width-0.1
   (package
     (name "rust-unicode-width")
-    (version "0.1.9")
+    (version "0.1.10")
     (source
       (origin
         (method url-fetch)
@@ -70419,7 +70419,7 @@ boundaries according to Unicode Standard Annex #29 rules.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0wq9wl69wlp6zwlxp660g9p4hm5gk91chwk14dp1gl9bxba45mry"))))
+          "12vc3wv0qwg8rzcgb9bhaf5119dlmd6lmkhbfy1zfls6n7jx3vf0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
