@@ -304,14 +304,14 @@ to @code{cabal repl}).")
 (define-public git-annex
   (package
     (name "git-annex")
-    (version "10.20220822")
+    (version "10.20220927")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://hackage.haskell.org/package/"
                            "git-annex/git-annex-" version ".tar.gz"))
        (sha256
-        (base32 "1qv3cb7p2zyc5mpcr4nfgzdmswfny5jbimd2ip7ygh71jlahrbfc"))))
+        (base32 "1bqcaddw47g6i3z9g0iym5x7zy1q8fsirzqnjsa63n2bwm6zzplc"))))
     (build-system haskell-build-system)
     (arguments
      `(#:configure-flags
@@ -406,6 +406,7 @@ to @code{cabal repl}).")
            ghc-bloomfilter
            ghc-byteable
            ghc-case-insensitive
+           ghc-clientsession
            ghc-concurrent-output
            ghc-conduit
            ghc-connection
@@ -462,6 +463,14 @@ to @code{cabal repl}).")
            ghc-utf8-string
            ghc-uuid
            ghc-vector
+           ghc-wai
+           ghc-wai-extra
+           ghc-warp
+           ghc-warp-tls
+           ghc-yesod
+           ghc-yesod-core
+           ghc-yesod-form
+           ghc-yesod-static
            git
            rsync))
     (native-inputs
