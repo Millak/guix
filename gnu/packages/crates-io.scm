@@ -73951,16 +73951,16 @@ extended attributes.")
 (define-public rust-xdg-2
   (package
     (name "rust-xdg")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "xdg" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00sqvl6v0sjdrrmyk2671sshnjlbjdwgb1lw0f3jchbhijazw8rs"))))
+        (base32 "1xl81zfx5fsc5n06h77s0fvrslzhh2piabfz0c1lqk5xbkdq6i8c"))))
     (build-system cargo-build-system)
-    (arguments `(#:cargo-inputs (("rust-dirs" ,rust-dirs-3))))
+    (arguments `(#:cargo-inputs (("rust-dirs" ,rust-dirs-4))))
     (home-page "https://github.com/whitequark/rust-xdg")
     (synopsis "Store and retrieve files according to XDG specification")
     (description
