@@ -267,6 +267,7 @@ call it if it is not associated to a terminal.")
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules
+           pkg-config
            ;; For testing.
            dbus))
     (inputs
