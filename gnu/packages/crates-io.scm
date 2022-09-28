@@ -32110,14 +32110,14 @@ nor a system allocator.")
 (define-public rust-lexopt-0.2
   (package
     (name "rust-lexopt")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "lexopt" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0w1adb1qwp9rkznq37qvwh01ckxpwcywb6ki9mlw03filyp16xfy"))))
+         (base32 "1s7k6hra9p9xilhl852qi1a7c2gis59qf4yl1ca5pbxf5bkfk3j7"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/blyxxyz/lexopt")
     (synopsis "Minimalist pedantic command line parser")
