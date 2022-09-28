@@ -20010,6 +20010,26 @@ inline CSS directives, and it can be rendered both with and without word
 wrap.")
     (license license:expat)))
 
+(define-public r-ggghost
+  (package
+    (name "r-ggghost")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggghost" version))
+              (sha256
+               (base32
+                "0kvsjadxxdf6yvzk4a6yqkg02q1ysslvf3m0a369bdim396z4hnv"))))
+    (properties `((upstream-name . "ggghost")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-animation r-ggplot2))
+    (home-page "https://github.com/jonocarroll/ggghost")
+    (synopsis "Capture the spirit of your ggplot2 calls")
+    (description
+     "This package lets you create a reproducible @code{ggplot2} object by
+storing the data and calls.")
+    (license license:gpl3+)))
+
 (define-public r-ggtext
   (package
     (name "r-ggtext")
