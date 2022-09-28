@@ -31335,7 +31335,7 @@ systems.
 
 The service type to enable the samba services @code{samba}, @code{nmbd},
 @code{smbd} and @code{winbindd}.  By default this service type does not
-run as an AD DC, hence @code{samba} remains disabled.
+run any of the Samba daemons; they must be enabled individually.
 
 @end defvar
 
@@ -31350,16 +31350,16 @@ The samba package to use.
 The config file to use.
 
 @item @code{enable-samba?} (default: @code{#f})
-Manually enable the @code{samba} daemon.
+Enable the @code{samba} daemon.
 
 @item @code{enable-smbd?} (default: @code{#f})
-Manually enable the @code{smbd} daemon.
+Enable the @code{smbd} daemon.
 
 @item @code{enable-nmbd?} (default: @code{#f})
-Manually enable the @code{nmbd} daemon.
+Enable the @code{nmbd} daemon.
 
 @item @code{enable-winbindd?} (default: @code{#f})
-Manually enable the @code{winbindd} daemon.
+Enable the @code{winbindd} daemon.
 
 @end table
 @end deftp
