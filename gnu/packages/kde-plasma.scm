@@ -30,6 +30,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
@@ -292,7 +293,7 @@ basic needs and easy to configure for those who want special setups.")
        (sha256
         (base32 "1kzpimhkagsmqj0cky4cfav1kbzyfjaj2l5xdapnmaygbm6r8086"))))
     (native-inputs
-     (list extra-cmake-modules pkg-config qttools-5))
+     (list bash-minimal extra-cmake-modules pkg-config qttools-5))
     (inputs
      (list kauth
            kcompletion
@@ -323,13 +324,12 @@ basic needs and easy to configure for those who want special setups.")
            zlib))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; TODO: Fix this failing test-case
-                     (invoke "ctest" "-E" "processtest")))))))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-test
+                          (lambda* _
+                            (substitute* "autotests/processtest.cpp"
+                              (("/bin/sh")
+                               (which "bash"))))))))
     (home-page "https://userbase.kde.org/KSysGuard")
     (synopsis "Network enabled task and system monitoring")
     (description "KSysGuard can obtain information on system load and
