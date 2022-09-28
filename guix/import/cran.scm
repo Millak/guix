@@ -582,7 +582,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
               (home-page ,(if (string-null? home-page)
                               (string-append base-url name)
                               home-page))
-              (synopsis ,synopsis)
+              (synopsis ,(beautify-synopsis synopsis))
               (description ,(beautify-description (or (assoc-ref meta "Description")
                                                       "")))
               (license ,license))))
