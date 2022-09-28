@@ -18614,17 +18614,17 @@ other data.")
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1))))))
 
-(define-public rust-dirs-3
+(define-public rust-dirs-4
   (package
     (name "rust-dirs")
-    (version "3.0.1")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dirs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zxrb3anxsh80mnp2il7awccv0s5gvy7djn6gis18nbm0bnraa8l"))))
+        (base32 "0n8020zl4f0frfnzvgb9agvk4a14i1kjz4daqnxkgslndwmaffna"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -18635,6 +18635,19 @@ other data.")
      "This package is a tiny low-level library that provides platform-specific
 standard locations of directories for config, cache and other data.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-dirs-3
+  (package
+    (inherit rust-dirs-4)
+    (name "rust-dirs")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dirs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zxrb3anxsh80mnp2il7awccv0s5gvy7djn6gis18nbm0bnraa8l"))))))
 
 (define-public rust-dirs-2
   (package
