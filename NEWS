@@ -100,7 +100,7 @@ similar to how 'guix time-machine' would do it, as regular packages.
 *** New ‘rebar-build-system’
 *** New services
 anonip, bitmask, fail2ban, gitile, greetd, jami, lightdm, log-cleanup,
-nar-herder, opendht, rasdaemon, seatd, strongswan
+nar-herder, opendht, rasdaemon, samba, seatd, strongswan, wsdd
 
 ** Noteworthy bug fixes
 *** Fall back to Software Heritage when cloning a channel
