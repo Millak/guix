@@ -70830,7 +70830,7 @@ type-safe zero-cost dimensional analysis.")
 (define-public rust-url-2
   (package
     (name "rust-url")
-    (version "2.2.2")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
@@ -70839,19 +70839,18 @@ type-safe zero-cost dimensional analysis.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "132pzpvfvpw33gjlzqd55n5iag9qddzffq8qbp1myfykna1w61x5"))))
+         "0hs67jw257y0a7mj2p9wi0n61x8fc2vgwxg37y62nxkmmscwfs0d"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-form-urlencoded" ,rust-form-urlencoded-1)
-        ("rust-idna" ,rust-idna-0.2)
-        ("rust-matches" ,rust-matches-0.1)
+        ("rust-idna" ,rust-idna-0.3)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-rustc-test" ,rust-rustc-test-0.3)
+        ("rust-debugger-test" ,rust-debugger-test-0.1)
+        ("rust-debugger-test-parser" ,rust-debugger-test-parser-0.1)
         ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/servo/rust-url")
     (synopsis "URL library for Rust, based on the WHATWG URL Standard")
