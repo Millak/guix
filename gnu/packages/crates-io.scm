@@ -17047,6 +17047,31 @@ type.")
 the Debug trait manually.")
     (license license:expat)))
 
+(define-public rust-debugger-test-parser-0.1
+  (package
+    (name "rust-debugger-test-parser")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "debugger-test-parser" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0xcyxw0si7j4h701aksdd08j8jmrzc58833g66wm4xvp592kdrgb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-regex" ,rust-regex-1))))
+    (home-page
+     "https://github.com/microsoft/rust_debugger_test/debugger_test_parser")
+    (synopsis "Library for parsing debugger output")
+    (description
+     "This package provides a library for parsing the output of a debugger and
+verifying the contents.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-decimal-2
   (package
     (name "rust-decimal")
