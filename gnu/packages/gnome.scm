@@ -11640,6 +11640,7 @@ generic enough to work for everyone.")
            highlight
            libcanberra
            libgweather4
+           libnotify
            libsoup
            nss
            openldap
