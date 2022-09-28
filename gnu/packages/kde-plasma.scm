@@ -265,6 +265,17 @@ call it if it is not associated to a terminal.")
        (sha256
         (base32 "17ib0sgrhmmf3f8w3fni0825xz5581av5vnz8gca41vyf12css25"))))
     (build-system qt-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd))
+               (setenv "QT_QPA_PLATFORM" "offscreen")
+               (setenv "WAYLAND_DISPLAY" "libkscreen-test-wayland-backend-0")
+               (invoke "ctest" "-E"
+                "(kscreen-testscreenconfig|kscreen-testqscreenbackend|kscreen-testkwaylandbackend|kscreen-testkwaylandconfig|kscreen-testkwaylanddpms)")))))))
     (native-inputs
      (list extra-cmake-modules
            pkg-config
@@ -273,8 +284,6 @@ call it if it is not associated to a terminal.")
     (inputs
      (list kwayland libxrandr plasma-wayland-protocols
            qtbase-5 qtwayland-5 wayland qtx11extras))
-    (arguments
-     '(#:tests? #f)) ; FIXME: 55% tests passed, 5 tests failed out of 11
     (home-page "https://community.kde.org/Solid/Projects/ScreenManagement")
     (synopsis "KDE's screen management software")
     (description "KScreen is the new screen management software for KDE Plasma
