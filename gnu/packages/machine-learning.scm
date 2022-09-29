@@ -1615,8 +1615,7 @@ written in C++.")
           (base32 "04xw2dpfvpla8skpk08azmgr9k97cd8hn83lj4l85q165gbzql4s"))))
       (inputs
        (list alsa-lib
-             ;; `(,gfortran "lib") ;; replaced by lapack
-             lapack
+             lapack ;; compared to base kaldi, replacing `(,gfortran "lib")
              glib
              gstreamer
              jack-1
@@ -3486,3 +3485,80 @@ and Numpy.")
      "This package provides a Python library for probabilistic modeling and
 inference.")
     (license license:asl2.0)))
+
+(define-public vosk-api
+  (let* ((openfst openfst-for-vosk)
+         (kaldi kaldi-for-vosk))
+    (package
+      (name "vosk-api")
+      (version "0.3.43")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/alphacep/vosk-api")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xmp8i140c2hd3rj9dap8a2rnsvzb1k9hnqm12xzbaxrw73rkc29"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "src")))
+            (replace 'configure
+              (lambda _
+                (let* ((lapack   #$(this-package-input "lapack"))
+                       (openfst  #$(this-package-input "openfst"))
+                       (openblas #$(this-package-input "openblas"))
+                       (kaldi    #$(this-package-input "kaldi")))
+                  (substitute* "./Makefile"
+                    (("USE_SHARED\\?=0")
+                     "USE_SHARED?=1")
+                    (("-DFST_NO_DYNAMIC_LINKING")
+                     "")
+                    (("-lopenblas -llapack -lblas -lf2c")
+                     (string-append
+                      "-L" openblas "/lib " "-lopenblas "
+                      "-L" lapack "/lib " "-llapack -lblas "))
+                    (("-lfst -lfstngram")
+                     (string-append
+                      "-L" openfst "/lib " "-lfst -lfstngram "))
+                    (("\\$\\(HOME\\)\\/travis\\/kaldi")
+                     (string-append kaldi "/include"))
+                    (("\\$\\(KALDI_ROOT\\)\\/tools\\/openfst")
+                     openfst)
+                    (("\\$\\(KALDI_ROOT\\)\\/tools\\/OpenBLAS\\/install")
+                     openblas)
+                    (("\\$\\(KALDI_ROOT\\)\\/libs")
+                     (string-append kaldi "/lib"))))))
+            (replace 'install
+              (lambda _
+                (let* ((lib (string-append #$output "/lib"))
+                       (src (string-append #$output "/src")))
+                  (mkdir-p lib)
+                  (mkdir-p src)
+                  (install-file "libvosk.so" lib)
+                  (for-each
+                   (lambda (x) (install-file x src))
+                   (find-files "." "\\.h$"))))))))
+      (inputs (list kaldi openfst lapack openblas))
+      (home-page "https://alphacephei.com/vosk")
+      (synopsis "Speech recognition toolkit based on @code{kaldi}")
+      (description "\
+This package provides a speech recognition toolkit based on @code{kaldi}.  It
+supports more than 20 languages and dialects - English, Indian English,
+German, French, Spanish, Portuguese, Chinese, Russian, Turkish, Vietnamese,
+Italian, Dutch, Catalan, Arabic, Greek, Farsi, Filipino, Ukrainian, Kazakh,
+Swedish, Japanese, Esperanto, Hindi, Czech, Polish. The program works offline,
+even on lightweight devices.  Portable per-language models are about 50Mb each,
+and there are much bigger and precise models available.
+
+Vosk API provides a streaming API allowing to use it `on-the-fly' and bindings
+for different programming languages.  It allows quick reconfiguration of
+vocabulary for better accuracy, and supports speaker identification beside
+simple speech recognition.")
+      (license license:asl2.0))))
