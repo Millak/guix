@@ -45,6 +45,7 @@
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system python)
   #:use-module (guix build-system r)
+  #:use-module (guix build-system trivial)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
@@ -103,6 +104,7 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match))
 
@@ -3636,3 +3638,36 @@ operations.  It has zero overhead, as this relies on manual activation and
 there are no background processes.  Dictation is accessed manually with
 @code{nerd-dictation begin} and @code{nerd-dictation end} commands.")
       (license license:gpl3+))))
+
+(define-public nerd-dictation/wayland
+  (package
+    (inherit nerd-dictation)
+    (name "nerd-dictation-wayland")
+    (inputs (list bash-minimal nerd-dictation))
+    (propagated-inputs (list ydotool sox))
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let* ((exe (string-append #$output "/bin/nerd-dictation"))
+                 (original-exe #$(file-append nerd-dictation
+                                              "/bin/nerd-dictation"))
+                 (bash #$(this-package-input "bash-minimal"))
+                 (bash-exe (string-append bash "/bin/bash")))
+            (mkdir-p (dirname exe))
+            (call-with-output-file exe
+              (lambda (port)
+                (format port "#!~a
+if [ \"$1\" = begin ]
+  then
+    exec ~a $@ --input=SOX --simulate-input-tool=YDOTOOL
+  else
+    exec ~a $@
+fi"
+                        bash-exe
+                        original-exe
+                        original-exe)))
+            (chmod exe #o555)))))))
