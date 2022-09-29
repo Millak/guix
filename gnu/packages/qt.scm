@@ -1500,6 +1500,56 @@ set of plugins for interacting with pulseaudio and GStreamer.")
     (description "The Qt Wayland module provides the QtWayland client and
 compositor libraries.")))
 
+(define-public qtwayland
+  (package
+    (name "qtwayland")
+    (version "6.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (qt-urls name version))
+       (sha256
+        (base32 "1w60p1did7awdlzq5k8vnq2ncpskb07cpvz31cbv99bjs6igw53g"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-failing-tests
+                 (lambda _
+                   ;; FIXME: tst_seatv4::animatedCursor() fails here.
+                   ;; See also: <https://bugreports.qt.io/browse/QTBUG-78317>
+                   (substitute* "tests/auto/client/seatv4/tst_seatv4.cpp"
+                     (((string-append
+                        "QVERIFY\\(!cursorSurface\\(\\)->"
+                        "m_waitingFrameCallbacks\\.empty\\(\\)\\);")) "")
+                     (("QTRY_COMPARE\\(bufferSpy\\.count\\(\\), 1\\);") ""))))
+               (add-before 'check 'set-test-environment
+                 (lambda _
+                   ;; Do not fail just because /etc/machine-id is missing.
+                   (setenv "DBUS_FATAL_WARNINGS" "0")
+                   ;; Make Qt render "offscreen", required for tests.
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    (native-inputs (list glib perl pkg-config qtdeclarative))
+    (inputs
+     (list fontconfig
+           freetype
+           libx11
+           libxcomposite
+           libxext
+           libxkbcommon
+           libxrender
+           mesa
+           mtdev
+           qtbase
+           vulkan-headers
+           wayland))
+    (synopsis "Qt Wayland module")
+    (description "The Qt Wayland module provides the QtWayland client and
+compositor libraries.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
+
 (define-public qtserialport
   (package (inherit qtsvg-5)
     (name "qtserialport")
