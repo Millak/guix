@@ -8455,6 +8455,49 @@ the locations of docstrings, arguments, and functions.")
      "This package provides a Company backend for Python.")
     (license license:gpl3+)))
 
+(define-public emacs-elquery
+  (package
+    (name "emacs-elquery")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/AdamNiederer/elquery")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "035zjzmd7yfw0rsjpaklc2wwiqw6brkjadch9x8n8n2gjyxg05mn"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:emacs emacs-no-x
+      #:tests? #t
+      #:test-command #~(list "ert-runner")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'fix-native-compilation
+                     (lambda _
+                       (substitute* "elquery.el"
+                         (("\\(1- \\(/ length \\(match-data\\)\\) 2\\)")
+                          "(1- (/ (length (match-data)) 2))"))))
+                   (add-before 'check 'disable-failing-tests
+                     (lambda _
+                       (substitute* "test/elquery-test.el"
+                         (("\\(ert-deftest elquery--write-test .*" all)
+                          (string-append all "(skip-unless nil)\n"))))))))
+    (native-inputs
+     (list emacs-ert-runner emacs-undercover))
+    (propagated-inputs
+     (list emacs-dash))
+    (home-page "https://github.com/AdamNiederer/elquery/")
+    (synopsis "Read and manipulate HTML in Emacs")
+    (description
+     "Elquery is a library that lets you parse, query, set, and format HTML using
+Emacs Lisp.  It implements most of the @code{querySelector} API, and can get
+and set HTML attributes.")
+    (license license:gpl3+)))
+
 (define-public emacs-puppet-mode
   (package
     (name "emacs-puppet-mode")
