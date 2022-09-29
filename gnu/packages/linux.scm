@@ -1566,7 +1566,7 @@ which need to be installed separately.")
 (define-public linux-pam
   (package
     (name "linux-pam")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
@@ -1575,7 +1575,7 @@ which need to be installed separately.")
              version "/Linux-PAM-" version ".tar.xz"))
        (sha256
         (base32
-         "1z4jayf69qyyxln1gl6ch4qxfd66ib1g42garnrv2d8i1drl0790"))
+         "0kgrsj2scv5mx6w925h9hxf11jnqqs9z8s22aw94b90xm4qp3v74"))
        (patches (search-patches "linux-pam-unix_chkpwd.patch"
                                 "linux-pam-no-setfsuid.patch"))))
 
@@ -1592,6 +1592,12 @@ which need to be installed separately.")
        #:configure-flags (list (string-append "--includedir="
                                               (assoc-ref %outputs "out")
                                               "/include/security")
+                               ;; explicit libdir for pkgconfig files
+                               ;; drop with 1.5.3, which fixes
+                               ;; https://github.com/linux-pam/linux-pam/issues/466
+                               (string-append "--libdir="
+                                              (assoc-ref %outputs "out")
+                                              "/lib")
 
                                ;; XXX: <rpc/rpc.h> is missing from glibc when
                                ;; cross-compiling, so we have to disable NIS
