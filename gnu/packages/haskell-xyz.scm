@@ -7218,7 +7218,7 @@ online}.")
     (arguments
      `(#:cabal-revision
        ("1"
-        "1f0whk5ncanxfjjanrf6rqyncig2xgc5mh2j0sqy3nrlyjr9aqq9")))
+        "1xllyf26ypk37k807g5v6fl1449mhpvk18dljmqgwj723n0v8rpj")))
     (home-page "https://github.com/chrisdone/lucid")
     (synopsis "Haskell DSL for rendering HTML")
     (description "Clear to write, read and edit Haskell DSL for HTML.
