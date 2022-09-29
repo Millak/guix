@@ -220,7 +220,7 @@ window managers, that don't provide Qt integration by themselves.")
        (list cmake-shared extra-cmake-modules pkg-config))
       (inputs
        `(("qtbase" ,qtbase-5)
-         ("qtwayland" ,qtwayland)
+         ("qtwayland" ,qtwayland-5)
          ("wayland" ,wayland)
          ("xkbcommon" ,libxkbcommon)))
       (synopsis "Material Decoration for Qt")
@@ -1450,7 +1450,7 @@ record media, and manage a collection of media content.  It also contains a
 set of plugins for interacting with pulseaudio and GStreamer.")
     (license (package-license qtbase))))
 
-(define-public qtwayland
+(define-public qtwayland-5
   (package (inherit qtsvg-5)
     (name "qtwayland")
     (version "5.15.2")

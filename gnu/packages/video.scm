@@ -3385,7 +3385,7 @@ be used for realtime video capture via Linux-specific APIs.")
       qtbase-5
       qtsvg-5
       qtx11extras
-      qtwayland
+      qtwayland-5
       speexdsp
       v4l-utils
       wayland

@@ -1068,7 +1068,7 @@ protocols used in KDE Plasma.")
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list qtbase-5 qtwayland wayland wayland-protocols))
+     (list qtbase-5 qtwayland-5 wayland wayland-protocols))
     (arguments
      `(#:tests? #f ; FIXME tests require weston to run
                    ; weston requires wayland flags in mesa

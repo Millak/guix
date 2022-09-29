@@ -177,7 +177,7 @@ call it if it is not associated to a terminal.")
      (list libxkbcommon
            qtbase-5
            qtdeclarative-5
-           qtwayland
+           qtwayland-5
            wayland
            wayland-protocols))
     (home-page "https://invent.kde.org/plasma/layer-shell-qt")
