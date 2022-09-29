@@ -31335,7 +31335,39 @@ systems.
 
 The service type to enable the samba services @code{samba}, @code{nmbd},
 @code{smbd} and @code{winbindd}.  By default this service type does not
-run as an AD DC, hence @code{samba} remains disabled.
+run any of the Samba daemons; they must be enabled individually.
+
+Below is a basic example that configures a simple, anonymous
+(unauthenticated) Samba file share exposing the @file{/public}
+directory.
+
+@quotation Tip
+The @file{/public} directory and its contents must be world
+readable/writable, so you'll want to run @samp{chmod -R 777 /public} on
+it.
+@end quotation
+
+@quotation Caution
+Such a Samba configuration should only be used in controlled
+environments, and you should not share any private files using it, as
+anyone connecting to your network would be able to access them.
+@end quotation
+
+@lisp
+(service samba-service-type (samba-configuration
+                             (enable-smbd? #t)
+                             (config-file (plain-file "smb.conf" "\
+[global]
+map to guest = Bad User
+logging = syslog@@1
+
+[public]
+browsable = yes
+path = /public
+read only = no
+guest ok = yes
+guest only = yes\n"))))
+@end lisp
 
 @end defvar
 
@@ -31347,41 +31379,42 @@ Configuration record for the Samba suite.
 The samba package to use.
 
 @item @code{config-file} (default: @code{#f})
-The config file to use.
+The config file to use.  To learn about its syntax, run @samp{man
+smb.conf}.
 
 @item @code{enable-samba?} (default: @code{#f})
-Manually enable the @code{samba} daemon.
+Enable the @code{samba} daemon.
 
 @item @code{enable-smbd?} (default: @code{#f})
-Manually enable the @code{smbd} daemon.
+Enable the @code{smbd} daemon.
 
 @item @code{enable-nmbd?} (default: @code{#f})
-Manually enable the @code{nmbd} daemon.
+Enable the @code{nmbd} daemon.
 
 @item @code{enable-winbindd?} (default: @code{#f})
-Manually enable the @code{winbindd} daemon.
+Enable the @code{winbindd} daemon.
 
 @end table
 @end deftp
 
-@cindex wsdd
+@cindex wsdd, Web service discovery daemon
 @subsubheading Web Service Discovery Daemon
 
-Web Service Discovery Daemon implements
+The @acronym{WSDD, Web Service Discovery daemon} implements the
 @uref{http://docs.oasis-open.org/ws-dd/discovery/1.1/os/wsdd-discovery-1.1-spec-os.html,
-Web Services Dynamic Discovery} protocol that enables host discovery --
-similar to Avahi -- over Multicast DNS.  It is a drop-in replacement for
-SMB hosts that have had SMBv1 disabled for security reasons.
+Web Services Dynamic Discovery} protocol that enables host discovery
+over Multicast DNS, similar to what Avahi does.  It is a drop-in
+replacement for SMB hosts that have had SMBv1 disabled for security
+reasons.
 
 @defvr {Scheme Variable} wsdd-service-type
-
 Service type for the WSD host daemon.  The value for
 this service type is a @code{wsdd-configuration} record.  The details
 for the @code{wsdd-configuration} record type are given below.
 @end defvr
 
-@deftp{Data Type} wsdd-configuration This data type represents the
-configuration for the wsdd service.
+@deftp {Data Type} wsdd-configuration
+This data type represents the configuration for the wsdd service.
 
 @table @asis
 

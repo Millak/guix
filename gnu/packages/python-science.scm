@@ -1290,6 +1290,26 @@ powerful visualization backend to facilitate rapid prototyping, analysis, and
 visual integration of spatially referenced datasets.")
     (license license:expat)))
 
+(define-public python-simplespectral
+  (package
+    (name "python-simplespectral")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "SimpleSpectral" version))
+       (sha256
+        (base32 "0qh3xwdv9cwcqdamvglrhm586p4yaq1hd291py1fvykhk2a2d4w6"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-numpy python-scipy))
+    (home-page "https://github.com/xmikos/simplespectral")
+    (synopsis "FFT module for Python")
+    (description
+     "This package provides a simplified @code{scipy.signal.spectral} module
+to do spectral analysis in Python.")
+    (license license:expat)))
+
 (define-public python-traittypes
   (package
     (name "python-traittypes")

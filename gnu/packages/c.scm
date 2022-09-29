@@ -55,6 +55,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pcre)
@@ -1181,6 +1182,41 @@ structures designed to aid in the research, design and implementation of high
 performance concurrent systems developed in C99+.")
     (license (list license:bsd-2        ;everything except...
                    license:asl2.0))))   ;src/ck_hp.c
+
+(define-public libdispatch
+  (package
+    (name "libdispatch")
+    (version "5.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apple/swift-corelibs-libdispatch")
+             (commit (string-append "swift-" version "-RELEASE"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0skg1azbhbg7y0ql2a5sx6lmfip8l1rajqm95zzf9xv45n4dg9nn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Use Clang instead of GCC.
+               (add-before 'configure 'prepare-build-environment
+                 (lambda _
+                   (setenv "AR" "llvm-ar")
+                   (setenv "NM" "llvm-nm")
+                   (setenv "CC" "clang")
+                   (setenv "CXX" "clang++"))))))
+    (native-inputs (list clang llvm))
+    (home-page "https://apple.github.io/swift-corelibs-libdispatch/")
+    (synopsis "Concurrent code execution on multicore hardware")
+    (description
+     "Grand Central Dispatch (GCD or libdispatch) implements a concurrency model
+wherein program tasks are divided into work items.  These can be run
+sequentially or in parallel, with optional synchronization in between, and GCD
+will take care of dispatching tasks to available cores.")
+    (license license:asl2.0)))
 
 (define-public utf8-h
   ;; The latest tag is used as there is no release.

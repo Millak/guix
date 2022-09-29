@@ -16861,8 +16861,41 @@ hexadecimal, base32, and base64.")
      "Processing of data: URL according to WHATWG's Fetch Standard.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-datetime-0.5
+  (package
+    (name "rust-datetime")
+    (version "0.5.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "datetime" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1g2lhc2ay46njrnnyc0729ibyzkpv3r3d4g0h3gzwmrygykzghs4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+        (("rust-iso8601" ,rust-iso8601-0.3)
+         ("rust-libc" ,rust-libc-0.2)
+         ("rust-locale" ,rust-locale-0.2)
+         ("rust-num-traits" ,rust-num-traits-0.2)
+         ("rust-pad" ,rust-pad-0.1)
+         ("rust-redox-syscall" ,rust-redox-syscall-0.1)
+         ("rust-winapi" ,rust-winapi-0.3))
+        #:cargo-development-inputs
+        (("rust-regex" ,rust-regex-0.1)
+         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))
+    (home-page "https://github.com/rust-datetime/datetime")
+    (synopsis "Library for date and time formatting and arithmetic")
+    (description "This package provides a library for date and time formatting
+and arithmetic.")
+    (license license:expat)))
+
 (define-public rust-datetime-0.4
   (package
+    (inherit rust-datetime-0.5)
     (name "rust-datetime")
     (version "0.4.7")
     (source
@@ -16874,7 +16907,6 @@ hexadecimal, base32, and base64.")
         (sha256
          (base32
           "1fd74bq48xg8ki5yw1mr1pa5hd3j5lbk4iqc5r0kh3l62b0vci2w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
         (("rust-iso8601" ,rust-iso8601-0.1)
@@ -16887,12 +16919,7 @@ hexadecimal, base32, and base64.")
          ("rust-winapi" ,rust-winapi-0.2))
         #:cargo-development-inputs
         (("rust-regex" ,rust-regex-0.1)
-         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))
-    (home-page "https://github.com/rust-datetime/datetime")
-    (synopsis "Library for date and time formatting and arithmetic")
-    (description "This package provides a library for date and time formatting
-and arithmetic.")
-    (license license:expat)))
+         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))))
 
 (define-public rust-dbl-0.3
   (package
@@ -30422,8 +30449,30 @@ and locking in the core framework.")
 whether or not a given path points to an executable file.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-iso8601-0.3
+  (package
+    (name "rust-iso8601")
+    (version "0.3.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "iso8601" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0vvn6f9gv2295ik77nvaz99wzbwz1bmasrd787sz6d9mlwa6ks23"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nom" ,rust-nom-4))))
+    (home-page "https://github.com/badboy/iso8601")
+    (synopsis "Parsing ISO8601 dates using nom")
+    (description "Parsing ISO8601 dates using nom.")
+    (license license:expat)))
+
 (define-public rust-iso8601-0.1
   (package
+    (inherit rust-iso8601-0.3)
     (name "rust-iso8601")
     (version "0.1.1")
     (source
@@ -30439,11 +30488,7 @@ whether or not a given path points to an executable file.")
     (arguments
      `(#:cargo-inputs
        (("rust-clippy" ,rust-clippy-0.0)
-        ("rust-nom" ,rust-nom-1))))
-    (home-page "https://github.com/badboy/iso8601")
-    (synopsis "Parsing ISO8601 dates using nom")
-    (description "Parsing ISO8601 dates using nom.")
-    (license license:expat)))
+        ("rust-nom" ,rust-nom-1))))))
 
 (define-public rust-itertools-0.10
   (package
@@ -74614,8 +74659,33 @@ implementation that works everywhere, even WASM!")
      "Library to support the reading and writing of zip files.")
     (license license:expat)))
 
+(define-public rust-zoneinfo-compiled-0.5
+  (package
+    (name "rust-zoneinfo-compiled")
+    (version "0.5.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "zoneinfo_compiled" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1pm50w4vv34r08mrajfvyhc1254gv8zv4q6p7gs315c9bvkfpyv4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-datetime" ,rust-datetime-0.5))))
+    (home-page "https://github.com/rust-datetime/zoneinfo-compiled/")
+    (synopsis "Library for parsing compiled zoneinfo files")
+    (description
+     "This package provides a library for parsing compiled zoneinfo files.")
+    (license license:expat)))
+
 (define-public rust-zoneinfo-compiled-0.4
   (package
+    (inherit rust-zoneinfo-compiled-0.5)
     (name "rust-zoneinfo-compiled")
     (version "0.4.8")
     (source
@@ -74627,16 +74697,10 @@ implementation that works everywhere, even WASM!")
         (sha256
          (base32
           "0bnm19w791q6kp79s0zl1cj9w51bw5xrifrxfy3g1p05i676y4vf"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-datetime" ,rust-datetime-0.4))))
-    (home-page "https://github.com/rust-datetime/zoneinfo-compiled/")
-    (synopsis "Library for parsing compiled zoneinfo files")
-    (description
-     "This package provides a library for parsing compiled zoneinfo files.")
-    (license license:expat)))
+        ("rust-datetime" ,rust-datetime-0.4))))))
 
 (define-public rust-zstd-0.9
   (package

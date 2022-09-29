@@ -997,6 +997,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/cpuinfo-system-libraries.patch		\
   %D%/packages/patches/cpulimit-with-glib-2.32.patch		\
   %D%/packages/patches/crawl-upgrade-saves.patch		\
+  %D%/packages/patches/crc32c-unbundle-googletest.patch		\
   %D%/packages/patches/crda-optional-gcrypt.patch		\
   %D%/packages/patches/clucene-contribs-lib.patch               \
   %D%/packages/patches/cube-nocheck.patch			\
@@ -1868,6 +1869,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/teensy-loader-cli-help.patch		\
   %D%/packages/patches/tensorflow-c-api-fix.patch		\
   %D%/packages/patches/texinfo-5-perl-compat.patch		\
+  %D%/packages/patches/telegram-desktop-allow-disable-libtgvoip.patch   \
   %D%/packages/patches/telegram-purple-adjust-test.patch	\
   %D%/packages/patches/texi2html-document-encoding.patch	\
   %D%/packages/patches/texi2html-i18n.patch			\
@@ -1967,6 +1969,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/warsow-qfusion-fix-bool-return-type.patch	\
   %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\
   %D%/packages/patches/webrtc-audio-processing-big-endian.patch	\
+  %D%/packages/patches/webrtc-for-telegram-desktop-fix-gcc12-cstdint.patch   \
   %D%/packages/patches/websocketpp-fix-for-cmake-3.15.patch	\
   %D%/packages/patches/widelands-add-missing-map-include.patch	\
   %D%/packages/patches/widelands-system-wide_minizip.patch	\

@@ -51,6 +51,8 @@
 ;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Andreas Rammhold <andreas@rammhold.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -696,6 +698,30 @@ or via the @code{facter} Ruby library.")
 console.")
       ;; This package uses a modified version of the "ISC License".
       (license (license:non-copyleft "file://LICENSE")))))
+
+(define-public btop
+  (package
+    (name "btop")
+    (version "1.2.9")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/aristocratos/btop/archive/refs/tags/v"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0cb5q7hrb9y378i98km9s6jbi5c50i7wra8m8jik5hf4m4s3930g"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;no test suite
+           #:make-flags #~(list (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
+    (home-page "https://github.com/aristocratos/btop")
+    (synopsis "Resource monitor")
+    (description "Btop++ provides unified monitoring of CPU, memory, network
+and processes.")
+    (license license:asl2.0)))
 
 (define-public htop
   (package
@@ -2125,14 +2151,16 @@ command.")
      (substitute-keyword-arguments (package-arguments wpa-supplicant-minimal)
        ((#:phases phases)
         `(modify-phases ,phases
-           (add-after 'configure 'configure-for-dbus
+           (add-after 'configure 'set-config-options
              (lambda _
                (let ((port (open-file ".config" "al")))
+                 ;; Enable Opportunistic Wireless Encryption (OWE) and D-Bus
+                 ;; support.
                  (display "
+      CONFIG_OWE=y
       CONFIG_CTRL_IFACE_DBUS_NEW=y
       CONFIG_CTRL_IFACE_DBUS_INTRO=y\n" port)
-                 (close-port port))
-               #t))
+                 (close-port port))))
           (add-after 'install-documentation 'install-dbus-conf
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))

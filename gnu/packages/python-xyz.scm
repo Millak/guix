@@ -7415,13 +7415,13 @@ data, and scientific formats.")
 (define-public python-pyvips
   (package
     (name "python-pyvips")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyvips" version))
        (sha256
-        (base32 "0lq71iiic4pc8qhxr60gi141w25pjnn4vsh05d5l0fjkgjsv137b"))))
+        (base32 "1dfbwwvnnsk4g2kj1pw654z9jq3mb72l1m8ma29858jpn12vn7dm"))))
     (build-system python-build-system)
     (arguments
      (list #:phases

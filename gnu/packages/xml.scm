@@ -159,7 +159,7 @@ things the parser might find in the XML document (like start tags).")
 (define expat/fixed
   (package
     (inherit expat)
-    (version "2.4.7")
+    (version "2.4.9")
     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
               (origin
                 (method url-fetch)
@@ -171,7 +171,7 @@ things the parser might find in the XML document (like start tags).")
                             "/expat-" version ".tar.xz")))
                 (sha256
                  (base32
-                  "0zbss0dssn17mjmvk17qfi5cmvm0lcyzs62cwvqr219hhl864xcq")))))))
+                  "0m03zh7al39mx4rf0s2bgdn77r658qqf9k3a7bwx6z2wzql0g33f")))))))
 
 (define-public libebml
   (package

@@ -55,7 +55,9 @@
                 #:select (file-system-packages))
   #:use-module (gnu packages admin)
   #:use-module ((gnu packages linux)
-                #:select (alsa-utils crda eudev e2fsprogs fuse gpm kbd lvm2 rng-tools))
+                #:select (alsa-utils btrfs-progs crda eudev
+                          e2fsprogs f2fs-tools fuse gpm kbd lvm2 rng-tools
+                          util-linux xfsprogs))
   #:use-module (gnu packages bash)
   #:use-module ((gnu packages base)
                 #:select (coreutils glibc glibc-utf8-locales tar))
@@ -64,7 +66,10 @@
   #:autoload   (gnu packages hurd) (hurd)
   #:use-module (gnu packages package-management)
   #:use-module ((gnu packages gnupg) #:select (guile-gcrypt))
-  #:use-module (gnu packages linux)
+  #:use-module ((gnu packages disk)
+                #:select (dosfstools))
+  #:use-module ((gnu packages file-systems)
+                #:select (bcachefs-tools exfat-utils jfsutils zfs))
   #:use-module (gnu packages terminals)
   #:use-module ((gnu build file-systems)
                 #:select (mount-flags->bit-mask
@@ -86,6 +91,7 @@
   #:export (fstab-service-type
             root-file-system-service
             file-system-service-type
+            file-system-utilities
             swap-service
             host-name-service
             %default-console-font
@@ -488,6 +494,31 @@ upon boot."
                 (memq 'bind-mount (file-system-flags file-system))))
           file-systems))
 
+(define (file-system-type->utilities type)
+  "Return the package providing the utilities for file system TYPE, #f
+otherwise."
+  (assoc-ref
+   `(("bcachefs" . ,bcachefs-tools)
+     ("btrfs" . ,btrfs-progs)
+     ("exfat" . ,exfat-utils)
+     ("ext2" . ,e2fsprogs)
+     ("ext3" . ,e2fsprogs)
+     ("ext4" . ,e2fsprogs)
+     ("fat" . ,dosfstools)
+     ("f2fs" . ,f2fs-tools)
+     ("jfs" . ,jfsutils)
+     ("vfat" . ,dosfstools)
+     ("xfs" . ,xfsprogs)
+     ("zfs" . ,zfs))
+   type))
+
+(define (file-system-utilities file-systems)
+  "Return a list of packages containing file system utilities for
+FILE-SYSTEMS."
+  (filter-map (lambda (file-system)
+                (file-system-type->utilities (file-system-type file-system)))
+              file-systems))
+
 (define file-system-service-type
   (service-type (name 'file-systems)
                 (extensions
@@ -495,6 +526,8 @@ upon boot."
                                           file-system-shepherd-services)
                        (service-extension fstab-service-type
                                           file-system-fstab-entries)
+                       (service-extension profile-service-type
+                                          file-system-utilities)
 
                        ;; Have 'user-processes' depend on 'file-systems'.
                        (service-extension user-processes-service-type

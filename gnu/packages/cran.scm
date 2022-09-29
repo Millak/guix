@@ -20010,6 +20010,26 @@ inline CSS directives, and it can be rendered both with and without word
 wrap.")
     (license license:expat)))
 
+(define-public r-ggghost
+  (package
+    (name "r-ggghost")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggghost" version))
+              (sha256
+               (base32
+                "0kvsjadxxdf6yvzk4a6yqkg02q1ysslvf3m0a369bdim396z4hnv"))))
+    (properties `((upstream-name . "ggghost")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-animation r-ggplot2))
+    (home-page "https://github.com/jonocarroll/ggghost")
+    (synopsis "Capture the spirit of your ggplot2 calls")
+    (description
+     "This package lets you create a reproducible @code{ggplot2} object by
+storing the data and calls.")
+    (license license:gpl3+)))
+
 (define-public r-ggtext
   (package
     (name "r-ggtext")
@@ -20033,6 +20053,31 @@ wrap.")
 complex formatted plot labels (titles, subtitles, facet labels, axis labels,
 etc.).  Text boxes with automatic word wrap are also supported.")
     (license license:gpl2)))
+
+(define-public r-ggthemeassist
+  (package
+    (name "r-ggthemeassist")
+    (version "0.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggThemeAssist" version))
+              (sha256
+               (base32
+                "1biw91a8p13h62v4w3yim6ghr98khmyhb3qd0h04asf91vvmpxbv"))))
+    (properties `((upstream-name . "ggThemeAssist")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-formatr
+           r-ggplot2
+           r-miniui
+           r-rstudioapi
+           r-shiny))
+    (home-page "https://github.com/calligross/ggthemeassist")
+    (synopsis "Add-in to customize ggplot2 themes")
+    (description
+     "This package provides an Rstudio add-in that delivers a graphical
+interface for editing @code{ggplot2} theme elements.")
+    (license license:gpl3)))
 
 ;; This package includes minified JavaScript files.  When upgrading please
 ;; check that there are no new minified JavaScript files.
@@ -24758,6 +24803,61 @@ Mardia, K.V. (2016).  Statistical shape analysis, with Applications in R (2nd
 Edition), John Wiley and Sons.")
     (license license:gpl2)))
 
+(define-public r-animation
+  (package
+    (name "r-animation")
+    (version "2.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "animation" version))
+              (sha256
+               (base32
+                "0sg4sz5lkn85yzpcg22xkr7921cbnh7g74nlp9imjy7c0hdqyhc8"))
+              (snippet
+               '(for-each delete-file
+                          '("inst/misc/scianimator/js/jquery.scianimator.min.js"
+                            "inst/misc/scianimator/js/jquery-1.4.4.min.js")))))
+    (properties `((upstream-name . "animation")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/misc/"
+               (symlink (search-input-file
+                         inputs
+                         "share/javascript/jquery.scianimator.min.js")
+                        "scianimator/js/jquery.scianimator.min.js")
+               (invoke "esbuild" (assoc-ref inputs "js-jquery")
+                       "--minify"
+                       (string-append "--outfile="
+                                      "scianimator/js/jquery-1.4.4.min.js"))))))))
+    (propagated-inputs (list r-magick))
+    (inputs (list js-scianimator))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("js-jquery"
+        ,(origin
+           (method url-fetch)
+           (uri "https://code.jquery.com/jquery-1.4.4.js")
+           (sha256
+            (base32
+             "10nl4smq63vrfb0c3n0fknm1zw7ss8gicy6wc6jb6l3rmyad075k"))))))
+    (home-page "https://yihui.org/animation/")
+    (synopsis "Gallery of animations and utilities to create animations")
+    (description
+     "This package provides functions for animations in statistics, covering
+topics in probability theory, mathematical statistics, multivariate
+statistics, non-parametric statistics, sampling survey, linear models, time
+series, computational statistics, data mining and machine learning.  These
+functions may be helpful in teaching statistics and data analysis.  Also
+provided in this package are a series of functions to save animations to
+various formats, e.g. GIF, HTML pages, PDF, and videos.  PDF animations can be
+inserted into Sweave / @code{knitr} easily.")
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-anthropometry
   (package
     (name "r-anthropometry")
@@ -26144,6 +26244,25 @@ uses a trans-dimensional @dfn{Markov Chain Monte Carlo} (MCMC) approach based
 on a continuous-time birth-death process.")
     (license license:gpl2+)))
 
+(define-public r-bundesligr
+  (package
+    (name "r-bundesligr")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "bundesligR" version))
+              (sha256
+               (base32
+                "0dnhbh9jh7dfbk7mfh8msq4ys5kakalr0kwkycycrb2q8rd049vp"))))
+    (properties `((upstream-name . "bundesligR")))
+    (build-system r-build-system)
+    (home-page "https://github.com/ottlngr/bundesligR")
+    (synopsis "All final tables of the Bundesliga")
+    (description
+     "This package provides all final tables of Germany's highest football
+league, the Bundesliga.  It contains data from 1964 to 2016.")
+    (license license:gpl3)))
+
 (define-public r-d3network
   (package
     (name "r-d3network")
@@ -26801,6 +26920,28 @@ method (Sen, 1968) plus implementation of Xuebin Zhang's (Zhang, 1999) and
 Yue-Pilon's (Yue, 2002) pre-whitening approaches to determining trends in
 climate data.")
     (license license:lgpl2.1)))
+
+(define-public r-rlecuyer
+  (package
+    (name "r-rlecuyer")
+    (version "0.3-5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rlecuyer" version))
+              (sha256
+               (base32
+                "09mniai7v8gapr6hd3zm8sm3vi1zcyhgym389904ykb2yx7l68s7"))))
+    (properties `((upstream-name . "rlecuyer")))
+    (build-system r-build-system)
+    (home-page
+     "https://www.iro.umontreal.ca/~lecuyer/myftp/papers/streams00.pdf")
+    (synopsis "R interface to RNG with multiple streams")
+    (description
+     "This package provides an interface to the C implementation of the random
+number generator with multiple independent streams developed by L'Ecuyer et
+al (2002).  The main purpose of this package is to enable the use of this
+random number generator in parallel R applications.")
+    (license license:gpl2+)))
 
 (define-public r-rlinsolve
   (package
@@ -31931,6 +32072,34 @@ split, combine, and compress.  This package interfaces directly to the
 @code{qpdf} does not read actual content from PDF files: to extract text and
 data you need the @code{pdftools} package.")
     (license license:asl2.0)))
+
+(define-public r-pbdmpi
+  (package
+    (name "r-pbdmpi")
+    (version "0.4-4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "pbdMPI" version))
+              (sha256
+               (base32
+                "006pm2yn4mdrpwhfflqcybzv41lz7zssrjrcpq5g98zf60p9c07a"))))
+    (properties `((upstream-name . "pbdMPI")))
+    (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'mpi-setup
+           ,%openmpi-setup))))
+    (inputs (list openmpi))
+    (propagated-inputs (list r-float r-rlecuyer))
+    (native-inputs (list pkg-config))
+    (home-page "https://pbdr.org/")
+    (synopsis "Programming with Big Data -- Interface to MPI")
+    (description
+     "This package provides an efficient interface to MPI by utilizing S4
+classes and methods with a focus on @dfn{Single Program/Multiple Data} (SPMD)
+parallel programming style, which is intended for batch parallel execution.")
+    (license license:mpl2.0)))
 
 (define-public r-pdftools
   (package

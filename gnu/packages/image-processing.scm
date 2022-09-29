@@ -671,7 +671,7 @@ things like:
 (define-public vips
   (package
     (name "vips")
-    (version "8.10.6")
+    (version "8.13.1")
     (source
      (origin
        (method url-fetch)
@@ -679,7 +679,7 @@ things like:
              "https://github.com/libvips/libvips/releases/download/v"
              version "/vips-" version ".tar.gz"))
        (sha256
-        (base32 "0vjsh3i0861f6h9as3bch956cidz824zz499pvhjs3lfjn6hhs14"))))
+        (base32 "00kp3439jcqv9l2gcjg88xzvlq8clv54z1m3x66i3chvarz7ndxd"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gobject-introspection pkg-config))

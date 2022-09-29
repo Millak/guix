@@ -129,13 +129,23 @@ the haskell-build-system."
         #:name "R team"
         #:description
         "The R language, CRAN and Bioconductor repositories, the \"cran\" importer,
-and the r-build-system."))
+and the r-build-system."
+        #:scope (list "gnu/packages/bioconductor.scm"
+                      "gnu/packages/cran.scm"
+                      "guix/build/r-build-system.scm"
+                      "guix/build-system/r.scm"
+                      "guix/import/cran.scm"
+                      "guix/scripts/import/cran.scm"
+                      "tests/cran.scm")))
 
 (define-team julia
   (team 'julia
         #:name "Julia team"
         #:description
-        "The Julia language, Julia packages, and the julia-build-system."))
+        "The Julia language, Julia packages, and the julia-build-system."
+        #:scope (list (make-regexp "^gnu/packages/julia(-.+|)\\.scm$")
+                      "guix/build/julia-build-system.scm"
+                      "guix/build-system/julia.scm")))
 
 (define-team ocaml
   (team 'ocaml
@@ -185,7 +195,10 @@ ecosystem."
         #:scope (list (make-regexp "^gnu/packages/emacs(-.+|)\\.scm$")
                       "guix/build/emacs-build-system.scm"
                       "guix/build/emacs-utils.scm"
-                      "guix/build-system/emacs.scm")))
+                      "guix/build-system/emacs.scm"
+                      "guix/import/elpa.scm"
+                      "guix/scripts/import/elpa.scm"
+                      "tests/elpa.scm")))
 
 (define-team lisp
   (team 'lisp
@@ -200,11 +213,23 @@ asdf-build-system."
 
 (define-team ruby
   (team 'ruby
-        #:name "Ruby team"))
+        #:name "Ruby team"
+        #:scope (list "gnu/packages/ruby.scm"
+                      "guix/build/ruby-build-system.scm"
+                      "guix/build-system/ruby.scm"
+                      "guix/import/gem.scm"
+                      "guix/scripts/import/gem.scm"
+                      "tests/gem.scm")))
 
 (define-team go
   (team 'go
-        #:name "Go team"))
+        #:name "Go team"
+        #:scope (list "gnu/packages/golang.scm"
+                      "guix/build/go-build-system.scm"
+                      "guix/build-system/go.scm"
+                      "guix/import/go.scm"
+                      "guix/scripts/import/go.scm"
+                      "tests/go.scm")))
 
 (define-team embedded-bootstrap
   (team 'embedded-bootstrap
@@ -212,11 +237,23 @@ asdf-build-system."
 
 (define-team rust
   (team 'rust
-        #:name "Rust"))
+        #:name "Rust"
+        #:scope (list (make-regexp "^gnu/packages/(crates|rust)(-.+|)\\.scm$")
+                      "guix/build/cargo-build-system.scm"
+                      "guix/build/cargo-utils.scm"
+                      "guix/build-system/cargo.scm"
+                      "guix/import/crate.scm"
+                      "guix/scripts/import/crate.scm"
+                      "tests/crate.scm")))
 
 (define-team kernel
   (team 'kernel
-        #:name "Linux-libre kernel team"))
+        #:name "Linux-libre kernel team"
+        #:scope (list "gnu/build/linux-modules.scm"
+                      "gnu/packages/linux.scm"
+                      "gnu/tests/linux-modules.scm"
+                      "guix/build/linux-module-build-system.scm"
+                      "guix/build-system/linux-module.scm")))
 
 (define-team core
   (team 'core
@@ -316,17 +353,21 @@ asdf-build-system."
 
 (define-team translations
   (team 'translations
-        #:name "Translations"))
+        #:name "Translations"
+        #:scope (list (make-regexp "^po/"))))
 
 (define-team installer
   (team 'installer
         #:name "Installer script and system installer"
-        #:scope
-        (list (make-regexp "^guix/installer(\\.scm$|/)"))))
+        #:scope (list (make-regexp "^gnu/installer(\\.scm$|/)"))))
 
 (define-team home
   (team 'home
-        #:name "Team for \"Guix Home\""))
+        #:name "Team for \"Guix Home\""
+        #:scope (list (make-regexp "^(gnu|guix/scripts)/home(\\.scm$|/)")
+                      "tests/guix-home.sh"
+                      "tests/home-import.scm"
+                      "tests/home-services.scm")))
 
 (define-team mentors
   (team 'mentors
@@ -339,7 +380,8 @@ asdf-build-system."
         #:name "Mozilla"
         #:description
         "Taking care about Icecat and Icedove, built from Mozilla Firefox
-and Thunderbird."))
+and Thunderbird."
+        #:scope (list "gnu/packages/gnuzilla.scm")))
 
 (define-team racket
   (team 'racket
@@ -347,7 +389,8 @@ and Thunderbird."))
         #:description
         "The Racket language and Racket-based languages, Racket packages,
 Racket's variant of Chez Scheme, and development of a Racket build system and
-importer."))
+importer."
+        #:scope (list "gnu/packages/racket.scm")))
 
 
 (define-member (person "Thiago Jung Bauermann"
@@ -433,6 +476,14 @@ importer."))
 (define-member (person "Josselin Poiret"
                        "dev@jpoiret.xyz")
   core installer)
+
+(define-member (person "("
+                       "paren@disroot.org")
+  home mentors)
+
+(define-member (person "Simon Tournier"
+                       "zimon.toutoune@gmail.com")
+  julia core mentors)
 
 
 (define (find-team name)

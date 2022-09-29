@@ -575,6 +575,14 @@ marked as 'needed-for-boot'."
   (service file-system-service-type
            (map add-dependencies file-systems)))
 
+(define (boot-file-system-service os)
+  "Return a service which adds, to the system profile, packages providing the
+utilites for the file systems marked as 'needed-for-boot' in OS."
+  (let ((file-systems (filter file-system-needed-for-boot?
+                              (operating-system-file-systems os))))
+    (simple-service 'boot-file-system-utilities profile-service-type
+                    (file-system-utilities file-systems))))
+
 (define (mapped-device-users device file-systems)
   "Return the subset of FILE-SYSTEMS that use DEVICE."
   (let ((targets (map (cut string-append "/dev/mapper/" <>)
@@ -720,13 +728,14 @@ bookkeeping."
   (define known-fs
     (map file-system-mount-point (operating-system-file-systems os)))
 
-  (let* ((mappings  (device-mapping-services os))
-         (root-fs   (root-file-system-service))
-         (other-fs  (non-boot-file-system-service os))
-         (swaps     (swap-services os))
-         (procs     (service user-processes-service-type))
-         (host-name (host-name-service (operating-system-host-name os)))
-         (entries   (operating-system-directory-base-entries os)))
+  (let* ((mappings     (device-mapping-services os))
+         (root-fs      (root-file-system-service))
+         (boot-fs      (boot-file-system-service os))
+         (non-boot-fs  (non-boot-file-system-service os))
+         (swaps        (swap-services os))
+         (procs        (service user-processes-service-type))
+         (host-name    (host-name-service (operating-system-host-name os)))
+         (entries      (operating-system-directory-base-entries os)))
     (cons* (service system-service-type entries)
            (service linux-builder-service-type
                     (linux-builder-configuration
@@ -757,7 +766,7 @@ bookkeeping."
                     (operating-system-setuid-programs os))
            (service profile-service-type
                     (operating-system-packages os))
-           other-fs
+           boot-fs non-boot-fs
            (append mappings swaps
 
                    ;; Add the firmware service.
@@ -887,8 +896,9 @@ of PROVENANCE-SERVICE-TYPE to its services."
         iw wireless-tools))
 
 (define %base-packages-disk-utilities
-  ;; A well-rounded set of packages for interacting with disks, partitions
-  ;; and filesystems.
+  ;; A well-rounded set of packages for interacting with disks,
+  ;; partitions and filesystems, included with the Guix installation
+  ;; image.
   (list parted gptfdisk ddrescue
         ;; We used to provide fdisk from GNU fdisk, but as of version 2.0.0a
         ;; it pulls Guile 1.8, which takes unreasonable space; furthermore
@@ -903,8 +913,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
 (define %base-packages
   ;; Default set of packages globally visible.  It should include anything
   ;; required for basic administrator tasks.
-  (append (list e2fsprogs)
-          %base-packages-artwork
+  (append %base-packages-artwork
           %base-packages-interactive
           %base-packages-linux
           %base-packages-networking

@@ -9997,92 +9997,93 @@ world.")
     (build-system trivial-build-system)
     (arguments '(#:builder (begin (mkdir %output) #t)))
     (propagated-inputs
-     `(;; GNOME-Core-OS-Services
-       ("accountsservice" ,accountsservice)
-       ("network-manager" ,network-manager)
-       ("packagekit" ,packagekit)
-       ("upower" ,upower)
-       ;; GNOME-Core-Shell
-       ("adwaita-icon-theme" ,adwaita-icon-theme)
-       ("gdm" ,gdm)
-       ("glib-networking" ,glib-networking)
-       ("gnome-backgrounds" ,gnome-backgrounds)
-       ("gnome-bluetooth" ,gnome-bluetooth)
-       ("gnome-color-manager" ,gnome-color-manager)
-       ("gnome-control-center" ,gnome-control-center)
-       ("gnome-desktop" ,gnome-desktop)
-       ("gnome-initial-setup" ,gnome-initial-setup)
-       ("gnome-keyring" ,gnome-keyring)
-       ("gnome-menus" ,gnome-menus)
-       ("gnome-session" ,gnome-session)
-       ("gnome-settings-daemon" ,gnome-settings-daemon)
-       ("gnome-shell-extensions" ,gnome-shell-extensions)
-       ("gnome-shell" ,gnome-shell)
-       ("gnome-themes-extra" ,gnome-themes-extra)
-       ("gnome-user-docs" ,gnome-user-docs)
-       ("gnome-user-share" ,gnome-user-share)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gvfs" ,gvfs)
-       ("mutter" ,mutter)
-       ("orca" ,orca)
-       ("rygel" ,rygel)
-       ("sushi" ,sushi)
-       ;; GNOME-Core-Utilities
-       ("baobab" ,baobab)
-       ("cheese" ,cheese)
-       ;; XXX: EoG requires librsvg-next, which depends on Rust, which currently
-       ;; only works on x86_64, so exclude it on other architectures.
-       ,@(if (string-prefix? "x86_64" (%current-system))
-             `(("eog" ,eog))
+     `(,@(if (string-prefix? "x86_64" (%current-system))
+             ;; XXX: EoG requires librsvg-next, which depends on Rust, which currently
+             ;; only works on x86_64, so exclude it on other architectures.
+             (list eog)
              '())
-       ("epiphany" ,epiphany)
-       ("evince" ,evince)
-       ("file-roller" ,file-roller)
-       ("gedit" ,gedit)
-       ("gnome-boxes" ,gnome-boxes)
-       ("gnome-calculator" ,gnome-calculator)
-       ("gnome-calendar" ,gnome-calendar)
-       ("gnome-characters" ,gnome-characters)
-       ("gnome-clocks" ,gnome-clocks)
-       ("gnome-contacts" ,gnome-contacts)
-       ("gnome-disk-utility" ,gnome-disk-utility)
-       ("gnome-font-viewer" ,gnome-font-viewer)
-       ("gnome-maps" ,gnome-maps)
-       ("gnome-music" ,gnome-music)
-       ("gnome-photos" ,gnome-photos)
-       ("gnome-screenshot" ,gnome-screenshot)
-       ("gnome-system-monitor" ,gnome-system-monitor)
-       ("gnome-terminal" ,gnome-terminal)
-       ("gnome-weather" ,gnome-weather)
-       ("nautilus" ,nautilus)
-       ("simple-scan" ,simple-scan)
-       ("totem" ,totem)
-       ("tracker-miners" ,tracker-miners)
-       ("yelp" ,yelp)
-       ;; Others
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("gnome-online-accounts" ,gnome-online-accounts)
+       ,@(list
+          ;; GNOME-Core-OS-Services.
+          accountsservice
+          network-manager
+          packagekit
+          upower
+          ;; GNOME-Core-Shell.
+          adwaita-icon-theme
+          gdm
+          glib-networking
+          gnome-backgrounds
+          gnome-bluetooth
+          gnome-color-manager
+          gnome-control-center
+          gnome-desktop
+          gnome-initial-setup
+          gnome-keyring
+          gnome-menus
+          gnome-session
+          gnome-settings-daemon
+          gnome-shell
+          gnome-shell-extensions
+          gnome-themes-extra
+          gnome-user-docs
+          gnome-user-share
+          gsettings-desktop-schemas
+          gvfs
+          mutter
+          orca
+          rygel
+          sushi
+          ;; GNOME-Core-Utilities.
+          baobab
+          cheese
+          epiphany
+          evince
+          file-roller
+          gnome-boxes
+          gnome-calculator
+          gnome-calendar
+          gnome-characters
+          gnome-clocks
+          gnome-console
+          gnome-contacts
+          gnome-disk-utility
+          gnome-font-viewer
+          gnome-maps
+          gnome-music
+          gnome-photos
+          gnome-screenshot
+          gnome-system-monitor
+          gnome-text-editor
+          gnome-weather
+          nautilus
+          simple-scan
+          totem
+          tracker-miners
+          yelp
+          ;; Others.
+          gnome-online-accounts
+          hicolor-icon-theme
 
-       ;; Packages not part of GNOME proper but that are needed for a good
-       ;; experience.  See <https://bugs.gnu.org/39646>.
-       ;; XXX: Find out exactly which ones are needed and why.
-       ("font-abattis-cantarell"            ,font-abattis-cantarell)
-       ("font-dejavu"               ,font-dejavu)
-       ("at-spi2-core"              ,at-spi2-core-minimal)
-       ("dbus"                      ,dbus)
-       ("dconf"                     ,dconf)
-       ("desktop-file-utils"        ,desktop-file-utils)
-       ("gnome-default-applications" ,gnome-default-applications)
-       ("gst-plugins-base"          ,gst-plugins-base)
-       ("gst-plugins-good"          ,gst-plugins-good)
-       ("gucharmap"                 ,gucharmap)
-       ("pinentry-gnome3"           ,pinentry-gnome3)
-       ("pulseaudio"                ,pulseaudio)
-       ("shared-mime-info"          ,shared-mime-info)
-       ("system-config-printer"     ,system-config-printer)
-       ("xdg-user-dirs"             ,xdg-user-dirs)
-       ("yelp"                      ,yelp)
-       ("zenity"                    ,zenity)))
+          ;; Packages not part of GNOME proper but that are needed for a good
+          ;; experience.  See <https://bugs.gnu.org/39646>.
+          ;; XXX: Find out exactly which ones are needed and why.
+          at-spi2-core-minimal
+          dbus
+          dconf
+          desktop-file-utils
+          font-abattis-cantarell
+          font-dejavu
+          gnome-default-applications
+          gst-plugins-base
+          gst-plugins-good
+          gucharmap
+          pinentry-gnome3
+          pulseaudio
+          shared-mime-info
+          system-config-printer
+          xdg-user-dirs
+          yelp
+          zenity)))
     (synopsis "The GNU desktop environment")
     (home-page "https://www.gnome.org/")
     (description
@@ -11658,6 +11659,7 @@ generic enough to work for everyone.")
            highlight
            libcanberra
            libgweather4
+           libnotify
            libsoup
            nss
            openldap

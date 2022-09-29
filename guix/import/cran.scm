@@ -82,32 +82,64 @@
 (define %input-style
   (make-parameter 'variable)) ; or 'specification
 
-(define string->license
-  (match-lambda
-   ("AGPL-3" 'agpl3+)
-   ("Artistic-2.0" 'artistic2.0)
-   ("Apache License 2.0" 'asl2.0)
-   ("BSD_2_clause" 'bsd-2)
-   ("BSD_2_clause + file LICENSE" 'bsd-2)
-   ("BSD_3_clause" 'bsd-3)
-   ("BSD_3_clause + file LICENSE" 'bsd-3)
-   ("GPL" '(list gpl2+ gpl3+))
-   ("GPL (>= 2)" 'gpl2+)
-   ("GPL (>= 3)" 'gpl3+)
-   ("GPL-2" 'gpl2)
-   ("GPL-3" 'gpl3)
-   ("LGPL-2" 'lgpl2.0)
-   ("LGPL-2.1" 'lgpl2.1)
-   ("LGPL-3" 'lgpl3)
-   ("LGPL (>= 2)" 'lgpl2.0+)
-   ("LGPL (>= 2.1)" 'lgpl2.1+)
-   ("LGPL (>= 3)" 'lgpl3+)
-   ("MIT" 'expat)
-   ("MIT + file LICENSE" 'expat)
-   ((x) (string->license x))
-   ((lst ...) `(list ,@(map string->license lst)))
-   (_ #f)))
+(define (string->licenses license-string)
+  (let ((licenses
+         (map string-trim-both
+              (string-tokenize license-string
+                               (char-set-complement (char-set #\|))))))
+    (string->license licenses)))
 
+(define string->license
+  (let ((prefix identity))
+    (match-lambda
+      ("AGPL-3" (prefix 'agpl3))
+      ("AGPL (>= 3)" (prefix 'agpl3+))
+      ("Artistic-2.0" (prefix 'artistic2.0))
+      ((or "Apache License 2.0"
+           "Apache License (== 2.0)")
+       (prefix 'asl2.0))
+      ("BSD_2_clause" (prefix 'bsd-2))
+      ("BSD_2_clause + file LICENSE" (prefix 'bsd-2))
+      ("BSD_3_clause" (prefix 'bsd-3))
+      ("BSD_3_clause + file LICENSE" (prefix 'bsd-3))
+      ("CC0" (prefix 'cc0))
+      ("CC BY-SA 4.0" (prefix 'cc-by-sa4.0))
+      ("CeCILL" (prefix 'cecill))
+      ((or "GPL"
+           "GNU General Public License")
+       `(list ,(prefix 'gpl2+) ,(prefix 'gpl3+)))
+      ((or "GPL (>= 2)"
+           "GPL (>= 2.0)")
+       (prefix 'gpl2+))
+      ((or "GPL (> 2)"
+           "GPL (>= 3)"
+           "GPL (>= 3.0)"
+           "GNU General Public License (>= 3)")
+       (prefix 'gpl3+))
+      ((or "GPL-2"
+           "GNU General Public License version 2")
+       (prefix 'gpl2))
+      ((or "GPL-3"
+           "GNU General Public License version 3")
+       (prefix 'gpl3))
+      ((or "GNU Lesser General Public License"
+           "LGPL")
+       (prefix 'lgpl2.0+))
+      ("LGPL-2" (prefix 'lgpl2.0))
+      ("LGPL-2.1" (prefix 'lgpl2.1))
+      ("LGPL-3" (prefix 'lgpl3))
+      ((or "LGPL (>= 2)"
+           "LGPL (>= 2.0)")
+       (prefix 'lgpl2.0+))
+      ("LGPL (>= 2.1)" (prefix 'lgpl2.1+))
+      ("LGPL (>= 3)" (prefix 'lgpl3+))
+      ("MIT" (prefix 'expat))
+      ("MIT + file LICENSE" (prefix 'expat))
+      ("file LICENSE"
+       `(,(prefix 'fsdg-compatible) "file://LICENSE"))
+      ((x) (string->license x))
+      ((lst ...) `(list ,@(map string->license lst)))
+      (unknown `(,(prefix 'fsdg-compatible) ,unknown)))))
 
 (define (description->alist description)
   "Convert a DESCRIPTION string into an alist."
@@ -360,9 +392,20 @@ empty list when the FIELD cannot be found."
 (define invalid-packages
   (list "c++11"
         "c++14"
-        "linux"
         "getopt::long"
+        "linux"
+        "none"
+        "windows"
+        "xcode"
         "xquartz"))
+
+(define (transform-sysname sysname)
+  "Return a Guix package name for the common package name SYSNAME."
+  (match sysname
+    ("java" "openjdk")
+    ("fftw3" "fftw")
+    ("tcl/tk" "tcl")
+    (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))
 
@@ -474,7 +517,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
          (name       (assoc-ref meta "Package"))
          (synopsis   (assoc-ref meta "Title"))
          (version    (assoc-ref meta "Version"))
-         (license    (string->license (assoc-ref meta "License")))
+         (license    (string->licenses (assoc-ref meta "License")))
          ;; Some packages have multiple home pages.  Some have none.
          (home-page  (case repository
                        ((git) (assoc-ref meta 'git))
@@ -558,7 +601,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                     `((properties ,`(,'quasiquote ((,'upstream-name . ,name)))))
                     '())
               (build-system r-build-system)
-              ,@(maybe-inputs sysdepends)
+              ,@(maybe-inputs (map transform-sysname sysdepends))
               ,@(maybe-inputs (map cran-guix-name propagate) 'propagated-inputs)
               ,@(maybe-inputs
                  `(,@(if (needs-fortran? source (not (or git? hg?)))
@@ -571,7 +614,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
               (home-page ,(if (string-null? home-page)
                               (string-append base-url name)
                               home-page))
-              (synopsis ,synopsis)
+              (synopsis ,(beautify-synopsis synopsis))
               (description ,(beautify-description (or (assoc-ref meta "Description")
                                                       "")))
               (license ,license))))

@@ -35,7 +35,7 @@
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
-;;; Copyright © 2019, 2020, 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2019-2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2020, 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -6943,6 +6943,46 @@ monitoring tools for Linux.  These include @code{mpstat}, @code{iostat},
 @code{tapestat}, @code{cifsiostat}, @code{pidstat}, @code{sar}, @code{sadc},
 @code{sadf} and @code{sa}.")
     (license license:gpl2+)))
+
+(define-public acpilight
+  (package
+    (name "acpilight")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/wavexx/acpilight.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r0r3nx6x6vkpal6vci0zaa1n9dfacypldf6k8fxg7919vzxdn1w"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ; no tests
+           #:make-flags
+           #~(list (string-append "prefix=" #$output)
+                   (string-append "sysconfdir=" #$output "/etc"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'patch
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Prevent reloading udev at build time
+                   (substitute* "Makefile"
+                     (("udevadm") "true"))
+                   (substitute* "90-backlight.rules"
+                     (("/bin")
+                      (string-append #$(this-package-input "coreutils")
+                                     "/bin"))))))))
+    (inputs (list coreutils python))
+    (home-page "https://gitlab.com/wavexx/acpilight")
+    (synopsis "Backward-compatibile xbacklight replacement")
+    (description "acpilight is a backward-compatibile replacement for
+xbacklight that uses the ACPI interface to set the display brightness.  On
+modern laptops acpilight can control both display and keyboard backlight
+uniformly on either X11, the console or Wayland.")
+    (license license:gpl3+)))
 
 (define-public light
   (package

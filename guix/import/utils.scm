@@ -72,6 +72,7 @@
 
             snake-case
             beautify-description
+            beautify-synopsis
 
             alist->package
 
@@ -295,7 +296,22 @@ LENGTH characters."
     ;; Use double spacing between sentences
     (fill-paragraph (regexp-substitute/global #f "\\. \\b"
                                           cleaned 'pre ".  " 'post)
-                length)))
+                    length)))
+
+(define (beautify-synopsis synopsis)
+  "Improve the package SYNOPSIS."
+  (let ((cleaned (cond
+                  ((not (string? synopsis))
+                   (G_ "This package lacks a synopsis.  Run \
+\"info '(guix) Synopses and Descriptions'\" for more information."))
+                  ((string-prefix? "A " synopsis)
+                   (substring synopsis 1))
+                  ;; Remove trailing period.
+                  ((string-suffix? "." synopsis)
+                   (substring synopsis 0
+                              (1- (string-length synopsis))))
+                  (else synopsis))))
+    (string-trim-both cleaned)))
 
 (define* (package-names->package-inputs names #:optional (output #f))
   "Given a list of PACKAGE-NAMES or (PACKAGE-NAME VERSION) pairs, and an

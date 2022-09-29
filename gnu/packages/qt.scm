@@ -3234,6 +3234,25 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
 (PyQt5, PyQt4 and PySide) and additional custom QWidgets.")
     (license license:expat)))
 
+(define-public python-qt.py
+  (package
+    (name "python-qt.py")
+    (version "1.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Qt.py" version))
+       (sha256
+        (base32 "07rvfwzjl378j75j2va0c6xylwx16icxa6dycsjgjc329pgpng40"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pyqt))
+    (home-page "https://github.com/mottosso/Qt.py")
+    (synopsis "Abstraction layer for Python Qt bindings")
+    (description
+     "This package provides an abstraction layer on top of the various Qt
+bindings (PySide, PySide2, PyQt4 and PyQt5).")
+    (license license:expat)))
+
 (define-public qscintilla
   (package
     (name "qscintilla")

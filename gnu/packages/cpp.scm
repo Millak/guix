@@ -1041,6 +1041,15 @@ Google's C++ code base.")
           `(cons* "-DBUILD_TESTING=ON"
                   (delete "-DABSL_RUN_TESTS=ON" ,flags))))))))
 
+(define-public abseil-cpp-cxxstd17
+  (let ((base abseil-cpp))
+    (hidden-package
+     (package/inherit base
+       (arguments
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:configure-flags flags)
+           #~(cons* "-DCMAKE_CXX_STANDARD=17" #$flags))))))))
+
 (define-public pegtl
   (package
     (name "pegtl")
@@ -1907,3 +1916,41 @@ and above.  It is header only and has zero dependencies.  It provides a
 templated string type for compatibility with any STL-like string (std::string,
 std::wstring, etc).")
     (license license:boost1.0)))
+
+(define-public crc32c
+  (package
+    (name "crc32c")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/crc32c")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0966lyy3w5cnrs0c0fkma4hga51k54hns72l4n76944awqssap7j"))
+              (patches (search-patches "crc32c-unbundle-googletest.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                     "-DCRC32C_BUILD_BENCHMARKS=OFF"
+                                     "-DCRC32C_USE_GLOG=OFF"
+                                     (string-append
+                                      "-DCRC32C_BUILD_TESTS="
+                                      ;; TODO: perhaps infer #:tests?
+                                      (if #$(%current-target-system)
+                                          "OFF" "ON")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'make-reproducible
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("if\\(HAVE_SSE42\\)") "if(FALSE)")))))))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/google/crc32c")
+    (synopsis "Cyclic redundancy check")
+    (description
+     "This package provides architecture-specific implementations of the
+CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
+    (license license:bsd-3)))

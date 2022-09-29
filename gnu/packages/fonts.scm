@@ -2736,7 +2736,7 @@ and readability.  This package bundles those icons into a font.")
 (define-public font-lxgw-wenkai
   (package
     (name "font-lxgw-wenkai")
-    (version "1.245")
+    (version "1.245.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2744,7 +2744,7 @@ and readability.  This package bundles those icons into a font.")
                     version "/lxgw-wenkai-v" version ".tar.gz"))
               (sha256
                (base32
-                "01x5nfw0cy7v8vsjw32zayc0ryskiwj22yzqi28252896073mm9k"))))
+                "13hvr1jz9xpb0cgi4xk3zfbn6w5x258zja55hznbgny2sijnjn8a"))))
     (build-system font-build-system)
     (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
     (synopsis "Simplified Chinese Imitation Song typeface")
@@ -2758,7 +2758,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
   (package
     (inherit font-lxgw-wenkai)
     (name "font-lxgw-wenkai-tc")
-    (version "0.922")
+    (version "0.922.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2766,7 +2766,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
                     version "/lxgw-wenkai-tc-v" version ".tar.gz"))
               (sha256
                (base32
-                "0kb12sfb8ihsj14yzk5ib657xvswqy0hy5gr1vfbn1n05vzy8wyk"))))
+                "0a1n0yfnh3sc3ldgjxxglw4xyg82i2pk432sk8hfdzrrl4zzjyz3"))))
     (home-page "https://github.com/lxgw/LxgwWenKaitc")
     (synopsis "Traditional Chinese Imitation Song typeface")
     (description

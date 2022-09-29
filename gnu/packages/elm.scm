@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -485,6 +486,23 @@ you.")
     (description
      "This package is for markdown parsing and rendering in Elm.  It is based
 on the @code{marked} project, which focuses on speed.")
+    (license license:bsd-3)))
+
+(define-public elm-community-random-extra
+  (package
+    (name "elm-community-random-extra")
+    (version "3.2.0")
+    (source (elm-package-origin
+             "elm-community/random-extra" version
+             (base32 "13l48mx4wj7qdxl1shn9ij34izap256vv3k49ncnxpkjb7m1m3xk")))
+    (build-system elm-build-system)
+    (propagated-inputs (list elm-time elm-random elm-core))
+    (inputs (list elm-explorations-test))
+    (home-page
+     "https://package.elm-lang.org/packages/elm-community/random-extra/")
+    (synopsis "Extra functions for the Elm core random library")
+    (description "@code{emacs-community-random-extra} includes lots of extra
+helper functions for the Random module.")
     (license license:bsd-3)))
 
 (define-public elm-todomvc

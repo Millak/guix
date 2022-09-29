@@ -100,6 +100,7 @@
     "third_party/angle/src/third_party/volk" ;Expat
     "third_party/apple_apsl" ;APSL2.0
     "third_party/axe-core" ;MPL2.0
+    "third_party/bidimapper" ;ASL2.0
     "third_party/blink" ;BSD-3, LGPL2+
     "third_party/boringssl" ;OpenSSL/ISC (Google additions are ISC)
     "third_party/boringssl/src/third_party/fiat" ;Expat
@@ -173,6 +174,7 @@
     "third_party/hunspell" ;MPL1.1/GPL2+/LGPL2.1+
     "third_party/iccjpeg" ;IJG
     "third_party/inspector_protocol" ;BSD-3
+    "third_party/ipcz" ;BSD-3
     "third_party/jinja2" ;BSD-3
     "third_party/jstemplate" ;ASL2.0
     "third_party/khronos" ;Expat, SGI
@@ -317,9 +319,10 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "105.0.5195.125")
+(define %chromium-version "106.0.5249.61")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/102.0.5005.61-1")
+(define %arch-revision "6afedb08139b97089ce8ef720ece5cd14c83948c")
 
 (define %ungoogled-origin
   (origin
@@ -329,7 +332,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0k16wma9lj9q34xgz377nasnfzcw7wi73l91r41yilvgb3l2fgw8"))))
+      "0mz3f4f2q72zl6m9vxxx084z0a1kfmsqf7fcir5bka85ap2klpjl"))))
 
 (define %debian-origin
   (origin
@@ -345,7 +348,7 @@
       "1ln6r1qzlr7dsgvcbssvvc34my4mpkwv9hmvlb2dhjncs7isp65j"))))
 
 (define %chromium-gcc-patchset
-  (let ((commit "chromium-105-patchset-1"))
+  (let ((commit "chromium-106-patchset-3"))
     (origin
       (method git-fetch)
       (uri (git-reference
@@ -355,7 +358,7 @@
                                 (string-drop commit 9)))
       (sha256
        (base32
-        "08c3pbdqjdqi7rmyqkkh6q429611ikakf4gkzwg1gr07vyknwkfa")))))
+        "109garl1z19zgn3sgg1y2339aa229kfpmlb238cp6kbd7gv8j43x")))))
 
 (define (origin-file origin file)
   (computed-file
@@ -377,23 +380,27 @@
 
 (define %gcc-patches
   (map gcc-patch
-       '("chromium-105-AdjustMaskLayerGeometry-ceilf.patch"
-         "chromium-105-Bitmap-include.patch"
-         "chromium-105-browser_finder-include.patch"
-         "chromium-105-raw_ptr-noexcept.patch"
-         "chromium-105-Trap-raw_ptr.patch")))
+       '("chromium-106-AutofillPopupControllerImpl-namespace.patch"
+         "chromium-106-LinuxInputMethodContext-include.patch"
+         "chromium-106-ReverseBeaconTimeoutSorter-constexpr.patch")))
 
-;; Take a patch from Arch that reverts a change which requires an unreleased
-;; version of ffmpeg.
-(define %ungoogled-chromium-unroll-ffmpeg.patch
+(define (arch-patch revision name hash)
   (origin
     (method url-fetch)
-    (uri "https://raw.githubusercontent.com/archlinux/svntogit-packages\
-/f3225f99b900e11ac900725992ea883142d7309c/trunk/roll-src-third_party-ffmpeg.patch")
-    (file-name "ungoogled-chromium-unroll-ffmpeg.patch")
-    (sha256
-     (base32
-      "0i7crn6fcwq09kd6a4smqnffaldyv61lmv2p0drcnpfrwalmkprh"))))
+    (uri (string-append "https://raw.githubusercontent.com/archlinux"
+                        "/svntogit-packages/" revision "/trunk/" name))
+    (sha256 (base32 hash))))
+
+(define %reverse-patches
+  (list
+   ;; These patches revert changes that require an unreleased ffmpeg.
+   (arch-patch %arch-revision "REVERT-roll-src-third_party-ffmpeg-m102.patch"
+               "0i7crn6fcwq09kd6a4smqnffaldyv61lmv2p0drcnpfrwalmkprh")
+   (arch-patch %arch-revision "REVERT-roll-src-third_party-ffmpeg-m106.patch"
+               "0li10cvxnppmmmsc7w77b1s7z02s5bzd39zsal9x768708fx64jc")
+   ;; Fix crash when using Global Media Controls.
+   (arch-patch %arch-revision "REVERT-enable-GlobalMediaControlsCastStartStop.patch"
+               "1ilsw421lylkjnq3lvc607bdx7cvwlish8qzgwx9s84l4hzv37vp")))
 
 (define %guix-patches
   (list (local-file
@@ -436,8 +443,11 @@
                     (append '#+%debian-patches '#+%guix-patches
                             '#+%gcc-patches))
 
-          (invoke "patch" "-Rp1" "--force" "--input" "--no-backup-if-mismatch"
-                  "--input" #$%ungoogled-chromium-unroll-ffmpeg.patch)
+          ;; These patches are "reversed", i.e. their changes should be undone.
+          (for-each (lambda (patch)
+                      (invoke "patch" "-Rp1" "-F3" "--force" "--input"
+                              patch "--no-backup-if-mismatch"))
+                    '#+%reverse-patches)
 
           (with-directory-excursion #+%ungoogled-origin
             (format #t "Ungooglifying...~%")
@@ -506,7 +516,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0rhay46fnfffqcpk6c856hj414508fmhda600lz5whcacr25q6r0"))
+                "15qljfg8w124yp65srp1rz3ywrlqhzqzkhimn1h9xz0jkf9cnypj"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -624,10 +634,10 @@
                   ;; This include path is added by Debians openjpeg patch.
                   (("/usr/include/openjpeg-2.4") openjpeg))
 
-                ;; Remove contrib/ prefix from minizip header inclusions.
+                ;; Adjust minizip header inclusions.
                 (substitute* (find-files "third_party/tflite_support\
 /src/tensorflow_lite_support/metadata/cc")
-                  (("contrib/minizip/")
+                  (("third_party/zlib/minizip/")
                    "minizip/"))
 
                 (substitute*
@@ -762,11 +772,9 @@
 
                 ;; Disable compiler flags that require Clang 15.
                 (substitute* "build/config/compiler/BUILD.gn"
-                  (("\"-no-opaque-pointers\",")
-                   "")
                   (("\"-Wno-unqualified-std-cast-call\"")
                    "")
-                  (("\"-Wno-deprecated-non-prototype\"")
+                  (("\"-Wno-deprecated-builtins\",")
                    ""))
 
                 ;; TODO: pre-compile instead. Avoids a race condition.

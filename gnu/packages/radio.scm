@@ -468,6 +468,86 @@ controls for certain tuners which may be paired with an audio device.")
      "This package provides RTL-SDR devices support to the SoapySDR library.")
     (license license:expat)))
 
+(define-public python-simplesoapy
+  (package
+    (name "python-simplesoapy")
+    (version "1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "SimpleSoapy" version))
+       (sha256
+        (base32 "0bh02m5zj82mp7sxpvwr24ylmrbp3p4r9q7psqcfnxl628w3b4hl"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-numpy soapysdr))
+    (home-page "https://github.com/xmikos/simplesoapy")
+    (synopsis "Python wrapper for SoapySDR")
+    (description
+     "This package provide a simple pythonic wrapper for the SoapySDR
+library.")
+    (license license:expat)))
+
+(define-public soapy-power
+  (package
+    (name "soapy-power")
+    (version "1.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "soapy_power" version))
+       (sha256
+        (base32 "1rajmygcqvv5ph7yk65r4w581lfszrz0f48csvfmma1ami0lirdm"))))
+    (build-system python-build-system)
+    (inputs
+     (list python-numpy
+           python-scipy
+           python-simplesoapy
+           python-simplespectral))
+    (home-page "https://github.com/xmikos/soapy_power")
+    (synopsis "Obtain power spectrum from SDR devices")
+    (description "The @code{soapy_power} obtains the power spectrum from SDR
+devices that are supported by the SoapySDR library.")
+    (license license:expat)))
+
+(define-public qspectrumanalyzer
+  (package
+    (name "qspectrumanalyzer")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "QSpectrumAnalyzer" version))
+       (sha256
+        (base32 "1bhl8zp4z7v3595ailyivx9vb7y5si6kr22aylphb5pf60jxqhn0"))))
+    (build-system python-build-system)
+    (inputs
+     (list bash-minimal
+           python-pyqt
+           python-pyqtgraph
+           python-qt.py
+           python-simplespectral
+           python-simplesoapy
+           soapy-power))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-path
+                 ;; Add the location of the default backend to PATH.
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (wrap-program (string-append #$output
+                                                "/bin/qspectrumanalyzer")
+                     `("PATH" ":" prefix
+                       (,(string-append (assoc-ref inputs "soapy-power")
+                                        "/bin")))))))))
+    (home-page "https://github.com/xmikos/qspectrumanalyzer")
+    (synopsis "Spectrum analyzer for multiple SDR platforms")
+    (description
+     "This package provides a spectrum analyzer for multiple SDR platforms.
+It is a GUI for @code{soapy_power}, @code{hackrf_sweep}, @code{rtl_power},
+@code{rx_power} and other backends.")
+    (license license:gpl3)))
+
 (define-public aptdec
   ;; No release since 2013, use commit directly.
   (let ((commit "51405971fd4e97714d1e987269e49c6edfe4e0da")
