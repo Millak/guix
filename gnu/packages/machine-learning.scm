@@ -583,6 +583,22 @@ optimizing, and searching weighted finite-state transducers (FSTs).")
     (arguments '(#:configure-flags '("--enable-ngram-fsts" "CXXFLAGS=-std=c++14")
                  #:make-flags '("CXXFLAGS=-std=c++14")))))
 
+(define openfst-for-vosk
+  (package
+    (inherit openfst)
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.openfst.org/twiki/pub/FST/"
+                           "FstDownload/openfst-" version ".tar.gz"))
+       (sha256
+        (base32 "0h2lfhhihg63b804hrcljnkggijbjmp84i5g8q735wb09y9z2c4p"))))
+    (arguments
+     '(#:configure-flags
+       '("--enable-shared" "--enable-far" "--enable-ngram-fsts"
+         "--enable-lookahead-fsts" "--with-pic" "--disable-bin")))))
+
 (define-public shogun
   (package
     (name "shogun")
