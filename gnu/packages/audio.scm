@@ -1400,7 +1400,7 @@ object library.")
 (define-public csound
   (package
     (name "csound")
-    (version "6.14.0")
+    (version "6.16.2")
     (source
      (origin
        (method git-fetch)
@@ -1409,7 +1409,7 @@ object library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sr9knfhbm2m0wpkjq2l5n471vnl51wy4p6j4m95zqybimzb4s2j"))))
+        (base32 "1lgasyk8j4cl9178vci1dph63nks3cgwhf8y1d04z9dc8gg15dyn"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison flex gettext-minimal zlib))
