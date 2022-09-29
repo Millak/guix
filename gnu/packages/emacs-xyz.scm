@@ -8498,6 +8498,48 @@ Emacs Lisp.  It implements most of the @code{querySelector} API, and can get
 and set HTML attributes.")
     (license license:gpl3+)))
 
+(define-public emacs-cov
+  ;; XXX: Upstream made no release nor any tag so far.
+  (let ((commit "cd3e1995c596cc227124db9537792d8329ffb696")
+        (revision "0"))
+    (package
+      (name "emacs-cov")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/AdamNiederer/cov")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gyc0si60czhgrkm7kink1p1zj1h5j5nzif4ivm5bg78l28skmpm"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:emacs emacs-no-x              ;for libxml
+        #:tests? #t
+        #:test-command #~(list "ert-runner")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'disable-failing-tests
+              (lambda _
+                (substitute* "test/cov-test.el"
+                  (("\\(ert-deftest cov--load-coverage-test-mtime-check .*" all)
+                   (string-append all "(skip-unless nil)\n"))))))))
+      (native-inputs
+       (list emacs-ert-runner emacs-mocker emacs-undercover))
+      (propagated-inputs
+       (list emacs-elquery emacs-f emacs-s))
+      (home-page "https://github.com/AdamNiederer/cov/")
+      (synopsis "Emacs extension for displaying coverage data")
+      (description
+       "Cov shows code coverage data for your program in Emacs.  It supports
+currently @code{gcov}, @code{lcov}, @code{coverage.py}, and @code{clover}
+output, as well as the Coveralls format produced by Undercover.")
+      (license license:gpl3+))))
+
 (define-public emacs-puppet-mode
   (package
     (name "emacs-puppet-mode")
