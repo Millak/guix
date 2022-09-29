@@ -3562,3 +3562,43 @@ for different programming languages.  It allows quick reconfiguration of
 vocabulary for better accuracy, and supports speaker identification beside
 simple speech recognition.")
       (license license:asl2.0))))
+
+(define-public python-vosk
+  (package
+    (inherit vosk-api)
+    (name "python-vosk")
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-cffi python-requests python-tqdm python-srt python-websockets))
+    (inputs (list vosk-api))
+    (arguments
+     (list
+      #:tests? #f  ;; TODO There are tests but not run through Makefile.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'config
+            (lambda _
+              (chdir "python")
+              (setenv "VOSK_SOURCE" #$vosk-api)))
+          (add-before 'build 'from-abi-to-api
+            (lambda _
+              (substitute* "vosk_builder.py"
+                (("ffibuilder\\.set_source\\(\"vosk.vosk_cffi\", None\\)")
+                 (string-append
+                  "ffibuilder.set_source(\"vosk.vosk_cffi\", "
+                  "r\"\"\"\n#include<vosk_api.h>\n#include<Python.h>\"\"\",\n\t"
+                  "library_dirs=["
+                  "'" #$vosk-api "/lib'"
+                  "],\n\t"
+                  "libraries=['vosk', 'python3.9'],\n\t"
+                  "include_dirs=["
+                  "'" #$vosk-api "/src'" "])")))
+              (substitute* "vosk/__init__.py"
+                (("_c = open_dll\\(\\)")
+                 "")
+                (("_ffi")
+                 "ffi")
+                (("from \\.vosk_cffi import ffi as ffi")
+                 "from .vosk_cffi import ffi, lib")
+                (("_c\\.")
+                 "lib.")))))))))
