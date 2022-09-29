@@ -1656,7 +1656,27 @@ package provides command line tools using the Bio++ library.")
                   ;; Remove useless msbuild directory
                   (delete-file-recursively
                    "c++/src/build-system/project_tree_builder/msbuild")
-                  #t))))
+
+                  ;; Build reproducibly.
+                  ;; Do not record the kernel version
+                  (substitute* "c++/src/build-system/configure"
+                    (("kver=.*") "kver=\"\""))
+                  ;; Do not generate random numbers.
+                  (substitute* "c++/scripts/common/impl/define_random_macros.sh"
+                    (("#define NCBI_RANDOM_VALUE_MAX  0xffffffffu" m)
+                     (string-append m "
+#define NCBI_RANDOM_VALUE_0    2845495105u
+#define NCBI_RANDOM_VALUE_1    2158634051u
+#define NCBI_RANDOM_VALUE_2    4072202242u
+#define NCBI_RANDOM_VALUE_3    902228395u
+#define NCBI_RANDOM_VALUE_4    1353323915u
+#define NCBI_RANDOM_VALUE_5    574823513u
+#define NCBI_RANDOM_VALUE_6    4119501261u
+#define NCBI_RANDOM_VALUE_7    2477640938u
+#define NCBI_RANDOM_VALUE_8    2776595395u
+#define NCBI_RANDOM_VALUE_9    270550684u
+"))
+                    (("cksum") "cksum >/dev/null"))))))
     (build-system gnu-build-system)
     (arguments
      `(;; There are two(!) tests for this massive library, and both fail with
