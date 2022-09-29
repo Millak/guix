@@ -1596,6 +1596,105 @@ discrete, and conditional dimensions.")
 written in C++.")
       (license license:asl2.0))))
 
+(define kaldi-for-vosk
+  (let* ((commit "6417ac1dece94783e80dfbac0148604685d27579")
+         (revision "0")
+         (openfst openfst-for-vosk))
+    (package
+      (inherit kaldi)
+      (name "kaldi")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/alphacep/kaldi")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "04xw2dpfvpla8skpk08azmgr9k97cd8hn83lj4l85q165gbzql4s"))))
+      (inputs
+       (list alsa-lib
+             ;; `(,gfortran "lib") ;; replaced by lapack
+             lapack
+             glib
+             gstreamer
+             jack-1
+             openblas
+             openfst
+             portaudio
+             python))
+      (arguments
+       (list
+        #:test-target "test"
+        #:make-flags ''("online2" "lm" "rnnlm")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "src")))
+            (replace 'configure
+              (lambda _
+                (let* ((portaudio #$(this-package-input "portaudio"))
+                       (lapack    #$(this-package-input "lapack"))
+                       (openfst   #$(this-package-input "openfst"))
+                       (openblas  #$(this-package-input "openblas")))
+                  #$@(if (target-x86?)
+                         '()
+                         #~((substitute* "makefiles/linux_openblas.mk"
+                              (("-msse -msse2") ""))))
+                  (substitute* "makefiles/default_rules.mk"
+                    (("/bin/bash") (which "bash")))
+                  (substitute* "Makefile"
+                    (("ext_depend: check_portaudio")
+                     "ext_depend:"))
+                  (substitute* '("online/Makefile"
+                                 "onlinebin/Makefile"
+                                 "gst-plugin/Makefile")
+                    (("../../tools/portaudio/install")
+                     portaudio))
+                  (substitute* "matrix/Makefile"     ;temporary test bypass
+                    (("matrix-lib-test sparse-matrix-test") ""))
+
+                  ;; This `configure' script doesn't support variables passed as
+                  ;; arguments, nor does it support "prefix".
+                  (substitute* "configure"
+                    (("check_for_slow_expf;") "")
+                    ;; This affects the RPATH and also serves as the installation
+                    ;; directory.
+                    (("KALDILIBDIR=`pwd`/lib")
+                     (string-append "KALDILIBDIR=" #$output "/lib"))
+                    (("OPENBLASROOT=\\\"\\$\\(rel2abs ..\\/tools\\/OpenBLAS\\/install\\)\\\"")
+                     (string-append "OPENBLASROOT=\"" openblas "\""))
+                    (("-L\\$OPENBLASLIBDIR -l:libopenblas.a -l:libblas.a -l:liblapack.a -l:libf2c.a")
+                     (string-append "-L$OPENBLASLIBDIR -lopenblas "
+                                    "-L" lapack "/lib -lblas -llapack")))
+                  (mkdir-p #$output) ; must exist
+                  (setenv "CONFIG_SHELL" (which "bash"))
+                  (setenv "OPENFST_VER" #$(package-version openfst))
+                  (invoke "./configure"
+                          "--use-cuda=no"
+                          "--mathlib=OPENBLAS_CLAPACK"
+                          "--shared"
+                          (string-append "--fst-root=" openfst)))))
+            (add-after 'configure 'optimize-build
+                       (lambda _ (substitute* "kaldi.mk" ((" -O1") " -O3"))))
+            (replace 'install
+              (lambda _
+                (let* ((inc (string-append #$output "/include"))
+                       (lib (string-append #$output "/lib")))
+                  ;; The build phase installed symlinks to the actual
+                  ;; libraries.  Install the actual targets.
+                  (for-each (lambda (file)
+                              (let ((target (readlink file)))
+                                (delete-file file)
+                                (install-file target lib)))
+                            (find-files lib "\\.so"))
+                  ;; Install headers
+                  (for-each (lambda (file)
+                              (let ((target-dir (string-append inc "/" (dirname file))))
+                                (install-file file target-dir)))
+                            (find-files "." "\\.h")))))))))))
+
 (define-public gst-kaldi-nnet2-online
   (let ((commit "cb227ef43b66a9835c14eb0ad39e08ee03c210ad")
         (revision "2"))
