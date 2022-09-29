@@ -107,6 +107,7 @@ Copyright @copyright{} 2022 Karl Hallsby@*
 Copyright @copyright{} 2022 Justin Veilleux@*
 Copyright @copyright{} 2022 Reily Siegel@*
 Copyright @copyright{} 2022 Simon Streit@*
+Copyright @copyright{} 2022 (@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -40154,12 +40155,13 @@ services)}.
 
 @menu
 * Essential Home Services::  Environment variables, packages, on-* scripts.
-* Shells: Shells Home Services.          POSIX shells, Bash, Zsh.
-* Mcron: Mcron Home Service.             Scheduled User's Job Execution.
-* Shepherd: Shepherd Home Service.       Managing User's Daemons.
-* SSH: Secure Shell.                     Setting up the secure shell client.
-* Desktop: Desktop Home Services.        Services for graphical environments.
-* Guix: Guix Home Services.              Services for Guix.
+* Shells: Shells Home Services.                        POSIX shells, Bash, Zsh.
+* Mcron: Mcron Home Service.                           Scheduled User's Job Execution.
+* Power Management: Power Management Home Services.    Services for battery power.
+* Shepherd: Shepherd Home Service.                     Managing User's Daemons.
+* SSH: Secure Shell.                                   Setting up the secure shell client.
+* Desktop: Desktop Home Services.                      Services for graphical environments.
+* Guix: Guix Home Services.                            Services for Guix.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -40604,6 +40606,82 @@ The mcron package to use.
 This is a list of gexps (@pxref{G-Expressions}), where each gexp
 corresponds to an mcron job specification (@pxref{Syntax, mcron job
 specifications,, mcron, GNU@tie{}mcron}).
+@end table
+@end deftp
+
+@node Power Management Home Services
+@subsection Power Management Home Services
+
+@cindex power management
+The @code{(gnu home services pm)} module provides home services
+pertaining to battery power.
+
+@defvr {Scheme Variable} home-batsignal-service-type
+Service for @code{batsignal}, a program that monitors battery levels
+and warns the user through desktop notifications when their battery
+is getting low.  You can also configure a command to be run when the
+battery level passes a point deemed ``dangerous''.  This service is
+configured with the @code{home-batsignal-configuration} record.
+@end defvr
+
+@deftp {Data Type} home-batsignal-configuration
+Data type representing the configuration for batsignal.
+
+@table @asis
+@item @code{warning-level} (default: @code{15})
+The battery level to send a warning message at.
+
+@item @code{warning-message} (default: @code{#f})
+The message to send as a notification when the battery level reaches
+the @code{warning-level}.  Setting to @code{#f} uses the default
+message.
+
+@item @code{critical-level} (default: @code{5})
+The battery level to send a critical message at.
+
+@item @code{critical-message} (default: @code{#f})
+The message to send as a notification when the battery level reaches
+the @code{critical-level}.  Setting to @code{#f} uses the default
+message.
+
+@item @code{danger-level} (default: @code{2})
+The battery level to run the @code{danger-command} at.
+
+@item @code{danger-command} (default: @code{#f})
+The command to run when the battery level reaches the @code{danger-level}.
+Setting to @code{#f} disables running the command entirely.
+
+@item @code{full-level} (default: @code{#f})
+The battery level to send a full message at.  Setting to @code{#f}
+disables sending the full message entirely.
+
+@item @code{full-message} (default: @code{#f})
+The message to send as a notification when the battery level reaches
+the @code{full-level}.  Setting to @code{#f} uses the default message.
+
+@item @code{batteries} (default: @code{'()})
+The batteries to monitor.  Setting to @code{'()} tries to find batteries
+automatically.
+
+@item @code{poll-delay} (default: @code{60})
+The time in seconds to wait before checking the batteries again.
+
+@item @code{icon} (default: @code{#f})
+A file-like object to use as the icon for battery notifications.  Setting
+to @code{#f} disables notification icons entirely.
+
+@item @code{notifications?} (default: @code{#t})
+Whether to send any notifications.
+
+@item @code{notifications-expire?} (default: @code{#f})
+Whether notifications sent expire after a time.
+
+@item @code{notification-command} (default: @code{#f})
+Command to use to send messages.  Setting to @code{#f} sends a notification
+through @code{libnotify}.
+
+@item @code{ignore-missing?} (default: @code{#f})
+Whether to ignore missing battery errors.
 @end table
 @end deftp
 
