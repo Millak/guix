@@ -8596,6 +8596,29 @@ linting of manifests and integration with Puppet Debugger.")
       (description "This package provides an Emacs major mode for writing Purescript.")
       (license license:gpl3+))))
 
+(define-public emacs-new-purescript-mode
+  (let ((commit "9f7bb73e26340fcd2ea1946dbad165f0406eb3e1")
+        (revision "0"))
+    (package
+      (name "emacs-new-purescript-mode")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/justinwoo/new-purescript-mode")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0b3499df0gfz8yrdxz9dpgwal21h50sciigwz25ri1hwv1c1i7k0"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/justinwoo/new-purescript-mode/")
+      (synopsis "Simple PureScript mode for cheap syntax highlighting")
+      (description "New PureScript mode is a simple PureScript Emacs mode that
+just provides syntax highlighting.")
+      (license license:expat))))
+
 (define-public emacs-god-mode
   (package
     (name "emacs-god-mode")
