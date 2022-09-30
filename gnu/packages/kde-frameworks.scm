@@ -1391,7 +1391,9 @@ libpulse.")
            kirigami
            qtbase-5
            qtdeclarative-5
-           qtquickcontrols2-5))
+           qtquickcontrols2-5
+           qtx11extras ; optional
+           sonnet)) ; optional
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "QtQuickControls2 style that integrates with the desktop")
     (description "This is a style for QtQuickControls2 which is using
