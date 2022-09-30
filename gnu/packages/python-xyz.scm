@@ -4031,6 +4031,28 @@ e.g. filters, callbacks and errbacks can all be promises.")
      "Virtualenv is a tool to create isolated Python environments.")
     (license license:expat)))
 
+(define-public python-crossenv
+  (package
+    (name "python-crossenv")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "crossenv" version))
+       (sha256
+        (base32
+         "07rv4650n19740ixmnsf4qbxyqlgi7f5m1cy8cq0gl01q3r6hps4"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #f)) ; tests not distributed on pypi
+    (home-page "https://github.com/benfogle/virtualenv")
+    (synopsis "Cross-compiling virtualenv for Python")
+    (description "This package is a tool for cross-compiling extension
+modules.  It creates a special virtual environment such that @command{pip} or
+@file{setup.py} will cross compile packages for you, usually with no further
+work on your part.")
+    (license license:expat)))
+
 (define-public python-markupsafe
   (package
     (name "python-markupsafe")
