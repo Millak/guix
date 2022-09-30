@@ -313,7 +313,7 @@ used to further tweak the behaviour of the different profiles.")
 (define-public bemenu
   (package
     (name "bemenu")
-    (version "0.6.4")
+    (version "0.6.10")
     (source
      (origin
        (method git-fetch)
@@ -322,27 +322,28 @@ used to further tweak the behaviour of the different profiles.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18vplvnymgc6576sdh84lm5rlwyb9d038plqpjs638hzskf4q577"))))
+        (base32 "0i2pv3qnb0l2ryvj9ycf9d5rng6yfk0kpjkq8hy6g956672wdzx6"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags (list ,(string-append "CC=" (cc-for-target))
-                          "CFLAGS=-O2 -fPIC"
-                          (string-append "LDFLAGS=-Wl,-rpath="
-                                         (assoc-ref %outputs "out") "/lib")
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "CFLAGS=-O2 -fPIC"
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))         ; no configure script
     (inputs
-     `(("cairo" ,cairo)
-       ("libx11" ,libx11)
-       ("libxkbcomon" ,libxkbcommon)
-       ("libxinerama" ,libxinerama)
-       ("ncurses" ,ncurses)
-       ("pango" ,pango)
-       ("wayland" ,wayland)
-       ("wayland-protocols" ,wayland-protocols)))
+     (list cairo
+           libx11
+           libxkbcommon
+           libxinerama
+           ncurses
+           pango
+           wayland
+           wayland-protocols))
     (native-inputs
      (list doxygen pkg-config))
     (home-page "https://github.com/Cloudef/bemenu")
