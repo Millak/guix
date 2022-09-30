@@ -471,6 +471,8 @@ reboot\n")
     (mlet* %store-monad ((images (run-install
                                   %minimal-os-on-vda
                                   %minimal-os-on-vda-source
+                                  #:packages
+                                  (list e2fsprogs)
                                   #:script
                                   %simple-installation-script-for-/dev/vda
                                   #:installation-image-type
