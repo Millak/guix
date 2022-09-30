@@ -2010,7 +2010,7 @@ TCP connection, TLS handshake and so on) in the terminal.")
      '(#:configure-flags
        ;; disable -march=native in build for reproducibility; see
        ;; https://wiki.squid-cache.org/KnowledgeBase/IllegalInstructionError
-       (list "--disable-arch-native")
+       (list "--disable-arch-native" "--with-openssl")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'fix-true-path
