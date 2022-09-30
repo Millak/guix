@@ -31,6 +31,7 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt)
+  #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
@@ -364,6 +365,53 @@ concept.")
 These window decorations can be used by for example an X11 based window
 manager which re-parents a Client window to a window decoration frame.")
     (license license:lgpl3+)))
+
+(define-public kde-cli-tools
+  (package
+    (name "kde-cli-tools")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-" version ".tar.xz"))
+              (patches (search-patches "kde-cli-tools-delay-mime-db.patch"))
+              (sha256
+               (base32
+                "0i1lnkyb2bdvbhnr2wsgjy2sjichzxxqkvn30ca85rj21cavk2z3"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f ;TODO: Failing sub-tests 3/7
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-writable-location
+                 (lambda* _
+                   (substitute* "keditfiletype/tests/filetypestest.cpp"
+                     (("QStandardPaths::writableLocation.QStandardPaths::\
+GenericDataLocation.")
+                      (string-append "\"" (getcwd) "/\"")))))
+               (add-before 'check 'setup-env
+                 (lambda* _
+                   (setenv "HOME" (getcwd)))))))
+    (native-inputs (list extra-cmake-modules pkg-config shared-mime-info))
+    (inputs (list kconfig
+                  kdesu
+                  kdoctools
+                  kiconthemes
+                  ki18n
+                  kcmutils
+                  kio
+                  kservice
+                  kwindowsystem
+                  kactivities
+                  kparts
+                  plasma-workspace
+                  qtx11extras
+                  qtsvg-5))
+    (synopsis "CLI tools for interacting with KDE")
+    (description "This package provides command-line tools based on
+KDE Frameworks 5 to better interact with the system.")
+    (home-page "https://invent.kde.org/plasma/kde-cli-tools")
+    (license license:lgpl2.0+)))
 
 (define-public kgamma
   (package
