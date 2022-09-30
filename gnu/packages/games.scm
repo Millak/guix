@@ -1589,7 +1589,7 @@ does not include game data.")
   (package
     (inherit julius)
     (name "augustus")
-    (version "2.0.1")
+    (version "3.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1598,17 +1598,19 @@ does not include game data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0czazw8mc3fbvdazs2nzvgxd1dpzjc8z5fwiv89vv4nd7laz3jkj"))
+        (base32 "0d1k5279imc17mk3lxn8amc4ljgcj4v6x6lj2w3bph1z0a7a4bim"))
        ;; Remove unused bundled libraries.
        (modules '((guix build utils)))
        (snippet
         '(begin
            (with-directory-excursion "ext"
-             (for-each delete-file-recursively '("dirent" "png" "SDL2" "zlib")))
-           #t))))
+             (for-each delete-file-recursively
+                       '("dirent" "expat" "png" "SDL2" "zlib")))))))
     (arguments
      ;; No tests.  See https://github.com/Keriew/augustus/issues/82.
      `(#:tests? #f))
+    (inputs (modify-inputs (package-inputs julius)
+              (prepend expat)))
     (home-page "https://github.com/Keriew/augustus")
     (synopsis "Re-implementation of Caesar III game engine with gameplay changes")
     (description
