@@ -8464,6 +8464,46 @@ BLAST, KEGG, GenBank, MEDLINE and GO.")
     ;; (LGPLv2.1+) and scripts in samples (which have GPL2 and GPL2+)
     (license (list license:ruby license:lgpl2.1+ license:gpl2+ ))))
 
+(define-public centrifuge
+  (package
+    (name "centrifuge")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DaehwanKimLab/centrifuge.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "167610gbz1rrh6ir3j7jcmhzg3x5msn7x7a3dpv7wmwdndnnqvg0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ; no check target
+      #:make-flags
+      #~(list (string-append "prefix=" #$output))
+      #:phases
+      '(modify-phases %standard-phases
+         (delete 'configure))))
+    (inputs (list python-wrapper))
+    (native-inputs
+     (list pandoc perl                  ;for documentation
+           which))
+    (home-page "https://github.com/DaehwanKimLab/centrifuge/")
+    (synopsis "Classifier for metagenomic sequences")
+    (description "Centrifuge is a microbial classification engine that enables
+rapid, accurate and sensitive labeling of reads and quantification of species
+on desktop computers.  The system uses an indexing scheme based on the
+@dfn{Burrows-Wheeler transform} (BWT) and the @dfn{Ferragina-Manzini} (FM)
+index, optimized specifically for the metagenomic classification problem.
+Centrifuge requires a relatively small index (4.7 GB for all complete
+bacterial and viral genomes plus the human genome) and classifies sequences at
+very high speed, allowing it to process the millions of reads from a typical
+high-throughput DNA sequencing run within a few minutes.")
+    (license license:gpl3+)))
+
 (define-public bio-vcf
   (package
     (name "bio-vcf")
