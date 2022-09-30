@@ -1555,7 +1555,7 @@ Joy-Con controllers.")
 (define-public julius
   (package
     (name "julius")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1564,7 +1564,7 @@ Joy-Con controllers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nfdn8n6ywhm69ckz9a1chl5xxiqyaj3l337wadsbppnpscjihrc"))
+        (base32 "0w7kmgz9ya0ck9cxhsyralarg7y6ydx4plmh33r4mkxkamlr7493"))
        ;; Remove unused bundled libraries.
        (modules '((guix build utils)))
        (snippet
