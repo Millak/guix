@@ -10296,7 +10296,7 @@ The following file formats are supported:
 (define-public salmon
   (package
     (name "salmon")
-    (version "1.6.0")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10305,104 +10305,112 @@ The following file formats are supported:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wb5wl0rc77svbwq6zvak5h7pf9acw3di0vz5i3gqyhg5l6qd736"))
+                "1370ry3jpj05gplzyny44mqg77a29a6gp8ijmjz135d2igf956r8"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled headers for eigen3.
                '(delete-file-recursively "include/eigen3/"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       ,#~(list (string-append "-Dlibgff_DIR="
-                               #$(this-package-input "libgff") "/lib")
-                "-DCMAKE_CXX_FLAGS=\"-DHAVE_NUMERIC_LIMITS128=1\""
-                "-Dlibgff_FOUND=TRUE"
-                "-DTBB_FOUND=TRUE"
-                #$(string-append "-DTBB_VERSION=" (package-version tbb-2020))
-                "-DTBB_LIBRARIES=tbb -ltbbmalloc"
-                "-DFETCHED_PUFFERFISH=TRUE"
-                "-DUSE_SHARED_LIBS=TRUE")
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dlibgff_DIR="
+                             #$(this-package-input "libgff") "/lib")
+              "-DCMAKE_CXX_FLAGS=\"-DHAVE_NUMERIC_LIMITS128=1\""
+              "-Dlibgff_FOUND=TRUE"
+              "-DTBB_FOUND=TRUE"
+              #$(string-append "-DTBB_VERSION=" (package-version tbb))
+              "-DFETCHED_PUFFERFISH=TRUE"
+              "-DUSE_SHARED_LIBS=TRUE")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-pufferfish
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "pufferfish")
-                               "external/pufferfish")
-             ;; This test isn't working correctly, so compilation aborts.
-             (substitute* "external/pufferfish/include/string_view.hpp"
-               (("#if __has_include\\(<string_view>\\)")
-                "#if 0"))
-             (let ((headers "external/install/pufferfish/include/pufferfish")
-                   (source "external/install/src/pufferfish"))
-               (mkdir-p headers)
-               (mkdir-p source)
-               (for-each (lambda (file)
-                           (install-file (string-append "external/pufferfish/include/" file)
-                                         headers))
-                         (list "ProgOpts.hpp" "BooPHF.hpp" "SpinLock.hpp"
-                               "Kmer.hpp" "CanonicalKmer.hpp" "string_view.hpp"
-                               "CanonicalKmerIterator.hpp"
-                               "PufferfishBaseIndex.hpp"
-                               "PufferfishIndex.hpp"
-                               "PufferfishSparseIndex.hpp"
-                               "PufferfishLossyIndex.hpp"
-                               "PufferfishTypes.hpp"
-                               "rank9b.hpp" "rank9sel.hpp" "macros.hpp"
-                               "select.hpp" "Util.hpp"
-                               "PairedAlignmentFormatter.hpp"
-                               "SelectiveAlignmentUtils.hpp"
-                               "PuffAligner.hpp" "MemCollector.hpp"
-                               "MemChainer.hpp" "CommonTypes.hpp"
-                               "SAMWriter.hpp" "PufferfishConfig.hpp"
-                               "BulkChunk.hpp" "BinWriter.hpp"))
-               (for-each (lambda (dir)
-                           (copy-recursively
-                            (string-append "external/pufferfish/include/" dir)
-                            (string-append headers "/" dir)))
-                         (list "libdivide"
-                               "ksw2pp"
-                               "compact_vector"
-                               "metro"
-                               "chobo"
-                               "sparsepp"
-                               "simde"
-                               "tsl"))
-               (copy-recursively
-                (string-append "external/pufferfish/src/metro/")
-                (string-append source "/metro"))
-               (install-file
-                (string-append "external/pufferfish/src/rank9b.cpp")
-                source)
+       '(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-pufferfish
+            (lambda* (#:key inputs #:allow-other-keys)
+              (copy-recursively (assoc-ref inputs "pufferfish")
+                                "external/pufferfish")
+              ;; This test isn't working correctly, so compilation aborts.
+              (substitute* "external/pufferfish/include/string_view.hpp"
+                (("#if __has_include\\(<string_view>\\)")
+                 "#if 0"))
+              (let ((headers "external/install/pufferfish/include/pufferfish")
+                    (source "external/install/src/pufferfish"))
+                (mkdir-p headers)
+                (mkdir-p source)
+                (for-each (lambda (file)
+                            (install-file (string-append "external/pufferfish/include/" file)
+                                          headers))
+                          (list "ProgOpts.hpp" "BooPHF.hpp" "SpinLock.hpp"
+                                "Kmer.hpp" "CanonicalKmer.hpp" "string_view.hpp"
+                                "CanonicalKmerIterator.hpp"
+                                "PufferfishBaseIndex.hpp"
+                                "PufferfishIndex.hpp"
+                                "PufferfishSparseIndex.hpp"
+                                "PufferfishLossyIndex.hpp"
+                                "PufferfishTypes.hpp"
+                                "rank9b.hpp" "rank9sel.hpp" "macros.hpp"
+                                "select.hpp" "Util.hpp"
+                                "PairedAlignmentFormatter.hpp"
+                                "SelectiveAlignmentUtils.hpp"
+                                "PuffAligner.hpp" "MemCollector.hpp"
+                                "MemChainer.hpp" "CommonTypes.hpp"
+                                "SAMWriter.hpp" "PufferfishConfig.hpp"
+                                "BulkChunk.hpp" "BinWriter.hpp"))
 
-               ;; Do not complain about not having built libtbb
-               (substitute* "external/pufferfish/external/twopaco/CMakeLists.txt"
-                 (("add_dependencies.*") "")))))
-         (add-after 'unpack 'do-not-phone-home
-           (lambda _
-             (substitute* "src/Salmon.cpp"
-               (("getVersionMessage\\(\\)") "\"\""))))
-         (add-after 'unpack 'use-system-libraries
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Ensure that all headers can be found
-             (setenv "CPLUS_INCLUDE_PATH"
-                     (string-append (or (getenv "CPLUS_INCLUDE_PATH") "")
-                                    ":"
-                                    (getcwd) "/external/install/pufferfish/include:"
-                                    (assoc-ref inputs "eigen")
-                                    "/include/eigen3"))))
-         (add-after 'unpack 'fix-error-message-in-tests
-           (lambda _
-             (substitute* "cmake/TestSalmonQuasi.cmake"
-               (("SALMON_QUASI_INDEX_COMMAND")
-                "SALMON_QUASI_INDEX_CMD")))))))
+                (for-each (lambda (dir)
+                            (copy-recursively
+                             (string-append "external/pufferfish/include/" dir)
+                             (string-append headers "/" dir)))
+                          (list "libdivide"
+                                "ksw2pp"
+                                "compact_vector"
+                                "itlib"
+                                "metro"
+                                "chobo"
+                                "sparsepp"
+                                "simde"
+                                "tsl"))
+                (copy-recursively
+                 (string-append "external/pufferfish/src/metro/")
+                 (string-append source "/metro"))
+                (install-file
+                 (string-append "external/pufferfish/src/rank9b.cpp")
+                 source)
+
+                ;; Do not complain about not having built libtbb
+                (substitute* "external/pufferfish/external/twopaco/CMakeLists.txt"
+                  (("add_dependencies.*") "")))))
+          (add-after 'unpack 'do-not-phone-home
+            (lambda _
+              (substitute* "src/Salmon.cpp"
+                (("getVersionMessage\\(\\)") "\"\""))))
+          (add-after 'unpack 'use-system-libraries
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Ensure that all headers can be found
+              (setenv "CPLUS_INCLUDE_PATH"
+                      (string-append (or (getenv "CPLUS_INCLUDE_PATH") "")
+                                     ":"
+                                     (getcwd) "/external/install/pufferfish/include:"
+                                     (assoc-ref inputs "eigen")
+                                     "/include/eigen3"))))
+          (add-after 'unpack 'fix-error-message-in-tests
+            (lambda _
+              (substitute* "cmake/TestSalmonQuasi.cmake"
+                (("SALMON_QUASI_INDEX_COMMAND")
+                 "SALMON_QUASI_INDEX_CMD")))))))
     (inputs
-     `(("boost" ,boost)
-       ("bzip2" ,bzip2)
-       ("cereal" ,cereal-1.3.0)
-       ("curl" ,curl)
-       ("eigen" ,eigen)
-       ("jemalloc" ,jemalloc)
-       ("libgff" ,libgff)
+     (list boost
+           bzip2
+           cereal-1.3.0
+           curl
+           eigen
+           jemalloc
+           libgff
+           tbb
+           libstadenio-for-salmon
+           xz
+           zlib))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
        ("pufferfish" ,(origin
                         (method git-fetch)
                         (uri (git-reference
@@ -10411,13 +10419,7 @@ The following file formats are supported:
                         (file-name (git-file-name "pufferfish" version))
                         (sha256
                          (base32
-                          "0jakgpbanl6cs23x3g26iab54p7zylcf9v8vc32ps57smp8wql52"))))
-       ("tbb" ,tbb-2020)
-       ("libstadenio-for-salmon" ,libstadenio-for-salmon)
-       ("xz" ,xz)
-       ("zlib" ,zlib)))
-    (native-inputs
-     (list pkg-config))
+                          "048a006mc2d0h78ym58mv67hl1pj480ilc5ifq0rlzfdyyfs1b8i"))))))
     (home-page "https://github.com/COMBINE-lab/salmon")
     (synopsis "Quantification from RNA-seq reads using lightweight alignments")
     (description "Salmon is a program to produce highly-accurate,
