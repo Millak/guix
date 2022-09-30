@@ -52,6 +52,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
@@ -63,6 +64,8 @@
   #:use-module (gnu packages package-management) ; flatpak
   #:use-module (gnu packages video)
   #:use-module (gnu packages vpn)
+  #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
@@ -387,6 +390,60 @@ manager which re-parents a Client window to a window decoration frame.")
      "This package provides a tool to adjust your monitor gamma settings.")
     (home-page "https://invent.kde.org/plasma/kgamma5")
     (license license:gpl2+)))
+
+(define-public kinfocenter
+  (package
+    (name "kinfocenter")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version
+                                  "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0zvki76yghkn158s7hb5g9drz7xaqxkmp2747404n2n0gmnmsdif"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-systemsettings-symlink
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (substitute* "CMakeLists.txt"
+                              (("\\$\\{KDE_INSTALL_FULL_BINDIR\\}/systemsettings5")
+                               (search-input-file inputs
+                                                  "/bin/systemsettings5"))))))))
+    (native-inputs (list aha extra-cmake-modules kdoctools pkg-config))
+    ;; * vulkaninfo
+    ;; Wayland KCM
+    (inputs (list dmidecode
+                  ;; fwupdmgr ;; Packaged on master branch already
+                  kconfig
+                  kconfigwidgets
+                  kcoreaddons
+                  kirigami
+                  ki18n
+                  kcmutils
+                  kio
+                  kservice
+                  libusb
+                  kwidgetsaddons
+                  kdeclarative
+                  kpackage
+                  kwayland
+                  mesa-utils
+                  pciutils
+                  plasma-framework
+                  qtbase-5
+                  solid
+                  util-linux
+                  vulkan-tools
+                  wayland-utils
+                  xdpyinfo))
+    (propagated-inputs (list system-settings))
+    (home-page "https://invent.kde.org/plasma/kinfocenter")
+    (synopsis "View information about computer's hardware")
+    (description "This package provides tool to view information about
+computer's hardware.")
+    (license (list license:gpl2 license:gpl3))))
 
 (define-public kmenuedit
   (package
