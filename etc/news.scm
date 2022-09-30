@@ -29,6 +29,7 @@
  (entry (commit "28ade1bab207974cce6a014e7187968511fc5526")
         (title
          (en "@option{--with-source} is now recursive")
+         (de "@option{--with-source} ist jetzt rekursiv")
          (fr "@option{--with-source} est dorénavant récursive"))
         (body
          (en "The @option{--with-source} package transformation option now
@@ -39,6 +40,14 @@ software and share their changes.
 
 Run @command{info \"(guix) Package Transformation Options\"} for more
 info.")
+         (de "Die Paketumwandlungsoption @option{--with-source} wird jetzt den
+angegebenen Quellcode für sämtliche passende Pakete benutzen, Abhängigkeiten
+eingeschlossen. Die Option hilft Paketbetreuern, Entwicklern und allgemein allen
+Nutzern, die Guix benutzen, das Recht, ihre Software anzupassen und
+Änderungen zu teilen, leichter auszuüben.
+
+Führen Sie für mehr Informationen @command{info \"(guix.de)
+Paketumwandlungsoptionen\"} aus.")
          (fr "L'option de transformation de paquet @option{--with-source}
 s'applique désormais à tous les paquets correspondant, y compris les
 dépendances.  Cette option est utile pour les personnes qui maintiennent un
