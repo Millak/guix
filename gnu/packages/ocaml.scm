@@ -1081,7 +1081,7 @@ the OCaml core distribution.")
 (define-public emacs-tuareg
   (package
     (name "emacs-tuareg")
-    (version "3.0.0")
+    (version "3.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1090,7 +1090,7 @@ the OCaml core distribution.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "115vm0hq4xkwfd3w0j8xqhkdgcirlxpnwzwxv02c27583hj056is"))))
+        (base32 "1p3xpk78i8ywgdmc59w05wjjy9dg6gm5gicm08szmrlnx08v2ihm"))))
     (build-system gnu-build-system)
     (arguments
      (list
