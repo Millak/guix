@@ -19056,24 +19056,27 @@ match and total match information in the mode-line in various search modes.")
     (license license:gpl3+)))
 
 (define-public emacs-pg
-  (let ((commit "4f6516ec3946d95dcef49abb6703cc89ecb5183d"))
-    (package
-      (name "emacs-pg")
-      (version (git-version "0.1" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference (url "https://github.com/cbbrowne/pg.el")
-                                    (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1zh7v4nnpzvbi8yj1ynlqlawk5bmlxi6s80b5f2y7hkdqb5q26k0"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/cbbrowne/pg.el")
-      (synopsis "Emacs Lisp interface for PostgreSQL")
-      (description
-       "This package provides an Emacs Lisp interface for PostgreSQL.")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-pg")
+    (version "0.16")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url "https://github.com/emarsden/pg-el")
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jdnslpgdm16klaga02p33g7c8bjzg164kxz3jd7gs5v9gqa6ppz"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/emarsden/pg-el")
+    (synopsis "Emacs Lisp interface for PostgreSQL")
+    (description
+     "This module lets you access the PostgreSQL object-relational DBMS from
+Emacs, using its socket-level frontend/backend protocol.  The module is
+capable of automatic type coercions from a range of SQL types to the
+equivalent Emacs Lisp type.  This is a low level API, and won't be useful to
+end users.")
+    (license license:gpl2+)))
 
 (define-public emacs-finalize
   (package
