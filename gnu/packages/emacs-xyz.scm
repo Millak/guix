@@ -17103,7 +17103,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
 (define-public emacs-ement
   (package
     (name "emacs-ement")
-    (version "0.2.1")
+    (version "0.3")
     (source
      (origin
        (method git-fetch)
@@ -17112,7 +17112,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kfh0vlsz4qnx4vwkwhkxawk5cpxgnvkar72wha9cxj8s6j51vx0"))))
+        (base32 "0ing4pdqh4z3jsk9qb8qc5n968c27mxn0yq0h102plrb7fafd8ic"))))
     (build-system emacs-build-system)
     (arguments
      `(#:emacs ,emacs))               ;need libxml support
