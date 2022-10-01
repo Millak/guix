@@ -1644,7 +1644,7 @@ modes:
 (define-public nanovna-saver
   (package
     (name "nanovna-saver")
-    (version "0.3.9")
+    (version "0.5.3")
     (source
      (origin
        (method git-fetch)
@@ -1653,7 +1653,7 @@ modes:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h5k402wjlj7xjniggwf0x7a5srlgglc2x4hy6lz6c30zwa7z8fm"))))
+        (base32 "1h0wzva8j7fqnpf0qy42bw9rdclgq3jdq902ajvd9v5iqcqs78n0"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython))
