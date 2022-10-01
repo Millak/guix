@@ -483,8 +483,7 @@ you to call routines in shared libraries from within Bash.")
                           (lambda _
                             (substitute* "ble.pp"
                               (("PATH=/bin:/usr/bin readlink")
-                               (search-input-file %build-inputs
-                                                  "/bin/readlink")))))
+                               "readlink"))))
                         (delete 'configure) ;no configure
                         (add-before 'check 'use-LANG-for-tests
                           (lambda _
