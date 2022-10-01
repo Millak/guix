@@ -6555,14 +6555,14 @@ your code non-blocking and speedy.")
 (define-public python-socks
   (package
     (name "python-socks")
-    (version "1.2.4")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-socks" version))
        (sha256
         (base32
-         "1n6xb18jy41ybgkmamakg6psp3qididd45qknxiggngaiibz43kx"))))
+         "12msk06c0glljcrx1byd78xgv05lxw81vknqwhn8ccs7an7cmag3"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ; tests not included
@@ -6571,8 +6571,7 @@ your code non-blocking and speedy.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "tests/" "-s"))
-             #t)))))
+               (invoke "pytest" "tests/" "-s")))))))
     (propagated-inputs
      (list python-async-timeout python-curio python-trio))
     (native-inputs
