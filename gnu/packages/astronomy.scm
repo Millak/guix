@@ -591,6 +591,50 @@ large scale galaxy-survey data, it can perform reasonably well on moderately
 crowded star fields.")
     (license license:gpl3+)))
 
+(define-public splash
+  (package
+    (name "splash")
+    (version "3.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/danieljprice/splash")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "12s3w96wzd4zpxw4adzhalkr57fgdk7cjp6bj596jnd87pz3rhyd"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; FIXME: Tests failed
+     ;; Issue submited upstream https://github.com/danieljprice/splash/issues/67
+     ;;
+     ;; make: *** No rule to make target 'test_interpolate3D.o', needed by 'test1'.  Stop.
+     ;;
+     (list #:tests? #f
+           #:parallel-build? #f ;parallel build fails
+           #:make-flags #~(list "SYSTEM=gfortran" "PREFIX="
+                                (string-append "GIZA_DIR="
+                                               #$(this-package-input "giza"))
+                                (string-append "DESTDIR="
+                                               #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-before 'install 'create-install-dirrectories
+                          (lambda _
+                            (mkdir-p (string-append #$output "/bin")))))))
+    (native-inputs (list gfortran pkg-config perl python-wrapper))
+    (inputs (list cairo cfitsio giza))
+    (home-page "https://users.monash.edu.au/~dprice/splash/")
+    (synopsis
+     "Astrophysical visualisation tool for smoothed particle hydrodynamics")
+    (description
+     "SPLASH is visualisation tool for Smoothed Particle Hydrodynamics (SPH)
+simulations in one, two and three dimensions, developed mainly for
+astrophysics.  It uses a command-line menu but data can be manipulated
+interactively in the plotting window.")
+    (license license:gpl2+)))
+
 (define-public skymaker
   (package
     (name "skymaker")
