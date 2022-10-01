@@ -13023,25 +13023,26 @@ profiler via Sysprof, debugging support, and more.")
          "17r059srxrx26w40swy47pdpyigyjdczp8550g4rfh86qs3ld4il"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-sources
-           (lambda _
-             (substitute* "komikku/utils.py"
-               (("from komikku\\.servers import get_servers_list")
-                ;; code following that line should migrate old databases
-                ;; but the line itself results in an import error
-                "return data_dir_path"))))
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))))
-         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (wrap-program (search-input-file outputs "bin/komikku")
-               `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            (lambda _
+              (substitute* "komikku/utils.py"
+                (("from komikku\\.servers import get_servers_list")
+                 ;; code following that line should migrate old databases
+                 ;; but the line itself results in an import error
+                 "return data_dir_path"))))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") (which "true")))))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/komikku")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (inputs
      (list bash-minimal
            gtk+
