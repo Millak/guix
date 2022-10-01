@@ -61,6 +61,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages texinfo)
@@ -826,3 +827,32 @@ debugger with support for programming, disassembly and reverse
 engineering.")
       (home-page "https://github.com/dlbeer/mspdebug")
       (license license:gpl2+))))
+
+(define-public seer-gdb
+  (package
+    (name "seer-gdb")
+    (version "1.11")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/epasveer/seer.git")
+                     (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0778573rixhdanmzp4slghpwgv7pm08n7cpa24rm3wrvs77ic3kb"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ; Those are strangely manual
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "src"))))))
+    (inputs
+     (list qtbase-5 qtcharts))
+    (synopsis "GUI frontend for GDB")
+    (description "This package provides a frontend to GDB, the GNU debugger.")
+    (home-page "https://github.com/epasveer/seer")
+    ;; Note: Some icons in src/resources are creative commons 3.0 and/or 4.0.
+    (license license:gpl3+)))
