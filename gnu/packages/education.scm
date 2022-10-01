@@ -1094,7 +1094,7 @@ machine, and more.")
        ("github.com/spf13/viper" ,go-github-com-spf13-viper)
        ("golang.org/x/net" ,go-golang-org-x-net)
        ("golang.org/x/text" ,go-golang-org-x-text)))
-    (home-page "https://exercism.io")
+    (home-page "https://exercism.org/")
     (synopsis "Mentored learning for programming languages")
     (description "Commandline client for exercism.io, a free service providing
 mentored learning for programming languages.")
