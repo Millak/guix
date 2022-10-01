@@ -1065,7 +1065,28 @@ machine, and more.")
     (arguments
      `(#:import-path "github.com/exercism/cli/exercism"
        #:unpack-path "github.com/exercism/cli"
-       #:install-source? #f))
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out  (assoc-ref outputs "out"))
+                    (bash (string-append out "/etc/bash_completion.d/exercism"))
+                    (fish (string-append
+                            out "/share/fish/vendor_completions.d/exercism.fish"))
+                    (zsh  (string-append out "/share/zsh/site-functions/_exercism")))
+               (mkdir-p (dirname bash))
+               (with-output-to-file bash
+                 (lambda ()
+                   (invoke (string-append out "/bin/exercism") "completion" "bash")))
+               (mkdir-p (dirname fish))
+               (with-output-to-file fish
+                 (lambda ()
+                   (invoke (string-append out "/bin/exercism") "completion" "fish")))
+               (mkdir-p (dirname zsh))
+               (with-output-to-file zsh
+                 (lambda ()
+                   (invoke (string-append out "/bin/exercism") "completion" "zsh")))))))))
     (inputs
      `(("github.com/blang/semver" ,go-github-com-blang-semver)
        ("github.com/spf13/cobra" ,go-github-com-spf13-cobra)
