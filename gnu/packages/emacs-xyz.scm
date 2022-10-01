@@ -18558,7 +18558,7 @@ the format.")
 (define-public emacs-nov-el
   (package
     (name "emacs-nov-el")
-    (version "0.3.4")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -18568,18 +18568,18 @@ the format.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0va9xjrq30cv5kb59a4rq5mcm83ggnv774r8spmskff3hj8012wf"))))
+         "10507fdfx02wb3j7g34w4ii8rgnjbmriq63ir6x1agf38s3i9p52"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:emacs ,emacs                   ;need libxml
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'embed-path-to-unzip
-           (lambda _
-             (substitute* "nov.el"
-               (("\\(executable-find \"unzip\"\\)")
-                (string-append "\"" (which "unzip") "\"")))
-             #t)))))
+     (list
+      #:emacs emacs                    ;need libxml
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'embed-path-to-unzip
+            (lambda _
+              (substitute* "nov.el"
+                (("\\(executable-find \"unzip\"\\)")
+                 (string-append "\"" (which "unzip") "\""))))))))
     (propagated-inputs
      (list emacs-dash emacs-esxml))
     (inputs
