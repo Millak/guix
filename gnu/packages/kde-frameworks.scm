@@ -1851,7 +1851,7 @@ asynchronous jobs.")
                 "11fbqylchzvm0pfw8bvy03px5zcg4jbch39vzcvnl6si7vikm4qj"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list extra-cmake-modules dbus qttools-5))
+     (list extra-cmake-modules dbus pkg-config qttools-5))
     (inputs
      (list kcodecs
            kconfig
