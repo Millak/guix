@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2014, 2015, 2017, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2014, 2015, 2017, 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
@@ -109,13 +109,6 @@
             hpnd
             fsdg-compatible))
 
-(define-record-type <license>
-  (license name uri comment)
-  license?
-  (name    license-name)
-  (uri     license-uri)
-  (comment license-comment))
-
 ;;; Commentary:
 ;;;
 ;;; Available licenses.
@@ -128,6 +121,53 @@
 ;;; when modifying this list to avoid mismatches.
 ;;;
 ;;; Code:
+
+(define-record-type <license>
+  (license name uri comment)
+  actual-license?
+  (name    license-name)
+  (uri     license-uri)
+  (comment license-comment))
+
+(define-syntax define-license-predicate
+  (syntax-rules (define define*)
+    "Define PREDICATE as a license predicate that, when applied to trivial
+cases, reduces to #t at macro-expansion time."
+    ((_ predicate (variables ...) (procedures ...)
+        (define variable _) rest ...)
+     (define-license-predicate
+       predicate
+       (variable variables ...) (procedures ...)
+       rest ...))
+    ((_ predicate (variables ...) (procedures ...)
+        (define* (procedure _ ...) _ ...)
+        rest ...)
+     (define-license-predicate
+       predicate
+       (variables ...) (procedure procedures ...)
+       rest ...))
+    ((_ predicate (variables ...) (procedures ...))
+     (define-syntax predicate
+       (lambda (s)
+         (syntax-case s (variables ... procedures ...)
+           ((_ variables) #t) ...
+           ((_ (procedures _)) #t) ...
+           ((_ obj) #'(actual-license? obj))
+           (id
+            (identifier? #'id)
+            #'actual-license?)))))))
+
+(define-syntax begin-license-definitions
+  (syntax-rules ()
+    ((_ predicate definitions ...)
+     (begin
+       ;; Define PREDICATE such that it expands to #t when passed one of the
+       ;; identifiers in DEFINITIONS.
+       (define-license-predicate predicate () () definitions ...)
+
+       definitions ...))))
+
+(begin-license-definitions license?
 
 (define agpl1
   (license "AGPL 1"
@@ -717,6 +757,6 @@ Data.  More details can be found at URI.  See also
 https://www.gnu.org/distros/free-system-distribution-guidelines.en.html#non-functional-data."
   (license "FSDG-compatible"
            uri
-           comment))
+           comment)))
 
 ;;; licenses.scm ends here
