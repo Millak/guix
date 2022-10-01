@@ -18465,7 +18465,7 @@ from @code{groovy-mode} for editing Jenkins declarative pipeline files.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ieure/scratch-el")
+             (url "https://codeberg.org/emacs-weirdware/scratch")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -18484,7 +18484,7 @@ from @code{groovy-mode} for editing Jenkins declarative pipeline files.")
                            (string-append (assoc-ref outputs "out")
                                           "/share/info"))
              #t)))))
-    (home-page "https://github.com/ieure/scratch-el/")
+    (home-page "https://codeberg.org/emacs-weirdware/scratch")
     (synopsis "Create scratch buffers with the same mode as current buffer")
     (description "Scratch is an extension to Emacs that enables one to create
 scratch buffers that are in the same mode as the current buffer.  This is
