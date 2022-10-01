@@ -2074,6 +2074,29 @@ adding, modifying and removing contacts.")
 and customizable platform for mobile devices.")
     (license (list license:gpl3+ license:lgpl2.1+))))
 
+(define-public plasma-redshift-control
+  (let ((commit "d9f38a5f0bcf030be16db1776166581c16e802cb")
+        (revision "1"))
+    (package
+      (name "plasma-redshift-control")
+      (version (git-version "0.1-pre" revision commit))
+      (home-page "https://invent.kde.org/plasma/plasma-redshift-control")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1wadxhy6iljhikfw2rbj9dhwb86f2sgwyf62r7sfq6cszcpgp0xi"))))
+      (build-system qt-build-system)
+      (native-inputs (list extra-cmake-modules pkg-config))
+      (inputs (list kwindowsystem plasma-framework redshift))
+      (synopsis "Adjust color temperature")
+      (description
+       "This package provides color temperature control applet for the Plasma
+Desktop.")
+      (license (list license:lgpl2.1 license:lgpl3)))))
+
 (define-public plasma-vault
   (package
     (name "plasma-vault")
