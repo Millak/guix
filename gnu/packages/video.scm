@@ -785,12 +785,18 @@ old-fashioned output methods with powerful ascii-art renderer.")
        (sha256
         (base32 "0ns9xh582c8kajw4v2x5ap5jfiba3gxywqc2klc0v6fc3id1gqii"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-postinstall-script
+            (lambda _
+              (setenv "DESTDIR" "/"))))))
     (native-inputs
      (list
-      desktop-file-utils           ; for update-desktop-database
       intltool
       `(,glib "bin")               ; for glib-compile-resources
-      `(,gtk "bin")                ; for gtk-update-icon-cache
       pkg-config
       python-wrapper))             ; for generate-authors.py
     (inputs
