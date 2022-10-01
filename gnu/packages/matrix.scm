@@ -235,7 +235,7 @@ fledged batteries-included asyncio layer using aiohttp.")
 (define-public pantalaimon
   (package
     (name "pantalaimon")
-    (version "0.10.3")
+    (version "0.10.5")
     (source
      (origin
        (method git-fetch)
@@ -245,7 +245,7 @@ fledged batteries-included asyncio layer using aiohttp.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "153d8083lj3qqirbv5q1d3igzd61a5kyzfk7xmv29sd3jbs8ysm9"))))
+         "16ask8v00654q307c55q5gnm8hrj40gibpab5zl52v4i0bgl9j68"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
