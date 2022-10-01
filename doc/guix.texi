@@ -19230,9 +19230,25 @@ the user mode network stack,,, QEMU, QEMU Documentation}).
 @cindex DHCP, networking service
 @defvr {Scheme Variable} dhcp-client-service-type
 This is the type of services that run @var{dhcp}, a Dynamic Host Configuration
-Protocol (DHCP) client, on all the non-loopback network interfaces.  Its value
-is the DHCP client package to use, @code{isc-dhcp} by default.
+Protocol (DHCP) client.
 @end defvr
+
+@deftp {Data Type} dhcp-client-configuration
+Data type representing the configuration of the DHCP client service.
+
+@table @asis
+@item @code{package} (default: @code{isc-dhcp})
+DHCP client package to use.
+
+@item @code{interfaces} (default: @code{'all})
+Either @code{'all} or the list of interface names that the DHCP client
+should listen on---e.g., @code{'("eno1")}.
+
+When set to @code{'all}, the DHCP client listens on all the available
+non-loopback interfaces that can be activated.  Otherwise the DHCP
+client listens only on the specified interfaces.
+@end table
+@end deftp
 
 @cindex NetworkManager
 

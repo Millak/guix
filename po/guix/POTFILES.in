@@ -5,6 +5,7 @@ gnu/packages.scm
 gnu/services.scm
 gnu/system.scm
 gnu/services/configuration.scm
+gnu/services/networking.scm
 gnu/services/shepherd.scm
 gnu/services/samba.scm
 gnu/home/services.scm
