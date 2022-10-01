@@ -56,6 +56,7 @@
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 msimonin <matthieu.simonin@inria.fr>
+;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -432,14 +433,14 @@ Callback Hell.
 (define-public python-aiohttp-socks
   (package
     (name "python-aiohttp-socks")
-    (version "0.6.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiohttp_socks" version))
        (sha256
         (base32
-         "04w010bvi719ifpc3sshav95k10hf9nq8czn9yglkj206yxcypdr"))))
+         "06il43dv6qm858af841vq9qadw6h7qsfs06nnwagmwqyi72cl592"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-aiohttp python-attrs python-socks))
