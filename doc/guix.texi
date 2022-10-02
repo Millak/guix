@@ -19461,7 +19461,7 @@ For example:
 The package that provides the DHCP daemon.  This package is expected to
 provide the daemon at @file{sbin/dhcpd} relative to its output
 directory.  The default package is the
-@uref{https://www.isc.org/products/DHCP, ISC's DHCP server}.
+@uref{https://www.isc.org/dhcp/, ISC's DHCP server}.
 @item @code{config-file} (default: @code{#f})
 The configuration file to use.  This is required.  It will be passed to
 @code{dhcpd} via its @code{-cf} option.  This may be any ``file-like''
