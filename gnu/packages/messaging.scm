@@ -2483,7 +2483,7 @@ notification, emojis, E2E encryption, and voip calls.")
 (define-public quaternion
   (package
     (name "quaternion")
-    (version "0.0.9.4f")
+    (version "0.0.95.1")
     (outputs '("out" "debug"))
     (source
      (origin
@@ -2493,12 +2493,13 @@ notification, emojis, E2E encryption, and voip calls.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q9ddz4rs02a0w3lwrsjnh59khv38cq9f0kv09vnwvazvayn87ck"))))
+        (base32 "10mzcr4rpyq5bl3h8wzxxlk8rdz7slhiq863xs77bmsq2pzf6lp8"))))
     (build-system qt-build-system)
     (inputs
      (list libqmatrixclient
            qtbase-5
            qtdeclarative-5
+           qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols-5
            qtquickcontrols2-5
