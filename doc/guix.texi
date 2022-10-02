@@ -13254,7 +13254,7 @@ guix import gem rails
 You can also ask for a specific version:
 
 @example
-guix import gem @@7.0.4
+guix import gem rails@@7.0.4
 @end example
 
 @table @code
