@@ -3029,6 +3029,11 @@ links.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'substitute-ag-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (make-file-writable "ag.el")
+              (emacs-substitute-variables "ag.el"
+                ("ag-executable" (search-input-file inputs "/bin/ag")))))
           (add-before 'install 'make-info
             (lambda _
               (with-directory-excursion "docs"
@@ -3037,12 +3042,11 @@ links.")
             (lambda _
               (install-file "docs/_build/texinfo/agel.info"
                             (string-append #$output "/share/info")))))))
+    (inputs (list the-silver-searcher))     ; 'ag' executable
     (native-inputs
      (list python-sphinx texinfo))
     (propagated-inputs
-     (list emacs-dash
-           emacs-s
-           the-silver-searcher))        ;'ag' executable
+     (list emacs-dash emacs-s))
     (home-page "https://github.com/Wilfred/ag.el")
     (synopsis "Front-end for ag (the-silver-searcher) for Emacs")
     (description "This package provides the ability to use the silver
