@@ -3026,17 +3026,17 @@ links.")
         (base32 "1p918y24vcn2pdliaymd210xp9fvhd4a1srqbv2lfiqrh59yjidx"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'make-info
-           (lambda _
-             (with-directory-excursion "docs"
-               (invoke "make" "info"))))
-         (add-after 'install 'install-info
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (info (string-append out "/share/info")))
-               (install-file "docs/_build/texinfo/agel.info" info)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'make-info
+            (lambda _
+              (with-directory-excursion "docs"
+                (invoke "make" "info"))))
+          (add-after 'install 'install-info
+            (lambda _
+              (install-file "docs/_build/texinfo/agel.info"
+                            (string-append #$output "/share/info")))))))
     (native-inputs
      (list python-sphinx texinfo))
     (propagated-inputs
