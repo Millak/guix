@@ -43,11 +43,11 @@
 
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
   #:export (options->transformation
@@ -115,8 +115,7 @@ extensions."
   "Return a package based on P but with its source taken from URI.  Extract
 the new package's version number from URI."
   (let ((base (tarball-base-name (basename uri))))
-    (let-values (((_ version*)
-                  (hyphen-package-name->name+version base)))
+    (let ((_ version* (hyphen-package-name->name+version base)))
       (package (inherit p)
                (version (or version version*
                             (package-version p)))
@@ -146,8 +145,7 @@ SPECS uses invalid syntax."
                     (lambda (old)
                       (package-with-source old uri)))))
            ((spec uri)
-            (let-values (((name version)
-                          (package-name->name+version spec)))
+            (let ((name version (package-name->name+version spec)))
               ;; Note: Here VERSION is used as the version string of the new
               ;; package rather than as part of the spec of the package being
               ;; targeted.
