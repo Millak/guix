@@ -18,7 +18,7 @@
 ;;; Copyright © 2019 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -727,24 +727,36 @@ extracting content or merging files.")
 (define-public python-pydyf
   (package
     (name "python-pydyf")
-    (version "0.1.2")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydyf" version))
        (sha256
-        (base32 "0b30g3hhxw1bg18r9ax85i1dkg8vy1y1wzas0bg0bxblh7j5sbqy"))))
+        (base32 "18q43g5d9455msipcgd5fvnh8m4a2rz189slzfg80yycjw66rshs"))))
     (build-system python-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "pytest" "-vv" "-c" "/dev/null")))))))
     (propagated-inputs (list python-pillow))
-    (native-inputs (list ghostscript python-pytest))
+    (native-inputs
+     (list ghostscript
+           python-flit-core
+           python-pypa-build
+           python-pytest))
     (home-page "https://github.com/CourtBouillon/pydyf")
     (synopsis "Low-level PDF generator")
     (description "@code{pydyf} is a low-level PDF generator written in Python
