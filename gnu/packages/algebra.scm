@@ -106,24 +106,26 @@ multiplication routines such as Toom–Cook and the FFT.")
 
 (define-public gf2x
   (package
-   (name "gf2x")
-   (version "1.2")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://gforge.inria.fr/frs/download.php/file/36934/gf2x-"
-                  version ".tar.gz"))
-            (sha256
-             (base32
-              "0d6vh1mxskvv3bxl6byp7gxxw3zzpkldrxnyajhnl05m0gx7yhk1"))))
-   (build-system gnu-build-system)
-   (synopsis "Arithmetic of polynomials over binary finite fields")
-   (description
-    "The gf2x library provides arithmetic of polynomials over finite fields
+    (name "gf2x")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.inria.fr/gf2x/gf2x")
+                    (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0521pkhwj7x6www4phraqzm9f7rdpi37vvmd33badkba17cdb40d"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool))
+    (synopsis "Arithmetic of polynomials over binary finite fields")
+    (description
+     "The gf2x library provides arithmetic of polynomials over finite fields
 of characteristic 2.  It implements the multiplication, squaring and
 greatest common divisor operations.")
-   (license license:gpl3+)
-   (home-page "https://gforge.inria.fr/projects/gf2x/")))
+    (home-page "https://gitlab.inria.fr/gf2x/gf2x")
+    (license license:gpl3+)))
 
 (define-public cm
   (package
