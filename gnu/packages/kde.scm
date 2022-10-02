@@ -678,6 +678,41 @@ the generated @file{massif.out.%pid} in the visualizer.  Gzip or Bzip2
 compressed massif files can also be opened transparently.")
     (license license:gpl2+)))
 
+(define-public libqaccessibilityclient
+  (package
+    (name "libqaccessibilityclient")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/" name
+                                  "/libqaccessibilityclient-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "0a9lv2jb5gyqxvrkl5xl09gjnlp05b5yfzfb0wmaxz0l8d7qnxhw"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ;TODO: Failing tests
+       #:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                         ;
+                        ;; make Qt render "offscreen", required for tests
+                        (setenv "QT_QPA_PLATFORM" "offscreen")
+                        ;; For missing '/etc/machine-id'
+                        (setenv "DBUS_FATAL_WARNINGS" "0")
+                        (setenv "HOME"
+                                (getcwd))
+                        (invoke "dbus-launch" "ctest")))))))
+    (native-inputs (list dbus extra-cmake-modules))
+    (inputs (list qtbase-5))
+    (home-page "https://invent.kde.org/libraries/libqaccessibilityclient")
+    (synopsis "Helper library to make writing accessibility tools easier")
+    (description "This package provides library that is used when writing
+accessibility clients such as screen readers.")
+    (license license:lgpl2.1+)))
+
 (define-public libkomparediff2
   (package
     (name "libkomparediff2")
