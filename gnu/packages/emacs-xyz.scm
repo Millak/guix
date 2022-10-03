@@ -19641,6 +19641,35 @@ tables of contents.")
 timestamps by providing a @code{ts} struct.")
     (license license:gpl3+)))
 
+(define-public emacs-circadian
+  (package
+    (name "emacs-circadian")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/guidoschmidt/circadian.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wpsykmai3idz0bgfl07hwl9nr4x9sgprvqgw8jln4dz2wf5gdic"))))
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "ert-runner")))
+    (build-system emacs-build-system)
+    (native-inputs
+     (list emacs-el-mock emacs-ert-runner))
+    (home-page "https://github.com/guidoschmidt/circadian.el")
+    (synopsis "Theme-switching for Emacs based on daytime")
+    (description "Circadian may reduce eye strain by automatically switching
+between light and dark themes based on daytime.  It is inspired by color
+temperature shifting tools and brightness adaption software.")
+    ;; The LICENSE file is expat, but the sole ".el" file is explicitly GPL3+.
+    (license (list license:gpl3+
+                   license:expat))))
+
 (define-public emacs-peg
   (package
     (name "emacs-peg")
