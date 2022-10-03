@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1402,42 +1403,43 @@ objects.")
 
 (define-public gappa
   (package
-   (name "gappa")
-   (version "1.4.0")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "https://gappa.gitlabpages.inria.fr/releases/"
-                                "gappa-" version ".tar.gz"))
-            (sha256
-             (base32
-              "12x42z901pr05ldmparqdi8sq9s7fxbavhzk2dbq3l6hy247dwbb"))))
-   (build-system gnu-build-system)
-   (inputs
-    (list boost gmp mpfr))
-   (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'patch-remake-shell
-          (lambda _
-            (substitute* "remake.cpp"
-             (("/bin/sh") (which "sh")))
-            #t))
-        (replace 'build
-          (lambda _ (invoke "./remake" "-s" "-d")))
-        (replace 'install
-          (lambda _ (invoke "./remake" "-s" "-d" "install")))
-        (replace 'check
-          (lambda _ (invoke "./remake" "check"))))))
-   (home-page "http://gappa.gforge.inria.fr/")
-   (synopsis "Proof generator for arithmetic properties")
-   (description "Gappa is a tool intended to help verifying and formally
+    (name "gappa")
+    (version "1.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.inria.fr/gappa/gappa")
+                    (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vfggzilc0gicrhqypmlx30ccrdkmyg22zzn46988c28xi9rcicj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-remake-shell
+                 (lambda _
+                   (substitute* "remake.cpp"
+                     (("/bin/sh") (which "sh")))))
+               (replace 'build
+                 (lambda _ (invoke "./remake" "-s" "-d")))
+               (replace 'install
+                 (lambda _ (invoke "./remake" "-s" "-d" "install")))
+               (replace 'check
+                 (lambda _ (invoke "./remake" "check"))))))
+    (native-inputs (list autoconf automake bison flex libtool))
+    (inputs (list boost gmp mpfr))
+    (home-page "https://gitlab.inria.fr/gappa/gappa")
+    (synopsis "Proof generator for arithmetic properties")
+    (description "Gappa is a tool intended to help verifying and formally
 proving properties on numerical programs dealing with floating-point or
 fixed-point arithmetic.  It has been used to write robust floating-point
 filters for CGAL and it is used to certify elementary functions in CRlibm.
 While Gappa is intended to be used directly, it can also act as a backend
 prover for the Why3 software verification platform or as an automatic tactic
 for the Coq proof assistant.")
-   (license (list license:gpl3+ license:cecill)))) ; either/or
+    (license (list license:gpl3+ license:cecill)))) ; either/or
 
 (define-public givaro
   (package
