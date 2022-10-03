@@ -895,6 +895,40 @@ for applying cryptography to short pieces of text, and can also quickly apply
 cryptography to the contents of the clipboard.")
     (license license:gpl2+)))
 
+(define-public khealthcertificate
+  (package
+    (name "khealthcertificate")
+    (version "22.09")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma-mobile/"
+                                  (version-major+minor version)
+                                  "/khealthcertificate-" version ".tar.xz"))
+              (sha256
+               (base32
+                "16vkjpyxwx34pvdpnci0l6mx2bdjialiscjvbdx53xbsq9ff701k"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "ctest" "-E"
+                               "(icaovdsparsertest|nlcoronacheckparsertest)")))))))
+    (native-inputs (list extra-cmake-modules pkg-config))
+    (inputs (list karchive
+                  kcodecs
+                  ki18n
+                  openssl
+                  qtdeclarative-5
+                  zlib))
+    (home-page "https://api.kde.org/khealthcertificate/html/index.html")
+    (synopsis "Digital vaccination and recovery certificate library")
+    (description
+     "This package provides a library for arsing of digital vaccination,
+test and recovery certificates.")
+    (license license:lgpl2.0)))
+
 (define-public kidentitymanagement
   (package
     (name "kidentitymanagement")
