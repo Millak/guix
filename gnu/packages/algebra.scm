@@ -107,7 +107,7 @@ multiplication routines such as Toom–Cook and the FFT.")
 (define-public gf2x
   (package
     (name "gf2x")
-    (version "1.2")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -116,7 +116,7 @@ multiplication routines such as Toom–Cook and the FFT.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0521pkhwj7x6www4phraqzm9f7rdpi37vvmd33badkba17cdb40d"))))
+                "04g5jg0i4vz46b4w2dvbmahwzi3k6b8g515mfw7im1inc78s14id"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool))
     (synopsis "Arithmetic of polynomials over binary finite fields")
