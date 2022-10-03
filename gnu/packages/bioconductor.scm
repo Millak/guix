@@ -16475,32 +16475,32 @@ using aCGH or sequencing.")
 (define-public r-bionero
   (package
     (name "r-bionero")
-    (version "1.4.0")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioNERO" version))
        (sha256
         (base32
-         "1nyzjbl0gcwvbj2nxfwykirikf8j3rsx5ny45bqjbcb4r23k65kj"))))
+         "0dsznfnhidbmf52rv8l26f1ms2k9yy4q4c6cf3x8ylc79c1sjrcp"))))
     (properties `((upstream-name . "BioNERO")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocparallel
            r-complexheatmap
-           r-deseq2
            r-dynamictreecut
            r-genie3
            r-ggnetwork
            r-ggnewscale
            r-ggplot2
-           r-ggpubr
+           r-ggrepel
            r-igraph
            r-intergraph
            r-matrixstats
            r-minet
            r-netrep
            r-networkd3
+           r-patchwork
            r-rcolorbrewer
            r-reshape2
            r-summarizedexperiment
