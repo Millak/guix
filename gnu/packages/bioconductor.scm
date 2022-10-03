@@ -3698,13 +3698,13 @@ analysis.")
 (define-public r-chipseeker
   (package
     (name "r-chipseeker")
-    (version "1.32.0")
+    (version "1.32.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ChIPseeker" version))
               (sha256
                (base32
-                "001f85nk4myk9vgs05inlj2dfby4802p1iyzkfqg332yk52gsbl7"))))
+                "0l2514wvlc8q7n1zjzfrghdg372sp73z39204bkif3g6pdkcvbcf"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -3718,6 +3718,7 @@ analysis.")
            r-genomicranges
            r-genomicfeatures
            r-ggplot2
+           r-ggvenndiagram
            r-gplots
            r-gtools
            r-dplyr
