@@ -648,11 +648,14 @@ underlying solvers like Cplex, Gurobi, Lpsolver, Glpk, CbC, SCIP or WBO.")
     (name "ocaml-dose3")
     (version "5.0.1")
     (source (origin
-              (method url-fetch)
-              (uri "https://gforge.inria.fr/frs/download.php/file/36063/dose3-5.0.1.tar.gz")
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/irill/dose3")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "00yvyfm4j423zqndvgc1ycnmiffaa2l9ab40cyg23pf51qmzk2jm"))
+                "0dxkw37gj8z45kd0dnrlfgpj8yycq0dphs8kjm9kvq9xc8rikxp3"))
               (patches
                (search-patches
                 "ocaml-dose3-add-unix-dependency.patch"
