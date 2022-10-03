@@ -2370,14 +2370,14 @@ used visualizations.")
 (define-public r-dearseq
   (package
     (name "r-dearseq")
-    (version "1.8.1")
+    (version "1.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "dearseq" version))
        (sha256
         (base32
-         "1f144k5gsclcmsnlsbisr2mivk91dbkci83wx1kznw6i15p4cpj1"))))
+         "1zsqsgf243gq1k57mw11d6apzccnq531mwg2wzw9mjrs1m0jsfzl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-compquadform
