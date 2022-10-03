@@ -18321,13 +18321,13 @@ parsing UK postcodes.")
 (define-public python-faker
   (package
     (name "python-faker")
-    (version "13.3.4")
+    (version "15.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Faker" version))
               (sha256
                (base32
-                "04855dqvvi2mr739l5x3qf82rxq0a7spc8gl76k8xixmbw36328q"))))
+                "1yx3gsivisf8ls43v0fgzy4n5q9625xrp9fr9cb5gp3h6k9cfpr4"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
