@@ -802,6 +802,32 @@ cards.")
 opening hours expressions.")
     (license license:lgpl2.0+)))
 
+(define-public kosmindoormap
+  (package
+    (name "kosmindoormap")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "042axwxa1497snr8f0m6a61gl9ypdkvllnhnlw4h5ffah7yl5n3s"))))
+    (build-system cmake-build-system)
+    (native-inputs (list bison extra-cmake-modules flex))
+    (inputs (list ki18n
+                  kopeninghours
+                  kpublictransport
+                  qtbase-5
+                  qtdeclarative-5
+                  zlib))
+    (home-page "https://invent.kde.org/libraries/kosmindoormap")
+    (synopsis "Indoor map renderer")
+    (description
+     "This package provides facilities for rendering OpenStreetMap
+multi-floor indoor maps.")
+    (license license:lgpl2.0+)))
+
 (define-public kpmcore
   (package
     (name "kpmcore")
