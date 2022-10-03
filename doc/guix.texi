@@ -2939,11 +2939,12 @@ chroot /mnt /bin/sh
 @end example
 
 @item
-Source your @var{user} profile to setup the environment, where
-@var{user} is the user name used for the Guix System you are attempting
-to repair:
+Source the system profile as well as your @var{user} profile to setup
+the environment, where @var{user} is the user name used for the Guix
+System you are attempting to repair:
 
 @example sh
+source /var/guix/profiles/system/profile/etc/profile
 source /home/@var{user}/.guix-profile/etc/profile
 @end example
 
