@@ -1427,7 +1427,9 @@ objects.")
                (replace 'install
                  (lambda _ (invoke "./remake" "-s" "-d" "install")))
                (replace 'check
-                 (lambda _ (invoke "./remake" "check"))))))
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "./remake" "check")))))))
     (native-inputs (list autoconf automake bison flex libtool))
     (inputs (list boost gmp mpfr))
     (home-page "https://gitlab.inria.fr/gappa/gappa")
