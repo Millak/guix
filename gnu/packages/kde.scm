@@ -768,6 +768,40 @@ including SSL/TLS, X.509 certificates, SASL, OpenPGP, S/MIME CMS, and smart
 cards.")
     (license license:lgpl2.1+)))
 
+(define-public kopeninghours
+  (package
+    (name "kopeninghours")
+    (version "22.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "03hslgx4zgg7gsnz2xhx4wnchvqfc5n8c6ihgwz3972fkxsjfdvq"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases '(modify-phases %standard-phases
+                       (replace 'check
+                         (lambda* (#:key tests? #:allow-other-keys)
+                           (when tests?
+                             (setenv "QT_QPA_PLATFORM" "offscreen")
+                             (invoke "ctest" "-E"
+                                     "(evaluatetest|iterationtest)")))))))
+    (native-inputs (list bison extra-cmake-modules flex))
+    (inputs (list boost
+                  kholidays
+                  ki18n
+                  osmctools
+                  qtbase-5
+                  qtdeclarative-5))
+    (home-page "https://invent.kde.org/libraries/kopeninghours")
+    (synopsis "Get opening hours from OpenStreetMap")
+    (description
+     "This package provides a library for parsing and evaluating OpenStreetMap
+opening hours expressions.")
+    (license license:lgpl2.0+)))
+
 (define-public kpmcore
   (package
     (name "kpmcore")
