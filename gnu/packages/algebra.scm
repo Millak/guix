@@ -631,35 +631,42 @@ geometry and singularity theory.")
 
 (define-public gmp-ecm
   (package
-   (name "gmp-ecm")
-   (version "7.0.4")
-   (source (origin
-             (method url-fetch)
-             (uri
-               (let ((hash "00c4c691a1ef8605b65bdf794a71539d"))
-                    (string-append "https://gitlab.inria.fr/zimmerma/ecm/"
-                                   "uploads/" hash "/ecm-" version
-                                   ".tar.gz")))
-             (sha256 (base32
-                      "0hxs24c2m3mh0nq1zz63z3sb7dhy1rilg2s1igwwcb26x3pb7xqc"))))
-   (build-system gnu-build-system)
-   (inputs
-    (list gmp))
-   (arguments
-    `(#:configure-flags '("--enable-shared"
-                          ;; Disable specific assembly routines, which depend
-                          ;; on the subarchitecture of the build machine,
-                          ;; and use gmp instead.
-                          "--disable-asm-redc")))
-   (synopsis "Integer factorization library using the elliptic curve method")
-   (description
-    "GMP-ECM factors integers using the elliptic curve method (ECM) as well
+    (name "gmp-ecm")
+    (version "7.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.inria.fr/zimmerma/ecm")
+                    (commit (string-append "git-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "013sfsd5kyh7phhf4namcdndpcp2jnibzxf10f4g89qabr8av63m"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list gmp))
+    (arguments
+     (list
+      #:configure-flags #~(list "--enable-shared"
+                                ;; Disable specific assembly routines, which
+                                ;; depend on the subarchitecture of the build
+                                ;; machine, and use gmp instead.
+                                "--disable-asm-redc")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-paths
+                     (lambda _
+                       (substitute* "test.ecm"
+                         (("/bin/rm") (which "rm"))))))))
+    (native-inputs (list autoconf automake libtool))
+    (synopsis "Integer factorization library using the elliptic curve method")
+    (description
+     "GMP-ECM factors integers using the elliptic curve method (ECM) as well
 as the P-1 and P+1 algorithms.  It provides a library and a stand-alone
 binary.")
-   ;; Most files are under lgpl3+, but some are under gpl3+ or gpl2+,
-   ;; so the combined work is under gpl3+.
-   (license license:gpl3+)
-   (home-page "http://ecm.gforge.inria.fr/")))
+    (home-page "https://gitlab.inria.fr/zimmerma/ecm")
+    ;; Most files are under lgpl3+, but some are under gpl3+ or gpl2+, so the
+    ;; combined work is under gpl3+.
+    (license license:gpl3+)))
 
 (define-public bc
   (package
