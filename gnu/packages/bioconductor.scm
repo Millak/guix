@@ -7726,14 +7726,14 @@ platform for merging tree with associated data and converting file formats.")
 (define-public r-ggtree
   (package
     (name "r-ggtree")
-    (version "3.4.0")
+    (version "3.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ggtree" version))
        (sha256
         (base32
-         "033r748npv0l72yb9sk6lqnj0l7cd36ykf788145qv8ck5i2gyk4"))))
+         "0h1qlhn4rj7jgd9vrja7lykaglyfvnzwkghvsqj1mvp4niwli7y5"))))
     (properties `((upstream-name . "ggtree")))
     (build-system r-build-system)
     (propagated-inputs
