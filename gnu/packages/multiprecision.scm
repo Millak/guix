@@ -8,6 +8,7 @@
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,8 +32,9 @@
   #:use-module (gnu packages m4)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages texinfo)
-  #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu))
 
@@ -159,25 +161,20 @@ precision and correctly rounds the results.")
   (package
     (name "mpfi")
     (version "1.5.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://gforge.inria.fr/frs/download.php"
-                           "/latestfile/181/mpfi-" version ".tgz"))
-       (sha256
-        (base32 "0mismr1ll3wp788dq2n22s5irm0dziy75byyfdwz22kjbmckhf9v"))))
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://gforge.inria.fr/frs/download.php"
+                                  "/latestfile/181/mpfi-" version ".tgz"))
+              (sha256
+               (base32
+                "0mismr1ll3wp788dq2n22s5irm0dziy75byyfdwz22kjbmckhf9v"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;tests are broken in this release
-       #:configure-flags '("--enable-static=no")))
-    (native-inputs
-     `(("automake" ,automake)
-       ("autoreconf" ,autoconf)
-       ("libtool" ,libtool)
-       ("texinfo" ,texinfo)))
+     (list #:tests? #f                  ;tests are broken in this release
+           #:configure-flags #~(list "--enable-static=no")))
+    (native-inputs (list automake autoconf libtool texinfo))
     (propagated-inputs
-     (list gmp ; <mpfi.h> refers to both
-           mpfr))
+     (list gmp mpfr))                   ;<mpfi.h> refers to both
     (home-page "https://gforge.inria.fr/projects/mpfi/")
     (synopsis "C library for arbitrary-precision interval arithmetic")
     (description
