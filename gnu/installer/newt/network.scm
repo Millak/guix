@@ -122,10 +122,15 @@ FULL-VALUE tentatives, spaced by 1 second."
           (lambda _ #f))
         (alarm 3))
       (lambda ()
-        (false-if-exception
-         (= (response-code
-             (http-request "https://ci.guix.gnu.org"))
-            200)))
+        (or
+          (false-if-exception
+            (= (response-code
+                 (http-request "https://ci.guix.gnu.org"))
+               200))
+          (false-if-exception
+            (= (response-code
+                 (http-request "https://bordeaux.guix.gnu.org"))
+               200))))
       (lambda ()
         (alarm 0))))
 
