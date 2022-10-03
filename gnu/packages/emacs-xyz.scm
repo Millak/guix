@@ -26209,8 +26209,8 @@ the standard @code{Dockerfile} file format.")
     (license license:asl2.0)))
 
 (define-public emacs-lsp-mode
-  (let ((commit "4aafe25e03ab7470b8d3c1cb326affa3c5e9930e")
-        (revision "0"))
+  (let ((commit "26c4d3e54ad2956623e64132312fe864274d346f")
+        (revision "1"))
     (package
       (name "emacs-lsp-mode")
       (version (git-version "8.0.1" revision commit))
@@ -26222,7 +26222,7 @@ the standard @code{Dockerfile} file format.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "01csz4vr3fg1q2py45mxj5j8bkvckn3daam1jafb2gg9gjc9bp7z"))))
+          (base32 "0klnik69b5y6s2q00vyshxymlg7k4x9x6m7wpsf7z9w12qn27alx"))))
       (build-system emacs-build-system)
       (arguments
        `(#:emacs ,emacs                 ;need libxml support
