@@ -58,6 +58,7 @@
 ;;; Copyright © 2022 cage <cage-dev@twistfold.it>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8183,6 +8184,33 @@ provided by a TLS reverse proxy (e.g. tlstunnel, hitch or stunnel).")
       ;; "cpe:2.3:a:comelz:quark" package.  The proper fix is for (guix cve)
       ;; to account for "vendor names".
       (properties '((lint-hidden-cve . ("CVE-2019-15520")))))))
+
+(define-public go-webring
+  (let ((commit "6786a27b0c57df75323217453369c83a4d9f4dea")
+        (revision "0"))
+    (package
+      (name "go-webring")
+      (version (git-version "20220426" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~amolith/go-webring")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xra0mapdmda8n0z6zsgcqppdzvxc47p0fahsdyig5qmpk89ar8l"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "git.sr.ht/~amolith/go-webring"
+             #:install-source? #f))
+      (inputs (list go-github-com-spf13-pflag))
+      (home-page "https://git.sr.ht/~amolith/go-webring")
+      (synopsis "Simple webring implementation")
+      (description
+"@code{go--webring} provides a simple webring implementation as used by
+the Fediring.")
+      (license (list license:cc0 license:bsd-2)))))
 
 (define-public archivebox
   (package
