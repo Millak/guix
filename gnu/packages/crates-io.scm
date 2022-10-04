@@ -54083,14 +54083,14 @@ implementations.")
 (define-public rust-slog-stdlog-4
   (package
     (name "rust-slog-stdlog")
-    (version "4.1.0")
+    (version "4.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "slog-stdlog" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nhg9mwaf5y1gs2f7nbz3r9fngq0g3d3qvz66z5lzgxd09rsna42"))))
+        (base32 "0gpsf62ckblpc6a70dnhsz677c7s5cz4glpqsf8p5bmvwnnb41k7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
