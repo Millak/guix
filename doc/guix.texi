@@ -19177,8 +19177,8 @@ This is the data type representing a network route.
 
 @table @asis
 @item @code{destination}
-The route destination (a string), either an IP address or
-@code{"default"} to denote the default route.
+The route destination (a string), either an IP address and network mask
+or @code{"default"} to denote the default route.
 
 @item @code{source} (default: @code{#f})
 The route source.
