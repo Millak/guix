@@ -4845,7 +4845,7 @@ data.")
 (define-public kaiju
   (package
     (name "kaiju")
-    (version "1.6.3")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4854,24 +4854,45 @@ data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "119pzi0ddzv9mjg4wwa6han0cwr3k3ssn7kirvsjfcq05mi5ka0x"))))
+                "1hfmadkfs6jjd7l3byly5xxb0ifm3dm1wis11sjbqfcv6l89snmg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; There are no tests.
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'move-to-src-dir
-           (lambda _ (chdir "src") #t))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (mkdir-p bin)
-               (chdir "..")
-               (copy-recursively "bin" bin))
-             #t)))))
+     (list
+      #:tests? #f                       ; There are no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'move-to-src-dir
+            (lambda _ (chdir "src")))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (mkdir-p bin)
+                (copy-recursively "../bin" bin)
+                (let ((path (search-path-as-list '("bin")
+                                                 '#$(match (package-inputs this-package)
+                                                      (((_ pkg) ...) pkg)))))
+                  (for-each (lambda (script)
+                              (let ((exe (string-append bin "/" script)))
+                                (chmod exe #o555)
+                                (wrap-script exe
+                                  #:guile #$(file-append guile-3.0 "/bin/guile")
+                                  `("PATH" ":" prefix ,path))))
+                            (list "kaiju-convertMAR.py"
+                                  "kaiju-gbk2faa.pl"
+                                  "kaiju-makedb")))))))))
     (inputs
-     (list perl zlib))
+     (list bzip2
+           coreutils
+           curl
+           gawk
+           guile-3.0 ;for wrap-script
+           gzip
+           perl
+           python-wrapper
+           tar
+           wget
+           zlib))
     (home-page "http://kaiju.binf.ku.dk/")
     (synopsis "Fast and sensitive taxonomic classification for metagenomics")
     (description "Kaiju is a program for sensitive taxonomic classification
