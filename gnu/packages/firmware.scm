@@ -259,19 +259,11 @@ driver.")
                          help2man
                          gettext-minimal))
     (inputs (list bash-completion
-                  glib
                   libgudev
                   libxmlb
-                  gusb
                   sqlite
-                  libarchive
-                  libjcat
-                  json-glib
-                  curl
                   polkit
                   eudev
-                  gcab
-                  gnutls
                   libelf
                   tpm2-tss
                   cairo
@@ -281,6 +273,15 @@ driver.")
                   mingw-w64-tools
                   libsmbios
                   gnu-efi))
+    ;; In Requires of fwupd*.pc.
+    (propagated-inputs (list curl
+                             gcab
+                             glib
+                             gnutls
+                             gusb
+                             json-glib
+                             libarchive
+                             libjcat))
     (home-page "https://fwupd.org/")
     (synopsis "Daemon to allow session software to update firmware")
     (description "This package aims to make updating firmware on GNU/Linux
