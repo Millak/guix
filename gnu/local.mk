@@ -1442,6 +1442,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libofa-ftbfs-2.diff		\
   %D%/packages/patches/libotr-test-auth-fix.patch		\
   %D%/packages/patches/libksieve-Fix-missing-link-libraries.patch \
+  %D%/packages/patches/libksysguard-qdiriterator-follow-symlinks.patch \
   %D%/packages/patches/libmad-armv7-thumb-pt1.patch		\
   %D%/packages/patches/libmad-armv7-thumb-pt2.patch		\
   %D%/packages/patches/libmad-length-check.patch		\

@@ -963,6 +963,7 @@ basic needs and easy to configure for those who want special setups.")
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version
                            "/libksysguard-" version ".tar.xz"))
+       (patches (search-patches "libksysguard-qdiriterator-follow-symlinks.patch"))
        (sha256
         (base32 "1gqsjsdkp25abqqp4f6cv6ih199q9ad7q1a4lkhjgsh4h8jq1856"))))
     (native-inputs
