@@ -6904,7 +6904,7 @@ supports image conversion, rotation, and slideshows.")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/eog-plugins/"
-                                  (version-major+minor version) "/"
+                                  (version-major version) "/"
                                   "eog-plugins-" version ".tar.xz"))
               (sha256
                (base32
