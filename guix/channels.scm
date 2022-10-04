@@ -419,19 +419,28 @@ their relation.  When AUTHENTICATE? is false, CHANNEL is not authenticated."
     (if authenticate?
         (if (channel-introduction channel)
             (authenticate-channel channel checkout commit)
-            ;; TODO: Warn for all the channels once the authentication interface
-            ;; is public.
-            (when (guix-channel? channel)
-              (raise (make-compound-condition
-                      (formatted-message (G_ "channel '~a' lacks an \
+            (begin
+              (when (file-exists?
+                     (string-append checkout "/.guix-authorizations"))
+                (warning (and=> (channel-location channel)
+                                source-properties->location)
+                         (G_ "channel '~a' lacks 'introduction' field but \
+'.guix-authorizations' found\n")
+                         (channel-name channel)))
+
+              ;; TODO: Warn for all the channels once the authentication interface
+              ;; is public.
+              (when (guix-channel? channel)
+                (raise (make-compound-condition
+                        (formatted-message (G_ "channel '~a' lacks an \
 introduction and cannot be authenticated~%")
-                                         (channel-name channel))
-                      (condition
-                       (&fix-hint
-                        (hint (G_ "Add the missing introduction to your
+                                           (channel-name channel))
+                        (condition
+                         (&fix-hint
+                          (hint (G_ "Add the missing introduction to your
 channels file to address the issue.  Alternatively, you can pass
 @option{--disable-authentication}, at the risk of running unauthenticated and
-thus potentially malicious code."))))))))
+thus potentially malicious code.")))))))))
         (warning (G_ "channel authentication disabled~%")))
 
     (when (guix-channel? channel)
