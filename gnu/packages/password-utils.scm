@@ -82,6 +82,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
@@ -758,7 +759,7 @@ using password-store through rofi interface:
 (define-public tessen
   (package
     (name "tessen")
-    (version "2.1.0")
+    (version "2.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -767,7 +768,7 @@ using password-store through rofi interface:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ddsjhzp1qy3jfhxlrzcxgp0gza234yc0sdlngwa3xdj0wr40zs0"))))
+                "01jaxakq847k3v2wid8fzhcmq8mraxz0q1j87s1jv75l1gy4qiij"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests?
@@ -777,13 +778,17 @@ using password-store through rofi interface:
                (add-after 'unpack 'patch-wtype-path
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "tessen"
-                     (("wtype") (search-input-file inputs "/bin/wtype")))))
+                     (("notify-send") (search-input-file inputs
+                                                         "/bin/notify-send"))
+                     (("wl-copy") (search-input-file inputs "/bin/wl-copy"))
+                     (("wtype") (search-input-file inputs "/bin/wtype"))
+                     (("xdg-open") (search-input-file inputs "/bin/xdg-open")))))
                (delete 'configure)) ;no configure script
            #:make-flags
            #~(list (string-append "PREFIX="
                                   #$output))))
     (native-inputs (list scdoc))
-    (inputs (list wtype))
+    (inputs (list libnotify wl-clipboard wtype xdg-utils))
     (home-page "https://github.com/ayushnix/tessen")
     (synopsis "Frontend for password-store and gopass")
     (description "Tessen is a bash script that can autotype and copy data
