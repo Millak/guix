@@ -312,7 +312,7 @@ topology functions.")
            libhandy
            librsvg
            libsecret
-           libshumate           
+           libshumate
            libsoup
            libxml2
            pango-next                   ;TODO: remove when it's the default
