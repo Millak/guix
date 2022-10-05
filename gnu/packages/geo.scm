@@ -280,15 +280,16 @@ topology functions.")
                                     "update_desktop_database"))
                    (string-append option ": false"))
                   (else all))))))
-          (add-after 'unpack 'patch-dbus-service
-            (lambda _
-              (substitute* "data/org.gnome.Maps.service.in"
-                (("@pkgdatadir@/org.gnome.Maps")
-                 (string-append #$output "/bin/gnome-maps")))))
           (add-after 'install 'wrap
             (lambda _
-              (wrap-program (string-append #$output "/bin/gnome-maps")
-                `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))))))))
+              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                (substitute* (string-append #$output "/share/gnome-maps/"
+                                            "org.gnome.Maps")
+                  (("imports\\.package\\.init" all)
+                   (string-append "'" gi-typelib-path "'.split(':').forEach("
+                                  "path => imports.gi.GIRepository.Repository."
+                                  "prepend_search_path(path));\n"
+                                  all)))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
