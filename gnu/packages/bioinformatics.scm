@@ -2429,26 +2429,27 @@ are not included due to their size.")
 (define-public cd-hit
   (package
     (name "cd-hit")
-    (version "4.6.8")
+    (version "4.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/weizhongli/cdhit"
                                   "/releases/download/V" version
                                   "/cd-hit-v" version
-                                  "-2017-0621-source.tar.gz"))
+                                  "-2019-0228.tar.gz"))
               (sha256
                (base32
-                "1b4mwm2520ixjbw57sil20f9iixzw4bkdqqwgg1fc3pzm6rz4zmn"))))
+                "1phmfhgcpyfd6kj7jwzw976613lcpv1wc2pzfdfaxla062x2s5r6"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are no tests
-       #:make-flags
-       ;; Executables are copied directly to the PREFIX.
-       ,#~(list (string-append "PREFIX=" #$output "/bin")
-                ;; Support longer sequences (e.g. Pacbio sequences)
-                "MAX_SEQ=60000000")
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #f                       ; there are no tests
+      #:make-flags
+      ;; Executables are copied directly to the PREFIX.
+      #~(list (string-append "PREFIX=" #$output "/bin")
+              ;; Support longer sequences (e.g. Pacbio sequences)
+              "MAX_SEQ=60000000")
+      #:phases
+      '(modify-phases %standard-phases
          ;; No "configure" script
          (delete 'configure)
          ;; Remove sources of non-determinism
@@ -2458,15 +2459,13 @@ are not included due to their size.")
                ((" \\(built on \" __DATE__ \"\\)") ""))
              (substitute* "cdhit-common.c++"
                (("__DATE__") "\"0\"")
-               (("\", %s, \" __TIME__ \"\\\\n\", date") ""))
-             #t))
+               (("\", %s, \" __TIME__ \"\\\\n\", date") ""))))
          ;; The "install" target does not create the target directory.
          (add-before 'install 'create-target-dir
            (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/bin"))
-             #t)))))
+             (mkdir-p (string-append (assoc-ref outputs "out") "/bin")))))))
     (inputs
-     (list perl))
+     (list perl zlib))
     (home-page "http://weizhongli-lab.org/cd-hit/")
     (synopsis "Cluster and compare protein or nucleotide sequences")
     (description
