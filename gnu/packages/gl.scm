@@ -755,7 +755,7 @@ OpenGL graphics API.")
 (define-public libglvnd
   (package
     (name "libglvnd")
-    (version "1.3.4")
+    (version "1.5.0")
     (home-page "https://gitlab.freedesktop.org/glvnd/libglvnd")
     (source (origin
               (method git-fetch)
@@ -765,7 +765,7 @@ OpenGL graphics API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0phvgg2h3pcz3x39gaymwb37bnw1s26clq9wsj0zx398zmp3dwpk"))))
+                "1nvlcwzivrdchp70i2l7ic7qdlsdmlsb0ckydscr43rhqldswx69"))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags '("-Dx11=enabled")
