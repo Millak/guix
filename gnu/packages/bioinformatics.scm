@@ -2476,6 +2476,26 @@ databases.")
     ;; version 2 (GPLv2)."
     (license license:gpl2)))
 
+(define-public cd-hit-auxtools
+  (package
+    (inherit cd-hit)
+    (name "cd-hit-auxtools")
+    (arguments
+     (list
+      #:tests? #f                       ; there are no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir (lambda _ (chdir "cd-hit-auxtools")))
+          ;; No "configure" script
+          (delete 'configure)
+          ;; There is no install target.
+          (replace 'install
+            (lambda _
+              (for-each (lambda (file)
+                          (install-file file (string-append #$output "/bin")))
+                        '("cd-hit-dup" "cd-hit-lap" "read-linker")))))))
+    (inputs '())))
+
 (define-public clipper
   (package
     (name "clipper")
