@@ -273,29 +273,54 @@ with dashes."
   "Improve the package DESCRIPTION by turning a beginning sentence fragment into
 a proper sentence and by using two spaces between sentences, and wrap lines at
 LENGTH characters."
-  (let ((cleaned (cond
-                  ((not (string? description))
-                   (G_ "This package lacks a description.  Run \
+  (unless (string? description)
+    (G_ "This package lacks a description.  Run \
 \"info '(guix) Synopses and Descriptions'\" for more information."))
-                  ((string-prefix? "A " description)
-                   (string-append "This package provides a"
-                                  (substring description 1)))
-                  ((string-prefix? "Provides " description)
-                   (string-append "This package provides"
-                                  (substring description
-                                             (string-length "Provides"))))
-                  ((string-prefix? "Implements " description)
-                   (string-append "This package implements"
-                                  (substring description
-                                             (string-length "Implements"))))
-                  ((string-prefix? "Functions " description)
-                   (string-append "This package provides functions"
-                                  (substring description
-                                             (string-length "Functions"))))
-                  (else description))))
+
+  (let* ((fix-word
+          (lambda (word)
+            (fold (lambda (proc acc) (proc acc)) word
+                  (list
+                   ;; Remove wrapping in single quotes, common in R packages.
+                   (cut string-trim-both <> #\')
+                   ;; Escape single @ to prevent it from being understood as
+                   ;; invalid Texinfo syntax.
+                   (cut regexp-substitute/global #f "@" <> 'pre "@@" 'post)))))
+         (words
+          (string-tokenize (string-trim-both description)
+                           (char-set-complement
+                            (char-set #\space #\newline))))
+         (new-words
+          (match words
+            (((and (or "A" "Functions" "Methods") first) . rest)
+             (cons* "This" "package" "provides"
+                    (string-downcase first) rest))
+            (((and (or "Contains"
+                       "Creates"
+                       "Performs"
+                       "Provides"
+                       "Produces"
+                       "Implements"
+                       "Infers") first) . rest)
+             (cons* "This" "package"
+                    (string-downcase first) rest))
+            (_ words)))
+         (cleaned
+          (string-join (map fix-word new-words))))
     ;; Use double spacing between sentences
     (fill-paragraph (regexp-substitute/global #f "\\. \\b"
-                                          cleaned 'pre ".  " 'post)
+                                              cleaned 'pre
+                                              (lambda (m)
+                                                (let ((pre (match:prefix m))
+                                                      (abbrevs '("Dr" "Mr" "Mrs"
+                                                                 "Ms" "Prof" "vs"
+                                                                 "e.g")))
+                                                  (if (or (any (cut string-suffix? <> pre) abbrevs)
+                                                          (char-upper-case?
+                                                           (string-ref pre (1- (string-length pre)))))
+                                                      ". "
+                                                      ".  ")))
+                                              'post)
                     length)))
 
 (define (beautify-synopsis synopsis)
