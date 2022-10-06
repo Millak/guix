@@ -37809,7 +37809,7 @@ like
 @end lisp
 
 @node Invoking guix system
-@section Invoking @code{guix system}
+@section Invoking @command{guix system}
 
 Once you have written an operating system declaration as seen in the
 previous section, it can be @dfn{instantiated} using the @command{guix
@@ -38455,7 +38455,7 @@ Again, the default output format is Dot/Graphviz, but you can pass
 @end table
 
 @node Invoking guix deploy
-@section Invoking @code{guix deploy}
+@section Invoking @command{guix deploy}
 
 We've already seen @code{operating-system} declarations used to manage a
 machine's configuration locally.  Suppose you need to configure multiple
@@ -41027,7 +41027,7 @@ A typical extension for adding a channel might look like this:
 @end defvr
 
 @node Invoking guix home
-@section Invoking @code{guix home}
+@section Invoking @command{guix home}
 
 Once you have written a home environment declaration (@pxref{Declaring
 the Home Environment,,,,}, it can be @dfn{instantiated} using the
