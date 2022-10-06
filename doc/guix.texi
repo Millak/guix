@@ -1591,7 +1591,7 @@ effectively running @code{guix-daemon} executable is upgraded.
 
 @node Invoking guix-daemon
 @section Invoking @command{guix-daemon}
-
+@cindex @command{guix-daemon}
 The @command{guix-daemon} program implements all the functionality to
 access the store.  This includes launching build processes, running the
 garbage collector, querying the availability of a build result, etc.  It
@@ -3316,6 +3316,7 @@ retaining precise @dfn{provenance tracking} of the software.
 @cindex package installation
 @cindex package removal
 @cindex profile
+@cindex @command{guix package}
 The @command{guix package} command is the tool that allows users to
 install, upgrade, and remove packages, as well as rolling back to
 previous configurations.  These operations work on a user
@@ -4309,6 +4310,7 @@ guix package}).
 
 @cindex garbage collector
 @cindex disk space
+@cindex @command{guix gc}
 Packages that are installed, but not used, may be @dfn{garbage-collected}.
 The @command{guix gc} command allows users to explicitly run the garbage
 collector to reclaim space from the @file{/gnu/store} directory.  It is
@@ -4954,6 +4956,7 @@ declaration, and so on.
 
 @cindex reproducibility
 @cindex replicating Guix
+@cindex @command{guix describe}
 Often you may want to answer questions like: ``Which revision of Guix am I
 using?'' or ``Which channels am I using?''  This is useful information in many
 situations: if you want to @emph{replicate} an environment on a different
@@ -5807,6 +5810,7 @@ easily distributed to users who do not run Guix.
 @cindex reproducible build environments
 @cindex development environments
 @cindex @command{guix environment}
+@cindex @command{guix shell}
 @cindex environment, package build environment
 The purpose of @command{guix shell} is to make it easy to create one-off
 software environments, without changing one's profile.  It is typically
@@ -6237,6 +6241,8 @@ package transformation options (@pxref{Package Transformation Options}).
 @node Invoking guix environment
 @section Invoking @command{guix environment}
 
+@cindex @command{guix environment}
+
 The purpose of @command{guix environment} is to assist in creating
 development environments.
 
@@ -6615,6 +6621,8 @@ transformation options (@pxref{Package Transformation Options}).
 
 @node Invoking guix pack
 @section Invoking @command{guix pack}
+
+@cindex @command{guix pack}
 
 Occasionally you want to pass software to people who are not (yet!)
 lucky enough to be using Guix.  You'd tell them to run @command{guix
@@ -7033,6 +7041,8 @@ for Fortran development.  For other languages, please use
 
 @node Invoking guix git authenticate
 @section Invoking @command{guix git authenticate}
+
+@cindex @command{guix git authenticate}
 
 The @command{guix git authenticate} command authenticates a Git checkout
 following the same rule as for channels (@pxref{channel-authentication,
@@ -11799,6 +11809,7 @@ replaced with some arbitrary object -- currently the list
 @node Invoking guix repl
 @section Invoking @command{guix repl}
 
+@cindex @command{guix repl}
 @cindex REPL, read-eval-print loop, script
 The @command{guix repl} command makes it easier to program Guix in Guile
 by launching a Guile @dfn{read-eval-print loop} (REPL) for interactive
@@ -14104,6 +14115,7 @@ otherwise.
 @node Invoking guix style
 @section Invoking @command{guix style}
 
+@cindex @command{guix style}
 The @command{guix style} command helps users and packagers alike style
 their package definitions and configuration files according to the
 latest fashionable trends.  It can either reformat whole files, with the
@@ -15342,6 +15354,7 @@ information about mismatches.
 @node Invoking guix copy
 @section Invoking @command{guix copy}
 
+@cindex @command{guix copy}
 @cindex copy, of store items, over SSH
 @cindex SSH, copy of store items
 @cindex sharing store items across machines
@@ -15459,6 +15472,7 @@ must be PID 1 of the container or one of its child processes.
 @node Invoking guix weather
 @section Invoking @command{guix weather}
 
+@cindex @command{guix weather}
 Occasionally you're grumpy because substitutes are lacking and you end
 up building packages by yourself (@pxref{Substitutes}).  The
 @command{guix weather} command reports on substitute availability on the
@@ -15589,6 +15603,7 @@ Display the list of store items for which substitutes are missing.
 @node Invoking guix processes
 @section Invoking @command{guix processes}
 
+@cindex @command{guix processes}
 The @command{guix processes} command can be useful to developers and system
 administrators, especially on multi-user machines and on build farms: it lists
 the current sessions (connections to the daemon), as well as information about
@@ -37811,6 +37826,7 @@ like
 @node Invoking guix system
 @section Invoking @command{guix system}
 
+@cindex @command{guix system}
 Once you have written an operating system declaration as seen in the
 previous section, it can be @dfn{instantiated} using the @command{guix
 system} command.  The synopsis is:
@@ -38457,6 +38473,7 @@ Again, the default output format is Dot/Graphviz, but you can pass
 @node Invoking guix deploy
 @section Invoking @command{guix deploy}
 
+@cindex @command{guix deploy}
 We've already seen @code{operating-system} declarations used to manage a
 machine's configuration locally.  Suppose you need to configure multiple
 machines, though---perhaps you're managing a service on the web that's
@@ -41028,6 +41045,8 @@ A typical extension for adding a channel might look like this:
 
 @node Invoking guix home
 @section Invoking @command{guix home}
+
+@cindex @command{guix home}
 
 Once you have written a home environment declaration (@pxref{Declaring
 the Home Environment,,,,}, it can be @dfn{instantiated} using the
