@@ -122,12 +122,34 @@ text-mode :when (and (fboundp 'git-commit-mode) (git-commit-mode))
                                      nil 'noerror)
               (match-string-no-properties 1)))
           var)
-       ": Move to "
-       (concat "("
-               (string-replace "\.scm" ""
-                               (string-replace "/" " "
-                                               (car (magit-staged-files))))
-               ").")
+       ": Move to ("
+       (p (with-temp-buffer
+            (magit-git-wash #'magit-diff-wash-diffs
+              "diff" "--staged")
+            (goto-char (point-min))
+            (when (and
+                   (re-search-forward "\\+(define-public \\(\\S-+\\)"
+                                      nil 'noerror)
+                   (re-search-backward "modified[ ]*\\(\\S-+\\)"
+                                       nil 'noerror))
+              (string-replace
+               "\.scm" ""
+               (string-replace "/" " "
+                               (match-string-no-properties 1)))))
+          new-module)
+       ")." n
        n
-       n "* " (car (magit-staged-files)) " (" (s var) "): Move from here…"
-       n "* " (cadr (magit-staged-files)) " (" (s var) "): …to here.")
+       "* " (p (with-temp-buffer
+                  (magit-git-wash #'magit-diff-wash-diffs
+                    "diff" "--staged")
+                  (goto-char (point-min))
+                  (when (and
+                         (re-search-forward "\\-(define-public \\(\\S-+\\)"
+                                            nil 'noerror)
+                         (re-search-backward "modified[ ]*\\(\\S-+\\)"
+                                             nil 'noerror))
+                    (match-string-no-properties 1)))
+                source)
+       " (" (s var) "): Move from here…" n
+       "* " (concat (string-replace " " "/" new-module) ".scm")
+       " (" (s var) "): …to here.")
