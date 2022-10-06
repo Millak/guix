@@ -17199,7 +17199,7 @@ editing RPM spec files.")
 (define-public emacs-lcr
   (package
     (name "emacs-lcr")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -17208,7 +17208,7 @@ editing RPM spec files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mc55icihxqpf8b05990q1lc2nj2792wcgyr73xsiqx0963sjaj8"))))
+        (base32 "1856i3xll0pjrnh9r1xvi8lywpnixps2znvkvvd5505wcp20bcxf"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash))
