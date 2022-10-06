@@ -1261,13 +1261,13 @@ developed mainly for Ren'py.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.0.0")
+    (version "8.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.renpy.org/dl/" version
                            "/renpy-" version "-source.tar.bz2"))
-       (sha256 (base32 "09z3r16j4cxddkb50ghmi4xp0s05s15q4pzdmfajy85ignwqhjdi"))
+       (sha256 (base32 "1b49y60pi6304fg06lw5gajzrgg9w80swpfkn6pw0lxbr6djgjgn"))
        (modules '((guix build utils)))
        (patches
         (search-patches
