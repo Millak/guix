@@ -16743,6 +16743,43 @@ ensemble machine learning for the estimation of nuisance functions.")
 visualizing bisulfite sequencing data.")
     (license license:artistic2.0)))
 
+(define-public r-dada2
+  (package
+    (name "r-dada2")
+    (version "1.24.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "dada2" version))
+              (sha256
+               (base32
+                "0nvjnmcjh0i660y8s3rh9b3zl163wxdx7qm2n36m6vf0iy987l4x"))))
+    (properties `((upstream-name . "dada2")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-biostrings
+           r-ggplot2
+           r-iranges
+           r-rcpp
+           r-rcppparallel
+           r-reshape2
+           r-shortread
+           r-xvector))
+    (native-inputs (list r-knitr))
+    (home-page "https://benjjneb.github.io/dada2/")
+    (synopsis
+     "Accurate, high-resolution sample inference from amplicon sequencing data")
+    (description
+     "The dada2 package infers exact @dfn{amplicon sequence variants} (ASVs)
+from high-throughput amplicon sequencing data, replacing the coarser and less
+accurate OTU clustering approach.  The dada2 pipeline takes as input
+demultiplexed fastq files, and outputs the sequence variants and their
+sample-wise abundances after removing substitution and chimera errors.
+Taxonomic classification is available via a native implementation of the RDP
+naive Bayesian classifier, and species-level assignment to 16S rRNA gene
+fragments by exact matching.")
+    (license license:lgpl2.0)))
+
 (define-public r-dmrseq
   (package
     (name "r-dmrseq")
