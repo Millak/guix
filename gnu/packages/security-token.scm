@@ -909,7 +909,8 @@ phone is required.")
                "-DPKG_CONFIG_EXECUTABLE="
                (search-input-file %build-inputs
                                   (string-append
-                                    "/bin/" ,(pkg-config-for-target)))))
+                                   "/bin/" ,(pkg-config-for-target))))
+             (string-append "-DUDEV_RULES_DIR=" %output "/lib/udev/rules.d"))
        #:phases
        (modify-phases %standard-phases
          ;; regress tests enabled only for debug builds
