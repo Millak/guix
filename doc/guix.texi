@@ -35618,7 +35618,21 @@ Data type representing the configuration for @code{gitolite-service-type}.
 
 @table @asis
 @item @code{package} (default: @var{gitolite})
-Gitolite package to use.
+Gitolite package to use.  There are optional Gitolite dependencies that
+are not included in the default package, such as Redis and git-annex.
+These features can be made available by using the @code{make-gitolite}
+procedure in the @code{(gnu packages version-control}) module to produce
+a variant of Gitolite with the desired additional dependencies.
+
+The following code returns a package in which the Redis and git-annex
+programs can be invoked by Gitolite's scripts:
+
+@example
+(use-modules (gnu packages databases)
+             (gnu packages haskell-apps)
+             (gnu packages version-control))
+(make-gitolite (list redis git-annex))
+@end example
 
 @item @code{user} (default: @var{git})
 User to use for Gitolite.  This will be user that you use when accessing
