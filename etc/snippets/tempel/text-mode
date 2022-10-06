@@ -70,7 +70,7 @@ text-mode :when (and (fboundp 'git-commit-mode) (git-commit-mode))
             (buffer-substring-no-properties (point) (- end 2))))))
     version) "." n n
  "* " (car (magit-staged-files)) " (" (s var) "): Update to " (s version) "."
- (mapconcat (lambda (file) (concat "* " file)) (cdr (magit-staged-files))) n)
+ n (mapconcat (lambda (file) (concat "* " file)) (cdr (magit-staged-files)) "\n"))
 
 (addcl\ 
  "gnu: Add cl-"
@@ -98,7 +98,7 @@ text-mode :when (and (fboundp 'git-commit-mode) (git-commit-mode))
     var)
  ": Use HTTPS home page." n n
  "* " (car (magit-staged-files)) " (" (s var) ")[home-page]: Use HTTPS." n
- (mapconcat (lambda (file) (concat "* " file)) (cdr (magit-staged-files))) n)
+ (mapconcat (lambda (file) (concat "* " file)) (cdr (magit-staged-files)) "\n"))
 
 (move\ 
  "gnu: "
