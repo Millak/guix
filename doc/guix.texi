@@ -14118,6 +14118,10 @@ otherwise.
 @section Invoking @command{guix style}
 
 @cindex @command{guix style}
+@cindex styling rules
+@cindex lint, code style
+@cindex format, code style
+@cindex format conventions
 The @command{guix style} command helps users and packagers alike style
 their package definitions and configuration files according to the
 latest fashionable trends.  It can either reformat whole files, with the
