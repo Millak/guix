@@ -2752,6 +2752,27 @@ This package contains the following outputs:
 ")
     (license license:gpl2)))
 
+(define-public font-arphic-ukai
+  (package
+    (name "font-arphic-ukai")
+    (version "0.2.20080216.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://deb.debian.org/debian/pool/main"
+                                  "/f/fonts-arphic-ukai/fonts-arphic-ukai_"
+                                  version ".orig.tar.bz2"))
+              (sha256
+               (base32
+                "1lp3i9m6x5wrqjkh1a8vpyhmsrhvsa2znj2mx13qfkwza5rqv5ml"))))
+    (build-system font-build-system)
+    (home-page "https://www.freedesktop.org/wiki/Software/CJKUnifonts/")
+    (synopsis "Truetype fonts for Taiwanese and Hakka")
+    (description
+     "This package provides a set of Truetype fonts, which contain all
+characters necessary to display Taiwanese and Hakka.")
+    (license (license:fsdg-compatible
+              "https://www.freedesktop.org/wiki/Arphic_Public_License/"))))
+
 (define-public font-atui-feather
   (let ((version "0")
         (commit "c51fe7cedbcf2cbf4f1b993cef5d8def612dec1d")
