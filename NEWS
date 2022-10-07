@@ -43,6 +43,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 
 ** Distribution
 *** The installation script can now enable local substitute servers discovery
+*** The installation script can now customize the Bash prompt for Guix
 *** More control over boot-time file system checks and repairs
 *** XFS file systems can be created by the installer and mounted by label/UUID
 *** New interface for declaring swap space
