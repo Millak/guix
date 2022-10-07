@@ -2,6 +2,7 @@
 #include "misc.hh"
 #include "local-store.hh"
 
+#include <string>
 #include <functional>
 #include <queue>
 #include <algorithm>
@@ -226,10 +227,10 @@ static void readTempRoots(PathSet & tempRoots, FDs & fds)
         //FDPtr fd(new AutoCloseFD(openLockFile(path, false)));
         //if (*fd == -1) continue;
 
-        /* Try to acquire a write lock without blocking.  This can
-           only succeed if the owning process has died.  In that case
-           we don't care about its temporary roots. */
-        if (lockFile(*fd, ltWrite, false)) {
+        /* Try to acquire a write lock without blocking.  This can only
+           succeed if the owning process has died, in which case we don't care
+           about its temporary roots, or if we are the owning process.  */
+        if (i.name != std::to_string(getpid()) && lockFile(*fd, ltWrite, false)) {
             printMsg(lvlError, format("removing stale temporary roots file `%1%'") % path);
             unlink(path.c_str());
             writeFull(*fd, "d");
