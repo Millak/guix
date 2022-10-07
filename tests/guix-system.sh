@@ -354,6 +354,12 @@ for example in gnu/system/examples/*.tmpl; do
     guix system -n disk-image $options "$example"
 done
 
+# Make sure the desktop image can be built on major architectures.
+for system in x86_64-linux i686-linux aarch64-linux
+do
+    guix system -n image -s "$system" gnu/system/examples/desktop.tmpl
+done
+
 # Verify that the images can be built.
 guix system -n vm gnu/system/examples/bare-bones.tmpl
 guix system -n image gnu/system/images/pinebook-pro.scm
