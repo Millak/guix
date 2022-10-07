@@ -1763,7 +1763,11 @@ client devices can handle.")
                 "0h095a26w3sgbspsf7wzz8ddg62j3jb9ckrrv41k7cdp0k2dkhsg"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags (list "-Dlibnma_gtk4=true")
+     ;; GTK 4.x depends on Rust (indirectly) so pull it only on platforms
+     ;; where it is supported.
+     `(#:configure-flags ,(if (supported-package? gtk)
+                              `(list "-Dlibnma_gtk4=true")
+                              `(list "-Dlibnma_gtk4=false"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-docbook-xml
@@ -1782,7 +1786,7 @@ client devices can handle.")
            vala))
     (inputs
      (list gcr
-           gtk
+           (if (supported-package? gtk) gtk gtk+)
            iso-codes
            mobile-broadband-provider-info
            network-manager))
