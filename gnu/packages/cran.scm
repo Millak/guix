@@ -17,7 +17,7 @@
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019 Nicolò Balzarotti <anothersms@gmail.com>
-;;; Copyright © 2019, 2020, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
+;;; Copyright © 2019, 2020, 2021, 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019 Arne Babenhauserheide <arne_bab@web.de>
 ;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Todor Kondić <tk.code@protonmail.com>
@@ -17433,6 +17433,33 @@ library.")
     (description "This package provides interactive visualizations for
 profiling R code.")
     (license license:gpl3)))
+
+(define-public r-prospectr
+  (package
+    (name "r-prospectr")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "prospectr" version))
+              (sha256
+               (base32
+                "1p53hcgcs2p09zhc2n7byjzrgvcgz6w7q00mlsn4kmnz7l4p7rrm"))))
+    (properties `((upstream-name . "prospectr")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-foreach
+           r-iterators
+           r-lifecycle
+           r-mathjaxr
+           r-rcpp
+           r-rcpparmadillo))
+    (home-page "https://github.com/l-ramirez-lopez/prospectr")
+    (synopsis "Functions for processing and sample selection of spectroscopic data")
+    (description
+     "@code{prospectr} provides miscellaneous functions to preprocess
+spectroscopic data and conduct representative sample selection, or calibration
+sampling.")
+    (license license:expat)))
 
 (define-public r-protviz
   (package
