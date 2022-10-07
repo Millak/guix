@@ -918,6 +918,28 @@ all languages with a consistent look and aesthetic.  Its goal is to properly
 display all Unicode symbols.")
     (license license:silofl1.1)))
 
+(define-public font-google-noto-sans-cjk
+  (package
+    (name "font-google-noto-sans-cjk")
+    (version "2.004")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/googlefonts/noto-cjk/releases/download/Sans"
+             version "/03_NotoSansCJK-OTC.zip"))
+       (file-name (string-append name "-" version ".zip"))
+       (sha256
+        (base32 "1v9yda7r98g4a3pk0y3cjbgc1i2lv4ax0f0v6aqasfzz4ldlx3sj"))))
+    (build-system font-build-system)
+    (home-page "https://www.google.com/get/noto/")
+    (synopsis "Fonts to cover all languages")
+    (description "Google Noto Fonts is a family of fonts designed to support
+all languages with a consistent look and aesthetic.  Its goal is to properly
+display all Unicode symbols.  This package provides the Sans Serif variant of
+CJK fonts.")
+    (license license:silofl1.1)))
+
 (define-public font-google-roboto
   (package
     (name "font-google-roboto")
