@@ -22,6 +22,10 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages ratpoison)
+  #:use-module (gnu packages vnc)
+  #:use-module (gnu packages xorg)
   #:use-module (gnu services)
   #:use-module (gnu services dbus)
   #:use-module (gnu services desktop)
@@ -59,16 +63,15 @@
                   (supplementary-groups '("wheel" "netdev"
                                           "audio" "video")))
                  %base-user-accounts))
-    (packages (append (map specification->package
-                           '("dbus"     ;for dbus-run-session
-                             "dconf"
-                             "gnome-settings-daemon" ;for schemas
-                             "ratpoison"
-                             "tigervnc-client"
-                             "xterm"))
-                      %base-packages
-                      (list `(,glib "bin")
-                            glib)))
+    (packages (cons* dbus               ;for dbus-run-session
+                     dconf
+                     `(,glib "bin")
+                     glib
+                     gnome-settings-daemon ;for schemas
+                     ratpoison
+                     tigervnc-client
+                     xterm
+                     %base-packages))
     (services (cons*
                (service openssh-service-type (openssh-configuration
                                               (permit-root-login #t)
