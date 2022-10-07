@@ -567,6 +567,24 @@ sys_create_shell_completion()
         _msg "${PAS}installed shell completion"
 }
 
+sys_customize_bashrc()
+{
+    prompt_yes_no "Customize users Bash shell prompt for Guix?" || return
+    for bashrc in /home/*/.bashrc /root/.bashrc; do
+        test -f "$bashrc" || continue
+        grep -Fq '$GUIX_ENVIRONMENT' "$bashrc" && continue
+        cp "${bashrc}" "${bashrc}.bak"
+        echo '
+# Automatically added by the Guix install script.
+if [ -n "$GUIX_ENVIRONMENT" ]; then
+    if [[ $PS1 =~ (.*)"\\$" ]]; then
+        PS1="${BASH_REMATCH[1]} [env]\\\$ "
+    fi
+fi
+' >> "$bashrc"
+    done
+    _msg "${PAS}Bash shell prompt successfully customized for Guix"
+}
 
 welcome()
 {
@@ -636,6 +654,7 @@ main()
     sys_authorize_build_farms
     sys_create_init_profile
     sys_create_shell_completion
+    sys_customize_bashrc
 
     _msg "${INF}cleaning up ${tmp_path}"
     rm -r "${tmp_path}"
