@@ -4995,7 +4995,10 @@ libxml to ease remote use of the RESTful API.")
     (arguments (substitute-keyword-arguments (package-arguments rest)
                  ((#:tests? _ #f) #t)
                  ((#:configure-flags _)
-                  #~(list))
+                  ;; Do not build the optional 'librest-demo' program as it
+                  ;; depends on gtksourceview and libadwaita and thus,
+                  ;; indirectly, on Rust.
+                  #~(list "-Dexamples=false"))
                  ((#:phases phases '%standard-phases)
                   #~(modify-phases #$phases
                       (add-after 'unpack 'disable-problematic-tests
@@ -5012,7 +5015,7 @@ libxml to ease remote use of the RESTful API.")
        (append gettext-minimal
                gi-docgen
                gsettings-desktop-schemas)))
-    (inputs (list gtksourceview json-glib libadwaita))
+    (inputs (list json-glib))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs rest)
        (replace "libsoup" libsoup)
