@@ -694,6 +694,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/sysctl.scm			\
   %D%/services/telephony.scm			\
   %D%/services/version-control.scm              \
+  %D%/services/vnc.scm				\
   %D%/services/vpn.scm				\
   %D%/services/web.scm				\
   %D%/services/xorg.scm				\
@@ -775,6 +776,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/telephony.scm		        \
   %D%/tests/version-control.scm			\
   %D%/tests/virtualization.scm			\
+  %D%/tests/vnc.scm				\
   %D%/tests/web.scm
 
 INSTALLER_MODULES =                             \
