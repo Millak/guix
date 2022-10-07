@@ -99,6 +99,12 @@ _flush()
     done
 }
 
+die()
+{
+    _err "${ERR}$*"
+    exit 1
+}
+
 # Return true if user answered yes, false otherwise.  It defaults to "yes"
 # when a single newline character is input.
 # $1: The prompt question.
@@ -230,8 +236,7 @@ chk_sys_arch()
             local arch=powerpc64le
             ;;
         *)
-            _err "${ERR}Unsupported CPU type: ${arch}"
-            exit 1
+            die "Unsupported CPU type: ${arch}"
     esac
 
     case "$os" in
@@ -239,8 +244,7 @@ chk_sys_arch()
             local os=linux
             ;;
         *)
-            _err "${ERR}Your operation system (${os}) is not supported."
-            exit 1
+            die "Your operation system (${os}) is not supported."
     esac
 
     ARCH_OS="${arch}-${os}"
@@ -295,8 +299,7 @@ guix_get_bin_list()
     if [[ "${#bin_ver_ls}" -ne "0" ]]; then
         _msg "${PAS}Release for your system: ${default_ver}"
     else
-        _err "${ERR}Could not obtain list of Guix releases."
-        exit 1
+        die "Could not obtain list of Guix releases."
     fi
 
     # Use default to download according to the list and local ARCH_OS.
@@ -321,8 +324,7 @@ guix_get_bin()
             "${url}/${bin_ver}.tar.xz" "${url}/${bin_ver}.tar.xz.sig"; then
         _msg "${PAS}download completed."
     else
-        _err "${ERR}could not download ${url}/${bin_ver}.tar.xz."
-        exit 1
+        die "could not download ${url}/${bin_ver}.tar.xz."
     fi
 
     pushd "${dl_path}" >/dev/null
@@ -330,8 +332,7 @@ guix_get_bin()
         _msg "${PAS}Signature is valid."
         popd >/dev/null
     else
-        _err "${ERR}could not verify the signature."
-        exit 1
+        die "could not verify the signature."
     fi
 }
 
@@ -343,8 +344,7 @@ sys_create_store()
     _debug "--- [ ${FUNCNAME[0]} ] ---"
 
     if [[ -e "/var/guix" || -e "/gnu" ]]; then
-        _err "${ERR}A previous Guix installation was found.  Refusing to overwrite."
-        exit 1
+        die "A previous Guix installation was found.  Refusing to overwrite."
     fi
 
     cd "$tmp_path"
