@@ -2437,7 +2437,7 @@ binary to setuid-binaries:
 (define-public wl-clipboard
   (package
     (name "wl-clipboard")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -2446,20 +2446,25 @@ binary to setuid-binaries:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c4w87ipsw09aii34szj9p0xfy0m00wyjpll0gb0aqmwa60p0c5d"))))
+        (base32 "1g6hcsn4klapvz3bw0k8syixwyyi4cl1c7vbc6f1a2hjpcf4pawn"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "src" "\\.c$")
-               (("\"(cat|rm)\"" _ command)
-                (string-append "\"" (assoc-ref inputs "coreutils")
-                               "/bin/" command "\""))
-               (("\"xdg-mime\"")
-                (string-append "\"" (assoc-ref inputs "xdg-utils")
-                               "/bin/xdg-mime\""))))))))
+     (list #:configure-flags
+           #~(list (string-append "-Dzshcompletiondir=" #$output
+                                  "/share/zsh/site-functions")
+                   (string-append "-Dfishcompletiondir=" #$output
+                                  "/share/fish/completions"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-file-names
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (find-files "src" "\\.c$")
+                     (("\"(cat|rm)\"" _ command)
+                      (string-append "\"" (assoc-ref inputs "coreutils")
+                                     "/bin/" command "\""))
+                     (("\"xdg-mime\"")
+                      (string-append "\"" (assoc-ref inputs "xdg-utils")
+                                     "/bin/xdg-mime\""))))))))
     (native-inputs
      (list pkg-config))
     (inputs
