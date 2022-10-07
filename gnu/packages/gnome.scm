@@ -5819,7 +5819,19 @@ faster results and to avoid unnecessary server load.")
               ;; If not specified, udev will try putting history information
               ;; in /gnu/store.
               "-Dhistorydir=/var/lib/upower"
-              (string-append "-Dudevrulesdir=" #$output "/bin/udev/rules.d"))))
+              (string-append "-Dudevrulesdir=" #$output "/bin/udev/rules.d"))
+      #:phases (if (target-x86-32?)
+                   #~(modify-phases %standard-phases
+                       (add-after 'unpack 'adjust-test-for-excess-precision
+                         (lambda _
+                           ;; Address test failure caused by excess precision
+                           ;; on i686:
+                           ;; <https://gitlab.freedesktop.org/upower/upower/-/issues/214>.
+                           (substitute* "src/linux/integration-test.py"
+                             (("assertEqual(.*)40\\.0" _ middle)
+                              (string-append
+                               "assertAlmostEqual" middle "40.0"))))))
+                   #~%standard-phases)))
     (native-inputs
      (list `(,glib "bin")               ; for gdbus-codegen
            gobject-introspection
