@@ -6564,6 +6564,26 @@ Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
+(define-public texlive-zhspacing
+  (package
+    (inherit
+     (simple-texlive-package "texlive-zhspacing"
+                             (list "doc/generic/zhspacing/"
+                                   "tex/context/third/zhspacing/"
+                                   "tex/generic/zhspacing/"
+                                   "tex/xelatex/zhspacing/")
+                             (base32
+                              "02hwa7yjwb6wxkkib83mjdbara5zcsixbp5xlawri8n9ah54vxjm")
+                             #:trivial? #t))
+    (home-page "https://ctan.org/macros/xetex/generic/zhspacing")
+    (synopsis "Spacing for mixed CJK-English documents in XeTeX")
+    (description
+     "The package manages spacing in a CJK document; between consecutive Chinese
+letters, spaces are ignored, but a consistent space is inserted between Chinese
+text and English (or mathematics).  The package may be used by any document
+format under XeTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-zref
   (package
     (inherit (simple-texlive-package
