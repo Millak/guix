@@ -1798,35 +1798,33 @@ programs.")
       (license license:gpl3+))))
 
 (define-public emacs-dante
-  (let ((commit "38b589417294c7ea44bf65b73b8046d950f9531b")
-        (revision "1"))
-    (package
-      (name "emacs-dante")
-      (version (git-version "1.6" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/jyp/dante")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1mnmn635552zlwd4zr68jbvdjipl6gi4mi6wiyck28fsmq8kw96h"))
-                (file-name (git-file-name name version))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-dash
-             emacs-f
-             emacs-flycheck
-             emacs-haskell-mode
-             emacs-s
-             emacs-company
-             emacs-lcr))
-      (home-page "https://github.com/jyp/dante")
-      (synopsis "Minor mode for interactive Haskell")
-      (description
-       "This package provides a minor mode for Haskell development that
+  (package
+    (name "emacs-dante")
+    (version "1.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jyp/dante")
+                    (commit version)))
+              (sha256
+               (base32
+                "0q7hackvaplh1f645ngd76f2ls5mvg93xicr3rkxr07hd36yihag"))
+              (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-company
+           emacs-dash
+           emacs-f
+           emacs-flycheck
+           emacs-haskell-mode
+           emacs-lcr
+           emacs-s))
+    (home-page "https://github.com/jyp/dante")
+    (synopsis "Minor mode for interactive Haskell")
+    (description
+     "This package provides a minor mode for Haskell development that
 supports type hints, definition-jumping, completion, and more.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-flycheck
   (package
