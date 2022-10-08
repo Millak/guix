@@ -366,7 +366,12 @@ Linux kernel.")
                 "07857vdkak306d9s5g6fhmjyxk7vijzjhkmqb15s7ihfxx9lx8xb"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f))                    ; no check target
+     '(#:tests? #f                                ;no check target
+
+       ;; XXX: Building with '-fsanitize=undefined' leads to embedded C++ STL
+       ;; header file names in libgme.so, meaning that libgme retains a
+       ;; reference to GCC.  Disable UBSAN to avoid that.
+       #:configure-flags '("-DENABLE_UBSAN=OFF")))
     (home-page "https://bitbucket.org/mpyne/game-music-emu")
     (synopsis "Video game music file playback library")
     (description
