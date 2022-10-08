@@ -1209,22 +1209,23 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
     (propagated-inputs
      (list libxkbcommon pixman wayland))
     (arguments
-     `(#:configure-flags
-       (list
-        ;; Otherwise, the RUNPATH will lack the final path component.
-        (string-append "-Dc_link_args=-Wl,-rpath="
-                       (assoc-ref %outputs "out") "/lib:"
-                       (assoc-ref %outputs "out") "/lib/weston:"
-                       (assoc-ref %outputs "out") "/lib/libweston-"
-                       ,(version-major (package-version this-package)))
-        "-Dbackend-default=auto"
-        "-Dsystemd=false"
-        (string-append "-Dxwayland-path="
-                       (assoc-ref %build-inputs "xorg-server-xwayland")
-                       "/bin/Xwayland"))
-       #:parallel-tests? #f           ; Parallel tests cause failures.
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:configure-flags
+      #~(list
+         ;; Otherwise, the RUNPATH will lack the final path component.
+         (string-append "-Dc_link_args=-Wl,-rpath="
+                        #$output "/lib:"
+                        #$output "/lib/weston:"
+                        #$output "/lib/libweston-"
+                        #$(version-major (package-version this-package)))
+         "-Dbackend-default=auto"
+         "-Dsystemd=false"
+         (string-append "-Dxwayland-path="
+                        #$(this-package-input "xorg-server-xwayland")
+                        "/bin/Xwayland"))
+      #:parallel-tests? #f              ; Parallel tests cause failures.
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'configure 'use-elogind
            (lambda _
              ;; Use elogind instead of systemd
