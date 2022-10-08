@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@pobox.com>
 ;;; Copyright © 2015-2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
@@ -1233,23 +1233,19 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
              (substitute* '("libweston/launcher-logind.c"
                             "libweston/weston-launch.c")
                (("#include <systemd/sd-login.h>")
-                "#include <elogind/sd-login.h>"))
-             #t))
+                "#include <elogind/sd-login.h>"))))
          (add-after 'configure 'patch-confdefs.h
            (lambda _
-             (system "echo \"#define HAVE_SYSTEMD_LOGIN_209 1\" >> confdefs.h")
-             #t))
+             (system "echo \"#define HAVE_SYSTEMD_LOGIN_209 1\" >> confdefs.h")))
          (add-before 'check 'setup
            (lambda _
              (setenv "HOME" (getcwd))
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             #t))
+             (setenv "XDG_RUNTIME_DIR" (getcwd))))
          (add-before 'check 'start-xorg-server
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The test suite requires a running X server.
              (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t)))))
+             (setenv "DISPLAY" ":1"))))))
     (home-page "https://wayland.freedesktop.org")
     (synopsis "Reference implementation of a Wayland compositor")
     (description "Weston is the reference implementation of a Wayland
