@@ -11406,7 +11406,7 @@ based methods.")
 (define-public pigx-sars-cov-2
   (package
     (name "pigx-sars-cov-2")
-    (version "0.0.7")
+    (version "0.0.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_sars-cov-2"
@@ -11414,24 +11414,51 @@ based methods.")
                                   "/pigx_sars-cov-2-" version ".tar.gz"))
               (sha256
                (base32
-                "1bqm03ypf7l8lrkjkydxzn7vy0qlps3v9c5cpz2wb008zw44bi3k"))))
+                "1yf1y25asnhxz80dajs54wrhr0wyi9fldk7lxsnqrh7gpqp2dvcs"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ;requires huge kraken database
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'autoreconf
-           (lambda _
-             ;; https://github.com/BIMSBbioinfo/pigx_sars-cov-2/issues/123
-             (substitute* "m4/ax_r_package.m4"
-               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
-                "if(system.file(package=\"PKG\") == \"\")"))
-             (invoke "autoreconf" "-vif")))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'unpack-databases
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; The tests need to be able to write caches to HOME.
+             ;; They also default to reading the databases from there.
+             (setenv "HOME" "/tmp")
+             ;; Unpack the three databases in the expected location.
+             (let ((root "/tmp/.local/share/pigx/databases")
+                   (use-underscore (lambda (c) (if (equal? c #\-) #\_ c))))
+               (for-each (lambda (db)
+                           (let ((where (string-append root "/"
+                                                       (string-map use-underscore db))))
+                             (mkdir-p where)
+                             (invoke "tar" "-C" where
+                                     "-xf" (assoc-ref inputs db))))
+                         '("kraken-db" "krona-db" "vep-db")))))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
     (native-inputs
-     (list automake autoconf))
+     (let ((bimsb-origin
+            (lambda (name hash)
+              (origin
+                (method url-fetch)
+                (uri
+                 (string-append "https://bimsbstatic.mdc-berlin.de/akalin/AAkalin_pathogenomics"
+                                "/databases_small-20221006/" name))
+                (sha256 (base32 hash))))))
+       `(("kraken-db"
+          ,(bimsb-origin
+            "kraken_db.tar.gz"
+            "0sdm4xh5npg6c3y2pz8xgphim4qpglm8wdid6rlaaqsn6iikv0mz"))
+         ("krona-db"
+          ,(bimsb-origin
+            "krona_db.tar.gz"
+            "1rwy4gd3vw1gdjldrgf44c1xaa3vq8i3pgisjhrac81yx63x8f2h"))
+         ("vep-db"
+          ,(bimsb-origin
+            "vep_db.tar.gz"
+            "0d8hhi43zsw3wqm7gd0z0gpcdsc6h6ra0imn87hifl9a64jxqzxz")))))
     (inputs
      (list bash-minimal
            bedtools
@@ -11447,10 +11474,16 @@ based methods.")
            python-pyyaml
            python-wrapper
            r-base64url
+           r-data-table
+           r-deconvr
            r-dplyr
            r-dt
            r-ggplot2
+           r-htmltools
+           r-jsonlite
+           r-knitr
            r-magrittr
+           r-mass
            r-minimal
            r-plotly
            r-qpcr
