@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,9 +88,8 @@
                      (validate-runpath? #t)
                      (patch-shebangs? #t)
                      (strip-binaries? #t)
-                     (strip-flags ''("--strip-debug"))
-                     (strip-directories ''("lib" "lib64" "libexec"
-                                           "bin" "sbin"))
+                     (strip-flags %strip-flags)
+                     (strip-directories %strip-directories)
                      (phases '(@ (guix build copy-build-system)
                                  %standard-phases))
                      (system (%current-system))

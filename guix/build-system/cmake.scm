@@ -110,9 +110,8 @@
                       (validate-runpath? #t)
                       (patch-shebangs? #t)
                       (strip-binaries? #t)
-                      (strip-flags ''("--strip-debug"))
-                      (strip-directories ''("lib" "lib64" "libexec"
-                                            "bin" "sbin"))
+                      (strip-flags %strip-flags)
+                      (strip-directories %strip-directories)
                       (phases '%standard-phases)
                       (system (%current-system))
                       (substitutable? #t)
@@ -185,10 +184,8 @@ provides a 'CMakeLists.txt' file as its build system."
                             (validate-runpath? #t)
                             (patch-shebangs? #t)
                             (strip-binaries? #t)
-                            (strip-flags ''("--strip-debug"
-                                            "--enable-deterministic-archives"))
-                            (strip-directories ''("lib" "lib64" "libexec"
-                                                  "bin" "sbin"))
+                            (strip-flags %strip-flags)
+                            (strip-directories %strip-directories)
                             (phases '%standard-phases)
                             (substitutable? #t)
                             (system (%current-system))

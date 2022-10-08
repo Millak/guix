@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +29,8 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:export (%gnu-build-system-modules
+            %strip-flags
+            %strip-directories
             gnu-build
             gnu-build-system
             standard-packages

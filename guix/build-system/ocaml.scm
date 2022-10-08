@@ -243,9 +243,8 @@ pre-defined variants."
                       (validate-runpath? #t)
                       (patch-shebangs? #t)
                       (strip-binaries? #t)
-                      (strip-flags ''("--strip-debug"))
-                      (strip-directories ''("lib" "lib64" "libexec"
-                                            "bin" "sbin"))
+                      (strip-flags %strip-flags)
+                      (strip-directories %strip-directories)
                       (phases '(@ (guix build ocaml-build-system)
                                   %standard-phases))
                       (system (%current-system))

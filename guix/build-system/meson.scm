@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
@@ -180,9 +180,8 @@ TRIPLET."
                       (validate-runpath? #t)
                       (patch-shebangs? #t)
                       (strip-binaries? #t)
-                      (strip-flags ''("--strip-debug"))
-                      (strip-directories ''("lib" "lib64" "libexec"
-                                            "bin" "sbin"))
+                      (strip-flags %strip-flags)
+                      (strip-directories %strip-directories)
                       (elf-directories ''("lib" "lib64" "libexec"
                                           "bin" "sbin"))
                       (phases '%standard-phases)
@@ -262,9 +261,8 @@ has a 'meson.build' file."
                             (validate-runpath? #t)
                             (patch-shebangs? #t)
                             (strip-binaries? #t)
-                            (strip-flags ''("--strip-debug"))
-                            (strip-directories ''("lib" "lib64" "libexec"
-                                                  "bin" "sbin"))
+                            (strip-flags %strip-flags)
+                            (strip-directories %strip-directories)
                             (elf-directories ''("lib" "lib64" "libexec"
                                                 "bin" "sbin"))
                             ;; See 'gnu-cross-build' for why this needs to be

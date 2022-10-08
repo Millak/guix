@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -154,9 +154,8 @@
                       (exclude %default-exclude)
                       (local-packages '())
                       (tests? #t)
-                      (strip-flags ''("--strip-debug"))
-                      (strip-directories ''("lib" "lib64" "libexec"
-                                            "bin" "sbin"))
+                      (strip-flags %strip-flags)
+                      (strip-directories %strip-directories)
                       (phases '%standard-phases)
                       (system (%current-system))
                       (imported-modules %maven-build-system-modules)

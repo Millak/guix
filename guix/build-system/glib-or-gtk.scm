@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2015, 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -139,9 +139,8 @@
                             (validate-runpath? #t)
                             (patch-shebangs? #t)
                             (strip-binaries? #t)
-                            (strip-flags ''("--strip-debug"))
-                            (strip-directories ''("lib" "lib64" "libexec"
-                                                  "bin" "sbin"))
+                            (strip-flags %strip-flags)
+                            (strip-directories %strip-directories)
                             (phases '(@ (guix build glib-or-gtk-build-system)
                                         %standard-phases))
                             (glib-or-gtk-wrap-excluded-outputs ''())
@@ -214,9 +213,8 @@
                                   (make-dynamic-linker-cache? #f)
                                   (patch-shebangs? #t)
                                   (strip-binaries? #t)
-                                  (strip-flags ''("--strip-debug"))
-                                  (strip-directories ''("lib" "lib64" "libexec"
-                                                        "bin" "sbin"))
+                                  (strip-flags %strip-flags)
+                                  (strip-directories %strip-directories)
                                   (phases '(@ (guix build glib-or-gtk-build-system)
                                               %standard-phases))
                                   (glib-or-gtk-wrap-excluded-outputs ''())
