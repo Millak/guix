@@ -1178,34 +1178,34 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
     (native-inputs
      (list mscgen pkg-config python-3 xorg-server))
     (inputs
-     `(("cairo" ,cairo-xcb)
-       ("colord" ,colord)
-       ("dbus" ,dbus)
-       ("elogind" ,elogind)
-       ("freerdp" ,freerdp)
-       ("glib" ,glib)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("lcms" ,lcms)
-       ("libdrm" ,libdrm)
-       ("libevdev" ,libevdev)
-       ("libinput" ,libinput-minimal)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libunwind" ,libunwind)
-       ("libva" ,libva)
-       ("libwebp" ,libwebp)
-       ("libx11" ,libx11)
-       ("libxcb" ,libxcb)
-       ("libxcursor" ,libxcursor)
-       ("libxml2" ,libxml2)
-       ("mesa" ,mesa)
-       ("mtdev" ,mtdev)
-       ("linux-pam" ,linux-pam)
-       ("pango" ,pango)
-       ("pipewire" ,pipewire-0.3)
-       ("wayland-protocols" ,wayland-protocols-next)
-       ("xorg-server-xwayland" ,xorg-server-xwayland)))
+     (list cairo-xcb
+           colord
+           dbus
+           elogind
+           freerdp
+           glib
+           gstreamer
+           gst-plugins-base
+           lcms
+           libdrm
+           libevdev
+           libinput-minimal
+           libjpeg-turbo
+           libpng
+           libunwind
+           libva
+           libwebp
+           libx11
+           libxcb
+           libxcursor
+           libxml2
+           mesa
+           mtdev
+           linux-pam
+           pango
+           pipewire-0.3
+           wayland-protocols-next
+           xorg-server-xwayland))
     (propagated-inputs
      (list libxkbcommon pixman wayland))
     (arguments
