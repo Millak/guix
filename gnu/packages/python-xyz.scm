@@ -555,6 +555,37 @@ decorators, including variants of the Python standard library's
 @code{lru_cache} function decorator.")
     (license license:expat)))
 
+(define-public python-cobib
+  (package
+    (name "python-cobib")
+    (version "3.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cobib" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16nbrbvascbf6cb7yvn9q793dy8zx703pqrmk3mswib9a19mnx3n"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-beautifulsoup4
+           python-bibtexparser
+           python-pylatexenc
+           python-requests
+           python-requests-oauthlib
+           python-ruamel.yaml))
+    (native-inputs
+     (list python-future
+           python-pyte
+           python-pytest))
+    (home-page "https://gitlab.com/mrossinek/cobib")
+    (synopsis "Terminal-based bibliography management tool")
+    (description
+     "@command{cobib} is a command-line based bibliography management tool.
+It uses a plain-text database, a location-independent library, and features
+git integration, command-line support, and a curses-based TUI.")
+    (license license:expat)))
+
 (define-public python-colorful
   (package
     (name "python-colorful")
