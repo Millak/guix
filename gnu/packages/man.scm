@@ -282,25 +282,27 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
         (base32 "1252c1356z5spya3yl0lcmmymglx3bmfwmamiz1y5l13xqpwbnwy"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-html
-           ;; As of 6.00, this package tries to convert man pages to HTML with
-           ;; man2html.  The only Guix package currently providing that script
-           ;; is man-for-txr, but that version seems unable to handle relative
-           ;; ‘.so’ statements properly.  Disable HTML generation.
-           (lambda _
-             (substitute* "lib/build-html.mk"
-               (("(html:) .*" _ target) (string-append target "\n")))))
-         (delete 'configure))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-html
+            ;; As of 6.00, this package tries to convert man pages to HTML with
+            ;; man2html.  The only Guix package currently providing that script
+            ;; is man-for-txr, but that version seems unable to handle relative
+            ;; ‘.so’ statements properly.  Disable HTML generation.
+            (lambda _
+              (substitute* "lib/build-html.mk"
+                (("(html:) .*" _ target) (string-append target "\n")))))
+          (delete 'configure))
 
-       ;; The 'all' target depends on three targets that directly populate
-       ;; $(MANDIR) based on its current contents.  Doing that in parallel
-       ;; leads to undefined behavior (see <http://bugs.gnu.org/18701>.)
-       #:parallel-build? #f
+      ;; The 'all' target depends on three targets that directly populate
+      ;; $(MANDIR) based on its current contents.  Doing that in parallel
+      ;; leads to undefined behavior (see <http://bugs.gnu.org/18701>.)
+      #:parallel-build? #f
 
-       #:tests? #f
-       #:make-flags ,#~(list (string-append "mandir=" #$output "/share/man"))))
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "mandir=" #$output "/share/man"))))
     (home-page "https://www.kernel.org/doc/man-pages/")
     (synopsis "Development manual pages from the Linux project")
     (description
