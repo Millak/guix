@@ -192,36 +192,36 @@ framebuffer graphics, audio output and input event.")
     (native-inputs
      (list autoconf automake libtool perl pkg-config))
     (inputs
-     `(("alsa" ,alsa-lib)
-       ("ffmpeg" ,ffmpeg)
-       ("freetype" ,freetype)
-       ("glu" ,glu)
-       ("gstreamer" ,gstreamer)
-       ("imlib2" ,imlib2)
-       ("jasper" ,jasper)
-       ("jpeg" ,libjpeg-turbo)
-       ("libcddb" ,libcddb)
-       ("libdrm" ,libdrm)
-       ("libtimidity" ,libtimidity)
-       ("mad" ,libmad)
-       ("mng" ,libmng)
-       ("mpeg2" ,libmpeg2)
-       ("mpeg3" ,libmpeg3)
-       ("opengl" ,mesa)
-       ("png" ,libpng)
-       ("sdl" ,sdl)
-       ("svg" ,(librsvg-for-system))
-       ("tiff" ,libtiff)
-       ("tslib" ,tslib)
-       ("vdpau" ,libvdpau)
-       ("vorbisfile" ,libvorbis)
-       ("wayland" ,wayland)
-       ("webp" ,libwebp)
-       ("x11" ,libx11)
-       ("xcomposite" ,libxcomposite)
-       ("xext" ,libxext)
-       ("xproto" ,xorgproto)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           ffmpeg
+           freetype
+           glu
+           gstreamer
+           imlib2
+           jasper
+           libjpeg-turbo
+           libcddb
+           libdrm
+           libtimidity
+           libmad
+           libmng
+           libmpeg2
+           libmpeg3
+           mesa
+           libpng
+           sdl
+           (librsvg-for-system)
+           libtiff
+           tslib
+           libvdpau
+           libvorbis
+           wayland
+           libwebp
+           libx11
+           libxcomposite
+           libxext
+           xorgproto
+           zlib))
     (propagated-inputs
      (list flux))
     (synopsis "DFB Graphics Library")
