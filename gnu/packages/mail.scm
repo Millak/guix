@@ -4141,7 +4141,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
 (define-public public-inbox
   (package
     (name "public-inbox")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -4149,9 +4149,8 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                    (commit (string-append "v" version))))
              (sha256
               (base32
-               "0xni1l54v1z3p0zb52807maay0yqabp8jgf5iras5zmhgjyk3swz"))
-             (file-name (git-file-name name version))
-             (patches (search-patches "public-inbox-fix-spawn-test.patch"))))
+               "0cgvxg0f32nvb3079x46gjkfis4bc98s6nx6kl8rm90kmb1kxkx9"))
+             (file-name (git-file-name name version))))
     (build-system perl-build-system)
     (arguments
      `(#:imported-modules (,@%perl-build-system-modules
@@ -4227,33 +4226,39 @@ Git and exports them in maildir format or to an MDA through a pipe.")
      (list ;; For testing.
            lsof openssl tini))
     (inputs
-     (list bash-minimal
-           curl
-           git
-           perl-dbd-sqlite
-           perl-dbi
-           perl-email-address-xs
-           perl-email-mime-contenttype
-           perl-email-mime
-           perl-email-simple
-           perl-net-server
-           perl-plack-middleware-deflater
-           perl-plack-middleware-reverseproxy
-           perl-plack
-           perl-search-xapian
-           perl-socket-msghdr
-           perl-timedate
-           perl-uri-escape
-           perl-inline-c
-           perl-parse-recdescent
-           perl-linux-inotify2
-           ;; FIXME: Perl modules are unable to find the config file for highlight
-           ;; https://issues.guix.gnu.org/48033#4
-           ;; ("highlight" ,highlight)
-           ;; For testing.
-           perl-ipc-run
-           perl-xml-feed
-           xapian))
+     (append
+      (if (target-x86-32?)
+          ;; Required by test t/pop3d.t, otherwise fails with
+          ;; “sizeof(off_t)=8 requires File::FcntlLock”.
+          (list perl-file-fcntllock)
+          '())
+      (list bash-minimal
+            curl
+            git
+            perl-dbd-sqlite
+            perl-dbi
+            perl-email-address-xs
+            perl-email-mime-contenttype
+            perl-email-mime
+            perl-email-simple
+            perl-net-server
+            perl-plack-middleware-deflater
+            perl-plack-middleware-reverseproxy
+            perl-plack
+            perl-search-xapian
+            perl-socket-msghdr
+            perl-timedate
+            perl-uri-escape
+            perl-inline-c
+            perl-parse-recdescent
+            perl-linux-inotify2
+            ;; FIXME: Perl modules are unable to find the config file for highlight
+            ;; https://issues.guix.gnu.org/48033#4
+            ;; ("highlight" ,highlight)
+            ;; For testing.
+            perl-ipc-run
+            perl-xml-feed
+            xapian)))
     (home-page "https://public-inbox.org/README.html")
     (synopsis "Archive mailing lists in Git repositories")
     (description
