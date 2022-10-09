@@ -18918,24 +18918,31 @@ close, copy, cut, paste, undo, redo.")
                 (uri (git-reference
                       (url "git://git.zx2c4.com/password-store")
                       (commit commit)))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0ni62f4pq96g0i0q66bch1dl9k4zqwhg7xaf746k3gbbqxcdh3vi"))
-                (file-name (git-file-name name version))))
+                  "0ni62f4pq96g0i0q66bch1dl9k4zqwhg7xaf746k3gbbqxcdh3vi"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'extract-el-file
-             (lambda _
-               (copy-file "contrib/emacs/password-store.el" "password-store.el")
-               (delete-file-recursively "contrib")
-               (delete-file-recursively "man")
-               (delete-file-recursively "src")
-               (delete-file-recursively "tests"))))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'extract-el-file
+                   (lambda _
+                     (copy-file "contrib/emacs/password-store.el"
+                                "password-store.el")
+                     (delete-file-recursively "contrib")
+                     (delete-file-recursively "man")
+                     (delete-file-recursively "src")
+                     (delete-file-recursively "tests")))
+                 (add-after 'extract-el-file 'patch-executables
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (emacs-substitute-variables "password-store.el"
+                       ("password-store-executable"
+                        (search-input-file inputs "/bin/pass"))))))))
+      (inputs
+       (list password-store))
       (propagated-inputs
-       (list emacs-auth-source-pass emacs-s emacs-with-editor
-             password-store))
+       (list emacs-auth-source-pass emacs-s emacs-with-editor))
       (home-page "https://git.zx2c4.com/password-store/tree/contrib/emacs")
       (synopsis "Password store (pass) support for Emacs")
       (description
