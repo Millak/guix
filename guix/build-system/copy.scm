@@ -122,8 +122,8 @@
                             #:validate-runpath? #$validate-runpath?
                             #:patch-shebangs? #$patch-shebangs?
                             #:strip-binaries? #$strip-binaries?
-                            #:strip-flags #$(sexp->gexp strip-flags)
-                            #:strip-directories #$(sexp->gexp strip-directories))))))
+                            #:strip-flags #$strip-flags
+                            #:strip-directories #$strip-directories)))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
