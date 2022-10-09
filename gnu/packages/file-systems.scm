@@ -1457,7 +1457,13 @@ On Guix System, you will need to invoke the included shell scripts as
                                                   "mount"))))
              (substitute* '("libfuse/util/mount.mergerfs.c")
                (("/bin/sh" command)
-                (string-append (assoc-ref inputs "bash-minimal") command))))))))
+                (string-append (assoc-ref inputs "bash-minimal") command))
+               ;; mount.mergerfs tries to execute `mergerfs`, which cannot be found
+               ;; without an absolute path. Hard-coding the path is fine, since we don’t
+               ;; link mount.mergerfs to mount.fuse anyway.
+               (("add_arg\\(&command, type\\);")
+                (string-append "add_arg(&command, \"" (assoc-ref outputs "out")
+                               "/bin/mergerfs\");"))))))))
     ;; Mergerfs bundles a heavily modified copy of fuse.
     (inputs
      (list bash-minimal util-linux))
