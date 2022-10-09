@@ -18681,6 +18681,81 @@ are set right after mentioned variables, so that they can be overriden.
 @end table
 @end deftp
 
+@deftp {Data Type} greetd-wlgreet-session
+Generic configuration record for the wlgreet greetd greeter.
+
+@table @asis
+@item @code{wlgreet} (default: @code{wlgreet})
+The package with the @command{/bin/wlgreet} command.
+
+@item @code{command} (default: @code{(file-append sway "/bin/sway")})
+Command to be started by @command{/bin/wlgreet} on successful login.
+
+@item @code{command-args} (default: @code{'()})
+Command arguments to pass to command.
+
+@item @code{output-mode} (default: @code{"all"})
+Option to use for @code{outputMode} in the TOML configuration file.
+
+@item @code{scale} (default: @code{1})
+Option to use for @code{scale} in the TOML configuration file.
+
+@item @code{background} (default: @code{'(0 0 0 0.9)})
+RGBA list to use as the background colour of the login prompt.
+
+@item @code{headline} (default: @code{'(1 1 1 1)})
+RGBA list to use as the headline colour of the UI popup.
+
+@item @code{prompt} (default: @code{'(1 1 1 1)})
+RGBA list to use as the prompt colour of the UI popup.
+
+@item @code{prompt-error} (default: @code{'(1 1 1 1)})
+RGBA list to use as the error colour of the UI popup.
+
+@item @code{border} (default: @code{'(1 1 1 1)})
+RGBA list to use as the border colour of the UI popup.
+
+@item @code{extra-env} (default: @code{'()})
+Extra environment variables to set on login.
+
+@end table
+@end deftp
+
+@deftp {Data Type} greetd-wlgreet-sway-session
+Sway-specific configuration record for the wlgreet greetd greeter.
+
+@table @asis
+@item @code{wlgreet-session} (default: @code{(greetd-wlgreet-session)})
+A @code{greetd-wlgreet-session} record for generic wlgreet configuration,
+on top of the Sway-specific @code{greetd-wlgreet-sway-session}.
+
+@item @code{sway} (default: @code{sway})
+The package providing the @command{/bin/sway} command.
+
+@item @code{sway-configuration} (default: #f)
+File-like object providing an additional Sway configuration file to be
+prepended to the mandatory part of the configuration.
+
+@end table
+
+Here is an example of a greetd configuration that uses wlgreet and Sway:
+
+@lisp
+  (greetd-configuration
+   ;; We need to give the greeter user these permissions, otherwise
+   ;; Sway will crash on launch.
+   (greeter-supplementary-groups (list "video" "input" "seat"))
+   (terminals
+    (list (greetd-terminal-configuration
+           (terminal-vt "1")
+           (terminal-switch #t)
+           (default-session-command
+            (greetd-wlgreet-sway-session
+             (sway-configuration
+              (local-file "sway-greetd.conf"))))))))
+@end lisp
+@end deftp
+
 @node Scheduled Job Execution
 @subsection Scheduled Job Execution
 
