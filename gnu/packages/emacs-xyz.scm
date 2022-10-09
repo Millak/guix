@@ -10547,11 +10547,12 @@ matched.")
            "18crb4zh2pjf0cmv3b913m9vfng27girjwfqc3mk7vqd1r5a49yk"))))
       (build-system emacs-build-system)
       (propagated-inputs
-       (list emacs-ivy emacs-password-store password-store))
+       (list emacs-ivy emacs-password-store))
       (home-page "https://github.com/ecraven/ivy-pass")
-      (synopsis "Ivy interface for password store (pass)")
-      (description "This package provides an Ivy interface for working with
-the password store @code{pass}.")
+      (synopsis "Ivy interface to the @code{pass} password store")
+      (description
+       "This package provides an Ivy interface for working with the password
+store (@code{pass}) in Emacs.")
       (license license:gpl3))))
 
 (define-public emacs-ivy-yasnippet
