@@ -6,7 +6,7 @@
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 LuHui <luhux76@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -30,6 +30,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix utils)
   #:use-module (ice-9 match))
@@ -38,6 +39,29 @@
 ;;;
 ;;; This module has been separated from (gnu packages databases) to reduce the
 ;;; number of module references for core packages.
+
+(define bdb-snippet
+  ;; Remove some bundled and generated files.  Some of the old
+  ;; Autotools files are too old for some architectures
+  ;; (e.g. aarch64 and powerpc64le).
+  #~(begin
+      (for-each delete-file-recursively
+                '("dist/configure"
+                  "dist/config.sub"
+                  "dist/config.guess"
+                  "dist/install-sh"
+                  "dist/ltmain.sh"
+                  "dist/aclocal/libtool.m4"
+                  "dist/aclocal/ltoptions.m4"
+                  "dist/aclocal/ltsugar.m4"
+                  "dist/aclocal/ltversion.m4"
+                  "dist/aclocal/lt~obsolete.m4"))
+      (substitute* "dist/configure.ac"
+        ;; Placate 'automake'.
+        (("AC_DEFINE\\(DB_WIN32\\)")
+         "AC_DEFINE(DB_WIN32, [], [Description])")
+        (("AC_DEFINE\\(HAVE_SYSTEM_INCLUDE_FILES\\)")
+         "AC_DEFINE(HAVE_SYSTEM_INCLUDE_FILES, [], [Description])"))))
 
 (define-public bdb-4.8
   (package
@@ -52,78 +76,65 @@
              (sha256
               (base32
                "0ampbl2f0hb1nix195kz1syrqqxpmvnvnfvphambj7xjrl3iljg0"))
-             (patches (search-patches "bdb-5.3-atomics-on-gcc-9.patch"))))
+             (patches (search-patches "bdb-5.3-atomics-on-gcc-9.patch"))
+             (modules '((guix build utils)
+                        (srfi srfi-1)))
+             (snippet bdb-snippet)))
     (build-system gnu-build-system)
     (outputs '("out"                             ; programs, libraries, headers
                "doc"))                           ; 94 MiB of HTML docs
     (arguments
-     `(#:tests? #f                            ; no check target available
-       #:disallowed-references ("doc")
-       #:phases
-       (modify-phases %standard-phases
-         ;; The configure script is too old to recognise aarch64 and
-         ;; powerpc64le as valid architectures.  The trick below works
-         ;; for "--build", but not for "--host", so update config.sub.
-         ,@(if (and (%current-target-system)
-                    (or (target-ppc64le? (%current-target-system))
-                        (target-aarch64? (%current-target-system))
-                        (target-riscv64? (%current-target-system))))
-               `((add-after 'unpack 'update-config.sub
-                   (lambda* (#:key native-inputs #:allow-other-keys)
-                     (delete-file "dist/config.sub")
-                     (symlink
-                      (search-input-file native-inputs "/bin/config.sub")
-                      "dist/config.sub"))))
-               '())
-         (replace 'configure
-           (lambda* (#:key target outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (doc (assoc-ref outputs "doc")))
-               ;; '--docdir' is not honored, so we need to patch.
-               (substitute* "dist/Makefile.in"
-                 (("docdir[[:blank:]]*=.*")
-                  (string-append "docdir = " doc "/share/doc/bdb")))
+     (list #:tests? #f                        ; no check target available
+           #:disallowed-references '("doc")
+           #:out-of-source? #true
+           #:configure-flags
+           #~(list
+              ;; Remove 7 MiB of .a files.
+              "--disable-static"
 
-               (chdir "build_unix")
-               (invoke "../dist/configure"
-                       (string-append "--prefix=" out)
-                       (string-append "CONFIG_SHELL=" (which "bash"))
-                       (string-append "SHELL=" (which "bash"))
+              ;; The compatibility mode is needed by some packages,
+              ;; notably iproute2.
+              "--enable-compat185"
 
-                       ;; Bdb's config script doesn't recognize very many
-                       ;; architectures, and is a dependant on the 'config'
-                       ;; package, so we manually define the build target.
-                       ,@(match (%current-system)
-                           ("aarch64-linux"
-                            '("--build=aarch64-unknown-linux-gnu"))
-                           ("powerpc64le-linux"
-                            '("--build=powerpc64le-unknown-linux-gnu"))
-                           ("riscv64-linux"
-                            '("--build=riscv64-unknown-linux-gnu"))
-                           (_ '()))
-
-                       ,@(if (%current-target-system)         ; cross building
-                             '((string-append "--host=" target))
-                             '())
-
-                       ;; Remove 7 MiB of .a files.
-                       "--disable-static"
-
-                       ;; The compatibility mode is needed by some packages,
-                       ;; notably iproute2.
-                       "--enable-compat185"
-
-                       ;; The following flag is needed so that the inclusion
-                       ;; of db_cxx.h into C++ files works; it leads to
-                       ;; HAVE_CXX_STDHEADERS being defined in db_cxx.h.
-                       "--enable-cxx")))))))
-    (native-inputs
-     (if (and (%current-target-system)
-              (or (target-ppc64le? (%current-target-system))
-                  (target-aarch64? (%current-target-system))
-                  (target-riscv64? (%current-target-system))))
-         `(("config" ,config)) ; for config.sub
-         '()))
+              ;; The following flag is needed so that the inclusion
+              ;; of db_cxx.h into C++ files works; it leads to
+              ;; HAVE_CXX_STDHEADERS being defined in db_cxx.h.
+              "--enable-cxx")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'bootstrap
+                 (lambda* (#:key inputs native-inputs outputs
+                           #:allow-other-keys #:rest arguments)
+                   (with-directory-excursion "dist"
+                     (for-each (lambda (x)
+                                 (install-file x "aclocal"))
+                               (find-files "aclocal_java"))
+                     (apply (assq-ref %standard-phases 'bootstrap) arguments)
+                     (let ((automake-files (search-input-directory
+                                            (or native-inputs inputs)
+                                            "share/automake-1.16")))
+                       (define (replace file)
+                         (symlink (string-append automake-files "/" file) file))
+                       (for-each replace '("config.sub" "config.guess"
+                                           "install-sh"))))))
+               (add-before 'configure 'pre-configure
+                 (lambda _
+                   (chdir "dist")
+                   ;; '--docdir' is not honored, so we need to patch.
+                   (substitute* "Makefile.in"
+                     (("docdir[[:blank:]]*=.*")
+                      (string-append "docdir = " #$output:doc
+                                     "/share/doc/bdb")))
+                   ;; Replace __EDIT_DB_VERSION__... by actual version numbers.
+                   ;; s_config is responsible for this, but also runs autoconf
+                   ;; again, so patch out the autoconf bits.
+                   (substitute* "s_config"
+                     (("^.*(aclocal|autoconf|autoheader|config\\.hin).*$") "")
+                     (("^.*auto4mte.*$") "")
+                     (("rm (.*) configure") "")
+                     (("chmod (.*) config.guess(.*)$") ""))
+                   (invoke "sh" "s_config"))))))
+    (native-inputs (list autoconf automake libtool))
     (synopsis "Berkeley database")
     (description
      "Berkeley DB is an embeddable database allowing developers the choice of
@@ -138,7 +149,7 @@ SQL, Key/Value, XML/XQuery or Java Object storage for their data model.")
     (name "bdb")
     (version "5.3.28")
     (source (origin
-              (method url-fetch)
+              (inherit (package-source bdb-4.8))
               (uri (string-append "https://download.oracle.com/berkeley-db/db-"
                                   version ".tar.gz"))
               (sha256
@@ -152,12 +163,14 @@ SQL, Key/Value, XML/XQuery or Java Object storage for their data model.")
     (name "bdb")
     (version "6.2.32")
     (source (origin
+              (inherit (package-source bdb-4.8))
               (method url-fetch)
               (uri (string-append "https://download.oracle.com/berkeley-db/db-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1yx8wzhch5wwh016nh0kfxvknjkafv6ybkqh6nh7lxx50jqf5id9"))))
+                "1yx8wzhch5wwh016nh0kfxvknjkafv6ybkqh6nh7lxx50jqf5id9"))
+              (patches '())))
     ;; Starting with version 6, BDB is distributed under AGPL3. Many individual
     ;; files are covered by the 3-clause BSD license.
     (license (list license:agpl3+ license:bsd-3))))
