@@ -1259,7 +1259,7 @@ compatibility is also supported.")
 (define-public wolfssl
   (package
     (name "wolfssl")
-    (version "4.8.1")
+    (version "5.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1268,11 +1268,14 @@ compatibility is also supported.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0w5pd40j6h4j2f0b7c2n1n979y9qk8aln3ss2gb0jfsid1hrmx5k"))))
+                "0pz25acm842cl6l51vqr8pgxci6rda8sznms757p7rnm9fw3jdl0"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
-       '("--enable-reproducible-build")))
+       '("--enable-distro"
+         "--enable-pkcs11"
+         "--disable-examples"
+         "--enable-jobserver=no")))
     (native-inputs
      (list autoconf automake libtool))
     (synopsis "SSL/TLS implementation")
