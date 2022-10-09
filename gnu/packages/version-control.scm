@@ -3462,7 +3462,7 @@ commit messages for style.")
 (define-public hut
   (package
     (name "hut")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -3471,7 +3471,7 @@ commit messages for style.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15ag8fibnahcfgd0w2j4k813z10ymi39rx8d3c8b9955zc62p1fr"))))
+        (base32 "0ybngrwwmkm00dlkdhvkfcvcjhp5xzs8fh90zqr0h12ssqx9pll3"))))
     (build-system go-build-system)
     (arguments
      (list
