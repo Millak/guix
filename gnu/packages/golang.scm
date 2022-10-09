@@ -3630,7 +3630,7 @@ middleware for Go web applications and services.")
 (define-public go-github-com-spf13-cobra
   (package
     (name "go-github-com-spf13-cobra")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -3640,7 +3640,7 @@ middleware for Go web applications and services.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ijhnk9pcks1v1cxri4kf6v1h26ym3jikmkgv4fdfrmm7sqgva13"))))
+         "0qavvyljh509w5xb46lfkak670szp6v4jswwar1hx13cpid8gk5d"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/spf13/cobra"))
