@@ -1760,27 +1760,29 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "3.6.7")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1idpxnh8vrvan3g0ymaa24bd4iyxi19xrr76sdrrpxx2r8shmqfc"))))
+        (base32 "1vddvizywy6kfxg0i3m0627f675i7sdp7k3ld9sjlp78hppjbh9x"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-test
-           ;; Skip test suite failing with "Program reassemble_test is not
-           ;; available" and alike errors.  Also skip test suite failing with
-           ;; "AssertionError: Program extcap/sdjournal is not available"
-           ;; error.'
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("suite_unittests" all) (string-append "# " all))
-               (("suite_extcaps" all) (string-append "# " all))))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             ;; Skip test suite failing with "Program reassemble_test is not
+             ;; available" and alike errors.  Also skip test suite failing
+             ;; with "AssertionError: Program extcap/sdjournal is not
+             ;; available" error.'
+             (when tests?
+               (invoke "ctest"
+                       "-E"
+                       (string-join (list "suite_unittests" "suite_extcaps")
+                                    "|"))))))
        ;; Build process chokes during `validate-runpath' phase.
        ;;
        ;; Errors are like the following:
@@ -1809,6 +1811,7 @@ of the same name.")
            mit-krb5
            `(,nghttp2 "lib")
            minizip
+           pcre2
            qtbase-5
            qtmultimedia-5
            qtsvg-5
