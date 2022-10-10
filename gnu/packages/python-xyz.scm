@@ -11447,14 +11447,14 @@ provided that can be used to do various manipulations with LilyPond files.")
 (define-public python-appdirs
   (package
     (name "python-appdirs")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "appdirs" version))
         (sha256
           (base32
-            "14id6wxi12lgyw0mg3bcfnf888ad07jz9yj46gfzhn186z8rcn4y"))))
+            "0hfzmwknxqhg20aj83fx80vna74xfimg8sk18wb85fmin9kh2pbx"))))
     (build-system python-build-system)
     (home-page "https://github.com/ActiveState/appdirs")
     (synopsis
