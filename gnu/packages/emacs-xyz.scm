@@ -16432,15 +16432,25 @@ Emacs.")
 (define-public emacs-eglot
   (package
     (name "emacs-eglot")
-    (version "1.8")
+    (version "1.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/"
-                           "eglot-" version ".tar"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/joaotavora/eglot")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1n04jnf3wwpxafrzfd02l53wf90brjc8p835f84k0n0rjxin99k5"))))
+        (base32
+         "1mx2b7ljwvmfl5d0w9m7i1i900198lsdx1cpi8n7wq58h5df88p9"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "emacs" "--batch"
+                             "-l" "eglot.el"
+                             "-l" "eglot-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-eldoc emacs-jsonrpc emacs-project))
     (home-page "https://github.com/joaotavora/eglot")
