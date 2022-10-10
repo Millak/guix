@@ -807,7 +807,6 @@ of index files."
                           #~#t
                           #~(read-pid-file #$pid-file))))))))
 
-     ;; TODO: Add 'reload' action.
      (list (shepherd-service
             (provision '(nginx))
             (documentation "Run the nginx daemon.")
@@ -815,7 +814,19 @@ of index files."
             (modules `((ice-9 match)
                        ,@%default-modules))
             (start (nginx-action "-p" run-directory))
-            (stop (nginx-action "-s" "stop")))))))
+            (stop (nginx-action "-s" "stop"))
+            (actions
+              (list
+               (shepherd-action
+                 (name 'reload)
+                 (documentation "Reload NGINX configuration file and restart worker processes.")
+                 (procedure
+                   #~(lambda (pid)
+                       (if pid
+                         (begin
+                           (kill pid SIGHUP)
+                           (format #t "Service NGINX (PID ~a) has been reloaded." pid))
+                         (format #t "Service NGINX is not running."))))))))))))
 
 (define nginx-service-type
   (service-type (name 'nginx)
