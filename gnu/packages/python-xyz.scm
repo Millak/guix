@@ -24367,7 +24367,7 @@ time-or-computationally-expensive properties quick and easy and works in Python
 (define-public python-folium
   (package
     (name "python-folium")
-    (version "0.12.1")
+    (version "0.13.0")
     (source
      (origin
        ;; PyPI has a ".whl" file but not a proper source release.
@@ -24378,7 +24378,7 @@ time-or-computationally-expensive properties quick and easy and works in Python
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q05pzca3wfwgnbg03l3bagnhh348yx68w4aa91rg3g8zlviwjz1"))))
+        (base32 "00adpdi1890zzzg7ffp04hmx59igdcdpyqa129vnmwqh54b5a006"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-branca python-jinja2 python-numpy python-requests))
