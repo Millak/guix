@@ -4492,6 +4492,7 @@ sensitive completion, colors, and more.")
     (build-system dune-build-system)
     (arguments
      `(#:test-target "tests"))
+    (properties `((upstream-name . "ANSITerminal")))
     (home-page "https://github.com/Chris00/ANSITerminal")
     (synopsis
      "Basic control of ANSI compliant terminals and the windows shell")
