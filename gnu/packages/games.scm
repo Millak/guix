@@ -6940,7 +6940,7 @@ at their peak of economic growth and military prowess.
 (define-public open-adventure
   (package
     (name "open-adventure")
-    (version "1.9")
+    (version "1.11")
     (source
      (origin
        (method git-fetch)
@@ -6949,16 +6949,17 @@ at their peak of economic growth and military prowess.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "123svzy7xczdklx6plbafp22yv9bcvwfibjk0jv2c9i22dfsr07f"))))
+        (base32 "1n0fzrdlbc6px88qr574ww2q85xk43bv09jpmsskzv1l2cncwm37"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list "CC=gcc")
+       #:parallel-tests? #f             ;some tests fail non-deterministically
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ;no configure script
          (add-before 'build 'use-echo
            (lambda _
-             (substitute* "tests/Makefile"
+             (substitute* (list "tests/Makefile" "tests/tapview")
                (("/bin/echo") (which "echo")))
              #t))
          (add-after 'build 'build-manpage
