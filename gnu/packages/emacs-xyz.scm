@@ -18949,7 +18949,7 @@ close, copy, cut, paste, undo, redo.")
       (description
        "This package provides functions for working with pass (\"the
 standard Unix password manager\").")
-      (license license:gpl2+))))
+      (license license:gpl3+))))
 
 (define-public emacs-password-store-otp
   (package
