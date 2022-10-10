@@ -6952,38 +6952,36 @@ at their peak of economic growth and military prowess.
         (base32 "1n0fzrdlbc6px88qr574ww2q85xk43bv09jpmsskzv1l2cncwm37"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list "CC=gcc")
-       #:parallel-tests? #f             ;some tests fail non-deterministically
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ;no configure script
-         (add-before 'build 'use-echo
-           (lambda _
-             (substitute* (list "tests/Makefile" "tests/tapview")
-               (("/bin/echo") (which "echo")))
-             #t))
-         (add-after 'build 'build-manpage
-           (lambda _
-             ;; This target is missing a dependency
-             (substitute* "Makefile"
-               ((".adoc.6:" line)
-                (string-append line " advent.adoc")))
-             (invoke "make" ".adoc.6")))
-         ;; There is no install target.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man (string-append out "/share/man/man6")))
-               (install-file "advent" bin)
-               (install-file "advent.6" man))
-             #t)))))
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:parallel-tests? #f              ;some tests fail non-deterministically
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;no configure script
+          (add-before 'build 'use-echo
+            (lambda _
+              (substitute* (list "tests/Makefile" "tests/tapview")
+                (("/bin/echo") (which "echo")))))
+          (add-after 'build 'build-manpage
+            (lambda _
+              ;; This target is missing a dependency
+              (substitute* "Makefile"
+                ((".adoc.6:" line)
+                 (string-append line " advent.adoc")))
+              (invoke "make" ".adoc.6")))
+          ;; There is no install target.
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (man (string-append #$output "/share/man/man6")))
+                (install-file "advent" bin)
+                (install-file "advent.6" man)))))))
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("libedit" ,libedit)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("python-pyyaml" ,python-pyyaml)))
+     (list asciidoc
+           libedit
+           pkg-config
+           python-pyyaml
+           python-wrapper))
     (home-page "https://gitlab.com/esr/open-adventure")
     (synopsis "Colossal Cave Adventure")
     (description
