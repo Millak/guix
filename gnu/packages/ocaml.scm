@@ -7831,7 +7831,7 @@ convenience functions for vectors and matrices.")
 (define-public ocaml-cairo2
   (package
     (name "ocaml-cairo2")
-    (version "0.6.3")
+    (version "0.6.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7840,7 +7840,7 @@ convenience functions for vectors and matrices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m0wh0s0sqjfa3mgq99lwk0dsg0bwxipaz93hq18m0lz5fqxib1m"))))
+                "06ag9b88ihhr7yd3s9l0ac7ysig02fmlmsswybbsvz71ni0mb105"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "tests"))
