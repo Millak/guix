@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Mehmet Tekman <mtekman89@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,11 +25,13 @@
 
 (define-module (gnu packages vnc)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -560,6 +563,56 @@ of its unique features are:
 @env{_JAVA_AWT_WM_NONREPARENTING} environment variable when using it with
 ratpoison.")
     (license license:gpl2+)))
+
+(define-public x11vnc
+  ;; The release version of 0.9.16 requires patches to work, so we pin to the
+  ;; latest working commit
+  (let ((commit "3e4dc8ef2985a6e670e1d9649fe55395c2b31039")
+        (revision "0"))
+    (package
+      (name "x11vnc")
+      (version (git-version "0.9.16" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/LibVNC/x11vnc")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0a120gv9h3whiznlddl0j3nz3400jjgl97znaincm5i2m5pnjifs"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases #~(modify-phases %standard-phases
+                          (add-before 'bootstrap 'delete-premature-configure
+                            (lambda _
+                              (substitute* "./autogen.sh"
+                                ((".*/configure")
+                                 "")))))))
+      (native-inputs (list autoconf automake autobuild pkg-config))
+      (inputs (list avahi
+                    libjpeg-turbo
+                    libvnc
+                    libx11
+                    libxcomposite
+                    libxdamage
+                    libxext
+                    libxfixes
+                    libxi
+                    libxinerama
+                    libxrandr
+                    libxtst
+                    openssl
+                    xdpyinfo
+                    xf86-video-dummy
+                    zlib))
+      (synopsis "VNC server for real X displays")
+      (home-page "https://github.com/LibVNC/x11vnc")
+      (description
+       "x11vnc allows one to view and interact with real remote X
+displays (i.e. a display corresponding to a physical monitor, keyboard, and
+mouse) with any VNC viewer.")
+      (license license:gpl2+))))
 
 (define-public libvnc
   (package
