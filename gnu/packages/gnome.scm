@@ -10427,9 +10427,12 @@ desktop.  It supports multiple calendars, month, week and year view.")
            libpeas
            libportal
            python-pygobject
-           evolution-data-server
            gnome-online-accounts
            gsettings-desktop-schemas))
+    (propagated-inputs
+     ;; This is so that the Guix System D-Bus service can find the Evolution
+     ;; Data Server schemas.
+     (list evolution-data-server))
     (home-page "https://wiki.gnome.org/Apps/Todo")
     (synopsis "GNOME's ToDo Application")
     (description "GNOME To Do is a simplistic personal task manager designed
