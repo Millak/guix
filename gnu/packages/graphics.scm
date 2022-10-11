@@ -2373,7 +2373,8 @@ generated discrete signed distance field using the cubic spline kernel.
            ;; TODO: Fix failing LaTeX invocation (which results in equations
            ;; being inserted literally into PNGs rather than being typeset).
            ;;texlive-tiny
-           ))
+
+           perl))                            ;used to generate Fortran headers
     (inputs
      (list scotch))
     (home-page "http://www.mmgtools.org/")
