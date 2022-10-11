@@ -59,6 +59,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -680,7 +681,7 @@ and the unversioned commands available.")))
 (define-public micropython
   (package
     (name "micropython")
-    (version "1.18")
+    (version "1.19")
     (source
       (origin
         (method url-fetch)
@@ -688,7 +689,7 @@ and the unversioned commands available.")))
                             "releases/download/v" version
                             "/micropython-" version ".tar.xz"))
         (sha256
-         (base32 "1d1yza02pwq3kh8531ryq9sjk7zjqh786nnw397cccfk5ss73z4n"))
+         (base32 "090bbls5vnicynjyjqqd5zqwx8d6zxp7wlnrxgh0b4s8cyf5i8zj"))
       (modules '((guix build utils)))
       (snippet
        '(begin
