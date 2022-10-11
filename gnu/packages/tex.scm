@@ -11142,6 +11142,28 @@ The class is a development of the apa class (which is no longer
 maintained).")
     (license license:lppl1.3c+)))
 
+(define-public texlive-apacite
+  (package
+    (inherit (simple-texlive-package
+              "texlive-apacite"
+              (list "tex/latex/apacite/")
+              (base32
+               "0bcfpcmflhvxwzmdj8dgf43mzaywx2asahp52nqn3wwvq64bqym6")
+              #:trivial? #t))
+    (propagated-inputs (list texlive-latex-natbib
+                             texlive-tools))
+    (home-page "https://www.ctan.org/pkg/apacite")
+    (synopsis "Citation style following the rules of the APA")
+    (description "Apacite provides a BibTeX style and a LaTeX package which
+are designed to match the requirements of the American Psychological
+Association’s style for citations.  The package follows the 6th edition
+of the APA manual, and is designed to work with the apa6 class.  A test
+document is provided.  The package is compatible with chapterbib and
+(to some extent) with hyperref (for limits of compatibility, see the
+documentation).  The package also includes a means of generating an author
+index for a document.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-endfloat
   (package
     (inherit (simple-texlive-package
