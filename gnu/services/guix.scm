@@ -59,6 +59,7 @@
             guix-build-coordinator-agent-configuration-authentication
             guix-build-coordinator-agent-configuration-systems
             guix-build-coordinator-agent-configuration-max-parallel-builds
+            guix-build-coordinator-agent-configuration-max-allocated-builds
             guix-build-coordinator-agent-configuration-max-1min-load-average
             guix-build-coordinator-agent-configuration-derivation-substitute-urls
             guix-build-coordinator-agent-configuration-non-derivation-substitute-urls
@@ -177,6 +178,9 @@
   (max-parallel-builds
    guix-build-coordinator-agent-configuration-max-parallel-builds
    (default 1))
+  (max-allocated-builds
+   guix-build-coordinator-agent-configuration-max-allocated-builds
+   (default #f))
   (max-1min-load-average
    guix-build-coordinator-agent-configuration-max-1min-load-average
    (default #f))
@@ -406,6 +410,7 @@
 (define (guix-build-coordinator-agent-shepherd-services config)
   (match-record config <guix-build-coordinator-agent-configuration>
     (package user coordinator authentication max-parallel-builds
+             max-allocated-builds
              max-1min-load-average
              derivation-substitute-urls non-derivation-substitute-urls
              systems)
@@ -439,6 +444,10 @@
                                                 token-file))))
                       #$(simple-format #f "--max-parallel-builds=~A"
                                        max-parallel-builds)
+                      #$@(if max-allocated-builds
+                             #~(#$(simple-format #f "--max-allocated-builds=~A"
+                                                 max-allocated-builds))
+                             #~())
                       #$@(if max-1min-load-average
                              #~(#$(simple-format #f "--max-1min-load-average=~A"
                                                  max-1min-load-average))

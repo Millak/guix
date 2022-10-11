@@ -35865,6 +35865,9 @@ will use the current system it's running on as the default.
 @item @code{max-parallel-builds} (default: @code{1})
 The number of builds to perform in parallel.
 
+@item @code{max-allocated-builds} (default: @code{#f})
+The maximum number of builds this agent can be allocated.
+
 @item @code{max-1min-load-average} (default: @code{#f})
 Load average value to look at when considering starting new builds, if
 the 1 minute load average exceeds this value, the agent will wait before
