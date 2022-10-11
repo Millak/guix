@@ -5894,6 +5894,42 @@ drive that supports the ATA/ATAPI-7 IDLE IMMEDIATE command with unload
 feature, and a laptop with an accelerometer.  It has no effect on SSDs.")
     (license license:gpl2)))
 
+
+(define-public nbfc-linux
+  (let ((version "0.1.7")
+        (commit "4c2b75e4a875459e86a9892319889ff945e9cadf")
+        (revision "0"))
+    (package
+      (name "nbfc-linux")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/nbfc-linux/nbfc-linux")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0mmyfaigrh3fd5v11a8p38km4m02qzsfx8yh72g0z405bzhqn5jk"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:make-flags (list (string-append "CC="
+                                           ,(cc-for-target))
+                            (string-append "PREFIX="
+                                           (assoc-ref %outputs "out")))
+         #:tests? #f
+         #:phases (modify-phases %standard-phases
+                    (delete 'configure))))
+      (native-inputs (list pkg-config))
+      (propagated-inputs (list python dmidecode))
+      (synopsis "NoteBook FanControl ported to Linux")
+      (description
+       "This package provides a C port of NoteBook FanControl (NBFC), a fan
+control service for notebooks.  It provides the same utilities with the same
+interfaces as the original NBFC, although the implementation differs.")
+      (home-page "https://github.com/nbfc-linux/nbfc-linux")
+      (license license:gpl3+))))
+
 (define-public thinkfan
   (package
     (name "thinkfan")
