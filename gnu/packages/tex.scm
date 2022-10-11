@@ -11129,6 +11129,20 @@ and selecting references used in a publication.")
               (base32
                "08jn8piyaad4zln33c0gikyhdkcsk2s3ms9l992riq2hbpbm9lcf")
               #:trivial? #t))
+    (propagated-inputs (list texlive-apacite
+                             texlive-babel
+                             texlive-booktabs
+                             texlive-endnotes
+                             texlive-etoolbox
+                             texlive-generic-xstring
+                             texlive-latex-draftwatermark
+                             texlive-latex-fancyhdr
+                             texlive-latex-float
+                             texlive-latex-graphics
+                             texlive-lm
+                             texlive-substr
+                             texlive-times
+                             texlive-tools))
     (home-page "https://www.ctan.org/pkg/apa6")
     (synopsis "Format documents in APA style (6th edition)")
     (description "The class formats documents in APA style (6th
