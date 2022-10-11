@@ -92,33 +92,20 @@ _debug()
     fi
 }
 
-_flush()
-{
-    while read -t0; do
-        read -N1
-    done
-}
-
 die()
 {
     _err "${ERR}$*"
     exit 1
 }
 
-# Return true if user answered yes, false otherwise.  It defaults to "yes"
-# when a single newline character is input.
+# Return true if user answered yes, false otherwise.  The prompt is
+# yes-biased, that is, when the user simply enter newline, it is equivalent to
+# answering "yes".
 # $1: The prompt question.
 prompt_yes_no() {
-    while true; do
-        _flush
-        read -N1 -rsp "$1 [Y/n]" yn
-        case $yn in
-            $'\n') echo && return 0;;
-            [Yy]*) echo && return 0;;
-            [Nn]*) echo && return 1;;
-            *) echo && _msg "Please answer yes or no."
-        esac
-    done
+    local -l yn
+    read -rp "$1 [Y/n]" yn
+    [[ ! $yn || $yn = y || $yn = yes ]] || return 1
 }
 
 chk_require()
