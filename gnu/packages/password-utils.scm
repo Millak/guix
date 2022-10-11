@@ -37,6 +37,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,6 +58,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
@@ -616,6 +618,42 @@ GnuPG-encrypted file, allowing the program to be simple yet secure.
 Synchronization is possible using the integrated git support, which commits
 changes to your password database to a git repository that can be managed
 through the pass command.")
+    (license license:gpl2+)))
+
+(define-public pass-age
+  (package
+    (inherit password-store)
+    (name "pass-age")
+    (version "1.7.4a0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FiloSottile/passage")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17899whffnpqqx9x1nx2b8bfxbxlh1pwlglqa0kznl0cn6sb37ql"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'rename-script
+                    (lambda _
+                      (rename-file "src/password-store.sh"
+                                   "src/passage"))))
+       #:install-plan
+       '(("src/passage" "/bin/")
+         ("src/completion/pass.bash-completion"
+          "/share/bash-completion/completions/")
+         ("src/completion/pass.zsh-completion"
+          "/share/zsh/site-functions/"))))
+    (propagated-inputs
+     (list util-linux git qrencode sed tree age))
+    (home-page "https://github.com/FiloSottile/passage")
+    (synopsis "Encrypted password manager")
+    (description "This package provides an encrypted password manager, forked
+from the @code{password-store} package.  Files are encrypted with the
+@command{age} encryption package with small explicit keys.")
     (license license:gpl2+)))
 
 (define-public pass-otp
