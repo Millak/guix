@@ -6803,6 +6803,23 @@ splines, and filled circles and ellipses.  The package uses @code{tpic}
 provides means for easy customization of the list of notes.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-endnotes
+  (package
+    (inherit (simple-texlive-package
+              "texlive-endnotes"
+              (list "doc/latex/endnotes/"
+                    "tex/latex/endnotes/")
+              (base32
+               "1s7j5sg8fbhifng0gfqnghbvalbbh0p7j9v06r660w089364ypwz")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/endnotes")
+    (synopsis "Deal with endnotesings in strings")
+    (description
+     "Accumulates notes (using the @code{\\endnote} command, which can be used
+as a replacement for @code{\\footnote}), and places them at the end of
+the section, chapter or document.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-enumitem
   (package
     (inherit
