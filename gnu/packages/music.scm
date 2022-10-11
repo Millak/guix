@@ -6109,21 +6109,21 @@ MIDI drums and comes as two separate drumkits: Black Pearl and Red Zeppelin.")
     (name "helm")
     (version "0.9.0")
     (source
-      (origin
-        (method git-fetch)
-        (uri
-          (git-reference
-            (url "https://github.com/mtytel/helm")
-            (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32
-            "17ys2vvhncx9i3ydg3xwgz1d3gqv4yr5mqi7vr0i0ca6nad6x3d4"))
-        ;; Apply GCC 9 fixes from https://github.com/mtytel/helm/pull/233
-        (patches (search-patches "helm-fix-gcc-9-build.patch"))))
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/mtytel/helm")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "17ys2vvhncx9i3ydg3xwgz1d3gqv4yr5mqi7vr0i0ca6nad6x3d4"))
+       ;; Apply GCC 9 fixes from https://github.com/mtytel/helm/pull/233
+       (patches (search-patches "helm-fix-gcc-9-build.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f  ; no "check" target
+     `(#:tests? #f                      ; no "check" target
        #:make-flags
        (list (string-append "DESTDIR=" (assoc-ref %outputs "out"))
              "lv2" "standalone")
@@ -6140,6 +6140,11 @@ MIDI drums and comes as two separate drumkits: Black Pearl and Red Zeppelin.")
              (substitute* "Makefile"
                (("/usr") ""))
              #t))
+         (add-after 'unpack 'fix-hardcoded-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* (list "src/common/load_save.cpp"
+                                "src/editor_sections/patch_browser.cpp")
+               (("/usr") (assoc-ref outputs "out")))))
          (delete 'configure))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
