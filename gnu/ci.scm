@@ -38,6 +38,7 @@
   #:use-module ((guix licenses)
                 #:select (gpl3+ license? license-name))
   #:use-module ((guix utils) #:select (%current-system))
+  #:use-module ((guix scripts system) #:select (read-operating-system))
   #:use-module ((guix scripts pack)
                 #:select (self-contained-tarball))
   #:use-module (gnu bootloader)
