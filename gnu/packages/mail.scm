@@ -4227,7 +4227,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
            lsof openssl tini))
     (inputs
      (append
-      (if (target-x86-32?)
+      (if (not (target-64bit?))
           ;; Required by test t/pop3d.t, otherwise fails with
           ;; “sizeof(off_t)=8 requires File::FcntlLock”.
           (list perl-file-fcntllock)
