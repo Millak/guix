@@ -4187,20 +4187,20 @@ type, for example: packages, buffers, files, etc.")
     (license license:gpl3+)))
 
 (define-public emacs-guix
-  (let ((commit "c9aef52121b458297e70bb50f49f7276b4a8d759")
-        (revision "5"))
+  (let ((commit "cf5b7a402ea503c3dcda85a86b9a6c6dd01896e0")
+        (revision "6"))
     (package
       (name "emacs-guix")
       (version (git-version "0.5.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://gitlab.com/emacs-guix/emacs-guix.git")
+                      (url "https://git.savannah.gnu.org/git/guix/emacs-guix.git")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "00xdxadbi9fxpfp60zah9190rcz3w08vl1blbhmaiy7c1hd2gi39"))))
+                  "0wxiipgv91rlk9bhspx370rykywi52rxg5m1f7680vzs3ckc7nyd"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -4233,7 +4233,7 @@ type, for example: packages, buffers, files, etc.")
              emacs-geiser-guile
              emacs-magit-popup
              guile-gcrypt))
-      (home-page "https://emacs-guix.gitlab.io/website/")
+      (home-page "https://guix.gnu.org")
       (synopsis "Emacs interface for GNU Guix")
       (description
        "Emacs-Guix provides a visual interface, tools and features for the GNU
