@@ -835,7 +835,7 @@ prefix, resolve it; and if 'commit' is unset, fetch CHANNEL's branch tip."
         (branch (channel-branch channel)))
     (if (and commit (commit-id? commit))
         commit
-        (let* ((ref (if commit `(commit . ,commit) `(branch . ,branch)))
+        (let* ((ref (if commit `(tag-or-commit . ,commit) `(branch . ,branch)))
                (cache commit relation
                      (update-cached-checkout (channel-url channel)
                                              #:ref ref

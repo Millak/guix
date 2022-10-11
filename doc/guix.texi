@@ -4645,7 +4645,7 @@ but it supports the following options:
 @itemx --branch=@var{branch}
 Download code for the @code{guix} channel from the specified @var{url}, at the
 given @var{commit} (a valid Git commit ID represented as a hexadecimal
-string), or @var{branch}.
+string or the name of a tag), or @var{branch}.
 
 @cindex @file{channels.scm}, configuration file
 @cindex configuration file for channels
@@ -4797,6 +4797,25 @@ of Guix to be used is defined by a commit or by a channel
 description file created by @command{guix describe}
 (@pxref{Invoking guix describe}).
 
+Let's assume that you want to travel to those days of November 2020 when
+version 1.2.0 of Guix was released and, once you're there, run the
+@command{guile} of that time:
+
+@example
+guix time-machine --commit=v1.2.0 -- \
+  environment -C --ad-hoc guile -- guile
+@end example
+
+The command above fetches Guix@tie{}1.2.0 and runs its @command{guix
+environment} command to spawn an environment in a container running
+@command{guile} (@command{guix environment} has since been subsumed by
+@command{guix shell}; @pxref{Invoking guix shell}).  It's like driving a
+DeLorean@footnote{If you don't know what a DeLorean is, consider
+traveling back to the 1980's.}!  The first @command{guix time-machine}
+invocation can be expensive: it may have to download or even build a
+large number of packages; the result is cached though and subsequent
+commands targeting the same commit are almost instantaneous.
+
 The general syntax is:
 
 @example
@@ -4813,7 +4832,7 @@ this revision are the same as for @command{guix pull} (@pxref{Invoking guix pull
 @itemx --branch=@var{branch}
 Use the @code{guix} channel from the specified @var{url}, at the
 given @var{commit} (a valid Git commit ID represented as a hexadecimal
-string), or @var{branch}.
+string or the name of a tag), or @var{branch}.
 
 @item --channels=@var{file}
 @itemx -C @var{file}
