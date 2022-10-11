@@ -272,12 +272,15 @@ corresponding Git object."
                   ;; There's no such tag, so it must be a commit ID.
                   (resolve `(commit . ,str)))))))
       (('tag    . tag)
-       (let ((oid (reference-name->oid repository
-                                       (string-append "refs/tags/" tag))))
-         ;; OID may point to a "tag" object, but it can also point directly
-         ;; to a "commit" object, as surprising as it may seem.  Return that
-         ;; object, whatever that is.
-         (object-lookup repository oid))))))
+       (let* ((oid (reference-name->oid repository
+                                        (string-append "refs/tags/" tag)))
+              (obj (object-lookup repository oid)))
+         ;; OID may designate an "annotated tag" object or a "commit" object.
+         ;; Return the commit object in both cases.
+         (if (= OBJ-TAG (object-type obj))
+             (object-lookup repository
+                            (tag-target-id (tag-lookup repository oid)))
+             obj))))))
 
 (define (switch-to-ref repository ref)
   "Switch to REPOSITORY's branch, commit or tag specified by REF.  Return the
