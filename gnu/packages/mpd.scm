@@ -9,7 +9,7 @@
 ;;; Copyright © 2019 Evan Straw <evan.straw99@gmail.com>
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Lars-Dominik Braun <lars@6xq.net>
-;;; Copyright © 2020, 2021 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2020–2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Noah Evans <noah@nevans.me>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -63,6 +63,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
+  #:use-module (gnu packages music)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
@@ -442,7 +443,7 @@ support")
 (define-public cantata
   (package
     (name "cantata")
-    (version "2.4.2")
+    (version "2.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/CDrummond/"
@@ -450,16 +451,18 @@ support")
                                   "cantata-" version ".tar.bz2"))
               (sha256
                (base32
-                "10pcrpmb4n1mkgr21xd580nrbmh57q7s72cbs1zay847hc65vliy"))))
+                "090ph8kb2vicjaajn64kmfppb90ix0pnxj525shglyjn7ymh0zpb"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ; No test suite
     (native-inputs
      (list pkg-config))
     (inputs
-     (list eudev
+     (list avahi
+           eudev
            ffmpeg
            libcdio-paranoia
+           libmusicbrainz
            libebur128
            libmtp
            mpg123
