@@ -2403,7 +2403,6 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
       #:tests? #f                       ;no test target
       #:configure-flags
       #~(list "-DCMAKE_BUILD_TYPE=Release"
-              "-DBUILD_DOCS=ON"
               ;; Fix required because we are using a static SingleApplication
               "-DCMAKE_CXX_FLAGS= \"-DQAPPLICATION_CLASS=QApplication\" "
               ;; Compile Qml will make Nheko faster, but you will need to recompile
@@ -2469,7 +2468,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            xcb-util-wm
            zlib))
     (native-inputs
-     (list asciidoc doxygen graphviz pkg-config qttools-5))
+     (list asciidoc pkg-config qttools-5))
     (home-page "https://github.com/Nheko-Reborn/nheko")
     (synopsis "Desktop client for Matrix using Qt and C++14")
     (description "@code{Nheko} want to provide a native desktop app for the
