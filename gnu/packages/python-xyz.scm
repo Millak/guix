@@ -3011,6 +3011,29 @@ the optional C extension for speedups.  Simplejson is also supported on
 Python 3.3+.")
     (license license:x11)))
 
+(define-public python-simple-rlp
+  (package
+    (name "python-simple-rlp")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SamuelHaidu/simple-rlp")
+             ;; Upstream doesn't tag the git repo.
+             (commit "342ea269d84da1ddc4a7630cdebc90159261391c")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1nv92sphpkyrncak4qgj50qmgkmj4ycl2szbnv9c7ihgl5df4div"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/SamuelHaidu/simple-rlp")
+    (synopsis
+     "Python implementation of RLP (Recursive Length Prefix) encoding")
+    (description
+     "@code{simple-rlp} is a python implementation of RLP (Recursive Length \
+Prefix) - Encode and decode data structures.")
+    (license license:expat)))
 
 (define-public python-pyicu
   (package
