@@ -58,6 +58,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2492,6 +2493,31 @@ similar to BerkeleyDB, LevelDB, etc.")
 supports many data structures including strings, hashes, lists, sets, sorted
 sets, bitmaps and hyperloglogs.")
     (home-page "https://redis.io/")
+    (license license:bsd-3)))
+
+(define-public hiredis
+  (package
+    (name "hiredis")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/redis/hiredis")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a55zk3qrw9yl27i87h3brg2hskmmzbfda77dhq9a4if7y70xnfb"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     ;; needed for testing
+     (list redis))
+    (synopsis "Minimalistic C client library for the Redis database")
+    (description "This package provides a library for sending commands and
+receiving replies to and from a Redis server.  It comes with a synchronous
+API, asynchronous API and reply parsing API.  Only the binary-safe Redis
+protocol is supported.")
+    (home-page "https://github.com/redis/hiredis")
     (license license:bsd-3)))
 
 (define-public ruby-redis
