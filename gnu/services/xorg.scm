@@ -673,13 +673,7 @@ reboot_cmd " shepherd "/sbin/reboot\n"
                    (list (service-extension shepherd-root-service-type
                                             slim-shepherd-service)
                          (service-extension pam-root-service-type
-                                            slim-pam-service)
-
-                         ;; Unconditionally add xterm to the system profile, to
-                         ;; avoid bad surprises.
-                         (service-extension profile-service-type
-                                            (const (list xterm)))))
-
+                                            slim-pam-service)))
                   (default-value (slim-configuration))
                   (description
                    "Run the SLiM graphical login manager for X11."))))
