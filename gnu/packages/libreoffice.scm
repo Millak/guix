@@ -73,6 +73,7 @@
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
+  #:use-module (gnu packages m4)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages openldap)
@@ -83,6 +84,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages scanner)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml)
@@ -995,6 +997,53 @@ patterns, which are pre-processed by a perl script.")
     ;; Triple license, including "mpl1.1 or later".
     (license
      (list license:mpl1.1 license:mpl2.0 license:gpl2+ license:lgpl2.1+))))
+
+(define-public hunspell-dict-hu
+  (let ((revision "2")
+        (major+minor "1.7"))
+    (package
+      (name "hunspell-dict-hu")
+      (version (string-append major+minor "-" revision))
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append "mirror://sourceforge/magyarispell/Magyar Ispell/"
+                             major+minor
+                             "/magyarispell-" version ".tar.gz"))
+         (sha256
+          (base32 "0r22rvqrp5bzgr9sqyap82kibi5z9n6xy5b06si28idqijw7c772"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags
+             #~(list "myspell"
+                     "--jobs=1"     ;the Makefile is not ready for parallelism
+                     (string-append "SH="
+                                    (search-input-file %build-inputs
+                                                       "/bin/bash"))
+                     (string-append "AWK="
+                                    (search-input-file %build-inputs
+                                                       "/bin/awk")))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'configure
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (substitute* "config"
+                       (("/usr/bin/awk")
+                        (which "awk")))))
+                 (replace 'install                ;no install target
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let* ((out (assoc-ref outputs "out"))
+                            (share (string-append out "/share/hunspell/")))
+                       (install-file "hu_HU.aff" share)
+                       (install-file "hu_HU.dic" share)))))
+             #:tests? #f))                        ; no tests
+      (native-inputs
+       (list hunspell m4 recode))
+      (synopsis "Hunspell dictionary for Hungarian (hu_HU)")
+      (description "This package provides a dictionary for the Hunspell
+spell-checking library.")
+      (home-page "http://magyarispell.sourceforge.net/")
+      (license (list license:gpl2 license:gpl3)))))
 
 (define-public mythes
   (package
