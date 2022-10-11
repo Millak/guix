@@ -49,6 +49,11 @@
      (list
       #:modules `((ice-9 format)
                   ,@%gnu-build-system-modules)
+      ;; Specify the absolute location of xterm, as the user experience sucks
+      ;; when no terminal is available (can't consult help with 'C-t ?', for
+      ;; example).
+      #:configure-flags #~(list (string-append "--with-xterm="
+                                               #$(this-package-input "xterm")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-xsession
@@ -78,7 +83,8 @@
            libxtst
            libx11
            readline
-           xorgproto))
+           xorgproto
+           xterm))
     (native-inputs
      (list perl
            pkg-config))
