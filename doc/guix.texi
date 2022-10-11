@@ -16313,7 +16313,7 @@ The default set includes core utilities and it is good practice to
 install non-core utilities in user profiles (@pxref{Invoking guix
 package}).
 
-@item @code{timezone}
+@item @code{timezone} (default: @code{"Etc/UTC"})
 A timezone identifying string---e.g., @code{"Europe/Paris"}.
 
 You can run the @command{tzselect} command to find out which timezone
