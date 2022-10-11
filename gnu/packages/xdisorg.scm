@@ -60,6 +60,7 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2022 Mehmet Tekman <mtekman89@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1145,6 +1146,57 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
 X Window System.")
     (license (license:non-copyleft #f "See xlock.c.")
              ))) ; + GPLv2 in modes/glx/biof.c.
+
+(define-public xtrlock
+  (package
+    (name "xtrlock")
+    (version "2.15")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://debian/pool/main/x/xtrlock/xtrlock_" version
+                    ".tar.xz"))
+              (sha256
+               (base32
+                "0mgpysbvipd5h6x6zz4hng6b13gp3qjnpgny3azyj8k8dv85bppw"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; LDLIBS are required for the package to build.
+     ;; CFLAGS are required for it to use the shadow file, and to
+     ;; be compatible with multi-touch devices.
+     (list #:make-flags
+           #~'("CFLAGS=-O2 -g -Wall -DSHADOW_PWD -DMULTITOUCH"
+               "LDLIBS=-lX11 -lcrypt -lXi")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (delete 'check)
+               (add-after 'unpack 'rename-makefile
+                 (lambda _
+                   (rename-file "Makefile.noimake" "Makefile")
+                   (rename-file "xtrlock.man" "xtrlock.1")))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out")))
+                     (install-file "xtrlock"
+                                   (string-append out "/bin/"))
+                     (install-file "xtrlock.1"
+                                   (string-append out
+                                                  "/share/man/man1/"))))))))
+    (inputs (list libx11 libxi libxfixes))
+    (home-page "https://packages.debian.org/sid/xtrlock")
+    (synopsis "Minimal X display lock program")
+    (description
+     "xtrlock locks the X server till the user enters their password at the
+keyboard.  While xtrlock is running, the mouse and keyboard are grabbed and
+the mouse cursor becomes a padlock.  Output displayed by X programs, and
+windows put up by new X clients, continue to be visible, and any new output is
+displayed normally.  The mouse and keyboard are returned when the user types
+their password, followed by Enter or Newline.  If an incorrect password is
+entered the bell is sounded.  Pressing Backspace or Delete erases one
+character of a password partially typed; pressing Escape or Clear clears
+anything that has been entered.")
+    (license license:gpl2+)))
 
 (define-public xosd
   (package
