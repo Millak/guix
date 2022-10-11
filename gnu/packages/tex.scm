@@ -11957,6 +11957,28 @@ recurrences of, a substring.  The package works equally in Plain TeX and LaTeX
 (expandable) macros.")
       (license license:lppl1.3c))))
 
+(define-public texlive-substr
+  (package
+    (inherit (simple-texlive-package
+              "texlive-substr"
+              (list "doc/latex/substr/"
+                    "tex/latex/substr/")
+              (base32
+               "0kfd4kq5yrg65f2mpric1cs1xr416wgj9bdixpibgjsdg5fb73sw")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/substr")
+    (synopsis "Deal with substrings in strings")
+    (description
+     "The package provides commands to deal with substrings of strings.  Macros
+are provided to:
+
+@itemize
+@item determine if one string is a substring of another,
+@item return the parts of a string before or after a substring, and
+@item count the number of occurrences of a substring.
+@end itemize")
+    (license license:lppl1.0+)))
+
 (define-public texlive-latex-totcount
   (package
     (inherit (simple-texlive-package
