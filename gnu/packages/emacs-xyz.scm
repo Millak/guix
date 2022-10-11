@@ -4222,9 +4222,8 @@ type, for example: packages, buffers, files, etc.")
       (native-inputs
        (list autoconf automake emacs-minimal pkg-config texinfo))
       (inputs
-       `(("guile"
-          ,@(assoc-ref (package-native-inputs guix) "guile"))
-         ("guix" ,guix)))
+       (list (lookup-package-input guix "guile")
+             guix))
       (propagated-inputs
        (list emacs-bui
              emacs-dash
