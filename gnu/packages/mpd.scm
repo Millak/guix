@@ -480,7 +480,7 @@ artists along with albumart.")
 (define-public mcg
   (package
     (name "mcg")
-    (version "2.1.2")
+    (version "3.1")
     (source
      (origin
        (method git-fetch)
@@ -491,22 +491,22 @@ artists along with albumart.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01iqxydssxyi4s644dwl64vm7xhn0szd99hdpywbipvb7kwp5196"))))
-    (build-system python-build-system)
+         "087d3gvx8z1yj7rg9d9h1x02vkw57h4v6xf5pxqyhqyk2435kk17"))))
+    (build-system meson-build-system)
     (inputs (list avahi
                   dconf
                   gsettings-desktop-schemas
                   gtk+
+                  python
                   python-pygobject))
-    (native-inputs (list `(,glib "bin")
+    (native-inputs (list desktop-file-utils
+                         gettext-minimal
+                         `(,glib "bin")
                          gobject-introspection
+                         `(,gtk+ "bin")
                          pkg-config))
     (arguments
-     `(#:imported-modules ((guix build glib-or-gtk-build-system)
-                           ,@%python-build-system-modules)
-       #:modules ((guix build python-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  (guix build utils))
+     `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-program
@@ -515,9 +515,7 @@ artists along with albumart.")
                                         "/bin/mcg")))
                (wrap-program prog
                  `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))
-         (add-after 'wrap-program 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (synopsis "Covergrid for the MPD")
     (description
      "mcg (CoverGrid) is a client for the Music Player Daemon (MPD), focusing
