@@ -40,7 +40,7 @@
   #:use-module (guix search-paths)
   #:use-module (guix profiles)
   #:use-module (guix channels)
-  #:use-module ((guix git) #:select (update-cached-checkout))
+  #:use-module ((guix git) #:select (update-cached-checkout commit-id?))
   #:use-module (guix monads)
   #:use-module (guix store)
   #:use-module (guix derivations)
@@ -833,7 +833,7 @@ CHANNEL's 'commit' field is a full SHA1, return it as-is; if it's a SHA1
 prefix, resolve it; and if 'commit' is unset, fetch CHANNEL's branch tip."
   (let ((commit (channel-commit channel))
         (branch (channel-branch channel)))
-    (if (and commit (= (string-length commit) 40))
+    (if (and commit (commit-id? commit))
         commit
         (let* ((ref (if commit `(commit . ,commit) `(branch . ,branch)))
                (cache commit relation
