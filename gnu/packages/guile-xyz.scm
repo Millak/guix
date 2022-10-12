@@ -4441,6 +4441,50 @@ Discovery (DNS-SD).")
       (home-page "https://www.nongnu.org/guile-avahi/")
       (license license:lgpl3+))))
 
+(define-public guile-dns
+  (package
+    (name "guile-dns")
+    (version "0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.lysator.liu.se/hugo/guile-dns")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18skivracv6jh1zab9dknkcpbizc416n0pb2mcwb20dpzc2md9yf"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "PREFIX=" #$output)
+                                ;; Prevent guild warnings.
+                                "GUILE_AUTO_COMPILE=0"
+                                ;; Make tests verbose and disable coverage
+                                ;; report. The coverage report fails on
+                                ;; i686-linux.
+                                "TEST_FLAGS=--verbose")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     ;; CURDIR is a standard GNU Make variable. Prefer it to
+                     ;; PWD. PWD is set by the shell and is absent in the
+                     ;; build process.
+                     (("PWD") "CURDIR")
+                     ;; Install info file at share/info, not at share.
+                     (("share doc") "share/info doc"))))
+               (delete 'configure))))
+    (inputs
+     (list guile-3.0))
+    (native-inputs
+     (list texinfo))
+    (home-page "https://git.lysator.liu.se/hugo/guile-dns")
+    (synopsis "Guile DNS library")
+    (description "@code{guile-dns} is a DNS library written in pure Guile
+Scheme.")
+    (license license:gpl3+)))
+
 (define-public guile-jwt
   (package
     (name "guile-jwt")
