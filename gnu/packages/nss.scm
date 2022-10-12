@@ -5,7 +5,7 @@
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -106,6 +106,19 @@ in the Mozilla clients.")
              (sha256
               (base32
                "0v3zds1id71j5a5si42a658fjz8nv2f6zp6w4gqrqmdr6ksz8sxv"))))))
+
+(define-public nspr-next
+  (package
+    (inherit nspr)
+    (version "4.35")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
+                    version "/src/nspr-" version ".tar.gz"))
+              (sha256
+               (base32
+                "13xwda56yhp1w7v02qvlxvlqiniw8kr4g3fxlljmv6wnlmz2k8vy"))))))
 
 (define-public nss
   (package
