@@ -7286,7 +7286,7 @@ a secret password store, an adblocker, and a modern UI.")
            libhandy
            libnotify
            libportal
-           librsvg                      ; for loading SVG files
+           (librsvg-for-system)         ; for loading SVG files
            libsecret
            libsoup
            libxslt
