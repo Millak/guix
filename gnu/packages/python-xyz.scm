@@ -496,6 +496,25 @@ and variables you'll need already imported and created.
     (home-page "https://github.com/google/python-fire")
     (license license:asl2.0)))
 
+(define-public python-dotmap
+  (package
+    (name "python-dotmap")
+    (version "1.3.30")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dotmap" version))
+              (sha256
+               (base32
+                "0s5kb2v7jd0narz6m6jcicak3h5pw290wz21cdsv8pq77y9sf8aq"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/drgrib/dotmap")
+    (synopsis "Ordered, dynamically-expandable dot-access dictionary")
+    (description
+     "DotMap is a dot-access dictionary subclass that has dynamic
+hierarchy creation, can be initialized with keys, can be initialized from a
+dictionary, can be convert to a dictionary, and is ordered by insertion.")
+    (license license:expat)))
+
 (define-public python-twodict
   (package
     (name "python-twodict")
