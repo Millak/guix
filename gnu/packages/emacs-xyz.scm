@@ -27956,7 +27956,7 @@ or regions to a REPL from ~a buffers.") language))))
   (make-emacs-eval-in-repl "elm" #:inputs (list emacs-elm-mode)))
 
 (define-public emacs-eval-in-repl-erlang
-  (make-emacs-eval-in-repl "erlang" #:inputs (list emacs-erlang)))
+  (make-emacs-eval-in-repl "erlang" #:inputs (delay (list emacs-erlang))))
 
 (define-public emacs-eval-in-repl-geiser
   (make-emacs-eval-in-repl "geiser" #:language "Scheme"
