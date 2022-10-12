@@ -743,7 +743,7 @@ embedded kernel situations.")
                        ""))
                     (for-each
                      (lambda (file)
-                       (let ((start-rx (make-regexp " *ListElement\\{"))
+                       (let ((start-rx (make-regexp " *ListElement *\\{"))
                              (end-rx   (make-regexp " *\\}")))
                         (with-atomic-file-replacement file
                           (lambda (in out)
