@@ -33,6 +33,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module ((guix licenses) #:select (fsdg-compatible))
   #:export (wsl-boot-program
             wsl-os
             wsl2-image))
@@ -113,7 +114,7 @@ USER."
     (home-page #f)
     (synopsis #f)
     (description #f)
-    (license #f)))
+    (license (fsdg-compatible "dummy"))))
 
 (define dummy-bootloader
   (bootloader
