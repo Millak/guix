@@ -41262,6 +41262,20 @@ format.
 
 @end deftp
 
+@defvr {Scheme Variable} home-dbus-service-type
+This is the service type for running a session-specific D-Bus, for
+unprivileged applications that require D-Bus to be running.
+@end defvr
+
+@deftp {Data Type} home-dbus-configuration
+The configuration record for @code{home-dbus-service-type}.
+
+@table @asis
+@item @code{dbus} (default: @code{dbus})
+The package providing the @code{/bin/dbus-daemon} command.
+@end table
+@end deftp
+
 @node Guix Home Services
 @subsection Guix Home Services
 

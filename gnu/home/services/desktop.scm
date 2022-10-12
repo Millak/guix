@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +21,7 @@
   #:use-module (gnu home services)
   #:use-module (gnu home services shepherd)
   #:use-module (gnu services configuration)
+  #:autoload   (gnu packages glib)    (dbus)
   #:autoload   (gnu packages xdisorg) (redshift)
   #:use-module (guix records)
   #:use-module (guix gexp)
@@ -27,8 +29,10 @@
   #:use-module (ice-9 match)
   #:export (home-redshift-configuration
             home-redshift-configuration?
+            home-redshift-service-type
 
-            home-redshift-service-type))
+            home-dbus-configuration
+            home-dbus-service-type))
 
 
 ;;;
@@ -172,3 +176,51 @@ format."))
    (description
     "Run Redshift, a program that adjusts the color temperature of display
 according to time of day.")))
+
+
+;;;
+;;; D-Bus.
+;;;
+
+(define-record-type* <home-dbus-configuration>
+  home-dbus-configuration make-home-dbus-configuration
+  home-dbus-configuration?
+  (dbus home-dbus-dbus                  ;file-like
+        (default dbus)))
+
+(define (home-dbus-shepherd-services config)
+  (list (shepherd-service
+         (documentation "Run the D-Bus daemon in session-specific mode.")
+         (provision '(dbus))
+         (start #~(make-forkexec-constructor
+                   (list #$(file-append (home-dbus-dbus config)
+                                        "/bin/dbus-daemon")
+                         "--nofork" "--session"
+                         (format #f "--address=unix:path=~a/bus"
+                                 (or (getenv "XDG_RUNTIME_DIR")
+                                     (format #f "/run/user/~a"
+                                             (getuid)))))
+                   #:environment-variables
+                   #~(list "DBUS_VERBOSE=1")
+                   #:log-file
+                   (format #f "~a/dbus.log"
+                           (or (getenv "XDG_LOG_HOME")
+                               (format #f "~a/.local/var/log"
+                                       (getenv "HOME"))))))
+         (stop #~(make-kill-destructor)))))
+
+(define (home-dbus-environment-variables config)
+  '(("DBUS_SESSION_BUS_ADDRESS"
+     . "unix:path=${XDG_RUNTIME_DIR:-/run/user/$UID}/bus")))
+
+(define home-dbus-service-type
+  (service-type
+   (name 'home-dbus)
+   (extensions
+    (list (service-extension home-shepherd-service-type
+                             home-dbus-shepherd-services)
+          (service-extension home-environment-variables-service-type
+                             home-dbus-environment-variables)))
+   (default-value (home-dbus-configuration))
+   (description
+    "Run the session-specific D-Bus inter-process message bus.")))
