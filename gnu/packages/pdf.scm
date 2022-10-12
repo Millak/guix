@@ -1499,7 +1499,7 @@ manipulating PDF documents from the command line.  It supports
 (define-public weasyprint
   (package
     (name "weasyprint")
-    (version "54.3")
+    (version "56.1")
     (source
      (origin
        (method git-fetch)
@@ -1509,7 +1509,7 @@ manipulating PDF documents from the command line.  It supports
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0cn8gpgyic6pmrnhp0540nbgplpsd5aybi7k89anz6m1sshgjzgs"))))
+         "08l0yaqg0rxnb2r3x4baf4wng5pxpjbyalnrl4glwh9l69740q7p"))))
     (build-system python-build-system)
     (arguments
      (list
