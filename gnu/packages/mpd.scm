@@ -481,18 +481,28 @@ artists along with albumart.")
   (package
     (name "mcg")
     (version "3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://gitlab.com/coderkun/mcg")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "087d3gvx8z1yj7rg9d9h1x02vkw57h4v6xf5pxqyhqyk2435kk17"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/coderkun/mcg")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "087d3gvx8z1yj7rg9d9h1x02vkw57h4v6xf5pxqyhqyk2435kk17"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((prog (string-append (assoc-ref outputs "out")
+                                         "/bin/mcg")))
+                (wrap-program prog
+                  `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (inputs (list avahi
                   dconf
                   gsettings-desktop-schemas
@@ -505,17 +515,6 @@ artists along with albumart.")
                          gobject-introspection
                          `(,gtk+ "bin")
                          pkg-config))
-    (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/mcg")))
-               (wrap-program prog
-                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (synopsis "Covergrid for the MPD")
     (description
      "mcg (CoverGrid) is a client for the Music Player Daemon (MPD), focusing
