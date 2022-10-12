@@ -10280,40 +10280,37 @@ SVG, EPS, PNG and terminal output.")
 (define-public python-seaborn
   (package
     (name "python-seaborn")
-    (version "0.11.2")
+    (version "0.12.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "seaborn" version))
               (sha256
                (base32
-                "1xpl3zb945sihsiwm9q1yyx84sakk1phcg0fprj6i0j0dllfjifg"))
-              (patches (search-patches "python-seaborn-kde-test.patch"
-                                       "python-seaborn-2690.patch"))))
+                "08vvnp4ps86857imxz2l5xi2vir5xdcdp3apq4badb4b5llifgw9"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-more-tests
-                    (lambda _
-                      (substitute* "seaborn/tests/test_distributions.py"
-                        (("get_contour_color\\(ax\\.collections\\[0\\]\\)")
-                         "get_contour_color(ax.collections[0])")
-                        (("c\\.get_color\\(\\)") "get_contour_color(c)")
-                        (("def test_hue_ignores_cmap")
-                         "def skip_test_hue_ignores_cmap")
-                        (("def test_fill_artists")
-                         "def skip_test_fill_artists")
-                        (("def test_with_rug") "def skip_test_with_rug"))))
-                  (add-before 'check 'start-xserver
-                    (lambda _
-                      (system "Xvfb :1 &")
-                      (setenv "DISPLAY" ":1")))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "seaborn")))))))
+     (list #:modules '((guix build python-build-system)
+                       (guix build utils)
+                       (ice-9 match))
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'build
+                          (lambda _
+                            (invoke "python" "-m" "build" "--wheel"
+                                    "--no-isolation" ".")))
+                        (replace 'install
+                          (lambda _
+                            (match (find-files "dist" "\\.whl$")
+                              ((wheel _ ...)
+                               (invoke "python" "-m" "pip" "install"
+                                       (string-append "--prefix=" #$output)
+                                       wheel)))))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vv")))))))
     (propagated-inputs (list python-pandas python-matplotlib python-numpy
                              python-scipy))
-    (native-inputs (list python-pytest xorg-server-for-tests))
+    (native-inputs (list python-flit-core python-pypa-build python-pytest))
     (home-page "https://seaborn.pydata.org/")
     (synopsis "Statistical data visualization")
     (description
