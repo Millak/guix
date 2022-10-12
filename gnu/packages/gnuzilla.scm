@@ -1246,7 +1246,8 @@ ca495991b7852b855"))
                                 (string-drop hash 8))))))
           (delete 'bootstrap)
           (replace 'configure
-            (lambda* (#:key inputs configure-flags #:allow-other-keys)
+            (lambda* (#:key native-inputs inputs configure-flags
+                      #:allow-other-keys)
               (let* ((bash (which "bash"))
                      (abs-srcdir (getcwd))
                      (srcdir (string-append "../" (basename abs-srcdir)))
@@ -1298,9 +1299,12 @@ ca495991b7852b855"))
                       "ac_add_options --enable-system-ffi\n"
                       "ac_add_options --enable-system-pixman\n"
                       "ac_add_options --prefix=" #$output "\n"
-                      "ac_add_options --with-clang-path=" (assoc-ref %build-inputs "clang") "/bin/clang\n"
+                      "ac_add_options --with-clang-path="
+                      (search-input-file (or native-inputs inputs)
+                                         "bin/clang") "\n"
                       "ac_add_options --with-distribution-id=org.gnu\n"
-                      "ac_add_options --with-libclang-path=" (assoc-ref %build-inputs "clang") "/lib\n"
+                      "ac_add_options --with-libclang-path="
+                      #$(this-package-native-input "clang") "/lib\n"
                       "ac_add_options --with-system-bz2\n"
                       "ac_add_options --with-system-icu\n"
                       "ac_add_options --with-system-jpeg\n"
