@@ -493,12 +493,14 @@ artists along with albumart.")
         (base32
          "01iqxydssxyi4s644dwl64vm7xhn0szd99hdpywbipvb7kwp5196"))))
     (build-system python-build-system)
-    (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     (list avahi dconf gsettings-desktop-schemas gtk+ python-pygobject))
+    (inputs (list avahi
+                  dconf
+                  gsettings-desktop-schemas
+                  gtk+
+                  python-pygobject))
+    (native-inputs (list `(,glib "bin")
+                         gobject-introspection
+                         pkg-config))
     (arguments
      `(#:imported-modules ((guix build glib-or-gtk-build-system)
                            ,@%python-build-system-modules)
