@@ -145,6 +145,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/browser-extensions.scm		\
   %D%/packages/build-tools.scm			\
   %D%/packages/busybox.scm			\
+  %D%/packages/bqn.scm				\
   %D%/packages/c.scm				\
   %D%/packages/calcurse.scm			\
   %D%/packages/ccache.scm			\
