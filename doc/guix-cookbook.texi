@@ -11,7 +11,7 @@
 @set SUBSTITUTE-TOR-URL https://4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
 
 @copying
-Copyright @copyright{} 2019 Ricardo Wurmus@*
+Copyright @copyright{} 2019, 2022 Ricardo Wurmus@*
 Copyright @copyright{} 2019 Efraim Flashner@*
 Copyright @copyright{} 2019 Pierre Neidhardt@*
 Copyright @copyright{} 2020 Oleg Pykhalov@*
@@ -71,6 +71,7 @@ Weblate} (@pxref{Translating Guix,,, guix, GNU Guix reference manual}).
 * Scheme tutorials::            Meet your new favorite language!
 * Packaging::                   Packaging tutorials
 * System Configuration::        Customizing the GNU System
+* Containers::                  Isolated environments and nested systems
 * Advanced package management:: Power to the users!
 * Environment management::      Control environment
 
@@ -2453,6 +2454,405 @@ ngx.say(stdout)
                                   (body (list #~(format #f "content_by_lua_file ~s;"
                                                         #$(local-file "index.lua"))))))))))))))
 @end lisp
+
+@c *********************************************************************
+@node Containers
+@chapter Containers
+
+The kernel Linux provides a number of shared facilities that are
+available to processes in the system.  These facilities include a shared
+view on the file system, other processes, network devices, user and
+group identities, and a few others.  Since Linux 3.19 a user can choose
+to @emph{unshare} some of these shared facilities for selected
+processes, providing them (and their child processes) with a different
+view on the system.
+
+A process with an unshared @code{mount} namespace, for example, has its
+own view on the file system --- it will only be able to see directories
+that have been explicitly bound in its mount namespace.  A process with
+its own @code{proc} namespace will consider itself to be the only
+process running on the system, running as PID 1.
+
+Guix uses these kernel features to provide fully isolated environments
+and even complete Guix System containers, lightweight virtual machines
+that share the host system's kernel.  This feature comes in especially
+handy when using Guix on a foreign distribution to prevent interference
+from foreign libraries or configuration files that are available
+system-wide.
+
+@menu
+* Guix Containers::            Perfectly isolated environments
+* Guix System Containers::     A system inside your system
+@end menu
+
+@node Guix Containers
+@section Guix Containers
+
+The easiest way to get started is to use @command{guix shell} with the
+@option{--container} option.  @xref{Invoking guix shell,,, guix, GNU
+Guix Reference Manual} for a reference of valid options.
+
+The following snippet spawns a minimal shell process with most
+namespaces unshared from the system.  The current working directory is
+visible to the process, but anything else on the file system is
+unavailable.  This extreme isolation can be very useful when you want to
+rule out any sort of interference from environment variables, globally
+installed libraries, or configuration files.
+
+@example
+guix shell --container
+@end example
+
+It is a bleak environment, barren, desolate.  You will find that not
+even the GNU coreutils are available here, so to explore this deserted
+wasteland you need to use built-in shell commands.  Even the usually
+gigantic @file{/gnu/store} directory is reduced to a faint shadow of
+itself.
+
+@example sh
+$ echo /gnu/store/*
+/gnu/store/@dots{}-gcc-10.3.0-lib
+/gnu/store/@dots{}-glibc-2.33
+/gnu/store/@dots{}-bash-static-5.1.8
+/gnu/store/@dots{}-ncurses-6.2.20210619
+/gnu/store/@dots{}-bash-5.1.8
+/gnu/store/@dots{}-profile
+/gnu/store/@dots{}-readline-8.1.1
+@end example
+
+@cindex exiting a container
+There isn't much you can do in an environment like this other than
+exiting it.  You can use @key{^D} or @command{exit} to terminate this
+limited shell environment.
+
+@cindex exposing directories, container
+@cindex sharing directories, container
+@cindex mapping locations, container
+You can make other directories available inside of the container
+environment; use @option{--expose=DIRECTORY} to bind-mount the given
+directory as a read-only location inside the container, or use
+@option{--share=DIRECTORY} to make the location writable.  With an
+additional mapping argument after the directory name you can control the
+name of the directory inside the container.  In the following example we
+map @file{/etc} on the host system to @file{/the/host/etc} inside a
+container in which the GNU coreutils are installed.
+
+@example sh
+$ guix shell --container --share=/etc=/the/host/etc coreutils
+$ ls /the/host/etc
+@end example
+
+Similarly, you can prevent the current working directory from being
+mapped into the container with the @option{--no-cwd} option.  Another
+good idea is to create a dedicated directory that will serve as the
+container's home directory, and spawn the container shell from that
+directory.
+
+@cindex hide system libraries, container
+@cindex avoid ABI mismatch, container
+On a foreign system a container environment can be used to compile
+software that cannot possibly be linked with system libraries or with
+the system's compiler toolchain.  A common use-case in a research
+context is to install packages from within an R session.  Outside of a
+container environment there is a good chance that the foreign compiler
+toolchain and incompatible system libraries are found first, resulting
+in incompatible binaries that cannot be used by R.  In a container shell
+this problem disappears, as system libraries and executables simply
+aren't available due to the unshared @code{mount} namespace.
+
+Let's take a comprehensive manifest providing a comfortable development
+environment for use with R:
+
+@lisp
+(specifications->manifest
+  (list "r-minimal"
+
+        ;; base packages
+        "bash-minimal"
+        "glibc-locales"
+        "nss-certs"
+
+        ;; Common command line tools lest the container is too empty.
+        "coreutils"
+        "grep"
+        "which"
+        "wget"
+        "sed"
+
+        ;; R markdown tools
+        "pandoc"
+
+        ;; Toolchain and common libraries for "install.packages"
+        "gcc-toolchain@@10"
+        "gfortran-toolchain"
+        "gawk"
+        "tar"
+        "gzip"
+        "unzip"
+        "make"
+        "cmake"
+        "pkg-config"
+        "cairo"
+        "libxt"
+        "openssl"
+        "curl"
+        "zlib"))
+@end lisp
+
+Let's use this to run R inside a container environment.  For convenience
+we share the @code{net} namespace to use the host system's network
+interfaces.  Now we can build R packages from source the traditional way
+without having to worry about ABI mismatch or incompatibilities.
+
+@example sh
+$ guix shell --container --network --manifest=manifest.scm -- R
+
+R version 4.2.1 (2022-06-23) -- "Funny-Looking Kid"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+@dots{}
+> e <- Sys.getenv("GUIX_ENVIRONMENT")
+> Sys.setenv(GIT_SSL_CAINFO=paste0(e, "/etc/ssl/certs/ca-certificates.crt"))
+> Sys.setenv(SSL_CERT_FILE=paste0(e, "/etc/ssl/certs/ca-certificates.crt"))
+> Sys.setenv(SSL_CERT_DIR=paste0(e, "/etc/ssl/certs"))
+> install.packages("Cairo", lib=paste0(getwd()))
+@dots{}
+* installing *source* package 'Cairo' ...
+@dots{}
+* DONE (Cairo)
+
+The downloaded source packages are in
+	'/tmp/RtmpCuwdwM/downloaded_packages'
+> library("Cairo", lib=getwd())
+> # success!
+@end example
+
+Using container shells is fun, but they can become a little cumbersome
+when you want to go beyond just a single interactive process.  Some
+tasks become a lot easier when they sit on the rock solid foundation of
+a proper Guix System and its rich set of system services.  The next
+section shows you how to launch a complete Guix System inside of a
+container.
+
+
+@node Guix System Containers
+@section Guix System Containers
+
+The Guix System provides a wide array of interconnected system services
+that are configured declaratively to form a dependable stateless GNU
+System foundation for whatever tasks you throw at it.  Even when using
+Guix on a foreign distribution you can benefit from the design of Guix
+System by running a system instance as a container.  Using the same
+kernel features of unshared namespaces mentioned in the previous
+section, the resulting Guix System instance is isolated from the host
+system and only shares file system locations that you explicitly
+declare.
+
+A Guix System container differs from the shell process created by
+@command{guix shell --container} in a number of important ways.  While
+in a container shell the containerized process is a Bash shell process,
+a Guix System container runs the Shepherd as PID 1.  In a system
+container all system services (@pxref{Services,,, guix, GNU Guix
+Reference Manual}) are set up just as they would be on a Guix System in
+a virtual machine or on bare metal---this includes daemons managed by
+the GNU@tie{}Shepherd (@pxref{Shepherd Services,,, guix, GNU Guix
+Reference Manual}) as well as other kinds of extensions to the operating
+system (@pxref{Service Composition,,, guix, GNU Guix Reference Manual}).
+
+The perceived increase in complexity of running a Guix System container
+is easily justified when dealing with more complex applications that
+have higher or just more rigid requirements on their execution
+contexts---configuration files, dedicated user accounts, directories for
+caches or log files, etc.  In Guix System the demands of this kind of
+software are satisfied through the deployment of system services.
+
+
+@node A Database Container
+@subsection A Database Container
+
+A good example might be a PostgreSQL database server.  Much of the
+complexity of setting up such a database server is encapsulated in this
+deceptively short service declaration:
+
+@lisp
+(service postgresql-service-type
+         (postgresql-configuration
+          (postgresql postgresql-14)))
+@end lisp
+
+A complete operating system declaration for use with a Guix System
+container would look something like this:
+
+@lisp
+(use-modules (gnu))
+(use-package-modules databases)
+(use-service-modules databases)
+
+(operating-system
+  (host-name "container")
+  (timezone "Europe/Berlin")
+  (file-systems (cons (file-system
+                        (device (file-system-label "does-not-matter"))
+                        (mount-point "/")
+                        (type "ext4"))
+                      %base-file-systems))
+  (bootloader (bootloader-configuration
+               (bootloader grub-bootloader)
+               (targets '("/dev/sdX"))))
+  (services
+   (cons* (service postgresql-service-type
+                   (postgresql-configuration
+                    (postgresql postgresql-14)
+                    (config-file
+                     (postgresql-config-file
+                      (log-destination "stderr")
+                      (hba-file
+                       (plain-file "pg_hba.conf"
+                                   "\
+local	all	all			trust
+host	all	all	10.0.0.1/32 	trust"))
+                      (extra-config
+                       '(("listen_addresses" "*")
+                         ("log_directory"    "/var/log/postgresql")))))))
+          (service postgresql-role-service-type
+                   (postgresql-role-configuration
+                    (roles
+                     (list (postgresql-role
+                            (name "test")
+                            (create-database? #t))))))
+          %base-services)))
+@end lisp
+
+With @code{postgresql-role-service-type} we define a role ``test'' and
+create a matching database, so that we can test right away without any
+further manual setup.  The @code{postgresql-config-file} settings allow
+a client from IP address 10.0.0.1 to connect without requiring
+authentication---a bad idea in production systems, but convenient for
+this example.
+
+Let's build a script that will launch an instance of this Guix System as
+a container.  Write the @code{operating-system} declaration above to a
+file @file{os.scm} and then use @command{guix system container} to build
+the launcher.  (@pxref{Invoking guix system,,, guix, GNU Guix Reference
+Manual}).
+
+@example
+$ guix system container os.scm
+The following derivations will be built:
+  /gnu/store/@dots{}-run-container.drv
+  @dots{}
+building /gnu/store/@dots{}-run-container.drv...
+/gnu/store/@dots{}-run-container
+@end example
+
+Now that we have a launcher script we can run it to spawn the new system
+with a running PostgreSQL service.  Note that due to some as yet
+unresolved limitations we need to run the launcher as the root user, for
+example with @command{sudo}.
+
+@example
+$ sudo /gnu/store/@dots{}-run-container
+system container is running as PID 5983
+@dots{}
+@end example
+
+Background the process with @key{Ctrl-z} followed by @command{bg}.  Note
+the process ID in the output; we will need it to connect to the
+container later.  You know what?  Let's try attaching to the container
+right now.  We will use @command{nsenter}, a tool provided by the
+@code{util-linux} package:
+
+@example
+$ guix shell util-linux
+$ sudo nsenter -a -t 5983
+root@@container /# pgrep -a postgres
+49 /gnu/store/@dots{}-postgresql-14.4/bin/postgres -D /var/lib/postgresql/data --config-file=/gnu/store/@dots{}-postgresql.conf -p 5432
+51 postgres: checkpointer
+52 postgres: background writer
+53 postgres: walwriter
+54 postgres: autovacuum launcher
+55 postgres: stats collector
+56 postgres: logical replication launcher
+root@@container /# exit
+@end example
+
+The PostgreSQL service is running in the container!
+
+
+@node Container Networking
+@subsection Container Networking
+@cindex container networking
+
+What good is a Guix System running a PostgreSQL database service as a
+container when we can only talk to it with processes originating in the
+container?  It would be much better if we could talk to the database
+over the network.
+
+The easiest way to do this is to create a pair of connected virtual
+Ethernet devices (known as @code{veth}).  We move one of the devices
+(@code{ceth-test}) into the @code{net} namespace of the container and
+leave the other end (@code{veth-test}) of the connection on the host
+system.
+
+@example
+pid=5983
+ns="guix-test"
+host="veth-test"
+client="ceth-test"
+
+# Attach the new net namespace "guix-test" to the container PID.
+sudo ip netns attach $ns $pid
+
+# Create the pair of devices
+sudo ip link add $host type veth peer name $client
+
+# Move the client device into the container's net namespace
+sudo ip link set $client netns $ns
+@end example
+
+Then we configure the host side:
+
+@example
+sudo ip link set $host up
+sudo ip addr add 10.0.0.1/24 dev $host
+@end example
+
+@dots{}and then we configure the client side:
+
+@example
+sudo ip netns exec $ns  ip link set lo up
+sudo ip netns exec $ns  ip link set $client up
+sudo ip netns exec $ns  ip addr add 10.0.0.2/24 dev $client
+@end example
+
+At this point the host can reach the container at IP address 10.0.0.2,
+and the container can reach the host at IP 10.0.0.1.  This is all we
+need to talk to the database server inside the container from the host
+system on the outside.
+
+@example
+$ psql -h 10.0.0.2 -U test
+psql (14.4)
+Type "help" for help.
+
+test=> CREATE TABLE hello (who TEXT NOT NULL);
+CREATE TABLE
+test=> INSERT INTO hello (who) VALUES ('world');
+INSERT 0 1
+test=> SELECT * FROM hello;
+  who
+-------
+ world
+(1 row)
+@end example
+
+Now that we're done with this little demonstration let's clean up:
+
+@example
+sudo kill $pid
+sudo ip netns del $ns
+sudo ip link del $host
+@end example
+
 
 @c *********************************************************************
 @node Advanced package management
