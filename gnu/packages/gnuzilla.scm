@@ -1420,37 +1420,30 @@ Thunderbird.  It supports email, news feeds, chat, calendar and contacts.")
   (package
     (inherit icedove)
     (name "icedove-wayland")
-    (native-inputs '())
-    (inputs
-     `(("bash" ,bash-minimal)
-       ("icedove" ,icedove)))
     (build-system trivial-build-system)
     (arguments
-      '(#:modules ((guix build utils))
-        #:builder
-        (begin
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
           (use-modules (guix build utils))
-          (let* ((bash    (assoc-ref %build-inputs "bash"))
-                 (icedove (assoc-ref %build-inputs "icedove"))
-                 (out     (assoc-ref %outputs "out"))
-                 (exe     (string-append out "/bin/icedove")))
+          (let* ((exe (string-append #$output "/bin/icedove")))
             (mkdir-p (dirname exe))
-
             (call-with-output-file exe
               (lambda (port)
                 (format port "#!~a
  MOZ_ENABLE_WAYLAND=1 exec ~a $@"
-                        (string-append bash "/bin/bash")
-                        (string-append icedove "/bin/icedove"))))
+                        #$(file-append bash-minimal "/bin/bash")
+                        #$(file-append icedove "/bin/icedove"))))
             (chmod exe #o555)
-
             ;; Provide the manual and .desktop file.
-            (copy-recursively (string-append icedove "/share")
-                              (string-append out "/share"))
-            (substitute* (string-append
-                          out "/share/applications/icedove.desktop")
-              ((icedove) out))
-            #t))))))
+            (copy-recursively (string-append #$icedove "/share")
+                              (string-append #$output "/share"))
+            (substitute* (string-append #$output
+                                        "/share/applications/icedove.desktop")
+              ((#$icedove) #$output))))))
+    (native-inputs '())
+    (inputs '())))
 
 (define-public firefox-decrypt
   (package
