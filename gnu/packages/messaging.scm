@@ -36,6 +36,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Giovanni Biscuolo <g@xelera.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2126,7 +2127,7 @@ is also scriptable and extensible via Guile.")
 (define-public libstrophe
   (package
     (name "libstrophe")
-    (version "0.12.0")
+    (version "0.12.2")
     (source
      (origin
        (method git-fetch)
@@ -2135,7 +2136,7 @@ is also scriptable and extensible via Guile.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1apply301lxyjax2677bd5mc0a3233nm5qb7fiqpawq2n7vh17v0"))))
+        (base32 "1ispq6sf7pq02irrqfga4i1xhrg1pg0f86qvvnix15clm8i1agld"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags '(list "--disable-static")
@@ -2167,7 +2168,7 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.12.1")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
@@ -2176,7 +2177,7 @@ are both supported).")
                        version ".tar.gz"))
        (sha256
         (base32
-         "0vihmlzxr6n3y6v0vdzzxh5p1i09p0hx6sd1b2pnpcgkgcg4hi73"))))
+         "14n45zwc6fxjargqhwqan8fyb7x0ql0hmw56rbjkjfkhpba2qmks"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -2311,7 +2312,7 @@ notifications, and Python scripting support.")
 (define-public libqmatrixclient
   (package
     (name "libqmatrixclient")
-    (version "0.5.3.2")
+    (version "0.6.11")
     (source
      (origin
        (method git-fetch)
@@ -2320,7 +2321,7 @@ notifications, and Python scripting support.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gkwr3yw6k2m0j8cc085b5p2q788rf5nhp1p5hc5d55pc7mci2qs"))))
+        (base32 "072d3irpdd0p4w77s5pp0baqf74hk7vqggw7ic7i42lzjdwp3yql"))))
     (build-system cmake-build-system)
     (inputs
      (list qtbase-5 qtmultimedia-5))
@@ -2482,7 +2483,7 @@ notification, emojis, E2E encryption, and voip calls.")
 (define-public quaternion
   (package
     (name "quaternion")
-    (version "0.0.9.4f")
+    (version "0.0.95.1")
     (outputs '("out" "debug"))
     (source
      (origin
@@ -2492,12 +2493,13 @@ notification, emojis, E2E encryption, and voip calls.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q9ddz4rs02a0w3lwrsjnh59khv38cq9f0kv09vnwvazvayn87ck"))))
+        (base32 "10mzcr4rpyq5bl3h8wzxxlk8rdz7slhiq863xs77bmsq2pzf6lp8"))))
     (build-system qt-build-system)
     (inputs
      (list libqmatrixclient
            qtbase-5
            qtdeclarative-5
+           qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols-5
            qtquickcontrols2-5
@@ -2684,6 +2686,20 @@ from almost any programming language with a C-FFI and features first-class
 support for high performance Telegram Bot creation.")
     (home-page "https://core.telegram.org/tdlib")
     (license license:boost1.0)))
+
+(define-public tdlib-1.8.0
+  (package
+    (inherit tdlib)
+    (name "tdlib-1.8.0")
+    (version "1.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tdlib/td")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "19psqpyh9a2kzfdhgqkirpif4x8pzy89phvi59dq155y30a3661q"))))))
 
 (define-public purple-mm-sms
   (package
@@ -3382,7 +3398,7 @@ Weechat communicate over the Matrix protocol.")
 (define-public weechat-wee-slack
   (package
     (name "weechat-wee-slack")
-    (version "2.8.0")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -3392,7 +3408,7 @@ Weechat communicate over the Matrix protocol.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0xfklr0gsc9jgxfyrrb2j756lclz9g8imcb0pk0xgyj8mhsw23zk"))))
+         "01h9n6a39sgpczvjywvxb5z5vz3jb3h2xx2vspjkkz06gzwniijq"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

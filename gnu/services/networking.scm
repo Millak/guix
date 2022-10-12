@@ -66,6 +66,9 @@
   #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (guix deprecation)
+  #:use-module (guix diagnostics)
+  #:autoload   (guix ui) (display-hint)
+  #:use-module (guix i18n)
   #:use-module (rnrs enums)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -77,6 +80,10 @@
                static-networking-service-type)
   #:export (%facebook-host-aliases
             dhcp-client-service-type
+            dhcp-client-configuration
+            dhcp-client-configuration?
+            dhcp-client-configuration-package
+            dhcp-client-configuration-interfaces
 
             dhcpd-service-type
             dhcpd-configuration
@@ -259,52 +266,78 @@ fe80::1%lo0 connect.facebook.net
 fe80::1%lo0 www.connect.facebook.net
 fe80::1%lo0 apps.facebook.com\n")
 
+
+(define-record-type* <dhcp-client-configuration>
+  dhcp-client-configuration make-dhcp-client-configuration
+  dhcp-client-configuration?
+  (package      dhcp-client-configuration-package ;file-like
+                (default isc-dhcp))
+  (interfaces   dhcp-client-configuration-interfaces
+                (default 'all)))                  ;'all | list of strings
+
+(define dhcp-client-shepherd-service
+  (match-lambda
+    (($ <dhcp-client-configuration> package interfaces)
+     (let ((pid-file "/var/run/dhclient.pid"))
+       (list (shepherd-service
+              (documentation "Set up networking via DHCP.")
+              (requirement '(user-processes udev))
+
+              ;; XXX: Running with '-nw' ("no wait") avoids blocking for a minute when
+              ;; networking is unavailable, but also means that the interface is not up
+              ;; yet when 'start' completes.  To wait for the interface to be ready, one
+              ;; should instead monitor udev events.
+              (provision '(networking))
+
+              (start #~(lambda _
+                         (define dhclient
+                           (string-append #$package "/sbin/dhclient"))
+
+                         ;; When invoked without any arguments, 'dhclient' discovers all
+                         ;; non-loopback interfaces *that are up*.  However, the relevant
+                         ;; interfaces are typically down at this point.  Thus we perform
+                         ;; our own interface discovery here.
+                         (define valid?
+                           (lambda (interface)
+                             (and (arp-network-interface? interface)
+                                  (not (loopback-network-interface? interface))
+                                  ;; XXX: Make sure the interfaces are up so that
+                                  ;; 'dhclient' can actually send/receive over them.
+                                  ;; Ignore those that cannot be activated.
+                                  (false-if-exception
+                                   (set-network-interface-up interface)))))
+                         (define ifaces
+                           (filter valid?
+                                   #$(match interfaces
+                                       ('all
+                                        #~(all-network-interface-names))
+                                       (_
+                                        #~'#$interfaces))))
+
+                         (false-if-exception (delete-file #$pid-file))
+                         (let ((pid (fork+exec-command
+                                     (cons* dhclient "-nw"
+                                            "-pf" #$pid-file ifaces))))
+                           (and (zero? (cdr (waitpid pid)))
+                                (read-pid-file #$pid-file)))))
+              (stop #~(make-kill-destructor))))))
+    (package
+     (warning (G_ "'dhcp-client' service now expects a \
+'dhcp-client-configuration' record~%"))
+     (display-hint (G_ "The value associated with instances of
+@code{dhcp-client-service-type} must now be a @code{dhcp-client-configuration}
+record instead of a package.  Please adjust your configuration accordingly."))
+     (dhcp-client-shepherd-service
+      (dhcp-client-configuration
+       (package package))))))
+
 (define dhcp-client-service-type
-  (shepherd-service-type
-   'dhcp-client
-   (lambda (dhcp)
-     (define dhclient
-       (file-append dhcp "/sbin/dhclient"))
-
-     (define pid-file
-       "/var/run/dhclient.pid")
-
-     (shepherd-service
-      (documentation "Set up networking via DHCP.")
-      (requirement '(user-processes udev))
-
-      ;; XXX: Running with '-nw' ("no wait") avoids blocking for a minute when
-      ;; networking is unavailable, but also means that the interface is not up
-      ;; yet when 'start' completes.  To wait for the interface to be ready, one
-      ;; should instead monitor udev events.
-      (provision '(networking))
-
-      (start #~(lambda _
-                 ;; When invoked without any arguments, 'dhclient' discovers all
-                 ;; non-loopback interfaces *that are up*.  However, the relevant
-                 ;; interfaces are typically down at this point.  Thus we perform
-                 ;; our own interface discovery here.
-                 (define valid?
-                   (lambda (interface)
-                     (and (arp-network-interface? interface)
-                          (not (loopback-network-interface? interface))
-                          ;; XXX: Make sure the interfaces are up so that
-                          ;; 'dhclient' can actually send/receive over them.
-                          ;; Ignore those that cannot be activated.
-                          (false-if-exception
-                           (set-network-interface-up interface)))))
-                 (define ifaces
-                   (filter valid? (all-network-interface-names)))
-
-                 (false-if-exception (delete-file #$pid-file))
-                 (let ((pid (fork+exec-command
-                             (cons* #$dhclient "-nw"
-                                    "-pf" #$pid-file ifaces))))
-                   (and (zero? (cdr (waitpid pid)))
-                        (read-pid-file #$pid-file)))))
-      (stop #~(make-kill-destructor))))
-   isc-dhcp
-   (description "Run @command{dhcp}, a Dynamic Host Configuration
+  (service-type (name 'dhcp-client)
+                (extensions
+                 (list (service-extension shepherd-root-service-type
+                                          dhcp-client-shepherd-service)))
+                (default-value (dhcp-client-configuration))
+                (description "Run @command{dhcp}, a Dynamic Host Configuration
 Protocol (DHCP) client, on all the non-loopback network interfaces.")))
 
 (define-record-type* <dhcpd-configuration>

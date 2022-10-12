@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2022 Milran <milranmike@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -923,3 +924,31 @@ noun phrases, verb phrases, etc.).")
 analysis (pitch, formant, intensity, ...), speech synthesis, labelling, segmenting
 and manipulation.")
     (license license:gpl2+)))
+
+(define-public libskk
+  (package
+    (name "libskk")
+    (version "1.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ueno/libskk")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0y279pcgs3jrsi9vzx086xhz9jbz23dqqijp4agygc9ackp9sxy5"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf
+                         automake
+                         gettext-minimal
+                         gobject-introspection
+                         libtool
+                         pkg-config
+                         vala))
+    (inputs (list libgee json-glib libxkbcommon))
+    (home-page "https://github.com/ueno/libskk")
+    (synopsis "Dealing with Japanese kana-to-kanji conversion")
+    (description
+     "libskk is a library to deal with Japanese kana-to-kanji conversion method.")
+    (license license:gpl3+)))

@@ -366,7 +366,12 @@ Linux kernel.")
                 "07857vdkak306d9s5g6fhmjyxk7vijzjhkmqb15s7ihfxx9lx8xb"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f))                    ; no check target
+     '(#:tests? #f                                ;no check target
+
+       ;; XXX: Building with '-fsanitize=undefined' leads to embedded C++ STL
+       ;; header file names in libgme.so, meaning that libgme retains a
+       ;; reference to GCC.  Disable UBSAN to avoid that.
+       #:configure-flags '("-DENABLE_UBSAN=OFF")))
     (home-page "https://bitbucket.org/mpyne/game-music-emu")
     (synopsis "Video game music file playback library")
     (description
@@ -1400,7 +1405,7 @@ object library.")
 (define-public csound
   (package
     (name "csound")
-    (version "6.14.0")
+    (version "6.16.2")
     (source
      (origin
        (method git-fetch)
@@ -1409,7 +1414,7 @@ object library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sr9knfhbm2m0wpkjq2l5n471vnl51wy4p6j4m95zqybimzb4s2j"))))
+        (base32 "1lgasyk8j4cl9178vci1dph63nks3cgwhf8y1d04z9dc8gg15dyn"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison flex gettext-minimal zlib))

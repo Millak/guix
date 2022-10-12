@@ -786,12 +786,18 @@ old-fashioned output methods with powerful ascii-art renderer.")
        (sha256
         (base32 "0ns9xh582c8kajw4v2x5ap5jfiba3gxywqc2klc0v6fc3id1gqii"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-postinstall-script
+            (lambda _
+              (setenv "DESTDIR" "/"))))))
     (native-inputs
      (list
-      desktop-file-utils           ; for update-desktop-database
       intltool
       `(,glib "bin")               ; for glib-compile-resources
-      `(,gtk "bin")                ; for gtk-update-icon-cache
       pkg-config
       python-wrapper))             ; for generate-authors.py
     (inputs
@@ -1774,6 +1780,8 @@ audio/video codec library.")
              (sha256
               (base32
                "14xadxm1yaamp216nq09xwasxg5g133v86dbb33mdg5di1zrlhdg"))))
+    (inputs (modify-inputs (package-inputs ffmpeg-5)
+              (replace "sdl2" sdl2-2.0)))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-5)
        ((#:configure-flags flags ''())
@@ -3387,7 +3395,7 @@ be used for realtime video capture via Linux-specific APIs.")
       qtbase-5
       qtsvg-5
       qtx11extras
-      qtwayland
+      qtwayland-5
       speexdsp
       v4l-utils
       wayland
@@ -5287,6 +5295,12 @@ result in several formats:
              (substitute* "Cargo.toml"
                ;; Allow using more recent versions of
                (("~3.1.2") "~3"))))
+         (add-after 'configure 'force-rust-edition-2018
+           (lambda* (#:key vendor-dir #:allow-other-keys)
+             ;; Force all the dependencies to not be higher than edition 2018.
+             (with-fluids ((%default-port-encoding #f))
+               (substitute* (find-files vendor-dir "Cargo.toml")
+                 (("edition = \\\"2021\\\"") "edition = \"2018\"")))))
          (replace 'build
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))

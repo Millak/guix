@@ -265,7 +265,8 @@ VERSION is the target version of the boot-parameters record."
   (packages operating-system-packages             ; list of (PACKAGE OUTPUT...)
             (default %base-packages))             ; or just PACKAGE
 
-  (timezone operating-system-timezone)            ; string
+  (timezone operating-system-timezone
+            (default "Etc/UTC"))                  ; string
   (locale   operating-system-locale               ; string
             (default "en_US.utf8"))
   (locale-definitions operating-system-locale-definitions ; list of <locale-definition>

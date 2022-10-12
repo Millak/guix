@@ -148,12 +148,26 @@ joystick, and graphics hardware.")
                eudev                    ;for discovering input devices
                fcitx                    ;helps with CJK input
                glib
-               ibus
+               ibus-minimal
                libxkbcommon
                libxcursor               ;enables X11 cursor support
                wayland
                wayland-protocols)))
     (license license:bsd-3)))
+
+(define-public sdl2-2.0
+  (package
+    (inherit sdl2)
+    (name "sdl2")
+    (version "2.0.14")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "https://libsdl.org/release/SDL2-"
+                              version ".tar.gz"))
+              (sha256
+               (base32
+                "1g1jahknv5r4yhh1xq5sf0md20ybdw1zh1i15lry26sq39bmn8fq"))))))
 
 (define-public libmikmod
   (package

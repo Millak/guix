@@ -468,7 +468,7 @@ depend: $(STDLIB_MLIS) $(STDLIB_DEPS)"))
 (define-public ocamlbuild
   (package
     (name "ocamlbuild")
-    (version "0.14.1")
+    (version "0.14.2")
     (source
      (origin
        (method git-fetch)
@@ -477,7 +477,7 @@ depend: $(STDLIB_MLIS) $(STDLIB_DEPS)"))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00ma0g6ajll9awp2bp303bawac8ync4k9w2a6vix0k4nw3003gb4"))))
+        (base32 "16q8s22msyfq66i1sbz99wj04a9x9ad95x458ixxacxsv0qqh2j0"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:make-flags
@@ -648,11 +648,14 @@ underlying solvers like Cplex, Gurobi, Lpsolver, Glpk, CbC, SCIP or WBO.")
     (name "ocaml-dose3")
     (version "5.0.1")
     (source (origin
-              (method url-fetch)
-              (uri "https://gforge.inria.fr/frs/download.php/file/36063/dose3-5.0.1.tar.gz")
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/irill/dose3")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "00yvyfm4j423zqndvgc1ycnmiffaa2l9ab40cyg23pf51qmzk2jm"))
+                "0dxkw37gj8z45kd0dnrlfgpj8yycq0dphs8kjm9kvq9xc8rikxp3"))
               (patches
                (search-patches
                 "ocaml-dose3-add-unix-dependency.patch"
@@ -1081,7 +1084,7 @@ the OCaml core distribution.")
 (define-public emacs-tuareg
   (package
     (name "emacs-tuareg")
-    (version "3.0.0")
+    (version "3.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1090,7 +1093,7 @@ the OCaml core distribution.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "115vm0hq4xkwfd3w0j8xqhkdgcirlxpnwzwxv02c27583hj056is"))))
+        (base32 "1p3xpk78i8ywgdmc59w05wjjy9dg6gm5gicm08szmrlnx08v2ihm"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2503,7 +2506,7 @@ simple (yet expressive) query language to select the tests to run.")
 (define-public ocaml-ppx-tools
   (package
     (name "ocaml-ppx-tools")
-    (version "6.5")
+    (version "6.6")
     (source
      (origin
        (method git-fetch)
@@ -2513,7 +2516,7 @@ simple (yet expressive) query language to select the tests to run.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fwibah2hgllrnbdrmfqil5gr5raf6pb5h2zx6zs1h3d4ykvy8k8"))))
+         "1ms2i063cwsm8wcw7jixz3qx2f2prrmf0k44gbksvsgqvm1rl6s2"))))
     (build-system dune-build-system)
     (arguments
      ;; No tests
@@ -4489,6 +4492,7 @@ sensitive completion, colors, and more.")
     (build-system dune-build-system)
     (arguments
      `(#:test-target "tests"))
+    (properties `((upstream-name . "ANSITerminal")))
     (home-page "https://github.com/Chris00/ANSITerminal")
     (synopsis
      "Basic control of ANSI compliant terminals and the windows shell")
@@ -5046,39 +5050,6 @@ yojson package.  The program @code{atdgen} can be used to derive OCaml-JSON
 serializers and deserializers from type definitions.")
     (license license:bsd-3)))
  
-(define-public ocaml-craml
-  (package
-    (name "ocaml-craml")
-    (version "1.0.0")
-    (home-page "https://github.com/realworldocaml/craml")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url (string-append home-page ".git"))
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "197xjp4vmzdymf2ndinw271ihpf45h04mx8gqj8ypspxdr5fj1a5"))))
-    (build-system dune-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'upgrade
-           (lambda _
-             (invoke "dune" "upgrade")
-             #t)))))
-    (inputs
-     (list ocaml-fmt ocaml-astring ocaml-logs ocaml-cmdliner))
-    (synopsis
-     "CRAM-testing framework for testing command line applications")
-    (description "CRAM is a is functional testing framework for command line
-applications.  @code{craml} is freely inspired by the
-Mercurial's @code{https://www.selenic.com/blog/?p=663, unified test
-format}.  @code{craml} is released as a single binary (called @code{craml}).")
-    (license license:isc)))
-
 (define-public ocaml-merlin-lib
   (package
     (name "ocaml-merlin-lib")
@@ -7860,7 +7831,7 @@ convenience functions for vectors and matrices.")
 (define-public ocaml-cairo2
   (package
     (name "ocaml-cairo2")
-    (version "0.6.3")
+    (version "0.6.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7869,7 +7840,7 @@ convenience functions for vectors and matrices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m0wh0s0sqjfa3mgq99lwk0dsg0bwxipaz93hq18m0lz5fqxib1m"))))
+                "06ag9b88ihhr7yd3s9l0ac7ysig02fmlmsswybbsvz71ni0mb105"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "tests"))
@@ -8180,7 +8151,7 @@ selection of character properties of the Unicode character database.")
 (define-public ocaml-uuseg
   (package
     (name "ocaml-uuseg")
-    (version "14.0.0")
+    (version "15.0.0")
     (source
      (origin
        (method url-fetch)
@@ -8188,7 +8159,7 @@ selection of character properties of the Unicode character database.")
                            "uuseg-" version ".tbz"))
        (sha256
         (base32
-         "1g9zyzjkhqxgbb9mh3cgaawscwdazv6y8kdqvmy6yhnimmfqv25p"))))
+         "1qz130wlmnvb6j7kpvgjlqmdm2jqid4wb1dmrsls4hdm4rp7gk5b"))))
     (build-system ocaml-build-system)
     (arguments
      '(#:build-flags '("build" "--tests" "true")

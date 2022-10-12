@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
+;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -35,7 +37,10 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
@@ -48,6 +53,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
@@ -218,14 +224,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.26")
+    (version "2.29")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "061w86jffyi49m4d9n974a3pd1svbw3azmh0qx8h2v7h0178791l"))))
+        (base32 "0szx4pivkaja8v399m6v7ycp1xprm4cz7n5z929g4j191hg81f8q"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -252,6 +258,7 @@ cards.")
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-curl-sys" ,rust-curl-sys-0.4)
         ("rust-cxx" ,rust-cxx-1)
+        ("rust-cxx-build" ,rust-cxx-build-1)
         ("rust-fastrand" ,rust-fastrand-1)
         ("rust-gettext-rs" ,rust-gettext-rs-0.7)
         ("rust-lexopt" ,rust-lexopt-0.2)
@@ -265,8 +272,7 @@ cards.")
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
-       (("rust-cxx-build" ,rust-cxx-build-1)
-        ("rust-tempfile" ,rust-tempfile-3)
+       (("rust-tempfile" ,rust-tempfile-3)
         ("rust-proptest" ,rust-proptest-1)
         ("rust-section-testing" ,rust-section-testing-0.0))
        #:phases
@@ -491,67 +497,93 @@ a simple interface that makes it easy to organize and browse feeds.")
     (license (list license:expat
                    license:gpl3+))))    ; tuir/packages/praw
 
+(define-public syndication-domination
+  (let ((revision "1")
+        (commit "f64caabd6f46be14fdb92085971a7f2d6fa5e61e"))
+    (package
+      (name "syndication-domination")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/gabmus/syndication-domination")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1i0llzzm3lc2kw7rjhb46c7wlknsb6r9bdrf61chi2pk6hpjyscv"))))
+      (build-system meson-build-system)
+      (arguments
+       (list #:meson meson-0.63))
+      (inputs (list fmt tidy-html pybind11 python pugixml))
+      (native-inputs (list cmake pkg-config)) ; need cmake to find pybind11
+      (home-page "https://gitlab.com/gabmus/syndication-domination")
+      (synopsis "RSS/Atom feed parser")
+      (description "This package provides an experimental RSS/Atom feed
+parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
+      (license license:agpl3))))
+
 (define-public gfeeds
   (package
     (name "gfeeds")
-    (version "0.16.2")
+    (version "1.0.3")
     (source (origin
-              (method url-fetch)
-              (uri
-               (string-append
-                "https://gitlab.gnome.org/World/gfeeds/-/archive/" version
-                "/gfeeds-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/World/gfeeds")
+                    (commit version)))
               (sha256
                (base32
-                "05gwwzqfz29m477imd5vh84jfla1wnklwpc2sdxnqli72wg08fli"))))
+                "1lkvhff7pl1y4brqsix6sar5yl8flyhfp3w96fx0klhk3586bvhg"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-mpv-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "gfeeds/confManager.py"
-               (("mpv") (search-input-file inputs "/bin/mpv")))
-             #t))
-         (add-after 'unpack 'patch-webkit2-version
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "bin/gfeeds.in"
-               (("gi\\.require_version\\('WebKit2', '4\\.0'\\)")
-                "gi.require_version('WebKit2', '4.1')"))))
-         (add-after 'install 'wrap-gfeeds
-           (lambda* (#:key outputs #:allow-other-keys)
-             (wrap-program (string-append
-                            (assoc-ref outputs "out") "/bin/gfeeds")
-               `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-               `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
-               `("XDG_DATA_DIRS" ":" prefix (,(getenv "XDG_DATA_DIRS"))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-mpv-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "gfeeds/confManager.py"
+                (("mpv") (search-input-file inputs "/bin/mpv")))))
+          (add-after 'unpack 'skip-icon-cache
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") "true"))))
+          (add-after 'install 'wrap-gfeeds
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (string-append
+                             (assoc-ref outputs "out") "/bin/gfeeds")
+                `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+                `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
+                `("XDG_DATA_DIRS" ":" prefix (,(getenv "XDG_DATA_DIRS")))))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin")
+           blueprint-compiler
+           gobject-introspection
+           pkg-config))
     (inputs
-     (list glib
+     (list bash-minimal
+           glib
            gsettings-desktop-schemas
-           gtk+
+           gtk
            hicolor-icon-theme
-           libhandy
+           libadwaita
            mpv
            python
            python-beautifulsoup4
            python-dateutil
            python-feedparser
            python-html5lib
+           python-humanize
            python-listparser
            python-lxml
+           python-magic
            python-pillow
            python-pygments
+           python-pygobject
            python-pytz
-           python-readability
+           python-readability-lxml
            python-requests
-           webkitgtk
-           python-pygobject))
+           syndication-domination
+           webkitgtk-next))
     (home-page "https://gfeeds.gabmus.org/")
     (synopsis "Easy-to-use GTK+ RSS/Atom feed reader")
     (description "Feeds is an RSS/Atom feed reader made with GTK+

@@ -77,7 +77,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.0594")
+    (version "9.0.0719")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -86,7 +86,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0rb1385pwz75z342b4915gp8212xipp38z9qlaxdqdy3x5m16lcp"))))
+               "1fmy2yf83w9429dp3hyx2l24mffjqmaxqcabdyyjcvmgx7zp3bii"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -99,6 +99,7 @@
                             "src/testdir/test_filetype.vim"
                             "src/testdir/test_normal.vim"
                             "src/testdir/test_popupwin.vim"
+                            "src/testdir/test_prompt_buffer.vim"
                             "src/testdir/test_shell.vim"
                             "src/testdir/test_suspend.vim"
                             "src/testdir/test_terminal.vim"
@@ -125,6 +126,9 @@
              ;; actions.  The path of the bash binary is shown, which results in
              ;; a difference being detected.  Patching the expected result is
              ;; non-trivial due to the special format used, so skip the test.
+             (substitute* "src/testdir/test_messages.vim"
+               ((".*Test_echo_verbose_system.*" line)
+                (string-append line "return\n")))
              (substitute* "src/testdir/test_terminal.vim"
                ((".*Test_open_term_from_cmd.*" line)
                 (string-append line "return\n"))
@@ -685,7 +689,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.7.2")
+    (version "0.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -694,7 +698,7 @@ are detected, the user is notified.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jn4i4ral79ys06i50bimylm515sfh41z503gj50a74h1ylg0z4w"))))
+                "0hkd49wkxfi6k1xa92hdd4b9z356r32hbpr78z1cigcln1wr0z7j"))))
     (build-system cmake-build-system)
     (arguments
      (list #:modules

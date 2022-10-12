@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -106,24 +107,26 @@ multiplication routines such as Toom–Cook and the FFT.")
 
 (define-public gf2x
   (package
-   (name "gf2x")
-   (version "1.2")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://gforge.inria.fr/frs/download.php/file/36934/gf2x-"
-                  version ".tar.gz"))
-            (sha256
-             (base32
-              "0d6vh1mxskvv3bxl6byp7gxxw3zzpkldrxnyajhnl05m0gx7yhk1"))))
-   (build-system gnu-build-system)
-   (synopsis "Arithmetic of polynomials over binary finite fields")
-   (description
-    "The gf2x library provides arithmetic of polynomials over finite fields
+    (name "gf2x")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.inria.fr/gf2x/gf2x")
+                    (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04g5jg0i4vz46b4w2dvbmahwzi3k6b8g515mfw7im1inc78s14id"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool))
+    (synopsis "Arithmetic of polynomials over binary finite fields")
+    (description
+     "The gf2x library provides arithmetic of polynomials over finite fields
 of characteristic 2.  It implements the multiplication, squaring and
 greatest common divisor operations.")
-   (license license:gpl3+)
-   (home-page "https://gforge.inria.fr/projects/gf2x/")))
+    (home-page "https://gitlab.inria.fr/gf2x/gf2x")
+    (license license:gpl3+)))
 
 (define-public cm
   (package
@@ -336,7 +339,12 @@ precision.")
                            "~parisse/debian/dists/stable/main/source/"
                            "giac_" version ".tar.gz"))
        (sha256
-        (base32 "1zh7bf0ag4vbyyj5n8lbvy2ivp0kshms40ra5lq1ff035rpx230j"))))
+        (base32 "1zh7bf0ag4vbyyj5n8lbvy2ivp0kshms40ra5lq1ff035rpx230j"))
+       (patches
+        ;; Patch borrowed from Sage math team.  Giac 1.9.0-21 does not build
+        ;; since Pari-GP 2.15 upgrade.  Reported upstream here:
+        ;; <https://xcas.univ-grenoble-alpes.fr/forum/viewtopic.php?f=3&t=2800>.
+        (search-patches "giac-pari-gp-anyarg.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -352,9 +360,10 @@ precision.")
                                  (find-files "doc" "^Makefile"))
                 (("/bin/cp") (which "cp")))))
           (add-after 'unpack 'disable-failing-test
-            ;; FIXME: Test failing.  Not sure why.
+            ;; FIXME: Tests failing.  Not sure why.
             (lambda _
               (substitute* "check/Makefile.in"
+                (("chk_fhan4") "")
                 (("chk_fhan11") ""))))
           (add-after 'install 'fix-doc
             (lambda _
@@ -629,35 +638,42 @@ geometry and singularity theory.")
 
 (define-public gmp-ecm
   (package
-   (name "gmp-ecm")
-   (version "7.0.4")
-   (source (origin
-             (method url-fetch)
-             (uri
-               (let ((hash "00c4c691a1ef8605b65bdf794a71539d"))
-                    (string-append "https://gitlab.inria.fr/zimmerma/ecm/"
-                                   "uploads/" hash "/ecm-" version
-                                   ".tar.gz")))
-             (sha256 (base32
-                      "0hxs24c2m3mh0nq1zz63z3sb7dhy1rilg2s1igwwcb26x3pb7xqc"))))
-   (build-system gnu-build-system)
-   (inputs
-    (list gmp))
-   (arguments
-    `(#:configure-flags '("--enable-shared"
-                          ;; Disable specific assembly routines, which depend
-                          ;; on the subarchitecture of the build machine,
-                          ;; and use gmp instead.
-                          "--disable-asm-redc")))
-   (synopsis "Integer factorization library using the elliptic curve method")
-   (description
-    "GMP-ECM factors integers using the elliptic curve method (ECM) as well
+    (name "gmp-ecm")
+    (version "7.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.inria.fr/zimmerma/ecm")
+                    (commit (string-append "git-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "013sfsd5kyh7phhf4namcdndpcp2jnibzxf10f4g89qabr8av63m"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list gmp))
+    (arguments
+     (list
+      #:configure-flags #~(list "--enable-shared"
+                                ;; Disable specific assembly routines, which
+                                ;; depend on the subarchitecture of the build
+                                ;; machine, and use gmp instead.
+                                "--disable-asm-redc")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-paths
+                     (lambda _
+                       (substitute* "test.ecm"
+                         (("/bin/rm") (which "rm"))))))))
+    (native-inputs (list autoconf automake libtool))
+    (synopsis "Integer factorization library using the elliptic curve method")
+    (description
+     "GMP-ECM factors integers using the elliptic curve method (ECM) as well
 as the P-1 and P+1 algorithms.  It provides a library and a stand-alone
 binary.")
-   ;; Most files are under lgpl3+, but some are under gpl3+ or gpl2+,
-   ;; so the combined work is under gpl3+.
-   (license license:gpl3+)
-   (home-page "http://ecm.gforge.inria.fr/")))
+    (home-page "https://gitlab.inria.fr/zimmerma/ecm")
+    ;; Most files are under lgpl3+, but some are under gpl3+ or gpl2+, so the
+    ;; combined work is under gpl3+.
+    (license license:gpl3+)))
 
 (define-public bc
   (package
@@ -1393,42 +1409,45 @@ objects.")
 
 (define-public gappa
   (package
-   (name "gappa")
-   (version "1.4.0")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "https://gappa.gitlabpages.inria.fr/releases/"
-                                "gappa-" version ".tar.gz"))
-            (sha256
-             (base32
-              "12x42z901pr05ldmparqdi8sq9s7fxbavhzk2dbq3l6hy247dwbb"))))
-   (build-system gnu-build-system)
-   (inputs
-    (list boost gmp mpfr))
-   (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'patch-remake-shell
-          (lambda _
-            (substitute* "remake.cpp"
-             (("/bin/sh") (which "sh")))
-            #t))
-        (replace 'build
-          (lambda _ (invoke "./remake" "-s" "-d")))
-        (replace 'install
-          (lambda _ (invoke "./remake" "-s" "-d" "install")))
-        (replace 'check
-          (lambda _ (invoke "./remake" "check"))))))
-   (home-page "http://gappa.gforge.inria.fr/")
-   (synopsis "Proof generator for arithmetic properties")
-   (description "Gappa is a tool intended to help verifying and formally
+    (name "gappa")
+    (version "1.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.inria.fr/gappa/gappa")
+                    (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vfggzilc0gicrhqypmlx30ccrdkmyg22zzn46988c28xi9rcicj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-remake-shell
+                 (lambda _
+                   (substitute* "remake.cpp"
+                     (("/bin/sh") (which "sh")))))
+               (replace 'build
+                 (lambda _ (invoke "./remake" "-s" "-d")))
+               (replace 'install
+                 (lambda _ (invoke "./remake" "-s" "-d" "install")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "./remake" "check")))))))
+    (native-inputs (list autoconf automake bison flex libtool))
+    (inputs (list boost gmp mpfr))
+    (home-page "https://gitlab.inria.fr/gappa/gappa")
+    (synopsis "Proof generator for arithmetic properties")
+    (description "Gappa is a tool intended to help verifying and formally
 proving properties on numerical programs dealing with floating-point or
 fixed-point arithmetic.  It has been used to write robust floating-point
 filters for CGAL and it is used to certify elementary functions in CRlibm.
 While Gappa is intended to be used directly, it can also act as a backend
 prover for the Why3 software verification platform or as an automatic tactic
 for the Coq proof assistant.")
-   (license (list license:gpl3+ license:cecill)))) ; either/or
+    (license (list license:gpl3+ license:cecill)))) ; either/or
 
 (define-public givaro
   (package

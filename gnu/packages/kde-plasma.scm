@@ -179,7 +179,7 @@ call it if it is not associated to a terminal.")
      (list libxkbcommon
            qtbase-5
            qtdeclarative-5
-           qtwayland
+           qtwayland-5
            wayland
            wayland-protocols))
     (home-page "https://invent.kde.org/plasma/layer-shell-qt")
@@ -270,7 +270,7 @@ call it if it is not associated to a terminal.")
            dbus))
     (inputs
      (list kwayland libxrandr plasma-wayland-protocols
-           qtbase-5 qtwayland wayland qtx11extras))
+           qtbase-5 qtwayland-5 wayland qtx11extras))
     (arguments
      '(#:tests? #f)) ; FIXME: 55% tests passed, 5 tests failed out of 11
     (home-page "https://community.kde.org/Solid/Projects/ScreenManagement")
@@ -355,7 +355,7 @@ with a ksysguardd daemon, which may also run on a remote system.")
     (inputs
      (list plasma-wayland-protocols
            qtbase-5
-           qtwayland
+           qtwayland-5
            kwayland
            wayland
            wayland-protocols-next))

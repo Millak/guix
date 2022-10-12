@@ -22,6 +22,7 @@
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-64)
+  #:use-module (srfi srfi-71)
   #:use-module (rnrs io ports)
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
@@ -33,7 +34,6 @@
             wait-for-tcp-port
             wait-for-unix-socket
             marionette-control
-            marionette-screen-text
             wait-for-screen-text
             %qwerty-us-keystrokes
             marionette-type
@@ -312,40 +312,61 @@ Monitor\")."
 
 (define* (marionette-screen-text marionette #:key (ocr "ocrad"))
   "Take a screenshot of MARIONETTE, perform optical character
-recognition (OCR), and return the text read from the screen as a string.  Do
-this by invoking OCR, which should be the file name of GNU Ocrad's
-@command{ocrad} or Tesseract OCR's @command{tesseract} command."
+recognition (OCR), and return the text read from the screen as a string, along
+the screen dump image used.  Do this by invoking OCR, which should be the file
+name of GNU Ocrad's@command{ocrad} or Tesseract OCR's @command{tesseract}
+command.  The screen dump image returned as the second value should be deleted
+if it is not needed."
   (define image (string-append (tmpnam) ".ppm"))
   ;; Use the QEMU Monitor to save an image of the screen to the host.
   (marionette-control (string-append "screendump " image) marionette)
   ;; Process it via the OCR.
   (cond
    ((string-contains ocr "ocrad")
-    (invoke-ocrad-ocr image #:ocrad ocr))
+    (values (invoke-ocrad-ocr image #:ocrad ocr) image))
    ((string-contains ocr "tesseract")
-    (invoke-tesseract-ocr image #:tesseract ocr))
+    (values (invoke-tesseract-ocr image #:tesseract ocr) image))
    (else (error "unsupported ocr command"))))
 
 (define* (wait-for-screen-text marionette predicate
                                #:key
                                (ocr "ocrad")
-                               (timeout 30))
+                               (timeout 30)
+                               pre-action
+                               post-action)
   "Wait for TIMEOUT seconds or until the screen text on MARIONETTE matches
-PREDICATE, whichever comes first.  Raise an error when TIMEOUT is exceeded."
+PREDICATE, whichever comes first.  Raise an error when TIMEOUT is exceeded.
+The error contains the recognized text along the preserved file name of the
+screen dump, which is relative to the current working directory.  If
+PRE-ACTION is provided, it should be a thunk to call before each OCR attempt.
+Likewise for POST-ACTION, except it runs at the end of a successful OCR."
   (define start
     (car (gettimeofday)))
 
   (define end
     (+ start timeout))
 
-  (let loop ((last-text #f))
+  (let loop ((last-text #f)
+             (last-screendump #f))
     (if (> (car (gettimeofday)) end)
-        (error "'wait-for-screen-text' timeout" 'ocr-text: last-text)
-        (let ((text (marionette-screen-text marionette #:ocr ocr)))
-          (or (predicate text)
-              (begin
-                (sleep 1)
-                (loop text)))))))
+        (let ((screendump-backup (string-drop last-screendump 5)))
+          ;; Move the file from /tmp/fileXXXXXX.pmm to the current working
+          ;; directory, so that it is preserved in the test derivation output.
+          (copy-file last-screendump screendump-backup)
+          (delete-file last-screendump)
+          (error "'wait-for-screen-text' timeout"
+                 'ocr-text: last-text
+                 'screendump: screendump-backup))
+        (let* ((_ (and (procedure? pre-action) (pre-action)))
+               (text screendump (marionette-screen-text marionette #:ocr ocr))
+               (_ (and (procedure? post-action) (post-action)))
+               (result (predicate text)))
+          (cond (result
+                 (delete-file screendump)
+                 result)
+                (else
+                 (sleep 1)
+                 (loop text screendump)))))))
 
 (define %qwerty-us-keystrokes
   ;; Maps "special" characters to their keystrokes.
@@ -367,8 +388,10 @@ PREDICATE, whichever comes first.  Raise an error when TIMEOUT is exceeded."
     (#\> . "shift-dot")
     (#\. . "dot")
     (#\, . "comma")
+    (#\: . "shift-semicolon")
     (#\; . "semicolon")
     (#\' . "apostrophe")
+    (#\! . "shift-1")
     (#\" . "shift-apostrophe")
     (#\` . "grave_accent")
     (#\bs . "backspace")

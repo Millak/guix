@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Alex ter Weele <alex.ter.weele@gmail.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -158,13 +158,13 @@ homeserver and generally help bootstrap the ecosystem.")
 (define-public python-matrix-nio
   (package
     (name "python-matrix-nio")
-    (version "0.18.7")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "matrix-nio" version))
        (sha256
-        (base32 "0cw4y6dx8n8hynxqlzzkj8p34nfbc2xryvmkr5yhmja31y4rks4k"))))
+        (base32 "1ycrp48b15nm2d3w3qpzps21czl3gbikadl10sncbzr9wdwn44g4"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -191,6 +191,7 @@ homeserver and generally help bootstrap the ecosystem.")
        ("python-hpack" ,python-hpack)
        ("python-faker" ,python-faker)
        ("python-pytest-aiohttp" ,python-pytest-aiohttp)
+       ("python-pytest-asyncio" ,python-pytest-asyncio)
        ("python-aioresponses" ,python-aioresponses)
        ("python-pytest-benchmark" ,python-pytest-benchmark)
        ("python-toml" ,python-toml)
@@ -206,7 +207,7 @@ homeserver and generally help bootstrap the ecosystem.")
            (file-name (git-file-name name version))
            (sha256
             (base32
-             "152prkndk53pfxm4in4xak4hwzyaxlbp6wv2zbk2xpzgyy9bvn3s"))))))
+             "10j8g3ns3v1ghdn262dxg50ayaczdp1hj97pj4ydw02bncqhddpd"))))))
     (propagated-inputs
      (list python-aiofiles
            python-aiohttp
@@ -216,7 +217,7 @@ homeserver and generally help bootstrap the ecosystem.")
            python-future
            python-h11
            python-h2
-           python-jsonschema
+           python-jsonschema-next
            python-logbook
            python-olm
            python-peewee
@@ -234,7 +235,7 @@ fledged batteries-included asyncio layer using aiohttp.")
 (define-public pantalaimon
   (package
     (name "pantalaimon")
-    (version "0.10.3")
+    (version "0.10.5")
     (source
      (origin
        (method git-fetch)
@@ -244,7 +245,7 @@ fledged batteries-included asyncio layer using aiohttp.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "153d8083lj3qqirbv5q1d3igzd61a5kyzfk7xmv29sd3jbs8ysm9"))))
+         "16ask8v00654q307c55q5gnm8hrj40gibpab5zl52v4i0bgl9j68"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

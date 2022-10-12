@@ -1438,32 +1438,40 @@ files.")
       (documentation
        "Anonimyze the given log file location with anonip.")
       (start
-       #~(lambda _
-           (unless (file-exists? #$input)
-             (mknod #$input 'fifo #o600 0))
-           (let ((pid
-                  (fork+exec-command
-                   (append
-                    (list #$(file-append (anonip-configuration-anonip config)
-                                         "/bin/anonip")
-                          (string-append "--input=" #$input)
-                          (string-append "--output=" #$output))
-                    (if #$(anonip-configuration-skip-private? config)
-                        '("--skip-private") (list))
-                    '#$(optional anonip-configuration-column "--column")
-                    '#$(optional anonip-configuration-ipv4mask "--ipv4mask")
-                    '#$(optional anonip-configuration-ipv6mask "--ipv6mask")
-                    '#$(optional anonip-configuration-increment "--increment")
-                    '#$(optional anonip-configuration-replacement
-                                 "--replacement")
-                    '#$(optional anonip-configuration-delimiter "--delimiter")
-                    '#$(optional anonip-configuration-regex "--regex"))
-                   ;; Run in a UTF-8 locale
-                   #:environment-variables
-                   (list (string-append "GUIX_LOCPATH=" #$glibc-utf8-locales
-                                        "/lib/locale")
-                         "LC_ALL=en_US.utf8"))))
-             pid)))
+       #~(lambda ()
+           (define (spawn)
+             (fork+exec-command
+              (append
+               (list #$(file-append (anonip-configuration-anonip config)
+                                    "/bin/anonip")
+                     (string-append "--input=" #$input)
+                     (string-append "--output=" #$output))
+               (if #$(anonip-configuration-skip-private? config)
+                   '("--skip-private") (list))
+               '#$(optional anonip-configuration-column "--column")
+               '#$(optional anonip-configuration-ipv4mask "--ipv4mask")
+               '#$(optional anonip-configuration-ipv6mask "--ipv6mask")
+               '#$(optional anonip-configuration-increment "--increment")
+               '#$(optional anonip-configuration-replacement
+                            "--replacement")
+               '#$(optional anonip-configuration-delimiter "--delimiter")
+               '#$(optional anonip-configuration-regex "--regex"))
+              ;; Run in a UTF-8 locale
+              #:environment-variables
+              (list (string-append "GUIX_LOCPATH=" #$glibc-utf8-locales
+                                   "/lib/locale")
+                    "LC_ALL=en_US.utf8")))
+
+           (let ((stat (stat #$input #f)))
+             (cond ((not stat)
+                    (mknod #$input 'fifo #o600 0)
+                    (spawn))
+                   ((eq? 'fifo (stat:type stat))
+                    (spawn))
+                   (else
+                    (format #t "'~a' is not a FIFO; bailing out~%"
+                            #$input)
+                    #f)))))
       (stop #~(make-kill-destructor))))))
 
 (define anonip-service-type

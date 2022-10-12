@@ -751,7 +751,7 @@ different notification systems.")
            qtquickcontrols-5
            qtquickcontrols2-5
            qtx11extras
-           qtwayland
+           qtwayland-5
            wayland))
     (home-page "https://community.kde.org/KDEConnect")
     (synopsis "Enable your devices to communicate with each other")
@@ -902,6 +902,33 @@ charts.")
 partitions, floppy and CD drives, etc.) along with information on their
 capacity, free space, type and mount point.  It also allows you to mount and
 unmount drives and view them in a file manager.")
+(license license:gpl2+)))
+
+(define-public ktimer
+  (package
+    (name "ktimer")
+    (version "20.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/" version
+                                  "/src/ktimer-" version ".tar.xz"))
+              (sha256
+               (base32
+                "12fz5v5ky03h18jl75fnq1zagjq8qzi1s1q7phjz5d1rbhwc57ls"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules
+           kdoctools))
+    (inputs
+     (list kdbusaddons
+           ki18n
+           kio
+           knotifications))
+    (home-page "https://kde.org/applications/utilities/ktimer")
+    (synopsis "Countdown Launcher")
+    (description "KTimer is a little tool to execute programs after some time.
+It allows you to enter several tasks and to set a timer for each of them.  The
+timers for each task can be started, stopped, changed, or looped.")
     (license license:gpl2+)))
 
 (define-public kcachegrind

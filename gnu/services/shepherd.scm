@@ -107,14 +107,15 @@
       (symlink (canonicalize-path "/run/current-system")
                "/run/booted-system")
 
-      ;; Close any remaining open file descriptors to be on the safe
-      ;; side.  This must be the very last thing we do, because
-      ;; Guile has internal FDs such as 'sleep_pipe' that need to be
-      ;; alive.
+      ;; Ensure open file descriptors are close-on-exec so shepherd doesn't
+      ;; inherit them.
       (let loop ((fd 3))
         (when (< fd 1024)
-          (false-if-exception (close-fdes fd))
-          (loop (+ 1 fd))))
+          (false-if-exception
+           (let ((flags (fcntl fd F_GETFD)))
+             (when (zero? (logand flags FD_CLOEXEC))
+               (fcntl fd F_SETFD (logior FD_CLOEXEC flags)))))
+          (loop (+ fd 1))))
 
       ;; Start shepherd.
       (execl #$(file-append shepherd "/bin/shepherd")

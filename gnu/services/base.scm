@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -71,6 +72,7 @@
   #:use-module ((gnu packages file-systems)
                 #:select (bcachefs-tools exfat-utils jfsutils zfs))
   #:use-module (gnu packages terminals)
+  #:use-module ((gnu packages wm) #:select (sway))
   #:use-module ((gnu build file-systems)
                 #:select (mount-flags->bit-mask
                           swap-space->flags-bit-mask))
@@ -237,6 +239,8 @@
             greetd-configuration
             greetd-terminal-configuration
             greetd-agreety-session
+            greetd-wlgreet-session
+            greetd-wlgreet-sway-session
 
             %base-services))
 
@@ -2902,6 +2906,109 @@ to handle."
      "agreety-command"
      #~(execl #$agreety #$agreety "-c" #$command))))
 
+(define-record-type* <greetd-wlgreet-session>
+  greetd-wlgreet-session make-greetd-wlgreet-session
+  greetd-wlgreet-session?
+  (wlgreet greetd-wlgreet (default wlgreet))
+  (command greetd-wlgreet-command
+           (default (file-append sway "/bin/sway")))
+  (command-args greetd-wlgreet-command-args (default '()))
+  (output-mode greetd-wlgreet-output-mode (default "all"))
+  (scale greetd-wlgreet-scale (default 1))
+  (background greetd-wlgreet-background (default '(0 0 0 0.9)))
+  (headline greetd-wlgreet-headline (default '(1 1 1 1)))
+  (prompt greetd-wlgreet-prompt (default '(1 1 1 1)))
+  (prompt-error greetd-wlgreet-prompt-error (default '(1 1 1 1)))
+  (border greetd-wlgreet-border (default '(1 1 1 1)))
+  (extra-env greetd-wlgreet-extra-env (default '())))
+
+(define (greetd-wlgreet-wayland-session-command session)
+  (program-file "wlgreet-session-command"
+    #~(let* ((username (getenv "USER"))
+             (useruid (number->string
+                       (passwd:uid (getpwuid username))))
+             (command #$(greetd-wlgreet-command session)))
+        (use-modules (ice-9 match))
+        (setenv "XDG_SESSION_TYPE" "wayland")
+        (setenv "XDG_RUNTIME_DIR" (string-append "/run/user/" useruid))
+        (for-each (lambda (env) (setenv (car env) (cdr env)))
+                  '(#$@(greetd-wlgreet-extra-env session)))
+        (apply execl command command
+               (list #$@(greetd-wlgreet-command-args session))))))
+
+(define (make-wlgreet-config-color section-name color)
+  (match color
+    ((red green blue opacity)
+     (string-append
+      "[" section-name "]\n"
+      "red = " (number->string red) "\n"
+      "green = " (number->string green) "\n"
+      "blue = " (number->string blue) "\n"
+      "opacity = " (number->string opacity) "\n"))))
+
+(define (make-wlgreet-configuration-file session)
+  (let ((command (greetd-wlgreet-wayland-session-command session))
+        (output-mode (greetd-wlgreet-output-mode session))
+        (scale (greetd-wlgreet-scale session))
+        (background (greetd-wlgreet-background session))
+        (headline (greetd-wlgreet-headline session))
+        (prompt (greetd-wlgreet-prompt session))
+        (prompt-error (greetd-wlgreet-prompt-error session))
+        (border (greetd-wlgreet-border session)))
+    (mixed-text-file "wlgreet.toml"
+      "command = \"" command "\"\n"
+      "outputMode = \"" output-mode "\"\n"
+      "scale = " (number->string scale) "\n"
+      (apply string-append
+             (map (match-lambda
+                    ((section-name . color)
+                     (make-wlgreet-config-color section-name color)))
+                  `(("background" . ,background)
+                    ("headline" . ,headline)
+                    ("prompt" . ,prompt)
+                    ("prompt-error" . ,prompt-error)
+                    ("border" . ,border)))))))
+
+(define-record-type* <greetd-wlgreet-sway-session>
+  greetd-wlgreet-sway-session make-greetd-wlgreet-sway-session
+  greetd-wlgreet-sway-session?
+  (wlgreet-session greetd-wlgreet-sway-session-wlgreet-session       ;<greetd-wlgreet-session>
+                   (default (greetd-wlgreet-session)))
+  (sway greetd-wlgreet-sway-session-sway (default sway))             ;<package>
+  (sway-configuration greetd-wlgreet-sway-session-sway-configuration ;file-like
+                      (default (plain-file "wlgreet-sway-config" ""))))
+
+(define (make-wlgreet-sway-configuration-file session)
+  (let* ((wlgreet-session (greetd-wlgreet-sway-session-wlgreet-session session))
+         (wlgreet-config (make-wlgreet-configuration-file wlgreet-session))
+         (wlgreet (file-append (greetd-wlgreet wlgreet-session) "/bin/wlgreet"))
+         (sway-config (greetd-wlgreet-sway-session-sway-configuration session))
+         (swaymsg (file-append (greetd-wlgreet-sway-session-sway session)
+                               "/bin/swaymsg")))
+    (mixed-text-file "wlgreet-sway.conf"
+      "include " sway-config "\n"
+      "xwayland disable\n"
+      "exec \"" wlgreet " --config " wlgreet-config "; "
+      swaymsg " exit\"\n")))
+
+(define (greetd-wlgreet-sway-session-command session)
+  (let ((sway (file-append (greetd-wlgreet-sway-session-sway session)
+                           "/bin/sway"))
+        (config (make-wlgreet-sway-configuration-file session)))
+    (program-file "wlgreet-sway-session-command"
+      #~(let* ((log-file (open-output-file
+                          (string-append "/tmp/sway-greeter."
+                                         (number->string (getpid))
+                                         ".log")))
+             (username (getenv "USER"))
+             (useruid (number->string (passwd:uid (getpwuid username)))))
+          ;; redirect stdout/err to log-file
+          (dup2 (fileno log-file) 1)
+          (dup2 1 2)
+          (sleep 1) ;give seatd/logind some time to start up
+          (setenv "XDG_RUNTIME_DIR" (string-append "/run/user/" useruid))
+          (execl #$sway #$sway "-d" "-c" #$config)))))
+
 (define (make-greetd-default-session-command config-or-command)
   (cond ((greetd-agreety-session? config-or-command)
          (cond ((greetd-agreety-xdg-env? config-or-command)
@@ -2912,6 +3019,8 @@ to handle."
                 (make-greetd-agreety-session-command
                  config-or-command
                  (greetd-agreety-tty-session-command config-or-command)))))
+        ((greetd-wlgreet-sway-session? config-or-command)
+         (greetd-wlgreet-sway-session-command config-or-command))
         (#t config-or-command)))
 
 (define-record-type* <greetd-terminal-configuration>

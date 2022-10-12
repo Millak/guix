@@ -1656,7 +1656,27 @@ package provides command line tools using the Bio++ library.")
                   ;; Remove useless msbuild directory
                   (delete-file-recursively
                    "c++/src/build-system/project_tree_builder/msbuild")
-                  #t))))
+
+                  ;; Build reproducibly.
+                  ;; Do not record the kernel version
+                  (substitute* "c++/src/build-system/configure"
+                    (("kver=.*") "kver=\"\""))
+                  ;; Do not generate random numbers.
+                  (substitute* "c++/scripts/common/impl/define_random_macros.sh"
+                    (("#define NCBI_RANDOM_VALUE_MAX  0xffffffffu" m)
+                     (string-append m "
+#define NCBI_RANDOM_VALUE_0    2845495105u
+#define NCBI_RANDOM_VALUE_1    2158634051u
+#define NCBI_RANDOM_VALUE_2    4072202242u
+#define NCBI_RANDOM_VALUE_3    902228395u
+#define NCBI_RANDOM_VALUE_4    1353323915u
+#define NCBI_RANDOM_VALUE_5    574823513u
+#define NCBI_RANDOM_VALUE_6    4119501261u
+#define NCBI_RANDOM_VALUE_7    2477640938u
+#define NCBI_RANDOM_VALUE_8    2776595395u
+#define NCBI_RANDOM_VALUE_9    270550684u
+"))
+                    (("cksum") "cksum >/dev/null"))))))
     (build-system gnu-build-system)
     (arguments
      `(;; There are two(!) tests for this massive library, and both fail with
@@ -2409,26 +2429,27 @@ are not included due to their size.")
 (define-public cd-hit
   (package
     (name "cd-hit")
-    (version "4.6.8")
+    (version "4.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/weizhongli/cdhit"
                                   "/releases/download/V" version
                                   "/cd-hit-v" version
-                                  "-2017-0621-source.tar.gz"))
+                                  "-2019-0228.tar.gz"))
               (sha256
                (base32
-                "1b4mwm2520ixjbw57sil20f9iixzw4bkdqqwgg1fc3pzm6rz4zmn"))))
+                "1phmfhgcpyfd6kj7jwzw976613lcpv1wc2pzfdfaxla062x2s5r6"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are no tests
-       #:make-flags
-       ;; Executables are copied directly to the PREFIX.
-       ,#~(list (string-append "PREFIX=" #$output "/bin")
-                ;; Support longer sequences (e.g. Pacbio sequences)
-                "MAX_SEQ=60000000")
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #f                       ; there are no tests
+      #:make-flags
+      ;; Executables are copied directly to the PREFIX.
+      #~(list (string-append "PREFIX=" #$output "/bin")
+              ;; Support longer sequences (e.g. Pacbio sequences)
+              "MAX_SEQ=60000000")
+      #:phases
+      '(modify-phases %standard-phases
          ;; No "configure" script
          (delete 'configure)
          ;; Remove sources of non-determinism
@@ -2438,15 +2459,13 @@ are not included due to their size.")
                ((" \\(built on \" __DATE__ \"\\)") ""))
              (substitute* "cdhit-common.c++"
                (("__DATE__") "\"0\"")
-               (("\", %s, \" __TIME__ \"\\\\n\", date") ""))
-             #t))
+               (("\", %s, \" __TIME__ \"\\\\n\", date") ""))))
          ;; The "install" target does not create the target directory.
          (add-before 'install 'create-target-dir
            (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/bin"))
-             #t)))))
+             (mkdir-p (string-append (assoc-ref outputs "out") "/bin")))))))
     (inputs
-     (list perl))
+     (list perl zlib))
     (home-page "http://weizhongli-lab.org/cd-hit/")
     (synopsis "Cluster and compare protein or nucleotide sequences")
     (description
@@ -2456,6 +2475,26 @@ databases.")
     ;; The manual says: "It can be copied under the GNU General Public License
     ;; version 2 (GPLv2)."
     (license license:gpl2)))
+
+(define-public cd-hit-auxtools
+  (package
+    (inherit cd-hit)
+    (name "cd-hit-auxtools")
+    (arguments
+     (list
+      #:tests? #f                       ; there are no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir (lambda _ (chdir "cd-hit-auxtools")))
+          ;; No "configure" script
+          (delete 'configure)
+          ;; There is no install target.
+          (replace 'install
+            (lambda _
+              (for-each (lambda (file)
+                          (install-file file (string-append #$output "/bin")))
+                        '("cd-hit-dup" "cd-hit-lap" "read-linker")))))))
+    (inputs '())))
 
 (define-public clipper
   (package
@@ -4825,7 +4864,7 @@ data.")
 (define-public kaiju
   (package
     (name "kaiju")
-    (version "1.6.3")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4834,24 +4873,45 @@ data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "119pzi0ddzv9mjg4wwa6han0cwr3k3ssn7kirvsjfcq05mi5ka0x"))))
+                "1hfmadkfs6jjd7l3byly5xxb0ifm3dm1wis11sjbqfcv6l89snmg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; There are no tests.
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'move-to-src-dir
-           (lambda _ (chdir "src") #t))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (mkdir-p bin)
-               (chdir "..")
-               (copy-recursively "bin" bin))
-             #t)))))
+     (list
+      #:tests? #f                       ; There are no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'move-to-src-dir
+            (lambda _ (chdir "src")))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (mkdir-p bin)
+                (copy-recursively "../bin" bin)
+                (let ((path (search-path-as-list '("bin")
+                                                 '#$(match (package-inputs this-package)
+                                                      (((_ pkg) ...) pkg)))))
+                  (for-each (lambda (script)
+                              (let ((exe (string-append bin "/" script)))
+                                (chmod exe #o555)
+                                (wrap-script exe
+                                  #:guile #$(file-append guile-3.0 "/bin/guile")
+                                  `("PATH" ":" prefix ,path))))
+                            (list "kaiju-convertMAR.py"
+                                  "kaiju-gbk2faa.pl"
+                                  "kaiju-makedb")))))))))
     (inputs
-     (list perl zlib))
+     (list bzip2
+           coreutils
+           curl
+           gawk
+           guile-3.0 ;for wrap-script
+           gzip
+           perl
+           python-wrapper
+           tar
+           wget
+           zlib))
     (home-page "http://kaiju.binf.ku.dk/")
     (synopsis "Fast and sensitive taxonomic classification for metagenomics")
     (description "Kaiju is a program for sensitive taxonomic classification
@@ -6236,7 +6296,7 @@ accessed/downloaded on demand across HTTP.")
      (origin
        (method url-fetch)
        (uri (string-append
-             "http://pngu.mgh.harvard.edu/~purcell/plink/dist/plink-"
+             "https://zzz.bwh.harvard.edu/plink/dist/plink-"
              version "-src.zip"))
        (sha256
         (base32 "0as8gxm4pjyc8dxmm1sl873rrd7wn5qs0l29nqfnl31x8i467xaa"))
@@ -8444,6 +8504,46 @@ BLAST, KEGG, GenBank, MEDLINE and GO.")
     ;; (LGPLv2.1+) and scripts in samples (which have GPL2 and GPL2+)
     (license (list license:ruby license:lgpl2.1+ license:gpl2+ ))))
 
+(define-public centrifuge
+  (package
+    (name "centrifuge")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DaehwanKimLab/centrifuge.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "167610gbz1rrh6ir3j7jcmhzg3x5msn7x7a3dpv7wmwdndnnqvg0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ; no check target
+      #:make-flags
+      #~(list (string-append "prefix=" #$output))
+      #:phases
+      '(modify-phases %standard-phases
+         (delete 'configure))))
+    (inputs (list python-wrapper))
+    (native-inputs
+     (list pandoc perl                  ;for documentation
+           which))
+    (home-page "https://github.com/DaehwanKimLab/centrifuge/")
+    (synopsis "Classifier for metagenomic sequences")
+    (description "Centrifuge is a microbial classification engine that enables
+rapid, accurate and sensitive labeling of reads and quantification of species
+on desktop computers.  The system uses an indexing scheme based on the
+@dfn{Burrows-Wheeler transform} (BWT) and the @dfn{Ferragina-Manzini} (FM)
+index, optimized specifically for the metagenomic classification problem.
+Centrifuge requires a relatively small index (4.7 GB for all complete
+bacterial and viral genomes plus the human genome) and classifies sequences at
+very high speed, allowing it to process the millions of reads from a typical
+high-throughput DNA sequencing run within a few minutes.")
+    (license license:gpl3+)))
+
 (define-public bio-vcf
   (package
     (name "bio-vcf")
@@ -10236,7 +10336,7 @@ The following file formats are supported:
 (define-public salmon
   (package
     (name "salmon")
-    (version "1.6.0")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10245,104 +10345,112 @@ The following file formats are supported:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wb5wl0rc77svbwq6zvak5h7pf9acw3di0vz5i3gqyhg5l6qd736"))
+                "1370ry3jpj05gplzyny44mqg77a29a6gp8ijmjz135d2igf956r8"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled headers for eigen3.
                '(delete-file-recursively "include/eigen3/"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       ,#~(list (string-append "-Dlibgff_DIR="
-                               #$(this-package-input "libgff") "/lib")
-                "-DCMAKE_CXX_FLAGS=\"-DHAVE_NUMERIC_LIMITS128=1\""
-                "-Dlibgff_FOUND=TRUE"
-                "-DTBB_FOUND=TRUE"
-                #$(string-append "-DTBB_VERSION=" (package-version tbb-2020))
-                "-DTBB_LIBRARIES=tbb -ltbbmalloc"
-                "-DFETCHED_PUFFERFISH=TRUE"
-                "-DUSE_SHARED_LIBS=TRUE")
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dlibgff_DIR="
+                             #$(this-package-input "libgff") "/lib")
+              "-DCMAKE_CXX_FLAGS=\"-DHAVE_NUMERIC_LIMITS128=1\""
+              "-Dlibgff_FOUND=TRUE"
+              "-DTBB_FOUND=TRUE"
+              #$(string-append "-DTBB_VERSION=" (package-version tbb))
+              "-DFETCHED_PUFFERFISH=TRUE"
+              "-DUSE_SHARED_LIBS=TRUE")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-pufferfish
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "pufferfish")
-                               "external/pufferfish")
-             ;; This test isn't working correctly, so compilation aborts.
-             (substitute* "external/pufferfish/include/string_view.hpp"
-               (("#if __has_include\\(<string_view>\\)")
-                "#if 0"))
-             (let ((headers "external/install/pufferfish/include/pufferfish")
-                   (source "external/install/src/pufferfish"))
-               (mkdir-p headers)
-               (mkdir-p source)
-               (for-each (lambda (file)
-                           (install-file (string-append "external/pufferfish/include/" file)
-                                         headers))
-                         (list "ProgOpts.hpp" "BooPHF.hpp" "SpinLock.hpp"
-                               "Kmer.hpp" "CanonicalKmer.hpp" "string_view.hpp"
-                               "CanonicalKmerIterator.hpp"
-                               "PufferfishBaseIndex.hpp"
-                               "PufferfishIndex.hpp"
-                               "PufferfishSparseIndex.hpp"
-                               "PufferfishLossyIndex.hpp"
-                               "PufferfishTypes.hpp"
-                               "rank9b.hpp" "rank9sel.hpp" "macros.hpp"
-                               "select.hpp" "Util.hpp"
-                               "PairedAlignmentFormatter.hpp"
-                               "SelectiveAlignmentUtils.hpp"
-                               "PuffAligner.hpp" "MemCollector.hpp"
-                               "MemChainer.hpp" "CommonTypes.hpp"
-                               "SAMWriter.hpp" "PufferfishConfig.hpp"
-                               "BulkChunk.hpp" "BinWriter.hpp"))
-               (for-each (lambda (dir)
-                           (copy-recursively
-                            (string-append "external/pufferfish/include/" dir)
-                            (string-append headers "/" dir)))
-                         (list "libdivide"
-                               "ksw2pp"
-                               "compact_vector"
-                               "metro"
-                               "chobo"
-                               "sparsepp"
-                               "simde"
-                               "tsl"))
-               (copy-recursively
-                (string-append "external/pufferfish/src/metro/")
-                (string-append source "/metro"))
-               (install-file
-                (string-append "external/pufferfish/src/rank9b.cpp")
-                source)
+       '(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-pufferfish
+            (lambda* (#:key inputs #:allow-other-keys)
+              (copy-recursively (assoc-ref inputs "pufferfish")
+                                "external/pufferfish")
+              ;; This test isn't working correctly, so compilation aborts.
+              (substitute* "external/pufferfish/include/string_view.hpp"
+                (("#if __has_include\\(<string_view>\\)")
+                 "#if 0"))
+              (let ((headers "external/install/pufferfish/include/pufferfish")
+                    (source "external/install/src/pufferfish"))
+                (mkdir-p headers)
+                (mkdir-p source)
+                (for-each (lambda (file)
+                            (install-file (string-append "external/pufferfish/include/" file)
+                                          headers))
+                          (list "ProgOpts.hpp" "BooPHF.hpp" "SpinLock.hpp"
+                                "Kmer.hpp" "CanonicalKmer.hpp" "string_view.hpp"
+                                "CanonicalKmerIterator.hpp"
+                                "PufferfishBaseIndex.hpp"
+                                "PufferfishIndex.hpp"
+                                "PufferfishSparseIndex.hpp"
+                                "PufferfishLossyIndex.hpp"
+                                "PufferfishTypes.hpp"
+                                "rank9b.hpp" "rank9sel.hpp" "macros.hpp"
+                                "select.hpp" "Util.hpp"
+                                "PairedAlignmentFormatter.hpp"
+                                "SelectiveAlignmentUtils.hpp"
+                                "PuffAligner.hpp" "MemCollector.hpp"
+                                "MemChainer.hpp" "CommonTypes.hpp"
+                                "SAMWriter.hpp" "PufferfishConfig.hpp"
+                                "BulkChunk.hpp" "BinWriter.hpp"))
 
-               ;; Do not complain about not having built libtbb
-               (substitute* "external/pufferfish/external/twopaco/CMakeLists.txt"
-                 (("add_dependencies.*") "")))))
-         (add-after 'unpack 'do-not-phone-home
-           (lambda _
-             (substitute* "src/Salmon.cpp"
-               (("getVersionMessage\\(\\)") "\"\""))))
-         (add-after 'unpack 'use-system-libraries
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Ensure that all headers can be found
-             (setenv "CPLUS_INCLUDE_PATH"
-                     (string-append (or (getenv "CPLUS_INCLUDE_PATH") "")
-                                    ":"
-                                    (getcwd) "/external/install/pufferfish/include:"
-                                    (assoc-ref inputs "eigen")
-                                    "/include/eigen3"))))
-         (add-after 'unpack 'fix-error-message-in-tests
-           (lambda _
-             (substitute* "cmake/TestSalmonQuasi.cmake"
-               (("SALMON_QUASI_INDEX_COMMAND")
-                "SALMON_QUASI_INDEX_CMD")))))))
+                (for-each (lambda (dir)
+                            (copy-recursively
+                             (string-append "external/pufferfish/include/" dir)
+                             (string-append headers "/" dir)))
+                          (list "libdivide"
+                                "ksw2pp"
+                                "compact_vector"
+                                "itlib"
+                                "metro"
+                                "chobo"
+                                "sparsepp"
+                                "simde"
+                                "tsl"))
+                (copy-recursively
+                 (string-append "external/pufferfish/src/metro/")
+                 (string-append source "/metro"))
+                (install-file
+                 (string-append "external/pufferfish/src/rank9b.cpp")
+                 source)
+
+                ;; Do not complain about not having built libtbb
+                (substitute* "external/pufferfish/external/twopaco/CMakeLists.txt"
+                  (("add_dependencies.*") "")))))
+          (add-after 'unpack 'do-not-phone-home
+            (lambda _
+              (substitute* "src/Salmon.cpp"
+                (("getVersionMessage\\(\\)") "\"\""))))
+          (add-after 'unpack 'use-system-libraries
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Ensure that all headers can be found
+              (setenv "CPLUS_INCLUDE_PATH"
+                      (string-append (or (getenv "CPLUS_INCLUDE_PATH") "")
+                                     ":"
+                                     (getcwd) "/external/install/pufferfish/include:"
+                                     (assoc-ref inputs "eigen")
+                                     "/include/eigen3"))))
+          (add-after 'unpack 'fix-error-message-in-tests
+            (lambda _
+              (substitute* "cmake/TestSalmonQuasi.cmake"
+                (("SALMON_QUASI_INDEX_COMMAND")
+                 "SALMON_QUASI_INDEX_CMD")))))))
     (inputs
-     `(("boost" ,boost)
-       ("bzip2" ,bzip2)
-       ("cereal" ,cereal-1.3.0)
-       ("curl" ,curl)
-       ("eigen" ,eigen)
-       ("jemalloc" ,jemalloc)
-       ("libgff" ,libgff)
+     (list boost
+           bzip2
+           cereal-1.3.0
+           curl
+           eigen
+           jemalloc
+           libgff
+           tbb
+           libstadenio-for-salmon
+           xz
+           zlib))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
        ("pufferfish" ,(origin
                         (method git-fetch)
                         (uri (git-reference
@@ -10351,13 +10459,7 @@ The following file formats are supported:
                         (file-name (git-file-name "pufferfish" version))
                         (sha256
                          (base32
-                          "0jakgpbanl6cs23x3g26iab54p7zylcf9v8vc32ps57smp8wql52"))))
-       ("tbb" ,tbb-2020)
-       ("libstadenio-for-salmon" ,libstadenio-for-salmon)
-       ("xz" ,xz)
-       ("zlib" ,zlib)))
-    (native-inputs
-     (list pkg-config))
+                          "048a006mc2d0h78ym58mv67hl1pj480ilc5ifq0rlzfdyyfs1b8i"))))))
     (home-page "https://github.com/COMBINE-lab/salmon")
     (synopsis "Quantification from RNA-seq reads using lightweight alignments")
     (description "Salmon is a program to produce highly-accurate,
@@ -11304,7 +11406,7 @@ based methods.")
 (define-public pigx-sars-cov-2
   (package
     (name "pigx-sars-cov-2")
-    (version "0.0.7")
+    (version "0.0.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_sars-cov-2"
@@ -11312,24 +11414,51 @@ based methods.")
                                   "/pigx_sars-cov-2-" version ".tar.gz"))
               (sha256
                (base32
-                "1bqm03ypf7l8lrkjkydxzn7vy0qlps3v9c5cpz2wb008zw44bi3k"))))
+                "1yf1y25asnhxz80dajs54wrhr0wyi9fldk7lxsnqrh7gpqp2dvcs"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ;requires huge kraken database
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'autoreconf
-           (lambda _
-             ;; https://github.com/BIMSBbioinfo/pigx_sars-cov-2/issues/123
-             (substitute* "m4/ax_r_package.m4"
-               (("if\\(is.na\\(packageDescription\\(\"PKG\"\\)\\)\\)")
-                "if(system.file(package=\"PKG\") == \"\")"))
-             (invoke "autoreconf" "-vif")))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'unpack-databases
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; The tests need to be able to write caches to HOME.
+             ;; They also default to reading the databases from there.
+             (setenv "HOME" "/tmp")
+             ;; Unpack the three databases in the expected location.
+             (let ((root "/tmp/.local/share/pigx/databases")
+                   (use-underscore (lambda (c) (if (equal? c #\-) #\_ c))))
+               (for-each (lambda (db)
+                           (let ((where (string-append root "/"
+                                                       (string-map use-underscore db))))
+                             (mkdir-p where)
+                             (invoke "tar" "-C" where
+                                     "-xf" (assoc-ref inputs db))))
+                         '("kraken-db" "krona-db" "vep-db")))))
          (add-before 'configure 'set-PYTHONPATH
            (lambda _
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
     (native-inputs
-     (list automake autoconf))
+     (let ((bimsb-origin
+            (lambda (name hash)
+              (origin
+                (method url-fetch)
+                (uri
+                 (string-append "https://bimsbstatic.mdc-berlin.de/akalin/AAkalin_pathogenomics"
+                                "/databases_small-20221006/" name))
+                (sha256 (base32 hash))))))
+       `(("kraken-db"
+          ,(bimsb-origin
+            "kraken_db.tar.gz"
+            "0sdm4xh5npg6c3y2pz8xgphim4qpglm8wdid6rlaaqsn6iikv0mz"))
+         ("krona-db"
+          ,(bimsb-origin
+            "krona_db.tar.gz"
+            "1rwy4gd3vw1gdjldrgf44c1xaa3vq8i3pgisjhrac81yx63x8f2h"))
+         ("vep-db"
+          ,(bimsb-origin
+            "vep_db.tar.gz"
+            "0d8hhi43zsw3wqm7gd0z0gpcdsc6h6ra0imn87hifl9a64jxqzxz")))))
     (inputs
      (list bash-minimal
            bedtools
@@ -11345,10 +11474,16 @@ based methods.")
            python-pyyaml
            python-wrapper
            r-base64url
+           r-data-table
+           r-deconvr
            r-dplyr
            r-dt
            r-ggplot2
+           r-htmltools
+           r-jsonlite
+           r-knitr
            r-magrittr
+           r-mass
            r-minimal
            r-plotly
            r-qpcr
@@ -16228,6 +16363,38 @@ reading whole-genome coverage from BAM files and writing either indexed TSV or
 BigWig files, as well as efficient region coverage summary over intervals from
 both types of files.")
     (license license:expat)))
+
+(define-public megahit
+  (package
+    (name "megahit")
+    (version "1.2.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/voutcn/megahit.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r5d9nkdmgjsbrpj43q9hy3s8jwsabaz3ji561v18hy47v58923c"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:test-target "simple_test"
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* "src/megahit"
+               (("os.path.join\\(script_path, '..'\\)")
+                "os.path.join(script_path, '../source')")))))))
+    (inputs (list python-wrapper zlib))
+    (home-page "https://www.ncbi.nlm.nih.gov/pubmed/25609793")
+    (synopsis "Meta-genome assembler")
+    (description "Megahit is a fast and memory-efficient NGS assembler.  It is
+optimized for metagenomes, but also works well on generic single genome
+assembly (small or mammalian size) and single-cell assembly.")
+    (license license:gpl3)))
 
 (define-public mudskipper
   (package

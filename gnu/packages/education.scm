@@ -582,7 +582,7 @@ a pen-tablet display and a beamer.")
 (define-public fet
   (package
     (name "fet")
-    (version "6.5.7")
+    (version "6.6.2")
     (source
      (origin
        (method url-fetch)
@@ -591,7 +591,7 @@ a pen-tablet display and a beamer.")
               (list (string-append directory base)
                     (string-append directory "old/" base))))
        (sha256
-        (base32 "08j5i3dlp290fz142ljn68j8ssi5f3kabs0dd75ig33kms30hjs7"))))
+        (base32 "0w3fp367r8gx35qmfcx9v8z2lrwfm0fjqbadyk3lhwf28gb1csxr"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1065,15 +1065,36 @@ machine, and more.")
     (arguments
      `(#:import-path "github.com/exercism/cli/exercism"
        #:unpack-path "github.com/exercism/cli"
-       #:install-source? #f))
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out  (assoc-ref outputs "out"))
+                    (bash (string-append out "/etc/bash_completion.d/exercism"))
+                    (fish (string-append
+                            out "/share/fish/vendor_completions.d/exercism.fish"))
+                    (zsh  (string-append out "/share/zsh/site-functions/_exercism")))
+               (mkdir-p (dirname bash))
+               (with-output-to-file bash
+                 (lambda ()
+                   (invoke (string-append out "/bin/exercism") "completion" "bash")))
+               (mkdir-p (dirname fish))
+               (with-output-to-file fish
+                 (lambda ()
+                   (invoke (string-append out "/bin/exercism") "completion" "fish")))
+               (mkdir-p (dirname zsh))
+               (with-output-to-file zsh
+                 (lambda ()
+                   (invoke (string-append out "/bin/exercism") "completion" "zsh")))))))))
     (inputs
-     `(("github.com/blang/semver" ,go-github-com-blang-semver)
-       ("github.com/spf13/cobra" ,go-github-com-spf13-cobra)
-       ("github.com/spf13/pflag" ,go-github-com-spf13-pflag)
-       ("github.com/spf13/viper" ,go-github-com-spf13-viper)
-       ("golang.org/x/net" ,go-golang-org-x-net)
-       ("golang.org/x/text" ,go-golang-org-x-text)))
-    (home-page "https://exercism.io")
+     (list go-github-com-blang-semver
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-golang-org-x-net
+           go-golang-org-x-text))
+    (home-page "https://exercism.org/")
     (synopsis "Mentored learning for programming languages")
     (description "Commandline client for exercism.io, a free service providing
 mentored learning for programming languages.")

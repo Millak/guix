@@ -502,7 +502,7 @@ Telegram project, for its use in telegram desktop client.")
            qtbase-5
            qtimageformats
            qtsvg-5
-           qtwayland
+           qtwayland-5
            range-v3
            rlottie-for-telegram-desktop
            rnnoise

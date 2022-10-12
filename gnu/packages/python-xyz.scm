@@ -130,6 +130,7 @@
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
+;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -552,6 +553,37 @@ from a docstring rather than the other way around.")
     (description "This module provides various memoizing collections and
 decorators, including variants of the Python standard library's
 @code{lru_cache} function decorator.")
+    (license license:expat)))
+
+(define-public python-cobib
+  (package
+    (name "python-cobib")
+    (version "3.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cobib" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16nbrbvascbf6cb7yvn9q793dy8zx703pqrmk3mswib9a19mnx3n"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-beautifulsoup4
+           python-bibtexparser
+           python-pylatexenc
+           python-requests
+           python-requests-oauthlib
+           python-ruamel.yaml))
+    (native-inputs
+     (list python-future
+           python-pyte
+           python-pytest))
+    (home-page "https://gitlab.com/mrossinek/cobib")
+    (synopsis "Terminal-based bibliography management tool")
+    (description
+     "@command{cobib} is a command-line based bibliography management tool.
+It uses a plain-text database, a location-independent library, and features
+git integration, command-line support, and a curses-based TUI.")
     (license license:expat)))
 
 (define-public python-colorful
@@ -1618,6 +1650,25 @@ concepts.")
     (description "Hnswlib is a header-only C++ implementation of fast
 approximate nearest neighbor search with Python bindings.")
     (license license:asl2.0)))
+
+(define-public python-pylatexenc
+  (package
+    (name "python-pylatexenc")
+    (version "2.10")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pylatexenc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ls09z47b5md71gkxcj7fd87ynpvv2walgp2w6z31p26xf2gvn1x"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/phfaist/pylatexenc")
+    (synopsis "LaTeX parser for Unicode/LaTeX conversion")
+    (description
+     "@code{python-pylatexenc} is a LaTeX parser providing LaTeX-to-Unicode and
+Unicode-to-LaTeX conversion.")
+    (license license:expat)))
 
 (define-public python-pyls-black
   (package
@@ -7278,6 +7329,30 @@ buffer transformation, compression, and decompression functions for use in the
 tifffile, czifile, and other scientific image input/output modules.")
     (license license:bsd-3)))
 
+(define-public python-property-manager
+  (package
+    (name "python-property-manager")
+    (version "3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "property-manager" version))
+       (sha256
+        (base32 "0m3w4spr8f39xnm65naw29ncal4r453kn7ndqb63rwbsmslnvrwk"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest-cov))
+    (propagated-inputs
+     (list python-verboselogs
+           python-humanfriendly
+           python-coloredlogs))
+    (home-page "https://github.com/xolox/python-property-manager")
+    (synopsis "Useful property variants for Python programming")
+    (description "The @code{property-manager} package defines several custom
+property variants for Python programming including required properties,
+writable properties, cached properties, etc.")
+    (license license:expat))) ; MIT license
+
 (define-public python-executing
   (package
     (name "python-executing")
@@ -7298,6 +7373,32 @@ tifffile, czifile, and other scientific image input/output modules.")
     (description "This package lets you get information about what a frame is
 currently doing, particularly the AST node being executed.")
     (license license:expat)))
+
+(define-public python-executor
+  (package
+    (name "python-executor")
+    (version "23.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "executor" version))
+       (sha256
+        (base32 "0g83yr54j0vcwhy6h7n0jsd7q0q630kwa6v9kqzlzrm9xj6c3ip1"))))
+    (build-system python-build-system)
+    (arguments
+    `(#:tests? #f)) ; TODO: tests require root/sudo
+    (propagated-inputs
+     (list python-six
+           python-property-manager
+           python-fasteners
+           python-virtualenv))
+    (home-page "https://github.com/xolox/python-executor")
+    (synopsis "Programmer friendly subprocess wrapper")
+    (description "The @code{executor} package is a simple wrapper for Python’s
+subprocess module that makes it very easy to handle subprocesses on UNIX
+systems with proper escaping of arguments and error checking currently doing,
+particularly the AST node being executed.")
+    (license license:expat))) ; MIT license
 
 (define-public python-roifile
   (package
@@ -9479,13 +9580,13 @@ interfaces in an easy and portable manner.")
 (define-public python-networkx
   (package
     (name "python-networkx")
-    (version "2.6.2")
+    (version "2.8.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "networkx" version))
        (sha256
-        (base32 "1fqrq7gc0nn4rd4zqibw96cap75vb5nlixapkajwawp71jaz21i3"))))
+        (base32 "19h18f5j79l7kmwm5cvm75fadjgmkzw5m3pyvb9cnq0860q7faxx"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -11196,6 +11297,23 @@ checksums.  It implement more than a hundred checksum routines.")
     (description
      "Raise asynchronous exceptions in other threads, control the timeout of
 blocks or callables with two context managers and two decorators.")
+    (license license:expat)))
+
+(define-public python-timeout-decorator
+  (package
+    (name "python-timeout-decorator")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "timeout-decorator" version))
+              (sha256
+               (base32
+                "1mxk2qyydhzncm93z08kvj5ssxq3fr2n7pkrrji28nqwvdc2ybva"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/pnpnpn/timeout-decorator")
+    (synopsis "Timeout decorator")
+    (description "This package provides a decorator that raises an error
+when an operation takes longer than expected.")
     (license license:expat)))
 
 (define-public python-straight-plugin
@@ -15955,6 +16073,49 @@ is made as zipfile like as possible.")
     (description
      "This is a Python package for rendering rich text, tables, progress bars,
 syntax highlighting, markdown and more to the terminal.")
+    (license license:expat)))
+
+(define-public python-textual
+  (package
+    (name "python-textual")
+    (version "0.1.18")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "textual" version))
+              (sha256
+               (base32
+                "08yg5a51hz1axfj5hx28hx31gq5apcj6vpkkmawmiplisa73z25j"))))
+    (build-system python-build-system)
+    (arguments
+     (let ((tests
+            ;; The release on pypi comes without tests.  We can't build
+            ;; from this checkout, though, because installation requires
+            ;; an invocation of poetry.
+            (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Textualize/textual")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b3ycwqhp21mg9fvmadgxhgbvkwq6fd784l2xcmvy77rravrnnax")))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       (copy-recursively #$(file-append tests "/tests")
+                                         "tests")
+                       (invoke "python" "-m" "pytest" "-vv"))))))))
+    (propagated-inputs
+     (list python-rich python-typing-extensions))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/Textualize/textual")
+    (synopsis "Build text user interfaces in Python")
+    (description "Textual is a @acronym{TUI, Text User Interface} framework
+for Python inspired by modern web development.")
     (license license:expat)))
 
 (define-public python-magic
@@ -24237,7 +24398,7 @@ time-or-computationally-expensive properties quick and easy and works in Python
 (define-public python-folium
   (package
     (name "python-folium")
-    (version "0.12.1")
+    (version "0.13.0")
     (source
      (origin
        ;; PyPI has a ".whl" file but not a proper source release.
@@ -24248,7 +24409,7 @@ time-or-computationally-expensive properties quick and easy and works in Python
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q05pzca3wfwgnbg03l3bagnhh348yx68w4aa91rg3g8zlviwjz1"))))
+        (base32 "00adpdi1890zzzg7ffp04hmx59igdcdpyqa129vnmwqh54b5a006"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-branca python-jinja2 python-numpy python-requests))
@@ -27929,6 +28090,38 @@ characteristics")
 traditional readability measures based on simple surface
 characteristics. These measures are basically linear regressions based on the
 number of words, syllables, and sentences.")
+    (license license:asl2.0)))
+
+(define-public python-readability-lxml
+  (package
+    (name "python-readability-lxml")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/buriy/python-readability")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "13nfy2v0pbbf62jn9qwgi489gg97hbb22q6w3f78mnvjxd2m19rh"))
+              (snippet
+               #~(begin (delete-file "readability/compat/two.py")))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "pytest" "-v" "tests/")))))))
+    (propagated-inputs (list python-chardet python-cssselect python-lxml))
+    (native-inputs (list python-timeout-decorator python-pytest))
+    (home-page "http://github.com/buriy/python-readability")
+    (synopsis "HTML to text parser")
+    (description
+     "This package provides classes and function that strip gratuitous markup
+from web pages to make them easier to read.")
     (license license:asl2.0)))
 
 (define-public python-listparser

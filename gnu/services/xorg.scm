@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2022 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,7 @@
   #:autoload   (gnu services sddm) (sddm-service-type)
   #:use-module (gnu artwork)
   #:use-module (gnu services)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system pam)
   #:use-module (gnu system setuid)
@@ -63,6 +65,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (xorg-configuration
             xorg-configuration?
@@ -112,6 +115,13 @@
             localed-configuration
             localed-configuration?
             localed-service-type
+
+            dconf-keyfile
+            dconf-profile
+            dconf-profile-name
+            dconf-profile-content
+            dconf-profile-keyfile
+            dconf-service-type
 
             gdm-configuration
             gdm-service-type
@@ -663,13 +673,7 @@ reboot_cmd " shepherd "/sbin/reboot\n"
                    (list (service-extension shepherd-root-service-type
                                             slim-shepherd-service)
                          (service-extension pam-root-service-type
-                                            slim-pam-service)
-
-                         ;; Unconditionally add xterm to the system profile, to
-                         ;; avoid bad surprises.
-                         (service-extension profile-service-type
-                                            (const (list xterm)))))
-
+                                            slim-pam-service)))
                   (default-value (slim-configuration))
                   (description
                    "Run the SLiM graphical login manager for X11."))))
@@ -804,6 +808,106 @@ the GNOME desktop environment.")
 
 
 ;;;
+;;; Dconf.
+;;;
+
+(define-maybe text-config)
+
+(define-configuration/no-serialization dconf-keyfile
+  (name string
+        "The file name of the associated keyfile, e.g. \"00-login-screen\".")
+  (content text-config "The content of the associated keyfile."))
+
+(define-configuration/no-serialization dconf-profile
+  (name string "The file name of the dconf system profile, which should match
+the name of a user for which the profile is to be used with.  To have the
+profile used, the environment variable \"DCONF_PROFILE\" should be set to the
+profile file, e.g.:
+@example
+ export DCONF_PROFILE=/etc/dconf/profile/gdm
+@end example")
+  (content maybe-text-config "The content of the Dconf profile.  Unless
+provided, it defaults to include the user database (\"user-db:NAME\") as well
+as the system database (\"system-db:NAME\"), which corresponds to the
+generated database, @file{/etc/dconf/db/NAME}.")
+  (keyfile dconf-keyfile "The keyfile associated with the profile"))
+
+(define dconf-profiles?
+  (list-of dconf-profile?))
+
+(define-configuration/no-serialization dconf-configuration
+  (profiles dconf-profiles "The list of <dconf-profile> objects to populate."))
+
+(define (dconf-profile->profile-file profile)
+  "Given PROFILE, a <dconf-profile> object, return a dconf profile file."
+  (let ((name (dconf-profile-name profile))
+        (content (dconf-profile-content profile)))
+    (apply mixed-text-file
+           name
+           (if (maybe-value-set? content)
+               (interpose content "\n" 'suffix)
+               (interpose (list (string-append "user-db:" name)
+                                (string-append "system-db:" name))
+                          "\n" 'suffix)))))
+
+(define (dconf-profile->db-keyfile profile)
+  "Given PROFILE, a <dconf-profile> object, return a dconf profile file."
+  (let ((keyfile (dconf-profile-keyfile profile)))
+    (apply mixed-text-file (dconf-keyfile-name keyfile)
+           (interpose (dconf-keyfile-content keyfile) "\n" 'suffix))))
+
+(define (dconf-profile->db-keyfile-dir profile)
+  "Wrap the keyfile in a directory, to satisfy 'dconf compile'."
+  (let ((name (dconf-profile-name profile))
+        (keyfile-name (dconf-keyfile-name (dconf-profile-keyfile profile))))
+    (computed-file name
+                   #~(begin
+                       (mkdir #$output)
+                       (symlink #$(dconf-profile->db-keyfile profile)
+                                (string-append #$output "/" #$keyfile-name))))))
+
+(define (dconf-profile->db profile)
+  "Compile the a <dconf-profile> object into a GVariant Database file."
+  (let ((name (dconf-profile-name profile)))
+    (computed-file
+     name
+     (with-imported-modules '((guix build utils))
+       #~(begin
+           (use-modules (guix build utils))
+           (setenv "DCONF_PROFILE" #$(dconf-profile->profile-file profile))
+           (invoke #$(file-append dconf "/bin/dconf") "compile"
+                   #$output #$(dconf-profile->db-keyfile-dir profile)))))))
+
+(define (dconf-profile->files profile)
+  "Given PROFILE, a <dconf-profile> object, return a dconf directory
+containing the associated profile, keyfile and database files to be assembled
+under /etc."
+  (let ((name (dconf-profile-name profile))
+        (keyfile-name (dconf-keyfile-name (dconf-profile-keyfile profile))))
+    (list (list (string-append "dconf/profile/" name)
+                (dconf-profile->profile-file profile))
+          (list (string-append "dconf/db/" name ".d/" keyfile-name)
+                (dconf-profile->db-keyfile profile))
+          (list (string-append "dconf/db/" name)
+                (dconf-profile->db profile)))))
+
+(define dconf-service-type
+  (service-type
+   (name 'dconf-profile)
+   (extensions
+    (list (service-extension etc-service-type
+                             (lambda (dconf-profiles)
+                               (append-map dconf-profile->files
+                                           dconf-profiles)))))
+   (compose concatenate)
+   (extend append)
+   (default-value '())
+   (description "Extend the @code{etc-service-type} to populate the file
+hierarchy under @file{/etc/dconf} with the <dconf-profile> objects provided as
+argument.")))
+
+
+;;;
 ;;; GNOME Desktop Manager.
 ;;;
 
@@ -876,6 +980,7 @@ the GNOME desktop environment.")
   (gdm gdm-configuration-gdm (default gdm))
   (allow-empty-passwords? gdm-configuration-allow-empty-passwords? (default #t))
   (auto-login? gdm-configuration-auto-login? (default #f))
+  (auto-suspend? gdm-configuration-auto-suspend? (default #t))
   (dbus-daemon gdm-configuration-dbus-daemon (default dbus-daemon-wrapper))
   (debug? gdm-configuration-debug? (default #f))
   (default-user gdm-configuration-default-user (default #f))
@@ -885,9 +990,35 @@ the GNOME desktop environment.")
                       (default (xorg-configuration)))
   (x-session gdm-configuration-x-session
              (default (xinitrc)))
+  (xdmcp? gdm-configuration-xdmcp?
+          (default #f))
   (wayland? gdm-configuration-wayland? (default #f))
   (wayland-session gdm-configuration-wayland-session
                    (default gdm-wayland-session-wrapper)))
+
+(define (gdm-dconf-profiles config)
+  (if (gdm-configuration-auto-suspend? config)
+      '()
+      ;; This custom gconf profile works around a lack of configuration option
+      ;; to disable auto-suspend when no users are physically logged in (see:
+      ;; https://gitlab.gnome.org/GNOME/gnome-control-center/-/issues/22).
+      (list (dconf-profile
+             (name "gdm")
+             (content (list #~(begin
+                                (use-modules (ice-9 textual-ports))
+                                (string-trim
+                                 (call-with-input-file
+                                     #$(file-append gdm "/share/dconf/profile/gdm")
+                                   get-string-all)))
+                            "system-db:gdm"))
+             (keyfile (dconf-keyfile
+                       (name "00-disable-suspend")
+                       (content
+                        (list "[org/gnome/settings-daemon/plugins/power]"
+                              "sleep-inactive-ac-type='nothing'"
+                              "sleep-inactive-battery-type='nothing'"
+                              "sleep-inactive-ac-timeout=0"
+                              "sleep-inactive-battery-timeout=0"))))))))
 
 (define (gdm-configuration-file config)
   (mixed-text-file "gdm-custom.conf"
@@ -913,18 +1044,20 @@ the GNOME desktop environment.")
                    ;; See also
                    ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=39281>.
                    "InitialSetupEnable=false\n"
-                   "WaylandEnable=" (if (gdm-configuration-wayland? config)
-                                        "true"
-                                        "false") "\n"
+                   (format #f "WaylandEnable=~:[false~;true~]~%"
+                           (gdm-configuration-wayland? config))
                    "\n"
                    "[debug]\n"
-                   "Enable=" (if (gdm-configuration-debug? config)
-                                 "true"
-                                 "false") "\n"
+                   (format #f "Enable=~:[false~;true~]~%"
+                           (gdm-configuration-debug? config))
                    "\n"
                    "[security]\n"
                    "#DisallowTCP=true\n"
-                   "#AllowRemoteAutoLogin=false\n"))
+                   "#AllowRemoteAutoLogin=false\n"
+                   "\n"
+                   "[xdmcp]\n"
+                   (format #f "Enable=~:[false~;true~]~%"
+                           (gdm-configuration-xdmcp? config))))
 
 (define (gdm-pam-service config)
   "Return a PAM service for @command{gdm}."
@@ -959,7 +1092,10 @@ the GNOME desktop environment.")
                      (list #$(file-append (gdm-configuration-gdm config)
                                           "/bin/gdm"))
                      #:environment-variables
-                     (list (string-append
+                     (list #$@(if (gdm-configuration-auto-suspend? config)
+                                  #~()
+                                  #~("DCONF_PROFILE=/etc/dconf/profile/gdm"))
+                           (string-append
                             "GDM_CUSTOM_CONF="
                             #$(gdm-configuration-file config))
                            (string-append
@@ -995,6 +1131,41 @@ the GNOME desktop environment.")
          (stop #~(make-kill-destructor))
          (respawn? #t))))
 
+(define gdm-polkit-rules
+  (lambda (config)
+    (if (gdm-configuration-xdmcp? config)
+        ;; Allow remote (XDMCP) users to use colord; otherwise an
+        ;; authentication dialog would appear on the GDM screen (see the
+        ;; upstream bug:
+        ;; https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/issues/273).
+        (list (computed-file
+               "02-allow-colord.rules"
+               (with-imported-modules '((guix build utils))
+                 #~(begin
+                     (use-modules (guix build utils))
+
+                     (let* ((rules.d
+                             (string-append #$output
+                                            "/share/polkit-1"
+                                            "/rules.d"))
+                            (allow-colord.rules (string-append
+                                                 rules.d
+                                                 "/02-allow-colord.rules")))
+                       (mkdir-p rules.d)
+                       (call-with-output-file allow-colord.rules
+                         (lambda (port)
+                           ;; This workaround enables any local or remote in
+                           ;; the "users" group to use colord (see:
+                           ;; https://c-nergy.be/blog/?p=12073).
+                           (format port "\
+polkit.addRule(function(action, subject) {
+   if (action.id.match(\"org.freedesktop.color-manager\")) {
+      polkit.log(\"POLKIT DEBUG returning YES for action: \" + action);
+      return polkit.Result.YES;
+   }
+});~%"))))))))
+        '())))
+
 (define gdm-service-type
   (handle-xorg-configuration gdm-configuration
     (service-type (name 'gdm)
@@ -1003,8 +1174,12 @@ the GNOME desktop environment.")
                                             gdm-shepherd-service)
                          (service-extension account-service-type
                                             (const %gdm-accounts))
+                         (service-extension dconf-service-type
+                                            gdm-dconf-profiles)
                          (service-extension pam-root-service-type
                                             gdm-pam-service)
+                         (service-extension polkit-service-type
+                                            gdm-polkit-rules)
                          (service-extension profile-service-type
                                             gdm-configuration-gnome-shell-assets)
                          (service-extension dbus-root-service-type

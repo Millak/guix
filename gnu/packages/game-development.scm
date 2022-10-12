@@ -1210,7 +1210,7 @@ to create fully featured games and multimedia programs in the python language.")
 
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
-        (renpy-version "8.0.0"))
+        (renpy-version "8.0.3"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
@@ -1220,7 +1220,7 @@ to create fully featured games and multimedia programs in the python language.")
          (method url-fetch)
          (uri (string-append "https://www.renpy.org/dl/" renpy-version
                              "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "0majf64pdfba5byjlv41pgsdmwvy09hw3m7143jz3kc1wjd2gaw8"))
+         (sha256 (base32 "1nq78mybkvshshdjy5bly6nfq6dnwll648ng62fwmksxpni17486"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -1261,13 +1261,13 @@ developed mainly for Ren'py.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.0.0")
+    (version "8.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.renpy.org/dl/" version
                            "/renpy-" version "-source.tar.bz2"))
-       (sha256 (base32 "09z3r16j4cxddkb50ghmi4xp0s05s15q4pzdmfajy85ignwqhjdi"))
+       (sha256 (base32 "1b49y60pi6304fg06lw5gajzrgg9w80swpfkn6pw0lxbr6djgjgn"))
        (modules '((guix build utils)))
        (patches
         (search-patches

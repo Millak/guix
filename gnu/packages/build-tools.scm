@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -763,3 +764,35 @@ Build has features such as:
 @item Extensible language/compiler framework.
 @end itemize")
     (license license:gpl2+)))
+
+(define-public genie
+  (let ((commit "b139103697bbb62db895e4cc7bfe202bcff4ff25")
+        (revision "0"))
+    (package
+      (name "genie")
+      (version (git-version "1167" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bkaradzic/genie")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "16plshzkyjjzpfcxnwjskrs7i4gg0qn92h2k0rbfl4a79fgmwvwv"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases #~(modify-phases %standard-phases
+                          (delete 'configure)
+                          (replace 'install
+                            (lambda _
+                              (install-file "bin/linux/genie"
+                                            (string-append #$output "/bin")))))
+             #:tests? #f)) ;no tests
+      (home-page "https://github.com/bkaradzic/genie")
+      (synopsis "Project generator")
+      (description
+       "GENie generates projects from Lua scripts, making it easy to apply the
+same settings to multiple projects.  It supports generating projects using GNU
+Makefiles, JSON Compilation Database, and experimentally Ninja.")
+      (license license:bsd-3))))

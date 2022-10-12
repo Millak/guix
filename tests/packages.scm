@@ -94,6 +94,13 @@
                     (write
                      (dummy-package "foo" (location #f)))))))
 
+(test-equal "license type checking"
+  'bad-license
+  (guard (c ((package-license-error? c)
+             (package-error-invalid-license c)))
+    (dummy-package "foo"
+      (license 'bad-license))))
+
 (test-assert "hidden-package"
   (and (hidden-package? (hidden-package (dummy-package "foo")))
        (not (hidden-package? (dummy-package "foo")))))

@@ -53,6 +53,7 @@
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Andreas Rammhold <andreas@rammhold.de>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,6 +100,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages crypto)
@@ -109,6 +111,7 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
@@ -5223,6 +5226,74 @@ name space for storing data in PAM.
 greetd-pam-mount is used in configuration of greetd to provide
 auto-(mounting/unmounting) of XDG_RUNTIME_DIR in the way that it will not
 interfere with default pam-mount configuration.")))
+
+(define-public wlgreet
+  (package
+    (name "wlgreet")
+    (version "0.4")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://git.sr.ht/~kennylevinsen/wlgreet")
+                   (commit version)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "00grp63n9nrgqls3knxfv9wjbc7p0jwr7i2vzxy750dz85gi2kzn"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-chrono" ,rust-chrono-0.4)
+             ("rust-getopts" ,rust-getopts-0.2)
+             ("rust-greetd-ipc" ,rust-greetd-ipc-0.8)
+             ("rust-lazy-static" ,rust-lazy-static-1)
+             ("rust-memmap2" ,rust-memmap2-0.3)
+             ("rust-nix" ,rust-nix-0.15)
+             ("rust-os-pipe" ,rust-os-pipe-0.8)
+             ("rust-rusttype" ,rust-rusttype-0.7)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-smithay-client-toolkit"
+              ,rust-smithay-client-toolkit-0.15)
+             ("rust-toml" ,rust-toml-0.5)
+             ("rust-wayland-client" ,rust-wayland-client-0.29)
+             ("rust-wayland-protocols" ,rust-wayland-protocols-0.29)
+             ("rust-xml-rs" ,rust-xml-rs-0.8))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-bundled-fonts
+                 (lambda _
+                   (delete-file-recursively "fonts")))
+               (add-after 'remove-bundled-fonts 'fix-font-references
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/draw.rs"
+                     (("\\.\\./fonts/dejavu/DejaVuSansMono\\.ttf" _)
+                      (search-input-file
+                       inputs
+                       "share/fonts/truetype/DejaVuSansMono.ttf"))
+                     (("\\.\\./fonts/Roboto-Regular\\.ttf" _)
+                      (search-input-file
+                       inputs
+                       "share/fonts/truetype/Roboto-Regular.ttf")))))
+               (add-after 'configure 'fix-library-references
+                 (lambda* (#:key inputs vendor-dir #:allow-other-keys)
+                   (substitute* (find-files vendor-dir "\\.rs$")
+                     (("lib(wayland-.*|xkbcommon)\\.so" so-file)
+                      (search-input-file
+                       inputs
+                       (string-append "lib/" so-file)))))))))
+    (inputs
+     (list font-dejavu
+           font-google-roboto
+           libxkbcommon
+           wayland))
+    (home-page "https://git.sr.ht/~kennylevinsen/wlgreet")
+    (synopsis "Bare-bones Wayland-based greeter for @command{greetd}")
+    (description
+     "@command{wlgreet} provides a @command{greetd} greeter
+that runs on a Wayland compositor such as @command{sway}.  It
+is implemented with pure Wayland APIs, so it does not depend
+on a GUI toolkit.")
+    (license license:gpl3)))
 
 (define-public libseat
   (package

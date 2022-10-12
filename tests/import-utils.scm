@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -32,13 +32,26 @@
 (test-begin "import-utils")
 
 (test-equal "beautify-description: use double spacing"
-  "This is a package.  It is great.  Trust me Mr.  Hendrix."
+  "\
+Trust me Mr. Hendrix, M. Night Shyamalan et al.  \
+Differences are hard to spot,
+e.g. in CLOS vs. GOOPS."
   (beautify-description
-   "This is a package. It is great. Trust me Mr. Hendrix."))
+   "
+Trust me Mr. Hendrix, M. Night Shyamalan et al. \
+Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
 
 (test-equal "beautify-description: transform fragment into sentence"
   "This package provides a function to establish world peace"
   (beautify-description "A function to establish world peace"))
+
+(test-equal "beautify-description: remove single quotes"
+  "CRAN likes to quote acronyms and function names."
+  (beautify-description "CRAN likes to 'quote' acronyms and 'function' names."))
+
+(test-equal "beautify-description: escape @"
+  "This @@ is not Texinfo syntax.  Neither is this %@@>%."
+  (beautify-description "This @ is not Texinfo syntax.  Neither is this %@>%."))
 
 (test-equal "license->symbol"
   'license:lgpl2.0
@@ -202,5 +215,24 @@
 
                  ("license" . #f))))
     (package-native-inputs (alist->package meta))))
+
+(test-assert "alist->package with properties"
+  (let* ((meta '(("name" . "hello")
+                 ("version" . "2.10")
+                 ("source" .
+                  ;; Use a 'file://' URI so that we don't cause a download.
+                  ,(string-append "file://"
+                                  (search-path %load-path "guix.scm")))
+                 ("build-system" . "gnu")
+                 ("properties" . (("hidden?" . #t)
+                                  ("upstream-name" . "hello-upstream")))
+                 ("home-page" . "https://gnu.org")
+                 ("synopsis" . "Say hi")
+                 ("description" . "This package says hi.")
+                 ("license" . "GPL-3.0+")))
+         (pkg (alist->package meta)))
+    (and (package? pkg)
+         (equal? (package-upstream-name pkg) "hello-upstream")
+         (hidden-package? pkg))))
 
 (test-end "import-utils")

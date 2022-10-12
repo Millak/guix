@@ -92,6 +92,7 @@
   #:use-module (ice-9 match)
   #:use-module (rnrs bytevectors)
   #:export (guix-system
+            read-operating-system
 
             service-node-type
             shepherd-service-node-type))
@@ -106,6 +107,11 @@
   (make-user-module '((gnu system)
                       (gnu services)
                       (gnu system shadow))))
+
+;; Note: The procedure below is used in external projects such as Emacs-Guix.
+(define (read-operating-system file)
+  "Read the operating-system declaration from FILE and return it."
+  (load* file %user-module))
 
 
 ;;;

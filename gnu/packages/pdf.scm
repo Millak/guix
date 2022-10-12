@@ -18,7 +18,7 @@
 ;;; Copyright © 2019 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -112,7 +112,7 @@
 (define-public extractpdfmark
   (package
     (name "extractpdfmark")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -121,21 +121,21 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14aa6zly53j8gx5d32caiabk2j4b102xha0v9149yahz6kbn5b80"))))
+        (base32 "0yzc3ajgdfb4ssxp49g2vrki45kl144j39bg0wdn6h9dc14kzmx4"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'start-xorg-server
-           ;; The test suite wants to write to /homeless-shelter
-           (lambda _ (setenv "HOME" (getcwd)))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-home
+                 ;; The test suite wants to write to /homeless-shelter
+                 (lambda _ (setenv "HOME" (getcwd)))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("ghostscript" ,ghostscript)
-       ("pkg-config" ,pkg-config)
-       ("texlive" ,texlive-tiny)))
+     (list autoconf
+           automake
+           gettext-minimal
+           ghostscript
+           pkg-config
+           texlive-tiny))
     (inputs
      (list poppler))
     (home-page "https://github.com/trueroad/extractpdfmark")
@@ -727,24 +727,36 @@ extracting content or merging files.")
 (define-public python-pydyf
   (package
     (name "python-pydyf")
-    (version "0.1.2")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydyf" version))
        (sha256
-        (base32 "0b30g3hhxw1bg18r9ax85i1dkg8vy1y1wzas0bg0bxblh7j5sbqy"))))
+        (base32 "18q43g5d9455msipcgd5fvnh8m4a2rz189slzfg80yycjw66rshs"))))
     (build-system python-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "pytest" "-vv" "-c" "/dev/null")))))))
     (propagated-inputs (list python-pillow))
-    (native-inputs (list ghostscript python-pytest))
+    (native-inputs
+     (list ghostscript
+           python-flit-core
+           python-pypa-build
+           python-pytest))
     (home-page "https://github.com/CourtBouillon/pydyf")
     (synopsis "Low-level PDF generator")
     (description "@code{pydyf} is a low-level PDF generator written in Python
@@ -1276,7 +1288,7 @@ manage or manipulate PDFs.")
 (define-public pdfarranger
   (package
     (name "pdfarranger")
-    (version "1.8.2")
+    (version "1.9.1")
     (source
      (origin
        (method git-fetch)
@@ -1285,19 +1297,19 @@ manage or manipulate PDFs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18bpnnwjx72d5ps06dr89mkixiwzc9hf5gr75k8qcnrkshl038v2"))))
+        (base32 "1s0ysg8kfbrvwcr80vrsx7150ixa9v7pb4xm49s97nkiq5k69hal"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f                      ;no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-for-typelib
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out     (assoc-ref outputs "out"))
-                    (program (string-append out "/bin/pdfarranger")))
-               (wrap-program program
-                 `("GI_TYPELIB_PATH" ":" prefix
-                   (,(getenv "GI_TYPELIB_PATH"))))))))))
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-for-typelib
+            (lambda _
+              (let ((program (string-append #$output "/bin/pdfarranger")))
+                (wrap-program program
+                  `("GI_TYPELIB_PATH" ":" prefix
+                    (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs
      (list intltool python-distutils-extra))
     (inputs

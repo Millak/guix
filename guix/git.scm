@@ -62,6 +62,7 @@
             commit-difference
             commit-relation
             commit-descendant?
+            commit-id?
 
             remote-refs
 
@@ -219,6 +220,12 @@ of SHA1 string."
     (last (string-split url #\/)) ".git" "")
    "-" (string-take sha1 7)))
 
+(define (commit-id? str)
+  "Return true if STR is likely a Git commit ID, false otherwise---e.g., if it
+is a tag name.  This is based on a simple heuristic so use with care!"
+  (and (= (string-length str) 40)
+       (string-every char-set:hex-digit str)))
+
 (define (resolve-reference repository ref)
   "Resolve the branch, commit or tag specified by REF, and return the
 corresponding Git object."
@@ -254,8 +261,7 @@ corresponding Git object."
                           #f))
                      (_ #f)))
               => (lambda (commit) (resolve `(commit . ,commit))))
-             ((or (> (string-length str) 40)
-                  (not (string-every char-set:hex-digit str)))
+             ((not (commit-id? str))
               (resolve `(tag . ,str)))      ;definitely a tag
              (else
               (catch 'git-error

@@ -354,7 +354,8 @@ asdf-build-system."
 (define-team translations
   (team 'translations
         #:name "Translations"
-        #:scope (list (make-regexp "^po/"))))
+        #:scope (list "etc/news.scm"
+                      (make-regexp "^po/"))))
 
 (define-team installer
   (team 'installer

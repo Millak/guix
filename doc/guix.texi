@@ -107,6 +107,7 @@ Copyright @copyright{} 2022 Karl Hallsby@*
 Copyright @copyright{} 2022 Justin Veilleux@*
 Copyright @copyright{} 2022 Reily Siegel@*
 Copyright @copyright{} 2022 Simon Streit@*
+Copyright @copyright{} 2022 (@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -1590,7 +1591,7 @@ effectively running @code{guix-daemon} executable is upgraded.
 
 @node Invoking guix-daemon
 @section Invoking @command{guix-daemon}
-
+@cindex @command{guix-daemon}
 The @command{guix-daemon} program implements all the functionality to
 access the store.  This includes launching build processes, running the
 garbage collector, querying the availability of a build result, etc.  It
@@ -2939,11 +2940,12 @@ chroot /mnt /bin/sh
 @end example
 
 @item
-Source your @var{user} profile to setup the environment, where
-@var{user} is the user name used for the Guix System you are attempting
-to repair:
+Source the system profile as well as your @var{user} profile to setup
+the environment, where @var{user} is the user name used for the Guix
+System you are attempting to repair:
 
 @example sh
+source /var/guix/profiles/system/profile/etc/profile
 source /home/@var{user}/.guix-profile/etc/profile
 @end example
 
@@ -3314,6 +3316,7 @@ retaining precise @dfn{provenance tracking} of the software.
 @cindex package installation
 @cindex package removal
 @cindex profile
+@cindex @command{guix package}
 The @command{guix package} command is the tool that allows users to
 install, upgrade, and remove packages, as well as rolling back to
 previous configurations.  These operations work on a user
@@ -4307,6 +4310,7 @@ guix package}).
 
 @cindex garbage collector
 @cindex disk space
+@cindex @command{guix gc}
 Packages that are installed, but not used, may be @dfn{garbage-collected}.
 The @command{guix gc} command allows users to explicitly run the garbage
 collector to reclaim space from the @file{/gnu/store} directory.  It is
@@ -4952,6 +4956,7 @@ declaration, and so on.
 
 @cindex reproducibility
 @cindex replicating Guix
+@cindex @command{guix describe}
 Often you may want to answer questions like: ``Which revision of Guix am I
 using?'' or ``Which channels am I using?''  This is useful information in many
 situations: if you want to @emph{replicate} an environment on a different
@@ -5047,6 +5052,8 @@ Display information about @var{profile}.
 
 @cindex @command{guix archive}
 @cindex archive
+@cindex exporting files from the store
+@cindex importing files to the store
 The @command{guix archive} command allows users to @dfn{export} files
 from the store into a single archive, and to later @dfn{import} them on
 a machine that runs Guix.
@@ -5805,6 +5812,7 @@ easily distributed to users who do not run Guix.
 @cindex reproducible build environments
 @cindex development environments
 @cindex @command{guix environment}
+@cindex @command{guix shell}
 @cindex environment, package build environment
 The purpose of @command{guix shell} is to make it easy to create one-off
 software environments, without changing one's profile.  It is typically
@@ -6235,6 +6243,8 @@ package transformation options (@pxref{Package Transformation Options}).
 @node Invoking guix environment
 @section Invoking @command{guix environment}
 
+@cindex @command{guix environment}
+
 The purpose of @command{guix environment} is to assist in creating
 development environments.
 
@@ -6613,6 +6623,8 @@ transformation options (@pxref{Package Transformation Options}).
 
 @node Invoking guix pack
 @section Invoking @command{guix pack}
+
+@cindex @command{guix pack}
 
 Occasionally you want to pass software to people who are not (yet!)
 lucky enough to be using Guix.  You'd tell them to run @command{guix
@@ -7031,6 +7043,8 @@ for Fortran development.  For other languages, please use
 
 @node Invoking guix git authenticate
 @section Invoking @command{guix git authenticate}
+
+@cindex @command{guix git authenticate}
 
 The @command{guix git authenticate} command authenticates a Git checkout
 following the same rule as for channels (@pxref{channel-authentication,
@@ -11797,6 +11811,7 @@ replaced with some arbitrary object -- currently the list
 @node Invoking guix repl
 @section Invoking @command{guix repl}
 
+@cindex @command{guix repl}
 @cindex REPL, read-eval-print loop, script
 The @command{guix repl} command makes it easier to program Guix in Guile
 by launching a Guile @dfn{read-eval-print loop} (REPL) for interactive
@@ -12364,14 +12379,15 @@ one provided by the distribution.  The example below downloads
 the @code{ed} package:
 
 @example
-guix build ed --with-source=mirror://gnu/ed/ed-1.7.tar.gz
+guix build ed --with-source=mirror://gnu/ed/ed-1.4.tar.gz
 @end example
 
 As a developer, @option{--with-source} makes it easy to test release
-candidates:
+candidates, and even to test their impact on packages that depend on
+them:
 
 @example
-guix build guile --with-source=../guile-2.0.9.219-e1bb7.tar.xz
+guix build elogind --with-source=@dots{}/shepherd-0.9.0rc1.tar.gz 
 @end example
 
 @dots{} or to build from a checkout in a pristine environment:
@@ -13238,7 +13254,7 @@ guix import gem rails
 You can also ask for a specific version:
 
 @example
-guix import gem @@7.0.4
+guix import gem rails@@7.0.4
 @end example
 
 @table @code
@@ -14101,6 +14117,11 @@ otherwise.
 @node Invoking guix style
 @section Invoking @command{guix style}
 
+@cindex @command{guix style}
+@cindex styling rules
+@cindex lint, code style
+@cindex format, code style
+@cindex format conventions
 The @command{guix style} command helps users and packagers alike style
 their package definitions and configuration files according to the
 latest fashionable trends.  It can either reformat whole files, with the
@@ -15339,6 +15360,7 @@ information about mismatches.
 @node Invoking guix copy
 @section Invoking @command{guix copy}
 
+@cindex @command{guix copy}
 @cindex copy, of store items, over SSH
 @cindex SSH, copy of store items
 @cindex sharing store items across machines
@@ -15456,6 +15478,7 @@ must be PID 1 of the container or one of its child processes.
 @node Invoking guix weather
 @section Invoking @command{guix weather}
 
+@cindex @command{guix weather}
 Occasionally you're grumpy because substitutes are lacking and you end
 up building packages by yourself (@pxref{Substitutes}).  The
 @command{guix weather} command reports on substitute availability on the
@@ -15586,6 +15609,7 @@ Display the list of store items for which substitutes are missing.
 @node Invoking guix processes
 @section Invoking @command{guix processes}
 
+@cindex @command{guix processes}
 The @command{guix processes} command can be useful to developers and system
 administrators, especially on multi-user machines and on build farms: it lists
 the current sessions (connections to the daemon), as well as information about
@@ -16289,7 +16313,7 @@ The default set includes core utilities and it is good practice to
 install non-core utilities in user profiles (@pxref{Invoking guix
 package}).
 
-@item @code{timezone}
+@item @code{timezone} (default: @code{"Etc/UTC"})
 A timezone identifying string---e.g., @code{"Europe/Paris"}.
 
 You can run the @command{tzselect} command to find out which timezone
@@ -17530,6 +17554,7 @@ declaration.
 * Web Services::                Web servers.
 * Certificate Services::        TLS certificates via Let's Encrypt.
 * DNS Services::                DNS daemons.
+* VNC Services::                VNC daemons.
 * VPN Services::                VPN daemons.
 * Network File System::         NFS related services.
 * Samba Services::              Samba services.
@@ -18656,6 +18681,81 @@ are set right after mentioned variables, so that they can be overriden.
 @end table
 @end deftp
 
+@deftp {Data Type} greetd-wlgreet-session
+Generic configuration record for the wlgreet greetd greeter.
+
+@table @asis
+@item @code{wlgreet} (default: @code{wlgreet})
+The package with the @command{/bin/wlgreet} command.
+
+@item @code{command} (default: @code{(file-append sway "/bin/sway")})
+Command to be started by @command{/bin/wlgreet} on successful login.
+
+@item @code{command-args} (default: @code{'()})
+Command arguments to pass to command.
+
+@item @code{output-mode} (default: @code{"all"})
+Option to use for @code{outputMode} in the TOML configuration file.
+
+@item @code{scale} (default: @code{1})
+Option to use for @code{scale} in the TOML configuration file.
+
+@item @code{background} (default: @code{'(0 0 0 0.9)})
+RGBA list to use as the background colour of the login prompt.
+
+@item @code{headline} (default: @code{'(1 1 1 1)})
+RGBA list to use as the headline colour of the UI popup.
+
+@item @code{prompt} (default: @code{'(1 1 1 1)})
+RGBA list to use as the prompt colour of the UI popup.
+
+@item @code{prompt-error} (default: @code{'(1 1 1 1)})
+RGBA list to use as the error colour of the UI popup.
+
+@item @code{border} (default: @code{'(1 1 1 1)})
+RGBA list to use as the border colour of the UI popup.
+
+@item @code{extra-env} (default: @code{'()})
+Extra environment variables to set on login.
+
+@end table
+@end deftp
+
+@deftp {Data Type} greetd-wlgreet-sway-session
+Sway-specific configuration record for the wlgreet greetd greeter.
+
+@table @asis
+@item @code{wlgreet-session} (default: @code{(greetd-wlgreet-session)})
+A @code{greetd-wlgreet-session} record for generic wlgreet configuration,
+on top of the Sway-specific @code{greetd-wlgreet-sway-session}.
+
+@item @code{sway} (default: @code{sway})
+The package providing the @command{/bin/sway} command.
+
+@item @code{sway-configuration} (default: #f)
+File-like object providing an additional Sway configuration file to be
+prepended to the mandatory part of the configuration.
+
+@end table
+
+Here is an example of a greetd configuration that uses wlgreet and Sway:
+
+@lisp
+  (greetd-configuration
+   ;; We need to give the greeter user these permissions, otherwise
+   ;; Sway will crash on launch.
+   (greeter-supplementary-groups (list "video" "input" "seat"))
+   (terminals
+    (list (greetd-terminal-configuration
+           (terminal-vt "1")
+           (terminal-switch #t)
+           (default-session-command
+            (greetd-wlgreet-sway-session
+             (sway-configuration
+              (local-file "sway-greetd.conf"))))))))
+@end lisp
+@end deftp
+
 @node Scheduled Job Execution
 @subsection Scheduled Job Execution
 
@@ -19175,8 +19275,8 @@ This is the data type representing a network route.
 
 @table @asis
 @item @code{destination}
-The route destination (a string), either an IP address or
-@code{"default"} to denote the default route.
+The route destination (a string), either an IP address and network mask
+or @code{"default"} to denote the default route.
 
 @item @code{source} (default: @code{#f})
 The route source.
@@ -19227,9 +19327,25 @@ the user mode network stack,,, QEMU, QEMU Documentation}).
 @cindex DHCP, networking service
 @defvr {Scheme Variable} dhcp-client-service-type
 This is the type of services that run @var{dhcp}, a Dynamic Host Configuration
-Protocol (DHCP) client, on all the non-loopback network interfaces.  Its value
-is the DHCP client package to use, @code{isc-dhcp} by default.
+Protocol (DHCP) client.
 @end defvr
+
+@deftp {Data Type} dhcp-client-configuration
+Data type representing the configuration of the DHCP client service.
+
+@table @asis
+@item @code{package} (default: @code{isc-dhcp})
+DHCP client package to use.
+
+@item @code{interfaces} (default: @code{'all})
+Either @code{'all} or the list of interface names that the DHCP client
+should listen on---e.g., @code{'("eno1")}.
+
+When set to @code{'all}, the DHCP client listens on all the available
+non-loopback interfaces that can be activated.  Otherwise the DHCP
+client listens only on the specified interfaces.
+@end table
+@end deftp
 
 @cindex NetworkManager
 
@@ -19460,7 +19576,7 @@ For example:
 The package that provides the DHCP daemon.  This package is expected to
 provide the daemon at @file{sbin/dhcpd} relative to its output
 directory.  The default package is the
-@uref{https://www.isc.org/products/DHCP, ISC's DHCP server}.
+@uref{https://www.isc.org/dhcp/, ISC's DHCP server}.
 @item @code{config-file} (default: @code{#f})
 The configuration file to use.  This is required.  It will be passed to
 @code{dhcpd} via its @code{-cf} option.  This may be any ``file-like''
@@ -21022,6 +21138,7 @@ started by the @dfn{login manager}, by default the GNOME Display Manager (GDM).
 
 @cindex GDM
 @cindex GNOME, login manager
+@anchor{gdm}
 GDM of course allows users to log in into window managers and desktop
 environments other than GNOME; for those using GNOME, GDM is required for
 features such as automatic screen locking.
@@ -21067,6 +21184,12 @@ When @code{auto-login?} is false, GDM presents a log-in screen.
 When @code{auto-login?} is true, GDM logs in directly as
 @code{default-user}.
 
+@item @code{auto-suspend?} (default @code{#t})
+When true, GDM will automatically suspend to RAM when nobody is
+physically connected.  When a machine is used via remote desktop or SSH,
+this should be set to false to avoid GDM interrupting remote sessions or
+rendering the machine unavailable.
+
 @item @code{debug?} (default: @code{#f})
 When true, GDM writes debug messages to its log.
 
@@ -21078,6 +21201,12 @@ Configuration of the Xorg graphical server.
 
 @item @code{x-session} (default: @code{(xinitrc)})
 Script to run before starting a X session.
+
+@item @code{xdmcp?} (default: @code{#f})
+When true, enable the X Display Manager Control Protocol (XDMCP).  This
+should only be enabled in trusted environments, as the protocol is not
+secure.  When enabled, GDM listens for XDMCP queries on the UDP port
+177.
 
 @item @code{dbus-daemon} (default: @code{dbus-daemon-wrapper})
 File name of the @code{dbus-daemon} executable.
@@ -21311,6 +21440,7 @@ Relogin after logout.
 
 @cindex lightdm, graphical login manager
 @cindex display manager, lightdm
+@anchor{lightdm}
 @defvr {Scheme Variable} lightdm-service-type
 This is the type of the service to run the
 @url{https://github.com/canonical/lightdm,LightDM display manager}.  Its
@@ -21514,10 +21644,11 @@ Extra configuration values to append to the seat configuration section.
 
 @cindex Xorg, configuration
 @deftp {Data Type} xorg-configuration
-This data type represents the configuration of the Xorg graphical display
-server.  Note that there is no Xorg service; instead, the X server is started
-by a ``display manager'' such as GDM, SDDM, and SLiM@.  Thus, the configuration
-of these display managers aggregates an @code{xorg-configuration} record.
+This data type represents the configuration of the Xorg graphical
+display server.  Note that there is no Xorg service; instead, the X
+server is started by a ``display manager'' such as GDM, SDDM, LightDM or
+SLiM@.  Thus, the configuration of these display managers aggregates an
+@code{xorg-configuration} record.
 
 @table @asis
 @item @code{modules} (default: @code{%default-xorg-modules})
@@ -30784,6 +30915,157 @@ Defaults to @samp{()}.
 
 @c %end of fragment
 
+@node VNC Services
+@subsection VNC Services
+@cindex VNC (virtual network computing)
+@cindex XDMCP (x display manager control protocol)
+
+The @code{(gnu services vnc)} module provides services related to
+@dfn{Virtual Network Computing} (VNC), which makes it possible to
+locally use graphical Xorg applications running on a remote machine.
+Combined with a graphical manager that supports the @dfn{X Display
+Manager Control Protocol}, such as GDM (@pxref{gdm}) or LightDM
+(@pxref{lightdm}), it is possible to remote an entire desktop for a
+multi-user environment.
+
+@subsubheading Xvnc
+
+Xvnc is a VNC server that spawns its own X window server; which means it
+can run on headless servers.  The Xvnc implementations provided by the
+@code{tigervnc-server} and @code{turbovnc} aim to be fast and efficient.
+
+@defvar {Scheme Variable} xvnc-service-type
+
+The @code{xvnc-server-type} service can be configured via the
+@code{xvnc-configuration} record, documented below.  A second virtual
+display could be made available on a remote machine for via the
+following configuration:
+@end defvar
+
+@lisp
+(service xvnc-service-type (xvnc-configuration (display-number 10)
+@end lisp
+
+As a demonstration, the @command{xclock} command could then be started
+on the remote machine on display number 10, and it could be display
+locally via the @command{vncviewer} command:
+@example
+# Start xclock on the remote machine.
+ssh -L5910:localhost:5910 -- guix shell xclock -- env DISPLAY=:10 xclock
+# Access it via VNC.
+guix shell tigervnc-client -- vncviewer localhost:5910
+@end example
+
+The following configuration combines XDMCP and Inetd to allow multiple
+users to concurrently use the remote system, login in graphically via
+the GDM display manager:
+
+@lisp
+(operating-system
+  [...]
+  (services (cons*
+             [...]
+             (service xvnc-service-type (xvnc-configuration
+                                         (display-number 5)
+                                         (localhost? #f)
+                                         (xdmcp? #t)
+                                         (inetd? #t)))
+             (modify-services %desktop-services
+               (gdm-service-type config => (gdm-configuration
+                                            (inherit config)
+                                            (auto-suspend? #f)
+                                            (xdmcp? #t)))))))
+@end lisp
+
+A remote user could then connect to it by using the @command{vncviewer}
+command or a compatible VNC client and start a desktop session of their
+choosing:
+@example
+vncviewer remote-host:5905
+@end example
+
+@quotation Warning
+Unless your machine is in a controlled environment, for security
+reasons, the @code{localhost?} configuration of the
+@code{xvnc-configuration} record should be left to its default @code{#t}
+value and exposed via a secure means such as an SSH port forward.  The
+XDMCP port, UDP 177 should also be blocked from the outside by a
+firewall, as it is not a secure protocol and can expose login
+credentials in clear.
+@end quotation
+
+@c Use (configuration->documentation 'xvnc-configuration) to regenerate
+@c the documentation.
+@c %start of fragment
+@deftp {Data Type} xvnc-configuration
+Available @code{xvnc-configuration} fields are:
+
+@table @asis
+@item @code{xvnc} (default: @code{tigervnc-server}) (type: file-like)
+The package that provides the Xvnc binary.
+
+@item @code{display-number} (default: @code{0}) (type: number)
+The display number used by Xvnc.  You should set this to a number not
+already used a Xorg server.
+
+@item @code{geometry} (default: @code{"1024x768"}) (type: string)
+The size of the desktop to be created.
+
+@item @code{depth} (default: @code{24}) (type: color-depth)
+The pixel depth in bits of the desktop to be created.  Accepted values
+are 16, 24 or 32.
+
+@item @code{port} (type: maybe-port)
+The port on which to listen for connections from viewers.  When left
+unspecified, it defaults to 5900 plus the display number.
+
+@item @code{ipv4?} (default: @code{#t}) (type: boolean)
+Use IPv4 for incoming and outgoing connections.
+
+@item @code{ipv6?} (default: @code{#t}) (type: boolean)
+Use IPv6 for incoming and outgoing connections.
+
+@item @code{password-file} (type: maybe-string)
+The password file to use, if any.  Refer to vncpasswd(1) to learn how to
+generate such a file.
+
+@item @code{xdmcp?} (default: @code{#f}) (type: boolean)
+Query the XDMCP server for a session.  This enables users to log in a
+desktop session from the login manager screen.  For a multiple users
+scenario, you'll want to enable the @code{inetd?} option as well, so
+that each connection to the VNC server is handled separately rather than
+shared.
+
+@item @code{inetd?} (default: @code{#f}) (type: boolean)
+Use an Inetd-style service, which runs the Xvnc server on demand.
+
+@item @code{frame-rate} (default: @code{60}) (type: number)
+The maximum number of updates per second sent to each client.
+
+@item @code{security-types} (default: @code{("None")}) (type: security-types)
+The allowed security schemes to use for incoming connections.  The
+default is "None", which is safe given that Xvnc is configured to
+authenticate the user via the display manager, and only for local
+connections.  Accepted values are any of the following: ("None"
+"VncAuth" "Plain" "TLSNone" "TLSVnc" "TLSPlain" "X509None" "X509Vnc")
+
+@item @code{localhost?} (default: @code{#t}) (type: boolean)
+Only allow connections from the same machine.  It is set to #true by
+default for security, which means SSH or another secure means should be
+used to expose the remote port.
+
+@item @code{log-level} (default: @code{30}) (type: log-level)
+The log level, a number between 0 and 100, 100 meaning most verbose
+output.  The log messages are output to syslog.
+
+@item @code{extra-options} (default: @code{()}) (type: strings)
+This can be used to provide extra Xvnc options not exposed via this
+<xvnc-configuration> record.
+
+@end table
+
+@end deftp
+@c %end of fragment
 
 @node VPN Services
 @subsection VPN Services
@@ -35658,6 +35940,9 @@ will use the current system it's running on as the default.
 @item @code{max-parallel-builds} (default: @code{1})
 The number of builds to perform in parallel.
 
+@item @code{max-allocated-builds} (default: @code{#f})
+The maximum number of builds this agent can be allocated.
+
 @item @code{max-1min-load-average} (default: @code{#f})
 Load average value to look at when considering starting new builds, if
 the 1 minute load average exceeds this value, the agent will wait before
@@ -37790,8 +38075,9 @@ like
 @end lisp
 
 @node Invoking guix system
-@section Invoking @code{guix system}
+@section Invoking @command{guix system}
 
+@cindex @command{guix system}
 Once you have written an operating system declaration as seen in the
 previous section, it can be @dfn{instantiated} using the @command{guix
 system} command.  The synopsis is:
@@ -38436,8 +38722,9 @@ Again, the default output format is Dot/Graphviz, but you can pass
 @end table
 
 @node Invoking guix deploy
-@section Invoking @code{guix deploy}
+@section Invoking @command{guix deploy}
 
+@cindex @command{guix deploy}
 We've already seen @code{operating-system} declarations used to manage a
 machine's configuration locally.  Suppose you need to configure multiple
 machines, though---perhaps you're managing a service on the web that's
@@ -40152,12 +40439,13 @@ services)}.
 
 @menu
 * Essential Home Services::  Environment variables, packages, on-* scripts.
-* Shells: Shells Home Services.          POSIX shells, Bash, Zsh.
-* Mcron: Mcron Home Service.             Scheduled User's Job Execution.
-* Shepherd: Shepherd Home Service.       Managing User's Daemons.
-* SSH: Secure Shell.                     Setting up the secure shell client.
-* Desktop: Desktop Home Services.        Services for graphical environments.
-* Guix: Guix Home Services.              Services for Guix.
+* Shells: Shells Home Services.                        POSIX shells, Bash, Zsh.
+* Mcron: Mcron Home Service.                           Scheduled User's Job Execution.
+* Power Management: Power Management Home Services.    Services for battery power.
+* Shepherd: Shepherd Home Service.                     Managing User's Daemons.
+* SSH: Secure Shell.                                   Setting up the secure shell client.
+* Desktop: Desktop Home Services.                      Services for graphical environments.
+* Guix: Guix Home Services.                            Services for Guix.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -40605,6 +40893,82 @@ specifications,, mcron, GNU@tie{}mcron}).
 @end table
 @end deftp
 
+@node Power Management Home Services
+@subsection Power Management Home Services
+
+@cindex power management
+The @code{(gnu home services pm)} module provides home services
+pertaining to battery power.
+
+@defvr {Scheme Variable} home-batsignal-service-type
+Service for @code{batsignal}, a program that monitors battery levels
+and warns the user through desktop notifications when their battery
+is getting low.  You can also configure a command to be run when the
+battery level passes a point deemed ``dangerous''.  This service is
+configured with the @code{home-batsignal-configuration} record.
+@end defvr
+
+@deftp {Data Type} home-batsignal-configuration
+Data type representing the configuration for batsignal.
+
+@table @asis
+@item @code{warning-level} (default: @code{15})
+The battery level to send a warning message at.
+
+@item @code{warning-message} (default: @code{#f})
+The message to send as a notification when the battery level reaches
+the @code{warning-level}.  Setting to @code{#f} uses the default
+message.
+
+@item @code{critical-level} (default: @code{5})
+The battery level to send a critical message at.
+
+@item @code{critical-message} (default: @code{#f})
+The message to send as a notification when the battery level reaches
+the @code{critical-level}.  Setting to @code{#f} uses the default
+message.
+
+@item @code{danger-level} (default: @code{2})
+The battery level to run the @code{danger-command} at.
+
+@item @code{danger-command} (default: @code{#f})
+The command to run when the battery level reaches the @code{danger-level}.
+Setting to @code{#f} disables running the command entirely.
+
+@item @code{full-level} (default: @code{#f})
+The battery level to send a full message at.  Setting to @code{#f}
+disables sending the full message entirely.
+
+@item @code{full-message} (default: @code{#f})
+The message to send as a notification when the battery level reaches
+the @code{full-level}.  Setting to @code{#f} uses the default message.
+
+@item @code{batteries} (default: @code{'()})
+The batteries to monitor.  Setting to @code{'()} tries to find batteries
+automatically.
+
+@item @code{poll-delay} (default: @code{60})
+The time in seconds to wait before checking the batteries again.
+
+@item @code{icon} (default: @code{#f})
+A file-like object to use as the icon for battery notifications.  Setting
+to @code{#f} disables notification icons entirely.
+
+@item @code{notifications?} (default: @code{#t})
+Whether to send any notifications.
+
+@item @code{notifications-expire?} (default: @code{#f})
+Whether notifications sent expire after a time.
+
+@item @code{notification-command} (default: @code{#f})
+Command to use to send messages.  Setting to @code{#f} sends a notification
+through @code{libnotify}.
+
+@item @code{ignore-missing?} (default: @code{#f})
+Whether to ignore missing battery errors.
+@end table
+@end deftp
+
 @node Shepherd Home Service
 @subsection Managing User Daemons
 
@@ -40931,7 +41295,9 @@ A typical extension for adding a channel might look like this:
 @end defvr
 
 @node Invoking guix home
-@section Invoking @code{guix home}
+@section Invoking @command{guix home}
+
+@cindex @command{guix home}
 
 Once you have written a home environment declaration (@pxref{Declaring
 the Home Environment,,,,}, it can be @dfn{instantiated} using the

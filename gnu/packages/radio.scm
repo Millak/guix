@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Sheng Yang <styang@fastmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022 Ryan Tolboom <ryan@using.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,6 +90,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tcl)
@@ -1642,7 +1644,7 @@ modes:
 (define-public nanovna-saver
   (package
     (name "nanovna-saver")
-    (version "0.3.9")
+    (version "0.5.3")
     (source
      (origin
        (method git-fetch)
@@ -1651,7 +1653,7 @@ modes:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h5k402wjlj7xjniggwf0x7a5srlgglc2x4hy6lz6c30zwa7z8fm"))))
+        (base32 "1h0wzva8j7fqnpf0qy42bw9rdclgq3jdq902ajvd9v5iqcqs78n0"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython))
@@ -2667,4 +2669,41 @@ Radios.")
 the navigation message, computation of observables and, finally, computation of
 position fixes) the signals of the BeiDou, Galileo, GLONASS and GPS Global
 Navigation Satellite System.")
+    (license license:gpl3+)))
+
+(define-public qdmr
+  (package
+    (name "qdmr")
+    (version "0.10.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/hmatuschek/qdmr")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "037vkwk974zrwacxafslkb3mbw9258v9sdpwdvb23msjzbc3snrn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda _
+                   (substitute* "lib/CMakeLists.txt"
+                     (("(DESTINATION \")/etc/udev/" _ directive)
+                      (string-append directive #$output "/lib/udev/"))))))))
+    (inputs (list libusb qtbase-5 qtlocation qtserialport yaml-cpp))
+    (native-inputs (list qttools-5))
+    (home-page "https://dm3mat.darc.de/qdmr/")
+    (synopsis "GUI application and command line tool to program DMR radios")
+    (description
+     "qdmr is a graphical user interface (GUI) application that allows one to
+program several types of DMR radios.  It is comparable to the Customer
+Programming Software (CPS) bundled with these radios but aims to be a more
+universal tool.
+
+To install the qdmr udev rules, you must extend @code{udev-service-type} with this
+package.  E.g.: @code{(udev-rules-service 'qdmr qdmr)}")
     (license license:gpl3+)))

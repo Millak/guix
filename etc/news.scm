@@ -25,6 +25,48 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "28ade1bab207974cce6a014e7187968511fc5526")
+        (title
+         (en "@option{--with-source} is now recursive")
+         (de "@option{--with-source} ist jetzt rekursiv")
+         (fr "@option{--with-source} est dorénavant récursive")
+         (pt "@option{--with-source} agora é recursiva"))
+        (body
+         (en "The @option{--with-source} package transformation option now
+uses the specified source for all matching packages, including dependencies.
+This option is useful for all package maintainers, developers, and, in
+general, all users who want Guix to facilitate their rights to modify their
+software and share their changes.
+
+Run @command{info \"(guix) Package Transformation Options\"} for more
+info.")
+         (de "Die Paketumwandlungsoption @option{--with-source} wird jetzt den
+angegebenen Quellcode für sämtliche passende Pakete benutzen, Abhängigkeiten
+eingeschlossen. Die Option hilft Paketbetreuern, Entwicklern und allgemein allen
+Nutzern, die Guix benutzen, das Recht, ihre Software anzupassen und
+Änderungen zu teilen, leichter auszuüben.
+
+Führen Sie für mehr Informationen @command{info \"(guix.de)
+Paketumwandlungsoptionen\"} aus.")
+         (fr "L'option de transformation de paquet @option{--with-source}
+s'applique désormais à tous les paquets correspondant, y compris les
+dépendances.  Cette option est utile pour les personnes qui maintiennent un
+logiciel, en développent un ou, plus généralement, pour toute personne qui
+souhaite que Guix facilite l'exercice de ses droits à modifier le logiciel et
+à partager ses changements.
+
+Lancer @command{info \"(guix.fr) Options de transformation de paquets\"} pour
+plus d'informations.")
+         (pt "A opção de transformação de pacote @option{--with-source} agora
+usa a fonte especificada para todos os pacotes correspondentes, incluindo
+dependências.  Essa opção é útil para todos os mantenedores de pacotes,
+desenvolvedores e usuários em geral que querem que o Guix facilite seu direito
+de modificar seu software e compartilhar suas mudanças.
+
+Execute @command{info \"(guix) Package Transformation Options\"} para mais
+informações.")))
+
  (entry (commit "a13f5ead0265cf0fe11e60150547c09dfc8c45b0")
         (title
          (en "Guix System image creation is now documented")

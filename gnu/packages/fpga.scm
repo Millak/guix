@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Andrew Miloradovsky <andrew@interpretmath.pw>
 ;;; Copyright © 2022 Christian Gelinek <cgelinek@radlogic.com.au>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
 
 (define-module (gnu packages fpga)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -352,7 +354,7 @@ FOSS FPGA place and route tool.")
 (define-public gtkwave
   (package
     (name "gtkwave")
-    (version "3.3.111")
+    (version "3.3.113")
     (source
      (origin
        (method url-fetch)
@@ -362,23 +364,20 @@ FOSS FPGA place and route tool.")
                   (string-append "http://gtkwave.sourceforge.net/"
                                  "gtkwave-" version ".tar.gz")))
        (sha256
-        (base32 "15n2gv2hd7h23cci95ij7yr71fkxppb209sfdsmmngh3fik09rpn"))))
+        (base32 "1zqkfchmns5x90qxa8kg39bfhax3vxf1mrdz3lhyb9fz1gp4difn"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gperf pkg-config))
     (inputs
-     `(("tcl" ,tcl)
-       ("tk" ,tk)
-       ("gtk+-2" ,gtk+-2)))
+     (list tcl tk gtk+-2))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-tcl="
-                            (assoc-ref %build-inputs "tcl")
-                            "/lib")
-             (string-append "--with-tk="
-                            (assoc-ref %build-inputs "tk")
-                            "/lib"))))
-
+     (list #:configure-flags
+           #~(list (string-append "--with-tcl="
+                                  (assoc-ref %build-inputs "tcl")
+                                  "/lib")
+                   (string-append "--with-tk="
+                                  (assoc-ref %build-inputs "tk")
+                                  "/lib"))))
     (synopsis "Waveform viewer for FPGA simulator trace files")
     (description "This package is a waveform viewer for FPGA
 simulator trace files (@dfn{FST}).")

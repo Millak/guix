@@ -8,6 +8,7 @@
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,11 +29,15 @@
   #:use-module (guix licenses)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bison)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages texinfo)
-  #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu))
 
@@ -156,32 +161,44 @@ precision and correctly rounds the results.")
    (home-page "http://www.multiprecision.org/mpc/")))
 
 (define-public mpfi
-  (package
-    (name "mpfi")
-    (version "1.5.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://gforge.inria.fr/frs/download.php"
-                           "/latestfile/181/mpfi-" version ".tgz"))
-       (sha256
-        (base32 "0mismr1ll3wp788dq2n22s5irm0dziy75byyfdwz22kjbmckhf9v"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ;tests are broken in this release
-       #:configure-flags '("--enable-static=no")))
-    (native-inputs
-     `(("automake" ,automake)
-       ("autoreconf" ,autoconf)
-       ("libtool" ,libtool)
-       ("texinfo" ,texinfo)))
-    (propagated-inputs
-     (list gmp ; <mpfi.h> refers to both
-           mpfr))
-    (home-page "https://gforge.inria.fr/projects/mpfi/")
-    (synopsis "C library for arbitrary-precision interval arithmetic")
-    (description
-     "@acronym{MPFI, Multiple Precision Floating-point Interval} is a portable C
+  ;; The last release, 1.5.4, lacks source files such as div_ext.c and others
+  ;; (see: https://gitlab.inria.fr/mpfi/mpfi/-/issues/21721).  Use the latest
+  ;; commit until a new release is made.
+  (let ((commit "b9825348f1e723ab0988105599b34f1f9cd5ff3e")
+        (revision "1"))
+    (package
+      (name "mpfi")
+      (version (git-version "1.5.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.inria.fr/mpfi/mpfi")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "141pa2ym1azka25bwkx2w1mf6wdcn155ncc45dr5bj5dycw2hj0m"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:configure-flags #~(list "--enable-static=no")
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'chdir
+                            (lambda _
+                              (chdir "mpfi")))
+                          (add-after 'unpack 'disable-problematic-tests
+                            (lambda _
+                              ;; XXX: The tdiv_ext and trec_sqrt tests
+                              ;; segfaults (not reported upstream; accounts on
+                              ;; their gitlab apparently require to be
+                              ;; manually created).
+                              (setenv "XFAIL_TESTS" "tdiv_ext trec_sqrt"))))))
+      (native-inputs (list automake autoconf libtool texinfo))
+      (propagated-inputs
+       (list gmp mpfr))                 ;<mpfi.h> refers to both
+      (home-page "https://gitlab.inria.fr/mpfi/mpfi")
+      (synopsis "C library for arbitrary-precision interval arithmetic")
+      (description
+       "@acronym{MPFI, Multiple Precision Floating-point Interval} is a portable C
 library for arbitrary-precision interval arithmetic, with intervals represented
 using MPFR reliable floating-point numbers.  It's based on the @acronym{GMP, GNU
 Multiple Precision Arithmetic} and GNU@tie{}@acronym{MPFR, Multiple Precision
@@ -190,7 +207,7 @@ Floating-Point Reliably} libraries.
 The purpose of arbitrary-precision interval arithmetic is to get results that
 are both guaranteed, thanks to interval computation, and accurate, thanks to
 multiple-precision arithmetic.")
-    (license lgpl2.1+)))
+      (license lgpl2.1+))))
 
 (define-public irram
   (package

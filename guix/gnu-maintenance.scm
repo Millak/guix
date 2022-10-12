@@ -785,8 +785,7 @@ GNOME packages; EMMS is included though, because its releases are on gnu.org."
   ;; Return true if the given package may be handled by the generic HTML
   ;; updater.
   (let ((hosting-sites '("github.com" "github.io" "gitlab.com"
-                         "notabug.org" "sr.ht"
-                         "gforge.inria.fr" "gitlab.inria.fr"
+                         "notabug.org" "sr.ht" "gitlab.inria.fr"
                          "ftp.gnu.org" "download.savannah.gnu.org"
                          "pypi.org" "crates.io" "rubygems.org"
                          "bioconductor.org")))

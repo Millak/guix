@@ -1,0 +1,28 @@
+From 041d16b521d8231e5b441015f08bb386f9d2a51c Mon Sep 17 00:00:00 2001
+From: Vincent Delecroix <20100.delecroix@gmail.com*>
+Date: Thu, 15 Sep 2022 12:11:01 +0200
+Subject: ANYARG giac patch
+
+---
+diff --git a/src/pari.cc b/src/pari.cc
+index 76ce8e1..50d08ab 100644
+--- a/src/pari.cc
++++ b/src/pari.cc
+@@ -40,6 +40,13 @@ using namespace std;
+ 
+ #ifdef HAVE_LIBPARI
+ 
++// Anyarg disappeared from PARI 2.15.0
++#ifdef __cplusplus
++#  define ANYARG ...
++#else
++#  define ANYARG
++#endif
++
+ #ifdef HAVE_PTHREAD_H
+ #include <pthread.h>
+ #endif
+
+-- 
+cgit v1.0-1-gd88e
+

@@ -6562,6 +6562,26 @@ Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
+(define-public texlive-zhspacing
+  (package
+    (inherit
+     (simple-texlive-package "texlive-zhspacing"
+                             (list "doc/generic/zhspacing/"
+                                   "tex/context/third/zhspacing/"
+                                   "tex/generic/zhspacing/"
+                                   "tex/xelatex/zhspacing/")
+                             (base32
+                              "02hwa7yjwb6wxkkib83mjdbara5zcsixbp5xlawri8n9ah54vxjm")
+                             #:trivial? #t))
+    (home-page "https://ctan.org/macros/xetex/generic/zhspacing")
+    (synopsis "Spacing for mixed CJK-English documents in XeTeX")
+    (description
+     "The package manages spacing in a CJK document; between consecutive Chinese
+letters, spaces are ignored, but a consistent space is inserted between Chinese
+text and English (or mathematics).  The package may be used by any document
+format under XeTeX.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-zref
   (package
     (inherit (simple-texlive-package
@@ -6780,6 +6800,23 @@ splines, and filled circles and ellipses.  The package uses @code{tpic}
      "This package allows nested endnotes, supports @code{hyperref} and
 provides means for easy customization of the list of notes.")
     (license license:lppl1.3c+)))
+
+(define-public texlive-endnotes
+  (package
+    (inherit (simple-texlive-package
+              "texlive-endnotes"
+              (list "doc/latex/endnotes/"
+                    "tex/latex/endnotes/")
+              (base32
+               "1s7j5sg8fbhifng0gfqnghbvalbbh0p7j9v06r660w089364ypwz")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/endnotes")
+    (synopsis "Deal with endnotesings in strings")
+    (description
+     "Accumulates notes (using the @code{\\endnote} command, which can be used
+as a replacement for @code{\\footnote}), and places them at the end of
+the section, chapter or document.")
+    (license license:lppl1.0+)))
 
 (define-public texlive-enumitem
   (package
@@ -11090,6 +11127,20 @@ and selecting references used in a publication.")
               (base32
                "08jn8piyaad4zln33c0gikyhdkcsk2s3ms9l992riq2hbpbm9lcf")
               #:trivial? #t))
+    (propagated-inputs (list texlive-apacite
+                             texlive-babel
+                             texlive-booktabs
+                             texlive-endnotes
+                             texlive-etoolbox
+                             texlive-generic-xstring
+                             texlive-latex-draftwatermark
+                             texlive-latex-fancyhdr
+                             texlive-latex-float
+                             texlive-latex-graphics
+                             texlive-lm
+                             texlive-substr
+                             texlive-times
+                             texlive-tools))
     (home-page "https://www.ctan.org/pkg/apa6")
     (synopsis "Format documents in APA style (6th edition)")
     (description "The class formats documents in APA style (6th
@@ -11102,6 +11153,28 @@ for copies for use in masked peer review.
 The class is a development of the apa class (which is no longer
 maintained).")
     (license license:lppl1.3c+)))
+
+(define-public texlive-apacite
+  (package
+    (inherit (simple-texlive-package
+              "texlive-apacite"
+              (list "tex/latex/apacite/")
+              (base32
+               "0bcfpcmflhvxwzmdj8dgf43mzaywx2asahp52nqn3wwvq64bqym6")
+              #:trivial? #t))
+    (propagated-inputs (list texlive-latex-natbib
+                             texlive-tools))
+    (home-page "https://www.ctan.org/pkg/apacite")
+    (synopsis "Citation style following the rules of the APA")
+    (description "Apacite provides a BibTeX style and a LaTeX package which
+are designed to match the requirements of the American Psychological
+Association’s style for citations.  The package follows the 6th edition
+of the APA manual, and is designed to work with the apa6 class.  A test
+document is provided.  The package is compatible with chapterbib and
+(to some extent) with hyperref (for limits of compatibility, see the
+documentation).  The package also includes a means of generating an author
+index for a document.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-endfloat
   (package
@@ -11874,6 +11947,49 @@ can be used to implement similar tasks, that have to treat text syllable by
 syllable.  The package itself does not support UTF-8 input in ordinary
 (PDF)LaTeX; some UTF-8 support is offered by package @code{soulutf8}.")
       (license license:lppl))))
+
+(define-public texlive-generic-xstring
+  (let ((template (simple-texlive-package
+                   "texlive-generic-xstring"
+                   (list "/doc/generic/xstring/"
+                         "/tex/generic/xstring/")
+                   (base32
+                    "1azpq855kq1l4686bjp8haxim5c8wycz1b6lcg5q7x8kb4g9sppn")
+                   #:trivial? #t)))
+    (package
+      (inherit template)
+      (home-page "http://www.ctan.org/pkg/xstring")
+      (synopsis "String manipulation for (La)TeX")
+      (description
+       "@code{xstring} package provides macros for manipulating strings --
+testing a string's contents, extracting substrings, substitution of substrings
+and providing numbers such as string length, position of, or number of
+recurrences of, a substring.  The package works equally in Plain TeX and LaTeX
+(though e-TeX is always required).  The strings to be processed may contain
+(expandable) macros.")
+      (license license:lppl1.3c))))
+
+(define-public texlive-substr
+  (package
+    (inherit (simple-texlive-package
+              "texlive-substr"
+              (list "doc/latex/substr/"
+                    "tex/latex/substr/")
+              (base32
+               "0kfd4kq5yrg65f2mpric1cs1xr416wgj9bdixpibgjsdg5fb73sw")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/substr")
+    (synopsis "Deal with substrings in strings")
+    (description
+     "The package provides commands to deal with substrings of strings.  Macros
+are provided to:
+
+@itemize
+@item determine if one string is a substring of another,
+@item return the parts of a string before or after a substring, and
+@item count the number of occurrences of a substring.
+@end itemize")
+    (license license:lppl1.0+)))
 
 (define-public texlive-latex-totcount
   (package

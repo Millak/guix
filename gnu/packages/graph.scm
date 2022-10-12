@@ -290,6 +290,7 @@ subplots, multiple-axes, polar charts, and bubble charts.")
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-louvain" version))
+       (patches (search-patches "python-louvain-fix-test.patch"))
        (sha256
         (base32 "0sx53l555rwq0z7if8agirjgw4ddp8r9b949wwz8vlig03sjvfmp"))))
     (build-system python-build-system)

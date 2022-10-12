@@ -42,6 +42,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages xml))
 
@@ -305,16 +306,16 @@ based on required access.")
 (define-public python-setools
   (package
     (name "python-setools")
-    (version "4.1.1")
+    (version "4.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/TresysTechnology/setools")
+                    (url "https://github.com/SELinuxProject/setools")
                     (commit version)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0459xxly6zzqc5azcwk3rbbcxvj60dq08f8z6xr05y7dsbb16cg6"))))
+                "1qvd5j6zwq4fmlahg45swjplhif2z89x7s6pnp07gvcp2fbqdsh5"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; the test target causes a rebuild
@@ -339,10 +340,10 @@ based on required access.")
     (propagated-inputs
      (list python-networkx))
     (inputs
-     (list libsepol libselinux))
+     (list libsepol libselinux python-pyqt))
     (native-inputs
-     (list bison flex swig))
-    (home-page "https://github.com/TresysTechnology/setools")
+     (list bison flex python-cython swig))
+    (home-page "https://github.com/SELinuxProject/setools")
     (synopsis "Tools for SELinux policy analysis")
     (description "SETools is a collection of graphical tools, command-line
 tools, and libraries designed to facilitate SELinux policy analysis.")

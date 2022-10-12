@@ -256,7 +256,7 @@ otherwise."
         (leave (G_ "missing deployment file argument~%")))
 
       (when (and (pair? command) (not execute-command?))
-        (leave (G_ "'--' was used by '-x' was not specified~%")))
+        (leave (G_ "'--' was used, but '-x' was not specified~%")))
 
       (with-status-verbosity (assoc-ref opts 'verbosity)
         (with-store store

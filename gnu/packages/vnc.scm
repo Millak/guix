@@ -25,6 +25,7 @@
 (define-module (gnu packages vnc)
   #:use-module (guix build-system cmake)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
@@ -207,61 +208,74 @@ and TLS encryption.  This package installs only the VNC client, the
 application which is needed to connect to VNC servers.")
       (license license:gpl2))))
 
-;; A VNC server is, in fact, an X server so it seems like a good idea
-;; to build on the work already done for xorg-server package.  This is
-;; not entirely compatible with the recommendation in BUILDING.txt
-;; where the client is built first, then the source code of the X
-;; server is copied into a subdir of the build directory, patched with
-;; VNC additions and then build and installed as Xvnc.  The procedure
-;; was turned around, where TigerVNC code is downloaded and built
-;; inside the Guix X server build dir. Also, the VNC patching process
-;; for the X server is automated in a straightforward manner.
+(define %tigervnc-client-source (package-source tigervnc-client))
+
+;; A VNC server is, in fact, an X server so it seems like a good idea to build
+;; on the work already done for xorg-server package.  This is not entirely
+;; compatible with the recommendation in BUILDING.txt where the client is
+;; built first, then the source code of the X server is copied into a subdir
+;; of the build directory, patched with VNC additions and then build and
+;; installed as Xvnc.  The procedure was turned around, where TigerVNC code is
+;; downloaded and built inside the Guix X server build dir.  Also, the VNC
+;; patching process for the X server is automated in a straightforward manner.
 (define-public tigervnc-server
   (package
     (inherit xorg-server)
     (name "tigervnc-server")
     (version (package-version tigervnc-client))
-    (native-inputs
-     `(("tigervnc-src" ,(package-source tigervnc-client))
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("gettext-minimal" ,gettext-minimal)
-       ("font-util" ,font-util)
-       ("cmake" ,cmake)
-       ("perl" ,perl)
-       ,@(package-native-inputs tigervnc-client)
-       ,@(package-inputs tigervnc-client)
-       ,@(package-native-inputs xorg-server)))
-    (inputs
-     (modify-inputs (package-inputs xorg-server)
-       (prepend perl coreutils xauth)))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs xorg-server)
-       (prepend xauth)))
+    (source
+     (origin
+       (inherit (package-source xorg-server))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Copy the VNC extension into the xorg-server sources.
+            (copy-recursively #$(file-append %tigervnc-client-source
+                                             "/unix/xserver")
+                              ".")
+            ;; Include a full copy of tigervnc-client sources, so that the
+            ;; complete sources involved are available and can be edited during
+            ;; the build.
+            (copy-recursively #$%tigervnc-client-source "tigervnc-client")
+            ;; Adjust the VNC extension build system files so that it refers
+            ;; to it.
+            (substitute* "hw/vnc/Makefile.am"
+              (("(TIGERVNC_SRCDIR=).*" _ head)
+               (string-append head "$(CURDIR)/../../tigervnc-client\n"))
+              (("(TIGERVNC_BUILDDIR=).*" _ head)
+               (string-append head
+                              "$(CURDIR)/../../tigervnc-client/build\n")))
+            ;; Ensure the Autotools build system gets re-bootstrapped.
+            (delete-file "configure")))
+       ;; Patch the xorg-server build system so that it builds the VNC
+       ;; extension.
+       (patches (cons (file-append %tigervnc-client-source
+                                   "/unix/xserver21.1.1.patch")
+                      (origin-patches (package-source xorg-server))))
+       (file-name (string-append name "-" version ".tar.xz"))))
     (arguments
      (substitute-keyword-arguments
          (package-arguments xorg-server)
+       ((#:tests? #f #f)
+        #f)
        ((#:configure-flags flags)
-        `(append '("--with-pic"         ; Taken from BUILDING.txt
-                   "--without-dtrace"
-                   "--disable-static"
-                   "--disable-dri2"
-                   "--disable-xinerama"
-                   "--disable-xvfb"
-                   "--disable-xnest"
-                   "--disable-xorg"
-                   "--disable-dmx"
-                   "--disable-xwin"
-                   "--disable-xephyr"
-                   "--disable-kdrive"
-                   ;; "--disable-config-dbus" ; This was a warning.
-                   "--disable-config-hal"
-                   "--disable-config-udev"
-                   "--disable-dri2"
-                   ;; "--enable-install-libxf86config" ; This, too, was a warning.
-                   "--enable-glx")
-                 (delete "--enable-xephyr" ,flags)))
+        #~(cons* "--with-pic"           ; Taken from BUILDING.txt
+                 "--without-dtrace"
+                 "--disable-static"
+                 "--disable-dri2"
+                 "--disable-xinerama"
+                 "--disable-xvfb"
+                 "--disable-xnest"
+                 "--disable-xorg"
+                 "--disable-dmx"
+                 "--disable-xwin"
+                 "--disable-xephyr"
+                 "--disable-kdrive"
+                 "--disable-config-hal"
+                 "--disable-config-udev"
+                 "--disable-dri2"
+                 "--enable-glx"
+                 (delete "--enable-xephyr" #$flags)))
        ((#:modules modules)
         `(append '((ice-9 ftw)
                    (ice-9 match)
@@ -269,55 +283,91 @@ application which is needed to connect to VNC servers.")
                    (guix build gnu-build-system))
                  modules))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'check)              ;)
-           (add-after 'unpack 'copy-tvnc-xserver
-             (lambda _
-               (let*
-                   ((tvnc-src (assoc-ref %build-inputs "tigervnc-src"))
-                    (tvnc-xserver (string-append tvnc-src "/unix/xserver")))
-                 (copy-recursively tvnc-xserver "."))))
-           (add-after 'copy-tvnc-xserver 'patch-xserver
-             (lambda _
-               (invoke "patch" "-p1" "-i"
-                       (string-append (assoc-ref %build-inputs "tigervnc-src")
-                                      "/unix/xserver21.1.1.patch"))
-               (invoke "autoreconf" "-fiv")))
-           (add-before 'build 'build-tigervnc
-             (lambda _
-               (let* ((out (assoc-ref %outputs "out"))
-                      (tvnc-src (assoc-ref %build-inputs "tigervnc-src"))
-                      (tvnc-build (string-append (getcwd) "/tigervnc-build")))
-                 (mkdir-p tvnc-build)
-                 (with-directory-excursion tvnc-build
-                   (invoke "cmake" "-G" "Unix Makefiles"
-                           (string-append "-DCMAKE_INSTALL_PREFIX=" out)
-                           tvnc-src)
-                   (invoke "make" "-j" (number->string (parallel-job-count)))))))
-           (replace 'build
-             (lambda _
-               (let*  ((tvnc-src (assoc-ref %build-inputs "tigervnc-src"))
-                       (tvnc-build (string-append (getcwd) "/tigervnc-build"))
-                       (srcarg (string-append "TIGERVNC_SRCDIR=" tvnc-src))
-                       (buildarg (string-append "TIGERVNC_BUILDDIR=" tvnc-build)))
-                 (invoke "make" srcarg buildarg "-j"
-                         (number->string (parallel-job-count))))))
-           (add-before 'install 'install-tigervnc-aux
-             (lambda _
-               (let*  ((out (assoc-ref %outputs 'out))
-                       (tvnc-src (assoc-ref %build-inputs "tigervnc-src"))
-                       (tvnc-build (string-append (getcwd) "/tigervnc-build"))
-                       (srcarg (string-append "TIGERVNC_SRCDIR=" tvnc-src))
-                       (buildarg (string-append "TIGERVNC_BUILDDIR=" tvnc-build)))
-                 (with-directory-excursion (string-append tvnc-build "/unix")
-                   (invoke "make" srcarg buildarg "install")))))
-           (replace 'install
-             (lambda* _
-               (let*  ((tvnc-src (assoc-ref %build-inputs "tigervnc-src"))
-                       (tvnc-build (string-append (getcwd) "/tigervnc-build"))
-                       (srcarg (string-append "TIGERVNC_SRCDIR=" tvnc-src))
-                       (buildarg (string-append "TIGERVNC_BUILDDIR=" tvnc-build)))
-                 (invoke "make" "install" srcarg buildarg))))))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'adjust-pam-config
+              (lambda _
+                (substitute* "tigervnc-client/unix/vncserver/tigervnc.pam"
+                  (("pam_systemd.so")
+                   "pam_elogind.so"))))
+            (add-after 'unpack 'patch-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "tigervnc-client/unix/vncserver/vncserver.in"
+                  (("`mcookie`")
+                   (format #f "`~a`" (search-input-file inputs "bin/mcookie")))
+                  ;; Adjust the places where the vncserver script looks for
+                  ;; X11 fonts.
+                  (("'/usr/share/X11/fonts'" all)
+                   (format #f "'~a', '~a', ~a"
+                           "/run/current-system/profile/share/fonts/X11"
+                           (string-append #$(this-package-input "font-alias")
+                                          "share/fonts/X11")
+                           all))
+                  ;; Adjust the location used to locate of the .desktop files.
+                  (("/usr/share/xsessions")
+                   "/run/current-system/profile/share/xsessions")
+                  ;; Do not require a system-provided Xsession shell script,
+                  ;; as Guix System has none.  This causes the foreach loop to
+                  ;; iterate an empty list (disabled).
+                  (("\"/etc/X11/xinit/Xsession\", \"/etc/X11/Xsession\"")
+                   "()")
+                  (("if \\(not defined \\$Xsession)")
+                   "if (0)")
+                  (("@cmd, \\$Xsession,")
+                   "@cmd,"))))
+            (add-before 'build 'build-tigervnc
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (mkdir-p "tigervnc-client/build")
+                (with-directory-excursion "tigervnc-client/build"
+                  (invoke "cmake" "-G" "Unix Makefiles"
+                          (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+                          "..")
+                  (invoke "make" "-j" (number->string (if parallel-build?
+                                                          (parallel-job-count)
+                                                          1))))))
+            (replace 'build
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (invoke "make" "-j" (number->string (if parallel-build?
+                                                        (parallel-job-count)
+                                                        1)))))
+            (add-before 'install 'install-tigervnc-aux
+              (lambda _
+                (invoke "make" "-C" "tigervnc-client/build/unix" "install")))
+            (replace 'install
+              (lambda _
+                (invoke "make" "install")))
+            (add-after 'install 'wrap-vncserver
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (wrap-script (search-input-file outputs "libexec/vncserver")
+                  (list "PATH" 'prefix
+                        (map (lambda (p)
+                               (dirname (search-input-file inputs p)))
+                             '("bin/uname"
+                               "bin/xauth"
+                               "bin/xinit"))))))))))
+    (native-inputs
+     (modify-inputs (append (package-native-inputs xorg-server)
+                            (package-native-inputs tigervnc-client))
+       (append %tigervnc-client-source
+               autoconf
+               automake
+               libtool
+               gettext-minimal
+               font-util
+               cmake
+               perl)))
+    (inputs
+     (modify-inputs (append (package-inputs xorg-server)
+                            (package-inputs tigervnc-client))
+       (prepend coreutils
+                font-alias
+                guile-3.0
+                perl
+                util-linux
+                xauth
+                xinit)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs xorg-server)
+       (prepend xauth)))
     (description "TigerVNC is a client/server implementation of VNC (Virtual
 Network Computing).  It provides enough performance to run even 3D and video
 applications.  It also provides extensions for advanced authentication methods

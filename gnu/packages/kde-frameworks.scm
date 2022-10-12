@@ -730,7 +730,7 @@ replace the other outdated Graphviz tools.")
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list qtbase-5 qtwayland qtx11extras plasma-wayland-protocols wayland))
+     (list qtbase-5 qtwayland-5 qtx11extras plasma-wayland-protocols wayland))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Utilities for graphical user interfaces")
     (description "The KDE GUI addons provide utilities for graphical user
@@ -1051,7 +1051,7 @@ protocols used in KDE Plasma.")
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list qtbase-5 plasma-wayland-protocols qtwayland wayland wayland-protocols))
+     (list qtbase-5 plasma-wayland-protocols qtwayland-5 wayland wayland-protocols))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

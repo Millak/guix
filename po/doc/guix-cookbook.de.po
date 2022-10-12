@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: guix 1.0.1.4876-09145-dirty\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-07-09 07:59+0000\n"
-"PO-Revision-Date: 2022-08-04 21:19+0000\n"
+"PO-Revision-Date: 2022-09-30 23:59+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: German <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/de/>\n"
 "Language: de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -245,7 +245,7 @@ msgstr "GNU@tie{}Guix ist in Scheme geschrieben, einer für alle Anwendungszweck
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:112
 msgid "Knowing the basics of how to program in Scheme will unlock many of the advanced features Guix provides --- and you don't even need to be an experienced programmer to use them!"
-msgstr "Wenn man die Grundzüge kennt, wie man in Scheme programmiert, bekommt man Zugang zu vielen der fortgeschrittenen Funktionen von Guix@tie{}— und Sie müssen dazu nicht einmal ein erfahrener Programmierer sein!"
+msgstr "Wenn man die Grundzüge kennt, wie man in Scheme programmiert, bekommt man Zugang zu vielen der fortgeschrittenen Funktionen von Guix@tie{}– und Sie müssen dazu nicht einmal ein erfahrener Programmierer sein!"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:114
@@ -412,8 +412,8 @@ msgid ""
 "@result{} (display (string-append \"Hello \" \"Guix\" \"\\n\"))\n"
 "\n"
 msgstr ""
-"'(display (string-append \"Hello \" \"Guix\" \"\\n\"))\n"
-"@result{} (display (string-append \"Hello \" \"Guix\" \"\\n\"))\n"
+"'(display (string-append \"Hallo \" \"Guix\" \"\\n\"))\n"
+"@result{} (display (string-append \"Hallo \" \"Guix\" \"\\n\"))\n"
 "\n"
 
 #. type: lisp
@@ -1645,7 +1645,7 @@ msgstr "native-inputs"
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:915
 msgid "Required for building but not runtime -- installing a package through a substitute won't install these inputs."
-msgstr "Sie werden zum Erstellen gebraucht, aber @emph{nicht} zur Laufzeit@tie{}— wenn Sie ein Paket als Substitut installieren, werden diese Eingaben nirgendwo installiert."
+msgstr "Sie werden zum Erstellen gebraucht, aber @emph{nicht} zur Laufzeit@tie{}– wenn Sie ein Paket als Substitut installieren, werden diese Eingaben nirgendwo installiert."
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:915
@@ -2999,7 +2999,7 @@ msgstr "In der Vergangenheit drehte sich in Guix System alles um eine @code{oper
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1677
 msgid "Depending on the target machine, that can go from a standard @code{x86_64} machine to a small ARM single board computer such as the Pine64, the image constraints can vary a lot.  The hardware manufacturers will impose different image formats with various partition sizes and offsets."
-msgstr "Aber je nach Zielmaschine@tie{}— diese kann alles von einer normalen @code{x86_64}-Maschine sein bis zu einem kleinen ARM-Einplatinenrechner wie dem Pine64@tie{}—, können die für ein Abbild geltenden Einschränkungen sehr unterschiedlich sein. Die Hardwarehersteller ordnen verschiedene Abbildformate an mit unterschiedlich versetzten unterschiedlich großen Partitionen."
+msgstr "Aber je nach Zielmaschine@tie{}– diese kann alles von einer normalen @code{x86_64}-Maschine sein bis zu einem kleinen ARM-Einplatinenrechner wie dem Pine64@tie{}–, können die für ein Abbild geltenden Einschränkungen sehr unterschiedlich sein. Die Hardwarehersteller ordnen verschiedene Abbildformate an mit unterschiedlich versetzten unterschiedlich großen Partitionen."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1682
@@ -3389,7 +3389,7 @@ msgstr "Damit Sie sich mit einem Wireguard-VPN-Server verbinden können, müssen
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1886
 msgid "Here is a configuration example for Linux-Libre < 5.6, where the module is out of tree and need to be loaded manually---following revisions of the kernel have it built-in and so don't need such configuration:"
-msgstr "Hier ist ein Beispiel für eine Konfiguration für Linux-Libre < 5.6, wo sich das Modul noch nicht im Kernel-Quellbaum befindet („out of tree“) und daher von Hand geladen werden muss@tie{}— in nachfolgenden Kernelversionen ist das Modul bereits eingebaut und @emph{keine} derartige Konfiguration ist nötig."
+msgstr "Hier ist ein Beispiel für eine Konfiguration für Linux-Libre < 5.6, wo sich das Modul noch nicht im Kernel-Quellbaum befindet („out of tree“) und daher von Hand geladen werden muss@tie{}– in nachfolgenden Kernelversionen ist das Modul bereits eingebaut und @emph{keine} derartige Konfiguration ist nötig."
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1891
@@ -5357,7 +5357,7 @@ msgstr "Die Nix-basierten Software-Distributionen Nixpkgs und NixOS waren auch e
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3000
 msgid "GNU@tie{}Guix itself is a collective work with contributions from a number of people.  See the @file{AUTHORS} file in Guix for more information on these fine people.  The @file{THANKS} file lists people who have helped by reporting bugs, taking care of the infrastructure, providing artwork and themes, making suggestions, and more---thank you!"
-msgstr "GNU@tie{}Guix ist selbst das Produkt kollektiver Arbeit mit Beiträgen durch eine Vielzahl von Leuten. Siehe die Datei @file{AUTHORS} in Guix für mehr Informationen, wer diese wunderbaren Menschen sind. In der Datei @file{THANKS} finden Sie eine Liste der Leute, die uns geholfen haben, indem Sie Fehler gemeldet, sich um unsere Infrastruktur gekümmert, künstlerische Arbeit und schön gestaltete Themen beigesteuert, Vorschläge gemacht und noch vieles mehr getan haben@tie{}— vielen Dank!"
+msgstr "GNU@tie{}Guix ist selbst das Produkt kollektiver Arbeit mit Beiträgen durch eine Vielzahl von Leuten. Siehe die Datei @file{AUTHORS} in Guix für mehr Informationen, wer diese wunderbaren Menschen sind. In der Datei @file{THANKS} finden Sie eine Liste der Leute, die uns geholfen haben, indem Sie Fehler gemeldet, sich um unsere Infrastruktur gekümmert, künstlerische Arbeit und schön gestaltete Themen beigesteuert, Vorschläge gemacht und noch vieles mehr getan haben@tie{}– vielen Dank!"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:3003

@@ -11641,6 +11641,28 @@ method calls.  Furthermore, a partial sequence can be created and held, and
 used as the head of many different sequences.")
     (license license:perl-license)))
 
+(define-public perl-file-fcntllock
+  (package
+    (name "perl-file-fcntllock")
+    (version "0.22")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/J/JT/JTT/File-FcntlLock-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1pxwknq4lw0wqpkh8pf18qsjf9g503vx6a5184vvffprzwpbp6ls"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/File-FcntlLock")
+    (synopsis "File locking with fcntl(2)")
+    (description "File locking in Perl is usually done using the @code{flock}
+function.  Unfortunately, this only allows locks on whole files and is often
+implemented in terms of the @code{flock(2)} system function which has some
+shortcomings (especially concerning locks on remotely mounted file systems)
+and slightly different behaviour than @code{fcntl(2)}.")
+    (license license:perl-license)))
+
 (define-public perl-font-ttf
   (package
     (name "perl-font-ttf")

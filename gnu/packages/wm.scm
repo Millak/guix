@@ -57,6 +57,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Elais Player <elais@fastmail.com>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
+;;; Copyright © 2022 Fredrik Salomonsson <plattfot@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1752,6 +1753,34 @@ display a clock or apply image manipulation techniques to the background image."
     (description "Waybar is a highly customisable Wayland bar for Sway and
 Wlroots based compositors.")
     (license license:expat))) ; MIT license
+
+(define-public waybar-cpu-histogram
+  (package
+    (name "waybar-cpu-histogram")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~plattfot/waybar-cpu-histogram")
+             (commit (string-append version))))
+       (sha256
+        (base32
+         "001pyf1jdmf2478plnggd7dkfi688qwi89db2jwfp4zza3640na6"))
+       (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list jsoncpp
+           fmt))
+    (synopsis "CPU histogram for waybar")
+    (description
+     "Custom module for waybar to show CPU usage as a histogram.  A compact way
+to see how many cores are active, compared to having a bar for each
+core/thread.")
+    (home-page "https://github.com/plattfot/cpu-histogram/")
+    (license license:expat)))
 
 (define-public wlr-randr
   (package

@@ -35,6 +35,7 @@
 ;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2022 Pier-Hugues Pellerin <phpellerin@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -841,6 +842,49 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (alist-replace "go" (list go-1.16) (package-native-inputs go-1.16))
        (package-native-inputs go-1.16)))))
 
+(define-public go-1.18
+  (package
+    (inherit go-1.17)
+    (name "go")
+    (version "1.18.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1s2xwgd3mfbjdf7ls9gyj7n1lbqc4276qkr3znyq9694isj1ak20"))))))
+
+(define-public go-1.19
+  (package
+    (inherit go-1.18)
+    (name "go")
+    (version "1.19.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1gah4zhbkgbwrrryfmzdv2qwi1rgxk10q2r3hnlcb1dybf9c1i1w"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.18)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install-doc-files
+              (lambda _
+                (for-each (lambda (file)
+                            (install-file file (string-append
+                                                #$output "/share/doc/go")))
+                          '("CONTRIBUTING.md" "PATENTS" "README.md"
+                            "SECURITY.md"))))))))))
+
 (define-public go go-1.17)
 
 (define make-go-std
@@ -880,6 +924,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.14 (make-go-std go-1.14))
 (define-public go-std-1.16 (make-go-std go-1.16))
 (define-public go-std-1.17 (make-go-std go-1.17))
+(define-public go-std-1.18 (make-go-std go-1.18))
+(define-public go-std-1.19 (make-go-std go-1.19))
 
 (define-public go-0xacab-org-leap-shapeshifter
   (let ((commit "0aa6226582efb8e563540ec1d3c5cfcd19200474")
@@ -3584,7 +3630,7 @@ middleware for Go web applications and services.")
 (define-public go-github-com-spf13-cobra
   (package
     (name "go-github-com-spf13-cobra")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -3594,7 +3640,7 @@ middleware for Go web applications and services.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ijhnk9pcks1v1cxri4kf6v1h26ym3jikmkgv4fdfrmm7sqgva13"))))
+         "0qavvyljh509w5xb46lfkak670szp6v4jswwar1hx13cpid8gk5d"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/spf13/cobra"))
@@ -6036,6 +6082,29 @@ network protocol.")
     (home-page "https://github.com/lucas-clemente/quic-go")
     (license license:expat)))
 
+(define-public go-github-com-lunixbochs-vtclean
+  (package
+    (name "go-github-com-lunixbochs-vtclean")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lunixbochs/vtclean")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jqn33l1kzy4dk66zbvxz7rlgkgg34s9mhc8z0lrz0i88466zhd8"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/lunixbochs/vtclean"))
+    (home-page "https://github.com/lunixbochs/vtclean")
+    (synopsis "Filter out terminal escape sequences")
+    (description
+     "The @code{vtclean} provides the @command{vtclean} command and a library
+designed to clean up raw terminal output by stripping escape sequences,
+optionally preserving color.")
+    (license license:expat)))
+
 (define-public go-github-com-francoispqt-gojay
   (package
     (name "go-github-com-francoispqt-gojay")
@@ -7779,6 +7848,33 @@ file system operations.")
       (description "This package provides @code{jbenet's} context
 extensions.")
       (license license:expat))))
+
+(define-public go-github-com-juju-ansiterm
+  (package
+    (name "go-github-com-juju-ansiterm")
+    (version "0.0.0-20210929141451-8b71cc96ebdc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/juju/ansiterm")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05mk7mlvg11dd6b0j0wlq547ghbmx2ywwrlbcb4kddpg7qaqp1va"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/juju/ansiterm"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-colorable
+           go-github-com-lunixbochs-vtclean))
+    (home-page "https://github.com/juju/ansiterm")
+    (synopsis "Writer to output ANSI escape codes for color and styles")
+    (description
+     "The ansiterm package provides a writer to output the ANSI escape codes
+for color and styles.")
+    (license license:lgpl3)))
 
 (define-public go-github-com-kevinburke-ssh-config
   (package
@@ -9916,6 +10012,50 @@ kubernetes-sigs/yaml is a permanent fork of
 @url{https://github.com/ghodss/yaml,ghodss/yaml}.")
     (license (list license:expat license:bsd-3))))
 
+(define-public go-git-sr-ht-emersion-go-scfg
+  (package
+    (name "go-git-sr-ht-emersion-go-scfg")
+    (version "0.0.0-20211215104734-c2c7a15d6c99")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~emersion/go-scfg")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02gn8hz8zfv8y0krysx2wv951gw8hmhdfqf1ysidwm7i293365w4"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "git.sr.ht/~emersion/go-scfg"))
+    (propagated-inputs
+     (list go-github-com-google-shlex
+           go-github-com-davecgh-go-spew))
+    (home-page "https://git.sr.ht/~emersion/go-scfg")
+    (synopsis "Go library for simple configuration file format")
+    (description "Package go-scfg parses scfg files.")
+    (license license:expat)))
+
+(define-public go-git-sr-ht-emersion-gqlclient
+  (package
+    (name "go-git-sr-ht-emersion-gqlclient")
+    (version "0.0.0-20220202181617-4e6e9c763dd2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~emersion/gqlclient")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d9hmaz7yy02bk455gmaav818xi49sw69jyx6dxzymv6ln7r1cv1"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "git.sr.ht/~emersion/gqlclient"))
+    (home-page "https://git.sr.ht/~emersion/gqlclient")
+    (synopsis "GraphQL client and code generator")
+    (description
+     "This package provides a GraphQL client and code generator for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-google-go-jsonnet
   (package
     (name "go-github-com-google-go-jsonnet")
@@ -9943,6 +10083,28 @@ kubernetes-sigs/yaml is a permanent fork of
 Jsonnet} data templating language in Go.  It is a feature-complete,
 production-ready implementation, compatible with the original Jsonnet C++
 implementation.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-google-shlex
+  (package
+    (name "go-github-com-google-shlex")
+    (version "0.0.0-20191202100458-e7afc7fbc510")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/shlex")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14z8hqyik910wk2qwnzgz8mjsmiamxa0pj55ahbv0jx6j3dgvzfm"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/google/shlex"))
+    (home-page "https://github.com/google/shlex")
+    (synopsis "Simple lexer for Go")
+    (description
+     "@code{shlex} implements a simple lexer which splits input into tokens
+using shell-style rules for quoting and commenting.")
     (license license:asl2.0)))
 
 (define-public go-github-com-gorilla-websocket

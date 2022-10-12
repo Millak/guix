@@ -4500,15 +4500,15 @@ tools.")
 (define-public guile-eris
   (package
     (name "guile-eris")
-    (version "0.2.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://inqlab.net/git/eris.git")
+             (url "https://codeberg.org/eris/guile-eris.git")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1ijglmwkdy1l87gj429qfjis0v8b1zlxhbyfhx5za8664h68nqka"))))
+       (sha256 (base32 "0d4wbjwwaxk0zn5gjhl86qhvk1aisgzp1vnvy4xbvrv5ydqpgyqm"))))
     (build-system gnu-build-system)
     (arguments '())
     (native-inputs
@@ -4517,17 +4517,18 @@ tools.")
            pkg-config
            texinfo
            ;; test dependency
-           guile-srfi-180))
+           guile-srfi-180
+           guile-quickcheck))
     (inputs (list guile-3.0))
     (propagated-inputs
      (list guile-sodium))
     (synopsis "Guile implementation of the Encoding for Robust Immutable Storage (ERIS)")
     (description
-     "Guile-ERIS is the reference implementation of the Encoding for Robust
-Immutable Storage (ERIS).  ERIS allows arbitrary content to be encoded into
-uniformly sized, encrypted blocks that can be reassembled using a short
-read-capability.")
-    (home-page "https://inqlab.net/git/eris.git")
+     "Guile-ERIS is a Guile implementation of the @url{http://purl.org/eris,
+Encoding for Robust Immutable Storage (ERIS)}.  ERIS allows arbitrary content
+to be encoded into uniformly sized, encrypted blocks that can be reassembled
+using a short read-capability.")
+    (home-page "https://codeberg.org/eris/guile-eris")
     (license license:gpl3+)))
 
 (define-public guile-r6rs-protobuf

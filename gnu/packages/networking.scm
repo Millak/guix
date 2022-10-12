@@ -40,6 +40,7 @@
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2020 Hamzeh Nasajpour <h.nasajpour@pantherx.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2021 Fakhri Sajadi <f.sajadi@pantherx.org>
 ;;; Copyright © 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
@@ -48,9 +49,11 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Simon South <simon@simonsouth.net>
+;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
+;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,6 +83,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -115,6 +119,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
@@ -973,6 +978,33 @@ tasks.")
     (home-page "https://github.com/blueman-project/blueman")
     (license license:gpl3+)))
 
+(define-public nm-tray
+  (package
+    (name "nm-tray")
+    (version "0.5.0")
+    (home-page "https://github.com/palinek/nm-tray")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (sha256
+               (base32
+                "14i8sl0hrnyidlvqnxza0v4018f7p685ksn8419i2w7f9yqpvpiw"))
+              (file-name (git-file-name name version))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f)) ;There are no tests upstream
+    (inputs (list qtbase-5 networkmanager-qt))
+    (native-inputs (list qttools-5 pkg-config))
+    (synopsis
+     "NetworkManager front-end with information icon residing in system tray")
+    (description
+     "nm-tray is a network connection management tool (NetworkManager
+front-end) with an information icon residing in the system tray.  Unlike
+nm-applet, which is part of GNOME, this application is desktop-unaware.")
+    (license license:gpl2+)))
+
 ;; The gnu.org ‘home’ for this GNU project is a directory listing with 1.6.0 as
 ;; the latest version.  The author's git repository, mentioned in the 1.6.0
 ;; README and otherwise legit-looking, contains a proper 1.7.0 release tarball
@@ -1728,27 +1760,29 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "3.6.7")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1idpxnh8vrvan3g0ymaa24bd4iyxi19xrr76sdrrpxx2r8shmqfc"))))
+        (base32 "1vddvizywy6kfxg0i3m0627f675i7sdp7k3ld9sjlp78hppjbh9x"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-test
-           ;; Skip test suite failing with "Program reassemble_test is not
-           ;; available" and alike errors.  Also skip test suite failing with
-           ;; "AssertionError: Program extcap/sdjournal is not available"
-           ;; error.'
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("suite_unittests" all) (string-append "# " all))
-               (("suite_extcaps" all) (string-append "# " all))))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             ;; Skip test suite failing with "Program reassemble_test is not
+             ;; available" and alike errors.  Also skip test suite failing
+             ;; with "AssertionError: Program extcap/sdjournal is not
+             ;; available" error.'
+             (when tests?
+               (invoke "ctest"
+                       "-E"
+                       (string-join (list "suite_unittests" "suite_extcaps")
+                                    "|"))))))
        ;; Build process chokes during `validate-runpath' phase.
        ;;
        ;; Errors are like the following:
@@ -1777,6 +1811,7 @@ of the same name.")
            mit-krb5
            `(,nghttp2 "lib")
            minizip
+           pcre2
            qtbase-5
            qtmultimedia-5
            qtsvg-5
@@ -2010,7 +2045,7 @@ TCP connection, TLS handshake and so on) in the terminal.")
      '(#:configure-flags
        ;; disable -march=native in build for reproducibility; see
        ;; https://wiki.squid-cache.org/KnowledgeBase/IllegalInstructionError
-       (list "--disable-arch-native")
+       (list "--disable-arch-native" "--with-openssl")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'fix-true-path

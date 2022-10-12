@@ -1192,7 +1192,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.1.5")
+    (version "2.1.6")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1201,7 +1201,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "0371j5k28cymqngfl76dfxzggvdf8n0ssij37350gzs4bhg084qr"))))
+           (base32 "0ymxkms1gwf731x61sj54rnnp029724zhywkxd4164yjz0a90cqm"))))
     (build-system linux-module-build-system)
     (arguments
      (list
@@ -1457,7 +1457,13 @@ On Guix System, you will need to invoke the included shell scripts as
                                                   "mount"))))
              (substitute* '("libfuse/util/mount.mergerfs.c")
                (("/bin/sh" command)
-                (string-append (assoc-ref inputs "bash-minimal") command))))))))
+                (string-append (assoc-ref inputs "bash-minimal") command))
+               ;; mount.mergerfs tries to execute `mergerfs`, which cannot be found
+               ;; without an absolute path. Hard-coding the path is fine, since we don’t
+               ;; link mount.mergerfs to mount.fuse anyway.
+               (("add_arg\\(&command, type\\);")
+                (string-append "add_arg(&command, \"" (assoc-ref outputs "out")
+                               "/bin/mergerfs\");"))))))))
     ;; Mergerfs bundles a heavily modified copy of fuse.
     (inputs
      (list bash-minimal util-linux))

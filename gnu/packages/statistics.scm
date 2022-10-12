@@ -12,7 +12,7 @@
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2018 Alex Branham <alex.branham@gmail.com>
 ;;; Copyright © 2020 Tim Howes <timhowes@lavabit.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
@@ -73,6 +73,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages ocaml)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -83,6 +84,7 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -4407,31 +4409,55 @@ from within R.")
 (define-public r-spams
   (package
     (name "r-spams")
-    (version "2.6-2017-03-22")
-    (source
-     (origin
-       (method url-fetch)
-       ;; Use the ‘Latest version’ link for a stable URI across releases.
-       (uri (string-append "https://gforge.inria.fr/frs/download.php/"
-                           "latestfile/4531/spams-R-v" version ".tar.gz"))
-       (sha256
-        (base32
-         "13z2293jixf1r9g8dyy856xrhvpjr2ln2n9smn6644126r9hmhkx"))))
+    (version "2.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.inria.fr/thoth/spams-devel")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qvj87fw4sm54c7dvhxjgmgvnyyrrz9fk6dqp3ak0gwgb42gqh60"))))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "spams") #t))
-         ;; Don't tune for the building machine.
-         (add-after 'chdir 'no-mtune
-           (lambda _
-             (substitute* "src/Makevars"
-               (("-mtune=native") ""))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-generated-file-shebangs 'patch-paths
+            (lambda _
+              (substitute* (cons* "swig/setRelease"
+                                  "swig/R/docmatlab2R"
+                                  "swig/R/mkdist"
+                                  (find-files "." "(^mk|\\.sh$)"))
+                (("/bin/pwd") "pwd")
+                (("/bin/rm") "rm"))))
+          (add-after 'patch-paths 'mkdist
+            (lambda _
+              (chdir "swig/R")
+              (setenv "TEXINPUTS" (string-append (getcwd) "/../../doc:"))
+              (substitute* "mkdist"
+                (("^SWIG=.*")
+                 (string-append "SWIG=" (which "swig")))
+                (("^../mkdoc") ""))     ;requires texlive-aeguill
+              (invoke "./mkdist")
+              (chdir "dist/spams-R/spams")))
+          ;; Don't tune for the building machine.
+          (add-after 'mkdist 'no-mtune
+            (lambda _
+              (substitute* "src/Makevars"
+                (("-mtune=native") "")))))))
+    (native-inputs
+     (list hevea
+           perl
+           swig
+           ;;texlive-aeguill    ;;FIXME: package me!
+           texlive-base
+           texlive-jknappen))
     (propagated-inputs
-     (list r-lattice r-matrix))
-    (home-page "https://spams-devel.gforge.inria.fr")
+     (list r-lattice
+           r-matrix))
+    (home-page "https://gitlab.inria.fr/thoth/spams-devel/")
     (synopsis "Toolbox for solving sparse estimation problems")
     (description "SPAMS (SPArse Modeling Software) is an optimization toolbox
 for solving various sparse estimation problems.  It includes tools for the

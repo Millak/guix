@@ -1555,7 +1555,7 @@ Joy-Con controllers.")
 (define-public julius
   (package
     (name "julius")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1564,7 +1564,7 @@ Joy-Con controllers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nfdn8n6ywhm69ckz9a1chl5xxiqyaj3l337wadsbppnpscjihrc"))
+        (base32 "0w7kmgz9ya0ck9cxhsyralarg7y6ydx4plmh33r4mkxkamlr7493"))
        ;; Remove unused bundled libraries.
        (modules '((guix build utils)))
        (snippet
@@ -1589,7 +1589,7 @@ does not include game data.")
   (package
     (inherit julius)
     (name "augustus")
-    (version "2.0.1")
+    (version "3.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1598,17 +1598,19 @@ does not include game data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0czazw8mc3fbvdazs2nzvgxd1dpzjc8z5fwiv89vv4nd7laz3jkj"))
+        (base32 "0d1k5279imc17mk3lxn8amc4ljgcj4v6x6lj2w3bph1z0a7a4bim"))
        ;; Remove unused bundled libraries.
        (modules '((guix build utils)))
        (snippet
         '(begin
            (with-directory-excursion "ext"
-             (for-each delete-file-recursively '("dirent" "png" "SDL2" "zlib")))
-           #t))))
+             (for-each delete-file-recursively
+                       '("dirent" "expat" "png" "SDL2" "zlib")))))))
     (arguments
      ;; No tests.  See https://github.com/Keriew/augustus/issues/82.
      `(#:tests? #f))
+    (inputs (modify-inputs (package-inputs julius)
+              (prepend expat)))
     (home-page "https://github.com/Keriew/augustus")
     (synopsis "Re-implementation of Caesar III game engine with gameplay changes")
     (description
@@ -6938,7 +6940,7 @@ at their peak of economic growth and military prowess.
 (define-public open-adventure
   (package
     (name "open-adventure")
-    (version "1.9")
+    (version "1.11")
     (source
      (origin
        (method git-fetch)
@@ -6947,40 +6949,39 @@ at their peak of economic growth and military prowess.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "123svzy7xczdklx6plbafp22yv9bcvwfibjk0jv2c9i22dfsr07f"))))
+        (base32 "1n0fzrdlbc6px88qr574ww2q85xk43bv09jpmsskzv1l2cncwm37"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list "CC=gcc")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ;no configure script
-         (add-before 'build 'use-echo
-           (lambda _
-             (substitute* "tests/Makefile"
-               (("/bin/echo") (which "echo")))
-             #t))
-         (add-after 'build 'build-manpage
-           (lambda _
-             ;; This target is missing a dependency
-             (substitute* "Makefile"
-               ((".adoc.6:" line)
-                (string-append line " advent.adoc")))
-             (invoke "make" ".adoc.6")))
-         ;; There is no install target.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man (string-append out "/share/man/man6")))
-               (install-file "advent" bin)
-               (install-file "advent.6" man))
-             #t)))))
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:parallel-tests? #f              ;some tests fail non-deterministically
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;no configure script
+          (add-before 'build 'use-echo
+            (lambda _
+              (substitute* (list "tests/Makefile" "tests/tapview")
+                (("/bin/echo") (which "echo")))))
+          (add-after 'build 'build-manpage
+            (lambda _
+              ;; This target is missing a dependency
+              (substitute* "Makefile"
+                ((".adoc.6:" line)
+                 (string-append line " advent.adoc")))
+              (invoke "make" ".adoc.6")))
+          ;; There is no install target.
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (man (string-append #$output "/share/man/man6")))
+                (install-file "advent" bin)
+                (install-file "advent.6" man)))))))
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("libedit" ,libedit)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("python-pyyaml" ,python-pyyaml)))
+     (list asciidoc
+           libedit
+           pkg-config
+           python-pyyaml
+           python-wrapper))
     (home-page "https://gitlab.com/esr/open-adventure")
     (synopsis "Colossal Cave Adventure")
     (description

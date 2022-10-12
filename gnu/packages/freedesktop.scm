@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@pobox.com>
 ;;; Copyright © 2015-2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
@@ -1165,66 +1165,67 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
 (define-public weston
   (package
     (name "weston")
-    (version "9.0.0")
+    (version "10.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://wayland.freedesktop.org/releases/"
-                    "weston-" version ".tar.xz"))
+                    "https://gitlab.freedesktop.org/wayland/weston/-/releases/"
+                    version "/downloads/weston-" version ".tar.xz"))
               (sha256
                (base32
-                "1zlql0xgiqc3pvgbpnnvj4xvpd91pwva8qf83xfb23if377ddxaw"))))
+                "1rs92p7sfkw9lqlkfnqh5af19ym3x8l3hp3yfv117m7qv6h6qr49"))))
     (build-system meson-build-system)
     (native-inputs
-     (list mscgen pkg-config xorg-server))
+     (list mscgen pkg-config python-3 xorg-server))
     (inputs
-     `(("cairo" ,cairo-xcb)
-       ("colord" ,colord)
-       ("dbus" ,dbus)
-       ("elogind" ,elogind)
-       ("freerdp" ,freerdp)
-       ("glib" ,glib)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("lcms" ,lcms)
-       ("libdrm" ,libdrm)
-       ("libevdev" ,libevdev)
-       ("libinput" ,libinput-minimal)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libunwind" ,libunwind)
-       ("libva" ,libva)
-       ("libwebp" ,libwebp)
-       ("libx11" ,libx11)
-       ("libxcb" ,libxcb)
-       ("libxcursor" ,libxcursor)
-       ("libxml2" ,libxml2)
-       ("mesa" ,mesa)
-       ("mtdev" ,mtdev)
-       ("linux-pam" ,linux-pam)
-       ("pango" ,pango)
-       ("pipewire" ,pipewire)
-       ("wayland-protocols" ,wayland-protocols)
-       ("xorg-server-xwayland" ,xorg-server-xwayland)))
+     (list cairo-xcb
+           colord
+           dbus
+           elogind
+           freerdp
+           glib
+           gstreamer
+           gst-plugins-base
+           lcms
+           libdrm
+           libevdev
+           libinput-minimal
+           libjpeg-turbo
+           libpng
+           libunwind
+           libva
+           libwebp
+           libx11
+           libxcb
+           libxcursor
+           libxml2
+           mesa
+           mtdev
+           linux-pam
+           pango
+           pipewire-0.3
+           wayland-protocols-next
+           xorg-server-xwayland))
     (propagated-inputs
      (list libxkbcommon pixman wayland))
     (arguments
-     `(#:configure-flags
-       (list
-        ;; Otherwise, the RUNPATH will lack the final path component.
-        (string-append "-Dc_link_args=-Wl,-rpath="
-                       (assoc-ref %outputs "out") "/lib:"
-                       (assoc-ref %outputs "out") "/lib/weston:"
-                       (assoc-ref %outputs "out") "/lib/libweston-"
-                       ,(version-major (package-version this-package)))
-        "-Dbackend-default=auto"
-        "-Dsystemd=false"
-        (string-append "-Dxwayland-path="
-                       (assoc-ref %build-inputs "xorg-server-xwayland")
-                       "/bin/Xwayland"))
-       #:parallel-tests? #f           ; Parallel tests cause failures.
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:configure-flags
+      #~(list
+         ;; Otherwise, the RUNPATH will lack the final path component.
+         (string-append "-Dc_link_args=-Wl,-rpath="
+                        #$output "/lib:"
+                        #$output "/lib/weston:"
+                        #$output "/lib/libweston-"
+                        #$(version-major (package-version this-package)))
+         "-Dbackend-default=auto"
+         "-Dsystemd=false"
+         (string-append "-Dxwayland-path="
+                        #$(this-package-input "xorg-server-xwayland")
+                        "/bin/Xwayland"))
+      #:parallel-tests? #f              ; Parallel tests cause failures.
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'configure 'use-elogind
            (lambda _
              ;; Use elogind instead of systemd
@@ -1233,23 +1234,19 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
              (substitute* '("libweston/launcher-logind.c"
                             "libweston/weston-launch.c")
                (("#include <systemd/sd-login.h>")
-                "#include <elogind/sd-login.h>"))
-             #t))
+                "#include <elogind/sd-login.h>"))))
          (add-after 'configure 'patch-confdefs.h
            (lambda _
-             (system "echo \"#define HAVE_SYSTEMD_LOGIN_209 1\" >> confdefs.h")
-             #t))
+             (system "echo \"#define HAVE_SYSTEMD_LOGIN_209 1\" >> confdefs.h")))
          (add-before 'check 'setup
            (lambda _
              (setenv "HOME" (getcwd))
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             #t))
+             (setenv "XDG_RUNTIME_DIR" (getcwd))))
          (add-before 'check 'start-xorg-server
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The test suite requires a running X server.
              (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t)))))
+             (setenv "DISPLAY" ":1"))))))
     (home-page "https://wayland.freedesktop.org")
     (synopsis "Reference implementation of a Wayland compositor")
     (description "Weston is the reference implementation of a Wayland

@@ -54,6 +54,7 @@
 # Copyright © 2022 muradm <mail@muradm.net>
 # Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 # Copyright © 2022 Alex Griffin <a@ajgrf.com>
+# Copyright © 2022 ( <paren@disroot.org>
 #
 # This file is part of GNU Guix.
 #
@@ -89,6 +90,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/symlink-manager.scm		\
   %D%/home/services/fontutils.scm		\
   %D%/home/services/guix.scm			\
+  %D%/home/services/pm.scm			\
   %D%/home/services/shells.scm			\
   %D%/home/services/shepherd.scm		\
   %D%/home/services/ssh.scm			\
@@ -145,6 +147,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/browser-extensions.scm		\
   %D%/packages/build-tools.scm			\
   %D%/packages/busybox.scm			\
+  %D%/packages/bqn.scm				\
   %D%/packages/c.scm				\
   %D%/packages/calcurse.scm			\
   %D%/packages/ccache.scm			\
@@ -309,6 +312,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/haxe.scm				\
   %D%/packages/heads.scm			\
   %D%/packages/hexedit.scm			\
+  %D%/packages/high-availability.scm			\
   %D%/packages/hugs.scm				\
   %D%/packages/hunspell.scm				\
   %D%/packages/hurd.scm				\
@@ -692,6 +696,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/sysctl.scm			\
   %D%/services/telephony.scm			\
   %D%/services/version-control.scm              \
+  %D%/services/vnc.scm				\
   %D%/services/vpn.scm				\
   %D%/services/web.scm				\
   %D%/services/xorg.scm				\
@@ -773,6 +778,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/telephony.scm		        \
   %D%/tests/version-control.scm			\
   %D%/tests/virtualization.scm			\
+  %D%/tests/vnc.scm				\
   %D%/tests/web.scm
 
 INSTALLER_MODULES =                             \
@@ -1184,6 +1190,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghostscript-no-header-id.patch		\
   %D%/packages/patches/ghostscript-no-header-uuid.patch		\
   %D%/packages/patches/ghostscript-no-header-creationdate.patch \
+  %D%/packages/patches/giac-pari-gp-anyarg.patch		\
   %D%/packages/patches/giara-fix-login.patch                      \
   %D%/packages/patches/glib-appinfo-watch.patch			\
   %D%/packages/patches/glib-networking-gnutls-binding.patch	\
@@ -1309,7 +1316,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/i7z-gcc-10.patch				\
   %D%/packages/patches/icecat-makeicecat.patch			\
   %D%/packages/patches/icecat-avoid-bundled-libraries.patch	\
-  %D%/packages/patches/icecat-use-older-reveal-hidden-html.patch	\
   %D%/packages/patches/icecat-use-system-graphite2+harfbuzz.patch	\
   %D%/packages/patches/icecat-use-system-media-libs.patch	\
   %D%/packages/patches/icedtea-7-hotspot-aarch64-use-c++98.patch\
@@ -1612,6 +1618,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
   %D%/packages/patches/pthreadpool-system-libraries.patch	\
   %D%/packages/patches/python-chai-drop-python2.patch		\
+  %D%/packages/patches/python-louvain-fix-test.patch		\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
   %D%/packages/patches/python-poppler-qt5-fix-build.patch	\
   %D%/packages/patches/python-w3lib-fix-test-failure.patch	\
@@ -1646,7 +1653,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/phoronix-test-suite-fsdg.patch		\
   %D%/packages/patches/php-bug-74093-test.patch			\
   %D%/packages/patches/php-curl-compat.patch			\
-  %D%/packages/patches/picard-fix-id3-rename-test.patch		\
   %D%/packages/patches/picprog-non-intel-support.patch		\
   %D%/packages/patches/pidgin-add-search-path.patch		\
   %D%/packages/patches/pinball-system-ltdl.patch		\
@@ -1670,7 +1676,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/psm-disable-memory-stats.patch		\
   %D%/packages/patches/psm-ldflags.patch			\
   %D%/packages/patches/psm-repro.patch				\
-  %D%/packages/patches/public-inbox-fix-spawn-test.patch	\
   %D%/packages/patches/pulseaudio-fix-mult-test.patch		\
   %D%/packages/patches/pulseaudio-longer-test-timeout.patch	\
   %D%/packages/patches/pulseview-qt515-compat.patch		\
@@ -1815,8 +1820,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/scalapack-gcc-10-compilation.patch	\
   %D%/packages/patches/scheme48-tests.patch			\
   %D%/packages/patches/scons-test-environment.patch		\
-  %D%/packages/patches/scotch-build-parallelism.patch		\
-  %D%/packages/patches/scotch-integer-declarations.patch	\
   %D%/packages/patches/screen-hurd-path-max.patch		\
   %D%/packages/patches/sdl-libx11-1.6.patch			\
   %D%/packages/patches/seed-webkit.patch			\

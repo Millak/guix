@@ -31,6 +31,7 @@
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Benjamin Slade <slade@lambda-y.net>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1181,7 +1182,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.8.0")
+    (version "4.8.1")
     (source
      (origin
        (method url-fetch)
@@ -1189,7 +1190,7 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0zxxvjnbmaahvm9lwm007dzgc0yl8qamkp1467c5kqyi6ws21mn8"))
+        (base32 "1za2nyqqs2lrbss61gfw17qba2f0w6a119m1xk4d0fx2k3gdis2w"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
     (build-system meson-build-system)

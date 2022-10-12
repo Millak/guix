@@ -1341,12 +1341,25 @@ guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master
 When posting a patch to the mailing list, use @samp{[PATCH] @dots{}} as
 a subject, if your patch is to be applied on a branch other than
 @code{master}, say @code{core-updates}, specify it in the subject like
-@samp{[PATCH core-updates] @dots{}}.  You may use your email client or
-the @command{git send-email} command (@pxref{Sending a Patch Series}).
-We prefer to get patches in plain text messages, either inline or as
-MIME attachments.  You are advised to pay attention if your email client
-changes anything like line breaks or indentation which could potentially
-break the patches.
+@samp{[PATCH core-updates] @dots{}}.
+
+@quotation Tip
+To add a prefix to the subject of your patch, you may use the
+@option{--subject-prefix} option of the @command{git format-patch} or
+@command{git send-email} commands, for example:
+@example
+git send-email --subject-prefix='PATCH core-updates' \
+  --to=guix-patches@@gnu.org -1
+@end example
+For more information, run @samp{man git-format-patch} and @samp{man
+git-send-email}.
+@end quotation
+
+You may use your email client or the @command{git send-email} command
+(@pxref{Sending a Patch Series}).  We prefer to get patches in plain
+text messages, either inline or as MIME attachments.  You are advised to
+pay attention if your email client changes anything like line breaks or
+indentation which could potentially break the patches.
 
 Expect some delay when you submit your very first patch to
 @email{guix-patches@@gnu.org}. You have to wait until you get an

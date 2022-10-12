@@ -1091,14 +1091,14 @@ interactive mode.")
 (define-public btrbk
   (package
     (name "btrbk")
-    (version "0.32.2")
+    (version "0.32.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://digint.ch/download/btrbk/releases/"
                                   "btrbk-" version ".tar.xz"))
               (sha256
                (base32
-                "0gi0j09fm4pgw3dq0z27lkpyvrs3ssyqg9b46v5ba794z63w753z"))))
+                "1nl6cbzqkc2srwi1428vijq69rp5cdx7484zcx61ph0rnhg9srfc"))))
     (build-system gnu-build-system)
     (arguments
      (list

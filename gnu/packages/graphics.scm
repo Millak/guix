@@ -192,36 +192,36 @@ framebuffer graphics, audio output and input event.")
     (native-inputs
      (list autoconf automake libtool perl pkg-config))
     (inputs
-     `(("alsa" ,alsa-lib)
-       ("ffmpeg" ,ffmpeg)
-       ("freetype" ,freetype)
-       ("glu" ,glu)
-       ("gstreamer" ,gstreamer)
-       ("imlib2" ,imlib2)
-       ("jasper" ,jasper)
-       ("jpeg" ,libjpeg-turbo)
-       ("libcddb" ,libcddb)
-       ("libdrm" ,libdrm)
-       ("libtimidity" ,libtimidity)
-       ("mad" ,libmad)
-       ("mng" ,libmng)
-       ("mpeg2" ,libmpeg2)
-       ("mpeg3" ,libmpeg3)
-       ("opengl" ,mesa)
-       ("png" ,libpng)
-       ("sdl" ,sdl)
-       ("svg" ,(librsvg-for-system))
-       ("tiff" ,libtiff)
-       ("tslib" ,tslib)
-       ("vdpau" ,libvdpau)
-       ("vorbisfile" ,libvorbis)
-       ("wayland" ,wayland)
-       ("webp" ,libwebp)
-       ("x11" ,libx11)
-       ("xcomposite" ,libxcomposite)
-       ("xext" ,libxext)
-       ("xproto" ,xorgproto)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           ffmpeg
+           freetype
+           glu
+           gstreamer
+           imlib2
+           jasper
+           libjpeg-turbo
+           libcddb
+           libdrm
+           libtimidity
+           libmad
+           libmng
+           libmpeg2
+           libmpeg3
+           mesa
+           libpng
+           sdl
+           (librsvg-for-system)
+           libtiff
+           tslib
+           libvdpau
+           libvorbis
+           wayland
+           libwebp
+           libx11
+           libxcomposite
+           libxext
+           xorgproto
+           zlib))
     (propagated-inputs
      (list flux))
     (synopsis "DFB Graphics Library")
@@ -1118,29 +1118,53 @@ graphics.")
   (package
     (name "openexr")
     (version "3.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/AcademySoftwareFoundation/openexr")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0c9vla0kbsbbhkk42jlbf94nzfb1anqh7dy9b0b3nna1qr6v4bh6"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/AcademySoftwareFoundation/openexr")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0c9vla0kbsbbhkk42jlbf94nzfb1anqh7dy9b0b3nna1qr6v4bh6"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; /var/tmp does not exist in the Guix build environment
-         (add-after 'unpack 'patch-test-directory
-           (lambda _
-             (substitute* '("src/test/OpenEXRUtilTest/tmpDir.h"
-                            "src/test/OpenEXRFuzzTest/tmpDir.h"
-                            "src/test/OpenEXRTest/tmpDir.h"
-                            "src/test/OpenEXRCoreTest/main.cpp")
-               (("/var/tmp") "/tmp")))))))
-    (inputs
-     (list imath zlib))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-test-directory
+                 (lambda _
+                   (substitute* (list
+                                 "src/test/OpenEXRUtilTest/tmpDir.h"
+                                 "src/test/OpenEXRFuzzTest/tmpDir.h"
+                                 "src/test/OpenEXRTest/tmpDir.h"
+                                 "src/test/OpenEXRCoreTest/main.cpp")
+                     (("/var/tmp")
+                      "/tmp"))))
+               #$@(if (target-64bit?)
+                      #~()
+                      #~((add-after 'patch-test-directory 'disable-broken-tests
+                           (lambda _
+                             ;; Disable tests that fail at least on i686-linux.
+                             (substitute* '("src/test/OpenEXRCoreTest/main.cpp"
+					    "src/test/OpenEXRTest/main.cpp")
+                               (("TEST \\(testCompression, \"basic\"\\);")
+                                "")
+                               (("TEST\\( testNoCompression, \"core_compression\" \\);")
+                                "")
+                               (("TEST\\( testRLECompression, \"core_compression\" \\);")
+                                "")
+                               (("TEST\\( testZIPCompression, \"core_compression\" \\);")
+                                "")
+                               (("TEST\\( testZIPSCompression, \"core_compression\" \\);")
+                                "")
+                               (("TEST\\( testB44Compression, \"core_compression\" \\);")
+                                "")
+                               (("TEST\\( testB44ACompression, \"core_compression\" \\);")
+                                "")
+                               (("TEST \\(testOptimizedInterleavePatterns, \"basic\"\\);")
+                                "")))))))))
+    (inputs (list imath zlib))
     (home-page "https://www.openexr.com/")
     (synopsis "High-dynamic-range file format library")
     (description
@@ -2202,6 +2226,75 @@ Features include:
 ")
     (license license:gpl3+)))
 
+(define-public discregrid
+  (let ((commit "4c27e1cc88be828c6ac5b8a05759ac7e01cf79e9")
+        (revision "0"))
+    (package
+      (name "discregrid")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/InteractiveComputerGraphics/Discregrid")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01cwfpw19rc9k5glx9dhnqpihd0is28a9b53qvzp5kgjmdq2v1p0"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+              (delete-file-recursively "extern/cxxopts")
+              (substitute* '("cmd/discrete_field_to_bitmap/main.cpp"
+                             "cmd/generate_density_map/main.cpp"
+                             "cmd/generate_sdf/main.cpp")
+                (("^#include <cxxopts/cxxopts\\.hpp>")
+                 "#include <cxxopts.hpp>"))))))
+      (build-system cmake-build-system)
+      (outputs '("out" "bin"))
+      (arguments
+       (list #:tests? #f                ; No tests
+             #:configure-flags
+             #~(list (string-append "-DCMAKE_INSTALL_BINDIR="
+                                    #$output:bin "/bin")
+                     ;; Bespoke version of BUILD_SHARED_LIBS.
+                     "-DBUILD_AS_SHARED_LIBS=ON")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-cmake
+                   (lambda _
+                     (let ((port (open-file "cmd/CMakeLists.txt" "a")))
+                       (display "install(TARGETS
+  DiscreteFieldToBitmap
+  GenerateDensityMap
+  GenerateSDF)
+"
+                                port)
+                       (close-port port)))))))
+      (inputs
+       (list cxxopts eigen))
+      (home-page "https://github.com/InteractiveComputerGraphics/Discregrid")
+      (synopsis "Discretize functions on regular grids")
+      (description "Discregrid is a C++ library for the parallel discretization
+of (preferably smooth) functions on regular grids.  It generates a (cubic)
+polynomial discretization given a box-shaped domain, a grid resolution, and a
+3D scalar field.  The library can also serialize and deserialize the generated
+discrete grid, and compute and discretize the signed distance field
+corresponding to a triangle mesh.  The following programs are included with
+Discregrid:
+
+@itemize
+@item @code{GenerateSDF}: Computes a discrete (cubic) signed distance field
+from a triangle mesh in OBJ format.
+
+@item @code{DiscreteFieldToBitmap}: Generates an image in bitmap format of a
+two-dimensional slice of a previously computed discretization.
+
+@item @code{GenerateDensityMap}: Generates a density map from a previously
+generated discrete signed distance field using the cubic spline kernel.
+@end itemize")
+      (license license:expat))))
+
 (define-public mmg
   (package
     (name "mmg")
@@ -2280,7 +2373,8 @@ Features include:
            ;; TODO: Fix failing LaTeX invocation (which results in equations
            ;; being inserted literally into PNGs rather than being typeset).
            ;;texlive-tiny
-           ))
+
+           perl))                            ;used to generate Fortran headers
     (inputs
      (list scotch))
     (home-page "http://www.mmgtools.org/")

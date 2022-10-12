@@ -36,6 +36,7 @@
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,6 +59,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -80,6 +82,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
@@ -109,8 +112,7 @@
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages xml)
-  #:use-module (guix build-system python))
+  #:use-module (gnu packages xml))
 
 (define-public pwgen
   (package
@@ -757,7 +759,7 @@ using password-store through rofi interface:
 (define-public tessen
   (package
     (name "tessen")
-    (version "2.1.0")
+    (version "2.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -766,7 +768,7 @@ using password-store through rofi interface:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ddsjhzp1qy3jfhxlrzcxgp0gza234yc0sdlngwa3xdj0wr40zs0"))))
+                "01jaxakq847k3v2wid8fzhcmq8mraxz0q1j87s1jv75l1gy4qiij"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests?
@@ -776,13 +778,17 @@ using password-store through rofi interface:
                (add-after 'unpack 'patch-wtype-path
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "tessen"
-                     (("wtype") (search-input-file inputs "/bin/wtype")))))
+                     (("notify-send") (search-input-file inputs
+                                                         "/bin/notify-send"))
+                     (("wl-copy") (search-input-file inputs "/bin/wl-copy"))
+                     (("wtype") (search-input-file inputs "/bin/wtype"))
+                     (("xdg-open") (search-input-file inputs "/bin/xdg-open")))))
                (delete 'configure)) ;no configure script
            #:make-flags
            #~(list (string-append "PREFIX="
                                   #$output))))
     (native-inputs (list scdoc))
-    (inputs (list wtype))
+    (inputs (list libnotify wl-clipboard wtype xdg-utils))
     (home-page "https://github.com/ayushnix/tessen")
     (synopsis "Frontend for password-store and gopass")
     (description "Tessen is a bash script that can autotype and copy data
@@ -862,6 +868,39 @@ This package only contains the Browserpass native messaging host.  You must
 also install the browser extension for GNU IceCat or ungoogled-chromium
 separately.")
     (license license:isc)))
+
+(define-public cpass
+  (package
+    (name "cpass")
+    (version "0.9.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cpass" version))
+              (sha256
+               (base32
+                "1zp3a8mgqxn916fzj1v2yhgnl7v6s0vnd0qcghqs3qq648qmlwr5"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-pass-refs
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "cpass.py"
+                     (("'pass'")
+                      (string-append "'"
+                                     (search-input-file inputs
+                                                        "bin/pass")
+                                     "'"))
+                     (("\\.password_store")
+                      ".password-store")))))))
+    (inputs (list password-store))
+    (propagated-inputs (list python-urwid))
+    (home-page "https://github.com/OliverLew/cpass")
+    (synopsis "Textual interface for @command{pass}")
+    (description
+     "@command{cpass} is a terminal user interface for @command{pass}.
+It supports both vim-like keybindings and the mouse.")
+    (license license:expat)))
 
 (define-public argon2
   (package

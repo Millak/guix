@@ -277,7 +277,7 @@ expressions and blanks that were read."
    ('lambda 2)
    ('lambda* 2)
    ('match-lambda 1)
-   ('match-lambda* 2)
+   ('match-lambda* 1)
    ('define 2)
    ('define* 2)
    ('define-public 2)

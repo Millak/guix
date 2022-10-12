@@ -1242,7 +1242,6 @@ provides the GNU compiler for the Go programming language."))
     (version "0.23")
     (source (origin
              (method url-fetch)
-             ;; Used to be at isl.gforge.inria.fr.
              (uri (list (string-append "mirror://sourceforge/libisl/isl-"
                                        version ".tar.bz2")
                         (string-append %gcc-infrastructure

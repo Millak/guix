@@ -255,7 +255,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "43.rc")                   ;for libsoup 3 support
+    (version "43.0")                    ;for libsoup 3 support
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -263,27 +263,33 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "16a3j896fwxgnvrmx27jnrvhxzh3v22paaq87ad57yp8wkq946il"))))
+                "1r1l6ajs6zz316m8zac5r0l3qgdv616xh376bfn2fflcnz7wys08"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
+      #:meson meson-0.63
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'skip-gtk-update-icon-cache
-            ;; Don't create 'icon-theme.cache'.
+          (add-after 'unpack 'skip-cache-and-database-updates
             (lambda _
-              (substitute* "meson_post_install.py"
-                (("gtk-update-icon-cache") "true"))))
-          (add-after 'unpack 'patch-dbus-service
-            (lambda _
-              (substitute* "data/org.gnome.Maps.service.in"
-                (("@pkgdatadir@/org.gnome.Maps")
-                 (string-append #$output "/bin/gnome-maps")))))
+              (substitute* "meson.build"
+                (("([a-z_]*): true" all option)
+                 (cond                ; cond rather than match saves an import
+                  ((member option '("gtk_update_icon_cache"
+                                    "update_desktop_database"))
+                   (string-append option ": false"))
+                  (else all))))))
           (add-after 'install 'wrap
             (lambda _
-              (wrap-program (string-append #$output "/bin/gnome-maps")
-                `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))))))))
+              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                (substitute* (string-append #$output "/share/gnome-maps/"
+                                            "org.gnome.Maps")
+                  (("imports\\.package\\.init" all)
+                   (string-append "'" gi-typelib-path "'.split(':').forEach("
+                                  "path => imports.gi.GIRepository.Repository."
+                                  "prepend_search_path(path));\n"
+                                  all)))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
@@ -307,7 +313,7 @@ topology functions.")
            libhandy
            librsvg
            libsecret
-           libshumate           
+           libshumate
            libsoup
            libxml2
            pango-next                   ;TODO: remove when it's the default

@@ -56,6 +56,8 @@
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 msimonin <matthieu.simonin@inria.fr>
+;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -432,14 +434,14 @@ Callback Hell.
 (define-public python-aiohttp-socks
   (package
     (name "python-aiohttp-socks")
-    (version "0.6.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiohttp_socks" version))
        (sha256
         (base32
-         "04w010bvi719ifpc3sshav95k10hf9nq8czn9yglkj206yxcypdr"))))
+         "06il43dv6qm858af841vq9qadw6h7qsfs06nnwagmwqyi72cl592"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-aiohttp python-attrs python-socks))
@@ -563,13 +565,13 @@ WSGI.  This package includes libraries for implementing ASGI servers.")
 (define-public python-aws-sam-translator
   (package
     (name "python-aws-sam-translator")
-    (version "1.40.0")
+    (version "1.51.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "aws-sam-translator" version))
               (sha256
                (base32
-                "1hq5ggbzcq4k3ks439hki493w4sasgaxns6j5x57xsj822acalmf"))))
+                "1ywzchc3nk13xh593j7b14qp3y0fdx7cfbdhnm34p39av66xffac"))))
     (build-system python-build-system)
     (arguments
      `(;; XXX: Tests are not distributed with the PyPI archive, and would
@@ -710,7 +712,7 @@ decode and default on encode.
 (define-public python-cfn-lint
   (package
     (name "python-cfn-lint")
-    (version "0.54.3")
+    (version "0.65.0")
     (home-page "https://github.com/aws-cloudformation/cfn-lint")
     (source (origin
               (method git-fetch)
@@ -720,11 +722,16 @@ decode and default on encode.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "106qf19n2k6sdjkb4006aidibd24qqiw901c1613xgjpnyw4dyl6"))))
+                "1rfacp39jssrbchrzb49vwrqyzhx5v7jfcgngqnb9r7qfs4bwi3w"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-network-test
+           (lambda _
+             ;; This test requires networking.
+             (substitute* "test/unit/module/formatters/test_formatters.py"
+               (("def test_sarif_formatter") "def _test_sarif_formatter"))))
          (replace 'check
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (when tests?
@@ -744,17 +751,59 @@ decode and default on encode.
      (list python-pydot python-mock))
     (propagated-inputs
      (list python-aws-sam-translator
+           python-importlib-resources
+           python-jschema-to-python
            python-jsonpatch
            python-jsonschema
            python-junit-xml
            python-networkx
            python-pyyaml
+           python-sarif-om
            python-six))
     (synopsis "Validate CloudFormation templates")
     (description
      "This package lets you validate CloudFormation YAML/JSON templates against
 the CloudFormation spec and additional checks.  Includes checking valid values
 for resource properties and best practices.")
+    (license license:expat)))
+
+(define-public python-jschema-to-python
+  (package
+    (name "python-jschema-to-python")
+    (version "1.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jschema_to_python" version))
+              (sha256
+               (base32
+                "14cvaiwm56g0v6p7zviikaa5i9ln3yqy910jmp60hirhbpz19zvn"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-attrs python-jsonpickle python-pbr))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/microsoft/jschema-to-python")
+    (synopsis "Generate Python classes from a JSON schema.")
+    (description "This package generates source code for Python classes from a
+@url{http://jschema.org,JSchema} JSON schema.")
+    (license license:expat)))
+
+(define-public python-sarif-om
+  (package
+    (name "python-sarif-om")
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sarif_om" version))
+              (sha256
+               (base32
+                "167gb8xjm0310km3w1s12bqldbv7zyklkr4j5900vq4361ml2pyd"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-attrs))
+    (native-inputs (list python-pbr))
+    (home-page "https://github.com/microsoft/sarif-python-om")
+    (synopsis "Python implementation of the SARIF 2.1.0 object model.")
+    (description "This module contains classes for the object model defined
+by the @url{https://sarifweb.azurewebsites.net,Static Analysis Results
+Interchange Format (SARIF)} file format.")
     (license license:expat)))
 
 (define-public python-falcon
@@ -3213,6 +3262,26 @@ supports url redirection and retries, and also gzip and deflate decoding.")
     (description "AWS CLI provides a unified command line interface to the
 Amazon Web Services (AWS) API.")
     (license license:asl2.0)))
+
+(define-public awscli-2
+  (package
+    (inherit awscli)
+    (name "awscli")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri (string-append name "v2") version))
+       (sha256
+        (base32
+         "0g1icsy2l4n540gnhliypy830dfp08hpfc3rk12dlxgc9v3ra4wl"))))
+    (arguments
+     ;; FIXME: The 'pypi' release does not contain tests.
+     '(#:tests? #f))
+    (inputs
+     (list python-importlib-resources
+           python-executor))))
+
 
 (define-public python-wsgiproxy2
   (package
@@ -6561,14 +6630,14 @@ your code non-blocking and speedy.")
 (define-public python-socks
   (package
     (name "python-socks")
-    (version "1.2.4")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-socks" version))
        (sha256
         (base32
-         "1n6xb18jy41ybgkmamakg6psp3qididd45qknxiggngaiibz43kx"))))
+         "12msk06c0glljcrx1byd78xgv05lxw81vknqwhn8ccs7an7cmag3"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ; tests not included
@@ -6577,8 +6646,7 @@ your code non-blocking and speedy.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "tests/" "-s"))
-             #t)))))
+               (invoke "pytest" "tests/" "-s")))))))
     (propagated-inputs
      (list python-async-timeout python-curio python-trio))
     (native-inputs
