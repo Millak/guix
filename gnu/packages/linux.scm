@@ -933,7 +933,8 @@ It has been modified to remove all non-free binary blobs.")
   (make-linux-libre* linux-libre-5.19-version
                      linux-libre-5.19-gnu-revision
                      linux-libre-5.19-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
 (define-public linux-libre-version         linux-libre-5.19-version)
@@ -946,42 +947,47 @@ It has been modified to remove all non-free binary blobs.")
   (make-linux-libre* linux-libre-5.15-version
                      linux-libre-5.15-gnu-revision
                      linux-libre-5.15-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
 (define-public linux-libre-5.10
   (make-linux-libre* linux-libre-5.10-version
                      linux-libre-5.10-gnu-revision
                      linux-libre-5.10-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
 (define-public linux-libre-5.4
   (make-linux-libre* linux-libre-5.4-version
                      linux-libre-5.4-gnu-revision
                      linux-libre-5.4-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
 (define-public linux-libre-4.19
   (make-linux-libre* linux-libre-4.19-version
                      linux-libre-4.19-gnu-revision
                      linux-libre-4.19-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux")
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux")
                      #:configuration-file kernel-config))
 
 (define-public linux-libre-4.14
   (make-linux-libre* linux-libre-4.14-version
                      linux-libre-4.14-gnu-revision
                      linux-libre-4.14-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux")
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "powerpc64le-linux")
                      #:configuration-file kernel-config))
 
 (define-public linux-libre-4.9
   (make-linux-libre* linux-libre-4.9-version
                      linux-libre-4.9-gnu-revision
                      linux-libre-4.9-source
-                     '("x86_64-linux" "i686-linux")
+                     '("x86_64-linux" "i686-linux" "powerpc64le-linux")
                      #:configuration-file kernel-config))
 
 ;; Linux-Libre-LTS points to the *newest* released long-term support version of
@@ -1169,7 +1175,7 @@ It has been modified to remove all non-free binary blobs.")
           linux-libre-5.19-gnu-revision
           linux-libre-5.19-source
           '("x86_64-linux" "i686-linux" "armhf-linux"
-            "aarch64-linux" "riscv64-linux")
+            "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
           #:extra-version "bpf"
           #:configuration-file kernel-config
           #:extra-options
