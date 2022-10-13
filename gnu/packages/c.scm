@@ -1183,6 +1183,47 @@ performance concurrent systems developed in C99+.")
     (license (list license:bsd-2        ;everything except...
                    license:asl2.0))))   ;src/ck_hp.c
 
+(define-public tinydir
+  (package
+    (name "tinydir")
+    (version "1.2.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cxong/tinydir")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nprgdfx4i8wzc1idw6chan4fjfa75b5ll8kghdc0q2278pny259"))
+              (patches (search-patches "tinydir-fix-cbehave-test.patch"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "tests/cbehave"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'path-cmake
+            (lambda _
+              (substitute* "tests/CMakeLists.txt"
+                (("^include_dir.*cbehave.*")
+                 (string-append "include_directories("#$cbehave "/include)"))
+                (("^add_subdir.*cbeha.*") ""))))
+          (add-before 'configure 'chdir
+            (lambda _
+              (chdir "tests")))
+          (replace 'install
+            (lambda _
+              (install-file "../tinydir.h"
+                            (string-append #$output "/include")))))))
+    (native-inputs (list cbehave))
+    (home-page "https://github.com/cxong/tinydir")
+    (synopsis "List directories programmatically")
+    (description "@code{tinydir} is a header-only C wrapper for listing
+directory contents.")
+    (license license:bsd-2)))
+
 (define-public libdispatch
   (package
     (name "libdispatch")
