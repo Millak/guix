@@ -1,0 +1,11 @@
+diff -ur a/include/gemmi/json.hpp b/include/gemmi/json.hpp
+--- a/include/gemmi/json.hpp
++++ b/include/gemmi/json.hpp
+@@ -38,6 +38,7 @@
+ 
+ inline std::string as_cif_value(const sajson::value& val) {
+   switch (val.get_type()) {
++    case sajson::TYPE_INTEGER:
+     case sajson::TYPE_DOUBLE:
+       return val.as_string();
+     case sajson::TYPE_NULL:

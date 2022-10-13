@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +37,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
@@ -570,3 +572,97 @@ symmetries written in C.  Spglib can be used to:
 used to prepare publication-quality figures, to share interactive results with
 your colleagues, or to generate pre-rendered animations.")
     (license license:bsd-3)))
+
+(define-public gemmi
+  (package
+    (name "gemmi")
+    (version "0.5.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/project-gemmi/gemmi")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00km5q726bslrw7xbfwb3f3mrsk19qbimfnl3hvr4wi1y3z8i18a"))
+              (patches
+               (search-patches "gemmi-fix-sajson-types.patch"
+                               "gemmi-fix-pegtl-usage.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively "include/gemmi/third_party")
+                  (delete-file-recursively "third_party")))))
+    (outputs '("out" "bin" "python"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system)
+                   #:select (site-packages)))
+      #:imported-modules (append %cmake-build-system-modules
+                                 '((guix build python-build-system)))
+      #:configure-flags
+      #~(list "-DUSE_PYTHON=ON"
+              (string-append "-DPYTHON_INSTALL_DIR="
+                             (site-packages %build-inputs %outputs)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-includes
+            (lambda _
+              (substitute* (list "include/gemmi/sprintf.hpp"
+                                 "include/gemmi/dirwalk.hpp"
+                                 "include/gemmi/cif.hpp"
+                                 "include/gemmi/json.hpp"
+                                 "python/gemmi.cpp"
+                                 "include/gemmi/atof.hpp"
+                                 "include/gemmi/numb.hpp"
+                                 "include/gemmi/fourier.hpp")
+                (("<stb/stb_sprintf.h>") "<stb_sprintf.h>")
+                (("\"third_party/tinydir.h\"") "<tinydir.h>")
+                (("\"third_party/tao/pegtl.hpp\"") "<tao/pegtl.hpp>")
+                (("\"third_party/sajson.h\"") "<sajson.h>")
+                (("\"gemmi/third_party/tao/pegtl/parse_error.hpp\"")
+                 "<tao/pegtl/parse_error.hpp>")
+                (("\"third_party/fast_float.h\"")
+                 "<fast_float/fast_float.h>")
+                (("\"third_party/pocketfft_hdronly.h\"")
+                 "<pocketfft_hdronly.h>"))))
+          (add-after 'unpack 'change-bin-prefix
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("install\\(TARGETS program DESTINATION bin\\)")
+                 (string-append
+                  "install(TARGETS program DESTINATION "
+                  #$output:bin "/bin)")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source"
+                  (setenv "PYTHONPATH" "../build")
+                  (invoke "python3" "-m" "unittest" "discover" "-v"
+                          "-s" "tests"))))))))
+    (inputs (list python zlib))
+    (native-inputs
+     (list fast-float
+           optionparser
+           pegtl
+           pocketfft-cpp
+           pybind11
+           sajson-for-gemmi
+           stb-sprintf
+           tinydir))
+    (home-page "https://gemmi.readthedocs.io/en/latest/")
+    (synopsis "Macromolecular crystallography library and utilities")
+    (description "GEMMI is a C++ library for macromolecular crystallography.
+It can be used for working with
+@enumerate
+@item macromolecular models (content of PDB, PDBx/mmCIF and mmJSON files),
+@item refinement restraints (CIF files),
+@item reflection data (MTZ and mmCIF formats),
+@item data on a 3D grid (electron density maps, masks, MRC/CCP4 format)
+@item crystallographic symmetry.
+@end enumerate")
+    (license license:mpl2.0)))

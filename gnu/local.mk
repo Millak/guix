@@ -1180,6 +1180,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/gdm-wayland-session-wrapper-from-env.patch	\
   %D%/packages/patches/gdm-pass-gdk-pixbuf-loader-env.patch	\
   %D%/packages/patches/geeqie-clutter.patch			\
+  %D%/packages/patches/gemmi-fix-pegtl-usage.patch		\
+  %D%/packages/patches/gemmi-fix-sajson-types.patch		\
   %D%/packages/patches/genimage-mke2fs-test.patch		\
   %D%/packages/patches/geoclue-config.patch			\
   %D%/packages/patches/ghc-4.patch				\
