@@ -675,6 +675,44 @@ It indexes documents and provides a search interface for retrieving documents
 that best match text queries.")
     (license license:expat)))
 
+(define-public python-mdit-py-plugins
+  (package
+    (name "python-mdit-py-plugins")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mdit-py-plugins" version))
+       (sha256
+        (base32
+         "0l4pwsn2q30j160zjg79qa8v2brc4zl295rgrkpbfspcxr8lzhpc"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-markdown-it-py))
+    (native-inputs
+     (list python-coverage
+           python-pytest
+           python-pytest-cov
+           python-pytest-regressions))
+    (home-page "https://github.com/executablebooks/mdit-py-plugins")
+    (synopsis "Collection of plugins for markdown-it-py")
+    (description
+     "This package contains a collection of plugins for @code{markdown-it-py}
+like:
+
+@enumerate
+@item amsmath,
+@item attrs,
+@item container,
+@item definition list,
+@item dollarmath,
+@item field list,
+@item footnote,
+@item textmath, and
+@item wordcount.
+@end enumerate
+")
+    (license license:expat)))
+
 (define-public python-mdurl
   (package
     (name "python-mdurl")
