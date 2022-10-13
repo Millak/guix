@@ -19146,7 +19146,7 @@ object has been freed.")
 (define-public emacs-emacsql
   (package
     (name "emacs-emacsql")
-    (version "3.0.0")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
@@ -19155,7 +19155,7 @@ object has been freed.")
              (commit (string-append version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c84gxr1majqj4b59wgdy3lzm3ap66w9qsrnkx8hdbk9895ak81g"))))
+        (base32 "1iibfb5l94i8p5kqb54wxpbsflh3v7d36kfn34pg16839hs54410"))))
     (build-system emacs-build-system)
     (arguments
      `(#:modules ((guix build emacs-build-system)
