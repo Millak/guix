@@ -924,6 +924,36 @@ variables into the markdown template")
 Markdown.  All extensions are found under the module namespace of pymdownx.")
     (license license:expat)))
 
+(define-public python-pint
+  (package
+    (name "python-pint")
+    (version "0.19.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Pint" version))
+              (sha256
+               (base32
+                "1bsbiikm9i4saqc6mc3minkmrgnsgcg734agsvd7icqhyngrim71"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-mpl
+           python-pytest-subtests
+           python-setuptools-scm
+           python-sparse
+           python-dask
+           python-xarray
+           python-distributed))
+    (home-page "https://github.com/hgrecco/pint")
+    (synopsis "Physical quantities module")
+    (description
+     "Pint is a Python package to define, operate and manipulate physical
+quantities: the product of a numerical value and a unit of measurement.  It
+allows arithmetic operations between them and conversions from and to
+different units.")
+    (license license:bsd-3)))
+
 (define-public python-plotille
   (package
     (name "python-plotille")
