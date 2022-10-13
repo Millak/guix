@@ -1,0 +1,109 @@
+This patch replaces #ifndef POCKETFFT_NO_VECTORS by #if POCKETFFT_NO_VECTORS.
+It also makes it the default, as SIMD instructions are not that well-suited
+for substitutes.
+
+diff --git a/pocketfft_hdronly.h b/pocketfft_hdronly.h
+index d75ada6..b2d0a23 100644
+--- a/pocketfft_hdronly.h
++++ b/pocketfft_hdronly.h
+@@ -39,6 +39,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ #ifndef POCKETFFT_HDRONLY_H
+ #define POCKETFFT_HDRONLY_H
+ 
++#ifndef POCKETFFT_NO_VECTORS
++#define POCKETFFT_NO_VECTORS 1
++#endif
++
+ #ifndef __cplusplus
+ #error This file is C++ and requires a C++ compiler.
+ #endif
+@@ -106,29 +110,29 @@ constexpr bool FORWARD  = true,
+                BACKWARD = false;
+ 
+ // only enable vector support for gcc>=5.0 and clang>=5.0
+-#ifndef POCKETFFT_NO_VECTORS
+-#define POCKETFFT_NO_VECTORS
++#if !(POCKETFFT_NO_VECTORS)
++#define POCKETFFT_NO_VECTORS 1
+ #if defined(__INTEL_COMPILER)
+ // do nothing. This is necessary because this compiler also sets __GNUC__.
+ #elif defined(__clang__)
+ // AppleClang has their own version numbering
+ #ifdef __apple_build_version__
+ #  if (__clang_major__ > 9) || (__clang_major__ == 9 && __clang_minor__ >= 1)
+-#     undef POCKETFFT_NO_VECTORS
++#define POCKETFFT_NO_VECTORS 0
+ #  endif
+ #elif __clang_major__ >= 5
+-#  undef POCKETFFT_NO_VECTORS
++#define POCKETFFT_NO_VECTORS 0
+ #endif
+ #elif defined(__GNUC__)
+ #if __GNUC__>=5
+-#undef POCKETFFT_NO_VECTORS
++#define POCKETFFT_NO_VECTORS 0
+ #endif
+ #endif
+ #endif
+ 
+ template<typename T> struct VLEN { static constexpr size_t val=1; };
+ 
+-#ifndef POCKETFFT_NO_VECTORS
++#if !(POCKETFFT_NO_VECTORS)
+ #if (defined(__AVX512F__))
+ template<> struct VLEN<float> { static constexpr size_t val=16; };
+ template<> struct VLEN<double> { static constexpr size_t val=8; };
+@@ -145,7 +149,7 @@ template<> struct VLEN<double> { static constexpr size_t val=2; };
+ template<> struct VLEN<float> { static constexpr size_t val=4; };
+ template<> struct VLEN<double> { static constexpr size_t val=2; };
+ #else
+-#define POCKETFFT_NO_VECTORS
++#define POCKETFFT_NO_VECTORS 1
+ #endif
+ #endif
+ 
+@@ -180,7 +184,7 @@ template<typename T> class arr
+     T *p;
+     size_t sz;
+ 
+-#if defined(POCKETFFT_NO_VECTORS)
++#if POCKETFFT_NO_VECTORS
+     static T *ralloc(size_t num)
+       {
+       if (num==0) return nullptr;
+@@ -3026,7 +3030,7 @@ class rev_iter
+ template<typename T> struct VTYPE {};
+ template <typename T> using vtype_t = typename VTYPE<T>::type;
+ 
+-#ifndef POCKETFFT_NO_VECTORS
++#if !(POCKETFFT_NO_VECTORS)
+ template<> struct VTYPE<float>
+   {
+   using type = float __attribute__ ((vector_size (VLEN<float>::val*sizeof(float))));
+@@ -3139,7 +3143,7 @@ POCKETFFT_NOINLINE void general_nd(const cndarr<T> &in, ndarr<T> &out,
+         auto storage = alloc_tmp<T0>(in.shape(), len, sizeof(T));
+         const auto &tin(iax==0? in : out);
+         multi_iter<vlen> it(tin, out, axes[iax]);
+-#ifndef POCKETFFT_NO_VECTORS
++#if !(POCKETFFT_NO_VECTORS)
+         if (vlen>1)
+           while (it.remaining()>=vlen)
+             {
+@@ -3245,7 +3249,7 @@ template<typename T> POCKETFFT_NOINLINE void general_r2c(
+     constexpr auto vlen = VLEN<T>::val;
+     auto storage = alloc_tmp<T>(in.shape(), len, sizeof(T));
+     multi_iter<vlen> it(in, out, axis);
+-#ifndef POCKETFFT_NO_VECTORS
++#if !(POCKETFFT_NO_VECTORS)
+     if (vlen>1)
+       while (it.remaining()>=vlen)
+         {
+@@ -3300,7 +3304,7 @@ template<typename T> POCKETFFT_NOINLINE void general_c2r(
+       constexpr auto vlen = VLEN<T>::val;
+       auto storage = alloc_tmp<T>(out.shape(), len, sizeof(T));
+       multi_iter<vlen> it(in, out, axis);
+-#ifndef POCKETFFT_NO_VECTORS
++#if !(POCKETFFT_NO_VECTORS)
+       if (vlen>1)
+         while (it.remaining()>=vlen)
+           {

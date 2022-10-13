@@ -2008,3 +2008,31 @@ CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
 floating point numbers from strings.  It implements the C++ from_chars
 functions for the float and double types.")
     (license (list license:asl2.0 license:expat)))) ; dual licensed
+
+(define-public pocketfft-cpp
+  (let ((commit "daa8bb18327bc5c7d22c69428c25cf5dc64167d3")
+        (revision "0"))
+    (package
+      (name "pocketfft-cpp")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mreineck/pocketfft")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1dbkkqkmkxgmz1qjpsqzic5ig3qw1pqndbb3dvjc7xq5f2rdzyq1"))
+                (patches (search-patches
+                          "pocketfft-cpp-prefer-preprocessor-if.patch"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan #~'(("pocketfft_hdronly.h" "include/"))))
+      (home-page "https://github.com/mreineck/pocketfft")
+      (synopsis "C++11 header-only Fast Fourier Transform library")
+      (description "This package provides a single-header C++11 library for
+computing Fast Fourier transformations.  It supports multidimensional arrays,
+different floating point sizes and complex transformations.")
+      (license license:bsd-3))))
