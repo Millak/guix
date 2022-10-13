@@ -121,9 +121,6 @@ shell'."
       --expose=SPEC      for containers, expose read-only host file system
                          according to SPEC"))
   (display (G_ "
-  -F, --emulate-fhs      for containers, emulate the Filesystem Hierarchy
-                         Standard (FHS)"))
-  (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
   (display (G_ "
       --bootstrap        use bootstrap binaries to build the environment")))
@@ -260,9 +257,6 @@ use '--preserve' instead~%"))
                    (alist-cons 'file-system-mapping
                                (specification->file-system-mapping arg #f)
                                result)))
-         (option '(#\F "emulate-fhs") #f #f
-                 (lambda (opt name arg result)
-                   (alist-cons 'emulate-fhs? #t result)))
          (option '(#\r "root") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'gc-root arg result)))
@@ -1030,15 +1024,7 @@ command-line option processing with 'parse-command-line'."
       (with-store/maybe store
         (with-status-verbosity (assoc-ref opts 'verbosity)
           (define manifest-from-opts
-            (options/resolve-packages
-             store
-             ;; For an FHS-container, add the (hidden) package glibc-for-fhs
-             ;; which uses the global cache at /etc/ld.so.cache.
-             (if emulate-fhs?
-                 (alist-cons 'expression
-                             '(ad-hoc-package "(@@ (gnu packages base) glibc-for-fhs)")
-                             opts)
-                 opts)))
+            (options/resolve-packages store opts))
 
           (define manifest
             (if profile

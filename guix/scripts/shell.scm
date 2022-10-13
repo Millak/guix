@@ -68,6 +68,9 @@ interactive shell in that environment.\n"))
       --rebuild-cache    rebuild cached environment, if any"))
   (display (G_ "
       --export-manifest  print a manifest for the given options"))
+  (display (G_ "
+  -F, --emulate-fhs      for containers, emulate the Filesystem Hierarchy
+                         Standard (FHS)"))
 
   (show-environment-options-help)
   (newline)
@@ -136,7 +139,20 @@ interactive shell in that environment.\n"))
                         (alist-cons 'explicit-loading? #t result)))
               (option '("rebuild-cache") #f #f
                       (lambda (opt name arg result)
-                        (alist-cons 'rebuild-cache? #t result))))
+                        (alist-cons 'rebuild-cache? #t result)))
+
+              (option '(#\F "emulate-fhs") #f #f
+                      (lambda (opt name arg result)
+                        (let ((result
+                               ;; For an FHS-container, add the (hidden)
+                               ;; package glibc-for-fhs which uses the global
+                               ;; cache at /etc/ld.so.cache.
+                               (alist-cons
+                                'expression
+                                '(ad-hoc-package
+                                  "(@@ (gnu packages base) glibc-for-fhs)")
+                                result)))
+                         (alist-cons 'emulate-fhs? #t result)))))
         (filter-map (lambda (opt)
                       (and (not (any (lambda (name)
                                        (member name to-remove))

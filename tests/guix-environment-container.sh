@@ -217,7 +217,7 @@ fi
 # Test that the container has FHS specific files/directories.  Note that /bin
 # exists in a non-FHS container as it will contain sh, a symlink to the bash
 # package, so we don't test for it.
-guix environment -C --emulate-fhs --ad-hoc --bootstrap guile-bootstrap \
+guix shell -C --emulate-fhs --bootstrap guile-bootstrap \
      -- guile -c '(exit (and (file-exists? "/etc/ld.so.cache")
                              (file-exists? "/lib")
                              (file-exists? "/sbin")
@@ -229,5 +229,5 @@ guix environment -C --emulate-fhs --ad-hoc --bootstrap guile-bootstrap \
                              (file-exists? "/usr/share")))'
 
 # Test that the ld cache was generated and can be successfully read.
-guix environment -C --emulate-fhs --ad-hoc --bootstrap guile-bootstrap \
+guix shell -CF --bootstrap guile-bootstrap \
      -- guile -c '(execlp "ldconfig" "ldconfig" "-p")'
