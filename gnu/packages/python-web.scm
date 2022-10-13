@@ -3571,22 +3571,31 @@ Python.")
 (define-public python-responses
   (package
     (name "python-responses")
-    (version "0.10.6")
+    (version "0.22.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "responses" version))
               (sha256
                (base32
-                "147pacwkkqy3qf3hr33fnl1xbzgw0zsm3qppvvy9qhq8h069qbah"))))
+                "0bhhffwl0zqin4xc89nc97ynzr7l3j4b8rjqk9w9flnj2cmcnsir"))))
     (build-system python-build-system)
     (arguments
-     `(;; Test suite is not distributed:
-       ;; https://github.com/getsentry/responses/issues/38
-       #:tests? #f))
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
     (native-inputs
-     (list python-mock))
+     (list python-mock
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-httpserver))
     (propagated-inputs
-     (list python-requests python-cookies python-six))
+     (list python-requests
+           python-cookies
+           python-six
+           python-types-toml))
     (home-page "https://github.com/getsentry/responses")
     (synopsis "Utility for mocking out the `requests` Python library")
     (description "A utility library for mocking out the `requests` Python
