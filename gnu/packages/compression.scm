@@ -659,6 +659,12 @@ archiving.  Lzip is a clean implementation of the LZMA algorithm.")
                (base32
                 "0wmmyi03fv2lflsir5ldrsv04q57k3hmlqajzb1m3p86gwbh967j"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; The configure script doesn't recognise the --build or --host
+     ;; arguments, so set CXX here
+     `(,@(if (%current-target-system)
+             `(#:make-flags (list ,(string-append "CXX=" (cxx-for-target))))
+             '())))
     (home-page "https://www.nongnu.org/lzip/lziprecover.html")
     (synopsis "Recover and decompress data from damaged lzip files")
     (description
