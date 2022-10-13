@@ -905,3 +905,97 @@ emphasis on quality rather than speed.")
 Orbital Package} contains a program and library for performing extended Hückel
 calculations and analyzing the results.")
     (license license:bsd-2)))
+
+(define-public avalon-toolkit
+  (package
+    (name "avalon-toolkit")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://sourceforge/avalontoolkit/"
+             "AvalonToolkit_" (substring version 0 3) "/AvalonToolkit_"
+             version ".source.tar"))
+       (sha256
+        (base32
+         "0rnnyy6axs2da7aa4q6l30ldavbk49v6l22llj1adn74h1i67bpv"))
+       (modules '((guix build utils) (ice-9 ftw)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "../SourceDistribution/java")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; There are no intended tests
+      #:tests? #f
+      #:phases
+      #~(let ((programs '("canonizer" "matchtest" "sketch" "smi2mol" "struchk")))
+          (modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "common")))
+            (delete 'configure)
+            (add-before 'build 'dont-free-static-memory
+              (lambda _
+                (substitute* "reaccsio.c"
+                  (("MyFree\\(.*tempdir\\)" m)
+                   (string-append "/* freeing memory from getenv is bad */"
+                                  "// " m)))))
+            ;; The makefile has incorrect compiler flags and is missing some
+            ;; object files, so we build it ourselves.
+            (replace 'build
+              (lambda _
+                (for-each
+                 (lambda (part)
+                   (format #t "Compiling ~a.c ~~> ~a.o~%" part part)
+                   (invoke #$(cc-for-target) "-c" "-fPIC" "-O2"
+                           (string-append part ".c")
+                           "-o" (string-append part ".o")))
+                 (list "aacheck" "casutils" "denormal" "depictutil"
+                       "didepict" "fixcharges" "forio" "geometry"
+                       "graph" "hashcode" "layout" "local" "pattern"
+                       "perceive" "reaccsio" "rtutils" "set" "shortcut"
+                       "sketch" "ssmatch" "stereo" "symbol_lists"
+                       "symboltable" "utilities"))
+                (display "Building libavalontoolkit.so\n")
+                (apply invoke "gcc" "-fPIC" "-shared" "-lm"
+                       "-o" "libavalontoolkit.so" "canonizer.c" "smi2mol.c"
+                       "struchk.c" "patclean.c" (find-files "." "\\.o$"))
+                ;; patclean is not built here as there is an undeclared
+                ;; variable in main().
+                (for-each
+                 (lambda (program)
+                   (display (string-append "Building " program "\n"))
+                   (invoke "gcc" "-L." "-lavalontoolkit" "-lm" "-O2"
+                           (string-append "-Wl,-rpath=" #$output "/lib")
+                           "-DMAIN" (string-append program ".c") "-o" program))
+                 programs)))
+            (replace 'install
+              (lambda _
+                ;; Executables
+                (for-each
+                 (lambda (program)
+                   (install-file program (string-append #$output "/bin")))
+                 programs)
+                (for-each
+                 (lambda (name)
+                   (symlink (string-append #$output "/bin/smi2mol")
+                            (string-append #$output "/bin/" name)))
+                 '("mol2smi" "rdf2smi" "mol2tbl" "mol2sma" "smi2rdf"))
+                ;; Library
+                (install-file "libavalontoolkit.so"
+                              (string-append #$output "/lib"))
+                (for-each
+                 (lambda (file)
+                   (install-file file (string-append #$output
+                                                    "/include/avalontoolkit")))
+                 (find-files "." "\\.h$"))
+                (install-file "../license.txt"
+                              (string-append #$output "/share/doc/"
+                                             #$name "-" #$version "/"))))))))
+    (home-page "https://sourceforge.net/projects/avalontoolkit/")
+    (synopsis "Tools for SMILES and MOL files and for structure fingerprinting")
+    (description "This package contains a library and programs for
+canonicalization of SMILES and MOL files, molecular structure fingerprinting
+and rendering molecules.")
+    (license license:bsd-3)))
