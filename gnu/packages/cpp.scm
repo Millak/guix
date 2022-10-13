@@ -57,6 +57,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system scons)
   #:use-module (guix modules)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
@@ -2036,3 +2037,67 @@ functions for the float and double types.")
 computing Fast Fourier transformations.  It supports multidimensional arrays,
 different floating point sizes and complex transformations.")
       (license license:bsd-3))))
+
+(define-public sajson
+  (let ((commit "ec644013e34f9984a3cc9ba568cab97a391db9cd")
+        (revision "0"))
+    (package
+      (name "sajson")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/chadaustin/sajson")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (patches
+                 (search-patches "sajson-build-with-gcc10.patch"))
+                (sha256
+                 (base32
+                  "0fjag27w7gvkc5pdhq3ad7yc09rabpzahndw1sgsg04ipznidmmq"))
+                (modules '((guix build utils)))
+                (snippet '(delete-file-recursively "third-party"))))
+      (build-system scons-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'disable-other-builds
+              (lambda _
+                (substitute* "SConstruct"
+                  (("for name, tools in builds:")
+                   "for name, tools in [('opt', [gcc, opt])]:"))))
+            (add-after 'unpack 'use-external-unittest-cpp
+              (lambda _
+                (substitute* "SConscript"
+                  (("unittestpp_env\\.Library") "_dummy = ")
+                  (("test_env = env.Clone\\(tools=\\[unittestpp, sajson\\]\\)")
+                   (string-append
+                    "test_env = env.Clone(tools=[sajson])\n"
+                    "test_env.Append(CPPPATH='"
+                    (search-input-directory %build-inputs "/include/UnitTest++")
+                    "', LIBPATH='"
+                    (string-append #$(this-package-native-input "unittest-cpp")
+                                   "/lib")
+                    "', LIBS=['UnitTest++'])")))))
+            (replace 'build
+              (lambda* (#:key tests? #:allow-other-keys #:rest args)
+                (when tests?
+                  (apply (assoc-ref %standard-phases 'build)
+                         args))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "build/opt/test")
+                  (invoke "build/opt/test_unsorted"))))
+            (replace 'install
+              (lambda _
+                (let ((out (string-append #$output "/include")))
+                  (install-file "include/sajson.h" out)
+                  (install-file "include/sajson_ostream.h" out)))))))
+      (native-inputs (list unittest-cpp))
+      (home-page "https://github.com/chadaustin/sajson")
+      (synopsis "C++11 header-only, in-place JSON parser")
+      (description "@code{sajson} is an in-place JSON parser with support for
+parsing with only a single memory allocation.")
+      (license license:expat))))
