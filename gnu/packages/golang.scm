@@ -36,6 +36,7 @@
 ;;; Copyright © 2022 Pier-Hugues Pellerin <phpellerin@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
