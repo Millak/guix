@@ -76,6 +76,15 @@ then add or remove events dynamically without having to change the event
 loop.")
     (license bsd-3)))
 
+(define-public libevent-with-openssl
+  (package/inherit libevent
+    (name "libevent-with-openssl")
+    (inputs (modify-inputs (package-inputs libevent)
+              (prepend openssl)))
+    (arguments
+     ;; This skips some of the tests which fail on armhf and aarch64.
+     '(#:configure-flags '("--disable-libevent-regress")))))
+
 (define-public libev
   (package
     (name "libev")
