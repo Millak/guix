@@ -13419,21 +13419,21 @@ arguments, such as arguments separated by commas and semicolons.")
 (define-public emacs-evil-escape
   (package
     (name "emacs-evil-escape")
-    (version "3.14")
+    (version "3.16")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://github.com/syl20bnr/evil-escape")
+         (url "https://github.com/emacsorphanage/evil-escape")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s8lmmm25qabicwaj9jybpbd8mkc62yl7jnhk1lpablydjkv3w2i"))))
+        (base32 "1z30v59igndqzxg9gcx4bsbf5jkh11wp936il8azkrz3qdryaj4a"))))
     (propagated-inputs
      (list emacs-evil))
     (build-system emacs-build-system)
-    (home-page "https://github.com/syl20bnr/evil-escape")
+    (home-page "https://github.com/emacsorphanage/evil-escape")
     (synopsis "Escape from insert state and everything else in Emacs")
     (description
      "Evil escape provides a customizable key sequence to escape from insert
