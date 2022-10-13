@@ -1,0 +1,195 @@
+Patch for gemmi: Keep numbers in JSON file as strings.
+
+Adapted from this commit of the bundled fork of sajson in gemmi:
+https://github.com/project-gemmi/gemmi/commit/fccbca4f6040364ba708613e1429c2251872240d
+
+diff -ur a/include/sajson.h b/include/sajson.h
+--- a/include/sajson.h
++++ b/include/sajson.h
+@@ -411,43 +411,6 @@
+ };
+ } // namespace internal
+ 
+-namespace integer_storage {
+-enum { word_length = 1 };
+-
+-inline int load(const size_t* location) {
+-    int value;
+-    memcpy(&value, location, sizeof(value));
+-    return value;
+-}
+-
+-inline void store(size_t* location, int value) {
+-    // NOTE: Most modern compilers optimize away this constant-size
+-    // memcpy into a single instruction. If any don't, and treat
+-    // punning through a union as legal, they can be special-cased.
+-    static_assert(
+-        sizeof(value) <= sizeof(*location),
+-        "size_t must not be smaller than int");
+-    memcpy(location, &value, sizeof(value));
+-}
+-} // namespace integer_storage
+-
+-namespace double_storage {
+-enum { word_length = sizeof(double) / sizeof(size_t) };
+-
+-inline double load(const size_t* location) {
+-    double value;
+-    memcpy(&value, location, sizeof(double));
+-    return value;
+-}
+-
+-inline void store(size_t* location, double value) {
+-    // NOTE: Most modern compilers optimize away this constant-size
+-    // memcpy into a single instruction. If any don't, and treat
+-    // punning through a union as legal, they can be special-cased.
+-    memcpy(location, &value, sizeof(double));
+-}
+-} // namespace double_storage
+-
+ /// Represents a JSON value.  First, call get_type() to check its type,
+ /// which determines which methods are available.
+ ///
+@@ -585,70 +548,10 @@
+         return length;
+     }
+ 
+-    /// If a numeric value was parsed as a 32-bit integer, returns it.
+-    /// Only legal if get_type() is TYPE_INTEGER.
+-    int get_integer_value() const {
+-        assert_tag(tag::integer);
+-        return integer_storage::load(payload);
+-    }
+-
+-    /// If a numeric value was parsed as a double, returns it.
+-    /// Only legal if get_type() is TYPE_DOUBLE.
+-    double get_double_value() const {
+-        assert_tag(tag::double_);
+-        return double_storage::load(payload);
+-    }
+-
+-    /// Returns a numeric value as a double-precision float.
+-    /// Only legal if get_type() is TYPE_INTEGER or TYPE_DOUBLE.
+-    double get_number_value() const {
+-        assert_tag_2(tag::integer, tag::double_);
+-        if (value_tag == tag::integer) {
+-            return get_integer_value();
+-        } else {
+-            return get_double_value();
+-        }
+-    }
+-
+-    /// Returns true and writes to the output argument if the numeric value
+-    /// fits in a 53-bit integer.  This is useful for timestamps and other
+-    /// situations where integral values with greater than 32-bit precision
+-    /// are used, as 64-bit values are not understood by all JSON
+-    /// implementations or languages.
+-    /// Returns false if the value is not an integer or not in range.
+-    /// Only legal if get_type() is TYPE_INTEGER or TYPE_DOUBLE.
+-    bool get_int53_value(int64_t* out) const {
+-        // Make sure the output variable is always defined to avoid any
+-        // possible situation like
+-        // https://gist.github.com/chadaustin/2c249cb850619ddec05b23ca42cf7a18
+-        *out = 0;
+-
+-        assert_tag_2(tag::integer, tag::double_);
+-        switch (value_tag) {
+-        case tag::integer:
+-            *out = get_integer_value();
+-            return true;
+-        case tag::double_: {
+-            double v = get_double_value();
+-            if (v < -(1LL << 53) || v > (1LL << 53)) {
+-                return false;
+-            }
+-            int64_t as_int = static_cast<int64_t>(v);
+-            if (as_int != v) {
+-                return false;
+-            }
+-            *out = as_int;
+-            return true;
+-        }
+-        default:
+-            return false;
+-        }
+-    }
+-
+     /// Returns the length of the string.
+     /// Only legal if get_type() is TYPE_STRING.
+     size_t get_string_length() const {
+-        assert_tag(tag::string);
++        assert_tag_3(tag::string, tag::integer, tag::double_);
+         return payload[1] - payload[0];
+     }
+ 
+@@ -659,7 +562,7 @@
+     /// embedded NULs.
+     /// Only legal if get_type() is TYPE_STRING.
+     const char* as_cstring() const {
+-        assert_tag(tag::string);
++        assert_tag_3(tag::string, tag::integer, tag::double_);
+         return text + payload[0];
+     }
+ 
+@@ -667,7 +570,7 @@
+     /// Returns a string's value as a std::string.
+     /// Only legal if get_type() is TYPE_STRING.
+     std::string as_string() const {
+-        assert_tag(tag::string);
++        assert_tag_3(tag::string, tag::integer, tag::double_);
+         return std::string(text + payload[0], text + payload[1]);
+     }
+ #endif
+@@ -690,6 +593,10 @@
+         assert(e1 == value_tag || e2 == value_tag);
+     }
+ 
++    void assert_tag_3(tag e1, tag e2, tag e3) const {
++        assert(e1 == value_tag || e2 == value_tag || e3 == value_tag);
++    }
++
+     void assert_in_bounds(size_t i) const { assert(i < get_length()); }
+ 
+     const tag value_tag;
+@@ -2059,6 +1966,8 @@
+     std::pair<char*, internal::tag> parse_number(char* p) {
+         using internal::tag;
+ 
++	size_t start = p - input.get_data();
++
+         // Assume 32-bit, two's complement integers.
+         static constexpr unsigned RISKY = INT_MAX / 10u;
+         unsigned max_digit_after_risky = INT_MAX % 10u;
+@@ -2235,23 +2144,18 @@
+                 u = 0u - u;
+             }
+         }
++
++        bool success;
++        size_t* out = allocator.reserve(2, &success);
++        if (SAJSON_UNLIKELY(!success)) {
++            return std::make_pair(oom(p, "number"), tag::null);
++        }
++        out[0] = start;
++        out[1] = p - input.get_data();
++
+         if (try_double) {
+-            bool success;
+-            size_t* out
+-                = allocator.reserve(double_storage::word_length, &success);
+-            if (SAJSON_UNLIKELY(!success)) {
+-                return std::make_pair(oom(p, "double"), tag::null);
+-            }
+-            double_storage::store(out, d);
+             return std::make_pair(p, tag::double_);
+         } else {
+-            bool success;
+-            size_t* out
+-                = allocator.reserve(integer_storage::word_length, &success);
+-            if (SAJSON_UNLIKELY(!success)) {
+-                return std::make_pair(oom(p, "integer"), tag::null);
+-            }
+-            integer_storage::store(out, static_cast<int>(u));
+             return std::make_pair(p, tag::integer);
+         }
+     }

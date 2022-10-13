@@ -2102,6 +2102,22 @@ different floating point sizes and complex transformations.")
 parsing with only a single memory allocation.")
       (license license:expat))))
 
+(define-public sajson-for-gemmi
+  (package/inherit sajson
+    (name "sajson-for-gemmi")
+    (source (origin
+              (inherit (package-source sajson))
+              (patches (cons
+                        (search-patch
+                         "sajson-for-gemmi-numbers-as-strings.patch")
+                        (origin-patches (package-source sajson))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments sajson)
+       ;; This is a modified version used in gemmi, in which numbers are kept
+       ;; as strings. Building the tests fails with the modification.
+       ((#:tests? _ #f) #f)))
+    (properties '((hidden? . #t)))))
+
 (define-public optionparser
   (package
     (name "optionparser")
