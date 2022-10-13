@@ -771,3 +771,30 @@ of the algorithms, the calculations give identical results.")
     (synopsis "Maestro file parser")
     (description "maeparser is a parser for Schrodinger Maestro files.")
     (license license:expat)))
+
+(define-public coordgenlibs
+  (package
+    (name "coordgenlibs")
+    (version "3.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/schrodinger/coordgenlibs/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d09x3v38i9y184bml020bq7xizdrdwng38qmdxlplzfhqkjdidv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DCOORDGEN_RIGOROUS_BUILD=OFF"
+              "-DCOORDGEN_USE_MAEPARSER=ON")))
+    (inputs (list boost maeparser))
+    (home-page "https://github.com/schrodinger/coordgenlibs/")
+    (synopsis "2D molecule coordinate generation")
+    (description "@code{coordgenlibs} contains algorithms to generate 2D
+coordinates of molecules including macrocycles and metal complexes.  It has an
+emphasis on quality rather than speed.")
+    (license license:bsd-3)))
