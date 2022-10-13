@@ -252,7 +252,7 @@ otherwise use the IMAGE name."
          (drv (run-with-store store
                 (mbegin %store-monad
                   (set-guile-for-build (default-guile))
-                  (lower-object (system-image image))))))
+                  (lower-object (system-image image) system)))))
     (parameterize ((%graft? #f))
       (derivation->job name drv))))
 
