@@ -2101,3 +2101,50 @@ different floating point sizes and complex transformations.")
       (description "@code{sajson} is an in-place JSON parser with support for
 parsing with only a single memory allocation.")
       (license license:expat))))
+
+(define-public optionparser
+  (package
+    (name "optionparser")
+    (version "1.7")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "mirror://sourceforge/optionparser/"
+                              "optionparser-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04gfxrdzwacaynb8scsz6rr7nh64n6yk6w9dh2qdhrxw4caqr0dk"))))
+    (outputs '("out" "doc"))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'chdir
+            (lambda _ (chdir "src")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (begin
+                  (invoke "./example_arg")
+                  (invoke "./testparse")
+                  (invoke "./testprintusage")
+                  (invoke "./testodr")
+                  (invoke "./example")))))
+          (replace 'install
+            (lambda _
+              (install-file "optionparser.h"
+                            (string-append #$output "/include"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (copy-recursively
+               "../html"
+               (string-append #$output:doc "/share/doc/optionparser/html")))))))
+    (native-inputs (list doxygen))
+    (home-page "https://optionparser.sourceforge.net/")
+    (synopsis "Header-only C++ library to parse command line options")
+    (description "This package provides a header-only C++ library to parse
+command line options.  It supports the short and long option formats of
+getopt(), getopt_long() and getopt_long_only().")
+    (license license:expat)))
