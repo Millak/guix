@@ -53,6 +53,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -16116,6 +16117,33 @@ data Dec a
     (description
      "This package enables integration of terminal screen state in html
 pages.")
+    (license license:bsd-3)))
+
+(define-public ghc-open-browser
+  (package
+    (name "ghc-open-browser")
+    (version "0.2.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "open-browser" version))
+              (sha256
+               (base32
+                "0rna8ir2cfp8gk0rd2q60an51jxc08lx4gl0liw8wwqgh1ijxv8b"))))
+    (build-system haskell-build-system)
+    (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+         (add-before 'configure 'patch-xdg-open
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((xdg-open (assoc-ref inputs "xdg-utils")))
+               (substitute* "lib/Web/Browser/Linux.hs"
+                 (("xdg-open")
+                  (search-input-file inputs "/bin/xdg-open")))))))))
+    (inputs (list xdg-utils))
+    (home-page "https://github.com/rightfold/open-browser")
+    (synopsis "Open a web browser from Haskell")
+    (description "Haskell library for opening the web browser.")
     (license license:bsd-3)))
 
 (define-public ghc-singleton-bool
