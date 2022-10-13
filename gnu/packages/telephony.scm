@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Demis Balbach <db@minikn.xyz>
+;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages file)
@@ -89,6 +91,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages libevent)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
@@ -894,3 +897,32 @@ Initiation Protocol (SIP) and a multimedia framework.")
 telephony functionality into custom Telegram clients.")
     (home-page "https://github.com/zevlg/libtgvoip")
     (license license:unlicense)))
+
+(define-public coturn
+  (package
+    (name "coturn")
+    (version "4.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/coturn/coturn")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "152v2lnjj9b3w61d8aak7hmi9riw9cjs5g54g1gfpzlyk4c2jw21"))))
+    (inputs
+     (list openssl
+           sqlite
+           libevent-with-openssl
+           hiredis))
+    (native-inputs
+     (list pkg-config))
+    (build-system gnu-build-system)
+    (synopsis "Implementation of a TURN and STUN server for VoIP")
+    (description
+     "This package provides a VoIP media traffic NAT traversal server and
+gateway.  It implements the STUN (Session Traversal Utilities for NAT) and
+TURN (Traversal Using Relays around NAT) server protocols.")
+    (home-page "https://github.com/coturn/coturn")
+    (license license:bsd-3)))
