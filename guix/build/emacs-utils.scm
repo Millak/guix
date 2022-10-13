@@ -220,7 +220,7 @@ useful to avoid double quotes being added when the replacement is provided as
 a string."
     ((_ file (variable replacement modifier ...) ...)
      (emacs-substitute-sexps file
-       ((string-append "(def[a-z]+[[:space:]\n]+" variable "\\>")
+       ((string-append "(def[a-z]+[[:space:]\n]+" variable "\\_>")
         replacement
         modifier ...)
        ...))))
