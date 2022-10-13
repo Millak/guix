@@ -43,6 +43,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gv)
@@ -57,6 +58,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages stb)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system cmake)
@@ -798,3 +800,108 @@ of the algorithms, the calculations give identical results.")
 coordinates of molecules including macrocycles and metal complexes.  It has an
 emphasis on quality rather than speed.")
     (license license:bsd-3)))
+
+(define-public yaehmop
+  (package
+    (name "yaehmop")
+    (version "2022.09.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/greglandrum/yaehmop")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1x0d75m1hgdb411fiv7c5bwq1n4y0swrll0gigh8v5c73kjxrja0"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Separate program
+                  (delete-file-recursively "viewkel")
+                  ;; Remove example output (some are corrupted)
+                  (for-each delete-file (find-files "examples" "\\.Z$"))
+                  ;; Documentation outputs
+                  (for-each delete-file (find-files "docs" "\\.(ps|pdf)$"))
+                  ;; These are transpiled from Fortran to C, but we build the
+                  ;; Fortran code instead
+                  (delete-file-recursively "tightbind/f2c_files")
+                  (with-directory-excursion "tightbind"
+                    (for-each delete-file '("abfns.c"
+                                            "cboris.c"
+                                            "diag.c"
+                                            "lovlap.c")))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "-DUSE_BLAS_LAPACK=ON"
+         (string-append "-DPARM_FILE_LOC=" #$output
+                        "/share/" #$name "-" #$version "/eht_parms.dat")
+         "-DBIND_EXE_NAME=yaehmop-bind")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "tightbind")))
+          (add-after 'chdir 'patch-fortran-functions
+            (lambda _
+              (substitute* '("mov.c" "prototypes.h")
+                (("lovlap\\(") "lovlap_(")
+                (("abfns\\(") "abfns_("))))
+          (add-after 'chdir 'patch-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("project\\(yaehmop C\\)") "project(yaehmop C Fortran)")
+                (("abfns.c") "fortran77/abfns.f")
+                (("lovlap.c") "fortran77/lovlap.f")
+                (("(set\\(PARM_FILE_LOC.*)\\)" all init)
+                 (string-append init " CACHE STRING \"\")"))
+                (("add_library\\(yaehmop_eht" lib)
+                 (string-append lib " SHARED "))
+                (("target_link_libraries\\(test_eht \\$\\{LAPACK_LIBRARIES\\}.*"
+                  all)
+                 (string-append all "\ntarget_link_libraries(yaehmop_eht "
+                                "${LAPACK_LIBRARIES})\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../docs"
+                (substitute* "bind_manual.tex"
+                  (("\\\\usepackage\\{bindpage\\}")
+                   (string-append
+                    "\\usepackage[left=2cm,right=2cm,top=4cm,bottom=2cm]"
+                    "{geometry}\n"
+                    "\\pdfsuppressptexinfo=-1\n")))
+                (substitute* "Zmat_appendix.tex"
+                  (("file=dihedral\\.eps")
+                   "file=figs/dihedral.eps"))
+                (setenv "FORCE_SOURCE_DATE" "1")
+                (invoke "latexmk" "-pdf" "bind_manual.tex"))))
+          (add-after 'install 'install-eht-parms
+            (lambda _
+              (install-file "../tightbind/eht_parms.dat"
+                            (string-append #$output "/share/"
+                                           #$name "-" #$version))))
+          (add-after 'install-eht-parms 'install-doc
+            (lambda _
+              (install-file "../docs/bind_manual.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (delete 'check)
+          (add-after 'install-doc 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./test_eht")))))))
+    (inputs (list openblas))
+    (native-inputs
+     (list gfortran
+           (texlive-updmap.cfg (list texlive-fonts-ec
+                                     texlive-latex-graphics
+                                     texlive-latex-geometry))))
+    (home-page "https://github.com/greglandrum/yaehmop")
+    (synopsis "Perform extended Hückel calculations")
+    (description "@acronym{YAeHMOP, Yet Another extended Hueckel Molecular
+Orbital Package} contains a program and library for performing extended Hückel
+calculations and analyzing the results.")
+    (license license:bsd-2)))
