@@ -66,7 +66,7 @@
 ;;; Copyright © 2019, 2020, 2021 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020, 2021, 2022 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2019, 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2019, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2020 Riku Viitanen <riku.viitanen@protonmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 sirgazil <sirgazil@zoho.com>
@@ -673,6 +673,38 @@ during long operations.")
     (description "This package provides python library for full-text search.
 It indexes documents and provides a search interface for retrieving documents
 that best match text queries.")
+    (license license:expat)))
+
+(define-public python-mdurl
+  (package
+    (name "python-mdurl")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "mdurl" version))
+              (sha256
+               (base32
+                "1fn1hy35h9grggwqax90zcb52inlfxrxsm27vlqqz8zfyllkshdv"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;pypi source does not contain tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _ (invoke "flit" "build")))
+          (replace 'install
+            (lambda _
+              (for-each
+               (lambda (wheel)
+                 (invoke "python" "-m" "pip" "install"
+                         wheel (string-append "--prefix=" #$output)))
+               (find-files "dist" "\\.whl$")))))))
+    (native-inputs (list python-flit))
+    (home-page "https://github.com/executablebooks/mdurl")
+    (synopsis "Markdown URL utilities")
+    (description
+     "This package implements a Python port of the JavaScript @code{mdurl}.")
     (license license:expat)))
 
 (define-public python-mrkd
