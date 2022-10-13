@@ -319,6 +319,71 @@ asynchronous one follows
 design}.")
     (license license:asl2.0)))
 
+(define-public python-jupytext
+  (package
+    (name "python-jupytext")
+    (version "1.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mwouts/jupytext")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gqpvphrp2ja9ggadx0rrk0sqbpz6kqqg62qqmw4k17469lphc8c"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              ;; some tests fail when HOME=/homeless-shelter.
+              (setenv "HOME" "/tmp")
+              ;; OSError: [Errno 18] Invalid cross-device link
+              (setenv "TMPDIR" "/tmp")
+              (when tests?
+                (let ((disabled-tests
+                       (list "test_create_header_with_set_formats"
+                             "test_pre_commit_hook"
+                             "test_sync_with_pre_commit_hook")))
+                  (invoke "pytest" "-vv" "-k"
+                          (string-append "not "
+                                         (string-join disabled-tests
+                                                      " and not "))))))))))
+    (native-inputs
+     (list git-minimal
+           python-autopep8
+           python-black
+           python-flake8
+           python-gitpython
+           python-isort
+           python-ipython-genutils
+           python-jupyter-server
+           python-pre-commit
+           python-pytest
+           python-pyaml))
+    (propagated-inputs
+     (list python-markdown-it-py
+           python-mdit-py-plugins
+           python-nbformat))
+    (home-page "https://github.com/mwouts/jupytext")
+    (synopsis
+     "Jupyter notebooks as Markdown documents, Julia, Python or R scripts")
+    (description
+     "Jupytext is a plugin for Jupyter that can save Jupyter notebooks as
+either Markdown files or scripts in many languages.  Common use cases for
+Jupytext are:
+
+@itemize
+@item version control on Jupyter Notebooks
+@item editing, merging or refactoring notebooks in your favorite text editor
+@item applying Q&A checks on notebooks.
+@end itemize
+")
+    (license license:expat)))
+
 (define-public python-logzero
   (package
     (name "python-logzero")
