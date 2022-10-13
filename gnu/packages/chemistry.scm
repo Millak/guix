@@ -34,6 +34,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -42,10 +43,12 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages gv)
   #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
@@ -57,6 +60,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages web)
@@ -1078,4 +1082,150 @@ and rendering molecules.")
     (description "RingDecomposerLib is a library for the calculation of
 unique ring families, relevant cycles, the smallest set of smallest rings and
 other ring topology descriptions.")
+    (license license:bsd-3)))
+
+(define-public rdkit
+  (package
+    (name "rdkit")
+    (version "2022.03.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rdkit/rdkit")
+                    (commit
+                     (string-append
+                      "Release_" (string-replace-substring version "." "_")))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19idgilabh04cbr1qj6zgrgsfjm248mmfz6fsr0smrd68d0xnml9"))
+              (patches
+               (search-patches "rdkit-unbundle-external-dependencies.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   ;; Remove pickle files (only used in tests),
+                   ;; as they are compiled programs
+                   (for-each
+                    (lambda (name)
+                      (display (string-append name "\n"))
+                      (delete-file name))
+                    (find-files "." "\\.pkl(\\.gz)?$"))
+                   ;; Remove SQLite data files (can be generated)
+                   (delete-file "Data/RDData.sqlt")
+                   (delete-file "Data/RDTests.sqlt")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %cmake-build-system-modules
+                                 '((guix build python-build-system)))
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system)
+                   #:select (add-installed-pythonpath)))
+      #:configure-flags
+      #~(list "-DRDK_BUILD_AVALON_SUPPORT=ON"
+              "-DRDK_BUILD_CAIRO_SUPPORT=ON"
+              "-DRDK_BUILD_FREESASA_SUPPORT=ON"
+              "-DRDK_BUILD_INCHI_SUPPORT=ON"
+              "-DRDK_BUILD_YAEHMOP_SUPPORT=ON"
+              (string-append "-DCATCH_DIR="
+                             (search-input-directory %build-inputs
+                                                     "/include/catch2"))
+              "-DRDK_INSTALL_INTREE=OFF"
+              "-DRDK_INSTALL_STATIC_LIBS=OFF"
+              (string-append
+               "-DRDK_OPTIMIZE_POPCNT="
+               #$(let ((system (or (%current-target-system)
+                                   (%current-system))))
+                   (cond
+                    ((string-prefix? "x86_64" system) "ON")
+                    ((string-prefix? "i686" system) "ON")
+                    (else "OFF"))))
+              "-DRDK_USE_FLEXBISON=ON"
+              (string-append
+               "-DCMAKE_INCLUDE_PATH="
+               (search-input-directory %build-inputs "/include/avalontoolkit")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-external-dependencies
+            (lambda _
+              (symlink
+               (string-append
+                (search-input-file
+                 %build-inputs "/share/fonts/truetype/ComicNeue-Regular.ttf"))
+               "Data/Fonts/ComicNeue-Regular.ttf")))
+          (add-after 'unpack 'fix-inchi-include
+            (lambda _
+              (substitute* "Code/cmake/Modules/FindInchi.cmake"
+                (("inchi_api.h.*\\)") "inchi/inchi_api.h)")
+                (("INCHI_LIBRARY NAMES.*\\)")
+                 "INCHI_LIBRARY NAMES inchi PATH_SUFFIXES inchi)")
+                (("find_library" prev)
+                 (string-append
+                  "list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .so.1)\n"
+                  prev)))
+              (substitute* "External/INCHI-API/inchi.cpp"
+                (("<inchi_api.h>") "<inchi/inchi_api.h>"))))
+          (add-before 'build 'enable-bytecode-determinism
+              (lambda _
+                (setenv "PYTHONHASHSEED" "0")
+                (setenv "PYTHONDONTWRITEBYTECODE" "1")))
+          (add-after 'install 'pre-check
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion "../source"
+                (invoke "sqlite3" "Data/RDData.sqlt"
+                        ".read rdkit/Dbase/test_data/RDData.sqlite")
+                (invoke "sqlite3" "Data/RDTests.sqlt"
+                        ".read rdkit/Dbase/test_data/RDTests.sqlite")
+                (setenv "RDBASE" (canonicalize-path ".")))
+              (add-installed-pythonpath inputs outputs)))
+          (delete 'check)
+          (add-after 'pre-check 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (when tests?
+                (let ((job-count (number->string
+                                  (if parallel-tests? (parallel-job-count) 1))))
+                  (invoke
+                   "ctest" "-j" job-count
+                   "-E" (string-append
+                         "("
+                         (string-join
+                          '(;; need pickled data
+                            "pyDiscreteValueVect" "pySparseIntVect"
+                            "graphmoltestPickler" "pyPartialCharges"
+                            "substructLibraryTest" "pyFeatures"
+                            "pythonTestDirML" "pythonTestDirChem"
+                            ;; Catching Python exception fails
+                            "pyRanker") "|")
+                         ")")))))))))
+    (inputs
+     (list avalon-toolkit
+           cairo
+           coordgenlibs
+           font-comic-neue
+           freetype
+           inchi
+           maeparser
+           python
+           ringdecomposerlib
+           sqlite
+           yaehmop))
+    (native-inputs
+     (list bison
+           boost
+           catch2
+           eigen
+           flex
+           freesasa
+           pkg-config
+           rapidjson
+           tar))
+    (propagated-inputs
+     (list python-numpy python-cairocffi python-pillow))
+    (home-page "https://rdkit.org/")
+    (synopsis "Collection of cheminformatics software")
+    (description "RDKit is a C++ and Python library for cheminformatics, which
+includes (among other things) the analysis and modification of molecules in 2D
+and 3D and descriptor generation for machine learning.")
     (license license:bsd-3)))
