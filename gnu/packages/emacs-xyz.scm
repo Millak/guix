@@ -26782,7 +26782,7 @@ commands (a prefix and a suffix) we prefer to call it just a \"transient\".")
 (define-public emacs-forge
   (package
      (name "emacs-forge")
-     (version "0.3.1")
+     (version "0.3.2")
      (source
       (origin
         (method git-fetch)
@@ -26791,7 +26791,7 @@ commands (a prefix and a suffix) we prefer to call it just a \"transient\".")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "112mghydfzrbiwnzrb2f9d74y6ja702157p66ss94kqps0lj7rkp"))))
+         (base32 "0p1jlq169hpalhzmjm3h4q3x5xr9kdmz0qig8jwfvisyqay5vbih"))))
      (build-system emacs-build-system)
      (arguments
       `(#:tests? #f                     ;no tests
