@@ -31,6 +31,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** New updater (see ‘guix refresh’): ‘generic-git’
 *** ‘guix graph’ has a new ‘--max-depth’ option
 *** ‘guix deploy’ has a new ‘--execute’ option
+*** ‘guix shell’ has a new ‘--emulate-fhs’ option
 *** ‘--with-commit’ option now accepts strings returned by ‘git describe’
 *** Align tabular data output by commands like ‘guix package --list-available’
 *** Improved ‘guix import go’ importer via a new PEG parser
