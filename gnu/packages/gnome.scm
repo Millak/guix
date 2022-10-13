@@ -3753,8 +3753,10 @@ diagrams.")
                              (system (or (%current-target-system)
                                          (%current-system))))
   ;; Since librsvg 2.50 depends on Rust, and Rust is only correctly supported
-  ;; on x86_64 so far, use the ancient C version on other platforms (FIXME).
-  (if (string-prefix? "x86_64-" system)
+  ;; on x86_64 and aarch64 so far, use the ancient C version on other
+  ;; platforms (FIXME).
+  (if (or (string-prefix? "x86_64-" system)
+          (string-prefix? "aarch64-" system))
       librsvg
       librsvg-2.40))
 
