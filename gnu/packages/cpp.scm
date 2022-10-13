@@ -29,6 +29,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1954,3 +1955,56 @@ std::wstring, etc).")
      "This package provides architecture-specific implementations of the
 CRC32C algorithm, which is specified in RFC 3720, section 12.1.")
     (license license:bsd-3)))
+
+(define fast-float-test-files
+  (let ((commit "97a0b2e638feb479387554cf253e346500541e7e"))
+   (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url (string-append "https://github.com/fastfloat"
+                              "/supplemental_test_files.git"))
+          (commit "97a0b2e638feb479387554cf253e346500541e7e")))
+    (file-name (string-append "fast-float-test-files-"
+                              (string-take commit 8)))
+    (sha256
+     (base32
+      "0dxbiyzyh7i847i89ablfzypfc3ckhm7f74w98jsh73v1mppmxlf")))))
+
+(define-public fast-float
+  (package
+    (name "fast-float")
+    (version "3.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fastfloat/fast_float")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0z3rxxd0pwvw70dbnv63rm67biw829vdqf50y16isxm6g3sbrz8g"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DFASTFLOAT_TEST=ON"
+                                "-DSYSTEM_DOCTEST=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake-tests
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (substitute* "tests/CMakeLists.txt"
+                (("FetchContent_GetProperties\\(supplemental_test_files.*")
+                 "")
+                (("if\\(NOT supplemental_test_files_POPULATED.*")
+                 (string-append
+                  "set(supplemental_test_files_BINARY_DIR "
+                  (search-input-directory (or native-inputs inputs)
+                                          "data")
+                  ")\nif(0)\n"))))))))
+    (native-inputs (list doctest fast-float-test-files))
+    (home-page "https://github.com/fastfloat/fast_float")
+    (synopsis "Floating point number parser for C++")
+    (description "@code{fast_float} is a header-only C++ library for parsing
+floating point numbers from strings.  It implements the C++ from_chars
+functions for the float and double types.")
+    (license (list license:asl2.0 license:expat)))) ; dual licensed
