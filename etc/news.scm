@@ -26,6 +26,41 @@
 (channel-news
  (version 0)
 
+ (entry (commit "c7ba5f38b80433b040d3946b8fc0b1e8621ba30a")
+        (title
+         (en "New @option{--emulate-fhs} option for @command{guix shell}")
+         (fr "Nouvelle option @option{--emulate-fhs} pour @command{guix shell}"))
+        (body
+         (en "The @command{guix shell} command has a new
+@option{--emulate-fhs} (or @option{-F}) option.  Combined with
+@option{--container} (or @option{-C}), it emulates the file and directory
+layout specified by the Filesystem Hierarchy Standard (FHS), providing
+@file{/bin}, @file{/lib}, etc. within the container.
+
+For example, the following command runs @file{/bin/ls} within such a
+container:
+
+@example
+guix shell -CF coreutils -- /bin/ls
+@end example
+
+Run @command{info \"(guix) Invoking guix shell\"} for more information.")
+         (fr "La commande @command{guix shell} dispose d'une nouvelle option,
+@option{--emulate-fhs} (ou @option{-F}).  Avec @option{--container} (ou
+@option{-C}), elle permet d'imiter la disposition des fichiers et répertoires
+spécifiée par le @i{Filesystem Hierarchy Standard} (FHS) en fournissant
+@file{/bin}, @file{/lib}, etc. dans le conteneur.
+
+Par exemple, la commande ci-dessous lance @file{/bin/ls} dans un tel
+conteneur :
+
+@example
+guix shell -CF coreutils -- /bin/ls
+@end example
+
+Lancer @command{info \"(guix.fr) Invoquer guix shell\"} pour plus
+d'informations.")))
+
  (entry (commit "28ade1bab207974cce6a014e7187968511fc5526")
         (title
          (en "@option{--with-source} is now recursive")
