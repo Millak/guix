@@ -1628,6 +1628,30 @@ cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and contro
 TCGAbiolinksGUI package.")
     (license license:gpl3)))
 
+(define-public r-tximportdata
+  (package
+    (name "r-tximportdata")
+    (version "1.24.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "tximportData" version
+                                     'experiment))
+              (sha256
+               (base32
+                "0mgbwpybg2xd6x1ijrflmjh5w63qz6ylnzszbbyp437n618m7riy"))))
+    (properties `((upstream-name . "tximportData")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/tximportData")
+    (synopsis "Data for the tximport package")
+    (description
+     "This package provides the output of running various transcript abundance
+quantifiers on a set of 6 RNA-seq samples from the GEUVADIS project.  The
+quantifiers were @code{Cufflinks}, @code{RSEM}, @code{kallisto}, @code{Salmon}
+and @code{Sailfish}.  Alevin example output is also included.")
+    (license license:gpl2+)))
+
+
 
 ;;; Packages
 
