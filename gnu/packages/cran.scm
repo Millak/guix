@@ -19575,6 +19575,35 @@ This package aims to be a collection of mainly new statistics and geometries
 that fills this gap.")
     (license license:expat)))
 
+(define-public r-eulerr
+  (package
+    (name "r-eulerr")
+    (version "6.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "eulerr" version))
+              (sha256
+               (base32
+                "0lldp2319qd08y87f862gx8a77rvikcnkmdl9xgx4glynfs3hk19"))))
+    (properties `((upstream-name . "eulerr")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-gensa
+           r-polyclip
+           r-polylabelr
+           r-rcpp
+           r-rcpparmadillo))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/jolars/eulerr")
+    (synopsis "Area-proportional Euler and Venn diagrams with ellipses")
+    (description
+     "This package generates area-proportional Euler diagrams using
+numerical optimization.  An Euler diagram is a generalization of a
+Venn diagram, relaxing the criterion that all interactions need to be
+represented.  Diagrams may be fit with ellipses and circles via a wide
+range of inputs and can be visualized in numerous ways.")
+    (license license:gpl3)))
+
 (define-public r-europepmc
   (package
     (name "r-europepmc")
