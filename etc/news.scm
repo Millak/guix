@@ -29,6 +29,7 @@
  (entry (commit "c7ba5f38b80433b040d3946b8fc0b1e8621ba30a")
         (title
          (en "New @option{--emulate-fhs} option for @command{guix shell}")
+         (de "Neue Option @option{--emulate-fhs} für @command{guix shell}")
          (fr "Nouvelle option @option{--emulate-fhs} pour @command{guix shell}"))
         (body
          (en "The @command{guix shell} command has a new
@@ -45,6 +46,22 @@ guix shell -CF coreutils -- /bin/ls
 @end example
 
 Run @command{info \"(guix) Invoking guix shell\"} for more information.")
+         (de "Der Befehl @command{guix shell} verfügt jetzt über eine neue
+Befehlszeilenoption @option{--emulate-fhs} (oder @option{-F}).  Zusammen mit
+@option{--container} (oder @option{-C}) kann so die Datei- und
+Verzeichnisstruktur, die im @i{Filesystem Hierarchy Standard} (FHS) vorgegeben
+wird, nachgebildet werden. Das heißt, in der Container-Umgebung gibt es
+@file{/bin}, @file{/lib} und so weiter.
+
+Zum Beispiel wird folgender Befehl @file{/bin/ls} in einem solchen Container
+ausführen:
+
+@example
+guix shell -CF coreutils -- /bin/ls
+@end example
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix shell\"} aus, um mehr
+zu erfahren.")
          (fr "La commande @command{guix shell} dispose d'une nouvelle option,
 @option{--emulate-fhs} (ou @option{-F}).  Avec @option{--container} (ou
 @option{-C}), elle permet d'imiter la disposition des fichiers et répertoires
