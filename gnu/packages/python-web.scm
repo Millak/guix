@@ -6678,6 +6678,43 @@ through the network, it only deals with the implementation details of the
 SOCKS protocols.  It can be paired with any I/O library.")
     (license license:expat)))
 
+(define-public python-siosocks
+  (package
+    (name "python-siosocks")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "siosocks" version))
+              (sha256
+               (base32
+                "0qqxy8wl5mrmlkblzjq9nsg0cbm5jwgj409mhnhq6gd1ypvbndms"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vvv")))))))
+    (native-inputs (list python-pytest python-pytest-asyncio python-pytest-cov
+                         python-pytest-trio))
+    (propagated-inputs (list python-trio))
+    (home-page "https://github.com/pohmelie/siosocks")
+    (synopsis "SOCKSv4 & SOCKSv5 TCP proxy protocol implementation in Python")
+    (description
+     "This package provides a Python module and framework for sans-io socks proxy
+client/server with couple io backends.
+
+Features:
+@itemize
+@item Only TCP connect (no BIND, no UDP)
+@item Both client and server
+@item SOCKS versions: 4, 4a, 5
+@item SOCKSv5 auth: no auth, username/password
+@item Couple io backends: @code{asyncio}, @code{trio}, @code{socketserver}
+@item One-shot socks server (@code{python -m siosocks})
+@end itemize")
+    (license license:expat)))
+
 (define-public python-msrest
   (package
     (name "python-msrest")
