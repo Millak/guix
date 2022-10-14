@@ -22,7 +22,6 @@
   #:use-module (guix scripts)
   #:use-module (guix store)
   #:use-module (guix utils)
-  #:use-module (guix grafts)
   #:use-module (guix monads)
   #:use-module (guix base32)
   #:use-module (guix packages)

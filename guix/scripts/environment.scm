@@ -24,7 +24,6 @@
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module ((guix status) #:select (with-status-verbosity))
-  #:use-module (guix grafts)
   #:use-module (guix derivations)
   #:use-module (guix packages)
   #:use-module (guix profiles)

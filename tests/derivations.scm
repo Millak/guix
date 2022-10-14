@@ -20,7 +20,6 @@
 
 (define-module (test-derivations)
   #:use-module (guix derivations)
-  #:use-module (guix grafts)
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module ((gcrypt hash) #:prefix gcrypt:)

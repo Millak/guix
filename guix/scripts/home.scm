@@ -47,7 +47,6 @@
   #:use-module (guix derivations)
   #:use-module (guix ui)
   #:autoload   (guix colors) (supports-hyperlinks? file-hyperlink)
-  #:use-module (guix grafts)
   #:use-module (guix packages)
   #:use-module (guix profiles)
   #:use-module (guix store)

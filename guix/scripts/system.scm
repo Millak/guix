@@ -38,7 +38,6 @@
                (sqlite-register store-database-file call-with-database)
   #:autoload   (guix build store-copy) (copy-store-item)
   #:use-module (guix describe)
-  #:use-module (guix grafts)
   #:use-module (guix gexp)
   #:use-module (guix derivations)
   #:use-module (guix diagnostics)

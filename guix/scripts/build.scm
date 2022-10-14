@@ -28,10 +28,7 @@
   #:use-module (guix derivations)
   #:use-module (guix packages)
   #:use-module (guix memoization)
-  #:use-module (guix grafts)
-
   #:use-module (guix utils)
-
   #:use-module (guix monads)
   #:use-module (guix gexp)
   #:use-module (guix profiles)

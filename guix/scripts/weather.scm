@@ -29,7 +29,6 @@
   #:use-module (guix progress)
   #:use-module (guix monads)
   #:use-module (guix store)
-  #:use-module (guix grafts)
   #:use-module (guix gexp)
   #:use-module (guix colors)
   #:use-module ((guix build syscalls) #:select (terminal-columns))

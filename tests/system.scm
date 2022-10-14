@@ -24,7 +24,6 @@
   #:use-module (guix monads)
   #:use-module ((guix gexp) #:select (lower-object))
   #:use-module ((guix utils) #:select (%current-system))
-  #:use-module (guix grafts)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64))
 

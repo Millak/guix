@@ -47,7 +47,6 @@
                                 gexp->approximate-sexp))
   #:use-module (guix licenses)
   #:use-module (guix records)
-  #:use-module (guix grafts)
   #:use-module (guix upstream)
   #:use-module (guix utils)
   #:use-module (guix memoization)

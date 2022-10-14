@@ -23,7 +23,6 @@
   #:use-module ((guix build syscalls) #:select (mkdtemp!))
   #:use-module (guix tests)
   #:use-module (guix store)
-  #:use-module ((guix grafts) #:select (%graft?))
   #:use-module (guix derivations)
   #:use-module (guix sets)
   #:use-module (guix gexp)

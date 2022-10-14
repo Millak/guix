@@ -26,7 +26,6 @@
                 #:select (fold-archive restore-file))
   #:use-module (guix store)
   #:use-module ((guix status) #:select (with-status-verbosity))
-  #:use-module (guix grafts)
   #:use-module (guix packages)
   #:use-module (guix derivations)
   #:use-module (guix monads)

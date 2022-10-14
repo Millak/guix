@@ -25,7 +25,6 @@
   #:use-module (guix store)
   #:use-module (guix monads)
   #:use-module (guix derivations)
-  #:use-module (guix grafts)
   #:use-module (guix utils)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
