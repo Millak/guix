@@ -75,10 +75,15 @@ true, evaluate using dynamic scoping."
           (string-append "--visit=" file)
           (string-append "--eval=" (expr->string expr))))
 
-(define (emacs-batch-disable-compilation file)
+(define* (emacs-batch-disable-compilation file #:key native?)
+  "Disable byte compilation for FILE.
+If NATIVE?, only disable native compilation."
   (emacs-batch-edit-file file
-    '(progn
-      (add-file-local-variable 'no-byte-compile t)
+    `(progn
+      (add-file-local-variable ',(if native?
+                                     'no-native-compile
+                                     'no-byte-compile)
+                               t)
       (basic-save-buffer))))
 
 (define-condition-type &emacs-batch-error &error
