@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +24,7 @@
   #:use-module (guix derivations)
   #:use-module ((guix utils) #:select (%current-system))
   #:use-module (guix sets)
+  #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9 gnu)
   #:use-module (srfi srfi-26)
@@ -78,7 +79,7 @@
     (($ <graft> (? string? item))
      item)))
 
-(define* (graft-derivation/shallow store drv grafts
+(define* (graft-derivation/shallow drv grafts
                                    #:key
                                    (name (derivation-name drv))
                                    (outputs (derivation-output-names drv))
@@ -87,72 +88,60 @@
   "Return a derivation called NAME, which applies GRAFTS to the specified
 OUTPUTS of DRV.  This procedure performs \"shallow\" grafting in that GRAFTS
 are not recursively applied to dependencies of DRV."
-  ;; XXX: Someday rewrite using gexps.
   (define mapping
     ;; List of store item pairs.
-    (map (match-lambda
-          (($ <graft> source source-output target target-output)
-           (cons (if (derivation? source)
-                     (derivation->output-path source source-output)
-                     source)
-                 (if (derivation? target)
-                     (derivation->output-path target target-output)
-                     target))))
+    (map (lambda (graft)
+           (gexp
+            ((ungexp (graft-origin graft)
+                     (graft-origin-output graft))
+             . (ungexp (graft-replacement graft)
+                       (graft-replacement-output graft)))))
          grafts))
 
-  (define output-pairs
-    (map (lambda (output)
-           (cons output
-                 (derivation-output-path
-                  (assoc-ref (derivation-outputs drv) output))))
-         outputs))
-
   (define build
-    `(begin
-       (use-modules (guix build graft)
-                    (guix build utils)
-                    (ice-9 match))
+    (with-imported-modules '((guix build graft)
+                             (guix build utils)
+                             (guix build debug-link)
+                             (guix elf))
+      #~(begin
+          (use-modules (guix build graft)
+                       (guix build utils)
+                       (ice-9 match))
 
-       (let* ((old-outputs ',output-pairs)
-              (mapping (append ',mapping
-                               (map (match-lambda
-                                      ((name . file)
-                                       (cons (assoc-ref old-outputs name)
-                                             file)))
-                                    %outputs))))
-         (graft old-outputs %outputs mapping))))
+          (define %outputs
+            (ungexp (outputs->gexp outputs)))
 
-  (define add-label
-    (cut cons "x" <>))
+          (let* ((old-outputs '(ungexp
+                                (map (lambda (output)
+                                       (gexp ((ungexp output)
+                                              . (ungexp drv output))))
+                                     outputs)))
+                 (mapping (append '(ungexp mapping)
+                                  (map (match-lambda
+                                         ((name . file)
+                                          (cons (assoc-ref old-outputs name)
+                                                file)))
+                                       %outputs))))
+            (graft old-outputs %outputs mapping)))))
+
 
   (define properties
     `((type . graft)
       (graft (count . ,(length grafts)))))
 
-  (match grafts
-    ((($ <graft> sources source-outputs targets target-outputs) ...)
-     (let ((sources (zip sources source-outputs))
-           (targets (zip targets target-outputs)))
-       (build-expression->derivation store name build
-                                     #:system system
-                                     #:guile-for-build guile
-                                     #:modules '((guix build graft)
-                                                 (guix build utils)
-                                                 (guix build debug-link)
-                                                 (guix elf))
-                                     #:inputs `(,@(map (lambda (out)
-                                                         `("x" ,drv ,out))
-                                                       outputs)
-                                                ,@(append (map add-label sources)
-                                                          (map add-label targets)))
-                                     #:outputs outputs
+  (gexp->derivation name build
+                    #:system system
+                    #:guile-for-build guile
 
-                                     ;; Grafts are computationally cheap so no
-                                     ;; need to offload or substitute.
-                                     #:local-build? #t
-                                     #:substitutable? #f
+                    ;; Grafts are computationally cheap so no
+                    ;; need to offload or substitute.
+                    #:local-build? #t
+                    #:substitutable? #f
 
-                                     #:properties properties)))))
+                    #:properties properties))
+
+(define graft-derivation/shallow*
+  (store-lower graft-derivation/shallow))
 
 (define (non-self-references store drv outputs)
   "Return the list of references of the OUTPUTS of DRV, excluding self
@@ -291,10 +280,10 @@ derivations to the corresponding set of grafts."
               ;; Use APPLICABLE, the subset of GRAFTS that is really
               ;; applicable to DRV, to avoid creating several identical
               ;; grafted variants of DRV.
-              (let* ((new    (graft-derivation/shallow store drv applicable
-                                                       #:outputs outputs
-                                                       #:guile guile
-                                                       #:system system))
+              (let* ((new    (graft-derivation/shallow* store drv applicable
+                                                        #:outputs outputs
+                                                        #:guile guile
+                                                        #:system system))
                      (grafts (append (map (lambda (output)
                                             (graft
                                               (origin drv)
