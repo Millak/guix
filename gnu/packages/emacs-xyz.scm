@@ -25666,6 +25666,36 @@ next, volume) and display and control the current playlist as well as your
 stored playlists.")
     (license license:gpl3+)))
 
+(define-public emacs-navigel
+  (package
+    (name "emacs-navigel")
+    (version "0.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/DamienCassou/navigel")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0v9f7wb6yghds3hjj8x5di6gfa8n5kjwhav7la1ca2zwgs2c1a9p"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "ert-runner")))
+    (native-inputs
+     (list emacs-ert-runner))
+    (propagated-inputs
+     (list emacs-tablist))
+    (home-page "https://github.com/DamienCassou/navigel")
+    (synopsis "Emacs library for creating tabulated-list based user-interfaces")
+    (description
+     "The navigel package is a library that makes it simpler for Emacs Lisp
+developers to define user-interfaces based on tablists (also known as
+tabulated-lists).")
+    (license license:gpl3+)))
+
 (define-public emacs-vterm
   (let ((version "0.0.1")
         (revision "1")
