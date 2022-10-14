@@ -25633,6 +25633,12 @@ comments.")
                (base32
                 "0fsg2si7afrnsz91i0ziza6nbc4ds9kpnr2z71wf6896zb1afhfx"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "ert-runner")))
+    (native-inputs
+     (list emacs-ert-runner))
     (home-page "https://github.com/mpdel/libmpdel")
     (synopsis "Emacs library to communicate with Music Player Daemon (MPD)")
     (description
