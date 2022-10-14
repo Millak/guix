@@ -12356,6 +12356,18 @@ a file, or a complete directory.")
                (base32
                 "1wn94nkfv6qyyj6clvms7m7ncqf09bgszv67may530y75kylivav"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-native-comp
+                 (lambda _
+                   ;; Native compilation of this package may crash your system,
+                   ;; see <https://bugs.gnu.org/57878>.
+                   (for-each
+                    (lambda (file)
+                      (make-file-writable file)
+                      (emacs-batch-disable-compilation file #:native? #t))
+                    (find-files "." "\\.el$")))))))
     (propagated-inputs
      (list emacs-s))
     (home-page "https://github.com/DarwinAwardWinner/ido-ubiquitous")
