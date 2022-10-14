@@ -39,12 +39,11 @@
             graft-replacement-output
 
             graft-derivation
-            graft-derivation/shallow
-
-            %graft?
-            without-grafting
-            set-grafting
-            grafting?))
+            graft-derivation/shallow)
+  #:re-export (%graft?                            ;for backward compatibility
+               without-grafting
+               set-grafting
+               grafting?))
 
 (define-record-type* <graft> graft make-graft
   graft?
@@ -333,36 +332,6 @@ DRV, and graft DRV itself to refer to those grafted dependencies."
        (if (equal? drv (graft-origin first))
            (graft-replacement first)
            drv)))))
-
-
-;; The following might feel more at home in (guix packages) but since (guix
-;; gexp), which is a lower level, needs them, we put them here.
-
-(define %graft?
-  ;; Whether to honor package grafts by default.
-  (make-parameter #t))
-
-(define (call-without-grafting thunk)
-  (lambda (store)
-    (values (parameterize ((%graft? #f))
-              (run-with-store store (thunk)))
-            store)))
-
-(define-syntax-rule (without-grafting mexp ...)
-  "Bind monadic expressions MEXP in a dynamic extent where '%graft?' is
-false."
-  (call-without-grafting (lambda () (mbegin %store-monad mexp ...))))
-
-(define-inlinable (set-grafting enable?)
-  ;; This monadic procedure enables grafting when ENABLE? is true, and
-  ;; disables it otherwise.  It returns the previous setting.
-  (lambda (store)
-    (values (%graft? enable?) store)))
-
-(define-inlinable (grafting?)
-  ;; Return a Boolean indicating whether grafting is enabled.
-  (lambda (store)
-    (values (%graft?) store)))
 
 ;; Local Variables:
 ;; eval: (put 'with-cache 'scheme-indent-function 1)
