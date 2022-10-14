@@ -72,10 +72,9 @@
     (build-system gnu-build-system)
     (home-page "https://www.gnu.org/software/gnucobol/")
     (synopsis "Modern COBOL compiler")
-    (description "GnuCOBOL is a free, modern COBOL compiler.  GnuCOBOL
-implements a substantial part of the COBOL 85, COBOL 2002 and COBOL 2014
-standards and X/Open COBOL, as well as many extensions included in other
-COBOL compilers (IBM COBOL, MicroFocus COBOL, ACUCOBOL-GT and others).
-GnuCOBOL translates COBOL into C and compiles the translated code using
-a native C compiler.")
+    (description
+     "GnuCOBOL is a free, modern COBOL compiler.  It implements a substantial
+part of COBOL 85, X/Open COBOL and newer ISO COBOL standards as well as many
+extensions from other COBOL compilers (IBM COBOL, MicroFocus COBOL, ACUCOBOL-GT
+and others).")
     (license gpl3+)))
