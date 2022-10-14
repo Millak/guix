@@ -3035,6 +3035,42 @@ with python-requests.")
 adapter for use with the Requests library.")
     (license license:asl2.0)))
 
+(define-public python-aioftp
+  (package
+    (name "python-aioftp")
+    (version "0.21.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "aioftp" version))
+              (sha256
+               (base32
+                "1f8vql2j2b3ykqyh5bxzsp8x5f2if2c1ya232ld3hz3cc7a2dfr8"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vvv")))))))
+    (native-inputs (list python-async-timeout python-pytest
+                         python-pytest-asyncio python-pytest-cov
+                         python-trustme))
+    (propagated-inputs (list python-siosocks))
+    (home-page "https://aioftp.readthedocs.io/")
+    (synopsis "FTP client/server for asyncio in Python")
+    (description
+     "FTP client and server for asyncio (Python 3) Library implementing FTP
+protocol, both client and server for Python asyncio module.
+
+ Supported commands as client: USER, PASS, ACCT, PWD, CWD, CDUP, MKD, RMD,
+ MLSD, MLST, RNFR, RNTO, DELE, STOR, APPE, RETR, TYPE, PASV, ABOR, QUIT,
+ REST, LIST (as fallback).
+
+ Supported commands as server: USER, PASS, QUIT, PWD, CWD, CDUP, MKD, RMD,
+ MLSD, LIST (non-standard), MLST, RNFR, RNTO, DELE, STOR, RETR,
+ TYPE (\"I\" and \"A\"), PASV, ABOR, APPE, REST.")
+    (license license:asl2.0)))
+
 (define-public python-msal
   (package
     (name "python-msal")
