@@ -75,7 +75,7 @@
 ;;; Copyright © 2020 Josh Marshall <joshua.r.marshall.1991@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Alex ter Weele <alex.ter.weele@gmail.com>
-;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2020, 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020 Yuval Kogman <nothingmuch@woobling.org>
@@ -16213,6 +16213,33 @@ the python-file module both provide a \"magic.py\" file; these two
 modules, which are different and were developed separately, both serve
 the same purpose: to provide Python bindings for libmagic.")
     (license license:expat)))
+
+(define-public s3cmd
+  (package
+    (name "s3cmd")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/s3tools/s3cmd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rdgwwmmp8mdxc84bxq6k9a7v7z2qgc3df47djzs2b84gw81dglx"))))
+    (build-system python-build-system)
+    (inputs
+     (list python-dateutil
+           python-magic))
+    (home-page "https://s3tools.org/s3cmd")
+    (synopsis "Command line tool for S3-compatible storage services")
+    (description
+     "S3cmd is a command line tool for uploading, retrieving and managing data
+in storage services that are compatible with the Amazon Simple Storage
+Service (S3) protocol, including S3 itself.  It supports rsync-like backup,
+GnuPG encryption, and more.  It also supports management of Amazon's
+CloudFront content delivery network.")
+    (license license:gpl2+)))
 
 (define-public python-pkgconfig
   (package
