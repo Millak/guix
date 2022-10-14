@@ -25644,20 +25644,20 @@ music.")
 (define-public emacs-mpdel
   (package
     (name "emacs-mpdel")
-    (version "1.0.0")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitea.petton.fr/mpdel/mpdel.git")
+             (url "https://github.com/mpdel/mpdel")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0pyyvbzskr44dxbmlp3y0r6s459fd51cvwjmnjaqxfxflr5v891g"))))
+         "1wg48z0g6qqsd38r2ydba8dp7cq72cnkzshmhj6900xak6f5ywfd"))))
     (build-system emacs-build-system)
-    (inputs
-     (list emacs-libmpdel))
+    (propagated-inputs
+     (list emacs-libmpdel emacs-navigel))
     (home-page "https://gitea.petton.fr/mpdel/mpdel")
     (synopsis "Emacs user interface for Music Player Daemon (MPD)")
     (description
