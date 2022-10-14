@@ -946,6 +946,51 @@ Python.")
     ;; licensed lgpl2.1+
     (license (list license:expat license:lgpl2.1+))))
 
+(define-public python-bioframe
+  (package
+    (name "python-bioframe")
+    (version "0.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       ;; pypi version does not contain tests and requirements.txt
+       (uri (git-reference
+             (url "https://github.com/open2c/bioframe")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "14lvb18d4npapyi6j2zqh9q94l658dzmka5riiizw1h0zb0kp9xb"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (setenv "MPLCONFIGDIR" "/tmp")
+             (when tests?
+               (invoke "pytest" "-v")))))))
+    (native-inputs
+     (list python-biopython
+           python-pysam
+           python-pytest
+           python-wheel))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy
+           python-pandas
+           python-requests))
+    (home-page "https://github.com/open2c/bioframe")
+    (synopsis "Pandas utilities for tab-delimited and other genomic files")
+    (description
+     "This package is a library to enable flexible and scalable operations on
+genomic interval dataframes in Python.  Bioframe enables access to a rich set
+of dataframe operations.  Working in Python enables rapid visualization and
+iteration of genomic analyses.  The philosophy underlying bioframe is to
+enable flexible operations.  Instead of creating a function for every possible
+use-case, we encourage users to compose functions to achieve their goals.")
+    (license license:expat)))
+
 (define-public python-biom-format
   (package
     (name "python-biom-format")
