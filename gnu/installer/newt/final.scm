@@ -80,16 +80,21 @@ press the button to reboot.")))
 (define (run-install-failed-page)
   (match (current-clients)
     (()
-     (match (choice-window
+     (match (ternary-window
              (G_ "Installation failed")
              (G_ "Resume")
              (G_ "Restart the installer")
+             (G_ "Report the failure")
              (G_ "The final system installation step failed.  You can resume from \
 a specific step, or restart the installer."))
        (1 (abort-to-prompt 'installer-step 'abort))
        (2
         ;; Keep going, the installer will be restarted later on.
-        #t)))
+        #t)
+       (3 (raise
+           (condition
+            (&message
+             (message "User abort.")))))))
     (_
      (send-to-clients '(installation-failure))
      #t)))
