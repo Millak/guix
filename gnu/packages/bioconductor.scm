@@ -1384,6 +1384,29 @@ genomation package.  Included are Chip Seq, Methylation and Cage data,
 downloaded from Encode.")
     (license license:gpl3+)))
 
+(define-public r-macrophage
+  (package
+    (name "r-macrophage")
+    (version "1.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "macrophage" version
+                                     'experiment))
+              (sha256
+               (base32
+                "0ml8v92w021fmzsn4yl90ap3l4l3b9c1pk8pzsrm122p82wzlyms"))))
+    (properties `((upstream-name . "macrophage")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/macrophage")
+    (synopsis "Human macrophage immune response data")
+    (description
+     "This package provides the output of running @code{Salmon} on a set of 24
+RNA-seq samples from Alasoo, et al. \"Shared genetic effects on chromatin and
+gene expression indicate a role for enhancer priming in immune response\", published
+in Nature Genetics, January 2018.")
+    (license license:gpl2+)))
+
 (define-public r-msdata
   (package
     (name "r-msdata")
