@@ -13035,6 +13035,50 @@ storage format, called @code{cool}, used to store genomic interaction data,
 such as Hi-C contact matrices.")
     (license license:bsd-3)))
 
+(define-public python-cooltools
+  (package
+    (name "python-cooltools")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cooltools" version))
+              (sha256
+               (base32
+                "08hyzd3kazr87nvv6rwp5i1g9rwj7jmrly925lqnvippz4wp7k4g"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-v")))))))
+    (native-inputs
+     (list python-cython
+           python-pytest))
+    (propagated-inputs
+     (list python-bioframe
+           python-click
+           python-cooler
+           python-joblib
+           python-matplotlib
+           python-multiprocess
+           python-numba
+           python-numpy
+           python-pandas
+           python-scikit-image
+           python-scikit-learn
+           python-scipy))
+    (home-page "https://github.com/open2c/cooltools")
+    (synopsis
+     "Analysis tools for genomic interaction data stored in .cool format")
+    (description
+     "This package provides necessary tools for the analysis of the genomic
+interaction data stored in @code{.cool} format.  This collection of tools
+includes operations like compartment, insulation or peak calling.")
+    (license license:expat)))
+
 (define-public python-hicmatrix
   (package
     (name "python-hicmatrix")
