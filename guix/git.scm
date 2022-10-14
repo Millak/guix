@@ -261,7 +261,8 @@ corresponding Git object."
                           #f))
                      (_ #f)))
               => (lambda (commit) (resolve `(commit . ,commit))))
-             ((not (commit-id? str))
+             ((or (> (string-length str) 40)
+                  (not (string-every char-set:hex-digit str)))
               (resolve `(tag . ,str)))      ;definitely a tag
              (else
               (catch 'git-error
