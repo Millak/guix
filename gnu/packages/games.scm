@@ -65,7 +65,7 @@
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Yovan Naumovski <yovan@gorski.stream>
@@ -6753,7 +6753,7 @@ fight against their plot and save his fellow rabbits from slavery.")
 (define-public 0ad-data
   (package
     (name "0ad-data")
-    (version "0.0.25b-alpha")
+    (version "0.0.26-alpha")
     (source
      (origin
        (method url-fetch)
@@ -6761,7 +6761,7 @@ fight against their plot and save his fellow rabbits from slavery.")
                            version "-unix-data.tar.xz"))
        (file-name (string-append name "-" version ".tar.xz"))
        (sha256
-        (base32 "1c9zrddmjxvvacismld6fbwbw9vrdbq6g6d3424p8w5p6xg5wlwy"))))
+        (base32 "0z9dfw2hn2fyrx70866lv5464fbagdb8dip321wq10pqb22y805j"))))
     (build-system trivial-build-system)
     (native-inputs (list tar unzip xz))
     (arguments
@@ -6800,7 +6800,7 @@ fight against their plot and save his fellow rabbits from slavery.")
 (define-public 0ad
   (package
     (name "0ad")
-    (version "0.0.25b-alpha")
+    (version "0.0.26-alpha")
     (source
      (origin
        (method url-fetch)
@@ -6808,7 +6808,7 @@ fight against their plot and save his fellow rabbits from slavery.")
                            version "-unix-build.tar.xz"))
        (file-name (string-append name "-" version ".tar.xz"))
        (sha256
-        (base32 "1p9fa8f7sjb9c5wl3mawzyfqvgr614kdkhrj2k4db9vkyisws3fp"))))
+        (base32 "0jzfq09ispi7740c01h6yqxqv9y3zx66d217z32pfbiiwgvns71f"))))
     ;; A snippet here would cause a build failure because of timestamps
     ;; reset.  See https://bugs.gnu.org/26734.
     (inputs
@@ -6816,6 +6816,7 @@ fight against their plot and save his fellow rabbits from slavery.")
            curl
            enet
            fmt
+           freetype
            gloox
            icu4c-68
            libidn
