@@ -6369,14 +6369,14 @@ reduce that load.")
 (define-public java-commons-jcs
   (package
     (name "java-commons-jcs")
-    (version "2.2.1")
+    (version "3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/commons/jcs/source/"
-                                  "commons-jcs-dist-" version "-src.tar.gz"))
+                                  "commons-jcs3-dist-" version "-src.tar.gz"))
               (sha256
                (base32
-                "0syhq2npjbrl0azqfjm0gvash1qd5qjy4qmysxcrqjsk0nf9fa1q"))))
+                "0y1lm1xnsj99bf7y9mkvbzqfy8dr7ac8zcbkpsjgzb9vhabfsbac"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "commons-jcs.jar"
@@ -6385,20 +6385,16 @@ reduce that load.")
        #:tests? #f; requires hsqldb
        #:phases
        (modify-phases %standard-phases
-         (add-before 'build 'prepare
+         (add-before 'build 'copy-resources
            (lambda _
-             (with-directory-excursion
-               "commons-jcs-core/src/main/java/org/apache/commons/jcs"
-               (substitute*
-                 "auxiliary/disk/jdbc/dsfactory/SharedPoolDataSourceFactory.java"
-                 (("commons.dbcp") "commons.dbcp2")
-                 ((".*\\.setMaxActive.*") ""))
-               ;;; Remove dependency on velocity-tools
-               (delete-file "admin/servlet/JCSAdminServlet.java"))
-             #t)))))
+             (copy-recursively "commons-jcs-core/src/main/resources"
+                               "build/classes"))))))
     (propagated-inputs
-     (list java-classpathx-servletapi java-commons-logging-minimal
-           java-commons-httpclient java-commons-dbcp))
+     (list java-classpathx-servletapi
+           java-commons-dbcp
+           java-httpcomponents-httpclient
+           java-httpcomponents-httpcore
+           java-log4j-api))
     (native-inputs
      (list java-junit))
     (home-page "https://commons.apache.org/proper/commons-jcs/")

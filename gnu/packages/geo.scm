@@ -1756,15 +1756,6 @@ to the OSM opening hours specification.")
                                   "<date>1970-01-01 00:00:00 +0000</date>"
                                   "</commit></entry></info>"))))
              #t))
-         (add-before 'build 'fix-jcs
-           (lambda _
-             ;; This version of JOSM uses an unreleased version of commons-jcs,
-             ;; which has renamed its classes to another namespace.  Rename them
-             ;; back so they can be used with our version of jcs.
-             (substitute* (find-files "." ".*.java$")
-               (("jcs3") "jcs")
-               (("ICache.NAME_COMPONENT_DELIMITER") "\":\""))
-             #t))
          (add-before 'build 'fix-classpath
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "CLASSPATH"
