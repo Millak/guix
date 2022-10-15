@@ -1707,7 +1707,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "18360")
+    (version "18583")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1716,7 +1716,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "0j7fhzh6hs2b5r1a3d1xpy6f5r6q1kh79bck28raang8ldd754c6"))
+                "01ghh9kl984lr8f70jsks31p6a4cqpxqjpmbc4x6mzbmvy87dfvy"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
