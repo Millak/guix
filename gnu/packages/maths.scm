@@ -7498,6 +7498,37 @@ the sequential @command{lingeling} and its parallel variants
 also included.")
      (license license:expat))))
 
+(define-public louvain-community
+  (let ((commit "8cc5382d4844af127b1c1257373740d7e6b76f1e")
+        (revision "1"))
+    (package
+      (name "louvain-community")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/meelgroup/louvain-community")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ss00hkdvr9bdkd355hxf8zd7xycb3nm8qpy7s75gjjf6yng0bfj"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f                ; tests appear to require missing files
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'encode-git-hash
+                   (lambda _
+                     (substitute* "CMakeLists.txt"
+                       (("GIT-hash-notfound") #$commit)))))))
+      (native-inputs (list python))
+      (home-page "https://github.com/meelgroup/louvain-communities")
+      (synopsis "Multi-criteria community detection")
+      (description "This package provides a C++ implementation of the Louvain
+community detection algorithm.")
+      (license license:lgpl3+))))
+
 (define-public libqalculate
   (package
     (name "libqalculate")
