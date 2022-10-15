@@ -381,8 +381,8 @@ languages.")
     (license license:gpl3+)))
 
 (define-public emacs-next
-  (let ((commit "0a5477b448e6b62bcedc1803e531ec7686eea48d")
-        (revision "1"))
+  (let ((commit "4aeb80ccecd0dc3f3b3f567779632a0f23476a09")
+        (revision "2"))
     (package
       (inherit emacs)
       (name "emacs-next")
@@ -395,9 +395,13 @@ languages.")
                (url "https://git.savannah.gnu.org/git/emacs.git/")
                (commit commit)))
          (file-name (git-file-name name version))
+         ;; emacs-source-date-epoch.patch is no longer necessary
+         (patches (search-patches "emacs-exec-path.patch"
+                                  "emacs-fix-scheme-indent-function.patch"
+                                  "emacs-native-comp-driver-options.patch"))
          (sha256
           (base32
-           "0dqmrawkvbypxp8gcnspnhhmfamzp3l62gfgp1pw2l6svz58v991"))))
+           "0rr2iiqsma37gbg4irn69cc2f3mr83ndycg0dsl3ba96i5fw60zs"))))
       (inputs
        (modify-inputs (package-inputs emacs)
          (prepend sqlite)))
