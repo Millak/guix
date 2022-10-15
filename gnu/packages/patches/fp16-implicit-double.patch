@@ -1,0 +1,23 @@
+Prevent implicit conversion of float to double to avoid precision
+error on i686.
+
+  https://github.com/Maratyszcza/FP16/issues/20
+
+Taken from Debian:
+
+  https://salsa.debian.org/deeplearning-team/fp16/-/blob/master/debian/patches/ftbfs-i386.patch
+
+Index: fp16/include/fp16/fp16.h
+===================================================================
+--- fp16.orig/include/fp16/fp16.h
++++ fp16/include/fp16/fp16.h
+@@ -228,7 +228,8 @@ static inline uint16_t fp16_ieee_from_fp
+ 	const float scale_to_inf = fp32_from_bits(UINT32_C(0x77800000));
+ 	const float scale_to_zero = fp32_from_bits(UINT32_C(0x08800000));
+ #endif
+-	float base = (fabsf(f) * scale_to_inf) * scale_to_zero;
++	const volatile float base_inf = fabsf(f) * scale_to_inf;
++	float base = base_inf * scale_to_zero;
+ 
+ 	const uint32_t w = fp32_to_bits(f);
+ 	const uint32_t shl1_w = w + w;

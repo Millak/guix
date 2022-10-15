@@ -7690,7 +7690,8 @@ when an application performs repeated divisions by the same divisor.")
                 (sha256
                  (base32
                   "05mm4vrxsac35hjf5djif9r6rdxj9ippg97ia3p6q6b8lrp7srwv"))
-                (patches (search-patches "fp16-system-libraries.patch"))))
+                (patches (search-patches "fp16-implicit-double.patch"
+                                         "fp16-system-libraries.patch"))))
       (build-system cmake-build-system)
       (arguments
        `(#:imported-modules ((guix build python-build-system)
