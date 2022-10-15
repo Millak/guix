@@ -55,6 +55,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;; Copyright © 2022 vicvbcun <guix@ikherbers.com>
+;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7361,6 +7362,59 @@ researchers and developers alike to get started on SAT.")
 back to C with improved data structures, better scheduling of inprocessing and
 optimized algorithms and implementation.")
     (license license:expat)))
+
+(define-public aiger
+  (package
+    (name "aiger")
+    (version "1.9.9")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "http://fmv.jku.at/aiger/aiger-"
+                                 version ".tar.gz"))
+             (sha256
+               (base32
+                "1ish0dw0nf9gyghxsdhpy1jjiy5wp54c993swp85xp7m6vdx6l0y"))))
+    (outputs (list "out" "static"))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ; no check target
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-source
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "aiger.c"
+                     (("\"(gzip|gunzip)" all cmd)
+                      (string-append
+                       "\""
+                       (search-input-file inputs (string-append "bin/" cmd)))))))
+               (add-after 'unpack 'patch-build-files
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* "makefile.in"
+                     (("test -d .*") "true")
+                     (("/usr/local") (assoc-ref outputs "out")))))
+               (replace 'configure
+                 (lambda* (#:key configure-flags #:allow-other-keys)
+                   (apply invoke "./configure.sh" configure-flags)))
+               (add-after 'install 'install-static
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (apply invoke #$(ar-for-target) "rcs" "libaiger.a"
+                          (find-files "." "\\.o$"))
+                   (let* ((static (assoc-ref outputs "static"))
+                          (lib (string-append static "/lib"))
+                          (incl (string-append static "/include/aiger")))
+                     (mkdir-p lib)
+                     (mkdir-p incl)
+                     (install-file "libaiger.a" lib)
+                     (for-each (lambda (f) (install-file f incl))
+                               (find-files "." "\\.h$"))))))))
+    (inputs (list gzip))
+    (home-page "http://fmv.jku.at/aiger")
+    (synopsis "Utilities for And-Inverter Graphs")
+    (description "AIGER is a format, library and set of utilities for
+@acronym{AIG, And-Inverter Graphs}s.  The focus is on conversion utilities and a
+generic reader and writer API.")
+    (license (list license:expat
+                   license:bsd-3))))    ; blif2aig
 
 (define-public libqalculate
   (package
