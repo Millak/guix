@@ -2096,6 +2096,19 @@ want to avoid auto-loading the Emacs packages installed with Guix, you
 can do so by running Emacs with the @option{--no-site-file} option
 (@pxref{Init File,,, emacs, The GNU Emacs Manual}).
 
+@quotation Note
+Emacs can now compile packages natively.  Under the default
+configuration, this means that Emacs packages will now be
+just-in-time (JIT) compiled as you use them, and the results
+stored in a subdirectory of your @code{user-emacs-directory}.
+
+Furthermore, the build system for Emacs packages transparently
+supports native compilation, but note, that
+@code{emacs-minimal}---the default Emacs for building
+packages---has been configured without native compilation.
+To natively compile your emacs packages ahead of time, use a
+transformation like @option{--with-input=emacs-minimal=emacs}.
+@end quotation
 
 @node Upgrading Guix
 @section Upgrading Guix
