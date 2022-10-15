@@ -4937,7 +4937,7 @@ utility, a static analysis tool (linter) for Robot Framework source files.")
 (define-public python-robotframework-pabot
   (package
     (name "python-robotframework-pabot")
-    (version "2.5.2")
+    (version "2.7.0")
     (source
      (origin
        ;; There are no tests in the PyPI archive.
@@ -4948,7 +4948,7 @@ utility, a static analysis tool (linter) for Robot Framework source files.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "14a8isq1f4lgfwjb84hhzg6jm7ns18dxa9bg6dy8k2ml8zl0qknk"))))
+         "0246vvyaxax0nzlrffvp9vg6mh5jmvbbm87azignf0gakjidr7nn"))))
     (build-system python-build-system)
     (arguments
      (list
