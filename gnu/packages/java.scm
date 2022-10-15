@@ -5332,6 +5332,31 @@ including java-asm.")
        ((#:tests? _) #f)))
     (native-inputs `())))
 
+(define-public java-asm-3
+  (package
+    (inherit java-asm)
+    (version "3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.ow2.org/asm/asm")
+                     (commit "ASM_3_1")))
+              (file-name (git-file-name "java-asm" version))
+              (sha256
+               (base32
+                "0xbyf2sl8j6mrvfpg2da0vjdp906rac62l66gkk82x5cn3vc30h4"))
+              (modules '((guix build utils)))
+              (snippet `(for-each delete-file (find-files "." "\\.jar$")))))
+    (arguments
+     `(#:build-target "jar"
+       #:test-target "test"
+       #:tests? #f; require legacy test software
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install (install-jars "output/dist"))
+         (delete 'generate-jar-indices))))
+    (native-inputs (list java-ow-util-ant-tasks))))
+
 (define-public java-asm-8
   (package
     (inherit java-asm)
