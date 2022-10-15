@@ -196,6 +196,7 @@ Pendulum instances.")
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-dateutil" version))
+       (patches (search-patches "python-dateutil-pytest-compat.patch"))
        (sha256
         (base32
          "11iy7m4bp2lgfkcl0r6xzf34bvk7ppjmsyn2ygfikbi72v6cl8q1"))))

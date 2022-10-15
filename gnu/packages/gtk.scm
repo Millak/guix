@@ -1342,8 +1342,8 @@ application suites.")
      (list cairo
            fontconfig
            (if (target-x86-64?)
-               librsvg-bootstrap
-               librsvg-2.40)
+             librsvg-bootstrap
+             librsvg-2.40)
            glib
            graphene
            libepoxy
@@ -2285,13 +2285,13 @@ information.")
                              `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
                          (find-files (string-append out "/bin")))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("itstool" ,itstool)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           itstool
+           perl
+           pkg-config
+           python-wrapper))
     (inputs
      (list bc
            dblatex
@@ -2305,7 +2305,6 @@ information.")
            python-lxml
            python-parameterized
            python-pygments
-           python-unittest2
            source-highlight
            yelp-tools))
     (home-page "https://wiki.gnome.org/DocumentationProject/GtkDoc")
@@ -2330,8 +2329,8 @@ with some extra work.")
 (define-public gtk-doc/stable
   (hidden-package
    (package/inherit gtk-doc
-     (inputs (alist-replace "dblatex" `(,dblatex/stable)
-                            (package-inputs gtk-doc))))))
+     (inputs (modify-inputs (package-inputs gtk-doc)
+               (replace "dblatex" dblatex/stable))))))
 
 (define-public gtk-engines
   (package

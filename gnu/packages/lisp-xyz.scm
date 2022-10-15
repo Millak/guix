@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018-2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
@@ -712,6 +712,15 @@ timeouts.")
     (inputs (list sbcl-alexandria))
     (native-inputs (list sbcl-fiveam))
     (build-system asdf-build-system/sbcl)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-test-sleep
+             (lambda _
+               ;; 0.001 is too short for some slower machines.
+               (substitute* "test/bordeaux-threads-test.lisp"
+                 (("sleep 0\\.001") "sleep 0.002")))))))
     (synopsis "Portable shared-state concurrency library for Common Lisp")
     (description "BORDEAUX-THREADS is a proposed standard for a minimal
 MP/Threading interface.  It is similar to the CLIM-SYS threading and lock

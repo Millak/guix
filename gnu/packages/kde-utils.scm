@@ -2,6 +2,8 @@
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +27,7 @@
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gnome)
@@ -40,14 +43,14 @@
 (define-public ark
   (package
     (name "ark")
-    (version "20.04.1")
+    (version "22.04.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ark-" version ".tar.xz"))
               (sha256
                (base32
-                "0g5bfa1lc7mhrc2ngd4ldf33dpwr7gqrj95kp897pf632wwj23iw"))
+                "1wjy90qkkzafwcw8d4v9cyhmc3sgfipc1085hq2ghqhvrgdyzs00"))
               ;; The libarchive package in Guix does not support
               ;; xar; disable related tests.
               (patches (search-patches "ark-skip-xar-test.patch"))))
@@ -79,7 +82,8 @@
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools xorg-server))
     (inputs
-     (list breeze-icons
+     (list bash-minimal
+           breeze-icons
            karchive
            kconfig
            kcrash
@@ -113,14 +117,14 @@ well as CD-ROM images.")
 (define-public kate
   (package
     (name "kate")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kate-" version ".tar.xz"))
        (sha256
-        (base32 "0nrby307syrqlxrf9lwdzc9c15ifw47418qwszqwg345ma2pww7i"))))
+        (base32 "0dnlr1cld6lqanqv98bss66w2bi2y78vqb8jx26addn2r1w4ygkf"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -139,11 +143,12 @@ well as CD-ROM images.")
            kjobwidgets
            kparts
            ktexteditor
+           ksyntaxhighlighting
            kwallet
            plasma-framework
            kwindowsystem
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5
            qtscript))
     (arguments
@@ -178,14 +183,14 @@ Kate's features include:
 (define-public kmag
   (package
     (name "kmag")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/kmag-" version ".tar.xz"))
       (sha256
-       (base32 "18lk8i2r90gvw8q5j179xgpniih92mwk06krk7w4jv98yinqf6m5"))))
+       (base32 "08jwv2wnb67vjgz5pv1nn6rwl9ldj8dfd74l6va9vz4x5pk7d859"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -193,7 +198,7 @@ Kate's features include:
      (list ki18n
            kio
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            ;; TODO: QAccessibilityClient - libqaccessibilityclien
            qtbase-5))
     (home-page "https://apps.kde.org/kmag/")
@@ -208,14 +213,14 @@ artists to web-designers to people with low vision.")
 (define-public kmousetool
   (package
     (name "kmousetool")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmousetool-" version ".tar.xz"))
        (sha256
-        (base32 "01j6bx8zihns4ip8maj0gb3w3bhx1ha2ljhfmsm6lcyay531ay98"))))
+        (base32 "13pvdhhf3fdkaiyjp0ijqm5qdffabyw7qq2051l1nqv6i7w6lgwx"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -232,7 +237,7 @@ artists to web-designers to people with low vision.")
            libxtst
            libxt
            phonon
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5))
     (home-page "https://apps.kde.org/kmousetool/")
     (synopsis "Automatic mouse click and mouse manipulation tool for the
@@ -246,14 +251,14 @@ whom pressing buttons hurts.")
 (define-public kmouth
   (package
     (name "kmouth")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmouth-" version ".tar.xz"))
        (sha256
-        (base32 "1afgxlys9mvmc3rd33g7gchfb0ylx83x3x0a0qf3dra6cpgsgcg7"))))
+        (base32 "0lzaw7qqvpqzfz4nb2lk8l06c4yxacfg5982yk33g5q0j7r19bpy"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -267,7 +272,7 @@ whom pressing buttons hurts.")
            kio
            kwidgetsaddons
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5
            qtspeech))
     (home-page "https://apps.kde.org/kmouth/")
@@ -305,7 +310,7 @@ sentences to be re-spoken.")
            ki18n
            kwidgetsaddons
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5))
     (home-page "https://apps.kde.org/kronometer/")
     (synopsis "Simple stopwatch application")
@@ -348,7 +353,7 @@ to save the times and resume them later.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5
            solid
            zlib))
@@ -395,15 +400,14 @@ either be created or generated from a image.")
 (define-public okteta
   (package
     (name "okteta")
-    (version "17.12.3")
+    (version "0.26.9")
     (source
      (origin
        (method url-fetch)
-       ;; TODO: Why is this not in "stable" anymore
-       (uri (string-append "mirror://kde/Attic/applications/" version
+       (uri (string-append "mirror://kde/stable/okteta/" version
                            "/src/okteta-" version ".tar.xz"))
        (sha256
-        (base32 "03wsv83l1cay2dpcsksad124wzan7kh8zxdw1h0yicn398kdbck4"))))
+        (base32 "1yszs3w78dqdr5d8djf6gp4abzc5lcms859imqcq50wl9r6lr18n"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools qttools-5 shared-mime-info))
@@ -423,9 +427,10 @@ either be created or generated from a image.")
            kservice
            kwidgetsaddons
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qca
            qtbase-5
+           qtdeclarative-5
            qtscript))
     (arguments
      `(#:phases
@@ -480,7 +485,7 @@ redone.")
            ktextwidgets
            kwindowsystem
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5))
     (home-page "https://apps.kde.org/rsibreak/")
     (synopsis "Assists in the Recovery and Prevention of Repetitive Strain
@@ -526,7 +531,7 @@ remind you to take a break now and then.")
            kwindowsystem
            kxmlgui
            samba
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            plasma-framework
            qtbase-5
            qtdeclarative-5
@@ -566,14 +571,14 @@ Features:
 (define-public sweeper
   (package
     (name "sweeper")
-    (version "20.04.1")
+    (version "22.04.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/sweeper-" version ".tar.xz"))
        (sha256
-        (base32 "1az3c2khnh51bbmqpamj4p26d3a0ff4l5rd3vcrylg94mk7wgh59"))))
+        (base32 "0kda4a5d9a11am2y6f91bx8v3nb8mw9qh671nskvgkx46x1pww21"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -588,7 +593,7 @@ Features:
            kio
            ktextwidgets
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5))
     (home-page "https://apps.kde.org/sweeper/")
     (synopsis "Temporary file and history cleaner")

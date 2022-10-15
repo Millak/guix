@@ -9,6 +9,8 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,14 +30,16 @@
 (define-module (gnu packages polkit)
   #:use-module ((guix licenses) #:select (lgpl2.0+))
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix memoization)
   #:use-module (guix utils)
   #:use-module (guix build utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (gnu packages)
-  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
@@ -53,102 +57,75 @@
 (define-public polkit-mozjs
   (package
     (name "polkit")
-    (version "0.120")
+    (version "121")
     (source (origin
              (method url-fetch)
              (uri (string-append
                    "https://www.freedesktop.org/software/polkit/releases/"
                    name "-" version ".tar.gz"))
+             (patches (search-patches "polkit-disable-systemd.patch"))
              (sha256
               (base32
-               "00zfg9b9ivkcj2jcf5b92cpvvyljz8cmfwj86lkvy5rihnd5jypf"))
-             (patches (search-patches "polkit-configure-elogind.patch"
-                                      "polkit-CVE-2021-4034.patch"))
+               "1apz3bh7nbpmlp1cr00pb8z8wp0c7yb23ninb959jz3r38saxiwx"))
              (modules '((guix build utils)))
              (snippet
               '(begin
-                 (use-modules (guix build utils))
-                 ;; Disable broken test.
-                 (substitute* "test/Makefile.in"
-                   (("SUBDIRS = mocklibc . polkit polkitbackend")
-                    "SUBDIRS = mocklibc . polkit"))
                  ;; Disable a test that requires Python, D-Bus and a few
                  ;; libraries and fails with "ERROR: timed out waiting for bus
                  ;; process to terminate".
-                 (substitute* "test/polkitbackend/Makefile.am"
-                   (("TEST_PROGS \\+= polkitbackendjsauthoritytest-wrapper.py")
+                 (substitute* "test/meson.build"
+                   (("subdir\\('polkitbackend'\\)")
                     ""))
-                 ;; Guix System's polkit
-                 ;; service stores actions under /etc/polkit-1/actions.
+                 ;; Look up actions and rules from /etc/polkit ...
+                 (substitute* "src/polkitbackend/meson.build"
+                   (("'-DPACKAGE_SYSCONF_DIR=.*,")
+                    "'-DPACKAGE_SYSCONF_DIR=\"/etc\"',"))
                  (substitute* "src/polkitbackend/polkitbackendinteractiveauthority.c"
                    (("PACKAGE_DATA_DIR \"/polkit-1/actions\"")
                     "PACKAGE_SYSCONF_DIR \"/polkit-1/actions\""))
+                 ;; ... but install package files below the prefix.
+                 (substitute* "meson.build"
+                   (("pk_sysconfdir = get_option\\('sysconfdir'\\)")
+                    "pk_sysconfdir = get_option('prefix') + '/etc'"))
                  ;; Set the setuid helper's real location.
                  (substitute* "src/polkitagent/polkitagentsession.c"
                    (("PACKAGE_PREFIX \"/lib/polkit-1/polkit-agent-helper-1\"")
                     "\"/run/setuid-programs/polkit-agent-helper-1\""))))))
-    (build-system gnu-build-system)
+    (build-system meson-build-system)
     (inputs
-     (list expat linux-pam elogind mozjs nspr))
+     (list elogind
+           expat
+           linux-pam
+           mozjs-91
+           nspr))
     (propagated-inputs
-     (list glib)) ; required by polkit-gobject-1.pc
+     (list glib))                       ;required by polkit-gobject-1.pc
     (native-inputs
      (list pkg-config
-           `(,glib "bin")                         ;for glib-mkenums
-           intltool
+           gettext-minimal
+           perl
+           `(,glib "bin")               ;for glib-mkenums
            gobject-introspection
-           libxslt                                ;for man page generation
-           docbook-xsl))                          ;for man page generation
+           libxml2                      ;for man page generation
+           libxslt                      ;for man page generation
+           docbook-xsl))                ;for man page generation
     (arguments
-     `(#:configure-flags '("--sysconfdir=/etc"
-                           "--enable-man-pages"
-                           ;; Prevent ‘configure: error: cannot check for
-                           ;; file existence when cross compiling’.
-                           ,@(if (%current-target-system)
-                                 '("--with-os-type=unknown")
-                                 '()))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after
-          'unpack 'fix-introspection-install-dir
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
-              (substitute* (find-files "." "Makefile.in")
-                (("@INTROSPECTION_GIRDIR@")
-                 (string-append out "/share/gir-1.0/"))
-                (("@INTROSPECTION_TYPELIBDIR@")
-                 (string-append out "/lib/girepository-1.0/"))))))
-         ;; TODO: Core-updates: Unify on the cross-build version.
-         ,@(if (%current-target-system)
-             `((add-after 'unpack 'fix-manpage-generation
-               (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                 (let ((xsldoc (string-append (assoc-ref (or native-inputs inputs)
-                                                         "docbook-xsl")
-                                              "/xml/xsl/docbook-xsl-"
-                                              ,(package-version docbook-xsl))))
-                   (substitute* '("docs/man/Makefile.am" "docs/man/Makefile.in")
-                     (("http://docbook.sourceforge.net/release/xsl/current")
-                      xsldoc))))))
-             `((add-after 'unpack 'fix-manpage-generation
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((xsldoc (string-append (assoc-ref inputs "docbook-xsl")
-                                              "/xml/xsl/docbook-xsl-"
-                                              ,(package-version docbook-xsl))))
-                   (substitute* '("docs/man/Makefile.am" "docs/man/Makefile.in")
-                     (("http://docbook.sourceforge.net/release/xsl/current")
-                      xsldoc)))))))
-         (replace
-          'install
-          (lambda* (#:key outputs (make-flags '()) #:allow-other-keys)
-            ;; Override sysconfdir during "make install", to avoid attempting
-            ;; to install in /etc, and to instead install the skeletons in the
-            ;; output directory.
-            (let ((out (assoc-ref outputs "out")))
-             (apply invoke "make" "install"
-                           (string-append "sysconfdir=" out "/etc")
-                           (string-append "polkit_actiondir="
-                                          out "/share/polkit-1/actions")
-                           make-flags)))))))
+     (list #:configure-flags
+           #~'("--sysconfdir=/etc"
+               "-Dsession_tracking=libelogind"
+               "-Dman=true"
+               "-Dtests=true"
+               "-Djs_engine=mozjs"
+               ;; Work around broken gobject-introspection detection when
+               ;; cross-compiling.  The build system probes for the _target_
+               ;; gobject-introspection, but if we change it to native, Meson
+               ;; fails with:
+               ;; ERROR: Pkg-config binary for machine MachineChoice.BUILD
+               ;; not found, giving up.
+               ;; Just disable introspection for now.
+               #$@(if (%current-target-system)
+                      '("-Dintrospection=false")
+                      '()))))
     (home-page "https://www.freedesktop.org/wiki/Software/polkit/")
     (synopsis "Authorization API for privilege management")
     (description "Polkit is an application-level toolkit for defining and
@@ -164,25 +141,10 @@ for unprivileged applications.")
   (let ((base polkit-mozjs))
     (package/inherit base
       (name "polkit-duktape")
-      (source
-       (origin
-         (inherit (package-source base))
-         (patches
-          (append
-              (search-patches "polkit-use-duktape.patch")
-              (origin-patches (package-source base))))))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:configure-flags flags)
-          `(cons "--with-duktape" ,flags))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'force-gnu-build-system-bootstrap
-               (lambda _
-                 (delete-file "configure")))))))
-      (native-inputs
-       (modify-inputs (package-native-inputs base)
-         (prepend autoconf automake libtool)))
+          #~(delete "-Djs_engine=mozjs" #$flags))))
       (inputs
        (modify-inputs (package-inputs base)
          (replace "mozjs" duktape))))))

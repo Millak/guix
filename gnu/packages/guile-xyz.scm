@@ -618,6 +618,21 @@ Unix-style DSV format and RFC 4180 format.")
                (search-patches "guile-fibers-wait-for-io-readiness.patch"
                                "guile-fibers-epoll-instance-is-dead.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list "GUILE_AUTO_COMPILE=0")
+           #:phases
+           (if (target-x86-64?)
+             #~%standard-phases
+             #~(modify-phases %standard-phases
+                 (add-before 'check 'disable-some-tests
+                   (lambda _
+                     ;; This test can take more than an hour on some systems.
+                     (substitute* "tests/basic.scm"
+                       ((".*spawn-fiber loop-to-1e4.*") ""))
+                     ;; These tests can take more than an hour and/or segfault.
+                     (substitute* "Makefile"
+                       (("tests/speedup.scm") ""))))))))
     (native-inputs
      (list texinfo pkg-config autoconf automake libtool
            guile-3.0            ;for 'guild compile

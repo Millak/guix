@@ -979,7 +979,7 @@ Metafile}, and @acronym{EMF+, Enhanced Metafile Plus} files.")
 (define-public imlib2
   (package
     (name "imlib2")
-    (version "1.9.0")
+    (version "1.9.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -987,7 +987,7 @@ Metafile}, and @acronym{EMF+, Enhanced Metafile Plus} files.")
                     "/imlib2-" version ".tar.xz"))
               (sha256
                (base32
-                "0l662h74i3mzl5ligj1352rf8bf48drasj97wygr2037gk5fijas"))))
+                "0hsdfs7wa5f7fwb5nfgqzvf29bp59rgy0i0c4m6mvgpzpww408ja"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list "--disable-static")))
@@ -1274,7 +1274,7 @@ language bindings to VIGRA.")
 (define-public libwebp
   (package
     (name "libwebp")
-    (version "1.2.0")
+    (version "1.2.2")
     (source
      (origin
        ;; No tarballs are provided for >0.6.1.
@@ -1285,14 +1285,14 @@ language bindings to VIGRA.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rgblphsd56033w7lpkrzl7m5w0fi7wavxri1ayzlg8fhpmmqp4k"))))
+         "1khqkm5j9aiii9jfsbxzzyz3x33sifzcx537cyjyb3a2g2rl969k"))))
     (build-system gnu-build-system)
     (inputs
-     `(("freeglut" ,freeglut)
-       ("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)))
+     (list freeglut
+           giflib
+           libjpeg-turbo
+           libpng
+           libtiff))
     (native-inputs
      (list autoconf automake libtool))
     (arguments
@@ -1327,9 +1327,7 @@ channels.")
     (build-system gnu-build-system)
     (propagated-inputs
      ;; These are all in the 'Libs.private' field of libmng.pc.
-     `(("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("zlib" ,zlib)))
+     (list lcms libjpeg-turbo zlib))
     (home-page "https://www.libmng.com/")
     (synopsis "Library for handling MNG files")
     (description

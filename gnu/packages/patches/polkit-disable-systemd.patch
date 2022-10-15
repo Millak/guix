@@ -1,0 +1,30 @@
+Don't install systemd units unless using libsystemd session tracking.
+
+Submitted upstream:
+
+  https://gitlab.freedesktop.org/polkit/polkit/-/merge_requests/134
+
+diff --git a/data/meson.build b/data/meson.build
+--- a/data/meson.build
++++ b/data/meson.build
+@@ -26,7 +26,7 @@ if enable_pam
+   )
+ endif
+ 
+-if enable_logind
++if session_tracking == 'libsystemd-login'
+   configure_file(
+     input: 'polkit.service.in',
+     output: '@BASENAME@',
+diff --git a/meson.build b/meson.build
+--- a/meson.build
++++ b/meson.build
+@@ -199,7 +199,7 @@ if enable_logind
+ 
+   # systemd unit / service files
+   systemd_systemdsystemunitdir = get_option('systemdsystemunitdir')
+-  if systemd_systemdsystemunitdir == ''
++  if systemd_systemdsystemunitdir == '' and session_tracking == 'libsystemd-login'
+     systemd_dep = dependency('systemd', not_found_message: 'systemd required but not found, please provide a valid systemd user unit dir or disable it')
+     # FIXME: systemd.pc file does not use variables with relative paths, so `define_variable` cannot be used
+     systemd_systemdsystemunitdir = systemd_dep.get_pkgconfig_variable('systemdsystemunitdir')

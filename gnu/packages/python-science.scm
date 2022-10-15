@@ -424,7 +424,7 @@ library.")
     (inputs
      (list which xclip xsel))
     (native-inputs
-     (list python-cython-0.29.32
+     (list python-cython
            python-beautifulsoup4
            python-lxml
            python-html5lib

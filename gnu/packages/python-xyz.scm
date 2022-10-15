@@ -1380,14 +1380,14 @@ by @code{binstar}, @code{binstar-build}, and @code{chalmers}.")
 (define-public python-babel
   (package
     (name "python-babel")
-    (version "2.9.0")
+    (version "2.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Babel" version))
        (sha256
         (base32
-         "018yg7g2pa6vjixx1nx41cfispgfi0azzp0a1chlycbj8jsil0ys"))))
+         "0l9cvfmsz0hlvcinxaf6xf2f02ldgw3xq9i1fc7lk5zf24vma53n"))))
     (build-system python-build-system)
     (native-inputs
      (list python-freezegun python-pytest tzdata-for-tests))
@@ -3506,14 +3506,14 @@ interfaces.")
 (define-public python-click
   (package
     (name "python-click")
-    (version "8.1.2")
+    (version "8.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "click" version))
        (sha256
         (base32
-         "0whs38a2i0561kwbgigs6vic9r0a1887m2v1aw3rmv6r2kz0g5s7"))))
+         "13kvp8visj5xh9d43brnda6q0kc1s40flxa5cw0p0a9hzf5dr0kn"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3904,21 +3904,14 @@ JavaScript-like message boxes.  Types of dialog boxes include:
   (package
     (name "python-pympler")
     (home-page "https://pythonhosted.org/Pympler/")
-    (version "0.9")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pympler" version))
               (sha256
                (base32
-                "0ivfw2k86nbw9ck9swidl4422w7bhjldxwj90a4sy5r1cbgygjzj"))))
+                "1ynkqpv2akldmvkll5vh5zhwj433s1d59iv0f76lygyak4silgwr"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'check)
-                  (add-after 'install 'check
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (add-installed-pythonpath inputs outputs)
-                      (invoke "python" "setup.py" "test"))))))
     (synopsis "Measure, monitor and analyze memory behavior")
     (description
      "Pympler is a development tool to measure, monitor and analyze
@@ -5644,13 +5637,13 @@ provides additional functionality on the produced Mallard documents.")
 (define-public python-cython
   (package
     (name "python-cython")
-    (version "0.29.24")
+    (version "0.29.32")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cython" version))
        (sha256
-        (base32 "0hw4gs18rh4slij1fg252argxhraypld9apbqbl60230qc3lvw6d"))))
+        (base32 "1xqsihpqnfal29nb5kmw8z71nd4jbsnbz7p3lkr094xpb13wycw7"))))
     (build-system python-build-system)
     ;; we need the full python package and not just the python-wrapper
     ;; because we need libpython3.3m.so
@@ -5685,18 +5678,6 @@ provides additional functionality on the produced Mallard documents.")
 programming language and the extended Cython programming language.  It makes
 writing C extensions for Python as easy as Python itself.")
     (license license:asl2.0)))
-
-;; Newer version required for Pandas.
-(define-public python-cython-0.29.32
-  (package
-    (inherit python-cython)
-    (version "0.29.32")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Cython" version))
-              (sha256
-               (base32
-                "1xqsihpqnfal29nb5kmw8z71nd4jbsnbz7p3lkr094xpb13wycw7"))))))
 
 (define-public python-cython-3
   (package
@@ -5893,7 +5874,7 @@ capabilities.")
            python-pandas
            python-pydata-sphinx-theme
            python-scipy                 ;used by matplotlib
-           python-sphinx
+           python-sphinx-4
            python-sphinx-panels
            texinfo
            texlive-bin
@@ -7198,13 +7179,13 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
 (define-public python-pillow
   (package
     (name "python-pillow")
-    (version "9.0.0")
+    (version "9.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pillow" version))
               (sha256
                (base32
-                "0gjry0yqryd2678sm47jhdnbghzxn5wk8pgyaqwr4qi7x5ijjvpf"))
+                "011wgm1mssjchpva9wsi2a07im9czyjvik137xlp5f0g7vykdrkm"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (delete-file-recursively "src/thirdparty")))))
@@ -13874,14 +13855,14 @@ simulation, statistical modeling, machine learning and much more.")
 (define-public python-chardet
   (package
     (name "python-chardet")
-    (version "4.0.0")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "chardet" version))
        (sha256
         (base32
-         "1ykr04qyhgpc0h5b7dhqw4g92b1xv7ki2ky910mhy4mlbnhm6vqd"))))
+         "1amqmz8731ly6f9rkbk09w4jqgmmgyxykd1bawhgrdbqzlmxys03"))))
     (native-inputs
      (list python-pytest))
     (build-system python-build-system)
@@ -13890,7 +13871,10 @@ simulation, statistical modeling, machine learning and much more.")
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda _
-                   (invoke "pytest" "-vv")))
+                   (invoke "pytest" "-vv" "-k"
+                           ;; Disable test that fails sporadically:
+                           ;; https://github.com/chardet/chardet/issues/256
+                           "not test_detect_all_and_detect_one_should_agree")))
                ;; This package provides a 'chardetect' executable that only
                ;; depends on Python, so customize the wrap phase to avoid
                ;; adding pytest and friends in order to save size.
@@ -13918,13 +13902,13 @@ automatically detect a wide range of file encodings.")
 (define-public python-charset-normalizer
   (package
     (name "python-charset-normalizer")
-    (version "2.0.11")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "charset-normalizer" version))
        (sha256
-        (base32 "071pi2kd222rjjrjdllffqv3iz4bfaj93a9bfs65907fd6fqlfcq"))))
+        (base32 "04zlajr77f6c7ai59l46as1idi0jjgbvj72lh4v5wfpz2s070pjp"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -19442,15 +19426,12 @@ from the header, as well as section details and data available.")
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
-                  ,@(if (target-riscv64?)
-                      ;; TODO: Remove the conditional on staging.
-                      `((add-after 'unpack 'remove-test-hypothesis-deadlines
-                          (lambda _
-                            (substitute* "tests/test_make.py"
-                              (("assume, given") "assume, given, settings")
-                              (("( +)@given" all spaces)
-                               (string-append spaces "@settings(deadline=None)\n" all))))))
-                      '())
+                  (add-after 'unpack 'remove-test-hypothesis-deadlines
+                    (lambda _
+                      (substitute* "tests/test_make.py"
+                        (("assume, given") "assume, given, settings")
+                        (("( +)@given" all spaces)
+                         (string-append spaces "@settings(deadline=None)\n" all)))))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?

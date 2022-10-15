@@ -159,6 +159,7 @@ copied to their outputs; otherwise the TEXLIVE-BUILD-SYSTEM is used."
     (file-name (string-append "hyph-utf8-scripts-"
                               (number->string %texlive-revision)
                               "-checkout"))
+    (patches (search-patches "texlive-hyph-utf8-no-byebug.patch"))
     (sha256
      (base32
       "04xzf5gr3ylyh3ls09imrx4mwq3qp1k97r9njzlan6hlff875rx2"))))
@@ -188,7 +189,8 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                          (string-append root "/tex/generic/hyph-utf8/patterns/quote")))
                    (mkdir "scripts")
                    (copy-recursively
-                    (assoc-ref inputs "hyph-utf8-scripts") "scripts")
+                    (dirname (search-input-file inputs "hyph-utf8.rb"))
+                    "scripts")
 
                    ;; Prepare target directories
                    (mkdir-p patterns)
@@ -226,9 +228,7 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                         (string-append "File.join(\"" ptex "\"")))
                      (invoke "ruby" "generate-ptex-patterns.rb")))))))))
       (native-inputs
-       `(("ruby" ,ruby)
-         ("ruby-hydra" ,ruby-hydra)
-         ("hyph-utf8-scripts" ,hyph-utf8-scripts)))
+       (list ruby ruby-hydra-minimal hyph-utf8-scripts))
       (home-page "https://ctan.org/pkg/hyph-utf8"))))
 
 (define texlive-extra-src
@@ -3429,12 +3429,10 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-latex-refcount
              texlive-latex-rerunfilecheck
              texlive-url
-             ;; TODO: Add this in next rebuild cycle.
-             ;;texlive-cm
-             ;;texlive-latex-graphics    ;for keyval
-             ;;texlive-stringenc
-             ;;texlive-zapfding
-             ))
+             texlive-cm
+             texlive-latex-graphics     ;for keyval
+             texlive-stringenc
+             texlive-zapfding))
       (home-page "https://www.ctan.org/pkg/hyperref")
       (synopsis "Extensive support for hypertext in LaTeX")
       (description

@@ -62,17 +62,17 @@
 (define-public python-sphinx
   (package
     (name "python-sphinx")
-    (version "4.5.0")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Sphinx" version))
        (sha256
         (base32
-         "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))
+         "12cdy3m5c09lpf2bbxzbhm5v5y9fk7jgm94qrzggpq86waj28cms"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
@@ -111,10 +111,6 @@
            texlive-etoolbox
            texlive-generic-ltxcmds
            texlive-hyperref
-           ;; TODO: Remove texlive-stringenc and texlive-zapfding after
-           ;; propagating them in texlive-hyperref in next rebuild cycle.
-           texlive-stringenc
-           texlive-zapfding
            texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
            texlive-latex-cmap
            texlive-latex-fancyhdr
@@ -147,6 +143,18 @@
 for Python projects or other documents consisting of multiple reStructuredText
 sources.")
     (license license:bsd-2)))
+
+;; Some packages do not support Sphinx 5 yet.  Remove when unused.
+(define-public python-sphinx-4
+  (package
+    (inherit python-sphinx)
+    (version "4.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Sphinx" version))
+              (sha256
+               (base32
+                "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))))
 
 (define-public python-sphinxcontrib-apidoc
   (package
@@ -365,14 +373,16 @@ Blog, News or Announcements section to a Sphinx website.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest")))))))
-    (propagated-inputs (list python-docutils python-sphinx))
+    (propagated-inputs (list python-docutils python-sphinx-4))
     (native-inputs
      (list python-pytest
            python-pytest-regressions))
     (home-page "https://github.com/executablebooks/sphinx-panels")
     (synopsis "Sphinx extension for creating panels in a grid layout")
     (description
-     "This package provides a sphinx extension for creating panels in a grid layout.")
+     "This package provides a sphinx extension for creating panels in a
+grid layout.  It is no longer maintained and users are encouraged to use
+@code{sphinx-design} instead.")
     (license license:expat)))
 
 (define-public python-sphinx-tabs

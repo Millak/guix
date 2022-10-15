@@ -2841,13 +2841,13 @@ APIs.")
 (define-public python-requests
   (package
     (name "python-requests")
-    (version "2.27.1")
+    (version "2.28.1")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "requests" version))
              (sha256
               (base32
-               "0qcsbi919d689xqlgyhw9zkppp1fs6k09wwffa3ri6d8smpwbmv8"))))
+               "10vrr7bijzrypvms3g2sgz8vya7f9ymmcv423ikampgy0aqrjmbw"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-certifi
@@ -3191,14 +3191,14 @@ addon for removing tracking fields from URLs.")
 (define-public python-urllib3
   (package
     (name "python-urllib3")
-    (version "1.26.8")
+    (version "1.26.9")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "urllib3" version))
         (sha256
          (base32
-          "0g18xk7gfm88gr4bp3f58vgvsbzwps3sq2kqhv5xyz9ylvck6z0f"))))
+          "13j4mkk6vgix4bixfqk3fhydsl3r5f61z94ss4fmwsl0fxjg3fma"))))
     (build-system python-build-system)
     (arguments `(#:tests? #f))
     (propagated-inputs
@@ -5740,6 +5740,12 @@ files.")
         (base32
          "1vk7g5z977mi89hamwiqawpmibwvv9ghrf3pqva1waxmyc7gyjb5"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'extend-test-timeout
+                 (lambda _
+                   (setenv "WEBSOCKETS_TESTS_TIMEOUT_FACTOR" "10"))))))
     (home-page "https://github.com/aaugustin/websockets")
     (synopsis
      "Python implementation of the WebSocket Protocol (RFC 6455 & 7692)")

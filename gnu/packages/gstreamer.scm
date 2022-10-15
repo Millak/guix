@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2015, 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -29,6 +29,7 @@
 (define-module (gnu packages gstreamer)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -404,7 +405,7 @@ arrays of data.")
 (define-public gstreamer-docs
   (package
     (name "gstreamer-docs")
-    (version "1.18.5")
+    (version "1.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -412,7 +413,7 @@ arrays of data.")
                     "/gstreamer-docs-" version ".tar.xz"))
               (sha256
                (base32
-                "1xvqrqv1zxqdpvd02dvr0xspk30c8b940vvnr9x75a08nx0x75xh"))))
+                "1gziccq5f4fy23q6dm8nwbmzh68gn9rfbqw0xcn4r8yn82545z3k"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -464,7 +465,7 @@ the GStreamer multimedia framework.")
 (define-public gstreamer
   (package
     (name "gstreamer")
-    (version "1.18.5")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
@@ -473,33 +474,26 @@ the GStreamer multimedia framework.")
              version ".tar.xz"))
        (sha256
         (base32
-         "02p8my6dzmm4rvd93s3qnh8w5bm9bh4f7gdydbsvnn9llqr251jm"))))
+         "0aisl8nazcfi4b5j6fz8zwpp0k9csb022zniz65b2pxxpdjayzb0"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ,@%common-gstreamer-phases
-         ;; FIXME: Since switching to the meson-build-system, two tests
-         ;; started failing on i686.  See
-         ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/issues/499>.
-         ,@(if (string-prefix? "i686" (or (%current-target-system)
-                                          (%current-system)))
-               `((add-after 'unpack 'disable-some-tests
-                   (lambda _
-                     (substitute* "tests/check/gst/gstsystemclock.c"
-                       (("tcase_add_test \\(tc_chain, test_stress_cleanup_unschedule.*")
-                        "")
-                       (("tcase_add_test \\(tc_chain, test_stress_reschedule.*")
-                        "")))))
-               '())
-         (add-after 'unpack 'disable-problematic-tests
-           (lambda _
-             ;; Disable the 'pipelines-seek' test, which appears to be load
-             ;; sensitive (see:
-             ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/854).
-             (substitute* "tests/check/meson.build"
-               ((".*'pipelines/seek.c'.*")
-                "")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               #$@%common-gstreamer-phases
+               #$@(if (string-prefix? "i686" (or (%current-target-system)
+                                                 (%current-system)))
+                      ;; FIXME: These tests consistently fail in the Guix CI:
+                      ;;   https://issues.guix.gnu.org/57868
+                      '((add-after 'unpack 'disable-systemclock-test
+                          (lambda _
+                            (substitute* "tests/check/gst/gstsystemclock.c"
+                              (("tcase_add_test \\(tc_chain, \
+test_stress_cleanup_unschedule.*")
+                               "")
+                              (("tcase_add_test \\(tc_chain, \
+test_stress_reschedule.*")
+                               "")))))
+                      '()))))
     (propagated-inputs
      ;; In gstreamer-1.0.pc:
      ;;   Requires: glib-2.0, gobject-2.0
@@ -507,15 +501,14 @@ the GStreamer multimedia framework.")
      (list elfutils ; libdw
            glib libunwind))
     (native-inputs
-     `(("bash-completion" ,bash-completion)
-       ("bison" ,bison)
-       ("flex" ,flex)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)))
+     (list bash-completion
+           bison flex
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           perl
+           pkg-config
+           python-wrapper))
     (inputs
      (list gmp libcap
            ;; For tests.
@@ -542,7 +535,7 @@ This package provides the core library and elements.")
 (define-public gst-plugins-base
   (package
     (name "gst-plugins-base")
-    (version "1.18.5")
+    (version "1.20.3")
     (source
      (origin
       (method url-fetch)
@@ -550,75 +543,87 @@ This package provides the core library and elements.")
                           name "-" version ".tar.xz"))
       (sha256
        (base32
-        "18vg8kk7p2p8za8zaqg0v7z6898yw5a3b12vvl7xn02pb3s7l2wn"))))
+        "17rw8wj1x1bg153m9z76pdvgz5k93m3riyalfpzq00x7h7fv6c3y"))))
     (build-system meson-build-system)
     (propagated-inputs
-     `(("glib" ,glib)              ;required by gstreamer-sdp-1.0.pc
-       ("gstreamer" ,gstreamer)    ;required by gstreamer-plugins-base-1.0.pc
-       ;; wayland-client.h is referred to in
-       ;; include/gstreamer-1.0/gst/gl/wayland/gstgldisplay_wayland.h
-       ("wayland" ,wayland)
-       ;; XXX: Do not enable Orc optimizations on ARM systems because
-       ;; it leads to two test failures.
-       ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/issues/683
-       ,@(if (string-prefix? "arm" (or (%current-target-system)
-                                       (%current-system)))
-             '()
-             `(("orc" ,orc)))))         ;required by gstreamer-audio-1.0.pc
+     (list glib                     ;required by gstreamer-sdp-1.0.pc
+           gstreamer                ;required by gstreamer-plugins-base-1.0.pc
+           libgudev                 ;required by gstreamer-gl-1.0.pc
+           ;; wayland-client.h is referred to in
+           ;; include/gstreamer-1.0/gst/gl/wayland/gstgldisplay_wayland.h
+           wayland
+           orc))                    ;required by gstreamer-audio-1.0.pc
     (inputs
      ;; TODO: Add libvorbisidec
-     `(("cdparanoia" ,cdparanoia)
-       ("pango" ,pango)
-       ("libogg" ,libogg)
-       ("libtheora" ,libtheora)
-       ("libvorbis" ,libvorbis)
-       ("libx11" ,libx11)
-       ("zlib" ,zlib)
-       ("libXext" ,libxext)
-       ("libxv" ,libxv)
-       ("alsa-lib" ,alsa-lib)
-       ("opus" ,opus)
-       ("graphene" ,graphene)
-       ("iso-codes" ,iso-codes)
-       ("libgudev" ,libgudev)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libvisual" ,libvisual)
-       ("mesa" ,mesa)
-       ("wayland-protocols" ,wayland-protocols)))
+     (list alsa-lib
+           cdparanoia
+           graphene
+           iso-codes
+           libjpeg-turbo
+           libogg
+           libpng
+           libtheora
+           libvisual
+           libvorbis
+           libx11
+           libxext
+           libxv
+           mesa
+           opus
+           pango
+           wayland-protocols
+           zlib))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("python-wrapper" ,python-wrapper)
-       ("gettext" ,gettext-minimal)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list pkg-config
+           `(,glib "bin")
+           gobject-introspection
+           python-wrapper
+           gettext-minimal
+           xorg-server-for-tests))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ,@%common-gstreamer-phases
-         (add-after 'unpack 'disable-problematic-tests
-           (lambda _
-             (substitute* "tests/check/meson.build"
-               ;; This test causes nondeterministic failures (see:
-               ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/950).
-               ((".*'elements/appsrc.c'.*")
-                ""))))
-         (add-before 'configure 'patch
-           (lambda _
-             (substitute* "tests/check/libs/pbutils.c"
-               (("/bin/sh") (which "sh")))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for $XDG_RUNTIME_DIR.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@%common-gstreamer-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "tests/check/meson.build"
+                ;; This test causes nondeterministic failures (see:
+                ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/950).
+                ((".*'elements/appsrc.c'.*")
+                 ""))
+              ;; Some other tests fail on other architectures.
+              #$@(cond
+                   ((target-x86-32?)
+                    #~((substitute* "tests/check/meson.build"
+                         ((".*'libs/libsabi\\.c'.*") ""))))
+                   ((target-riscv64?)
+                    #~((substitute* "tests/check/meson.build"
+                         ((".*'libs/gstglcolorconvert\\.c'.*") "")
+                         ((".*'libs/gstglcontext\\.c'.*") "")
+                         ((".*'libs/gstglmemory\\.c'.*") "")
+                         ((".*'libs/gstglupload\\.c'.*") "")
+                         ((".*'elements/glimagesink\\.c'.*") "")
+                         ((".*'pipelines/gl-launch-lines\\.c'.*") "")
+                         ((".*'elements/glstereo\\.c'.*") "")
+                         ((".*'elements/glmixer\\.c'.*") ""))))
+                   (else
+                     #~()))))
+          (add-before 'configure 'patch
+            (lambda _
+              (substitute* "tests/check/libs/pbutils.c"
+                (("/bin/sh") (which "sh")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; Tests write to $HOME.
+              (setenv "HOME" (getcwd))
+              ;; Tests look for $XDG_RUNTIME_DIR.
+              (setenv "XDG_RUNTIME_DIR" (getcwd))
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis
      "Plugins for the GStreamer multimedia library")
@@ -629,7 +634,7 @@ for the GStreamer multimedia library.")
 (define-public gst-plugins-good
   (package
     (name "gst-plugins-good")
-    (version "1.18.5")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
@@ -637,74 +642,87 @@ for the GStreamer multimedia library.")
         (string-append
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
-       (patches (search-patches "gst-plugins-good-fix-test.patch"))
        (sha256
-        (base32 "0svrapawych2s3lm4lx3x023zxq5kcx50jnfmh0qigszfskyxbis"))))
+        (base32 "1dv8b2md1xk6d45ir1wzbvqhxbvm6mxv881rjl0brnjwpw3c5wzq"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:phases
-       (modify-phases %standard-phases
-         ,@%common-gstreamer-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for $XDG_RUNTIME_DIR.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t)))))
+     (list
+      #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@%common-gstreamer-phases
+          (add-after 'unpack 'absolutize-libsoup-library
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define libsoup
+                (search-input-file inputs "lib/libsoup-3.0.so"))
+
+              (substitute* "ext/soup/gstsouploader.c"
+                (("(#define LIBSOUP_3_SONAME ).+$" _ prefix)
+                 (string-append prefix "\"" libsoup "\"\n")))))
+          (add-after 'unpack 'skip-failing-tests
+            (lambda _
+              (substitute* "tests/check/meson.build"
+                ;; Reported as shaky upstream, see
+                ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/785>
+                (("\\[ 'elements/flvmux' \\]") "[ 'elements/flvmux', true ]"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; Tests write to $HOME.
+              (setenv "HOME" (getcwd))
+              ;; Tests look for $XDG_RUNTIME_DIR.
+              (setenv "XDG_RUNTIME_DIR" (getcwd))
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)
-       ("xmllint" ,libxml2)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gsettings-desktop-schemas
+           libxml2
+           perl
+           pkg-config
+           python-wrapper
+           xorg-server-for-tests))
     (inputs
-     `(("aalib" ,aalib)
-       ("bzip2" ,bzip2)
-       ("cairo" ,cairo)
-       ("flac" ,flac)
-       ("librsvg" ,(librsvg-for-system))
-       ("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("glu" ,glu)
-       ("gtk+" ,gtk+)
-       ("jack" ,jack-2)
-       ("lame" ,lame)
-       ("libavc1394" ,libavc1394)
-       ("libcaca" ,libcaca)
-       ("libdv" ,libdv)
-       ("libgudev" ,libgudev)
-       ("libiec61883" ,libiec61883)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libshout" ,libshout)
-       ("libsoup" ,libsoup)
-       ("libvpx" ,libvpx)
-       ("libx11" ,libx11)
-       ("libxdamage" ,libxdamage)
-       ("libxfixes" ,libxfixes)
-       ("libxext" ,libxext)
-       ("libxshm" ,libxshmfence)
-       ("mesa" ,mesa)
-       ("mpg123" ,mpg123)
-       ("orc" ,orc)
-       ("pulseaudio" ,pulseaudio)
-       ("speex" ,speex)
-       ("taglib" ,taglib)
-       ("twolame" ,twolame)
-       ("v4l-utils" ,v4l-utils)
-       ("wavpack" ,wavpack)
-       ("zlib" ,zlib)))
+     (list aalib
+           bzip2
+           cairo
+           flac
+           (librsvg-for-system)
+           glib
+           glib-networking
+           glu
+           gtk+
+           jack-2
+           lame
+           libavc1394
+           libcaca
+           libdv
+           libgudev
+           libiec61883
+           libjpeg-turbo
+           libpng
+           libshout
+           libsoup
+           libvpx
+           libx11
+           libxdamage
+           libxfixes
+           libxext
+           libxshmfence
+           mesa
+           mpg123
+           orc
+           pulseaudio
+           speex
+           taglib
+           twolame
+           v4l-utils
+           wavpack
+           zlib))
     (propagated-inputs
      (list gstreamer gst-plugins-base))
     (synopsis "GStreamer plugins and helper libraries")
@@ -719,14 +737,14 @@ model to base your own plug-in on, here it is.")
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
-    (version "1.18.5")
+    (version "1.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "13k7mm2wmsbhd04a20v9lj4afpf0w33ambpwlrw8bl7hjhxr4r51"))
+                "0kys6m5hg5bc30wfg8qa3s7dmkdz3kj1j8lhvn3267fxalxw24bs"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -734,179 +752,177 @@ model to base your own plug-in on, here it is.")
                   (delete-file-recursively "ext/sctp/usrsctp")))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Dsctp-internal-usrsctp=disabled")
-       #:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:phases
-       (modify-phases %standard-phases
-         ,@%common-gstreamer-phases
-         ,@(if (string-prefix? "arm" (or (%current-target-system)
-                                         (%current-system)))
-               ;; Disable test that fails on ARMv7.
-               ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/issues/1188
-               `((add-after 'unpack 'disable-asfmux-test
-                   (lambda _
-                     (substitute* "tests/check/meson.build"
-                       (("\\[\\['elements/asfmux\\.c'\\]\\],")
-                        "")))))
-               '())
-         (add-after 'unpack 'adjust-tests
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (let ((gst-plugins-good (assoc-ref (or native-inputs inputs)
-                                                "gst-plugins-good")))
-               (substitute* "tests/check/meson.build"
-                 ;; Make gst-plugin-good available for tests, see
-                 ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1426
-                 (("'GST_PLUGIN_SYSTEM_PATH_1_0', ''")
-                  (string-append "'GST_PLUGIN_SYSTEM_PATH_1_0', '"
-                                 gst-plugins-good "/lib/gstreamer-1.0'"))
+     (list
+      #:configure-flags #~(list "-Dsctp-internal-usrsctp=disabled")
+      #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@%common-gstreamer-phases
+          #$@(if (string-prefix? "arm" (or (%current-target-system)
+                                           (%current-system)))
+                 ;; Disable test that fails on ARMv7.
+                 ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/issues/1188
+                 `((add-after 'unpack 'disable-asfmux-test
+                     (lambda _
+                       (substitute* "tests/check/meson.build"
+                         (("\\[\\['elements/asfmux\\.c'\\]\\],")
+                          "")))))
+                 '())
+          (add-after 'unpack 'adjust-tests
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (let ((gst-plugins-good (assoc-ref (or native-inputs inputs)
+                                                 "gst-plugins-good")))
+                (substitute* "tests/check/meson.build"
+                  ;; Make gst-plugin-good available for tests, see
+                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1426
+                  (("'GST_PLUGIN_SYSTEM_PATH_1_0', ''")
+                   (string-append "'GST_PLUGIN_SYSTEM_PATH_1_0', '"
+                                  gst-plugins-good "/lib/gstreamer-1.0'"))
 
-                 ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1136
-                 ((".*elements/msdkh264enc\\.c.*") "")
-                 ((".*elements/svthevcenc\\.c.*") "")
+                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1136
+                  ((".*elements/msdkh264enc\\.c.*") "")
+                  ((".*elements/svthevcenc\\.c.*") "")
 
-                 ;; The 'elements_shm.test_shm_live' test sometimes times out
-                 ;; (see:
-                 ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/790).
-                 ((".*'elements/shm\\.c'.*") "")
+                  ;; The 'elements_shm.test_shm_live' test sometimes times out
+                  ;; (see:
+                  ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/790).
+                  ((".*'elements/shm\\.c'.*") "")
 
-                 ;; FIXME: Why is this failing.
-                 ((".*elements/dash_mpd\\.c.*") "")
+                  ;; FIXME: Why is this failing.
+                  ((".*elements/dash_mpd\\.c.*") "")
 
-                 ;; These tests are flaky and occasionally time out:
-                 ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/932
-                 ((".*elements/curlhttpsrc\\.c.*") "")
-                 ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
-                 ((".*elements/dtls\\.c.*") ""))
-               (substitute* "tests/check/elements/zxing.c"
-                 ;; zxing 1.2.0 seemingly changed the type representation of
-                 ;; the EAN_13 structure; disable it.
-                 ((".*\"EAN_13\".*")
-                  "")))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for $XDG_RUNTIME_DIR.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0"))))))
+                  ;; These tests are flaky and occasionally time out:
+                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/932
+                  ((".*elements/curlhttpsrc\\.c.*") "")
+                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
+                  ((".*elements/dtls\\.c.*") ""))
+                (substitute* "tests/check/elements/zxing.c"
+                  ;; zxing 1.2.0 seemingly changed the type representation of
+                  ;; the EAN_13 structure; disable it.
+                  ((".*\"EAN_13\".*")
+                   "")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; Tests write to $HOME.
+              (setenv "HOME" (getcwd))
+              ;; Tests look for $XDG_RUNTIME_DIR.
+              (setenv "XDG_RUNTIME_DIR" (getcwd))
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (propagated-inputs
      (list gstreamer gst-plugins-base))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")         ; for glib-mkenums, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gst-plugins-good" ,gst-plugins-good) ;for tests
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list gettext-minimal
+           `(,glib "bin")               ; for glib-mkenums, etc.
+           gobject-introspection
+           gsettings-desktop-schemas
+           gst-plugins-good             ;for tests
+           perl
+           pkg-config
+           python-wrapper
+           xorg-server-for-tests))
     (inputs
-     `(("bluez" ,bluez)
-       ("bzip2" ,bzip2)
-       ("cairo" ,cairo)
-       ;; ("ccextractor" ,ccextractor)
-       ("chromaprint" ,chromaprint)
-       ("curl" ,curl)
-       ("directfb" ,directfb)
-       ;;("dssim" ,dssim)
-       ("faac" ,faac)
-       ("faad2" ,faad2)
-       ("flite" ,flite)
-       ("fluidsynth" ,fluidsynth)
-       ("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("glu" ,glu)
-       ("gsm" ,gsm)
-       ("gtk+" ,gtk+)
-       ("iqa" ,iqa)
-       ("ladspa" ,ladspa)
-       ("lcms" ,lcms)
-       ("libaom" ,libaom)
-       ("libass" ,libass)
-       ("libbs2b" ,libbs2b)
-       ("libdc1394" ,libdc1394)
-       ("libdca" ,libdca)
-       ("libde265" ,libde265)
-       ("libdrm" ,libdrm)
-       ("libdvdnav" ,libdvdnav)
-       ("libdvdread" ,libdvdread)
-       ("libexif" ,libexif)
-       ("libfdk" ,libfdk)
-       ("libgcrypt" ,libgcrypt)
-       ("libgme" ,libgme)
-       ("libgudev" ,libgudev)
-       ("libkate" ,libkate)
-       ,@(if (target-x86?)
-           `(("libmfx" ,mediasdk))
-           '())
-       ("libmms" ,libmms)
-       ("libmodplug" ,libmodplug)
-       ("libmpcdec" ,libmpcdec)
-       ("libnice" ,libnice)
-       ("libofa" ,libofa)
-       ("libopenmpt" ,libopenmpt)
-       ("librsvg" ,(librsvg-for-system))
-       ("libsndfile" ,libsndfile)
-       ("libsrtp" ,libsrtp)
-       ("libssh2" ,libssh2)
-       ("libtiff" ,libtiff)
-       ("libusb" ,libusb)
-       ("libva" ,libva)
-       ("libvdpau" ,libvdpau)
-       ("libwebp" ,libwebp)
-       ("libx11" ,libx11)
-       ("libxcb" ,libxcb)
-       ("libxext" ,libxext)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxml2" ,libxml2)
-       ("libxshm" ,libxshmfence)
-       ("lilv" ,lilv)
-       ("lrdf" ,lrdf)
-       ("lv2" ,lv2)
-       ("mesa" ,mesa)
-       ("mjpegtools" ,mjpegtools)
-       ("neon" ,neon)
-       ("nettle" ,nettle)
-       ("openal" ,openal)
-       ;; ("opencv" ,opencv)
-       ("openexr" ,openexr)
-       ("openh264" ,openh264)
-       ("openjpeg" ,openjpeg)
-       ;; ("openni2" ,openni2)
-       ("opensles" ,opensles)
-       ("openssl" ,openssl)
-       ("opus" ,opus)
-       ("orc" ,orc)
-       ("pango" ,pango)
-       ("rtmp" ,rtmpdump)
-       ("sbc" ,sbc)
-       ("sctp" ,lksctp-tools)
-       ("soundtouch" ,soundtouch)
-       ("spandsp" ,spandsp)
-       ("srt" ,srt)
-       ,@(if (target-x86-64?)
-             `(("svthevcenc" ,svt-hevc))
-             '())
-       ("tinyalsa" ,tinyalsa)
-       ("transcode" ,transcode)
-       ("usrsctp" ,usrsctp)
-       ("v4l" ,v4l-utils)
-       ("voaacenc" ,vo-aacenc)
-       ("voamrwbenc" ,vo-amrwbenc)
-       ("vulkan-headers" ,vulkan-headers)
-       ("vulkan-loader" ,vulkan-loader)
-       ("x265" ,x265)
-       ("wayland" ,wayland)
-       ("webrtcdsp" ,webrtc-audio-processing)
-       ("wildmidi" ,wildmidi)
-       ("wpebackend-fdo" ,wpebackend-fdo)
-       ("zbar" ,zbar)
-       ("zxing" ,zxing-cpp-1.2)))
+     (append
+      (if (target-x86?) (list mediasdk) '())
+      (if (target-x86-64?) (list svt-hevc) '())
+      (list bluez
+            bzip2
+            cairo
+            ;; ccextractor
+            chromaprint
+            curl
+            directfb
+            ;; dssim
+            faac
+            faad2
+            flite
+            fluidsynth
+            glib
+            glib-networking
+            glu
+            gsm
+            gtk+
+            iqa
+            ladspa
+            lcms
+            libaom
+            libass
+            libbs2b
+            libdc1394
+            libdca
+            libde265
+            libdrm
+            libdvdnav
+            libdvdread
+            libexif
+            libfdk
+            libgcrypt
+            libgme
+            libgudev
+            libkate
+            libmms
+            libmodplug
+            libmpcdec
+            libnice
+            libofa
+            libopenmpt
+            (librsvg-for-system)
+            libsndfile
+            libsrtp
+            libssh2
+            libtiff
+            libusb
+            libva
+            libvdpau
+            libwebp
+            libx11
+            libxcb
+            libxext
+            libxkbcommon
+            libxml2
+            libxshmfence
+            lilv
+            lrdf
+            lv2
+            mesa
+            mjpegtools
+            neon
+            nettle
+            openal
+            ;; opencv
+            openexr
+            openh264
+            openjpeg
+            ;; openni2
+            opensles
+            openssl-1.1
+            opus
+            orc
+            pango
+            rtmpdump
+            sbc
+            lksctp-tools
+            soundtouch
+            spandsp
+            srt
+            tinyalsa
+            transcode
+            usrsctp
+            v4l-utils
+            vo-aacenc
+            vo-amrwbenc
+            vulkan-headers
+            vulkan-loader
+            x265
+            wayland
+            webrtc-audio-processing
+            wildmidi
+            wpebackend-fdo
+            zbar
+            zxing-cpp-1.2)))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "Plugins for the GStreamer multimedia library")
     (description
@@ -917,7 +933,7 @@ par compared to the rest.")
 (define-public gst-plugins-ugly
   (package
     (name "gst-plugins-ugly")
-    (version "1.18.5")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
@@ -925,33 +941,33 @@ par compared to the rest.")
         (string-append "https://gstreamer.freedesktop.org/src/"
                        name "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1nb6kz3gbn8r0sld6xkm16qpgyb2bvhafb7sff9rgagqk0z80cnz"))))
+        (base32 "1zdfsq0zm1d3wj3w3z44bf3v28clr8yd6qzmkjs09hq9k9w21alc"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:phases
-       (modify-phases %standard-phases
-         ,@%common-gstreamer-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for $XDG_RUNTIME_DIR.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0"))))))
+     (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
+           #:phases
+           #~(modify-phases %standard-phases
+               #$@%common-gstreamer-phases
+               (add-before 'check 'pre-check
+                 (lambda _
+                   ;; Tests require a running X server.
+                   (system "Xvfb :1 +extension GLX &")
+                   (setenv "DISPLAY" ":1")
+                   ;; Tests write to $HOME.
+                   (setenv "HOME" (getcwd))
+                   ;; Tests look for $XDG_RUNTIME_DIR.
+                   (setenv "XDG_RUNTIME_DIR" (getcwd))
+                   ;; For missing '/etc/machine-id'.
+                   (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gsettings-desktop-schemas
+           perl
+           pkg-config
+           python-wrapper
+           xorg-server-for-tests))
     (inputs
      (list glib
            glib-networking
@@ -974,7 +990,7 @@ think twice about shipping them.")
 (define-public gst-libav
   (package
     (name "gst-libav")
-    (version "1.18.5")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
@@ -983,7 +999,7 @@ think twice about shipping them.")
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
        (sha256
-        (base32 "0j55jgk9sbhinfx2gsg21q609x6yzrixrn5xxlxd378fj6500bl2"))))
+        (base32 "1zkxybdzdkn07wwmj0rrgxyvbry472dggjv2chdsmpzwc02x3v9z"))))
     (build-system meson-build-system)
     (native-inputs
      (list perl pkg-config python-wrapper ruby))
@@ -1000,7 +1016,7 @@ decoders, muxers, and demuxers provided by FFmpeg.")
 (define-public gst-editing-services
   (package
     (name "gst-editing-services")
-    (version "1.18.5")
+    (version "1.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1008,27 +1024,27 @@ decoders, muxers, and demuxers provided by FFmpeg.")
                     "gst-editing-services-" version ".tar.xz"))
               (sha256
                (base32
-                "1x8db4021qv4ypq1g6n5q2awrb7glr4xp1h650c3w7q59lwsix4a"))))
+                "18msiadg6wi1636ylp02yfiwphxlz39gh3vbxchl9qpvd7g9dn2z"))))
     (build-system meson-build-system)
     (arguments
-     ;; FIXME: 16/22 failing tests.
-     `(#:tests? #f
-       #:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:phases (modify-phases %standard-phases
-                  ,@%common-gstreamer-phases)))
+     (list
+      #:tests? #f                    ; FIXME: 16/23 failing tests.
+      #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
+      #:phases #~(modify-phases %standard-phases
+                   #$@%common-gstreamer-phases)))
     (propagated-inputs
      (list gstreamer gst-plugins-base))
     (inputs
      (list glib glib-networking gtk+ libxml2))
     (native-inputs
-     `(("flex" ,flex)
-       ("gobject-introspection" ,gobject-introspection)
-       ("glib:bin" ,glib "bin")
-       ("gst-plugins-bad" ,gst-plugins-bad)
-       ("gst-plugins-good" ,gst-plugins-good)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list flex
+           gobject-introspection
+           `(,glib "bin")
+           gst-plugins-bad
+           gst-plugins-good
+           perl
+           pkg-config
+           python-wrapper))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "GStreamer library for non-linear editors")
     (description
@@ -1043,25 +1059,32 @@ given, also pass them to the build system instead of the ones used by PKG."
     (package/inherit pkg
       (arguments
        (substitute-keyword-arguments (package-arguments pkg)
-         ((#:configure-flags flags `(,@(or configure-flags '())))
-          `(append
+         ((#:configure-flags flags #~'())
+         #~(append
             (list
-             ,@(map (lambda (plugin)
-                      (string-append "-D" plugin "=enabled"))
-                    plugins))
-            (list ,@(or configure-flags flags))))
-          ((#:phases phases)
-           `(modify-phases ,phases
-              (add-after 'unpack 'disable-auto-plugins
-                (lambda _
-                  (substitute* "meson_options.txt"
-                    (("'auto'") "'disabled'"))
-                  #t)))))))))
+             #$@(map (lambda (plugin)
+                       (string-append "-D" plugin "=enabled"))
+                     plugins))
+            #$(or configure-flags flags)))
+         ((#:phases phases)
+           #~(modify-phases #$phases
+               (add-after 'unpack 'disable-auto-plugins
+                 (lambda _
+                   (substitute* "meson_options.txt"
+                     (("'auto'") "'disabled'")))))))))))
+
+(define-public gst-plugins-bad-minimal
+  (package
+    (inherit (gst-plugins/selection gst-plugins-bad #:plugins '()))
+    (name "gst-plugins-bad-minimal")
+    (description "This package provides the smallest selection of GStreamer's
+\"bad\" plugin set, essentially containing libraries and the gst-transcoder
+binary, but none of the actual plugins.")))
 
 (define-public python-gst
   (package
     (name "python-gst")
-    (version "1.18.5")
+    (version "1.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1069,18 +1092,19 @@ given, also pass them to the build system instead of the ones used by PKG."
                     "gst-python-" version ".tar.xz"))
               (sha256
                (base32
-                "0lmwwmr3wm56qlrdrb0d5cpmqxkcmarz61wmp1nrv5852f3qadjk"))))
+                "1p6g05k88nbbv5x9madsvphxcdkfl1z0lmp39p6bhmg9x8h82d6v"))))
     (build-system meson-build-system)
     (arguments
-     `(#:modules ((guix build meson-build-system)
+     (list
+      #:modules `((guix build meson-build-system)
                   (guix build utils)
                   ((guix build python-build-system) #:prefix python:))
-       #:imported-modules (,@%meson-build-system-modules
+      #:imported-modules `(,@%meson-build-system-modules
                            (guix build python-build-system))
-       #:configure-flags
-       (list (string-append
-              "-Dpygi-overrides-dir="
-              (python:site-packages %build-inputs %outputs) "/gi/overrides"))))
+      #:configure-flags
+      #~(list (string-append
+               "-Dpygi-overrides-dir="
+               (python:site-packages %build-inputs %outputs) "/gi/overrides"))))
     (native-inputs
      (list pkg-config python))
     (propagated-inputs
@@ -1090,7 +1114,8 @@ given, also pass them to the build system instead of the ones used by PKG."
     (description
      "This package contains GObject Introspection overrides for Python that can
 be used by Python applications using GStreamer.")
-    (license license:lgpl2.1+)))
+    (license license:lgpl2.1+)
+    (properties `((upstream-name . "gst-python")))))
 
 (define-public gst123
   (package

@@ -1,0 +1,43 @@
+Add compatibility with newer versions of pytest.
+
+Taken from upstream:
+
+  https://github.com/dateutil/dateutil/commit/2bdd63158b7f981fc6d70a869680451bdfd8d848
+
+diff --git a/dateutil/test/test_internals.py b/dateutil/test/test_internals.py
+index 53081314..b32e6723 100644
+--- a/dateutil/test/test_internals.py
++++ b/dateutil/test/test_internals.py
+@@ -9,6 +9,7 @@
+ 
+ import sys
+ import pytest
++import warnings
+ 
+ from dateutil.parser._parser import _ymd
+ from dateutil import tz
+@@ -65,18 +66,17 @@ def test_parser_parser_private_not_warns():
+     from dateutil.parser._parser import _timelex, _tzparser
+     from dateutil.parser._parser import _parsetz
+ 
+-    with pytest.warns(None) as recorder:
++    with warnings.catch_warnings():
++        warnings.simplefilter("error")
+         _tzparser()
+-        assert len(recorder) == 0
+ 
+-    with pytest.warns(None) as recorder:
++    with warnings.catch_warnings():
++        warnings.simplefilter("error")
+         _timelex('2014-03-03')
+ 
+-        assert len(recorder) == 0
+-
+-    with pytest.warns(None) as recorder:
++    with warnings.catch_warnings():
++        warnings.simplefilter("error")
+         _parsetz('+05:00')
+-        assert len(recorder) == 0
+ 
+ 
+ @pytest.mark.tzstr

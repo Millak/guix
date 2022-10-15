@@ -2,6 +2,8 @@
 ;;; Copyright © 2013, 2014 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,28 +22,32 @@
 
 (define-module (gnu packages libunwind)
   #:use-module (guix packages)
-  #:use-module (gnu packages)
   #:use-module (guix download)
+  #:use-module (guix utils)
+  #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix licenses))
 
 (define-public libunwind
   (package
     (name "libunwind")
-    (version "1.5.0")
+    (version "1.6.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://savannah/libunwind/libunwind-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "05qhzcg1xag3l5m3c805np6k342gc0f3g087b7g16jidv59pccwh"))))
+               "0xj9g6a9q7v7zz6lymf3f6011synibgawi4wi384bywid5kfqsja"))))
     (build-system gnu-build-system)
     (arguments
-     ;; FIXME: As of glibc 2.25, we get 1 out of 34 test failures (2 are
-     ;; expected to fail).
-     ;; Report them upstream.
-     '(#:tests? #f))
+     `(;; Two tests are failing with newer toolchains:
+       ;; https://github.com/libunwind/libunwind/issues/363
+       #:make-flags
+       '("XFAIL_TESTS=run-coredump-unwind run-coredump-unwind-mdi")
+       ;; A different collection of tests fails for each architecture.
+       #:tests? ,(and (not (%current-target-system))
+                      (target-x86-64?))))
     (home-page "https://www.nongnu.org/libunwind")
     (synopsis "Determining the call chain of a program")
     (description

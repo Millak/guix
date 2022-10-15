@@ -259,17 +259,19 @@ ElasticSearch server")
 (define-public firebird
   (package
     (name "firebird")
-    (version "3.0.7")
+    (version "3.0.10")
     (source
-     (let ((revision "33374-0"))
+     (let ((revision "33601-0"))
        (origin
          (method url-fetch)
          (uri (string-append "https://github.com/FirebirdSQL/"
-                             "firebird/releases/download/R"
-                             (string-replace-substring version "." "_") "/"
+                             "firebird/releases/download/v"
+                             version "/"
                              "Firebird-" version "." revision ".tar.bz2"))
          (sha256
-          (base32 "0xpy1bncz36c6n28y7kllm1dkrdkn4vb4gw2n43f2351mznmrf5c"))
+          (base32 "0h033xj1kxwgvdv4ncm6kk0mqybvvn203gf88xcv3avys9hbnf4i"))
+         (patches (search-patches "firebird-riscv64-support-pt1.patch"
+                                  "firebird-riscv64-support-pt2.patch"))
          (modules '((guix build utils)))
          (snippet
           `(begin
@@ -291,8 +293,7 @@ ElasticSearch server")
                     "doc/Firebird-3-QuickStart.pdf"
                     (string-append "doc/Firebird-" ,version
                                    "-ReleaseNotes.pdf")
-                    "doc/README.SecureRemotePassword.html"))
-             #t)))))
+                    "doc/README.SecureRemotePassword.html")))))))
     (build-system gnu-build-system)
     (outputs (list "debug" "out"))
     (arguments
@@ -325,13 +326,19 @@ ElasticSearch server")
                   (srfi srfi-26))
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-riscv64?)
+             `((add-before 'bootstrap 'force-bootstrap
+                 (lambda _
+                   (delete-file "configure")
+                   ;; This file prevents automake from running.
+                   (delete-file "autogen.sh"))))
+             '())
          (add-after 'unpack 'use-system-boost
            (lambda _
              (substitute* "src/include/firebird/Message.h"
                (("\"\\./impl/boost/preprocessor/seq/for_each_i\\.hpp\"")
                 "<boost/preprocessor/seq/for_each_i.hpp>")
-               (("FB_BOOST_") "BOOST_"))
-             #t))
+               (("FB_BOOST_") "BOOST_"))))
          (add-after 'unpack 'patch-installation
            (lambda _
              (substitute*
@@ -359,27 +366,23 @@ ElasticSearch server")
 
              ;; These promote proprietary workflows not relevant on Guix.
              (for-each delete-file-recursively
-                       (find-files "doc" "README\\.(build\\.msvc|NT|Win)"))
-             #t))
+                       (find-files "doc" "README\\.(build\\.msvc|NT|Win)"))))
          (add-after 'configure 'delete-init-scripts
            (lambda _
-             (delete-file-recursively "gen/install/misc")
-             #t))
+             (delete-file-recursively "gen/install/misc")))
          (add-before 'build 'set-build-environment-variables
            (lambda _
              ;; ‘isql’ needs to run & find libfbclient.so during the build.
              ;; This doubles as a rudimentary test in lieu of a test suite.
              (setenv "LD_LIBRARY_PATH"
-                     (string-append (assoc-ref %build-inputs "icu4c") "/lib"))
-             #t))
+                     (string-append (assoc-ref %build-inputs "icu4c") "/lib"))))
          (add-before 'install 'keep-embedded-debug-symbols
            (lambda _
              ;; Let the gnu-build-system separate & deal with them later.
              ;; XXX Upstream would use ‘--strip-unneeded’, shaving a whole
              ;; megabyte off Guix's 7.7M libEngine12.so, for example.
              (substitute* "gen/Makefile.install"
-               (("readelf") "false"))
-             #t))
+               (("readelf") "false"))))
          (add-after 'install 'prune-undesirable-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -390,12 +393,15 @@ ElasticSearch server")
                  ;; Delete (now-)empty directories.
                  (for-each rmdir
                            (list "include/firebird/impl"
-                                 "lib/firebird/plugins/udr"))
-                 #t)))))))
+                                 "lib/firebird/plugins/udr")))))))))
+    (native-inputs
+     (if (target-riscv64?)
+       (list autoconf automake libtool)
+       '()))
     (inputs
      (list boost
            editline
-           icu4c-67
+           icu4c
            libtommath
            ncurses
            zlib))
@@ -418,8 +424,6 @@ Firebird can also be embedded into stand-alone applications that don't want or
 need a full client & server.  Used in this manner, it offers richer SQL support
 than SQLite as well as the option to seamlessly migrate to a client/server
 database later.")
-    (properties
-     `((lint-hidden-cve . ("CVE-2017-6369"))))
     (license
      ;; See doc/license/README.license.usage.txt for rationale & details.
      (list license:bsd-3                ; src/common/sha2/
@@ -1284,39 +1288,13 @@ pictures, sounds, or video.")
   (package
     (inherit postgresql-14)
     (version "13.6")
-    (replacement postgresql-13/replacement)
     (source (origin
               (inherit (package-source postgresql-14))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))
-              (patches (search-patches "postgresql-riscv-spinlocks.patch"))))))
-
-;; The merge of commit ...
-;;  781dd2de230e3 gnu: postgresql-13: Fix building on riscv64-linux.
-;; ... in ...
-;;  49b350fafc2c3 Merge branch 'master' into staging.
-;; ... lost the inherited patch from postgresql-14, causing problems such as ...
-;;  05fef7bfc6005 gnu: timescaledb: Adjust test preparation to PostgreSQL 13.6.
-;;
-;; While at it, remove the RISC-V spinlock patch, which has been upstreamed
-;; in a different form (so the old patch still applies).
-;; TODO: Remove in the next rebuild cycle.
-(define postgresql-13/replacement
-  (package
-    (inherit postgresql-13)
-    (version "13.7")
-    (source
-     (origin
-       (inherit (package-source postgresql-13))
-       (uri (string-append "https://ftp.postgresql.org/pub/source/v"
-                           version "/postgresql-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "16b3ljid7zd1v5l4l4pmwihx43wi8p9izidkjfii8dnqygs5p40v"))
-       (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))))
+                "1z37ix80hb2bqa2smh1hbj9r507ypnl3pil43gkqznnlv6ipzz5s"))))))
 
 (define-public postgresql-11
   (package
@@ -1329,9 +1307,7 @@ pictures, sounds, or video.")
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1983a7y4y6zhbgh0qcdfkf99445j1zm5q1ncrbkrx555y08y3n9d"))
-              (patches (search-patches
-                        "postgresql-disable-resolve_symlinks.patch"))))
+                "1983a7y4y6zhbgh0qcdfkf99445j1zm5q1ncrbkrx555y08y3n9d"))))
     (native-inputs
      (modify-inputs (package-native-inputs postgresql-13)
        (replace "docbook-xml" docbook-xml-4.2)))))

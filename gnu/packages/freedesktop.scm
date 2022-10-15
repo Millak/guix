@@ -508,14 +508,14 @@ freedesktop.org project.")
   ;; Updating this will rebuild over 700 packages through libinput-minimal.
   (package
     (name "libinput")
-    (version "1.19.2")
+    (version "1.19.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://freedesktop.org/software/libinput/"
                                   "libinput-" version ".tar.xz"))
               (sha256
                (base32
-                "10xqk05mkvsyxfxpn3vwkwb7j22d38wlbg1l1k37f6pfyc59zhqg"))))
+                "0h5lz54rrl48bhi3vki6s08m6rn2h62rlf08dhgchdm9nmqaaczz"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Ddocumentation=false")
@@ -1646,9 +1646,9 @@ which speak the Qualcomm MSM Interface (QMI) protocol.")
       #~(list (string-append "--with-udev-base-dir=" #$output "/lib/udev"))))
     (native-inputs
      (list dbus
+           gettext-minimal
            gobject-introspection
            `(,glib "bin")               ;for glib-mkenums
-           gettext-minimal
            pkg-config
            python
            python-dbus
@@ -2000,15 +2000,15 @@ manually by a user.")
 (define-public perl-file-basedir
   (package
     (name "perl-file-basedir")
-    (version "0.08")
+    (version "0.09")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://cpan/authors/id/K/KI/KIMRYAN/"
+       (uri (string-append "mirror://cpan/authors/id/P/PL/PLICEASE/"
                            "File-BaseDir-" version ".tar.gz"))
        (sha256
         (base32
-         "1qq5ag9zffx8zc5i9b4z03ar80pqj4drgk3vjdlyfapjwb9zqrf0"))))
+         "1nb757cyyy80xln147qgns113i2ivfpgcfhsxw8qzb322llgg9kd"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-module-build perl-file-which perl-test-pod
@@ -2052,7 +2052,7 @@ applications define in those files.")
 (define-public perl-file-mimeinfo
   (package
     (name "perl-file-mimeinfo")
-    (version "0.29")
+    (version "0.33")
     (source
      (origin
        (method url-fetch)
@@ -2060,7 +2060,7 @@ applications define in those files.")
                            "File-MimeInfo-" version ".tar.gz"))
        (sha256
         (base32
-         "1sh8r6vczyz08zm8vfsjmkg6a165wch54akjdrd1vbifcmwjg5pi"))))
+         "1i5iw6ri0w9clwpqf40xmsh4isc8xvx2lyf2r5g34886i6rsdgpn"))))
     (build-system perl-build-system)
     (inputs
      ;; TODO(staging): Make unconditional.

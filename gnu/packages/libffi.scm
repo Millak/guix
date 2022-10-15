@@ -82,13 +82,13 @@ conversions for values passed between the two languages.")
 (define-public python-cffi
   (package
     (name "python-cffi")
-    (version "1.14.4")
+    (version "1.15.1")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "cffi" version))
       (sha256
-       (base32 "0v080s7vlrjz9z823x2yh36yc8drwpvvir6w8wfkkzd7k2z5qihs"))))
+       (base32 "1y9lr651svbzf1m03s4lqbnbv2byx8f6f0ml7hjm24vvlfwvy06l"))))
     (build-system python-build-system)
     (inputs
      (list libffi))
@@ -118,9 +118,8 @@ conversions for values passed between the two languages.")
              ;; using find_library or the like with their name fail when the
              ;; resolved .so object is a linker script rather than an ELF
              ;; binary (this is a limitation of the ctype library of Python).
-             (let* ((glibc (assoc-ref inputs "libc"))
-                    (libm (string-append glibc "/lib/libm.so.6"))
-                    (libc (string-append glibc "/lib/libc.so.6")))
+             (let ((libm (search-input-file inputs "lib/libm.so.6"))
+                   (libc (search-input-file inputs "lib/libc.so.6")))
                (substitute* '("testing/cffi0/test_function.py"
                               "testing/cffi0/test_parsing.py"
                               "testing/cffi0/test_unicode_literals.py"
@@ -139,18 +138,6 @@ conversions for values passed between the two languages.")
     (synopsis "Foreign function interface for Python")
     (description "Foreign Function Interface for Python calling C code.")
     (license expat)))
-
-;; TODO(staging): Merge with the above.
-(define-public python-cffi-1.15
-  (package
-    (inherit python-cffi)
-    (version "1.15.0")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (pypi-uri "cffi" version))
-      (sha256
-       (base32 "0m3rz2pqfmyfagx0bhj2jlbr2h58j3wr3cyv1agxkhlnm1k0s3wj"))))))
 
 (define-public python-cffi-documentation
   (package

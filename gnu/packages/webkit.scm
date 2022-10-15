@@ -236,12 +236,14 @@ engine that uses Wayland for graphics output.")
            enchant
            geoclue
            gst-plugins-base
+           gst-plugins-bad-minimal
            gtk+-2
            harfbuzz
            hyphen
            icu4c
            lcms
            libgcrypt
+           libgudev
            libjpeg-turbo
            libmanette
            libnotify

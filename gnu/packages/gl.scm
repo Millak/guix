@@ -67,6 +67,7 @@
   #:use-module (guix build-system waf)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:hide (zip)))
@@ -74,15 +75,22 @@
 (define-public glu
   (package
     (name "glu")
-    (version "9.0.1")
+    (version "9.0.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "ftp://ftp.freedesktop.org/pub/mesa/glu/glu-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/mesa/glu")
+                    (commit (string-append "glu-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xqhk9bn10nbvffw3r4p4rjslwz1l7gaycc0x2pqkr2irp7q9x7n"))))
+                "1khxfidyglpx4yd8f3xvrj05ah823cz1ygcszhcaa4w7h9kd1lbr"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list pkg-config
+           autoconf
+           automake
+           libtool))
     (propagated-inputs
      (list mesa)) ; according to glu.pc
     (home-page "http://www.opengl.org/archives/resources/faq/technical/glu.htm")
@@ -103,16 +111,15 @@ as ASCII text.")
 (define-public freeglut
   (package
     (name "freeglut")
-    (version "3.2.1")
+    (version "3.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "mirror://sourceforge/freeglut/freeglut/"
-                    version "/freeglut-" version ".tar.gz"))
-              (patches (search-patches "freeglut-gcc-compat.patch"))
+                    "https://github.com/FreeGLUTProject/freeglut/releases"
+                    "/download/v" version "/freeglut-" version ".tar.gz"))
               (sha256
                (base32
-                "0s6sk49q8ijgbsrrryb7dzqx2fa744jhx1wck5cz5jia2010w06l"))))
+                "0l3s57zw51fy3mn5qfdm4z775kfhflgxppanaxmskfzh5l44m565"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ;no test target
@@ -248,14 +255,14 @@ also known as DXTn or DXTC) for Mesa.")
     (package
       (inherit libva)
       (name "libva-without-mesa")
-      (inputs `(,@(fold alist-delete (package-inputs libva)
-                        '("mesa" "wayland"))))
+      (inputs (fold alist-delete (package-inputs libva)
+                    '("mesa" "wayland")))
       (arguments
        (strip-keyword-arguments
         '(#:make-flags)
         (substitute-keyword-arguments (package-arguments libva)
           ((#:configure-flags flags)
-           '(list "--disable-glx" "--disable-egl"))))))))
+           '(list "--disable-glx"))))))))
 
 (define-public mesa
   (package
@@ -716,37 +723,31 @@ OpenGL graphics API.")
 (define-public libepoxy
   (package
     (name "libepoxy")
-    (version "1.5.5")
+    (version "1.5.10")
+    (home-page "https://github.com/anholt/libepoxy")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/anholt/libepoxy/releases/download/"
-                    version "/libepoxy-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mh5bdgqfd8m4wj6jlvn4ac94sgfa8r6ish75ciwrhdw47dn65i6"))))
+                "0jw02bzdwynyrwsn5rhcacv92h9xx928j3xp436f8gdnwlyb5641"))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap)
-         (add-before
-           'configure 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((python (assoc-ref inputs "python"))
-                   (mesa (assoc-ref inputs "mesa")))
-               (substitute* "src/gen_dispatch.py"
-                 (("/usr/bin/env python") python))
-               (substitute* (find-files "." "\\.[ch]$")
-                 (("libGL.so.1") (string-append mesa "/lib/libGL.so.1"))
-                 (("libEGL.so.1") (string-append mesa "/lib/libEGL.so.1")))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((mesa (dirname (search-input-file inputs "lib/libGL.so"))))
+                (substitute* (find-files "." "\\.[ch]$")
+                  (("libGL.so.1") (string-append mesa "/libGL.so.1"))
+                  (("libEGL.so.1") (string-append mesa "/libEGL.so.1")))))))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python))
     (propagated-inputs
      ;; epoxy.pc: 'Requires.private: gl egl'
      (list mesa))
-    (home-page "https://github.com/anholt/libepoxy/")
     (synopsis "Library for handling OpenGL function pointer management")
     (description
      "A library for handling OpenGL function pointer management.")

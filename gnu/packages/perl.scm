@@ -8573,7 +8573,7 @@ for a given module is comprehensive.")
 (define-public perl-pod-parser
   (package
     (name "perl-pod-parser")
-    (version "1.63")
+    (version "1.65")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8581,7 +8581,7 @@ for a given module is comprehensive.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1k8clxxdjag56zm6cv38c3q81gj7xphfhh98l21jynwp55hvbq6v"))))
+                "12mj07a34shx5h203l693fra7ip9hc49zrd7w8gsa5llcpnbv9rv"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Pod-Parser")
     (synopsis "Modules for parsing/translating POD format documents")

@@ -40,52 +40,52 @@
 (define-public nspr
   (package
     (name "nspr")
-    (version "4.31")
+    (version "4.34")
     (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
-                   version "/src/nspr-" version ".tar.gz"))
-             (sha256
-              (base32
-               "1j5b2m8cjlhnnv8sq34587avaagkqvh521w4f95miwgvsn3xlaap"))))
+              (method url-fetch)
+              (uri (string-append
+                    "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
+                    version "/src/nspr-" version ".tar.gz"))
+              (sha256
+               (base32
+                "177rxcf3lglabs7sgwcvf72ww4v56qa71lc495wl13sxs4f03vxy"))))
     (build-system gnu-build-system)
     (inputs
-     ;; For 'compile-et.pl' and 'nspr-config'.
-     (list perl ;for 'compile-et.pl'
-           bash-minimal)) ;for 'nspr-config'
+     (list perl                         ;for 'compile-et.pl'
+           bash-minimal))               ;for 'nspr-config'
     (native-inputs
      (list perl))
     (arguments
-     `(;; Prevent the 'native' perl from sneaking into the closure.
-       ;; XXX it would be nice to do the same for 'bash-minimal',
-       ;; but using 'canonical-package' causes loops.
-       ,@(if (%current-target-system)
-             `(#:disallowed-references
-               (,(gexp-input (this-package-native-input "perl") #:native? #t)))
-             '())
-       #:tests? #f ; no check target
-       #:configure-flags
-       (list "--disable-static"
-             "--enable-64bit"
-             (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib")
-             ;; Mozilla deviates from Autotools conventions
-             ;; due to historical reasons.  Adjust to Mozilla conventions,
-             ;; otherwise the Makefile will try to use TARGET-gcc
-             ;; as a ‘native’ compiler.
-             ,@(if (%current-target-system)
-                   `(,(string-append "--host="
-                                     (nix-system->gnu-triplet (%current-system)))
-                     ,(string-append "--target=" (%current-target-system)))
-                   '()))
-       ;; Use fixed timestamps for reproducibility.
-       #:make-flags '("SH_DATE='1970-01-01 00:00:01'"
-                      ;; This is epoch 1 in microseconds.
-                      "SH_NOW=100000")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'chdir
-                    (lambda _ (chdir "nspr") #t)))))
+     (list
+      ;; Prevent the 'native' perl from sneaking into the closure.
+      ;; XXX it would be nice to do the same for 'bash-minimal',
+      ;; but using 'canonical-package' causes loops.
+      #:disallowed-references
+      (if (%current-target-system)
+          (list (gexp-input (this-package-native-input "perl") #:native? #t))
+          #f)
+      #:tests? #f                       ;no check target
+      #:configure-flags
+      #~(list "--disable-static"
+              "--enable-64bit"
+              (string-append "LDFLAGS=-Wl,-rpath="
+                             (assoc-ref %outputs "out") "/lib")
+              ;; Mozilla deviates from Autotools conventions
+              ;; due to historical reasons.  Adjust to Mozilla conventions,
+              ;; otherwise the Makefile will try to use TARGET-gcc
+              ;; as a ‘native’ compiler.
+              #$@(if (%current-target-system)
+                     #~((string-append "--host="
+                                       #$(nix-system->gnu-triplet (%current-system)))
+                        (string-append "--target=" #$(%current-target-system)))
+                     #~()))
+      ;; Use fixed timestamps for reproducibility.
+      #:make-flags #~'("SH_DATE='1970-01-01 00:00:01'"
+                       ;; This is epoch 1 in microseconds.
+                       "SH_NOW=100000")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'configure 'chdir
+                     (lambda _ (chdir "nspr") #t)))))
     (home-page
      "https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSPR")
     (synopsis "Netscape API for system level and libc-like functions")
@@ -112,7 +112,7 @@ in the Mozilla clients.")
     (name "nss")
     ;; Also update and test the nss-certs package, which duplicates version and
     ;; source to avoid a top-level variable reference & module cycle.
-    (version "3.72")
+    (version "3.81")
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
@@ -123,7 +123,7 @@ in the Mozilla clients.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "0bnh683nij6s0gvjcgwhyw5d3yx9fpm42pxj5bm97r0ky6ghm9kf"))
+                "19ncvhz45dhr0nmymwkxspq9l44gaafkspxiwxbqs1hpnqxmzgx8"))
               ;; Create nss.pc and nss-config.
               (patches (search-patches "nss-3.56-pkgconfig.patch"
                                        "nss-getcwd-nonnull.patch"
@@ -137,82 +137,84 @@ in the Mozilla clients.")
     (build-system gnu-build-system)
     (outputs '("out" "bin"))
     (arguments
-     `(#:make-flags
-       (let* ((out (assoc-ref %outputs "out"))
-              (nspr (string-append (assoc-ref %build-inputs "nspr")))
-              (rpath (string-append "-Wl,-rpath=" out "/lib/nss")))
-         (list "-C" "nss" (string-append "PREFIX=" out)
-               "NSDISTMODE=copy"
-               "NSS_USE_SYSTEM_SQLITE=1"
-               ;; The gtests fail to compile on riscv64.
-               ;; Skipping them doesn't affect the test suite.
-               ,@(if (target-riscv64?)
-                   `("NSS_DISABLE_GTESTS=1")
-                   '())
-               (string-append "NSPR_INCLUDE_DIR=" nspr "/include/nspr")
-               ;; Add $out/lib/nss to RPATH.
-               (string-append "RPATH=" rpath)
-               (string-append "LDFLAGS=" rpath)))
-       #:modules ((guix build gnu-build-system)
+     (list
+      #:make-flags
+      #~(let ((rpath (string-append "-Wl,-rpath=" #$output "/lib/nss")))
+          (list "-C" "nss"
+                (string-append "PREFIX=" #$output)
+                "NSDISTMODE=copy"
+                "NSS_USE_SYSTEM_SQLITE=1"
+                ;; The gtests fail to compile on riscv64.
+                ;; Skipping them doesn't affect the test suite.
+                #$@(if (target-riscv64?)
+                       #~("NSS_DISABLE_GTESTS=1")
+                       #~())
+                (string-append "NSPR_INCLUDE_DIR="
+                               (search-input-directory %build-inputs
+                                                       "include/nspr"))
+                ;; Add $out/lib/nss to RPATH.
+                (string-append "RPATH=" rpath)
+                (string-append "LDFLAGS=" rpath)))
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-26))
-       #:tests? ,(not (or (%current-target-system)
-                          ;; Tests take more than 30 hours on riscv64-linux.
-                          (target-riscv64?)))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             (setenv "CC" ,(cc-for-target))
-             ;; Tells NSS to build for the 64-bit ABI if we are 64-bit system.
-             ,@(if (target-64bit?)
-                   `((setenv "USE_64" "1"))
-                   '())))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (begin
-                   ;; Use 127.0.0.1 instead of $HOST.$DOMSUF as HOSTADDR for
-                   ;; testing.  The latter requires a working DNS or /etc/hosts.
-                   (setenv "DOMSUF" "localdomain")
-                   (setenv "USE_IP" "TRUE")
-                   (setenv "IP_ADDRESS" "127.0.0.1")
+      #:tests? (not (or (%current-target-system)
+                        ;; Tests take more than 30 hours on riscv64-linux.
+                        (target-riscv64?)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (setenv "CC" #$(cc-for-target))
+              ;; Tells NSS to build for the 64-bit ABI if we are 64-bit system.
+              #$@(if (target-64bit?)
+                     #~((setenv "USE_64" "1"))
+                     #~())))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (begin
+                    ;; Use 127.0.0.1 instead of $HOST.$DOMSUF as HOSTADDR for
+                    ;; testing.  The latter requires a working DNS or /etc/hosts.
+                    (setenv "DOMSUF" "localdomain")
+                    (setenv "USE_IP" "TRUE")
+                    (setenv "IP_ADDRESS" "127.0.0.1")
 
-                   ;; The "PayPalEE.cert" certificate expires every six months,
-                   ;; leading to test failures:
-                   ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
-                   ;; work around that, set the time to roughly the release date.
-                   (invoke "faketime" "2021-09-30" "./nss/tests/all.sh"))
-                 (format #t "test suite not run~%"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append (assoc-ref outputs "bin") "/bin"))
-                    (inc (string-append out "/include/nss"))
-                    (lib (string-append out "/lib/nss"))
-                    (obj (match (scandir "dist" (cut string-suffix? "OBJ" <>))
-                           ((obj) (string-append "dist/" obj)))))
-               ;; Install nss-config to $out/bin.
-               (install-file (string-append obj "/bin/nss-config")
-                             (string-append out "/bin"))
-               (delete-file (string-append obj "/bin/nss-config"))
-               ;; Install nss.pc to $out/lib/pkgconfig.
-               (install-file (string-append obj "/lib/pkgconfig/nss.pc")
-                             (string-append out "/lib/pkgconfig"))
-               (delete-file (string-append obj "/lib/pkgconfig/nss.pc"))
-               (rmdir (string-append obj "/lib/pkgconfig"))
-               ;; Install other files.
-               (copy-recursively "dist/public/nss" inc)
-               (copy-recursively (string-append obj "/bin") bin)
-               (copy-recursively (string-append obj "/lib") lib)))))))
+                    ;; The "PayPalEE.cert" certificate expires every six months,
+                    ;; leading to test failures:
+                    ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
+                    ;; work around that, set the time to roughly the release date.
+                    (invoke "faketime" "2022-06-01" "./nss/tests/all.sh"))
+                  (format #t "test suite not run~%"))))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append (assoc-ref outputs "bin") "/bin"))
+                     (inc (string-append out "/include/nss"))
+                     (lib (string-append out "/lib/nss"))
+                     (obj (match (scandir "dist" (cut string-suffix? "OBJ" <>))
+                            ((obj) (string-append "dist/" obj)))))
+                ;; Install nss-config to $out/bin.
+                (install-file (string-append obj "/bin/nss-config")
+                              (string-append out "/bin"))
+                (delete-file (string-append obj "/bin/nss-config"))
+                ;; Install nss.pc to $out/lib/pkgconfig.
+                (install-file (string-append obj "/lib/pkgconfig/nss.pc")
+                              (string-append out "/lib/pkgconfig"))
+                (delete-file (string-append obj "/lib/pkgconfig/nss.pc"))
+                (rmdir (string-append obj "/lib/pkgconfig"))
+                ;; Install other files.
+                (copy-recursively "dist/public/nss" inc)
+                (copy-recursively (string-append obj "/bin") bin)
+                (copy-recursively (string-append obj "/lib") lib)))))))
     (inputs
      (list sqlite zlib))
     (propagated-inputs
-     (list nspr))                 ;required by nss.pc.
+     (list nspr))                       ;required by nss.pc.
     (native-inputs
-     (list perl libfaketime))   ;for tests
+     (list perl libfaketime))           ;for tests
 
     ;; The NSS test suite takes around 48 hours on Loongson 3A (MIPS) when
     ;; another build is happening concurrently on the same machine.

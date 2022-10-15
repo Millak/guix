@@ -1105,6 +1105,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/fifo-map-fix-flags-for-gcc.patch		\
   %D%/packages/patches/fifo-map-remove-catch.hpp.patch		\
   %D%/packages/patches/findutils-localstatedir.patch		\
+  %D%/packages/patches/firebird-riscv64-support-pt1.patch	\
+  %D%/packages/patches/firebird-riscv64-support-pt2.patch	\
   %D%/packages/patches/flann-cmake-3.11.patch			\
   %D%/packages/patches/flatpak-fix-path.patch			\
   %D%/packages/patches/flatpak-unset-gdk-pixbuf-for-sandbox.patch	\
@@ -1116,7 +1118,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/fp16-system-libraries.patch		\
   %D%/packages/patches/fpc-reproducibility.patch		\
   %D%/packages/patches/freedink-engine-fix-sdl-hints.patch	\
-  %D%/packages/patches/freeglut-gcc-compat.patch		\
   %D%/packages/patches/freeimage-unbundle.patch		\
   %D%/packages/patches/fuse-glibc-2.34.patch			\
   %D%/packages/patches/fuse-overlapping-headers.patch		\
@@ -1258,14 +1259,12 @@ dist_patch_DATA =						\
   %D%/packages/patches/gpm-glibc-2.26.patch			\
   %D%/packages/patches/gpodder-disable-updater.patch		\
   %D%/packages/patches/gpsbabel-fix-i686-test.patch		\
-  %D%/packages/patches/grantlee-merge-theme-dirs.patch		\
   %D%/packages/patches/grep-timing-sensitive-test.patch		\
   %D%/packages/patches/grfcodec-gcc-compat.patch		\
   %D%/packages/patches/gromacs-tinyxml2.patch			\
   %D%/packages/patches/groovy-add-exceptionutilsgenerator.patch	\
   %D%/packages/patches/grub-efi-fat-serial-number.patch		\
   %D%/packages/patches/grub-setup-root.patch			\
-  %D%/packages/patches/gst-plugins-good-fix-test.patch		\
   %D%/packages/patches/guile-1.8-cpp-4.5.patch			\
   %D%/packages/patches/guile-2.2-skip-oom-test.patch            \
   %D%/packages/patches/guile-2.2-skip-so-test.patch             \
@@ -1369,7 +1368,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/julia-SOURCE_DATE_EPOCH-mtime.patch	\
   %D%/packages/patches/julia-tracker-16-compat.patch		\
   %D%/packages/patches/julia-allow-parallel-build.patch		\
-  %D%/packages/patches/kdbusaddons-kinit-file-name.patch	\
   %D%/packages/patches/libffi-3.3-powerpc-fixes.patch		\
   %D%/packages/patches/libffi-float128-powerpc64le.patch	\
   %D%/packages/patches/libobjc2-unbundle-robin-map.patch	\
@@ -1386,16 +1384,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/kiki-missing-includes.patch		\
   %D%/packages/patches/kiki-portability-64bit.patch		\
   %D%/packages/patches/kinit-kdeinit-extra_libs.patch		\
-  %D%/packages/patches/kinit-kdeinit-libpath.patch		\
   %D%/packages/patches/kio-search-smbd-on-PATH.patch		\
   %D%/packages/patches/kismet-unbundle-boost.patch		\
-  %D%/packages/patches/kmail-Fix-missing-link-libraries.patch \
   %D%/packages/patches/kmod-module-directory.patch		\
   %D%/packages/patches/kmscon-runtime-keymap-switch.patch	\
-  %D%/packages/patches/kpackage-allow-external-paths.patch	\
-  %D%/packages/patches/kpackage-fix-KF5PackageMacros.cmake.patch \
-  %D%/packages/patches/kmplayer-aarch64.patch			\
-  %D%/packages/patches/kmplayer-upstream_Fix-build-with-Qt-5.9.patch	\
   %D%/packages/patches/kobodeluxe-paths.patch			\
   %D%/packages/patches/kobodeluxe-enemies-pipe-decl.patch	\
   %D%/packages/patches/kobodeluxe-const-charp-conversion.patch	\
@@ -1551,6 +1543,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/monero-use-system-miniupnpc.patch			\
   %D%/packages/patches/mosaicatcher-unbundle-htslib.patch	\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
+  %D%/packages/patches/mrustc-riscv64-support.patch		\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\
   %D%/packages/patches/mupen64plus-ui-console-notice.patch	\
   %D%/packages/patches/mupen64plus-video-z64-glew-correct-path.patch    \
@@ -1677,13 +1670,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/plib-CVE-2011-4620.patch		\
   %D%/packages/patches/plib-CVE-2012-4552.patch		\
   %D%/packages/patches/plotutils-spline-test.patch		\
-  %D%/packages/patches/polkit-CVE-2021-4034.patch		\
-  %D%/packages/patches/polkit-configure-elogind.patch		\
-  %D%/packages/patches/polkit-use-duktape.patch			\
+  %D%/packages/patches/polkit-disable-systemd.patch		\
   %D%/packages/patches/portaudio-audacity-compat.patch		\
   %D%/packages/patches/portmidi-modular-build.patch		\
   %D%/packages/patches/postgresql-disable-resolve_symlinks.patch	\
-  %D%/packages/patches/postgresql-riscv-spinlocks.patch	\
   %D%/packages/patches/procmail-ambiguous-getline-debian.patch  \
   %D%/packages/patches/procmail-CVE-2014-3618.patch		\
   %D%/packages/patches/procmail-CVE-2017-16844.patch		\
@@ -1717,6 +1707,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-argcomplete-1.11.1-fish31.patch	\
   %D%/packages/patches/python-cross-compile.patch		\
   %D%/packages/patches/python-configobj-setuptools.patch	\
+  %D%/packages/patches/python-dateutil-pytest-compat.patch	\
   %D%/packages/patches/python-debugpy-unbundle-pydevd.patch	\
   %D%/packages/patches/python-docopt-pytest6-compat.patch	\
   %D%/packages/patches/python-execnet-read-only-fix.patch	\
@@ -1808,12 +1799,13 @@ dist_patch_DATA =						\
   %D%/packages/patches/rocm-comgr-3.1.0-dependencies.patch \
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch \
   %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch \
+  %D%/packages/patches/ruby-hydra-minimal-no-byebug.patch		\
   %D%/packages/patches/ruby-anystyle-data-immutable-install.patch	\
   %D%/packages/patches/ruby-anystyle-fix-dictionary-populate.patch	\
   %D%/packages/patches/ruby-latex-decode-fix-test.patch		\
   %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
   %D%/packages/patches/ruby-sanitize-system-libxml.patch	\
-  %D%/packages/patches/rustc-1.39.0-src.patch			\
+  %D%/packages/patches/rustc-1.54.0-src.patch			\
   %D%/packages/patches/rust-adblock-ignore-live-tests.patch		\
   %D%/packages/patches/i3status-rust-enable-unstable-features.patch	\
   %D%/packages/patches/rust-ndarray-remove-blas-src-dep.patch	\
@@ -1889,6 +1881,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/telegram-purple-adjust-test.patch	\
   %D%/packages/patches/texi2html-document-encoding.patch	\
   %D%/packages/patches/texi2html-i18n.patch			\
+  %D%/packages/patches/texlive-hyph-utf8-no-byebug.patch	\
   %D%/packages/patches/thefuck-test-environ.patch		\
   %D%/packages/patches/tidy-CVE-2015-5522+5523.patch		\
   %D%/packages/patches/timescaledb-flaky-test.patch		\

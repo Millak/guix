@@ -447,11 +447,10 @@ GTK and also enables xwidgets.")))
        ((#:modules _) (%emacs-modules build-system))
        ((#:phases phases)
         #~(modify-phases #$phases
+            (delete 'set-libgccjit-path)
             (delete 'restore-emacs-pdmp)
             (delete 'strip-double-wrap)))))
-    (inputs (list ncurses coreutils gzip
-                  (make-ld-wrapper "ld-wrapper" #:binutils binutils)
-                  binutils glibc libgccjit zlib))
+    (inputs (list ncurses coreutils gzip))
     (native-inputs (list autoconf pkg-config))))
 
 (define-public emacs-xwidgets

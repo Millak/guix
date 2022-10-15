@@ -335,6 +335,7 @@ the SVT-HEVC encoder, it is possible to spread video encoding processing across
 multiple Intel's Xeon processors to achieve a real advantage of processing
 efficiency.")
     (home-page "https://01.org/svt")
+    ;; Specifically targets x86_64 Intel hardware.
     (supported-systems '("x86_64-linux"))
     (license (license:non-copyleft "file:///LICENSE.md"))))
 
@@ -1500,14 +1501,14 @@ quality and performance.")
 (define-public libva
   (package
     (name "libva")
-    (version "2.13.0")
+    (version "2.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/intel/libva/releases/download/"
                            version "/libva-" version ".tar.bz2"))
        (sha256
-        (base32 "0q6l193x9whd80sjd5mx8cb7c0fcljb19nhfpla5h49nkzrq7lzs"))))
+        (base32 "1jhy8qzfp4ydbxs9qd9km7k5wq8r4s2vq20r1q07lgld8l4x93i5"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -1519,27 +1520,24 @@ quality and performance.")
            mesa
            wayland))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before
-          'build 'fix-dlopen-paths
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
+     (list
+      ;; Most drivers are in mesa's $prefix/lib/dri, so use that.  (Can be
+      ;; overridden at run-time via LIBVA_DRIVERS_PATH.)
+      #:configure-flags
+      #~(list (string-append "--with-drivers-path="
+                             (search-input-directory %build-inputs "lib/dri")))
+      ;; However, we can't write to mesa's store directory, so override the
+      ;; following make variable to install the dummy driver to libva's
+      ;; $prefix/lib/dri directory.
+      #:make-flags
+      #~(list (string-append "dummy_drv_video_ladir=" #$output "/lib/dri"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-dlopen-paths
+            (lambda _
               (substitute* "va/drm/va_drm_auth_x11.c"
                 (("\"libva-x11\\.so\\.%d\"")
-                 (string-append "\"" out "/lib/libva-x11.so.%d\"")))
-              #t))))
-       ;; Most drivers are in mesa's $prefix/lib/dri, so use that.  (Can be
-       ;; overridden at run-time via LIBVA_DRIVERS_PATH.)
-       #:configure-flags
-       (list (string-append "--with-drivers-path="
-                            (assoc-ref %build-inputs "mesa") "/lib/dri"))
-       ;; However, we can't write to mesa's store directory, so override the
-       ;; following make variable to install the dummy driver to libva's
-       ;; $prefix/lib/dri directory.
-       #:make-flags
-       (list (string-append "dummy_drv_video_ladir="
-                            (assoc-ref %outputs "out") "/lib/dri"))))
+                 (string-append "\"" #$output "/lib/libva-x11.so.%d\""))))))))
     (home-page "https://www.freedesktop.org/wiki/Software/vaapi/")
     (synopsis "Video acceleration library")
     (description "The main motivation for VA-API (Video Acceleration API) is
@@ -1727,6 +1725,10 @@ operate properly.")
 
          ;; The static libraries are 23 MiB
          "--disable-static"
+
+         #$@(if (target-riscv64?)
+              '("--extra-cflags=-fPIC")
+              '())
 
          ;; Runtime cpu detection is not implemented on
          ;; MIPS, so we disable some features.
@@ -4388,7 +4390,7 @@ tools for styling them, including a built-in real-time video preview.")
            (gst-plugins/selection gst-plugins-bad #:plugins
                                   '("debugutils" "transcode")
                                   #:configure-flags
-                                  '("-Dintrospection=enabled"))
+                                  #~'("-Dintrospection=enabled"))
            gst-libav
            gsound
            gtk+

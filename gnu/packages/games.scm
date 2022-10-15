@@ -6825,7 +6825,7 @@ fight against their plot and save his fellow rabbits from slavery.")
            libxcursor
            libxml2
            miniupnpc
-           mozjs
+           mozjs-78
            openal
            sdl2
            wxwidgets

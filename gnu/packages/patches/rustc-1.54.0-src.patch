@@ -1,0 +1,117 @@
+# mrustc is much better at enum packing, so causes almost all of these to be smaller by one pointer
+--- compiler/rustc_ast/src/ast.rs
++++ compiler/rustc_ast/src/ast.rs
+@@ -1075,7 +1075,7 @@ pub struct Expr {
+ }
+ 
+ // `Expr` is used a lot. Make sure it doesn't unintentionally get bigger.
+-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
++#[cfg(all(not(rust_compiler = "mrustc"), target_arch = "x86_64", target_pointer_width = "64"))]
+ rustc_data_structures::static_assert_size!(Expr, 104);
+ 
+ impl Expr {
+@@ -2779,7 +2779,7 @@ pub enum AssocItemKind {
+     MacCall(MacCall),
+ }
+ 
+-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
++#[cfg(all(not(rust_compiler = "mrustc"), target_arch = "x86_64", target_pointer_width = "64"))]
+ rustc_data_structures::static_assert_size!(AssocItemKind, 72);
+ 
+ impl AssocItemKind {
+@@ -2831,7 +2831,7 @@ pub enum ForeignItemKind {
+     MacCall(MacCall),
+ }
+ 
+-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
++#[cfg(all(not(rust_compiler="mrustc"),target_arch = "x86_64", target_pointer_width = "64"))]
+ rustc_data_structures::static_assert_size!(ForeignItemKind, 72);
+ 
+ impl From<ForeignItemKind> for ItemKind {
+--- compiler/rustc_hir/src/hir.rs
++++ compiler/rustc_hir/src/hir.rs
+@@ -3050,3 +3050,3 @@
+ // Some nodes are used a lot. Make sure they don't unintentionally get bigger.
+-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
++#[cfg(all(not(rust_compiler="mrustc"),target_arch = "x86_64", target_pointer_width = "64"))]
+ mod size_asserts {
+--- compiler/rustc_middle/src/mir/interpret/error.rs
++++ compiler/rustc_middle/src/mir/interpret/error.rs
+@@ -452,2 +452,2 @@
+-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
++#[cfg(all(not(rust_compiler="mrustc"), target_arch = "x86_64", target_pointer_width = "64"))]
+ static_assert_size!(InterpError<'_>, 64);
+--- compiler/rustc_middle/src/mir/mod.rs
++++ compiler/rustc_middle/src/mir/mod.rs
+@@ -2203,2 +2203,2 @@
+-#[cfg(target_arch = "x86_64")]
++#[cfg(all(not(rust_compiler="mrustc"), target_arch = "x86_64"))]
+ static_assert_size!(AggregateKind<'_>, 48);
+--- compiler/rustc_middle/src/thir.rs
++++ compiler/rustc_middle/src/thir.rs
+@@ -147,2 +147,2 @@
+-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
++#[cfg(all(not(rust_compiler="mrustc"), target_arch = "x86_64", target_pointer_width = "64"))]
+ rustc_data_structures::static_assert_size!(Expr<'_>, 144);
+--- compiler/rustc_mir/src/interpret/place.rs
++++ compiler/rustc_mir/src/interpret/place.rs
+@@ -91,2 +91,2 @@
+-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
++#[cfg(all(not(rust_compiler = "mrustc"), target_arch = "x86_64", target_pointer_width = "64"))]
+ rustc_data_structures::static_assert_size!(Place, 64);
+@@ -100,2 +100,2 @@
+-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
++#[cfg(all(not(rust_compiler = "mrustc"), target_arch = "x86_64", target_pointer_width = "64"))]
+ rustc_data_structures::static_assert_size!(PlaceTy<'_>, 80);
+--- compiler/rustc_mir/src/interpret/operand.rs
++++ compiler/rustc_mir/src/interpret/operand.rs
+@@ -35,2 +35,2 @@
+-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
++#[cfg(all(not(rust_compiler = "mrustc"), target_arch = "x86_64", target_pointer_width = "64"))]
+ rustc_data_structures::static_assert_size!(Immediate, 56);
+@@ -90,2 +90,2 @@
+-#[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
++#[cfg(all(not(rust_compiler = "mrustc"), target_arch = "x86_64", target_pointer_width = "64"))]
+ rustc_data_structures::static_assert_size!(ImmTy<'_>, 72);
+
+#
+# Disable crc32fast's use of stdarch
+#
+--- vendor/crc32fast/src/specialized/mod.rs
++++ vendor/crc32fast/src/specialized/mod.rs
+@@ -1,5 +1,6 @@
+ cfg_if! {
+     if #[cfg(all(
++        not(rust_compiler = "mrustc"),
+         crc32fast_stdarchx86,
+         any(target_arch = "x86", target_arch = "x86_64")
+     ))] {
+
+#
+# Disable std_detect's detection logic (use the same logic as miri)
+#
+--- library/stdarch/crates/std_detect/src/detect/mod.rs
++++ library/stdarch/crates/std_detect/src/detect/mod.rs
+@@ -88,2 +88,2 @@
+ cfg_if! {
+-    if #[cfg(miri)] {
++    if #[cfg(any(miri, rust_compiler = "mrustc"))] {
+
+# PPV-Lite also needs to know that we're pretending to be miri
+--- vendor/ppv-lite86/src/lib.rs
++++ vendor/ppv-lite86/src/lib.rs
+@@ -12,9 +12,9 @@
+-#[cfg(all(feature = "simd", target_arch = "x86_64", not(miri)))]
++#[cfg(all(feature = "simd", target_arch = "x86_64", not(miri), not(rust_compiler = "mrustc")))]
+ pub mod x86_64;
+-#[cfg(all(feature = "simd", target_arch = "x86_64", not(miri)))]
++#[cfg(all(feature = "simd", target_arch = "x86_64", not(miri), not(rust_compiler = "mrustc")))]
+ use self::x86_64 as arch;
+ 
+-#[cfg(any(miri, not(all(feature = "simd", any(target_arch = "x86_64")))))]
++#[cfg(any(miri, rust_compiler = "mrustc", not(all(feature = "simd", any(target_arch = "x86_64")))))]
+ pub mod generic;
+-#[cfg(any(miri, not(all(feature = "simd", any(target_arch = "x86_64")))))]
++#[cfg(any(miri, rust_compiler = "mrustc", not(all(feature = "simd", any(target_arch = "x86_64")))))]
+ use self::generic as arch;
+

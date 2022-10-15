@@ -119,7 +119,7 @@ the <tz.h> library for handling time zones and leap seconds.")
 (define-public libical
   (package
     (name "libical")
-    (version "3.0.10")
+    (version "3.0.14")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -127,7 +127,7 @@ the <tz.h> library for handling time zones and leap seconds.")
                     version "/libical-" version ".tar.gz"))
               (sha256
                (base32
-                "1d1nqcfilb4k8bc5x85fhnd26l1ski58wpk2nmds6mlxrzkb6czr"))))
+                "13ycghsi4iv8mnm0xv97bs0x6qvfhdxkw20n3yhcc7bg6n0bg122"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ; test suite appears broken
@@ -143,8 +143,7 @@ the <tz.h> library for handling time zones and leap seconds.")
              (substitute* "doc/reference/libical-glib/libical-glib-docs.sgml.in"
                (("http://www.oasis-open.org/docbook/xml/4.3/")
                 (string-append (assoc-ref inputs "docbook-xml")
-                               "/xml/dtd/docbook/")))
-             #t))
+                               "/xml/dtd/docbook/")))))
          (add-before 'configure 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
              ;; TODO: libical 3.1.0 supports using TZDIR instead of a hard-coded
@@ -156,8 +155,7 @@ the <tz.h> library for handling time zones and leap seconds.")
                   (string-append "\"" tzdata "/share/zoneinfo\""))
                  (("\\\"/usr/lib/zoneinfo\\\",") "")
                  (("\\\"/etc/zoneinfo\\\",") "")
-                 (("\\\"/usr/share/lib/zoneinfo\\\"") "")))
-             #t)))))
+                 (("\\\"/usr/share/lib/zoneinfo\\\"") ""))))))))
     (native-inputs
      (list docbook-xml-4.3
            gobject-introspection

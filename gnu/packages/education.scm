@@ -646,14 +646,14 @@ language and very flexible regarding to new or unknown keyboard layouts.")
 (define-public ktouch
   (package
     (name "ktouch")
-    (version "20.12.1")
+    (version "21.12.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://kde/stable/release-service/"
                             version "/src/ktouch-" version ".tar.xz"))
         (sha256
-         (base32 "10lm2p8w26c9n6lhvw3301myfss0dq7hl7rawzb3hsy1lqvmvdib"))))
+         (base32 "1rq2n8395sb17rqd295axv2pbwzhqs8ikjqx5ryn4lv1713alabl"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
