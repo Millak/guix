@@ -1047,25 +1047,20 @@ protocols used in KDE Plasma.")
               (sha256
                (base32
                 "0dcnsiippwxvwvf1gvp75lx97c4nydzn3x1l8lfy86w9lfslw7zb"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
      (list qtbase-5 plasma-wayland-protocols qtwayland-5 wayland wayland-protocols))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-specific-tests
-           (lambda _
-             ;; PlasmaWindowModelTest::testChangeWindowAfterModelDestroy(icon)
-             (substitute* "autotests/client/test_plasma_window_model.cpp"
-               ((".*changedSpy\\.wait.*") ""))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             (when tests? ;; One test fails.
-               (invoke "ctest" "-E" "kwayland-testWaylandRegistry")))))))
+     (list
+      ;; Tests spawn Wayland sessions that cannot run in parallel.
+      #:parallel-tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-XDG_RUNTIME_DIR
+            (lambda _
+              (setenv "XDG_RUNTIME_DIR" (getcwd)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Qt-style API to interact with the wayland client and server")
     (description "As the names suggest they implement a Client respectively a
