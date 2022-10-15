@@ -443,17 +443,18 @@ MesCC-Tools), and finally M2-Planet.")
   (package
     (inherit mes)
     (name "mes-boot")
-    (version "0.24")
+    (version "0.24.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/mes/"
                                   "mes-" version ".tar.gz"))
               (sha256
                (base32
-                "00lrpm4x5qg0l840zhbf9mr67mqhp8gljcl24j5dy0y109gf32w2"))))
+                "0d855agwawjjzwbjmvb5xlbwg77zdpwbjm9kjxc2wqvn0vmhq4im"))))
     (inputs '())
     (propagated-inputs '())
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
     (native-inputs
      `(("m2-planet" ,stage0-posix)
        ("nyacc-source" ,(bootstrap-origin
@@ -468,7 +469,7 @@ MesCC-Tools), and finally M2-Planet.")
       #:strip-binaries? #f              ;no strip yet
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'unpack-seeds
+          (add-after 'unpack 'unpack-extra-sources
             (lambda _
               (let ((nyacc-source #$(this-package-native-input "nyacc-source")))
                 (with-directory-excursion ".."
@@ -477,12 +478,22 @@ MesCC-Tools), and finally M2-Planet.")
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let ((out #$output)
                     (gash #$(this-package-native-input "bash"))
-                    (dir (with-directory-excursion ".." (getcwd))))
+                    (dir (with-directory-excursion ".." (getcwd)))
+                    (target (or #$(%current-target-system)
+                                #$(%current-system)))
+                    (cpu
+                     (cond
+                      ((or #$(target-x86-64?) #$(target-x86-32?))
+                       "x86")
+                      (#$(target-arm?)
+                       "arm")
+                      (else
+                       (error "mes-boot: system not supported" target)))))
                 (setenv "GUILE_LOAD_PATH" (string-append
                                            dir "/nyacc-1.00.2/module"))
                 (invoke "gash" "configure.sh"
                         (string-append "--prefix=" out)
-                        "--host=i686-linux-gnu"))))
+                        (string-append "--host=" cpu "-linux-gnu")))))
           (replace 'build
             (lambda _
               (invoke "gash" "bootstrap.sh")))
