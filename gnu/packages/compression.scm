@@ -58,6 +58,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -82,6 +83,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
@@ -2263,6 +2265,19 @@ package, an implementation of the Brotli lossless compression algorithm.")))
 
 (define-public python-google-brotli
   (deprecated-package "python-google-brotli" python-brotli))
+
+(define-public java-brotli
+  (package
+    (inherit brotli)
+    (name "java-brotli")
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "java-brotli.jar"
+       #:source-dir "java"
+       ;; Tests are mixed in with java sources, the ant build system
+       ;; doesn't allow that
+       #:tests? #f))
+    (native-inputs (list java-junit))))
 
 (define-public ucl
   (package
