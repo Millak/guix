@@ -56,6 +56,7 @@
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;; Copyright © 2022 vicvbcun <guix@ikherbers.com>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -159,6 +160,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
@@ -7528,6 +7530,55 @@ also included.")
       (description "This package provides a C++ implementation of the Louvain
 community detection algorithm.")
       (license license:lgpl3+))))
+
+(define-public cryptominisat
+  (package
+    (name "cryptominisat")
+    (version "5.11.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/msoos/cryptominisat")
+             (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32
+        "1izjn44phjp9670s7bxrdx4p0r59idqwv3bm6sr0qnlqlha5z4zc"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:build-type "Release"
+      #:test-target "test"
+      #:configure-flags #~(list "-DENABLE_TESTING=ON" "-DSTATS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(utils/lingeling-ala\\)") ""))
+              ;; Transitively included in vendored gtest.h. Fixed in
+              ;; upstream:
+              ;; https://github.com/msoos/cryptominisat/pull/686
+              (substitute* "tests/assump_test.cpp"
+                (("#include <vector>")
+                 "#include <vector>\n#include <algorithm>"))
+              (substitute* "tests/CMakeLists.txt"
+                (("add_subdirectory\\(\\$\\{GTEST_PREFIX\\} gtest\\)")
+                 "find_package(GTest REQUIRED)")
+                (("add_subdirectory\\(\\$\\{PROJECT_SOURCE_DIR\\}/utils/.*\\)")
+                 "")))))))
+    (inputs (list boost louvain-community python python-numpy sqlite zlib))
+    (native-inputs (list googletest lingeling python python-wrapper python-lit))
+    (synopsis "Incremental SAT solver")
+    (description
+     "CryptoMiniSat is an incremental SAT solver with both command line and
+library (C++, C, Python) interfaces.  The command-line interface takes a
+@acronym{CNF, Conjunctive Normal Form} as an input in the DIMACS format with
+the extension of XOR clauses.  The library interfaces mimic this and also
+allow incremental solving, including assumptions.")
+    (home-page "https://github.com/msoos/cryptominisat")
+    (license license:expat)))
 
 (define-public libqalculate
   (package
