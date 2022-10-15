@@ -1664,7 +1664,7 @@ an independent project by the JOSM team.")
 (define-public java-opening-hours-parser
   (package
     (name "java-opening-hours-parser")
-    (version "0.23.0")
+    (version "0.27.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1673,11 +1673,12 @@ an independent project by the JOSM team.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yhbd2ix6h506aljh0jkrnp28m4xcqdcdpnqm30fn08kawdgxgsh"))))
+                "1sw5ccxqw4ly5hzxnnljjqx4876gyvagi10sg8r9w25n211lq0x4"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "java-opening-hours-parser.jar"
        #:source-dir "src/main/java"
+       #:test-exclude (list "**/IndividualTest.java")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'copy-resources
@@ -1692,8 +1693,7 @@ an independent project by the JOSM team.")
                        "-DEBUG_TOKEN_MANAGER=false" "-JDK_VERSION=1.8"
                        "-GRAMMAR_ENCODING=UTF-8"
                        (string-append "-OUTPUT_DIRECTORY=" dir)
-                       file))
-             #t)))))
+                       file)))))))
     (inputs
      (list java-jetbrains-annotations))
     (native-inputs
