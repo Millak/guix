@@ -4861,13 +4861,13 @@ process automation (RPA).")
 (define-public python-robotframework-datadriver
   (package
     (name "python-robotframework-datadriver")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "robotframework-datadriver" version))
        (sha256
-        (base32 "0qa2vry8jr49k5rbrvmkgggzsmis1wv06dp5dvwmp7afm7vjc51k"))))
+        (base32 "0mcyr3v98nvfnvffy096qp3jqslas7l8hh0j00lpi0mp12cd0qk9"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
