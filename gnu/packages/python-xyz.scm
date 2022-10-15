@@ -4772,7 +4772,7 @@ ecosystem, but can naturally be used also by other projects.")
 (define-public python-robotframework
   (package
     (name "python-robotframework")
-    (version "5.0")
+    (version "5.0.1")
     ;; There are no tests in the PyPI archive.
     (source
      (origin
@@ -4782,7 +4782,7 @@ ecosystem, but can naturally be used also by other projects.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qcm36c8hachbv3bc05ky7cf63i3sj0y8dw3bwjvcln28i543f81"))
+        (base32 "0jjr71npzrm5mv16pya3m2dqaqgf6sc45yca5kfmc5lfislig5b8"))
        (patches (search-patches
                  "python-robotframework-atest.patch"
                  "python-robotframework-source-date-epoch.patch"))))
@@ -4803,13 +4803,7 @@ ecosystem, but can naturally be used also by other projects.")
               ;; directory not being '/', as is the case in the Guix build
               ;; container.
               (delete-file "atest/robot/standard_libraries/\
-operating_system/path_expansion.robot")
-              ;; FIXME: The test 'Process.Sending Signal.By default signal
-              ;; is not sent to process running in shell' fails for unknown
-              ;; reason (see:
-              ;; https://github.com/robotframework/robotframework/issues/4292).
-              (delete-file "atest/robot/standard_libraries/\
-process/sending_signal.robot")))
+operating_system/path_expansion.robot")))
           (add-before 'build 'build-and-install-doc
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((doc (string-append (assoc-ref outputs "doc")
@@ -4845,7 +4839,7 @@ process/sending_signal.robot")))
                 (invoke "xvfb-run" "atest/run.py")))))))
     (native-inputs
      (list python-docutils
-           python-jsonschema
+           python-jsonschema-next
            python-invoke
            python-lxml
            python-pygments
