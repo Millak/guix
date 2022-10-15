@@ -6828,40 +6828,29 @@ programs.")
 (define-public java-commons-compress
   (package
     (name "java-commons-compress")
-    (version "1.13")
+    (version "1.21")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/commons/compress/source/"
                                   "commons-compress-" version "-src.tar.gz"))
               (sha256
                (base32
-                "1vjqvavrn0babffn1kciz6v52ibwq2vwhzlb95hazis3lgllnxc8"))))
+                "1rkpb6xcyly1wnbx4q6iq6p5hrr0h1d0ppb5r07psc75cbmizjry"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "commons-compress.jar"
+       #:source-dir "src/main/java"
+       #:tests? #f; requires java-mockito-3
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             (with-directory-excursion "src/test/java/org/apache/commons/compress/"
-               ;; FIXME: These tests really should not fail.  Maybe they are
-               ;; indicative of problems with our Java packaging work.
-
-               ;; This test fails with a null pointer exception.
-               (delete-file "archivers/sevenz/SevenZOutputFileTest.java")
-               ;; This test fails to open test resources.
-               (delete-file "archivers/zip/ExplodeSupportTest.java")
-
-               ;; FIXME: This test adds a dependency on powermock, which is hard to
-               ;; package at this point.
-               ;; https://github.com/powermock/powermock
-               (delete-file "archivers/sevenz/SevenZNativeHeapTest.java"))
-             #t))
          (replace 'install (install-from-pom "pom.xml")))))
     (propagated-inputs
-     (list java-xz apache-commons-parent-pom-41))
-    (native-inputs
-     (list java-junit java-mockito-1))
+     (list java-asm-3
+           java-brotli
+           java-osgi-core
+           java-xz
+           java-zstd
+           apache-commons-parent-pom-52))
     (home-page "https://commons.apache.org/proper/commons-compress/")
     (synopsis "Java library for working with compressed files")
     (description "The Apache Commons Compress library defines an API for
@@ -6923,7 +6912,12 @@ Custom formats can be created using a fluent style API.")
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f ; no tests
-       #:jar-name "osgi-annotation.jar"))
+       #:jar-name "osgi-annotation.jar"
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'create-pom
+           (generate-pom.xml "pom.xml" "osgi" "osgi-annotation" ,version))
+         (replace 'install (install-from-pom "pom.xml")))))
     (home-page "https://www.osgi.org")
     (synopsis "Annotation module of OSGi framework")
     (description
@@ -6948,7 +6942,12 @@ components.")
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f ; no tests
-       #:jar-name "osgi-core.jar"))
+       #:jar-name "osgi-core.jar"
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'create-pom
+           (generate-pom.xml "pom.xml" "org.osgi" "org.osgi.core" ,version))
+         (replace 'install (install-from-pom "pom.xml")))))
     (inputs
      (list java-osgi-annotation))
     (home-page "https://www.osgi.org")

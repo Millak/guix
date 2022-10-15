@@ -3462,8 +3462,7 @@ internal to the SureFire Logger API.  It is designed to have no dependency.")
          (add-before 'install 'fix-pom-dependency-versions
            (lambda _
              (substitute* "pom.xml"
-               (("1.11") ,(package-version java-commons-compress))
-               (("1.13") ,(package-version java-commons-codec)))
+               (("1.11") ,(package-version java-commons-codec)))
              (substitute* "pom.xml"
                (("commonsLang3Version>.*")
                 (string-append
