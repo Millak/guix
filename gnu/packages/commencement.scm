@@ -544,7 +544,7 @@ MesCC-Tools), and finally M2-Planet.")
   (package
     (inherit tcc)
     (name "tcc-boot0")
-    (version "0.9.26-1136-g5bba73cc")
+    (version "0.9.26-1134-g80114c4d")
     (source (origin
               (method url-fetch)
               (uri (list
@@ -554,9 +554,10 @@ MesCC-Tools), and finally M2-Planet.")
                                    "tcc-" version ".tar.gz")))
               (sha256
                (base32
-                "1y2f04qwdqg7dgxiscbf0ibybx2gclniwbbcsxpayazzii2cvji3"))))
+                "0wljasyfw32rd73fniam3pwxvnkpwf327dzs8dy9b9vdla1mmplx"))))
     (build-system gnu-build-system)
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
     (inputs '())
     (propagated-inputs '())
     (native-inputs
@@ -585,10 +586,20 @@ MesCC-Tools), and finally M2-Planet.")
                      (dir (with-directory-excursion ".." (getcwd)))
                      (interpreter "/lib/mes-loader")
                      (mes #$(this-package-native-input "mes"))
-                     (mescc (string-append mes "/bin/mescc")))
+                     (mescc (string-append mes "/bin/mescc"))
+                     (cpu (cond
+                           ((or #$(target-x86-64?) #$(target-x86-32?))
+                            "x86")
+                           (#$(target-arm?)
+                            "arm")
+                           (else
+                            (error "tcc-boot0: system not supported" target))))
+                     (host (string-append cpu "-linux-gnu")))
                 (substitute* "conftest.c"
                   (("volatile") ""))
                 (setenv "prefix" out)
+                (setenv "host" host)
+                (setenv "ARCH" cpu)
                 (setenv "GUILE_LOAD_PATH"
                         (string-append dir "/nyacc-1.00.2/module"))
                 (invoke "sh" "configure"
