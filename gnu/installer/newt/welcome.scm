@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,6 +18,8 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu installer newt welcome)
+  #:use-module ((gnu build linux-modules)
+                #:select (modules-loaded))
   #:use-module (gnu installer steps)
   #:use-module (gnu installer utils)
   #:use-module (gnu installer newt page)
@@ -121,30 +124,38 @@ we want this page to occupy all the screen space available."
   "Run a welcome page with the given textual LOGO displayed at the center of
 the page. Ask the user to choose between manual installation, graphical
 installation and reboot."
-  (run-menu-page
-   (G_ "GNU Guix install")
-   (G_ "Welcome to GNU Guix system installer!
+  (begin
+    (when (member "uvesafb" (modules-loaded))
+      (run-error-page (G_ "\
+This may be a false alarm, but possibly your graphics hardware does not
+work well with only free software.  Expect trouble.  If after installation,
+the system does not boot, perhaps you will need to add nomodeset to the
+kernel arguments and need to configure the uvesafb kernel module.")
+                      (G_ "Pre-install warning")))
+    (run-menu-page
+     (G_ "GNU Guix install")
+     (G_ "Welcome to GNU Guix system installer!
 
 You will be guided through a graphical installation program.
 
 If you are familiar with GNU/Linux and you want tight control over \
 the installation process, you can instead choose manual installation.  \
 Documentation is accessible at any time by pressing Ctrl-Alt-F2.")
-   logo
-   #:listbox-items
-   `((,(G_ "Graphical install using a terminal based interface")
-      .
-      ,(const #t))
-     (,(G_ "Install using the shell based process")
-      .
-      ,(lambda ()
-         ;; Switch to TTY3, where a root shell is available for shell based
-         ;; install. The other root TTY's would have been ok too.
-         (system* "chvt" "3")
-         (run-welcome-page logo)))
-     (,(G_ "Reboot")
-      .
-      ,(lambda ()
-         (newt-finish)
-         (reboot))))
-   #:listbox-item->text car))
+     logo
+     #:listbox-items
+     `((,(G_ "Graphical install using a terminal based interface")
+        .
+        ,(const #t))
+       (,(G_ "Install using the shell based process")
+        .
+        ,(lambda ()
+           ;; Switch to TTY3, where a root shell is available for shell based
+           ;; install. The other root TTY's would have been ok too.
+           (system* "chvt" "3")
+           (run-welcome-page logo)))
+       (,(G_ "Reboot")
+        .
+        ,(lambda ()
+           (newt-finish)
+           (reboot))))
+     #:listbox-item->text car)))
