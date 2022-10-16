@@ -290,7 +290,7 @@ prompt the user with the option to go with insecure DNS only.")
 (define-public dnsmasq
   (package
     (name "dnsmasq")
-    (version "2.86")
+    (version "2.87")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -298,7 +298,7 @@ prompt the user with the option to go with insecure DNS only.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "027b0ycw8h8yvvkq46vnr7dv8iqn5srm4kr7hm7sq110kvy2rm98"))))
+                "0ynyi4mixhxhbfxb2bivinkrjc5zgj9lj5bzgvymc8vz98vc0a02"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
