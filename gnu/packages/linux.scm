@@ -3524,7 +3524,7 @@ compressed, transparent to other programs, without decompressing them.")
 (define-public numactl
   (package
     (name "numactl")
-    (version "2.0.14")
+    (version "2.0.16")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3532,7 +3532,7 @@ compressed, transparent to other programs, without decompressing them.")
                     version "/numactl-" version ".tar.gz"))
               (sha256
                (base32
-                "1xngddsph43bxljywahi9d44fxr022slsap4hh91w8xnq54d2sw2"))))
+                "1j67wx3383fwqbvhg4nwqf72vpdgimmrvkpn3b9s2xzr7a4jy90v"))))
     (build-system gnu-build-system)
     (arguments
      `(,@(if (target-riscv64?)
