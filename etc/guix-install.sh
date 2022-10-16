@@ -581,6 +581,7 @@ fi
 
 welcome()
 {
+    local char
     cat<<"EOF"
     ░░░                                     ░░░
     ░░▒▒░░░░░░░░░               ░░░░░░░░░▒▒░░
@@ -607,7 +608,13 @@ This script installs GNU Guix on your system
 https://www.gnu.org/software/guix/
 EOF
     echo -n "Press return to continue..."
-    read -r
+    read -r char
+    if [ "$char" ]; then
+	echo
+	echo "...that ($char) was not a return!"
+	_msg "${WAR}Use newlines to automate installation, e.g.: yes '' | ${0##*/}"
+	_msg "${WAR}Any other method is unsupported and likely to break in future."
+    fi
 }
 
 main()
