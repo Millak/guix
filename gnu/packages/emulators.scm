@@ -397,7 +397,7 @@ older games.")
   ;; This is not a patch staging area for DOSBox, but an unaffiliated fork.
   (package
     (name "dosbox-staging")
-    (version "0.78.1")
+    (version "0.79.1")
     (source
      (origin
        (method git-fetch)
@@ -406,7 +406,7 @@ older games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16byip1j9ckq0ik7ilrj0fc9dal3495s48xd21drpbb8q9jwb342"))))
+        (base32 "0wdnkz3djjc514hn945fr9g9mnpnvk16fan84ny9g5wxak6dvsqp"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -420,6 +420,8 @@ older games.")
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-includes
                  (lambda _
+                   ;; This unnecessary file has an encoding error.
+                   (delete-file "./src/libs/sdlcd/macosx/SDLOSXCAGuard.h")
                    (substitute* (find-files "." "\\.(cpp|h)")
                      (("^(#include <)(SDL[_.])" _ include file)
                       (string-append include "SDL2/" file))))))))
@@ -428,10 +430,12 @@ older games.")
     (inputs
      (list alsa-lib
            fluidsynth
+           iir
            libpng
            mesa
            opusfile
            (sdl-union (list sdl2 sdl2-net))
+           speexdsp
            zlib))
     (home-page "https://dosbox-staging.github.io")
     (synopsis "DOS/x86 PC emulator focusing on ease of use")
