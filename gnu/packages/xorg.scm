@@ -4230,17 +4230,14 @@ file.")
 (define-public xrefresh
   (package
     (name "xrefresh")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/xrefresh-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "0lv3rlshh7s0z3aqx5ahnnf8cl082m934bk7gv881mz8nydznz98"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://xorg/individual/app/xrefresh-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "07hvfw3rdv8mzqmm9ax5z8kw544insdd152f2z8868ply8sxdwd9"))))
     (build-system gnu-build-system)
     (inputs
       (list libx11))
