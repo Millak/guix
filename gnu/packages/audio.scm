@@ -475,31 +475,6 @@ by MusicIP.")
     (home-page "https://code.google.com/archive/p/musicip-libofa/")
     (license license:gpl2+)))
 
-(define-public faac
-  (package
-    (name "faac")
-    (version "1.30")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://sourceforge/faac/faac-src"
-                       "/faac-" version "/faac-1_30.tar.gz"))
-       (sha256
-        (base32 "1lmj0dib3mjp84jhxc5ddvydkzzhb0gfrdh3ikcidjlcb378ghxd"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (synopsis "Freeware Advanced Audio Coder")
-    (description "FAAC is an MPEG-4 and MPEG-2 AAC encoder.")
-    (home-page "https://www.audiocoding.com/faac.html")
-    (license
-     (list
-      ;; ISO MPEG-4 reference code.
-      license:gpl2+
-      ;; Others.
-      license:lgpl2.0+))))
-
 (define-public libtimidity
   (package
     (name "libtimidity")
