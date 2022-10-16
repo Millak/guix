@@ -2721,11 +2721,7 @@ export.")
                (substitute* "tcl/pd-gui.tcl"
                  (("exec wish ") (string-append "exec " (which ,wish) " ")))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool gettext-minimal pkg-config))
     (inputs
      (list tk alsa-lib jack-1))
     (home-page "https://puredata.info")
