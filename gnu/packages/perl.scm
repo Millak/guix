@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2019, 2020, 2021 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2018 Mark H Weaver <mhw@netris.org>
@@ -330,6 +330,74 @@ text manipulation and now used for a wide range of tasks including system
 administration, web development, network programming, GUI development, and
 more.")
     (license license:gpl1+)))
+
+(define-public perl-5.6
+  (package
+    (inherit perl-5.14)
+    (name "perl")
+    (version "5.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.cpan.org/src/5.0/perl-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0khk94gvc8qkwxdb98khmxbwxxdbhap7rxb9ymkha6vhpxp6zrm5"))))
+    (properties `((release-date . "2003-11-15")
+                  (hidden? . #t))) ;only for GHC 4.
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out  (assoc-ref outputs "out"))
+                   (libc (assoc-ref inputs "libc")))
+               ;; Use the right path for `pwd'.
+               (substitute* "lib/Cwd.pm"
+                 (("/bin/pwd")
+                  (which "pwd")))
+
+               (invoke "./Configure"
+                       (string-append "-Dprefix=" out)
+                       (string-append "-Dman1dir=" out "/share/man/man1")
+                       (string-append "-Dman3dir=" out "/share/man/man3")
+                       "-de" "-Dcc=gcc"
+                       "-Uinstallusrbinperl"
+                       "-Dinstallstyle=lib/perl5"
+                       "-Duseshrplib"
+                       (string-append "-Dlocincpth=" libc "/include")
+                       (string-append "-Dloclibpth=" libc "/lib")
+
+                       ;; Force the library search path to contain only libc
+                       ;; because it is recorded in Config.pm and
+                       ;; Config_heavy.pl; we don't want to keep a reference
+                       ;; to everything that's in $LIBRARY_PATH at build
+                       ;; time (Binutils, bzip2, file, etc.)
+                       (string-append "-Dlibpth=" libc "/lib")
+                       (string-append "-Dplibpth=" libc "/lib")))))
+         (add-after 'configure 'bleh
+           (lambda _
+             (substitute* '("makefile"
+                            "x2p/makefile")
+               ((".*\\<command-line>.*") ""))
+             ;; Don't look for /usr/include/errno.h.
+             (substitute* "ext/Errno/Errno_pm.PL"
+               (("O eq 'linux'") "O eq 'loonix'"))
+             (substitute* "ext/IPC/SysV/SysV.xs"
+               ((".*asm/page.h.*") ""))))
+         (add-before 'strip 'make-shared-objects-writable
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; The 'lib/perl5' directory contains ~50 MiB of .so.  Make them
+             ;; writable so that 'strip' actually strips them.
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib")))
+               (for-each (lambda (dso)
+                           (chmod dso #o755))
+                         (find-files lib "\\.so$"))))))))
+    (native-inputs
+     (list gcc-5))))
 
 (define-public perl-algorithm-c3
   (package
