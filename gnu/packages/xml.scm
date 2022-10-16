@@ -1215,10 +1215,10 @@ Libxml2).")
                 "0cncvb0xhbq2i7rszj6pmcs3b97f0a17j081z0cmcfrrzv8kwrhc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib"))
-       #:tests? #f))                    ; tests are run during build
+     (list
+      #:configure-flags
+      #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+      #:tests? #f))                    ; tests are run during build
     (home-page "https://www.msweet.org/mxml/")
     (synopsis "Small XML parsing library")
     (description
