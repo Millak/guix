@@ -2188,7 +2188,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
           (add-before 'configure 'set-up-waf
             (lambda* (#:key inputs #:allow-other-keys)
               (copy-file (search-input-file inputs "bin/waf") "waf")
-              (setenv "CC" "gcc"))))
+              (setenv "CC" #$(cc-for-target)))))
       #:configure-flags
       #~(list "--enable-libmpv-shared"
               "--enable-cdda"
