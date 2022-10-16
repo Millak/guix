@@ -2719,8 +2719,7 @@ export.")
            (add-before 'configure 'fix-with-path
              (lambda _
                (substitute* "tcl/pd-gui.tcl"
-                 (("exec wish ") (string-append "exec " (which ,wish) " ")))
-               #t))))))
+                 (("exec wish ") (string-append "exec " (which ,wish) " ")))))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
