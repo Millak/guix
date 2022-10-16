@@ -3947,13 +3947,14 @@ PGP handling, multiple servers, and secure connections.")
         (base32 "0di9gwavgyr1xkd8sfh52ldkn2lq1kdad76ww2x4y0lhimnxw7gc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "CC=" ,(cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))         ; no configure script
     (inputs
      (list lua pcre2 openssl))
     (home-page "https://github.com/lefcha/imapfilter")
