@@ -236,7 +236,7 @@ promoting the market for advanced audio.")
        ("openal" ,openal)))
     (synopsis "Software Synthesizer")
     (description "WildMIDI is a simple software midi player which has a core
-softsynth library that can be use with other applications.")
+softsynth library that can be used with other applications.")
     (home-page "https://www.mindwerks.net/projects/wildmidi/")
     (license
      (list

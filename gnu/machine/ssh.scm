@@ -466,7 +466,7 @@ environment type of 'managed-host."
          (machine-configuration machine))
     (unless (file-exists? %public-key-file)
       (raise (formatted-message (G_ "no signing key '~a'. \
-have you run 'guix archive --generate-key?'")
+Have you run 'guix archive --generate-key'?")
                                 %public-key-file)))
     (remote-authorize-signing-key (call-with-input-file %public-key-file
                                     (lambda (port)

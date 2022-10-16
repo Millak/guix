@@ -1046,7 +1046,7 @@ Some ACTIONS support additional ARGS.\n"))
   (newline)
   (display (G_ "
       --graph-backend=BACKEND
-                         use BACKEND for 'extension-graphs' and 'shepherd-graph'"))
+                         use BACKEND for 'extension-graph' and 'shepherd-graph'"))
   (newline)
   (display (G_ "
   -I, --list-installed[=REGEXP]

@@ -10814,7 +10814,8 @@ inside the Zenith Colony.")
     (description "Provides a large set of Go-related services for X11:
 @itemize
 @item Local games with precise implementation of the Chinese and Japanese rulesets
-@item Edition and visualization of SGF files-Connection to the NNGS or IGS Go servers
+@item Edition and visualization of SGF files
+@item Connection to the NNGS or IGS Go servers
 @item Bridge to Go modem protocol, allowing to play against Go modem-capable AIs
 such as GnuGo.
 @end itemize")

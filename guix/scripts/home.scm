@@ -476,7 +476,7 @@ resulting from command-line parsing."
   (define (ensure-home-environment file-or-exp obj)
     (ensure-profile-directory)
     (unless (home-environment? obj)
-      (leave (G_ "'~a' does not return a home environment ~%")
+      (leave (G_ "'~a' does not return a home environment~%")
              file-or-exp))
     obj)
 

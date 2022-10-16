@@ -1016,9 +1016,9 @@ command-line option processing with 'parse-command-line'."
       (when (and (not container?) user)
         (leave (G_ "'--user' cannot be used without '--container'~%")))
       (when (and (not container?) no-cwd?)
-        (leave (G_ "--no-cwd cannot be used without --container~%")))
+        (leave (G_ "--no-cwd cannot be used without '--container'~%")))
       (when (and (not container?) emulate-fhs?)
-        (leave (G_ "'--emulate-fhs' cannot be used without '--container~'%")))
+        (leave (G_ "'--emulate-fhs' cannot be used without '--container~%'")))
 
 
       (with-store/maybe store
