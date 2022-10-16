@@ -141,8 +141,10 @@ chk_gpg_keyring()
             if prompt_yes_no "${INF}The following OpenPGP public key is \
 required to verify the Guix binary signature: $gpg_key_id.
 Would you like me to fetch it for you?"; then
+		# Use a reasonable time-out here so users don't report silent
+		# ‘freezes’ when Savannah goes out to lunch, as has happened.
                 wget "https://sv.gnu.org/people/viewgpg.php?user_id=$user_id" \
-                     --no-verbose -O- | gpg --import -
+                     --timeout=30 --no-verbose -O- | gpg --import -
             else
                 _err "${ERR}Missing OpenPGP public key ($gpg_key_id).
 Fetch it with this command:
