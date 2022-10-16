@@ -17724,13 +17724,13 @@ as well.")
 (define-public ptpython
   (package
     (name "ptpython")
-    (version "3.0.17")
+    (version "3.0.20")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ptpython" version))
               (sha256
                (base32
-                "1phk1grcvn456igjg8gwjjg8bf4kszddq5nd5sdlz3hslg62a7ci"))))
+                "1mjfyr5gwrs1qbizh6nki0nv6hahmg8mhhqxi1qc6pfa4znlrzga"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f)) ;there are no tests
@@ -17741,9 +17741,9 @@ as well.")
     (synopsis "Python Read-Eval-Print-Loop with nice IDE-like features")
     (description
      "ptpython is a Python read-eval-print loop with IDE-like features.
-     It supports syntax highlighting, multiline editing, autocompletion, mouse,
-     color schemes, bracketed paste, Vi and Emacs keybindings, Chinese characters
-     etc.")
+It supports syntax highlighting, multiline editing, autocompletion, mouse,
+color schemes, bracketed paste, Vi and Emacs keybindings, Chinese characters
+etc.")
     (license license:bsd-3)))
 
 (define-public python-easyprocess
