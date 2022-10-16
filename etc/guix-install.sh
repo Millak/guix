@@ -3,7 +3,7 @@
 # Copyright © 2017 sharlatan <sharlatanus@gmail.com>
 # Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 # Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
-# Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+# Copyright © 2019–2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 # Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 # Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 # Copyright © 2020 Daniel Brooks <db48x@db48x.net>
@@ -137,23 +137,27 @@ chk_gpg_keyring()
         gpg_key_id=${GPG_SIGNING_KEYS[$user_id]}
         # Without --dry-run this command will create a ~/.gnupg owned by root on
         # systems where gpg has never been used, causing errors and confusion.
-        if ! gpg --dry-run --list-keys "$gpg_key_id" >/dev/null 2>&1; then
-            if prompt_yes_no "${INF}The following OpenPGP public key is \
+        if gpg --dry-run --list-keys "$gpg_key_id" >/dev/null 2>&1; then
+            continue
+        fi
+        if prompt_yes_no "${INF}The following OpenPGP public key is \
 required to verify the Guix binary signature: $gpg_key_id.
 Would you like me to fetch it for you?"; then
-		# Use a reasonable time-out here so users don't report silent
-		# ‘freezes’ when Savannah goes out to lunch, as has happened.
-                wget "https://sv.gnu.org/people/viewgpg.php?user_id=$user_id" \
-                     --timeout=30 --no-verbose -O- | gpg --import -
-            else
-                _err "${ERR}Missing OpenPGP public key ($gpg_key_id).
+            # Use a reasonable time-out here so users don't report silent
+            # ‘freezes’ when Savannah goes out to lunch, as has happened.
+            if wget "https://sv.gnu.org/people/viewgpg.php?user_id=$user_id" \
+                    --timeout=30 --no-verbose -O- | gpg --import -; then
+                continue
+            fi
+        fi
+	# If we reach this point, the key is (still) missing.  Report further
+	# missing keys, if any, but then abort the installation.
+        _err "${ERR}Missing OpenPGP public key ($gpg_key_id).
 Fetch it with this command:
 
   wget \"https://sv.gnu.org/people/viewgpg.php?user_id=$user_id\" -O - | \
 sudo -i gpg --import -"
-                exit_flag=yes
-            fi
-        fi
+        exit_flag=yes
     done
     if [ "$exit_flag" = yes ]; then
         exit 1
