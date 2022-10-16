@@ -5197,6 +5197,42 @@ every feature for every plugin.")))
     (description "The modello XPP3 plugin generates XML readers and writers based
 on the XPP3 API (XML Pull Parser).")))
 
+(define-public java-ow-util-ant-tasks
+  (package
+    (name "java-ow-util-ant-tasks")
+    (version "1.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                     "mirror://debian/pool/main/o/ow-util-ant-tasks/"
+                     "ow-util-ant-tasks_" version ".orig.tar.gz"))
+              (sha256
+               (base32
+                "1y5ln1g36aligwcadqksdj18i5ghqnxn523wjbzy2zyd7w58fgy5"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "ow-util-ant-tasks.jar"
+       #:tests? #f; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'delete-cyclic-dependency
+           (lambda _
+             ;; This file depends on asm-3, which depends on this package
+             (delete-file "src/org/objectweb/util/ant/DependencyAnalyzer.java")
+             ;; This file depends on xalan
+             (delete-file "src/org/objectweb/util/ant/Xalan2Liaison.java")))
+         (add-before 'build 'fix-new-ant
+           (lambda _
+             (substitute* "src/org/objectweb/util/ant/MultipleCopy.java"
+               ((", destFile.getAbsolutePath\\(\\)")
+                ", new String[] { destFile.getAbsolutePath() }")))))))
+    (home-page "https://packages.debian.org/source/stretch/ow-util-ant-tasks")
+    (synopsis "Replacement for base ant tasks")
+    (description "This library is used in the legacy build process of several
+key frameworks developed by ObjectWeb, among them legacy versions of the
+ObjectWeb ASM bytecode manipulation framework.")
+    (license license:lgpl2.0+)))
+
 (define-public java-asm
   (package
     (name "java-asm")
