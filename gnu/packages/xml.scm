@@ -1532,15 +1532,12 @@ SAX2 APIs.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
-          (delete 'check)
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (invoke "make" "install"
-                      (string-append
-                       "PREFIX=" (assoc-ref outputs "out"))))))))
+          (delete 'check))))
     (synopsis "C library for reading and writing .xlsx files")
     (description "XLSX I/O aims to provide a C library for reading and writing
 .xlsx files.  The .xlsx file format is the native format used by Microsoft(R)
