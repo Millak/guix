@@ -33,7 +33,7 @@ then
     exec bash "$0" "$@"
 fi
 
-set -e
+set -eo pipefail
 
 [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1; }
 
