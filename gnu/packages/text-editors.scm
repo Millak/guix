@@ -1136,7 +1136,8 @@ card.  It offers:
     (arguments
      `(#:tests? #f
        #:make-flags
-       (list "CC=gcc"
+       (list "STRIP=true"               ; don't
+             (string-append "CC=" ,(cc-for-target))
              (string-append "PREFIX=" (assoc-ref %outputs "out"))
              (string-append "LDFLAGS=-L" (assoc-ref %build-inputs "ncurses")
                             "/lib"))
