@@ -1025,7 +1025,8 @@ Google's C++ code base.")
 
 (define-public abseil-cpp
   (let ((base abseil-cpp-20200923.3))
-    (package/inherit base
+    (package
+      (inherit base)
       (name "abseil-cpp")
       (version "20220623.1")
       (source (origin
