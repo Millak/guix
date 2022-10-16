@@ -195,14 +195,14 @@
 (define-public audacious
   (package
     (name "audacious")
-    (version "4.1")
+    (version "4.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://distfiles.audacious-media-player.org/"
                            "audacious-" version ".tar.bz2"))
        (sha256
-        (base32 "0p734psjjvjcmla2hg5h6a9v1prvy63jj9xm2g2ngs49jy7qan0z"))))
+        (base32 "1cq4brifp992dhg0sbf180jjdv137g5wk8ac7hmzx0d4f3j09czy"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -214,8 +214,7 @@
          (add-after 'install 'unpack-plugins
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((plugins (assoc-ref inputs "audacious-plugins")))
-               (invoke "tar" "xvf" plugins)
-               #t)))
+               (invoke "tar" "xvf" plugins))))
          (add-after 'unpack-plugins 'configure-plugins
            (lambda* (#:key configure-flags outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -247,7 +246,7 @@
            (uri (string-append "https://distfiles.audacious-media-player.org/"
                                "audacious-plugins-" version ".tar.bz2"))
            (sha256
-            (base32 "0k0xnqmxi5lna034i2cnzvfzrykxmv4fbs1nkrc9sd2ma1igrmns"))))
+            (base32 "0zs1k91z272ql49qr7kxlxb0lajamc9ra41pgj3ynh8h7afgd83g"))))
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")         ; for gdbus-codegen
        ("pkg-config" ,pkg-config)))
