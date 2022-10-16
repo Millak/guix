@@ -1101,6 +1101,39 @@ guitar amplification and a small range of classic effects, signal processors and
 generators of mostly elementary and occasionally exotic nature.")
     (license license:gpl3+)))
 
+(define-public iir
+  (package
+    (name "iir")
+    (version "1.9.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/berndporr/iir1")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wbh804as740kjvmyaqx4rwvwwrbwh0fnj979dvv1ljlx1p50bk0"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'delete-static-library
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (delete-file (string-append out "/lib/libiir_static.a"))))))))
+    (home-page "https://berndporr.github.io/iir1/")
+    (synopsis
+     "Real-time C++ @acronym{IIR, infinite impulse response} filter library")
+    (description
+     "This C++ library implements the Butterworth, RBJ, and Chebychev
+@acronym{IIR, infinite impulse response} filters.  Samples are processed one by
+one, in real time.  It can easily import coefficients generated with Python
+(@code{scipy}).  It also avoids memory leaks by allocating memory at compile
+time, using templates, instead of calling @code{malloc()} or @code{new}.")
+    (license license:expat)))
+
 (define-public infamous-plugins
   (package
     (name "infamous-plugins")
