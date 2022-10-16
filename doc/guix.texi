@@ -21627,7 +21627,7 @@ The name of the icon theme to use.
 The name of the cursor theme to use.
 
 @item @code{cursor-theme-size} (default: @code{16}) (type: number)
-The size to use for the the cursor theme.
+The size to use for the cursor theme.
 
 @item @code{allow-debugging?} (type: maybe-boolean)
 Set to #t to enable debug log level.
@@ -22962,7 +22962,7 @@ Enable polling the kernel for battery level changes.
 Ignore the lid state, this can be useful if it's incorrect on a device.
 
 @item @code{use-percentage-for-policy?} (default: @code{#t})
-Whether a to use a policy based on battery percentage rather than on
+Whether to use a policy based on battery percentage rather than on
 estimated time left.  A policy based on battery percentage is usually
 more reliable.
 
@@ -26752,7 +26752,7 @@ When left unspecified, the value from the account archive prevails.
 Whether peer discovery should be enabled.  Peer discovery is used to
 discover other OpenDHT nodes on the local network, which can be useful
 to maintain communication between devices on such network even when the
-connection to the the Internet has been lost.  When left unspecified,
+connection to the Internet has been lost.  When left unspecified,
 the value from the account archive prevails.
 
 @item @code{bootstrap-hostnames} (type: maybe-string-list)
@@ -30989,7 +30989,7 @@ can run on headless servers.  The Xvnc implementations provided by the
 
 The @code{xvnc-server-type} service can be configured via the
 @code{xvnc-configuration} record, documented below.  A second virtual
-display could be made available on a remote machine for via the
+display could be made available on a remote machine via the
 following configuration:
 @end defvar
 
@@ -30998,7 +30998,7 @@ following configuration:
 @end lisp
 
 As a demonstration, the @command{xclock} command could then be started
-on the remote machine on display number 10, and it could be display
+on the remote machine on display number 10, and it could be displayed
 locally via the @command{vncviewer} command:
 @example
 # Start xclock on the remote machine.
