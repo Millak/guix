@@ -371,7 +371,7 @@ and vice versa.")
 (define-public cracklib
   (package
     (name "cracklib")
-    (version "2.9.7")
+    (version "2.9.8")
     (source
      (origin
        (method url-fetch)
@@ -379,7 +379,7 @@ and vice versa.")
                            "releases/download/v" version "/"
                            "cracklib-" version ".tar.bz2"))
        (sha256
-        (base32 "1rimpjsdnmw8f5b7k558cic41p2qy2n2yrlqp5vh7mp4162hk0py"))))
+        (base32 "11p3f0yqg9d32g3n1qik7jfyl2l14pf8i8vzq3bpram3bqw3978z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
