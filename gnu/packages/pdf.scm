@@ -315,7 +315,8 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
 ;; XXX: Remove it on core-updates.  It is only needed for evince 42.3 that
 ;; requires a recent poppler.
 (define-public poppler-next
-  (package/inherit poppler
+  (package
+    (inherit poppler)
     (name "poppler-next")
     (version "22.09.0")
     (source (origin
