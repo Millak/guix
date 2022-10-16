@@ -1294,7 +1294,7 @@ known public suffixes.")
 (define-public maradns
   (package
     (name "maradns")
-    (version "3.5.0020")
+    (version "3.5.0022")
     (source
      (origin
        (method url-fetch)
@@ -1302,7 +1302,7 @@ known public suffixes.")
                            (version-major+minor version) "/"
                            version "/maradns-" version ".tar.xz"))
        (sha256
-        (base32 "1qgabw6y2bwy6y88dikis62k789i0xh7iwxan8jmqpzvksqwjfgw"))))
+        (base32 "1sw267jxxxngjcar8cj3jpxnpiz0szgkhlz5l46c67qs690w9kdi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; need to be root to run tests
