@@ -1044,6 +1044,7 @@ protocols used in KDE Plasma.")
                     "mirror://kde/stable/frameworks/"
                     (version-major+minor version) "/"
                     name "-" version ".tar.xz"))
+              (patches (search-patches "kwayland-skip-flaky-test.patch"))
               (sha256
                (base32
                 "0dcnsiippwxvwvf1gvp75lx97c4nydzn3x1l8lfy86w9lfslw7zb"))))

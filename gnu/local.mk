@@ -1397,6 +1397,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/kodi-increase-test-timeout.patch		\
   %D%/packages/patches/kodi-set-libcurl-ssl-parameters.patch		\
   %D%/packages/patches/kodi-skip-test-449.patch		\
+  %D%/packages/patches/kwayland-skip-flaky-test.patch		\
   %D%/packages/patches/laby-make-install.patch			\
   %D%/packages/patches/ldns-drill-examples.patch		\
   %D%/packages/patches/leela-zero-gtest.patch			\
