@@ -22046,13 +22046,13 @@ Included are implementations of:
 (define-public bpython
   (package
     (name "bpython")
-    (version "0.21")
+    (version "0.23")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bpython" version))
        (sha256
-        (base32 "11wlf12nm6ggn9512y4yqs26s8gdgpx0h9ls94k7fsjgjy4rpal8"))))
+        (base32 "0ah5giynavyh70yc0jqgmjaajv3xg5j2y7k9i3q8mi47r2mph04z"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
