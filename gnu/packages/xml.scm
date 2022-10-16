@@ -1531,15 +1531,16 @@ SAX2 APIs.")
      (list expat gnu-make minizip which))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make" "install"
-                     (string-append
-                      "PREFIX=" (assoc-ref outputs "out"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'check)
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "make" "install"
+                      (string-append
+                       "PREFIX=" (assoc-ref outputs "out"))))))))
     (synopsis "C library for reading and writing .xlsx files")
     (description "XLSX I/O aims to provide a C library for reading and writing
 .xlsx files.  The .xlsx file format is the native format used by Microsoft(R)
