@@ -1315,7 +1315,7 @@ encryption algorithm if so desired.")
 (define-public pass-tomb
   (package
     (name "pass-tomb")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -1324,7 +1324,7 @@ encryption algorithm if so desired.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qj7vx7svk1ljwihj3kv310k17mafnf919n30n4qn1yxmmsvj924"))))
+        (base32 "1sjkbdm2i3v77nbnap8sypbfdqwxckc8h66g3ixjnyr6cqgcrdli"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
