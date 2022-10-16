@@ -4591,17 +4591,14 @@ cannot be adequately worked around on the client side of the wire.")
 (define-public libxp
   (package
     (name "libxp")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/lib/libXp-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "0mwc2jwmq03b1m9ihax5c6gw2ln8rc70zz4fsj3kb7440nchqdkz"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://xorg/individual/lib/libXp-" version ".tar.xz"))
+       (sha256
+        (base32 "197iklxwyd4naryc6mzv0g5qi1dy1apxk9w9k3yshd1ax2wf668z"))))
     (build-system gnu-build-system)
     (propagated-inputs
       (list printproto))
