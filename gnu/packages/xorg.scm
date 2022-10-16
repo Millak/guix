@@ -5934,17 +5934,14 @@ form.")
 (define-public xmag
   (package
     (name "xmag")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://xorg/individual/app/" name "-"
-             version
-             ".tar.gz"))
+       (uri (string-append "mirror://xorg/individual/app/xmag-"
+                           version ".tar.xz"))
        (sha256
-        (base32
-         "19bsg5ykal458d52v0rvdx49v54vwxwqg8q36fdcsv9p2j8yri87"))))
+        (base32 "0qblrqrhxml2asgbck53a1v7c4y7ap7jcyqjg500h1i7bb63d680"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
