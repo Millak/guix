@@ -250,7 +250,6 @@
         "--enable-libquicktime"
         "--enable-lzo"
         "--enable-a52"
-        "--enable-faac"
         "--enable-libxml2"
         ;;; XXX: Not available.
         ;"--enable-ibp"
@@ -274,7 +273,6 @@
            python-wrapper))
     (inputs
      (list alsa-lib
-           faac
            ffmpeg
            freetype
            imagemagick
