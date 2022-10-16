@@ -360,7 +360,7 @@ SplitObjs=NO
            ;; TODO: Perl used to allow setting $* to enable multi-line
            ;; matching.  If we want to use a more recent Perl we need to patch
            ;; all expressions that require multi-line matching.  Hard to tell.
-           perl-5.14))
+           perl-5.6))
     (home-page "https://www.haskell.org/ghc")
     (synopsis "The Glasgow Haskell Compiler")
     (description
