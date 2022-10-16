@@ -836,7 +836,6 @@ model to base your own plug-in on, here it is.")
             curl
             directfb
             ;; dssim
-            faac
             faad2
             flite
             fluidsynth
