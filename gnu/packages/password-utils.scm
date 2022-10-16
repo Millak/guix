@@ -636,19 +636,43 @@ through the pass command.")
         (base32 "17899whffnpqqx9x1nx2b8bfxbxlh1pwlglqa0kznl0cn6sb37ql"))))
     (build-system copy-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'rename-script
-                    (lambda _
-                      (rename-file "src/password-store.sh"
-                                   "src/passage"))))
+     '(#:modules
+       ((guix build copy-build-system)
+        (guix build utils)
+        (srfi srfi-26))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'rename-script
+           (lambda _
+             (rename-file "src/password-store.sh"
+                          "src/passage")))
+         (add-after 'install 'wrap-script
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (script (string-append out "/bin/passage")))
+               (substitute* script
+                 ;; Avoid ugly ‘.passage-real’ in --help output and elsewhere.
+                 (("^(PROGRAM=).*" _ program=)
+                  (string-append program= (basename script) "\n")))
+               (wrap-program script
+                 `("PATH" ":" prefix
+                   ,(map dirname
+                         (map (cut search-input-file inputs <>)
+                              (list "bin/age"
+                                    "bin/getopt"
+                                    "bin/git"
+                                    "bin/pkill"
+                                    "bin/qrencode"
+                                    "bin/sed"
+                                    "bin/tree")))))))))
        #:install-plan
        '(("src/passage" "/bin/")
          ("src/completion/pass.bash-completion"
           "/share/bash-completion/completions/")
          ("src/completion/pass.zsh-completion"
           "/share/zsh/site-functions/"))))
-    (propagated-inputs
-     (list util-linux git qrencode sed tree age))
+    (inputs
+     (list age git procps qrencode sed tree util-linux))
     (home-page "https://github.com/FiloSottile/passage")
     (synopsis "Encrypted password manager")
     (description "This package provides an encrypted password manager, forked
