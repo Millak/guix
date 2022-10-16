@@ -2226,15 +2226,13 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
              ;; and passed as linker flags, but the order in which they are added
              ;; varies.  See <https://github.com/mpv-player/mpv/issues/7855>.
              ;; Set PYTHONHASHSEED as a workaround for deterministic results.
-             (setenv "PYTHONHASHSEED" "1")
-             #t))
+             (setenv "PYTHONHASHSEED" "1")))
          (add-before
           'configure 'setup-waf
           (lambda* (#:key inputs #:allow-other-keys)
             (let ((waf (assoc-ref inputs "waf")))
               (copy-file (string-append waf "/bin/waf") "waf"))
-            (setenv "CC" "gcc")
-            #t)))
+            (setenv "CC" "gcc"))))
        #:configure-flags (list "--enable-libmpv-shared"
                                "--enable-cdda"
                                "--enable-dvdnav"
