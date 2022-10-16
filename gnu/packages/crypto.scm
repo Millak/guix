@@ -1530,8 +1530,7 @@ non-encrypted files.")
                                                 "fspp-test")))))
              #t)))))
     (native-inputs
-     `(("python" ,python-wrapper)
-       ("pkg-config" ,pkg-config)))
+     (list pkg-config python-wrapper))
     (inputs
      (list boost curl fuse range-v3 spdlog))
     (home-page "https://www.cryfs.org/")
