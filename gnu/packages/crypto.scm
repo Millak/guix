@@ -1519,16 +1519,15 @@ non-encrypted files.")
              (when tests?
                (let ((tests (find-files "." "-test$")))
                  ;; XXX: Disable failing tests. Unfortunately there are a
-                   ;; few. Some only fail in the build environment due to
-                   ;; FUSE not being available.
-                   (for-each invoke
-                             (lset-difference string-contains
-                                              tests
-                                              '("cpp-utils-test"
-                                                "cryfs-cli-test"
-                                                "blobstore-test"
-                                                "fspp-test")))))
-             #t)))))
+                 ;; few. Some only fail in the build environment due to
+                 ;; FUSE not being available.
+                 (for-each invoke
+                           (lset-difference string-contains
+                                            tests
+                                            '("cpp-utils-test"
+                                              "cryfs-cli-test"
+                                              "blobstore-test"
+                                              "fspp-test"))))))))))
     (native-inputs
      (list pkg-config python-wrapper))
     (inputs
