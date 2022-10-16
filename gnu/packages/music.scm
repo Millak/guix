@@ -2707,19 +2707,21 @@ export.")
     (arguments
      (let ((wish (string-append "wish" (version-major+minor
                                         (package-version tk)))))
-       `(#:tests? #f                    ; no "check" target
-         #:configure-flags
-         (list
-          "--enable-jack"
-          (string-append "--with-wish=" (string-append
-                                         (assoc-ref %build-inputs "tk")
-                                         "/bin/" ,wish)))
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'fix-with-path
-             (lambda _
-               (substitute* "tcl/pd-gui.tcl"
-                 (("exec wish ") (string-append "exec " (which ,wish) " ")))))))))
+       (list
+        #:tests? #f                     ; no "check" target
+        #:configure-flags
+        #~(list
+           "--enable-jack"
+           (string-append "--with-wish="
+                          (search-input-file %build-inputs
+                                             (string-append "/bin/" #$wish))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'fix-wish-path
+              (lambda _
+                (substitute* "tcl/pd-gui.tcl"
+                  (("exec wish ")
+                   (string-append "exec " (which #$wish) " ")))))))))
     (native-inputs
      (list autoconf automake libtool gettext-minimal pkg-config))
     (inputs
