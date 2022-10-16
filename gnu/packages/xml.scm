@@ -1517,7 +1517,7 @@ SAX2 APIs.")
 (define-public xlsxio
   (package
     (name "xlsxio")
-    (version "0.2.29")
+    (version "0.2.33")
     (source
      (origin
        (method git-fetch)
@@ -1526,7 +1526,7 @@ SAX2 APIs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jr6ggzhd8aakdvppcl8scy9j9jafg82zbzr4ih996sz8lrj90fn"))))
+        (base32 "16i3yd168kb63za7jpycpb2by4831gz7wi90vzifdf85csc8c70s"))))
     (native-inputs
      (list expat gnu-make minizip which))
     (build-system gnu-build-system)
