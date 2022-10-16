@@ -3084,8 +3084,7 @@ different audio devices such as ALSA or PulseAudio.")
            jack-1
            portaudio
            qtbase-5
-           qtsvg-5
-           qtx11extras))
+           qtsvg-5))
     (native-inputs
      (list pkg-config qttools-5))
     (home-page "https://qjackctl.sourceforge.io/")
