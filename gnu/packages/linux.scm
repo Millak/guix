@@ -2684,14 +2684,15 @@ Both commands are targeted at system administrators.")
         (base32 "13br8s6gqnfc844ps38ya5nny3pndsmskszv3dsp1cxcgvmscg1c"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "UNITDIR=$(PREFIX)/lib/systemd/system")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no ./configure script
+     (list
+      #:tests? #f                       ; no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              "UNITDIR=$(PREFIX)/lib/systemd/system")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))         ; no ./configure script
     (home-page "https://www.chronox.de/jent.html")
     (synopsis "CPU jitter random number generator daemon")
     (description
