@@ -8404,6 +8404,15 @@ composability.")
        #:unpack-path "filippo.io/age"
        #:install-source? #f))))
 
+(define-public age-keygen
+  (package
+    (inherit go-filippo-io-age)
+    (name "age-keygen")
+    (arguments
+     `(#:import-path "filippo.io/age/cmd/age-keygen"
+       #:unpack-path "filippo.io/age"
+       #:install-source? #f))))
+
 (define-public go-filippo-io-edwards25519
   (package
     (name "go-filippo-io-edwards25519")
