@@ -5944,9 +5944,10 @@ form.")
         (base32 "0qblrqrhxml2asgbck53a1v7c4y7ap7jcyqjg500h1i7bb63d680"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-appdefaultdir="
-                            %output ,%app-defaults-dir))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-appdefaultdir="
+                             #$output #$%app-defaults-dir))))
     (inputs
      (list libxaw))
     (native-inputs
