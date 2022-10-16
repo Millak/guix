@@ -8,6 +8,7 @@
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Lu hux <luhux@outlook.com>
+;;; Copyright © 2022 ROCKTAKEY <rocktakey@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -429,3 +430,41 @@ intelligible and easily correctable.")
     (description "sdcv is simple text-based utility for work with dictionaries
 in StarDict's format.")
     (license license:gpl2+)))
+
+(define-public skk-jisyo
+  (let ((commit "38c81dbc74cdbdead843364023dea837f239a48c")
+        (revision "0"))
+    (package
+      (name "skk-jisyo")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/skk-dev/dict")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "121j73bgd7fvj7zvaidqvgzfdvimig3f0vsyfv4vndwfgskh2r7z"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("./" "share/skk"
+                           #:include-regexp ("SKK-JISYO\\.*")
+                           #:exclude-regexp ("\\.gz$" "\\.md5$")
+                           #:exclude ("SKK-JISYO.pubdic+"
+                                      "SKK-JISYO.wrong.annotated"
+                                      "SKK-JISYO.wrong")))
+         #:phases (modify-phases %standard-phases
+                    (add-before 'install 'decompress
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (map (lambda (arg)
+                               (invoke "gzip" "-v" "-d" arg))
+                             (find-files "." "SKK-JISYO\\..*\\.gz$"))
+                        (invoke "tar" "xvf" "zipcode.tar.gz"))))))
+      (home-page "https://skk-dev.github.io/dict/")
+      (synopsis "Jisyo (dictionary) files for the SKK Japanese-input software")
+      (description
+       "This package provides @file{SKK-JISYO.L}, the standard dictionary file
+for SKK Japanese input systems, and various dictionary files.
+@file{SKK-JISYO.L} can be used with @code{emacs-ddskk} or @code{uim} package.")
+      (license license:gpl2+))))
