@@ -649,7 +649,7 @@ hardware works with a fully free operating system or not.")
 (define-public headsetcontrol
   (package
     (name "headsetcontrol")
-    (version "2.6")
+    (version "2.6.1")
     (source
      (origin
        (method git-fetch)
@@ -658,7 +658,7 @@ hardware works with a fully free operating system or not.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a7zimzi71416pmn6z0l1dn1c2x8p702hkd0k6da9rsznff85a88"))))
+        (base32 "1pkgi87wjyris53frw3qmjdqvkzyyl55ikjgn8cidnbr6i3rqls9"))))
     (build-system cmake-build-system)
     (inputs
      (list hidapi))
