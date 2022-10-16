@@ -3935,7 +3935,7 @@ PGP handling, multiple servers, and secure connections.")
 (define-public imapfilter
   (package
     (name "imapfilter")
-    (version "2.7.5")
+    (version "2.7.6")
     (source
      (origin
        (method git-fetch)
@@ -3944,7 +3944,7 @@ PGP handling, multiple servers, and secure connections.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a7f85r3axwclzw1s79zl2l8222nj2gklvvq33w9qv0dz5n71dcx"))))
+        (base32 "0di9gwavgyr1xkd8sfh52ldkn2lq1kdad76ww2x4y0lhimnxw7gc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
