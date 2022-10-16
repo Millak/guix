@@ -1794,17 +1794,14 @@ listed on the command line.")
 (define-public smproxy
   (package
     (name "smproxy")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/smproxy-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "0rkjyzmsdqmlrkx8gy2j4q6iksk58hcc92xzdprkf8kml9ar3wbc"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://xorg/individual/app/smproxy-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "01gkz4n2pfxiklzzx3ghnm9shx3626jcriwvrs3pvawxrhvr5aaa"))))
     (build-system gnu-build-system)
     (inputs
       (list libxt libxmu))
