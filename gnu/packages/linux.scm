@@ -4874,14 +4874,14 @@ about ACPI devices.")
 (define-public acpid
   (package
     (name "acpid")
-    (version "2.0.33")
+    (version "2.0.34")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/acpid2/acpid-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1s6vf8lqwrcqi14k0ww47pk1kifbvxin73ha7mk1njmk7qdzfmh8"))))
+                "0cxkdbd087kj9ikprvvjpk0ixzqbipf2rmj6qyp7r15wzj65q29d"))))
     (build-system gnu-build-system)
     (home-page "https://sourceforge.net/projects/acpid2/")
     (synopsis "Daemon for delivering ACPI events to user-space programs")
