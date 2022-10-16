@@ -607,7 +607,8 @@ This script installs GNU Guix on your system
 
 https://www.gnu.org/software/guix/
 EOF
-    echo -n "Press return to continue..."
+    # Don't use ‘read -p’ here!  It won't display when run non-interactively.
+    echo -n "Press return to continue..."$'\r'
     read -r char
     if [ "$char" ]; then
 	echo
