@@ -2168,58 +2168,15 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
               (sha256
                (base32 "12qxwm1ww5vhjddl8yvj1xa0n1fi9z3lmzwhaiday2v59ca0qgsk"))))
     (build-system waf-build-system)
-    (native-inputs
-     (list perl ; for zsh completion file
-           pkg-config python-docutils))
-    ;; Missing features: libguess, V4L2
-    (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("enca" ,enca)
-       ("ffmpeg" ,ffmpeg)
-       ("jack" ,jack-1)
-       ("ladspa" ,ladspa)
-       ("lcms" ,lcms)
-       ("libass" ,libass)
-       ("libbluray" ,libbluray)
-       ("libcaca" ,libcaca)
-       ("libbs2b" ,libbs2b)
-       ("libcdio-paranoia" ,libcdio-paranoia)
-       ("libdvdread" ,libdvdread)
-       ("libdvdnav" ,libdvdnav)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libva" ,libva)
-       ("libvdpau" ,libvdpau)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxinerama" ,libxinerama)
-       ("libxrandr" ,libxrandr)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("libxv" ,libxv)
-       ;; XXX: lua > 5.2 is not currently supported; see
-       ;; waftools/checks/custom.py
-       ("lua" ,lua-5.2)
-       ("mesa" ,mesa)
-       ("mpg123" ,mpg123)
-       ("pulseaudio" ,pulseaudio)
-       ("rsound" ,rsound)
-       ("shaderc" ,shaderc)
-       ("vulkan-headers" ,vulkan-headers)
-       ("vulkan-loader" ,vulkan-loader)
-       ("waf" ,python-waf)
-       ("wayland" ,wayland)
-       ("wayland-protocols" ,wayland-protocols)
-       ("libxkbcommon" ,libxkbcommon)
-       ("yt-dlp" ,yt-dlp)
-       ("zlib" ,zlib)))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ytdl (assoc-ref inputs "yt-dlp")))
-               (substitute* "player/lua/ytdl_hook.lua"
-                 (("\"yt-dlp\",")
-                  (string-append "\"" ytdl "/bin/yt-dlp\","))))))
+             (substitute* "player/lua/ytdl_hook.lua"
+               (("\"yt-dlp\",")
+                (string-append
+                 "\"" (search-input-file inputs "bin/yt-dlp") "\",")))))
          (add-before 'configure 'build-reproducibly
            (lambda _
              ;; Somewhere in the build system library dependencies are enumerated
@@ -2227,18 +2184,59 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
              ;; varies.  See <https://github.com/mpv-player/mpv/issues/7855>.
              ;; Set PYTHONHASHSEED as a workaround for deterministic results.
              (setenv "PYTHONHASHSEED" "1")))
-         (add-before
-          'configure 'setup-waf
-          (lambda* (#:key inputs #:allow-other-keys)
-            (let ((waf (assoc-ref inputs "waf")))
-              (copy-file (string-append waf "/bin/waf") "waf"))
-            (setenv "CC" "gcc"))))
+         (add-before 'configure 'set-up-waf
+           (lambda* (#:key inputs #:allow-other-keys)
+             (copy-file (search-input-file inputs "/bin/waf") "waf")
+             (setenv "CC" "gcc"))))
        #:configure-flags (list "--enable-libmpv-shared"
                                "--enable-cdda"
                                "--enable-dvdnav"
                                "--disable-build-date")
        ;; No check function defined.
        #:tests? #f))
+    (native-inputs
+     (list perl ; for zsh completion file
+           pkg-config python-docutils))
+    ;; Missing features: libguess, V4L2.
+    (inputs
+     (list alsa-lib
+           enca
+           ffmpeg
+           jack-1
+           ladspa
+           lcms
+           libass
+           libbluray
+           libcaca
+           libbs2b
+           libcdio-paranoia
+           libdvdread
+           libdvdnav
+           libjpeg-turbo
+           libva
+           libvdpau
+           libx11
+           libxext
+           libxkbcommon
+           libxinerama
+           libxrandr
+           libxscrnsaver
+           libxv
+           ;; XXX: lua > 5.2 is not currently supported; see
+           ;; waftools/checks/custom.py
+           lua-5.2
+           mesa
+           mpg123
+           pulseaudio
+           python-waf
+           rsound
+           shaderc
+           vulkan-headers
+           vulkan-loader
+           wayland
+           wayland-protocols
+           yt-dlp
+           zlib))
     (home-page "https://mpv.io/")
     (synopsis "Audio and video player")
     (description "mpv is a general-purpose audio and video player.  It is a
