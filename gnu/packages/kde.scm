@@ -167,9 +167,9 @@ This package contains GUI widgets for baloo.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/akregator"))
-                    (qt-process-path (string-append
-                                       (assoc-ref inputs "qtwebengine-5")
-                                       "/lib/qt5/libexec/QtWebEngineProcess")))
+                    (qt-process-path
+                     (search-input-file
+                      inputs "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
                  `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (native-inputs
