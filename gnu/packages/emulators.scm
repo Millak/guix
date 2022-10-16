@@ -426,13 +426,13 @@ older games.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("fluidsynth" ,fluidsynth)
-       ("libpng" ,libpng)
-       ("mesa" ,mesa)
-       ("opusfile" ,opusfile)
-       ("sdl2" ,(sdl-union (list sdl2 sdl2-net)))
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           fluidsynth
+           libpng
+           mesa
+           opusfile
+           (sdl-union (list sdl2 sdl2-net))
+           zlib))
     (home-page "https://dosbox-staging.github.io")
     (synopsis "DOS/x86 PC emulator focusing on ease of use")
     (description
