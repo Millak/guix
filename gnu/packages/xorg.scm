@@ -5602,14 +5602,14 @@ The XCB util module provides the following libraries:
 (define-public xcb-util-cursor
   (package
     (name "xcb-util-cursor")
-    (version "0.1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://xcb.freedesktop.org/dist/"
-                                  "xcb-util-cursor-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0krr4rcw6r42cncinzvzzdqnmxk3nrgpnadyg2h8k9x10q3hm885"))))
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://xcb.freedesktop.org/dist/"
+                           "xcb-util-cursor-" version ".tar.xz"))
+       (sha256
+        (base32 "1yria9h0vqpblkgzqhpygk3rraijd3mmipg0mdhkayxbpj8gxp18"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
