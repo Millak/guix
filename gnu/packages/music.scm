@@ -2284,7 +2284,7 @@ perform creative live mixes with digital music files.")
 (define-public synthv1
   (package
     (name "synthv1")
-    (version "0.9.26")
+    (version "0.9.27")
     (source (origin
               (method url-fetch)
               (uri
@@ -2292,7 +2292,7 @@ perform creative live mixes with digital music files.")
                               "/synthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1asikh341f3vblrl8l07yakza80ybs8sid3n2qpsrvigaz3iymcd"))))
+                "13qcig5j69qzcxqs9w5x9shrbb6vyj00g2fz1jw1kxramppyvcvg"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
