@@ -2169,31 +2169,33 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                (base32 "12qxwm1ww5vhjddl8yvj1xa0n1fi9z3lmzwhaiday2v59ca0qgsk"))))
     (build-system waf-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "player/lua/ytdl_hook.lua"
-               (("\"yt-dlp\",")
-                (string-append
-                 "\"" (search-input-file inputs "bin/yt-dlp") "\",")))))
-         (add-before 'configure 'build-reproducibly
-           (lambda _
-             ;; Somewhere in the build system library dependencies are enumerated
-             ;; and passed as linker flags, but the order in which they are added
-             ;; varies.  See <https://github.com/mpv-player/mpv/issues/7855>.
-             ;; Set PYTHONHASHSEED as a workaround for deterministic results.
-             (setenv "PYTHONHASHSEED" "1")))
-         (add-before 'configure 'set-up-waf
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-file (search-input-file inputs "/bin/waf") "waf")
-             (setenv "CC" "gcc"))))
-       #:configure-flags (list "--enable-libmpv-shared"
-                               "--enable-cdda"
-                               "--enable-dvdnav"
-                               "--disable-build-date")
-       ;; No check function defined.
-       #:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-file-names
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "player/lua/ytdl_hook.lua"
+		(("\"yt-dlp\",")
+                 (string-append
+                  "\"" (search-input-file inputs "bin/yt-dlp") "\",")))))
+          (add-before 'configure 'build-reproducibly
+            (lambda _
+              ;; Somewhere in the build system library dependencies are enumerated
+              ;; and passed as linker flags, but the order in which they are added
+              ;; varies.  See <https://github.com/mpv-player/mpv/issues/7855>.
+              ;; Set PYTHONHASHSEED as a workaround for deterministic results.
+              (setenv "PYTHONHASHSEED" "1")))
+          (add-before 'configure 'set-up-waf
+            (lambda* (#:key inputs #:allow-other-keys)
+              (copy-file (search-input-file inputs "bin/waf") "waf")
+              (setenv "CC" "gcc"))))
+      #:configure-flags
+      #~(list "--enable-libmpv-shared"
+              "--enable-cdda"
+              "--enable-dvdnav"
+              "--disable-build-date")
+      ;; No check function defined.
+      #:tests? #f))
     (native-inputs
      (list perl ; for zsh completion file
            pkg-config python-docutils))
