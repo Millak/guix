@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -34,6 +34,7 @@
   #:use-module (guix store)
   #:autoload   (guix base16) (bytevector->base16-string)
   #:use-module (guix base32)
+  #:autoload   (guix base64) (base64-encode)
   #:use-module (guix build-system)
   #:use-module (guix diagnostics)
   #:use-module (guix download)
@@ -63,6 +64,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 format)
+  #:autoload   (rnrs bytevectors) (string->utf8)
   #:use-module (web client)
   #:use-module (web uri)
   #:use-module ((guix build download)
@@ -721,8 +723,14 @@ response from URI, and additional details, such as the actual HTTP response.
 TIMEOUT is the maximum number of seconds (possibly an inexact number) to wait
 for connections to complete; when TIMEOUT is #f, wait as long as needed."
   (define headers
-    '((User-Agent . "GNU Guile")
-      (Accept . "*/*")))
+    `((User-Agent . "GNU Guile")
+      (Accept . "*/*")
+      ,@(match (uri-userinfo uri)
+          ((? string? str)                        ;"basic authentication"
+           `((Authorization . ,(string-append "Basic "
+                                              (base64-encode
+                                               (string->utf8 str))))))
+          (_ '()))))
 
   (let loop ((uri     uri)
              (visited '()))
