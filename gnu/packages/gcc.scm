@@ -778,6 +778,10 @@ It also includes runtime support libraries for these languages.")
                        (("/lib/ld\\.so\\.1")
                         (search-input-file
                           inputs #$(glibc-dynamic-linker matching-system))))
+                     (substitute* "gcc/config/i386/gnu.h"
+                       (("/lib/ld\\.so")
+                        (search-input-file
+                          inputs #$(glibc-dynamic-linker matching-system))))
                      (substitute* '("gcc/config/alpha/linux-elf.h"
                                     "gcc/config/arm/linux-elf.h"
                                     "gcc/config/i386/linux.h"
