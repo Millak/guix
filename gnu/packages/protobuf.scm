@@ -31,6 +31,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system ruby)
@@ -285,22 +286,11 @@ any memory-restricted system.")
               (sha256
                (base32
                 "0z03h9k68qvnlyhpk0ndwp01bdx77vrjr6mybxq4ldilkkbksklk"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
           (add-before 'check 'generate-protos-for-tests
             (lambda _
               ;; Generate Python sources.
@@ -324,7 +314,6 @@ any memory-restricted system.")
     (native-inputs
      (list python-grpc-stubs
            python-grpcio-tools
-           python-pypa-build
            python-pytest
            python-typing-extensions-next))
     (propagated-inputs
