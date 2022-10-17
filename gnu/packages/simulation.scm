@@ -63,6 +63,7 @@
   #:use-module (guix svn-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -835,7 +836,7 @@ tools and a collection of Python modules for programmatic use.")
        (sha256
         (base32
          "11flp2c4ynk1fhanf4mqyzrpd0gjbnv6afrwwc7xi3mb6ms69lr0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -845,21 +846,8 @@ tools and a collection of Python modules for programmatic use.")
               ;; Due to lack of metadata, the gmsh Python package is not
               ;; detected although importable.
               (substitute* "pyproject.toml"
-                (("\"gmsh\",") ""))))
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-v" "tests"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
-    (native-inputs (list python-pypa-build python-flit-core python-pytest))
+                (("\"gmsh\",") "")))))))
+    (native-inputs (list python-flit-core python-pytest))
     (propagated-inputs (list gmsh python-meshio python-numpy))
     (home-page "https://github.com/nschloe/pygmsh")
     (synopsis "Python frontend for Gmsh")
