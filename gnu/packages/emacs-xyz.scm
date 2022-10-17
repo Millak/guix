@@ -20358,8 +20358,7 @@ navigate and display hierarchy structures.")
                (base32
                 "1n6g6k4adzkkn1g7z4j27s35xy12c1fg2r08gv345ddr3wplq4ri"))))
     (propagated-inputs
-     (list emacs-hierarchy emacs-request emacs-dash emacs-s
-           emacs-tree-mode))
+     (list emacs-dash emacs-request emacs-s emacs-tree-mode))
     (build-system emacs-build-system)
     (home-page "https://github.com/ahungry/md4rd")
     (synopsis "Emacs Mode for Reddit")
