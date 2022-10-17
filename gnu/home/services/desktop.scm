@@ -201,7 +201,7 @@ according to time of day.")))
                                      (format #f "/run/user/~a"
                                              (getuid)))))
                    #:environment-variables
-                   '(list "DBUS_VERBOSE=1")
+                   '("DBUS_VERBOSE=1")
                    #:log-file
                    (format #f "~a/dbus.log"
                            (or (getenv "XDG_LOG_HOME")
