@@ -41,6 +41,27 @@
 ;;;
 ;;; Code:
 
+(define-public python-pip
+  (package
+    (name "python-pip")
+    (version "22.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pip" version))
+       (sha256
+        (base32
+         "0jwac0bhfp48w4fqibf1ysrs2grksdv92hwqm7bmdw2jn2fr5l9z"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:tests? #f))          ; there are no tests in the pypi archive.
+    (home-page "https://pip.pypa.io/")
+    (synopsis "Package manager for Python software")
+    (description
+     "Pip is a package manager for Python software, that finds packages on the
+Python Package Index (PyPI).")
+    (license license:expat)))
+
 (define-public python-setuptools
   (package
     (name "python-setuptools")

@@ -12835,27 +12835,6 @@ fakes, or doubles.  Basically, a stub is an object that returns pre-canned
 responses, rather than doing any computation.")
     (license license:bsd-3)))
 
-(define-public python-pip
-  (package
-    (name "python-pip")
-    (version "22.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pip" version))
-       (sha256
-        (base32
-         "0jwac0bhfp48w4fqibf1ysrs2grksdv92hwqm7bmdw2jn2fr5l9z"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f))          ; there are no tests in the pypi archive.
-    (home-page "https://pip.pypa.io/")
-    (synopsis "Package manager for Python software")
-    (description
-     "Pip is a package manager for Python software, that finds packages on the
-Python Package Index (PyPI).")
-    (license license:expat)))
-
 ;;; Variant used to break a dependency cycle with
 ;;; python-pytest-perf-bootstrap.
 (define-public python-pip-run-bootstrap
