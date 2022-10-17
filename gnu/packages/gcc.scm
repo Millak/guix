@@ -745,7 +745,10 @@ It also includes runtime support libraries for these languages.")
                   (delete-file-recursively "texinfo")
                   (substitute* "configure"
                     (("host_tools=(.*)texinfo" _ before)
-                     (string-append "host_tools=" before)))))))
+                     (string-append "host_tools=" before)))
+                  ;; Fix building on arm* with gcc-4+
+                  (substitute* "gcc/config/arm/arm.c"
+                    (("arm_prog_mode") "arm_prgmode"))))))
     (supported-systems (fold delete %supported-systems
                              '("powerpc64le-linux" "riscv64-linux")))
     (native-inputs (list texinfo dejagnu))
