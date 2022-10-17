@@ -920,28 +920,28 @@ Octave.  TeXmacs is completely extensible via Guile.")
        #:glib-or-gtk? #t))
     (build-system meson-build-system)
     (native-inputs
-     (list pkg-config
-           vala
-           desktop-file-utils
-           appstream-glib
-           gettext-minimal
+     (list appstream-glib
            blueprint-compiler
+           desktop-file-utils
+           gettext-minimal
            `(,glib "bin")
-           `(,gtk "bin")))
+           `(,gtk "bin")
+           pkg-config
+           vala))
     (inputs
-     (list json-glib
+     (list gtk
+           gtksourceview
+           json-glib
            libadwaita
            libgee
            python
            python-pygobject
-           python-pyyaml
-           gtk
-           gtksourceview))
+           python-pyyaml))
     (home-page "https://github.com/liferooter/textpieces")
     (synopsis "Quick text processor")
     (description
-     "Text Pieces tool for quick text transformations such as checksums,
-encoding, decoding and so on.
+     "Text Pieces is a tool for quick text transformations such as checksums,
+encoding, decoding, etc.
 
 The basic features of Text Pieces are:
 @itemize
