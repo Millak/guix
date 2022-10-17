@@ -370,6 +370,50 @@ required structures.")
               ,@(alist-delete "guile"
                               (package-inputs gnutls))))))
 
+(define-public guile-gnutls
+  (package
+    ;; This package supersedes the Guile bindings that came with GnuTLS until
+    ;; version 3.7.8 included.
+    (name "guile-gnutls")
+    (version "3.7.9")
+    (home-page "https://gitlab.com/gnutls/guile/")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "00sfpqjmd263ka51fq4xf7nvaaxyfqsr3r8fj94jgx45q6q6n6wq"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags
+       ;; Tell the build system that we want Guile bindings installed to
+       ;; the output instead of Guiles own module directory.
+       (list "--disable-static"
+             (string-append "--with-guile-site-dir="
+                            "$(datarootdir)/guile/site/$(GUILE_EFFECTIVE_VERSION)")
+             (string-append "--with-guile-site-ccache-dir="
+                            "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache")
+             (string-append "--with-guile-extension-dir="
+                            "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions"))))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           pkg-config
+           texinfo
+           guile-3.0))
+    (inputs
+     (list gnutls-latest))
+    (synopsis "Guile bindings to GnuTLS")
+    (description
+     "This package provides Guile bindings to GnuTLS, a library implementation
+the @acronym{TLS, Transport-Layer Security} protocol.  It supersedes the Guile
+bindings that were formerly provided as part of GnuTLS.")
+    (license license:lgpl2.1+)))
+
 (define (target->openssl-target target)
   "Return the value to set CONFIGURE_TARGET_ARCH to when cross-compiling
 OpenSSL for TARGET."
