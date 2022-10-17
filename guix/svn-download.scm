@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2016, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Sree Harsha Totakura <sreeharsha@totakura.in>
 ;;; Copyright © 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;;
@@ -79,17 +79,42 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
     (with-imported-modules '((guix build svn)
                              (guix build utils))
       #~(begin
-          (use-modules (guix build svn))
-          (svn-fetch '#$(svn-reference-url ref)
-                     '#$(svn-reference-revision ref)
+          (use-modules (guix build svn)
+                       (ice-9 match))
+
+          (svn-fetch (getenv "svn url")
+                     (string->number (getenv "svn revision"))
                      #$output
-                     #:svn-command (string-append #+svn "/bin/svn")
-                     #:recursive? #$(svn-reference-recursive? ref)
-                     #:user-name #$(svn-reference-user-name ref)
-                     #:password #$(svn-reference-password ref)))))
+                     #:svn-command #+(file-append svn "/bin/svn")
+                     #:recursive? (match (getenv "svn recursive?")
+                                    ("yes" #t)
+                                    (_ #f))
+                     #:user-name (getenv "svn user name")
+                     #:password (getenv "svn password")))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "svn-checkout") build
+
+                      ;; Use environment variables and a fixed script name so
+                      ;; there's only one script in store for all the
+                      ;; downloads.
+                      #:script-name "svn-download"
+                      #:env-vars
+                      `(("svn url" . ,(svn-reference-url ref))
+                        ("svn revision"
+                         . ,(number->string (svn-reference-revision ref)))
+                        ,@(if (svn-reference-recursive? ref)
+                              `(("svn recursive?" . "yes"))
+                              '())
+                        ,@(if (svn-reference-user-name ref)
+                              `(("svn user name"
+                                 . ,(svn-reference-user-name ref)))
+                              '())
+                        ,@(if (svn-reference-password ref)
+                              `(("svn password"
+                                 . ,(svn-reference-password ref)))
+                              '()))
+
                       #:system system
                       #:hash-algo hash-algo
                       #:hash hash
