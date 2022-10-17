@@ -259,6 +259,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1)
@@ -7127,33 +7128,16 @@ run simple @code{argparse} parsers from function signatures.")
               (sha256
                (base32
                 "169ixll1ncm2a2pcc86665ikjv2lrzs10p6c1w4yj55p3gk3xgh1"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; Do a manual PEP 517 style build/install procedure until the
-          ;; python-build-system overhaul is merged.
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (let ((circa-1980 (* 10 366 24 60 60)))
-                (setenv "SOURCE_DATE_EPOCH" (number->string circa-1980))
-                (invoke "python" "-m" "build" "--wheel" "--no-isolation" "."))))
           (add-before 'check 'disable-e2e-tests
             (lambda _
               ;; These tests rely on KeyboardInterrupts which do not
               ;; work in the build container.
-              (delete-file "autopage/tests/test_end_to_end.py")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+              (delete-file "autopage/tests/test_end_to_end.py"))))))
     (native-inputs
      (list python-pypa-build
            python-setuptools
