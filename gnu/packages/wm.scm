@@ -58,6 +58,7 @@
 ;;; Copyright © 2022 Elais Player <elais@fastmail.com>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2022 Fredrik Salomonsson <plattfot@posteo.net>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1807,17 +1808,32 @@ core/thread.")
   (package
     (name "mako")
     (version "1.7.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/emersion/mako")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0vpar1a7zafkd2plmyaackgba6fyg35s9zzyxmj8j7v2q5zxirgz"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/mako")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vpar1a7zafkd2plmyaackgba6fyg35s9zzyxmj8j7v2q5zxirgz"))))
     (build-system meson-build-system)
-    (inputs (list basu cairo gdk-pixbuf pango wayland))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-makoctl
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "makoctl"
+                     (("^BUSCTL=.*$")
+                      (string-append
+                       "BUSCTL="
+                       (search-input-file inputs "bin/basuctl")
+                       "\n"))
+                     (("jq ")
+                      (string-append
+                       (search-input-file inputs "bin/jq")
+                       " "))))))))
+    (inputs (list basu cairo gdk-pixbuf jq pango wayland))
     (native-inputs (list pkg-config scdoc wayland-protocols))
     (home-page "https://wayland.emersion.fr/mako")
     (synopsis "Lightweight Wayland notification daemon")
