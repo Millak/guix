@@ -23803,28 +23803,25 @@ searches with @code{ripgrep}.")
       (license license:gpl3+))))
 
 (define-public emacs-focus
-  (let ((commit "5f3f20e7f22fb9fd7c48abce8bd38061d97e4bc0")
-        (version "1.0.0")
-        (revision "1"))
-    (package
-      (name "emacs-focus")
-      (version (git-version version revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/larstvei/Focus")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0a55i4bychfnnzjg67a9h4j130hchcg44446dwwx1l1h48i692dw"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/larstvei/Focus")
-      (synopsis "Minor mode for focusing in on relevant text")
-      (description "This package provides a minor mode that dims the color of
+  (package
+    (name "emacs-focus")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/larstvei/Focus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0qbzbs18isxyf5yiz64vyxvzjpfjdaafxnas2lhx3sjkgglb08i2"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/larstvei/Focus")
+    (synopsis "Minor mode for focusing in on relevant text")
+    (description "This package provides a minor mode that dims the color of
 text in neighboring sections.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-pandoc-mode
   (package
