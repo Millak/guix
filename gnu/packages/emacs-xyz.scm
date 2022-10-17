@@ -16453,7 +16453,7 @@ Emacs.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1mx2b7ljwvmfl5d0w9m7i1i900198lsdx1cpi8n7wq58h5df88p9"))))
+         "030837yak24ymjawsfr1hgyfdjy3k30ld1ca0cgnrxhgxc7p8hwv"))))
     (build-system emacs-build-system)
     (arguments
      (list
