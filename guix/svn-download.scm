@@ -145,27 +145,53 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
       #~(begin
           (use-modules (guix build svn)
                        (guix build utils)
-                       (srfi srfi-1))
-          (every (lambda (location)
-                   ;; The directory must exist if we are to fetch only a
-                   ;; single file.
-                   (unless (string-suffix? "/" location)
-                     (mkdir-p (string-append #$output "/" (dirname location))))
-                   (svn-fetch (string-append '#$(svn-multi-reference-url ref)
-                                             "/" location)
-                              '#$(svn-multi-reference-revision ref)
-                              (if (string-suffix? "/" location)
-                                  (string-append #$output "/" location)
-                                  (string-append #$output "/" (dirname location)))
-                              #:svn-command (string-append #+svn "/bin/svn")
-                              #:recursive?
-                              #$(svn-multi-reference-recursive? ref)
-                              #:user-name #$(svn-multi-reference-user-name ref)
-                              #:password #$(svn-multi-reference-password ref)))
-                 '#$(sexp->gexp (svn-multi-reference-locations ref))))))
+                       (srfi srfi-1)
+                       (ice-9 match))
+
+          (for-each (lambda (location)
+                      ;; The directory must exist if we are to fetch only a
+                      ;; single file.
+                      (unless (string-suffix? "/" location)
+                        (mkdir-p (string-append #$output "/" (dirname location))))
+                      (svn-fetch (string-append (getenv "svn url") "/" location)
+                                 (string->number (getenv "svn revision"))
+                                 (if (string-suffix? "/" location)
+                                     (string-append #$output "/" location)
+                                     (string-append #$output "/" (dirname location)))
+                                 #:svn-command #+(file-append svn "/bin/svn")
+                                 #:recursive? (match (getenv "svn recursive?")
+                                                ("yes" #t)
+                                                (_ #f))
+                                 #:user-name (getenv "svn user name")
+                                 #:password (getenv "svn password")))
+                    (call-with-input-string (getenv "svn locations")
+                      read)))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "svn-checkout") build
+
+                      ;; Use environment variables and a fixed script name so
+                      ;; there's only one script in store for all the
+                      ;; downloads.
+                      #:script-name "svn-multi-download"
+                      #:env-vars
+                      `(("svn url" . ,(svn-multi-reference-url ref))
+                        ("svn locations"
+                         . ,(object->string (svn-multi-reference-locations ref)))
+                        ("svn revision"
+                         . ,(number->string (svn-multi-reference-revision ref)))
+                        ,@(if (svn-multi-reference-recursive? ref)
+                              `(("svn recursive?" . "yes"))
+                              '())
+                        ,@(if (svn-multi-reference-user-name ref)
+                              `(("svn user name"
+                                 . ,(svn-multi-reference-user-name ref)))
+                              '())
+                        ,@(if (svn-multi-reference-password ref)
+                              `(("svn password"
+                                 . ,(svn-multi-reference-password ref)))
+                              '()))
+
                       #:leaked-env-vars '("http_proxy" "https_proxy"
                                           "LC_ALL" "LC_MESSAGES" "LANG"
                                           "COLUMNS")
