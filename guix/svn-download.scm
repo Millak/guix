@@ -34,6 +34,8 @@
             svn-reference-url
             svn-reference-revision
             svn-reference-recursive?
+            svn-reference-user-name
+            svn-reference-password
             svn-fetch
             download-svn-to-store
 
@@ -43,6 +45,8 @@
             svn-multi-reference-revision
             svn-multi-reference-locations
             svn-multi-reference-recursive?
+            svn-multi-reference-user-name
+            svn-multi-reference-password
             svn-multi-fetch
             download-multi-svn-to-store))
 
