@@ -1497,9 +1497,11 @@ manipulating PDF documents from the command line.  It supports
        (sha256
         (base32
          "08l0yaqg0rxnb2r3x4baf4wng5pxpjbyalnrl4glwh9l69740q7p"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags #~(list "-vv" "-c" "/dev/null"
+                           "-n" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-library-paths
@@ -1520,21 +1522,7 @@ manipulating PDF documents from the command line.  It supports
                 (("'pangoft2-1.0-0'")
                  (format #f "~s"
                          (search-input-file inputs
-                                            "lib/libpangoft2-1.0.so"))))))
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "-c" "/dev/null"
-                        "-n" (number->string (parallel-job-count))))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+                                            "lib/libpangoft2-1.0.so")))))))))
     (inputs (list fontconfig glib harfbuzz pango))
     (propagated-inputs
      (list gdk-pixbuf
@@ -1552,7 +1540,6 @@ manipulating PDF documents from the command line.  It supports
      (list font-dejavu                  ;tests depend on it
            ghostscript
            python-flit-core
-           python-pypa-build
            python-pytest
            python-pytest-xdist))
     (home-page "https://weasyprint.org/")
