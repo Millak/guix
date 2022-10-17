@@ -8843,6 +8843,30 @@ codes.")
     ;; Quad-licensed: Perl Artistic, Perl Artistic 2.0, X11, and BSD.
     (license (list (package-license perl) license:x11 license:bsd-3))))
 
+(define-public perl-regexp-grammars
+  (package
+    (name "perl-regexp-grammars")
+    (version "1.058")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DC/DCONWAY/Regexp-Grammars-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "14hwskrmy6ma0k9nr1amrf7wpb1f6jsx7x29kgizlx0n4n7db27a"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-pod perl-moose))
+    (home-page "https://metacpan.org/release/Regexp-Grammars")
+    (synopsis "Complete recursive descent parser on Perl's regex engine")
+    (description
+     "The @code{Regexp::Grammars} module adds a small number of new
+regex constructs that can be used within Perl 5.10 patterns to implement
+complete recursive-descent parsing.  It allows you to go beyond matching
+complex, nested and recursive structures, and allows you to parse and extract
+hierarchical data from it.")
+    (license license:perl-license)))
+
 (define-public perl-regexp-util
   (package
     (name "perl-regexp-util")
