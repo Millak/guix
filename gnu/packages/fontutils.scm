@@ -1564,12 +1564,11 @@ generate bitmaps.")
               (sha256
                (base32
                 "0qavzspxhwnaayj5mxq6ncjjziggabxj157ls04h2rdrpq167706"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
           (add-after 'unpack 'adjust-for-older-attrs
             ;; Our older attrs package is using the 'attr' rather than 'attrs'
             ;; namespace.
@@ -1586,27 +1585,9 @@ generate bitmaps.")
                 (("@attrs")
                  "@attr")
                 (("\\battrs\\.")
-                 "attr."))))
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "tests"
-                        ;;"-n" (number->string (parallel-job-count))
-                        ;; This test requires orjson, which needs the maturin
-                        ;; build system and new Rust dependencies.
-                        ;;"--ignore" "tests/test_preconf.py"
-                        )))))))
+                 "attr.")))))))
     (native-inputs
      (list python-poetry-core
-           python-pypa-build
            python-pytest
            python-ufo2ft))
     (propagated-inputs
