@@ -21390,30 +21390,13 @@ particularly convenient for use in tests.")
        (uri (pypi-uri "tempora" version))
        (sha256
         (base32 "09wirlk5vmxlhl9rnxp7g5qz2nsd6b0gnzk5fczbz0s8lsbz386b"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Do not test the myproject.toml build as it tries to pull
-                ;; dependencies from the Internet.
-                (invoke "pytest" "-k" "not project")))))))
+     ;; Do not test the myproject.toml build as it tries to pull
+     ;; dependencies from the Internet.
+     (list #:test-flags #~'("-vv" "-k" "not project")))
     (native-inputs
-     (list python-pypa-build
-           python-freezegun
+     (list python-freezegun
            python-pytest
            python-pytest-black
            python-pytest-checkdocs
