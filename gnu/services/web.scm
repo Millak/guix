@@ -820,13 +820,7 @@ of index files."
                (shepherd-action
                  (name 'reload)
                  (documentation "Reload NGINX configuration file and restart worker processes.")
-                 (procedure
-                   #~(lambda (pid)
-                       (if pid
-                         (begin
-                           (kill pid SIGHUP)
-                           (format #t "Service NGINX (PID ~a) has been reloaded." pid))
-                         (format #t "Service NGINX is not running."))))))))))))
+                 (procedure (nginx-action "-s" "reload"))))))))))
 
 (define nginx-service-type
   (service-type (name 'nginx)
