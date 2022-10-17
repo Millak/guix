@@ -49,6 +49,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
@@ -735,28 +736,14 @@ extracting content or merging files.")
        (uri (pypi-uri "pydyf" version))
        (sha256
         (base32 "18q43g5d9455msipcgd5fvnh8m4a2rz189slzfg80yycjw66rshs"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "-c" "/dev/null")))))))
+      #:test-flags #~'("-vv" "-c" "/dev/null")))
     (propagated-inputs (list python-pillow))
     (native-inputs
      (list ghostscript
            python-flit-core
-           python-pypa-build
            python-pytest))
     (home-page "https://github.com/CourtBouillon/pydyf")
     (synopsis "Low-level PDF generator")
