@@ -46,6 +46,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -359,6 +360,33 @@ for parsing and rendering CommonMark.")
     ;; licensed. The CommonMark specification is Creative Commons CC-BY-SA 4.0
     ;; licensed. See 'COPYING' in the source distribution for more information.
     (license (list license:bsd-2 license:expat license:cc-by-sa4.0))))
+
+(define-public perl-commonmark
+  (package
+    (name "perl-commonmark")
+    (version "0.290000")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/N/NW/NWELLNHOF/CommonMark-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1pgaqa4f00i9r5z7l9xiya0q51ysq0nhpvgr0f3rza3cxz1v80d5"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:make-maker-flags
+       ;; MakeMaker ignores LIBRARY_PATH.
+       (list (format #f "LIBS=-L~a/lib -lcmark"
+                     (assoc-ref %build-inputs "cmark")))))
+    (inputs (list cmark perl-test-leaktrace perl-devel-checklib
+                  perl-module-build))
+    (home-page "https://metacpan.org/release/CommonMark")
+    (synopsis "Interface to the CommonMark C library")
+    (description
+     "This module is an XS wrapper around the official
+CommonMark C library libcmark.  It closely follows the original API.")
+    (license license:perl-license)))
 
 (define-public cmark-gfm
   (package
