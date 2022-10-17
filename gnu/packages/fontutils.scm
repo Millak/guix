@@ -1615,31 +1615,9 @@ with @samp{nameIDs}.")
        (uri (pypi-uri "ufoLib2" version))
        (sha256
         (base32 "0yx4i8q5rfyqhr2fj70a7z1bp1jv7bdlr64ww9z4nv9ycbda4x9j"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pypa-build
-           python-pytest
-           python-setuptools-scm
-           python-wheel))
+     (list python-pytest python-setuptools-scm))
     (propagated-inputs (list python-attrs python-fonttools-full))
     (home-page "https://github.com/fonttools/ufoLib2")
     (synopsis "Unified Font Object (UFO) font processing library")
