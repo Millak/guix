@@ -20295,31 +20295,6 @@ successive level is highlighted in a different color.  This makes it easy to
 orient yourself in the code, and tell which statements are at a given level.")
       (license license:gpl3+))))
 
-(define-public emacs-hierarchy
-  (package
-    (name "emacs-hierarchy")
-    (version "0.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/DamienCassou/hierarchy")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1kykbb1sil5cycfa5aj8dhsxc5yrx1641i2np5kwdjid6ahdlz5r"))))
-    (build-system emacs-build-system)
-    (native-inputs
-     (list emacs-buttercup))
-    (arguments
-     `(#:tests? #t
-       #:test-command '("buttercup" "-L" ".")))
-    (home-page "https://github.com/DamienCassou/hierarchy")
-    (synopsis "Library to create and display hierarchy structures")
-    (description "This package provides an Emacs library to create, query,
-navigate and display hierarchy structures.")
-    (license license:gpl3+)))
-
 (define-public emacs-tree-mode
   (let ((commit "b06078826d5875d74b0e7b7ac47b0d0917610534")
         (revision "1"))
