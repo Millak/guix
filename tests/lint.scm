@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
@@ -35,6 +35,7 @@
   #:use-module (guix tests http)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix svn-download)
   #:use-module (guix build-system texlive)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
@@ -1084,6 +1085,35 @@
                               ; unreachable
                 (and (? lint-warning?) second-warning))
                (lint-warning-message second-warning)))))))))
+
+(test-equal "source: svn-reference, HTTP 200"
+  '()
+  (with-http-server `((200 ,%long-string))
+    (let ((pkg (package
+                 (inherit (dummy-package "x"))
+                 (source (origin
+                           (method svn-fetch)
+                           (uri (svn-reference
+                                 (url (%local-url))
+                                 (revision 1234)))
+                           (sha256 %null-sha256))))))
+      (check-source pkg))))
+
+(with-http-server `((404 ,%long-string))
+  (test-equal "source: svn-reference, HTTP 404"
+    (format #f "URI ~a not reachable: 404 (\"Such is life\")"
+            (%local-url))
+    (let ((pkg (package
+                 (inherit (dummy-package "x"))
+                 (source (origin
+                           (method svn-fetch)
+                           (uri (svn-reference
+                                 (url (%local-url))
+                                 (revision 1234)))
+                           (sha256 %null-sha256))))))
+      (match (check-source pkg)
+        ((warning)
+         (lint-warning-message warning))))))
 
 (test-equal "mirror-url"
   '()
