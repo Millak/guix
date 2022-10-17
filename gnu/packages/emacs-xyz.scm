@@ -13967,26 +13967,28 @@ characters.")
       (license license:gpl3+))))
 
 (define-public emacs-ob-sclang
-  (package
-    (inherit emacs-org-contrib)
-    (name "emacs-ob-sclang")
-    (source
-     (origin
-       (inherit (package-source emacs-org-contrib))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (with-directory-excursion "lisp"
-             (for-each (lambda (file)
-                         (unless (equal? file "./ob-sclang.el")
-                           (delete-file file)))
-                       (find-files "." "\\.el$")))))))
-    (propagated-inputs
-     (list emacs-org emacs-scel))
-    (synopsis "Org Babel support for SuperCollider")
-    (description "This package adds support for evaluating @code{sclang}
-Org mode source blocks.  It is extracted from the @code{emacs-org-contrib}
-package.")))
+  (let ((commit "cd3f3c847d8149cd4ce4a775942dac88ba92c772")
+        (revision "1"))
+    (package
+      (name "emacs-ob-sclang")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://repo.or.cz/ob-sclang")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0dr8va2v0262plqxd63yxymqiffkql9klci7wsp5i7xgpka8925q"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-org emacs-scel))
+      (home-page "https://repo.or.cz/ob-sclang")
+      (synopsis "Org Babel support for SuperCollider")
+      (description "This package adds support for evaluating @code{sclang} Org
+mode source blocks.")
+      (license license:gpl3+))))
 
 (define-public emacs-org-edna
   (package
