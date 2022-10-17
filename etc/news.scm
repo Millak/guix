@@ -30,7 +30,8 @@
         (title
          (en "New @option{--emulate-fhs} option for @command{guix shell}")
          (de "Neue Option @option{--emulate-fhs} für @command{guix shell}")
-         (fr "Nouvelle option @option{--emulate-fhs} pour @command{guix shell}"))
+         (fr "Nouvelle option @option{--emulate-fhs} pour @command{guix shell}")
+         (pt "Nova opção @option{--emulate-fhs} para o @command{guix shell}"))
         (body
          (en "The @command{guix shell} command has a new
 @option{--emulate-fhs} (or @option{-F}) option.  Combined with
@@ -76,7 +77,22 @@ guix shell -CF coreutils -- /bin/ls
 @end example
 
 Lancer @command{info \"(guix.fr) Invoquer guix shell\"} pour plus
-d'informations.")))
+d'informations.")
+         (pt "O comando @command{guix shell} tem uma nova opção
+@option{--emulate-fhs} (ou @option{-F}).  Combinada com
+@option{--container} (ou @option{-C}), ela emula o layout de arquivos e
+diretórios especificado pelo Padrão de Hierarquia do Sistema de
+Arquivos (Filesystem Hierarchy Standard — FHS), provendo @file{/bin},
+@file{/lib}, etc. dentro do contêiner.
+
+Por exemplo, o comando seguinte executa @file{/bin/ls} dentro de um contêiner
+desse tipo:
+
+@example
+guix shell -CF coreutils -- /bin/ls
+@end example
+
+Execute @command{info \"(guix) Invoking guix shell\"} para mais informações.")))
 
  (entry (commit "28ade1bab207974cce6a014e7187968511fc5526")
         (title
