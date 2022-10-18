@@ -63400,31 +63400,6 @@ Rust.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-tokio" ,rust-tokio-0.2))))))
 
-(define-public rust-tokio-socks-0.2
-  (package
-    (inherit rust-tokio-socks-0.3)
-    (name "rust-tokio-socks")
-    (version "0.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tokio-socks" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1bwdjafbbs0907w42dl899inykflz4gbm026wh097q151s57i5qr"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bytes" ,rust-bytes-0.4)
-        ("rust-either" ,rust-either-1)
-        ("rust-futures" ,rust-futures-0.3)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tokio" ,rust-tokio-0.2))
-       #:cargo-development-inputs
-       (("rust-hyper" ,rust-hyper-0.13)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-tokio" ,rust-tokio-0.2))))))
-
 (define-public rust-tokio-stream-0.1
   (package
     (name "rust-tokio-stream")
