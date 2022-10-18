@@ -645,6 +645,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
 (define cran->guix-package
   (memoize
    (lambda* (package-name #:key (repo 'cran) version (license-prefix identity)
+                          (fetch-description fetch-description)
                           #:allow-other-keys)
      "Fetch the metadata for PACKAGE-NAME from REPO and return the `package'
 s-expression corresponding to that package, or #f on failure."
