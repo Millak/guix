@@ -48890,21 +48890,6 @@ console applications.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-winapi" ,rust-winapi-0.2))))))
 
-(define-public rust-rpassword-2
-  (package
-    (inherit rust-rpassword-3)
-    (name "rust-rpassword")
-    (version "2.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rpassword" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1v255xqkig5lwnczvm3achydhxx6kf9jcdxdlgzndgpd18bp6x6k"))))))
-
 (define-public rust-runtime-0.3
   (package
     (name "rust-runtime")
