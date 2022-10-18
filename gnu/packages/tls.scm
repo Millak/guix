@@ -385,7 +385,8 @@ required structures.")
               (sha256
                (base32
                 "00sfpqjmd263ka51fq4xf7nvaaxyfqsr3r8fj94jgx45q6q6n6wq"))
-              (file-name (git-file-name name version))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "gnutls-cross.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -404,9 +405,11 @@ required structures.")
            libtool
            pkg-config
            texinfo
+           gnutls                 ;XXX: 'guile-snarf' invokes the native 'cpp'
            guile-3.0))
     (inputs
-     (list gnutls-latest))
+     (list gnutls-latest
+           guile-3.0))
     (synopsis "Guile bindings to GnuTLS")
     (description
      "This package provides Guile bindings to GnuTLS, a library implementation
