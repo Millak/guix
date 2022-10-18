@@ -49192,44 +49192,6 @@ please consider using @code{async-std} or @code{tokio}.")
     (native-inputs
      (list pkg-config))))
 
-(define-public rust-rusqlite-0.19
-  (package
-    (inherit rust-rusqlite-0.23)
-    (name "rust-rusqlite")
-    (version "0.19.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rusqlite" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "19xq7s0kzhlljm3hqx0vidr91ia8hl49r4m5gwdj9dyywgks5g3f"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-csv" ,rust-csv-1)
-        ("rust-fallible-iterator" ,rust-fallible-iterator-0.2)
-        ("rust-fallible-streaming-iterator"
-         ,rust-fallible-streaming-iterator-0.1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libsqlite3-sys" ,rust-libsqlite3-sys-0.15)
-        ("rust-lru-cache" ,rust-lru-cache-0.1)
-        ("rust-memchr" ,rust-memchr-2)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-time" ,rust-time-0.1)
-        ("rust-url" ,rust-url-1)
-        ("rust-uuid" ,rust-uuid-0.7))
-       #:cargo-development-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-tempdir" ,rust-tempdir-0.3)
-        ("rust-unicase" ,rust-unicase-2)
-        ("rust-uuid" ,rust-uuid-0.7))))
-    (inputs
-     (list sqlite))))
-
 (define-public rust-rust-htslib-0.38
   (package
     (name "rust-rust-htslib")
