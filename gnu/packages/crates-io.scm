@@ -25381,25 +25381,6 @@ getters and setters on fields.")
        (("rust-gettext-sys" ,rust-gettext-sys-0.19)
         ("rust-locale-config" ,rust-locale-config-0.3))))))
 
-(define-public rust-gettext-rs-0.4
-  (package
-    (inherit rust-gettext-rs-0.5)
-    (name "rust-gettext-rs")
-    (version "0.4.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gettext-rs" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0z6fcsn1g3w9mlgfj6ln6qvqf8610w3zwvk6g062h657v114lifz"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-gettext-sys" ,rust-gettext-sys-0.19)
-        ("rust-locale-config" ,rust-locale-config-0.2))))))
-
 (define-public rust-gettext-sys-0.21
   (package
     (name "rust-gettext-sys")
