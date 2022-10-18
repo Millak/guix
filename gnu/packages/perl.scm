@@ -2262,6 +2262,51 @@ CPAN::Meta object are present.")
 versa.")
     (license (package-license perl))))
 
+(define-public perl-critic
+  (package
+    (name "perl-critic")
+    (version "1.140")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PETDANCE/Perl-Critic-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1nzxpn71mrpp85yxrxlraj52q2skvf9ja887ls11d57h6smg1vmz"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-deep))
+    (propagated-inputs (list perltidy
+                             perl-exception-class
+                             perl-io-string
+                             perl-ppi
+                             perl-ppix-regexp
+                             perl-b-keywords
+                             perl-config-tiny
+                             perl-padwalker
+                             perl-test-memory-cycle
+                             perl-file-which
+                             perl-list-moreutils
+                             perl-module-pluggable
+                             perl-pod-parser
+                             perl-pod-spell
+                             perl-ppix-quotelike
+                             perl-ppix-utilities
+                             perl-readonly
+                             perl-string-format
+                             perl-task-weaken))
+    (home-page "https://metacpan.org/release/Perl-Critic")
+    (synopsis "Critique Perl source code for best-practices")
+    (description
+     "@code{perlcritic} is a Perl source code analyzer.  It is the
+executable front-end to the @code{Perl::Critic} engine, which attempts to
+identify awkward, hard to read, error-prone, or unconventional constructs in
+your code.  Most of the rules are based on Damian Conway's book \"Perl Best
+Practices\".  However, @code{perlcritic} is not limited to enforcing PBP, and it
+will even support rules that contradict Conway.  All rules can easily be
+configured or disabled to your liking.")
+    (license license:perl-license)))
+
 (define-public perl-crypt-cbc
   (package
     (name "perl-crypt-cbc")
