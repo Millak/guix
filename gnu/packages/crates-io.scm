@@ -48288,47 +48288,6 @@ your own implementation.")
 decoding, and compression.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rkv-0.10
-  (package
-    (name "rust-rkv")
-    (version "0.10.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rkv" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "14v7izkpwvk4ag8p9machzjq2v10xwimy5ylbra744wpyk0xp8rh"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f  ; Some test files missing.
-       #:cargo-inputs
-       (("rust-arrayref" ,rust-arrayref-0.3)
-        ("rust-bincode" ,rust-bincode-1)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-failure" ,rust-failure-0.1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-lmdb-rkv" ,rust-lmdb-rkv-0.14)
-        ("rust-ordered-float" ,rust-ordered-float-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-url" ,rust-url-2)
-        ("rust-uuid" ,rust-uuid-0.8))
-       #:cargo-development-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list lmdb))
-    (home-page "https://github.com/mozilla/rkv")
-    (synopsis "Typed key-value storage")
-    (description "This package provides a typed key-value storage solution.")
-    (license license:asl2.0)))
-
 (define-public rust-rmp-0.8
   (package
     (name "rust-rmp")
