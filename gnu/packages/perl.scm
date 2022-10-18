@@ -9488,6 +9488,30 @@ expanding standard C/Unix-style backslash escapes like \n and \t, wrapping and
 removing double-quotes, and truncating to fit within a desired length.")
     (license (package-license perl))))
 
+(define-public perl-string-format
+  (package
+    (name "perl-string-format")
+    (version "1.18")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/S/SR/SREZIC/String-Format-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0y77frxzjifd4sw0j19cc346ysas1mya84rdxaz279lyin7plhcy"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/String-Format")
+    (synopsis "Format sprintf-like strings with arbitrary format definitions")
+    (description
+     "@code{String::Format} lets you define arbitrary printf-like format
+sequences to be expanded.  This module would be most useful in configuration
+files and reporting tools, where the results of a query need to be formatted in
+a particular way.  It was inspired by
+@url{http://www.mutt.org/doc/manual/manual.html#index-format,mutt's
+@code{index_format} and related directives}.")
+    (license license:gpl2)))
+
 (define-public perl-string-formatter
   (package
     (name "perl-string-formatter")
