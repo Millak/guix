@@ -34481,34 +34481,6 @@ drop-in replacement for miniz.")
      "This package provides math interoperability standard types.")
     (license license:expat)))
 
-(define-public rust-minus-3
-  (package
-    (name "rust-minus")
-    (version "3.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "minus" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0k0h6zpfv87kkadkjjyhzgalciqvjrlhc48lxcp46rg6rk17s5d4"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-async-std" ,rust-async-std-1)
-        ("rust-crossterm" ,rust-crossterm-0.19)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/arijit79/minus")
-    (synopsis "Asynchronous paging library for Rust")
-    (description
-     "Minus is a fast, asynchronous terminal paging library for Rust.  It
-provides high level functionalities to easily write a pager for any terminal
-application.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-mio-0.8
   (package
     (name "rust-mio")
