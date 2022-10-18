@@ -66,6 +66,7 @@
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
+  #:use-module (gnu packages libunistring)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
@@ -330,8 +331,6 @@ required structures.")
                   (ftp-directory . "/gcrypt/gnutls")))))
 
 (define-public gnutls-latest
-  ;; Version 3.7.7 introduces 'set-session-record-port-close!', which allows
-  ;; us to get rid of the wrapper port in 'tls-wrap'.
   (package
     (inherit gnutls)
     (version "3.7.7")
@@ -344,7 +343,14 @@ required structures.")
                                        "gnutls-cross.patch"))
               (sha256
                (base32
-                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))))
+                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))
+
+    ;; Disable Guile bindings: they are now provided by Guile-GnuTLS.
+    (inputs (modify-inputs (package-inputs gnutls)
+              (delete "guile")
+              (append libunistring)))             ;GnuTLS depends on it
+    (native-inputs (modify-inputs (package-native-inputs gnutls)
+                     (delete "guile")))))
 
 (define-public gnutls/guile-2.0
   ;; GnuTLS for Guile 2.0.
