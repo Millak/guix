@@ -42477,26 +42477,6 @@ both WASM and native applications")
 applications.")
     (license license:expat)))
 
-(define-public rust-podio-0.1
-  (package
-    (name "rust-podio")
-    (version "0.1.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "podio" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "06bzjxrl0h8rp5860n51dlr1g143grg2jmx4g6y1mdn2ignyz2xi"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/mvdnes/podio.git")
-    (synopsis "Additional trait to read and write Plain Old Data")
-    (description
-     "Additional trait for Read and Write to read and write Plain Old Data.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-polars-0.17
   (package
     (name "rust-polars")
