@@ -45940,33 +45940,6 @@ data.")
     (description "This package provides a generic connection pool.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-racer-cargo-metadata-0.1
-  (package
-    (name "rust-racer-cargo-metadata")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "racer-cargo-metadata" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0vvwbfi991gjbk2k9a7yl7fqc8amvwlf7sa9lsx1sr0s55rcsq1b"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f
-       #:cargo-inputs
-       (("rust-racer-interner" ,rust-racer-interner-0.1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/racer-rust/racer")
-    (synopsis "Lightweight cargo metadata parser for racer")
-    (description
-     "This crate provides parsing for cargo metadata.  It is used mostly in
-Racer.")
-    (license license:expat)))
-
 (define-public rust-racer-interner-0.1
   (package
     (name "rust-racer-interner")
