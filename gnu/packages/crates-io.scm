@@ -56825,39 +56825,6 @@ package provides derive macros.")
     (description "Snafu aims to be an ergonomic error handling library.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-snailquote-0.3
-  (package
-    (name "rust-snailquote")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "snailquote" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "04687yzvgk3ja0ch7k96w3v36fzvqd9ci2l5k12ijligh2fp4jzk"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-thiserror" ,rust-thiserror-1)
-        ("rust-unicode-categories" ,rust-unicode-categories-0.1))))
-    (home-page "https://github.com/euank/snailquote")
-    (synopsis "Escape and unescape strings with shell-inspired quoting")
-    (description
-     "This library provides functions to escape and unescape strings.
-
-It escapes them in a roughly ``sh'' compatible way (e.g. double quotes
-supporting backslash escapes, single quotes supporting no escapes).
-
-In addition, it provides support for common C-like ASCII escapes (like
-@samp{\\n} for newline, @samp{\\v} for vertical tab, etc.) and Rust
-string-like Unicode (via @samp{\\u@{12ff@}} style escapes).
-
-More importantly, this library also provides the ability to un-escape a given
-escaped text to recover the original string.")
-    (license license:gpl3)))
-
 (define-public rust-snake-case-0.3
   (package
     (name "rust-snake-case")
