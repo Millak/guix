@@ -4586,30 +4586,6 @@ AsyncSeek if the inner type does.")
 @code{async-executor} and @code{async-io}.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-async-global-executor-1
-  (package
-    (inherit rust-async-global-executor-2)
-    (name "rust-async-global-executor")
-    (version "1.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "async-global-executor" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "017s1lik153s587l6q9x5bf9i1n7gxqcg3zn2mdgvf16rm4rn1vk"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-async-executor" ,rust-async-executor-1)
-        ("rust-async-io" ,rust-async-io-1)
-        ("rust-futures-lite" ,rust-futures-lite-1)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-tokio" ,rust-tokio-0.3))
-       #:cargo-development-inputs
-       (("rust-doc-comment" ,rust-doc-comment-0.3))))))
-
 (define-public rust-async-h1-2
   (package
     (name "rust-async-h1")
