@@ -61523,34 +61523,6 @@ fixed set of worker threads.")
      "This crate provides Rust bindings for the Apache Thrift RPC system.")
     (license license:asl2.0)))
 
-(define-public rust-thrussh-libsodium-0.1
-  (package
-    (name "rust-thrussh-libsodium")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "thrussh-libsodium" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0fjssjiwnmbxjvajk37l7k0fcw1ys97j7n8bpn3q3bbnz2qfrphv"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libsodium))
-    (home-page "https://nest.pijul.com/pijul_org/thrussh")
-    (synopsis "Straightforward bindings to libsodium")
-    (description
-     "You can bind to libsodium from Rust with this crate.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-tiger-0.1
   (package
     (name "rust-tiger")
