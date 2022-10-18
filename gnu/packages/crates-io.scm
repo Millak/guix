@@ -40649,21 +40649,6 @@ path.Clean.")
 directory path to the provided path.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-pathdiff-0.1
-  (package
-    (inherit rust-pathdiff-0.2)
-    (name "rust-pathdiff")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pathdiff" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0cfg3isnx6mf3wbi7rsg4nmvywby40sbcs589n20fgi09l4p1gx3"))))))
-
 (define-public rust-pbkdf2-0.10
   (package
     (name "rust-pbkdf2")
