@@ -22334,33 +22334,6 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
      "This package provides a simple, efficient logging system for Rust.")
     (license license:expat)))
 
-(define-public rust-fern-0.5
-  (package
-    (inherit rust-fern-0.6)
-    (name "rust-fern")
-    (version "0.5.9")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "fern" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1anslk0hx9an4ypcaxqff080hgbcxm7ji7d4qf4f6qx1mkav16p6"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-reopen" ,rust-reopen-0.3)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-colored" ,rust-colored-1)
-        ("rust-syslog" ,rust-syslog-3)
-        ("rust-syslog" ,rust-syslog-4))
-       #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-tempdir" ,rust-tempdir-0.3))))))
-
 (define-public rust-fever-api-0.2
   (package
     (name "rust-fever-api")
