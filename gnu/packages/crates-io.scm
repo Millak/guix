@@ -2358,21 +2358,6 @@ This package is deprecated and was replaced by the @code{aes} crate.")
        (("rust-rustc-version" ,rust-rustc-version-0.2)
         ("rust-xdg" ,rust-xdg-2))))))
 
-(define-public rust-afl-0.4
-  (package
-    (inherit rust-afl-0.5)
-    (name "rust-afl")
-    (version "0.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "afl" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0g2chc18ji7qxi0d03n2ai140qdcww958v5si6rcjnnhmri1vyfb"))))))
-
 (define-public rust-ahash-0.7
   (package
     (name "rust-ahash")
