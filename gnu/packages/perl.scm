@@ -71,6 +71,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages language)
   #:use-module (gnu packages less)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl-check)
@@ -8708,6 +8709,34 @@ with performing the actual translation of text.
 the @dfn{Pod} (plain old documentation) markup language that is typically
 used for writing documentation for Perl and for Perl modules.")
     (license (package-license perl))))
+
+(define-public perl-pod-spell
+  (package
+    (name "perl-pod-spell")
+    (version "1.25")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/H/HA/HAARG/Pod-Spell-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "18wzpfn39hpw6n8g9pwh964nid8skks79i5jdcm33gf9kf5qx3r0"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-file-sharedir-install))
+    (propagated-inputs (list perl-class-tiny perl-file-sharedir
+                             perl-lingua-en-inflect))
+    (home-page "https://metacpan.org/release/Pod-Spell")
+    (synopsis "Formatter for spellchecking Pod")
+    (description
+     "@code{Pod::Spell} is a Pod formatter whose output is good
+for spellchecking.
+
+@code{Pod::Spell} is rather like @code{Pod::Text}, except that it doesn't put
+much effort into actual formatting, and it suppresses things that look like Perl
+symbols or Perl jargon (so that your spellchecking program won't complain about
+mystery words like \"@code{$thing}\" or \"@code{Foo::Bar}\" or \"@code{hashref}\").")
+    (license license:artistic2.0)))
 
 (define-public perl-posix-strftime-compiler
   (package
