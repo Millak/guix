@@ -8854,6 +8854,38 @@ can also be useful as a development and debugging tool for catching updates to
 variables that should not be changed.")
     (license (package-license perl))))
 
+(define-public perl-readonly-xs
+  (package
+    (name "perl-readonly-xs")
+    (version "1.05")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/R/RO/ROODE/Readonly-XS-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "03gz7yp194fwah2bc36ww04hgw1qx8p6y68vvnywircrablc9rca"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-readonly))
+    (home-page "https://metacpan.org/release/Readonly-XS")
+    (synopsis "Companion module for @code{Readonly.pm}, to speed up read-only
+scalar variables")
+    (description
+     "The @code{Readonly} module is an effective way to create non-modifiable
+variables.  However, it's relatively slow.
+
+The reason it's slow is that is implements the read-only-ness of variables via
+tied objects.  This mechanism is inherently slow.  Perl simply has to do a lot
+of work under the hood to make tied variables work.
+
+This module corrects the speed problem, at least with respect to scalar
+variables.  When @code{Readonly::XS} is installed, @code{Readonly} uses it to
+access the internals of scalar variables.  Instead of creating a scalar variable
+object and tying it, @code{Readonly} simply flips the @code{SvREADONLY} bit in
+the scalar's @code{FLAGS} structure.")
+    (license license:perl-license)))
+
 (define-public perl-ref-util-xs
   (package
     (name "perl-ref-util-xs")
