@@ -21909,39 +21909,6 @@ implement features such as look-around and backtracking, which are not
 supported in purely NFA-based implementations.")
     (license license:expat)))
 
-(define-public rust-fancy-regex-0.3
-  (package
-    (inherit rust-fancy-regex-0.7)
-    (name "rust-fancy-regex")
-    (version "0.3.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "fancy-regex" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "051bnj890xrvhslppdzw6n956xfjg0wr2ixvhy336d2japvap4df"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bit-set" ,rust-bit-set-0.5)
-        ("rust-regex" ,rust-regex-1))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-matches" ,rust-matches-0.1)
-        ("rust-quickcheck" ,rust-quickcheck-0.7))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version-requirements
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("0.3.0") ,(package-version rust-criterion-0.3)))))
-         ;; XXX: Remove Oniguruma-related tests since Guix does not provide
-         ;; the library yet.
-         (add-after 'unpack 'remove-oniguruma-tests
-           (lambda _
-             (delete-file-recursively "tests/oniguruma")
-             (delete-file "tests/oniguruma.rs"))))))))
-
 (define-public rust-fast-chemail-0.9
   (package
     (name "rust-fast-chemail")
