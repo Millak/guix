@@ -1515,21 +1515,21 @@ multi-system game/emulator system.")
         (base32 "1s8psdn3a3hqvvfgmlfxrqqdw8hbr0zyrvirzsnzh6yxmgpvkbwg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                                 ;require "git"
-       #:configure-flags (list "--enable-release") ;for optimizations
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           ;; configure does not work followed by both "SHELL=..." and
-           ;; "CONFIG_SHELL=..."; set environment variables instead
-           (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bash (search-input-file inputs "/bin/bash"))
-                    (flags `(,(string-append "--prefix=" out)
+     (list
+      #:tests? #f                                   ;require "git"
+      #:configure-flags #~(list "--enable-release") ;for optimizations
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; configure does not work followed by both "SHELL=..." and
+            ;; "CONFIG_SHELL=..."; set environment variables instead
+            (lambda* (#:key inputs configure-flags #:allow-other-keys)
+              (let ((bash (search-input-file inputs "/bin/bash"))
+                    (flags `(,(string-append "--prefix=" #$output)
                              ,@configure-flags)))
-               (setenv "SHELL" bash)
-               (setenv "CONFIG_SHELL" bash)
-               (apply invoke "./configure" flags)))))))
+                (setenv "SHELL" bash)
+                (setenv "CONFIG_SHELL" bash)
+                (apply invoke "./configure" flags)))))))
     (native-inputs
      (list nasm pkg-config))
     (inputs
