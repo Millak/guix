@@ -61048,33 +61048,6 @@ into mod, giving clear and readable test results.")
 for TLS).")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-test-generator-0.3
-  (package
-    (name "rust-test-generator")
-    (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "test-generator" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1h03y4503jhhrks4m7xqfjya9lsx3ip5dlbldr7mgcws6j8bx5za"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-glob" ,rust-glob-0.3)
-        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
-        ("rust-quote" ,rust-quote-0.6)
-        ("rust-syn" ,rust-syn-0.15))))
-    (home-page "https://github.com/frehberg/test-generator")
-    (synopsis "Generate parameterized tests from different input parameters")
-    (description
-     "This crate provides @code{#[test_resources]} and @code{#[bench_resources]}
-procedural macro attributes that generates multiple parameterized tests using
-one body with different resource input parameters.  A test is generated for
-each resource matching the specific resource location pattern.")
-    (license license:asl2.0)))
-
 (define-public rust-tester-0.9
   (package
     (name "rust-tester")
