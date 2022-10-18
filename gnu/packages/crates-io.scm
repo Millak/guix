@@ -35022,26 +35022,6 @@ quick compile time, and minimal dependencies.")
     (description "Run NASM during your Cargo build.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-nasm-rs-0.1
-  (package
-    (inherit rust-nasm-rs-0.2)
-    (name "rust-nasm-rs")
-    (version "0.1.7")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "nasm-rs" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0r34hiy1pc0aksrfc02zsl0zyw33i9yi7kyx8l214l7nm0mzm97y"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rayon" ,rust-rayon-1))))))
-
 (define-public rust-nalgebra-0.29
   (package
     (name "rust-nalgebra")
