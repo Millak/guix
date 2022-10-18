@@ -21063,37 +21063,6 @@ deserialized from environment variables.")
      "Type-erased Serialize and Serializer traits.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-err-derive-0.2
-  (package
-    (name "rust-err-derive")
-    (version "0.2.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "err-derive" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0v6wxrshfpg7mwaxzq8jwxbfiyn7zk5rlm4m8kkrwh7dpf8nrx42"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-synstructure" ,rust-synstructure-0.12)
-        ("rust-skeptic" ,rust-skeptic-0.13)
-        ("rust-proc-macro-error" ,rust-proc-macro-error-0.4)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-quote" ,rust-quote-1))
-       #:cargo-development-inputs
-       (("rust-skeptic" ,rust-skeptic-0.13))))
-    (home-page "https://gitlab.com/torkleyy/err-derive")
-    (synopsis "Derive macro for `std::error::Error`")
-    (description
-     "Derive macro for @code{std::error::Error}.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-errno-0.2
   (package
     (name "rust-errno")
