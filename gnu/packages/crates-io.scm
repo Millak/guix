@@ -70629,31 +70629,6 @@ implementation that works everywhere, even WASM!")
         ("rust-tokio-io" ,rust-tokio-io-0.1)
         ("rust-zstd-safe" ,rust-zstd-safe-3))))))
 
-(define-public rust-zstd-0.5
-  (package
-    (inherit rust-zstd-0.6)
-    (name "rust-zstd")
-    (version "0.5.3+zstd.1.4.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "zstd" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1n0cgj9i3dk90kn7jcahq5fligqrjfzmnq08hfg71yhyfypjxcq1"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-futures" ,rust-futures-0.1)
-        ("rust-tokio-io" ,rust-tokio-io-0.1)
-        ("rust-zstd-safe" ,rust-zstd-safe-2))
-       #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-humansize" ,rust-humansize-1)
-        ("rust-partial-io" ,rust-partial-io-0.3)
-        ("rust-quickcheck" ,rust-quickcheck-0.6)
-        ("rust-walkdir" ,rust-walkdir-2))))))
-
 (define-public rust-zstd-safe-4
   (package
     (name "rust-zstd-safe")
