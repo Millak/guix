@@ -17373,29 +17373,6 @@ resource-constrained devices, like micro-controllers.")
 strings.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-delta-e-0.2
-  (package
-    (name "rust-delta-e")
-    (version "0.2.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "delta_e" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "18rxibmi27ark8vj367qm2iqmv5x293l8fm9ang4y2sv3l251sf5"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-lab" ,rust-lab-0.7))))
-    (home-page "https://github.com/elliotekj/DeltaE")
-    (synopsis "Pure Rust implementation of the CIEDE2000 algorithm")
-    (description "DeltaE is a pure-Rust implementation of the
-@url{http://en.wikipedia.org/wiki/Color_difference#CIEDE2000, CIEDE2000}
-algorithm which serves to quantify the difference between two colors.")
-    (license license:expat)))
-
 (define-public rust-demo-hack-0.0
   (package
     (name "rust-demo-hack")
