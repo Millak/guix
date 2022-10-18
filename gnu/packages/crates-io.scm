@@ -70356,23 +70356,6 @@ library.")
 for locating fonts.")
     (license license:expat)))
 
-(define-public rust-yeslogic-fontconfig-sys-2
-  (package
-    (inherit rust-yeslogic-fontconfig-sys-3)
-    (name "rust-yeslogic-fontconfig-sys")
-    (version "2.11.2")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "yeslogic-fontconfig-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "13bzwn12dmxnc8iqd6za6q3j2ililnqjcplnlrfblbca4ia73r1q"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-const-cstr" ,rust-const-cstr-0.3)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
-
 (define-public rust-zbase32-0.1
   (package
     (name "rust-zbase32")
