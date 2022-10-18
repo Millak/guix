@@ -13956,22 +13956,6 @@ intrinsics.")
     (description "This package provides a Manual coverage marks.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cov-mark-1
-  (package
-    (inherit rust-cov-mark-2)
-    (name "rust-cov-mark")
-    (version "1.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cov-mark" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1wv75ylrai556m388a40d50fxiyacmvm6qqz6va6qf1q04z3vylz"))))
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-countme-3
   (package
     (name "rust-countme")
