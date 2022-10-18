@@ -8810,6 +8810,29 @@ Perl.  This class forms the root of the parse tree, playing a role similar to
 @code{PPI::Document}.")
     (license license:perl-license)))
 
+(define-public perl-ppix-quotelike
+  (package
+    (name "perl-ppix-quotelike")
+    (version "0.023")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/W/WY/WYANT/PPIx-QuoteLike-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "08ad4d20afvi1c4xzwbfk94lmf6gwlmqkdrpjxzf0lrcklaa6xim"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-ppi perl-ppix-regexp perl-readonly))
+    (home-page "https://metacpan.org/release/PPIx-QuoteLike")
+    (synopsis "Parse Perl string literals and string-literal-like things")
+    (description
+     "@code{PPIX::QuoteLike} parses Perl string literals and things that
+are reasonably like string literals.  Its real reason for being is to find
+interpolated variables for @code{Perl::Critic} policies and similar code.")
+    (license license:perl-license)))
+
 (define-public perl-probe-perl
   (package
     (name "perl-probe-perl")
