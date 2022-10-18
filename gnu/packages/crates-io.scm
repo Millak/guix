@@ -12398,19 +12398,6 @@ colors.")
          (base32
           "0nbc1czs512h1k696y7glv1kjrb2b914zpxraic6q5fgv80wizzl"))))))
 
-(define-public rust-colored-1.9.1
-  (package
-    (inherit rust-colored-1)
-    (name "rust-colored")
-    (version "1.9.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "colored" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0fildacm47g86acmx44yvxx6cka8fdym5qkgfm8x8gh2hsrghc7r"))))))
-
 (define-public rust-combine-4
   (package
     (name "rust-combine")
