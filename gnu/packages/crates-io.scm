@@ -34312,19 +34312,6 @@ efficient round-trip float parsing. Minimal-lexical implements a correct, fast
 float parser.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-minimal-lexical-0.1
-  (package
-    (inherit rust-minimal-lexical-0.2)
-    (name "rust-minimal-lexical")
-    (version "0.1.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "minimal-lexical" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32 "0xynhr97vyv5n5lls41dl7bfa3ba122lix9mqij1l7yprl6n6r4w"))))))
-
 (define-public rust-miniz-oxide-0.5
   (package
     (name "rust-miniz-oxide")
