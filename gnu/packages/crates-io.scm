@@ -8573,21 +8573,6 @@ alphabet.")
 UTF-8.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-bstr-0.1
-  (package
-    (inherit rust-bstr-0.2)
-    (name "rust-bstr")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bstr" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0nzi9vqhl56ws8gq39f3aj4qjrr4l3g5lbkkcj8xq1x4cb74wq2r"))))))
-
 (define-public rust-buf-redux-0.8
   (package
     (name "rust-buf-redux")
