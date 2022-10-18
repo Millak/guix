@@ -68905,37 +68905,6 @@ attribute that is not in the shared backend crate.")
        (("rust-proc-macro2" ,rust-proc-macro2-0.4)
         ("rust-quote" ,rust-quote-0.6))))))
 
-(define-public rust-wasm-bindgen-webidl-0.2
-  (package
-    (name "rust-wasm-bindgen-webidl")
-    (version "0.2.58")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "wasm-bindgen-webidl" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0pcpaw8w3xgfrg9y24ljrsl2bkidgdaaz3ka2bgk417wjc6jl0gg"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-heck" ,rust-heck-0.3)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-wasm-bindgen-backend" ,rust-wasm-bindgen-backend-0.2)
-        ("rust-weedle" ,rust-weedle-0.10))))
-    (home-page "https://rustwasm.github.io/wasm-bindgen/")
-    (synopsis "Support for parsing WebIDL specific to wasm-bindgen")
-    (description
-     "Support for parsing WebIDL specific to wasm-bindgen.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-wasmparser-0.57
   (package
     (name "rust-wasmparser")
