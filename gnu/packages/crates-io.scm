@@ -23355,25 +23355,6 @@ values to other threads.")
     (description "This package provides bindings for Freetype used by Servo.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-freetype-0.4
-  (package
-    (inherit rust-freetype-0.7)
-    (name "rust-freetype")
-    (version "0.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "freetype" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0a70x03n68997f08bi3n47q9wyi3pv5s9v4rjc79sihb84mnp4hi"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-servo-freetype-sys" ,rust-servo-freetype-sys-4))))))
-
 (define-public rust-freetype-rs-0.26
   (package
     (name "rust-freetype-rs")
