@@ -34725,34 +34725,6 @@ checking.")
     (description "mp4 is a Rust library to read and write ISO-MP4 files.")
     (license license:expat)))
 
-(define-public rust-multi-default-trait-impl-0.1
-  (package
-    (name "rust-multi-default-trait-impl")
-    (version "0.1.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "multi-default-trait-impl" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1r6y5zb6kg655zi02yk4amkwsgds5ay9ag1dk30cls7rn3dlvvqs"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/hainish/multi-default-trait-impl")
-    (synopsis "Define multiple implementations of trait")
-    (description
-     "This library contains two attribute macros: @code{default_trait_impl}
-which defines a default trait implementation, and @code{trait_impl} which uses
-a default trait implementation you've defined.")
-    (license license:lgpl2.1+)))
-
 (define-public rust-multimap-0.8
   (package
     (name "rust-multimap")
