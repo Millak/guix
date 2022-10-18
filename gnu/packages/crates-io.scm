@@ -56083,27 +56083,6 @@ algebra.")
     (description "This package provides a simple SIMD Rust library.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-path-slash-0.1
-  (package
-    (name "rust-path-slash")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "path-slash" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "06dnnmd3fvmr9ngwgj0xrfj9s8h09m9dgf3zlqsbalzk9wybpb1w"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/rhysd/path-slash")
-    (synopsis "Conversion to/from a file path from/to slash path")
-    (description
-     "Path-slash is a tiny library to convert a file path (e.g., @samp{foo/bar},
-@samp{foo\bar} or @samp{C:\foo\bar}) from or to slash path (e.g.,
-@samp{foo/bar}, @samp{C:/foo/bar}).")
-    (license license:expat)))
-
 (define-public rust-paw-1
   (package
     (name "rust-paw")
