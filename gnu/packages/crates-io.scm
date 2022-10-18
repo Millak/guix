@@ -59520,30 +59520,6 @@ processors, disks, components and networks.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
-(define-public rust-sysinfo-0.16
-  (package
-    (inherit rust-sysinfo-0.18)
-    (name "rust-sysinfo")
-    (version "0.16.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sysinfo" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "06x5kvd4glq35jjy23xj8p7nd64dk8g4kc0v9qdfhyr0y0792zjn"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-         ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
-         ("rust-doc-comment" ,rust-doc-comment-0.3)
-         ("rust-libc" ,rust-libc-0.2)
-         ("rust-ntapi" ,rust-ntapi-0.3)
-         ("rust-once-cell" ,rust-once-cell-1)
-         ("rust-rayon" ,rust-rayon-1)
-         ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-syslog-4
   (package
     (name "rust-syslog")
