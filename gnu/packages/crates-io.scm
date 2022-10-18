@@ -20987,30 +20987,6 @@ from the environment.")
 variables.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-envmnt-0.6
-  (package
-    (name "rust-envmnt")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "envmnt" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "12zkq3p999bypyxmjnpiqw9r3hmifb3bcikd7j3as1fdcbq01fyl"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-indexmap" ,rust-indexmap-1))))
-    (home-page "https://github.com/sagiegurari/envmnt")
-    (synopsis "Environment variables utility functions")
-    (description
-     "Environment variables utility functions.")
-    (license license:asl2.0)))
-
 (define-public rust-envy-0.4
   (package
     (name "rust-envy")
