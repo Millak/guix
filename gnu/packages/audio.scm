@@ -633,7 +633,7 @@ streams from live audio.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "6.9")
+    (version "7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -651,7 +651,7 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
                     #t)))
               (sha256
                (base32
-                "0vlcbd70y0an881zv87kc3akmaiz4w7whsy3yaiiqqjww35jg1mm"))
+                "1xzgcd2d8zzgx3s9sr3kcxl3vz3vfr5l1xs9qpjplmk22dfj8b08"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
@@ -701,6 +701,7 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            flac
            glibmm
            gtkmm-2
+           hicolor-icon-theme
            jack-1
            libarchive
            libart-lgpl
