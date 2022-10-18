@@ -5765,32 +5765,6 @@ trace (backtrace) at runtime in a Rust program.")
         (base32
          "0mfwbb6832rh1za304w8x37bvs9fjbybpmmz0iksqfzsaf108w8k"))))))
 
-(define-public rust-backtrace-sys-0.1
-  (package
-    (name "rust-backtrace-sys")
-    (version "0.1.37")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "backtrace-sys" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "16a3igz22q9lnnjjr77f4k8ci48v8zdwrs67khx3h7wx3jzfpyqq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-cc" ,rust-cc-1))))
-    (home-page "https://github.com/rust-lang/backtrace-rs")
-    (synopsis "Bindings to the libbacktrace gcc library")
-    (description
-     "This package provides bindings to the libbacktrace gcc library.")
-    (license (list license:asl2.0
-                   license:expat))))
-
 (define-public rust-bare-metal-1
   (package
     (name "rust-bare-metal")
