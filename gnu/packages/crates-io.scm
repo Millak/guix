@@ -48630,25 +48630,6 @@ text-buffer for applications such as text editors.  Ropey is fast, robust, and
 can handle huge texts and memory-incoherent edits with ease.")
     (license license:expat)))
 
-(define-public rust-route-recognizer-0.2
-  (package
-    (name "rust-route-recognizer")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "route-recognizer" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "17mmnyzg7yr5x84n28y6bll1qn21g11k61p6sgg2fjf0xdshcxsn"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/http-rs/route-recognizer")
-    (synopsis "Recognizes URL patterns")
-    (description
-     "This package helps recognizing URL patterns with support for dynamic and
-wildcard segments")
-    (license license:expat)))
-
 (define-public rust-rowan-0.15
   (package
     (name "rust-rowan")
