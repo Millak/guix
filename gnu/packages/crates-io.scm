@@ -3139,21 +3139,6 @@ coverage-guided, mutation-based fuzzers.")
        #:cargo-inputs
        (("rust-derive-arbitrary" ,rust-derive-arbitrary-0.4))))))
 
-(define-public rust-arbitrary-0.2
-  (package
-    (inherit rust-arbitrary-0.4)
-    (name "rust-arbitrary")
-    (version "0.2.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "arbitrary" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "1i3fhcdyjq4isn22xx2svmpfr5hwyzi0wavbm07fs8i2dv5pdkv4"))))))
-
 (define-public rust-arboard-1
   (package
     (name "rust-arboard")
