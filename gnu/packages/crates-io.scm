@@ -37132,22 +37132,6 @@ encapsulates the data.")
 nothing.")
     (license license:expat)))
 
-(define-public rust-noop-proc-macro-0.2
-  (package
-    (inherit rust-noop-proc-macro-0.3)
-    (name "rust-noop-proc-macro")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "noop_proc_macro" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0in1l0rjxzs4fylb6zad484z1c58jxyzchhc12k0cjrvm0y6zwsz"))))
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-normalize-line-endings-0.3
   (package
     (name "rust-normalize-line-endings")
