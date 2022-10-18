@@ -48288,32 +48288,6 @@ your own implementation.")
 decoding, and compression.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rls-span-0.5
-  (package
-    (name "rust-rls-span")
-    (version "0.5.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rls-span" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0d6rwya5zsyw6vmrj8d8g3fgvic0xyp1lvfhv62vswk2dzavxsgj"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1))))
-    (home-page "https://github.com/rust-lang/rls")
-    (synopsis "Types for identifying code spans/ranges")
-    (description
-     "Identify Rust code spans and ranges using these types - for use with the
-Rust Language Server.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-rkv-0.10
   (package
     (name "rust-rkv")
