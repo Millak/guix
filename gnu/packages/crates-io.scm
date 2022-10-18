@@ -19617,30 +19617,6 @@ programs.")
      "This package provides lightweight binding to DirectWrite.")
     (license license:mpl2.0)))
 
-(define-public rust-dwrote-0.9
-  (package
-    (inherit rust-dwrote-0.11)
-    (name "rust-dwrote")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "dwrote" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "03gzl5pd90nlkmwqmbmjmyz47h7wlblbqrwv5a29npnv0ag3dl8b"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ;("rust-wio" ,rust-wio-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-easy-cast-0.4
   (package
     (name "rust-easy-cast")
