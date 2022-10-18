@@ -34620,28 +34620,6 @@ possible over the OS abstractions.")
      "This package provides asynchronous wrapper for Windows synchronous pipes.")
     (license license:expat)))
 
-(define-public rust-mio-anonymous-pipes-0.1
-  (package
-    (inherit rust-mio-anonymous-pipes-0.2)
-    (name "rust-mio-anonymous-pipes")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "mio-anonymous-pipes" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1bqs8wncd73q4pnbiwskhgds57hyr8g89vfpqmw1vk9dqp1p9hpq"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-mio" ,rust-mio-0.6)
-        ("rust-miow" ,rust-miow-0.3)
-        ("rust-spsc-buffer" ,rust-spsc-buffer-0.1)
-        ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-mio-extras-2
   (package
     (name "rust-mio-extras")
