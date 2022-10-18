@@ -37654,33 +37654,6 @@ more.")
 Rust.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-num-bigint-dig-0.6
-(package
-  (inherit rust-num-bigint-dig-0.7)
-  (name "rust-num-bigint-dig")
-  (version "0.6.0")
-  (source
-   (origin
-     (method url-fetch)
-     (uri (crate-uri "num-bigint-dig" version))
-     (file-name (string-append name "-" version ".tar.gz"))
-     (sha256
-      (base32 "1aljx3bxfnzq35i9pkbqkj0d0hc1wjc2dd60wccjqylz1wrkrl5k"))))
-  (arguments
-   `(#:skip-build? #t
-     #:cargo-inputs
-     (("rust-autocfg" ,rust-autocfg-0.1)
-      ("rust-byteorder" ,rust-byteorder-1)
-      ("rust-lazy-static" ,rust-lazy-static-1)
-      ("rust-libm" ,rust-libm-0.2)
-      ("rust-num-integer" ,rust-num-integer-0.1)
-      ("rust-num-iter" ,rust-num-iter-0.1)
-      ("rust-num-traits" ,rust-num-traits-0.2)
-      ("rust-rand" ,rust-rand-0.7)
-      ("rust-serde" ,rust-serde-1)
-      ("rust-smallvec" ,rust-smallvec-1)
-      ("rust-zeroize" ,rust-zeroize-1))))))
-
 (define-public rust-num-complex-0.4
   (package
     (name "rust-num-complex")
