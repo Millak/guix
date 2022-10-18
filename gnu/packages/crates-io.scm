@@ -59055,34 +59055,6 @@ standard library.")
      "This package provides helper methods and macros for custom derives.")
     (license license:expat)))
 
-(define-public rust-synstructure-0.10
-  (package
-    (name "rust-synstructure")
-    (version "0.10.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "synstructure" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0grirdkgh2wl4hf9a3nbiazpgccxgq54kn52ms0xrr6njvgkwd82"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-0.4)
-        ("rust-quote" ,rust-quote-0.6)
-        ("rust-syn" ,rust-syn-0.15)
-        ("rust-unicode-xid" ,rust-unicode-xid-0.1))
-       #:cargo-development-inputs
-       (("rust-synstructure-test-traits" ,rust-synstructure-test-traits-0.1))))
-    (home-page "https://github.com/mystor/synstructure")
-    (synopsis "Helper methods and macros for custom derives")
-    (description
-     "Helper methods and macros for custom derives.")
-    (license license:expat)))
-
 (define-public rust-synstructure-test-traits-0.1
   (package
     (name "rust-synstructure-test-traits")
