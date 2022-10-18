@@ -33680,22 +33680,6 @@ for Rust structs.")
        (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (inputs '())))
 
-(define-public rust-memoffset-0.2
-  (package
-    (inherit rust-memoffset-0.5)
-    (name "rust-memoffset")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "memoffset" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1cvm2z7dy138s302ii7wlzcxbka5a8yfl5pl5di7lbdnw9hw578g"))))
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-memsec-0.6
   (package
     (name "rust-memsec")
