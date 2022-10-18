@@ -3508,26 +3508,6 @@ the platform-specific getters provided by winit, or another library.")
     (description "This package provides x11 clipboard support for Rust.")
     (license license:expat)))
 
-(define-public rust-x11-clipboard-0.4
-  (package
-    (inherit rust-x11-clipboard-0.5)
-    (name "rust-x11-clipboard")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "x11-clipboard" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0nqdnswiyj28b1izjp5rzbc67cxpb5c8p4vh1xyndkirzs84vqqk"))))
-    (arguments
-     `(#:tests? #f  ; Tests require display server.
-       #:cargo-inputs (("rust-xcb" ,rust-xcb-0.9))))
-    (native-inputs
-     (list python))))
-
 (define-public rust-x11-dl-2
   (package
     (name "rust-x11-dl")
