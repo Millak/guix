@@ -2076,6 +2076,33 @@ of the style used by the Git version control system.")
 and writing of @code{.ini}-style configuration files.")
     (license (package-license perl))))
 
+(define-public perl-config-tiny
+  (package
+    (name "perl-config-tiny")
+    (version "2.28")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/R/RS/RSAVAGE/Config-Tiny-"
+                    version ".tgz"))
+              (sha256
+               (base32
+                "000mw17nb7aj341s0afqimxd53w5y0c4yk61pihqzm191lx89pqj"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-pod))
+    (home-page "https://metacpan.org/release/Config-Tiny")
+    (synopsis "Read/Write .ini style files with as little code as possible")
+    (description
+     "@code{Config::Tiny} is a Perl class to read and write .ini
+style configuration files with as little code as possible, reducing load time
+and memory overhead.
+
+This module is primarily for reading human written files, and anything we write
+shouldn't need to have documentation/comments.  If you need something with more
+power move up to @code{Config::Simple}, @code{Config::General} or one of the
+many other @code{Config::*} modules.")
+    (license license:perl-license)))
+
 (define-public perl-const-fast
   (package
     (name "perl-const-fast")
