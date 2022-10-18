@@ -2408,29 +2408,6 @@ first-class Rust objects.")
 applications.")
     (license license:expat)))
 
-(define-public rust-smithay-clipboard-0.3
-  (package
-    (inherit rust-smithay-clipboard-0.6)
-    (name "rust-smithay-clipboard")
-    (version "0.3.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "smithay-clipboard" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1h7qhcx44cgwncgpn5llky0c56vgsg9mqrkybb2z37vsxxia4rwn"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-nix" ,rust-nix-0.14)
-        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.6))
-       #:cargo-development-inputs
-       (("rust-andrew" ,rust-andrew-0.2))))
-    (inputs
-     (list wayland))))
-
 (define-public rust-tiff-0.6
   (package
     (name "rust-tiff")
