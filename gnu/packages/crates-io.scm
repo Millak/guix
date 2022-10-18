@@ -35348,29 +35348,6 @@ statically-sized or dynamically-sized matrices.")
 linear algebra library.")
     (license license:asl2.0)))
 
-(define-public rust-named-pipe-0.4
-  (package
-    (name "rust-named-pipe")
-    (version "0.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "named-pipe" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0azby10wzmsrf66m1bysbil0sjfybnvhsa8py093xz4irqy4975d"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t     ; Only builds on Windows.
-       #:cargo-inputs (("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/blackbeam/named_pipe")
-    (synopsis "Wrapper for overlapped (asynchronous) IO of Windows's named pipes")
-    (description "This package provides a wrapper for overlapped (asynchronous)
-IO of Windows's named pipes.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-napi-0.5
   (package
     (name "rust-napi")
