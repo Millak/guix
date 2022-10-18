@@ -30832,20 +30832,6 @@ primitives to an @code{io::Write}.")
         (base32
          "136vwi6l2k1vrlvfx49lhficj813pk88xrcx1q3axqh1mwms6943"))))))
 
-(define-public rust-itoa-0.1
- (package
-   (inherit rust-itoa-0.4)
-   (name "rust-itoa")
-   (version "0.1.1")
-   (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "itoa" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "18g7p2hrb3dk84z3frfgmszfc9hjb4ps9vp99qlb1kmf9gm8hc5f"))))))
-
 (define-public rust-ivf-0.1
   (package
     (name "rust-ivf")
