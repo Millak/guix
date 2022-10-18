@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
@@ -7630,18 +7630,15 @@ compressed JSON header blocks.
                  `("GUILE_LOAD_PATH" ":" prefix (,path))
                  `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,gopath)))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("uglify-js" ,uglify-js)
-       ("pkg-config" ,pkg-config)
-       ("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))))
+     (list autoconf automake uglify-js pkg-config
+           (lookup-package-native-input guix "guile")))
     (inputs
-     `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
-       ("guix" ,guix)
-       ("guile-zlib" ,guile-zlib)
-       ("guile-commonmark" ,guile-commonmark)
-       ("guile-json" ,guile-json-4)
-       ("bash-minimal" ,bash-minimal)))
+     (list (lookup-package-native-input guix "guile")
+           guix
+           guile-zlib
+           guile-commonmark
+           guile-json-4
+           bash-minimal))
     (home-page "https://github.com/UMCUGenetics/hpcguix-web")
     (synopsis "Web interface for cluster deployments of Guix")
     (description "Hpcguix-web provides a web interface to the list of packages
