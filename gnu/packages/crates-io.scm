@@ -33599,29 +33599,6 @@ by inspecting the system for user preference.")
         ("rust-regex" ,rust-regex-1)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
-(define-public rust-located-yaml-0.2
-  (package
-    (name "rust-located-yaml")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "located_yaml" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0xnx5al5v7d9syspj0irm22alwc3a9adikqxpbyyf6vsz3k8xilv"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-yaml-rust" ,rust-yaml-rust-0.4))))
-    (home-page "https://github.com/johnlepikhin/located_yaml")
-    (synopsis "YAML parser with saved positions")
-    (description
-     "YAML parser which provides AST with saved tokens positions.")
-    (license (list license:expat))))
-
 (define-public rust-lock-api-0.4
   (package
     (name "rust-lock-api")
