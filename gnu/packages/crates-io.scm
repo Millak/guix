@@ -28656,20 +28656,6 @@ HTTP request or response body.")
      "This crates parses and formats HTTP datetime strings.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-httpdate-0.3
-  (package
-    (inherit rust-httpdate-1)
-    (name "rust-httpdate")
-    (version "0.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "httpdate" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0izbd3sf0625wm4rrfv85xa4xa8j4n1ldxhwlkgff4cm6rh4sjs9"))))
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-humantime-serde-1
   (package
     (name "rust-humantime-serde")
