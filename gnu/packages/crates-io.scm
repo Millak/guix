@@ -31669,24 +31669,6 @@ space, and comparing differences in color.")
         ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
         ("rust-rand" ,rust-rand-0.5))))))
 
-(define-public rust-lab-0.4
-  (package
-    (inherit rust-lab-0.7)
-    (name "rust-lab")
-    (version "0.4.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "lab" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0h4ig5bvzmwlzd74zj7b4sh7kzi3c6mjjnw7yjz8ijxvr4mrcr1s"))))
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-rand" ,rust-rand-0.3))))))
-
 (define-public rust-lalrpop-0.19
   (package
     (name "rust-lalrpop")
