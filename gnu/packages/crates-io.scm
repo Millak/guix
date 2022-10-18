@@ -35280,42 +35280,6 @@ statically-sized or dynamically-sized matrices.")
        (("rust-rand-xorshift" ,rust-rand-xorshift-0.2)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
-(define-public rust-nalgebra-0.18
-  (package
-    (inherit rust-nalgebra-0.19)
-    (name "rust-nalgebra")
-    (version "0.18.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "nalgebra" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "18i1npny8s45ff67p5qpdwwsn36fp23mal8847fkb32cqgdzvada"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-abomonation" ,rust-abomonation-0.7)
-        ("rust-alga" ,rust-alga-0.9)
-        ("rust-approx" ,rust-approx-0.3)
-        ("rust-generic-array" ,rust-generic-array-0.12)
-        ("rust-matrixmultiply" ,rust-matrixmultiply-0.2)
-        ("rust-mint" ,rust-mint-0.5)
-        ("rust-num-complex" ,rust-num-complex-0.2)
-        ("rust-num-rational" ,rust-num-rational-0.2)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-pest" ,rust-pest-2)
-        ("rust-pest-derive" ,rust-pest-derive-2)
-        ("rust-quickcheck" ,rust-quickcheck-0.8)
-        ("rust-rand" ,rust-rand-0.6)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-typenum" ,rust-typenum-1))
-       #:cargo-development-inputs
-       (("rust-rand-xorshift" ,rust-rand-xorshift-0.1)
-        ("rust-serde-json" ,rust-serde-json-1))))))
-
 (define-public rust-nalgebra-macros-0.1
   (package
     (name "rust-nalgebra-macros")
