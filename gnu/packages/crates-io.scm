@@ -32007,34 +32007,6 @@ sending emails from Rust applications.")
         ("rust-proptest" ,rust-proptest-0.10)
         ("rust-quickcheck" ,rust-quickcheck-1))))))
 
-(define-public rust-lexical-core-0.4
-  (package
-    (inherit rust-lexical-core-0.7)
-    (name "rust-lexical-core")
-    (version "0.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "lexical-core" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1gr5y3ykghd3wjc00l3iizkj1dxylyhwi6fj6yn2qg06nzx771iz"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-dtoa" ,rust-dtoa-0.4)
-        ("rust-ryu" ,rust-ryu-1)
-        ("rust-stackvector" ,rust-stackvector-1)
-        ("rust-static-assertions" ,rust-static-assertions-0.3))
-       #:cargo-development-inputs
-       (("rust-approx" ,rust-approx-0.3)
-        ("rust-proptest" ,rust-proptest-0.9)
-        ("rust-quickcheck" ,rust-quickcheck-0.8)
-        ("rust-rustc-version" ,rust-rustc-version-0.2))))))
-
 (define-public rust-lexical-parse-float-0.8
   (package
     (name "rust-lexical-parse-float")
