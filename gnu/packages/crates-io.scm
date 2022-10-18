@@ -36363,34 +36363,6 @@ applications written in Rust.  Its API is inspired by the popular
 @code{express} framework for JavaScript.")
     (license license:expat)))
 
-(define-public rust-nipper-0.1
-  (package
-    (name "rust-nipper")
-    (version "0.1.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "nipper" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "05h1zsqmg405f589lfm8ch2b0853h7hqv7mz38bvpx4k8s3844vn"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cssparser" ,rust-cssparser-0.27)
-        ("rust-html5ever" ,rust-html5ever-0.25)
-        ("rust-markup5ever" ,rust-markup5ever-0.10)
-        ("rust-selectors" ,rust-selectors-0.22)
-        ("rust-tendril" ,rust-tendril-0.4))))
-    (home-page "https://github.com/importcjj/nipper")
-    (synopsis "HTML manipulation with CSS selectors")
-    (description
-     "Nipper is based on HTML crate html5ever and the CSS selector crate
-selectors.  You can use the jQuery-like syntax to query and manipulate an HTML
-document quickly.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-nitrokey-0.9
   (package
     (name "rust-nitrokey")
