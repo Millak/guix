@@ -32831,26 +32831,6 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
      "This package provides a simple parser for MIME e-mail messages.")
     (license license:bsd-0)))
 
-(define-public rust-make-cmd-0.1
-  (package
-    (name "rust-make-cmd")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "make-cmd" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1ly0lc5p1a0qdiqnh19ly3snb9q83sjbbb1njvh8a5xgx3xqmjm8"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/mneumann/make-cmd-rs")
-    (synopsis "Enable build.rs scripts to invoke gnu_make")
-    (description "This package enables build.rs scripts to invoke gnu_make
-platform-independently.")
-    (license license:expat)))
-
 (define-public rust-malloc-buf-0.0
  (package
    (name "rust-malloc-buf")
