@@ -8786,6 +8786,30 @@ applications.")
 code.")
     (license license:perl-license)))
 
+(define-public perl-ppix-regexp
+  (package
+    (name "perl-ppix-regexp")
+    (version "0.085")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/W/WY/WYANT/PPIx-Regexp-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "07fg63ql3f7hv1ys10l8j0p562ndraq9lk66iw9y0f444j4vpw1f"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-ppi))
+    (home-page "https://metacpan.org/release/PPIx-Regexp")
+    (synopsis "Parse Perl string literals and string-literal-like things")
+    (description
+     "The purpose of the @code{PPIx-Regexp} package is to parse
+regular expressions in a manner similar to the way the @code{PPI} package parses
+Perl.  This class forms the root of the parse tree, playing a role similar to
+@code{PPI::Document}.")
+    (license license:perl-license)))
+
 (define-public perl-probe-perl
   (package
     (name "perl-probe-perl")
