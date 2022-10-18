@@ -59146,36 +59146,6 @@ standard library.")
 intelligence using Sublime Text's grammars.")
     (license license:expat)))
 
-(define-public rust-syntect-3
-  (package
-    (inherit rust-syntect-4)
-    (name "rust-syntect")
-    (version "3.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "syntect" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1f6qn1yy15b0hq9h6q1rikqnm3lh56ic6bq3ywsmdsjy8ni9splm"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-plist" ,rust-plist-0.4)
-        ("rust-yaml-rust" ,rust-yaml-rust-0.4)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.6)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-fnv" ,rust-fnv-1)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-lazycell" ,rust-lazycell-1)
-        ("rust-bincode" ,rust-bincode-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-onig" ,rust-onig-5))))))
-
 (define-public rust-syntex-0.58
  (package
    (name "rust-syntex")
