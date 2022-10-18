@@ -67456,23 +67456,6 @@ Unix users and groups.")
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.7))))))
 
-(define-public rust-users-0.9
-  (package
-    (inherit rust-users-0.10)
-    (name "rust-users")
-    (version "0.9.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "users" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1kxl3y2hcrqqip7jpqn5mz7xlpbwmmpfmaza0xnyrhx0mrkl4by7"))))
-    (arguments
-     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
-
 (define-public rust-utf-8-0.7
   (package
     (name "rust-utf-8")
