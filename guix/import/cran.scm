@@ -508,7 +508,8 @@ reference the pkg-config tool."
 (define (needs-knitr? meta)
   (member "knitr" (listify meta "VignetteBuilder")))
 
-(define* (description->package repository meta #:key (license-prefix identity))
+(define* (description->package repository meta #:key (license-prefix identity)
+                               (download-source download))
   "Return the `package' s-expression for an R package published on REPOSITORY
 from the alist META, which was derived from the R package's DESCRIPTION file."
   (let* ((base-url   (case repository
@@ -550,10 +551,10 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                           (_ #f)))))
          (git?       (if (assoc-ref meta 'git) #true #false))
          (hg?        (if (assoc-ref meta 'hg) #true #false))
-         (source     (download source-url #:method (cond
-                                                    (git? 'git)
-                                                    (hg? 'hg)
-                                                    (else #f))))
+         (source     (download-source source-url #:method (cond
+                                                           (git? 'git)
+                                                           (hg? 'hg)
+                                                           (else #f))))
          (sysdepends (append
                       (if (needs-zlib? source (not (or git? hg?))) '("zlib") '())
                       (filter (lambda (name)
@@ -646,13 +647,15 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
   (memoize
    (lambda* (package-name #:key (repo 'cran) version (license-prefix identity)
                           (fetch-description fetch-description)
+                          (download-source download)
                           #:allow-other-keys)
      "Fetch the metadata for PACKAGE-NAME from REPO and return the `package'
 s-expression corresponding to that package, or #f on failure."
      (let ((description (fetch-description repo package-name version)))
        (if description
            (description->package repo description
-                                 #:license-prefix license-prefix)
+                                 #:license-prefix license-prefix
+                                 #:download-source download-source)
            (case repo
              ((git)
               ;; Retry import from Bioconductor
