@@ -11743,24 +11743,6 @@ colorization.")
        (("rust-lazy-bytes-cast" ,rust-lazy-bytes-cast-5)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
-(define-public rust-clipboard-win-2
-  (package
-    (inherit rust-clipboard-win-3)
-    (name "rust-clipboard-win")
-    (version "2.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "clipboard-win" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0431sg4jhabrqf2dliiwhbx9hinb9z4qfcm6914lm5mb17ya5798"))))
-    (arguments
-     `(#:tests? #f  ; Tests are for Windows.
-       #:cargo-inputs (("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-clippy-0.0
   (package
     (name "rust-clippy")
