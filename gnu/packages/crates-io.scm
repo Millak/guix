@@ -25950,20 +25950,6 @@ libcurl, which is intended to be used with the @code{git2} crate.")
     (description "Gjson is a JSON parser for Rust.")
     (license license:expat)))
 
-(define-public rust-gjson-0.7
-  (package
-    (inherit rust-gjson-0.8)
-    (name "rust-gjson")
-    (version "0.7.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gjson" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0vhary4ha77scriaw6r4nv16ha9pfzirm84sjc240csqwb542p10"))))
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-glam-0.17
   (package
     (name "rust-glam")
