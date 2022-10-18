@@ -1823,38 +1823,6 @@ Rust, using gimli.")
         ("rust-memmap" ,rust-memmap-0.7)
         ("rust-rustc-test" ,rust-rustc-test-0.3))))))
 
-(define-public rust-addr2line-0.9
-  (package
-    (inherit rust-addr2line-0.11)
-    (name "rust-addr2line")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "addr2line" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "17rlf04nx3g3rcy661v24ksnmpk6vqn680g5b5sp8lk20iih2xnx"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cpp-demangle" ,rust-cpp-demangle-0.2)
-        ("rust-fallible-iterator" ,rust-fallible-iterator-0.2)
-        ("rust-gimli" ,rust-gimli-0.18)
-        ("rust-intervaltree" ,rust-intervaltree-0.2)
-        ("rust-lazycell" ,rust-lazycell-1)
-        ("rust-object" ,rust-object-0.12)
-        ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
-        ("rust-smallvec" ,rust-smallvec-0.6))
-       #:cargo-development-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-clap" ,rust-clap-2)
-        ;("rust-findshlibs" ,rust-findshlibs-0.4)
-        ("rust-memmap" ,rust-memmap-0.7)
-        ("rust-rustc-test" ,rust-rustc-test-0.3))))))
-
 (define-public rust-adler-1
   (package
     (name "rust-adler")
