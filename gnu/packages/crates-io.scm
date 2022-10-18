@@ -52229,31 +52229,6 @@ function.")
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-subtle" ,rust-subtle-2))))))
 
-(define-public rust-scrypt-0.2
-  (package
-    (inherit rust-scrypt-0.3)
-    (name "rust-scrypt")
-    (version "0.2.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "scrypt" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1pfgqgzdjxjf7c8r1wfka0ackfpv1g8w7wvbr25b42hdx787jv35"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.9)
-        ("rust-byte-tools" ,rust-byte-tools-0.3)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-hmac" ,rust-hmac-0.7)
-        ("rust-pbkdf2" ,rust-pbkdf2-0.3)
-        ("rust-rand" ,rust-rand-0.5)
-        ("rust-sha2" ,rust-sha2-0.8)
-        ("rust-subtle" ,rust-subtle-1))))))
-
 (define-public rust-scroll-0.10
   (package
     (name "rust-scroll")
