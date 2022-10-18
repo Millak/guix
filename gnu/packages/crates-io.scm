@@ -53936,30 +53936,6 @@ using nested parameters, similar to those used by @code{qs} for Node, and
 commonly used by Ruby on Rails via Rack.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-serde-regex-1
-  (package
-    (name "rust-serde-regex")
-    (version "1.1.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "serde_regex" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32 "1pxsnxb8c198szghk1hvzvhva36w2q5zs70hqkmdf5d89qd6y4x8"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-regex" ,rust-regex-1))
-       #:cargo-development-inputs
-       (("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/tailhook/serde-regex")
-    (synopsis "Serde wrapper to serialize regular expressions as strings")
-    (description "This package provides a serde wrapper, that can be used to
-serialize regular expressions as strings.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-serde-repr-0.1
   (package
     (name "rust-serde-repr")
