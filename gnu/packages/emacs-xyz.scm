@@ -33502,6 +33502,47 @@ tree to go back to previous buffer states.  To use vundo, type @kbd{M-x vundo RE
 the buffer you want to undo.  An undo tree buffer should pop up.")
     (license license:gpl3+)))
 
+(define-public emacs-org-cliplink
+  (let ((commit "13e0940b65d22bec34e2de4bc8cba1412a7abfbc")
+        (revision "0"))
+    (package
+      (name "emacs-org-cliplink")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/rexim/org-cliplink")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1avyiw8vlv4n1r7zqvc6wjlsz7jl2pqaprzpm782gzp0c999pssl"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "ert-runner")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-geiser-racket-binary
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "org-cliplink-transport.el"
+                  (("curl\")")
+                   (string-append (search-input-file inputs "bin/curl")
+                                  "\")"))))))))
+      (native-inputs
+       (list emacs-el-mock emacs-ert-runner emacs-undercover))
+      (inputs
+       (list curl))
+      (home-page "https://github.com/rexim/org-cliplink/")
+      (synopsis "Insert Org mode links from the clipboard")
+      (description
+       "Org Cliplink provides a simple command that takes a URL from the
+clipboard and inserts an Org mode link with a title of a page found by the URL
+into the current buffer.")
+      (license license:expat))))
+
 (define-public emacs-project-x
   ;; There is no proper release.
   ;; The base version is extracted from the README.org.
