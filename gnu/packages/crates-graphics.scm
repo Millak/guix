@@ -1810,37 +1810,6 @@ nicely with Piston libraries.")
      "This package provides a library for storing viewport information.")
     (license license:expat)))
 
-(define-public rust-piston-window-0.105
-  (package
-    (name "rust-piston-window")
-    (version "0.105.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "piston_window" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "05n2905gkp5ck25kbq95ia6pj1xz63dpp247jz3xcw1d41xpvi95"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-gfx-device-gl" ,rust-gfx-device-gl-0.16)
-        ("rust-gfx" ,rust-gfx-0.18)
-        ("rust-piston2d-graphics" ,rust-piston2d-graphics-0.35)
-        ("rust-piston" ,rust-piston-0.49)
-        ("rust-shader-version" ,rust-shader-version-0.6)
-        ("rust-pistoncore-glutin-window" ,rust-pistoncore-glutin-window-0.63)
-        ("rust-piston2d-gfx-graphics" ,rust-piston2d-gfx-graphics-0.66)
-        ("rust-piston-texture" ,rust-piston-texture-0.8))))
-    (home-page "https://github.com/pistondevelopers/piston_window")
-    (synopsis "Official Piston window wrapper for the Piston game engine")
-    (description
-     "The official Piston window wrapper for the Piston game engine.")
-    (license license:expat)))
-
 (define-public rust-piston2d-gfx-graphics-0.66
   (package
     (name "rust-piston2d-gfx-graphics")
