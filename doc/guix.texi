@@ -13499,6 +13499,10 @@ definitions are to be appended to existing user modules, as the list of
 used package modules need not be changed.  The default is
 @option{--style=variable}.
 
+When @option{--prefix=license:} is added, the importer will prefix
+license atoms with @code{license:}, allowing a prefixed import of
+@code{(guix licenses)}.
+
 When @option{--archive=bioconductor} is added, metadata is imported from
 @uref{https://www.bioconductor.org/, Bioconductor}, a repository of R
 packages for the analysis and comprehension of high-throughput

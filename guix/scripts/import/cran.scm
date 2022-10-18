@@ -53,6 +53,9 @@ Import and convert the CRAN package for PACKAGE-NAME.\n"))
   (display (G_ "
   -s, --style=STYLE      choose output style, either specification or variable"))
   (display (G_ "
+  -p, --license-prefix=PREFIX
+                         add custom prefix to licenses"))
+  (display (G_ "
   -V, --version          display version information and exit"))
   (newline)
   (show-bug-report-information))
@@ -74,6 +77,10 @@ Import and convert the CRAN package for PACKAGE-NAME.\n"))
                  (lambda (opt name arg result)
                    (alist-cons 'style (string->symbol arg)
                                (alist-delete 'style result))))
+         (option '(#\p "license-prefix") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'license-prefix arg
+                               (alist-delete 'license-prefix result))))
          (option '(#\r "recursive") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'recursive #t result)))
@@ -95,7 +102,13 @@ Import and convert the CRAN package for PACKAGE-NAME.\n"))
                             (('argument . value)
                              value)
                             (_ #f))
-                           (reverse opts))))
+                           (reverse opts)))
+         (prefix (assoc-ref opts 'license-prefix))
+         (prefix-proc (if (string? prefix)
+                        (lambda (symbol)
+                          (string->symbol
+                            (string-append prefix (symbol->string symbol))))
+                        identity)))
     (parameterize ((%input-style (assoc-ref opts 'style)))
       (match args
         ((spec)
@@ -107,11 +120,13 @@ Import and convert the CRAN package for PACKAGE-NAME.\n"))
                       (filter identity
                               (cran-recursive-import name
                                                      #:version version
-                                                     #:repo (or (assoc-ref opts 'repo) 'cran)))))
+                                                     #:repo (or (assoc-ref opts 'repo) 'cran)
+                                                     #:license-prefix prefix-proc))))
                ;; Single import
                (let ((sexp (cran->guix-package name
                                                #:version version
-                                               #:repo (or (assoc-ref opts 'repo) 'cran))))
+                                               #:repo (or (assoc-ref opts 'repo) 'cran)
+                                               #:license-prefix prefix-proc)))
                  (unless sexp
                    (leave (G_ "failed to download description for package '~a'~%")
                           name))

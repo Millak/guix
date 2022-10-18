@@ -83,16 +83,16 @@
 (define %input-style
   (make-parameter 'variable)) ; or 'specification
 
-(define (string->licenses license-string)
+(define (string->licenses license-string license-prefix)
   (let ((licenses
          (map string-trim-both
               (string-tokenize license-string
                                (char-set-complement (char-set #\|))))))
-    (string->license licenses)))
+    (string->license licenses license-prefix)))
 
-(define string->license
-  (let ((prefix identity))
-    (match-lambda
+(define (string->license license-string license-prefix)
+  (let ((prefix license-prefix))
+    (match license-string
       ("AGPL-3" (prefix 'agpl3))
       ("AGPL (>= 3)" (prefix 'agpl3+))
       ("Artistic-2.0" (prefix 'artistic2.0))
@@ -138,8 +138,8 @@
       ("MIT + file LICENSE" (prefix 'expat))
       ("file LICENSE"
        `(,(prefix 'fsdg-compatible) "file://LICENSE"))
-      ((x) (string->license x))
-      ((lst ...) `(list ,@(map string->license lst)))
+      ((x) (string->license x license-prefix))
+      ((lst ...) `(list ,@(map (cut string->license <> license-prefix) lst)))
       (unknown `(,(prefix 'fsdg-compatible) ,unknown)))))
 
 (define (description->alist description)
@@ -508,7 +508,7 @@ reference the pkg-config tool."
 (define (needs-knitr? meta)
   (member "knitr" (listify meta "VignetteBuilder")))
 
-(define (description->package repository meta)
+(define* (description->package repository meta #:key (license-prefix identity))
   "Return the `package' s-expression for an R package published on REPOSITORY
 from the alist META, which was derived from the R package's DESCRIPTION file."
   (let* ((base-url   (case repository
@@ -528,7 +528,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
          (name       (assoc-ref meta "Package"))
          (synopsis   (assoc-ref meta "Title"))
          (version    (assoc-ref meta "Version"))
-         (license    (string->licenses (assoc-ref meta "License")))
+         (license    (string->licenses (assoc-ref meta "License") license-prefix))
          ;; Some packages have multiple home pages.  Some have none.
          (home-page  (case repository
                        ((git) (assoc-ref meta 'git))
@@ -644,31 +644,38 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
 
 (define cran->guix-package
   (memoize
-   (lambda* (package-name #:key (repo 'cran) version #:allow-other-keys)
+   (lambda* (package-name #:key (repo 'cran) version (license-prefix identity)
+                          #:allow-other-keys)
      "Fetch the metadata for PACKAGE-NAME from REPO and return the `package'
 s-expression corresponding to that package, or #f on failure."
      (let ((description (fetch-description repo package-name version)))
        (if description
-           (description->package repo description)
+           (description->package repo description
+                                 #:license-prefix license-prefix)
            (case repo
              ((git)
               ;; Retry import from Bioconductor
-              (cran->guix-package package-name #:repo 'bioconductor))
+              (cran->guix-package package-name #:repo 'bioconductor
+                                  #:license-prefix license-prefix))
              ((hg)
               ;; Retry import from Bioconductor
-              (cran->guix-package package-name #:repo 'bioconductor))
+              (cran->guix-package package-name #:repo 'bioconductor
+                                  #:license-prefix license-prefix))
              ((bioconductor)
               ;; Retry import from CRAN
-              (cran->guix-package package-name #:repo 'cran))
+              (cran->guix-package package-name #:repo 'cran
+                                  #:license-prefix license-prefix))
              (else
               (values #f '()))))))))
 
-(define* (cran-recursive-import package-name #:key (repo 'cran) version)
+(define* (cran-recursive-import package-name #:key (repo 'cran) version
+                                (license-prefix identity))
   (recursive-import package-name
                     #:version version
                     #:repo repo
                     #:repo->guix-package cran->guix-package
-                    #:guix-name cran-guix-name))
+                    #:guix-name cran-guix-name
+                    #:license-prefix license-prefix))
 
 
 ;;;
