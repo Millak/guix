@@ -350,7 +350,7 @@ $(prefix)/etc/openrc\n")))
                                (bs     (assoc-ref inputs
                                                   "guile-bytestructures"))
                                (ssh    (assoc-ref inputs "guile-ssh"))
-                               (gnutls (assoc-ref inputs "gnutls"))
+                               (gnutls (assoc-ref inputs "guile-gnutls"))
                                (disarchive (assoc-ref inputs "disarchive"))
                                (lzma (assoc-ref inputs "guile-lzma"))
                                (locales (assoc-ref inputs "glibc-utf8-locales"))
@@ -406,7 +406,7 @@ $(prefix)/etc/openrc\n")))
                        ;; Guile libraries are needed here for
                        ;; cross-compilation.
                        ("guile" ,guile-3.0-latest) ;for faster builds
-                       ("gnutls" ,gnutls)
+                       ("guile-gnutls" ,guile-gnutls)
                        ,@(if (%current-target-system)
                              '()
                              `(("guile-avahi" ,guile-avahi)))
@@ -435,6 +435,7 @@ $(prefix)/etc/openrc\n")))
          ("gzip" ,gzip)
          ("sqlite" ,sqlite)
          ("libgcrypt" ,libgcrypt)
+         ("zlib" ,zlib)
 
          ("guile" ,guile-3.0-latest)
 
@@ -463,7 +464,7 @@ $(prefix)/etc/openrc\n")))
 
          ("glibc-utf8-locales" ,glibc-utf8-locales)))
       (propagated-inputs
-       `(("gnutls" ,gnutls)
+       `(("guile-gnutls" ,guile-gnutls)
          ;; Avahi requires "glib" which doesn't cross-compile yet.
          ,@(if (%current-target-system)
                '()
@@ -550,7 +551,7 @@ the Nix package manager.")
     (inputs
      (modify-inputs (package-inputs guix)
        (delete "boot-guile" "boot-guile/i686" "util-linux")
-       (prepend gnutls guile-git guile-json-3 guile-gcrypt)))
+       (prepend guile-gnutls guile-git guile-json-3 guile-gcrypt)))
 
     (propagated-inputs '())
 
@@ -1414,7 +1415,7 @@ environments.")
                                          "guile-lzlib"
                                          "guile-zlib"
                                          "guile-sqlite3"
-                                         "gnutls"
+                                         "guile-gnutls"
                                          ,@(if (hurd-target?)
                                                '()
                                                '("guile-fibers")))))
@@ -1458,7 +1459,7 @@ environments.")
        (list pkg-config
              autoconf
              automake
-             gnutls
+             guile-gnutls
 
              ;; Guile libraries are needed here for cross-compilation.
              guile-json-4
@@ -1486,7 +1487,7 @@ environments.")
               guile-zlib
               guile-sqlite3
               guix
-              gnutls)
+              guile-gnutls)
         (if (hurd-target?)
             '()
             (list guile-fibers-1.1))))
@@ -1535,7 +1536,7 @@ outputs of those builds.")
                                        "guile-lzlib"
                                        "guile-zlib"
                                        "guile-sqlite3"
-                                       "gnutls")))
+                                       "guile-gnutls")))
                     (wrap-program file
                       `("PATH" ":" prefix (,bin))
                       `("GUILE_LOAD_PATH" ":" prefix
@@ -1563,7 +1564,7 @@ outputs of those builds.")
      (list pkg-config
            autoconf
            automake
-           gnutls
+           guile-gnutls
 
            ;; Guile libraries are needed here for cross-compilation.
            guile-json-4
@@ -1584,7 +1585,7 @@ outputs of those builds.")
                guile-lzlib
                guile-zlib
                guix
-               gnutls)))
+               guile-gnutls)))
     (description
      "The Guix Build Coordinator helps with performing lots of builds across
 potentially many machines, and with doing something with the results and
@@ -1721,7 +1722,7 @@ in an isolated environment, in separate namespaces.")
                                          "guile-lzlib"
                                          "guile-prometheus"
                                          "guile-sqlite3"
-                                         "gnutls"
+                                         "guile-gnutls"
                                          "guile-fibers")))
                       (wrap-program file
                         `("GUILE_LOAD_PATH" ":" prefix
@@ -1748,7 +1749,7 @@ in an isolated environment, in separate namespaces.")
        (list pkg-config
              autoconf
              automake
-             gnutls
+             guile-gnutls
 
              ;; Guile libraries are needed here for cross-compilation.
              (car (assoc-ref (package-native-inputs guix) "guile"))
@@ -1772,7 +1773,7 @@ in an isolated environment, in separate namespaces.")
              guile-lib
              guile-lzlib
              guile-sqlite3
-             gnutls))
+             guile-gnutls))
       (home-page "https://git.cbaines.net/guix/nar-herder")
       (synopsis "Utility for managing and serving nars")
       (description
