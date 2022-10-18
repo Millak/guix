@@ -59302,19 +59302,6 @@ syntax extension expansion.")
      "This Rust crate gathers system information.")
     (license license:expat)))
 
-(define-public rust-sys-info-0.7
-  (package
-    (inherit rust-sys-info-0.9)
-    (name "rust-sys-info")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sys-info" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0facyh6hswp1i7airri8ly5kl6sv5bvkkd21vs51k2b3z22bvkz5"))))))
-
 (define-public rust-sys-locale-0.1
   (package
     (name "rust-sys-locale")
