@@ -3571,24 +3571,6 @@ the platform-specific getters provided by winit, or another library.")
      "This package provides a YUV4MPEG2 (@file{.y4m}) encoder and decoder.")
     (license license:expat)))
 
-(define-public rust-y4m-0.5
-  (package
-    (inherit rust-y4m-0.7)
-    (name "rust-y4m")
-    (version "0.5.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "y4m" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1933677by64y06zfgip2yq8b2dza8xnljhaksx93czq90b54kscz"))))
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-resize" ,rust-resize-0.3))))))
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
