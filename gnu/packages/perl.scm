@@ -8833,6 +8833,33 @@ are reasonably like string literals.  Its real reason for being is to find
 interpolated variables for @code{Perl::Critic} policies and similar code.")
     (license license:perl-license)))
 
+(define-public perl-ppix-utilities
+  (package
+    (name "perl-ppix-utilities")
+    (version "1.001000")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/E/EL/ELLIOTJS/PPIx-Utilities-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "16yb7dnz8lgq2azs8jxj1wac60kbn16x8y4py04ci8nndww87903"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-deep))
+    (propagated-inputs (list perl-exception-class perl-ppi perl-readonly-xs
+                             perl-task-weaken))
+    (home-page "https://metacpan.org/release/PPIx-Utilities")
+    (synopsis "Extensions to PPI")
+    (description
+     "@code{PPIx::Utilities} is a collection of functions for dealing
+with @code{PPI} objects, many of which originated in @code{Perl::Critic}.  They
+are organized into modules by the kind of @code{PPI} class they relate to, by
+replacing the \"@code{PPI}\" at the front of the module name with
+\"@code{PPIx::Utilities}\", e.g. functionality related to @code{PPI::Nodes} is
+in @code{PPIx::Utilities::Node}.")
+    (license license:perl-license)))
+
 (define-public perl-probe-perl
   (package
     (name "perl-probe-perl")
