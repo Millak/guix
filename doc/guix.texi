@@ -950,9 +950,11 @@ version 3.0.3 or later;
 @item @url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version
 0.1.0 or later;
 @item
-@uref{https://gnutls.org/, GnuTLS}, specifically its Guile bindings
-(@pxref{Guile Preparations, how to install the GnuTLS bindings for
-Guile,, gnutls-guile, GnuTLS-Guile});
+@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile
+Preparations, how to install the GnuTLS bindings for Guile,,
+gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to
+@uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS
+until version 3.7.8 included.};
 @item
 @uref{https://notabug.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0
 or later;
