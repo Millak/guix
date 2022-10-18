@@ -17697,33 +17697,6 @@ for arbitrary structs.")
          ("rust-skeptic" ,rust-skeptic-0.13)
          ("rust-syn" ,rust-syn-0.15))))))
 
-(define-public rust-derive-builder-0.5
-  (package
-    (inherit rust-derive-builder-0.9)
-    (name "rust-derive-builder")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "derive_builder" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0fgl8dsigr7h70clxjq8xmsfc021w5ag262wfgcqv0ian1m8x6cc"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-compiletest-rs" ,rust-compiletest-rs-0.3)
-        ("rust-derive-builder-core" ,rust-derive-builder-core-0.2)
-        ("rust-env-logger" ,rust-env-logger-0.4)
-        ("rust-log" ,rust-log-0.3)
-        ("rust-quote" ,rust-quote-0.3)
-        ("rust-skeptic" ,rust-skeptic-0.9)
-        ("rust-syn" ,rust-syn-0.11))
-       #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.4)
-        ("rust-log" ,rust-log-0.3)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.2)
-        ("rust-skeptic" ,rust-skeptic-0.9))))))
-
 (define-public rust-derive-builder-core-0.10
   (package
     (name "rust-derive-builder-core")
