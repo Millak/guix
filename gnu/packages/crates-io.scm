@@ -58727,27 +58727,6 @@ values without proliferating generics.")
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
-(define-public rust-sval-0.4
-  (package
-    (inherit rust-sval-0.5)
-    (name "rust-sval")
-    (version "0.4.7")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "sval" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1aljggx64481q4wp3wx9hxsfh2bs7d64nqsrwbb2zxcpmdnbn6yk"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-sval-derive" ,rust-sval-derive-0.4)
-        ("rust-smallvec" ,rust-smallvec-0.6)
-        ("rust-serde" ,rust-serde-1))))))
-
 (define-public rust-sval-derive-1
   (package
     (name "rust-sval-derive")
