@@ -8855,26 +8855,6 @@ constants from build.rs or a script.")
      "This package provides a fast bump allocation arena for Rust.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-bumpalo-2
-  (package
-    (inherit rust-bumpalo-3)
-    (name "rust-bumpalo")
-    (version "2.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bumpalo" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "020psxs5dlm0gdbs83rx2rcavibdshdr0fpzk3mmw65zq8ppz05d"))))
-    (arguments
-     `(#:tests? #f      ; cargo_readme_up_to_date test fails
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.2)
-        ("rust-quickcheck" ,rust-quickcheck-0.8))))))
-
 (define-public rust-bv-0.11
   (package
     (name "rust-bv")
