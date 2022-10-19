@@ -37,6 +37,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -272,7 +273,7 @@ solution (server-side)")))
               (sha256
                (base32
                 "1p8xkq3mxg476srwrgqax76vjzji0rjx32njmgnpa409vaqrbj5p"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -297,10 +298,7 @@ solution (server-side)")))
                                  (string-append #$output "/share/man/man1"))
                    (copy-recursively "docs/_build/singlehtml"
                                      (string-append #$output "/share/doc/"
-                                                    #$name "/html"))))
-               (replace 'check
-                 (lambda _
-                   (invoke "pytest" "-vv"))))))
+                                                    #$name "/html")))))))
     (native-inputs
      (list python-pytest python-sphinx))
     (inputs
