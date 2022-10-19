@@ -926,7 +926,7 @@ programmer to write text-based user interfaces.")
 (define-public go-github-com-junegunn-fzf
   (package
     (name "go-github-com-junegunn-fzf")
-    (version "0.25.0")
+    (version "0.34.0")
     (source
      (origin
        (method git-fetch)
@@ -936,7 +936,7 @@ programmer to write text-based user interfaces.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1j5bfxl4w8w3n89p051y8dhxg0py9l98v7r2gkr63bg4lj32faz8"))))
+         "023ksrmjg99svmkpnlh4k7gssv1sz2nl0v5b6bsr2iragvwrgkf4"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/junegunn/fzf"))
@@ -945,8 +945,10 @@ programmer to write text-based user interfaces.")
            go-github-com-mattn-go-shellwords
            go-github-com-mattn-go-isatty
            go-github-com-gdamore-tcell
+           go-github-com-rivo-uniseg
            go-github-com-saracen-walker
            go-golang.org-x-sync-errgroup
+           go-golang-org-x-term
            go-golang-org-x-crypto))
     (home-page "https://github.com/junegunn/fzf")
     (synopsis "Command-line fuzzy-finder")
