@@ -974,13 +974,13 @@ astronomy and astrophysics.")
 (define-public python-astropy-healpix
   (package
     (name "python-astropy-healpix")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "astropy-healpix" version))
+       (uri (pypi-uri "astropy_healpix" version))
        (sha256
-        (base32 "1436ml03xkmvx4afzbhfj67ab91418sz1w3lq1b18r43qchnd6j0"))))
+        (base32 "1n1svmd41iv944zf4anbnsigd47zr4dfjf49vrc7m6928gmq9hw8"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
