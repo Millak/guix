@@ -728,7 +728,7 @@ MAN-COMPRESSOR, using MAN-COMPRESSOR-FLAGS."
 
   (define (maybe-compress output)
     (maybe-compress-directory (string-append output "/share/man")
-                              "\\.[0-9]+$"
+                              "\\.[0-9]+[:alpha:]*$"
                               man-compressor
                               man-compressor-flags
                               man-compressor-file-extension)
