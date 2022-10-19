@@ -374,11 +374,11 @@ Linux kernel and C library interfaces employed by user-space programs.")
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
-       ;; The compress-documentation phase doesn't pick up on our manpages as
-       ;; its regex doesn't support trailing letters, so manually compress.
-       #:make-flags ,#~(list (string-append "prefix=" #$output) "gz")
+       #:make-flags ,#~(list (string-append "prefix=" #$output))
        #:license-file-regexp "POSIX-COPYRIGHT"
-       #:phases (modify-phases %standard-phases (delete 'configure))))
+       ;; The build phase only compresses documentation, which we already do.
+       #:phases (modify-phases %standard-phases (delete 'configure)
+                                                (delete 'build))))
     (home-page "https://www.kernel.org/doc/man-pages/")
     (synopsis "Man pages from the POSIX.1-2013 standard")
     (description
