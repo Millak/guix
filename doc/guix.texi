@@ -35736,6 +35736,15 @@ A value like @code{#o0027} will give read access to the group used by Gitolite
 (by default: @code{git}).  This is necessary when using Gitolite with software
 like cgit or gitweb.
 
+@item @code{local-code} (default: @code{"$rc@{GL_ADMIN_BASE@}/local"})
+Allows you to add your own non-core programs, or even override the
+shipped ones with your own.
+
+Please supply the FULL path to this variable. By default, directory
+called "local" in your gitolite clone is used, providing the benefits of
+versioning them as well as making changes to them without having to log
+on to the server.
+
 @item @code{unsafe-pattern} (default: @code{#f})
 An optional Perl regular expression for catching unsafe configurations in
 the configuration file.  See
