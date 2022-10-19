@@ -1125,13 +1125,13 @@ of dates.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "1.3.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "1a8djakaya6w5iv9237gkcz39brqzgrfs2wqrl0izi1s85cfdymn"))))
+        (base32 "129n268wnziprrv09f7y6f98cj1vh1bzp7ygsna10h3ilnjplkq1"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"
