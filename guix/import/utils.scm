@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -131,8 +132,9 @@ of the string VERSION is replaced by the symbol 'version."
   (bytevector->nix-base32-string (file-sha256 filename)))
 
 (define (spdx-string->license str)
-  "Convert STR, a SPDX formatted license identifier, to a license object.
-   Return #f if STR does not match any known identifiers."
+  "Convert STR, an SPDX license identifier, to a symbol like 'license:gpl3+
+giving the prefixed name of a license object exported from (guix licenses).
+Return #f if STR does not match any known SPDX license identifiers."
   ;; https://spdx.org/licenses/
   ;; The gfl1.0, nmap, repoze
   ;; licenses doesn't have SPDX identifiers
@@ -257,8 +259,9 @@ of the string VERSION is replaced by the symbol 'version."
     (_ #f)))
 
 (define (license->symbol license)
-  "Convert license to a symbol representing the variable the object is bound
-to in the (guix licenses) module, or #f if there is no such known license."
+  "Convert LICENSE object to a prefixed symbol representing the variable the
+object is bound to in the (guix licenses) module, such as 'license:gpl3+, or
+#f if there is no such known license."
   (define licenses
     (module-map (lambda (sym var) `(,(variable-ref var) . ,sym))
                 (resolve-interface '(guix licenses) #:prefix 'license:)))
