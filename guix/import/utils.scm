@@ -139,10 +139,11 @@ of the string VERSION is replaced by the symbol 'version."
   ;; Please update guix/licenses.scm when modifying
   ;; this list to avoid mismatches.
   ;;
-  ;; "GPL-N+" has been deprecated in favour of "GPL-N-or-later".
-  ;; "GPL-N" has been deprecated in favour of "GPL-N-only"
-  ;; or "GPL-N-or-later" as appropriate.  Likewise for LGPL
-  ;; and AGPL.
+  ;; "GPL-N+" has been deprecated in favour of "GPL-N-or-later".  "GPL-N" has
+  ;; been deprecated in favour of "GPL-N-only" or "GPL-N-or-later" as
+  ;; appropriate.  Likewise for LGPL and AGPL.  However, we list the
+  ;; deprecated forms here (with and without the "+" operator) to get better
+  ;; results from old license expressions.
   '(("AGPL-1.0"                   . license:agpl1)
     ("AGPL-1.0-only"              . license:agpl1)
     ("AGPL-3.0"                   . license:agpl3)
@@ -255,10 +256,11 @@ of the string VERSION is replaced by the symbol 'version."
     ("Zlib"                       . license:zlib)))
 
 (define (spdx-string->license str)
-  "Convert STR, an SPDX license identifier, to a symbol like 'license:gpl3+
-giving the prefixed name of a license object exported from (guix licenses).
-Return #f if STR does not match any known SPDX license identifiers.  Per the
-SPDX specification, license identifiers are compared case-insensitively."
+  "Convert STR, an SPDX license identifier (possibly with a postfix +
+operator), to a symbol like 'license:gpl3+ giving the prefixed name of a
+license object exported from (guix licenses).  Return #f if STR does not match
+any known SPDX license identifiers.  Per the SPDX specification, license
+identifiers are compared case-insensitively."
   ;; https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/#d2-case-sensitivity
   ;; Operators AND, OR, and WITH are case-sensitive, but identifiers are
   ;; case-insensitive for matching, though the canonical case is used in URIs.
@@ -266,7 +268,10 @@ SPDX specification, license identifiers are compared case-insensitively."
     ((_ . license)
      license)
     (#f
-     #f)))
+     (and (string-suffix? "+" str)
+          ;; We try the form with the + to support deprecated identifiers for
+          ;; GNU licenses (see above).  Here, we handle other uses of +.
+          (spdx-string->license (string-drop-right str 1))))))
 
 (define (license->symbol license)
   "Convert LICENSE object to a prefixed symbol representing the variable the
