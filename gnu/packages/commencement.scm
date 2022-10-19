@@ -1503,8 +1503,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
                      (let ((patch-file
                             #$(local-file
                                (search-patch "gcc-boot-4.6.4.patch"))))
-                       (invoke "patch" "--force" "-p1" "-i" patch-file)))
-                   (lambda* (#:key inputs #:allow-other-keys)
+                       (invoke "patch" "--force" "-p1" "-i" patch-file))
                      (let ((patch-file
                             #$(local-file
                                (search-patch "gcc-boot-2.95.3-arm.patch"))))
