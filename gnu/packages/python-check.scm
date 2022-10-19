@@ -432,13 +432,13 @@ of tests run in a specific order.")
 (define-public python-pytest-astropy-header
 (package
   (name "python-pytest-astropy-header")
-  (version "0.1.2")
+  (version "0.2.2")
   (source
     (origin
       (method url-fetch)
       (uri (pypi-uri "pytest-astropy-header" version))
       (sha256
-        (base32 "1y87agr324p6x5gvhziymxjlw54pyn4gqnd49papbl941djpkp5g"))))
+        (base32 "046v4arinv8b5jz05pvhnc0n1aqqndwvhlsl635ahxabr40i32bp"))))
   (build-system python-build-system)
   (native-inputs
    (list python-pytest python-setuptools-scm))
