@@ -879,13 +879,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.0.1")
+    (version "5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "09wh589ywjsgjvi76v2d2zqd9sri0461rrnml0b0pah5lbkcv0k3"))
+        (base32 "0zkv3ddzlxx21i796azfbqxrqnsxn83vsczscv577iyzxp3v5c8x"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -948,7 +948,7 @@ accurately in real time at any rate desired.")
            python-ipython
            python-jplephem
            python-objgraph
-           python-pytest
+           python-pytest-7.1
            python-pytest-astropy
            python-pytest-xdist
            python-setuptools-scm
