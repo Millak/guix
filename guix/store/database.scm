@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2019 Caleb Ristvedt <caleb.ristvedt@cune.org>
 ;;; Copyright © 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,7 +46,8 @@
             sqlite-register
             register-items
             %epoch
-            reset-timestamps))
+            reset-timestamps
+            vacuum-database))
 
 ;;; Code for working with the store database directly.
 
@@ -438,3 +440,8 @@ typically by adding them as temp-roots."
                     (register db item)
                     (report))
                   items)))))
+
+(define (vacuum-database)
+  (let ((db (sqlite-open (store-database-file))))
+    (sqlite-exec db "VACUUM;")
+    (sqlite-close db)))

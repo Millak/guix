@@ -4531,6 +4531,18 @@ import, unless it was started with @option{--disable-deduplication}
 this option is primarily useful when the daemon was running with
 @option{--disable-deduplication}.
 
+@item --vacuum-database
+@cindex vacuum the store database
+@comment Avoid words like 'repair,' 'compress,' and 'optimize.'
+Guix uses an sqlite database to keep track of the items in (@pxref{The Store}).
+Over time it is possible that the database may grow to a large size and become
+fragmented.  As a result, one may wish to clear the freed space and join the
+partially used pages in the database left behind from removed packages or after
+running the garbage collector.  Running @command{sudo guix gc
+--vacuum-database} will lock the database and @code{VACUUM} the store,
+defragmenting the database and purging freed pages, unlocking the database when
+it finishes.
+
 @end table
 
 @node Invoking guix pull
