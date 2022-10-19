@@ -4057,6 +4057,30 @@ the abstraction and portability layer as thin as possible.")
 (define-public ecl-usocket
   (sbcl-package->ecl-package sbcl-usocket))
 
+(define-public sbcl-trivial-sockets
+  (package
+    (name "sbcl-trivial-sockets")
+    (version "0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/usocket/trivial-sockets/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-trivial-sockets" version))
+       (sha256
+        (base32 "0xj9x5z3psxqap9c29qz1xswx5fiqxyzd35kmbw2g6z08cgb7nd0"))))
+    (build-system asdf-build-system/sbcl)
+    (home-page "https://github.com/usocket/trivial-sockets")
+    (synopsis "Simple socket library for Common Lisp")
+    (description
+     "This library is a portable socket interface that allows CL programs to
+open connected (client) stream sockets to network services.")
+    (license license:expat)))
+
+(define-public cl-trivial-sockets
+  (sbcl-package->cl-source-package sbcl-trivial-sockets))
+
 (define-public sbcl-s-xml
   (package
     (name "sbcl-s-xml")
