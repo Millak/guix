@@ -448,11 +448,11 @@ and suitable for 'exit'."
 (define* (launch-environment command profile manifest
                              #:key pure? (white-list '())
                              emulate-fhs?)
-  "Run COMMAND in a new environment containing INPUTS, using the native search
-paths defined by the list PATHS.  When PURE?, pre-existing environment
-variables are cleared before setting the new ones, except those matching the
-regexps in WHITE-LIST.  When EMULATE-FHS?, first set up an FHS environment
-with $PATH and generate the LD cache."
+  "Load the environment of PROFILE, which corresponds to MANIFEST, and execute
+COMMAND.  When PURE?, pre-existing environment variables are cleared before
+setting the new ones, except those matching the regexps in WHITE-LIST.  When
+EMULATE-FHS?, first set up an FHS environment with $PATH and generate the LD
+cache."
   ;; Properly handle SIGINT, so pressing C-c in an interactive terminal
   ;; application works.
   (sigaction SIGINT SIG_DFL)
