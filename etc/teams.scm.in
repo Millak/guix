@@ -530,7 +530,9 @@ TEAMS when a patch is received by Debbugs."
              prefix
              (person-name member)
              (person-email member)))
-   (team-members team)))
+   (sort
+    (team-members team)
+    (lambda (m1 m2) (string<? (person-name m1) (person-name m2))))))
 
 (define (list-teams)
   "Print all teams, their scope and their members."
