@@ -5450,8 +5450,8 @@ as conversion to and from @command{net.Addr}.")
       (license license:expat))))
 
 (define-public go-github-com-sabhiram-go-gitignore
-  (let ((commit "d3107576ba9425fc1c85f4b3569c4631b805a02e")
-        (revision "0"))
+  (let ((commit "525f6e181f062064d83887ed2530e3b1ba0bc95a")
+        (revision "1"))
     (package
       (name "go-github-com-sabhiram-go-gitignore")
       (version (git-version "1.0.2" revision commit))
@@ -5464,7 +5464,7 @@ as conversion to and from @command{net.Addr}.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1rdwyxgcsiwgmlqnc3k6h300mzlvjc3j21np4yh1h476wc8dvl0l"))))
+           "197giv3snczvbihzvkja5pq53yw5fc516rnjm71hni8gawb8jmh3"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path
