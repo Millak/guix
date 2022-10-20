@@ -446,6 +446,7 @@ submodules = false
 prefix = \"" out "\"
 sysconfdir = \"etc\"
 [rust]
+debug=false
 jemalloc=true
 default-linker = \"" gcc "/bin/gcc" "\"
 channel = \"stable\"
