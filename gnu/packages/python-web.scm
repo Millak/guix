@@ -79,6 +79,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -1601,7 +1602,7 @@ is Python’s.")
        (sha256
         (base32
          "1swm8h74nhg63nxk347blwq9f1qn6iiq3zisndcvm7axkq3pc2df"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -1609,21 +1610,8 @@ is Python’s.")
           (add-after 'unpack 'remove-coverage-pytest-options
             (lambda _
               (substitute* "pyproject.toml"
-                (("^--cov.*") ""))))
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
-    (native-inputs (list python-poetry-core python-pypa-build python-pytest))
+                (("^--cov.*") "")))))))
+    (native-inputs (list python-poetry-core python-pytest))
     (propagated-inputs
      (list python-isodate
            python-jsonschema
