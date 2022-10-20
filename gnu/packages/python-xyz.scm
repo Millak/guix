@@ -28050,7 +28050,7 @@ and frame grabber interface.")
        (uri (pypi-uri "scikit-build" version))
        (sha256
         (base32 "1wx1m9vnxnnz59lyaisgyxldp313kciyd4af8lf112vb8vbjy9yk"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -28061,11 +28061,6 @@ and frame grabber interface.")
                 (("^(CMAKE_DEFAULT_EXECUTABLE = ).*" _ head)
                  (format #f "~a ~s~%" head
                          (search-input-file inputs "bin/cmake"))))))
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -28091,12 +28086,7 @@ and frame grabber interface.")
                               ;; nondeterministically (see:
                               ;; https://github.com/scikit-build/scikit-build/issues/711).
                               "and not test_generator_cleanup "
-                              "and not test_generator_selection ")))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+                              "and not test_generator_selection "))))))))
     (native-inputs
      (list cmake-minimal
            gfortran
@@ -28107,15 +28097,13 @@ and frame grabber interface.")
            python-mock
            python-packaging
            python-path
-           python-pypa-build
            python-pytest
            python-pytest-cov
            python-pytest-mock
            python-pytest-virtualenv
            python-pytest-xdist
            python-requests
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-distro python-packaging python-wheel))
     (home-page "https://github.com/scikit-build/scikit-build")
