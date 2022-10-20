@@ -63,7 +63,12 @@
   #:autoload   (guix svn-download) (svn-reference?
                                     svn-reference-url
                                     svn-reference-user-name
-                                    svn-reference-password)
+                                    svn-reference-password
+
+                                    svn-multi-reference?
+                                    svn-multi-reference-url
+                                    svn-multi-reference-user-name
+                                    svn-multi-reference-password)
   #:use-module (guix import stackage)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
@@ -1143,18 +1148,32 @@ descriptions maintained upstream."
      uris)))
 
 (define (svn-reference-uri-with-userinfo ref)
-  "Return the URI of REF, an <svn-reference> object, but with an additional
-'userinfo' part corresponding to REF's user name and password, provided REF's
-URI is HTTP or HTTPS."
-  (let ((uri (string->uri (svn-reference-url ref))))
-    (if (and (svn-reference-user-name ref)
+  "Return the URI of REF, an <svn-reference> or <svn-multi-reference> object,
+but with an additional 'userinfo' part corresponding to REF's user name and
+password, provided REF's URI is HTTP or HTTPS."
+  ;; XXX: For lack of record type inheritance.
+  (define ->url
+    (if (svn-reference? ref)
+        svn-reference-url
+        svn-multi-reference-url))
+  (define ->user-name
+    (if (svn-reference? ref)
+        svn-reference-user-name
+        svn-multi-reference-user-name))
+  (define ->password
+    (if (svn-reference? ref)
+        svn-reference-password
+        svn-multi-reference-password))
+
+  (let ((uri (string->uri (->url ref))))
+    (if (and (->user-name ref)
              (memq (uri-scheme uri) '(http https)))
         (build-uri (uri-scheme uri)
                    #:userinfo
-                   (string-append (svn-reference-user-name ref)
-                                  (if (svn-reference-password ref)
+                   (string-append (->user-name ref)
+                                  (if (->password ref)
                                       (string-append
-                                       ":" (svn-reference-password ref))
+                                       ":" (->password ref))
                                       ""))
                    #:host (uri-host uri)
                    #:port (uri-port uri)
@@ -1207,7 +1226,8 @@ URI is HTTP or HTTPS."
          ((git-reference? (origin-uri origin))
           (warnings-for-uris
            (list (string->uri (git-reference-url (origin-uri origin))))))
-         ((svn-reference? (origin-uri origin))
+         ((or (svn-reference? (origin-uri origin))
+              (svn-multi-reference? (origin-uri origin)))
           (let ((uri (svn-reference-uri-with-userinfo (origin-uri origin))))
             (if (memq (uri-scheme uri) '(http https))
                 (warnings-for-uris (list uri))
