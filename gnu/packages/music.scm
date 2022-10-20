@@ -3054,6 +3054,13 @@ capabilities, custom envelopes, effects, etc.")
          ;; Move SSE compiler optimization flags from generic target to
          ;; athlon64 and core2 targets, because otherwise the build would fail
          ;; on non-Intel machines.
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* (list "src/Interface/InterChange.cpp"
+                                "src/Misc/Bank.cpp"
+                                "src/Misc/Config.cpp")
+               (("/usr/share") (string-append (assoc-ref outputs "out")
+                                              "/share")))))
          (add-after 'unpack 'remove-sse-flags-from-generic-target
            (lambda _
              (substitute* "src/CMakeLists.txt"
