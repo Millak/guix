@@ -59,6 +59,7 @@
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2022 Fredrik Salomonsson <plattfot@posteo.net>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2953,3 +2954,36 @@ used for multimedia keys.")
 an interface over @code{grim}, @code{slurp} and @code{jq}, and supports storing
 the screenshot either directly to the clipboard using @code{wl-copy} or to a
 file.")))
+
+(define-public wld
+  (let ((commit "6586736176ef50a88025abae835e29a7ca980126")
+        (revision "1"))
+    (package
+      (name "wld")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/michaelforney/wld")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0qkd3q8p1s72x688g83fkcarrz2h20904rpd8z44ql6ksgrj9bp3"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                              ; no tests
+         #:make-flags (list (string-append "CC=" ,(cc-for-target))
+                            (string-append "PREFIX=" %output))
+         #:phases (modify-phases %standard-phases
+                    (delete 'configure))))
+      (inputs (list fontconfig
+                    libdrm
+                    pixman
+                    wayland))
+      (propagated-inputs (list fontconfig pixman))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/michaelforney/wld")
+      (synopsis "Primitive drawing library for Wayland")
+      (description "wld is a drawing library that targets Wayland.")
+      (license license:expat))))
