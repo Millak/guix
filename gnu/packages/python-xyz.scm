@@ -12733,25 +12733,10 @@ domains support.")
         (uri (pypi-uri "path" version))
         (sha256
          (base32 "0lig13gxnfv98v790db1smvsbd3mnj7y8rwyiwhfi6xiqibygwms"))))
-     (build-system python-build-system)
+     (build-system pyproject-build-system)
      (arguments
-      (list
-       #:tests? #f
-       #:phases
-       #~(modify-phases %standard-phases
-           ;; XXX: PEP 517 manual build/install procedures copied from
-           ;; python-isort.
-           (replace 'build
-             (lambda _
-               ;; ZIP does not support timestamps before 1980.
-               (setenv "SOURCE_DATE_EPOCH" "315532800")
-               (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((whl (car (find-files "dist" "\\.whl$"))))
-                 (invoke "pip" "--no-cache-dir" "--no-input"
-                         "install" "--no-deps" "--prefix" #$output whl)))))))
-     (native-inputs (list python-pypa-build python-setuptools-scm))
+      (list #:tests? #f))
+     (native-inputs (list python-setuptools-scm))
      (home-page "https://github.com/jaraco/path")
      (synopsis "Object-oriented file system path manipulation library")
      (description "@code{path} (formerly @code{path.py}) implements path
@@ -12767,18 +12752,15 @@ invoked on those path objects directly.")
          (package-arguments python-path-bootstrap)
        ((#:tests? _ #f)
         (not (%current-target-system)))
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  ;; Do not test the myproject.toml build as it tries to pull
-                  ;; dependencies from the Internet.
-                  (invoke "pytest" "-vv" "-k"
-                          (string-append
-                           "not project "
-                           ;; This tests assumes a root user exists.
-                           "and not test_get_owner")))))))))
+       ((#:test-flags flags #~'())
+        #~(append (list "-vv" "-k"
+                        (string-append
+                         ;; Do not test the myproject.toml build as it tries
+                         ;; to pull dependencies from the Internet.
+                         "not project "
+                         ;; This tests assumes a root user exists.
+                         "and not test_get_owner"))
+                  #$flags))))
     (native-inputs
      (modify-inputs (package-native-inputs python-path-bootstrap)
        (append python-appdirs
