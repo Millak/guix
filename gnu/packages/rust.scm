@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 (unmatched parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
+;;; Copyright © 2022 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -138,7 +139,14 @@
       (file-name (git-file-name name (git-version version revision commit)))
       (sha256
        (base32
-        "09rvm3zgx1d86gippl8qzh13m641ynbw9q0zsc90g0h1khd3z3b6")))))
+        "09rvm3zgx1d86gippl8qzh13m641ynbw9q0zsc90g0h1khd3z3b6"))
+      (modules '((guix build utils)))
+      (snippet
+       '(begin
+          ;; Drastically reduces memory and build time requirements
+          ;; by disabling debug by default.
+          (substitute* (find-files "." "Makefile")
+            (("-g ") "")))))))
 
 ;;; Rust 1.54 is special in that it is built with mrustc, which shortens the
 ;;; bootstrap path.
