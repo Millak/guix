@@ -30450,34 +30450,17 @@ object, which can be useful if you want to force your objects into a table.")
        (uri (pypi-uri "deepmerge" version))
        (sha256
         (base32 "06hagzg8ccmjzqvszdxb52jgx5il8a1jdz41n4dpkyyjsfg7fi2b"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-version
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")))
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel"
-                      "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list python-pypa-build
-           python-setuptools-scm
-           python-pytest
-           python-wheel))
+     (list python-setuptools-scm
+           python-pytest))
     (home-page "https://deepmerge.readthedocs.io/en/latest/")
     (synopsis "Merge nested data structures")
     (description
