@@ -17213,12 +17213,11 @@ strings require only one extra byte in addition to the strings themselves.")
               (sha256
                (base32
                 "1n0h25gj6zd02kqyl040xpdvg4hpy1j92716sz0rg019xjqqijqb"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
           (add-after 'unpack 'adjust-for-older-attrs
             ;; Our older attrs package is using the 'attr' rather than 'attrs'
             ;; namespace.
@@ -17227,14 +17226,6 @@ strings require only one extra byte in addition to the strings themselves.")
               (substitute* (find-files "." "\\.py$")
                 (("from attrs\\b")
                  "from attr"))))
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -17252,7 +17243,6 @@ strings require only one extra byte in addition to the strings themselves.")
            python-msgpack
            python-poetry-core
            python-pymongo               ;for the bson module
-           python-pypa-build
            python-pytest
            python-pytest-xdist))
     (propagated-inputs
