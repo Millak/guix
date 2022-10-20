@@ -31113,7 +31113,7 @@ platform using the ActivityPub protocol.")
 (define-public python-lief
   (package
     (name "python-lief")
-    (version "0.12.1")
+    (version "0.12.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -31122,7 +31122,7 @@ platform using the ActivityPub protocol.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xzbh3bxy4rw1yamnx68da1v5s56ay4g081cyamv67256g0qy2i1"))))
+                "1xb21jsws8lw93by8r25ibzgiml8n1cp7rpzybc648lk6idw0zg6"))))
     (build-system python-build-system)
     (native-inputs (list cmake))
     (arguments
