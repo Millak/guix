@@ -6,7 +6,7 @@
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;; Copyright © 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;; Copyright © 2019–2022 Florian Pelz <pelzflorian@pelzflorian.de>
-;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -25,6 +25,61 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "400a7a4c80efbde1905ae98a298bbb5882d46a0d")
+        (title
+         (en "New build system for Python packages")
+         (de "Neues Erstellungssystem für Python-Pakete")
+         (fr "Nouveau système de construction pour les paquets Python"))
+        (body
+         (en "A new @var{pyproject-build-system} has been added.  This
+is a redesign of @var{python-build-system} with support for @dfn{PEP 517}
+and @file{pyproject.toml} files.  It also has built-in support for various
+test frameworks such as @command{pytest} and @code{nosetests}.
+
+There is a complementary @code{python-toolchain} package that comes with
+updated versions of @command{pip}, @command{setuptools} and others.
+
+The build system will eventually be merged into @var{python-build-system}
+but you are encouraged to use it for packages in the @code{guix} channel.
+Third party channels may want to wait until the API is stable (see the
+Guix manual for caveats).
+
+Despite the name, @var{pyproject-build-system} also works with the
+``legacy'' @file{setup.py} format.")
+         (de "Ein neues Erstellungssystem @var{pyproject-build-system} ist
+verfügbar.  Es ist eine Neuauflage des @var{python-build-system}, die
+@dfn{PEP 517} und @file{pyproject.toml}-Dateien unterstützt.  Auch wurde
+Unterstützung für Testrahmen wie @command{pytest} und @code{nosetests}
+eingebaut.
+
+Ergänzend gibt es ein Paket @code{python-toolchain} mit aktualisierten Versionen
+von @command{pip}, @command{setuptools} und mehr.
+
+Das Erstellungssystem wird in Zukunft Teil von @var{python-build-system} werden,
+aber wir würden es begrüßen, wenn Sie es für Pakete auf dem @code{guix}-Kanal
+verwenden würden.  Drittanbieterkanäle warten vielleicht lieber auf eine
+stabile Programmierschnittstelle (siehe die im Guix-Handbuch genannten
+Einschränkungen).
+
+Trotz dem Namen funktioniert @var{pyproject-build-system} auch mit dem „alten“
+@file{setup.py}-Format.")
+         (fr "Un nouveau système de construction, @var{pyproject-build-system},
+a été ajouté.  Il s'agit d'une refonte du @var{python-build-system} qui rajoute
+la prise en charge de @dfn{PEP 517} et des fichiers @file{pyproject.toml}.
+Il intègre aussi la prise en charge de divers cadriciels de test comme
+@command{pytest} ou @code{nosetests}.
+
+Un paquet supplémentaire @code{python-toolchain} fournit des versions à jour
+de @command{pip}, @command{setuptools} et autres.
+
+Le système de construction finira par être intégré au @var{python-build-system}
+mais nous vous encourageons à l'utiliser pour les paquets du canal @code{guix}.
+Les canaux tiers devraient attendre que l'API se stabilise (voir le manuel de
+Guix pour les mises en garde).
+
+Contrairement à ce qu'indique son nom, @var{pyproject-build-system} fonctionne
+aussi avec « l'ancien » format @file{setup.py}.")))
 
  (entry (commit "c7ba5f38b80433b040d3946b8fc0b1e8621ba30a")
         (title
