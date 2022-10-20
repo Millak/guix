@@ -1643,33 +1643,19 @@ JSON Schema Specification Draft 2020-12.
        (sha256
         (base32
          "1q09sjh4hsc0c8yqbd97h5mp6rwh427y6zyn8kv8wljk6sa0fs4q"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      ;; The example tests attempt to fetch resources from the Internet
+      ;; (see: https://github.com/p1c2u/openapi-spec-validator/issues/151).
+      #:test-flags #~'("-vv" "-k" "not Example and not Exampe")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-coverage-pytest-options
             (lambda _
               (substitute* "pyproject.toml"
-                (("^--cov.*") ""))))
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        ;; The example tests attempt to fetch resources from
-                        ;; the Internet (see:
-                        ;; https://github.com/p1c2u/openapi-spec-validator/issues/151).
-                        "-k" "not Example and not Exampe"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
-    (native-inputs (list python-poetry-core python-pypa-build python-pytest))
+                (("^--cov.*") "")))))))
+    (native-inputs (list python-poetry-core python-pytest))
     (propagated-inputs
      (list python-jsonschema
            python-openapi-schema-validator
