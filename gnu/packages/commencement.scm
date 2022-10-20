@@ -544,7 +544,7 @@ MesCC-Tools), and finally M2-Planet.")
   (package
     (inherit tcc)
     (name "tcc-boot0")
-    (version "0.9.26-1134-g80114c4d")
+    (version "0.9.26-1136-g1b4f281f")
     (source (origin
               (method url-fetch)
               (uri (list
@@ -554,7 +554,7 @@ MesCC-Tools), and finally M2-Planet.")
                                    "tcc-" version ".tar.gz")))
               (sha256
                (base32
-                "0wljasyfw32rd73fniam3pwxvnkpwf327dzs8dy9b9vdla1mmplx"))))
+                "0n8nb2yv1r9cxc00ryam16p0v5ix4jgwc73bdwjif9pdnr0yqmrh"))))
     (build-system gnu-build-system)
     (supported-systems '("armhf-linux" "aarch64-linux"
                          "i686-linux" "x86_64-linux"))
