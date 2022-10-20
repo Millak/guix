@@ -124,11 +124,11 @@
 
 ;;; Note: mrustc's only purpose is to be able to bootstap Rust; it's designed
 ;;; to be used in source form.
-(define %mrustc-commit "b364724f15fd6fce8234ad8add68107c23a22151")
+(define %mrustc-commit "597593aba86fa2edbea80c6e09f0b1b2a480722d")
 (define %mrustc-source
   (let* ((version "0.10")
          (commit %mrustc-commit)
-         (revision "1")
+         (revision "2")
          (name "mrustc"))
     (origin
       (method git-fetch)
@@ -138,8 +138,7 @@
       (file-name (git-file-name name (git-version version revision commit)))
       (sha256
        (base32
-        "0f7kh4n2663sn0z3xib8gzw0s97qpvwag40g2vs3bfjlrbpgi9z0"))
-      (patches (search-patches "mrustc-riscv64-support.patch")))))
+        "09rvm3zgx1d86gippl8qzh13m641ynbw9q0zsc90g0h1khd3z3b6")))))
 
 ;;; Rust 1.54 is special in that it is built with mrustc, which shortens the
 ;;; bootstrap path.
@@ -229,7 +228,7 @@
                  (substitute* '("minicargo.mk"
                                 "run_rustc/Makefile")
                    ;; Use the system-provided LLVM.
-                   (("LLVM_CONFIG := .*")
+                   (("LLVM_CONFIG [:|?]= .*")
                     (string-append "LLVM_CONFIG := " llvm "/bin/llvm-config\n")))
                  (substitute* "minicargo.mk"
                    ;; Do not try to fetch sources from the Internet.
