@@ -31142,6 +31142,54 @@ platform using the ActivityPub protocol.")
 and abstract ELF, PE and MachO formats.")
     (license license:asl2.0)))
 
+(define-public shrinkwrap
+  (package
+    (name "shrinkwrap")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fzakaria/shrinkwrap")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet '(substitute* "pyproject.toml"
+                          (("lief = \"0\\.12\\.0\"") "lief = \"*\"")))
+              (sha256
+               (base32
+                "1f3qrygj16y767q2c7pn9j6m95ggcmj9s5cx9v92ygygly4mr3jp"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-v" "tests"))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-click
+           python-poetry-core
+           python-pypa-build
+           python-pytest))
+    (inputs (list python-lief python-sh))
+    (home-page "https://github.com/fzakaria/shrinkwrap")
+    (synopsis "Emboss needed dependencies on the top level executable")
+    (description
+     "@code{shrinkwrap} is a tool which will discover all transitive dynamic
+shared objects, and lift them up to the executable referenced by absolute
+path.")
+    (license license:expat)))
+
 (define-public python-pymonad
   (package
     (name "python-pymonad")
