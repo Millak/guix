@@ -16546,6 +16546,7 @@ This is a list of symbols denoting mount flags.  Recognized flags
 include @code{read-only}, @code{bind-mount}, @code{no-dev} (disallow
 access to special files), @code{no-suid} (ignore setuid and setgid
 bits), @code{no-atime} (do not update file access times),
+@code{no-diratime} (likewise for directories only),
 @code{strict-atime} (update file access time), @code{lazy-time} (only
 update time on the in-memory version of the file inode),
 @code{no-exec} (disallow program execution), and @code{shared} (make the
