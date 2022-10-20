@@ -3033,3 +3033,35 @@ notable features include:
 @item Can place borders around windows
 @end itemize")
       (license license:expat))))
+
+(define-public velox
+  (let ((commit "fcc041265539befd907a64ee3a536cb2489ffb99")
+        (revision "1"))
+    (package
+      (name "velox")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/michaelforney/velox")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0d11bmag5zwmas3rf1b7x5hjla7wpxq70nr86dz3x9r7cal04mym"))
+                (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ;no tests
+         #:make-flags (list (string-append "CC="
+                                           ,(cc-for-target))
+                            (string-append "PREFIX=" %output))
+         #:phases (modify-phases %standard-phases
+                    (delete 'configure))))
+      (inputs (list libinput libxkbcommon wayland wld))
+      (propagated-inputs (list swc))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/michaelforney/velox")
+      (synopsis "Simple window manager based on swc")
+      (description "velox is a simple window manager for Wayland based on swc.
+It is inspired by dwm and xmonad.")
+      (license license:expat))))
