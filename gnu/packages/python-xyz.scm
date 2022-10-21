@@ -21580,14 +21580,14 @@ style guide, even if the original code didn't violate the style guide.")
 (define-public python-yq
   (package
     (name "python-yq")
-    (version "2.11.1")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yq" version))
        (sha256
         (base32
-         "1q4rky0a6n4izmq7slb91a54g8swry1xrbfqxwc8lkd3hhvlxxkl"))))
+         "1wklgs3d9si475nffw9agq5kgk8bdicbsmlj4sx4kiw64ji4ma1h"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -21602,9 +21602,9 @@ style guide, even if the original code didn't violate the style guide.")
                  "/bin/jq")))
              #t)))))
     (inputs
-     (list python-argcomplete python-pyyaml python-xmltodict jq))
+     (list python-argcomplete python-pyyaml python-xmltodict python-toml jq))
     (native-inputs
-     (list python-coverage python-flake8 python-wheel))
+     (list python-coverage python-flake8 python-setuptools-scm python-wheel))
     (home-page "https://github.com/kislyuk/yq")
     (synopsis "Command-line YAML/XML processor")
     (description
