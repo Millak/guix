@@ -6011,6 +6011,36 @@ systems.")
        (modify-inputs (package-inputs go-github-com-gdamore-tcell)
          (prepend go-golang-org-x-term go-golang-org-x-sys)))))
 
+(define-public go-github-com-rivo-tview
+  (package
+    (name "go-github-com-rivo-tview")
+    (version "0.0.0-20220703182358-a13d901d3386")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rivo/tview")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gf1m3ndbc3kgxpv0ryq9a1ahijg6m896sc9k7dvwfjd8vy0q0yd"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/rivo/tview"))
+    (propagated-inputs (list go-golang-org-x-term
+                             go-golang-org-x-sys
+                             go-github-com-rivo-uniseg
+                             go-github-com-mattn-go-runewidth
+                             go-github-com-lucasb-eyer-go-colorful
+                             go-github-com-gdamore-tcell-v2))
+    (home-page "https://github.com/rivo/tview")
+    (synopsis "Rich Interactive Widgets for Terminal UIs")
+    (description
+     "The tview package implements rich widgets for terminal based user
+interfaces.  The widgets provided with this package are useful for data
+exploration and data entry.")
+    (license license:expat)))
+
 (define-public go-github-com-xo-terminfo
   (package
     (name "go-github-com-xo-terminfo")
