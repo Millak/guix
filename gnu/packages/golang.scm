@@ -10484,6 +10484,32 @@ email library.")
      "The pty package provides functions for working with Unix pseudoterminals.")
     (license license:expat)))
 
+(define-public go-github-com-riywo-loginshell
+  (package
+    (name "go-github-com-riywo-loginshell")
+    (version "0.0.0-20200815045211-7d26008be1ab")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/riywo/loginshell")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "138yvis6lipw9x02jyiz7472bxi20206bcfikcar54i3xsww9q4i"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/riywo/loginshell"
+           ;; Tests try to get the current user's login shell; the build
+           ;; user doesn't have one.
+           #:tests? #f))
+    (home-page "https://github.com/riywo/loginshell")
+    (synopsis "Get the user's login shell in Go")
+    (description
+     "The loginshell package provides a Go library to get the login shell
+of the current user.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
