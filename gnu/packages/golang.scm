@@ -10382,6 +10382,53 @@ using shell-style rules for quoting and commenting.")
 email library.")
     (license license:gpl3+)))
 
+(define-public go-github-com-creack-pty
+  (package
+    (name "go-github-com-creack-pty")
+    (version "1.1.18")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/creack/pty")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qqhcgfym0napz8damj7dhfw28g2qn2f5h3lr93i0sxawq926yzc"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/creack/pty"
+           #:modules '((ice-9 popen)
+                       (ice-9 textual-ports)
+                       (guix build go-build-system)
+                       (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'regenerate-types
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   ;; Generated files are included (ztypes_*). We need to remake
+                   ;; them with Cgo.
+                   (with-directory-excursion (string-append "src/" import-path)
+                     (let* ((go-arch
+                             #$(car (go-target
+                                     (or (%current-target-system)
+                                         (nix-system->gnu-triplet (%current-system))))))
+                            (file (string-append "ztypes_" go-arch ".go"))
+                            (pipe (open-input-pipe "go tool cgo -godefs types.go"))
+                            (text (get-string-all pipe)))
+                       (close-pipe pipe)
+                       (for-each delete-file
+                         (find-files (getcwd) (file-name-predicate
+                                               "ztypes_[a-zA-Z0-9_]+.go")))
+                       (call-with-output-file file
+                         (lambda (port)
+                           (display text port))))))))))
+    (home-page "https://github.com/creack/pty")
+    (synopsis "Pseudoterminal handling in Go")
+    (description
+     "The pty package provides functions for working with Unix pseudoterminals.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar

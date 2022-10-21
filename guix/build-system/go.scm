@@ -38,6 +38,7 @@
             go-build-system
 
             go-pseudo-version?
+            go-target
             go-version->git-ref))
 
 ;; Commentary:
