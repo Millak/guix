@@ -6791,6 +6791,36 @@ format.")
 filters for Go.")
     (license license:bsd-2)))
 
+(define-public go-github-com-emersion-go-msgauth
+  (package
+    (name "go-github-com-emersion-go-msgauth")
+    (version "0.6.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-msgauth")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ds8yr4cm9wigcxg1sxc2m0wmy4z9n6gws3mj50dmf2ayij69z9j"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-msgauth"
+           #:tests? #f ; Source-only package.
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Source-only package.
+               (delete 'build))))
+    (propagated-inputs (list go-golang-org-x-crypto
+                             go-github-com-emersion-go-milter
+                             go-github-com-emersion-go-message))
+    (home-page "https://github.com/emersion/go-msgauth")
+    (synopsis "Email authentication for Go")
+    (description
+     "This package provides a Go library for authenticating emails.")
+    (license license:expat)))
+
 (define-public go-github-com-fatih-color
   (package
     (name "go-github-com-fatih-color")
