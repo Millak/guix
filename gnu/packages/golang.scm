@@ -11353,6 +11353,34 @@ library bevacqua/fuzzysearch.")
      "Gomega is the preferred matcher library for the Ginkgo test framework.")
     (license license:expat)))
 
+(define-public go-github-com-onsi-ginkgo
+  (package
+    (name "go-github-com-onsi-ginkgo")
+    (version "1.16.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/onsi/ginkgo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hh6n7q92y0ai8k6rj2yzw6wwxikhyiyk4j92zgvf1zad0gmqqmz"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/onsi/ginkgo"))
+    (propagated-inputs (list go-golang-org-x-sys
+                             go-golang-org-x-tools
+                             go-github-com-go-task-slim-sprig
+                             go-github-com-nxadm-tail
+                             go-github-com-onsi-gomega))
+    (home-page "https://github.com/onsi/ginkgo")
+    (synopsis "BDD-style testing framework for Go")
+    (description
+     "Ginkgo is a Behaviour-Driven Development testing framework for Go.  It
+builds on top of Go's builtin @code{testing} library and is complemented by the
+Gomega matcher library.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
