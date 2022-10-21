@@ -6777,6 +6777,39 @@ data serialization format.")
     (home-page "https://github.com/golang/protobuf")
     (license license:bsd-3)))
 
+(define-public go-google-golang-org-protobuf
+  (package
+    (name "go-google-golang-org-protobuf")
+    (version "1.28.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://go.googlesource.com/protobuf")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nzcc4qc00afi24nb7nlnwyzvvr6b8s8qdrn1sw085nygh2y2x8r"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "google.golang.org/protobuf"
+           #:tests? #f ; source-only package
+           #:phases #~(modify-phases %standard-phases
+                        ;; source-only package
+                        (delete 'build))))
+    (propagated-inputs (list go-github-com-google-go-cmp-cmp
+                             go-github-com-golang-protobuf-proto))
+    (home-page "https://google.golang.org/protobuf")
+    (synopsis "Go library for Protocol Buffers")
+    (description
+     "The protobuf package provides a Go implementation of Protocol Buffers, a
+language and platform neutral, extensible mechanism for serializing structured
+data.
+
+This package is a successor to @code{go-github-com-golang-protobuf} with an
+improved and cleaner API.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-mattn-go-zglob
   (package
     (name "go-github-com-mattn-go-zglob")
