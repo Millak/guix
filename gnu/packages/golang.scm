@@ -10637,6 +10637,29 @@ Specification.")
 array or reader.")
     (license license:expat)))
 
+(define-public go-github-com-gogs-chardet
+  (package
+    (name "go-github-com-gogs-chardet")
+    (version "0.0.0-20211120154057-b7413eaefb8f")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gogs/chardet")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12j8q5wc9m4n51v2j2m40nahqdl9bh3hzpdp26clzq91kc2amiz0"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/gogs/chardet"))
+    (home-page "https://github.com/gogs/chardet")
+    (synopsis "Character set detection for Go")
+    (description
+     "The chardet package ports character set detection from
+ICU to Go.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
