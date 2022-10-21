@@ -5894,9 +5894,9 @@ without requiring a real database connection.")
 golang's database/sql package.")
     (license license:mpl2.0)))
 
-(define-public go-golang-org-colorful
+(define-public go-github-com-lucasb-eyer-go-colorful
   (package
-    (name "go-golang-org-colorful")
+    (name "go-github-com-lucasb-eyer-go-colorful")
     (version "1.2.0")
     (source (origin
               (method git-fetch)
@@ -5908,16 +5908,19 @@ golang's database/sql package.")
                (base32
                 "08c3fkf27r16izjjd4w94xd1z7w1r4mdalbl53ms2ka2j465s3qs"))))
     (build-system go-build-system)
+    (propagated-inputs (list go-golang-org-x-image))
     (arguments
-     '(#:import-path "github.com/lucasb-eyer/go-colorful"))
-    (native-inputs
-     (list go-golang-org-sql-mock))
-    (synopsis "Convert between colorspaces and generate colors")
-    (description "This package implements Go's @code{color.Color} interface
-and provides a means of converting colors stored as RGB to various
-colorspaces.")
+     (list #:import-path "github.com/lucasb-eyer/go-colorful"))
     (home-page "https://github.com/lucasb-eyer/go-colorful")
+    (synopsis "Library for playing with colors in Go")
+    (description
+     "The colorful package provides a library for using colors in Go.
+It stores colors in RGB and provides methods for converting these to
+various color spaces.")
     (license license:expat)))
+
+(define-public go-golang-org-colorful
+  (deprecated-package "go-golang-org-colorful" go-github-com-lucasb-eyer-go-colorful))
 
 (define-public go-github-com-gdamore-encoding
   (package
@@ -5966,8 +5969,10 @@ non-UTF-friendly sources.")
       (arguments
        `(#:import-path "github.com/gdamore/tcell"))
       (inputs
-       (list go-github.com-mattn-go-runewidth go-golang-org-colorful
-             go-golang-org-x-text go-github-com-gdamore-encoding))
+       (list go-github.com-mattn-go-runewidth
+             go-github-com-lucasb-eyer-go-colorful
+             go-golang-org-x-text
+             go-github-com-gdamore-encoding))
       (home-page "https://github.com/gdamore/tcell")
       (synopsis "Provide a cell-based view for text terminals")
       (description "This package includes a full parser and expander for
@@ -7716,8 +7721,10 @@ io.Writers helping you to transform blocks of text.")
     (arguments
      `(#:import-path "github.com/muesli/termenv"))
     (native-inputs
-     (list go-github-com-google-goterm go-golang-org-colorful
-           go-github-com-mattn-go-isatty go-github.com-mattn-go-runewidth))
+     (list go-github-com-google-goterm
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-mattn-go-isatty
+           go-github.com-mattn-go-runewidth))
     (home-page "https://github.com/muesli/termenv/")
     (synopsis "Advanced styling options on the terminal")
     (description "termenv lets you safely use advanced styling options on the
@@ -7846,7 +7853,7 @@ which produce colorized output using github.com/fatih/color.")
            go-github.com-mattn-go-runewidth
            go-github-com-muesli-termenv
            go-github-com-google-goterm
-           go-golang-org-colorful
+           go-github-com-lucasb-eyer-go-colorful
            go-github-com-mattn-go-isatty
            go-github-com-olekukonko-tablewriter
            go-github-com-yuin-goldmark
@@ -9693,7 +9700,7 @@ string.")
        ("github.com/mattn/go-runewidth" ,go-github.com-mattn-go-runewidth)
        ("go-github-com-muesli-reflow-indent" ,go-github-com-muesli-reflow-indent)
        ("go-github-com-muesli-reflow-ansi" ,go-github-com-muesli-reflow-ansi)
-       ("go-golang-org-colorful" ,go-golang-org-colorful)
+       ("go-github-com-lucasb-eyer-go-colorful" ,go-github-com-lucasb-eyer-go-colorful)
        ("github.com/containerd/console" ,go-github-com-containerd-console)
        ("go-github-com-muesli-reflow-truncate" ,go-github-com-muesli-reflow-truncate)
        ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)

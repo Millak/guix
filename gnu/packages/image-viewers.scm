@@ -532,7 +532,7 @@ It supports JPEG, PNG and GIF formats.")
      '(#:import-path "github.com/eliukblau/pixterm/cmd/pixterm"
        #:unpack-path "github.com/eliukblau/pixterm"))
     (inputs (list go-github-com-disintegration-imaging
-                  go-golang-org-colorful
+                  go-github-com-lucasb-eyer-go-colorful
                   go-golang-org-x-crypto
                   go-golang-org-x-image))
     (home-page "https://github.com/eliukblau/pixterm")
