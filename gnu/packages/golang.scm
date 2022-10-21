@@ -10517,6 +10517,34 @@ using shell-style rules for quoting and commenting.")
 email library.")
     (license license:gpl3+)))
 
+(define-public go-github-com-jaytaylor-html2text
+  (package
+    (name "go-github-com-jaytaylor-html2text")
+    (version "0.0.0-20211105163654-bc68cce691ba")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jaytaylor/html2text")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12ckgkp8xqgp0fh6019nwp4ssg2k1rv1a67cpk37ian4q5zrvppm"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/jaytaylor/html2text"
+           ;; Tests are broken: <https://github.com/jaytaylor/html2text/issues/53>
+           #:tests? #f))
+    (propagated-inputs (list go-golang-org-x-net
+                             go-github-com-olekukonko-tablewriter
+                             go-github-com-ssor-bom))
+    (home-page "https://github.com/jaytaylor/html2text")
+    (synopsis "Convert HTML emails to text")
+    (description
+     "The html2text package converts HTML emails to plain text, allowing
+text-only mail clients to display them.")
+    (license license:expat)))
+
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
