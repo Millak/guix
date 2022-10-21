@@ -3269,7 +3269,7 @@ optimized for performance yet simple to use.")
 (define-public go-github-com-tomnomnom-gron
   (package
     (name "gron")
-    (version "0.6.1")
+    (version "0.7.1")
     (home-page "https://github.com/tomnomnom/gron")
     (source
      (origin
@@ -3279,7 +3279,7 @@ optimized for performance yet simple to use.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qmzawkhg0qn9kxxrssbdjni2khvamhrcklv3yxc0ljmh77mh61m"))))
+        (base32 "1sj34b6yv0qigy3aq7qmwf8bqxp1a8qh9p10lzkpw58s1c0iyh36"))))
     (build-system go-build-system)
     (arguments
      (let ((import-path "github.com/tomnomnom/gron"))
