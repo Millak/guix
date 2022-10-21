@@ -6235,28 +6235,26 @@ systems.")
     (package
       (inherit go-github-com-gdamore-tcell)
       (name "go-github-com-gdamore-tcell")
-      (version "2.3.1")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/gdamore/tcell")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0ypbl5080q9sd3irad8mv7zlg4242i8pmg5xyhbyq95kymwibaid"))))
+      (version "2.5.3")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/gdamore/tcell")
+                      (commit (string-append "v" version))))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0pvs0gigqxpifc7y7cx82cg95pgqmy8qzxynja3zidplrx2075j3"))))
       (arguments
-       `(#:import-path "github.com/gdamore/tcell/v2"
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'reset-gzip-timestamps 'make-files-writable
-             (lambda* (#:key outputs #:allow-other-keys)
-               ;; Make sure .gz files are writable so that the
-               ;; 'reset-gzip-timestamps' phase can do its work.
-               (let ((out (assoc-ref outputs "out")))
-                 (for-each make-file-writable
-                           (find-files out "\\.gz$"))))))))
+       (list #:import-path "github.com/gdamore/tcell/v2"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'reset-gzip-timestamps 'make-files-writable
+                   (lambda _
+                     ;; Make sure .gz files are writable so that the
+                     ;; 'reset-gzip-timestamps' phase can do its work.
+                     (for-each make-file-writable
+                               (find-files #$output "\\.gz$")))))))
       (propagated-inputs
        (modify-inputs (package-inputs go-github-com-gdamore-tcell)
          (prepend go-golang-org-x-term go-golang-org-x-sys)))))
