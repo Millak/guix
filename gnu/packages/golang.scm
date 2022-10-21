@@ -4071,6 +4071,30 @@ application's http.Handlers.")
     (description "File system notifications for Go")
     (license license:bsd-3)))
 
+(define-public go-github-com-nxadm-tail
+  (package
+    (name "go-github-com-nxadm-tail")
+    (version "1.4.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nxadm/tail")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j2gi485fhwdpmyzn42wk62103fclwbfywg42p275z1qv2bsz1rc"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/nxadm/tail"))
+    (propagated-inputs (list go-gopkg-in-tomb-v1
+                             go-github-com-fsnotify-fsnotify))
+    (home-page "https://github.com/nxadm/tail")
+    (synopsis "Go implementation of the functionality of @command{tail -f}")
+    (description
+     "This package provides a Go library for reading from continuously
+updating files, like @command{tail -f}.")
+    (license license:expat)))
+
 (define-public go-github-com-magiconair-properties
   (package
     (name "go-github-com-magiconair-properties")
