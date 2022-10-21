@@ -6767,6 +6767,30 @@ defined by RFC 5321.")
 format.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-milter
+  (package
+    (name "go-github-com-emersion-go-milter")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-milter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10vpry5gjz2bh9qchcx4p59zm7cc6cb6bfkii2n6vsn4svb950sa"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-milter"))
+    (propagated-inputs (list go-github-com-emersion-go-message))
+    (home-page "https://github.com/emersion/go-milter")
+    (synopsis "Milter mail filters in Go")
+    (description
+     "This package provides an interface for implementing milter mail
+filters for Go.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-fatih-color
   (package
     (name "go-github-com-fatih-color")
