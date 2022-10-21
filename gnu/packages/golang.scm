@@ -5984,6 +5984,28 @@ systems.")
        (modify-inputs (package-inputs go-github-com-gdamore-tcell)
          (prepend go-golang-org-x-term go-golang-org-x-sys)))))
 
+(define-public go-github-com-xo-terminfo
+  (package
+    (name "go-github-com-xo-terminfo")
+    (version "0.0.0-20210125001918-ca9a967f8778")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xo/terminfo")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05gdcvcbwcrcwxznhvs1q1xh4irz2d10v2mz179pydjh30kjc0j5"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/xo/terminfo"))
+    (home-page "https://github.com/xo/terminfo")
+    (synopsis "Read the terminfo database in Go")
+    (description
+     "The terminfo package implements terminfo database reading for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-mattn-go-shellwords
   (let ((commit "2444a32a19f450fabaa0bb3e96a703f15d9a97d2")
         (version "1.0.5")
