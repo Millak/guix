@@ -33410,6 +33410,31 @@ workspace diagnostics, symbols, and file symbols from @{emacs-lsp-mode}
 by leveraging @code{emacs-consult} APIs.")
     (license license:expat)))
 
+(define-public emacs-purs-mode
+  ;; XXX: Upstream set no tag nor any Version keyword.  Using 0 as the base
+  ;; version.
+  (let ((commit "d29f1021787a90d0fd3eb0af625958abb7f7506b")
+        (revision "0"))
+    (package
+      (name "emacs-purs-mode")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/PureFunctor/purs-mode")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0r7219ysf3hsjnan30hidf8jamcqsz36pkcmnhknff0c6dpwbnpx"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/PureFunctor/purs-mode/")
+      (synopsis "PureScript major mode for Emacs")
+      (description
+       "Purs mode provides a PureScript major mode for Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-pdb-capf
   (let ((commit "31602ccab53aa7dcf26a1af222c7da2bcc1390ed")
         (revision "0"))
