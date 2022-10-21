@@ -10045,6 +10045,27 @@ pcredential store, Pass, Secret Service, KDE Wallet, Encrypted File.")
     (home-page "https://gopkg.in/ini.v1")
     (license license:asl2.0)))
 
+;;; XXX: Since commit bfb61065f05a6eac0cf63b16db43d0c3e864c658, the
+;;; canonical name of the ini package is `go-github-com-go-ini-ini`,
+;;; not `go-gopkg-in-ini`.
+(define-public go-github-com-go-ini-ini
+  (package
+    (inherit go-gopkg-in-ini)
+    (name "go-github-com-go-ini-ini")
+    (version "1.66.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/go-ini/ini")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0kqg13606hnw8f75cb59fsy1m85kiqf3csi2g7q2512avdmaphc9"))))
+    (arguments
+     (list #:import-path "github.com/go-ini/ini"))
+    (propagated-inputs (list go-github-com-stretchr-testify))))
+
 (define-public go-github-com-skratchdot-open-golang
   (let ((commit "79abb63cd66e41cb1473e26d11ebdcd68b04c8e5")
         (revision "0"))
