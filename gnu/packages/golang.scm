@@ -10659,6 +10659,31 @@ using shell-style rules for quoting and commenting.")
 email library.")
     (license license:gpl3+)))
 
+(define-public go-github-com-emersion-go-message
+  (package
+    (name "go-github-com-emersion-go-message")
+    (version "0.16.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-message")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j5qdhsna28xcs843zsiccw700rld5hin466dl0n3a0ax1w13ay0"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-message"))
+    (propagated-inputs (list go-golang-org-x-text
+                             go-github-com-emersion-go-textwrapper))
+    (home-page "https://github.com/emersion/go-message")
+    (synopsis "Internet messages and MIME for Go")
+    (description
+     "The message package implements the Internet Message Format and Multipurpose
+Internet Mail Extensions in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-jaytaylor-html2text
   (package
     (name "go-github-com-jaytaylor-html2text")
