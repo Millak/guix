@@ -2665,6 +2665,32 @@ termination.")
       (home-page "https://gopkg.in/tomb.v2")
       (license license:bsd-3))))
 
+(define-public go-gopkg-in-tomb-v1
+  (package
+    (inherit go-gopkg.in-tomb.v2)
+    (name "go-gopkg-in-tomb-v1")
+    (version "1.0.0-20141024135613-dd632973f1e7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gopkg.in/tomb.v1")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lqmq1ag7s4b3gc3ddvr792c5xb5k6sfn0cchr3i2s7f1c231zjv"))))
+    (arguments
+     (list #:import-path "gopkg.in/tomb.v1"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-test
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   (substitute* (string-append "src/" import-path
+                                               "/tomb_test.go")
+                     (("t.Fatalf\\(`Killf\\(\"BO%s")
+                      "t.Fatalf(`Killf(\"BO%%s")))))))
+    (home-page "https://gopkg.in/tomb.v1")))
+
 (define-public go-gopkg-in-natefinch-lumberjack.v2
   (package
     (name "go-gopkg-in-natefinch-lumberjack.v2")
