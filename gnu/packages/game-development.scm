@@ -1088,7 +1088,8 @@ the creation of animations, tiled graphics, texture atlases, and more.")
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
-       (list "-DWITH_WEBP_SUPPORT=1")
+       (list "-DWITH_WEBP_SUPPORT=1"
+             "-DWITH_DESKTOP_INTEGRATION=1")
        ;; Tests are unmaintained
        #:tests? #f))
     (native-inputs
