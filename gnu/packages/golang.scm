@@ -6612,8 +6612,8 @@ can be used to build a client and/or a server.")
     (license license:expat)))
 
 (define-public go-github-com-emersion-go-sasl
-  (let ((commit "240c8404624e076f633766c16adbe96c7ac516b7")
-        (revision "0"))
+  (let ((commit "0b9dcfb154ac3d7515b08bc2691a0332800edfe9")
+        (revision "1"))
     (package
       (name "go-github-com-emersion-go-sasl")
       (version (git-version "0.0.0" revision commit))
@@ -6623,13 +6623,13 @@ can be used to build a client and/or a server.")
           (uri (git-reference
                 (url "https://github.com/emersion/go-sasl")
                 (commit commit)))
+          (file-name (git-file-name name version))
           (sha256
            (base32
-            "1py18p3clp474xhx6ypyp0bgv6n1dfm24m95cyyqb0k3vibar6ih"))
-          (file-name (git-file-name name version))))
+            "1cbf86wkqrdinfydndgdlnayg4a5mg3d4vqra377j2sfkg7wj0hs"))))
       (build-system go-build-system)
       (arguments
-       '(#:import-path "github.com/emersion/go-sasl"))
+       (list #:import-path "github.com/emersion/go-sasl"))
       (home-page "https://github.com/emersion/go-sasl")
       (synopsis "SASL library written in Go")
       (description "This package provides a SASL library written in Go.")
