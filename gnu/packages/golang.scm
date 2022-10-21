@@ -2893,6 +2893,37 @@ for the Go language.")
       (home-page "https://go.googlesource.com/crypto/")
       (license license:bsd-3))))
 
+(define-public go-github-com-protonmail-go-crypto
+  (package
+    (name "go-github-com-protonmail-go-crypto")
+    (version "0.0.0-20220623141421-5afb4c282135")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ProtonMail/go-crypto")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05qxdbn8wdk901z5kw2r3jdrag58nxlcsy0p8xd6rq0d71sw94wy"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/ProtonMail/go-crypto"
+           #:tests? #f ; Source-only package.
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Source-only package.
+               (delete 'build))))
+    (propagated-inputs (list go-golang-org-x-crypto))
+    (home-page "https://github.com/ProtonMail/go-crypto")
+    (synopsis "Fork of x/crypto with up-to-date OpenPGP implementation")
+    (description
+     "This package provides cryptography for Go.  This version of the
+package is a fork that adds a more up-to-date OpenPGP implementation.
+It is completely backwards compatible with @code{golang.org/x/crypto},
+the official package.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-net
   (let ((commit "ba9fcec4b297b415637633c5a6e8fa592e4a16c3")
         (revision "4"))
