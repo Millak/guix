@@ -10805,6 +10805,35 @@ text-only mail clients to display them.")
 library geared towards parsing MIME encoded emails.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-pgpmail
+  (package
+    (name "go-github-com-emersion-go-pgpmail")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-pgpmail")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ar26b0apw5bxn58qfn1a79cxigbmrqm1irh1rb7x57fydihc7wm"))))
+    (build-system go-build-system)
+    (arguments
+     (list ;; tests don't support our version of protonmail/go-crypto; see
+           ;; <https://github.com/emersion/go-pgpmail/issues/12>
+           #:tests? #f
+           #:import-path "github.com/emersion/go-pgpmail"))
+    (propagated-inputs (list go-golang-org-x-text
+                             go-golang-org-x-crypto
+                             go-github-com-emersion-go-message
+                             go-github-com-protonmail-go-crypto))
+    (home-page "https://github.com/emersion/go-pgpmail")
+    (synopsis "PGP mail encryption for Go")
+    (description
+     "The pgpmail package implements PGP encryption for e-mail messages.")
+    (license license:expat)))
+
 (define-public go-github-com-gatherstars-com-jwz
   (package
     (name "go-github-com-gatherstars-com-jwz")
