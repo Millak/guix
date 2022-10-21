@@ -192,185 +192,191 @@ is itself quite fast.")
                            version "/" name "-" version "-src.tar.bz2"))
        (sha256
         (base32
-         "0ar4nxy4cr5vwvfj71gmc174vx0n3lg9ka05sa1k60c8z0g3xp1q"))
-       (patches (search-patches "ghc-4.patch"))))
+         "0ar4nxy4cr5vwvfj71gmc174vx0n3lg9ka05sa1k60c8z0g3xp1q"))))
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"))
     (arguments
-     `(#:system "i686-linux"
-       #:strip-binaries? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           (lambda* (#:key inputs #:allow-other-keys)
-             (delete-file "configure")
-             (delete-file "config.sub")
-             (install-file (search-input-file inputs
-                                              "/bin/config.sub")
-                           ".")
+     (list
+      #:system "i686-linux"
+      #:strip-binaries? #f
+      #:parallel-build? #f
+      #:implicit-inputs? #f
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-1)
+                  (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-generated-c-code
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((tarball
+                     (match inputs
+                       (((_ . locations) ...)
+                        (let ((suffix (string-append "ghc-"
+                                                     #$(package-version this-package)
+                                                     "-x86-hc.tar.bz2")))
+                          (find (lambda (location)
+                                  (string-suffix? suffix location))
+                                locations))))))
+                (invoke "tar" "-xvf" tarball
+                        "--strip-components=1"))))
+          (replace 'bootstrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (delete-file "configure")
+              (delete-file "config.sub")
+              (install-file (search-input-file inputs
+                                               "/bin/config.sub")
+                            ".")
 
-             ;; Avoid dependency on "happy"
-             (substitute* "configure.in"
-               (("FPTOOLS_HAPPY") "echo sure\n"))
+              ;; Avoid dependency on "happy"
+              (substitute* "configure.in"
+                (("FPTOOLS_HAPPY") "echo sure\n"))
 
-             ;; Set options suggested in ghc/interpreter/README.BUILDING.HUGS.
-             (with-output-to-file "mk/build.mk"
-               (lambda ()
-                 (display "
-WithGhcHc=ghc-4.06
-GhcLibWays=u
-#HsLibsFor=hugs
-# Setting this leads to building the interpreter.
+              (let ((bash (which "bash")))
+                (substitute* '("configure.in"
+                               "ghc/configure.in"
+                               "ghc/rts/gmp/mpn/configure.in"
+                               "ghc/rts/gmp/mpz/configure.in"
+                               "ghc/rts/gmp/configure.in"
+                               "distrib/configure-bin.in")
+                  (("`/bin/sh") (string-append "`" bash))
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash))
+                  (("^#! /bin/sh") (string-append "#! " bash)))
+
+                (substitute* '("mk/config.mk.in"
+                               "ghc/rts/gmp/mpz/Makefile.in"
+                               "ghc/rts/gmp/Makefile.in")
+                  (("^SHELL.*=.*/bin/sh") (string-append "SHELL = " bash)))
+                (substitute* "aclocal.m4"
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash)))
+                (substitute* '("ghc/lib/std/cbits/system.c"
+                               "hslibs/posix/cbits/execvpe.c")
+                  (("/bin/sh") bash)
+                  (("\"sh\"") (string-append "\"" bash "\"")))
+
+                (setenv "CONFIG_SHELL" bash)
+                (setenv "SHELL" bash))
+
+              ;; The 'hscpp' script invokes GCC 2.95's 'cpp' (RAWCPP), which
+              ;; segfaults unless passed '-x c'.
+              (substitute* "mk/config.mk.in"
+                (("-traditional")
+                 "-traditional -x c"))
+
+              (setenv "CPP" (which "cpp"))
+              (invoke "autoreconf" "--verbose" "--force")))
+          (add-before 'configure 'configure-gmp
+            (lambda _
+              (with-directory-excursion "ghc/rts/gmp"
+                (invoke "./configure"))))
+          (replace 'configure
+            (lambda* (#:key build #:allow-other-keys)
+              (call-with-output-file "config.cache"
+                (lambda (port)
+                  ;; GCC 2.95 fails to deal with anonymous unions in glibc's
+                  ;; 'struct_rusage.h', so skip that.
+                  (display "ac_cv_func_getrusage=no\n" port)))
+
+              ;; CLK_TCK has been removed from recent libc.
+              (substitute* "ghc/interpreter/nHandle.c"
+                (("CLK_TCK") "sysconf (_SC_CLK_TCK)"))
+              ;; Avoid duplicate definitions of execvpe
+              (substitute* "ghc/lib/std/cbits/stgio.h"
+                (("^int.*execvpe.*") ""))
+              ;; gid_t is an undefined type
+              (substitute* "hslibs/posix/PosixProcEnv.lhs"
+                (("gid_t") "int"))
+
+              ;; This is needed so that ghc/includes/Stg.h can see config.h,
+              ;; which defines values that are important for
+              ;; ghc/includes/StgTypes.h and others.
+              (setenv "CPATH"
+                      (string-append (getcwd) "/ghc/includes:"
+                                     (getcwd) "/ghc/rts/gmp:"
+                                     (getcwd) "/mk:"
+                                     (or (getenv "CPATH") "")))
+
+              (with-output-to-file "mk/build.mk"
+                (lambda ()
+                  (display "
+ProjectsToBuild = glafp-utils hslibs ghc
+GhcLibWays=
 GhcHcOpts=-DDEBUG
-GhcRtsHcOpts=-optc-DDEBUG -optc-D__HUGS__ -unreg -optc-g -optc-D_GNU_SOURCE=1
-GhcRtsCcOpts=-optc-DDEBUG -optc-g -optc-D__HUGS__ -optc-D_GNU_SOURCE=1
-SplitObjs=NO
+GhcLibHcOpts= -O
+GhcRtsHcOpts=-optc-D_GNU_SOURCE=1 -optc-DDEBUG
+GhcRtsCcOpts=-optc-D_GNU_SOURCE=1 -optc-DDEBUG
+SplitObjs=YES
+GhcWithHscBuiltViaC=YES
 ")))
-
-             (substitute* "ghc/interpreter/interface.c"
-               ;; interface.c:2702: `stackOverflow' redeclared as different kind of symbol
-               ;; ../includes/Stg.h:188: previous declaration of `stackOverflow'
-               ((".*Sym\\(stackOverflow\\).*") "")
-               ;; interface.c:2713: `stg_error_entry' undeclared here (not in a function)
-               ;; interface.c:2713: initializer element is not constant
-               ;; interface.c:2713: (near initialization for `rtsTab[11].ad')
-               ((".*SymX\\(stg_error_entry\\).*") "")
-               ;; interface.c:2713: `Upd_frame_info' undeclared here (not in a function)
-               ;; interface.c:2713: initializer element is not constant
-               ;; interface.c:2713: (near initialization for `rtsTab[32].ad')
-               ((".*SymX\\(Upd_frame_info\\).*") ""))
-
-             ;; We need to use the absolute file names here or else the linker
-             ;; will complain about missing symbols.  Perhaps this could be
-             ;; avoided by modifying the library search path in a way that
-             ;; this old linker understands.
-             (substitute* "ghc/interpreter/Makefile"
-               (("-lbfd -liberty")
-                (string-append (search-input-file inputs "/lib/libbfd.a") " "
-                               (search-input-file inputs "/lib/libiberty.a"))))
-
-             (let ((bash (which "bash")))
-               (substitute* '("configure.in"
-                              "ghc/configure.in"
-                              "ghc/rts/gmp/mpn/configure.in"
-                              "ghc/rts/gmp/mpz/configure.in"
-                              "ghc/rts/gmp/configure.in"
-                              "distrib/configure-bin.in")
-                 (("`/bin/sh") (string-append "`" bash))
-                 (("SHELL=/bin/sh") (string-append "SHELL=" bash))
-                 (("^#! /bin/sh") (string-append "#! " bash)))
-
-               (substitute* '("mk/config.mk.in"
-                              "ghc/rts/gmp/mpz/Makefile.in"
-                              "ghc/rts/gmp/Makefile.in")
-                 (("^SHELL.*=.*/bin/sh") (string-append "SHELL = " bash)))
-               (substitute* "aclocal.m4"
-                 (("SHELL=/bin/sh") (string-append "SHELL=" bash)))
-
-               (setenv "CONFIG_SHELL" bash)
-               (setenv "SHELL" bash))
-
-             ;; The 'hscpp' script invokes GCC 2.95's 'cpp' (RAWCPP), which
-             ;; segfaults unless passed '-x c'.
-             (substitute* "mk/config.mk.in"
-               (("-traditional")
-                "-traditional -x c"))
-
-             (setenv "CPP" (which "cpp"))
-             (invoke "autoreconf" "--verbose" "--force")))
-         (add-before 'configure 'configure-gmp
-           (lambda* (#:key build inputs outputs #:allow-other-keys)
-             (with-directory-excursion "ghc/rts/gmp"
-               (let ((bash (which "bash"))
-                     (out  (assoc-ref outputs "out")))
-                 (invoke bash "./configure")))))
-         (replace 'configure
-           (lambda* (#:key build inputs outputs #:allow-other-keys)
-             (let ((bash (which "bash"))
-                   (out  (assoc-ref outputs "out")))
-               (call-with-output-file "config.cache"
-                 (lambda (port)
-                   ;; GCC 2.95 fails to deal with anonymous unions in glibc's
-                   ;; 'struct_rusage.h', so skip that.
-                   (display "ac_cv_func_getrusage=no\n" port)))
-
-               (invoke bash "./configure"
-                       "--enable-hc-boot"
-                       (string-append "--prefix=" out)
-                       (string-append "--build=" build)
-                       (string-append "--host=" build)))))
-         (add-before 'build 'make-boot
-           (lambda _
-             ;; CLK_TCK has been removed from recent libc.
-             (substitute* "ghc/interpreter/nHandle.c"
-               (("CLK_TCK") "sysconf (_SC_CLK_TCK)"))
-
-             ;; Only when building with more recent GCC
-             (when #false
-               ;; GCC 2.95 is fine with these comments, but GCC 4.6 is not.
-               (substitute* "ghc/rts/universal_call_c.S"
-                 (("^# .*") "")))
-
-             ;; Only when using more recent Perl
-             (when #false
-               (substitute* "ghc/driver/ghc-asm.prl"
-                 (("local\\(\\$\\*\\) = 1;") "")
-                 (("endef\\$/") "endef$/s")))
-
-             (setenv "CPATH"
-                     (string-append (getcwd) "/ghc/includes:"
-                                    (getcwd) "/mk:"
-                                    (or (getenv "CPATH") "")))
-             (invoke "make" "boot")))
-         (replace 'build
-           (lambda _
-             ;; TODO: since we don't have a Haskell compiler we cannot build
-             ;; the standard library.  And without the standard library we
-             ;; cannot build a Haskell compiler.
-             ;; make[3]: *** No rule to make target 'Array.o', needed by 'libHSstd.a'.  Stop.
-             ;; make[2]: *** No rule to make target 'utils/Argv.o', needed by 'hsc'.  Stop.
-             (invoke "make" "all")))
-         (add-after 'build 'build-hugs
-           (lambda _
-             (invoke "make" "-C" "ghc/interpreter")
-             (invoke "make" "-C" "ghc/interpreter" "install")))
-         (add-after 'install 'install-sources
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((lib (string-append (assoc-ref outputs "out") "/lib")))
-               (copy-recursively "hslibs"
-                                 (string-append lib "/hslibs"))
-               (copy-recursively "ghc/lib"
-                                 (string-append lib "/ghc/lib"))
-               (copy-recursively "ghc/compiler"
-                                 (string-append lib "/ghc/compiler"))
-               (copy-recursively "ghc/interpreter/lib" lib)
-               (install-file "ghc/interpreter/nHandle.so" lib)))))))
+              (invoke "./configure"
+                      "--enable-hc-boot" ; boot from C "source" files
+                      (string-append "--prefix=" #$output)
+                      (string-append "--build=" build)
+                      (string-append "--host=" build))))
+          ;; Build hsc
+          (add-before 'build 'make-boot
+            (lambda _
+              ;; Avoid calling happy
+              (invoke "touch" "ghc/compiler/rename/ParseIface.hs")
+              (invoke "touch" "ghc/compiler/parser/Parser.hs")
+              (invoke "make" "boot" "all")))
+          ;; Build libraries
+          (replace 'build
+            (lambda _
+              ;; Build these from their Haskell sources.
+              (invoke "sh" "-c" "echo GhcWithHscBuiltViaC=NO >>mk/build.mk")
+              (with-directory-excursion "ghc/lib"
+                (invoke "make" "clean" "boot" "all"))
+              (with-directory-excursion "hslibs"
+                (invoke "make" "clean" "boot" "all"))))
+          (add-before 'install 'do-not-strip
+            (lambda _
+              (substitute* '("install-sh"
+                             "ghc/rts/gmp/install.sh")
+                (("^stripprog=.*") "stripprog=echo\n"))
+              (substitute* "mk/opts.mk"
+                (("^SRC_INSTALL_BIN_OPTS.*") "")))))))
     (native-inputs
-     (list autoconf-2.13
-           bison                                  ;for parser.y
+     (modify-inputs (%final-inputs)
+       (delete "binutils" "gcc")
+       (prepend
+           autoconf-2.13
+           bison                        ;for parser.y
            config
-
-           ;; Needed to support lvalue casts.
-           gcc-2.95
 
            ;; Use an older assembler to work around this error in GMP:
            ;;   Error: `%edx' not allowed with `testb'
            binutils-2.33
 
-           ;; TODO: Perl used to allow setting $* to enable multi-line
-           ;; matching.  If we want to use a more recent Perl we need to patch
-           ;; all expressions that require multi-line matching.  Hard to tell.
-           perl-5.6))
+           ;; Needed to support lvalue casts.
+           gcc-2.95
+
+           ;; Perl used to allow setting $* to enable multi-line matching.  If
+           ;; we want to use a more recent Perl we need to patch all
+           ;; expressions that require multi-line matching.  Hard to tell.
+           perl-5.6
+
+           ;; This is the secret sauce.  These files are macro-heavy C
+           ;; "source" files that are used to build hsc from C.  They are
+           ;; presumably the output of previous versions of GHC.  Note that
+           ;; this is the "registerized" variant for x86.  An "unreg" variant
+           ;; of the *.hc files also exists for building GHC for other
+           ;; architectures.  The default "way" (see GhcLibWays above) to
+           ;; build and link the GHC binaries, however, is not the
+           ;; unregisterized variant.  Using the unregisterized *.hc files
+           ;; with a standard build will result in segfaults.
+           (origin
+             (method url-fetch)
+             (uri (string-append "http://downloads.haskell.org/~ghc/"
+                                 version "/ghc-" version "-x86-hc.tar.bz2"))
+             (sha256
+              (base32
+               "0fi60bj0ak391x31cq5wp1ffwavl5w9jffyf62yv9rhxa915596b"))))))
     (home-page "https://www.haskell.org/ghc")
     (synopsis "The Glasgow Haskell Compiler")
     (description
      "The Glasgow Haskell Compiler (GHC) is a state-of-the-art compiler and
-interactive environment for the functional language Haskell.  The value of
-this package lies in the modified build of Hugs that is linked with GHC's STG
-runtime system, the RTS.  \"STG\" stands for \"spineless, tagless,
-G-machine\"; it is the abstract machine designed to support nonstrict
-higher-order functional languages.  Neither the compiler nor the Haskell
-libraries are included in this package.")
+interactive environment for the functional language Haskell.")
     (license license:bsd-3)))
 
 (define ghc-bootstrap-x86_64-7.8.4
