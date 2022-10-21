@@ -10664,6 +10664,41 @@ email library.")
 text-only mail clients to display them.")
     (license license:expat)))
 
+(define-public go-github-com-jhillyerd-enmime
+  (package
+    (name "go-github-com-jhillyerd-enmime")
+    (version "0.9.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jhillyerd/enmime")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "124dqm598phbmalyx2gmxk201z9kq4ckvvdq8rc0akjlp24nxqbb"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/jhillyerd/enmime"))
+    (propagated-inputs (list go-golang-org-x-text
+                             go-golang-org-x-net
+                             go-github-com-stretchr-testify
+                             go-github-com-ssor-bom
+                             go-github-com-rivo-uniseg
+                             go-github-com-pkg-errors
+                             go-github-com-olekukonko-tablewriter
+                             go-github-com-mattn-go-runewidth
+                             go-github-com-gogs-chardet
+                             go-github-com-jaytaylor-html2text
+                             go-github-com-go-test-deep
+                             go-github-com-cention-sany-utf7))
+    (home-page "https://github.com/jhillyerd/enmime")
+    (synopsis "MIME encoder and decoder for Go")
+    (description
+     "The enmime package implements a MIME encoding and decoding
+library geared towards parsing MIME encoded emails.")
+    (license license:expat)))
+
 (define-public go-github-com-creack-pty
   (package
     (name "go-github-com-creack-pty")
