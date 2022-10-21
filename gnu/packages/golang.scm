@@ -10783,6 +10783,30 @@ array or reader.")
 ICU to Go.")
     (license license:expat)))
 
+(define-public go-github-com-go-test-deep
+  (package
+    (name "go-github-com-go-test-deep")
+    (version "1.0.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/go-test/deep")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mmw2w3by7y24jjpjwmf2gfl08c65jihn3si9m0sswmagmdsk8q0"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/go-test/deep"))
+    (home-page "https://github.com/go-test/deep")
+    (synopsis "Human-friendly deep variable equality in Go")
+    (description
+     "The deep package provides the deep.Equal function which is like
+reflect.DeepEqual but returns a list of differences.  This is helpful
+when comparing complex types like structures and maps.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
