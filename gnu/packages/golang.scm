@@ -10532,6 +10532,30 @@ email library.")
 of the current user.")
     (license license:expat)))
 
+(define-public go-github-com-kyoh86-xdg
+  (package
+    (name "go-github-com-kyoh86-xdg")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kyoh86/xdg")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0a5nz53fdz1c2qvwlf2dpjdd72nxri95i6q4b07c37kiipgaxncn"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/kyoh86/xdg"))
+    (home-page "https://github.com/kyoh86/xdg")
+    (synopsis "XDG base directories for Go")
+    (description
+     "The xdg package provides lightweight helper functions in Go to get
+config, data and cache directories according to the XDG Base Directory
+Specification.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
