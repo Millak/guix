@@ -16395,6 +16395,15 @@ the same purpose: to provide Python bindings for libmagic.")
        (sha256
         (base32 "0rdgwwmmp8mdxc84bxq6k9a7v7z2qgc3df47djzs2b84gw81dglx"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'hide-wrapping
+                 (lambda _
+                   (substitute* "S3/MultiPart.py"
+                     (("sys\\.argv\\[0\\]") "\"s3cmd\""))
+                   (substitute* "s3cmd"
+                     (("optparser\\.get_prog_name\\(\\)") "\"s3cmd\"")))))))
     (inputs
      (list python-dateutil
            python-magic))
