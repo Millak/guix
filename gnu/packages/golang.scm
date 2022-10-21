@@ -10614,6 +10614,29 @@ config, data and cache directories according to the XDG Base Directory
 Specification.")
     (license license:expat)))
 
+(define-public go-github-com-ssor-bom
+  (package
+    (name "go-github-com-ssor-bom")
+    (version "0.0.0-20170718123548-6386211fdfcf")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ssor/bom")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09g5496ifwqxqclh2iw58plcwcz0sczlnxwqxzwmnl4shdl371ld"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/ssor/bom"))
+    (home-page "https://github.com/ssor/bom")
+    (synopsis "Cleaning BOMs in Go")
+    (description
+     "The bom package provides small tools for cleaning BOMs from a byte
+array or reader.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
