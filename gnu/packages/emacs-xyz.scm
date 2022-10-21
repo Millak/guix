@@ -33525,12 +33525,12 @@ the buffer you want to undo.  An undo tree buffer should pop up.")
         #:test-command #~(list "ert-runner")
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'unpack 'patch-geiser-racket-binary
+            (add-after 'unpack 'patch-curl-executable
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "org-cliplink-transport.el"
-                  (("curl\")")
-                   (string-append (search-input-file inputs "bin/curl")
-                                  "\")"))))))))
+                  (("\\(executable-find \"curl\"\\)")
+                   (let ((curl (search-input-file inputs "/bin/curl")))
+                     (string-append "\"" curl "\"")))))))))
       (native-inputs
        (list emacs-el-mock emacs-ert-runner emacs-undercover))
       (inputs
