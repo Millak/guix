@@ -24395,6 +24395,43 @@ stories.  The default feed is top stories, which corresponds to the Hacker
 News homepage.")
     (license license:gpl3)))
 
+(define-public emacs-tokei
+  (package
+    (name "emacs-tokei")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nagy/tokei.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0gcjlcfxd4bg123gjf7d0vfvfd6zpd0da8svynglca1qhp77jkx1"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; .el is read-only in git.
+              (make-file-writable "tokei.el")
+              ;; Specify the absolute file name of tokei so that everything
+              ;; works out-of-the-box.
+              (emacs-substitute-variables "tokei.el"
+                ("tokei-program"
+                 (search-input-file inputs "/bin/tokei"))))))))
+    (inputs (list tokei))
+    (propagated-inputs (list emacs-magit))
+    (home-page "https://github.com/nagy/tokei.el")
+    (synopsis "Display codebase statistics in Emacs")
+    (description
+     "@code{emacs-tokei} is a major-mode for Emacs, that displays codebase
+statistics with the help of @code{tokei}.")
+    (license license:gpl3+)))
+
 (define-public emacs-youtube-dl
   (let ((commit "af877b5bc4f01c04fccfa7d47a2c328926f20ef4")
         (revision "2"))
