@@ -6589,26 +6589,27 @@ fnmatch gist (https://gist.github.com/kballard/272720).")
 (define-public go-github-com-emersion-go-imap
   (package
     (name "go-github-com-emersion-go-imap")
-    (version "1.0.0")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/emersion/go-imap")
-              (commit (string-append "v" version))))
-        (sha256
-         (base32
-          "1id8j2d0rn9sj8y62xhyygqpk5ygrcl9jlfx92sm1jsvxsm3kywq"))
-        (file-name (git-file-name name version))))
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-imap")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ak2ysvfcc9w0g1070msis8x9sh6gzvf0nd65ks594siwbmqddw8"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/emersion/go-imap"))
-    (native-inputs
-     (list go-golang-org-x-text))
+     (list #:import-path "github.com/emersion/go-imap"))
+    (propagated-inputs (list go-golang-org-x-text
+                             go-github-com-emersion-go-sasl
+                             go-github-com-emersion-go-message))
     (home-page "https://github.com/emersion/go-imap")
     (synopsis "IMAP4rev1 library written in Go")
-    (description "This package provides an IMAP4rev1 library written in Go.  It
-can be used to build a client and/or a server.")
+    (description
+     "This package provides an IMAP4rev1 library written in Go.  It
+can be used to build IMAP clients and servers.")
     (license license:expat)))
 
 (define-public go-github-com-emersion-go-sasl
