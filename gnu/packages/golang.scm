@@ -6259,6 +6259,38 @@ systems.")
        (modify-inputs (package-inputs go-github-com-gdamore-tcell)
          (prepend go-golang-org-x-term go-golang-org-x-sys)))))
 
+(define-public go-git-sr-ht-rockorager-tcell-term
+  (package
+    (name "go-git-sr-ht-rockorager-tcell-term")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~rockorager/tcell-term")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13nfb2mq59846j531j7p2nm8mi0kjw5p90pa89l3fwc0sljkn5p8"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~rockorager/tcell-term"))
+    (propagated-inputs
+     (list go-golang-org-x-sys
+           go-golang-org-x-term
+           go-gopkg-in-check-v1
+           go-github-com-mattn-go-runewidth
+           go-github-com-davecgh-go-spew
+           go-github-com-stretchr-testify
+           go-github-com-gdamore-tcell-v2
+           go-github-com-creack-pty))
+    (home-page "https://git.sr.ht/~rockorager/tcell-term")
+    (synopsis "Terminal widget for @code{tcell}")
+    (description
+     "This package provides a virtual terminal widget for the @code{tcell}
+Go library.")
+    (license license:expat)))
+
 (define-public go-github-com-rivo-tview
   (package
     (name "go-github-com-rivo-tview")
