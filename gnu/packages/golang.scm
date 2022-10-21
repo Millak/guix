@@ -9349,6 +9349,30 @@ or capture raw audio.")
 programs that use traditional command lines.")
     (license license:bsd-3)))
 
+(define-public go-git-sr-ht-sircmpwn-getopt
+  (package
+    (name "go-git-sr-ht-sircmpwn-getopt")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~sircmpwn/getopt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f9rammnmhaz21qkmz7qf76r8jlzi323g05ps3j7gwrxlw7442a6"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~sircmpwn/getopt"))
+    (propagated-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://git.sr.ht/~sircmpwn/getopt")
+    (synopsis "POSIX getopt for Go")
+    (description
+     "This package provides a POSIX-compatible implementation of
+@code{getopt} for Go.")
+    (license license:bsd-3)))
+
 (define-public go-go-uber-org-atomic
   (package
     (name "go-go-uber-org-atomic")
