@@ -1242,12 +1242,26 @@ standards of the IceCat project.")
        (cpe-name . "firefox_esr")
        (cpe-version . ,(first (string-split version #\-)))))))
 
-;; Update this together with icecat!
 (define %icedove-build-id "20221012000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-version "102.3.3")
+
+;; Provides the "comm" folder which is inserted into the icecat source.
+;; Avoids the duplication of Icecat's source tarball.
+(define thunderbird-source
+  (origin
+    (method hg-fetch)
+    (uri (hg-reference
+          (url "https://hg.mozilla.org/releases/comm-esr102")
+          (changeset "afeec21c1fcc27ba58f98f629e85609a728f79e6")))
+    (file-name (string-append "thunderbird-" %icedove-version "-checkout"))
+    (sha256
+     (base32
+      "1n4cj673akv9rwymc4bj3g3cx39amg9xpi504vkjpmykfbvrvr01"))))
+
 (define-public icedove
   (package
     (name "icedove")
-    (version "102.3.3")
+    (version %icedove-version)
     (source icecat-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
@@ -1263,10 +1277,9 @@ standards of the IceCat project.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-thunderbird-sources
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               (mkdir "comm")
-              (copy-recursively (assoc-ref inputs "thunderbird-sources")
-                                "comm")
+              (copy-recursively #$thunderbird-source "comm")
               (delete-file "sourcestamp.txt")))
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
             (lambda _
@@ -1528,34 +1541,19 @@ ca495991b7852b855"))
            zip
            zlib))
     (native-inputs
-     `(("thunderbird-sources"
-        ;; The changeset identifier is taken from the file "sourcestamp.txt"
-        ;; in the Thunderbird release tarball.  We don't use the release
-        ;; tarball because it duplicates the Icecat sources and only adds the
-        ;; "comm" directory, which is provided by this repository.
-        ,(let ((changeset "afeec21c1fcc27ba58f98f629e85609a728f79e6"))
-           (origin
-             (method hg-fetch)
-             (uri (hg-reference
-                   (url "https://hg.mozilla.org/releases/comm-esr102")
-                   (changeset changeset)))
-             (file-name (string-append "thunderbird-" version "-checkout"))
-             (sha256
-              (base32
-               "1n4cj673akv9rwymc4bj3g3cx39amg9xpi504vkjpmykfbvrvr01")))))
-       ("cargo" ,rust "cargo")
-       ("clang" ,clang)
-       ("llvm" ,llvm)
-       ("m4" ,m4)
-       ("nasm" ,nasm)
-       ("node" ,node)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("rust" ,rust)
-       ("rust-cbindgen" ,(force rust-cbindgen-0.23-promise))
-       ("which" ,which)
-       ("yasm" ,yasm)))
+     (list `(,rust "cargo")
+           clang
+           llvm
+           m4
+           nasm
+           node
+           perl
+           pkg-config
+           python-wrapper
+           rust
+           (force rust-cbindgen-0.23-promise)
+           which
+           yasm))
     (home-page "https://www.thunderbird.net")
     (synopsis "Rebranded Mozilla Thunderbird email client")
     (description
