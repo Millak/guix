@@ -198,8 +198,8 @@ by APL.")
                        (lib (string-append (assoc-ref outputs "lib")
                                            "/lib")))
                   (mkdir-p bin)
-                  (copy-recursively "BQN"
-                                    (string-append bin "/bqn"))
+                  (rename-file "BQN" "bqn")
+                  (install-file "bqn" bin)
                   (install-file "libcbqn.so" lib))))))))
     (native-inputs (list dbqn
                          bqn-sources
