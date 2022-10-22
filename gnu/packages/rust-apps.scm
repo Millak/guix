@@ -1843,17 +1843,16 @@ Full featured offline client with caching support.")
          (add-after 'unpack 'relax-version-requirements
            (lambda _
              (substitute* "Cargo.toml"
-               (("2.5") "2")
-               (("~2.3\"") "2\"")
-               (("~2.33\"") "2\"")      ; clap
-               (("3.1") "3"))))
+               (("\"~") "\""))))
          (add-after 'install 'install-manual-page
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
                     (man   (string-append out "/share/man/man1")))
                (install-file "Documentation/git-absorb.1" man)))))))
+    (native-inputs
+     (list pkg-config))
     (inputs
-     (list zlib))
+     (list libgit2-1.3 zlib))
     (home-page "https://github.com/tummychow/git-absorb")
     (synopsis "Git tool for making automatic fixup commits")
     (description
