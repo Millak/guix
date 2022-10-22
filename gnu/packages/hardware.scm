@@ -521,7 +521,7 @@ calibrated, and restored when the calibration is applied.")
 (define-public ddcui
   (package
     (name "ddcui")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -530,10 +530,10 @@ calibrated, and restored when the calibration is applied.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a9xfv80dpimx9wi9igjbbfydyfsgnbk6dv1plhjzyp2a9shdibb"))))
+        (base32 "0gypfmwxhjmgyfwk29k8hfbgr0698kbcq2yj4izxv1i59zm63irz"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f))                    ; No test suite
+     (list #:tests? #f))                    ; No test suite
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
