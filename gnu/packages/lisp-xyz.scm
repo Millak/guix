@@ -841,6 +841,41 @@ grammar.")
 (define-public ecl-cl-abnf
   (sbcl-package->ecl-package sbcl-cl-abnf))
 
+(define-public sbcl-select
+  (let ((commit "df7920fc451b6d15345040ce4a3ee1ea2818ab1a")
+        (revision "0"))
+    (package
+      (name "sbcl-select")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lisp-Stat/select")
+               (commit commit)))
+         (file-name (git-file-name "cl-select" version))
+         (sha256
+          (base32 "0bhpvfqp7n33pia4y62qi31bx86gjl2nxjy529rfawac57c9rxv3"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+        (list sbcl-alexandria
+              sbcl-anaphora
+              sbcl-let-plus))
+      (native-inputs
+        (list sbcl-fiveam))
+      (home-page "https://lisp-stat.github.io/select/")
+      (synopsis "Library for taking slices from array-like objects")
+      (description
+       "This is a library for selecting portions of sequences, arrays or
+data-frames.")
+      (license license:ms-pl))))
+
+(define-public cl-select
+  (sbcl-package->cl-source-package sbcl-select))
+
+(define-public ecl-select
+  (sbcl-package->ecl-package sbcl-select))
+
 (define-public sbcl-cl-ppcre
   (package
     (name "sbcl-cl-ppcre")
