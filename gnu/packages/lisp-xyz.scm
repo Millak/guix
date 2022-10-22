@@ -21850,6 +21850,40 @@ on top of Hunchentoot.")
 (define-public ecl-simple-routes
   (sbcl-package->ecl-package sbcl-simple-routes))
 
+(define-public sbcl-eris
+  (package
+    (name "sbcl-eris")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.ykonai.net/eris-cl")
+             (commit version)))
+       (file-name (git-file-name "cl-eris" version))
+       (sha256
+        (base32 "0qm74ld70aic39giamvix88500flv86047a82rx9gkjwaisf58rc"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-fiveam))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-bordeaux-threads
+           sbcl-function-cache
+           sbcl-ironclad
+           sbcl-mmap
+           sbcl-osicat
+           sbcl-serapeum
+           sbcl-trivial-gray-streams))
+    (home-page "https://git.ykonai.net/eris-cl/")
+    (synopsis "ERIS implementation for Common Lisp")
+    (description
+     "This is a Common Lisp implementation of the Encoding for Robust Immutable
+Storage specification (ERIS).")
+    (license license:lgpl3+)))
+
+(define-public cl-eris
+  (sbcl-package->cl-source-package sbcl-eris))
+
 (define-public sbcl-cl-ipfs-api2
   (let ((commit "3ee52c80023bcc662f7d01276ea0a5814bd0011b")
         (revision "0"))
