@@ -395,7 +395,9 @@ empty list when the FIELD cannot be found."
         "c++11"
         "c++14"
         "c++17"
+        "c99"
         "getopt::long"
+        "gnu"
         "posix.1-2001"
         "linux"
         "none"
@@ -406,15 +408,33 @@ empty list when the FIELD cannot be found."
 (define (transform-sysname sysname)
   "Return a Guix package name for the common package name SYSNAME."
   (match sysname
-    ("java" "openjdk")
-    ("fftw3" "fftw")
-    ("tcl/tk" "tcl")
     ("booktabs" "texlive-booktabs")
+    ("bowtie2" "bowtie")
+    ("cat" "coreutils")
+    ("java" "openjdk")
+    ("exiftool" "perl-image-exiftool")
+    ("fftw3" "fftw")
     ("freetype2" "freetype")
+    ("gettext" "gnu-gettext")
+    ("gmake" "gnu-make")
+    ("libarchive-devel" "libarchive")
+    ("libarchive_dev" "libarchive")
+    ("libbz2" "bzip2")
+    ("libexpat" "expat")
+    ("liblz4" "lz4")
+    ("liblzma" "xz")
+    ("libzstd" "zstd")
+    ("libxml2-devel" "libxml2")
+    ("libz" "zlib")
     ("mariadb-devel" "mariadb")
     ("mysql56_dev" "mariadb")
+    ("pandoc-citeproc" "pandoc")
+    ("python3" "python-3")
     ("sqlite3" "sqlite")
+    ("svn" "subversion")
+    ("tcl/tk" "tcl")
     ("udunits-2" "udunits")
+    ("whoami" "coreutils")
     ("x11" "libx11")
     (_ sysname)))
 
