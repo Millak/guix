@@ -171,37 +171,34 @@ by APL.")
     (name "cbqn")
     (outputs '("out" "lib"))
     (arguments
-     (list #:make-flags '(list "shared-o3" "o3")
-           #:phases #~(modify-phases %standard-phases
-                        (delete 'configure)
-                        (add-before 'build 'generate-bytecode
-                          (lambda* (#:key inputs #:allow-other-keys)
-                            (system (string-append #+dbqn
-                                                   "/bin/dbqn ./genRuntime "
-                                                   #+bqn-sources))))
-                        (replace 'check
-                          (lambda* (#:key inputs tests? #:allow-other-keys)
-                            (when tests?
-                              (system (string-append "./BQN -M 1000 \""
-                                                     #+bqn-sources
-                                                     "/test/this.bqn\""))
-                              (map (lambda (x)
-                                     (system (string-append "./BQN ./test/" x
-                                                            ".bqn")))
-                                   '("cmp" "equal" "copy" "random"))
-                              (system "make -C test/ffi"))))
-                        (replace 'install
-                          (lambda* (#:key outputs #:allow-other-keys)
-                            (let* ((bin (string-append (assoc-ref outputs
-                                                                  "out")
-                                                       "/bin"))
-                                   (lib (string-append (assoc-ref outputs
-                                                                  "lib")
-                                                       "/lib")))
-                              (mkdir-p bin)
-                              (copy-recursively "BQN"
-                                                (string-append bin "/bqn"))
-                              (install-file "libcbqn.so" lib)))))))
+     (substitute-keyword-arguments (strip-keyword-arguments
+                                    (list #:tests?)
+                                    (package-arguments cbqn-bootstrap))
+       ((#:make-flags flags #~(list))
+        #~(cons* "shared-o3" "o3" #$flags))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key inputs tests? #:allow-other-keys)
+                (when tests?
+                  (system (string-append "./BQN -M 1000 \""
+                                         #+bqn-sources
+                                         "/test/this.bqn\""))
+                  (map (lambda (x)
+                         (system (string-append "./BQN ./test/" x
+                                                ".bqn")))
+                       '("cmp" "equal" "copy" "random"))
+                  (system "make -C test/ffi"))))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((bin (string-append (assoc-ref outputs "out")
+                                           "/bin"))
+                       (lib (string-append (assoc-ref outputs "lib")
+                                           "/lib")))
+                  (mkdir-p bin)
+                  (copy-recursively "BQN"
+                                    (string-append bin "/bqn"))
+                  (install-file "libcbqn.so" lib))))))))
     (native-inputs (list dbqn
                          bqn-sources
                          libffi
