@@ -1121,7 +1121,7 @@ as the Pinebook Pro.")
 (define-public usbguard
   (package
     (name "usbguard")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1129,7 +1129,7 @@ as the Pinebook Pro.")
                     (commit (string-append "usbguard-" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0lpyhkz5nr0c9mq57mgcvam5c8qfqqwjc4xd46n2ldqc9vhfsask"))))
+               (base32 "10qqjk7hsycc6hk51abwcld7i48038zqi1jzli59cfvc76ikrxj5"))))
     (build-system gnu-build-system)
     (arguments
      (list
