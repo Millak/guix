@@ -17203,6 +17203,15 @@ multiplexer.")
         (base32 "0p0xd532xa8icysyxwqk481lr9xanmp68gf97fd9n2936gp12chv"))))
     (build-system emacs-build-system)
     (inputs (list curl))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'substitute-curl-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (make-file-writable "plz.el")
+              (emacs-substitute-variables "plz.el"
+                ("plz-curl-program" (search-input-file inputs "/bin/curl"))))))))
     (home-page "https://github.com/alphapapa/plz.el")
     (synopsis "HTTP library for Emacs")
     (description
