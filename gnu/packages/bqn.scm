@@ -182,12 +182,9 @@ by APL.")
     (name "cbqn")
     (outputs '("out" "lib"))
     (arguments
-     (list #:make-flags '(list "shared-o3" "o3n-singeli")
+     (list #:make-flags '(list "shared-o3" "o3")
            #:phases #~(modify-phases %standard-phases
                         (delete 'configure)
-                        (add-before 'build 'link-singeli
-                          (lambda* (#:key inputs #:allow-other-keys)
-                            (symlink #+singeli-sources "Singeli")))
                         (add-before 'build 'generate-bytecode
                           (lambda* (#:key inputs #:allow-other-keys)
                             (system (string-append #+dbqn
@@ -218,7 +215,6 @@ by APL.")
                               (install-file "libcbqn.so" lib)))))))
     (native-inputs (list dbqn
                          bqn-sources
-                         singeli-sources
                          libffi
                          clang-toolchain
                          linux-libre-headers))))
