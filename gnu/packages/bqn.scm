@@ -141,22 +141,23 @@ the same author.")
                   "0w38fhwf20drkyijy6nfnhmc5g5gw0zmzgmy1q605x57znlj85a2"))))
       (build-system gnu-build-system)
       (arguments
-       (list #:tests? #f                         ;skipping tests for bootstrap
-             #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
-             #:phases #~(modify-phases %standard-phases
-                          (delete 'configure)
-                          (add-before 'build 'generate-bytecode
-                            (lambda* (#:key inputs #:allow-other-keys)
-                              (system (string-append #+dbqn
-                                                     "/bin/dbqn ./genRuntime "
-                                                     #+bqn-sources))))
-                          (replace 'install
-                            (lambda* (#:key outputs #:allow-other-keys)
-                              (mkdir-p (string-append #$output "/bin"))
-                              (chmod "BQN" #o755)
-                              (copy-recursively "BQN"
-                                                (string-append #$output
-                                                               "/bin/bqn")))))))
+       (list
+        #:tests? #f                     ; skipping tests for bootstrap
+        #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'build 'generate-bytecode
+              (lambda* (#:key inputs #:allow-other-keys)
+                (system (string-append #+dbqn
+                                       "/bin/dbqn ./genRuntime "
+                                       #+bqn-sources))))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (mkdir-p (string-append #$output "/bin"))
+                (chmod "BQN" #o755)
+                (rename-file "BQN" "bqn")
+                (install-file "bqn" (string-append #$output "/bin")))))))
       (native-inputs (list dbqn bqn-sources))
       (inputs (list icedtea-8 libffi))
       (synopsis "BQN implementation in C")
