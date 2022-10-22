@@ -1849,7 +1849,7 @@ for packaging and deployment of cross-compiled Windows applications.")
 (define-public libostree
   (package
     (name "libostree")
-    (version "2022.5")
+    (version "2022.6")
     (source
      (origin
        (method url-fetch)
@@ -1857,7 +1857,7 @@ for packaging and deployment of cross-compiled Windows applications.")
              "https://github.com/ostreedev/ostree/releases/download/v"
              (version-major+minor version) "/libostree-" version ".tar.xz"))
        (sha256
-        (base32 "0gq53g601x09gc4ips6n3zmmdaz8zyv235xf63fxf4f17fclsk4i"))))
+        (base32 "135dzxqzy19a8hkxm25mriy7zf72sbxz1mzzfw6a2d8bk9yz8pl3"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
