@@ -93,9 +93,8 @@
                                 (dest-jar (string-append out "/share/java")))
                            (mkdir-p dest-bin)
                            (mkdir-p dest-jar)
-                           (copy-recursively "BQN"
-                                             (string-append dest-bin
-                                                            "/dbqn"))
+                           (rename-file "BQN" "dbqn")
+                           (install-file "dbqn" dest-bin)
                            (install-file "BQN.jar" dest-jar)
                            (substitute* (string-append dest-bin "/dbqn")
                              (("BQN.jar")
