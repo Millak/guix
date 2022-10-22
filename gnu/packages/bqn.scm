@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Christopher Rodriguez <yewscion@gmail.com>
+;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -142,6 +143,7 @@ the same author.")
       (build-system gnu-build-system)
       (arguments
        (list #:tests? #f                         ;skipping tests for bootstrap
+             #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
              #:phases #~(modify-phases %standard-phases
                           (delete 'configure)
                           (add-before 'build 'generate-bytecode
@@ -156,7 +158,7 @@ the same author.")
                               (copy-recursively "BQN"
                                                 (string-append #$output
                                                                "/bin/bqn")))))))
-      (native-inputs (list dbqn clang-toolchain bqn-sources))
+      (native-inputs (list dbqn bqn-sources))
       (inputs (list icedtea-8 libffi))
       (synopsis "BQN implementation in C")
       (description "This package provides the reference implementation of
@@ -202,5 +204,4 @@ by APL.")
     (native-inputs (list dbqn
                          bqn-sources
                          libffi
-                         clang-toolchain
                          linux-libre-headers))))
