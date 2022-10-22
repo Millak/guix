@@ -825,8 +825,10 @@ touchscreen devices.")
         ("rust-rstest" ,rust-rstest-0.6)
         ("rust-serial-test" ,rust-serial-test-0.5)
         ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list pkg-config))
     (inputs
-     (list zlib))
+     (list libgit2-1.3 zlib))
     (home-page "https://gitrebasetool.mitmaro.ca/")
     (synopsis "Terminal based sequence editor for git interactive rebase")
     (description
