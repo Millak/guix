@@ -165,17 +165,6 @@ by APL.")
       (home-page "https://mlochbaum.github.io/BQN/")
       (license license:gpl3))))
 
-(define singeli-sources
-  (let ((commit "fd17b144483549dbd2bcf23e3a37a09219171a99"))
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/mlochbaum/Singeli")
-            (commit commit)))
-      (file-name (git-file-name "singeli-sources" commit))
-      (sha256
-       (base32 "1rr4l7ijzcg25n2igi1mzya6qllh5wsrf3m5i429rlgwv1fwvfji")))))
-
 (define-public cbqn
   (package
     (inherit cbqn-bootstrap)
