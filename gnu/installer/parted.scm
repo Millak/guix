@@ -319,6 +319,25 @@ PARTED-OBJECT field equals PARTITION, return #f if not found."
                   partition))
         user-partitions))
 
+(define (read-partition-uuid/retry file-name)
+  "Call READ-PARTITION-UUID with 5 retries spaced by 1 second.  This is useful
+if the partition table is updated by the kernel at the time this function is
+called, causing the underlying /dev to be absent."
+  (define max-retries 5)
+
+  (let loop ((retry max-retries))
+    (catch #t
+      (lambda ()
+        (read-partition-uuid file-name))
+      (lambda _
+        (if (> retry 0)
+            (begin
+              (sleep 1)
+              (loop (- retry 1)))
+            (error
+             (format #f (G_ "Could not open ~a after ~a retries~%.")
+                     file-name max-retries)))))))
+
 
 ;;
 ;; Devices
@@ -1108,7 +1127,7 @@ Return #t if all the statements are valid."
                (need-formatting?
                 (user-partition-need-formatting? user-partition)))
            (or need-formatting?
-               (read-partition-uuid file-name)
+               (read-partition-uuid/retry file-name)
                (raise
                 (condition
                  (&cannot-read-uuid
