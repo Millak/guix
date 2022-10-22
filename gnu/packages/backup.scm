@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
@@ -633,13 +633,13 @@ detection, and lossless compression.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgbackup" version))
        (sha256
-        (base32 "0cy6chpa053rlvy4448vf9klb5v0v1vq3l76gqa3mcrwjb8y574z"))
+        (base32 "0q3jwmwwa3jlb02cbkcgh5a9cvwg64vawaypn41bdgpi8ds6hc6p"))
        (modules '((guix build utils)))
        (snippet
         '(begin
