@@ -129,7 +129,7 @@ the same author.")
          (commit "9c1cbdc99863b1da0116df61cd832137b196dc5c"))
     (package
       (name "cbqn-bootstrap")
-      (version (git-version "0" "1" commit))
+      (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
