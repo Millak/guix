@@ -26,7 +26,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2021, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
@@ -2378,6 +2378,49 @@ useful with system integration.")
 into the Unity menu bar.  Based on KSNI, it also works in KDE and will
 fallback to generic Systray support if none of those are available.")
       (license license:lgpl2.1+))))
+
+(define-public snixembed
+  (package
+    (name "snixembed")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~steef/snixembed/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14fkgxww4qbsxyqj9h3yqpdqsdz9r6015c9graas50r5b5ggd3bj"))
+              (modules '((guix build utils)))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:make-flags #~(list "CC=gcc"
+                                (string-append "PREFIX="
+                                               #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)))) ;no configure
+    (inputs (list gtk+ libdbusmenu))
+    (native-inputs (list pkg-config vala))
+    (synopsis "Proxy StatusNotifierItems as XEmbedded systemtray-spec icons")
+    (home-page "https://git.sr.ht/~steef/snixembed")
+    (description
+     "Snixembed is a program to proxy StatusNotifierItems as
+XEmbedded systemtray-spec icons.  This allows programs that only support the
+newer StatusNotifierItem to have the older XEmbedded systemtray support.
+While snixembed works fine with most setups, some bars and DEs provide their
+own optional SNI support, which should be preferred when available.
+
+Currently supported:
+@itemize
+@item icons (by pixmap and by freedesktop name)
+@item activation on left mouse button
+@item context menu on right mouse button (Menu dbusmenu or ContextMenu)
+@item tooltips (on hover, all markup except hyperlinks)
+@item limited AppIndicator support as a fallback
+@end itemize")
+    (license license:isc)))
 
 (define-public libportal
   (package
