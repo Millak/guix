@@ -477,14 +477,14 @@ RGB animations.")
 (define-public ddcutil
   (package
     (name "ddcutil")
-    (version "1.2.2")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.ddcutil.com/tarballs/"
                            "ddcutil-" version ".tar.gz"))
        (sha256
-        (base32 "18fbd45h2r3r702dvmlmyrwgs3ymr4mhm4f12lgv9jqb5csalbw2"))))
+        (base32 "0hm0cm4m4hk1jjy7kddg613mynvwlii3kp8al0j9v3c6mcx3p4mx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
