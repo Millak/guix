@@ -26157,14 +26157,39 @@ information for your operating system.")
 (define-public python-canonicaljson
   (package
     (name "python-canonicaljson")
-    (version "1.4.0")
+    (version "1.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "canonicaljson" version))
        (sha256
-        (base32 "0c86g0vvzdcg3nrcsqnbzlfhpprc2i894p8i14hska56yl27d6w9"))))
+        (base32 "0j5lq191jkd483q6xzc16c9fahxf15lrv03mvah9ka3lq85pcnfa"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'loosen-requirements
+           (lambda _
+             ;; Permit newer versions of setuptools_scm
+             (substitute* "pyproject.toml"
+               ((">= 2.0.0, <3") ">= 2.0.0"))))
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest"))))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-pypa-build python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-six python-frozendict python-simplejson))
     (home-page "https://github.com/matrix-org/python-canonicaljson")
