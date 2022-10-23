@@ -154,6 +154,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages perl-web)
+  #:use-module (gnu packages php)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio) ;libsndfile
@@ -5701,16 +5702,15 @@ and reverb.")
 (define-public lsp-plugins
   (package
     (name "lsp-plugins")
-    (version "1.1.26")
+    (version "1.2.3")
     (source
       (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/sadko4u/lsp-plugins")
-               (commit (string-append "lsp-plugins-" version))))
-        (file-name (git-file-name name version))
+        (method url-fetch)
+        (uri (string-append "https://github.com/sadko4u/lsp-plugins"
+                            "/releases/download/" version
+                            "/lsp-plugins-src-" version ".tar.gz"))
         (sha256
-         (base32 "1apw8zh3a3il4smkjji6bih4vbsymj0hjs10fgkrd4nazqkjvgyd"))))
+         (base32 "0asgwrkyncxz5h7kjkbwm78z8l2jndxvsrgd634m5x9n37gjsgvs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -5721,18 +5721,28 @@ and reverb.")
          (string-append "ETC_PATH=" (assoc-ref %outputs "out") "/etc"))
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))           ; no configure script
-       #:test-target "test"))
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (invoke "make" "config" "TEST=1"
+                       (string-append "PREFIX=" out)
+                       (string-append "ETCDIR=" out "/etc")))))
+         (replace 'check
+           (lambda _
+             (invoke ".build/host/lsp-plugin-fw/lsp-plugins-test" "utest"))))))
     (inputs
      (list cairo
+           freetype
            hicolor-icon-theme
            jack-1
            ladspa
            libsndfile
+           libx11
+           libxrandr
            lv2
            mesa))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config php))
     (synopsis "Audio plugin collection")
     (description "LSP (Linux Studio Plugins) is a collection of audio
 plugins available as LADSPA/LV2 plugins and as standalone JACK
