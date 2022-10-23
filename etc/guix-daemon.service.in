@@ -13,6 +13,10 @@ RemainAfterExit=yes
 StandardOutput=syslog
 StandardError=syslog
 
+# Work around a nasty systemd ‘feature’ that kills the entire process tree
+# (including the daemon!) if any child, such as cc1plus, runs out of memory.
+OOMPolicy=continue
+
 # See <https://lists.gnu.org/archive/html/guix-devel/2016-04/msg00608.html>.
 # Some package builds (for example, go@1.8.1) may require even more than
 # 1024 tasks.
