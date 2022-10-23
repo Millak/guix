@@ -27001,44 +27001,6 @@ correct value of @samp{CARGO_HOME} and @samp{RUSTUP_HOME}.")
      "This package provides a port of the Hamcrest testing library.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-handlebars-2
-  (package
-    (name "rust-handlebars")
-    (version "2.0.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "handlebars" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "1m99gwjd7q7q79bk4f716wsdvcyhsrcsq4vbzcavbkmc48d194mg"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-        (("rust-hashbrown" ,rust-hashbrown-0.5)
-         ("rust-log" ,rust-log-0.4)
-         ("rust-pest" ,rust-pest-2)
-         ("rust-pest-derive" ,rust-pest-derive-2)
-         ("rust-quick-error" ,rust-quick-error-1)
-         ("rust-serde" ,rust-serde-1)
-         ("rust-serde-json" ,rust-serde-json-1)
-         ("rust-walkdir" ,rust-walkdir-2))
-        #:cargo-development-inputs
-        (("rust-criterion" ,rust-criterion-0.2)
-         ("rust-env-logger" ,rust-env-logger-0.6)
-         ("rust-maplit" ,rust-maplit-1)
-         ("rust-serde-derive" ,rust-serde-derive-1)
-         ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/sunng87/handlebars-rust")
-    (synopsis "Handlebars templating implemented in Rust")
-    (description
-     "This package provides handlebars templating implemented in Rust.  It is
-the template engine that renders the official Rust website")
-    (license license:expat)))
-
 (define-public rust-handlegraph-0.3
   (package
     (name "rust-handlegraph")
