@@ -5,7 +5,7 @@
 ;;; Copyright © 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Charlie Ritter <chewzerita@posteo.net>
-;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 João Pedro Simas <jpsimas@gmail.com>
 ;;; Copyright © 2021 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
@@ -2291,6 +2291,18 @@ voice formats.")
                                #$(this-package-input "soapysdr")))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-CPU-extension-detection
+           ;; ‘Fix’ in the static sense.  TODO: Make this -tune'able.
+           (lambda _
+             (let ((file "cmake/Modules/DetectArchitecture.cmake"))
+               ;; Disable all build-time CPU extension detection…
+               (substitute* file
+                 (("detect_extensions\\(.*") ""))
+               (when ,(target-x86-64?)
+                 ;; …but force extensions that are guaranteed to be available.
+                 (substitute* file
+                   ((".*cmake_pop_check_state" eof)
+                    (string-append "force_ext_available(SSE2)\n" eof)))))))
          (add-after 'unpack 'fix-boost-compatibility
            (lambda _
              (substitute*
