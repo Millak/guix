@@ -219,6 +219,40 @@ utilities.")
 (define-public ecl-stdutils
   (sbcl-package->ecl-package sbcl-stdutils))
 
+(define-public sbcl-langutils
+  (let ((commit "38beec7a82eeb35b0bfb0824a41d13ed94fc648b")
+        (revision "0"))
+    (package
+      (name "sbcl-langutils")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/eslick/cl-langutils")
+               (commit commit)))
+         (file-name (git-file-name "cl-langutils" version))
+         (sha256
+          (base32 "15y9x5wkg3fqndc04w2sc650fnwimxp4gjgpv9xvvdm9x4v433x6"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments '(#:tests? #f)) ; There are no tests.
+      (inputs
+        (list sbcl-stdutils
+              sbcl-s-xml-rpc))
+      (home-page "https://langutils.common-lisp.dev/")
+      (synopsis "Common Lisp natural language processing toolkit")
+      (description
+       "This package provides a hierarchy of major functions and auxiliary
+functions related to the structured analysis and processing of open
+text.")
+      (license license:bsd-3))))
+
+(define-public cl-langutils
+  (sbcl-package->cl-source-package sbcl-langutils))
+
+(define-public ecl-langutils
+  (sbcl-package->ecl-package sbcl-langutils))
+
 (define-public sbcl-alea
   (package
     (name "sbcl-alea")
