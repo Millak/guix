@@ -23551,9 +23551,9 @@ process and much more.")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/Byron/fs-utils-rs")
-    (synopsis "Utilities to help working with the filesytem")
+    (synopsis "Utilities to help working with the filesystem")
     (description "This package provides a bunch of utilities to help working
-with the filesytem.")
+with the filesystem.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-fs2-0.2

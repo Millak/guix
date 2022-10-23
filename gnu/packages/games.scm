@@ -11154,7 +11154,7 @@ original, they have been invented by Thomas Colcombet.")
 RollerCoaster Tycoon 1 and 2, graphics- and gameplay-wise.
 
 In this game, you play as a manager of a theme park, allowing you to make a
-park of your dreams.  The list of responsiblities includes managing staff,
+park of your dreams.  The list of responsibilities includes managing staff,
 finances, landscaping, and most importantly: rides.  Good managers follow the
 principle of prioritizing the guests' happiness with a well-maintained park.
 Should they go unwise, a theme park plunge into chaos with vandalizing guests

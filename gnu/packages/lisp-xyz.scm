@@ -22308,7 +22308,7 @@ JSON handling.  Load the parser backend you prefer!
       (synopsis "Kenny's utilities for Common Lisp")
       (description
        "This library contains generic hacks meant to be used in any project.
-It was originally developped for the Cells library.")
+It was originally developed for the Cells library.")
       (license license:expat))))
 
 (define-public cl-utils-kt
@@ -22816,7 +22816,7 @@ to dispatch on the basis of types rather than classes.")
       (description
        "This library lets you build a metaclass which in turn lets you specify
 extra slot options in its classes.  Options may be easily inspected and custom
-inheritence may be set up.  The Meta-Object Protocol (MOP) is used for the
+inheritance may be set up.  The Meta-Object Protocol (MOP) is used for the
 implementation - through @code{closer-mop}.  Some convenience function for
 processing slot options are also available.
 

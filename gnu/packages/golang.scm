@@ -1334,9 +1334,9 @@ configuration file.")
                  "github.com/savsgio/gotils/time"
                  "github.com/savsgio/gotils/uuid")))))))
       (home-page "https://github.com/savsgio/gotils")
-      (synopsis "Golang utlities")
+      (synopsis "Golang utilities")
       (description
-       "Golang utlities to make your life easier with zero allocations.")
+       "Golang utilities to make your life easier with zero allocations.")
       (license license:asl2.0))))
 
 (define-public go-github-com-riobard-go-bloom

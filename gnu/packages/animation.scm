@@ -559,7 +559,7 @@ stacking and changing parameters in SWFs.
 @item
 @command{swfstrings} Scans SWFs for text data.
 @item
-@command{swfdump} Prints out various informations about SWFs.
+@command{swfdump} Prints out various information about SWFs.
 
 @item
 @command{jpeg2swf} Takes one or more JPEG pictures and generates a SWF

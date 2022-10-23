@@ -727,7 +727,7 @@ for goals involving set operations.
      "This library is an extension of coq-mathcomp which supports finite sets
 and finite maps on choicetypes (rather than finite types).  This includes
 support for functions with finite support and multisets.  The library also
-contains a generic order and set libary, which will eventually be used to
+contains a generic order and set library, which will eventually be used to
 subsume notations for finite sets.")
     (home-page "https://math-comp.github.io/")
     (license license:cecill-b)))

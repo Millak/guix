@@ -7138,7 +7138,7 @@ models, using simulation.  It was designed to work with models fit using the
     (description
       "Implementation of a simulation based aproach to power analysis.  Mixedpower uses
 lotdata and a linear mixed model fitted with lme4 to simulate new data sets.
-wer is computed seperate for every effect in the model output as the relation
+wer is computed separate for every effect in the model output as the relation
 significant simulations to all simulations.  More conservative simulations as
 protection against a bias in the pilotdata are available aswell as methods for
 otting the results.")

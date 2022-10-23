@@ -7509,7 +7509,7 @@ GenomicRanges operations.")
              r-stringr
              r-variantannotation))
       (home-page "https://github.com/mskilab/skitools/")
-      (synopsis "Various mskilab R utilties")
+      (synopsis "Various mskilab R utilities")
       (description
        "This package provides R miscellaneous utilities for basic data
 manipulation, debugging, visualization, lsf management, and common mskilab

@@ -7160,7 +7160,7 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
            emacs-transient))
     (home-page "https://docs.kyleam.com/piem")
     (synopsis "Glue for working with public-inbox archives")
-    (description "This packages provides a collection of Emacs libraries for
+    (description "This package provides a collection of Emacs libraries for
 working with public-inbox archives.  As much of the hard work here is already
 done by other Emacs libraries—things like mail clients, news readers, Git
 interfaces, and even web browsers—piem is mostly about bridging some of these
@@ -11426,7 +11426,7 @@ strings, and code folding.")
         (base32 "1qin0hclm3ly62nl5ddiim64bcd2k74b1yqsqqc61cf9k2q8k287"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/redguardtoo/js-comint")
-    (synopsis "Interacting with a JavaScript interpeter")
+    (synopsis "Interacting with a JavaScript interpreter")
     (description
      "This program is a comint mode for Emacs which allows you to run a
 compatible JavaScript REPL, such as node, SpiderMonkey or Rhino.
@@ -20039,7 +20039,7 @@ citations.")
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-org-roam emacs-citar))
     (home-page "https://github.com/emacs-citar/citar-org-roam")
-    (synopsis "Emacs pacakge to provide tighter Citar and Org-Roam integration")
+    (synopsis "Emacs package to provide tighter Citar and Org-Roam integration")
     (description "\
 Out-of-box, Citar provides default support for file-per-note bibliographic
 notes that are compatible with Org-Roam v2.  This package integrates directly

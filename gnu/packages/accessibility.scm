@@ -339,7 +339,7 @@ assistant for graphic designers, who need to select individual pixels.")
     (synopsis "Bridge for espeak and speakup")
     (description
      "Espeakup is a bridge between the speakup driver implemented in
-the Linux kernel and the espeak-ng text to speach synthesizer.
+the Linux kernel and the espeak-ng text to speech synthesizer.
 In order for this package to work, you need to have the following
 kernel modules built:
 @itemize @bullet

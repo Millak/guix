@@ -578,7 +578,7 @@ marked as 'needed-for-boot'."
 
 (define (boot-file-system-service os)
   "Return a service which adds, to the system profile, packages providing the
-utilites for the file systems marked as 'needed-for-boot' in OS."
+utilities for the file systems marked as 'needed-for-boot' in OS."
   (let ((file-systems (filter file-system-needed-for-boot?
                               (operating-system-file-systems os))))
     (simple-service 'boot-file-system-utilities profile-service-type
