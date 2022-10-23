@@ -31151,6 +31151,7 @@ allocator.")
     (license (list license:asl2.0
                    license:expat))))
 
+;; Keep this package for future packaging of pijul.
 (define-public rust-libpijul-0.12
   (package
     (name "rust-libpijul")
