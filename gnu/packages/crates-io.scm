@@ -36070,6 +36070,7 @@ cryptographic library.")
 release (fork of debug_unreachable)")
     (license license:expat)))
 
+;; Keep this package for future packaging of NewsFlash.
 (define-public rust-news-flash-1
   (package
     (name "rust-news-flash")
