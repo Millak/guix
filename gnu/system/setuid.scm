@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,7 +18,9 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu system setuid)
-  #:use-module (guix records)
+  #:use-module (gnu system privilege)
+  #:use-module (ice-9 match)
+  #:use-module (srfi srfi-1)
   #:export (setuid-program
             setuid-program?
             setuid-program-program
@@ -30,28 +33,29 @@
 
 ;;; Commentary:
 ;;;
-;;; Data structures representing setuid/setgid programs.  This is meant to be
-;;; used both on the host side and at run time--e.g., in activation snippets.
+;;; Do not use this module in new code.  It used to define data structures
+;;; representing setuid/setgid programs, but is now a mere compatibility shim
+;;; wrapping a subset of (gnu system privilege).
 ;;;
 ;;; Code:
 
-(define-record-type* <setuid-program>
-  setuid-program make-setuid-program
-  setuid-program?
-  ;; Path to program to link with setuid permissions
-  (program       setuid-program-program) ;file-like
-  ;; Whether to set user setuid bit
-  (setuid?       setuid-program-setuid? ;boolean
-                 (default #t))
-  ;; Whether to set group setgid bit
-  (setgid?       setuid-program-setgid? ;boolean
-                 (default #f))
-  ;; The user this should be set to (defaults to root)
-  (user          setuid-program-user    ;integer or string
-                 (default 0))
-  ;; Group we want to set this to (defaults to root)
-  (group         setuid-program-group   ;integer or string
-                 (default 0)))
+(define-syntax setuid-program
+  (lambda (fields)
+    (syntax-case fields ()
+      ((_ (field value) ...)
+       #`(privileged-program
+          (setuid? (match (assoc-ref '((field value) ...) 'setuid?)
+                     ((#f) #f)
+                     (_ #t)))
+          #,@(remove (match-lambda ((f _) (eq? (syntax->datum f) 'setuid?)))
+                     #'((field value) ...)))))))
+
+(define setuid-program?        privileged-program?)
+(define setuid-program-program privileged-program-program)
+(define setuid-program-setuid? privileged-program-setuid?)
+(define setuid-program-setgid? privileged-program-setgid?)
+(define setuid-program-user    privileged-program-user)
+(define setuid-program-group   privileged-program-group)
 
 (define (file-like->setuid-program program)
   (setuid-program (program program)))
