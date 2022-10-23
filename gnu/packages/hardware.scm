@@ -38,6 +38,8 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages bootloaders)
+  #:use-module (gnu packages cdrom)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
@@ -60,6 +62,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lxqt)
+  #:use-module (gnu packages mtools)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
@@ -815,12 +818,29 @@ specific SMBIOS tables.")
       #:tests? #f                       ; no way to test this
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-broken-Makefiles
+            (lambda _
+              (substitute* (list "build32/Makefile"
+                                 "build64/Makefile")
+                (("/sbin/(mkdosfs)" _ command)
+                 command))))
           (delete 'configure)           ; no configure script
           (add-before 'build 'enter-build-directory
             (lambda _
               (chdir #$(if (target-x86-32?)
                            "build32"
                            "build64"))))
+          (replace 'build
+            (lambda* (#:key inputs make-flags #:allow-other-keys)
+              (apply invoke
+                     "make" "all" "grub-iso" ; more options than memtest.iso
+                     (string-append "GRUB_FONT_DIR="
+                                    (search-input-directory inputs
+                                                            "share/grub"))
+                     (string-append "GRUB_LIB_DIR="
+                                    (search-input-directory inputs
+                                                            "lib/grub"))
+                     make-flags)))
           (replace 'install
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
@@ -830,10 +850,13 @@ specific SMBIOS tables.")
                 (for-each
                  (lambda (file)
                    (install-file file lib))
-                 (list "memtest.bin"
+                 (list "grub-memtest.iso"
+                       "memtest.bin"
                        "memtest.efi"))
                 (chdir "..")
                 (install-file "README.md" doc)))))))
+    (native-inputs
+     (list dosfstools grub-hybrid mtools xorriso))
     (supported-systems (list "i686-linux" "x86_64-linux"))
     (home-page "https://www.memtest.org/")
     (synopsis "Thorough real-mode memory tester")
