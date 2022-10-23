@@ -799,29 +799,27 @@ specific SMBIOS tables.")
 (define-public memtest86+
   (package
     (name "memtest86+")
-    ;; Update the description when/if UEFI support is released.
-    (version "5.01")
+    (version "6.00")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.memtest.org/download/5.01/memtest86+-"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/memtest86plus/memtest86plus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0fch1l55753y6jkk0hj8f6vw4h1kinkn9ysp22dq5g9zjnvjf88l"))))
+        (base32 "0fv605blaf4z0jyl1wp37x5x014dkp0z0a0fh114ws62fhnhdnlv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:system "i686-linux"            ; the result runs outside of any OS
-       #:tests? #f                      ; no way to test this
+     `(#:tests? #f                      ; no way to test this
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ; no configure script
-         (replace 'build
-           ;; The default 'make all' does wonderful things, like scp(1) a file to
-           ;; 192.168.0.12. Build the bootable images and nothing more.
+         (add-before 'build 'enter-build-directory
            (lambda _
-             (invoke "make"
-                     "memtest"          ; ELF executable
-                     "memtest.bin")))   ; DOS/MBR boot sector
+             (chdir ,(if (target-x86-32?)
+                         "build32"
+                         "build64"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -830,17 +828,10 @@ specific SMBIOS tables.")
                (for-each
                 (lambda (file)
                   (install-file file lib))
-                (list "memtest"
-                      "memtest.bin"))
-               (for-each
-                (lambda (file)
-                  (install-file file doc))
-                (list "FAQ"
-                      "README"))
-               #t))))))
-    (native-inputs
-     ;; Newer GCCs fail with a deluge of "multiple definition of `__foo'" errors.
-     (list gcc-4.9))
+                (list "memtest.bin"
+                      "memtest.efi"))
+               (chdir "..")
+               (install-file "README.md" doc)))))))
     (supported-systems (list "i686-linux" "x86_64-linux"))
     (home-page "https://www.memtest.org/")
     (synopsis "Thorough real-mode memory tester")
@@ -851,9 +842,7 @@ again, and verifies whether the result is the same as what was written.  This
 can help debug even intermittent and non-deterministic errors.
 
 It runs independently of any operating system, at computer boot-up, so that it
-can scan as much of your RAM as possible for hardware defects.
-
-Memtest86+ cannot currently be used on computers booted with UEFI.")
+can scan as much of your RAM as possible for hardware defects.")
     (license license:gpl2)))
 
 (define-public memtester
