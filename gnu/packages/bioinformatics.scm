@@ -10540,6 +10540,65 @@ single-cell RNA-seq data.")
 API services.")
     (license license:bsd-3)))
 
+(define-public python-multivelo
+  (package
+    (name "python-multivelo")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "multivelo" version))
+              (sha256
+               (base32
+                "1b4qyngwagh5sc2ygyfqyirg63myzh1g1glk03a1ykxfii32cjlp"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;pypi source does not contain tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (for-each
+               (lambda (wheel)
+                 (format #t wheel)
+                 (invoke "python" "-m" "pip" "install"
+                         wheel (string-append "--prefix=" #$output)))
+               (find-files "dist" "\\.whl$"))))
+          (add-before 'sanity-check 'set-env
+            (lambda _
+              ;; numba RuntimeError: cannot cache function 'rdist'
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs (list python-pypa-build))
+    (propagated-inputs
+     (list python-anndata
+           python-h5py
+           python-ipywidgets
+           python-joblib
+           python-loompy
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-pandas
+           python-scanpy
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-tqdm
+           python-umap-learn
+           scvelo))
+    (home-page "https://github.com/welch-lab/MultiVelo")
+    (synopsis "Velocity inference from single-cell multi-omic data")
+    (description "MultiVelo uses a probabilistic latent variable model to
+estimate the switch time and rate parameters of gene regulation, providing a
+quantitative summary of the temporal relationship between epigenomic and
+transcriptomic changes.")
+    (license license:bsd-3)))
+
 (define-public python-mygene
   (package
     (name "python-mygene")
