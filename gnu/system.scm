@@ -820,7 +820,7 @@ bookkeeping."
             (operating-system-environment-variables os))
            (service host-name-service-type host-name)
            procs root-fs
-           (service setuid-program-service-type
+           (service privileged-program-service-type
                     (operating-system-setuid-programs os))
            (service profile-service-type
                     (operating-system-packages os))
@@ -859,7 +859,7 @@ bookkeeping."
                               (list `("hosts" ,hosts-file)))
               (service hosts-service-type
                        (local-host-entries host-name)))
-          (service setuid-program-service-type
+          (service privileged-program-service-type
                    (operating-system-setuid-programs os))
           (service profile-service-type (operating-system-packages os)))))
 
