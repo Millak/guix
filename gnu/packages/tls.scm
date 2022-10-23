@@ -1123,53 +1123,54 @@ coding footprint.")
           (base32 "0rvxgxfk0filzw2dr14xwmiic1pwj82b615wydmg818xwdx7mxfx"))))
       (build-system trivial-build-system)
       (arguments
-       `(#:modules ((guix build utils)
+       (list
+        #:modules '((guix build utils)
                     (srfi srfi-26))
-         #:builder
-         (begin
-           (use-modules (guix build utils)
-                        (srfi srfi-26))
-           (let* ((source (assoc-ref %build-inputs "source"))
-                  (gzip (search-input-file %build-inputs "bin/gzip"))
-                  (out  (assoc-ref %outputs "out"))
-                  (bin  (string-append out "/bin"))
-                  (doc  (string-append out "/share/doc/" ,name "-" ,version))
-                  (man  (string-append out "/share/man"))
-                  (bash (in-vicinity (assoc-ref %build-inputs "bash") "bin")))
+        #:builder
+        #~(begin
+            (use-modules (guix build utils)
+                         (srfi srfi-26))
+            (let* ((source (assoc-ref %build-inputs "source"))
+                   (gzip (search-input-file %build-inputs "bin/gzip"))
+                   (bin  (string-append #$output "/bin"))
+                   (doc  (string-append #$output "/share/doc/"
+                                        #$name "-" #$version))
+                   (man  (string-append #$output "/share/man"))
+                   (bash (in-vicinity (assoc-ref %build-inputs "bash") "bin")))
 
-             (chdir source)
+              (chdir source)
 
-             (copy-recursively "docs" doc)
-             (install-file "LICENSE" doc)
+              (copy-recursively "docs" doc)
+              (install-file "LICENSE" doc)
 
-             (mkdir-p man)
-             (rename-file (string-append doc "/man")
-                          (string-append man "/man1"))
-             (for-each (cut invoke gzip "-9" <>)
-                       (find-files man ".*"))
+              (mkdir-p man)
+              (rename-file (string-append doc "/man")
+                           (string-append man "/man1"))
+              (for-each (cut invoke gzip "-9" <>)
+                        (find-files man ".*"))
 
-             (install-file "dehydrated" bin)
-             (with-directory-excursion bin
-               (patch-shebang "dehydrated" (list bash))
+              (install-file "dehydrated" bin)
+              (with-directory-excursion bin
+                (patch-shebang "dehydrated" (list bash))
 
-               ;; Do not try to write to the store.
-               (substitute* "dehydrated"
-                 (("SCRIPTDIR=\"\\$.*\"") "SCRIPTDIR=~/.dehydrated"))
+                ;; Do not try to write to the store.
+                (substitute* "dehydrated"
+                  (("SCRIPTDIR=\"\\$.*\"") "SCRIPTDIR=~/.dehydrated"))
 
-               (setenv "PATH" bash)
-               (wrap-program "dehydrated"
-                 `("PATH" ":" prefix
-                   ,(map (lambda (dir)
-                           (string-append dir "/bin"))
-                         (map (lambda (input)
-                                (assoc-ref %build-inputs input))
-                              '("coreutils"
-                                "curl"
-                                "diffutils"
-                                "gawk"
-                                "grep"
-                                "openssl"
-                                "sed"))))))))))
+                (setenv "PATH" bash)
+                (wrap-program "dehydrated"
+                  `("PATH" ":" prefix
+                    ,(map (lambda (dir)
+                            (string-append dir "/bin"))
+                          (map (lambda (input)
+                                 (assoc-ref %build-inputs input))
+                               '("coreutils"
+                                 "curl"
+                                 "diffutils"
+                                 "gawk"
+                                 "grep"
+                                 "openssl"
+                                 "sed"))))))))))
       (inputs
        (list bash
              coreutils
