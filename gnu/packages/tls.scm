@@ -1105,95 +1105,96 @@ coding footprint.")
                 #t)))))))))
 
 (define-public dehydrated
-  (package
-    (name "dehydrated")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/dehydrated-io/dehydrated/releases/download/"
-                    "v" version "/dehydrated-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1yf4kldyd5y13r6qxrkcbbk74ykngq7jzy0351vb2r3ywp114pqw"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils)
-                  (srfi srfi-26))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (srfi srfi-26))
-         (let* ((source (assoc-ref %build-inputs "source"))
-                (tar (assoc-ref %build-inputs "tar"))
-                (gz  (assoc-ref %build-inputs "gzip"))
-                (out (assoc-ref %outputs "out"))
-                (bin (string-append out "/bin"))
-                (doc (string-append out "/share/doc/" ,name "-" ,version))
-                (man (string-append out "/share/man"))
-                (bash (in-vicinity (assoc-ref %build-inputs "bash") "bin")))
+  ;; The last release is from 2020 and pleas for a new one have so far been
+  ;; ignored.  Yet, we must keep up with Let's Encrypt API changes & fixes.
+  (let ((revision "0")
+        (commit "6fb8eba56a67af8e8b5528b669a5da923b5d2182"))
+    (package
+      (name "dehydrated")
+      (version (git-version "0.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dehydrated-io/dehydrated")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0rvxgxfk0filzw2dr14xwmiic1pwj82b615wydmg818xwdx7mxfx"))))
+      (build-system trivial-build-system)
+      (arguments
+       `(#:modules ((guix build utils)
+                    (srfi srfi-26))
+         #:builder
+         (begin
+           (use-modules (guix build utils)
+                        (srfi srfi-26))
+           (let* ((source (assoc-ref %build-inputs "source"))
+                  (gzip (search-input-file %build-inputs "bin/gzip"))
+                  (out  (assoc-ref %outputs "out"))
+                  (bin  (string-append out "/bin"))
+                  (doc  (string-append out "/share/doc/" ,name "-" ,version))
+                  (man  (string-append out "/share/man"))
+                  (bash (in-vicinity (assoc-ref %build-inputs "bash") "bin")))
 
-           (setenv "PATH" (string-append gz "/bin"))
-           (invoke (string-append tar "/bin/tar") "xvf" source)
-           (chdir (string-append ,name "-" ,version))
+             (chdir source)
 
-           (copy-recursively "docs" doc)
-           (install-file "LICENSE" doc)
+             (copy-recursively "docs" doc)
+             (install-file "LICENSE" doc)
 
-           (mkdir-p man)
-           (rename-file (string-append doc "/man")
-                        (string-append man "/man1"))
-           (for-each (cut invoke "gzip" "-9" <>)
-                     (find-files man ".*"))
+             (mkdir-p man)
+             (rename-file (string-append doc "/man")
+                          (string-append man "/man1"))
+             (for-each (cut invoke gzip "-9" <>)
+                       (find-files man ".*"))
 
-           (install-file "dehydrated" bin)
-           (with-directory-excursion bin
-             (patch-shebang "dehydrated" (list bash))
+             (install-file "dehydrated" bin)
+             (with-directory-excursion bin
+               (patch-shebang "dehydrated" (list bash))
 
-             ;; Do not try to write to the store.
-             (substitute* "dehydrated"
-               (("SCRIPTDIR=\"\\$.*\"") "SCRIPTDIR=~/.dehydrated"))
+               ;; Do not try to write to the store.
+               (substitute* "dehydrated"
+                 (("SCRIPTDIR=\"\\$.*\"") "SCRIPTDIR=~/.dehydrated"))
 
-             (setenv "PATH" bash)
-             (wrap-program "dehydrated"
-               `("PATH" ":" prefix
-                 ,(map (lambda (dir)
-                         (string-append dir "/bin"))
-                       (map (lambda (input)
-                              (assoc-ref %build-inputs input))
-                            '("coreutils"
-                              "curl"
-                              "diffutils"
-                              "gawk"
-                              "grep"
-                              "openssl"
-                              "sed"))))))
-           #t))))
-    (inputs
-     (list bash
-           coreutils
-           curl
-           diffutils
-           gawk
-           grep
-           openssl
-           sed))
-    (native-inputs
-     (list gzip tar))
-    ;; The following definition is copied from the cURL package to prevent a
-    ;; cycle between the curl and tls modules.
-    (native-search-paths
-     (list (search-path-specification
-            (variable "CURL_CA_BUNDLE")
-            (file-type 'regular)
-            (separator #f)
-            (files '("etc/ssl/certs/ca-certificates.crt")))))
-    (home-page "https://dehydrated.io/")
-    (synopsis "ACME client implemented as a shell script")
-    (description "Dehydrated is a client for obtaining certificates from an
+               (setenv "PATH" bash)
+               (wrap-program "dehydrated"
+                 `("PATH" ":" prefix
+                   ,(map (lambda (dir)
+                           (string-append dir "/bin"))
+                         (map (lambda (input)
+                                (assoc-ref %build-inputs input))
+                              '("coreutils"
+                                "curl"
+                                "diffutils"
+                                "gawk"
+                                "grep"
+                                "openssl"
+                                "sed"))))))))))
+      (inputs
+       (list bash
+             coreutils
+             curl
+             diffutils
+             gawk
+             grep
+             openssl
+             sed))
+      (native-inputs
+       (list gzip))
+      ;; The following definition is copied from the cURL package to prevent a
+      ;; cycle between the curl and tls modules.
+      (native-search-paths
+       (list (search-path-specification
+              (variable "CURL_CA_BUNDLE")
+              (file-type 'regular)
+              (separator #f)
+              (files '("etc/ssl/certs/ca-certificates.crt")))))
+      (home-page "https://dehydrated.io/")
+      (synopsis "ACME client implemented as a shell script")
+      (description "Dehydrated is a client for obtaining certificates from an
 ACME server (such as Let's Encrypt) implemented as a relatively simple Bash
 script.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public go-github-com-certifi-gocertifi
   (let ((commit "a5e0173ced670013bfb649c7e806bc9529c986ec")
