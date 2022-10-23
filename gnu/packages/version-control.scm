@@ -31,7 +31,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
@@ -909,7 +909,7 @@ write native speed custom Git applications in any language with bindings.")
 (define-public git-crypt
   (package
     (name "git-crypt")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -918,7 +918,7 @@ write native speed custom Git applications in any language with bindings.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ba5s0fvmd9hhnfhfsjrm40v0qpxfnwc8vmm55m0k4dryzkzx66q"))))
+        (base32 "0ymk2z0jfyhycia8hg6wbj2g06m163yzqzanfk172cxb13fa8c26"))))
     (build-system gnu-build-system)
     (inputs
      (list git openssl))
