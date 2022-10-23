@@ -46,6 +46,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages hurd)
+  #:use-module (gnu system privilege)
   #:use-module (gnu system setuid)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -120,7 +121,8 @@
             extra-special-file
             etc-service-type
             etc-directory
-            setuid-program-service-type
+            privileged-program-service-type
+            setuid-program-service-type ; deprecated
             profile-service-type
             firmware-service-type
             gc-root-service-type
@@ -889,17 +891,17 @@ directory."
 FILES must be a list of name/file-like object pairs."
   (service etc-service-type files))
 
-(define (setuid-program->activation-gexp programs)
-  "Return an activation gexp for setuid-program from PROGRAMS."
+(define (privileged-program->activation-gexp programs)
+  "Return an activation gexp for privileged-program from PROGRAMS."
   (let ((programs (map (lambda (program)
                          ;; FIXME This is really ugly, I didn't managed to use
                          ;; "inherit"
-                         (let ((program-name (setuid-program-program program))
-                               (setuid?      (setuid-program-setuid? program))
-                               (setgid?      (setuid-program-setgid? program))
-                               (user         (setuid-program-user program))
-                               (group        (setuid-program-group program)) )
-                           #~(setuid-program
+                         (let ((program-name (privileged-program-program program))
+                               (setuid?      (privileged-program-setuid? program))
+                               (setgid?      (privileged-program-setgid? program))
+                               (user         (privileged-program-user program))
+                               (group        (privileged-program-group program)) )
+                           #~(privileged-program
                               (setuid? #$setuid?)
                               (setgid? #$setgid?)
                               (user    #$user)
@@ -907,17 +909,17 @@ FILES must be a list of name/file-like object pairs."
                               (program #$program-name))))
                        programs)))
     (with-imported-modules (source-module-closure
-                            '((gnu system setuid)))
+                            '((gnu system privilege)))
       #~(begin
-          (use-modules (gnu system setuid))
+          (use-modules (gnu system privilege))
 
           (activate-privileged-programs (list #$@programs))))))
 
-(define setuid-program-service-type
-  (service-type (name 'setuid-program)
+(define privileged-program-service-type
+  (service-type (name 'privileged-program)
                 (extensions
                  (list (service-extension activation-service-type
-                                          setuid-program->activation-gexp)))
+                                          privileged-program->activation-gexp)))
                 (compose concatenate)
                 (extend (lambda (config extensions)
                           (append config extensions)))
@@ -928,6 +930,10 @@ and apply special privileges like setuid and/or setgid.
 The deprecated @file{/run/setuid-programs} directory is also populated with
 symbolic links to their @file{/run/privileged/bin} counterpart.  It will be
 removed in a future Guix release.")))
+
+(define setuid-program-service-type
+  ;; Deprecated alias to ease transition.  Will be removed!
+  privileged-program-service-type)
 
 (define (packages->profile-entry packages)
   "Return a system entry for the profile containing PACKAGES."
