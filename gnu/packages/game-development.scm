@@ -617,7 +617,7 @@ clone.")
 (define-public tsukundere
   (package
     (name "tsukundere")
-    (version "0.4.1")
+    (version "0.4.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -626,7 +626,7 @@ clone.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11glghnff27rqh2s34g51afg93g3f5ryfz9mkyb7qj35ngl8vw5f"))))
+                "1lq2rs33s6l6y0hwwkv8pppgq2ki0q5kzj11s90yivi8g8g201af"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 match)
