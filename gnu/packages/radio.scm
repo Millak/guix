@@ -1230,13 +1230,17 @@ you must extend 'udev-service-type' with this package.  E.g.:
            automake
            doxygen
            libtool
-           lua
            pkg-config
            python-wrapper
-           swig
-           tcl))
+           swig))
     (inputs
-     (list gd libusb libxml2 readline))
+     (list gd
+           libusb
+           libxml2
+           lua
+           python
+           readline
+           tcl))
     (arguments
      `(#:configure-flags
        '("--disable-static"
