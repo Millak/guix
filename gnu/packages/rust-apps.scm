@@ -41,6 +41,7 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix deprecation)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -790,7 +791,7 @@ associated input devices using the built-in accelerometer; handy for convertible
 touchscreen devices.")
     (license license:expat)))
 
-(define-public rust-swc-1
+(define-public rust-swc
   (package
     (name "rust-swc")
     (version "1.2.24")
@@ -884,6 +885,8 @@ like async-await and emits javascript code which can be executed on old
 browsers.")
     (license (list license:expat
                    license:asl2.0))))
+
+(define-deprecated rust-swc-1 rust-swc)
 
 (define-public git-interactive-rebase-tool
   (package
