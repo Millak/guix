@@ -1146,7 +1146,7 @@ coding footprint.")
               (mkdir-p man)
               (rename-file (string-append doc "/man")
                            (string-append man "/man1"))
-              (for-each (cut invoke gzip "-9" <>)
+              (for-each (cut invoke gzip "-9n" <>)
                         (find-files man ".*"))
 
               (install-file "dehydrated" bin)
