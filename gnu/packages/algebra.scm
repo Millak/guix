@@ -327,7 +327,7 @@ precision.")
 (define-public giac
   (package
     (name "giac")
-    (version "1.9.0-21")
+    (version "1.9.0-23")
     (source
      (origin
        (method url-fetch)
@@ -339,7 +339,7 @@ precision.")
                            "~parisse/debian/dists/stable/main/source/"
                            "giac_" version ".tar.gz"))
        (sha256
-        (base32 "1zh7bf0ag4vbyyj5n8lbvy2ivp0kshms40ra5lq1ff035rpx230j"))
+        (base32 "07ksa9bcn7gl68v6z3pyhdnz91bj2aslaasq91bz9vbsjy83r3mr"))
        (patches
         ;; Patch borrowed from Sage math team.  Giac 1.9.0-21 does not build
         ;; since Pari-GP 2.15 upgrade.  Reported upstream here:
