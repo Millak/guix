@@ -186,6 +186,39 @@ portable between implementations.")
 (define-public ecl-alexandria
   (sbcl-package->ecl-package sbcl-alexandria))
 
+(define-public sbcl-stdutils
+  (let ((commit "4a4e5a4036b815318282da5dee2a22825369137b")
+        (revision "0"))
+    (package
+      (name "sbcl-stdutils")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/eslick/cl-stdutils")
+               (commit commit)))
+         (file-name (git-file-name "cl-stdutils" version))
+         (sha256
+          (base32 "16vxxphqdq8264x0aanm36x9r6d3ci1gjf4vf46mwl59gcff4wcj"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments '(#:tests? #f)) ; There are no tests.
+      (inputs
+        (list sbcl-cl-fad
+              sbcl-cl-ppcre))
+      (home-page "https://github.com/eslick/cl-stdutils/")
+      (synopsis "Grab bag of Common Lisp utility functions")
+      (description
+       "This package provides a grab bag of miscellaneous Common Lisp
+utilities.")
+      (license license:bsd-3))))
+
+(define-public cl-stdutils
+  (sbcl-package->cl-source-package sbcl-stdutils))
+
+(define-public ecl-stdutils
+  (sbcl-package->ecl-package sbcl-stdutils))
+
 (define-public sbcl-alea
   (package
     (name "sbcl-alea")
