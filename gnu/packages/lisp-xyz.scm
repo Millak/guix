@@ -15692,11 +15692,11 @@ dynamically.")
   (sbcl-package->cl-source-package sbcl-sxql-composer))
 
 (define-public sbcl-cl-i18n
-  (let ((commit "4216fe9fc7b54033c0d881dbb835b7af786365ed")
+  (let ((commit "5b569f3fe4c76d600fafecac507ac4f50e4cc1d1")
         (revision "1"))
     (package
       (name "sbcl-cl-i18n")
-      (version (git-version "0.5.1" revision commit))
+      (version (git-version "0.5.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -15705,7 +15705,7 @@ dynamically.")
                (commit commit)))
          (file-name (git-file-name "cl-i18n" version))
          (sha256
-          (base32 "1mdhfkk61djj39vgnns5y1cssd12h0m1cfwd21m8xpa2l3rqvmgf"))))
+          (base32 "0kj1wfvlbi7qwq61b0rcdxa0bmb4sfsnh1bj3n5jxp24sdib73w2"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-babel sbcl-cl-ppcre-unicode))
