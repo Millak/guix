@@ -811,27 +811,29 @@ specific SMBIOS tables.")
         (base32 "0fv605blaf4z0jyl1wp37x5x014dkp0z0a0fh114ws62fhnhdnlv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no way to test this
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'build 'enter-build-directory
-           (lambda _
-             (chdir ,(if (target-x86-32?)
-                         "build32"
-                         "build64"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib/memtest86+"))
-                    (doc (string-append out "/share/doc/memtest86+-" ,version)))
-               (for-each
-                (lambda (file)
-                  (install-file file lib))
-                (list "memtest.bin"
-                      "memtest.efi"))
-               (chdir "..")
-               (install-file "README.md" doc)))))))
+     (list
+      #:tests? #f                       ; no way to test this
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (add-before 'build 'enter-build-directory
+            (lambda _
+              (chdir #$(if (target-x86-32?)
+                           "build32"
+                           "build64"))))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (lib (string-append out "/lib/memtest86+"))
+                     (doc (string-append out "/share/doc/memtest86+-"
+                                         #$version)))
+                (for-each
+                 (lambda (file)
+                   (install-file file lib))
+                 (list "memtest.bin"
+                       "memtest.efi"))
+                (chdir "..")
+                (install-file "README.md" doc)))))))
     (supported-systems (list "i686-linux" "x86_64-linux"))
     (home-page "https://www.memtest.org/")
     (synopsis "Thorough real-mode memory tester")
