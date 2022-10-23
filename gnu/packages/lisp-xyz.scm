@@ -4371,8 +4371,8 @@ RFC 1321 by R. Rivest, published April 1992.")
      (list ecl-flexi-streams))))
 
 (define-public sbcl-cl+ssl
-  (let ((commit "046d698cf65539faf9aba0a5ccd086a9d6f53eef")
-        (revision "3"))
+  (let ((commit "8c13317509136e6722a25be51b74b813bbb32f9e")
+        (revision "4"))
     (package
       (name "sbcl-cl+ssl")
       (version (git-version "0.0.0" revision commit))
@@ -4384,7 +4384,7 @@ RFC 1321 by R. Rivest, published April 1992.")
                (commit commit)))
          (file-name (git-file-name "cl+ssl" version))
          (sha256
-          (base32 "110yhb0f1c8yilqsgza2xhv3675i41iizylibgy5qc5fa2lnaxbv"))))
+          (base32 "1cdq9dzk804y8bm874q8755yk4iz2z735ksm8waxl52kpfw8ai99"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
@@ -4408,7 +4408,8 @@ RFC 1321 by R. Rivest, published April 1992.")
                   "")))))))
       (native-inputs
        (list ;sbcl-cl-coveralls
-             sbcl-fiveam))
+             sbcl-fiveam
+             sbcl-trivial-sockets))
       (inputs
        (list openssl
              sbcl-cffi
@@ -4431,7 +4432,17 @@ Development into CL+SSL was done by David Lichteblau.")
   (sbcl-package->cl-source-package sbcl-cl+ssl))
 
 (define-public ecl-cl+ssl
-  (sbcl-package->ecl-package sbcl-cl+ssl))
+  ;; The trivial-sockets system used for the tests doesn't support ECL, so we
+  ;; remove it from native-inputs and disable the tests.
+  (let ((pkg (sbcl-package->ecl-package sbcl-cl+ssl)))
+    (package
+      (inherit pkg)
+      (native-inputs
+       (modify-inputs (package-native-inputs pkg)
+         (delete "sbcl-trivial-sockets")))
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-kmrcl
   (let ((version "1.111")
