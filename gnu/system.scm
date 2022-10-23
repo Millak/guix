@@ -302,8 +302,7 @@ VERSION is the target version of the boot-parameters record."
   (pam-services operating-system-pam-services     ; list of PAM services
                 (default (base-pam-services)))
   (setuid-programs operating-system-setuid-programs
-                   (default %setuid-programs)     ; list of <setuid-program>
-                   (sanitize ensure-setuid-program-list))
+                   (default %setuid-programs))    ; list of <setuid-program>
 
   (sudoers-file operating-system-sudoers-file     ; file-like
                 (default %sudoers-specification))
@@ -1239,31 +1238,6 @@ use 'plain-file' instead~%")
     ;; By default, applications that use D-Bus, such as Emacs, abort at startup
     ;; when /etc/machine-id is missing.  Make sure these warnings are non-fatal.
     ("DBUS_FATAL_WARNINGS" . "0")))
-
-;; Ensure LST is a list of <setuid-program> records and warn otherwise.
-(define-with-syntax-properties (ensure-setuid-program-list (lst properties))
-  (%ensure-setuid-program-list lst properties))
-
-;; We want to be able to use defines, so define a procedure.
-(define (%ensure-setuid-program-list lst properties)
-  (define warned? #f)
-
-  (define (warn-once)
-    (unless warned?
-      (warning (source-properties->location properties)
-               (G_ "representing setuid programs with file-like objects is \
-deprecated; use 'setuid-program' instead~%"))
-      (set! warned? #t)))
-
-  (map (match-lambda
-         ((? setuid-program? program)
-          program)
-         (program
-          ;; PROGRAM is a file-like or a gexp like #~(string-append #$foo
-          ;; "/bin/bar").
-          (warn-once)
-          (setuid-program (program program))))
-       lst))
 
 (define %setuid-programs
   ;; Default set of setuid-root programs.
