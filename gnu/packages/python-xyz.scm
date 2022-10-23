@@ -79,7 +79,7 @@
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020 Yuval Kogman <nothingmuch@woobling.org>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Hendursaga <hendursaga@yahoo.com>
@@ -26068,15 +26068,15 @@ library.  Only the high-level API is bound.")
 (define-public python-frozendict
   (package
     (name "python-frozendict")
-    (version "1.2")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "frozendict" version))
        (sha256
-        (base32 "0ibf1wipidz57giy53dh7mh68f2hz38x8f4wdq88mvxj5pr7jhbp"))))
+        (base32 "0y3zn57i1q5192f7l4w2z2zsy3rrx50g563msaq954r58s1v3d0m"))))
     (build-system python-build-system)
-    (home-page "https://github.com/slezica/python-frozendict")
+    (home-page "https://github.com/Marco-Sulla/python-frozendict")
     (synopsis "Simple immutable mapping for Python")
     (description
      "@dfn{frozendict} is an immutable wrapper around dictionaries that
