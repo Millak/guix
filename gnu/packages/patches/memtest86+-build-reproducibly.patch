@@ -1,0 +1,115 @@
+From ec426a6387ca49376a3af6093978bfc1388528d7 Mon Sep 17 00:00:00 2001
+From: Tobias Geerinckx-Rice <me@tobias.gr>
+Date: Sun, 23 Oct 2022 00:00:00 +0200
+Subject: [PATCH] gnu: memtest86+: Build reproducibly.
+
+Based on Debian's incomplete patch:
+<https://salsa.debian.org/debian/memtest86plus/-/blob/81d81a39103b383eb269dc5094b4538615e54d39/debian/patches/reproducible-builds.patch>.
+---
+ build32/Makefile | 12 ++++++++----
+ build64/Makefile | 12 ++++++++----
+ 2 files changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/build32/Makefile b/build32/Makefile
+index 8f3d427..d4e69ff 100644
+--- a/build32/Makefile
++++ b/build32/Makefile
+@@ -69,6 +69,8 @@ OBJS = boot/startup.o boot/efisetup.o $(SYS_OBJS) $(LIB_OBJS) $(TST_OBJS) $(APP_
+ 
+ all: memtest.bin memtest.efi
+ 
++export TZ=UTC
++
+ -include boot/efisetup.d
+ -include $(subst .o,.d,$(SYS_OBJS))
+ -include $(subst .o,.d,$(LIB_OBJS))
+@@ -153,13 +155,14 @@ esp.img: memtest.efi
+ 	@mkdir -p iso/EFI/BOOT
+ 	cp memtest.efi iso/EFI/BOOT/bootia32.efi
+ 	@rm -f esp.img
+-	/sbin/mkdosfs -n MEMTEST-ESP -F12 -C esp.img 4096
++	/sbin/mkdosfs -i 12345678 --invariant -n MEMTEST-ESP -F12 -C esp.img 4096
+ 	mcopy -s -i esp.img iso/EFI ::
+ 
+ memtest.iso: memtest.mbr floppy.img esp.img
+ 	@mkdir -p iso/boot
+ 	cp floppy.img iso/boot/floppy.img
+-	xorrisofs -pad -R -J -volid MT86PLUS_32 -graft-points -hide-rr-moved --grub2-mbr memtest.mbr \
++	xorrisofs --set_all_file_dates "=$$SOURCE_DATE_EPOCH" -uid 1000 -gid 1000 \
++                  -pad -R -J -volid MT86PLUS_32 -graft-points -hide-rr-moved --grub2-mbr memtest.mbr \
+ 		  -b /boot/floppy.img --efi-boot --interval:appended_partition_2:all:: \
+ 		  -part_like_isohybrid -iso_mbr_part_type 0x00 -append_partition 2 0xef ./esp.img \
+ 		  -o ./memtest.iso /boot=./iso/boot /EFI=./iso/EFI
+@@ -210,7 +213,7 @@ grub-esp.img: memtest.efi grub-bootia32.efi ../grub/${GRUB_CFG}-efi.cfg
+ 	cp $(GRUB_FONT_DIR)/unicode.pf2 grub-iso/EFI/BOOT/grub/fonts/
+ 	cp $(GRUB_LIB_DIR)/i386-efi/*.mod grub-iso/EFI/BOOT/grub/i386-efi/
+ 	@rm -f grub-esp.img
+-	/sbin/mkdosfs -n MT86P_ESP -F12 -C grub-esp.img 8192
++	/sbin/mkdosfs -i 12345678 --invariant -n MT86P_ESP -F12 -C grub-esp.img 8192
+ 	mcopy -s -i grub-esp.img grub-iso/EFI ::
+ 
+ grub-memtest.iso: memtest.bin grub-eltorito.img ../grub/${GRUB_CFG}-legacy.cfg grub-esp.img
+@@ -220,7 +223,8 @@ grub-memtest.iso: memtest.bin grub-eltorito.img ../grub/${GRUB_CFG}-legacy.cfg g
+ 	cp ../grub/${GRUB_CFG}-legacy.cfg grub-iso/boot/grub/grub.cfg
+ 	cp $(GRUB_FONT_DIR)/unicode.pf2 grub-iso/boot/grub/fonts/
+ 	cp $(GRUB_LIB_DIR)/i386-pc/*.mod grub-iso/boot/grub/i386-pc/
+-	xorrisofs -pad -R -J -volid MT86PLUS_32 -graft-points -hide-rr-moved \
++	xorrisofs --set_all_file_dates "=$$SOURCE_DATE_EPOCH" -uid 1000 -gid 1000 \
++		  -pad -R -J -volid MT86PLUS_32 -graft-points -hide-rr-moved \
+ 		  --grub2-mbr $(GRUB_LIB_DIR)/i386-pc/boot_hybrid.img \
+ 		  -b /boot/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table --grub2-boot-info \
+ 		  --efi-boot --interval:appended_partition_2:all:: \
+diff --git a/build64/Makefile b/build64/Makefile
+index 17f46a2..1cbe161 100644
+--- a/build64/Makefile
++++ b/build64/Makefile
+@@ -68,6 +68,8 @@ OBJS = boot/startup.o boot/efisetup.o $(SYS_OBJS) $(LIB_OBJS) $(TST_OBJS) $(APP_
+ 
+ all: memtest.bin memtest.efi
+ 
++export TZ=UTC
++
+ -include boot/efisetup.d
+ -include $(subst .o,.d,$(SYS_OBJS))
+ -include $(subst .o,.d,$(LIB_OBJS))
+@@ -152,13 +154,14 @@ esp.img: memtest.efi
+ 	@mkdir -p iso/EFI/BOOT
+ 	cp memtest.efi iso/EFI/BOOT/bootx64.efi
+ 	@rm -f esp.img
+-	/sbin/mkdosfs -n MEMTEST-ESP -F12 -C esp.img 4096
++	/sbin/mkdosfs -i 12345678 --invariant -n MEMTEST-ESP -F12 -C esp.img 4096
+ 	mcopy -s -i esp.img iso/EFI ::
+ 
+ memtest.iso: memtest.mbr floppy.img esp.img
+ 	@mkdir -p iso/boot
+ 	cp floppy.img iso/boot/floppy.img
+-	xorrisofs -pad -R -J -volid MT86PLUS_64 -graft-points -hide-rr-moved --grub2-mbr memtest.mbr \
++	xorrisofs --set_all_file_dates "=$$SOURCE_DATE_EPOCH" -uid 1000 -gid 1000 \
++                  -pad -R -J -volid MT86PLUS_64 -graft-points -hide-rr-moved --grub2-mbr memtest.mbr \
+ 		  -b /boot/floppy.img --efi-boot --interval:appended_partition_2:all:: \
+ 		  -part_like_isohybrid -iso_mbr_part_type 0x00 -append_partition 2 0xef ./esp.img \
+ 		  -o ./memtest.iso /boot=./iso/boot /EFI=./iso/EFI
+@@ -209,7 +212,7 @@ grub-esp.img: memtest.efi grub-bootx64.efi ../grub/${GRUB_CFG}-efi.cfg
+ 	cp $(GRUB_FONT_DIR)/unicode.pf2 grub-iso/EFI/BOOT/grub/fonts/
+ 	cp $(GRUB_LIB_DIR)/x86_64-efi/*.mod grub-iso/EFI/BOOT/grub/x86_64-efi/
+ 	@rm -f grub-esp.img
+-	/sbin/mkdosfs -n MT86P_ESP -F12 -C grub-esp.img 8192
++	/sbin/mkdosfs -i 12345678 --invariant -n MT86P_ESP -F12 -C grub-esp.img 8192
+ 	mcopy -s -i grub-esp.img grub-iso/EFI ::
+ 
+ grub-memtest.iso: memtest.bin grub-eltorito.img ../grub/${GRUB_CFG}-legacy.cfg grub-esp.img
+@@ -219,7 +222,8 @@ grub-memtest.iso: memtest.bin grub-eltorito.img ../grub/${GRUB_CFG}-legacy.cfg g
+ 	cp ../grub/${GRUB_CFG}-legacy.cfg grub-iso/boot/grub/grub.cfg
+ 	cp $(GRUB_FONT_DIR)/unicode.pf2 grub-iso/boot/grub/fonts/
+ 	cp $(GRUB_LIB_DIR)/i386-pc/*.mod grub-iso/boot/grub/i386-pc/
+-	xorrisofs -pad -R -J -volid MT86PLUS_64 -graft-points -hide-rr-moved \
++	xorrisofs --set_all_file_dates "=$$SOURCE_DATE_EPOCH" -uid 1000 -gid 1000 \
++		  -pad -R -J -volid MT86PLUS_64 -graft-points -hide-rr-moved \
+ 		  --grub2-mbr $(GRUB_LIB_DIR)/i386-pc/boot_hybrid.img \
+ 		  -b /boot/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table --grub2-boot-info \
+ 		  --efi-boot --interval:appended_partition_2:all:: \
+
+base-commit: d3bc8fa7c2a2400d9c4d58cee00168d39fa9d716
+-- 
+2.38.0
+

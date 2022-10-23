@@ -811,7 +811,9 @@ specific SMBIOS tables.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fv605blaf4z0jyl1wp37x5x014dkp0z0a0fh114ws62fhnhdnlv"))))
+        (base32 "0fv605blaf4z0jyl1wp37x5x014dkp0z0a0fh114ws62fhnhdnlv"))
+       (patches
+        (search-patches "memtest86+-build-reproducibly.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
