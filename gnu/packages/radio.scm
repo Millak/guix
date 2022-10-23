@@ -1226,7 +1226,10 @@ you must extend 'udev-service-type' with this package.  E.g.:
         (base32 "11r4i8gmxnb6ixpk4ns38c9xwj3qibp2v3pkhy2z0lhz0xxi1w4b"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list doxygen
+     (list autoconf
+           automake
+           doxygen
+           libtool
            lua
            pkg-config
            python-wrapper
@@ -1235,11 +1238,19 @@ you must extend 'udev-service-type' with this package.  E.g.:
     (inputs
      (list gd libusb libxml2 readline))
     (arguments
-     `(#:configure-flags '("--disable-static"
-                           "--with-lua-binding"
-                           "--with-python-binding"
-                           "--with-tcl-binding"
-                           "--with-xml-support")))
+     `(#:configure-flags
+       '("--disable-static"
+         "--with-lua-binding"
+         "--with-python-binding"
+         "--with-tcl-binding"
+         "--with-xml-support")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'bootstrap 'force-bootstrap
+           ;; The included configure script is misbuilt.  It will never find
+           ;; pkg-config, and hence any libraries that rely on it.  Rebuild it.
+           (lambda _
+             (delete-file "configure"))))))
     (synopsis "Tools and API to control radios")
     (description
      "The Ham Radio Control Library (Hamlib) is a project to provide programs
