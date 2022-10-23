@@ -4230,30 +4230,6 @@ assertions on the result of your program's run.")
      "This crate provides file system fixtures and assertions for testing.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-assert-fs-0.11
-  (package
-    (inherit rust-assert-fs-1)
-    (name "rust-assert-fs")
-    (version "0.11.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "assert-fs" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1h1q90qskbylv4g3jyizdanj73835q7vvq7q10y555x4gnavmrjc"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-globwalk" ,rust-globwalk-0.5)
-        ("rust-predicates" ,rust-predicates-1)
-        ("rust-predicates-core" ,rust-predicates-core-1)
-        ("rust-predicates-tree" ,rust-predicates-tree-1)
-        ("rust-tempfile" ,rust-tempfile-3))
-       #:cargo-development-inputs
-       (("rust-docmatic" ,rust-docmatic-0.1))))))
-
 (define-public rust-assert-impl-0.1
   (package
     (name "rust-assert-impl")
