@@ -1381,15 +1381,12 @@ current version of any major web browser.")
                   (delete-file-recursively "bin/jsonchecker")))))
     (build-system cmake-build-system)
     (arguments
-     (if (string-prefix? "aarch64" (or (%current-target-system)
-                                       (%current-system)))
-         '(#:phases
-           (modify-phases %standard-phases
-             (add-after 'unpack 'patch-aarch-march-detection
-               (lambda _
-                 (substitute* (find-files "." "^CMakeLists\\.txt$")
-                   (("native") "armv8-a"))))))
-         '()))
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-march=native
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("-m[^-]*=native") "")))))))
     (home-page "https://github.com/Tencent/rapidjson")
     (synopsis "JSON parser/generator for C++ with both SAX/DOM style API")
     (description
