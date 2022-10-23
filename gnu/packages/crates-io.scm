@@ -27001,30 +27001,6 @@ correct value of @samp{CARGO_HOME} and @samp{RUSTUP_HOME}.")
      "This package provides a port of the Hamcrest testing library.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-handlegraph-0.3
-  (package
-    (name "rust-handlegraph")
-    (version "0.3.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "handlegraph" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1sj100w4lpj7798pws85qrfrzsily5hhzh6j118rwf56sgic1yml"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-0.2)
-        ("rust-gfa" ,rust-gfa-0.6))))
-    (home-page "https://github.com/chfi/rs-handlegraph")
-    (synopsis "Library for use in variation graphs")
-    (description
-     "This package provides a Rust implementation of VG handle graph.")
-    (license license:expat)))
-
 (define-public rust-hash-hasher-2
   (package
     (name "rust-hash-hasher")
