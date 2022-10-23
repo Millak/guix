@@ -32,6 +32,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6269,6 +6270,18 @@ expression and a list of abbreviations (built in and given).")
         (base32
          "1qgap0j0ixmif309dvbqca7sy8xha9xgnj9s2lvh8qrczkc92gqi"))))
     (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-translit
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out")))
+                (wrap-program (string-append out "/bin/translit")
+                  `("PERL5LIB" ":" prefix
+                    (,(getenv "PERL5LIB")
+                     ,(string-append out "/lib/perl5/site_perl"))))))))))
+    (inputs (list bash-minimal))
     (home-page "https://metacpan.org/release/Lingua-Translit")
     (synopsis "Transliterate text between writing systems")
     (description "@code{Lingua::Translit} can be used to convert text from one
