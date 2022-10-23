@@ -21967,11 +21967,11 @@ for Common Lisp, using the HTTP API for (almost) everything, except for pubsub
   (sbcl-package->ecl-package sbcl-cl-ipfs-api2))
 
 (define-public sbcl-purgatory
-  (let ((commit "ade0d60a14a1067b9cc8cf06d1f1a1ca8cecdb03")
+  (let ((commit "3afd8f6bb4093ffb2f39ffdedf11278b3617fff9")
         (revision "1"))
     (package
       (name "sbcl-purgatory")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "0.1.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -21980,7 +21980,7 @@ for Common Lisp, using the HTTP API for (almost) everything, except for pubsub
                (commit commit)))
          (file-name (git-file-name "cl-purgatory" version))
          (sha256
-          (base32 "1mwlalymmfbx1jx5wzqcnpg5h8d0ylllm1p3f4lwaawfv05lk82s"))))
+          (base32 "0iy2jdgrwqrq9cph7bwf79d8l4zdsgcd9sfcn0lclzai2v0yizp9"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
