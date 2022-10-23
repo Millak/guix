@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
@@ -788,7 +789,102 @@ gitignore rules.")
 associated input devices using the built-in accelerometer; handy for convertible
 touchscreen devices.")
     (license license:expat)))
-                
+
+(define-public rust-swc-1
+  (package
+    (name "rust-swc")
+    (version "1.2.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/swc-project/swc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1w9al035x0gmard80vqvah8sy8szs6bnd1ynnyssiiylzg7vhyyv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-base64" ,rust-base64-0.12)
+        ("rust-console-error-panic-hook" ,rust-console-error-panic-hook-0.1)
+        ("rust-crc" ,rust-crc-1)
+        ("rust-darling" ,rust-darling-0.10)
+        ("rust-dashmap" ,rust-dashmap-3)
+        ("rust-either" ,rust-either-1)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-is-macro" ,rust-is-macro-0.1)
+        ("rust-jemallocator" ,rust-jemallocator-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mimalloc" ,rust-mimalloc-0.1)
+        ("rust-napi" ,rust-napi-0.5)
+        ("rust-napi-build" ,rust-napi-build-0.2)
+        ("rust-napi-derive" ,rust-napi-derive-0.5)
+        ("rust-nom" ,rust-nom-5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.7)
+        ("rust-path-clean" ,rust-path-clean-0.1)
+        ("rust-petgraph" ,rust-petgraph-0.5)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-radix-fmt" ,rust-radix-fmt-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-relative-path" ,rust-relative-path-1)
+        ("rust-retain-mut" ,rust-retain-mut-0.1)
+        ("rust-scoped-tls" ,rust-scoped-tls-1)
+        ("rust-st-map" ,rust-st-map-0.1)
+        ("rust-string-cache" ,rust-string-cache-0.8)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-num-bigint" ,rust-num-bigint-0.2)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sourcemap" ,rust-sourcemap-6)
+        ("rust-string-cache-codegen" ,rust-string-cache-codegen-0.5)
+        ("rust-tempfile" ,rust-tempfile-3))
+       #:tests? #f ;; tests env_query_chrome_71 and project_env fail
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'enable-unstable-features
+           (lambda _
+             (setenv "RUSTC_BOOTSTRAP" "1")
+             (substitute* "ecmascript/jsdoc/src/lib.rs"
+               (("pub use self" all)
+                (string-append "#![feature(non_exhaustive)]\n" all)))
+             (substitute* "ecmascript/parser/src/lib.rs"
+               (("//! es2019" all)
+                (string-append "#![feature(non_exhaustive)]
+#![feature(mem_take)]
+#![feature(proc_macro_hygiene)]
+" all)))
+             (substitute* "ecmascript/transforms/src/lib.rs"
+               (("#!\\[cfg_attr" all)
+                (string-append "#![feature(mem_take)]\n" all)))
+             #t))
+         (add-after 'enable-unstable-features 'patch-build-failures
+           (lambda _
+             (chmod ".cargo/config" 420)
+             (substitute* "ecmascript/transforms/macros/src/lib.rs"
+               (("use proc_macro::")
+                "extern crate proc_macro;\nuse proc_macro::"))
+             (substitute* "common/src/errors/emitter.rs"
+               (("        #\\[cfg\\(feature = \"tty-emitter\"\\)\\]\n") ""))
+             #t)))))
+    (home-page "https://swc.rs/")
+    (synopsis "Typescript/javascript compiler")
+    (description "@code{rust-swc} is a typescript/javascript compiler.  It
+consumes a javascript or typescript file which uses recently added features
+like async-await and emits javascript code which can be executed on old
+browsers.")
+    (license (list license:expat
+                   license:asl2.0))))
+
 (define-public git-interactive-rebase-tool
   (package
     (name "git-interactive-rebase-tool")
