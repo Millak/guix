@@ -44,6 +44,7 @@
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -263,6 +264,50 @@ frameworks, session management, URL-remapping for RESTful, page caching, and
 more.")
     (home-page "https://www.gnu.org/software/artanis/")
     (license (list license:gpl3+ license:lgpl3+)))) ;dual license
+
+(define-public guilescript
+  (package
+    (name "guilescript")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aconchillo/guilescript")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "15bvgklv77kvkl8dizriqblfir6rid5nm79ymi3m2fvpd7wf77qy"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0")
+       #:modules (((guix build guile-build-system)
+                   #:select (target-guile-effective-version))
+                  ,@%gnu-build-system-modules)
+       #:imported-modules ((guix build guile-build-system)
+                           ,@%gnu-build-system-modules)
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'wrap-guilescript
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin"))
+                             (version (target-guile-effective-version))
+                             (scm (string-append "/share/guile/site/" version))
+                             (go (string-append "/lib/guile/" version "/site-ccache")))
+                        (wrap-program (string-append bin "/guilescript")
+                          `("GUILE_LOAD_PATH" prefix
+                            (,(string-append out scm)))
+                          `("GUILE_LOAD_COMPILED_PATH" prefix
+                            (,(string-append out go)))))
+                      #t)))))
+    (native-inputs (list autoconf automake pkg-config))
+    (inputs (list guile-3.0 bash-minimal))
+    (home-page "https://github.com/aconchillo/guilescript")
+    (synopsis "Guile to JavaScript compiler")
+    (description
+     "GuileScript is a toy compiler that aims to compile Guile to JavaScript.  It
+currently does not do much, but it might in the future.")
+    (license license:gpl3+)))
 
 ;; There are no releases yet of this package.
 (define-public guile-pipe
