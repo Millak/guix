@@ -47,7 +47,6 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages hurd)
   #:use-module (gnu system privilege)
-  #:use-module (gnu system setuid)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)

@@ -370,7 +370,7 @@ System Configuration
 * Keyboard Layout::             How the system interprets key strokes.
 * Locales::                     Language and cultural convention settings.
 * Services::                    Specifying system services.
-* Setuid Programs::             Programs running with elevated privileges.
+* Privileged Programs::         Programs running with elevated privileges.
 * X.509 Certificates::          Authenticating HTTPS servers.
 * Name Service Switch::         Configuring libc's name service switch.
 * Initial RAM Disk::            Linux-Libre bootstrapping.
@@ -16965,7 +16965,7 @@ instance to support new system services.
 * Keyboard Layout::             How the system interprets key strokes.
 * Locales::                     Language and cultural convention settings.
 * Services::                    Specifying system services.
-* Setuid Programs::             Programs running with elevated privileges.
+* Privileged Programs::         Programs running with elevated privileges.
 * X.509 Certificates::          Authenticating HTTPS servers.
 * Name Service Switch::         Configuring libc's name service switch.
 * Initial RAM Disk::            Linux-Libre bootstrapping.
@@ -17689,9 +17689,9 @@ touch this field.
 Linux @dfn{pluggable authentication module} (PAM) services.
 @c FIXME: Add xref to PAM services section.
 
-@item @code{setuid-programs} (default: @code{%setuid-programs})
-List of @code{<setuid-program>}.  @xref{Setuid Programs}, for more
-information.
+@item @code{privileged-programs} (default: @code{%default-privileged-programs})
+List of @code{<privileged-program>}.  @xref{Privileged Programs}, for
+more information.
 
 @item @code{sudoers-file} (default: @code{%sudoers-specification})
 @cindex sudoers file
@@ -23700,10 +23700,10 @@ environment, you are unlikely to need this procedure.
 
 @defvar screen-locker-service-type
 Type for a service that adds a package for a screen locker or screen
-saver to the set of setuid programs and/or add a PAM entry for it.  The
+saver to the set of privileged programs and/or add a PAM entry for it.  The
 value for this service is a @code{<screen-locker-configuration>} object.
 
-While the default behavior is to setup both a setuid program and PAM
+While the default behavior is to setup both a privileged program and PAM
 entry, these two methods are redundant.  Screen locker programs may not
 execute when PAM is configured and @code{setuid} is set on their
 executable.  In this case, @code{using-setuid?} can be set to @code{#f}.
@@ -27877,7 +27877,7 @@ remote servers.  Run @command{man smtpd.conf} for more information.
 Make the following commands setgid to @code{smtpq} so they can be
 executed: @command{smtpctl}, @command{sendmail}, @command{send-mail},
 @command{makemap}, @command{mailq}, and @command{newaliases}.
-@xref{Setuid Programs}, for more information on setgid programs.
+@xref{Privileged Programs}, for more information on setgid programs.
 @end table
 @end deftp
 
@@ -40848,8 +40848,8 @@ create and run application bundles (aka. ``containers'').  The value for this
 service is the Singularity package to use.
 
 The service does not install a daemon; instead, it installs helper programs as
-setuid-root (@pxref{Setuid Programs}) such that unprivileged users can invoke
-@command{singularity run} and similar commands.
+setuid-root (@pxref{Privileged Programs}) such that unprivileged users can
+invoke @command{singularity run} and similar commands.
 @end defvar
 
 @cindex OCI-backed, Shepherd services
@@ -41649,9 +41649,10 @@ invokation.
 
 @c %end of fragment
 
-@node Setuid Programs
-@section Setuid Programs
+@node Privileged Programs
+@section Privileged Programs
 
+@cindex privileged programs
 @cindex setuid programs
 @cindex setgid programs
 Some programs need to run with elevated privileges, even when they are
@@ -41664,46 +41665,48 @@ obvious security reasons.  To address that, @command{passwd} should be
 (@pxref{How Change Persona,,, libc, The GNU C Library Reference Manual},
 for more info about the setuid mechanism).
 
-The store itself @emph{cannot} contain setuid programs: that would be a
-security issue since any user on the system can write derivations that
+The store itself @emph{cannot} contain privileged programs: that would be
+a security issue since any user on the system can write derivations that
 populate the store (@pxref{The Store}).  Thus, a different mechanism is
-used: instead of changing the setuid or setgid bits directly on files that
-are in the store, we let the system administrator @emph{declare} which
+used: instead of directly granting permissions to files that are in
+the store, we let the system administrator @emph{declare} which
 programs should be entrusted with these additional privileges.
 
-The @code{setuid-programs} field of an @code{operating-system}
-declaration contains a list of @code{<setuid-program>} denoting the
+The @code{privileged-programs} field of an @code{operating-system}
+declaration contains a list of @code{<privileged-program>} denoting the
 names of programs to have a setuid or setgid bit set (@pxref{Using the
 Configuration System}).  For instance, the @command{mount.nfs} program,
 which is part of the nfs-utils package, with a setuid root can be
 designated like this:
 
 @lisp
-(setuid-program
-  (program (file-append nfs-utils "/sbin/mount.nfs")))
+(privileged-program
+  (program (file-append nfs-utils "/sbin/mount.nfs"))
+  (setuid? #t))
 @end lisp
 
 And then, to make @command{mount.nfs} setuid on your system, add the
 previous example to your operating system declaration by appending it to
-@code{%setuid-programs} like this:
+@code{%default-privileged-programs} like this:
 
 @lisp
 (operating-system
   ;; Some fields omitted...
-  (setuid-programs
-    (append (list (setuid-program
-                    (program (file-append nfs-utils "/sbin/mount.nfs"))))
-            %setuid-programs)))
+  (privileged-programs
+    (append (list (privileged-program
+                    (program (file-append nfs-utils "/sbin/mount.nfs"))
+                    (setuid? #t))
+            %default-privileged-programs)))
 @end lisp
 
-@deftp {Data Type} setuid-program
-This data type represents a program with a setuid or setgid bit set.
+@deftp {Data Type} privileged-program
+This data type represents a program with special privileges, such as setuid
 
 @table @asis
 @item @code{program}
-A file-like object having its setuid and/or setgid bit set.
+A file-like object to which all given privileges should apply.
 
-@item @code{setuid?} (default: @code{#t})
+@item @code{setuid?} (default: @code{#f})
 Whether to set user setuid bit.
 
 @item @code{setgid?} (default: @code{#f})
@@ -41720,18 +41723,18 @@ defaults to root.
 @end table
 @end deftp
 
-A default set of setuid programs is defined by the
-@code{%setuid-programs} variable of the @code{(gnu system)} module.
+A default set of privileged programs is defined by the
+@code{%default-privileged-programs} variable of the @code{(gnu system)} module.
 
-@defvar %setuid-programs
-A list of @code{<setuid-program>} denoting common programs that are
-setuid-root.
+@defvar {Scheme Variable} %default-privileged-programs
+A list of @code{<privileged-program>} denoting common programs with
+elevated privileges.
 
 The list includes commands such as @command{passwd}, @command{ping},
 @command{su}, and @command{sudo}.
 @end defvar
 
-Under the hood, the actual setuid programs are created in the
+Under the hood, the actual privileged programs are created in the
 @file{/run/privileged/bin} directory at system activation time.  The
 files in this directory refer to the ``real'' binaries, which are in the
 store.
@@ -42674,7 +42677,7 @@ once @command{reconfigure} has completed.
 @end quotation
 
 This effects all the configuration specified in @var{file}: user
-accounts, system services, global package list, setuid programs, etc.
+accounts, system services, global package list, privileged programs, etc.
 The command starts system services specified in @var{file} that are not
 currently running; if a service is currently running this command will
 arrange for it to be upgraded the next time it is stopped (e.g.@: by
@@ -44047,10 +44050,10 @@ In this example, the effect would be to add an @file{/etc/issue} file
 pointing to the given file.
 @end defvar
 
-@defvar setuid-program-service-type
-Type for the ``setuid-program service''.  This service collects lists of
+@defvar privileged-program-service-type
+Type for the ``privileged-program service''.  This service collects lists of
 executable file names, passed as gexps, and adds them to the set of
-setuid and setgid programs on the system (@pxref{Setuid Programs}).
+privileged programs on the system (@pxref{Privileged Programs}).
 @end defvar
 
 @defvar profile-service-type

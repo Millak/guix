@@ -504,7 +504,7 @@ total number of shares generated.")
      `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
        ;; The "sudo" input is needed only to satisfy dependency checks in the
        ;; 'check' phase.  The "sudo" used at runtime should come from the
-       ;; system's setuid-programs, so ensure no reference is kept.
+       ;; system's privileged-programs, so ensure no reference is kept.
        #:disallowed-references (,sudo)
        ;; TODO: Build and install gtk and qt trays
        #:phases

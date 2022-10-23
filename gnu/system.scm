@@ -77,6 +77,7 @@
   #:use-module (gnu system locale)
   #:use-module (gnu system pam)
   #:use-module (gnu system linux-initrd)
+  #:use-module (gnu system privilege)
   #:use-module (gnu system setuid)
   #:use-module (gnu system uuid)
   #:use-module (gnu system file-systems)
@@ -130,6 +131,7 @@
             operating-system-keyboard-layout
             operating-system-name-service-switch
             operating-system-pam-services
+            operating-system-privileged-programs
             operating-system-setuid-programs
             operating-system-skeletons
             operating-system-sudoers-file
@@ -174,6 +176,7 @@
 
             local-host-aliases                    ;deprecated
             %root-account
+            %default-privileged-programs
             %setuid-programs
             %sudoers-specification
             %base-packages
@@ -301,7 +304,10 @@ VERSION is the target version of the boot-parameters record."
 
   (pam-services operating-system-pam-services     ; list of PAM services
                 (default (base-pam-services)))
+  (privileged-programs operating-system-privileged-programs ; list of <privileged-program>
+                       (default %default-privileged-programs))
   (setuid-programs operating-system-setuid-programs
+                   ;; For backwards compatibility; will be removed.
                    (default %setuid-programs))    ; list of <setuid-program>
 
   (sudoers-file operating-system-sudoers-file     ; file-like
@@ -821,7 +827,8 @@ bookkeeping."
            (service host-name-service-type host-name)
            procs root-fs
            (service privileged-program-service-type
-                    (operating-system-setuid-programs os))
+                    (append (operating-system-privileged-programs os)
+                            (operating-system-setuid-programs os)))
            (service profile-service-type
                     (operating-system-packages os))
            boot-fs non-boot-fs
@@ -860,7 +867,8 @@ bookkeeping."
               (service hosts-service-type
                        (local-host-entries host-name)))
           (service privileged-program-service-type
-                   (operating-system-setuid-programs os))
+                   (append (operating-system-privileged-programs os)
+                           (operating-system-setuid-programs os)))
           (service profile-service-type (operating-system-packages os)))))
 
 (define* (operating-system-services os)
@@ -1239,8 +1247,7 @@ use 'plain-file' instead~%")
     ;; when /etc/machine-id is missing.  Make sure these warnings are non-fatal.
     ("DBUS_FATAL_WARNINGS" . "0")))
 
-(define %setuid-programs
-  ;; Default set of setuid-root programs.
+(define %default-privileged-programs
   (let ((shadow (@ (gnu packages admin) shadow)))
     (map file-like->setuid-program
          (list (file-append shadow "/bin/passwd")
@@ -1261,6 +1268,12 @@ use 'plain-file' instead~%")
                ;; be setuid-root.
                (file-append util-linux "/bin/mount")
                (file-append util-linux "/bin/umount")))))
+
+(define %setuid-programs
+  ;; Do not add to this list or use it in new code!  It's defined only to ease
+  ;; transition to %default-privileged-programs and will be removed.  Some rare
+  ;; use cases already break, such as the obvious (remove … %setuid-programs).
+  '())
 
 (define %sudoers-specification
   ;; Default /etc/sudoers contents: 'root' and all members of the 'wheel'
