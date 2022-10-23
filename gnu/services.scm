@@ -911,7 +911,7 @@ FILES must be a list of name/file-like object pairs."
       #~(begin
           (use-modules (gnu system setuid))
 
-          (activate-setuid-programs (list #$@programs))))))
+          (activate-privileged-programs (list #$@programs))))))
 
 (define setuid-program-service-type
   (service-type (name 'setuid-program)

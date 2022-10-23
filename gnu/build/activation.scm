@@ -28,7 +28,7 @@
 
 (define-module (gnu build activation)
   #:use-module (gnu system accounts)
-  #:use-module (gnu system setuid)
+  #:use-module (gnu system privilege)
   #:use-module (gnu build accounts)
   #:use-module (gnu build linux-boot)
   #:use-module (guix build utils)
@@ -42,7 +42,7 @@
   #:export (activate-users+groups
             activate-user-home
             activate-etc
-            activate-setuid-programs
+            activate-privileged-programs
             activate-special-files
             activate-modprobe
             activate-firmware
@@ -288,8 +288,8 @@ they already exist."
   ;; Place where privileged copies of programs are stored.
   "/run/privileged/bin")
 
-(define (activate-setuid-programs programs)
-  "Turn PROGRAMS, a list of file setuid-programs records, into privileged
+(define (activate-privileged-programs programs)
+  "Turn PROGRAMS, a list of file privileged-programs records, into privileged
 copies stored under %PRIVILEGED-PROGRAM-DIRECTORY."
   (define (ensure-empty-directory directory)
     (if (file-exists? directory)
@@ -326,11 +326,11 @@ copies stored under %PRIVILEGED-PROGRAM-DIRECTORY."
   (for-each (lambda (program)
               (catch 'system-error
                 (lambda ()
-                  (let* ((program-name (setuid-program-program program))
-                         (setuid?      (setuid-program-setuid? program))
-                         (setgid?      (setuid-program-setgid? program))
-                         (user         (setuid-program-user program))
-                         (group        (setuid-program-group program))
+                  (let* ((program-name (privileged-program-program program))
+                         (setuid?      (privileged-program-setuid? program))
+                         (setgid?      (privileged-program-setgid? program))
+                         (user         (privileged-program-user program))
+                         (group        (privileged-program-group program))
                          (uid (match user
                                 ((? string?) (passwd:uid (getpwnam user)))
                                 ((? integer?) user)))
@@ -340,13 +340,13 @@ copies stored under %PRIVILEGED-PROGRAM-DIRECTORY."
                     (make-privileged-program program-name setuid? setgid? uid gid)
                     (make-deprecated-wrapper program-name)))
                 (lambda args
-                  ;; If we fail to create a setuid program, better keep going
+                  ;; If we fail to create a privileged program, better keep going
                   ;; so that we don't leave %PRIVILEGED-PROGRAM-DIRECTORY empty
                   ;; or half-populated.  This can happen if PROGRAMS contains
                   ;; incorrect file names: <https://bugs.gnu.org/38800>.
                   (format (current-error-port)
-                          "warning: failed to make ~s setuid/setgid: ~a~%"
-                          (setuid-program-program program)
+                          "warning: failed to privilege ~s: ~a~%"
+                          (privileged-program-program program)
                           (strerror (system-error-errno args))))))
             programs))
 
