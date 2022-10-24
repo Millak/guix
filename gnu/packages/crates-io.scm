@@ -16503,8 +16503,34 @@ for arbitrary structs.")
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-0.2))))))
 
+(define-public rust-derive-builder-macro-0.11
+  (package
+    (name "rust-derive-builder-macro")
+    (version "0.11.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "derive_builder_macro" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s6xfgsybd9wbk39hbgqjcn7d1l36a33q6v7d0x5y17d5fvi80wg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-derive-builder-core" ,rust-derive-builder-core-0.11)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/colin-kiegel/rust-derive-builder")
+    (synopsis
+     "Rust macro to automatically implement the builder pattern for arbitrary structs")
+    (description
+     "This crate provides a Rust macro to automatically implement the builder
+pattern for arbitrary structs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-derive-builder-macro-0.10
   (package
+    (inherit rust-derive-builder-macro-0.11)
     (name "rust-derive-builder-macro")
     (version "0.10.2")
     (source
@@ -16515,19 +16541,11 @@ for arbitrary structs.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0wwdm4cgd4vlvabj5xsjjr4vvkqhnd3fi9wp3v5mlb09jp74maaq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-derive-builder-core" ,rust-derive-builder-core-0.10)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/colin-kiegel/rust-derive-builder")
-    (synopsis
-     "Rust macro to automatically implement the builder pattern for arbitrary structs")
-    (description
-     "This crate provides a Rust macro to automatically implement the builder
-pattern for arbitrary structs.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-derive-error-chain-0.10
   (package
