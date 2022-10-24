@@ -30806,26 +30806,6 @@ harness used by @code{rustc --test}.")
 by inspecting the system for user preference.")
     (license license:expat)))
 
-(define-public rust-locale-config-0.2
-  (package
-    (inherit rust-locale-config-0.3)
-    (name "rust-locale-config")
-    (version "0.2.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "locale-config" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0p2kdgc1c9cq5bi2rpszbhkh7pdk1fwxhij37gayb2alwkmikb3k"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-lock-api-0.4
   (package
     (name "rust-lock-api")
