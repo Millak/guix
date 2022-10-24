@@ -48223,24 +48223,6 @@ It is automatically published using the compiler repository at
        #:cargo-development-inputs
        (("rust-expect-test" ,rust-expect-test-1))))))
 
-(define-public rust-rustc-ap-rustc-lexer-654
-  (package
-    (inherit rust-rustc-ap-rustc-lexer-721)
-    (name "rust-rustc-ap-rustc-lexer")
-    (version "654.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rustc-ap-rustc_lexer" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "19bx2z4gxxzqfjh9m11jp52lgdzz0k5fb0p1ad739bdc5cm4sciv"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-unicode-xid" ,rust-unicode-xid-0.2))))))
-
 (define-public rust-rustc-ap-rustc-macros-654
   (package
     (name "rust-rustc-ap-rustc-macros")
