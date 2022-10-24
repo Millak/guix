@@ -85,6 +85,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
@@ -857,7 +858,11 @@ for use at smaller text sizes")))
              (string-append "mirror://gnu/unifont/unifont-"
                             version "/unifont-" version ".tar.gz")))
        (sha256
-        (base32 "1m9lfss6sbmcr0b6h7pxxmdl71j9dmnvk8idvxzylqrwpwjaj4bx"))))
+        (base32 "1m9lfss6sbmcr0b6h7pxxmdl71j9dmnvk8idvxzylqrwpwjaj4bx"))
+       (snippet
+        '(begin
+           (use-modules (guix build utils))
+           (delete-file-recursively "font/precompiled")))))
     (build-system gnu-build-system)
     (outputs '("out"   ; TrueType/OpenType version
                "pcf"   ; PCF (bitmap) version
@@ -866,10 +871,15 @@ for use at smaller text sizes")))
     (arguments
      `(#:tests? #f          ; no check target
        #:make-flags
-       (list (string-append "CC=" ,(cc-for-target)))
+       (list (string-append "CC=" ,(cc-for-target))
+             "BUILDFONT=TRUE")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
+         (add-after 'unpack 'patch-source
+           (lambda _
+             (substitute* (find-files "." "Makefile")
+               (("/bin/sh -s") (string-append (which "sh") " -s")))))
          (replace 'install
           (lambda* (#:key make-flags outputs #:allow-other-keys)
             (let* ((ttf (string-append (assoc-ref outputs "out")
@@ -895,8 +905,10 @@ for use at smaller text sizes")))
               (invoke "gzip" "-9n" "doc/unifont.info")
               (install-file "doc/unifont.info.gz"
                             (string-append bin "/share/info"))))))))
+    (native-inputs
+     (list bdftopcf console-setup fontforge))
     (inputs
-     (list perl)) ; for utilities
+     (list perl perl-gd))       ; for utilities
     (synopsis
      "Large bitmap font covering Unicode's Basic Multilingual Plane")
     (description
