@@ -15679,27 +15679,6 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
     (description "This package provides Rust bindings to D-Bus.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-dbus-0.6
-  (package
-    (inherit rust-dbus-0.9)
-    (name "rust-dbus")
-    (version "0.6.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "dbus" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "068qyxvaam34sjmhjgxz6iikklvylxly7gp6n00yksqydzrz1da8"))))
-    (arguments
-     `(#:tests? #f ;it needs display and sockets and launches daemons
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-libdbus-sys" ,rust-libdbus-sys-0.2))
-       #:cargo-development-inputs
-       (("rust-tempdir" ,rust-tempdir-0.3))))))
-
 (define-public rust-dbus-tree-0.9
   (package
     (name "rust-dbus-tree")
