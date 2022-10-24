@@ -52017,36 +52017,6 @@ functionality and without weak references.")
      "This package provides a Rust wrapper around Fontxonfig.")
     (license license:expat)))
 
-(define-public rust-servo-fontconfig-sys-4
-  (package
-    (inherit rust-servo-fontconfig-sys-5)
-    (name "rust-servo-fontconfig-sys")
-    (version "4.0.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "servo-fontconfig-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0v0mbicy74wd6cjd5jyqnm4nvrrr5lmg053cn16kylhg8mkf3cv2"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            (for-each delete-file-recursively
-                      (find-files "." "[^Cargo.toml,^build\\.rs]"))
-            #t))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-expat-sys" ,rust-expat-sys-2)
-        ("rust-servo-freetype-sys" ,rust-servo-freetype-sys-4)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     `(("fontconfig" ,fontconfig)))))
-
 (define-public rust-servo-freetype-sys-4
   (package
     (name "rust-servo-freetype-sys")
