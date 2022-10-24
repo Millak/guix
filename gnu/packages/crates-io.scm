@@ -37248,26 +37248,6 @@ grammars and BER/DER encodings, for example.")
 library.")
     (license license:expat)))
 
-(define-public rust-onig-5
-  (package
-    (inherit rust-onig-6)
-    (name "rust-onig")
-    (version "5.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "onig" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0ivr0wq1zlyjhhkxpsnmpncg92sjx3rha8pnp3m1mzvgk7y27rz4"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-onig-sys" ,rust-onig-sys-69.2))))))
-
 (define-public rust-onig-sys-69.6
   (package
     (name "rust-onig-sys")
