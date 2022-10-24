@@ -45610,29 +45610,6 @@ reference counting.")
 @code{rdrand} and @code{rdseed} instructions")
     (license license:isc)))
 
-(define-public rust-read-color-1
-  (package
-    (name "rust-read-color")
-    (version "1.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "read_color" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "1np0pk31ak7hni4hri3m75mbf8py1wdfjshmrj5krbd4p9c8hk4z"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page
-      "https://github.com/pistondevelopers/read_color")
-    (synopsis
-      "Simple library for reading hex colors")
-    (description
-      "This package provides a simple library for reading hex colors")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-readkey-0.1
   (package
     (name "rust-readkey")
