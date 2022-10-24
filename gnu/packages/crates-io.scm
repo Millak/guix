@@ -40768,26 +40768,6 @@ applications.")
         ("rust-num" ,rust-num-0.4)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-polars-arrow-0.13
-  (package
-    (inherit rust-polars-arrow-0.14)
-    (name "rust-polars-arrow")
-    (version "0.13.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "polars-arrow" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0r6k2zm9f3nngjszdjnjz7r7c91qpq88lwjfgsbwfi8383xxbcjk"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-arrow" ,rust-arrow-4)
-        ("rust-num" ,rust-num-0.4)
-        ("rust-thiserror" ,rust-thiserror-1))))))
-
 (define-public rust-polars-core-0.17
   (package
     (name "rust-polars-core")
