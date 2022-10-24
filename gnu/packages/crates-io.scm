@@ -40917,25 +40917,6 @@ applications.")
         ("rust-polars-io" ,rust-polars-io-0.16)
         ("rust-polars-lazy" ,rust-polars-lazy-0.16))))))
 
-(define-public rust-polars-0.15
-  (package
-    (inherit rust-polars-0.16)
-    (name "rust-polars")
-    (version "0.15.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "polars" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1sl7vs6ck05f8w8jp7v75431b4v5j2rvvvw53jqgxc5226i7a2h8"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-polars-core" ,rust-polars-core-0.15)
-        ("rust-polars-io" ,rust-polars-io-0.15)
-        ("rust-polars-lazy" ,rust-polars-lazy-0.15))))))
-
 (define-public rust-polars-arrow-0.17
   (package
     (name "rust-polars-arrow")
