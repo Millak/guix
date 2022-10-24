@@ -1715,34 +1715,6 @@ nicely with Piston libraries.")
      "This package provides a library for storing viewport information.")
     (license license:expat)))
 
-(define-public rust-piston2d-gfx-graphics-0.66
-  (package
-    (name "rust-piston2d-gfx-graphics")
-    (version "0.66.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "piston2d-gfx_graphics" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1pmlkf5rl6pr0c1lqm0059xwj9pwlws7gaq9w6r9d916di6fzki1"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-gfx" ,rust-gfx-0.18)
-        ("rust-piston-shaders-graphics2d" ,rust-piston-shaders-graphics2d-0.3)
-        ("rust-piston-gfx-texture" ,rust-piston-gfx-texture-0.40)
-        ("rust-shader-version" ,rust-shader-version-0.6)
-        ("rust-draw-state" ,rust-draw-state-0.8))))
-    (home-page "https://github.com/PistonDevelopers/gfx_graphics")
-    (synopsis "Gfx 2D back-end for the Piston game engine")
-    (description
-     "This package provides a Gfx 2D back-end for the Piston game engine.")
-    (license license:expat)))
-
 (define-public rust-piston2d-graphics-0.35
   (package
     (name "rust-piston2d-graphics")
