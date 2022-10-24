@@ -27701,31 +27701,6 @@ bytestring representations.")
      "Simple procedural macro attribute for repetitive tests.")
     (license license:expat)))
 
-(define-public rust-intervaltree-0.2
-  (package
-    (name "rust-intervaltree")
-    (version "0.2.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "intervaltree" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "10k40gsv79kwnsqrzwmnmm6psa5fqws8yggavmbggvymv16hffdg"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-smallvec" ,rust-smallvec-0.6))))
-    (home-page "https://github.com/main--/rust-intervaltree")
-    (synopsis "Immutable interval trees")
-    (description
-     "This package provides a simple and generic implementation of an
-immutable interval tree.")
-    (license license:expat)))
-
 (define-public rust-inventory-0.2
   (package
     (name "rust-inventory")
