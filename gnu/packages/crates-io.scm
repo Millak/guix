@@ -29138,28 +29138,6 @@ language tags.")
 space, and comparing differences in color.")
     (license license:expat)))
 
-(define-public rust-lab-0.7
-  (package
-    (inherit rust-lab-0.11)
-    (name "rust-lab")
-    (version "0.7.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "lab" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0g692d489lq01pv3mzfhxd98j0r22lw28l6bk112m74djlfzxdmw"))))
-    (arguments
-     `(#:tests? #f  ; test suite assumes avx2 support
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
-        ("rust-rand" ,rust-rand-0.5))))))
-
 (define-public rust-lalrpop-0.19
   (package
     (name "rust-lalrpop")
