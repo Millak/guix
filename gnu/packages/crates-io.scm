@@ -40887,29 +40887,6 @@ network packet formats.")
     (license (list license:asl2.0
                    license:expat))))
 
-(define-public rust-platforms-2
-  (package
-    (name "rust-platforms")
-    (version "2.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "platforms" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "152cnf65zzr6vj5xyap1aqp6ajmfqdhlij2x1lx02hhjazryxl78"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))))
-    (home-page "https://rustsec.org")
-    (synopsis "Query information about valid Rust platforms")
-    (description
-     "This package provides information about valid Rust platforms (target
-triple, target_arch, target_os) sourced from Rust Forge.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-plist-1
   (package
     (name "rust-plist")
