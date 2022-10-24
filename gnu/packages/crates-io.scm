@@ -41482,28 +41482,6 @@ library.")
         ("rust-polars-io" ,rust-polars-io-0.14)
         ("rust-rayon" ,rust-rayon-1))))))
 
-(define-public rust-polars-lazy-0.13
-  (package
-    (inherit rust-polars-lazy-0.14)
-    (name "rust-polars-lazy")
-    (version "0.13.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "polars-lazy" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0z5dqz9fk23i10flq4lw8a3qb6638kwxcmka1dyxpabh94l86zqf"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-ahash" ,rust-ahash-0.7)
-        ("rust-itertools" ,rust-itertools-0.10)
-        ("rust-polars-arrow" ,rust-polars-arrow-0.13)
-        ("rust-polars-core" ,rust-polars-core-0.13)
-        ("rust-polars-io" ,rust-polars-io-0.13)
-        ("rust-rayon" ,rust-rayon-1))))))
-
 (define-public rust-polling-2
   (package
     (name "rust-polling")
