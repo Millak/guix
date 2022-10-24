@@ -932,6 +932,13 @@ browsers.")
         ("rust-assert-fs" ,rust-assert-fs-1)
         ("rust-predicates" ,rust-predicates-2)
         ("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libgit2-1.3
+           libssh2
+           openssl
+           zlib))
     (home-page "https://github.com/killercup/cargo-edit")
     (synopsis "Add and remove dependencies from the command line")
     (description
