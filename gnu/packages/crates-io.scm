@@ -24448,28 +24448,6 @@ inherits many goodies from both, such as limiting search depth and amount of
 open file descriptors.")
     (license license:expat)))
 
-(define-public rust-globwalk-0.5
-  (package
-    (inherit rust-globwalk-0.8)
-    (name "rust-globwalk")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "globwalk" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "09axyql26s09z60sgi3y3lkin9swy2b5km3b0v6mm84xhlljxyl9"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-ignore" ,rust-ignore-0.4)
-        ("rust-walkdir" ,rust-walkdir-2))
-       #:cargo-development-inputs
-       (("rust-docmatic" ,rust-docmatic-0.1)
-        ("rust-tempdir" ,rust-tempdir-0.3))))))
-
 (define-public rust-gloo-timers-0.2
   (package
     (name "rust-gloo-timers")
