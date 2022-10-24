@@ -4888,8 +4888,8 @@ display and behaviour is easily customisable.")
     (license license:gpl3+)))
 
 (define-public emacs-git-gutter-fringe
-  (let ((commit "16226caab44174301f1659f7bf8cc67a76153445")
-        (revision "1"))
+  (let ((commit "648cb5b57faec55711803cdc9434e55a733c3eba")
+        (revision "2"))
     (package
       (name "emacs-git-gutter-fringe")
       (version (git-version "0.23" revision commit))
@@ -4901,7 +4901,7 @@ display and behaviour is easily customisable.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1y77gjl0yznamdj0f55d418zb75k22izisjg7ikvrfsl2yfqf3pm"))))
+          (base32 "13bqq5r8ys2mmw1ffsm6hn6fji0vq3nx3slw98c9dgbvlprkaiip"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-git-gutter emacs-fringe-helper))
