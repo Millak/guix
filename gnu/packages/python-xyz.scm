@@ -4054,6 +4054,35 @@ cutting and pasting that code over and over.")
 to Roman Numerals.")
     (license license:psfl)))
 
+(define-public python-rollbar
+  (package
+    (name "python-rollbar")
+    (version "0.16.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rollbar" version))
+              (sha256
+               (base32
+                "1qpd0j50wqli3867xmhwk65pm1cxjs60yg83mcvcf3kic3y3sc82"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest-runner python-unittest2))
+    (inputs (list python-requests python-six python-httpx python-blinker
+                  python-webob))
+    (home-page "https://github.com/rollbar/pyrollbar")
+    (synopsis "Notifier for exceptions, errors, and log messages to Rollbar")
+    (description
+     "Python SDK for reporting exceptions, errors, and log messages
+to @url{https://rollbar.com/, Rollbar}.
+
+Capabilities include:
+
+@itemize @bullet
+@item Sending messages and exceptions with arbitrary context
+@item Getting back aggregates
+@item Debugging production issues
+@end itemize")
+    (license license:expat)))
+
 (define-public python-unidecode
   (package
     (name "python-unidecode")
