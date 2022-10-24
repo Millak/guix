@@ -1975,6 +1975,7 @@ times.")
               (sha256
                (base32
                 "0arx5wna0sh0vf5q8rjhh8nqdmnvg2pdpbhljl9l0x4kwm8vjhgp"))))
+    (properties `((upstream-name . "data.table")))
     (build-system r-build-system)
     (inputs
      (list zlib))
