@@ -9475,7 +9475,7 @@ with the value and the symbolic name.")
     (synopsis
      "Linux Kernel module exposing features of ThinkPad hardware")
     (description
-     "This package provides a Linux Kernel module that allows to control
+     "This package provides a Linux Kernel module that controls
 battery charging of specific ThinkPad laptops.  It also includes an improved
 version of the HDAPS driver.  The underlying hardware interfaces are
 @acronym{SMAPI, System Management Application Program Interface} and direct

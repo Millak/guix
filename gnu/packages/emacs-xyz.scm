@@ -8277,7 +8277,7 @@ and popup menus.")
       (propagated-inputs (list emacs-pos-tip emacs-popup))
       (home-page "https://github.com/waymondo/popup-kill-ring")
       (synopsis "Interactively insert item from kill-ring")
-      (description "This Emacs packages manages your Emacs kill-ring in an
+      (description "This Emacs package manages your Emacs kill-ring in an
 autocomplete style popup menu.")
       (license license:gpl3+))))
 

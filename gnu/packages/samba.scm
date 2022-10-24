@@ -546,6 +546,6 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
     (synopsis "A Web Service Discovery host daemon")
     (description "This daemon allows (Samba) hosts to be found by Web
 Service Dicovery Clients.  It also implements the client side of the
-discovery protocol which allows to search for devices implementing
+discovery protocol which searches for devices implementing
 WSD.")
     (license license:expat)))

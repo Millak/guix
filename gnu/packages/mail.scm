@@ -2556,7 +2556,7 @@ for a variety of mailbox formats such as mbox, mh and maildir.  Incoming mail
 can be sorted into separate files/directories and arbitrary commands can be
 executed on mail arrival.  Procmail is considered stable, but is no longer
 maintained.")
-    (license license:gpl2+))) ;; procmail allows to choose the
+    (license license:gpl2+))) ;; procmail allows choosing the
                               ;; nonfree Artistic License 1.0
                               ;; as alternative to the GPL2+.
                               ;; This option is not listed here.

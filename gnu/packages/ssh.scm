@@ -306,7 +306,7 @@ Additionally, various channel-specific options can be negotiated.")
     '((release-monitoring-url . "https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/")))
    (home-page "https://www.openssh.com/")))
 
-;; OpenSSH without X support. This allows to use OpenSSH without dragging X
+;; OpenSSH without X support. This allows using OpenSSH without dragging X
 ;; libraries to the closure.
 (define-public openssh-sans-x
   (package

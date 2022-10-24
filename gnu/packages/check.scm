@@ -2274,7 +2274,7 @@ failures.")
     (home-page "https://github.com/ktosiek/pytest-freezegun")
     (synopsis "Pytest plugin to freeze time in test fixtures")
     (description "The @code{pytest-freezegun} plugin wraps tests and fixtures
-with @code{freeze_time}, which allows to control (i.e., freeze) the time seen
+with @code{freeze_time}, which controls (i.e., freeze) the time seen
 by the test.")
     (license license:expat)))
 
