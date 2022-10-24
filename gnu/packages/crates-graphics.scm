@@ -1696,34 +1696,6 @@ with multiple back-ends.")
 interactive applications.")
     (license license:expat)))
 
-(define-public rust-pistoncore-glutin-window-0.63
-  (package
-    (name "rust-pistoncore-glutin-window")
-    (version "0.63.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pistoncore-glutin_window" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0dhbyxarv5i742d400bmqdqq3f8c25kcgcg0xavrc18dc913rixc"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-gl" ,rust-gl-0.11)
-        ("rust-glutin" ,rust-glutin-0.21)
-        ("rust-pistoncore-input" ,rust-pistoncore-input-0.28)
-        ("rust-pistoncore-window" ,rust-pistoncore-window-0.44)
-        ("rust-shader-version" ,rust-shader-version-0.6))))
-    (home-page "https://github.com/pistondevelopers/glutin_window")
-    (synopsis "Piston window back-end using the Glutin library")
-    (description
-     "This package provides a Piston window back-end using the Glutin library.")
-    (license license:expat)))
-
 (define-public rust-pistoncore-input-0.28
   (package
     (name "rust-pistoncore-input")
