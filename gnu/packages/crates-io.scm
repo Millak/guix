@@ -40898,25 +40898,6 @@ applications.")
      "Polars is a dataframe Library based on Apache Arrow.")
     (license license:expat)))
 
-(define-public rust-polars-0.16
-  (package
-    (inherit rust-polars-0.17)
-    (name "rust-polars")
-    (version "0.16.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "polars" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1s4fqc3vlpz73dbagfsj3hx7y7xmpqnp7nj0cn9srijxgxq5nm73"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-polars-core" ,rust-polars-core-0.16)
-        ("rust-polars-io" ,rust-polars-io-0.16)
-        ("rust-polars-lazy" ,rust-polars-lazy-0.16))))))
-
 (define-public rust-polars-arrow-0.17
   (package
     (name "rust-polars-arrow")
