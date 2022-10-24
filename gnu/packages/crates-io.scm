@@ -33116,22 +33116,6 @@ streaming API for miniz_oxide.")
     (arguments
      `(#:cargo-inputs (("rust-adler32" ,rust-adler32-1))))))
 
-(define-public rust-miniz-oxide-0.2
-  (package
-    (inherit rust-miniz-oxide-0.3)
-    (name "rust-miniz-oxide")
-    (version "0.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "miniz_oxide" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "17f92krv9hhsyc38prpfyn99m2hqhr4fgszpsla66a6gcrnpbhxn"))))
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-miniz-sys-0.1
   (package
     (name "rust-miniz-sys")
