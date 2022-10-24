@@ -63247,6 +63247,38 @@ the Trust-DNS client to use rustls for TLS.")
      "Test harness for ui tests of compiler diagnostics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-trycmd-0.13
+  (package
+    (name "rust-trycmd")
+    (version "0.13.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "trycmd" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1slz0b87k0n2hgbv76yc8wm68nh6cqi2lgm6gpcnkfz8rcrpndx5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-escargot" ,rust-escargot-0.5)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-humantime-serde" ,rust-humantime-serde-1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-schemars" ,rust-schemars-0.8)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-shlex" ,rust-shlex-1)
+        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-toml-edit" ,rust-toml-edit-0.14))))
+    (home-page "https://github.com/assert-rs/trycmd")
+    (synopsis "Snapshot testing for a herd of CLI tests")
+    (description "trycmd is a test harness that will enumerate test case files
+and run them to verify the results, taking inspiration from @code{trybuild} and
+@code{cram}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ttf-parser-0.12
   (package
     (name "rust-ttf-parser")
