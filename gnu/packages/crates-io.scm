@@ -61650,14 +61650,14 @@ serializing Rust structures.")
 (define-public rust-toml-edit-0.14
   (package
     (name "rust-toml-edit")
-    (version "0.14.3")
+    (version "0.14.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "toml_edit" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "01g772nkn5lmzaayssjd83rs3ri9ivny8r3wz2b3df1isrgkg65s"))))
+          (base32 "07xmklks4ldf8r9ban47zvq2s0csq43ja0dcjs43yi7j8ip2axjk"))))
     (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
