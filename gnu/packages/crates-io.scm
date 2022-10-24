@@ -51720,24 +51720,6 @@ the application/x-www-form-urlencoded format.")
 for later processing.")
     (license license:expat)))
 
-(define-public rust-serde-value-0.6
-  (package
-    (inherit rust-serde-value-0.7)
-    (name "rust-serde-value")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "serde-value" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1swh6870pr1cxr6ha769rv4wdnyfxdvsc42cmvf8lmla38lsfras"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-ordered-float" ,rust-ordered-float-1)
-        ("rust-serde" ,rust-serde-1))))))
-
 (define-public rust-serde-yaml-0.8
   (package
     (name "rust-serde-yaml")
