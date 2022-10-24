@@ -23636,32 +23636,6 @@ debugging format.")
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
-(define-public rust-gimli-0.20
-  (package
-    (inherit rust-gimli-0.23)
-    (name "rust-gimli")
-    (version "0.20.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gimli" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0cz6wg1niwfqf0mk28igsdnsm92cs57cai9jpzdmvw6hma863pc1"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-fallible-iterator"
-         ,rust-fallible-iterator-0.2)
-        ("rust-arrayvec" ,rust-arrayvec-0.5)
-        ("rust-stable-deref-trait"
-         ,rust-stable-deref-trait-1)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-byteorder" ,rust-byteorder-1))))))
-
 (define-public rust-git-version-0.3
   (package
     (name "rust-git-version")
