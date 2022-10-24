@@ -23668,31 +23668,6 @@ getters and setters on fields.")
 @acronym{GFA, Graphical Fragment Assembly} format.")
     (license license:expat)))
 
-(define-public rust-gfa-0.6
-  (package
-    (inherit rust-gfa-0.10)
-    (name "rust-gfa")
-    (version "0.6.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gfa" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0ghmy4r0324s6vvmj9nmh326346nkwm7nybnpcpswnjvf02b85gw"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-0.2)
-        ("rust-bytemuck" ,rust-bytemuck-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-nom" ,rust-nom-5)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3))))))
-
 (define-public rust-ghash-0.3
   (package
     (name "rust-ghash")
