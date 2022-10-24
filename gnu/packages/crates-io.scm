@@ -61881,39 +61881,6 @@ application authors using tracing to instrument their applications.")
         ("rust-tracing-futures" ,rust-tracing-futures-0.2)
         ("rust-tracing-log" ,rust-tracing-log-0.1))))))
 
-(define-public rust-tracing-subscriber-0.1
-  (package
-    (inherit rust-tracing-subscriber-0.2)
-    (name "rust-tracing-subscriber")
-    (version "0.1.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tracing-subscriber" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0i9fhlyz8mn2znpgmi5bv9y24pwpkkgfxs0rwcf6dl6djmjs2b0r"))))
-    (arguments
-     `(#:tests? #f      ; Some test files missing.
-       #:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.11)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-matchers" ,rust-matchers-0.0)
-        ("rust-owning-ref" ,rust-owning-ref-0.4)
-        ("rust-parking-lot" ,rust-parking-lot-0.9)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-smallvec" ,rust-smallvec-0.6)
-        ("rust-tracing-core" ,rust-tracing-core-0.1)
-        ("rust-tracing-log" ,rust-tracing-log-0.1))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-tracing" ,rust-tracing-0.1)
-        ("rust-tracing-log" ,rust-tracing-log-0.1))))))
-
 (define-public rust-tracing-tree-0.2
   (package
     (name "rust-tracing-tree")
