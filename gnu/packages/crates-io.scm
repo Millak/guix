@@ -43197,24 +43197,6 @@ compliant email address validation.")
        (("rust-bitflags" ,rust-bitflags-0.9)
         ("rust-getopts" ,rust-getopts-0.2))))))
 
-(define-public rust-pulldown-cmark-0.0.8
-  (package
-    (inherit rust-pulldown-cmark-0.4)
-    (name "rust-pulldown-cmark")
-    (version "0.0.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pulldown-cmark" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0hbg68h1w48cp72n95hjmbm70jrb5khc9vipcmjng83wjaxxfn0h"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-0.5)
-        ("rust-getopts" ,rust-getopts-0.2))))))
-
 (define-public rust-pulldown-cmark-to-cmark-7
   (package
     (name "rust-pulldown-cmark-to-cmark")
