@@ -13183,28 +13183,6 @@ to the @code{is_x86_feature_detected!} macro.")
 @url{crates.io}.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-crates-io-0.31
-  (package
-    (inherit rust-crates-io-0.33)
-    (name "rust-crates-io")
-    (version "0.31.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "crates-io" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0jhx0pgprlzypq037rkdsc2k3knlimx2vp5k7vwyvsa6iaa7gy89"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-curl" ,rust-curl-0.4)
-        ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-url" ,rust-url-2))))))
-
 (define-public rust-crc-1
   (package
     (name "rust-crc")
