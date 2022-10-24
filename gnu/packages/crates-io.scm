@@ -47279,26 +47279,6 @@ console applications.")
        (sha256
         (base32 "17z99xazhhbaczw0ib1vnnq450j0zacdn8b2zcbdir68sdbicdwr"))))))
 
-(define-public rust-rpassword-3
-  (package
-    (inherit rust-rpassword-4)
-    (name "rust-rpassword")
-    (version "3.0.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "rpassword" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0vkifbbs160d7i7wy3kb0vw9mbf3pf470hg8f623rjkzmsyafky3"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-kernel32-sys" ,rust-kernel32-sys-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.2))))))
-
 (define-public rust-runtime-0.3
   (package
     (name "rust-runtime")
