@@ -6582,7 +6582,13 @@ output.")
                (replace 'install
                  (lambda* (#:key make-flags #:allow-other-keys)
                    (apply invoke "make" "install-linux"
-                          make-flags))))))
+                          make-flags)))
+               (add-after 'install 'install-bdf2psf
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (install-file "Fonts/bdf2psf"
+                                 (string-append #$output "/bin"))
+                   (install-file "man/bdf2psf.1"
+                                 (string-append #$output "/share/man/man1")))))))
     (native-inputs
      (list pkg-config
            bdftopcf
