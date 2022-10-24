@@ -44328,29 +44328,6 @@ data.")
     (description "This package provides a generic connection pool.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-racer-interner-0.1
-  (package
-    (name "rust-racer-interner")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "racer-interner" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0k7ssjjcr4kr9r1jbz93rglisfsx1m6fkx3wz6yng5rizm528si0"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/racer-rust/racer")
-    (synopsis "Thread-local string interner for Racer")
-    (description
-     "This package allows one to intern strings in Rust in a thread-local
-fashion.  It is mostly used in Racer.")
-    (license license:expat)))
-
 (define-public rust-radium-0.6
   (package
     (name "rust-radium")
