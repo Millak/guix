@@ -12978,8 +12978,42 @@ to the @code{is_x86_feature_detected!} macro.")
     (description "This package provides bindings to Google's cpu profiler.")
     (license license:bsd-2)))
 
+(define-public rust-crates-index-0.18
+  (package
+    (name "rust-crates-index")
+    (version "0.18.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "crates-index" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1x7f7xfvqzlacji88iaz9n4k7wip72sk4gfvxvccli0cbf2yqirl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-git2" ,rust-git2-0.15)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-home" ,rust-home-0.5)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rustc-hash" ,rust-rustc-hash-1)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smartstring" ,rust-smartstring-1))))
+    (home-page "https://github.com/frewsxcv/rust-crates-index")
+    (synopsis "Retrieving and interacting with the crates.io index")
+    (description
+     "Library for retrieving and interacting with the crates.io index.")
+    (license license:asl2.0)))
+
 (define-public rust-crates-index-0.17
   (package
+    (inherit rust-crates-index-0.18)
     (name "rust-crates-index")
     (version "0.17.0")
     (source (origin
@@ -12989,7 +13023,6 @@ to the @code{is_x86_feature_detected!} macro.")
               (sha256
                (base32
                 "0izrm8m4wic5kp5y4p3f3d50lrlbamp3wizlgr4hm56rimfazm4a"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -13002,12 +13035,7 @@ to the @code{is_x86_feature_detected!} macro.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-smartstring" ,rust-smartstring-0.2))))
-    (home-page "https://github.com/frewsxcv/rust-crates-index")
-    (synopsis "Retrieving and interacting with the crates.io index")
-    (description
-     "Library for retrieving and interacting with the crates.io index.")
-    (license license:asl2.0)))
+        ("rust-smartstring" ,rust-smartstring-0.2))))))
 
 (define-public rust-crates-index-0.13
   (package
