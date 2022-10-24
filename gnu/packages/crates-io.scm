@@ -15403,22 +15403,22 @@ reading attributes into structs when implementing custom derives.")
         ("rust-strsim" ,rust-strsim-0.7)
         ("rust-syn" ,rust-syn-0.15))))))
 
-(define-public rust-darling-macro-0.13
+(define-public rust-darling-macro-0.14
   (package
     (name "rust-darling-macro")
-    (version "0.13.1")
+    (version "0.14.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "darling_macro" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0jzljnd0y7idi5lb7lhvymh3nkhaf32ksx0d38hv7zjjfcxipi3j"))))
+          (base32 "1dag2f4bq38vdn886slqczip5qzhvb95317kl04zrlnbpz2nkz6x"))))
     (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
-        (("rust-darling-core" ,rust-darling-core-0.13)
+        (("rust-darling-core" ,rust-darling-core-0.14)
          ("rust-quote" ,rust-quote-1)
          ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/TedDriggs/darling")
@@ -15428,6 +15428,25 @@ reading attributes into structs when implementing custom derives.")
 a proc-macro library for reading attributes into structs when implementing
 custom derives.")
     (license license:expat)))
+
+(define-public rust-darling-macro-0.13
+  (package
+    (inherit rust-darling-macro-0.14)
+    (name "rust-darling-macro")
+    (version "0.13.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "darling_macro" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "0jzljnd0y7idi5lb7lhvymh3nkhaf32ksx0d38hv7zjjfcxipi3j"))))
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-darling-core" ,rust-darling-core-0.13)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-darling-macro-0.12
   (package
