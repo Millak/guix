@@ -49237,49 +49237,6 @@ quickly convert floating point numbers to decimal strings.")
      "This package is a s3 handler for S3 Rich Support client (S3RS).")
     (license license:expat)))
 
-(define-public rust-s3handler-0.6
-  (package
-    (inherit rust-s3handler-0.7)
-    (name "rust-s3handler")
-    (version "0.6.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "s3handler" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0zridmnz9l3mr0crma95a3jqi961g034agx43a5yh4pgvv2q6mzq"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-async-trait" ,rust-async-trait-0.1)
-        ("rust-base64" ,rust-base64-0.6)
-        ("rust-bytes" ,rust-bytes-0.5)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-colored" ,rust-colored-1)
-        ("rust-dyn-clone" ,rust-dyn-clone-1)
-        ("rust-failure" ,rust-failure-0.1)
-        ("rust-failure-derive" ,rust-failure-derive-0.1)
-        ("rust-futures" ,rust-futures-0.3)
-        ("rust-hmac" ,rust-hmac-0.4)
-        ("rust-hmac-sha1" ,rust-hmac-sha1-0.1)
-        ("rust-http" ,rust-http-0.2)
-        ("rust-hyper" ,rust-hyper-0.11)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-md5" ,rust-md5-0.3)
-        ("rust-mime-guess" ,rust-mime-guess-2)
-        ("rust-quick-xml" ,rust-quick-xml-0.12)
-        ("rust-regex" ,rust-regex-0.2)
-        ("rust-reqwest" ,rust-reqwest-0.10)
-        ("rust-rust-crypto" ,rust-rust-crypto-0.2)
-        ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-sha2" ,rust-sha2-0.6)
-        ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-url" ,rust-url-2))))))
-
 (define-public rust-salsa-macros-0.17
   (package
     (name "rust-salsa-macros")
