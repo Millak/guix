@@ -12886,30 +12886,6 @@ intrinsics.")
      "This package provides a crate for demangling C++ symbols.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-cpp-demangle-0.2
-  (package
-    (inherit rust-cpp-demangle-0.3)
-    (name "rust-cpp-demangle")
-    (version "0.2.16")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cpp_demangle" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0bamx2c78xzjhhvpg6p9bjarl6qm6j8npm6756kiqdh784w29j8k"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-afl" ,rust-afl-0.8)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-glob" ,rust-glob-0.3))
-       #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-diff" ,rust-diff-0.1))))))
-
 (define-public rust-cpufeatures-0.2
   (package
     (name "rust-cpufeatures")
