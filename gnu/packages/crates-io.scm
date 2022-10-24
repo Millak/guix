@@ -29993,6 +29993,32 @@ algorithm and related formats (ZLIB, GZIP).")
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-libgit2-sys-0.13
+  (package
+    (inherit rust-libgit2-sys-0.14)
+    (name "rust-libgit2-sys")
+    (version "0.13.4+1.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1lgm4ssz4aw85k8jaj9xmp9wbhgvd8y80vbzrksjbphy8dinbynh"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "libgit2")))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libssh2-sys" ,rust-libssh2-sys-0.2)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+
 (define-public rust-libgit2-sys-0.12
   (package
     (inherit rust-libgit2-sys-0.14)
