@@ -890,7 +890,7 @@ browsers.")
 
 (define-deprecated rust-swc-1 rust-swc)
 
-(define-public rust-cargo-edit-0.8
+(define-public rust-cargo-edit
   (package
     (name "rust-cargo-edit")
     (version "0.8.0")
@@ -938,6 +938,8 @@ browsers.")
      "This package extends Cargo to allow you to add and remove dependencies
 by modifying your @file{Cargo.toml} file from the command line.")
     (license (list license:asl2.0 license:expat))))
+
+(define-deprecated rust-cargo-edit-0.8 rust-cargo-edit)
 
 (define-public git-interactive-rebase-tool
   (package
