@@ -13723,31 +13723,6 @@ message passing.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.6))))))
 
-(define-public rust-crossbeam-epoch-0.7
-  (package
-    (inherit rust-crossbeam-epoch-0.8)
-    (name "rust-crossbeam-epoch")
-    (version "0.7.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "crossbeam-epoch" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1a9prma2nalqvys7f8wrazkdzh26w3mi5gzrk8mdmwrp5rvxdp7y"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-arrayvec" ,rust-arrayvec-0.4)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.6)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-memoffset" ,rust-memoffset-0.5)
-        ("rust-scopeguard" ,rust-scopeguard-1))
-       #:cargo-development-inputs
-       (("rust-rand" ,rust-rand-0.6))))))
-
 (define-public rust-crossbeam-queue-0.3
   (package
     (name "rust-crossbeam-queue")
