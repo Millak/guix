@@ -15170,10 +15170,10 @@ crate (implementation detail).")
     (description "Daemonize is a Rust library for writing system deaemons.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-darling-0.13
+(define-public rust-darling-0.14
   (package
     (name "rust-darling")
-    (version "0.13.1")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
@@ -15181,13 +15181,13 @@ crate (implementation detail).")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x7pgzjswg28798zd5gk5g6nifhcaqq0apqmclydi39zd2w21myh"))))
+        (base32 "00mc7svmwphywkwndzkjxsqaxhygrm8f4jv1p1lngzd7vn5naaa5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-darling-core" ,rust-darling-core-0.13)
-        ("rust-darling-macro" ,rust-darling-macro-0.13))
+       (("rust-darling-core" ,rust-darling-core-0.14)
+        ("rust-darling-macro" ,rust-darling-macro-0.14))
        #:cargo-development-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
@@ -15198,6 +15198,29 @@ crate (implementation detail).")
      "This package provides a proc-macro library for reading attributes
 into structs when implementing custom derives.")
     (license license:expat)))
+
+(define-public rust-darling-0.13
+  (package
+    (inherit rust-darling-0.14)
+    (name "rust-darling")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "darling" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x7pgzjswg28798zd5gk5g6nifhcaqq0apqmclydi39zd2w21myh"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-darling-core" ,rust-darling-core-0.13)
+        ("rust-darling-macro" ,rust-darling-macro-0.13))
+       #:cargo-development-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-darling-0.12
   (package
