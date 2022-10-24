@@ -47544,27 +47544,6 @@ It is automatically published using the compiler repository at
 @url{https://www.github.com/rust-lang/rust}.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rustc-ap-rustc-lexer-721
-  (package
-    (inherit rust-rustc-ap-rustc-lexer-725)
-    (name "rust-rustc-ap-rustc-lexer")
-    (version "721.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rustc-ap-rustc_lexer" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1ldk41a4vxgh39p9650vhw1j7fng06pfmvb4xb2pvp22547gd89b"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-unicode-xid" ,rust-unicode-xid-0.2))
-       #:cargo-development-inputs
-       (("rust-expect-test" ,rust-expect-test-1))))))
-
 (define-public rust-rustc-ap-serialize-654
   (package
     (name "rust-rustc-ap-serialize")
