@@ -40937,28 +40937,6 @@ triple, target_arch, target_os) sourced from Rust Forge.")
 serialization.")
     (license license:expat)))
 
-(define-public rust-plist-0.4
-  (package
-    (inherit rust-plist-1)
-    (name "rust-plist")
-    (version "0.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "plist" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0zqnxc5i4y6mj119vr0lzpb5j67vffpx2phhgh711533bw3ryajz"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-line-wrap" ,rust-line-wrap-0.1)
-        ("rust-base64" ,rust-base64-0.10)
-        ("rust-xml-rs" ,rust-xml-rs-0.8)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-humantime" ,rust-humantime-1)
-        ("rust-byteorder" ,rust-byteorder-1))))))
-
 (define-public rust-plotters-0.3
   (package
     (name "rust-plotters")
