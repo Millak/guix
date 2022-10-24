@@ -69115,30 +69115,6 @@ Rust.")
 including a line breaking iterator.")
     (license license:asl2.0)))
 
-(define-public rust-shell2batch-0.4
-  (package
-    (name "rust-shell2batch")
-    (version "0.4.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "shell2batch" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0r9zfhxmqnrnyk7g590333szfpsjijs2wfwy7ish240w6pp54nhq"))
-    ;; https://github.com/sagiegurari/shell2batch/issues/17
-    (patches (search-patches "rust-shell2batch-lint-fix.patch"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-regex" ,rust-regex-1))))
-    (home-page "https://github.com/sagiegurari/shell2batch")
-    (synopsis "Basic shell scripts to windows batch scripts conversion")
-    (description "While it is not really possible to take every shell script
-and automatically convert it to a windows batch file, this library provides a
-way to convert simple shell commands to windows batch commands.")
-    (license license:asl2.0)))
-
 (define-public rust-enquote-1
   (package
     (name "rust-enquote")
