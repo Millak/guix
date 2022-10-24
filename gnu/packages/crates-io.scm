@@ -54965,20 +54965,6 @@ management.")
 are met.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-static-assertions-0.3
-  (package
-    (inherit rust-static-assertions-1)
-    (name "rust-static-assertions")
-    (version "0.3.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "static-assertions" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1lw33i89888yb3x29c6dv4mrkg3534n0rlg3r7qzh4p58xmv6gkz"))))))
-
 (define-public rust-static-map-macro-0.2
   (package
     (name "rust-static-map-macro")
