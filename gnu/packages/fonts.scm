@@ -847,7 +847,7 @@ for use at smaller text sizes")))
 (define-public font-gnu-unifont
   (package
     (name "font-gnu-unifont")
-    (version "14.0.04")
+    (version "15.0.01")
     (source
      (origin
        (method url-fetch)
@@ -857,9 +857,9 @@ for use at smaller text sizes")))
              (string-append "mirror://gnu/unifont/unifont-"
                             version "/unifont-" version ".tar.gz")))
        (sha256
-        (base32 "1fzycjxmgnq77r2s5914w1phg3qdwwnwa6p3zyfa1cscrxy52phz"))))
+        (base32 "1m9lfss6sbmcr0b6h7pxxmdl71j9dmnvk8idvxzylqrwpwjaj4bx"))))
     (build-system gnu-build-system)
-    (outputs '("out"   ; TrueType version
+    (outputs '("out"   ; TrueType/OpenType version
                "pcf"   ; PCF (bitmap) version
                "psf"   ; PSF (console) version
                "bin")) ; Utilities to manipulate '.hex' format
@@ -874,14 +874,19 @@ for use at smaller text sizes")))
           (lambda* (#:key make-flags outputs #:allow-other-keys)
             (let* ((ttf (string-append (assoc-ref outputs "out")
                                        "/share/fonts/truetype"))
+                   (otf (string-append (assoc-ref outputs "out")
+                                       "/share/fonts/opentype"))
                    (pcf (string-append (assoc-ref outputs "pcf")
                                        "/share/fonts/misc"))
                    (psf (string-append (assoc-ref outputs "psf")
                                        "/share/consolefonts"))
                    (bin (assoc-ref outputs "bin")))
+              ;; This directory isn't created in fonts/Makefile.
+              (mkdir-p otf)
               (apply invoke "make" "install"
                      (string-append "PREFIX=" bin)
                      (string-append "TTFDEST=" ttf)
+                     (string-append "OTFDEST=" otf)
                      (string-append "PCFDEST=" pcf)
                      (string-append "CONSOLEDEST=" psf)
                      make-flags)
