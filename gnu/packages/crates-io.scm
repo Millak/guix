@@ -64358,39 +64358,6 @@ The former can be used to unwrap values of type @code{Result} or @code{Option}
 comparable to calling @code{unwrap_err()}.")
     (license (list license:expat license:bsd-3))))
 
-(define-public rust-uom-0.31
-  (package
-    (name "rust-uom")
-    (version "0.31.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "uom" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0dwih0bclq18gfdf7if6kqip82w8yrf076l0ad1n3gr71bynpvmi"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-num-bigint" ,rust-num-bigint-0.3)
-        ("rust-num-rational" ,rust-num-rational-0.3)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-typenum" ,rust-typenum-1))
-       #:cargo-development-inputs
-       (("rust-approx" ,rust-approx-0.3)
-        ("rust-quickcheck" ,rust-quickcheck-0.9)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-static-assertions"
-         ,rust-static-assertions-1))))
-    (home-page "https://github.com/iliekturtles/uom")
-    (synopsis "Units of measurement")
-    (description "Units of measurement is a crate that does automatic
-type-safe zero-cost dimensional analysis.")
-    ;; Dual-licensed, either license applies.
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-ureq-2
   (package
     (name "rust-ureq")
