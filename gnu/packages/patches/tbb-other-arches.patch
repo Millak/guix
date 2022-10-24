@@ -1,8 +1,8 @@
 diff --git a/src/tbb/tools_api/ittnotify_config.h b/src/tbb/tools_api/ittnotify_config.h
-index 8ecc2378..0cf26f85 100644
+index f904a8e9..405f92e6 100644
 --- a/src/tbb/tools_api/ittnotify_config.h
 +++ b/src/tbb/tools_api/ittnotify_config.h
-@@ -159,6 +159,11 @@
+@@ -163,6 +163,11 @@
  #  define ITT_ARCH_ARM64  6
  #endif /* ITT_ARCH_ARM64 */
  
@@ -14,7 +14,7 @@ index 8ecc2378..0cf26f85 100644
  #ifndef ITT_ARCH
  #  if defined _M_IX86 || defined __i386__
  #    define ITT_ARCH ITT_ARCH_IA32
-@@ -172,6 +177,8 @@
+@@ -176,6 +181,8 @@
  #    define ITT_ARCH ITT_ARCH_ARM64
  #  elif defined __powerpc64__
  #    define ITT_ARCH ITT_ARCH_PPC64
@@ -24,7 +24,7 @@ index 8ecc2378..0cf26f85 100644
  #endif
  
 diff --git a/test/CMakeLists.txt b/test/CMakeLists.txt
-index 9534dce8..51a79331 100644
+index 2aa669c9..f915e252 100644
 --- a/test/CMakeLists.txt
 +++ b/test/CMakeLists.txt
 @@ -387,7 +387,10 @@ if (TARGET TBB::tbb)
