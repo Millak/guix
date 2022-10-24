@@ -66465,28 +66465,6 @@ implementation of webview, a tiny cross-platform library to render web-based
 GUIs as desktop applications.")
     (license license:expat)))
 
-(define-public rust-weedle-0.10
-  (package
-    (name "rust-weedle")
-    (version "0.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "weedle" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0r0i2kllvkn9jil6cjzxdi1zsc6p1gjyk751w8lyclaii1q3zd1v"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-nom" ,rust-nom-4))))
-    (home-page "https://github.com/rustwasm/weedle")
-    (synopsis "WebIDL Parser")
-    (description
-     "This package provides a WebIDL Parser.")
-    (license license:expat)))
-
 (define-public rust-weezl-0.1
   (package
     (name "rust-weezl")
