@@ -42386,27 +42386,6 @@ stabilized, this crate will be simply delegating to it, requiring no changes
 in your code.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-proc-macro-error-0.4
-  (package
-    (inherit rust-proc-macro-error-1)
-    (name "rust-proc-macro-error")
-    (version "0.4.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "proc-macro-error" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1rvpaadwv7vmsp142qqh2axqrr9v78f1nvdsi9nhmfhy10kk1wqq"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-proc-macro-error-attr" ,rust-proc-macro-error-attr-0.4)
-        ("rust-version-check" ,rust-version-check-0.9)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-quote" ,rust-quote-1))))))
-
 (define-public rust-proc-macro-error-attr-1
   (package
     (name "rust-proc-macro-error-attr")
