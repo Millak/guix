@@ -51520,42 +51520,6 @@ data.  This crate provides a wrapper that works with any existing Serde
        #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-0.9))))))
 
-(define-public rust-serde-macros-0.4
-  (package
-    (name "rust-serde-macros")
-    (version "0.4.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "serde_macros" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1717rpncvvyvyrpb7hdjgxpiki9vdgygwv2r3d9aal5n8cm8xi8i"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-cargo-toml
-           (lambda _
-             (substitute* "Cargo.toml"
-               ((", path =.*}") "}"))
-             #t)))
-       #:cargo-inputs
-       (("rust-serde-codegen" ,rust-serde-codegen-0.4))
-       #:cargo-development-inputs
-       (("rust-num" ,rust-num-0.2)
-        ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
-        ("rust-serde" ,rust-serde-0.4))))
-    (home-page "https://serde.rs")
-    (synopsis
-     "Macros to auto-generate implementations for the serde framework")
-    (description
-     "Macros to auto-generate implementations for the serde framework.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-serde-path-to-error-0.1
   (package
     (name "rust-serde-path-to-error")
