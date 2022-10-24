@@ -20747,32 +20747,6 @@ cross platform API.")
     (license (list license:asl2.0
                    license:expat))))
 
-(define-public rust-findshlibs-0.5
-  (package
-    (name "rust-findshlibs")
-    (version "0.5.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "findshlibs" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1n2vagn0q5yim32hxkwi1cjgp3yn1dm45p7z8nw6lapywihhs9mi"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2))))
-    (home-page "https://github.com/gimli-rs/findshlibs")
-    (synopsis "Find the set of shared libraries loaded in the current process")
-    (description
-     "Find the set of shared libraries loaded in the current process with a
-cross platform API.")
-    (license (list license:asl2.0
-                   license:expat))))
-
 (define-public rust-fixed-1
   (package
     (name "rust-fixed")
