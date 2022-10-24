@@ -51675,27 +51675,6 @@ the application/x-www-form-urlencoded format.")
        #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-1))))))
 
-(define-public rust-serde-urlencoded-0.5
-  (package
-    (inherit rust-serde-urlencoded-0.6)
-    (name "rust-serde-urlencoded")
-    (version "0.5.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "serde_urlencoded" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0nhnzllx5xrij4x17g351n14md691r95mxr7sbpz4sl80n8xcbb4"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-dtoa" ,rust-dtoa-0.4)
-        ("rust-itoa" ,rust-itoa-0.4)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-url" ,rust-url-1))
-       #:cargo-development-inputs
-       (("rust-serde-derive" ,rust-serde-derive-1))))))
-
 (define-public rust-serde-value-0.7
   (package
     (name "rust-serde-value")
