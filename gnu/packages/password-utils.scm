@@ -139,7 +139,7 @@ human.")
 (define-public keepassxc
   (package
     (name "keepassxc")
-    (version "2.7.1")
+    (version "2.7.3")
     (source
      (origin
        (method url-fetch)
@@ -147,7 +147,7 @@ human.")
                            "/releases/download/" version "/keepassxc-"
                            version "-src.tar.xz"))
        (sha256
-        (base32 "1ryk2ndv93jb155cp7qkjm7jd8hjy0v5gqvdvbdidhrmdiibl0b0"))))
+        (base32 "1pm7n960zyz6gr3qsia7y7kg1938zf460q4nlzs4i70vmridcp9x"))))
     (build-system cmake-build-system)
     (arguments
      (list
