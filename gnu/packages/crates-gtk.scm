@@ -928,35 +928,6 @@
         ("rust-serial-test" ,rust-serial-test-0.1)
         ("rust-serial-test-derive" ,rust-serial-test-derive-0.1))))))
 
-(define-public rust-gio-0.7
-  (package
-    (inherit rust-gio-0.8)
-    (name "rust-gio")
-    (version "0.7.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gio" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1qv0wc1hqyb81c03h81s3xrl9jslrw23fr4yhygxbhih9k9vaqb2"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-fragile" ,rust-fragile-0.3)
-        ("rust-futures-preview" ,rust-futures-preview-0.3)
-        ("rust-gio-sys" ,rust-gio-sys-0.9)
-        ("rust-glib" ,rust-glib-0.8)
-        ("rust-glib-sys" ,rust-glib-sys-0.9)
-        ("rust-gobject-sys" ,rust-gobject-sys-0.9)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1))
-       #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
-
 (define-public rust-gio-sys-0.15
   (package
     (name "rust-gio-sys")
