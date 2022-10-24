@@ -30935,8 +30935,36 @@ punctuation.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-libtest-mimic-0.5
+  (package
+    (name "rust-libtest-mimic")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libtest-mimic" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1v103c90ibs35ffr9mww9h5la3b7xxvil32v6x0szxcqq9wr8lkr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-threadpool" ,rust-threadpool-1))
+       #:cargo-development-inputs
+       (("rust-fastrand" ,rust-fastrand-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/LukasKalbertodt/libtest-mimic")
+    (synopsis "Tools for writing a test harness")
+    (description
+     "Write your own test harness that looks and behaves like the built-in test
+harness used by @code{rustc --test}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-libtest-mimic-0.3
   (package
+    (inherit rust-libtest-mimic-0.5)
     (name "rust-libtest-mimic")
     (version "0.3.0")
     (source (origin
@@ -30946,19 +30974,12 @@ punctuation.")
               (sha256
                (base32
                 "1bp2jllwpciljr14g6s9bk4835g46kszgrjwi66vxxsk3ynbi9q8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.4)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-termcolor" ,rust-termcolor-1))))
-    (home-page "https://github.com/LukasKalbertodt/libtest-mimic")
-    (synopsis "Tools for writing a test harness")
-    (description
-     "Write your own test harness that looks and behaves like the built-in test
-harness used by @code{rustc --test}.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-termcolor" ,rust-termcolor-1))))))
 
 (define-public rust-locale-0.2
   (package
