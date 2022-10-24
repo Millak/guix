@@ -46959,37 +46959,6 @@ please consider using @code{async-std} or @code{tokio}.")
         ("rust-url" ,rust-url-2)
         ("rust-uuid" ,rust-uuid-0.8))))))
 
-(define-public rust-rusqlite-0.24
-  (package
-    (inherit rust-rusqlite-0.25)
-    (name "rust-rusqlite")
-    (version "0.24.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rusqlite" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "04jiqa9y7pk7byk0kicjxqy75jifz1v4xhhaxhkwicms3kkqxwym"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-csv" ,rust-csv-1)
-        ("rust-fallible-iterator" ,rust-fallible-iterator-0.2)
-        ("rust-fallible-streaming-iterator" ,rust-fallible-streaming-iterator-0.1)
-        ("rust-hashlink" ,rust-hashlink-0.6)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libsqlite3-sys" ,rust-libsqlite3-sys-0.20)
-        ("rust-memchr" ,rust-memchr-2)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-time" ,rust-time-0.2)
-        ("rust-url" ,rust-url-2)
-        ("rust-uuid" ,rust-uuid-0.8))))))
-
 (define-public rust-rust-htslib-0.38
   (package
     (name "rust-rust-htslib")
