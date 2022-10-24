@@ -50866,18 +50866,17 @@ macOS and iOS.")
 (define-public rust-semver-1
   (package
     (name "rust-semver")
-    (version "1.0.3")
+    (version "1.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "semver" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gna1p10i86sf1pqfqndkwl0wks35x84yvjw77c74ckzxrbsqfjz"))))
+        (base32 "1i193dd6xkhh2fi1x7rws9pvv2ff3jfl9qjvvd9y6y6pcg2glpg2"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))))
     (home-page "https://docs.rs/crate/semver")
     (synopsis "Semantic version parsing and comparison")
