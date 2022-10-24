@@ -8959,7 +8959,7 @@ spreadsheet file.")
 (define-public rust-camino-1
   (package
     (name "rust-camino")
-    (version "1.0.4")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
@@ -8968,23 +8968,12 @@ spreadsheet file.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1a91b5i4n6ikg7p5pgvj3hjac1gnwjmdqsi3k83al2d701nqqr6l"))))
+         "07jc2jsyyhd2d0clpr0ama61b2hv09qzbfba2mx27pc87qg0xbc8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-structopt" ,rust-structopt-0.3))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version-requirements
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("1.0.38") ,(package-version rust-anyhow-1)))
-             #t)))))
+     `(#:cargo-inputs
+       (("rust-proptest" ,rust-proptest-1)
+        ("rust-serde" ,rust-serde-1))))
     (home-page
      "https://github.com/withoutboats/camino")
     (synopsis "UTF-8 paths")
