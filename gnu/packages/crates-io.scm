@@ -30456,29 +30456,6 @@ single-cell and single-nucleus sequencing data.")
              (setenv "RUSTC_BOOTSTRAP" "1")
              #t)))))))
 
-(define-public rust-libsqlite3-sys-0.15
-  (package
-    (inherit rust-libsqlite3-sys-0.20)
-    (name "rust-libsqlite3-sys")
-    (version "0.15.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "libsqlite3-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "104n0s4f46zprppjq6y82y0wjh1r2cgwzw26w914yj30rizy1cbj"))))
-    (build-system cargo-build-system)
-    (inputs
-     (list sqlite))
-    (arguments
-     `(#:cargo-inputs
-       ;; build dependencies
-       (("rust-bindgen" ,rust-bindgen-0.49)
-        ("rust-cc" ,rust-cc-1)
-        ("rust-pkg-config" ,rust-pkg-config-0.3)
-        ("rust-vcpkg" ,rust-vcpkg-0.2))))))
-
 (define-public rust-libxml-0.3
   (package
     (name "rust-libxml")
