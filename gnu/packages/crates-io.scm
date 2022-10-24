@@ -27248,28 +27248,6 @@ with hyper.")
        #:cargo-development-inputs
        (("rust-tokio" ,rust-tokio-0.2))))))
 
-(define-public rust-hyper-tls-0.3
-  (package
-    (inherit rust-hyper-tls-0.4)
-    (name "rust-hyper-tls")
-    (version "0.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "hyper-tls" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0kqp4sz8613j6nv375wfj3gh95ff4nb6a3rb1f2vbx0almm0v01s"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bytes" ,rust-bytes-0.4)
-        ("rust-futures" ,rust-futures-0.1)
-        ("rust-hyper" ,rust-hyper-0.12)
-        ("rust-native-tls" ,rust-native-tls-0.2)
-        ("rust-tokio-io" ,rust-tokio-io-0.1))
-       #:cargo-development-inputs
-       (("rust-tokio" ,rust-tokio-0.1))))))
-
 (define-public rust-hyphenation-commons-0.8
   (package
     (name "rust-hyphenation-commons")
