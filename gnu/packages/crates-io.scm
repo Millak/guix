@@ -54041,17 +54041,17 @@ algorithm.  Includes streaming compression and decompression.")
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-snappy-cpp" ,rust-snappy-cpp-0.1))))))
 
-(define-public rust-snapbox-macros-0.2
+(define-public rust-snapbox-macros-0.3
   (package
     (name "rust-snapbox-macros")
-    (version "0.2.1")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "snapbox-macros" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0c79lnjcs9yp62y665swv5y5y6088qc256bfr3s7xcnb0izfl7f0"))))
+                "0dkk7b5l9g8q7fswqj0686jqafkdl8apv1ay8r275cry430napj8"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
     (synopsis "Snapshot testing toolbox")
@@ -54067,6 +54067,19 @@ output from
 
 It is also flexible enough to build your own test harness like @code{trycmd}.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-snapbox-macros-0.2
+  (package
+    (inherit rust-snapbox-macros-0.3)
+    (name "rust-snapbox-macros")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "snapbox-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c79lnjcs9yp62y665swv5y5y6088qc256bfr3s7xcnb0izfl7f0"))))))
 
 (define-public rust-snapbox-0.2
   (package
