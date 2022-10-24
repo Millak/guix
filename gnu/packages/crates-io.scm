@@ -2301,31 +2301,6 @@ This package is deprecated and was replaced by the @code{aes} crate.")
      "Fuzz Rust code with american-fuzzy-lop.")
     (license license:asl2.0)))
 
-(define-public rust-afl-0.5
-  (package
-    (inherit rust-afl-0.8)
-    (name "rust-afl")
-    (version "0.5.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "afl" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0azpi917l8nhvx25n2v670nvkxkrhcwmddfi85qnr6kchmi6y946"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rustc-version" ,rust-rustc-version-0.2)
-        ("rust-cc" ,rust-cc-1)
-        ("rust-xdg" ,rust-xdg-2)
-        ("rust-clap" ,rust-clap-2))
-       #:cargo-development-inputs
-       (("rust-rustc-version" ,rust-rustc-version-0.2)
-        ("rust-xdg" ,rust-xdg-2))))))
-
 (define-public rust-ahash-0.7
   (package
     (name "rust-ahash")
