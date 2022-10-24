@@ -28166,27 +28166,6 @@ primitive Rust types.")
      "Simple procedural macro attribute for repetitive tests.")
     (license license:expat)))
 
-(define-public rust-interpolation-0.2
-  (package
-    (name "rust-interpolation")
-    (version "0.2.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "interpolation" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "00icvvgc72zdgyrwwg2p0wad4hry4d2vd6l9iqpyjpmw5dykbdyk"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/pistondevelopers/interpolation")
-    (synopsis "Library for interpolation")
-    (description
-     "This package provides a library for interpolation.")
-    (license license:expat)))
-
 (define-public rust-intervaltree-0.2
   (package
     (name "rust-intervaltree")
