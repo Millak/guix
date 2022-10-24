@@ -51853,26 +51853,6 @@ functions core functionality.")
        (sha256
         (base32 "0y4n8r4362y2fa6p2j0dgny4zfi194gdf01l6j850n9vf8ha3kwj"))))))
 
-(define-public rust-sha2-asm-0.3
-  (package
-    (inherit rust-sha2-asm-0.5)
-    (name "rust-sha2-asm")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "sha2-asm" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "09id310ngbcv98bww7ns1zmilcagnzhqx2s2skpmf23lzl890c9y"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-gcc" ,rust-gcc-0.3)
-        ("rust-generic-array" ,rust-generic-array-0.8))))))
-
 (define-public rust-sha3-0.9
   (package
     (name "rust-sha3")
