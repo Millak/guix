@@ -23869,44 +23869,6 @@ debugging format.")
         ("rust-indexmap" ,rust-indexmap-1)
         ("rust-byteorder" ,rust-byteorder-1))))))
 
-(define-public rust-gimli-0.18
-  (package
-    (name "rust-gimli")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "gimli" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0ma1zg2klqr47rasm7jn3zzd1j1pj2a8wkfbv5zsx10qh43phy4k"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-arrayvec" ,rust-arrayvec-0.4)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-fallible-iterator" ,rust-fallible-iterator-0.2)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
-       #:cargo-development-inputs
-       (("rust-crossbeam" ,rust-crossbeam-0.7)
-        ("rust-getopts" ,rust-getopts-0.2)
-        ("rust-memmap" ,rust-memmap-0.7)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-object" ,rust-object-0.12)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-test-assembler" ,rust-test-assembler-0.1)
-        ("rust-typed-arena" ,rust-typed-arena-1))))
-    (home-page "https://github.com/gimli-rs/gimli")
-    (synopsis "Reading and writing the DWARF debugging format")
-    (description
-     "This package provides a library for reading and writing the
-DWARF debugging format.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-git-version-0.3
   (package
     (name "rust-git-version")
