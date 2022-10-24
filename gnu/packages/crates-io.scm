@@ -24346,27 +24346,6 @@ libraries GMP, MPFR, and MPC.")
 and loading crate.")
     (license license:expat)))
 
-(define-public rust-goblin-0.1
-  (package
-    (inherit rust-goblin-0.2)
-    (name "rust-goblin")
-    (version "0.1.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "goblin" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1nn0aa2jf207gbyccxnrzm7n217di025z5y1ybblp7nkk11j309h"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-scroll" ,rust-scroll-0.10)
-        ("rust-plain" ,rust-plain-0.2)
-        ("rust-log" ,rust-log-0.4))))))
-
 (define-public rust-goblin-0.0
   (package
     (name "rust-goblin")
