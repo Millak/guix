@@ -11,7 +11,7 @@
 ;;; Copyright © 2016 Jookia <166291@gmail.com>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Dmitry Nikolaev <cameltheman@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Toni Reina <areina@riseup.net>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1880,7 +1880,7 @@ ExtraLight, Light, Book, Medium, Semibold, Bold & ExtraBold")
                #t))))))
     (native-inputs
      (list fontforge))
-    (home-page "http://culmus.sourceforge.net/")
+    (home-page "https://culmus.sourceforge.io/")
     (synopsis "TrueType Hebrew Fonts for X11")
     (description "14 Hebrew trivial families.  Contain ASCII glyphs from various
 sources.  Those families provide a basic set of a serif (Frank Ruehl), sans
