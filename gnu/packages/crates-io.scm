@@ -1792,37 +1792,6 @@ Rust, using gimli.")
     (description "This package provides a library for parsing domain names.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-addr2line-0.11
-  (package
-    (inherit rust-addr2line-0.14)
-    (name "rust-addr2line")
-    (version "0.11.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "addr2line" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0sk5g8cb2yynlcm0wcqff9l9c9ml69rqgfrrbii0ybgdc236jkhw"))))
-    (arguments
-     `(#:tests? #f      ; Not all test files included.
-       #:cargo-inputs
-       (("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
-        ("rust-object" ,rust-object-0.17)
-        ("rust-fallible-iterator" ,rust-fallible-iterator-0.2)
-        ("rust-cpp-demangle" ,rust-cpp-demangle-0.2)
-        ("rust-gimli" ,rust-gimli-0.20)
-        ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-lazycell" ,rust-lazycell-1))
-       #:cargo-development-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-findshlibs" ,rust-findshlibs-0.5)
-        ("rust-memmap" ,rust-memmap-0.7)
-        ("rust-rustc-test" ,rust-rustc-test-0.3))))))
-
 (define-public rust-adler-1
   (package
     (name "rust-adler")
