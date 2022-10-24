@@ -1548,32 +1548,6 @@ graphics and video games.")
     (description "This package provides OSMesa library bindings for Rust.")
     (license license:cc0)))
 
-(define-public rust-piston-0.49
-  (package
-    (name "rust-piston")
-    (version "0.49.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "piston" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1y0rbw92mzagqmwk79wv9axq0m7aid0s0d5cppyzh33wrxhdl3xj"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-pistoncore-input" ,rust-pistoncore-input-0.28)
-        ("rust-pistoncore-window" ,rust-pistoncore-window-0.44)
-        ("rust-pistoncore-event-loop" ,rust-pistoncore-event-loop-0.49))))
-    (home-page "https://github.com/PistonDevelopers/piston")
-    (synopsis "Piston game engine core libraries")
-    (description
-     "The Piston game engine core libraries.")
-    (license license:expat)))
-
 (define-public rust-piston-float-1
   (package
     (name "rust-piston-float")
