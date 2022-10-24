@@ -43584,26 +43584,6 @@ to write.")
         ("rust-memchr" ,rust-memchr-2)
         ("rust-serde" ,rust-serde-1))))))
 
-(define-public rust-quick-xml-0.12
-  (package
-    (inherit rust-quick-xml-0.20)
-    (name "rust-quick-xml")
-    (version "0.12.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "quick-xml" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0zvpwph44c5vgqapmdh50ylcdl9rpxffikcmq4fc208pn35nb00x"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-encoding-rs" ,rust-encoding-rs-0.8)
-        ("rust-failure" ,rust-failure-0.1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-memchr" ,rust-memchr-2))))))
-
 (define-public rust-quickcheck-1
   (package
     (name "rust-quickcheck")
