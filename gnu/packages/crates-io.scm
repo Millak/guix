@@ -37082,32 +37082,6 @@ file formats.")
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-wasmparser" ,rust-wasmparser-0.57))))))
 
-(define-public rust-object-0.17
-  (package
-    (inherit rust-object-0.23)
-    (name "rust-object")
-    (version "0.17.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "object" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1bmgbg4k0725lchfy9j1wnpfmywh5qhs0k4k6j2g7c0acvys8i7a"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-goblin" ,rust-goblin-0.1)
-        ("rust-target-lexicon" ,rust-target-lexicon-0.10)
-        ("rust-scroll" ,rust-scroll-0.10)
-        ("rust-parity-wasm" ,rust-parity-wasm-0.41)
-        ("rust-uuid" ,rust-uuid-0.8)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-crc32fast" ,rust-crc32fast-1)
-        ("rust-indexmap" ,rust-indexmap-1))))))
-
 (define-public rust-object-0.12
   (package
     (name "rust-object")
