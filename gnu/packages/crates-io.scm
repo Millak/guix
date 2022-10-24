@@ -21724,28 +21724,6 @@ values to other threads.")
      "This package provides low level binding for FreeType font library.")
     (license license:expat)))
 
-(define-public rust-freetype-sys-0.9
-  (package
-    (inherit rust-freetype-sys-0.13)
-    (name "rust-freetype-sys")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "freetype-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1i309xc6gcsgdfiim3j5f0sk08imr4frlzfa185iaxqciysqgikx"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-libz-sys" ,rust-libz-sys-1)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (inputs
-     (list freetype zlib))))
-
 (define-public rust-fs2-0.4
   (package
     (name "rust-fs2")
