@@ -10991,26 +10991,6 @@ contains all syscalls and related types.")
            license:asl2.0
            license:zlib))))
 
-(define-public rust-cloudflare-zlib-sys-0.2
-  (package
-    (inherit rust-cloudflare-zlib-sys-0.3)
-    (name "rust-cloudflare-zlib-sys")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cloudflare-zlib-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "01lwfd15ijw4d8jsqp87yv4wpmzcp84qm0qqwy3yxmm0fjr5q6by"))))
-    ;; This crate bundles cloudflare's fork of zlib, so we don't unbundle it.
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cc" ,rust-cc-1))))))
-
 (define-public rust-cmake-0.1
   (package
     (name "rust-cmake")
