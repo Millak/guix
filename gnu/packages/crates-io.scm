@@ -65060,31 +65060,6 @@ write operations.")
 has at least 1 element.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-vecmath-1
-  (package
-    (name "rust-vecmath")
-    (version "1.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "vecmath" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0shmj76rj7rqv377vy365xwr5rx23kxqgkqxxrymdjjvv3hf2slm"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-piston-float" ,rust-piston-float-1))))
-    (home-page "https://github.com/pistondevelopers/vecmath")
-    (synopsis "Library for vector math designed for reexporting")
-    (description
-     "This package provides a simple and type agnostic library for vector math
-designed for reexporting.")
-    (license license:expat)))
-
 (define-public rust-vergen-3
   (package
     (name "rust-vergen")
