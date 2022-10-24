@@ -893,49 +893,52 @@ browsers.")
 (define-public rust-cargo-edit
   (package
     (name "rust-cargo-edit")
-    (version "0.8.0")
+    (version "0.10.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "cargo-edit" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0yk5f4qjzflfqzgfws9zifij2fqchc9q551m7ljznmjrhlif2yh4"))))
+                "19wfjz7z4kqjfjmnq1bl6dhsvskjy6r656fqmbha9dfdspbsnmd0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:install-source? #f
        #:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-error-chain" ,rust-error-chain-0.12)
-        ("rust-git2" ,rust-git2-0.13)
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-cargo-metadata" ,rust-cargo-metadata-0.15)
+        ("rust-clap" ,rust-clap-3)
+        ("rust-concolor-control" ,rust-concolor-control-0.0.7)
+        ("rust-crates-index" ,rust-crates-index-0.18)
+        ("rust-dirs-next" ,rust-dirs-next-2)
+        ("rust-dunce" ,rust-dunce-1)
+        ("rust-env-proxy" ,rust-env-proxy-0.4)
+        ("rust-git2" ,rust-git2-0.14)
         ("rust-hex" ,rust-hex-0.4)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-pathdiff" ,rust-pathdiff-0.2)
         ("rust-regex" ,rust-regex-1)
         ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-toml-edit" ,rust-toml-edit-0.3)
-        ("rust-url" ,rust-url-2)
-        ("rust-crates-index" ,rust-crates-index-0.17)
-        ("rust-cargo-metadata" ,rust-cargo-metadata-0.14)
-        ("rust-dirs-next" ,rust-dirs-next-2)
-        ("rust-dunce" ,rust-dunce-1)
-        ("rust-env-proxy" ,rust-env-proxy-0.4)
-        ("rust-pathdiff" ,rust-pathdiff-0.2)
-        ("rust-structopt" ,rust-structopt-0.3)
         ("rust-subprocess" ,rust-subprocess-0.2)
-        ("rust-toml-edit" ,rust-toml-edit-0.3)
-        ("rust-ureq" ,rust-ureq-1))
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-toml-edit" ,rust-toml-edit-0.14)
+        ("rust-ureq" ,rust-ureq-2)
+        ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-2)
         ("rust-assert-fs" ,rust-assert-fs-1)
         ("rust-predicates" ,rust-predicates-2)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
+        ("rust-snapbox" ,rust-snapbox-0.2)
+        ("rust-trycmd" ,rust-trycmd-0.13)
+        ("rust-url" ,rust-url-2))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libgit2-1.3
+     (list libgit2
            libssh2
            openssl
            zlib))
