@@ -1641,36 +1641,6 @@ nicely with Piston libraries.")
      "This package provides a library for storing viewport information.")
     (license license:expat)))
 
-(define-public rust-piston2d-graphics-0.35
-  (package
-    (name "rust-piston2d-graphics")
-    (version "0.35.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "piston2d-graphics" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1dx2fanxc2pj76hc5l72x0fh4qg9gchjlr8rmbhdk6jpggcmq56g"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-interpolation" ,rust-interpolation-0.2)
-        ("rust-rusttype" ,rust-rusttype-0.7)
-        ("rust-piston-texture" ,rust-piston-texture-0.8)
-        ("rust-piston-viewport" ,rust-piston-viewport-1)
-        ("rust-read-color" ,rust-read-color-1)
-        ("rust-vecmath" ,rust-vecmath-1)
-        ("rust-fnv" ,rust-fnv-1))))
-    (home-page "https://github.com/pistondevelopers/graphics")
-    (synopsis "Library for 2D graphics that works with multiple back-ends")
-    (description "This package provides a library for 2D graphics that works
-with multiple back-ends.")
-    (license license:expat)))
-
 (define-public rust-pistoncore-event-loop-0.49
   (package
     (name "rust-pistoncore-event-loop")
