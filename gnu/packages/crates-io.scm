@@ -54412,17 +54412,17 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
                (base32
                 "0c79lnjcs9yp62y665swv5y5y6088qc256bfr3s7xcnb0izfl7f0"))))))
 
-(define-public rust-snapbox-0.2
+(define-public rust-snapbox-0.4
   (package
     (name "rust-snapbox")
-    (version "0.2.10")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "snapbox" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "14zxmsi4k9a9vgp9vs1q62ff1k57p26rwp5xs6f9bdijl9fisykn"))))
+                "1pad85id96wa6ngipdmfdbwaj0v9xd41p0rhb0f65lgcdrjrd2pr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -54433,11 +54433,12 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
         ("rust-dunce" ,rust-dunce-1)
         ("rust-filetime" ,rust-filetime-0.2)
         ("rust-ignore" ,rust-ignore-0.4)
-        ("rust-libtest-mimic" ,rust-libtest-mimic-0.3)
+        ("rust-libtest-mimic" ,rust-libtest-mimic-0.5)
         ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
         ("rust-os-pipe" ,rust-os-pipe-1)
+        ("rust-serde-json" ,rust-serde-json-1)
         ("rust-similar" ,rust-similar-2)
-        ("rust-snapbox-macros" ,rust-snapbox-macros-0.2)
+        ("rust-snapbox-macros" ,rust-snapbox-macros-0.3)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-wait-timeout" ,rust-wait-timeout-0.2)
         ("rust-walkdir" ,rust-walkdir-2)
@@ -54456,6 +54457,37 @@ output from
 
 It is also flexible enough to build your own test harness like @code{trycmd}.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-snapbox-0.2
+  (package
+    (inherit rust-snapbox-0.4)
+    (name "rust-snapbox")
+    (version "0.2.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "snapbox" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "14zxmsi4k9a9vgp9vs1q62ff1k57p26rwp5xs6f9bdijl9fisykn"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-concolor" ,rust-concolor-0.0.8)
+        ("rust-content-inspector" ,rust-content-inspector-0.2)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-dunce" ,rust-dunce-1)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-ignore" ,rust-ignore-0.4)
+        ("rust-libtest-mimic" ,rust-libtest-mimic-0.3)
+        ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
+        ("rust-os-pipe" ,rust-os-pipe-1)
+        ("rust-similar" ,rust-similar-2)
+        ("rust-snapbox-macros" ,rust-snapbox-macros-0.2)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-wait-timeout" ,rust-wait-timeout-0.2)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-yansi" ,rust-yansi-0.5))))))
 
 (define-public rust-snappy-cpp-0.1
   (package
