@@ -7340,29 +7340,6 @@ BLAKE2bp hash functions.")
 based on Blake2s.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-blas-sys-0.7
-  (package
-    (name "rust-blas-sys")
-    (version "0.7.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "blas-sys" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0h14zjycwc76v15h8qll9z1xiryvmpvsb5gam97pqpdjrrwv5c8k"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
-    (home-page "https://github.com/blas-lapack-rs/blas-sys")
-    (synopsis "Bindings to BLAS (Fortran)")
-    (description
-     "This package provides bindings to BLAS (Fortran).")
-    (license (list license:asl2.0
-                   license:expat))))
-
 (define-public rust-blobby-0.3
   (package
     (name "rust-blobby")
