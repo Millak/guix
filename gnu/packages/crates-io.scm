@@ -21520,21 +21520,6 @@ syntax, as used by HTML forms.")
 values to other threads.")
     (license license:asl2.0)))
 
-(define-public rust-fragile-0.3
-  (package
-    (inherit rust-fragile-1)
-    (name "rust-fragile")
-    (version "0.3.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "fragile" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1yf2hmkw52x2dva3c9km1x8c2z5kwby7qqn8kz5ms3gs480i9y05"))))))
-
 (define-public rust-freetype-0.7
   (package
     (name "rust-freetype")
