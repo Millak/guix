@@ -7115,34 +7115,37 @@ models, using simulation.  It was designed to work with models fit using the
     (license license:gpl2+)))
 
 (define-public r-mixedpower
-  (package
-    (name "r-mixedpower")
-    (version "2.0")
-    (source
-      (origin
-        ;; Not available on CRAN.
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/DejanDraschkow/mixedpower")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32 "1dy1i8lijbq59xl7482j17a0r4rsdy61smzddk8jsr8nygp2gqy8"))))
-    (properties `((upstream-name . "mixedpower")))
-    (build-system r-build-system)
-    (propagated-inputs
-      (list r-doparallel r-foreach r-ggplot2 r-lme4 r-reshape2))
-    (home-page "https://github.com/DejanDraschkow/mixedpower")
-    (synopsis
-      "Pilotdata based simulations for estimating power in linear mixed models")
-    (description
-      "Implementation of a simulation based aproach to power analysis.  Mixedpower uses
-lotdata and a linear mixed model fitted with lme4 to simulate new data sets.
-wer is computed separate for every effect in the model output as the relation
-significant simulations to all simulations.  More conservative simulations as
-protection against a bias in the pilotdata are available aswell as methods for
-otting the results.")
-    (license license:gpl3)))
+  ;; This commit contains fixes for R>=4.2. A newer release does not exist.
+  (let ((commit "6520195481bca3ce01862ef80a28c53b0a35d0f5")
+        (revision "1"))
+    (package
+      (name "r-mixedpower")
+      (version (git-version "2.0" revision commit))
+      (source
+        (origin
+          ;; Not available on CRAN.
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/DejanDraschkow/mixedpower")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+            (base32 "114z9pvya2jg10y804ga41gq00r7zcw4a7c7234ybhmv3jqw78q1"))))
+      (properties `((upstream-name . "mixedpower")))
+      (build-system r-build-system)
+      (propagated-inputs
+        (list r-doparallel r-foreach r-ggplot2 r-lme4 r-reshape2))
+      (home-page "https://github.com/DejanDraschkow/mixedpower")
+      (synopsis
+        "Pilotdata based simulations for estimating power in linear mixed models")
+      (description
+        "Implementation of a simulation based aproach to power analysis.
+Mixedpower uses lotdata and a linear mixed model fitted with lme4 to
+simulate new data sets.  wer is computed separate for every effect in the
+model output as the relation significant simulations to all simulations.
+More conservative simulations as protection against a bias in the
+pilotdata are available aswell as methods for otting the results.")
+      (license license:gpl3))))
 
 (define-public r-colorway
   (let ((commit "8ba8f0026aba37752c6770de45bf53b1b0f48afc")
