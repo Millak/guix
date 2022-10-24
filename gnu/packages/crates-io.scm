@@ -13847,27 +13847,6 @@ terminals.")
         ("rust-signal-hook" ,rust-signal-hook-0.1)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
-(define-public rust-crossterm-0.13
-  (package
-    (inherit rust-crossterm-0.19)
-    (name "rust-crossterm")
-    (version "0.13.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "crossterm" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1jw9s85mnhpkk38lihr4ildip4jhfhc3h86npncd92i4mdb257vm"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-crossterm-winapi" ,rust-crossterm-winapi-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-mio" ,rust-mio-0.6)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-crossterm-winapi-0.8
   (package
     (name "rust-crossterm-winapi")
