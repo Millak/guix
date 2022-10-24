@@ -4012,23 +4012,25 @@ assertions on the result of your program's run.")
 (define-public rust-assert-fs-1
   (package
     (name "rust-assert-fs")
-    (version "1.0.5")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "assert-fs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01qhcr9faq13p10kmi6j6k520dk20c8vxly8cqwkisdxx6fk8yvx"))))
+        (base32 "1gm1xsxmv1s8810kbjiw4rnikqi76a3yhrb8b717g90dw1rbn2fg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-doc-comment" ,rust-doc-comment-0.3)
+       (("rust-concolor" ,rust-concolor-0.0.8)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-globwalk" ,rust-globwalk-0.8)
         ("rust-predicates" ,rust-predicates-2)
         ("rust-predicates-core" ,rust-predicates-core-1)
         ("rust-predicates-tree" ,rust-predicates-tree-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-yansi" ,rust-yansi-0.5))))
     (home-page "https://github.com/assert-rs/assert_fs")
     (synopsis "Filesystem fixtures and assertions for testing")
     (description
