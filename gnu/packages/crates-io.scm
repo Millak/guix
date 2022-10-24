@@ -52382,32 +52382,6 @@ functions core functionality.")
 (Keccak) hash function.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-shader-version-0.6
-  (package
-    (name "rust-shader-version")
-    (version "0.6.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "shader_version" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1yk651xc9irl3pl0rlplypzyzy44d0j03ji0j7hjjdjknwzpi3j7"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-piston-graphics-api-version"
-         ,rust-piston-graphics-api-version-0.2))))
-    (home-page "https://github.com/pistondevelopers/shader_version")
-    (synopsis
-     "Helper library for detecting and picking compatible shaders")
-    (description "This package provides a helper library for detecting and
-picking compatible shaders.")
-    (license license:expat)))
-
 (define-public rust-shadow-rs-0.8
   (package
     (name "rust-shadow-rs")
