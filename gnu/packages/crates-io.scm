@@ -29957,10 +29957,10 @@ algorithm and related formats (ZLIB, GZIP).")
     (license
      (list license:expat license:asl2.0 license:ncsa))))
 
-(define-public rust-libgit2-sys-0.12
+(define-public rust-libgit2-sys-0.14
   (package
     (name "rust-libgit2-sys")
-    (version "0.12.25+1.3.0")
+    (version "0.14.0+1.5.0")
     (source
      (origin
        (method url-fetch)
@@ -29969,7 +29969,7 @@ algorithm and related formats (ZLIB, GZIP).")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1axsdyb2i67pn85vh8sb2z037n88fiiwqghkzsr1jrcdy2g1cs4g"))
+         "16wm7m65xvfqn11bhiclg7v5ajswhwrcrlg631r4z2hcqxchi827"))
        (modules '((guix build utils)))
        (snippet
         '(begin (delete-file-recursively "libgit2")))))
@@ -29992,6 +29992,32 @@ algorithm and related formats (ZLIB, GZIP).")
      "This package provides native Rust bindings to the @code{libgit2}
 library.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-libgit2-sys-0.12
+  (package
+    (inherit rust-libgit2-sys-0.14)
+    (name "rust-libgit2-sys")
+    (version "0.12.25+1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1axsdyb2i67pn85vh8sb2z037n88fiiwqghkzsr1jrcdy2g1cs4g"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "libgit2")))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libssh2-sys" ,rust-libssh2-sys-0.2)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-libgit2-sys-0.10
   (package
