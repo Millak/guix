@@ -31973,38 +31973,41 @@ arbitrary Emacs Lisp objects.")
     (license license:gpl3+)))
 
 (define-public emacs-csound-mode
-  (package
-    (name "emacs-csound-mode")
-    (version "0.2.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/hlolli/csound-mode")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1c88ak0jaj51fwiqniqxd7xyk23wjl9m57znzm8j267ld8g12znp"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-breaking-compilation
-           (lambda _
-             (for-each (lambda (file)
-                         (chmod file #o600) ; needed to write changes.
-                         (emacs-batch-disable-compilation file))
-                       '("csound-font-lock.el"))
-             #t)))))
-    (inputs
-     (list emacs-highlight emacs-multi emacs-shut-up))
-    (home-page "https://github.com/hlolli/csound-mode")
-    (synopsis "Emacs major mode for coding in CSound")
-    (description "Provides both a basic major mode for editing
+  ;; XXX: Upstream did not tag last release.  Using the commit matching
+  ;; version bump.
+  (let ((commit "44c49e5a9262ede4b4477bafb13b42b1ba047b9c"))
+    (package
+      (name "emacs-csound-mode")
+      (version "0.2.3")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hlolli/csound-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0kfhca1n0iv1400jf4ggjbarg7ry8ccd5bs7cf2brjdiqp74cvwb"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'disable-breaking-compilation
+             (lambda _
+               (for-each (lambda (file)
+                           (chmod file #o600) ; needed to write changes.
+                           (emacs-batch-disable-compilation file))
+                         '("csound-font-lock.el"))
+               #t)))))
+      (propagated-inputs
+       (list emacs-dash emacs-highlight emacs-multi emacs-shut-up))
+      (home-page "https://github.com/hlolli/csound-mode")
+      (synopsis "Emacs major mode for coding in CSound")
+      (description "Provides both a basic major mode for editing
 CSound files, as well as a REPL for fast feedback when composing
 and sound-designing.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-multi
   (package
