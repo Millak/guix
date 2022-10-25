@@ -1158,8 +1158,8 @@ This mailing list is backed by a Debbugs instance, which allows us to
 keep track of submissions (@pxref{Tracking Bugs and Patches}).  Each
 message sent to that mailing list gets a new tracking number assigned;
 people can then follow up on the submission by sending email to
-@code{@var{NNN}@@debbugs.gnu.org}, where @var{NNN} is the tracking
-number (@pxref{Sending a Patch Series}).
+@code{@var{ISSUE_NUMBER}@@debbugs.gnu.org}, where @var{ISSUE_NUMBER} is
+the tracking number (@pxref{Sending a Patch Series}).
 
 Please write commit logs in the ChangeLog format (@pxref{Change Logs,,,
 standards, GNU Coding Standards}); you can check the commit history for
@@ -1169,15 +1169,6 @@ Before submitting a patch that adds or modifies a package definition,
 please run through this check list:
 
 @enumerate
-@cindex @code{git format-patch}
-@cindex @code{git-format-patch}
-@item
-When generating your patches with @code{git format-patch} or @code{git
-send-email}, we recommend using the option @code{--base=}, perhaps with
-the value @code{auto}.  This option adds a note to the patch stating
-which commit the patch is based on.  This helps reviewers understand how
-to apply and review your patches.
-
 @item
 If the authors of the packaged software provide a cryptographic
 signature for the release tarball, make an effort to verify the
@@ -1363,18 +1354,6 @@ a subject, if your patch is to be applied on a branch other than
 @code{master}, say @code{core-updates}, specify it in the subject like
 @samp{[PATCH core-updates] @dots{}}.
 
-@quotation Tip
-To add a prefix to the subject of your patch, you may use the
-@option{--subject-prefix} option of the @command{git format-patch} or
-@command{git send-email} commands, for example:
-@example
-git send-email --subject-prefix='PATCH core-updates' \
-  --to=guix-patches@@gnu.org -1
-@end example
-For more information, run @samp{man git-format-patch} and @samp{man
-git-send-email}.
-@end quotation
-
 You may use your email client or the @command{git send-email} command
 (@pxref{Sending a Patch Series}).  We prefer to get patches in plain
 text messages, either inline or as MIME attachments.  You are advised to
@@ -1387,7 +1366,7 @@ acknowledgement with the assigned tracking number. Future acknowledgements
 should not be delayed.
 
 When a bug is resolved, please close the thread by sending an email to
-@email{@var{NNN}-done@@debbugs.gnu.org}.
+@email{@var{ISSUE_NUMBER}-done@@debbugs.gnu.org}.
 
 @node Configuring Git
 @subsection Configuring Git
@@ -1429,19 +1408,139 @@ git config --local sendemail.thread no
 @anchor{Sending a Patch Series}
 @cindex patch series
 @cindex @code{git send-email}
+@cindex @code{git format-patch}
 
-When sending a patch series (e.g., using @code{git send-email}), please
-first send one message to @email{guix-patches@@gnu.org}, and then send
-subsequent patches to @email{@var{NNN}@@debbugs.gnu.org} to make sure
-they are kept together.  See
-@uref{https://debbugs.gnu.org/Advanced.html, the Debbugs documentation}
-for more information.  You can install @command{git send-email} with
-@command{guix install git:send-email}.
-@c Debbugs bug: https://debbugs.gnu.org/db/15/15361.html
+@unnumberedsubsubsec Single Patches
+@anchor{Single Patches}
+The @command{git send-email} command is the best way to send both single
+patches and patch series (@pxref{Multiple Patches}) to the Guix mailing
+list.  Sending patches as email attachments may make them difficult to
+review in some mail clients, and @command{git diff} does not store commit
+metadata.
 
-To maximize the chances that you patch series is reviewed, the preferred
-submission way is to use the @code{etc/teams.scm} script to notify the
-appropriate team members (@pxref{Teams}).
+@quotation Note
+The @command{git send-email} command is provided by the @code{send-email}
+output of the @code{git} package, i.e. @code{git:send-email}.
+@end quotation
+
+The following command will create a patch email from the latest commit,
+open it in your @var{EDITOR} or @var{VISUAL} for editing, and send it to
+the Guix mailing list to be reviewed and merged:
+
+@example
+$ git send-email -1 -a --base=auto --to=guix-patches@@gnu.org
+@end example
+
+@quotation Tip
+To add a prefix to the subject of your patch, you may use the
+@option{--subject-prefix} option.  The Guix project uses this to
+specify that the patch is intended for a branch or repository
+other than the @code{master} branch of
+@url{https://git.savannah.gnu.org/cgit/guix.git}.
+
+@example
+git send-email -1 -a --base=auto \
+    --subject-prefix='PATCH core-updates' \
+    --to=guix-patches@@gnu.org
+@end example
+@end quotation
+
+The patch email contains a three-dash separator line after the commit
+message.  You may ``annotate'' the patch with explanatory text by adding
+it under this line.  If you do not wish to annotate the email, you may
+drop the @option{-a} flag (which is short for @option{--annotate}).
+
+The @option{--base=auto} flag automatically adds a note at the bottom
+of the patch of the commit it was based on, making it easier for
+maintainers to rebase and merge your patch.
+
+If you need to send a revised patch, don't resend it like this or send
+a ``fix'' patch to be applied on top of the last one; instead, use
+@command{git commit -a} or @url{https://git-rebase.io, @command{git rebase}}
+to modify the commit, and use the @email{@var{ISSUE_NUMBER}@@debbugs.gnu.org}
+address and the @option{-v} flag with @command{git send-email}.
+
+@example
+$ git commit -a
+$ git send-email -1 -a --base=auto -v @var{REVISION} \
+      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org
+@end example
+
+You can find out @var{ISSUE_NUMBER} either by searching on the mumi
+interface at @url{issues.guix.gnu.org} for the name of your patch or
+reading the acknowledgement email sent automatically by Debbugs in
+reply to incoming bugs and patches, which contains the bug number.
+
+@unnumberedsubsubsec Notifying Teams
+@anchor{Notifying Teams}
+@cindex teams
+The @file{etc/teams.scm} script may be used to notify all those who
+may be interested in your patch of its existence (@pxref{Teams}).
+Use @command{etc/teams.scm list-teams} to display all the teams,
+decide which team(s) your patch relates to, and use
+@command{etc/teams.scm cc} to output various @command{git send-email}
+flags which will notify the appropriate team members, or use
+@command{etc/teams.scm cc-members} to detect the appropriate teams
+automatically.
+
+@unnumberedsubsubsec Multiple Patches
+@anchor{Multiple Patches}
+@cindex cover letter
+While @command{git send-email} alone will suffice for a single
+patch, an unfortunate flaw in Debbugs means you need to be more
+careful when sending multiple patches: if you send them all to the
+@email{guix-patches@@gnu.org} address, a new issue will be created
+for each patch!
+
+When sending a series of patches, it's best to send a Git ``cover
+letter'' first, to give reviewers an overview of the patch series.
+We can create a directory called @file{outgoing} containing both
+our patch series and a cover letter called @file{0000-cover-letter.patch}
+with @command{git format-patch}.
+
+@example
+$ git format-patch -@var{NUMBER_COMMITS} -o outgoing \
+      --cover-letter --base=auto
+@end example
+
+We can now send @emph{just} the cover letter to the
+@email{guix-patches@@gnu.org} address, which will create an issue
+that we can send the rest of the patches to.
+
+@example
+$ git send-email outgoing/0000-cover-letter.patch -a \
+      --to=guix-patches@@debbugs.gnu.org \
+      $(etc/teams.scm cc-members ...)
+$ rm outgoing/0000-cover-letter.patch # we don't want to resend it!
+@end example
+
+Ensure you edit the email to add an appropriate subject line and
+blurb before sending it.  Note the automatically generated shortlog
+and diffstat below the blurb.
+
+Once the Debbugs mailer has replied to your cover letter email, you
+can send the actual patches to the newly-created issue address.
+
+@example
+$ git send-email outgoing/*.patch \
+      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org \
+      $(etc/teams.scm cc-members ...)
+$ rm -rf outgoing # we don't need these anymore
+@end example
+
+Thankfully, this @command{git format-patch} dance is not necessary
+to send an amended patch series, since an issue already exists for
+the patchset.
+
+@example
+$ git send-email -@var{NUMBER_COMMITS} \
+      -v@var{REVISION} --base=auto \
+      --to @var{ISSUE_NUMBER}@@debbugs.gnu.org
+@end example
+
+If need be, you may use @option{--cover-letter -a} to send another cover
+letter, e.g. for explaining what's changed since the last revision, and
+these changes are necessary.
 
 @unnumberedsubsec Teams
 @anchor{Teams}
@@ -1468,7 +1567,7 @@ You can run the following command to have the @code{Mentors} team put in
 CC of a patch series:
 
 @example
-$ git send-email --to XXX@@debbugs.gnu.org $(./etc/teams.scm cc mentors) *.patch
+$ git send-email --to @var{ISSUE_NUMBER}@@debbugs.gnu.org $(./etc/teams.scm cc mentors) *.patch
 @end example
 
 The appropriate team or teams can also be inferred from the modified
@@ -1477,7 +1576,7 @@ current Git repository to review, you can run:
 
 @example
 $ guix shell -D guix
-[env]$ git send-email --to XXX@@debbugs.gnu.org $(./etc/teams.scm cc-members HEAD~2 HEAD) *.patch
+[env]$ git send-email --to @var{ISSUE_NUMBER}@@debbugs.gnu.org $(./etc/teams.scm cc-members HEAD~2 HEAD) *.patch
 @end example
 
 @node Tracking Bugs and Patches
