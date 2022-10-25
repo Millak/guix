@@ -31991,22 +31991,21 @@ arbitrary Emacs Lisp objects.")
            "0kfhca1n0iv1400jf4ggjbarg7ry8ccd5bs7cf2brjdiqp74cvwb"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'disable-breaking-compilation
-             (lambda _
-               (for-each (lambda (file)
-                           (chmod file #o600) ; needed to write changes.
-                           (emacs-batch-disable-compilation file))
-                         '("csound-font-lock.el"))
-               #t)))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'disable-breaking-compilation
+              (lambda _
+                (let ((file "csound-font-lock.el"))
+                  (make-file-writable file)
+                  (emacs-batch-disable-compilation file)))))))
       (propagated-inputs
        (list emacs-dash emacs-highlight emacs-multi emacs-shut-up))
       (home-page "https://github.com/hlolli/csound-mode")
       (synopsis "Emacs major mode for coding in CSound")
-      (description "Provides both a basic major mode for editing
-CSound files, as well as a REPL for fast feedback when composing
-and sound-designing.")
+      (description "This package provides both a basic major mode for editing
+CSound files, as well as a REPL for fast feedback when composing and
+sound-designing using CSound.")
       (license license:gpl3+))))
 
 (define-public emacs-multi
