@@ -14211,6 +14211,44 @@ information...  The package can also be used to extract data from @code{.loom}
 files.")
       (license license:expat))))
 
+(define-public r-seuratwrappers
+  ;; There are no releases or tags.
+  (let ((commit "d28512f804d5fe05e6d68900ca9221020d52cf1d")
+        (revision "1"))
+    (package
+      (name "r-seuratwrappers")
+      (version (git-version "0.3.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/satijalab/seurat-wrappers")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0rm74y2fj3cmiqn7jz1ald8jbw53c2qxkj3mgl4pxih9vx39jhgy"))))
+      (properties `((upstream-name . "SeuratWrappers")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biocmanager
+             r-cowplot
+             r-ggplot2
+             r-igraph
+             r-matrix
+             r-remotes
+             r-rlang
+             r-rsvd
+             r-r-utils
+             r-seurat))
+      (home-page "https://github.com/satijalab/seurat-wrappers")
+      (synopsis "Community-provided methods and extensions for the Seurat object")
+      (description
+       "SeuratWrappers is a collection of community-provided methods and
+extensions for Seurat, curated by the Satija Lab at NYGC.  These methods
+comprise functionality not presently found in Seurat, and are able to be
+updated much more frequently.")
+      (license license:gpl3))))
+
 (define-public python-ctxcore
   (package
     (name "python-ctxcore")
