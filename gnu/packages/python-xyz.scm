@@ -12035,6 +12035,23 @@ independent alignment of columns (left or right justified or centred) and
 printing of sub-tables by specifying a row range.")
     (license license:bsd-3)))
 
+(define-public python-rtf-tokenize
+  (package
+    (name "python-rtf-tokenize")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rtf_tokenize" version))
+              (sha256
+               (base32
+                "026njb9iwznycda83bln3gfivcnzdz6vy8y86xvbsy84s28g6gaw"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/benoit-pierre/rtf_tokenize")
+    (synopsis "Simple RTF tokenizer")
+    (description "This package is a simple RTF tokenizer.")
+    (license license:gpl2+)))
+
 (define-public python-curio
   (package
     (name "python-curio")
