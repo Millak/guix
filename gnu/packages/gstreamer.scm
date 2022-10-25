@@ -791,6 +791,14 @@ model to base your own plug-in on, here it is.")
                   ;; FIXME: Why is this failing.
                   ((".*elements/dash_mpd\\.c.*") "")
 
+                  ;; This test is flaky on at least some architectures.
+                  ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1244
+                  #$@(if (member (%current-system)
+                                 '("i686-linux" "aarch64-linux"))
+                         `((("'elements/camerabin\\.c'\\]\\],")
+                            "'elements/camerabin.c'], true, ],"))
+                         '())
+
                   ;; These tests are flaky and occasionally time out:
                   ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/932
                   ((".*elements/curlhttpsrc\\.c.*") "")
