@@ -32031,11 +32031,11 @@ the expectations of each branch to define which one to invoke.")
     (license license:expat)))
 
 (define-public emacs-highlight
-  (let ((commit "9258a2b8362d737115cbd87618f947eadb140411")
-        (revision "1"))
+  (let ((commit "24366dfd5062a6902a13a03d724fc099db3121b8")
+        (revision "2"))
     (package
       (name "emacs-highlight")
-      (version "0.0.0")
+      (version (git-version "0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -32045,7 +32045,7 @@ the expectations of each branch to define which one to invoke.")
          (file-name (git-file-name name commit))
          (sha256
           (base32
-           "0pbqzgbfkm8smi23j94hirxh2r1yc0ipyjbbv1y906br6bx5c1a8"))))
+           "17r7f4y6b05nq2pzaq8pwww0s6j64vd6fikyv7pliv1n74sljj0d"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/emacsmirror/highlight")
       (synopsis "Highlighting commands for GNU Emacs")
