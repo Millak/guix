@@ -108,7 +108,7 @@ all data on disk will be lost, are you sure you want to proceed?") item)
   "Run a page asking the user to select a partition table label."
   ;; Force the GPT label if UEFI is supported.
   (if (efi-installation?)
-      "gpt"
+      ((run-label-confirmation-page button-callback) "gpt")
       (run-listbox-selection-page
        #:info-text (G_ "Select a new partition table type. \
 Be careful, all data on the disk will be lost.")

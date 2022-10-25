@@ -477,14 +477,14 @@ RGB animations.")
 (define-public ddcutil
   (package
     (name "ddcutil")
-    (version "1.2.2")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.ddcutil.com/tarballs/"
                            "ddcutil-" version ".tar.gz"))
        (sha256
-        (base32 "18fbd45h2r3r702dvmlmyrwgs3ymr4mhm4f12lgv9jqb5csalbw2"))))
+        (base32 "0hm0cm4m4hk1jjy7kddg613mynvwlii3kp8al0j9v3c6mcx3p4mx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -521,7 +521,7 @@ calibrated, and restored when the calibration is applied.")
 (define-public ddcui
   (package
     (name "ddcui")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -530,10 +530,10 @@ calibrated, and restored when the calibration is applied.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a9xfv80dpimx9wi9igjbbfydyfsgnbk6dv1plhjzyp2a9shdibb"))))
+        (base32 "0gypfmwxhjmgyfwk29k8hfbgr0698kbcq2yj4izxv1i59zm63irz"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f))                    ; No test suite
+     (list #:tests? #f))                    ; No test suite
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
@@ -649,7 +649,7 @@ hardware works with a fully free operating system or not.")
 (define-public headsetcontrol
   (package
     (name "headsetcontrol")
-    (version "2.6")
+    (version "2.6.1")
     (source
      (origin
        (method git-fetch)
@@ -658,7 +658,7 @@ hardware works with a fully free operating system or not.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a7zimzi71416pmn6z0l1dn1c2x8p702hkd0k6da9rsznff85a88"))))
+        (base32 "1pkgi87wjyris53frw3qmjdqvkzyyl55ikjgn8cidnbr6i3rqls9"))))
     (build-system cmake-build-system)
     (inputs
      (list hidapi))
@@ -1121,7 +1121,7 @@ as the Pinebook Pro.")
 (define-public usbguard
   (package
     (name "usbguard")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1129,7 +1129,7 @@ as the Pinebook Pro.")
                     (commit (string-append "usbguard-" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0lpyhkz5nr0c9mq57mgcvam5c8qfqqwjc4xd46n2ldqc9vhfsask"))))
+               (base32 "10qqjk7hsycc6hk51abwcld7i48038zqi1jzli59cfvc76ikrxj5"))))
     (build-system gnu-build-system)
     (arguments
      (list

@@ -819,14 +819,12 @@ of index files."
               (list
                (shepherd-action
                  (name 'reload)
-                 (documentation "Reload NGINX configuration file and restart worker processes.")
-                 (procedure
-                   #~(lambda (pid)
-                       (if pid
-                         (begin
-                           (kill pid SIGHUP)
-                           (format #t "Service NGINX (PID ~a) has been reloaded." pid))
-                         (format #t "Service NGINX is not running."))))))))))))
+                 (documentation "Reload nginx configuration file and restart worker processes.
+This has the effect of killing old worker processes and starting new ones, using
+the same configuration file.  It is useful for situations where the same nginx
+configuration file can point to different things after a reload, such as
+renewed TLS certificates, or @code{include}d files.")
+                 (procedure (nginx-action "-s" "reload"))))))))))
 
 (define nginx-service-type
   (service-type (name 'nginx)

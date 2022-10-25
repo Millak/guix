@@ -26,7 +26,7 @@
 
 (define-module (gnu packages libevent)
   #:use-module (gnu packages)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -74,7 +74,16 @@ libevent is meant to replace the event loop found in event driven
 network servers.  An application just needs to call event_dispatch() and
 then add or remove events dynamically without having to change the event
 loop.")
-    (license bsd-3)))
+    (license license:bsd-3)))
+
+(define-public libevent-with-openssl
+  (package/inherit libevent
+    (name "libevent-with-openssl")
+    (inputs (modify-inputs (package-inputs libevent)
+              (prepend openssl)))
+    (arguments
+     ;; This skips some of the tests which fail on armhf and aarch64.
+     '(#:configure-flags '("--disable-libevent-regress")))))
 
 (define-public libev
   (package
@@ -99,8 +108,7 @@ loosely modelled after libevent.  It includes relative timers, absolute timers
 with customized rescheduling, synchronous signals, process status change
 events, event watchers dealing with the event loop itself, file watchers, and
 limited support for fork events.")
-    (license
-     (list bsd-2 gpl2+))))
+    (license (list license:bsd-2 license:gpl2+))))
 
 (define-public libuv
   (package
@@ -131,7 +139,7 @@ resolution, asynchronous file system operations, and threading primitives.")
 
     ;; A few files fall under other non-copyleft licenses; see 'LICENSE' for
     ;; details.  Documentation is CC-BY 4.0 as of 1.12.0; see 'LICENSE-docs'.
-    (license (list expat cc-by4.0))))
+    (license (list license:expat license:cc-by4.0))))
 
 (define-public libuv-for-node
   ;; When upgrading Node, also upgrade this. Get the version from
@@ -218,7 +226,7 @@ Currently supported event loops are EV, Event, Glib/Gtk2, Tk, Qt,
 @code{Event::Lib}, Irssi, @code{IO::Async} and POE (and thus also WxWidgets
 and Prima).  It also comes with a very fast Pure Perl event loop that does
 not rely on XS.")
-    (license perl-license)))
+    (license license:perl-license)))
 
 (define-public perl-ev
   (package
@@ -259,7 +267,7 @@ not rely on XS.")
      "This module provides an interface to @code{libev}, a high performance
 full-featured event loop.  It can be used through the @code{AnyEvent} module
 and still be faster than other event loops currently supported in Perl.")
-    (license perl-license)))
+    (license license:perl-license)))
 
 (define-public perl-rpc-epc-service
   (package
@@ -286,4 +294,4 @@ and still be faster than other event loops currently supported in Perl.")
     (synopsis "Asynchronous remote procedure stack")
     (description "RPC::EPC::Service enables to connect the other process with
 the S-expression protocol, like the Swank protocol of the SLIME.")
-    (license perl-license)))
+    (license license:perl-license)))

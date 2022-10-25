@@ -996,7 +996,7 @@ animation of closing windowed applications.")
 (define-public gnome-shell-extension-blur-my-shell
   (package
     (name "gnome-shell-extension-blur-my-shell")
-    (version "29")
+    (version "44")
     (source
      (origin
        (method git-fetch)
@@ -1006,22 +1006,21 @@ animation of closing windowed applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "13x7zgaj3dz7lypdv1bgmpmh0f2w53q567zxmhmqimi1gy5mjrvk"))
-       (snippet
-        '(begin (delete-file "src/schemas/gschemas.compiled")))))
+         "0h7yfvrrg5r821mzrp42c09jws06mw6v9avvkfykqj8n8qnslmyx"))))
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
-       '(("." ,(string-append
-                "share/gnome-shell/extensions/"
-                "blur-my-shell@aunetx")
-          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
-                            "\\.xml$" "\\.compiled$")))
+     '(#:install-plan
+       (let ((extension "share/gnome-shell/extensions/blur-my-shell@aunetx"))
+         `(("src/" ,extension)
+           ("resources/" ,extension
+            #:include-regexp ("\\.svg$" "\\.ui"))
+           ("." ,extension
+            #:exclude-regexp ("src/" "resources/")
+            #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                              "\\.xml$" "\\.compiled$"))))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'cd-src
-           (lambda _ (chdir "src")))
-         (add-before 'install 'compile-schemas
+         (add-after 'unpack 'compile-schemas
            (lambda _
              (with-directory-excursion "schemas"
                (invoke "glib-compile-schemas" ".")))))))

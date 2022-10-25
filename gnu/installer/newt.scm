@@ -62,6 +62,9 @@
   (clear-screen))
 
 (define (exit-error error)
+  ;; Newt may be suspended in the context of the "install-system"
+  ;; procedure. Resume it unconditionnally.
+  (newt-resume)
   (newt-set-color COLORSET-ROOT "white" "red")
   (define action
     (run-textbox-page

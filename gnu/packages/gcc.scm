@@ -745,7 +745,10 @@ It also includes runtime support libraries for these languages.")
                   (delete-file-recursively "texinfo")
                   (substitute* "configure"
                     (("host_tools=(.*)texinfo" _ before)
-                     (string-append "host_tools=" before)))))))
+                     (string-append "host_tools=" before)))
+                  ;; Fix building on arm* with gcc-4+
+                  (substitute* "gcc/config/arm/arm.c"
+                    (("arm_prog_mode") "arm_prgmode"))))))
     (supported-systems (fold delete %supported-systems
                              '("powerpc64le-linux" "riscv64-linux")))
     (native-inputs (list texinfo dejagnu))
@@ -776,6 +779,10 @@ It also includes runtime support libraries for these languages.")
                                     "gcc/config/mips/linux.h"
                                     "gcc/config/rs6000/linux.h")
                        (("/lib/ld\\.so\\.1")
+                        (search-input-file
+                          inputs #$(glibc-dynamic-linker matching-system))))
+                     (substitute* "gcc/config/i386/gnu.h"
+                       (("/lib/ld\\.so")
                         (search-input-file
                           inputs #$(glibc-dynamic-linker matching-system))))
                      (substitute* '("gcc/config/alpha/linux-elf.h"

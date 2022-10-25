@@ -186,7 +186,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "8.9p1")
+   (version "9.1p1")
    (source (origin
              (method url-fetch)
              (uri (string-append "mirror://openbsd/OpenSSH/portable/"
@@ -195,7 +195,7 @@ a server that supports the SSH-2 protocol.")
                                       "openssh-trust-guix-store-directory.patch"))
              (sha256
               (base32
-               "1ry5prcax0134v6srkgznpl9ch5snkgq7yvjqvd8c5mbnxa7cjgx"))))
+               "126jzn5pxkf1dgzcb3lzpzab8airg0avnvr3y23kgqp3qw4m1y0r"))))
    (build-system gnu-build-system)
    (native-inputs (list groff pkg-config))
    (inputs `(("libedit" ,libedit)
@@ -306,7 +306,7 @@ Additionally, various channel-specific options can be negotiated.")
     '((release-monitoring-url . "https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/")))
    (home-page "https://www.openssh.com/")))
 
-;; OpenSSH without X support. This allows to use OpenSSH without dragging X
+;; OpenSSH without X support. This allows using OpenSSH without dragging X
 ;; libraries to the closure.
 (define-public openssh-sans-x
   (package

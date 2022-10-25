@@ -374,7 +374,7 @@ security:
              \" -SecurityTypes None\" ))
 @end lisp
 
-Or to set a PasswordFile for the classic (unsecure) VncAuth mecanism:
+Or to set a PasswordFile for the classic (unsecure) VncAuth mechanism:
 @lisp
 (vnc-server-command
  (file-append tigervnc-server \"/bin/Xvnc\"

@@ -286,6 +286,8 @@ expressions and blanks that were read."
    ('define-syntax-rule 2)
    ('define-module 2)
    ('define-gexp-compiler 2)
+   ('define-record-type 2)
+   ('define-record-type* 4)
    ('let 2)
    ('let* 2)
    ('letrec 2)

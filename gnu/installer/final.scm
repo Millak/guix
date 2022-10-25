@@ -211,7 +211,7 @@ or #f.  Return #t on success and #f on failure."
 
              (setenv "PATH" "/run/current-system/profile/bin/")
 
-             (set! ret (run-command install-command)))
+             (set! ret (run-command install-command #:tty? #t)))
            (lambda ()
              ;; Restart guix-daemon so that it does no keep the MNT namespace
              ;; alive.

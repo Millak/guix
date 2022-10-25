@@ -4442,7 +4442,7 @@ to BMP, JPEG or PNG image formats.")
                (wrap-program (string-append out "/bin/maxima")
                  `("PATH" prefix (,binutils))))
              #t))
-         ;; The Maxima command ‘describe’ allows to pick the relevant portions
+         ;; The Maxima command ‘describe’ allows picking the relevant portions
          ;; from Maxima’s Texinfo docs.  However it does not support reading
          ;; gzipped info files.
          (delete 'compress-documentation))))

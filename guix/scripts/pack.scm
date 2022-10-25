@@ -33,7 +33,6 @@
   #:use-module (guix store)
   #:use-module ((guix status) #:select (with-status-verbosity))
   #:use-module ((guix self) #:select (make-config.scm))
-  #:use-module (guix grafts)
   #:autoload   (guix inferior) (inferior-package?
                                 inferior-package-name
                                 inferior-package-version)

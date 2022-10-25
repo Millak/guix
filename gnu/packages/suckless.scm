@@ -279,14 +279,14 @@ optimising the environment for the application in use and the task performed.")
 (define-public dmenu
   (package
     (name "dmenu")
-    (version "5.1")
+    (version "5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dl.suckless.org/tools/dmenu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1mcg6i5g2c4wsyq9ap739si4zghk1xg6c3msdqrbfzm3pfg70k8z"))))
+                "14ipsirsfqbyqlnna0k8yla5j6mrbgh3gd9d4xrg4h4inmvwmm6l"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests

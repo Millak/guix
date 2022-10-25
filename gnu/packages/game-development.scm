@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 Jethro Cao <jethrocao@gmail.com>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
@@ -74,6 +74,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -85,6 +86,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages mp3)
@@ -180,6 +182,71 @@
      "Bullet is a physics engine library usable for collision detection.  It
 is used in some video games and movies.")
     (license license:zlib)))
+
+(define-public dds
+  (package
+    (name "dds")
+    (version "2.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dds-bridge/dds")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1iv09qic43nvla02lm8zgnkqpjgnc95p8zh3wyifmnmlh1rz02yj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'chdir
+                 (lambda _
+                   (chdir "src")))
+               (replace 'configure
+                 ;; Configuration is done by copying the appropriate
+                 ;; make file in the working directory.  There is no
+                 ;; configure script.
+                 (lambda _
+                   (copy-file "Makefiles/Makefile_linux_shared"
+                              "Makefile")))
+               (replace 'check
+                 ;; There is no "check" traget.  We must compile
+                 ;; a "dtest" program and apply it on a data set.
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (install-file "libdds.so" "../test")
+                     (with-directory-excursion "../test"
+                       (copy-file "Makefiles/Makefile_linux"
+                                  "Makefile")
+                       (substitute* "Makefile"
+                         (("-Werror") ""))
+                       (invoke "make")
+                       (invoke "./dtest" "-f" "../hands/list100.txt")))))
+               (replace 'install
+                 ;; "install" target merely moves ".so" file around
+                 ;; the source directory.  We install it in the store,
+                 ;; along with all shipped documentation (which cannot
+                 ;; be built from source unfortunately).
+                 (lambda _
+                   (install-file "libdds.so"
+                                 (string-append #$output "/lib"))
+                   (let ((doc (string-append #$output
+                                             "/share/doc/"
+                                             #$name "-" #$version)))
+                     (install-file "../LICENSE" doc)
+                     (copy-recursively "../doc" doc)))))))
+    (native-inputs
+     (list gawk procps))
+    (inputs
+     (list boost))
+    (home-page "http://privat.bahnhof.se/wb758135/")
+    (synopsis "Double dummy solver for the bridge card game")
+    (description "DDS is a double-dummy solver of bridge hands.  It supports
+single-threading and multi-threading for improved performance.  DDS
+offers a wide range of functions, including par-score calculations.")
+    (license license:asl2.0)))
 
 (define-public deutex
   (package
@@ -550,7 +617,7 @@ clone.")
 (define-public tsukundere
   (package
     (name "tsukundere")
-    (version "0.4.1")
+    (version "0.4.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -559,7 +626,7 @@ clone.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11glghnff27rqh2s34g51afg93g3f5ryfz9mkyb7qj35ngl8vw5f"))))
+                "1lq2rs33s6l6y0hwwkv8pppgq2ki0q5kzj11s90yivi8g8g201af"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 match)
@@ -1021,7 +1088,8 @@ the creation of animations, tiled graphics, texture atlases, and more.")
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
-       (list "-DWITH_WEBP_SUPPORT=1")
+       (list "-DWITH_WEBP_SUPPORT=1"
+             "-DWITH_DESKTOP_INTEGRATION=1")
        ;; Tests are unmaintained
        #:tests? #f))
     (native-inputs
@@ -2001,14 +2069,14 @@ a 2D editor view.")
 (define-public guile-chickadee
   (package
     (name "guile-chickadee")
-    (version "0.8.0")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.dthompson.us/chickadee/"
                                   "chickadee-" version ".tar.gz"))
               (sha256
                (base32
-                "1k2dml2z57lnc36wrmwhh7avnpczxgxnshlfhpbk174vg6v609n0"))))
+                "0b92lld7kj629mvq44vgd8vmf9h7s5gkdawb35vkzlx5q03wjfvk"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0")))
@@ -2018,6 +2086,8 @@ a 2D editor view.")
     (inputs
      (list freetype
            guile-3.0-latest
+           libjpeg-turbo
+           libpng
            libvorbis
            mpg123
            openal

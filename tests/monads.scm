@@ -20,7 +20,6 @@
   #:use-module (guix tests)
   #:use-module (guix store)
   #:use-module (guix monads)
-  #:use-module (guix grafts)
   #:use-module (guix derivations)
   #:use-module (guix packages)
   #:use-module (gnu packages)

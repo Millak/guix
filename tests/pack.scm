@@ -25,7 +25,6 @@
   #:use-module (guix profiles)
   #:use-module (guix packages)
   #:use-module (guix monads)
-  #:use-module (guix grafts)
   #:use-module (guix tests)
   #:use-module (guix gexp)
   #:use-module (guix modules)

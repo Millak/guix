@@ -195,14 +195,14 @@
 (define-public audacious
   (package
     (name "audacious")
-    (version "4.1")
+    (version "4.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://distfiles.audacious-media-player.org/"
                            "audacious-" version ".tar.bz2"))
        (sha256
-        (base32 "0p734psjjvjcmla2hg5h6a9v1prvy63jj9xm2g2ngs49jy7qan0z"))))
+        (base32 "1cq4brifp992dhg0sbf180jjdv137g5wk8ac7hmzx0d4f3j09czy"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -214,8 +214,7 @@
          (add-after 'install 'unpack-plugins
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((plugins (assoc-ref inputs "audacious-plugins")))
-               (invoke "tar" "xvf" plugins)
-               #t)))
+               (invoke "tar" "xvf" plugins))))
          (add-after 'unpack-plugins 'configure-plugins
            (lambda* (#:key configure-flags outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -247,7 +246,7 @@
            (uri (string-append "https://distfiles.audacious-media-player.org/"
                                "audacious-plugins-" version ".tar.bz2"))
            (sha256
-            (base32 "0k0xnqmxi5lna034i2cnzvfzrykxmv4fbs1nkrc9sd2ma1igrmns"))))
+            (base32 "0zs1k91z272ql49qr7kxlxb0lajamc9ra41pgj3ynh8h7afgd83g"))))
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")         ; for gdbus-codegen
        ("pkg-config" ,pkg-config)))
@@ -2284,7 +2283,7 @@ perform creative live mixes with digital music files.")
 (define-public synthv1
   (package
     (name "synthv1")
-    (version "0.9.26")
+    (version "0.9.27")
     (source (origin
               (method url-fetch)
               (uri
@@ -2292,7 +2291,7 @@ perform creative live mixes with digital music files.")
                               "/synthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1asikh341f3vblrl8l07yakza80ybs8sid3n2qpsrvigaz3iymcd"))))
+                "13qcig5j69qzcxqs9w5x9shrbb6vyj00g2fz1jw1kxramppyvcvg"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2316,7 +2315,7 @@ oscillators and stereo effects.")
 (define-public drumkv1
   (package
     (name "drumkv1")
-    (version "0.9.26")
+    (version "0.9.27")
     (source (origin
               (method url-fetch)
               (uri
@@ -2324,7 +2323,7 @@ oscillators and stereo effects.")
                               "/drumkv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0j05xqgcb7kwnnsgl6i7vbdsfq26chzs4zyq6pl0ipcmw4d82j8i"))))
+                "0j96z5bqh1mnldsda6dyp0jqp01mf7p55yr956rzkzg6jivj8fs3"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2349,7 +2348,7 @@ effects.")
 (define-public samplv1
   (package
     (name "samplv1")
-    (version "0.9.26")
+    (version "0.9.27")
     (source (origin
               (method url-fetch)
               (uri
@@ -2357,7 +2356,7 @@ effects.")
                               "/samplv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1rqz3hf39hk2m15ihrkn8f5cqgbkvz3rq6r2k35rvn7sgvcq1dli"))))
+                "0wxdcw5qs58kjfnnl4lnmafj8qim8qmdfdzrgnxggyhjg5mrpyby"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2382,7 +2381,7 @@ effects.")
 (define-public padthv1
   (package
     (name "padthv1")
-    (version "0.9.26")
+    (version "0.9.27")
     (source (origin
               (method url-fetch)
               (uri
@@ -2390,7 +2389,7 @@ effects.")
                               "/padthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "02pg0g4i65j46hirkc3xn7m2clm8krrafrkwjc1v8rkcdj6q2gw1"))))
+                "0ydm09g0ibvp1nf4fzzj6bkwlxx46pjxqgg8h76hwi6l8k0rz5m4"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2694,7 +2693,7 @@ export.")
 (define-public pd
   (package
     (name "pd")
-    (version "0.51-4")
+    (version "0.52-2")
     (source (origin
               (method url-fetch)
               (uri
@@ -2702,31 +2701,28 @@ export.")
                               version ".src.tar.gz"))
               (sha256
                (base32
-                "1hgw1ciwr59f4f9s0h7c2l36wcsn3jsddhr1r9qj97vf64c1ynaj"))))
+                "04fcsfgnv2r7g7p8vk9s9n3wba1bx4xgqw5mhwv09xbw9s3gapg9"))))
     (build-system gnu-build-system)
     (arguments
      (let ((wish (string-append "wish" (version-major+minor
                                         (package-version tk)))))
-       `(#:tests? #f                    ; no "check" target
-         #:configure-flags
-         (list
-          "--enable-jack"
-          (string-append "--with-wish=" (string-append
-                                         (assoc-ref %build-inputs "tk")
-                                         "/bin/" ,wish)))
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'fix-with-path
-             (lambda _
-               (substitute* "tcl/pd-gui.tcl"
-                 (("exec wish ") (string-append "exec " (which ,wish) " ")))
-               #t))))))
+       (list
+        #:tests? #f                     ; no "check" target
+        #:configure-flags
+        #~(list
+           "--enable-jack"
+           (string-append "--with-wish="
+                          (search-input-file %build-inputs
+                                             (string-append "/bin/" #$wish))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'fix-wish-path
+              (lambda _
+                (substitute* "tcl/pd-gui.tcl"
+                  (("exec wish ")
+                   (string-append "exec " (which #$wish) " ")))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool gettext-minimal pkg-config))
     (inputs
      (list tk alsa-lib jack-1))
     (home-page "https://puredata.info")
@@ -3289,14 +3285,14 @@ from the command line.")
 (define-public qtractor
   (package
     (name "qtractor")
-    (version "0.9.27")
+    (version "0.9.29")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.sourceforge.net/qtractor/"
                                   "qtractor-" version ".tar.gz"))
               (sha256
                (base32
-                "11131hb6n13n51rr319jhaa9jjxl9q8n9vkxq3si7gcxlli6pdbs"))))
+                "05g0zj5iy8knqccwglgql1flabgvpy4yqms4z1zqrkl9ws9bwc1x"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" target

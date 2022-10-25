@@ -277,32 +277,6 @@
        (("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-cairo-rs-0.7
-  (package
-    (inherit rust-cairo-rs-0.8)
-    (name "rust-cairo-rs")
-    (version "0.7.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cairo-rs" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "171m98g41avp5mmshqir4ka21napp7ma5fx45wi9mw5hwdyv8pg0"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.9)
-        ("rust-glib" ,rust-glib-0.8)
-        ("rust-glib-sys" ,rust-glib-sys-0.9)
-        ("rust-gobject-sys" ,rust-gobject-sys-0.9)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1))
-       #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))))
-
 (define-public rust-cairo-sys-rs-0.15
   (package
     (name "rust-cairo-sys-rs")
@@ -589,35 +563,6 @@
         ("rust-gio" ,rust-gio-0.8)
         ("rust-gio-sys" ,rust-gio-sys-0.9)
         ("rust-glib" ,rust-glib-0.9)
-        ("rust-glib-sys" ,rust-glib-sys-0.9)
-        ("rust-gobject-sys" ,rust-gobject-sys-0.9)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1))
-       #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
-
-(define-public rust-gdk-pixbuf-0.7
-  (package
-    (inherit rust-gdk-pixbuf-0.8)
-    (name "rust-gdk-pixbuf")
-    (version "0.7.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gdk-pixbuf" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1k2g3w2p57m68bi5sldvkmgjgslgqswrjsijjhqaibdvw67409lp"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-fragile" ,rust-fragile-0.3)
-        ("rust-futures-preview" ,rust-futures-preview-0.3)
-        ("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.9)
-        ("rust-gio" ,rust-gio-0.7)
-        ("rust-gio-sys" ,rust-gio-sys-0.9)
-        ("rust-glib" ,rust-glib-0.8)
         ("rust-glib-sys" ,rust-glib-sys-0.9)
         ("rust-gobject-sys" ,rust-gobject-sys-0.9)
         ("rust-libc" ,rust-libc-0.2)
@@ -956,35 +901,6 @@
        (("rust-gir-format-check" ,rust-gir-format-check-0.1)
         ("rust-serial-test" ,rust-serial-test-0.1)
         ("rust-serial-test-derive" ,rust-serial-test-derive-0.1))))))
-
-(define-public rust-gio-0.7
-  (package
-    (inherit rust-gio-0.8)
-    (name "rust-gio")
-    (version "0.7.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gio" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1qv0wc1hqyb81c03h81s3xrl9jslrw23fr4yhygxbhih9k9vaqb2"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-fragile" ,rust-fragile-0.3)
-        ("rust-futures-preview" ,rust-futures-preview-0.3)
-        ("rust-gio-sys" ,rust-gio-sys-0.9)
-        ("rust-glib" ,rust-glib-0.8)
-        ("rust-glib-sys" ,rust-glib-sys-0.9)
-        ("rust-gobject-sys" ,rust-gobject-sys-0.9)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1))
-       #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-gio-sys-0.15
   (package
@@ -1881,33 +1797,6 @@ library.")
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
-(define-public rust-pango-0.7
-  (package
-    (inherit rust-pango-0.8)
-    (name "rust-pango")
-    (version "0.7.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pango" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "11np7nxb69g3kid2l78b7k519x1wk1c3f9yy7swgzy24n5qs0grr"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-glib" ,rust-glib-0.8)
-        ("rust-glib-sys" ,rust-glib-sys-0.9)
-        ("rust-gobject-sys" ,rust-gobject-sys-0.9)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-pango-sys" ,rust-pango-sys-0.9)
-        ("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1))
-       #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
-
 (define-public rust-pango-sys-0.15
   (package
     (name "rust-pango-sys")
@@ -2062,36 +1951,6 @@ library.")
         ("rust-gobject-sys" ,rust-gobject-sys-0.9)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pango" ,rust-pango-0.8)
-        ("rust-pango-sys" ,rust-pango-sys-0.9)
-        ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.10)
-        ("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1))
-       #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
-
-(define-public rust-pangocairo-0.8
-  (package
-    (inherit rust-pangocairo-0.9)
-    (name "rust-pangocairo")
-    (version "0.8.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pangocairo" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0qjiwsp73x3w0493dzycyjzxnzwq7ixwmf1ccr5r41pjhxbnk1kl"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-cairo-rs" ,rust-cairo-rs-0.7)
-        ("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.9)
-        ("rust-glib" ,rust-glib-0.8)
-        ("rust-glib-sys" ,rust-glib-sys-0.9)
-        ("rust-gobject-sys" ,rust-gobject-sys-0.9)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-pango" ,rust-pango-0.7)
         ("rust-pango-sys" ,rust-pango-sys-0.9)
         ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.10)
         ("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1))

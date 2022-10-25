@@ -72,6 +72,11 @@
             wireguard-configuration-dns
             wireguard-configuration-private-key
             wireguard-configuration-peers
+            wireguard-configuration-pre-up
+            wireguard-configuration-post-up
+            wireguard-configuration-pre-down
+            wireguard-configuration-post-down
+            wireguard-configuration-table
 
             wireguard-service-type))
 
@@ -724,7 +729,17 @@ strongSwan.")))
   (peers              wireguard-configuration-peers ;list of <wiregard-peer>
                       (default '()))
   (dns                wireguard-configuration-dns ;list of strings
-                      (default #f)))
+                      (default #f))
+  (pre-up             wireguard-configuration-pre-up ;list of strings
+                      (default '()))
+  (post-up            wireguard-configuration-post-up ;list of strings
+                      (default '()))
+  (pre-down           wireguard-configuration-pre-down ;list of strings
+                      (default '()))
+  (post-down          wireguard-configuration-post-down ;list of strings
+                      (default '()))
+  (table              wireguard-configuration-table ;string
+                      (default "auto")))
 
 (define (wireguard-configuration-file config)
   (define (peer->config peer)
@@ -748,7 +763,8 @@ AllowedIPs = ~a
                   "\n"))))
 
   (match-record config <wireguard-configuration>
-    (wireguard interface addresses port private-key peers dns)
+    (wireguard interface addresses port private-key peers dns
+               pre-up post-up pre-down post-down table)
     (let* ((config-file (string-append interface ".conf"))
            (peers (map peer->config peers))
            (config
@@ -762,13 +778,49 @@ AllowedIPs = ~a
                      (let ((format (@ (ice-9 format) format)))
                        (format port "[Interface]
 Address = ~a
+~a
+~a
 PostUp = ~a set %i private-key ~a
+~a
+~a
+~a
 ~a
 ~a
 ~{~a~^~%~}"
                                #$(string-join addresses ",")
+                               #$(if table
+                                     (format #f "Table = ~a" table)
+                                     "")
+                               #$(if (null? pre-up)
+                                     ""
+                                     (string-join
+                                      (map (lambda (command)
+                                             (format #f "PreUp = ~a" command))
+                                           pre-up)
+                                      "\n"))
                                #$(file-append wireguard "/bin/wg")
                                #$private-key
+                               #$(if (null? post-up)
+                                     ""
+                                     (string-join
+                                      (map (lambda (command)
+                                             (format #f "PostUp = ~a" command))
+                                           post-up)
+                                      "\n"))
+                               #$(if (null? pre-down)
+                                     ""
+                                     (string-join
+                                      (map (lambda (command)
+                                             (format #f "PreDown = ~a" command))
+                                           pre-down)
+                                      "\n"))
+                               #$(if (null? post-down)
+                                     ""
+                                     (string-join
+                                      (map (lambda (command)
+                                             (format #f "PostDown = ~a" command))
+                                           post-down)
+                                      "\n"))
                                #$(if port
                                      (format #f "ListenPort = ~a" port)
                                      "")

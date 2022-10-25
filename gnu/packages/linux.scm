@@ -355,7 +355,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-5.19-version "5.19.15")
+(define-public linux-libre-5.19-version "5.19.16")
 (define-public linux-libre-5.19-gnu-revision "gnu")
 (define deblob-scripts-5.19
   (linux-libre-deblob-scripts
@@ -365,7 +365,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "092myqjixvy1k3ylcj0hfc4whfxapjvxsxm4gk30a3jv5dnh7mly")))
 (define-public linux-libre-5.19-pristine-source
   (let ((version linux-libre-5.19-version)
-        (hash (base32 "06zband5q6m9imyvn4y4naafdakjcj00rg23227cagnv8wwf71j6")))
+        (hash (base32 "13g0c6ljxk3sd0ja39ndih5vrzp2ssj78qxaf8nswn8hgrkazsx1")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.19)))
@@ -374,7 +374,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.73")
+(define-public linux-libre-5.15-version "5.15.74")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -384,12 +384,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "048r4synfax2ajyzlmp672b68yshxwlfccdah2vz1kh88rqfmgsc")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0pbi640llcdbx57vwwzc5axa75w0y5rixa9r752h725f4naz08m8")))
+        (hash (base32 "0ra2ijpw7w07gm3kjwyszlwfq2rbnmq84z50qhv5r0svz2i3j59c")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.147")
+(define-public linux-libre-5.10-version "5.10.149")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -399,12 +399,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1981axxswghza3iadp94q54y8w30h9w9vyq4cbjiiv9alvbv0pb8")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "16pdpjmvrdml7am7s2kydrif1l7f4aq0wh4ak0xh3dby16zkl9c5")))
+        (hash (base32 "1lv5q0m24ccbiqywy03s9s3wyxzm0v7f691rag89qfsn6z2k8q8g")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.217")
+(define-public linux-libre-5.4-version "5.4.219")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -414,7 +414,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1vnjbdyssa7dwyjl9kg35alwvf7yh597cl74yr1wy2gk5bc9paw6")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "0qrfrk0g1dky5apg8gdxczj2ir0g0z41zmdmbwwcxkxjz76jdf1b")))
+        (hash (base32 "0qd2a0cx6bq11qq2513xmm5jxzfrq6axvsc0pjbvdpv9fa9av4sj")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
@@ -2672,7 +2672,7 @@ Both commands are targeted at system administrators.")
 (define-public jitterentropy-rngd
   (package
     (name "jitterentropy-rngd")
-    (version "1.2.7")
+    (version "1.2.8")
     (source
      (origin
        (method git-fetch)
@@ -2681,17 +2681,18 @@ Both commands are targeted at system administrators.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "098hx09bsizin9405gh1c4rzbs2fr7qknqlr3glgyjpm3nm7bx28"))))
+        (base32 "13br8s6gqnfc844ps38ya5nny3pndsmskszv3dsp1cxcgvmscg1c"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "UNITDIR=$(PREFIX)/lib/systemd/system")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no ./configure script
+     (list
+      #:tests? #f                       ; no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              "UNITDIR=$(PREFIX)/lib/systemd/system")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))         ; no ./configure script
     (home-page "https://www.chronox.de/jent.html")
     (synopsis "CPU jitter random number generator daemon")
     (description
@@ -3523,7 +3524,7 @@ compressed, transparent to other programs, without decompressing them.")
 (define-public numactl
   (package
     (name "numactl")
-    (version "2.0.14")
+    (version "2.0.16")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3531,7 +3532,7 @@ compressed, transparent to other programs, without decompressing them.")
                     version "/numactl-" version ".tar.gz"))
               (sha256
                (base32
-                "1xngddsph43bxljywahi9d44fxr022slsap4hh91w8xnq54d2sw2"))))
+                "1j67wx3383fwqbvhg4nwqf72vpdgimmrvkpn3b9s2xzr7a4jy90v"))))
     (build-system gnu-build-system)
     (arguments
      `(,@(if (target-riscv64?)
@@ -4753,14 +4754,14 @@ isolation or root privileges.")
 (define-public hdparm
   (package
     (name "hdparm")
-    (version "9.64")
+    (version "9.65")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hdparm/hdparm/"
                                   "hdparm-" version ".tar.gz"))
               (sha256
                (base32
-                "16l5mc6dpqkzhwsljyzks05pq89l2lw09qkx50ks1zn3a5lranri"))))
+                "0jssagggg52ssl9kg99m88afghj7bm1854vyf4p96q6h23wjjjfi"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -4873,14 +4874,14 @@ about ACPI devices.")
 (define-public acpid
   (package
     (name "acpid")
-    (version "2.0.33")
+    (version "2.0.34")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/acpid2/acpid-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1s6vf8lqwrcqi14k0ww47pk1kifbvxin73ha7mk1njmk7qdzfmh8"))))
+                "0cxkdbd087kj9ikprvvjpk0ixzqbipf2rmj6qyp7r15wzj65q29d"))))
     (build-system gnu-build-system)
     (home-page "https://sourceforge.net/projects/acpid2/")
     (synopsis "Daemon for delivering ACPI events to user-space programs")
@@ -5894,6 +5895,42 @@ drive that supports the ATA/ATAPI-7 IDLE IMMEDIATE command with unload
 feature, and a laptop with an accelerometer.  It has no effect on SSDs.")
     (license license:gpl2)))
 
+
+(define-public nbfc-linux
+  (let ((version "0.1.7")
+        (commit "4c2b75e4a875459e86a9892319889ff945e9cadf")
+        (revision "0"))
+    (package
+      (name "nbfc-linux")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/nbfc-linux/nbfc-linux")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0mmyfaigrh3fd5v11a8p38km4m02qzsfx8yh72g0z405bzhqn5jk"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:make-flags (list (string-append "CC="
+                                           ,(cc-for-target))
+                            (string-append "PREFIX="
+                                           (assoc-ref %outputs "out")))
+         #:tests? #f
+         #:phases (modify-phases %standard-phases
+                    (delete 'configure))))
+      (native-inputs (list pkg-config))
+      (propagated-inputs (list python dmidecode))
+      (synopsis "NoteBook FanControl ported to Linux")
+      (description
+       "This package provides a C port of NoteBook FanControl (NBFC), a fan
+control service for notebooks.  It provides the same utilities with the same
+interfaces as the original NBFC, although the implementation differs.")
+      (home-page "https://github.com/nbfc-linux/nbfc-linux")
+      (license license:gpl3+))))
+
 (define-public thinkfan
   (package
     (name "thinkfan")
@@ -6670,7 +6707,7 @@ the @code{mce-inject} module loaded if it exists.")
 (define-public mcelog
   (package
     (name "mcelog")
-    (version "188")
+    (version "189")
     (source
      (origin
        (method git-fetch)
@@ -6679,7 +6716,7 @@ the @code{mce-inject} module loaded if it exists.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pdh0fj12wrm7whi96ak7m1f5b8ivgklabwkhfcfxd8dg134qczf"))
+        (base32 "0ml12xmmmljp22a89fw23c6gmba4dngavgnisv665w67kbnv5085"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -7888,14 +7925,14 @@ available in the kernel Linux.")
 (define-public cpuid
   (package
     (name "cpuid")
-    (version "20220812")
+    (version "20221003")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.etallen.com/cpuid/cpuid-"
                                   version ".src.tar.gz"))
               (sha256
                (base32
-                "1gss85szv4b48d93d6hzkkzggicdvw8dijiwfs84ywclgnwqzxiv"))))
+                "01w318kxcksfbjwjnnc9ly12g0yp4vm6xjgfl8mmi0jndg0cbi33"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -9438,7 +9475,7 @@ with the value and the symbolic name.")
     (synopsis
      "Linux Kernel module exposing features of ThinkPad hardware")
     (description
-     "This package provides a Linux Kernel module that allows to control
+     "This package provides a Linux Kernel module that controls
 battery charging of specific ThinkPad laptops.  It also includes an improved
 version of the HDAPS driver.  The underlying hardware interfaces are
 @acronym{SMAPI, System Management Application Program Interface} and direct

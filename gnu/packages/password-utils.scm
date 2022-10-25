@@ -37,6 +37,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,6 +58,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
@@ -137,7 +139,7 @@ human.")
 (define-public keepassxc
   (package
     (name "keepassxc")
-    (version "2.7.1")
+    (version "2.7.3")
     (source
      (origin
        (method url-fetch)
@@ -145,7 +147,7 @@ human.")
                            "/releases/download/" version "/keepassxc-"
                            version "-src.tar.xz"))
        (sha256
-        (base32 "1ryk2ndv93jb155cp7qkjm7jd8hjy0v5gqvdvbdidhrmdiibl0b0"))))
+        (base32 "1pm7n960zyz6gr3qsia7y7kg1938zf460q4nlzs4i70vmridcp9x"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -371,7 +373,7 @@ and vice versa.")
 (define-public cracklib
   (package
     (name "cracklib")
-    (version "2.9.7")
+    (version "2.9.8")
     (source
      (origin
        (method url-fetch)
@@ -379,7 +381,7 @@ and vice versa.")
                            "releases/download/v" version "/"
                            "cracklib-" version ".tar.bz2"))
        (sha256
-        (base32 "1rimpjsdnmw8f5b7k558cic41p2qy2n2yrlqp5vh7mp4162hk0py"))))
+        (base32 "11p3f0yqg9d32g3n1qik7jfyl2l14pf8i8vzq3bpram3bqw3978z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -587,6 +589,67 @@ GnuPG-encrypted file, allowing the program to be simple yet secure.
 Synchronization is possible using the integrated git support, which commits
 changes to your password database to a git repository that can be managed
 through the pass command.")
+    (license license:gpl2+)))
+
+(define-public pass-age
+  (package
+    (inherit password-store)
+    (name "pass-age")
+    (version "1.7.4a0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FiloSottile/passage")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17899whffnpqqx9x1nx2b8bfxbxlh1pwlglqa0kznl0cn6sb37ql"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:modules
+       ((guix build copy-build-system)
+        (guix build utils)
+        (srfi srfi-26))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'rename-script
+           (lambda _
+             (rename-file "src/password-store.sh"
+                          "src/passage")))
+         (add-after 'install 'wrap-script
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (script (string-append out "/bin/passage")))
+               (substitute* script
+                 ;; Avoid ugly ‘.passage-real’ in --help output and elsewhere.
+                 (("^(PROGRAM=).*" _ program=)
+                  (string-append program= (basename script) "\n")))
+               (wrap-program script
+                 `("PATH" ":" prefix
+                   ,(map dirname
+                         (map (cut search-input-file inputs <>)
+                              (list "bin/age"
+                                    "bin/age-keygen"
+                                    "bin/getopt"
+                                    "bin/git"
+                                    "bin/pkill"
+                                    "bin/qrencode"
+                                    "bin/sed"
+                                    "bin/tree")))))))))
+       #:install-plan
+       '(("src/passage" "/bin/")
+         ("src/completion/pass.bash-completion"
+          "/share/bash-completion/completions/")
+         ("src/completion/pass.zsh-completion"
+          "/share/zsh/site-functions/"))))
+    (inputs
+     (list age age-keygen git procps qrencode sed tree util-linux))
+    (home-page "https://github.com/FiloSottile/passage")
+    (synopsis "Encrypted password manager")
+    (description "This package provides an encrypted password manager, forked
+from the @code{password-store} package.  Files are encrypted with the
+@command{age} encryption package with small explicit keys.")
     (license license:gpl2+)))
 
 (define-public pass-otp
@@ -1315,7 +1378,7 @@ encryption algorithm if so desired.")
 (define-public pass-tomb
   (package
     (name "pass-tomb")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -1324,7 +1387,7 @@ encryption algorithm if so desired.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qj7vx7svk1ljwihj3kv310k17mafnf919n30n4qn1yxmmsvj924"))))
+        (base32 "1sjkbdm2i3v77nbnap8sypbfdqwxckc8h66g3ixjnyr6cqgcrdli"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

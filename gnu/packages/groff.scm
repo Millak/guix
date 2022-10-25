@@ -35,6 +35,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages perl)
@@ -258,3 +259,28 @@ It is typically used to display man pages on a web site.")
 man page format from Markdown.")
     (home-page "https://github.com/apjanke/ronn-ng")
     (license expat)))
+
+(define-public grap
+  (package
+    (name "grap")
+    (version "1.46")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://www.lunabase.org/~faber/Vault/software/grap/grap-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1d4bhhgi64x4cjww7fj0lqgr20w7lqnl2aizj6cndsgyxkywx3ks"))))
+    (build-system gnu-build-system)
+    (native-inputs (list flex bison))
+    (synopsis "Tool for creating graphs with troff")
+    (description
+     "Grap is a language for typesetting graphs specified and
+first implemented by Brian Kernighan and Jon Bentley at Bell Labs.  It is an
+expressive language for describing graphs and incorporating them in typeset
+documents.  It is implemented as a preprocessor to Kernigan's pic language for
+describing languages, so any system that can use pic can use grap.  For sure,
+TeX and groff can use it.")
+    (home-page "https://github.com/snorerot13/grap")
+    (license bsd-3)))

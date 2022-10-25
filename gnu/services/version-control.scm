@@ -405,7 +405,7 @@ access to exported repositories under @file{/srv/git}."
                                (list
                                 (gitolite-configuration-package config))))))
    (description
-    "Setup @command{gitolite}, a Git hosting tool providing access over SSH..
+    "Set up @command{gitolite}, a Git hosting tool providing access over SSH.
 By default, the @code{git} user is used, but this is configurable.
 Additionally, Gitolite can integrate with with tools like gitweb or cgit to
 provide a web interface to view selected repositories.")))

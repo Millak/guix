@@ -397,7 +397,7 @@ older games.")
   ;; This is not a patch staging area for DOSBox, but an unaffiliated fork.
   (package
     (name "dosbox-staging")
-    (version "0.78.1")
+    (version "0.79.1")
     (source
      (origin
        (method git-fetch)
@@ -406,7 +406,7 @@ older games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16byip1j9ckq0ik7ilrj0fc9dal3495s48xd21drpbb8q9jwb342"))))
+        (base32 "0wdnkz3djjc514hn945fr9g9mnpnvk16fan84ny9g5wxak6dvsqp"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -420,19 +420,23 @@ older games.")
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-includes
                  (lambda _
+                   ;; This unnecessary file has an encoding error.
+                   (delete-file "./src/libs/sdlcd/macosx/SDLOSXCAGuard.h")
                    (substitute* (find-files "." "\\.(cpp|h)")
                      (("^(#include <)(SDL[_.])" _ include file)
                       (string-append include "SDL2/" file))))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("fluidsynth" ,fluidsynth)
-       ("libpng" ,libpng)
-       ("mesa" ,mesa)
-       ("opusfile" ,opusfile)
-       ("sdl2" ,(sdl-union (list sdl2 sdl2-net)))
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           fluidsynth
+           iir
+           libpng
+           mesa
+           opusfile
+           (sdl-union (list sdl2 sdl2-net))
+           speexdsp
+           zlib))
     (home-page "https://dosbox-staging.github.io")
     (synopsis "DOS/x86 PC emulator focusing on ease of use")
     (description
@@ -1505,31 +1509,31 @@ multi-system game/emulator system.")
 (define-public scummvm
   (package
     (name "scummvm")
-    (version "2.6.0")
+    (version "2.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://downloads.scummvm.org/frs/scummvm/" version
                            "/scummvm-" version ".tar.xz"))
        (sha256
-        (base32 "05zw9xqdix88f8p3py2rfnyiaxr2sbifkqi9s5gy3nf9s3l3h50w"))))
+        (base32 "1s8psdn3a3hqvvfgmlfxrqqdw8hbr0zyrvirzsnzh6yxmgpvkbwg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                                 ;require "git"
-       #:configure-flags (list "--enable-release") ;for optimizations
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           ;; configure does not work followed by both "SHELL=..." and
-           ;; "CONFIG_SHELL=..."; set environment variables instead
-           (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bash (search-input-file inputs "/bin/bash"))
-                    (flags `(,(string-append "--prefix=" out)
+     (list
+      #:tests? #f                                   ;require "git"
+      #:configure-flags #~(list "--enable-release") ;for optimizations
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; configure does not work followed by both "SHELL=..." and
+            ;; "CONFIG_SHELL=..."; set environment variables instead
+            (lambda* (#:key inputs configure-flags #:allow-other-keys)
+              (let ((bash (search-input-file inputs "/bin/bash"))
+                    (flags `(,(string-append "--prefix=" #$output)
                              ,@configure-flags)))
-               (setenv "SHELL" bash)
-               (setenv "CONFIG_SHELL" bash)
-               (apply invoke "./configure" flags)))))))
+                (setenv "SHELL" bash)
+                (setenv "CONFIG_SHELL" bash)
+                (apply invoke "./configure" flags)))))))
     (native-inputs
      (list nasm pkg-config))
     (inputs

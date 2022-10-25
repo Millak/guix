@@ -110,7 +110,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.23.8")
+    (version "0.23.10")
     (source (origin
               (method url-fetch)
               (uri
@@ -119,7 +119,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1kvq9shd6b7y02r386s1chjmvs44wij5bfzn6qgq46dmyfdmdfw6"))))
+                "1a764k504nh9vqmsd92qh8sg03fwns19d7mypm618j6c8bmqqp30"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -158,6 +158,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                   libsndfile
                   libvorbis
                   opus
+                  pipewire-0.3
                   pulseaudio
                   sqlite
                   zlib))

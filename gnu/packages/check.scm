@@ -39,6 +39,7 @@
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1092,6 +1093,28 @@ and many external plugins.")
     (license license:expat)))
 
 (define-public python-pytest-6 python-pytest)
+
+;; Astropy started using hard dependencies for Pytest 7+, which might
+;; happen for some other projects. It could be set as default in staging.
+(define-public python-pytest-7.1
+  (package
+    (inherit python-pytest)
+    (version "7.1.3")
+    (name "python-pytest")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest" version))
+       (sha256
+        (base32
+         "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-pytest)
+      ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'build 'pretend-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))))
 
 (define-public python-pytest-bootstrap
   (package
@@ -2251,7 +2274,7 @@ failures.")
     (home-page "https://github.com/ktosiek/pytest-freezegun")
     (synopsis "Pytest plugin to freeze time in test fixtures")
     (description "The @code{pytest-freezegun} plugin wraps tests and fixtures
-with @code{freeze_time}, which allows to control (i.e., freeze) the time seen
+with @code{freeze_time}, which controls (i.e., freeze) the time seen
 by the test.")
     (license license:expat)))
 

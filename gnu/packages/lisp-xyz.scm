@@ -186,6 +186,73 @@ portable between implementations.")
 (define-public ecl-alexandria
   (sbcl-package->ecl-package sbcl-alexandria))
 
+(define-public sbcl-stdutils
+  (let ((commit "4a4e5a4036b815318282da5dee2a22825369137b")
+        (revision "0"))
+    (package
+      (name "sbcl-stdutils")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/eslick/cl-stdutils")
+               (commit commit)))
+         (file-name (git-file-name "cl-stdutils" version))
+         (sha256
+          (base32 "16vxxphqdq8264x0aanm36x9r6d3ci1gjf4vf46mwl59gcff4wcj"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments '(#:tests? #f)) ; There are no tests.
+      (inputs
+        (list sbcl-cl-fad
+              sbcl-cl-ppcre))
+      (home-page "https://github.com/eslick/cl-stdutils/")
+      (synopsis "Grab bag of Common Lisp utility functions")
+      (description
+       "This package provides a grab bag of miscellaneous Common Lisp
+utilities.")
+      (license license:bsd-3))))
+
+(define-public cl-stdutils
+  (sbcl-package->cl-source-package sbcl-stdutils))
+
+(define-public ecl-stdutils
+  (sbcl-package->ecl-package sbcl-stdutils))
+
+(define-public sbcl-langutils
+  (let ((commit "38beec7a82eeb35b0bfb0824a41d13ed94fc648b")
+        (revision "0"))
+    (package
+      (name "sbcl-langutils")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/eslick/cl-langutils")
+               (commit commit)))
+         (file-name (git-file-name "cl-langutils" version))
+         (sha256
+          (base32 "15y9x5wkg3fqndc04w2sc650fnwimxp4gjgpv9xvvdm9x4v433x6"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments '(#:tests? #f)) ; There are no tests.
+      (inputs
+        (list sbcl-stdutils
+              sbcl-s-xml-rpc))
+      (home-page "https://langutils.common-lisp.dev/")
+      (synopsis "Common Lisp natural language processing toolkit")
+      (description
+       "This package provides a hierarchy of major functions and auxiliary
+functions related to the structured analysis and processing of open
+text.")
+      (license license:bsd-3))))
+
+(define-public cl-langutils
+  (sbcl-package->cl-source-package sbcl-langutils))
+
+(define-public ecl-langutils
+  (sbcl-package->ecl-package sbcl-langutils))
+
 (define-public sbcl-alea
   (package
     (name "sbcl-alea")
@@ -840,6 +907,41 @@ grammar.")
 
 (define-public ecl-cl-abnf
   (sbcl-package->ecl-package sbcl-cl-abnf))
+
+(define-public sbcl-select
+  (let ((commit "df7920fc451b6d15345040ce4a3ee1ea2818ab1a")
+        (revision "0"))
+    (package
+      (name "sbcl-select")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lisp-Stat/select")
+               (commit commit)))
+         (file-name (git-file-name "cl-select" version))
+         (sha256
+          (base32 "0bhpvfqp7n33pia4y62qi31bx86gjl2nxjy529rfawac57c9rxv3"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+        (list sbcl-alexandria
+              sbcl-anaphora
+              sbcl-let-plus))
+      (native-inputs
+        (list sbcl-fiveam))
+      (home-page "https://lisp-stat.github.io/select/")
+      (synopsis "Library for taking slices from array-like objects")
+      (description
+       "This is a library for selecting portions of sequences, arrays or
+data-frames.")
+      (license license:ms-pl))))
+
+(define-public cl-select
+  (sbcl-package->cl-source-package sbcl-select))
+
+(define-public ecl-select
+  (sbcl-package->ecl-package sbcl-select))
 
 (define-public sbcl-cl-ppcre
   (package
@@ -2426,7 +2528,7 @@ also be supported.")
 (define-public sbcl-ironclad
   (package
     (name "sbcl-ironclad")
-    (version "0.57")
+    (version "0.58")
     (source
      (origin
        (method git-fetch)
@@ -2434,7 +2536,7 @@ also be supported.")
              (url "https://github.com/sharplispers/ironclad/")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "123qnf4rmi06vyfmnpdzbjskz8vk35kppjpmms21bxhb7rhxzlh2"))
+        (base32 "17plga14y1425g7midysj49x12kssqa77l43cr3sm9976zpya8i8"))
        (file-name (git-file-name "cl-ironclad" version))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
@@ -3707,7 +3809,7 @@ is a library for creating graphical user interfaces.")
 (define-public sbcl-cl-webkit
   (package
     (name "sbcl-cl-webkit")
-    (version "3.5.4")
+    (version "3.5.5")
     (source
      (origin
        (method git-fetch)
@@ -3717,7 +3819,7 @@ is a library for creating graphical user interfaces.")
        (file-name (git-file-name "cl-webkit" version))
        (sha256
         (base32
-         "072c6m63w9q4nr3lsvavi2i71qyfgygdpyqy659l0n81n7mjy2cr"))))
+         "1wbz8h9f76crwkpxn4wvkd05lz66zd7lhjag5g5n9fwvlrf2bh3d"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      `(("cffi" ,sbcl-cffi)
@@ -4057,6 +4159,30 @@ the abstraction and portability layer as thin as possible.")
 (define-public ecl-usocket
   (sbcl-package->ecl-package sbcl-usocket))
 
+(define-public sbcl-trivial-sockets
+  (package
+    (name "sbcl-trivial-sockets")
+    (version "0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/usocket/trivial-sockets/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-trivial-sockets" version))
+       (sha256
+        (base32 "0xj9x5z3psxqap9c29qz1xswx5fiqxyzd35kmbw2g6z08cgb7nd0"))))
+    (build-system asdf-build-system/sbcl)
+    (home-page "https://github.com/usocket/trivial-sockets")
+    (synopsis "Simple socket library for Common Lisp")
+    (description
+     "This library is a portable socket interface that allows CL programs to
+open connected (client) stream sockets to network services.")
+    (license license:expat)))
+
+(define-public cl-trivial-sockets
+  (sbcl-package->cl-source-package sbcl-trivial-sockets))
+
 (define-public sbcl-s-xml
   (package
     (name "sbcl-s-xml")
@@ -4312,8 +4438,8 @@ RFC 1321 by R. Rivest, published April 1992.")
      (list ecl-flexi-streams))))
 
 (define-public sbcl-cl+ssl
-  (let ((commit "046d698cf65539faf9aba0a5ccd086a9d6f53eef")
-        (revision "3"))
+  (let ((commit "8c13317509136e6722a25be51b74b813bbb32f9e")
+        (revision "4"))
     (package
       (name "sbcl-cl+ssl")
       (version (git-version "0.0.0" revision commit))
@@ -4325,7 +4451,7 @@ RFC 1321 by R. Rivest, published April 1992.")
                (commit commit)))
          (file-name (git-file-name "cl+ssl" version))
          (sha256
-          (base32 "110yhb0f1c8yilqsgza2xhv3675i41iizylibgy5qc5fa2lnaxbv"))))
+          (base32 "1cdq9dzk804y8bm874q8755yk4iz2z735ksm8waxl52kpfw8ai99"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
@@ -4349,7 +4475,8 @@ RFC 1321 by R. Rivest, published April 1992.")
                   "")))))))
       (native-inputs
        (list ;sbcl-cl-coveralls
-             sbcl-fiveam))
+             sbcl-fiveam
+             sbcl-trivial-sockets))
       (inputs
        (list openssl
              sbcl-cffi
@@ -4372,7 +4499,17 @@ Development into CL+SSL was done by David Lichteblau.")
   (sbcl-package->cl-source-package sbcl-cl+ssl))
 
 (define-public ecl-cl+ssl
-  (sbcl-package->ecl-package sbcl-cl+ssl))
+  ;; The trivial-sockets system used for the tests doesn't support ECL, so we
+  ;; remove it from native-inputs and disable the tests.
+  (let ((pkg (sbcl-package->ecl-package sbcl-cl+ssl)))
+    (package
+      (inherit pkg)
+      (native-inputs
+       (modify-inputs (package-native-inputs pkg)
+         (delete "sbcl-trivial-sockets")))
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-kmrcl
   (let ((version "1.111")
@@ -15622,11 +15759,11 @@ dynamically.")
   (sbcl-package->cl-source-package sbcl-sxql-composer))
 
 (define-public sbcl-cl-i18n
-  (let ((commit "4216fe9fc7b54033c0d881dbb835b7af786365ed")
+  (let ((commit "5b569f3fe4c76d600fafecac507ac4f50e4cc1d1")
         (revision "1"))
     (package
       (name "sbcl-cl-i18n")
-      (version (git-version "0.5.1" revision commit))
+      (version (git-version "0.5.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -15635,7 +15772,7 @@ dynamically.")
                (commit commit)))
          (file-name (git-file-name "cl-i18n" version))
          (sha256
-          (base32 "1mdhfkk61djj39vgnns5y1cssd12h0m1cfwd21m8xpa2l3rqvmgf"))))
+          (base32 "0kj1wfvlbi7qwq61b0rcdxa0bmb4sfsnh1bj3n5jxp24sdib73w2"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-babel sbcl-cl-ppcre-unicode))
@@ -21826,6 +21963,40 @@ on top of Hunchentoot.")
 (define-public ecl-simple-routes
   (sbcl-package->ecl-package sbcl-simple-routes))
 
+(define-public sbcl-eris
+  (package
+    (name "sbcl-eris")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.ykonai.net/eris-cl")
+             (commit version)))
+       (file-name (git-file-name "cl-eris" version))
+       (sha256
+        (base32 "0qm74ld70aic39giamvix88500flv86047a82rx9gkjwaisf58rc"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-fiveam))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-bordeaux-threads
+           sbcl-function-cache
+           sbcl-ironclad
+           sbcl-mmap
+           sbcl-osicat
+           sbcl-serapeum
+           sbcl-trivial-gray-streams))
+    (home-page "https://git.ykonai.net/eris-cl/")
+    (synopsis "ERIS implementation for Common Lisp")
+    (description
+     "This is a Common Lisp implementation of the Encoding for Robust Immutable
+Storage specification (ERIS).")
+    (license license:lgpl3+)))
+
+(define-public cl-eris
+  (sbcl-package->cl-source-package sbcl-eris))
+
 (define-public sbcl-cl-ipfs-api2
   (let ((commit "3ee52c80023bcc662f7d01276ea0a5814bd0011b")
         (revision "0"))
@@ -21863,11 +22034,11 @@ for Common Lisp, using the HTTP API for (almost) everything, except for pubsub
   (sbcl-package->ecl-package sbcl-cl-ipfs-api2))
 
 (define-public sbcl-purgatory
-  (let ((commit "ade0d60a14a1067b9cc8cf06d1f1a1ca8cecdb03")
+  (let ((commit "3afd8f6bb4093ffb2f39ffdedf11278b3617fff9")
         (revision "1"))
     (package
       (name "sbcl-purgatory")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "0.1.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -21876,7 +22047,7 @@ for Common Lisp, using the HTTP API for (almost) everything, except for pubsub
                (commit commit)))
          (file-name (git-file-name "cl-purgatory" version))
          (sha256
-          (base32 "1mwlalymmfbx1jx5wzqcnpg5h8d0ylllm1p3f4lwaawfv05lk82s"))))
+          (base32 "0iy2jdgrwqrq9cph7bwf79d8l4zdsgcd9sfcn0lclzai2v0yizp9"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -22284,7 +22455,7 @@ JSON handling.  Load the parser backend you prefer!
       (synopsis "Kenny's utilities for Common Lisp")
       (description
        "This library contains generic hacks meant to be used in any project.
-It was originally developped for the Cells library.")
+It was originally developed for the Cells library.")
       (license license:expat))))
 
 (define-public cl-utils-kt
@@ -22792,7 +22963,7 @@ to dispatch on the basis of types rather than classes.")
       (description
        "This library lets you build a metaclass which in turn lets you specify
 extra slot options in its classes.  Options may be easily inspected and custom
-inheritence may be set up.  The Meta-Object Protocol (MOP) is used for the
+inheritance may be set up.  The Meta-Object Protocol (MOP) is used for the
 implementation - through @code{closer-mop}.  Some convenience function for
 processing slot options are also available.
 

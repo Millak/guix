@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -24,6 +24,7 @@
                 #:select (resolve-uri-reference))
   #:use-module (json)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-19)
   #:use-module (ice-9 match)
   #:use-module (web uri)
   #:use-module (guix i18n)
@@ -42,6 +43,9 @@
             build-system
             build-status
             build-timestamp
+            build-start-time
+            build-stop-time
+            build-duration
             build-products
 
             checkout?
@@ -84,6 +88,11 @@
 ;;;
 ;;; Code:
 
+(define (seconds->date seconds)
+  "Given SECONDS, a number of seconds since 1970-01-01, return the
+corresponding date object."
+  (time-utc->date (make-time time-utc 0 seconds)))
+
 (define-json-mapping <build-product> make-build-product
   build-product?
   json->build-product
@@ -118,6 +127,10 @@
   (status      build-status "buildstatus"         ;symbol
                integer->build-status)
   (timestamp   build-timestamp)                   ;integer
+  (start-time  build-start-time "starttime"       ;date
+               seconds->date)
+  (stop-time   build-stop-time "stoptime"         ;date
+               seconds->date)
   (products    build-products "buildproducts"     ;<build-product>*
                (lambda (products)
                  (map json->build-product
@@ -200,6 +213,14 @@ api-agnostic."
 
 (define* (json-api-fetch base-url path #:rest query)
   (json-fetch (apply api-url base-url path query)))
+
+(define (build-duration build)
+  "Return the duration in seconds of BUILD."
+  (define duration
+    (time-difference (date->time-utc (build-stop-time build))
+                     (date->time-utc (build-start-time build))))
+
+  (time-second duration))
 
 (define* (queued-builds url #:optional (limit %query-limit))
   "Return the list of queued derivations on URL."

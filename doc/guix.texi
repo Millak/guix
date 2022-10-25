@@ -950,9 +950,11 @@ version 3.0.3 or later;
 @item @url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version
 0.1.0 or later;
 @item
-@uref{https://gnutls.org/, GnuTLS}, specifically its Guile bindings
-(@pxref{Guile Preparations, how to install the GnuTLS bindings for
-Guile,, gnutls-guile, GnuTLS-Guile});
+@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile
+Preparations, how to install the GnuTLS bindings for Guile,,
+gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to
+@uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS
+until version 3.7.8 included.};
 @item
 @uref{https://notabug.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0
 or later;
@@ -4645,7 +4647,7 @@ but it supports the following options:
 @itemx --branch=@var{branch}
 Download code for the @code{guix} channel from the specified @var{url}, at the
 given @var{commit} (a valid Git commit ID represented as a hexadecimal
-string), or @var{branch}.
+string or the name of a tag), or @var{branch}.
 
 @cindex @file{channels.scm}, configuration file
 @cindex configuration file for channels
@@ -4797,6 +4799,25 @@ of Guix to be used is defined by a commit or by a channel
 description file created by @command{guix describe}
 (@pxref{Invoking guix describe}).
 
+Let's assume that you want to travel to those days of November 2020 when
+version 1.2.0 of Guix was released and, once you're there, run the
+@command{guile} of that time:
+
+@example
+guix time-machine --commit=v1.2.0 -- \
+  environment -C --ad-hoc guile -- guile
+@end example
+
+The command above fetches Guix@tie{}1.2.0 and runs its @command{guix
+environment} command to spawn an environment in a container running
+@command{guile} (@command{guix environment} has since been subsumed by
+@command{guix shell}; @pxref{Invoking guix shell}).  It's like driving a
+DeLorean@footnote{If you don't know what a DeLorean is, consider
+traveling back to the 1980's.}!  The first @command{guix time-machine}
+invocation can be expensive: it may have to download or even build a
+large number of packages; the result is cached though and subsequent
+commands targeting the same commit are almost instantaneous.
+
 The general syntax is:
 
 @example
@@ -4813,7 +4834,7 @@ this revision are the same as for @command{guix pull} (@pxref{Invoking guix pull
 @itemx --branch=@var{branch}
 Use the @code{guix} channel from the specified @var{url}, at the
 given @var{commit} (a valid Git commit ID represented as a hexadecimal
-string), or @var{branch}.
+string or the name of a tag), or @var{branch}.
 
 @item --channels=@var{file}
 @itemx -C @var{file}
@@ -16525,6 +16546,7 @@ This is a list of symbols denoting mount flags.  Recognized flags
 include @code{read-only}, @code{bind-mount}, @code{no-dev} (disallow
 access to special files), @code{no-suid} (ignore setuid and setgid
 bits), @code{no-atime} (do not update file access times),
+@code{no-diratime} (likewise for directories only),
 @code{strict-atime} (update file access time), @code{lazy-time} (only
 update time on the in-memory version of the file inode),
 @code{no-exec} (disallow program execution), and @code{shared} (make the
@@ -21627,7 +21649,7 @@ The name of the icon theme to use.
 The name of the cursor theme to use.
 
 @item @code{cursor-theme-size} (default: @code{16}) (type: number)
-The size to use for the the cursor theme.
+The size to use for the cursor theme.
 
 @item @code{allow-debugging?} (type: maybe-boolean)
 Set to #t to enable debug log level.
@@ -22962,7 +22984,7 @@ Enable polling the kernel for battery level changes.
 Ignore the lid state, this can be useful if it's incorrect on a device.
 
 @item @code{use-percentage-for-policy?} (default: @code{#t})
-Whether a to use a policy based on battery percentage rather than on
+Whether to use a policy based on battery percentage rather than on
 estimated time left.  A policy based on battery percentage is usually
 more reliable.
 
@@ -26752,7 +26774,7 @@ When left unspecified, the value from the account archive prevails.
 Whether peer discovery should be enabled.  Peer discovery is used to
 discover other OpenDHT nodes on the local network, which can be useful
 to maintain communication between devices on such network even when the
-connection to the the Internet has been lost.  When left unspecified,
+connection to the Internet has been lost.  When left unspecified,
 the value from the account archive prevails.
 
 @item @code{bootstrap-hostnames} (type: maybe-string-list)
@@ -30989,7 +31011,7 @@ can run on headless servers.  The Xvnc implementations provided by the
 
 The @code{xvnc-server-type} service can be configured via the
 @code{xvnc-configuration} record, documented below.  A second virtual
-display could be made available on a remote machine for via the
+display could be made available on a remote machine via the
 following configuration:
 @end defvar
 
@@ -30998,7 +31020,7 @@ following configuration:
 @end lisp
 
 As a demonstration, the @command{xclock} command could then be started
-on the remote machine on display number 10, and it could be display
+on the remote machine on display number 10, and it could be displayed
 locally via the @command{vncviewer} command:
 @example
 # Start xclock on the remote machine.
@@ -31420,6 +31442,24 @@ the file does not exist.
 @item @code{peers} (default: @code{'()})
 The authorized peers on this interface.  This is a list of
 @var{wireguard-peer} records.
+
+@item @code{pre-up} (default: @code{'()})
+The script commands to be run before setting up the interface.
+
+@item @code{post-up} (default: @code{'()})
+The script commands to be run after setting up the interface.
+
+@item @code{pre-down} (default: @code{'()})
+The script commands to be run before tearing down the interface.
+
+@item @code{post-down} (default: @code{'()})
+The script commands to be run after tearing down the interface.
+
+@item @code{table} (default: @code{"auto"})
+The routing table to which routes are added, as a string.  There are two
+special values: @code{"off"} that disables the creation of routes
+altogether, and @code{"auto"} (the default) that adds routes to the
+default table and enables special handling of default routes.
 
 @end table
 @end deftp
@@ -35578,7 +35618,21 @@ Data type representing the configuration for @code{gitolite-service-type}.
 
 @table @asis
 @item @code{package} (default: @var{gitolite})
-Gitolite package to use.
+Gitolite package to use.  There are optional Gitolite dependencies that
+are not included in the default package, such as Redis and git-annex.
+These features can be made available by using the @code{make-gitolite}
+procedure in the @code{(gnu packages version-control}) module to produce
+a variant of Gitolite with the desired additional dependencies.
+
+The following code returns a package in which the Redis and git-annex
+programs can be invoked by Gitolite's scripts:
+
+@example
+(use-modules (gnu packages databases)
+             (gnu packages haskell-apps)
+             (gnu packages version-control))
+(make-gitolite (list redis git-annex))
+@end example
 
 @item @code{user} (default: @var{git})
 User to use for Gitolite.  This will be user that you use when accessing

@@ -7509,7 +7509,7 @@ GenomicRanges operations.")
              r-stringr
              r-variantannotation))
       (home-page "https://github.com/mskilab/skitools/")
-      (synopsis "Various mskilab R utilties")
+      (synopsis "Various mskilab R utilities")
       (description
        "This package provides R miscellaneous utilities for basic data
 manipulation, debugging, visualization, lsf management, and common mskilab
@@ -7859,7 +7859,7 @@ single-cell data.")
 to dissect cell communication in a global manner.  It integrates an original
 expert-curated database of ligand-receptor interactions taking into account
 multiple subunits expression.  Based on transcriptomic profiles (gene
-expression), this package allows to compute communication scores between cells
+expression), this package computes communication scores between cells
 and provides several visualization modes that can be helpful to dig into
 cell-cell interaction mechanism and extend biological knowledge.")
       (license license:gpl3))))

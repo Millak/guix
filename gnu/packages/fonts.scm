@@ -11,7 +11,7 @@
 ;;; Copyright © 2016 Jookia <166291@gmail.com>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Dmitry Nikolaev <cameltheman@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Toni Reina <areina@riseup.net>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -85,6 +85,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
@@ -847,7 +848,7 @@ for use at smaller text sizes")))
 (define-public font-gnu-unifont
   (package
     (name "font-gnu-unifont")
-    (version "14.0.04")
+    (version "15.0.01")
     (source
      (origin
        (method url-fetch)
@@ -857,31 +858,45 @@ for use at smaller text sizes")))
              (string-append "mirror://gnu/unifont/unifont-"
                             version "/unifont-" version ".tar.gz")))
        (sha256
-        (base32 "1fzycjxmgnq77r2s5914w1phg3qdwwnwa6p3zyfa1cscrxy52phz"))))
+        (base32 "1m9lfss6sbmcr0b6h7pxxmdl71j9dmnvk8idvxzylqrwpwjaj4bx"))
+       (snippet
+        '(begin
+           (use-modules (guix build utils))
+           (delete-file-recursively "font/precompiled")))))
     (build-system gnu-build-system)
-    (outputs '("out"   ; TrueType version
+    (outputs '("out"   ; TrueType/OpenType version
                "pcf"   ; PCF (bitmap) version
                "psf"   ; PSF (console) version
                "bin")) ; Utilities to manipulate '.hex' format
     (arguments
      `(#:tests? #f          ; no check target
        #:make-flags
-       (list (string-append "CC=" ,(cc-for-target)))
+       (list (string-append "CC=" ,(cc-for-target))
+             "BUILDFONT=TRUE")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
+         (add-after 'unpack 'patch-source
+           (lambda _
+             (substitute* (find-files "." "Makefile")
+               (("/bin/sh -s") (string-append (which "sh") " -s")))))
          (replace 'install
           (lambda* (#:key make-flags outputs #:allow-other-keys)
             (let* ((ttf (string-append (assoc-ref outputs "out")
                                        "/share/fonts/truetype"))
+                   (otf (string-append (assoc-ref outputs "out")
+                                       "/share/fonts/opentype"))
                    (pcf (string-append (assoc-ref outputs "pcf")
                                        "/share/fonts/misc"))
                    (psf (string-append (assoc-ref outputs "psf")
                                        "/share/consolefonts"))
                    (bin (assoc-ref outputs "bin")))
+              ;; This directory isn't created in fonts/Makefile.
+              (mkdir-p otf)
               (apply invoke "make" "install"
                      (string-append "PREFIX=" bin)
                      (string-append "TTFDEST=" ttf)
+                     (string-append "OTFDEST=" otf)
                      (string-append "PCFDEST=" pcf)
                      (string-append "CONSOLEDEST=" psf)
                      make-flags)
@@ -890,8 +905,10 @@ for use at smaller text sizes")))
               (invoke "gzip" "-9n" "doc/unifont.info")
               (install-file "doc/unifont.info.gz"
                             (string-append bin "/share/info"))))))))
+    (native-inputs
+     (list bdftopcf console-setup fontforge))
     (inputs
-     (list perl)) ; for utilities
+     (list perl perl-gd))       ; for utilities
     (synopsis
      "Large bitmap font covering Unicode's Basic Multilingual Plane")
     (description
@@ -1880,7 +1897,7 @@ ExtraLight, Light, Book, Medium, Semibold, Bold & ExtraBold")
                #t))))))
     (native-inputs
      (list fontforge))
-    (home-page "http://culmus.sourceforge.net/")
+    (home-page "https://culmus.sourceforge.io/")
     (synopsis "TrueType Hebrew Fonts for X11")
     (description "14 Hebrew trivial families.  Contain ASCII glyphs from various
 sources.  Those families provide a basic set of a serif (Frank Ruehl), sans

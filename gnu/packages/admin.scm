@@ -54,6 +54,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Andreas Rammhold <andreas@rammhold.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3211,13 +3212,13 @@ platform-specific methods.")
   (package
     (name "audit")
     (home-page "https://people.redhat.com/sgrubb/audit/")
-    (version "3.0.8")
+    (version "3.0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "audit-" version ".tar.gz"))
               (sha256
                (base32
-                "04w9m9ffvi58z11i344wa1hji9ba68cdklrkizhiwf39mnwxkx5m"))))
+                "0y5w8pl91xapi49ih1pw7h48lac201cj7fm89hkklmzi9m2715gx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--with-python=no"
@@ -5596,3 +5597,52 @@ mechanisms if you really want to protect services.")
 several hosts in succession or in parallel.  It can also be used to copy a
 file or files to several hosts.")
     (license license:gpl3+)))
+
+(define-public doctl
+  (package
+    (name "doctl")
+    (version "1.84.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/digitalocean/doctl")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jmqvz1rdqrsr4l0bv3ik1jla0xnbdvcmnw9892acvfs3wsmliyc"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/digitalocean/doctl/cmd/doctl"
+           #:unpack-path "github.com/digitalocean/doctl"
+           #:go go-1.19
+           #:build-flags
+           #~(list (string-append "-ldflags=-X github.com/digitalocean/doctl.Label=release"
+                                  " -X github.com/digitalocean/doctl.Major="
+                                  (car (string-split #$version #\.))
+                                  " -X github.com/digitalocean/doctl.Minor="
+                                  (cadr (string-split #$version #\.))
+                                  " -X github.com/digitalocean/doctl.Patch="
+                                  (caddr (string-split #$version #\.))))
+           #:install-source? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-completions
+                 (lambda _
+                   (define (install-completion shell file)
+                     (let ((file (string-append #$output file)))
+                       (mkdir-p (dirname file))
+                       (with-output-to-file file
+                         (lambda _
+                           (invoke (string-append #$output "/bin/doctl")
+                                   "completion" shell)))))
+                   (install-completion "bash" "/etc/bash_completion.d/doctl")
+                   (install-completion "fish"
+                                       "/etc/fish/completions/doctl.fish")
+                   (install-completion "zsh"
+                                       "/etc/zsh/site-functions/_doctl"))))))
+    (home-page "https://github.com/digitalocean/doctl")
+    (synopsis "Command line client for DigitalOcean")
+    (description
+     "@code{doctl} provides a unified command line interface to the DigitalOcean API.")
+    (license license:asl2.0)))

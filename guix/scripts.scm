@@ -22,7 +22,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix scripts)
-  #:use-module (guix grafts)
   #:use-module (guix utils)
   #:use-module (guix ui)
   #:use-module (guix store)

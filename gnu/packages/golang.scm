@@ -36,6 +36,7 @@
 ;;; Copyright © 2022 Pier-Hugues Pellerin <phpellerin@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1333,9 +1334,9 @@ configuration file.")
                  "github.com/savsgio/gotils/time"
                  "github.com/savsgio/gotils/uuid")))))))
       (home-page "https://github.com/savsgio/gotils")
-      (synopsis "Golang utlities")
+      (synopsis "Golang utilities")
       (description
-       "Golang utlities to make your life easier with zero allocations.")
+       "Golang utilities to make your life easier with zero allocations.")
       (license license:asl2.0))))
 
 (define-public go-github-com-riobard-go-bloom
@@ -3268,7 +3269,7 @@ optimized for performance yet simple to use.")
 (define-public go-github-com-tomnomnom-gron
   (package
     (name "gron")
-    (version "0.6.1")
+    (version "0.7.1")
     (home-page "https://github.com/tomnomnom/gron")
     (source
      (origin
@@ -3278,7 +3279,7 @@ optimized for performance yet simple to use.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qmzawkhg0qn9kxxrssbdjni2khvamhrcklv3yxc0ljmh77mh61m"))))
+        (base32 "1sj34b6yv0qigy3aq7qmwf8bqxp1a8qh9p10lzkpw58s1c0iyh36"))))
     (build-system go-build-system)
     (arguments
      (let ((import-path "github.com/tomnomnom/gron"))
@@ -5449,8 +5450,8 @@ as conversion to and from @command{net.Addr}.")
       (license license:expat))))
 
 (define-public go-github-com-sabhiram-go-gitignore
-  (let ((commit "d3107576ba9425fc1c85f4b3569c4631b805a02e")
-        (revision "0"))
+  (let ((commit "525f6e181f062064d83887ed2530e3b1ba0bc95a")
+        (revision "1"))
     (package
       (name "go-github-com-sabhiram-go-gitignore")
       (version (git-version "1.0.2" revision commit))
@@ -5463,7 +5464,7 @@ as conversion to and from @command{net.Addr}.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1rdwyxgcsiwgmlqnc3k6h300mzlvjc3j21np4yh1h476wc8dvl0l"))))
+           "197giv3snczvbihzvkja5pq53yw5fc516rnjm71hni8gawb8jmh3"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path
@@ -8364,6 +8365,76 @@ configuration languages, but other uses may be possible too.")
     (synopsis "Low-level key/value store in Go")
     (description "This package implements a low-level key/value store in Go.")
     (license license:expat)))
+
+(define-public go-filippo-io-age
+  (package
+    (name "go-filippo-io-age")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FiloSottile/age")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19fz68n262kvg2ssw4r6nik30zk6g6cy7rdi0fm05czwigqrdz1i"))))
+    (build-system go-build-system)
+    (arguments `(#:import-path "filippo.io/age"))
+    (inputs
+     (list go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-crypto
+           go-filippo-io-edwards25519))
+    (home-page "https://filippo.io/age")
+    (synopsis "Secure file encryption tool, format, and Go library")
+    (description
+     "This package implements file encryption according to the
+@{age-encryption.org/v1, https://age-encryption.org/v1} specification.
+It features small explicit keys, no configuration options, and Unix-style
+composability.")
+    (license license:bsd-3)))
+
+(define-public age
+  (package
+    (inherit go-filippo-io-age)
+    (name "age")
+    (arguments
+     `(#:import-path "filippo.io/age/cmd/age"
+       #:unpack-path "filippo.io/age"
+       #:install-source? #f))))
+
+(define-public age-keygen
+  (package
+    (inherit go-filippo-io-age)
+    (name "age-keygen")
+    (arguments
+     `(#:import-path "filippo.io/age/cmd/age-keygen"
+       #:unpack-path "filippo.io/age"
+       #:install-source? #f))))
+
+(define-public go-filippo-io-edwards25519
+  (package
+    (name "go-filippo-io-edwards25519")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FiloSottile/edwards25519")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01m8hpaj0cwp250f7b0din09cf8j6j5y631grx67qfhvfrmwr1zr"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "filippo.io/edwards25519"))
+    (home-page "https://filippo.io/edwards25519")
+    (synopsis "Group logic for the twisted Edwards curve")
+    (description
+     "This package implements the edwards25519 elliptic curve in Go, exposing
+the necessary APIs to build a wide array of higher-level primitives.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-rogpeppe-go-internal
   (package

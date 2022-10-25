@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -34,6 +34,7 @@
   #:use-module (guix store)
   #:autoload   (guix base16) (bytevector->base16-string)
   #:use-module (guix base32)
+  #:autoload   (guix base64) (base64-encode)
   #:use-module (guix build-system)
   #:use-module (guix diagnostics)
   #:use-module (guix download)
@@ -46,7 +47,6 @@
                                 gexp->approximate-sexp))
   #:use-module (guix licenses)
   #:use-module (guix records)
-  #:use-module (guix grafts)
   #:use-module (guix upstream)
   #:use-module (guix utils)
   #:use-module (guix memoization)
@@ -59,10 +59,20 @@
   #:use-module ((guix swh) #:hide (origin?))
   #:autoload   (guix git-download) (git-reference?
                                     git-reference-url git-reference-commit)
+  #:autoload   (guix svn-download) (svn-reference?
+                                    svn-reference-url
+                                    svn-reference-user-name
+                                    svn-reference-password
+
+                                    svn-multi-reference?
+                                    svn-multi-reference-url
+                                    svn-multi-reference-user-name
+                                    svn-multi-reference-password)
   #:use-module (guix import stackage)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 format)
+  #:autoload   (rnrs bytevectors) (string->utf8)
   #:use-module (web client)
   #:use-module (web uri)
   #:use-module ((guix build download)
@@ -721,8 +731,14 @@ response from URI, and additional details, such as the actual HTTP response.
 TIMEOUT is the maximum number of seconds (possibly an inexact number) to wait
 for connections to complete; when TIMEOUT is #f, wait as long as needed."
   (define headers
-    '((User-Agent . "GNU Guile")
-      (Accept . "*/*")))
+    `((User-Agent . "GNU Guile")
+      (Accept . "*/*")
+      ,@(match (uri-userinfo uri)
+          ((? string? str)                        ;"basic authentication"
+           `((Authorization . ,(string-append "Basic "
+                                              (base64-encode
+                                               (string->utf8 str))))))
+          (_ '()))))
 
   (let loop ((uri     uri)
              (visited '()))
@@ -1130,6 +1146,40 @@ descriptions maintained upstream."
     ((uris ...)
      uris)))
 
+(define (svn-reference-uri-with-userinfo ref)
+  "Return the URI of REF, an <svn-reference> or <svn-multi-reference> object,
+but with an additional 'userinfo' part corresponding to REF's user name and
+password, provided REF's URI is HTTP or HTTPS."
+  ;; XXX: For lack of record type inheritance.
+  (define ->url
+    (if (svn-reference? ref)
+        svn-reference-url
+        svn-multi-reference-url))
+  (define ->user-name
+    (if (svn-reference? ref)
+        svn-reference-user-name
+        svn-multi-reference-user-name))
+  (define ->password
+    (if (svn-reference? ref)
+        svn-reference-password
+        svn-multi-reference-password))
+
+  (let ((uri (string->uri (->url ref))))
+    (if (and (->user-name ref)
+             (memq (uri-scheme uri) '(http https)))
+        (build-uri (uri-scheme uri)
+                   #:userinfo
+                   (string-append (->user-name ref)
+                                  (if (->password ref)
+                                      (string-append
+                                       ":" (->password ref))
+                                      ""))
+                   #:host (uri-host uri)
+                   #:port (uri-port uri)
+                   #:query (uri-query uri)
+                   #:fragment (uri-fragment uri))
+        uri)))
+
 (define (check-source package)
   "Emit a warning if PACKAGE has an invalid 'source' field, or if that
 'source' is not reachable."
@@ -1175,6 +1225,12 @@ descriptions maintained upstream."
          ((git-reference? (origin-uri origin))
           (warnings-for-uris
            (list (string->uri (git-reference-url (origin-uri origin))))))
+         ((or (svn-reference? (origin-uri origin))
+              (svn-multi-reference? (origin-uri origin)))
+          (let ((uri (svn-reference-uri-with-userinfo (origin-uri origin))))
+            (if (memq (uri-scheme uri) '(http https))
+                (warnings-for-uris (list uri))
+                '())))                            ;TODO: handle svn:// URLs
          (else
           '()))
         '())))

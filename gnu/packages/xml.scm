@@ -176,14 +176,14 @@ things the parser might find in the XML document (like start tags).")
 (define-public libebml
   (package
     (name "libebml")
-    (version "1.4.2")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dl.matroska.org/downloads/libebml/"
                            "libebml-" version ".tar.xz"))
        (sha256
-        (base32 "1wmri5c94b02q2z32bqlpfs4vbw0n0c602321wigna2qw1y27is1"))))
+        (base32 "19w74q2makq4qz1cjsrlbzglwfhb4497bvbnxq539jbc6n1mzp42"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -1204,7 +1204,7 @@ Libxml2).")
 (define-public minixml
   (package
     (name "minixml")
-    (version "3.3")
+    (version "3.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/michaelrsweet/mxml/"
@@ -1212,13 +1212,13 @@ Libxml2).")
                                   "/mxml-" version ".tar.gz"))
               (sha256
                (base32
-                "1n1xzvhnsjsgsqaq1rg9zilwf0b2rydsadbxzy64z3lydwv7dybw"))))
+                "0cncvb0xhbq2i7rszj6pmcs3b97f0a17j081z0cmcfrrzv8kwrhc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib"))
-       #:tests? #f))                    ; tests are run during build
+     (list
+      #:configure-flags
+      #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+      #:tests? #f))                    ; tests are run during build
     (home-page "https://www.msweet.org/mxml/")
     (synopsis "Small XML parsing library")
     (description
@@ -1517,7 +1517,7 @@ SAX2 APIs.")
 (define-public xlsxio
   (package
     (name "xlsxio")
-    (version "0.2.29")
+    (version "0.2.33")
     (source
      (origin
        (method git-fetch)
@@ -1526,20 +1526,18 @@ SAX2 APIs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jr6ggzhd8aakdvppcl8scy9j9jafg82zbzr4ih996sz8lrj90fn"))))
+        (base32 "16i3yd168kb63za7jpycpb2by4831gz7wi90vzifdf85csc8c70s"))))
     (native-inputs
      (list expat gnu-make minizip which))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'check)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make" "install"
-                     (string-append
-                      "PREFIX=" (assoc-ref outputs "out"))))))))
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'check))))
     (synopsis "C library for reading and writing .xlsx files")
     (description "XLSX I/O aims to provide a C library for reading and writing
 .xlsx files.  The .xlsx file format is the native format used by Microsoft(R)

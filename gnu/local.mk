@@ -1194,7 +1194,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghostscript-no-header-id.patch		\
   %D%/packages/patches/ghostscript-no-header-uuid.patch		\
   %D%/packages/patches/ghostscript-no-header-creationdate.patch \
-  %D%/packages/patches/giac-pari-gp-anyarg.patch		\
   %D%/packages/patches/giara-fix-login.patch                      \
   %D%/packages/patches/glib-appinfo-watch.patch			\
   %D%/packages/patches/glib-networking-gnutls-binding.patch	\
@@ -1814,7 +1813,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-nettle-disable-vendor.patch		 \
   %D%/packages/patches/rust-nettle-sys-disable-vendor.patch	 \
   %D%/packages/patches/rust-openssl-sys-no-vendor.patch	\
-  %D%/packages/patches/rust-shell2batch-lint-fix.patch		\
   %D%/packages/patches/rust-wl-clipboard-rs-newer-wl.patch      \
   %D%/packages/patches/sbc-fix-build-non-x86.patch		\
   %D%/packages/patches/sbcl-aserve-add-HTML-5-elements.patch	\

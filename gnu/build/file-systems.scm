@@ -1132,6 +1132,8 @@ corresponds to the symbols listed in FLAGS."
        (logior MS_NOEXEC (loop rest)))
       (('no-atime rest ...)
        (logior MS_NOATIME (loop rest)))
+      (('no-diratime rest ...)
+       (logior MS_NODIRATIME (loop rest)))
       (('strict-atime rest ...)
        (logior MS_STRICTATIME (loop rest)))
       (('lazy-time rest ...)

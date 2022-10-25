@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1481,6 +1482,30 @@ data as HDF5.  It can save any Python data structure, offering the same ease
 of use as pickling or @code{numpy.save}, but with the language
 interoperability offered by HDF5.")
     (license license:bsd-3)))
+
+(define-public python-simple-pid
+  (package
+    (name "python-simple-pid")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "simple-pid" version))
+              (sha256
+               (base32
+                "094mz6rmfq1h0gpns5vlxb7xf9297hlkhndw7g9k95ziqfkv7mk0"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "unittest" "discover" "tests/")))))))
+    (home-page "https://github.com/m-lundberg/simple-pid")
+    (synopsis "Easy to use PID controller")
+    (description "This package provides a simple and easy-to-use @acronym{PID,
+proportional-integral-derivative} controller.")
+    (license license:expat)))
 
 (define-public python-opt-einsum
   (package

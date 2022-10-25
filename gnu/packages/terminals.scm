@@ -1097,14 +1097,13 @@ than a terminal.")
 (define-public python-curtsies
   (package
     (name "python-curtsies")
-    (version "0.3.5")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "curtsies" version))
        (sha256
-        (base32
-         "1g8dwafx4vx06isjkn28r3cwb0hw1bv67lgygaz34yk66lrzz1x5"))))
+        (base32 "1zj284kacv0d10ab3amkkx37hcciylkqympsksi9bwzy6g7fyafb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1113,9 +1112,9 @@ than a terminal.")
            (lambda _
              (invoke "nosetests" "-v"))))))
     (propagated-inputs
-     (list python-blessings python-cwcwidth))
+     (list python-blessed python-cwcwidth))
     (native-inputs
-     (list python-mock python-pyte python-nose))
+     (list python-pyte python-nose))
     (home-page "https://github.com/bpython/curtsies")
     (synopsis "Library for curses-like terminal interaction with colored
 strings")

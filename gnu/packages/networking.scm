@@ -872,14 +872,14 @@ systems with no further dependencies.")
 (define-public blueman
   (package
     (name "blueman")
-    (version "2.3.2")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/blueman-project/blueman/releases"
                            "/download/" version "/blueman-" version ".tar.xz"))
        (sha256
-        (base32 "1bjh0cx9j2akygiqyxm7g0q74jyx9hpgf186gv3m31vks5zpvkw4"))))
+        (base32 "0lh1aqpdq6vi4agrgmm7fifjbxz2s5qcs3hr7nfjrwrp2j1361n2"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags (list "--enable-polkit"
@@ -2666,7 +2666,7 @@ that block port 22.")
 (define-public iperf
   (package
     (name "iperf")
-    (version "3.11")
+    (version "3.12")
     (source
      (origin
        (method git-fetch)
@@ -2675,7 +2675,7 @@ that block port 22.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "064sb8f9jxi5ii43swd73c0mm50lvk51v7awhgbj6p129c1a4nn5"))))
+        (base32 "0bkmlah8lsm9vciaa9k84x3g1fd0k6nwnsrzp8y04piyiplrvpsi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -4214,14 +4214,14 @@ realistic with today's hardware.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.14")
+    (version "1.0.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1s0j5p0mjh1pda1aq5wm4hd41fh1m864jgbs82y5sshi9whijj57"))
+        (base32 "09iidaan6gq384n7ykdwwsll3vmq6q7zd7j7j721k2p91c9kmzpp"))
        (modules '((guix build utils)))
        (snippet
         '(begin

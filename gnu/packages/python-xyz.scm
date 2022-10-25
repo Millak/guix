@@ -75,7 +75,7 @@
 ;;; Copyright © 2020 Josh Marshall <joshua.r.marshall.1991@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Alex ter Weele <alex.ter.weele@gmail.com>
-;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2020, 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020 Yuval Kogman <nothingmuch@woobling.org>
@@ -495,6 +495,25 @@ and variables you'll need already imported and created.
 @end itemize")
     (home-page "https://github.com/google/python-fire")
     (license license:asl2.0)))
+
+(define-public python-dotmap
+  (package
+    (name "python-dotmap")
+    (version "1.3.30")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dotmap" version))
+              (sha256
+               (base32
+                "0s5kb2v7jd0narz6m6jcicak3h5pw290wz21cdsv8pq77y9sf8aq"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/drgrib/dotmap")
+    (synopsis "Ordered, dynamically-expandable dot-access dictionary")
+    (description
+     "DotMap is a dot-access dictionary subclass that has dynamic
+hierarchy creation, can be initialized with keys, can be initialized from a
+dictionary, can be convert to a dictionary, and is ordered by insertion.")
+    (license license:expat)))
 
 (define-public python-twodict
   (package
@@ -4753,7 +4772,7 @@ ecosystem, but can naturally be used also by other projects.")
 (define-public python-robotframework
   (package
     (name "python-robotframework")
-    (version "5.0")
+    (version "5.0.1")
     ;; There are no tests in the PyPI archive.
     (source
      (origin
@@ -4763,7 +4782,7 @@ ecosystem, but can naturally be used also by other projects.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qcm36c8hachbv3bc05ky7cf63i3sj0y8dw3bwjvcln28i543f81"))
+        (base32 "0jjr71npzrm5mv16pya3m2dqaqgf6sc45yca5kfmc5lfislig5b8"))
        (patches (search-patches
                  "python-robotframework-atest.patch"
                  "python-robotframework-source-date-epoch.patch"))))
@@ -4784,13 +4803,7 @@ ecosystem, but can naturally be used also by other projects.")
               ;; directory not being '/', as is the case in the Guix build
               ;; container.
               (delete-file "atest/robot/standard_libraries/\
-operating_system/path_expansion.robot")
-              ;; FIXME: The test 'Process.Sending Signal.By default signal
-              ;; is not sent to process running in shell' fails for unknown
-              ;; reason (see:
-              ;; https://github.com/robotframework/robotframework/issues/4292).
-              (delete-file "atest/robot/standard_libraries/\
-process/sending_signal.robot")))
+operating_system/path_expansion.robot")))
           (add-before 'build 'build-and-install-doc
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((doc (string-append (assoc-ref outputs "doc")
@@ -4826,7 +4839,7 @@ process/sending_signal.robot")))
                 (invoke "xvfb-run" "atest/run.py")))))))
     (native-inputs
      (list python-docutils
-           python-jsonschema
+           python-jsonschema-next
            python-invoke
            python-lxml
            python-pygments
@@ -4848,13 +4861,13 @@ process automation (RPA).")
 (define-public python-robotframework-datadriver
   (package
     (name "python-robotframework-datadriver")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "robotframework-datadriver" version))
        (sha256
-        (base32 "0qa2vry8jr49k5rbrvmkgggzsmis1wv06dp5dvwmp7afm7vjc51k"))))
+        (base32 "0mcyr3v98nvfnvffy096qp3jqslas7l8hh0j00lpi0mp12cd0qk9"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -4924,7 +4937,7 @@ utility, a static analysis tool (linter) for Robot Framework source files.")
 (define-public python-robotframework-pabot
   (package
     (name "python-robotframework-pabot")
-    (version "2.5.2")
+    (version "2.7.0")
     (source
      (origin
        ;; There are no tests in the PyPI archive.
@@ -4935,7 +4948,7 @@ utility, a static analysis tool (linter) for Robot Framework source files.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "14a8isq1f4lgfwjb84hhzg6jm7ns18dxa9bg6dy8k2ml8zl0qknk"))))
+         "0246vvyaxax0nzlrffvp9vg6mh5jmvbbm87azignf0gakjidr7nn"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -12022,6 +12035,23 @@ independent alignment of columns (left or right justified or centred) and
 printing of sub-tables by specifying a row range.")
     (license license:bsd-3)))
 
+(define-public python-rtf-tokenize
+  (package
+    (name "python-rtf-tokenize")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rtf_tokenize" version))
+              (sha256
+               (base32
+                "026njb9iwznycda83bln3gfivcnzdz6vy8y86xvbsy84s28g6gaw"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/benoit-pierre/rtf_tokenize")
+    (synopsis "Simple RTF tokenizer")
+    (description "This package is a simple RTF tokenizer.")
+    (license license:gpl2+)))
+
 (define-public python-curio
   (package
     (name "python-curio")
@@ -16195,6 +16225,33 @@ modules, which are different and were developed separately, both serve
 the same purpose: to provide Python bindings for libmagic.")
     (license license:expat)))
 
+(define-public s3cmd
+  (package
+    (name "s3cmd")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/s3tools/s3cmd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rdgwwmmp8mdxc84bxq6k9a7v7z2qgc3df47djzs2b84gw81dglx"))))
+    (build-system python-build-system)
+    (inputs
+     (list python-dateutil
+           python-magic))
+    (home-page "https://s3tools.org/s3cmd")
+    (synopsis "Command line tool for S3-compatible storage services")
+    (description
+     "S3cmd is a command line tool for uploading, retrieving and managing data
+in storage services that are compatible with the Amazon Simple Storage
+Service (S3) protocol, including S3 itself.  It supports rsync-like backup,
+GnuPG encryption, and more.  It also supports management of Amazon's
+CloudFront content delivery network.")
+    (license license:gpl2+)))
+
 (define-public python-pkgconfig
   (package
     (name "python-pkgconfig")
@@ -17684,13 +17741,13 @@ as well.")
 (define-public ptpython
   (package
     (name "ptpython")
-    (version "3.0.17")
+    (version "3.0.20")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ptpython" version))
               (sha256
                (base32
-                "1phk1grcvn456igjg8gwjjg8bf4kszddq5nd5sdlz3hslg62a7ci"))))
+                "1mjfyr5gwrs1qbizh6nki0nv6hahmg8mhhqxi1qc6pfa4znlrzga"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f)) ;there are no tests
@@ -17701,9 +17758,9 @@ as well.")
     (synopsis "Python Read-Eval-Print-Loop with nice IDE-like features")
     (description
      "ptpython is a Python read-eval-print loop with IDE-like features.
-     It supports syntax highlighting, multiline editing, autocompletion, mouse,
-     color schemes, bracketed paste, Vi and Emacs keybindings, Chinese characters
-     etc.")
+It supports syntax highlighting, multiline editing, autocompletion, mouse,
+color schemes, bracketed paste, Vi and Emacs keybindings, Chinese characters
+etc.")
     (license license:bsd-3)))
 
 (define-public python-easyprocess
@@ -18186,7 +18243,7 @@ without requiring an event loop, useful for creative responsive GUIs.")
 (define-public binwalk
   (package
     (name "binwalk")
-    (version "2.3.2")
+    (version "2.3.3")
     (source
      (origin
        (method git-fetch)
@@ -18195,7 +18252,13 @@ without requiring an event loop, useful for creative responsive GUIs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01dalxw07c42ka4fqpixcacvy42h04ya909lzpmsblr9s2xdgwcm"))))
+        (base32 "0phqyqv34vhh80dgipiggs4n3iq2vfjk9ywx2c5d8g61vzgbd2g8"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (for-each delete-file
+                      (list "testing/tests/input-vectors/firmware.zip"
+                            "testing/tests/test_firmware_zip.py"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -21540,14 +21603,14 @@ style guide, even if the original code didn't violate the style guide.")
 (define-public python-yq
   (package
     (name "python-yq")
-    (version "2.11.1")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yq" version))
        (sha256
         (base32
-         "1q4rky0a6n4izmq7slb91a54g8swry1xrbfqxwc8lkd3hhvlxxkl"))))
+         "1wklgs3d9si475nffw9agq5kgk8bdicbsmlj4sx4kiw64ji4ma1h"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -21562,9 +21625,9 @@ style guide, even if the original code didn't violate the style guide.")
                  "/bin/jq")))
              #t)))))
     (inputs
-     (list python-argcomplete python-pyyaml python-xmltodict jq))
+     (list python-argcomplete python-pyyaml python-xmltodict python-toml jq))
     (native-inputs
-     (list python-coverage python-flake8 python-wheel))
+     (list python-coverage python-flake8 python-setuptools-scm python-wheel))
     (home-page "https://github.com/kislyuk/yq")
     (synopsis "Command-line YAML/XML processor")
     (description
@@ -22006,13 +22069,13 @@ Included are implementations of:
 (define-public bpython
   (package
     (name "bpython")
-    (version "0.21")
+    (version "0.23")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bpython" version))
        (sha256
-        (base32 "11wlf12nm6ggn9512y4yqs26s8gdgpx0h9ls94k7fsjgjy4rpal8"))))
+        (base32 "0ah5giynavyh70yc0jqgmjaajv3xg5j2y7k9i3q8mi47r2mph04z"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -31073,7 +31136,7 @@ platform using the ActivityPub protocol.")
 (define-public python-lief
   (package
     (name "python-lief")
-    (version "0.12.1")
+    (version "0.12.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -31082,7 +31145,7 @@ platform using the ActivityPub protocol.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xzbh3bxy4rw1yamnx68da1v5s56ay4g081cyamv67256g0qy2i1"))))
+                "1xb21jsws8lw93by8r25ibzgiml8n1cp7rpzybc648lk6idw0zg6"))))
     (build-system python-build-system)
     (native-inputs (list cmake))
     (arguments
@@ -31101,6 +31164,54 @@ platform using the ActivityPub protocol.")
      "@code{python-lief} is a cross platform library which can parse, modify
 and abstract ELF, PE and MachO formats.")
     (license license:asl2.0)))
+
+(define-public shrinkwrap
+  (package
+    (name "shrinkwrap")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fzakaria/shrinkwrap")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet '(substitute* "pyproject.toml"
+                          (("lief = \"0\\.12\\.0\"") "lief = \"*\"")))
+              (sha256
+               (base32
+                "1f3qrygj16y767q2c7pn9j6m95ggcmj9s5cx9v92ygygly4mr3jp"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-v" "tests"))))
+          ;; XXX: PEP 517 manual build copied from python-isort.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (native-inputs
+     (list python-click
+           python-poetry-core
+           python-pypa-build
+           python-pytest))
+    (inputs (list python-lief python-sh))
+    (home-page "https://github.com/fzakaria/shrinkwrap")
+    (synopsis "Emboss needed dependencies on the top level executable")
+    (description
+     "@code{shrinkwrap} is a tool which will discover all transitive dynamic
+shared objects, and lift them up to the executable referenced by absolute
+path.")
+    (license license:expat)))
 
 (define-public python-pymonad
   (package

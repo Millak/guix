@@ -158,7 +158,7 @@ This package contains GUI widgets for baloo.")
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akregator-" version ".tar.xz"))
        (sha256
-        (base32 "9yy5c29zxpli4cddknmdvjkgii3j7pvw6lhwqfrqjc8jh83gm8f8"))))
+        (base32 "08n713271i7ifnbrgwrqmxvcpvj45wfqjiidw8zf9rpwxg2m2m9g"))))
     (build-system qt-build-system)
     (arguments
      `(#:phases
@@ -167,9 +167,9 @@ This package contains GUI widgets for baloo.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/akregator"))
-                    (qt-process-path (string-append
-                                       (assoc-ref inputs "qtwebengine-5")
-                                       "/lib/qt5/libexec/QtWebEngineProcess")))
+                    (qt-process-path
+                     (search-input-file
+                      inputs "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
                  `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (native-inputs

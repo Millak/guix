@@ -632,6 +632,12 @@ some compression ratio).")
               (base32
                "0j59hx72258334rmkwn57ahr6s69nlrx0a5ip1jw2fbiwr12sd63"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; The configure script doesn't recognise the --build or --host
+     ;; arguments, so set CXX here
+     `(,@(if (%current-target-system)
+             `(#:make-flags (list ,(string-append "CXX=" (cxx-for-target))))
+             '())))
     (home-page "https://www.nongnu.org/lzip/lzip.html")
     (synopsis "Lossless data compressor based on the LZMA algorithm")
     (description
@@ -653,6 +659,12 @@ archiving.  Lzip is a clean implementation of the LZMA algorithm.")
                (base32
                 "0wmmyi03fv2lflsir5ldrsv04q57k3hmlqajzb1m3p86gwbh967j"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; The configure script doesn't recognise the --build or --host
+     ;; arguments, so set CXX here
+     `(,@(if (%current-target-system)
+             `(#:make-flags (list ,(string-append "CXX=" (cxx-for-target))))
+             '())))
     (home-page "https://www.nongnu.org/lzip/lziprecover.html")
     (synopsis "Recover and decompress data from damaged lzip files")
     (description

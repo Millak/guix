@@ -1323,14 +1323,14 @@ invoking @command{notifymuch} from the post-new hook.")
 (define-public notmuch
   (package
     (name "notmuch")
-    (version "0.36")
+    (version "0.37")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://notmuchmail.org/releases/notmuch-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0h6f6mh9m9vrijm638x5sbsl321b74a25cdasbxhx67x62w320hk"))))
+        (base32 "1xl64xh0ijfkx265lcj9cqv1wkzha8gsn9jn4fw4xgvqigr6sxhf"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1692,7 +1692,7 @@ compresses it.")
 (define-public claws-mail
   (package
     (name "claws-mail")
-    (version "4.1.0")
+    (version "4.1.1")
     (source
      (origin
        (method url-fetch)
@@ -1700,7 +1700,7 @@ compresses it.")
         (string-append "https://www.claws-mail.org/releases/claws-mail-"
                        version ".tar.xz"))
        (sha256
-        (base32 "13ksh4iwr23zi86fwmiwxha94xqrr5zxq373i82rwaldvfh9q6hf"))))
+        (base32 "0i037bskrnmsmylhmqayjg0pmsr0m2zx8xhbxc6mwvw9q40fg2di"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -2556,7 +2556,7 @@ for a variety of mailbox formats such as mbox, mh and maildir.  Incoming mail
 can be sorted into separate files/directories and arbitrary commands can be
 executed on mail arrival.  Procmail is considered stable, but is no longer
 maintained.")
-    (license license:gpl2+))) ;; procmail allows to choose the
+    (license license:gpl2+))) ;; procmail allows choosing the
                               ;; nonfree Artistic License 1.0
                               ;; as alternative to the GPL2+.
                               ;; This option is not listed here.
@@ -2891,14 +2891,14 @@ easily (one at a time).")
 (define-public mpop
   (package
     (name "mpop")
-    (version "1.4.16")
+    (version "1.4.17")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/mpop/releases/"
                            "mpop-" version ".tar.xz"))
        (sha256
-        (base32 "1yc7lsdy9gvlslvljqg34kvcaf4wvrwlvj6h5awkzlp6x9qva3l7"))))
+        (base32 "1mcbvzdbdr86zsq8zr1zryjrmfiqikckx3648zvdjh99mm5lkbj2"))))
     (build-system gnu-build-system)
     (inputs
      (list gnutls))
@@ -3935,7 +3935,7 @@ PGP handling, multiple servers, and secure connections.")
 (define-public imapfilter
   (package
     (name "imapfilter")
-    (version "2.7.5")
+    (version "2.7.6")
     (source
      (origin
        (method git-fetch)
@@ -3944,16 +3944,17 @@ PGP handling, multiple servers, and secure connections.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a7f85r3axwclzw1s79zl2l8222nj2gklvvq33w9qv0dz5n71dcx"))))
+        (base32 "0di9gwavgyr1xkd8sfh52ldkn2lq1kdad76ww2x4y0lhimnxw7gc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "CC=" ,(cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))         ; no configure script
     (inputs
      (list lua pcre2 openssl))
     (home-page "https://github.com/lefcha/imapfilter")

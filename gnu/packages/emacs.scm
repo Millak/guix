@@ -93,14 +93,14 @@
 (define-public emacs
   (package
     (name "emacs")
-    (version "28.1")
+    (version "28.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/emacs/emacs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1qbmmmhnjhn4lvzsnyk7l5ganbi6wzbm38jc1a7hhyh3k78b7c98"))
+                "12144dcaihv2ymfm7g2vnvdl4h71hqnsz1mljzf34cpg6ci1h8gf"))
               (patches (search-patches "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-source-date-epoch.patch"))

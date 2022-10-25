@@ -1636,7 +1636,7 @@ discussed in the book).")
 lines by words rather than, as done by TeX, by characters.  The primary use for
 these facilities is to aid the generation of messages sent to the log file or
 console output to display messages to the user.  Package authors may also find
-this useful when writing out arbitary text to an external file.")
+this useful when writing out arbitrary text to an external file.")
     (license license:lppl1.3+)))
 
 (define-public texlive-helvetic

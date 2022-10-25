@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2019, 2020, 2021 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2018 Mark H Weaver <mhw@netris.org>
@@ -71,6 +71,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages language)
   #:use-module (gnu packages less)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl-check)
@@ -330,6 +331,74 @@ text manipulation and now used for a wide range of tasks including system
 administration, web development, network programming, GUI development, and
 more.")
     (license license:gpl1+)))
+
+(define-public perl-5.6
+  (package
+    (inherit perl-5.14)
+    (name "perl")
+    (version "5.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.cpan.org/src/5.0/perl-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0khk94gvc8qkwxdb98khmxbwxxdbhap7rxb9ymkha6vhpxp6zrm5"))))
+    (properties `((release-date . "2003-11-15")
+                  (hidden? . #t))) ;only for GHC 4.
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out  (assoc-ref outputs "out"))
+                   (libc (assoc-ref inputs "libc")))
+               ;; Use the right path for `pwd'.
+               (substitute* "lib/Cwd.pm"
+                 (("/bin/pwd")
+                  (which "pwd")))
+
+               (invoke "./Configure"
+                       (string-append "-Dprefix=" out)
+                       (string-append "-Dman1dir=" out "/share/man/man1")
+                       (string-append "-Dman3dir=" out "/share/man/man3")
+                       "-de" "-Dcc=gcc"
+                       "-Uinstallusrbinperl"
+                       "-Dinstallstyle=lib/perl5"
+                       "-Duseshrplib"
+                       (string-append "-Dlocincpth=" libc "/include")
+                       (string-append "-Dloclibpth=" libc "/lib")
+
+                       ;; Force the library search path to contain only libc
+                       ;; because it is recorded in Config.pm and
+                       ;; Config_heavy.pl; we don't want to keep a reference
+                       ;; to everything that's in $LIBRARY_PATH at build
+                       ;; time (Binutils, bzip2, file, etc.)
+                       (string-append "-Dlibpth=" libc "/lib")
+                       (string-append "-Dplibpth=" libc "/lib")))))
+         (add-after 'configure 'bleh
+           (lambda _
+             (substitute* '("makefile"
+                            "x2p/makefile")
+               ((".*\\<command-line>.*") ""))
+             ;; Don't look for /usr/include/errno.h.
+             (substitute* "ext/Errno/Errno_pm.PL"
+               (("O eq 'linux'") "O eq 'loonix'"))
+             (substitute* "ext/IPC/SysV/SysV.xs"
+               ((".*asm/page.h.*") ""))))
+         (add-before 'strip 'make-shared-objects-writable
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; The 'lib/perl5' directory contains ~50 MiB of .so.  Make them
+             ;; writable so that 'strip' actually strips them.
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib")))
+               (for-each (lambda (dso)
+                           (chmod dso #o755))
+                         (find-files lib "\\.so$"))))))))
+    (native-inputs
+     (list gcc-5))))
 
 (define-public perl-algorithm-c3
   (package
@@ -2008,6 +2077,33 @@ of the style used by the Git version control system.")
 and writing of @code{.ini}-style configuration files.")
     (license (package-license perl))))
 
+(define-public perl-config-tiny
+  (package
+    (name "perl-config-tiny")
+    (version "2.28")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/R/RS/RSAVAGE/Config-Tiny-"
+                    version ".tgz"))
+              (sha256
+               (base32
+                "000mw17nb7aj341s0afqimxd53w5y0c4yk61pihqzm191lx89pqj"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-pod))
+    (home-page "https://metacpan.org/release/Config-Tiny")
+    (synopsis "Read/Write .ini style files with as little code as possible")
+    (description
+     "@code{Config::Tiny} is a Perl class to read and write .ini
+style configuration files with as little code as possible, reducing load time
+and memory overhead.
+
+This module is primarily for reading human written files, and anything we write
+shouldn't need to have documentation/comments.  If you need something with more
+power move up to @code{Config::Simple}, @code{Config::General} or one of the
+many other @code{Config::*} modules.")
+    (license license:perl-license)))
+
 (define-public perl-const-fast
   (package
     (name "perl-const-fast")
@@ -2165,6 +2261,51 @@ CPAN::Meta object are present.")
     (description "This module converts Perl data structures to JSON and vice
 versa.")
     (license (package-license perl))))
+
+(define-public perl-critic
+  (package
+    (name "perl-critic")
+    (version "1.140")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PETDANCE/Perl-Critic-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1nzxpn71mrpp85yxrxlraj52q2skvf9ja887ls11d57h6smg1vmz"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-deep))
+    (propagated-inputs (list perltidy
+                             perl-exception-class
+                             perl-io-string
+                             perl-ppi
+                             perl-ppix-regexp
+                             perl-b-keywords
+                             perl-config-tiny
+                             perl-padwalker
+                             perl-test-memory-cycle
+                             perl-file-which
+                             perl-list-moreutils
+                             perl-module-pluggable
+                             perl-pod-parser
+                             perl-pod-spell
+                             perl-ppix-quotelike
+                             perl-ppix-utilities
+                             perl-readonly
+                             perl-string-format
+                             perl-task-weaken))
+    (home-page "https://metacpan.org/release/Perl-Critic")
+    (synopsis "Critique Perl source code for best-practices")
+    (description
+     "@code{perlcritic} is a Perl source code analyzer.  It is the
+executable front-end to the @code{Perl::Critic} engine, which attempts to
+identify awkward, hard to read, error-prone, or unconventional constructs in
+your code.  Most of the rules are based on Damian Conway's book \"Perl Best
+Practices\".  However, @code{perlcritic} is not limited to enforcing PBP, and it
+will even support rules that contradict Conway.  All rules can easily be
+configured or disabled to your liking.")
+    (license license:perl-license)))
 
 (define-public perl-crypt-cbc
   (package
@@ -8614,6 +8755,34 @@ the @dfn{Pod} (plain old documentation) markup language that is typically
 used for writing documentation for Perl and for Perl modules.")
     (license (package-license perl))))
 
+(define-public perl-pod-spell
+  (package
+    (name "perl-pod-spell")
+    (version "1.25")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/H/HA/HAARG/Pod-Spell-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "18wzpfn39hpw6n8g9pwh964nid8skks79i5jdcm33gf9kf5qx3r0"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-file-sharedir-install))
+    (propagated-inputs (list perl-class-tiny perl-file-sharedir
+                             perl-lingua-en-inflect))
+    (home-page "https://metacpan.org/release/Pod-Spell")
+    (synopsis "Formatter for spellchecking Pod")
+    (description
+     "@code{Pod::Spell} is a Pod formatter whose output is good
+for spellchecking.
+
+@code{Pod::Spell} is rather like @code{Pod::Text}, except that it doesn't put
+much effort into actual formatting, and it suppresses things that look like Perl
+symbols or Perl jargon (so that your spellchecking program won't complain about
+mystery words like \"@code{$thing}\" or \"@code{Foo::Bar}\" or \"@code{hashref}\").")
+    (license license:artistic2.0)))
+
 (define-public perl-posix-strftime-compiler
   (package
     (name "perl-posix-strftime-compiler")
@@ -8660,6 +8829,80 @@ applications.")
     (synopsis "Parse, analyze and manipulate Perl (without Perl)")
     (description "The PPI module parses, analyzes and manipulates Perl
 code.")
+    (license license:perl-license)))
+
+(define-public perl-ppix-regexp
+  (package
+    (name "perl-ppix-regexp")
+    (version "0.085")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/W/WY/WYANT/PPIx-Regexp-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "07fg63ql3f7hv1ys10l8j0p562ndraq9lk66iw9y0f444j4vpw1f"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-ppi))
+    (home-page "https://metacpan.org/release/PPIx-Regexp")
+    (synopsis "Parse Perl string literals and string-literal-like things")
+    (description
+     "The purpose of the @code{PPIx-Regexp} package is to parse
+regular expressions in a manner similar to the way the @code{PPI} package parses
+Perl.  This class forms the root of the parse tree, playing a role similar to
+@code{PPI::Document}.")
+    (license license:perl-license)))
+
+(define-public perl-ppix-quotelike
+  (package
+    (name "perl-ppix-quotelike")
+    (version "0.023")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/W/WY/WYANT/PPIx-QuoteLike-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "08ad4d20afvi1c4xzwbfk94lmf6gwlmqkdrpjxzf0lrcklaa6xim"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-ppi perl-ppix-regexp perl-readonly))
+    (home-page "https://metacpan.org/release/PPIx-QuoteLike")
+    (synopsis "Parse Perl string literals and string-literal-like things")
+    (description
+     "@code{PPIX::QuoteLike} parses Perl string literals and things that
+are reasonably like string literals.  Its real reason for being is to find
+interpolated variables for @code{Perl::Critic} policies and similar code.")
+    (license license:perl-license)))
+
+(define-public perl-ppix-utilities
+  (package
+    (name "perl-ppix-utilities")
+    (version "1.001000")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/E/EL/ELLIOTJS/PPIx-Utilities-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "16yb7dnz8lgq2azs8jxj1wac60kbn16x8y4py04ci8nndww87903"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-deep))
+    (propagated-inputs (list perl-exception-class perl-ppi perl-readonly-xs
+                             perl-task-weaken))
+    (home-page "https://metacpan.org/release/PPIx-Utilities")
+    (synopsis "Extensions to PPI")
+    (description
+     "@code{PPIx::Utilities} is a collection of functions for dealing
+with @code{PPI} objects, many of which originated in @code{Perl::Critic}.  They
+are organized into modules by the kind of @code{PPI} class they relate to, by
+replacing the \"@code{PPI}\" at the front of the module name with
+\"@code{PPIx::Utilities}\", e.g. functionality related to @code{PPI::Nodes} is
+in @code{PPIx::Utilities::Node}.")
     (license license:perl-license)))
 
 (define-public perl-probe-perl
@@ -8730,6 +8973,38 @@ can also be useful as a development and debugging tool for catching updates to
 variables that should not be changed.")
     (license (package-license perl))))
 
+(define-public perl-readonly-xs
+  (package
+    (name "perl-readonly-xs")
+    (version "1.05")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/R/RO/ROODE/Readonly-XS-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "03gz7yp194fwah2bc36ww04hgw1qx8p6y68vvnywircrablc9rca"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-readonly))
+    (home-page "https://metacpan.org/release/Readonly-XS")
+    (synopsis "Companion module for @code{Readonly.pm}, to speed up read-only
+scalar variables")
+    (description
+     "The @code{Readonly} module is an effective way to create non-modifiable
+variables.  However, it's relatively slow.
+
+The reason it's slow is that is implements the read-only-ness of variables via
+tied objects.  This mechanism is inherently slow.  Perl simply has to do a lot
+of work under the hood to make tied variables work.
+
+This module corrects the speed problem, at least with respect to scalar
+variables.  When @code{Readonly::XS} is installed, @code{Readonly} uses it to
+access the internals of scalar variables.  Instead of creating a scalar variable
+object and tying it, @code{Readonly} simply flips the @code{SvREADONLY} bit in
+the scalar's @code{FLAGS} structure.")
+    (license license:perl-license)))
+
 (define-public perl-ref-util-xs
   (package
     (name "perl-ref-util-xs")
@@ -8774,6 +9049,30 @@ codes.")
     (home-page "https://metacpan.org/release/Regexp-Common")
     ;; Quad-licensed: Perl Artistic, Perl Artistic 2.0, X11, and BSD.
     (license (list (package-license perl) license:x11 license:bsd-3))))
+
+(define-public perl-regexp-grammars
+  (package
+    (name "perl-regexp-grammars")
+    (version "1.058")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DC/DCONWAY/Regexp-Grammars-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "14hwskrmy6ma0k9nr1amrf7wpb1f6jsx7x29kgizlx0n4n7db27a"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-pod perl-moose))
+    (home-page "https://metacpan.org/release/Regexp-Grammars")
+    (synopsis "Complete recursive descent parser on Perl's regex engine")
+    (description
+     "The @code{Regexp::Grammars} module adds a small number of new
+regex constructs that can be used within Perl 5.10 patterns to implement
+complete recursive-descent parsing.  It allows you to go beyond matching
+complex, nested and recursive structures, and allows you to parse and extract
+hierarchical data from it.")
+    (license license:perl-license)))
 
 (define-public perl-regexp-util
   (package
@@ -9307,6 +9606,30 @@ frequently-performed string conversion functions, including applying and
 expanding standard C/Unix-style backslash escapes like \n and \t, wrapping and
 removing double-quotes, and truncating to fit within a desired length.")
     (license (package-license perl))))
+
+(define-public perl-string-format
+  (package
+    (name "perl-string-format")
+    (version "1.18")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/S/SR/SREZIC/String-Format-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0y77frxzjifd4sw0j19cc346ysas1mya84rdxaz279lyin7plhcy"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/String-Format")
+    (synopsis "Format sprintf-like strings with arbitrary format definitions")
+    (description
+     "@code{String::Format} lets you define arbitrary printf-like format
+sequences to be expanded.  This module would be most useful in configuration
+files and reporting tools, where the results of a query need to be formatted in
+a particular way.  It was inspired by
+@url{http://www.mutt.org/doc/manual/manual.html#index-format,mutt's
+@code{index_format} and related directives}.")
+    (license license:gpl2)))
 
 (define-public perl-string-formatter
   (package

@@ -1471,7 +1471,7 @@ non-encrypted files.")
 (define-public cryfs
   (package
     (name "cryfs")
-    (version "0.11.2")
+    (version "0.11.3")
     (source
      (origin
        (method url-fetch)
@@ -1479,7 +1479,7 @@ non-encrypted files.")
              "https://github.com/cryfs/cryfs/releases/download/"
              version "/cryfs-" version ".tar.xz"))
        (sha256
-        (base32 "1ggizlacm4fccsw9syy2763ihxnby6cdh3mhhraxy8bmsdjza7lm"))))
+        (base32 "1h41dhdfk2nll0vx5i66mgrdalv6kccwq5yx99gridywxw6qxxhq"))))
     (build-system cmake-build-system)
     (arguments
      '(#:modules ((guix build cmake-build-system)
@@ -1519,19 +1519,17 @@ non-encrypted files.")
              (when tests?
                (let ((tests (find-files "." "-test$")))
                  ;; XXX: Disable failing tests. Unfortunately there are a
-                   ;; few. Some only fail in the build environment due to
-                   ;; FUSE not being available.
-                   (for-each invoke
-                             (lset-difference string-contains
-                                              tests
-                                              '("cpp-utils-test"
-                                                "cryfs-cli-test"
-                                                "blobstore-test"
-                                                "fspp-test")))))
-             #t)))))
+                 ;; few. Some only fail in the build environment due to
+                 ;; FUSE not being available.
+                 (for-each invoke
+                           (lset-difference string-contains
+                                            tests
+                                            '("cpp-utils-test"
+                                              "cryfs-cli-test"
+                                              "blobstore-test"
+                                              "fspp-test"))))))))))
     (native-inputs
-     `(("python" ,python-wrapper)
-       ("pkg-config" ,pkg-config)))
+     (list pkg-config python-wrapper))
     (inputs
      (list boost curl fuse range-v3 spdlog))
     (home-page "https://www.cryfs.org/")

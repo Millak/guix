@@ -518,7 +518,7 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
 (define-public gnuastro
   (package
     (name "gnuastro")
-    (version "0.18")
+    (version "0.19")
     (source
      (origin
        (method url-fetch)
@@ -526,7 +526,7 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "1y9ig2kkwiwl0rmp9ip9n83fyjjpg2cc2pxzvdzr8rysq5az357y"))))
+         "192q3i4zlfmwfcchlf9lnpfgys9dssh7npr5qx0gzn3d2fri0xbz"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
@@ -879,13 +879,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.0.1")
+    (version "5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "09wh589ywjsgjvi76v2d2zqd9sri0461rrnml0b0pah5lbkcv0k3"))
+        (base32 "0zkv3ddzlxx21i796azfbqxrqnsxn83vsczscv577iyzxp3v5c8x"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -948,7 +948,7 @@ accurately in real time at any rate desired.")
            python-ipython
            python-jplephem
            python-objgraph
-           python-pytest
+           python-pytest-7.1
            python-pytest-astropy
            python-pytest-xdist
            python-setuptools-scm
@@ -974,13 +974,13 @@ astronomy and astrophysics.")
 (define-public python-astropy-healpix
   (package
     (name "python-astropy-healpix")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "astropy-healpix" version))
+       (uri (pypi-uri "astropy_healpix" version))
        (sha256
-        (base32 "1436ml03xkmvx4afzbhfj67ab91418sz1w3lq1b18r43qchnd6j0"))))
+        (base32 "1n1svmd41iv944zf4anbnsigd47zr4dfjf49vrc7m6928gmq9hw8"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1125,13 +1125,13 @@ of dates.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "1.3.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "1a8djakaya6w5iv9237gkcz39brqzgrfs2wqrl0izi1s85cfdymn"))))
+        (base32 "129n268wnziprrv09f7y6f98cj1vh1bzp7ygsna10h3ilnjplkq1"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"
@@ -1192,13 +1192,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-regions
   (package
     (name "python-regions")
-    (version "0.5")
+    (version "0.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regions" version))
        (sha256
-        (base32 "1bjrcjchbw3xw1a26d5g198lh7vxpp9m5sal58r7f8mmr1d8g2dc"))))
+        (base32 "0p95bxxw4dgd16rh1yj7zvfbijk52dqvqj20nj6q8kr5ms08acl0"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"

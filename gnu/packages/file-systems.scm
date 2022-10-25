@@ -448,8 +448,8 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "fd1b84975b960d5e42963bed2c18b8c63d8abce7")
-        (revision "14"))
+  (let ((commit "494421ee6e85514f90bb316d77e1dd4f7dad3420")
+        (revision "15"))
     (package
       (name "bcachefs-tools")
       (version (git-version "0.1" revision commit))
@@ -461,7 +461,7 @@ from a mounted file system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "08vh0pg2sj833062y4vvnvzqchhflcvysp3xdh0zjk121r3iqm0s"))))
+          (base32 "1sdh9rl8ydnb28646773lsxpdy5jysvjbxs2nwr3hsv4qyv93vc4"))))
       (build-system gnu-build-system)
       (arguments
        (list #:make-flags
@@ -472,7 +472,16 @@ from a mounted file system.")
                      (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
                      (string-append "PYTEST_CMD="
                                     #$(this-package-native-input "python-pytest")
-                                    "/bin/pytest"))
+                                    "/bin/pytest")
+                     (string-append "PYTEST_ARGS=-k '"
+                                    ;; These fail (‘invalid argument’) on
+                                    ;; kernels with a previous bcachefs version.
+                                    "not test_format and "
+                                    "not test_fsck and "
+                                    "not test_list and "
+                                    "not test_list_inodes and "
+                                    "not test_list_dirent"
+                                    "'"))
              #:phases
              #~(modify-phases %standard-phases
                  (delete 'configure)    ; no configure script

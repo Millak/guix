@@ -248,7 +248,7 @@ could be found at DIRECTORY or one of its ancestors."
 'latest-repository-commit'."
   (match (channel-commit channel)
     (#f      `(branch . ,(channel-branch channel)))
-    (commit  `(commit . ,(channel-commit channel)))))
+    (commit  `(tag-or-commit . ,(channel-commit channel)))))
 
 (define sexp->channel-introduction
   (match-lambda

@@ -17142,7 +17142,7 @@ effects from the jQuery UI library.")
     (home-page "https://github.com/datastorm-open/shinymanager")
     (synopsis "Authentication management for Shiny applications")
     (description
-     "This package provides simple and secure authentification mechanism for
+     "This package provides simple and secure authentication mechanism for
 single Shiny applications.  Credentials are stored in an encrypted SQLite
 database.")
     (license license:gpl3)))

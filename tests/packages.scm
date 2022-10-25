@@ -23,7 +23,6 @@
   #:use-module (guix tests)
   #:use-module (guix store)
   #:use-module (guix monads)
-  #:use-module (guix grafts)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:select (tarball?))

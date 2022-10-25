@@ -224,6 +224,7 @@ provided.")
   (package
     (name "libksba")
     (version "1.6.0")
+    (replacement libksba/fixed)
     (source
      (origin
       (method url-fetch)
@@ -252,6 +253,18 @@ specifications are building blocks of S/MIME and TLS.")
     (license license:gpl3+)
     (properties '((ftp-server . "ftp.gnupg.org")
                   (ftp-directory . "/gcrypt/libksba")))))
+
+(define libksba/fixed
+  (package
+    (inherit libksba)
+    (version "1.6.2")
+        (source
+     (origin
+      (method url-fetch)
+      (uri (string-append
+            "mirror://gnupg/libksba/libksba-" version ".tar.bz2"))
+      (sha256
+       (base32 "0wf9j9hlzvgn0vz6zg3fvcmpdr62v8bz1kzsvzdbs4lqqp51rq7w"))))))
 
 (define-public npth
   (package

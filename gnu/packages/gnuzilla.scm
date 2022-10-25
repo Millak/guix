@@ -621,8 +621,8 @@ in C/C++.")
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "102.3.0-guix0-preview1")
-(define %icecat-build-id "20220920000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "102.4.0-guix0-preview1")
+(define %icecat-build-id "20221019000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -644,11 +644,11 @@ in C/C++.")
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0nmm861p4zakdvi9lj0ac8dkf9v17250rzcmrx1f6r7rvjv273ih"))))
+              "0klh3lbm0zdmv90kmmpkzgn15pfjibr7zsjy3kvbzpql97fhv7z7"))))
 
-         (upstream-icecat-base-version "102.3.0") ; maybe older than base-version
+         (upstream-icecat-base-version "102.4.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
-         (gnuzilla-commit "f82b5b40943fe7723486fadccb48d454ee3e9dad")
+         (gnuzilla-commit "8f1aa117ddca6e8cd0114265fb4ca9b5a927565a")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -660,7 +660,7 @@ in C/C++.")
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "1d7lfvwi9mvaxcfiqcgch3idhyxpdf56r9b71r54yiifv6xlr7x9"))))
+              "0ryrn8ivm763swd0qbqhlgdwc2dj4xjd81d9i2r6hb7bsb4ky3y5"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -1242,12 +1242,26 @@ standards of the IceCat project.")
        (cpe-name . "firefox_esr")
        (cpe-version . ,(first (string-split version #\-)))))))
 
-;; Update this together with icecat!
-(define %icedove-build-id "20220928000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-build-id "20221019000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-version "102.4.0")
+
+;; Provides the "comm" folder which is inserted into the icecat source.
+;; Avoids the duplication of Icecat's source tarball.
+(define thunderbird-source
+  (origin
+    (method hg-fetch)
+    (uri (hg-reference
+          (url "https://hg.mozilla.org/releases/comm-esr102")
+          (changeset "c064680366a130c4c02ba9b85ef324f0f075c47b")))
+    (file-name (string-append "thunderbird-" %icedove-version "-checkout"))
+    (sha256
+     (base32
+      "0ccpp4890nqill1yn2lb5b855r4hpmhrcsdbxdk2sdn52dc0qda6"))))
+
 (define-public icedove
   (package
     (name "icedove")
-    (version "102.3.1")
+    (version %icedove-version)
     (source icecat-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
@@ -1263,10 +1277,9 @@ standards of the IceCat project.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-thunderbird-sources
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               (mkdir "comm")
-              (copy-recursively (assoc-ref inputs "thunderbird-sources")
-                                "comm")
+              (copy-recursively #$thunderbird-source "comm")
               (delete-file "sourcestamp.txt")))
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
             (lambda _
@@ -1528,34 +1541,19 @@ ca495991b7852b855"))
            zip
            zlib))
     (native-inputs
-     `(("thunderbird-sources"
-        ;; The changeset identifier is taken from the file "sourcestamp.txt"
-        ;; in the Thunderbird release tarball.  We don't use the release
-        ;; tarball because it duplicates the Icecat sources and only adds the
-        ;; "comm" directory, which is provided by this repository.
-        ,(let ((changeset "07a17b101f904a686bbdf798ba2e820079a8323f"))
-           (origin
-             (method hg-fetch)
-             (uri (hg-reference
-                   (url "https://hg.mozilla.org/releases/comm-esr102")
-                   (changeset changeset)))
-             (file-name (string-append "thunderbird-" version "-checkout"))
-             (sha256
-              (base32
-               "078jrxpzqj45l84i39a9fq023j71ngca5gs2ngpjsbily51bzx09")))))
-       ("cargo" ,rust "cargo")
-       ("clang" ,clang)
-       ("llvm" ,llvm)
-       ("m4" ,m4)
-       ("nasm" ,nasm)
-       ("node" ,node)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("rust" ,rust)
-       ("rust-cbindgen" ,(force rust-cbindgen-0.23-promise))
-       ("which" ,which)
-       ("yasm" ,yasm)))
+     (list `(,rust "cargo")
+           clang
+           llvm
+           m4
+           nasm
+           node
+           perl
+           pkg-config
+           python-wrapper
+           rust
+           (force rust-cbindgen-0.23-promise)
+           which
+           yasm))
     (home-page "https://www.thunderbird.net")
     (synopsis "Rebranded Mozilla Thunderbird email client")
     (description

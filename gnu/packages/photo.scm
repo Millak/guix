@@ -460,7 +460,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "4.0.0")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
@@ -468,7 +468,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "0bfcag6bj5vcmg4z4xjirs43iafcx89al6jl41i5mrhpjzszh5hl"))))
+        (base32 "0s0xwp5n4jhzdhbmsg02dlsc503jfznpwqn3rnipg687q3h83vsz"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBINARY_PACKAGE_BUILD=On"
@@ -482,6 +482,13 @@ photographic equipment.")
                (("\"libOpenCL\"")
                 (string-append "\"" (assoc-ref inputs "opencl-icd-loader")
                                "/lib/libOpenCL.so\"")))))
+         (add-after 'unpack 'fix-missing-include
+           (lambda _
+             ;; Fix missing include needed to build tests.  See upstream
+             ;; issue: https://github.com/darktable-org/darktable/issues/12604
+             (substitute* "./src/common/variables.h"
+               (("once")
+                "once\n#include \"common/image.h\""))))
          (add-before 'configure 'prepare-build-environment
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Rawspeed fails to build with GCC due to OpenMP error:

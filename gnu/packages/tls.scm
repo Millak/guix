@@ -66,6 +66,7 @@
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
+  #:use-module (gnu packages libunistring)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
@@ -330,8 +331,6 @@ required structures.")
                   (ftp-directory . "/gcrypt/gnutls")))))
 
 (define-public gnutls-latest
-  ;; Version 3.7.7 introduces 'set-session-record-port-close!', which allows
-  ;; us to get rid of the wrapper port in 'tls-wrap'.
   (package
     (inherit gnutls)
     (version "3.7.7")
@@ -344,7 +343,14 @@ required structures.")
                                        "gnutls-cross.patch"))
               (sha256
                (base32
-                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))))
+                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))
+
+    ;; Disable Guile bindings: they are now provided by Guile-GnuTLS.
+    (inputs (modify-inputs (package-inputs gnutls)
+              (delete "guile")
+              (append libunistring)))             ;GnuTLS depends on it
+    (native-inputs (modify-inputs (package-native-inputs gnutls)
+                     (delete "guile")))))
 
 (define-public gnutls/guile-2.0
   ;; GnuTLS for Guile 2.0.
@@ -369,6 +375,53 @@ required structures.")
     (inputs `(("guile" ,guile-2.2)
               ,@(alist-delete "guile"
                               (package-inputs gnutls))))))
+
+(define-public guile-gnutls
+  (package
+    ;; This package supersedes the Guile bindings that came with GnuTLS until
+    ;; version 3.7.8 included.
+    (name "guile-gnutls")
+    (version "3.7.9")
+    (home-page "https://gitlab.com/gnutls/guile/")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "00sfpqjmd263ka51fq4xf7nvaaxyfqsr3r8fj94jgx45q6q6n6wq"))
+              (file-name (git-file-name name version))
+              (patches (search-patches "gnutls-cross.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags
+       ;; Tell the build system that we want Guile bindings installed to
+       ;; the output instead of Guiles own module directory.
+       (list "--disable-static"
+             (string-append "--with-guile-site-dir="
+                            "$(datarootdir)/guile/site/$(GUILE_EFFECTIVE_VERSION)")
+             (string-append "--with-guile-site-ccache-dir="
+                            "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache")
+             (string-append "--with-guile-extension-dir="
+                            "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions"))))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           pkg-config
+           texinfo
+           gnutls                 ;XXX: 'guile-snarf' invokes the native 'cpp'
+           guile-3.0))
+    (inputs
+     (list gnutls-latest
+           guile-3.0))
+    (synopsis "Guile bindings to GnuTLS")
+    (description
+     "This package provides Guile bindings to GnuTLS, a library implementation
+the @acronym{TLS, Transport-Layer Security} protocol.  It supersedes the Guile
+bindings that were formerly provided as part of GnuTLS.")
+    (license license:lgpl2.1+)))
 
 (define (target->openssl-target target)
   "Return the value to set CONFIGURE_TARGET_ARCH to when cross-compiling
@@ -1206,7 +1259,7 @@ compatibility is also supported.")
 (define-public wolfssl
   (package
     (name "wolfssl")
-    (version "4.8.1")
+    (version "5.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1215,11 +1268,14 @@ compatibility is also supported.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0w5pd40j6h4j2f0b7c2n1n979y9qk8aln3ss2gb0jfsid1hrmx5k"))))
+                "0pz25acm842cl6l51vqr8pgxci6rda8sznms757p7rnm9fw3jdl0"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
-       '("--enable-reproducible-build")))
+       '("--enable-distro"
+         "--enable-pkcs11"
+         "--disable-examples"
+         "--enable-jobserver=no")))
     (native-inputs
      (list autoconf automake libtool))
     (synopsis "SSL/TLS implementation")

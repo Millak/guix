@@ -290,7 +290,7 @@ prompt the user with the option to go with insecure DNS only.")
 (define-public dnsmasq
   (package
     (name "dnsmasq")
-    (version "2.86")
+    (version "2.87")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -298,7 +298,7 @@ prompt the user with the option to go with insecure DNS only.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "027b0ycw8h8yvvkq46vnr7dv8iqn5srm4kr7hm7sq110kvy2rm98"))))
+                "0ynyi4mixhxhbfxb2bivinkrjc5zgj9lj5bzgvymc8vz98vc0a02"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -333,14 +333,14 @@ and BOOTP/TFTP for network booting of diskless machines.")
     ;; When updating, check whether isc-dhcp's bundled copy should be as well.
     ;; The BIND release notes are available here:
     ;; https://www.isc.org/bind/
-    (version "9.16.32")
+    (version "9.16.34")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://ftp.isc.org/isc/bind9/" version
                            "/bind-" version ".tar.xz"))
        (sha256
-        (base32 "0w2rcjxqnbhwzgsdsas36dadjq0qn6s1xjx4g4qk0ph2nvf4gj9j"))
+        (base32 "05ig8y20qksam7s466h15v6j2zgidn5nkbrk1d5c29nmypy2wgai"))
        (patches
         (search-patches "bind-re-add-attr-constructor-priority.patch"))))
     (build-system gnu-build-system)
@@ -666,14 +666,14 @@ BIND and djbdns---whilst using relatively little memory.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.13.2")
+    (version "1.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "10qs1q26lzw18ljggnbz0cc5f7lr9ksj615xbrmh4amryd3va4qa"))))
+        (base32 "0h8k5yh49vasyzwkm3n1xsidxr7xybqwkvg4cq6937qxi7brbg6w"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
@@ -1294,7 +1294,7 @@ known public suffixes.")
 (define-public maradns
   (package
     (name "maradns")
-    (version "3.5.0020")
+    (version "3.5.0022")
     (source
      (origin
        (method url-fetch)
@@ -1302,7 +1302,7 @@ known public suffixes.")
                            (version-major+minor version) "/"
                            version "/maradns-" version ".tar.xz"))
        (sha256
-        (base32 "1qgabw6y2bwy6y88dikis62k789i0xh7iwxan8jmqpzvksqwjfgw"))))
+        (base32 "1sw267jxxxngjcar8cj3jpxnpiz0szgkhlz5l46c67qs690w9kdi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; need to be root to run tests

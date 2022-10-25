@@ -24,7 +24,6 @@
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module ((guix status) #:select (with-status-verbosity))
-  #:use-module (guix grafts)
   #:use-module (guix derivations)
   #:use-module (guix packages)
   #:use-module (guix profiles)
@@ -448,11 +447,11 @@ and suitable for 'exit'."
 (define* (launch-environment command profile manifest
                              #:key pure? (white-list '())
                              emulate-fhs?)
-  "Run COMMAND in a new environment containing INPUTS, using the native search
-paths defined by the list PATHS.  When PURE?, pre-existing environment
-variables are cleared before setting the new ones, except those matching the
-regexps in WHITE-LIST.  When EMULATE-FHS?, first set up an FHS environment
-with $PATH and generate the LD cache."
+  "Load the environment of PROFILE, which corresponds to MANIFEST, and execute
+COMMAND.  When PURE?, pre-existing environment variables are cleared before
+setting the new ones, except those matching the regexps in WHITE-LIST.  When
+EMULATE-FHS?, first set up an FHS environment with $PATH and generate the LD
+cache."
   ;; Properly handle SIGINT, so pressing C-c in an interactive terminal
   ;; application works.
   (sigaction SIGINT SIG_DFL)
@@ -1016,9 +1015,9 @@ command-line option processing with 'parse-command-line'."
       (when (and (not container?) user)
         (leave (G_ "'--user' cannot be used without '--container'~%")))
       (when (and (not container?) no-cwd?)
-        (leave (G_ "--no-cwd cannot be used without --container~%")))
+        (leave (G_ "--no-cwd cannot be used without '--container'~%")))
       (when (and (not container?) emulate-fhs?)
-        (leave (G_ "'--emulate-fhs' cannot be used without '--container~'%")))
+        (leave (G_ "'--emulate-fhs' cannot be used without '--container~%'")))
 
 
       (with-store/maybe store

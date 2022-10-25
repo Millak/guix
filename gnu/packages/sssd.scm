@@ -66,7 +66,7 @@
 (define-public adcli
   (package
     (name "adcli")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -75,7 +75,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mwzd5vakdsssdvs6vljqpp8pw8i97n5lhxvmn9dn9720am7hfv7"))))
+        (base32 "1lg181hpv07zcdybpykjq6h4v6f5sjc60gxqbklm0wqxa8m4sakn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags

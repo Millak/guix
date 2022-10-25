@@ -181,6 +181,7 @@ provides a 'CMakeLists.txt' file as its build system."
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
     (gexp->derivation name builder
+                      #:graft? #f                 ;consistent with 'gnu-build'
                       #:system system
                       #:guile-for-build guile)))
 
@@ -269,6 +270,7 @@ build system."
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
     (gexp->derivation name builder
+                      #:graft? #f                 ;consistent with 'gnu-build'
                       #:system system
                       #:guile-for-build guile)))
 

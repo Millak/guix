@@ -23,7 +23,7 @@
   #:use-module (guix base32)
   #:use-module (gcrypt hash)
   #:use-module (guix tests http)
-  #:use-module (guix grafts)
+  #:use-module ((guix store) #:select (%graft?))
   #:use-module (srfi srfi-64)
   #:use-module (web client)
   #:use-module (ice-9 match))

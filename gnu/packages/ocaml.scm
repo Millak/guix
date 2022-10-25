@@ -7283,7 +7283,7 @@ thousands of times faster than fork.
 (define-public ocaml-core
   (package
     (name "ocaml-core")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
       (origin
         (method git-fetch)
@@ -7292,7 +7292,7 @@ thousands of times faster than fork.
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1m2ybvlz9zlb2d0jc0j7wdgd18mx9sh3ds2ylkv0cfjx1pzi0l25"))))
+          (base32 "17vc2i5qb53dr0civ8pkrnnsn2nkydlq44ash7fhh93yb4sffy28"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "core"
@@ -8002,7 +8002,7 @@ support for Mparser.")))
 (define-public lablgtk3
   (package
     (name "lablgtk")
-    (version "3.1.2")
+    (version "3.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8011,25 +8011,13 @@ support for Mparser.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b17w9qb1f02h3313cm62mrqlhwxficppzm72n7sf8mmwrylxbm7"))))
+                "0rhdr89w7yj8pkga5xc7iqmqvrs28034wb7sm7vx7faaxczwjifn"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "lablgtk3"
-       #:test-target "."
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'make-writable
-           (lambda _
-             (for-each (lambda (file)
-                         (chmod file #o644))
-                       (find-files "." "."))))
-         (add-before 'build 'set-version
-           (lambda _
-             (substitute* "dune-project"
-               (("\\(name lablgtk3\\)")
-                (string-append "(name lablgtk3)\n(version " ,version ")"))))))))
+       #:test-target "."))
     (propagated-inputs
-     (list ocaml-cairo2))
+     (list ocaml-cairo2 ocaml-camlp-streams))
     (inputs
      (list camlp5 gtk+))
     (native-inputs

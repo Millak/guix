@@ -12,7 +12,8 @@ text-mode :when (and (fboundp 'git-commit-mode) (git-commit-mode))
              (match-string-no-properties 1)))
          var)
       "." n n
-      "* " (car (magit-staged-files)) " (" (s var ) "): New variable.")
+      "* " (p (or (car (magit-staged-files)) ""))
+      " (" (s var ) "): New variable.")
 
 (remove\ "gnu: Remove "
          (p (with-temp-buffer
@@ -24,7 +25,8 @@ text-mode :when (and (fboundp 'git-commit-mode) (git-commit-mode))
                 (match-string-no-properties 1)))
             var)
          "." n n
-         "* " (car (magit-staged-files)) " (" (s var) "): Delete variable.")
+         "* " (p (or (car (magit-staged-files)) ""))
+         " (" (s var) "): Delete variable.")
 
 (rename\ "gnu: "
          (p (with-temp-buffer
@@ -43,7 +45,7 @@ text-mode :when (and (fboundp 'git-commit-mode) (git-commit-mode))
                 (thing-at-point 'sexp 'no-properties)))
             new-var)
          "." n n
-         "* " (car (magit-staged-files)) " (" (s prev-var) "): "
+         "* " (p (or (car (magit-staged-files)) "")) " (" (s prev-var) "): "
          "Define in terms of" n
          "'deprecated-package'." n
          "(" (s new-var) "): New variable, formerly known as \""
@@ -74,7 +76,7 @@ text-mode :when (and (fboundp 'git-commit-mode) (git-commit-mode))
                     (buffer-substring-no-properties (point) (- end 2))))))
             version)
          "." n n
-         "* " (car (magit-staged-files)) " (" (s var) "): "
+         "* " (p (or (car (magit-staged-files)) "")) " (" (s var) "): "
          "Update to " (s version) "." n
          (mapconcat (lambda (file) (concat "* " file))
                     (cdr (magit-staged-files))
@@ -92,7 +94,7 @@ text-mode :when (and (fboundp 'git-commit-mode) (git-commit-mode))
                            (thing-at-point 'sexp 'no-properties)))))
            var)
         "." n n
-        "* " (car (magit-staged-files))
+        "* " (p (or (car (magit-staged-files)) ""))
         " (cl-" (s var)
         ", ecl-" (s var)
         ", sbcl-" (s var) "): New variables.")
@@ -107,7 +109,8 @@ text-mode :when (and (fboundp 'git-commit-mode) (git-commit-mode))
                (match-string-no-properties 1)))
            var)
         ": Use HTTPS home page." n n
-        "* " (car (magit-staged-files)) " (" (s var) ")[home-page]: Use HTTPS."
+        "* " (p (or (car (magit-staged-files)) ""))
+        " (" (s var) ")[home-page]: Use HTTPS."
         n
         (mapconcat (lambda (file) (concat "* " file))
                    (cdr (magit-staged-files))

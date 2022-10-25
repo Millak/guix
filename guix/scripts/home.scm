@@ -47,7 +47,6 @@
   #:use-module (guix derivations)
   #:use-module (guix ui)
   #:autoload   (guix colors) (supports-hyperlinks? file-hyperlink)
-  #:use-module (guix grafts)
   #:use-module (guix packages)
   #:use-module (guix profiles)
   #:use-module (guix store)
@@ -476,7 +475,7 @@ resulting from command-line parsing."
   (define (ensure-home-environment file-or-exp obj)
     (ensure-profile-directory)
     (unless (home-environment? obj)
-      (leave (G_ "'~a' does not return a home environment ~%")
+      (leave (G_ "'~a' does not return a home environment~%")
              file-or-exp))
     obj)
 

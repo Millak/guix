@@ -38,7 +38,6 @@
                (sqlite-register store-database-file call-with-database)
   #:autoload   (guix build store-copy) (copy-store-item)
   #:use-module (guix describe)
-  #:use-module (guix grafts)
   #:use-module (guix gexp)
   #:use-module (guix derivations)
   #:use-module (guix diagnostics)
@@ -1046,7 +1045,7 @@ Some ACTIONS support additional ARGS.\n"))
   (newline)
   (display (G_ "
       --graph-backend=BACKEND
-                         use BACKEND for 'extension-graphs' and 'shepherd-graph'"))
+                         use BACKEND for 'extension-graph' and 'shepherd-graph'"))
   (newline)
   (display (G_ "
   -I, --list-installed[=REGEXP]

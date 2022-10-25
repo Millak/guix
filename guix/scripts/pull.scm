@@ -31,7 +31,6 @@
   #:use-module (guix derivations)
   #:use-module (guix profiles)
   #:use-module (guix gexp)
-  #:use-module (guix grafts)
   #:use-module (guix memoization)
   #:use-module (guix monads)
   #:use-module (guix channels)

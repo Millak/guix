@@ -573,27 +573,6 @@ types.")
 and iOS.")
     (license license:expat)))
 
-(define-public rust-dav1d-0.6
-  (package
-    (name "rust-dav1d")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "dav1d" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0pn6r1a9qfrpg2xwc7ci2iddvnzxb17ddca0bwymgi839cxc2chl"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-dav1d-sys" ,rust-dav1d-sys-0.3))))
-    (home-page "https://github.com/rust-av/dav1d-rs")
-    (synopsis "libdav1d bindings in Rust")
-    (description "This package provides libdav1d bindings in Rust.")
-    (license license:expat)))
-
 (define-public rust-dav1d-sys-0.3
   (package
     (name "rust-dav1d-sys")
@@ -618,28 +597,6 @@ and iOS.")
     (home-page "https://github.com/rust-av/dav1d-rs")
     (synopsis "FFI bindings to dav1d")
     (description "This package provides FFI bindings to dav1d.")
-    (license license:expat)))
-
-(define-public rust-dcv-color-primitives-0.1
-  (package
-    (name "rust-dcv-color-primitives")
-    (version "0.1.16")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "dcv-color-primitives" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0yrm1qipdmadynhjgz1bvdh42ph9azvwg8v43c8ywr8vlx9qvaq2"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))))
-    (home-page "https://github.com/aws/dcv-color-primitives")
-    (synopsis "Rust library to perform image color model conversion")
-    (description "This package is a Rust library to perform image color model
-conversion.")
     (license license:expat)))
 
 (define-public rust-euclid-0.22
@@ -767,31 +724,6 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (home-page "https://github.com/gfx-rs/gfx")
     (synopsis "Core library of Gfx-rs")
     (description "This package is a core library of Gfx-rs.")
-    (license license:asl2.0)))
-
-(define-public rust-gfx-device-gl-0.16
-  (package
-    (name "rust-gfx-device-gl")
-    (version "0.16.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gfx_device_gl" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1g5yg19jvxdmviljyakhd6253bnb2qg7v8iscf48ihc0ldgki70h"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-log" ,rust-log-0.4)
-        ("rust-gfx-gl" ,rust-gfx-gl-0.6)
-        ("rust-gfx-core" ,rust-gfx-core-0.9))))
-    (home-page "https://github.com/gfx-rs/gfx")
-    (synopsis "OpenGL backend for gfx-rs")
-    (description "This package provides the openGL backend for gfx-rs.")
     (license license:asl2.0)))
 
 (define-public rust-gfx-gl-0.6
@@ -1265,33 +1197,6 @@ EUI-64, also known as MAC-48 media access control addresses.")
 similar formats like VCard.")
     (license license:asl2.0)))
 
-(define-public rust-ichwh-0.3
-  (package
-    (name "rust-ichwh")
-    (version "0.3.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ichwh" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0m6628yw3l812hjknmh5b5gcvhn6as9gzjz60h54zjxyy4w5ss7a"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-async-std" ,rust-async-std-1)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-futures" ,rust-futures-0.3)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://gitlab.com/avandesa/ichwh-rs")
-    (synopsis "Asynchronous implementation of @command{which}")
-    (description
-     "@code{ichwh} aims to be a fully-asynchronous clone of GNU which.  The
-main job of @command{which} is to search for executables on the current
-PATH.")
-    (license license:expat)))
-
 (define-public rust-image-0.23
   (package
     (name "rust-image")
@@ -1498,29 +1403,6 @@ pixel buffers with width, height and stride.")
 graphics and video games.")
     (license license:expat)))
 
-(define-public rust-lyon-extra-0.17
-  (package
-    (name "rust-lyon-extra")
-    (version "0.17.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "lyon_extra" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "10n8h48a363qa66byqfkg164542p97v5rrnb33gqhggah739nwm0"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:skip-build?
-        #t
-        #:cargo-inputs
-        (("rust-lyon-path" ,rust-lyon-path-0.17)
-         ("rust-lyon-svg" ,rust-lyon-svg-0.17))))
-    (home-page "https://github.com/nical/lyon")
-    (synopsis "Optional utilities for the lyon crate")
-    (description "This package provides optional utilities for the lyon crate.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-lyon-geom-0.17
   (package
     (name "rust-lyon-geom")
@@ -1596,31 +1478,6 @@ graphics and video games.")
     (description "This package provides SVG helpers for the lyon crates.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-lyon-tessellation-0.17
-  (package
-    (name "rust-lyon-tessellation")
-    (version "0.17.10")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "lyon-tessellation" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0q2pccjszda26asylnvhwsil8wvsprfjazrqdzj4i033s26y0c3j"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:cargo-inputs
-        (("rust-float-next-after" ,rust-float-next-after-0.1)
-         ("rust-lyon-path" ,rust-lyon-path-0.17)
-         ("rust-serde" ,rust-serde-1))
-        #:cargo-development-inputs
-        (("rust-lyon-extra" ,rust-lyon-extra-0.17))))
-    (home-page "https://github.com/nical/lyon")
-    (synopsis "Low level path tessellation library")
-    (description
-      "This package provides a low level path tessellation library.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-osmesa-sys-0.1
   (package
     (name "rust-osmesa-sys")
@@ -1642,32 +1499,6 @@ graphics and video games.")
     (synopsis "OSMesa library bindings for Rust")
     (description "This package provides OSMesa library bindings for Rust.")
     (license license:cc0)))
-
-(define-public rust-piston-0.49
-  (package
-    (name "rust-piston")
-    (version "0.49.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "piston" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1y0rbw92mzagqmwk79wv9axq0m7aid0s0d5cppyzh33wrxhdl3xj"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-pistoncore-input" ,rust-pistoncore-input-0.28)
-        ("rust-pistoncore-window" ,rust-pistoncore-window-0.44)
-        ("rust-pistoncore-event-loop" ,rust-pistoncore-event-loop-0.49))))
-    (home-page "https://github.com/PistonDevelopers/piston")
-    (synopsis "Piston game engine core libraries")
-    (description
-     "The Piston game engine core libraries.")
-    (license license:expat)))
 
 (define-public rust-piston-float-1
   (package
@@ -1810,95 +1641,6 @@ nicely with Piston libraries.")
      "This package provides a library for storing viewport information.")
     (license license:expat)))
 
-(define-public rust-piston-window-0.105
-  (package
-    (name "rust-piston-window")
-    (version "0.105.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "piston_window" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "05n2905gkp5ck25kbq95ia6pj1xz63dpp247jz3xcw1d41xpvi95"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-gfx-device-gl" ,rust-gfx-device-gl-0.16)
-        ("rust-gfx" ,rust-gfx-0.18)
-        ("rust-piston2d-graphics" ,rust-piston2d-graphics-0.35)
-        ("rust-piston" ,rust-piston-0.49)
-        ("rust-shader-version" ,rust-shader-version-0.6)
-        ("rust-pistoncore-glutin-window" ,rust-pistoncore-glutin-window-0.63)
-        ("rust-piston2d-gfx-graphics" ,rust-piston2d-gfx-graphics-0.66)
-        ("rust-piston-texture" ,rust-piston-texture-0.8))))
-    (home-page "https://github.com/pistondevelopers/piston_window")
-    (synopsis "Official Piston window wrapper for the Piston game engine")
-    (description
-     "The official Piston window wrapper for the Piston game engine.")
-    (license license:expat)))
-
-(define-public rust-piston2d-gfx-graphics-0.66
-  (package
-    (name "rust-piston2d-gfx-graphics")
-    (version "0.66.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "piston2d-gfx_graphics" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1pmlkf5rl6pr0c1lqm0059xwj9pwlws7gaq9w6r9d916di6fzki1"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-gfx" ,rust-gfx-0.18)
-        ("rust-piston-shaders-graphics2d" ,rust-piston-shaders-graphics2d-0.3)
-        ("rust-piston-gfx-texture" ,rust-piston-gfx-texture-0.40)
-        ("rust-shader-version" ,rust-shader-version-0.6)
-        ("rust-draw-state" ,rust-draw-state-0.8))))
-    (home-page "https://github.com/PistonDevelopers/gfx_graphics")
-    (synopsis "Gfx 2D back-end for the Piston game engine")
-    (description
-     "This package provides a Gfx 2D back-end for the Piston game engine.")
-    (license license:expat)))
-
-(define-public rust-piston2d-graphics-0.35
-  (package
-    (name "rust-piston2d-graphics")
-    (version "0.35.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "piston2d-graphics" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1dx2fanxc2pj76hc5l72x0fh4qg9gchjlr8rmbhdk6jpggcmq56g"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-interpolation" ,rust-interpolation-0.2)
-        ("rust-rusttype" ,rust-rusttype-0.7)
-        ("rust-piston-texture" ,rust-piston-texture-0.8)
-        ("rust-piston-viewport" ,rust-piston-viewport-1)
-        ("rust-read-color" ,rust-read-color-1)
-        ("rust-vecmath" ,rust-vecmath-1)
-        ("rust-fnv" ,rust-fnv-1))))
-    (home-page "https://github.com/pistondevelopers/graphics")
-    (synopsis "Library for 2D graphics that works with multiple back-ends")
-    (description "This package provides a library for 2D graphics that works
-with multiple back-ends.")
-    (license license:expat)))
-
 (define-public rust-pistoncore-event-loop-0.49
   (package
     (name "rust-pistoncore-event-loop")
@@ -1922,34 +1664,6 @@ with multiple back-ends.")
     (synopsis "Piston event loop for games and interactive applications")
     (description "This package provides a Piston event loop for games and
 interactive applications.")
-    (license license:expat)))
-
-(define-public rust-pistoncore-glutin-window-0.63
-  (package
-    (name "rust-pistoncore-glutin-window")
-    (version "0.63.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pistoncore-glutin_window" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0dhbyxarv5i742d400bmqdqq3f8c25kcgcg0xavrc18dc913rixc"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-gl" ,rust-gl-0.11)
-        ("rust-glutin" ,rust-glutin-0.21)
-        ("rust-pistoncore-input" ,rust-pistoncore-input-0.28)
-        ("rust-pistoncore-window" ,rust-pistoncore-window-0.44)
-        ("rust-shader-version" ,rust-shader-version-0.6))))
-    (home-page "https://github.com/pistondevelopers/glutin_window")
-    (synopsis "Piston window back-end using the Glutin library")
-    (description
-     "This package provides a Piston window back-end using the Glutin library.")
     (license license:expat)))
 
 (define-public rust-pistoncore-input-0.28
@@ -2213,29 +1927,6 @@ images in AVIF format.")
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
-(define-public rust-resize-0.3
-  (package
-    (name "rust-resize")
-    (version "0.3.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "resize" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1ai83laz5yvg4r7z9q8d1m0vq0fqj2ycyprw5fxzxyzaj3im7rmr"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-png" ,rust-png-0.15))))
-    (home-page "https://github.com/PistonDevelopers/resize")
-    (synopsis "Simple image resampling library in pure Rust")
-    (description
-     "This package provides a simple image resampling library in pure Rust.")
-    (license license:expat)))
-
 (define-public rust-rgb-0.8
   (package
     (name "rust-rgb")
@@ -2407,29 +2098,6 @@ first-class Rust objects.")
      "This package provides access to the Wayland clipboard for client
 applications.")
     (license license:expat)))
-
-(define-public rust-smithay-clipboard-0.3
-  (package
-    (inherit rust-smithay-clipboard-0.6)
-    (name "rust-smithay-clipboard")
-    (version "0.3.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "smithay-clipboard" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1h7qhcx44cgwncgpn5llky0c56vgsg9mqrkybb2z37vsxxia4rwn"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-nix" ,rust-nix-0.14)
-        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.6))
-       #:cargo-development-inputs
-       (("rust-andrew" ,rust-andrew-0.2))))
-    (inputs
-     (list wayland))))
 
 (define-public rust-tiff-0.6
   (package
@@ -3508,26 +3176,6 @@ the platform-specific getters provided by winit, or another library.")
     (description "This package provides x11 clipboard support for Rust.")
     (license license:expat)))
 
-(define-public rust-x11-clipboard-0.4
-  (package
-    (inherit rust-x11-clipboard-0.5)
-    (name "rust-x11-clipboard")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "x11-clipboard" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0nqdnswiyj28b1izjp5rzbc67cxpb5c8p4vh1xyndkirzs84vqqk"))))
-    (arguments
-     `(#:tests? #f  ; Tests require display server.
-       #:cargo-inputs (("rust-xcb" ,rust-xcb-0.9))))
-    (native-inputs
-     (list python))))
-
 (define-public rust-x11-dl-2
   (package
     (name "rust-x11-dl")
@@ -3570,24 +3218,6 @@ the platform-specific getters provided by winit, or another library.")
     (description
      "This package provides a YUV4MPEG2 (@file{.y4m}) encoder and decoder.")
     (license license:expat)))
-
-(define-public rust-y4m-0.5
-  (package
-    (inherit rust-y4m-0.7)
-    (name "rust-y4m")
-    (version "0.5.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "y4m" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1933677by64y06zfgip2yq8b2dza8xnljhaksx93czq90b54kscz"))))
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-resize" ,rust-resize-0.3))))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

@@ -315,7 +315,8 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
 ;; XXX: Remove it on core-updates.  It is only needed for evince 42.3 that
 ;; requires a recent poppler.
 (define-public poppler-next
-  (package/inherit poppler
+  (package
+    (inherit poppler)
     (name "poppler-next")
     (version "22.09.0")
     (source (origin
@@ -963,7 +964,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method git-fetch)
@@ -972,7 +973,7 @@ using a stylus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16pf50x1ps8dcynnvw5lz7ggl0jg7qvzv6gkd30xg3hkcxff8ch3"))))
+        (base32 "13q3fsrszq828gki3z42lda9gghm9wsnsg7iylp1ypcbj7hd5zhk"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1498,7 +1499,7 @@ manipulating PDF documents from the command line.  It supports
 (define-public weasyprint
   (package
     (name "weasyprint")
-    (version "54.3")
+    (version "56.1")
     (source
      (origin
        (method git-fetch)
@@ -1508,7 +1509,7 @@ manipulating PDF documents from the command line.  It supports
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0cn8gpgyic6pmrnhp0540nbgplpsd5aybi7k89anz6m1sshgjzgs"))))
+         "08l0yaqg0rxnb2r3x4baf4wng5pxpjbyalnrl4glwh9l69740q7p"))))
     (build-system python-build-system)
     (arguments
      (list
