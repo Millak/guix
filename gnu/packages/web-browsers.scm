@@ -829,7 +829,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.9.6")
+    (version "0.9.9")
     (source
      (origin
        (method git-fetch)
@@ -838,7 +838,7 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19rr1wcadm4698q5gyq0pxv81220l5g8zfnp61s43a4q7kn4mi1z"))))
+        (base32 "0s73587wf29jzymlqrgcnci7w6wsfj1vcs7szxshsmaiszf0skwk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -912,10 +912,11 @@ http, and https via third-party applications.")
                  '("LISP_COMPILER) --eval \"(require 'asdf)\" "
                    "--eval \"(push \\\"$$(pwd)/\\\" asdf:*central-registry*)\"  "))))
              #t)))))
-    (synopsis "Gemini, kami and pleroma client with a terminal interface")
+    (synopsis
+     "Gemini, gopher, kami and pleroma client with a terminal interface")
     (description
-     "This package provides a Gemini, kami and pleroma client with a terminal
-interface.")
+     "This package provides a Gemini, gopher, kami and pleroma client with a
+terminal interface.")
     (home-page "https://www.autistici.org/interzona/tinmop.html")
     (license license:gpl3+)))
 
