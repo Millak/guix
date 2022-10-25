@@ -51,12 +51,11 @@ TARGET."
          "openssh" "emacs" "vim" "python" "guile" "guix")))
 
 (define %base-packages/armhf
-  ;; XXX: Relax requirements for armhf-linux for lack of enough build power.
-  (map (lambda (package)
-         (if (string=? (package-name package) "emacs")
-             (specification->package "emacs-no-x")
-             package))
-       %base-packages))
+  ;; The guix package doesn't build natively on armhf due to Guile memory
+  ;; issues compiling the package modules
+  (remove (lambda (package)
+            (string=? (package-name package) "guix"))
+          %base-packages))
 
 (define %base-packages/hurd
   ;; XXX: For now we are less demanding of "i586-gnu".
@@ -112,8 +111,6 @@ TARGET."
                       (cond ((string=? system "i586-gnu")
                              %base-packages/hurd)
                             ((string=? system "armhf-linux")
-                             ;; FIXME: Drop special case when ci.guix.gnu.org
-                             ;; has more ARMv7 build power.
                              %base-packages/armhf)
                             ((string=? system "powerpc64le-linux")
                              ;; FIXME: Drop 'bootstrap-tarballs' until
