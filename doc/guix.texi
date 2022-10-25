@@ -49,7 +49,7 @@ Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2021, 2022 Marius Bakke@*
 Copyright @copyright{} 2017, 2019, 2020, 2022 Hartmut Goebel@*
-Copyright @copyright{} 2017, 2019, 2020, 2021 Maxim Cournoyer@*
+Copyright @copyright{} 2017, 2019, 2020, 2021, 2022 Maxim Cournoyer@*
 Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
 Copyright @copyright{} 2017 Andy Wingo@*
@@ -6246,6 +6246,12 @@ directory:
 guix shell --container --expose=$HOME=/exchange guile -- guile
 @end example
 
+@cindex symbolic links, guix shell
+@item --symlink=@var{spec}
+@itemx -S @var{spec}
+For containers, create the symbolic links specified by @var{spec}, as
+documented in @ref{pack-symlink-option}.
+
 @cindex file system hierarchy standard (FHS)
 @cindex FHS (file system hierarchy standard)
 @item --emulate-fhs
@@ -7038,6 +7044,7 @@ Compress the resulting tarball using @var{tool}---one of @code{gzip},
 @code{zstd}, @code{bzip2}, @code{xz}, @code{lzip}, or @code{none} for no
 compression.
 
+@anchor{pack-symlink-option}
 @item --symlink=@var{spec}
 @itemx -S @var{spec}
 Add the symlinks specified by @var{spec} to the pack.  This option can

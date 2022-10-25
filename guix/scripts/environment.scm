@@ -33,8 +33,10 @@
   #:use-module ((guix gexp) #:select (lower-object))
   #:use-module (guix scripts)
   #:use-module (guix scripts build)
+  #:autoload   (guix scripts pack) (symlink-spec-option-parser)
   #:use-module (guix transformations)
   #:autoload   (ice-9 ftw) (scandir)
+  #:use-module (gnu build install)
   #:autoload   (gnu build linux-container) (call-with-container %namespaces
                                             user-namespace-supported?
                                             unprivileged-user-namespace-supported?
@@ -120,6 +122,9 @@ shell'."
       --expose=SPEC      for containers, expose read-only host file system
                          according to SPEC"))
   (display (G_ "
+  -S, --symlink=SPEC     for containers, add symlinks to the profile according
+                         to SPEC, e.g. \"/usr/bin/env=bin/env\"."))
+  (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
   (display (G_ "
       --bootstrap        use bootstrap binaries to build the environment")))
@@ -157,6 +162,7 @@ COMMAND or an interactive shell in that environment.\n"))
 (define %default-options
   `((system . ,(%current-system))
     (substitutes? . #t)
+    (symlinks . ())
     (offload? . #t)
     (graft? . #t)
     (print-build-trace? . #t)
@@ -256,6 +262,7 @@ use '--preserve' instead~%"))
                    (alist-cons 'file-system-mapping
                                (specification->file-system-mapping arg #f)
                                result)))
+         (option '(#\S "symlink") #t #f symlink-spec-option-parser)
          (option '(#\r "root") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'gc-root arg result)))
@@ -672,7 +679,7 @@ regexps in WHITE-LIST."
 (define* (launch-environment/container #:key command bash user user-mappings
                                        profile manifest link-profile? network?
                                        map-cwd? emulate-fhs? (setup-hook #f)
-                                       (white-list '()))
+                                       (symlinks '()) (white-list '()))
   "Run COMMAND within a container that features the software in PROFILE.
 Environment variables are set according to the search paths of MANIFEST.  The
 global shell is BASH, a file name for a GNU Bash binary in the store.  When
@@ -689,6 +696,9 @@ with the EMULATE-FHS? option.
 
 LINK-PROFILE? creates a symbolic link from ~/.guix-profile to the
 environment profile.
+
+SYMLINKS must be a list of (SOURCE -> TARGET) tuples denoting symlinks to be
+added to the container.
 
 Preserve environment variables whose name matches the one of the regexps in
 WHILE-LIST."
@@ -796,6 +806,15 @@ WHILE-LIST."
             ;; Create a dummy home directory.
             (mkdir-p home-dir)
             (setenv "HOME" home-dir)
+
+            ;; Create symlinks.
+            (let ((symlink->directives
+                   (match-lambda
+                     ((source '-> target)
+                      `((directory ,(dirname source))
+                        (,source -> ,(string-append profile "/" target)))))))
+              (for-each (cut evaluate-populate-directive <> ".")
+                        (append-map symlink->directives symlinks)))
 
             ;; Call an additional setup procedure, if provided.
             (when setup-hook
@@ -970,6 +989,7 @@ command-line option processing with 'parse-command-line'."
     (let* ((pure?        (assoc-ref opts 'pure))
            (container?   (assoc-ref opts 'container?))
            (link-prof?   (assoc-ref opts 'link-profile?))
+           (symlinks     (assoc-ref opts 'symlinks))
            (network?     (assoc-ref opts 'network?))
            (no-cwd?      (assoc-ref opts 'no-cwd?))
            (emulate-fhs? (assoc-ref opts 'emulate-fhs?))
@@ -1010,15 +1030,17 @@ command-line option processing with 'parse-command-line'."
 
       (when container? (assert-container-features))
 
-      (when (and (not container?) link-prof?)
-        (leave (G_ "'--link-profile' cannot be used without '--container'~%")))
-      (when (and (not container?) user)
-        (leave (G_ "'--user' cannot be used without '--container'~%")))
-      (when (and (not container?) no-cwd?)
-        (leave (G_ "--no-cwd cannot be used without '--container'~%")))
-      (when (and (not container?) emulate-fhs?)
-        (leave (G_ "'--emulate-fhs' cannot be used without '--container~%'")))
-
+      (when (not container?)
+        (when link-prof?
+          (leave (G_ "'--link-profile' cannot be used without '--container'~%")))
+        (when user
+          (leave (G_ "'--user' cannot be used without '--container'~%")))
+        (when no-cwd?
+          (leave (G_ "--no-cwd cannot be used without '--container'~%")))
+        (when emulate-fhs?
+          (leave (G_ "'--emulate-fhs' cannot be used without '--container~%'")))
+        (when (pair? symlinks)
+          (leave (G_ "'--symlink' cannot be used without '--container~%'"))))
 
       (with-store/maybe store
         (with-status-verbosity (assoc-ref opts 'verbosity)
@@ -1099,6 +1121,7 @@ when using '--container'; doing nothing~%"))
                                                     #:network? network?
                                                     #:map-cwd? (not no-cwd?)
                                                     #:emulate-fhs? emulate-fhs?
+                                                    #:symlinks symlinks
                                                     #:setup-hook
                                                     (and emulate-fhs?
                                                          setup-fhs))))

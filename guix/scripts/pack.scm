@@ -61,7 +61,9 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
   #:use-module (ice-9 match)
-  #:export (self-contained-tarball
+  #:export (symlink-spec-option-parser
+
+            self-contained-tarball
             debian-archive
             docker-image
             squashfs-image
@@ -160,6 +162,21 @@ its source property."
           ((_) str)
           ((names ... _) (loop names))))))
 
+(define (symlink-spec-option-parser opt name arg result)
+  "A SRFI-37 option parser for the --symlink option."
+  ;; Note: Using 'string-split' allows us to handle empty
+  ;; TARGET (as in "/opt/guile=", meaning that /opt/guile is
+  ;; a symlink to the profile) correctly.
+  (match (string-split arg (char-set #\=))
+    ((source target)
+     (let ((symlinks (assoc-ref result 'symlinks)))
+       (alist-cons 'symlinks
+                   `((,source -> ,target) ,@symlinks)
+                   (alist-delete 'symlinks result eq?))))
+    (x
+     (leave (G_ "~a: invalid symlink specification~%")
+            arg))))
+
 
 ;;;
 ;;; Tarball format.
@@ -226,8 +243,9 @@ its source property."
                `(,@(if (string=? parent "/")
                        '()
                        `((directory ,parent)))
-                 (,source
-                  -> ,(relative-file-name parent target)))))))
+                 ;; Use a relative file name for compatibility with
+                 ;; relocatable packs.
+                 (,source -> ,(relative-file-name parent target)))))))
 
         (define directives
           ;; Fully-qualified symlinks.
@@ -1208,20 +1226,7 @@ last resort for relocation."
                  (lambda (opt name arg result)
                    (alist-cons 'compressor (lookup-compressor arg)
                                result)))
-         (option '(#\S "symlink") #t #f
-                 (lambda (opt name arg result)
-                   ;; Note: Using 'string-split' allows us to handle empty
-                   ;; TARGET (as in "/opt/guile=", meaning that /opt/guile is
-                   ;; a symlink to the profile) correctly.
-                   (match (string-split arg (char-set #\=))
-                     ((source target)
-                      (let ((symlinks (assoc-ref result 'symlinks)))
-                        (alist-cons 'symlinks
-                                    `((,source -> ,target) ,@symlinks)
-                                    (alist-delete 'symlinks result eq?))))
-                     (x
-                      (leave (G_ "~a: invalid symlink specification~%")
-                             arg)))))
+         (option '(#\S "symlink") #t #f symlink-spec-option-parser)
          (option '("save-provenance") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'save-provenance? #t result)))
