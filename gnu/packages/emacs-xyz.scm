@@ -4862,30 +4862,32 @@ representation.")
       (license license:gpl2+))))
 
 (define-public emacs-git-gutter
-  (package
-    (name "emacs-git-gutter")
-    (version "0.92")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/syohex/emacs-git-gutter")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1fkp6iyisb3g5afyjkxz4yj4ws5f8n7whklck4jdf3014vs01b3c"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/syohex/emacs-git-gutter")
-    (synopsis "See and manage hunks of text in a version control system")
-    (description
-     "This package is an Emacs minor mode for displaying and interacting with
+  (let ((commit "ec28e85d237065cb3c28db4b66d129da6d309f9c")
+        (revision "0"))
+    (package
+      (name "emacs-git-gutter")
+      (version (git-version "0.92" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/syohex/emacs-git-gutter")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1fx3jp65ibcsv8akd8g4k701cs8yq0sg1bd2qszzfh6lvc4pblmi"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/syohex/emacs-git-gutter")
+      (synopsis "See and manage hunks of text in a version control system")
+      (description
+       "This package is an Emacs minor mode for displaying and interacting with
 hunks of text managed in a version control system.  Added modified and deleted
 areas can be indicated with symbols on the edge of the buffer, and commands
 can be used to move between and perform actions on these hunks.
 
 Git, Mercurial, Subversion and Bazaar are supported, and many parts of the
 display and behaviour is easily customisable.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-git-gutter-fringe
   (let ((commit "648cb5b57faec55711803cdc9434e55a733c3eba")
