@@ -49,6 +49,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages ghostscript)
@@ -372,6 +373,118 @@ GhcWithHscBuiltViaC=YES
              (sha256
               (base32
                "0fi60bj0ak391x31cq5wp1ffwavl5w9jffyf62yv9rhxa915596b"))))))
+    (home-page "https://www.haskell.org/ghc")
+    (synopsis "The Glasgow Haskell Compiler")
+    (description
+     "The Glasgow Haskell Compiler (GHC) is a state-of-the-art compiler and
+interactive environment for the functional language Haskell.")
+    (license license:bsd-3)))
+
+(define-public ghc-6.0
+  (package
+    (name "ghc")
+    (version "6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://downloads.haskell.org/~ghc/"
+                           version "/" name "-" version "-src.tar.bz2"))
+       (sha256
+        (base32
+         "06hpl8wyhhs1vz9dcdf0vbybwyzb5ifh27d59rx42q1vjs0m8zdv"))))
+    (build-system gnu-build-system)
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (arguments
+     (list
+      #:system "i686-linux"
+      #:tests? #false ;no check target
+      #:implicit-inputs? #false
+      #:parallel-build? #false ;not supported
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26)
+                  (srfi srfi-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (delete-file "configure")
+              (delete-file "config.sub")
+              (install-file (search-input-file inputs
+                                               "/bin/config.sub")
+                            ".")
+              (let ((bash (which "bash")))
+                (substitute* '("configure.in"
+                               "ghc/configure.in"
+                               "ghc/rts/gmp/configure.in"
+                               "distrib/configure-bin.in")
+                  (("`/bin/sh") (string-append "`" bash))
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash))
+                  (("^#! /bin/sh") (string-append "#! " bash)))
+                (substitute* "glafp-utils/runstdtest/runstdtest.prl"
+                  (("^#! /bin/sh") (string-append "#! " bash))
+                  (("TimeCmd /bin/sh")
+                   (string-append "TimeCmd " bash)))
+                (substitute* '("mk/config.mk.in"
+                               "ghc/rts/gmp/Makefile.in")
+                  (("^SHELL.*=.*/bin/sh") (string-append "SHELL = " bash)))
+                (substitute* "aclocal.m4"
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash)))
+                (substitute* '"ghc/compiler/Makefile"
+                  (("#!/bin/sh") (string-append "#!" bash)))
+                (substitute* '("libraries/base/cbits/system.c"
+                               "libraries/unix/cbits/execvpe.c")
+                  (("/bin/sh") bash)
+                  (("\"sh\"") (string-append "\"" bash "\"")))
+
+                (setenv "CONFIG_SHELL" bash)
+                (setenv "SHELL" bash))
+              (invoke "autoreconf" "--verbose" "--force")))
+          (replace 'configure
+            (lambda* (#:key build #:allow-other-keys)
+              (setenv "CPATH"
+                      (string-append (getcwd) "/ghc/includes:"
+                                     (getcwd) "/ghc/rts/gmp:"
+                                     (getcwd) "/mk:"
+                                     (or (getenv "CPATH") "")))
+              (call-with-output-file "config.cache"
+                (lambda (port)
+                  ;; GCC 2.95 fails to deal with anonymous unions in glibc's
+                  ;; 'struct_rusage.h':
+                  ;; Stats.c: In function `pageFaults':
+                  ;; Stats.c:270: structure has no member named `ru_majflt'
+                  ;; Stats.c:272: warning: control reaches end of non-void function
+                  (display "ac_cv_func_getrusage=no\n" port)))
+
+              ;; Socket.hsc:887: sizeof applied to an incomplete type
+              ;; Socket.hsc:893: dereferencing pointer to incomplete type
+              (substitute* "libraries/network/Network/Socket.hsc"
+                (("ifdef SO_PEERCRED")
+                 "ifdef SO_PEERCRED_NEVER"))
+              (invoke "./configure"
+                      (string-append "--with-hc=" (which "ghc"))
+                      (string-append "--prefix=" #$output)
+                      (string-append "--build=" build)
+                      (string-append "--host=" build)))))))
+    (native-search-paths (list (search-path-specification
+                                (variable "GHC_PACKAGE_PATH")
+                                (files (list
+                                        (string-append "lib/ghc-" version)))
+                                (file-pattern ".*\\.conf\\.d$")
+                                (file-type 'directory))))
+    (native-inputs
+     (modify-inputs (%final-inputs)
+       (delete "gcc")
+       (prepend autoconf-2.13
+                config
+                flex
+                ;; Perl used to allow setting $* to enable multi-line matching.  If
+                ;; we want to use a more recent Perl we need to patch all
+                ;; expressions that require multi-line matching.  Hard to tell.
+                perl-5.6
+                python-2               ;for tests
+                ghc-4
+                gcc-2.95)))
     (home-page "https://www.haskell.org/ghc")
     (synopsis "The Glasgow Haskell Compiler")
     (description
