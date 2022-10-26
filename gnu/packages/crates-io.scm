@@ -58090,16 +58090,14 @@ handle Unicode characters correctly.")
 (define-public rust-thiserror-impl-1
   (package
     (name "rust-thiserror-impl")
-    (version "1.0.26")
+    (version "1.0.37")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "thiserror-impl" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0ia72qiynlws5avb8f1xqlazp4g6bqgzjbwy5vs6nyg7myh6j386"))))
+        (base32 "1fydmpksd14x1mkc24zas01qjssz8q43sbn2ywl6n527dda1fbcq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
