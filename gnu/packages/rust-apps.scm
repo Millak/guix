@@ -1900,6 +1900,43 @@ workflow includes opening graphical programs from the terminal, as the locked
 terminal won't have to take up any space.")
     (license license:gpl3+)))
 
+(define-public swayr
+  (package
+   (name "swayr")
+   (version "0.18.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "swayr" version))
+     (file-name (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32 "1m443lwbs3lm20kkviw60db56w9i59dm393z1sn6llpfi2xihh3h"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:tests? #f
+      #:cargo-inputs
+      (("rust-clap" ,rust-clap-3)
+       ("rust-directories" ,rust-directories-4)
+       ("rust-env-logger" ,rust-env-logger-0.9)
+       ("rust-log" ,rust-log-0.4)
+       ("rust-once-cell" ,rust-once-cell-1)
+       ("rust-rand" ,rust-rand-0.8)
+       ("rust-regex" ,rust-regex-1)
+       ("rust-rt-format" ,rust-rt-format-0.3)
+       ("rust-serde" ,rust-serde-1)
+       ("rust-serde-json" ,rust-serde-json-1)
+       ("rust-swayipc" ,rust-swayipc-3)
+       ("rust-toml" ,rust-toml-0.5))))
+   (home-page "https://sr.ht/~tsdh/swayr/")
+   (synopsis "Window-switcher for the sway window manager")
+   (description
+    "This package provides a last-recently-used window-switcher for the sway
+window manager. Swayr consists of a daemon, and a client. The swayrd daemon
+records window/workspace creations, deletions, and focus changes using sway's
+JSON IPC interface. The swayr client offers subcommands, and sends them to the
+daemon which executes them.")
+   (license license:gpl3+)))
+
 (define-public tealdeer
   (package
     (name "tealdeer")
