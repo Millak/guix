@@ -61,6 +61,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages speech)
@@ -136,7 +137,6 @@
     ;; TODO: can likely be unbundled when Vulkan is updated.
     "third_party/dawn/third_party/khronos" ;ASL2.0
     "third_party/dawn/third_party/gn/webgpu-cts" ;BSD-3
-    "third_party/depot_tools/owners.py" ;BSD-3
     "third_party/devtools-frontend" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/acorn" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party\
@@ -216,7 +216,7 @@
     "third_party/nasm" ;BSD-2
     "third_party/nearby" ;ASL2.0
     "third_party/node" ;Expat
-    "third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2" ;BSD-2
+    "third_party/omnibox_proto" ;BSD-3
     "third_party/one_euro_filter" ;BSD-3
     "third_party/openscreen" ;BSD-3
     "third_party/openscreen/src/third_party/tinycbor" ;Expat
@@ -247,8 +247,6 @@
     "third_party/securemessage" ;ASL2.0
     "third_party/shell-encryption" ;ASL2.0
     "third_party/skia" ;BSD-3
-    "third_party/skia/include/third_party/skcms" ;BSD-3
-    "third_party/skia/third_party/skcms" ;BSD-3
     "third_party/skia/third_party/vulkanmemoryallocator" ;BSD-3, Expat
     "third_party/smhasher" ;Expat, public domain
 
@@ -319,7 +317,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "106.0.5249.119")
+(define %chromium-version "107.0.5304.68")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/102.0.5005.61-1")
 (define %arch-revision "6afedb08139b97089ce8ef720ece5cd14c83948c")
@@ -332,7 +330,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0mgyakq0g3v24b1qn76zblhjf9zzbiv1fq95w7w42nv3fvxfrxr2"))))
+      "0rjdi2lr71xjjf4x27183ys87fc95m85yp5x3kk6i39ppksvsj6b"))))
 
 (define %debian-origin
   (origin
@@ -346,19 +344,6 @@
     (sha256
      (base32
       "1ln6r1qzlr7dsgvcbssvvc34my4mpkwv9hmvlb2dhjncs7isp65j"))))
-
-(define %chromium-gcc-patchset
-  (let ((commit "chromium-106-patchset-3"))
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/stha09/chromium-patches")
-            (commit commit)))
-      (file-name (git-file-name "chromium-gcc-patches"
-                                (string-drop commit 9)))
-      (sha256
-       (base32
-        "109garl1z19zgn3sgg1y2339aa229kfpmlb238cp6kbd7gv8j43x")))))
 
 (define (origin-file origin file)
   (computed-file
@@ -375,14 +360,8 @@
          "system/zlib.patch"
          "system/openjpeg.patch")))
 
-(define (gcc-patch name)
-  (origin-file %chromium-gcc-patchset name))
-
 (define %gcc-patches
-  (map gcc-patch
-       '("chromium-106-AutofillPopupControllerImpl-namespace.patch"
-         "chromium-106-LinuxInputMethodContext-include.patch"
-         "chromium-106-ReverseBeaconTimeoutSorter-constexpr.patch")))
+  '())
 
 (define (arch-patch revision name hash)
   (origin
@@ -516,7 +495,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "14niglj8q6mfkmgbbjhaipmyhv6vryx93crswb1xa871a14in28g"))
+                "0k5qrmby1k2gw3lj96x3qag20kka61my578pv0zyrqqj5sdz3i5a"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -569,6 +548,11 @@
               "custom_toolchain=\"//build/toolchain/linux/unbundle:default\""
               "host_toolchain=\"//build/toolchain/linux/unbundle:default\""
 
+              (string-append "clang_base_path=\""
+                             (dirname (dirname (search-input-file %build-inputs
+                                                                  "/bin/clang")))
+                             "\"")
+
               ;; Prefer system libraries.
               "use_system_freetype=true"
               "use_system_harfbuzz=true"
@@ -577,6 +561,7 @@
               "use_system_libjpeg=true"
               "use_system_libopenjpeg2=true"
               "use_system_libpng=true"
+              "use_system_libwayland_server=true"
               "use_system_wayland_scanner=true"
               (string-append "system_wayland_scanner_path=\""
                              (search-input-file %build-inputs
@@ -637,7 +622,10 @@
                 ;; Adjust minizip header inclusions.
                 (substitute* (find-files "third_party/tflite_support\
 /src/tensorflow_lite_support/metadata/cc")
-                  (("third_party/zlib/minizip/")
+                  (("#include \"contrib/minizip/ioapi\\.h\"")
+                   ;; This one can be removed for M108 or so.
+                   "#include \"minizip/ioapi.h\"")
+                  (("third_party/zlib/contrib/minizip/")
                    "minizip/"))
 
                 (substitute*
@@ -695,7 +683,7 @@
                                "gpu/config/gpu_util.cc")
                   (("third_party/vulkan_headers/include/") ""))
 
-                (substitute* "third_party/skia/include/gpu/vk/GrVkVulkan.h"
+                (substitute* "third_party/skia/include/private/gpu/vk/SkiaVulkan.h"
                   (("include/third_party/vulkan/") "")))))
           (add-after 'patch-stuff 'add-absolute-references
             (lambda* (#:key inputs #:allow-other-keys)
@@ -965,6 +953,7 @@
            pciutils
            pipewire-0.3
            pulseaudio
+           qtbase-5
            re2
            snappy
            speech-dispatcher
