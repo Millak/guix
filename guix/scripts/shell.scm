@@ -534,43 +534,44 @@ concatenates MANIFESTS, a list of expressions."
   (category development)
   (synopsis "spawn one-off software environments")
 
-  (define (cache-entries directory)
-    (filter-map (match-lambda
-                  ((or "." "..") #f)
-                  (file (string-append directory "/" file)))
-                (or (scandir directory) '())))
+  (with-error-handling
+    (define (cache-entries directory)
+      (filter-map (match-lambda
+                    ((or "." "..") #f)
+                    (file (string-append directory "/" file)))
+                  (or (scandir directory) '())))
 
-  (define* (entry-expiration file)
-    ;; Return the time at which FILE, a cached profile, is considered expired.
-    (match (false-if-exception (lstat file))
-      (#f 0)                       ;FILE may have been deleted in the meantime
-      (st (+ (stat:atime st) (* 60 60 24 7)))))
+    (define* (entry-expiration file)
+      ;; Return the time at which FILE, a cached profile, is considered expired.
+      (match (false-if-exception (lstat file))
+        (#f 0)                       ;FILE may have been deleted in the meantime
+        (st (+ (stat:atime st) (* 60 60 24 7)))))
 
-  (define opts
-    (parse-args args))
+    (define opts
+      (parse-args args))
 
-  (define interactive?
-    (not (assoc-ref opts 'exec)))
+    (define interactive?
+      (not (assoc-ref opts 'exec)))
 
-  (if (assoc-ref opts 'check?)
-      (record-hint 'shell-check)
-      (when (and interactive?
-                 (not (hint-given? 'shell-check))
-                 (not (assoc-ref opts 'container?))
-                 (not (assoc-ref opts 'search-paths)))
-        (display-hint (G_ "Consider passing the @option{--check} option once
+    (if (assoc-ref opts 'check?)
+        (record-hint 'shell-check)
+        (when (and interactive?
+                   (not (hint-given? 'shell-check))
+                   (not (assoc-ref opts 'container?))
+                   (not (assoc-ref opts 'search-paths)))
+          (display-hint (G_ "Consider passing the @option{--check} option once
 to make sure your shell does not clobber environment variables."))) )
 
-  ;; Clean the cache in EXIT-HOOK so that (1) it happens after potential use
-  ;; of cached profiles, and (2) cleanup actually happens, even when
-  ;; 'guix-environment*' calls 'exit'.
-  (add-hook! exit-hook
-             (lambda _
-               (maybe-remove-expired-cache-entries
-                (%profile-cache-directory)
-                cache-entries
-                #:entry-expiration entry-expiration)))
+    ;; Clean the cache in EXIT-HOOK so that (1) it happens after potential use
+    ;; of cached profiles, and (2) cleanup actually happens, even when
+    ;; 'guix-environment*' calls 'exit'.
+    (add-hook! exit-hook
+               (lambda _
+                 (maybe-remove-expired-cache-entries
+                  (%profile-cache-directory)
+                  cache-entries
+                  #:entry-expiration entry-expiration)))
 
-  (if (assoc-ref opts 'export-manifest?)
-      (export-manifest opts (current-output-port))
-      (guix-environment* opts)))
+    (if (assoc-ref opts 'export-manifest?)
+        (export-manifest opts (current-output-port))
+        (guix-environment* opts))))

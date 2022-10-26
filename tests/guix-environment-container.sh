@@ -250,3 +250,6 @@ guix shell --bootstrap guile-bootstrap --container \
 
 # A dangling symlink causes the command to fail.
 ! guix shell --bootstrap -CS /usr/bin/python=bin/python guile-bootstrap -- exit
+
+# An invalid symlink spec causes the command to fail.
+! guix shell --bootstrap -CS bin/guile=/usr/bin/guile guile-bootstrap -- exit
