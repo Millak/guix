@@ -10486,36 +10486,41 @@ derive crate.")
 (define-public rust-clap-3
   (package
     (name "rust-clap")
-    (version "3.0.0-beta.2")
+    (version "3.1.18")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0hm1kivw6190rxbfqhdr4hqwlrijvwh90i3d9dyyw0d5k0chdlab"))))
+        (base32 "02s4hk9hrmm2s1j7dkbwpyd75mfzx3p8ks2chmp4ccybv95xznyj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t
+       #:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
+        ("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-clap-derive" ,rust-clap-derive-3)
+        ("rust-clap-lex" ,rust-clap-lex-0.2)
         ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-os-str-bytes" ,rust-os-str-bytes-2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-regex" ,rust-regex-1)
         ("rust-strsim" ,rust-strsim-0.10)
         ("rust-termcolor" ,rust-termcolor-1)
         ("rust-terminal-size" ,rust-terminal-size-0.1)
-        ("rust-textwrap" ,rust-textwrap-0.12)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-vec-map" ,rust-vec-map-0.8)
+        ("rust-textwrap" ,rust-textwrap-0.15)
+        ("rust-unicase" ,rust-unicase-2)
         ("rust-yaml-rust" ,rust-yaml-rust-0.4))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-humantime" ,rust-humantime-2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-regex" ,rust-regex-1)
-        ("rust-version-sync" ,rust-version-sync-0.8))))
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-shlex" ,rust-shlex-1)
+        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://clap.rs/")
     (synopsis "Command Line Argument Parser")
     (description
