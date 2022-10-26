@@ -55770,6 +55770,31 @@ interface.")
 executed by swayipc.")
     (license license:expat)))
 
+(define-public rust-swayipc-types-1
+  (package
+   (name "rust-swayipc-types")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "swayipc-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13lj6jyyxg41r9g0b07y8yd7ygy5gih61w5v48bpksvfdzhwwn55"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:skip-build? #t
+      #:cargo-inputs
+      (("rust-serde" ,rust-serde-1)
+       ("rust-serde-json" ,rust-serde-json-1)
+       ("rust-thiserror" ,rust-thiserror-1))))
+   (home-page "https://github.com/jaycefayne/swayipc-rs")
+   (synopsis "A library containing Type defintions from sway's IPC interface")
+   (description
+    "This package provides a library containing Type defintions from sway's IPC
+interface")
+   (license license:expat)))
+
 (define-public rust-syn-1
   (package
     (name "rust-syn")
