@@ -5298,7 +5298,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
            pkg-config
            vala))
     (inputs
-     (list gtk+ libgnome-games-support librsvg libxml2))
+     (list gtk+ libgnome-games-support-1 librsvg libxml2))
     (home-page "https://wiki.gnome.org/Apps/Five%20or%20more")
     (synopsis "Logic puzzle game")
     (description "Five or More is a game where you try to align
