@@ -2293,6 +2293,46 @@ reproducible gene expression signatures capable of accurately distinguishing
 tumor samples from healthy controls.")
     (license license:artistic2.0)))
 
+(define-public r-baalchip
+  (package
+    (name "r-baalchip")
+    (version "1.22.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "BaalChIP" version))
+              (sha256
+               (base32
+                "02qwk9n2fyg5f9xxjiiha9mi6p9ii3zi5x7w84sh5d5g58s27g6q"))))
+    (properties `((upstream-name . "BaalChIP")))
+    (build-system r-build-system)
+    (inputs (list perl)) ; extra/get.overlaps.v2_chrXY.perl
+    (propagated-inputs
+     (list r-coda
+           r-doby
+           r-doparallel
+           r-foreach
+           r-genomeinfodb
+           r-genomicalignments
+           r-genomicranges
+           r-ggplot2
+           r-iranges
+           r-reshape2
+           r-rsamtools
+           r-scales))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/BaalChIP")
+    (synopsis
+     "Analysis of allele-specific transcription factor binding in cancer genomes")
+    (description
+     "This package offers functions to process multiple @code{ChIP-seq BAM}
+files and detect allele-specific events.  It computes allele counts at
+individual variants (SNPs/SNVs), implements extensive @dfn{QC} (quality
+control) steps to remove problematic variants, and utilizes a Bayesian
+framework to identify statistically significant allele-specific events.
+BaalChIP is able to account for copy number differences between the two
+alleles, a known phenotypical feature of cancer samples.")
+    (license license:artistic2.0)))
+
 (define-public r-biocversion
   (package
     (name "r-biocversion")
