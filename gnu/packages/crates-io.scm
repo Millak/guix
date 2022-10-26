@@ -23507,7 +23507,7 @@ dirty state into your program.")
      `(("pkg-config" ,pkg-config)
        ("git" ,git-minimal)))           ;for a single test
     (inputs
-     (list libgit2-1.3 libssh2 openssl zlib))
+     (list libgit2 libssh2 openssl zlib))
     (home-page "https://github.com/rust-lang/git2-rs")
     (synopsis "Rust bindings to libgit2")
     (description
@@ -23571,7 +23571,9 @@ reading and writing git repositories.")
        #:cargo-development-inputs
        (("rust-paste" ,rust-paste-1)
         ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-time" ,rust-time-0.1))))))
+        ("rust-time" ,rust-time-0.1))))
+    (inputs
+     (list libgit2-1.3 libssh2 openssl zlib))))
 
 (define-public rust-git2-0.11
   (package
