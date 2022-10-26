@@ -188,12 +188,17 @@ etc. via a Web interface.  Features include:
             "/run/setuid-programs/fping")))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       '("--enable-agent" "--enable-ipv6" "--with-libpcre2")))
+     (list #:configure-flags
+           #~(list "--enable-agent"
+                   "--enable-ipv6"
+                   "--with-libpcre2"
+                   "--with-gnutls"
+                   (string-append "--with-gnutls="
+                                  (assoc-ref %build-inputs "gnutls")))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list pcre2))
+     (list gnutls pcre2))
     (home-page "https://www.zabbix.com/")
     (synopsis "Distributed monitoring solution (client-side agent)")
     (description "This package provides a distributed monitoring
@@ -239,8 +244,6 @@ solution (client-side agent)")
                         (string-append "--with-libevent="
                                        (assoc-ref %build-inputs "libevent"))
                         "--with-net-snmp"
-                        (string-append "--with-gnutls="
-                                       (assoc-ref %build-inputs "gnutls"))
                         "--with-libcurl"
                         (string-append "--with-zlib="
                                        (assoc-ref %build-inputs "zlib")))
@@ -249,7 +252,6 @@ solution (client-side agent)")
      (modify-inputs (package-inputs zabbix-agentd)
        (prepend curl
                 libevent
-                gnutls
                 net-snmp
                 postgresql
                 zlib)))
