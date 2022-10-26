@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
-;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -135,7 +135,8 @@ Cargo.toml file present at its root."
               ;; so that we can generate any cargo checksums.
               ;; The --strip-components argument is needed to prevent creating
               ;; an extra directory within `crate-dir`.
-              (invoke "tar" "xvf" path "-C" crate-dir "--strip-components" "1")))))
+              (format #t "Unpacking ~a~%" name)
+              (invoke "tar" "xf" path "-C" crate-dir "--strip-components" "1")))))
     inputs)
 
   ;; Configure cargo to actually use this new directory.
