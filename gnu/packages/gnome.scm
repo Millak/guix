@@ -10820,7 +10820,7 @@ is suitable as a default application in a Desktop environment.")
      (list autoconf automake
            `(,gtk+ "bin") intltool pkg-config))
     (inputs
-     (list gtksourceview libsm))
+     (list gtk+ gtksourceview-4 libsm))
     (home-page "https://wiki.gnome.org/Apps/Xpad")
     (synopsis "Virtual sticky note")
     (description
