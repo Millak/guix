@@ -170,7 +170,7 @@ etc. via a Web interface.  Features include:
 (define-public zabbix-agentd
   (package
     (name "zabbix-agentd")
-    (version "6.0.8")
+    (version "6.0.9")
     (source
      (origin
        (method url-fetch)
@@ -178,7 +178,7 @@ etc. via a Web interface.  Features include:
              "https://cdn.zabbix.com/zabbix/sources/stable/"
              (version-major+minor version) "/zabbix-" version ".tar.gz"))
        (sha256
-        (base32 "0ijf5d0kl2wb6amlz3bqfh7xg4wy00n1prislhszclj01sn0gy1g"))
+        (base32 "0rzdlmfvyqys166zi94q1c6pbf57b0g1dygb23ixsx083gq1hh01"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* '("src/zabbix_proxy/proxy.c"
