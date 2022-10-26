@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
+;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,6 +45,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (guix download)
@@ -150,6 +152,33 @@ to finish tasks, not organize them.")
      "Taskwarrior is a command-line task manager following the Getting Things
 Done time management method.  It supports network synchronization, filtering
 and querying data, exposing task data in multiple formats to other tools.")
+    (license license:expat)))
+
+(define-public tasksh
+  (package
+    (name "tasksh")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://taskwarrior.org/download/tasksh-" version ".tar.gz"))
+       (sha256 (base32
+                "1z8zw8lld62fjafjvy248dncjk0i4fwygw0ahzjdvyyppx4zjhkf"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list readline))
+    (arguments
+     `(#:tests? #f ; No tests implemented.
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'install-license-files)))) ; Already installed by package
+    (home-page "https://taskwarrior.org")
+    (synopsis "Taskwarrior shell")
+    (description
+     "Tasksh is a shell for Taskwarrior, providing a more immersive
+environment for list management. It has a review feature, shell command
+execution, and libreadline support.")
     (license license:expat)))
 
 (define-public worklog
