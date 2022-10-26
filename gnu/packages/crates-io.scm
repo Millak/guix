@@ -55725,8 +55725,34 @@ values without proliferating generics.")
     (description "This package provides custom derive for @code{sval}.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-swayipc-3
+  (package
+    (name "rust-swayipc")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "swayipc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16pf4r6svf99p73b8dhdannkvhfvmbjb4rx7gifxh8xj53rwy7db"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-swayipc-types" ,rust-swayipc-types-1))))
+    (home-page "https://github.com/jaycefayne/swayipc-rs")
+    (synopsis "Library for controlling sway through its IPC interface")
+    (description
+     "This package provides a library for controlling sway through its IPC
+interface.")
+    (license license:expat)))
+
 (define-public rust-swayipc-2
   (package
+    (inherit rust-swayipc-3)
     (name "rust-swayipc")
     (version "2.7.2")
     (source
@@ -55736,20 +55762,13 @@ values without proliferating generics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "03r15c2sijyrxmpsyjgma4gz7zmdl1g8akjnjkw6hrml91d5dilj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ; test sync::tests::connect ... FAILED
        #:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-async-std" ,rust-async-std-1)
         ("rust-swayipc-command-builder" ,rust-swayipc-command-builder-0.1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/jaycefayne/swayipc-rs")
-    (synopsis "Library for controlling sway through its IPC interface")
-    (description
-     "This package provides a library for controlling sway through its IPC
-interface.")
-    (license license:expat)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-swayipc-command-builder-0.1
   (package
