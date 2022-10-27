@@ -17043,13 +17043,30 @@ module capable of computing base-level alignments for very large sequences.")
             (lambda _
               (apply invoke "pip" "--no-cache-dir" "--no-input"
                      "install" "--no-deps" "--prefix" #$output
-                     (find-files "dist" "\\.whl$")))))))
+                     (find-files "dist" "\\.whl$"))))
+          (add-after 'install 'wrap-executable
+            (lambda _
+              (for-each
+               (lambda (script)
+                 (wrap-program script
+                   `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
+               (find-files (string-append #$output "/bin"))))))))
     (propagated-inputs
      (list python-mappy
            python-ncls
            python-pybedtools
            python-pysam
+           python-rpy2
            python-tqdm))
+    ;; Used by rpy2
+    (inputs
+     (list r-minimal  ;for R_LIBS_SITE
+           r-deseq2   ;for runDE
+           r-drimseq  ;for runDS
+           r-ggplot2  ;runDS, runDU
+           r-lazyeval ;for rpy2
+           r-qqman    ;for runDE
+           r-rlang))  ;for rpy2
     (native-inputs
      (list python-pypa-build python-setuptools))
     (home-page "https://flair.readthedocs.io/en/latest/")
