@@ -130,7 +130,10 @@ command-line arguments, multiple languages, and so on.")
               (substitute* (list (string-append bin "/egrep")
                                  (string-append bin "/fgrep"))
                 (("^exec grep")
-                 (string-append "exec " bin "/grep")))))))))
+                 (string-append "exec " bin "/grep")))))))
+      #:make-flags ,(if (hurd-target?)
+                        ''("XFAIL_TESTS=test-perror2 equiv-classes") ;XXX
+                        ''())))
    (synopsis "Print lines matching a pattern")
    (description
      "grep is a tool for finding text inside files.  Text is found by
