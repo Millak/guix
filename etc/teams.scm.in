@@ -601,6 +601,12 @@ and REV-END, two git revision strings."
       team-names))
     (anything
      (format (current-error-port)
-             "Usage: etc/teams.scm <command> [<args>]~%"))))
+             "Usage: etc/teams.scm <command> [<args>]
+
+Commands:
+  cc <team-name>            get git send-email flags for cc-ing <team-name>
+  cc-members <start> <end>  cc teams related to files changed between revisions
+  list-teams                list teams and their members
+  list-members <team-name>  list members belonging to <team-name>~%"))))
 
 (apply main (cdr (command-line)))
