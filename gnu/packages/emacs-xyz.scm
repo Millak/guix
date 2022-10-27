@@ -25175,7 +25175,7 @@ targets the Emacs based IDEs (CIDER, ESS, Geiser, Robe, SLIME etc.)")
 (define-public emacs-buttercup
   (package
     (name "emacs-buttercup")
-    (version "1.27")
+    (version "1.28")
     (source
      (origin
        (method git-fetch)
@@ -25185,7 +25185,7 @@ targets the Emacs based IDEs (CIDER, ESS, Geiser, Robe, SLIME etc.)")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1266pqsl67q5svwaxnvwnqhk23wmhds1sds98bas9w4yi4amff0b"))))
+         "1dc8m5w26gi698d31xvh1q8mwf4a3wa1xrnyhqqxrmfr8b71clpk"))))
     (build-system emacs-build-system)
     (arguments
      (list
