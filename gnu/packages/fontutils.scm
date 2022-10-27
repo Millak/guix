@@ -598,8 +598,7 @@ process.  FontParts is the successor of RoboFab.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~'("-vv"
-                       ;; These fail because the test data has not yet been
+      #:test-flags #~'(;; These fail because the test data has not yet been
                        ;; updated for newer FontTools:
                        ;;   https://github.com/googlefonts/glyphsLib/issues/787
                        ;; Re-enable for versions > 6.0.7.

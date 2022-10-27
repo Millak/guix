@@ -158,14 +158,16 @@ builder.build_wheel(sys.argv[2], config_settings=config_settings)"
         (format #t "Using ~a~%" use-test-backend)
         (match use-test-backend
           ('pytest
-           (apply invoke (cons pytest (or test-flags '("-vv")))))
+           (apply invoke pytest "-vv" test-flags))
           ('nose
-           (apply invoke (cons nosetests (or test-flags '("-v")))))
+           (apply invoke nosetests "-v" test-flags))
           ('nose2
-           (apply invoke (cons nose2 (or test-flags '("-v" "--pretty-assert")))))
+           (apply invoke nose2 "-v" "--pretty-assert" test-flags))
           ('setup.py
-           (apply invoke (append '("python" "setup.py")
-                                 (or test-flags '("test" "-v")))))
+           (apply invoke "python" "setup.py"
+                  (if (null? test-flags)
+                      '("test" "-v")
+                      test-flags)))
           ;; The developer should explicitly disable tests in this case.
           (else (raise (condition (&test-system-not-found))))))
       (format #t "test suite not run~%")))

@@ -95,7 +95,7 @@
                           (configure-flags ''())
                           (build-backend #f)
                           (test-backend #f)
-                          (test-flags #f)
+                          (test-flags ''())
                           (phases '%standard-phases)
                           (outputs '("out" "wheel"))
                           (search-paths '())

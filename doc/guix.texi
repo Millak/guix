@@ -9332,8 +9332,9 @@ to guess the appropriate backend based on @file{pyproject.toml}.
 @code{#:test-backend} is added.  It defaults to @code{#false} and will guess
 an appropriate test backend based on what is available in package inputs.
 @item
-@code{#:test-flags} is added.  The default is @code{#false}, and varies based
-on the detected @code{#:test-backend}.
+@code{#:test-flags} is added.  The default is @code{'()}.  These flags are
+passed as arguments to the test command.  Note that flags for verbose output
+is always enabled on supported backends.
 @end itemize
 
 It is considered ``experimental'' in that the implementation details are

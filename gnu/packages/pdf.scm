@@ -739,7 +739,7 @@ extracting content or merging files.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~'("-vv" "-c" "/dev/null")))
+      #:test-flags #~'("-c" "/dev/null")))
     (propagated-inputs (list python-pillow))
     (native-inputs
      (list ghostscript
@@ -1500,7 +1500,7 @@ manipulating PDF documents from the command line.  It supports
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-vv" "-c" "/dev/null"
+      #:test-flags #~(list "-c" "/dev/null"
                            "-n" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases

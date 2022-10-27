@@ -12753,7 +12753,7 @@ invoked on those path objects directly.")
        ((#:tests? _ #f)
         (not (%current-target-system)))
        ((#:test-flags flags #~'())
-        #~(append (list "-vv" "-k"
+        #~(append (list "-k"
                         (string-append
                          ;; Do not test the myproject.toml build as it tries
                          ;; to pull dependencies from the Internet.
@@ -21366,7 +21366,7 @@ particularly convenient for use in tests.")
     (arguments
      ;; Do not test the myproject.toml build as it tries to pull
      ;; dependencies from the Internet.
-     (list #:test-flags #~'("-vv" "-k" "not project")))
+     (list #:test-flags #~'("-k" "not project")))
     (native-inputs
      (list python-freezegun
            python-pytest

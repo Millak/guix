@@ -1648,7 +1648,7 @@ JSON Schema Specification Draft 2020-12.
      (list
       ;; The example tests attempt to fetch resources from the Internet
       ;; (see: https://github.com/p1c2u/openapi-spec-validator/issues/151).
-      #:test-flags #~'("-vv" "-k" "not Example and not Exampe")
+      #:test-flags #~'("-k" "not Example and not Exampe")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-coverage-pytest-options
