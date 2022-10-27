@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2018 Mark H Weaver <mhw@netris.org>
@@ -369,9 +369,16 @@ used to apply commands with arbitrarily long arguments.")
                                    " tests/misc/nice.sh"
                                    " tests/misc/pwd-long.sh"
                                    " tests/split/fail.sh"
+
+                                   ;; /hurd/fifo issue:
+                                   ;; <https://issues.guix.gnu.org/58803>.
+                                   " tests/df/unreadable.sh"
+
+                                   ;; Gnulib tests.
                                    " test-fdutimensat"
                                    " test-futimens"
                                    " test-linkat"
+                                   " test-perror2"
                                    " test-renameat"
                                    " test-renameatu"
                                    " test-tls"
