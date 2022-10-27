@@ -76,7 +76,7 @@
 (define-public wine
   (package
     (name "wine")
-    (version "7.8")
+    (version "7.19")
     (source
      (origin
        (method url-fetch)
@@ -88,7 +88,7 @@
               (string-append "https://dl.winehq.org/wine/source/" dir
                              "wine-" version ".tar.xz")))
        (sha256
-        (base32 "1f0r00b6lk59cmpj42b7f2jrd58d7vxfvpp54j7arwjhdg4yjxlg"))))
+        (base32 "08cxigkd83as6gkqgiwdpvr7cyy5ajsnhan3jbadwzqxdrz4kb23"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison flex gettext-minimal perl pkg-config))
