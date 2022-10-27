@@ -2526,7 +2526,9 @@ exec " gcc "/bin/" program
                            (substitute* "gnulib-tests/Makefile"
                              (("^XFAIL_TESTS =")
                               "XFAIL_TESTS = test-fnmatch ")))))
-                     '()))))))))
+                     '())))
+           ((#:make-flags flags ''())
+            ''()))))))
 
 (define file
   (package

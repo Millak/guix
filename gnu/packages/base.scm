@@ -317,7 +317,10 @@ interactive means to merge two files.")
                      (substitute* '("tests/xargs/verbose-quote.sh"
                                     "tests/find/exec-plus-last-file.sh")
                        (("#!/bin/sh")
-                        (string-append "#!" (which "sh")))))))))
+                        (string-append "#!" (which "sh")))))))
+      #:make-flags ,(if (hurd-target?)
+                        ''("XFAIL_TESTS=test-perror2")
+                        ''())))
    (synopsis "Operating on files matching given criteria")
    (description
     "Findutils supplies the basic file directory searching utilities of the
