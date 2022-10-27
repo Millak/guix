@@ -2900,11 +2900,18 @@ to handle."
                     (quote (#$@extra-env)))
           (apply execl #$command #$command (list #$@args)))))))
 
-(define (make-greetd-agreety-session-command config command)
-  (let ((agreety (file-append (greetd-agreety config) "/bin/agreety")))
-    (program-file
-     "agreety-command"
-     #~(execl #$agreety #$agreety "-c" #$command))))
+(define-gexp-compiler (greetd-agreety-session-compiler
+                       (session <greetd-agreety-session>)
+                       system target)
+  (let ((agreety (file-append (greetd-agreety session)
+                              "/bin/agreety"))
+        (command ((if (greetd-agreety-xdg-env? session)
+                      greetd-agreety-tty-xdg-session-command
+                      greetd-agreety-tty-session-command)
+                  session)))
+    (lower-object
+     (program-file "agreety-command"
+       #~(execl #$agreety #$agreety "-c" #$command)))))
 
 (define-record-type* <greetd-wlgreet-session>
   greetd-wlgreet-session make-greetd-wlgreet-session
@@ -2991,37 +2998,26 @@ to handle."
       "exec \"" wlgreet " --config " wlgreet-config "; "
       swaymsg " exit\"\n")))
 
-(define (greetd-wlgreet-sway-session-command session)
+(define-gexp-compiler (greetd-wlgreet-sway-session-compiler
+                       (session <greetd-wlgreet-sway-session>)
+                       system target)
   (let ((sway (file-append (greetd-wlgreet-sway-session-sway session)
                            "/bin/sway"))
         (config (make-wlgreet-sway-configuration-file session)))
-    (program-file "wlgreet-sway-session-command"
-      #~(let* ((log-file (open-output-file
-                          (string-append "/tmp/sway-greeter."
-                                         (number->string (getpid))
-                                         ".log")))
-             (username (getenv "USER"))
-             (useruid (number->string (passwd:uid (getpwuid username)))))
-          ;; redirect stdout/err to log-file
-          (dup2 (fileno log-file) 1)
-          (dup2 1 2)
-          (sleep 1) ;give seatd/logind some time to start up
-          (setenv "XDG_RUNTIME_DIR" (string-append "/run/user/" useruid))
-          (execl #$sway #$sway "-d" "-c" #$config)))))
-
-(define (make-greetd-default-session-command config-or-command)
-  (cond ((greetd-agreety-session? config-or-command)
-         (cond ((greetd-agreety-xdg-env? config-or-command)
-                (make-greetd-agreety-session-command
-                 config-or-command
-                 (greetd-agreety-tty-xdg-session-command config-or-command)))
-               (#t
-                (make-greetd-agreety-session-command
-                 config-or-command
-                 (greetd-agreety-tty-session-command config-or-command)))))
-        ((greetd-wlgreet-sway-session? config-or-command)
-         (greetd-wlgreet-sway-session-command config-or-command))
-        (#t config-or-command)))
+    (lower-object
+     (program-file "wlgreet-sway-session-command"
+       #~(let* ((log-file (open-output-file
+                           (string-append "/tmp/sway-greeter."
+                                          (number->string (getpid))
+                                          ".log")))
+                (username (getenv "USER"))
+                (useruid (number->string (passwd:uid (getpwuid username)))))
+           ;; redirect stdout/err to log-file
+           (dup2 (fileno log-file) 1)
+           (dup2 1 2)
+           (sleep 1) ;give seatd/logind some time to start up
+           (setenv "XDG_RUNTIME_DIR" (string-append "/run/user/" useruid))
+           (execl #$sway #$sway "-d" "-c" #$config))))))
 
 (define-record-type* <greetd-terminal-configuration>
   greetd-terminal-configuration make-greetd-terminal-configuration
@@ -3035,8 +3031,7 @@ to handle."
   (terminal-switch greetd-terminal-switch (default #f))
   (default-session-user greetd-default-session-user (default "greeter"))
   (default-session-command greetd-default-session-command
-    (default (greetd-agreety-session))
-    (sanitize make-greetd-default-session-command)))
+    (default (greetd-agreety-session))))
 
 (define (default-config-file-name config)
   (string-join (list "config-" (greetd-terminal-vt config) ".toml") ""))
