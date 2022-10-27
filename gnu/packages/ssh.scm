@@ -132,7 +132,7 @@ file names.
 (define-public libssh
   (package
     (name "libssh")
-    (version "0.9.6")
+    (version "0.10.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.libssh.org/files/"
@@ -140,7 +140,7 @@ file names.
                                   "/libssh-" version ".tar.xz"))
               (sha256
                (base32
-                "16w2mc7pyv9mijjlgacbz8dgczc7ig2m6m70w1pld04vpn2zig46"))))
+                "0zfr9fy4vg1bmz1k836hg9wi20mmaz2sgw61s6464iv1mda2qf87"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
