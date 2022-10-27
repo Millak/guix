@@ -94,51 +94,48 @@
     (call-with-input-file file
       (lambda (in)
         (let loop
-          ((line (read-line in
-                            'concat)))
+          ((line (read-line in 'concat)))
           (if (eof-object? line) #f
               (let ((m (string-match "build-backend = [\"'](.+)[\"']" line)))
                 (if m
                     (match:substring m 1)
-                    (loop (read-line in
-                                     'concat)))))))))
+                    (loop (read-line in 'concat)))))))))
 
   (let* ((wheel-output (assoc-ref outputs "wheel"))
          (wheel-dir (if wheel-output wheel-output "dist"))
          ;; There is no easy way to get data from Guile into Python via
          ;; s-expressions, but we have JSON serialization already, which Python
          ;; also supports out-of-the-box.
-         (config-settings (call-with-output-string (cut write-json
-                                                        configure-flags <>)))
+         (config-settings (call-with-output-string
+                            (cut write-json configure-flags <>)))
          ;; python-setuptools’ default backend supports setup.py *and*
          ;; pyproject.toml. Allow overriding this automatic detection via
          ;; build-backend.
          (auto-build-backend (if (file-exists? "pyproject.toml")
                                  (pyproject.toml->build-backend
-                                  "pyproject.toml") #f))
+                                  "pyproject.toml")
+                                 #f))
          ;; Use build system detection here and not in importer, because a) we
          ;; have alot of legacy packages and b) the importer cannot update arbitrary
          ;; fields in case a package switches its build system.
-         (use-build-backend (or build-backend auto-build-backend
+         (use-build-backend (or build-backend
+                                auto-build-backend
                                 "setuptools.build_meta")))
     (format #t
      "Using '~a' to build wheels, auto-detected '~a', override '~a'.~%"
      use-build-backend auto-build-backend build-backend)
     (mkdir-p wheel-dir)
     ;; Call the PEP 517 build function, which drops a .whl into wheel-dir.
-    (invoke "python"
-     "-c"
-     "import sys, importlib, json\nconfig_settings = json.loads (sys.argv[3])\nbuilder = importlib.import_module(sys.argv[1])\nbuilder.build_wheel(sys.argv[2], config_settings=config_settings)"
+    (invoke "python" "-c"
+     "import sys, importlib, json
+config_settings = json.loads (sys.argv[3])
+builder = importlib.import_module(sys.argv[1])
+builder.build_wheel(sys.argv[2], config_settings=config_settings)"
      use-build-backend
      wheel-dir
      config-settings)))
 
-(define* (check #:key inputs
-                outputs
-                tests?
-                test-backend
-                test-flags
-                #:allow-other-keys)
+(define* (check #:key tests? test-backend test-flags #:allow-other-keys)
   "Run the test suite of a given Python package."
   (if tests?
       ;; Unfortunately with PEP 517 there is no common method to specify test
@@ -182,12 +179,7 @@
     (define (extract file)
       "Extract wheel (ZIP file) into site-packages directory"
       ;; Use Python’s zipfile to avoid extra dependency
-      (invoke "python"
-              "-m"
-              "zipfile"
-              "-e"
-              file
-              site-dir))
+      (invoke "python" "-m" "zipfile" "-e" file site-dir))
 
     (define python-hashbang
       (string-append "#!" python "/bin/python"))
@@ -197,20 +189,15 @@
       "Move all files in SOURCE into DESTINATION, merging the two directories."
       (format #t "Merging directory ~a into ~a~%" source destination)
       (for-each (lambda (file)
-                  (format #t
-                          "~a/~a -> ~a/~a~%"
-                          source
-                          file
-                          destination
-                          file)
+                  (format #t "~a/~a -> ~a/~a~%"
+                          source file destination file)
                   (mkdir-p destination)
                   (rename-file (string-append source "/" file)
                                (string-append destination "/" file))
                   (when post-move
                     (post-move file)))
                 (scandir source
-                         (negate (cut member <>
-                                      '("." "..")))))
+                         (negate (cut member <> '("." "..")))))
       (rmdir source))
 
     (define (expand-data-directory directory)
@@ -222,13 +209,15 @@
         (when (file-exists? source)
           (merge-directories source destination
                              (lambda (f)
-                               (let ((dest-path (string-append destination "/"
-                                                               f)))
+                               (let ((dest-path (string-append destination
+                                                               "/" f)))
                                  (chmod dest-path #o755)
+                                 ;; PEP 427 recommends that installers rewrite
+                                 ;; this odd shebang.
                                  (substitute* dest-path
                                    (("#!python")
                                     python-hashbang)))))))
-      ;; Data can be contained in arbitrary directory structures. Most
+      ;; Data can be contained in arbitrary directory structures.  Most
       ;; commonly it is used for share/.
       (let ((source (string-append directory "/data"))
             (destination out))
@@ -237,8 +226,8 @@
       (let* ((distribution (car (string-split (basename directory) #\-)))
              (source (string-append directory "/headers"))
              (destination (string-append out "/include/python"
-                                         (python-version python) "/"
-                                         distribution)))
+                                         (python-version python)
+                                         "/" distribution)))
         (when (file-exists? source)
           (merge-directories source destination))))
 
@@ -247,10 +236,8 @@
       (scandir base
                (lambda (name)
                  (let ((stat (lstat (string-append base "/" name))))
-                   (and (not (member name
-                                     '("." "..")))
-                        (eq? (stat:type stat)
-                             'directory)
+                   (and (not (member name '("." "..")))
+                        (eq? (stat:type stat) 'directory)
                         (predicate name stat))))))
 
     (let* ((wheel-output (assoc-ref outputs "wheel"))
@@ -260,9 +247,8 @@
                                  (cut string-suffix? ".whl" <>)))))
       (cond
         ((> (length wheels) 1)
-          ;This code does not support multiple wheels
-         ;; yet, because their outputs would have to be
-         ;; merged properly.
+         ;; This code does not support multiple wheels yet, because their
+         ;; outputs would have to be merged properly.
          (raise (condition (&cannot-extract-multiple-wheels))))
         ((= (length wheels) 0)
          (raise (condition (&no-wheels-built)))))
@@ -293,7 +279,7 @@
         (invoke "python" "-m" "compileall"
                 "--invalidation-mode=unchecked-hash" site-dir))))
 
-(define* (create-entrypoints #:key inputs outputs (configure-flags '()) #:allow-other-keys)
+(define* (create-entrypoints #:key inputs outputs #:allow-other-keys)
   "Implement Entry Points Specification
 (https://packaging.python.org/specifications/entry-points/) by PyPa,
 which creates runnable scripts in bin/ from entry point specification
@@ -332,8 +318,8 @@ entry points."
                     (loop (read-line in) next-inside result))))))))
 
   (define (create-script path name module function)
-    "Create a Python script from an entry point’s NAME, MODULE and
-  FUNCTION and return write it to PATH/NAME."
+    "Create a Python script from an entry point’s NAME, MODULE and FUNCTION
+and return write it to PATH/NAME."
     (let ((interpreter (which "python"))
           (file-path (string-append path "/" name)))
       (format #t "Creating entry point for '~a.~a' at '~a'.~%"
