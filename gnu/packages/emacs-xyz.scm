@@ -10952,6 +10952,29 @@ refactoring for the @uref{http://clojure.org, Clojure programming language}.
 It is recommended to use @code{clojure-mode} with Paredit or Smartparens.")
     (license license:gpl3+)))
 
+(define-public emacs-clj-refactor
+  (package
+    (name "emacs-clj-refactor")
+    (version "3.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/clojure-emacs/clj-refactor.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15ya7hp5d2kwh1ig55d75vlghm1vsq99jh44i8q8v25vfmzjp7gp"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-yasnippet emacs-paredit emacs-multiple-cursors emacs-cider
+           emacs-clojure-mode emacs-parseedn emacs-hydra emacs-inflections))
+    (home-page "https://github.com/clojure-emacs/clj-refactor.el")
+    (synopsis "Powerful refactoring functionality for Clojure projects")
+    (description "This Emacs package complements the refactoring functionality
+you'd find in clojure-mode and CIDER.")
+    (license license:gpl3+)))
+
 (define-public emacs-clojure-snippets
   ;; Use latest commit (2018) since latest tagged release is too old and is
   ;; missing important changes.
