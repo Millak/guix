@@ -1531,15 +1531,63 @@ which highly leverage existing libraries in the larger LLVM project.")
 (define-public libcxx
   (package
     (name "libcxx")
-    (version "9.0.1")
+    (version "14.0.6")
+    (source (llvm-monorepo version))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi"
+              "-DCMAKE_C_COMPILER=clang"
+              "-DCMAKE_CXX_COMPILER=clang++"
+              ;; libc++.so is actually a GNU ld style linker script, however,
+              ;; CMake still tries to fix the RUNPATH of it during the install
+              ;; step. This argument tells CMake to use the install directory
+              ;; as RUNPATH and don't attempt to patch it.
+              ;; See also: https://gitlab.kitware.com/cmake/cmake/-/issues/22963
+              "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-subdirectory
+            (lambda _
+              (chdir "runtimes")))
+          (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gcc (assoc-ref inputs  "gcc")))
+                ;; Hide GCC's C++ headers so that they do not interfere with
+                ;; the ones we are attempting to build.
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-join (delete (string-append gcc "/include/c++")
+                                             (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                           #\:))
+                                     ":"))
+                (format #t
+                        "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                        (getenv "CPLUS_INCLUDE_PATH"))
+                #t))))))
+    (native-inputs
+     (list clang llvm python))
+    (home-page "https://libcxx.llvm.org")
+    (synopsis "C++ standard library")
+    (description
+     "This package provides an implementation of the C++ standard library for
+use with Clang, targeting C++11, C++14 and above.")
+    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))
+    (license license:expat)))
+
+;; Libcxx files specifically used by PySide2.
+(define-public libcxx-6
+  (package
+    (inherit libcxx)
+    (version (package-version llvm-6))
     (source
      (origin
        (method url-fetch)
        (uri (llvm-uri "libcxx" version))
        (sha256
         (base32
-         "0d2bj5i6mk4caq7skd5nsdmz8c2m5w5anximl5wz3x32p08zz089"))))
-    (build-system cmake-build-system)
+         "0rzw4qvxp6qx4l4h9amrq02gp7hbg8lw4m0sy3k60f50234gnm3n"))))
     (arguments
      (list
       #:phases
@@ -1558,33 +1606,6 @@ which highly leverage existing libraries in the larger LLVM project.")
                         "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
                         (getenv "CPLUS_INCLUDE_PATH"))
                 #t))))))
-    (native-inputs
-     (list clang llvm))
-    (home-page "https://libcxx.llvm.org")
-    (synopsis "C++ standard library")
-    (description
-     "This package provides an implementation of the C++ standard library for
-use with Clang, targeting C++11, C++14 and above.")
-    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))
-    (license license:expat)))
-
-;; Libcxx files specifically used by PySide2.
-(define-public libcxx-6
-  (package
-    (inherit libcxx)
-    (version (package-version llvm-6))
-    (source
-     (origin
-       (inherit (package-source libcxx))
-       (uri (llvm-uri "libcxx" version))
-       (sha256
-        (base32
-         "0rzw4qvxp6qx4l4h9amrq02gp7hbg8lw4m0sy3k60f50234gnm3n"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments libcxx)
-       ((#:phases p)
-        #~(modify-phases #$p
-            (delete 'enter-subdirectory)))))
     (native-inputs
      (list clang-6 llvm-6))))
 
