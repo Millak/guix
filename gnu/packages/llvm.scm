@@ -25,6 +25,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1540,22 +1541,23 @@ which highly leverage existing libraries in the larger LLVM project.")
          "0d2bj5i6mk4caq7skd5nsdmz8c2m5w5anximl5wz3x32p08zz089"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases (@ (guix build cmake-build-system) %standard-phases)
-         (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((gcc (assoc-ref inputs  "gcc")))
-               ;; Hide GCC's C++ headers so that they do not interfere with
-               ;; the ones we are attempting to build.
-               (setenv "CPLUS_INCLUDE_PATH"
-                       (string-join (delete (string-append gcc "/include/c++")
-                                            (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                          #\:))
-                                    ":"))
-               (format #t
-                       "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                       (getenv "CPLUS_INCLUDE_PATH"))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gcc (assoc-ref inputs  "gcc")))
+                ;; Hide GCC's C++ headers so that they do not interfere with
+                ;; the ones we are attempting to build.
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-join (delete (string-append gcc "/include/c++")
+                                             (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                           #\:))
+                                     ":"))
+                (format #t
+                        "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                        (getenv "CPLUS_INCLUDE_PATH"))
+                #t))))))
     (native-inputs
      (list clang llvm))
     (home-page "https://libcxx.llvm.org")
@@ -1578,6 +1580,11 @@ use with Clang, targeting C++11, C++14 and above.")
        (sha256
         (base32
          "0rzw4qvxp6qx4l4h9amrq02gp7hbg8lw4m0sy3k60f50234gnm3n"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libcxx)
+       ((#:phases p)
+        #~(modify-phases #$p
+            (delete 'enter-subdirectory)))))
     (native-inputs
      (list clang-6 llvm-6))))
 
