@@ -4594,6 +4594,27 @@ which is restored where possible when the file is loaded again.")
 strings.")
     (license license:gpl3+)))
 
+(define-public emacs-inflections
+  (package
+    (name "emacs-inflections")
+    (version "2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/eschulte/jump.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (snippet #~(begin (delete-file "jump.el")))
+       (sha256
+        (base32 "03fh7i6blnbc0zbmp83fk095hr3q4fdvrvfxad74zghcbc2nk7b7"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/eschulte/jump.el")
+    (synopsis "Convert english words between singular and plural")
+    (description "This package provides an Emacs library for converting
+english words between singular and plural.")
+    (license license:gpl3+)))
+
 (define-public emacs-blight
   (let ((commit "6bf9c6192d2bf979eebbfae1963401ef3ff4ef5d")
         (revision "0"))
