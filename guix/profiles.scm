@@ -1034,7 +1034,7 @@ MANIFEST."
               (setenv "LANGUAGE" language)
               (zero?
                (system* #+(file-append texinfo "/bin/install-info")
-                        "--silent" info
+                        info
                         (apply string-append #$output "/share/info/dir"
                                (if (string=? "en" language)
                                    '("")
