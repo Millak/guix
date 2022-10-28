@@ -17014,7 +17014,7 @@ module capable of computing base-level alignments for very large sequences.")
 (define-public flair
   (package
     (name "flair")
-    (version "1.6.2")
+    (version "1.6.4")
     (source
      (origin
        (method git-fetch)
@@ -17024,7 +17024,7 @@ module capable of computing base-level alignments for very large sequences.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "106swb2q7l20ki58fca1hg95q5f79bgp9gjb0clr2243ycrzyxf8"))))
+         "0jviacx6qx5rwgi3wvl7a8a8ml19r6cpngddivlk13f6g9072din"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -17054,10 +17054,12 @@ module capable of computing base-level alignments for very large sequences.")
                (find-files (string-append #$output "/bin"))))))))
     (propagated-inputs
      (list python-mappy
+           python-numpy
            python-ncls
            python-pybedtools
            python-pysam
            python-rpy2
+           python-scipy
            python-tqdm))
     ;; Used by rpy2
     (inputs
