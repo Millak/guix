@@ -1823,6 +1823,7 @@ at once based on a Perl regular expression.")
                (base32
                 "0751mb9l2f0jrk3vj6q8ilanifd121dliwk0c34g8k0dlzsv3kd7"))
               (modules '((guix build utils)))
+              (patches (search-patches "rottlog-direntry.patch"))
               (snippet
                '(begin
                   ;; Delete outdated Autotools build system files.

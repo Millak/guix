@@ -1795,10 +1795,11 @@ dist_patch_DATA =						\
   %D%/packages/patches/rnp-add-version.cmake.patch		\
   %D%/packages/patches/rnp-disable-ruby-rnp-tests.patch		\
   %D%/packages/patches/rnp-unbundle-googletest.patch		\
-  %D%/packages/patches/rocm-comgr-3.1.0-dependencies.patch \
-  %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch \
-  %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch \
-  %D%/packages/patches/ruby-hydra-minimal-no-byebug.patch		\
+  %D%/packages/patches/rocm-comgr-3.1.0-dependencies.patch 	\
+  %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\
+  %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch 	\
+  %D%/packages/patches/rottlog-direntry.patch 			\
+  %D%/packages/patches/ruby-hydra-minimal-no-byebug.patch	\
   %D%/packages/patches/ruby-anystyle-data-immutable-install.patch	\
   %D%/packages/patches/ruby-anystyle-fix-dictionary-populate.patch	\
   %D%/packages/patches/ruby-latex-decode-fix-test.patch		\
