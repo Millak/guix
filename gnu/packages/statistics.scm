@@ -7131,7 +7131,9 @@ models, using simulation.  It was designed to work with models fit using the
                  (commit commit)))
           (file-name (git-file-name name version))
           (sha256
-            (base32 "114z9pvya2jg10y804ga41gq00r7zcw4a7c7234ybhmv3jqw78q1"))))
+            (base32 "114z9pvya2jg10y804ga41gq00r7zcw4a7c7234ybhmv3jqw78q1"))
+          (patches
+            (search-patches "r-mixedpower-r2power.patch"))))
       (properties `((upstream-name . "mixedpower")))
       (build-system r-build-system)
       (propagated-inputs
