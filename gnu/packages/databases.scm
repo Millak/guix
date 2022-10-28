@@ -1058,13 +1058,12 @@ Language.")
                            "--skip-rpl"
                            "--skip-test-list=unstable-tests"))
                  (format #t "test suite not run~%"))))
-         (add-after
-          'install 'post-install
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let* ((out     (assoc-ref outputs "out"))
+         (add-after 'install 'post-install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out     (assoc-ref outputs "out"))
                    (dev     (assoc-ref outputs "dev"))
                    (lib     (assoc-ref outputs "lib"))
-                   (openssl (assoc-ref inputs "openssl")))
+                   (openssl (dirname (search-input-file inputs "lib/libssl.so"))))
               (substitute* (list (string-append out "/bin/mariadb-install-db")
                                  (string-append out "/bin/mysql_install_db"))
                 (("basedir=\"\"")
@@ -1102,20 +1101,20 @@ Language.")
               (substitute* (list (string-append dev "/bin/mysql_config")
                                  (string-append dev "/lib/pkgconfig/mariadb.pc"))
                 (("-lssl -lcrypto" all)
-                 (string-append "-L" openssl "/lib " all)))))))))
+                 (string-append "-L" openssl " " all)))))))))
     (native-inputs
      (list bison perl))
     (inputs
-     `(("fmt" ,fmt)
-       ("jemalloc" ,jemalloc)
-       ("libaio" ,libaio)
-       ("libxml2" ,libxml2)
-       ("ncurses" ,ncurses)
-       ("openssl" ,openssl)
-       ("pam" ,linux-pam)
-       ("pcre2" ,pcre2)
-       ("xz" ,xz)
-       ("zlib" ,zlib)))
+     (list fmt
+           jemalloc
+           libaio
+           libxml2
+           ncurses
+           openssl
+           linux-pam
+           pcre2
+           xz
+           zlib))
     ;; The test suite is very resource intensive and can take more than three
     ;; hours on a x86_64 system.  Give slow and busy machines some leeway.
     (properties '((timeout . 64800)))        ;18 hours
