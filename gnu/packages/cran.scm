@@ -402,6 +402,36 @@ wrapper functions.  The core applies McBane's Fortran functions that use
 Gaussian quadrature for a numerical solution.")
     (license license:gpl3)))
 
+(define-public r-dmwr2
+  (package
+    (name "r-dmwr2")
+    (version "0.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "DMwR2" version))
+              (sha256
+               (base32
+                "1vzfbz2k05j8r2hpig3d2grb99rnnh2s1sviii3prcyqicxfh0i9"))))
+    (properties `((upstream-name . "DMwR2")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-class
+           r-dbi
+           r-dplyr
+           r-quantmod
+           r-readr
+           r-rpart
+           r-xts
+           r-zoo))
+    (home-page "https://github.com/ltorgo/DMwR2")
+    (synopsis
+     "Functions and data for the second edition of \"Data Mining with R\"")
+    (description
+     "This package provides functions and data accompanying the second
+edition of the book \"Data Mining with R, learning with case studies\"
+by Luis Torgo, published by CRC Press.")
+    (license license:gpl2+)))
+
 (define-public r-emdist
   (package
     (name "r-emdist")
