@@ -3036,6 +3036,47 @@ two-colour microarray experiments and for the statistical analysis of
 factorial microarray data.")
     (license license:gpl2+)))
 
+(define-public r-damefinder
+  (package
+    (name "r-damefinder")
+    (version "1.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DAMEfinder" version))
+              (sha256
+               (base32
+                "123ra94bij0m45j2fzqr7fjipj4ld9kgk0kir1zfdbbd5h8h4mdf"))))
+    (properties `((upstream-name . "DAMEfinder")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-biostrings
+           r-bumphunter
+           r-cowplot
+           r-genomeinfodb
+           r-genomicalignments
+           r-genomicranges
+           r-ggplot2
+           r-iranges
+           r-limma
+           r-plyr
+           r-readr
+           r-reshape2
+           r-rsamtools
+           r-s4vectors
+           r-stringr
+           r-summarizedexperiment
+           r-variantannotation))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/DAMEfinder")
+    (synopsis "Differential allelicly methylated regions")
+    (description
+     "This package offers functionality for taking methtuple or Bismark
+outputs to calculate @acronym{ASM, Allele-Specific Methylation} scores and
+compute @acronym{DAMEs, Differential Allelicly MEthylated} regions.  It also
+offers nice visualization of methyl-circle plots.")
+    (license license:expat)))
+
 (define-public r-dearseq
   (package
     (name "r-dearseq")
