@@ -1454,3 +1454,51 @@ wrapper for disk usage querying and visualisation.")
 gone and to help you to clean it up.")
     (home-page "https://github.com/shundhammer/qdirstat")
     (license license:gpl2)))
+
+(define-public wipe
+  (package
+    (name "wipe")
+    (version "2.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/wipe/wipe/" version
+                                  "/wipe-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "180snqvh6k6il6prb19fncflf2jcvkihlb4w84sbndcv1wvicfa6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-makefile
+            (lambda _
+              (substitute* "Makefile.in"
+                ;; The Makefile.in uses install -o root, but during the
+                ;; build there is no root user, so if we leave that in,
+                ;; the build fails with the following error:
+                ;; /gnu/[...]/install: invalid user ‘root’
+                (("-o root") "")
+                ;; It's up to the distribution to strip the binaries or
+                ;; not.
+                (("\\$\\(INSTALL_BIN\\) -s ")
+                 "$(INSTALL_BIN) "))))
+          (add-after 'unpack 'force-autotools-bootstrap
+            (lambda _
+              ;; Rebuild the build system scripts, as the ones in bundles are
+              ;; very old and do not support all the options used by Guix.
+              (delete-file "configure"))))))
+    (native-inputs (list autoconf automake libtool))
+    (home-page "https://wipe.sourceforge.net")
+    (synopsis "Secure file/block device wiping utility")
+    (description
+     "Wipe can erase files and block devices securely.  To work properly it
+relies on several assumptions like having the block device write the correct
+sectors, etc.  For files it also doesn't work on log-structured file systems
+such as F2FS, JFFS, LogFS, etc.  You should @emph{not} trust @command{wipe} to
+work as advertised until you have manually verified that all its assumption
+hold true on your system.  To overwrite data it uses the Mersenne Twister
+pseudo-random number generator (PRNG) that is seeded with @file{/dev/urandom}
+or, if unavailable, @file{/dev/random}.")
+    (license license:gpl2+)))
