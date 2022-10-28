@@ -70,6 +70,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages benchmark)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -281,6 +282,10 @@ adding and extracting files to/from a tar archive.")
                (string-append "exec " (assoc-ref outputs "out")
                               "/bin/gzip")))
             #t)))))
+   (inputs
+    `(,@(if (%current-target-system)
+            `(("bash" ,bash-minimal))
+            '())))
    (description
     "GNU Gzip provides data compression and decompression utilities; the
 typical extension is \".gz\".  Unlike the \"zip\" format, it compresses a single
