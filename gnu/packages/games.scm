@@ -4293,22 +4293,19 @@ falling, themeable graphics and sounds, and replays.")
 (define-public wesnoth
   (package
     (name "wesnoth")
-    (version "1.16.5")
+    (version "1.16.6")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/wesnoth/wesnoth-"
-                                  (version-major+minor version)
-                                  "/wesnoth-" version "/"
-                                  "wesnoth-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wesnoth/wesnoth")
+                    (commit version)))
+              (file-name (string-append name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "02pzijbmkgcb8hc4l3f4r3r3mxqda936dp488i9sd9d4m3xdzimh"))))
+                "0hfvxmdnwn86w254blbjacia342j47rhhahm6ca79la9d04rlz3m"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f))                    ;no check target
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list #:tests? #f)) ;no test target
     (inputs
      (list boost
            dbus
@@ -4317,6 +4314,9 @@ falling, themeable graphics and sounds, and replays.")
            openssl
            pango
            (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
+    (native-inputs
+     (list gettext-minimal
+           pkg-config))
     (home-page "https://www.wesnoth.org/")
     (synopsis "Turn-based strategy game")
     (description
