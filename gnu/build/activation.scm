@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -66,46 +66,70 @@
 (define (dot-or-dot-dot? file)
   (member file '("." "..")))
 
-;; Based upon mkdir-p from (guix build utils)
-(define (verify-not-symbolic dir)
-  "Verify DIR or its ancestors aren't symbolic links."
+(define (mkdir-p/perms directory owner bits)
+  "Create directory DIRECTORY and all its ancestors.
+
+Additionally, verify no component of DIRECTORY is a symbolic link,
+without TOCTTOU races.  However, if OWNER differs from the the current
+(process) uid/gid, there is a small window in which DIRECTORY is set to the
+current (process) uid/gid instead of OWNER.  This is not expected to be
+a problem in practice.
+
+The permission bits and owner of DIRECTORY are set to BITS and OWNER.
+Anything above DIRECTORY that already exists keeps
+its old owner and bits.  For components that do not exist yet, the owner
+and bits are set according to the default behaviour of 'mkdir'."
   (define absolute?
-    (string-prefix? "/" dir))
+    (string-prefix? "/" directory))
 
   (define not-slash
     (char-set-complement (char-set #\/)))
 
-  (define (verify-component file)
-    (unless (eq? 'directory (stat:type (lstat file)))
-      (error "file name component is not a directory" dir)))
+  ;; By combining O_NOFOLLOW and O_DIRECTORY, this procedure automatically
+  ;; verifies that no components are symlinks.
+  (define open-flags (logior O_CLOEXEC ; don't pass the port on to subprocesses
+                             O_NOFOLLOW ; don't follow symlinks
+                             O_DIRECTORY)) ; reject anything not a directory
 
-  (let loop ((components (string-tokenize dir not-slash))
-             (root       (if absolute?
-                             ""
-                             ".")))
+  (let loop ((components (string-tokenize directory not-slash))
+             (root (open (if absolute? "/" ".") open-flags)))
     (match components
       ((head tail ...)
-       (let ((file (string-append root "/" head)))
-         (catch 'system-error
-           (lambda ()
-             (verify-component file)
-             (loop tail file))
-           (lambda args
-             (if (= ENOENT (system-error-errno args))
-                 #t
-                 (apply throw args))))))
-      (() #t))))
-
-;; TODO: the TOCTTOU race can be addressed once guile has bindings
-;; for fstatat, openat and friends.
-(define (mkdir-p/perms directory owner bits)
-  "Create the directory DIRECTORY and all its ancestors.
-Verify no component of DIRECTORY is a symbolic link.
-Warning: this is currently suspect to a TOCTTOU race!"
-  (verify-not-symbolic directory)
-  (mkdir-p directory)
-  (chown directory (passwd:uid owner) (passwd:gid owner))
-  (chmod directory bits))
+       (let retry ()
+         ;; In the usual case, we expect HEAD to already exist.
+         (match (catch 'system-error
+                  (lambda ()
+                    (openat root head open-flags))
+                  (lambda args
+                    (if (= ENOENT (system-error-errno args))
+                        #false
+                        (begin
+                          (close-port root)
+                          (apply throw args)))))
+           ((? port? new-root)
+            (close root)
+            (loop tail new-root))
+           (#false
+            ;; If not, create it.
+            (catch 'system-error
+              (lambda _
+                (mkdirat root head))
+              (lambda args
+                ;; Someone else created the directory.  Unexpected but fine.
+                (unless (= EEXIST (system-error-errno args))
+                  (close-port root)
+                  (apply throw args))))
+            (retry)))))
+      (()
+       (catch 'system-error
+         (lambda ()
+           (chown root (passwd:uid owner) (passwd:gid owner))
+           (chmod root bits))
+         (lambda args
+           (close-port root)
+           (apply throw args)))
+       (close-port root)
+       (values)))))
 
 (define* (copy-account-skeletons home
                                  #:key
