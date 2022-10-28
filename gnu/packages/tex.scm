@@ -3075,7 +3075,7 @@ contain.")
     (home-page "https://www.ctan.org/pkg/atveryend")
     (synopsis "Hooks at the very end of a document")
     (description
-     "This LaTeX packages provides two hooks for @code{\\end@{document@}}
+     "This LaTeX package provides two hooks for @code{\\end@{document@}}
 that are executed after the hook of @code{\\AtEndDocument}:
 @code{\\AfterLastShipout} can be used for code that is to be executed right
 after the last @code{\\clearpage} before the @file{.aux} file is closed.
