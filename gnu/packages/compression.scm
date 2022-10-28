@@ -529,6 +529,10 @@ compressed with pbzip2 can be decompressed with bzip2).")
                 (("^old_library='liblzma.a'") "old_library=''"))
               #t))))))
    (outputs '("out" "static"))
+   (inputs
+    `(,@(if (%current-target-system)
+            `(("bash" ,bash-minimal))
+            '())))
    (synopsis "General-purpose data compression")
    (description
     "XZ Utils is free general-purpose data compression software with high
