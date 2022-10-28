@@ -394,6 +394,10 @@ file; as a result, it is often used in conjunction with \"tar\", resulting in
        ,@(if (%current-target-system)
              '(#:tests? #f)
              '())))
+    (inputs
+     `(,@(if (%current-target-system)
+             `(("bash" ,bash-minimal))
+             '())))
     (outputs '("out" "static"))
     (synopsis "High-quality data compression program")
     (description
