@@ -465,7 +465,8 @@ interactive environment for the functional language Haskell.")
                 (("ifdef SO_PEERCRED")
                  "ifdef SO_PEERCRED_NEVER"))
               (invoke "./configure"
-                      (string-append "--with-hc=" (which "ghc"))
+                      "--enable-src-tree-happy"
+                      (string-append "--with-gcc=" (which "gcc"))
                       (string-append "--prefix=" #$output)
                       (string-append "--build=" build)
                       (string-append "--host=" build)))))))
@@ -485,7 +486,6 @@ interactive environment for the functional language Haskell.")
                 ;; we want to use a more recent Perl we need to patch all
                 ;; expressions that require multi-line matching.  Hard to tell.
                 perl-5.6
-                python-2               ;for tests
                 ghc-4
                 gcc-2.95)))
     (home-page "https://www.haskell.org/ghc")
