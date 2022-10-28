@@ -35,7 +35,7 @@
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
@@ -43,7 +43,6 @@
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
@@ -1826,64 +1825,58 @@ at once based on a Perl regular expression.")
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  (substitute* "Makefile.in"
-                    (("-o \\$\\{LOG_OWN\\} -g \\$\\{LOG_GROUP\\}")
-                     ;; Don't try to chown root.
-                     "")
+                  ;; Delete outdated Autotools build system files.
+                  (for-each delete-file
+                            (list "Makefile.in"
+                                  "config.guess"
+                                  "config.sub"
+                                  "configure"
+                                  "depcomp"
+                                  "install-sh"
+                                  "mdate-sh"
+                                  "missing"
+                                  "mkinstalldirs"
+                                  "texinfo.tex"))
+                  (substitute* "Makefile.am"
                     (("mkdir -p \\$\\(ROTT_STATDIR\\)")
                      ;; Don't attempt to create /var/lib/rottlog.
-                     "true"))
-                  #t))))
+                     "true"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "ROTT_ETCDIR=/etc/rottlog" ;rc file location
-                               "--localstatedir=/var")
-
-       ;; Install example config files in OUT/etc.
-       #:make-flags (list (string-append "ROTT_ETCDIR="
-                                         (assoc-ref %outputs "out")
-                                         "/etc"))
-
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-paths
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "rc/rc"
-                        (("/usr/sbin/sendmail")
-                         (search-input-file inputs "/bin/mail")))
-                      #t))
-                  (add-after 'unpack 'fix-configure
-                    (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                      ;; Replace outdated config.sub and config.guess:
-                      (for-each (lambda (file)
-                                  (install-file
-                                   (string-append
-                                    (assoc-ref
-                                     (or native-inputs inputs) "automake")
-                                    "/share/automake-"
-                                    ,(version-major+minor
-                                      (package-version automake))
-                                    "/" file) "."))
-                                '("config.sub" "config.guess"))
-                      #t))
-                  (add-after 'build 'set-packdir
-                    (lambda _
-                      ;; Set a default location for archived logs.
-                      (substitute* "rc/rc"
-                        (("packdir=\"\"")
-                         "packdir=\"/var/log\""))
-                      #t))
-                  (add-before 'install 'tweak-rc-weekly
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "rc/weekly"
-                        (("/bin/kill")
-                         (search-input-file inputs "/bin/kill"))
-                        (("syslogd\\.pid")
-                         ;; The file is called 'syslog.pid' (no 'd').
-                         "syslog.pid"))))
-                  (add-after 'install 'install-info
-                    (lambda _
-                      (invoke "make" "install-info"))))))
-    (native-inputs (list texinfo automake util-linux)) ; for 'cal'
+     (list
+      #:configure-flags #~(list "ROTT_ETCDIR=/etc/rottlog" ;rc file location
+                                "--localstatedir=/var")
+      ;; Install example config files in OUT/etc.
+      #:make-flags #~(list (string-append "ROTT_ETCDIR=" #$output "/etc")
+                           ;; Avoid the default -o root -g root arguments,
+                           ;; which fail due to not running as root.
+                           "INSTALL_RC=install"
+                           "INSTALL_SCRIPT=install")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "rc/rc"
+                (("/usr/sbin/sendmail")
+                 (search-input-file inputs "/bin/mail")))))
+          (add-after 'build 'set-packdir
+            (lambda _
+              ;; Set a default location for archived logs.
+              (substitute* "rc/rc"
+                (("packdir=\"\"")
+                 "packdir=\"/var/log\""))))
+          (add-before 'install 'tweak-rc-weekly
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "rc/weekly"
+                (("/bin/kill")
+                 (search-input-file inputs "/bin/kill"))
+                (("syslogd\\.pid")
+                 ;; The file is called 'syslog.pid' (no 'd').
+                 "syslog.pid"))))
+          (add-after 'install 'install-info
+            (lambda _
+              (invoke "make" "install-info"))))))
+    (native-inputs (list autoconf automake texinfo util-linux)) ; for 'cal'
     (inputs (list coreutils mailutils))
     (home-page "https://www.gnu.org/software/rottlog/")
     (synopsis "Log rotation and management")
