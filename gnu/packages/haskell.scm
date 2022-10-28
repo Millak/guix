@@ -56,6 +56,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
+  #:use-module (gnu packages m4)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
@@ -488,6 +489,92 @@ interactive environment for the functional language Haskell.")
                 perl-5.6
                 ghc-4
                 gcc-2.95)))
+    (home-page "https://www.haskell.org/ghc")
+    (synopsis "The Glasgow Haskell Compiler")
+    (description
+     "The Glasgow Haskell Compiler (GHC) is a state-of-the-art compiler and
+interactive environment for the functional language Haskell.")
+    (license license:bsd-3)))
+
+(define-public ghc-6.6
+  (package
+    (name "ghc")
+    (version "6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://downloads.haskell.org/~ghc/"
+                           version "/" name "-" version "-src.tar.bz2"))
+       (sha256
+        (base32
+         "0znc9myxyfg9zmvdlg09sf0dq11kc2bq4616llh82v6m6s8s5ckr"))))
+    (build-system gnu-build-system)
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (arguments
+     (list
+      #:system "i686-linux"
+      #:tests? #false ;no check target
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26)
+                  (srfi srfi-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bash (which "bash")))
+                (substitute* '("configure"
+                               "rts/gmp/configure"
+                               "distrib/configure-bin.ac")
+                  (("`/bin/sh") (string-append "`" bash))
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash))
+                  (("^#! /bin/sh") (string-append "#! " bash)))
+                (substitute* "utils/runstdtest/runstdtest.prl"
+                  (("^#! /bin/sh") (string-append "#! " bash))
+                  (("TimeCmd /bin/sh")
+                   (string-append "TimeCmd " bash)))
+                (substitute* '("mk/config.mk.in"
+                               "rts/gmp/Makefile.in")
+                  (("^SHELL.*=.*/bin/sh") (string-append "SHELL = " bash)))
+                (substitute* "aclocal.m4"
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash)))
+                (substitute* '"compiler/Makefile"
+                  (("#!/bin/sh") (string-append "#!" bash)))
+                (substitute* "libraries/base/cbits/execvpe.c"
+                  (("/bin/sh") bash)
+                  (("\"sh\"") (string-append "\"" bash "\"")))
+
+                (setenv "CONFIG_SHELL" bash)
+                (setenv "SHELL" bash))))
+          (replace 'configure
+            (lambda* (#:key build #:allow-other-keys)
+              (setenv "CPATH"
+                      (string-append (getcwd) "/includes:"
+                                     (getcwd) "/rts/gmp:"
+                                     (getcwd) "/mk:"
+                                     (or (getenv "CPATH") "")))
+              (invoke "./configure"
+                      (string-append "--with-hc=" (which "ghc"))
+                      (string-append "--with-gcc=" (which "gcc"))
+                      (string-append "--prefix=" #$output)
+                      (string-append "--build=" build)
+                      (string-append "--host=" build)))))))
+    (native-search-paths (list (search-path-specification
+                                (variable "GHC_PACKAGE_PATH")
+                                (files (list
+                                        (string-append "lib/ghc-" version)))
+                                (file-pattern ".*\\.conf\\.d$")
+                                (file-type 'directory))))
+    (native-inputs
+     (modify-inputs (%final-inputs)
+       (delete "gcc")
+       (prepend m4
+                ;; Perl used to allow setting $* to enable multi-line matching.  If
+                ;; we want to use a more recent Perl we need to patch all
+                ;; expressions that require multi-line matching.  Hard to tell.
+                perl-5.6
+                ghc-6.0
+                gcc-4.9)))
     (home-page "https://www.haskell.org/ghc")
     (synopsis "The Glasgow Haskell Compiler")
     (description
