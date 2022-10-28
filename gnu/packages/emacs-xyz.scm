@@ -3836,14 +3836,14 @@ window).")
 (define-public emacs-mmm-mode
   (package
     (name "emacs-mmm-mode")
-    (version "0.5.8")
+    (version "0.5.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "mmm-mode-" version ".tar"))
        (sha256
-        (base32 "05ckf4zapdpvnd3sqpw6kxaa567zh536a36m9qzx3sqyjbyn5fb4"))))
+        (base32 "12fss1ccb66xc87m5wpr3vg7bfrzz5m0q6s7pa0avvhsm2f8r2yh"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/purcell/mmm-mode")
     (synopsis "Allow multiple major modes in an Emacs buffer")
