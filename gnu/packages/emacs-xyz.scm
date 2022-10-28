@@ -29514,39 +29514,37 @@ Emacs that integrate with major modes like Org-mode.")
     (license license:expat)))
 
 (define-public emacs-modus-themes
-  ;; XXX: Upstream did not tag latest version bump, so we use the commit
-  ;; matching that bump.
-  (let ((commit "0b42e595fb8c1753039277ab0b068d0f4f107edf"))
-    (package
-      (name "emacs-modus-themes")
-      (version "2.7.1")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.sr.ht/~protesilaos/modus-themes")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0iy1psfkhqf9a47pabl1w108niw2d4xnfvlcql2j58qlv5k9h1z7"))))
-      (native-inputs (list texinfo))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'install 'makeinfo
-              (lambda _
-                (invoke "emacs"
-                        "--batch"
-                        "--eval=(require 'ox-texinfo)"
-                        "--eval=(find-file \"doc/modus-themes.org\")"
-                        "--eval=(org-texinfo-export-to-info)")
-                (install-file "doc/modus-themes.info" (string-append #$output "/share/info")))))))
-      (home-page "https://protesilaos.com/modus-themes/")
-      (synopsis "Accessible themes (WCAG AAA)")
-      (description
-       "The Modus themes are designed for accessible readability.  They conform
+  (package
+    (name "emacs-modus-themes")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~protesilaos/modus-themes")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1468y1ra4w4ihq68mfvddyijppj5sz143aawzg2nxdzphy9a84l2"))))
+    (native-inputs (list texinfo))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"doc/modus-themes.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "doc/modus-themes.info"
+                            (string-append #$output "/share/info")))))))
+    (home-page "https://protesilaos.com/modus-themes/")
+    (synopsis "Accessible themes (WCAG AAA)")
+    (description
+     "The Modus themes are designed for accessible readability.  They conform
 with the highest standard for color contrast between any given combination of
 background and foreground values.  This corresponds to the WCAG AAA standard,
 which specifies a minimum rate of distance in relative luminance of 7:1.
@@ -29555,8 +29553,8 @@ Modus Operandi (modus-operandi) is a light theme, while Modus
 Vivendi (modus-vivendi) is dark.  Each theme’s color palette is designed to
 meet the needs of the numerous interfaces that are possible in the Emacs
 computing environment.")
-      (license (list license:gpl3+
-                     license:fdl1.3+))))) ; GFDLv1.3+ for the manual
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-punpun-theme
   (let ((commit "7026684cd568cb691af3ced5de14c375fe6f5a1a")
