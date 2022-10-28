@@ -3014,6 +3014,28 @@ data.  In addition, provides numerous plotting functions for commonly
 used visualizations.")
    (license license:artistic2.0)))
 
+(define-public r-dama
+  (package
+    (name "r-dama")
+    (version "1.68.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "daMA" version))
+              (sha256
+               (base32
+                "1mpjvl24wsdmpgra3iasgfvy29m71318gj6j1gg6081w0n4cq72m"))))
+    (properties `((upstream-name . "daMA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass))
+    (home-page "https://bioconductor.org/packages/release/bioc/html/daMA.html")
+    (synopsis
+     "Efficient design and analysis of factorial two-colour microarray data")
+    (description
+     "This package contains functions for the efficient design of factorial
+two-colour microarray experiments and for the statistical analysis of
+factorial microarray data.")
+    (license license:gpl2+)))
+
 (define-public r-dearseq
   (package
     (name "r-dearseq")
