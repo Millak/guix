@@ -172,6 +172,10 @@ including, for example, recursive directory searching.")
                     "  CONFIG_HEADER='$(CONFIG_HEADER)'\t\t\\\n")))))
             (modules '((guix build utils)))))
    (build-system gnu-build-system)
+   (arguments
+    `(#:make-flags ,(if (hurd-target?)
+                        ''("XFAIL_TESTS=test-perror2")
+                        ''())))
    (synopsis "Stream editor")
    (native-inputs (list perl))                    ;for tests
    (description
