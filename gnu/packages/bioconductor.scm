@@ -48,6 +48,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages python)
@@ -3049,6 +3050,45 @@ used visualizations.")
 It features a variance component score test accounting for data
 heteroscedasticity through precision weights.  Perform both gene-wise and gene
 set analyses, and can deal with repeated or longitudinal data.")
+    (license license:gpl2)))
+
+(define-public r-debcam
+  (package
+    (name "r-debcam")
+    (version "1.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "debCAM" version))
+              (sha256
+               (base32
+                "1ynz57kkxl8nx80zhh1vhhydqb5n6r9d7p69f0k9nj8rp4hdgng7"))))
+    (properties `((upstream-name . "debCAM")))
+    (build-system r-build-system)
+    (inputs (list openjdk))
+    (propagated-inputs
+     (list r-apcluster
+           r-biobase
+           r-biocparallel
+           r-corpcor
+           r-dmwr2
+           r-geometry
+           r-nmf
+           r-nnls
+           r-pcapp
+           r-rjava
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/debCAM")
+    (synopsis "Deconvolution by convex analysis of mixtures")
+    (description
+     "This package is an R implementation for fully unsupervised deconvolution
+of complex tissues.  DebCAM provides basic functions to perform unsupervised
+deconvolution on mixture expression profiles by @acronym{CAM, Convex Analysis
+of Mixtures} and some auxiliary functions to help understand the
+subpopulation- specific results.  It also implements functions to perform
+supervised deconvolution based on prior knowledge of molecular markers, S
+matrix or A matrix.  Combining molecular markers from CAM and from prior
+knowledge can achieve semi-supervised deconvolution of mixtures.")
     (license license:gpl2)))
 
 (define-public r-decipher
