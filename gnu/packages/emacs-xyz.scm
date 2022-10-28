@@ -245,6 +245,7 @@
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages erlang)
   #:use-module (gnu packages statistics)
+  #:use-module (gnu packages libcanberra)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
@@ -14502,21 +14503,35 @@ structure, or any other pattern.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-ffplay
+          (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((ffplay (search-input-file inputs "/bin/ffplay")))
-                (make-file-writable "tmr.el")
                 (substitute* "tmr.el"
-                  (("\"ffplay")
-                   (string-append "\"" ffplay)))))))))
+                  (("\"ffplay ")
+                   (string-append "\"" ffplay " "))))
+              (emacs-substitute-variables "tmr.el"
+                ("tmr-sound-file"
+                 (search-input-file
+                  inputs
+                  "share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga")))))
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "tmr.info"
+                            (string-append #$output "/share/info")))))))
     (native-inputs (list texinfo))
-    (inputs (list ffmpeg))
+    (inputs (list ffmpeg sound-theme-freedesktop))
     (home-page "https://protesilaos.com/emacs/tmr/")
     (synopsis "Set timers using a convenient notation")
     (description
      "TMR is an Emacs package that provides facilities for setting timers
 using a convenient notation.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ;GFDLv1.3+ for the manual
 
 (define-public emacs-gn-mode
   (package
