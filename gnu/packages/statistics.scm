@@ -6256,25 +6256,23 @@ completion.")
 (define-public python-rpy2
   (package
     (name "python-rpy2")
-    (version "3.4.5")
+    (version "3.5.5")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "rpy2" version))
         (sha256
          (base32
-          "1cysswxr5glrdblyl2zsmywcj7xhxn3wmyihxinrz9gm8gmaacax"))))
+          "0dyhb3xn2p6s67yxhgh4qd4hp45mhb5zvgqkdsn26kyg447c8lm2"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((cwd (getcwd)))
-               (setenv "TZ" "UTC"))
-             ;; test_vector_complex has issues when run in our environment.
-             (invoke "pytest" "-v" "rpy2/tests/"
-                     "-k" "not test_vector_complex"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "TZ" "UTC")
+               (invoke "pytest" "-v" "rpy2/tests/")))))))
     (propagated-inputs
      (list python-cffi
            python-six
