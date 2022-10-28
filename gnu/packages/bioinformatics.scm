@@ -17049,6 +17049,7 @@ module capable of computing base-level alignments for very large sequences.")
               (for-each
                (lambda (script)
                  (wrap-program script
+                   `("R_HOME" ":" = (,(string-append #$r-minimal "/lib/R")))
                    `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
                (find-files (string-append #$output "/bin"))))))))
     (propagated-inputs
