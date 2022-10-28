@@ -311,6 +311,9 @@ GhcWithHscBuiltViaC=YES
 ")))
               (invoke "./configure"
                       "--enable-hc-boot" ; boot from C "source" files
+                      ;; Embed the absolute file name of GCC 2.95 in the GHC
+                      ;; driver script.
+                      (string-append "--with-gcc=" (which "gcc"))
                       (string-append "--prefix=" #$output)
                       (string-append "--build=" build)
                       (string-append "--host=" build))))
