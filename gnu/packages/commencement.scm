@@ -2475,15 +2475,15 @@ exec " gcc "/bin/" program
      `(#:tests? #f                            ; the test suite needs diffutils
        #:guile ,%bootstrap-guile
        #:implicit-inputs? #f
-       ,@(match (%current-system)
-           ((or "arm-linux" "aarch64-linux")
-            (substitute-keyword-arguments (package-arguments diffutils)
-              ((#:configure-flags flags ''())
+       ,@(substitute-keyword-arguments (package-arguments diffutils)
+           ((#:configure-flags flags ''())
+            (match (%current-system)
+              ((or "arm-linux" "aarch64-linux")
                ;; The generated config.status has some problems due to the
                ;; bootstrap environment.  Disable dependency tracking to work
                ;; around it.
-               `(cons "--disable-dependency-tracking" ,flags))))
-           (_ '()))))))
+               `(cons "--disable-dependency-tracking" ,flags))
+              (_ flags))))))))
 
 (define findutils-boot0
   (package

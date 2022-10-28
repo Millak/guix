@@ -283,6 +283,10 @@ differences.")
               "1v4g8gi0lgakqa7iix8s4fq7lq6l92vw3rjd9wfd2rhjng8xggd6"))
             (patches (search-patches "diffutils-fix-signal-processing.patch"))))
    (build-system gnu-build-system)
+   (arguments
+    `(#:make-flags ,(if (hurd-target?)
+                        ''("XFAIL_TESTS=test-perror2")
+                        ''())))
    (native-inputs (list perl))
    (synopsis "Comparing and merging files")
    (description
