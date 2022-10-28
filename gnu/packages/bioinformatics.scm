@@ -17061,6 +17061,7 @@ module capable of computing base-level alignments for very large sequences.")
     ;; Used by rpy2
     (inputs
      (list r-minimal  ;for R_LIBS_SITE
+           r-apeglm   ;for runDE
            r-deseq2   ;for runDE
            r-drimseq  ;for runDS
            r-ggplot2  ;runDS, runDU
