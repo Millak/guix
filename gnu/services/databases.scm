@@ -717,8 +717,8 @@ FLUSH PRIVILEGES;
          (documentation "Upgrade MySQL database schemas.")
          (start #~(make-forkexec-constructor
                    (list #$(mysql-upgrade-wrapper config))
-                   #:user "mysql" #:group "mysql")))))
-
+                   #:user "mysql" #:group "mysql"
+                   #:log-file "/var/log/mysql_upgrade.log")))))
 
 (define (mysql-shepherd-services config)
   (let ((min-services (append (mysql-install-shepherd-service config)
