@@ -3296,6 +3296,33 @@ Shiraishi-model signatures), computing weights that reflect the contributions
 of the signatures to the mutation load of the tumor.")
     (license license:gpl2)))
 
+(define-public r-deconrnaseq
+  (package
+    (name "r-deconrnaseq")
+    (version "1.38.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DeconRNASeq" version))
+              (sha256
+               (base32
+                "10smk88srxm58hli0fhkdfd6l5z02q58xc9mww39gkn71y0127k6"))))
+    (properties `((upstream-name . "DeconRNASeq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggplot2
+           r-limsolve
+           r-pcamethods))
+    (home-page "https://bioconductor.org/packages/DeconRNASeq")
+    (synopsis
+     "Deconvolution of heterogeneous tissue samples for mRNA-Seq data")
+    (description
+     "DeconSeq is an R package for deconvolution of heterogeneous tissues
+based on mRNA-Seq data.  It models the expression levels from heterogeneous
+cell populations in mRNA-Seq as the weighted average of expression from
+different constituting cell types and predicted cell type proportions of
+single expression profiles.")
+    (license license:gpl2)))
+
 (define-public r-deconvr
   (package
     (name "r-deconvr")
