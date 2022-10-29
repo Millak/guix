@@ -2744,12 +2744,6 @@ Guile, so its configuration can be written in Scheme; the original cron
 format is also supported.")
     (license license:gpl3+)))
 
-(define-public guile2.2-mcron
-  (package
-    (inherit mcron)
-    (name "guile2.2-mcron")
-    (inputs (list guile-2.2))))
-
 (define-public guile-picture-language
   (let ((commit "a1322bf11945465241ca5b742a70893f24156d12")
         (revision "5"))
