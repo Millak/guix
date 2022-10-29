@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
@@ -438,7 +438,7 @@ operating on batches.")
 (define-public google-highway
   (package
     (name "google-highway")
-    (version "0.17.0")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -447,7 +447,7 @@ operating on batches.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iwn7m8f1j7bchwbi5h84nzkzmzqd7byddbr4lh6i6lpd87wny08"))))
+        (base32 "1dxv61ag0pl5nl6ql4k83k4i95937nhl98img8gz9fx76cpw6z08"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on")))
