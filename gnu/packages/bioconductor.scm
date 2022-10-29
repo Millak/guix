@@ -3220,6 +3220,39 @@ reveals feature associations to hidden subclasses not exclusively related to
 higher deregulation levels.")
     (license license:gpl3+)))
 
+(define-public r-decomplexdisease
+  (package
+    (name "r-decomplexdisease")
+    (version "1.16.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DEComplexDisease" version))
+              (sha256
+               (base32
+                "09a967x1rnv7byjwh29ngjhs67rgg27zblmlzx6pyqlwy5jsp89d"))))
+    (properties `((upstream-name . "DEComplexDisease")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-complexheatmap
+           r-deseq2
+           r-edger
+           r-rcpp
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/DEComplexDisease")
+    (synopsis "Investigations of complex diseases by bi-clustering analysis")
+    (description
+     "DEComplexDisease is designed to find the @acronym{DEGs, Differential
+Expressed Genes} for complex disease, which is characterized by the
+heterogeneous genomic expression profiles.  Different from the established DEG
+analysis tools, it does not assume the patients of complex diseases to share
+the common DEGs.  By applying a bi-clustering algorithm, DEComplexDisease
+finds the DEGs shared by as many patients.  Applying the DEComplexDisease
+analysis results, users are possible to find the patients affected by the same
+mechanism based on the shared signatures.")
+    (license license:gpl3)))
+
 (define-public r-deconvr
   (package
     (name "r-deconvr")
