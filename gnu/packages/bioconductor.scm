@@ -3178,6 +3178,48 @@ knowledge can achieve semi-supervised deconvolution of mixtures.")
 biological sequences.")
     (license license:gpl3)))
 
+(define-public r-deco
+  (package
+    (name "r-deco")
+    (version "1.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "deco" version))
+              (sha256
+               (base32
+                "18n5zgln33c79jbjzjlivs8ihyg8zci6minfqlvagxgzcpa67k0m"))))
+    (properties `((upstream-name . "deco")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ade4
+           r-annotationdbi
+           r-biobase
+           r-biocparallel
+           r-biocstyle
+           r-cluster
+           r-foreign
+           r-gdata
+           r-ggplot2
+           r-gplots
+           r-gridextra
+           r-limma
+           r-locfit
+           r-made4
+           r-rcolorbrewer
+           r-reshape2
+           r-scatterplot3d
+           r-sfsmisc
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/fjcamlab/deco")
+    (synopsis "Decomposing heterogeneous cohorts using omic data profiling")
+    (description
+     "This package discovers differential features in hetero- and homogeneous
+omic data by a two-step method including subsampling LIMMA and NSCA.  DECO
+reveals feature associations to hidden subclasses not exclusively related to
+higher deregulation levels.")
+    (license license:gpl3+)))
+
 (define-public r-deconvr
   (package
     (name "r-deconvr")
