@@ -6123,40 +6123,36 @@ MIDI drums and comes as two separate drumkits: Black Pearl and Red Zeppelin.")
        (patches (search-patches "helm-fix-gcc-9-build.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
-       #:make-flags
-       (list (string-append "DESTDIR=" (assoc-ref %outputs "out"))
-             "lv2" "standalone")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'include-pnglib-code-and-remove-usr-from-paths
-           (lambda _
-             (substitute* "standalone/builds/linux/Makefile"
-               (("JUCE_INCLUDE_PNGLIB_CODE=0")
-                "JUCE_INCLUDE_PNGLIB_CODE=1"))
-             (substitute* "builds/linux/LV2/Makefile"
-               (("JUCE_INCLUDE_PNGLIB_CODE=0")
-                "JUCE_INCLUDE_PNGLIB_CODE=1"))
-             (substitute* "Makefile"
-               (("/usr") ""))
-             #t))
-         (add-after 'unpack 'fix-hardcoded-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* (list "src/common/load_save.cpp"
-                                "src/editor_sections/patch_browser.cpp")
-               (("/usr") (assoc-ref outputs "out")))))
-         (delete 'configure))))
+     (list
+      #:tests? #f                       ; no "check" target
+      #:make-flags
+      #~(list (string-append "DESTDIR=" #$output) "lv2" "standalone")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'include-pnglib-code-and-remove-usr-from-paths
+            (lambda _
+              (substitute* (list "standalone/builds/linux/Makefile"
+                                 "builds/linux/LV2/Makefile")
+                (("JUCE_INCLUDE_PNGLIB_CODE=0") "JUCE_INCLUDE_PNGLIB_CODE=1"))
+              (substitute* "Makefile"
+                (("/usr") ""))))
+          (add-after 'unpack 'fix-hardcoded-paths
+            (lambda _
+              (substitute* (list "src/common/load_save.cpp"
+                                 "src/editor_sections/patch_browser.cpp")
+                (("/usr") #$output))))
+          (delete 'configure))))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("curl" ,curl)
-       ("freetype2" ,freetype)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("libxcursor" ,libxcursor)
-       ("libxinerama" ,libxinerama)
-       ("jack" ,jack-1)
-       ("mesa" ,mesa)))
+     (list alsa-lib
+           curl
+           freetype
+           hicolor-icon-theme
+           jack-1
+           libxcursor
+           libxinerama
+           mesa))
     (native-inputs
-     (list pkg-config lv2))
+     (list lv2 pkg-config))
     (home-page "https://tytel.org/helm/")
     (synopsis "Polyphonic synth with lots of modulation")
     (description "Helm is a cross-platform polyphonic synthesizer available standalone
