@@ -2714,27 +2714,26 @@ is no support for parsing block and inline level HTML.")
                 "0bkn235g2ia4f7ispr9d55c7bc18282r3qd8ldhh5q2kiin75zi0"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'adjust-tests
-                    (lambda _
-                      (substitute* "tests/job-specifier.scm"
-                        ;; (getpw) fails with "entry not found" in the build
-                        ;; environment, so pass an argument.
-                        (("\\(getpw\\)")
-                         "(getpwnam (getuid))")
-                        ;; The build environment lacks an entry for root in
-                        ;; /etc/passwd.
-                        (("\\(getpw 0\\)")
-                         "(getpwnam \"nobody\")")
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'adjust-tests
+                     (lambda _
+                       (substitute* "tests/job-specifier.scm"
+                         ;; (getpw) fails with "entry not found" in the build
+                         ;; environment, so pass an argument.
+                         (("\\(getpw\\)")
+                          "(getpwnam (getuid))")
+                         ;; The build environment lacks an entry for root in
+                         ;; /etc/passwd.
+                         (("\\(getpw 0\\)")
+                          "(getpwnam \"nobody\")")
+                         ;; FIXME: Skip the 4 faulty tests (see above).
+                         (("\\(test-equal \"next-year\"" all)
+                          (string-append "(test-skip 4)\n" all))))))))
+    (native-inputs (list guile-3.0      ;for 'guild compile'
+                         pkg-config
+                         tzdata-for-tests))
 
-                        ;; FIXME: Skip the 4 faulty tests (see above).
-                        (("\\(test-equal \"next-year\"" all)
-                         (string-append "(test-skip 4)\n" all)))
-                      #t)))))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("tzdata" ,tzdata-for-tests)
-                     ("guile-native"              ;for 'guild compile'
-                      ,@(assoc-ref (package-inputs this-package) "guile"))))
     (inputs (list guile-3.0))
     (home-page "https://www.gnu.org/software/mcron/")
     (synopsis "Run jobs at scheduled times")
