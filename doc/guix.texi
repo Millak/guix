@@ -17711,17 +17711,19 @@ and the second element is its target.  By default it is:
 @cindex @file{/bin/sh}
 @cindex @file{sh}, in @file{/bin}
 @lisp
-`(("/bin/sh" ,(file-append bash "/bin/sh")))
+`(("/bin/sh" ,(file-append bash "/bin/sh"))
+  ("/usr/bin/env" ,(file-append coreutils "/bin/env")))
 @end lisp
 
 @cindex @file{/usr/bin/env}
 @cindex @file{env}, in @file{/usr/bin}
-If you want to add, say, @code{/usr/bin/env} to your system, you can
+If you want to add, say, @code{/bin/bash} to your system, you can
 change it to:
 
 @lisp
 `(("/bin/sh" ,(file-append bash "/bin/sh"))
-  ("/usr/bin/env" ,(file-append coreutils "/bin/env")))
+  ("/usr/bin/env" ,(file-append coreutils "/bin/env"))
+  ("/bin/bash" ,(file-append bash "/bin/bash")))
 @end lisp
 
 Since this is part of @code{%base-services}, you can use
