@@ -28,7 +28,7 @@
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
@@ -2234,57 +2234,55 @@ Format) file format decoder and encoder.")
     (license license:lgpl3+)))
 
 (define-public libjxl
-  (let ((commit "b7076f1869914eee47b3eae107750f3a3ce43a76")
-        (revision "0"))
-    (package
-      (name "libjxl")
-      (version (git-version "0.6.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/libjxl/libjxl")
-               (commit commit)
-               (recursive? #t)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0jx0hkd2nk15mmnzlk7y7fp644w336il7nsnp5yhf14j8zfaiqz8"))
-         (modules '((guix build utils)))
-         (snippet
-          ;; Delete the bundles that will not be used. libjxl bundles LCMS,
-          ;; which is in Guix, but a newer version is required.
-          '(begin
-             (for-each (lambda (directory)
-                         (delete-file-recursively
-                          (string-append "third_party/" directory)))
-                       '("brotli" "googletest" "highway"))))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:configure-flags
-         (list "-DJPEGXL_FORCE_SYSTEM_GTEST=true"
-               "-DJPEGXL_FORCE_SYSTEM_BROTLI=true"
-               ;; "-DJPEGXL_FORCE_SYSTEM_LCMS2=true" ; requires lcms@2.13
-               "-DJPEGXL_FORCE_SYSTEM_HWY=true")))
-      (native-inputs
-       (list asciidoc doxygen googletest pkg-config python))
-      (inputs
-       (list freeglut
-             gflags
-             giflib
-             google-brotli
-             google-highway
-             imath
-             ;; lcms ; requires lcms@2.13
-             libavif
-             libjpeg-turbo
-             libpng
-             libwebp
-             openexr))
-      (home-page "https://github.com/libjxl/libjxl")
-      (synopsis "JPEG XL image format reference implementation")
-      (description "This package contains a reference implementation of JPEG XL
+  (package
+    (name "libjxl")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libjxl/libjxl")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ysh7kd30wwnq0gc1l8c0j9b6wzd15k0kkvfaacjvjqcz11lnc7l"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete the bundles that will not be used. libjxl bundles LCMS,
+        ;; which is in Guix, but a newer version is required.
+        '(begin
+           (for-each (lambda (directory)
+                       (delete-file-recursively
+                        (string-append "third_party/" directory)))
+                     '("brotli" "googletest" "highway"))))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "-DJPEGXL_FORCE_SYSTEM_GTEST=true"
+             "-DJPEGXL_FORCE_SYSTEM_BROTLI=true"
+             ;; "-DJPEGXL_FORCE_SYSTEM_LCMS2=true" ; requires lcms@2.13
+             "-DJPEGXL_FORCE_SYSTEM_HWY=true")))
+    (native-inputs
+     (list asciidoc doxygen googletest pkg-config python))
+    (inputs
+     (list freeglut
+           gflags
+           giflib
+           google-brotli
+           google-highway
+           imath
+           ;; lcms ; requires lcms@2.13
+           libavif
+           libjpeg-turbo
+           libpng
+           libwebp
+           openexr))
+    (home-page "https://github.com/libjxl/libjxl")
+    (synopsis "JPEG XL image format reference implementation")
+    (description "This package contains a reference implementation of JPEG XL
 (encoder and decoder).")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
 
 (define-public mtpaint
   (package
