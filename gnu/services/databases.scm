@@ -30,6 +30,7 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages databases)
   #:use-module (guix build-system trivial)
   #:use-module (guix build union)
@@ -612,44 +613,21 @@ port=" (number->string port) "
      (with-imported-modules (source-module-closure
                              '((guix build utils)))
        #~(begin
-           (use-modules (ice-9 popen)
-                        (guix build utils))
-           (let ((mysqld (string-append #$mysql "/bin/mysqld")))
-             (if (string-prefix? "mysql-" (strip-store-file-name #$mysql))
-                 ;; For MySQL.
-                 (system* mysqld
-                          (string-append "--defaults-file=" #$my.cnf)
-                          "--initialize"
-                          "--user=mysql")
-                 ;; For MariaDB.
-                 ;; XXX: The 'mysql_install_db' script doesn't work directly
-                 ;;      due to missing 'mkdir' in PATH.
-                 (let ((p (open-pipe* OPEN_WRITE mysqld
-                                      (string-append
-                                       "--defaults-file=" #$my.cnf)
-                                      "--bootstrap"
-                                      "--user=mysql")))
-                   ;; Create the system database, as does by 'mysql_install_db'.
-                   (display "create database mysql;\n" p)
-                   (display "use mysql;\n" p)
-                   (for-each
-                    (lambda (sql)
-                      (call-with-input-file
-                          (string-append #$mysql:lib "/share/mysql/" sql)
-                        (lambda (in) (dump-port in p))))
-                    '("mysql_system_tables.sql"
-                      "mysql_performance_tables.sql"
-                      "mysql_system_tables_data.sql"
-                      "fill_help_tables.sql"))
-                   ;; Remove the anonymous user and disable root access from
-                   ;; remote machines, as does by 'mysql_secure_installation'.
-                   (display "
-DELETE FROM user WHERE User='';
-DELETE FROM user WHERE User='root' AND
-  Host NOT IN  ('localhost', '127.0.0.1', '::1');
-FLUSH PRIVILEGES;
-" p)
-                   (close-pipe p)))))))))
+           (use-modules (guix build utils))
+           ;; Make sed, mkdir, uname, etc available for mariadb-install-db.
+           (set-path-environment-variable "PATH" '("bin")
+                                          (list #$sed #$coreutils))
+           (if (string=? "mariadb" #$(package-name mysql))
+               ;; For MariaDB.
+               (system* #$(file-append mysql "/bin/mariadb-install-db")
+                        (string-append "--defaults-file=" #$my.cnf)
+                        "--skip-test-db"
+                        "--user=mysql")
+               ;; For MySQL.
+               (system* #$(file-append mysql "/bin/mysqld")
+                        (string-append "--defaults-file=" #$my.cnf)
+                        "--initialize"
+                        "--user=mysql")))))))
 
 (define (mysql-upgrade-wrapper config)
   ;; The MySQL socket and PID file may appear before the server is ready to
@@ -672,7 +650,8 @@ FLUSH PRIVILEGES;
                      (close-port sock)
                      ;; The socket is ready!
                      (execl mysql-upgrade mysql-upgrade
-                            (string-append "--defaults-file=" #$config-file))))
+                            (string-append "--defaults-file=" #$config-file)
+                            "--user=mysql")))
                  (lambda args
                    (if (< i timeout)
                        (begin
