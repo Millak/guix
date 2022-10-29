@@ -1554,6 +1554,39 @@ periodically and when requested by a node sending a Router Solicitation
 message.  These messages are required for IPv6 stateless autoconfiguration.")
     (license (license:non-copyleft "file://COPYRIGHT"))))
 
+(define-public ndppd
+  (package
+    (name "ndppd")
+    (version "0.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DanielAdolfsson/ndppd")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0niri5q9qyyyw5lmjpxk19pv3v4srjvmvyd5k6ks99mvqczjx9c0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ; There are no tests
+           #:make-flags #~(list (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'fix-paths
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("/bin/gzip") "gzip")))))))
+    (synopsis "NDP Proxy Daemon")
+    (description
+     "The Neighbor Discovery Protocol Proxy Daemon (ndppd) proxies some IPv6
+NDP messages between interfaces to allow IPv6 routing between machines that
+are in the same network but not on the same local link.  It currently only
+supports Neighbor Solicitation and Neighbor Advertisement messages.")
+    (home-page "https://github.com/DanielAdolfsson/ndppd")
+    (license license:gpl3+)))
+
 (define-public libpcap
   (package
     (name "libpcap")
