@@ -9084,7 +9084,7 @@ devices using the GNOME desktop.")
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
-    (version "42.3")
+    (version "42.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9092,7 +9092,7 @@ devices using the GNOME desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0zhw6hcrrcpq1zjkyzr5ipznxnzd2aczrqd7n2y7xbz21mjy62nf"))))
+                "1ln5rch6zbfh3vl2nnnmw39bylgg38rin6xp7ra0ra4ay3wv3gvs"))))
     (build-system meson-build-system)
     (arguments
      (list
