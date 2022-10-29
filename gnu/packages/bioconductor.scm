@@ -3253,6 +3253,49 @@ analysis results, users are possible to find the patients affected by the same
 mechanism based on the shared signatures.")
     (license license:gpl3)))
 
+(define-public r-decomptumor2sig
+  (package
+    (name "r-decomptumor2sig")
+    (version "2.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "decompTumor2Sig" version))
+              (sha256
+               (base32
+                "04hg9bbga2s8scjxfd8wjlmr45nzzvh8d6gr0w929sybx4nj2qz6"))))
+    (properties `((upstream-name . "decompTumor2Sig")))
+    (build-system r-build-system)
+    (inputs (list perl))                ;script/extractSpecColumns.pl
+    (propagated-inputs
+     (list r-biocgenerics
+           r-biostrings
+           r-bsgenome-hsapiens-ucsc-hg19
+           r-data-table
+           r-genomeinfodb
+           r-genomicfeatures
+           r-genomicranges
+           r-ggplot2
+           r-ggseqlogo
+           r-gridextra
+           r-matrix
+           r-plyr
+           r-quadprog
+           r-readxl
+           r-s4vectors
+           r-summarizedexperiment
+           r-txdb-hsapiens-ucsc-hg19-knowngene
+           r-variantannotation))
+    (native-inputs (list r-knitr))
+    (home-page "https://rmpiro.net/decompTumor2Sig/")
+    (synopsis "Decomposition of individual tumors into mutational signatures")
+    (description
+     "The package uses quadratic programming for signature refitting, i.e., to
+decompose the mutation catalog from an individual tumor sample into a set of
+given mutational signatures (either Alexandrov-model signatures or
+Shiraishi-model signatures), computing weights that reflect the contributions
+of the signatures to the mutation load of the tumor.")
+    (license license:gpl2)))
+
 (define-public r-deconvr
   (package
     (name "r-deconvr")
