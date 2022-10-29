@@ -40,6 +40,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin) ; For GNU hostname
@@ -925,6 +926,25 @@ With the package comes a plugin to use vifm as a vim file selector.")
 also works as a library for connecting to and scripting neovim processes
 through its msgpack-rpc API.")
     (license license:asl2.0)))
+
+(define-public python-neovim-remote
+  (package
+    (name "python-neovim-remote")
+    (version "2.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "neovim-remote" version))
+              (sha256
+               (base32
+                "00kxlb3f1k7iaxzpsr07scavmnyg8c1jmicmr13mfk2lcdac6g2b"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-psutil python-pynvim))
+    (home-page "https://github.com/mhinz/neovim-remote")
+    (synopsis "Control nvim processes using `nvr` commandline tool")
+    (description "This package provide a `nvr` command, which can open File in
+remote nvim.  Also allow opening files from within :terminal without starting
+a nested nvim process.")
+    (license license:expat)))
 
 (define-public vim-guix-vim
   (package
