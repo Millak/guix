@@ -3323,6 +3323,32 @@ different constituting cell types and predicted cell type proportions of
 single expression profiles.")
     (license license:gpl2)))
 
+(define-public r-decontam
+  (package
+    (name "r-decontam")
+    (version "1.16.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "decontam" version))
+              (sha256
+               (base32
+                "1g9hcfcfnpq6z21069yw0pyzncwznmvxb2xalg4y6y1604dy98q9"))))
+    (properties `((upstream-name . "decontam")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggplot2 r-reshape2))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/benjjneb/decontam")
+    (synopsis
+     "Identification of contaminants in marker-gene and metagenomics data")
+    (description
+     "This package offers simple statistical identification of contaminating
+sequence features in marker-gene or metagenomics data.  It works on any kind
+of feature derived from environmental sequencing data (e.g. ASVs, OTUs,
+taxonomic groups, MAGs, etc).  Requires DNA quantitation data or sequenced
+negative control samples.")
+    (license license:artistic2.0)))
+
 (define-public r-deconvr
   (package
     (name "r-deconvr")
