@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Brandon Lucas <br@ndon.dk>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
+;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -149,43 +150,47 @@ for configuration, scripting, and rapid prototyping.")
                                       "lua51-pkgconfig.patch"))))))
 
 (define-public luajit
-  (package
-    (name "luajit")
-    (version "2.1.0-beta3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://luajit.org/download/LuaJIT-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32 "1hyrhpkwjqsv54hnnx4cl8vk44h9d6c9w0fz1jfjz00w255y7lhs"))
-              (patches (search-patches "luajit-no_ldconfig.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ; luajit is distributed without tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'install 'create-luajit-symlink
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (with-directory-excursion bin
-                 (symlink ,(string-append name "-" version)
-                          ,name)
-                 #t)))))
-         #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))))
-    (home-page "https://www.luajit.org/")
-    (synopsis "Just in time compiler for Lua programming language version 5.1")
-    ;; On powerpc64le-linux, the build fails with an error: "No support for
-    ;; PowerPC 64 bit mode (yet)".  See: https://issues.guix.gnu.org/49220
-    (supported-systems (fold delete %supported-systems
-                             (list "powerpc64le-linux" "riscv64-linux")))
-    (description
-     "LuaJIT is a Just-In-Time Compiler (JIT) for the Lua
+  (let ((branch "2.1.0-beta3")
+        (commit "6c4826f12c4d33b8b978004bc681eb1eef2be977"))
+    (package
+      (name "luajit")
+      (version (git-version branch "0" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://luajit.org/git/luajit.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1a002yh8v1i1q9w09494q0b8vsbmw3amn9jgfs5qnz7ba54jij0q"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                    ; luajit is distributed without tests
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)          ; no configure script
+           (add-after 'install 'create-luajit-symlink
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bin (string-append out "/bin")))
+                 (with-directory-excursion bin
+                   (symlink ,(string-append name "-" branch)
+                            ,name))))))
+         #:make-flags (list (string-append "PREFIX="
+                                           (assoc-ref %outputs "out")))))
+      (home-page "https://www.luajit.org/")
+      (synopsis
+       "Just in time compiler for Lua programming language version 5.1")
+      ;; On powerpc64le-linux, the build fails with an error: "No support for
+      ;; PowerPC 64 bit mode (yet)".  See: https://issues.guix.gnu.org/49220
+      (supported-systems (fold delete %supported-systems
+                               (list "powerpc64le-linux" "riscv64-linux")))
+      (description
+       "LuaJIT is a Just-In-Time Compiler (JIT) for the Lua
 programming language.  Lua is a powerful, dynamic and light-weight programming
 language.  It may be embedded or used as a general-purpose, stand-alone
 language.")
-    (license license:x11)))
+      (license license:x11))))
 
 (define-public luajit-lua52-openresty
   (package
