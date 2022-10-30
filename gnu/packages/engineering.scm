@@ -1786,7 +1786,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "37")
+    (version "38")
     (source
      (origin
        (method url-fetch)
@@ -1797,7 +1797,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                             "old-releases/" version
                             "/ngspice-" version ".tar.gz")))
        (sha256
-        (base32 "1gpcic6b6xk3g4956jcsqljf33kj5g43cahmydq6m8rn39sadvlv"))))
+        (base32 "0mkw66d2isyyxssziwramd08amd7l1qm6dfg86r5s5kvqkv24gic"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
