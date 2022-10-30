@@ -4634,34 +4634,35 @@ tcpdump and snoop.")
         (base32 "0832nh2qf9pisgwnbgx6hkylx5d7i416l19y3ly4ifv7k1p7mxqa"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-slibdir=" %output "/lib")
-             (string-append "--with-ssbindir=" %output "/sbin"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-file-names
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "src/mtcrypt.c"
-                 (("\"(mount|umount)\";" _ command)
-                  (format #f "\"~a\";"
-                          (search-input-file inputs
-                                             (string-append "bin/" command))))
-                 (("\"(fsck)\"," _ command)
-                  (format #f "\"~a\","
-                          (search-input-file inputs
-                                             (string-append "sbin/" command)))))
-               (substitute* "src/rdconf1.c"
-                 (("\"(mount|umount)\", \"" _ command)
-                  (format #f "\"~a\", \""
-                          (search-input-file inputs
-                                             (string-append "bin/" command))))
-                 (("\"(fsck)\", \"" _ command)
-                  (format #f "\"~a\", \""
-                          (search-input-file inputs
-                                             (string-append "sbin/" command))))
-                 (("\"pmvarrun\", \"")
-                  (format #f "\"~a/sbin/pmvarrun\", \"" out)))))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-slibdir=" #$output "/lib")
+              (string-append "--with-ssbindir=" #$output "/sbin"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-file-names
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (substitute* "src/mtcrypt.c"
+                  (("\"(mount|umount)\";" _ command)
+                   (format #f "\"~a\";"
+                           (search-input-file inputs
+                                              (string-append "bin/" command))))
+                  (("\"(fsck)\"," _ command)
+                   (format #f "\"~a\","
+                           (search-input-file inputs
+                                              (string-append "sbin/" command)))))
+                (substitute* "src/rdconf1.c"
+                  (("\"(mount|umount)\", \"" _ command)
+                   (format #f "\"~a\", \""
+                           (search-input-file inputs
+                                              (string-append "bin/" command))))
+                  (("\"(fsck)\", \"" _ command)
+                   (format #f "\"~a\", \""
+                           (search-input-file inputs
+                                              (string-append "sbin/" command))))
+                  (("\"pmvarrun\", \"")
+                   (format #f "\"~a/sbin/pmvarrun\", \"" out)))))))))
     (native-inputs
      (list perl pkg-config))
     (inputs
