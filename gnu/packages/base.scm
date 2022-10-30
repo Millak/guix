@@ -395,7 +395,6 @@ used to apply commands with arbitrarily long arguments.")
                                    " test-perror2"
                                    " test-renameat"
                                    " test-renameatu"
-                                   " test-tls"
                                    " test-utimensat")))
             '())
       #:phases (modify-phases %standard-phases
