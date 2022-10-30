@@ -4633,45 +4633,47 @@ tcpdump and snoop.")
        (sha256
         (base32 "0832nh2qf9pisgwnbgx6hkylx5d7i416l19y3ly4ifv7k1p7mxqa"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list perl pkg-config))
-    (inputs
-     `(("cryptsetup" ,cryptsetup)
-       ("libhx" ,libhx)
-       ("libxml2" ,libxml2)
-       ("linux-pam" ,linux-pam)
-       ("lvm2" ,lvm2)
-       ("openssl" ,openssl)
-       ("pcre2" ,pcre2)
-       ("libmount" ,util-linux "lib")
-       ("util-linux" ,util-linux)))
     (arguments
      `(#:configure-flags
        (list (string-append "--with-slibdir=" %output "/lib")
              (string-append "--with-ssbindir=" %output "/sbin"))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-program-paths
+         (add-after 'unpack 'patch-file-names
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((util-linux (assoc-ref inputs "util-linux"))
-                   (out (assoc-ref outputs "out")))
+             (let ((out (assoc-ref outputs "out")))
                (substitute* "src/mtcrypt.c"
-                 (("\"mount\";")
-                  (string-append "\"" util-linux "/bin/mount\";"))
-                 (("\"umount\";")
-                  (string-append "\"" util-linux "/bin/umount\";"))
-                 (("\"fsck\",")
-                  (string-append "\"" util-linux "/sbin/fsck\",")))
+                 (("\"(mount|umount)\";" _ command)
+                  (format #f "\"~a\";"
+                          (search-input-file inputs
+                                             (string-append "bin/" command))))
+                 (("\"(fsck)\"," _ command)
+                  (format #f "\"~a\","
+                          (search-input-file inputs
+                                             (string-append "sbin/" command)))))
                (substitute* "src/rdconf1.c"
-                 (("\"mount\", \"")
-                  (string-append "\"" util-linux "/bin/mount\", \""))
-                 (("\"umount\", \"")
-                  (string-append "\"" util-linux "/bin/umount\", \""))
-                 (("\"fsck\", \"")
-                  (string-append "\"" util-linux "/sbin/fsck\", \""))
+                 (("\"(mount|umount)\", \"" _ command)
+                  (format #f "\"~a\", \""
+                          (search-input-file inputs
+                                             (string-append "bin/" command))))
+                 (("\"(fsck)\", \"" _ command)
+                  (format #f "\"~a\", \""
+                          (search-input-file inputs
+                                             (string-append "sbin/" command))))
                  (("\"pmvarrun\", \"")
-                  (string-append "\"" out "/sbin/pmvarrun\", \""))))
-             #t)))))
+                  (format #f "\"~a/sbin/pmvarrun\", \"" out)))))))))
+    (native-inputs
+     (list perl pkg-config))
+    (inputs
+     (list cryptsetup
+           libhx
+           libxml2
+           linux-pam
+           lvm2
+           openssl
+           pcre2
+           `(,util-linux "lib")
+           util-linux))
     (home-page "https://inai.de/projects/pam_mount/")
     (synopsis "PAM module to mount volumes for a user session")
     (description
