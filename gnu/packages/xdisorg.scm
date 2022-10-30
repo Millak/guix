@@ -2546,7 +2546,7 @@ The cutbuffer and clipboard selection are always synchronized.")
 (define-public jgmenu
   (package
     (name "jgmenu")
-    (version "4.4.0")
+    (version "4.4.1")
     (source
      (origin
        (method git-fetch)
@@ -2555,7 +2555,7 @@ The cutbuffer and clipboard selection are always synchronized.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08dyygclayyipa0p2qsxqa3fsfyflkrkhpi25dkc3ybkicvynk24"))))
+        (base32 "1a9irlrpa3mi3101cn9hi1ch5k1v4p0h83ni5j63qmlc5g7pcbsh"))))
     (build-system gnu-build-system)
     (native-inputs
      (list cppcheck perl pkg-config))
@@ -2575,8 +2575,7 @@ The cutbuffer and clipboard selection are always synchronized.")
            (lambda* (#:key outputs #:allow-other-keys)
              (setenv "CC" ,(cc-for-target))
              (invoke "./configure"
-                     (string-append "--prefix=" (assoc-ref outputs "out")))
-             #t)))))
+                     (string-append "--prefix=" (assoc-ref outputs "out"))))))))
     (synopsis "Simple X11 menu")
     (description
      "This is a simple menu for X11 designed for scripting and tweaking.  It
