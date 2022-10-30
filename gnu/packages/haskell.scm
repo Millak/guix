@@ -538,9 +538,12 @@ interactive environment for the functional language Haskell.")
                   (("^SHELL.*=.*/bin/sh") (string-append "SHELL = " bash)))
                 (substitute* "aclocal.m4"
                   (("SHELL=/bin/sh") (string-append "SHELL=" bash)))
-                (substitute* '"compiler/Makefile"
+                (substitute* "compiler/Makefile"
                   (("#!/bin/sh") (string-append "#!" bash)))
-                (substitute* "libraries/base/cbits/execvpe.c"
+                (substitute* '("libraries/base/cbits/execvpe.c"
+                               "libraries/Cabal/Distribution/attic"
+                               "libraries/Cabal/Distribution/Simple/Register.hs"
+                               "libraries/base/System/Process/Internals.hs")
                   (("/bin/sh") bash)
                   (("\"sh\"") (string-append "\"" bash "\"")))
 
