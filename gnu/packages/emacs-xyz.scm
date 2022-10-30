@@ -17209,7 +17209,6 @@ multiplexer.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'substitute-curl-path
             (lambda* (#:key inputs #:allow-other-keys)
-              (make-file-writable "plz.el")
               (emacs-substitute-variables "plz.el"
                 ("plz-curl-program" (search-input-file inputs "/bin/curl"))))))))
     (home-page "https://github.com/alphapapa/plz.el")
