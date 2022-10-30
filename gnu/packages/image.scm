@@ -1519,26 +1519,21 @@ differences in file encoding, image quality, and other small variations.")
                 "18bxlhbdc3zsmxj84i417xjh0q28kv26q449k23n0a72ldwziix2"))
               (patches (list (search-patch "steghide-fixes.patch")))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("perl" ,perl)))                 ;for tests
-    (inputs
-     `(("libmhash" ,libmhash)
-       ("libmcrypt" ,libmcrypt)
-       ("libjpeg" ,libjpeg-turbo)
-       ("zlib" ,zlib)))
     (arguments
-     `(#:make-flags '("CXXFLAGS=-fpermissive")    ;required for MHashPP.cc
-
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'set-perl-search-path
-                    (lambda _
-                      ;; Work around "dotless @INC" build failure.
-                      (setenv "PERL5LIB"
-                              (string-append (getcwd) "/tests:"
-                                             (getenv "PERL5LIB")))
-                      #t)))))
+     (list #:make-flags
+           #~(list "CXXFLAGS=-fpermissive")  ; required for MHashPP.cc
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'set-perl-search-path
+                 (lambda _
+                   ;; Work around "dotless @INC" build failure.
+                   (setenv "PERL5LIB"
+                           (string-append (getcwd) "/tests:"
+                                          (getenv "PERL5LIB"))))))))
+    (native-inputs
+     (list gettext-minimal libtool perl))
+    (inputs
+     (list libjpeg-turbo libmhash libmcrypt zlib))
     (home-page "http://steghide.sourceforge.net")
     (synopsis "Image and audio steganography")
     (description
