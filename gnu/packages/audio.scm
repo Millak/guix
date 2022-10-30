@@ -2613,14 +2613,13 @@ compensation, (de)interleaving, and byte-swapping
 (define-public python-pyaudio
   (package
     (name "python-pyaudio")
-    (version "0.2.11")
+    (version "0.2.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyAudio" version))
        (sha256
-        (base32
-         "0x7vdsigm7xgvyg3shd3lj113m8zqj2pxmrgdyj66kmnw0qdxgwk"))))
+        (base32 "17pvc27pn2xbisbq7nibhidyw8h2kyms7g2xbyx7nlxwfbdzbpam"))))
     (build-system python-build-system)
     (inputs
      (list portaudio))
