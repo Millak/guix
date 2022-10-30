@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020. 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -806,4 +807,27 @@ photo post-production and is primarily focused on improving a photographer's
 workflow by facilitating the handling of large numbers of images.  Most raw
 formats are supported, including Pentax Pixel Shift, Canon Dual-Pixel, and those
 from Foveon and X-Trans sensors.")
+    (license license:gpl3+)))
+
+(define-public librtprocess
+  (package
+    (name "librtprocess")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/CarVac/librtprocess")
+                    (commit version)))
+              (sha256
+               (base32
+                "0v0zwbdbc1fn7iy6wi0m6zgb86qdx1ijnv548d0ydbr8cm4klnpz"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; No tests
+     (list #:tests? #f))
+    (home-page "https://github.com/CarVac/librtprocess")
+    (synopsis "Highly optimized library for processing RAW images")
+    (description
+     "This package provides RawTherapee's highly optimized RAW processing routines.")
     (license license:gpl3+)))
