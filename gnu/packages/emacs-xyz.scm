@@ -33677,6 +33677,29 @@ clipboard and inserts an Org mode link with a title of a page found by the URL
 into the current buffer.")
       (license license:expat))))
 
+(define-public emacs-flymake-mypy
+  (let ((commit "d79e158f9ed3065ab692cd0d4048aac985c4fecd")
+        (revision "0"))
+    (package
+      (name "emacs-flymake-mypy")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/com4/flymake-mypy")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "124pfa1kwrapwylbrvkzg3jwcmlsvfklg33ms9ki32khvglmff5h"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/com4/flymake-mypy")
+      (synopsis "Flymake checker for mypy")
+      (description
+"This package provides Flymake support for Python static type checking
+using mypy.")
+      (license license:bsd-2))))
+
 (define-public emacs-project-x
   ;; There is no proper release.
   ;; The base version is extracted from the README.org.
