@@ -4410,7 +4410,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
 (define-public netdiscover
   (package
    (name "netdiscover")
-   (version "0.7")
+   (version "0.10")
    (source
     (origin
       (method git-fetch)
@@ -4418,10 +4418,10 @@ IPv6 Internet connectivity - it also works over IPv4.")
             (url "https://github.com/netdiscover-scanner/netdiscover")
             (commit version)))
       (sha256
-       (base32 "0g8w8rlg16dsibxi4dnyn7v7r8wwi5ypd51c4w59j0ps2id0w8yj"))
+       (base32 "1ljkj280qja9rz0zwkilsa4051fdxsygjqhfch0wpkxxa5zx3prx"))
       (file-name (string-append "netdiscover-" version))))
    (arguments
-    `(#:tests? #f)) ;; no tests
+    `(#:tests? #f))                     ; no tests
    (build-system gnu-build-system)
    (inputs
     (list libnet libpcap))
