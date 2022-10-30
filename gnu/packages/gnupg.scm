@@ -1167,7 +1167,7 @@ over.")
 (define-public jetring
   (package
     (name "jetring")
-    (version "0.30")
+    (version "0.31")
     (source
       (origin
         (method git-fetch)
@@ -1181,14 +1181,13 @@ over.")
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (delete 'configure) ; no configure script
+         (delete 'configure)            ; no configure script
          (add-before 'install 'hardlink-gnupg
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((gpg (search-input-file inputs "/bin/gpg")))
                (substitute* (find-files "." "jetring-[[:alpha:]]+$")
                  (("gpg -") (string-append gpg " -"))
-                 (("\\\"gpg\\\"") (string-append "\"" gpg "\"")))
-               #t)))
+                 (("\\\"gpg\\\"") (string-append "\"" gpg "\""))))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1199,9 +1198,8 @@ over.")
                (for-each (lambda (file)
                            (install-file file (string-append man "/man1/")))
                          (find-files "." ".*\\.1$"))
-               (install-file "jetring.7" (string-append man "/man7/"))
-               #t))))
-       #:tests? #f)) ; no test phase
+               (install-file "jetring.7" (string-append man "/man7/"))))))
+       #:tests? #f))                    ; no tests
     (inputs
      (list gnupg perl))
     (home-page "https://joeyh.name/code/jetring/")
