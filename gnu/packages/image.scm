@@ -1535,11 +1535,16 @@ differences in file encoding, image quality, and other small variations.")
     (inputs
      (list libjpeg-turbo libmhash libmcrypt zlib))
     (home-page "http://steghide.sourceforge.net")
-    (synopsis "Image and audio steganography")
+    (synopsis "`Hide' (nonconfidential) data in image or audio files")
     (description
-     "Steghide is a program to hide data in various kinds of image and audio
-files (known as @dfn{steganography}).  Neither color nor sample frequencies are
-changed, making the embedding resistant against first-order statistical tests.")
+     "Steghide is a program to `hide' data in various kinds of image and audio
+files.  This practice is known as @dfn{steganography}, but the method used by
+steghide is not very secure and should not be used where security is at stake.
+Even if a password is used, steghide offers little plausible deniability.
+
+Nonetheless, neither color nor sample frequencies are changed, making the
+embedding resistant against first-order statistical tests not aimed
+specifically at this tool.")
     (license license:gpl2+)))
 
 (define-public optipng
