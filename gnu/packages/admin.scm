@@ -4675,10 +4675,9 @@ tcpdump and snoop.")
     (home-page "http://pam-mount.sourceforge.net")
     (synopsis "PAM module to mount volumes for a user session")
     (description
-     "Pam-mount is a PAM module that can mount volumes when a user logs in.
-It supports mounting local filesystems of any kind the normal mount utility
-supports.  It can also mount encrypted LUKS volumes using the password
-supplied by the user when logging in.")
+     "Pam-mount is a PAM module to mount volumes when a user logs in.
+It can mount all local file systems supported by @command{mount}, as well as
+LUKS volumes encrypted with the user's log-in password.")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
 (define-public jc
@@ -5244,18 +5243,16 @@ then it can be a greeter.")
                  (("pam_mount_system_authtok") "greetd_pam_mount_system_authtok"))))))))
     (synopsis "PAM module to mount volumes for a user session (greetd variant)")
     (description
-     "Pam-mount is a PAM module that can mount volumes when a user logs in.
-It supports mounting local filesystems of any kind the normal mount utility
-supports.  It can also mount encrypted LUKS volumes using the password
-supplied by the user when logging in.
+     "Pam-mount is a PAM module to mount volumes when a user logs in.
+It can mount all local file systems supported by @command{mount}, as well as
+LUKS volumes encrypted with the user's log-in password.
 
-This package inherits pam-mount in the way that it is compiled specifically
-for use with greetd daemon.  It uses different configuration location and
-name space for storing data in PAM.
+This package inherits pam-mount but is compiled specifically for use with
+the @command{greetd} log-in manager.  It uses a different configuration
+location and PAM name space from the original.
 
-greetd-pam-mount is used in configuration of greetd to provide
-auto-(mounting/unmounting) of XDG_RUNTIME_DIR in the way that it will not
-interfere with default pam-mount configuration.")))
+This allows greetd-pam-mount to auto-(un)mount @env{XDG_RUNTIME_DIR} without
+interfering with any pam-mount configuration.")))
 
 (define-public wlgreet
   (package
