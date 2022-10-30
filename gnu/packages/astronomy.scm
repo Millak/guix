@@ -33,6 +33,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages flex)
@@ -44,12 +45,14 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
@@ -61,6 +64,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
@@ -72,6 +76,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -589,6 +594,43 @@ programs for the manipulation and analysis of astronomical data.")
 astronomical image.  Although it is particularly oriented towards reduction of
 large scale galaxy-survey data, it can perform reasonably well on moderately
 crowded star fields.")
+    (license license:gpl3+)))
+
+(define-public siril
+  (package
+    (name "siril")
+    (version "1.0.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/free-astro/siril")
+                    (commit version)))
+              (sha256
+               (base32
+                "0iqxb5zmjyygg4b6lwlq8z82mngxg7kjjpahhzk52m0cypfq0l18"))
+              (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+    (native-inputs (list cmake git glib libconfig pkg-config))
+    (inputs (list cfitsio
+                  exiv2
+                  fftwf
+                  gsl
+                  gtk+
+                  json-glib
+                  libraw
+                  librtprocess
+                  opencv))
+    (home-page "https://siril.org/")
+    (synopsis "Image processing software for amateur astronomy")
+    (description
+     "This package provides an astronomical image processing tool - SIRIL.  It is
+specially tailored for noise reduction and improving the signal/noise ratio of
+an image from multiple captures, as required in astronomy.  SIRIL can align
+automatically or manually, stack and enhance pictures from various file formats,
+even image sequence files (films and SER files).  It works well with limited
+system resources, like in embedded platforms, but is also very fast when run on
+more powerful computers and provides conversion to FITS from a large number of
+image formats.")
     (license license:gpl3+)))
 
 (define-public splash
