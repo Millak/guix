@@ -216,6 +216,8 @@ implementation offers several extensions over the standard utility.")
                      ",!concatenated incremental archives (renames)"
                      ",!renamed directory containing subdirectories"
                      ",!renamed subdirectories"
+                     ",!chained renames"
+                     ",!Directory"
                      "'")))
             '())
       #:phases (modify-phases %standard-phases
