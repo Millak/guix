@@ -871,7 +871,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.1.9")
+    (version "3.2.2")
     (source
      (origin
        (method git-fetch)
@@ -880,15 +880,19 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w3jyz9qgkb34gkv2lr71phk5ad3rycn86qyw7n88ryhdsk45j73"))
+        (base32 "1x1waa2cb91zhsqkx4mkiqy00kq1f1pavjfhlz7wknlnll48iayd"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Remove Ragel-generated C files.  We'll recreate them below.
            (for-each delete-file (find-files "." "\\.c\\.[gt]."))
            (delete-file "src/libknot/yparser/ypbody.c")
-           ;; Remove bundled library to ensure we always use the system's.
-           (delete-file-recursively "src/contrib/libbpf")))))
+           ;; Remove bundled libraries to ensure we always use the system's.
+           (with-directory-excursion "src/contrib"
+             (for-each delete-file-recursively
+                       (list "libbpf"
+                             ;; TODO: package this for DoQ (‘QUIC’) support.
+                             "libngtcp2")))))))
     (build-system gnu-build-system)
     (outputs (list "out" "doc" "lib" "tools"))
     (arguments
