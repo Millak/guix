@@ -94,7 +94,7 @@
        #:phases
        (modify-phases %standard-phases
          (add-after 'configure 'patch-absolute-paths
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("src/testdir/Makefile"
                             "src/testdir/test_filetype.vim"
                             "src/testdir/test_normal.vim"
@@ -106,7 +106,9 @@
                             "src/testdir/test_terminal2.vim")
                (("/bin/sh") (which "sh")))
              (substitute* "src/testdir/test_autocmd.vim"
-               (("/bin/kill") (which "kill")))))
+               (("/bin/kill") (which "kill")))
+             (substitute* "src/if_cscope.c"
+               (("/bin/sh") (search-input-file inputs "/bin/sh")))))
          (add-before 'check 'set-environment-variables
            (lambda* (#:key inputs #:allow-other-keys)
              ;; One of the tests tests timezone-dependent functions.
