@@ -4672,7 +4672,7 @@ tcpdump and snoop.")
                  (("\"pmvarrun\", \"")
                   (string-append "\"" out "/sbin/pmvarrun\", \""))))
              #t)))))
-    (home-page "http://pam-mount.sourceforge.net")
+    (home-page "https://inai.de/projects/pam_mount/")
     (synopsis "PAM module to mount volumes for a user session")
     (description
      "Pam-mount is a PAM module to mount volumes when a user logs in.
