@@ -6137,21 +6137,20 @@ invocations of itself.")
 (define-public ntfs-3g
   (package
     (name "ntfs-3g")
-    (version "2022.5.17")
+    (version "2022.10.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://tuxera.com/opensource/"
                                   "ntfs-3g_ntfsprogs-" version ".tgz"))
               (sha256
                (base32
-                "14zbsl7m32f796dkr334zbkj5rba7xa8smxb2ysf3095jyvgp284"))
+                "030pakw3h1z6p8phdbyb0hw0bb868znvrri96rg88jq7d3p3c3pj"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Install under $prefix.
                           (substitute* '("src/Makefile.in" "ntfsprogs/Makefile.in")
                             (("/sbin")
-                             "@sbindir@"))
-                          #t))))
+                             "@sbindir@"))))))
     (build-system gnu-build-system)
     (inputs (list util-linux ; libuuid
                   fuse))
@@ -6175,8 +6174,7 @@ invocations of itself.")
              (let* ((out (assoc-ref outputs "out"))
                     (sbin (string-append out "/sbin")))
                (symlink "mount.ntfs-3g"
-                        (string-append sbin "/mount.ntfs")))
-             #t)))))
+                        (string-append sbin "/mount.ntfs"))))))))
     (home-page "https://www.tuxera.com/community/open-source-ntfs-3g/")
     (synopsis "Read-write access to NTFS file systems")
     (description
