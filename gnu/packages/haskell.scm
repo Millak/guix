@@ -585,6 +585,100 @@ interactive environment for the functional language Haskell.")
 interactive environment for the functional language Haskell.")
     (license license:bsd-3)))
 
+(define-public ghc-6.10
+  (package
+    (name "ghc")
+    (version "6.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://downloads.haskell.org/~ghc/"
+                           version "/" name "-" version "-src.tar.bz2"))
+       (sha256
+        (base32
+         "0kakv05kqi92qbfgmhr57rvag10yvp338kjwzqczhkrgax98wsnn"))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "libffi"))))
+    (build-system gnu-build-system)
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (arguments
+     (list
+      #:system "i686-linux"
+      #:tests? #false ;no check target
+      #:parallel-build? #false ;fails when building libraries/*
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26)
+                  (srfi srfi-1))
+      #:configure-flags
+      #~(list
+         (string-append "--with-gmp-libraries="
+                        (assoc-ref %build-inputs "gmp") "/lib")
+         (string-append "--with-gmp-includes="
+                        (assoc-ref %build-inputs "gmp") "/include"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bash (which "bash")))
+                ;; Use our libffi package
+                (substitute* "rts/Makefile"
+                  (("-I../libffi/build/include")
+                   (string-append "-I"#$(this-package-input "libffi") "/include"))
+                  (("-L../libffi/build/include")
+                   (string-append "-L"#$(this-package-input "libffi") "/lib")))
+                (substitute* '("Makefile"
+                               "distrib/Makefile")
+                  (("SUBDIRS = gmp libffi")
+                   "SUBDIRS = gmp")
+                  (("\\$\\(MAKE\\) -C libffi.*") ""))
+                (substitute* "compiler/ghc.cabal.in"
+                  (("../libffi/build/include")
+                   (string-append #$(this-package-input "libffi") "/include")))
+
+                ;; Do not use libbfd, because it complicates the build and
+                ;; requires more patching.  Disable all debug and profiling
+                ;; builds.
+                (substitute* "mk/config.mk.in"
+                  (("GhcRTSWays \\+= debug") "")
+                  (("GhcRTSWays \\+= debug_dyn thr_dyn thr_debug_dyn")
+                   "GhcRTSWays += thr_dyn")
+                  (("thr thr_p thr_debug") "thr")
+                  (("GhcLibWays=p") "GhcLibWays="))
+
+                ;; Replace /bin/sh.
+                (substitute* '("configure"
+                               "distrib/configure-bin.ac")
+                  (("`/bin/sh") (string-append "`" bash))
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash))
+                  (("#! /bin/sh") (string-append "#! " bash)))
+                (substitute* '("mk/config.mk.in")
+                  (("^SHELL.*=.*/bin/sh") (string-append "SHELL = " bash)))
+                (substitute* "aclocal.m4"
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash)))
+                (substitute* '("libraries/unix/cbits/execvpe.c"
+                               "libraries/Cabal/Distribution/Simple/Register.hs"
+                               "libraries/process/System/Process/Internals.hs")
+                  (("/bin/sh") bash)
+                  (("\"sh\"") (string-append "\"" bash "\"")))))))))
+    (native-search-paths (list (search-path-specification
+                                (variable "GHC_PACKAGE_PATH")
+                                (files (list
+                                        (string-append "lib/ghc-" version)))
+                                (file-pattern ".*\\.conf\\.d$")
+                                (file-type 'directory))))
+    (inputs
+     (list gmp libffi))
+    (native-inputs
+     (list perl ghc-6.6))
+    (home-page "https://www.haskell.org/ghc")
+    (synopsis "The Glasgow Haskell Compiler")
+    (description
+     "The Glasgow Haskell Compiler (GHC) is a state-of-the-art compiler and
+interactive environment for the functional language Haskell.")
+    (license license:bsd-3)))
+
 (define ghc-bootstrap-x86_64-7.8.4
   (origin
     (method url-fetch)
