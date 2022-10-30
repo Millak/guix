@@ -289,7 +289,7 @@ differences.")
    (build-system gnu-build-system)
    (arguments
     `(#:make-flags ,(if (hurd-target?)
-                        ''("XFAIL_TESTS=test-perror2")
+                        ''("XFAIL_TESTS=test-perror2 large-subopt")
                         ''())))
    (native-inputs (list perl))
    (synopsis "Comparing and merging files")
