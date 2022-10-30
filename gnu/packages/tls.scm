@@ -1156,18 +1156,19 @@ coding footprint.")
               (setenv "PATH" bash)
               (wrap-program "dehydrated"
                 `("PATH" ":" prefix
-                  ,(map (lambda (dir)
-                          (string-append dir "/bin"))
-                        (map (lambda (input)
-                               (assoc-ref %build-inputs input))
-                             '("coreutils"
-                               "curl"
-                               "diffutils"
-                               "gawk"
-                               "grep"
-                               "openssl"
-                               "sed"
-                               "util-linux-with-udev"))))))))))
+                  ,(map (lambda (file)
+                          (dirname (search-input-file %build-inputs file)))
+                        (list
+                         ;; From check_dependencies() — keep them in sync.
+                         "bin/grep"
+                         "bin/diff"
+                         "bin/sed"
+                         "bin/awk"
+                         "bin/curl"
+                         "bin/cut"      ; also mktemp, head, tail
+                         "bin/hexdump"
+                         ;; Additional requirements.
+                         "bin/openssl")))))))))
     (inputs
      (list bash
            coreutils
