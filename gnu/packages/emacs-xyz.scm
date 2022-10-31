@@ -2088,7 +2088,7 @@ Distributed @acronym{Source Control Management, SCM} system.")
 (define-public emacs-alarm-clock
   (package
     (name "emacs-alarm-clock")
-    (version "1.0.1")
+    (version "1.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2097,7 +2097,7 @@ Distributed @acronym{Source Control Management, SCM} system.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11afq6lnlqdzbll015fx3031bslwfaz5362qgk2ipgqlk872559h"))))
+                "02gr5scf50js00xa1chvd0j7agr8bys5madzk96fwg0s4gfdmyqa"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include #~(cons "alarm.mp3" %default-include)
