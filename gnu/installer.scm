@@ -389,6 +389,12 @@ selected keymap."
                          (ice-9 match)
                          (ice-9 textual-ports))
 
+            ;; Enable core dump generation.
+            (setrlimit 'core #f #f)
+            (call-with-output-file "/proc/sys/kernel/core_pattern"
+              (lambda (port)
+                (format port %core-dump)))
+
             ;; Initialize gettext support so that installers can use
             ;; (guix i18n) module.
             #$init-gettext

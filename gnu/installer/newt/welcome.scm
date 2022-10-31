@@ -20,6 +20,7 @@
 (define-module (gnu installer newt welcome)
   #:use-module ((gnu build linux-modules)
                 #:select (modules-loaded))
+  #:use-module (gnu installer dump)
   #:use-module (gnu installer steps)
   #:use-module (gnu installer utils)
   #:use-module (gnu installer newt page)
@@ -132,6 +133,20 @@ work well with only free software.  Expect trouble.  If after installation,
 the system does not boot, perhaps you will need to add nomodeset to the
 kernel arguments and need to configure the uvesafb kernel module.")
                       (G_ "Pre-install warning")))
+    (when (file-exists? %core-dump)
+      (match
+          (choice-window
+           (G_ "Previous installation failed")
+           (G_ "Continue")
+           (G_ "Report the failure")
+           (G_ "It seems that the previous installation exited unexpectedly \
+and generated a core dump.  Do you want to continue or to report the failure \
+first?"))
+        (1 #t)
+        (2 (raise
+            (condition
+             (&message
+              (message "User abort.")))))))
     (run-menu-page
      (G_ "GNU Guix install")
      (G_ "Welcome to GNU Guix system installer!

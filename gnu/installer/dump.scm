@@ -28,12 +28,16 @@
   #:use-module (web http)
   #:use-module (web response)
   #:use-module (webutils multipart)
-  #:export (prepare-dump
+  #:export (%core-dump
+            prepare-dump
             make-dump
             send-dump-report))
 
 ;; The installer crash dump type.
 (define %dump-type "installer-dump")
+
+;; The core dump file.
+(define %core-dump "/tmp/installer-core-dump")
 
 (define (result->list result)
   "Return the alist for the given RESULT."
@@ -65,6 +69,10 @@ RESULT is the installer result hash table.  Returns the created directory path."
 
     ;; syslog
     (copy-file "/var/log/messages" "syslog")
+
+    ;; core dump
+    (when (file-exists? %core-dump)
+      (copy-file %core-dump "core-dump"))
 
     ;; dmesg
     (let ((pipe (open-pipe* OPEN_READ "dmesg")))
