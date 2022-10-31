@@ -26033,7 +26033,6 @@ according to their use.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'configure
             (lambda* (#:key inputs #:allow-other-keys)
-              (make-file-writable "detached.el")
               (emacs-substitute-variables "detached.el"
                 ("detached-dtach-program"
                  (search-input-file inputs "/bin/dtach"))
@@ -26043,11 +26042,11 @@ according to their use.")
     (native-inputs (list emacs-ert-runner))
     (inputs (list dtach))
     (home-page "https://git.sr.ht/~niklaseklund/detached.el")
-    (synopsis "A package to launch, and manage, detached processes")
+    (synopsis "Launch and manage detached processes from Emacs")
     (description
-     "The detached package allows users to run processes
-detached from Emacs.  It provides integration with multiple built-in modes, as
-well as providing an interface to attach and interact with the processes.")
+     "The Detached package allows users to run processes detached from Emacs.
+It provides integration with multiple built-in modes, as well as providing an
+interface to attach and interact with the processes.")
     (license license:gpl3+)))
 
 (define-public emacs-dtache
