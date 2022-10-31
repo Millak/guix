@@ -9,7 +9,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -59,6 +59,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system go)
   #:use-module (guix build-system qt)
@@ -1330,25 +1331,25 @@ main features are:
 (define-public silkaj
   (package
     (name "silkaj")
-    (version "0.7.6")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "silkaj" version))
        (sha256
-        (base32 "0hrn0jwg415z7wjkp0myvw85wszlfi18f56j03075xxakr4dmi2j"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))                    ;no test
-    (inputs
-     `(("click" ,python-click)
-       ("duniterpy" ,python-duniterpy)
-       ("pynacl" ,python-pynacl)
-       ("tabulate" ,python-tabulate)
-       ("texttable" ,python-texttable)))
+        (base32 "0p8jqnswrrxri8i2ikdz8mij7gks0yab3wdcb37jf2kjwmrwanpk"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core))
+    (propagated-inputs
+     (list python-click
+           python-duniterpy
+           python-pendulum
+           python-tabulate
+           python-texttable))
     (home-page "https://git.duniter.org/clients/python/silkaj")
     (synopsis "Command line client for Duniter network")
-    (description "@code{Silkaj} is a command line client for the
+    (description "Silkaj is a command line client for the
 @uref{https://github.com/duniter/duniter/, Duniter} network.
 
 Its features are:
