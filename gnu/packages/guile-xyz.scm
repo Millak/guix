@@ -1794,7 +1794,7 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -1804,7 +1804,7 @@ provides tight coupling to Guix.")
        (file-name (string-append name "-" version "-checkout"))
        (sha256
         (base32
-         "1526kdzcn0qvf5hpb4x5q01vb9mph9gfw24p81inqgjvy7a57lf9"))))
+         "1wjkba135iipwqrp14c3q6wpbjhglp9d12is16lj8l81xyv8gjn3"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -1817,12 +1817,13 @@ provides tight coupling to Guix.")
            help2man
            pkg-config))
     (inputs (list guile-3.0 which))
-    (propagated-inputs (list guile-lib guile-smc))
+    (propagated-inputs (list guile-lib guile-smc guile-dsv))
     (home-page "https://github.com/artyom-poptsov/guile-ics")
     (synopsis "Guile parser library for the iCalendar format")
     (description
-     "Guile-ICS is an iCalendar (RFC5545) format parser library written in
-pure Scheme.  The library can be used to read and write iCalendar data.
+     "Guile-ICS is an iCalendar (RFC5545) and vCard (RFC6350) format parser
+library written in pure Scheme.  The library can be used to read and write
+iCalendar/vCadr data and convert the data from/to various formats.
 
 The library is shipped with documentation in Info format and usage examples.")
     (license license:gpl3+)))
@@ -1832,7 +1833,7 @@ The library is shipped with documentation in Info format and usage examples.")
     (inherit guile-ics)
     (name "guile2.2-ics")
     (inputs (list guile-2.2 which))
-    (propagated-inputs (list guile2.2-lib guile2.2-smc))))
+    (propagated-inputs (list guile2.2-lib guile2.2-dsv guile2.2-smc))))
 
 (define-public guile-imanifest
   (let ((commit "ccd5a2111b008d778106f5595a3a585954d95d0")
