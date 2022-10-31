@@ -20487,7 +20487,7 @@ orient yourself in the code, and tell which statements are at a given level.")
 (define-public emacs-pulsar
   (package
     (name "emacs-pulsar")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -20496,7 +20496,7 @@ orient yourself in the code, and tell which statements are at a given level.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05ig8p3y5k20w4xy0ahaml9z0i0xyw6fkypzvz0mjpldhxl7dbxd"))))
+                "0wwj9civyidfcv0k859w0i2aqb75dypy7aihk3cnv1nv2q4m61j5"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
