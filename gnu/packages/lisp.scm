@@ -417,14 +417,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.2.6")
+    (version "2.2.10")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "18044dqx37mkipnrzs7jrp0cbnwp6snb5gi06a8zn9m8iy6088ry"))))
+        (base32 "0cq8x4svkawirxq5s5gs4qxkl23m4q5p722a2kpss8qjfslc7hwc"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -584,8 +584,7 @@ an interpreter, a compiler, a debugger, and much more.")
                      "--with-sb-xref-for-internals"
                      ;; SB-SIMD will only be built on x86_64 CPUs supporting
                      ;; AVX2 instructions. Some x86_64 CPUs don't, so for reproducibility
-                     ;; we disable it and we don't build its documentation (see the
-                     ;; 'build-doc' phase).
+                     ;; we disable it.
                      "--without-sb-simd")))
          (add-after 'build 'build-shared-library
            (lambda* (#:key outputs #:allow-other-keys)
@@ -596,11 +595,6 @@ an interpreter, a compiler, a debugger, and much more.")
              (invoke "sh" "install.sh")))
          (add-after 'build 'build-doc
            (lambda _
-             ;; Don't build the documentation for SB-SIMD as it is disabled in
-             ;; the 'build' phase.
-             (substitute* "doc/manual/generate-texinfo.lisp"
-               (("exclude '\\(\"asdf\"\\)")
-                "exclude '(\"asdf\" \"sb-simd\")"))
              (with-directory-excursion "doc/manual"
                (and  (invoke "make" "info")
                      (invoke "make" "dist")))))
