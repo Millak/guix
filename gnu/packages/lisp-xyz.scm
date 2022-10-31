@@ -24269,6 +24269,50 @@ processing named definitions.")
 (define-public ecl-definitions-systems
   (sbcl-package->ecl-package sbcl-definitions-systems))
 
+(define-public sbcl-zr-utils
+  (let ((commit "e7eaffcb71811f6e1ab85fb15a079bcac4038eeb")
+        (revision "0"))
+    (package
+      (name "sbcl-zr-utils")
+      (version (git-version "0.0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/zombie-raptor/zr-utils.git")
+               (commit commit)))
+         (file-name (git-file-name "cl-zr-utils" version))
+         (sha256
+          (base32 "1nx388974wdc49h3simr1jnv4rw1mcs2llv4xai88qwjf4y66hsy"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-parachute))
+      (inputs
+        (list sbcl-alexandria
+              sbcl-babel
+              sbcl-closer-mop
+              sbcl-cl-unicode
+              sbcl-trivial-gray-streams))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-tests
+                   (lambda _
+                     (substitute* "zr-utils.asd"
+                       (("\\(:parachute")
+                        "(:parachute :zr-utils/tests/all")))))))
+      (synopsis "Common Lisp utilities library")
+      (description
+       "This is a Common Lisp utilities library originating from the
+Zombie Raptor game engine project.")
+      (home-page "https://gitlab.com/zombie-raptor/zr-utils")
+      (license license:expat))))
+
+(define-public cl-zr-utils
+  (sbcl-package->cl-source-package sbcl-zr-utils))
+
+(define-public ecl-zr-utils
+  (sbcl-package->ecl-package sbcl-zr-utils))
+
 (define-public sbcl-draw-cons-tree
   (let ((commit "04334f5885a85cd7127db8dda3f6d6686a0438b1")
         (revision "0"))
