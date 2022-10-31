@@ -15177,7 +15177,7 @@ number on the left margin in Emacs.")
 (define-public emacs-lin
   (package
     (name "emacs-lin")
-    (version "0.3.0")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -15186,7 +15186,7 @@ number on the left margin in Emacs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w1mli2wrxbnwagn3rx5ygslmzlri3drm74nqgwpl4pwh66xi98a"))))
+                "0bbxm2ndp6hcpdiv34dl9smgx5l0m4pdzm7csp283f6q9kwwdf3v"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
