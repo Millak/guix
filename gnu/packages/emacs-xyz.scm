@@ -21897,47 +21897,46 @@ Magit.")
     (license license:gpl3+)))
 
 (define-public emacs-lice-el
-  (let ((commit "482e58ab83fff86ed754b00be27b62a219597e7c"))
-    (package
-      (name "emacs-lice-el")
-      (version (git-version "0.2" "2" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/buzztaiki/lice-el")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0yxkjyhfk8kpr8yqz54gdx6xwkj4s8bnbz60162jh12crj0bs5n7"))))
-      (build-system emacs-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-template-directory
-             (lambda* (#:key outputs #:allow-other-keys)
-               (chmod "lice.el" #o666)
-               (emacs-substitute-variables "lice.el"
-                 ("lice:system-template-directory"
-                  (string-append (assoc-ref outputs "out")
-                                 "/share/emacs-lice-el/template")))
-               #t))
-           (add-after 'install 'install-templates
-             (lambda* (#:key outputs #:allow-other-keys)
-               (copy-recursively
-                "template"
+  (package
+    (name "emacs-lice-el")
+    (version "0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/buzztaiki/lice-el")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06plnrxj6kgnl9mjcbc48mgagpa60yyyyribwicmcgg9pgrs0wad"))))
+    (build-system emacs-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-template-directory
+           (lambda* (#:key outputs #:allow-other-keys)
+             (chmod "lice.el" #o666)
+             (emacs-substitute-variables "lice.el"
+               ("lice:system-template-directory"
                 (string-append (assoc-ref outputs "out")
-                               "/share/emacs-lice-el/template"))
-               #t)))))
-      (home-page "https://github.com/buzztaiki/lice-el")
-      (synopsis "License and header template for Emacs")
-      (description "@code{lice.el} provides following features:
+                               "/share/emacs-lice-el/template")))
+             #t))
+         (add-after 'install 'install-templates
+           (lambda* (#:key outputs #:allow-other-keys)
+             (copy-recursively
+              "template"
+              (string-append (assoc-ref outputs "out")
+                             "/share/emacs-lice-el/template"))
+             #t)))))
+    (home-page "https://github.com/buzztaiki/lice-el")
+    (synopsis "License and header template for Emacs")
+    (description "@code{lice.el} provides following features:
 
 @itemize
 @item License template management.
 @item File header insertion.
 @end itemize\n")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-academic-phrases
   (let ((commit "0823ed8c24b26c32f909b896a469833ec4d7b656"))
