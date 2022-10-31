@@ -2985,6 +2985,25 @@ after Andy Lester’s Perl module WWW::Mechanize.")
 audio playback capability for Python 3 on OSX, Windows, and Linux.")
     (license license:expat))) ; MIT license
 
+(define-public python-jsonalias
+  (package
+    (name "python-jsonalias")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jsonalias" version))
+              (sha256
+               (base32
+                "0sd7c3vyvfhhpnan77ax4f0x1whjcb5iz7jhjky7kmcpaf9lvw34"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f)) ; There are no tests.
+    (home-page "https://github.com/kevinheavey/jsonalias/")
+    (synopsis "JSON type alias for Python")
+    (description
+     "This package provides a microlibrary that defines a JSON type alias for
+Python.")
+    (license license:expat)))
+
 (define-public python-simplejson
   (package
     (name "python-simplejson")
