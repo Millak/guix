@@ -33016,7 +33016,7 @@ for detecting and improve non-idiomatic Clojure source code.")
 (define-public emacs-mint-mode
   (package
     (name "emacs-mint-mode")
-    (version "1.0.3")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -33025,14 +33025,12 @@ for detecting and improve non-idiomatic Clojure source code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19szk2dhsa0771kbg1ywp0zz8j6akysvwmmrx2bihq8h5j4y23pg"))))
+        (base32 "0fwxhkkhvbwdxrg9j9pjgkh864fa8rvc6dcr46a69spyjja3rw90"))))
     (build-system emacs-build-system)
     (arguments '(#:include '("\\.el$" "\\.txt$")))
     (home-page "https://github.com/creatorrr/emacs-mint-mode")
     (synopsis "Major mode for Mint language")
-    (description
-     "Mint mode provides syntax highlighting, basic keyword auto-completion,
-and format on save for Mint programming language.")
+    (description "Mint mode provides syntax highlighting for Mint language.")
     (license license:gpl3+)))
 
 (define-public emacs-seeing-is-believing
