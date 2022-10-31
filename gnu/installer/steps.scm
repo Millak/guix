@@ -28,7 +28,10 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (rnrs io ports)
-  #:export (<installer-step>
+  #:export (&user-abort-error
+            user-abort-error?
+
+            <installer-step>
             installer-step
             make-installer-step
             installer-step?
@@ -49,6 +52,9 @@
             configuration->file
 
             %current-result))
+
+(define-condition-type &user-abort-error &error
+  user-abort-error?)
 
 ;; Hash table storing the step results. Use it only for logging and debug
 ;; purposes.

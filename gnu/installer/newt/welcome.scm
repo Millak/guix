@@ -145,8 +145,7 @@ first?"))
         (1 #t)
         (2 (raise
             (condition
-             (&message
-              (message "User abort.")))))))
+             (&user-abort-error))))))
     (run-menu-page
      (G_ "GNU Guix install")
      (G_ "Welcome to GNU Guix system installer!

@@ -453,11 +453,21 @@ selected keymap."
                                           key args)
                       (define dump-dir
                         (prepare-dump key args #:result %current-result))
+
+                      (define user-abort?
+                        (match args
+                          (((? user-abort-error? obj)) #t)
+                          (_ #f)))
+
                       (define action
-                        ((installer-exit-error current-installer)
-                         (get-string-all
-                          (open-input-file
-                           (string-append dump-dir "/installer-backtrace")))))
+                        (if user-abort?
+                            'dump
+                            ((installer-exit-error current-installer)
+                             (get-string-all
+                              (open-input-file
+                               (string-append dump-dir
+                                              "/installer-backtrace"))))))
+
                       (match action
                         ('dump
                          (let* ((dump-files

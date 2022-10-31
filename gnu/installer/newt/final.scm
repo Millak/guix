@@ -92,9 +92,8 @@ a specific step, or restart the installer."))
         ;; Keep going, the installer will be restarted later on.
         #t)
        (3 (raise
-           (condition
-            (&message
-             (message "User abort.")))))))
+            (condition
+             (&user-abort-error))))))
     (_
      (send-to-clients '(installation-failure))
      #t)))
