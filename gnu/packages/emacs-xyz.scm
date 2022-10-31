@@ -33501,31 +33501,28 @@ with popups, which also work in the terminal.")
       (license license:gpl3+))))
 
 (define-public emacs-popon
-  ;; Upstream does not tag releases.  The commit below matches the version
-  ;; bump.
-  (let ((commit "d16cb747d356eab3f1bc4061ecee473732f7b8bb"))
-    (package
-      (name "emacs-popon")
-      (version "0.4")
-      (source
-       (origin
-         (method git-fetch)
-         (uri
-          (git-reference
-           (url "https://codeberg.org/akib/emacs-popon")
-           (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1i5rp0gvcdqakzaznsh0lqzvlq5kif9q2grq4l80gl75dmqdpym7"))))
-      (build-system emacs-build-system)
-      (home-page "https://codeberg.org/akib/emacs-popon/")
-      (synopsis "Pop floating text on a window")
-      (description
-       "@code{emacs-popon} allows you to pop text on a window, what we call
+  (package
+    (name "emacs-popon")
+    (version "0.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://codeberg.org/akib/emacs-popon")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14hf1n9d7rqfzr58kjsvjq63v3iamk3szvcn6zms7ry8x70v3lmv"))))
+    (build-system emacs-build-system)
+    (home-page "https://codeberg.org/akib/emacs-popon/")
+    (synopsis "Pop floating text on a window")
+    (description
+     "@code{emacs-popon} allows you to pop text on a window, what we call
 a popon.  Popons are window-local and sticky, they don't move while
 scrolling, and they even don't go away when switching buffer, but you
 can bind a popon to a specific buffer to only show on that buffer.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-consult-lsp
   (package
