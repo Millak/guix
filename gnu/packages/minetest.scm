@@ -508,15 +508,15 @@ breakers simulate a player punching a node.")
     (name "minetest-technic")
     ;; Upstream doesn't keep version numbers, so use the release
     ;; date on ContentDB instead.
-    (version "2022-02-06")
+    (version "2022-10-30")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/minetest-mods/technic")
-             (commit "d2b68a6bef53e34e166deadd64e02b58bcae59a1")))
+             (commit "6a9dfec36f7265f9328fe378732417d9b57060b4")))
        (sha256
-        (base32 "0vmi1y39q0x39s9w0hhgi979a4hf6n1ah5jaazjvmjf02pjcvvy1"))
+        (base32 "0ng1aklm02n2lbar345yf88g3alzvnh0m0s5rb2bcw2k5lib8468"))
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (propagated-inputs
