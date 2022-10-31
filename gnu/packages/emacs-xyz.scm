@@ -21911,23 +21911,15 @@ Magit.")
                 "06plnrxj6kgnl9mjcbc48mgagpa60yyyyribwicmcgg9pgrs0wad"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-template-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (chmod "lice.el" #o666)
-             (emacs-substitute-variables "lice.el"
-               ("lice:system-template-directory"
-                (string-append (assoc-ref outputs "out")
-                               "/share/emacs-lice-el/template")))
-             #t))
-         (add-after 'install 'install-templates
-           (lambda* (#:key outputs #:allow-other-keys)
-             (copy-recursively
-              "template"
-              (string-append (assoc-ref outputs "out")
-                             "/share/emacs-lice-el/template"))
-             #t)))))
+     (list
+      #:include #~(cons "^template/" %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-template-directory
+            (lambda _
+              (emacs-substitute-variables "lice.el"
+                ("lice:system-template-directory"
+                 (string-append (elpa-directory #$output) "/template"))))))))
     (home-page "https://github.com/buzztaiki/lice-el")
     (synopsis "License and header template for Emacs")
     (description "@code{lice.el} provides following features:
