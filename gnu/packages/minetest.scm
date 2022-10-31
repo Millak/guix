@@ -395,7 +395,7 @@ with different rules and mechanics.")
 (define-public minetest-mineclone
   (package
     (name "minetest-mineclone")
-    (version "0.75.0")
+    (version "0.80.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -404,7 +404,7 @@ with different rules and mechanics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10apja8bp8wmrbjlxg3gvrw5bdc8mizcngvnfi2ff790f6bsc5ip"))))
+                "0ndgzasjmj8397bb3y2aqalx9v72llwgvp9pv05mms3chpji2675"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
