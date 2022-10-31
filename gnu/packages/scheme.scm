@@ -44,6 +44,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system asdf)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages autotools)
@@ -53,6 +54,8 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libunistring)
+  #:use-module (gnu packages lisp-check)
+  #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -946,6 +949,38 @@ multilingual support are some of the goals.  Gauche comes with a package
 manager/installer @code{gauche-package} which can download, compile, install
 and list gauche extension packages.")
     (license bsd-3)))
+
+(define-public sbcl-airship-scheme
+  (let ((commit "1862db81dfa67729444916c361f39f9f1c5a2ccd")
+        (revision "0"))
+    (package
+      (name "sbcl-airship-scheme")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/mbabich/airship-scheme.git")
+               (commit commit)))
+         (file-name (git-file-name "cl-airship-scheme" version))
+         (sha256
+          (base32 "1d1kvrzlx5kcfsn3rn30ww8jihjflpgcka3n3awj2k4f0sq4mplg"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (inputs
+        (list sbcl-alexandria
+              sbcl-float-features
+              sbcl-trivial-features
+              sbcl-zr-utils))
+      (synopsis "R7RS Scheme implementation in Common Lisp")
+      (description
+       "This is a R7RS Scheme implementation designed to run within
+a Common Lisp environment.")
+      (home-page "https://gitlab.com/mbabich/airship-scheme")
+      (license expat))))
+
+(define-public cl-airship-scheme
+  (sbcl-package->cl-source-package sbcl-airship-scheme))
 
 (define-public gerbil
   (package
