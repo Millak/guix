@@ -37209,6 +37209,15 @@ The Nix package to use.
 @item @code{sandbox} (default: @code{#t})
 Specifies whether builds are sandboxed by default.
 
+@item @code{build-directory} (default: @code{"/tmp"})
+The directory where build directory are stored during builds.
+This is useful to change if, for example, the default location does not
+have enough space to hold build trees for big packages.
+
+This is similar to setting the @env{TMPDIR} environment variable for
+@command{guix-daemon}.  @ref{Build Environment Setup, @env{TMPDIR}},
+for more info.
+
 @item @code{build-sandbox-items} (default: @code{'()})
 This is a list of strings or objects appended to the
 @code{build-sandbox-items} field of the configuration file.

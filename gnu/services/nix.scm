@@ -54,6 +54,8 @@
                        (default nix))
   (sandbox             nix-configuration-sandbox ;boolean
                        (default #t))
+  (build-directory     nix-configuration-build-directory ;string
+                       (default "/tmp"))
   (build-sandbox-items nix-configuration-build-sandbox-items ;list of strings
                        (default '()))
   (extra-config        nix-configuration-extra-config ;list of strings
@@ -106,7 +108,7 @@ GID."
 
 (define nix-service-etc
   (match-lambda
-    (($ <nix-configuration> package sandbox build-sandbox-items extra-config)
+    (($ <nix-configuration> package sandbox build-directory build-sandbox-items extra-config)
      (let ((ref-file (references-file package)))
        `(("nix/nix.conf"
           ,(computed-file
@@ -130,7 +132,7 @@ GID."
 (define nix-shepherd-service
   ;; Return a <shepherd-service> for Nix.
   (match-lambda
-    (($ <nix-configuration> package _ _ _ extra-options)
+    (($ <nix-configuration> package _ build-directory _ _ extra-options)
      (list
       (shepherd-service
        (provision '(nix-daemon))
@@ -138,7 +140,10 @@ GID."
        (requirement '())
        (start #~(make-forkexec-constructor
                  (list (string-append #$package "/bin/nix-daemon")
-                       #$@extra-options)))
+                       #$@extra-options)
+                 #:environment-variables
+                   (list (string-append "TMPDIR=" build-directory)
+                         "PATH=/run/current-system/profile/bin")))
        (respawn? #f)
        (stop #~(make-kill-destructor)))))))
 
