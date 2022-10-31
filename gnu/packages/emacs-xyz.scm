@@ -29860,39 +29860,37 @@ such as:
     (license license:gpl3+)))
 
 (define-public emacs-flycheck-cpplint
-  (let ((commit "1d8a090861572258ab704915263feeb3a436c3d2")
-        (revision "1"))
-    (package
-      (name "emacs-flycheck-cpplint")
-      (version (git-version "0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/flycheck/flycheck-google-cpplint")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0l6sg83f6z8x2alnblpv03rj442sbnkkkcbf8i0agjmx3713a5yx"))))
-      (build-system emacs-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'set-cpplint-path
-             (lambda _
-               (substitute* "flycheck-google-cpplint.el"
-                 (("\"cpplint.py\"")
-                  (string-append "\"" (which "cpplint") "\""))))))))
-      (inputs
-       (list cpplint))
-      (propagated-inputs
-       (list emacs-flycheck))
-      (synopsis "Google C++ checker for Flycheck")
-      (description "This package provides a interface for @code{cpplint} over
+  (package
+    (name "emacs-flycheck-cpplint")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/flycheck/flycheck-google-cpplint")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nlyv81pyqmyz18dlzw5h23prhkvyzb0aasjxba8mm33avx0fvvb"))))
+    (build-system emacs-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-cpplint-path
+           (lambda _
+             (substitute* "flycheck-google-cpplint.el"
+               (("\"cpplint.py\"")
+                (string-append "\"" (which "cpplint") "\""))))))))
+    (inputs
+     (list cpplint))
+    (propagated-inputs
+     (list emacs-flycheck))
+    (synopsis "Google C++ checker for Flycheck")
+    (description "This package provides a interface for @code{cpplint} over
 Flycheck plugin.  @code{cpplint} is a static code checker for C++, following
 Google guidelines.")
-      (home-page "https://github.com/flycheck/flycheck-google-cpplint")
-      (license license:gpl3+))))
+    (home-page "https://github.com/flycheck/flycheck-google-cpplint")
+    (license license:gpl3+)))
 
 (define-public emacs-highlight-doxygen
   ;; Upstream does not tag releases.  Commit below matches version bump.
