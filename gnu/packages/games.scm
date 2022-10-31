@@ -8275,7 +8275,7 @@ your score gets higher, you level up and the blocks fall faster.")
 (define-public endless-sky
   (package
     (name "endless-sky")
-    (version "0.9.14")
+    (version "0.9.16.1")
     (source
      (origin
        (method git-fetch)
@@ -8284,31 +8284,31 @@ your score gets higher, you level up and the blocks fall faster.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12iganf8dxiyrjznnabsarxjsr0h717j3k4mz15p0k67wxyahhmf"))))
+        (base32 "0cb2g1cb0mk6x9gq2x7n10rxlfhsq8wnssk068j6h80al3hhybly"))))
     (build-system scons-build-system)
     (arguments
-     `(#:scons ,scons-python2
-       #:scons-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Look for resources in the store directory.
-             (substitute* "source/Files.cpp"
-               (("/usr/local") (assoc-ref outputs "out")))
-             ;; Install game binary into %out/bin.
-             (substitute* "SConstruct"
-               (("games\"") "bin\""))))
-         (add-before 'build 'use-gcc-ar
-           ;; Use gcc-ar to support LTO.
-           (lambda _ (setenv "AR" "gcc-ar"))))))
+     (list #:scons-flags #~(list (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-paths
+                 (lambda _
+                   ;; Look for resources in the store directory.
+                   (substitute* "source/Files.cpp"
+                     (("/usr/local") #$output))
+                   ;; Install game binary into %out/bin.
+                   (substitute* "SConstruct"
+                     (("games\"") "bin\""))))
+               (add-before 'build 'use-gcc-ar
+                 ;; Use gcc-ar to support LTO.
+                 (lambda _ (setenv "AR" "gcc-ar"))))))
     (inputs
-     `(("glew" ,glew)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libmad" ,libmad)
-       ("libpng" ,libpng)
-       ("openal" ,openal)
-       ("sdl2" ,sdl2)))
+     (list glew
+           libjpeg-turbo
+           libmad
+           libpng
+           openal
+           sdl2
+           `(,util-linux "lib"))) ; for libuuid
     (home-page "https://endless-sky.github.io/")
     (synopsis "2D space trading and combat game")
     (description "Endless Sky is a 2D space trading and combat game.  Explore
