@@ -37,6 +37,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +63,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system go)
@@ -74,6 +76,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages mail)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages password-utils)
   #:use-module (gnu packages pcre)
@@ -10324,6 +10327,60 @@ using shell-style rules for quoting and commenting.")
     (description "This package provides basic image processing functions
 (resize, rotate, crop, brightness/contrast adjustments, etc.).")
     (license license:expat)))
+
+(define notmuch-fixtures
+  (origin
+    (method url-fetch)
+    (uri "http://notmuchmail.org/releases/test-databases/database-v1.tar.xz")
+    (sha256
+     (base32
+      "1lk91s00y4qy4pjh8638b5lfkgwyl282g1m27srsf7qfn58y16a2"))))
+
+(define-public go-github-com-zenhack-go-notmuch
+  (package
+    (name "go-github-com-zenhack-go-notmuch")
+    (version "0.0.0-20211022191430-4d57e8ad2a8b")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zenhack/go.notmuch")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j2s5smjf7pp7i72dw12sm9iz961y3cy8nkm7hmrg53f6wna57h9"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/zenhack/go.notmuch"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-notmuch-path
+                          (lambda* (#:key inputs import-path
+                                    #:allow-other-keys)
+                            (substitute* (find-files (string-append "src/"
+                                                      import-path) "\\.go$")
+                              (("// #cgo LDFLAGS:.*$")
+                               (string-append "// #cgo LDFLAGS: -lnotmuch "
+                                              "-L"
+                                              #$(this-package-input "notmuch")
+                                              "/lib\n"
+                                              "// #cgo CFLAGS: "
+                                              "-I"
+                                              #$(this-package-input "notmuch")
+                                              "/include\n")))))
+                        (add-before 'check 'unpack-test-fixtures
+                          (lambda* (#:key inputs import-path
+                                    #:allow-other-keys)
+                            (invoke "tar" "xf"
+                                    #$notmuch-fixtures "-C"
+                                    (string-append "src/" import-path
+                                                   "/fixtures")))))))
+    (inputs (list notmuch))
+    (home-page "https://github.com/zenhack/go.notmuch")
+    (synopsis "Go bindings to libnotmuch")
+    (description
+     "The notmuch package provides a Go language binding to the notmuch
+email library.")
+    (license license:gpl3+)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
