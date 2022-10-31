@@ -25657,17 +25657,17 @@ space models and automatic ARIMA modelling.")
 (define-public r-forestplot
   (package
     (name "r-forestplot")
-    (version "2.0.1")
+    (version "3.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "forestplot" version))
               (sha256
                (base32
-                "0bzwi6ws0qjq1pqiadssynbkxxd4zjp974jfdplmv16fcyszqhyi"))))
+                "0xk30mpb87sab2afnk2j474qjjf4j6x1ifh9j5n7w690f481iqqb"))))
     (properties `((upstream-name . "forestplot")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-checkmate r-magrittr))
+     (list r-abind r-checkmate))
     (native-inputs (list r-knitr))
     (home-page "https://gforge.se/packages/")
     (synopsis "Advanced forest plot using @code{grid} graphics")
