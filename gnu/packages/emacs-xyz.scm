@@ -27469,9 +27469,9 @@ invoked.")
     (description "This package allows ERT to work with asynchronous tests.")
     (license license:gpl3+)))
 
-(define-public emacs-prodigy-el
+(define-public emacs-prodigy
   (package
-    (name "emacs-prodigy-el")
+    (name "emacs-prodigy")
     (version "1.0.0")
     (source
      (origin
@@ -27492,6 +27492,9 @@ invoked.")
     (synopsis "Manage external services from within Emacs")
     (description "This package provides a GUI for defining and monitoring services.")
     (license license:gpl3+)))
+
+(define-public emacs-prodigy-el
+  (deprecated-package "emacs-prodigy-el" emacs-prodigy))
 
 (define-public emacs-web-server
   (package
