@@ -33448,30 +33448,27 @@ parallel fetching of tiles with cURL, and more.")
     (license license:gpl3+)))
 
 (define-public emacs-corfu-terminal
-  ;; Upstream does not tag releases, version taken from package header.
-  (let ((commit "7c5a8a1c07b6c1a41b358b083d5bf7773701d26b")
-        (revision "0"))
-    (package
-      (name "emacs-corfu-terminal")
-      (version (git-version "0.4" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri
-          (git-reference
-           (url "https://codeberg.org/akib/emacs-corfu-terminal")
-           (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0pk5vfcz8w4hiqrwzwpxdjzlbhla0bw7a1h6v0mqxad0j9y7v3nw"))))
-      (build-system emacs-build-system)
-      (propagated-inputs (list emacs-corfu emacs-popon))
-      (home-page "https://codeberg.org/akib/emacs-corfu-terminal/")
-      (synopsis "Replace corfu child frames with popups")
-      (description
-       "This package replaces the child frames @code{emacs-corfu} uses
+  (package
+    (name "emacs-corfu-terminal")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://codeberg.org/akib/emacs-corfu-terminal")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15pwv48v6plvc33715x1j1g6vf53ds4880ly5h96x2idffh7fncl"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-corfu emacs-popon))
+    (home-page "https://codeberg.org/akib/emacs-corfu-terminal/")
+    (synopsis "Replace corfu child frames with popups")
+    (description
+     "This package replaces the child frames @code{emacs-corfu} uses
 with popups, which also work in the terminal.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-corfu-doc-terminal
   ;; Upstream does not tag releases, version taken from package header.
