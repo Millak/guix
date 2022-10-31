@@ -14490,7 +14490,7 @@ such files while providing facilities to link between them.")
 (define-public emacs-logos
   (package
     (name "emacs-logos")
-    (version "0.4.0")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -14499,7 +14499,7 @@ such files while providing facilities to link between them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1f40h8kbmza2rgmz84rgwbb4bwqkbfxnc3sc7gqshvxdkz3flbb7"))))
+                "1s1bm8hipipxkcz558h7i21z19g5jsbpqaza8nr4mx03jdp4nsxf"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
