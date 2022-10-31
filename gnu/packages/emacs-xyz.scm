@@ -33027,7 +33027,6 @@ for detecting and improve non-idiomatic Clojure source code.")
        (sha256
         (base32 "0fwxhkkhvbwdxrg9j9pjgkh864fa8rvc6dcr46a69spyjja3rw90"))))
     (build-system emacs-build-system)
-    (arguments '(#:include '("\\.el$" "\\.txt$")))
     (home-page "https://github.com/creatorrr/emacs-mint-mode")
     (synopsis "Major mode for Mint language")
     (description "Mint mode provides syntax highlighting for Mint language.")
