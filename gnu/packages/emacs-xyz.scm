@@ -27470,30 +27470,28 @@ invoked.")
     (license license:gpl3+)))
 
 (define-public emacs-prodigy-el
-  (let ((commit "0a12eec1f001a4eef16b2c0c524f02f2647a4ff1")
-        (revision "2"))
-    (package
-      (name "emacs-prodigy-el")
-      (version (git-version "0.7.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/rejeep/prodigy.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "02kysq57kqzg0zkhaf302ada9cp9spgp71z8vbdq4c7dl6x75h4g"))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-dash emacs-s emacs-f))
-      (native-inputs
-       (list emacs-el-mock emacs-ert-async))
-      (home-page "https://github.com/rejeep/prodigy.el")
-      (synopsis "Manage external services from within Emacs")
-      (description "This package provides a GUI for defining and monitoring services.")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-prodigy-el")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rejeep/prodigy.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "04xspdj67nas1ivv0ldlmmkr6v7zd7y3k346pnfgvq8wzqi6x4vz"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-dash emacs-f emacs-s))
+    (native-inputs
+     (list emacs-el-mock emacs-ert-async))
+    (home-page "https://github.com/rejeep/prodigy.el")
+    (synopsis "Manage external services from within Emacs")
+    (description "This package provides a GUI for defining and monitoring services.")
+    (license license:gpl3+)))
 
 (define-public emacs-web-server
   (package
