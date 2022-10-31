@@ -899,6 +899,10 @@ caught and lead to a warning and #f as the result."
                  (format (current-error-port)
                          "warning: failed to read from device '~a'~%" device)
                  #f)
+                ((= EMEDIUMTYPE errno)            ;inaccessible, like DRBD secondaries
+                 (format (current-error-port)
+                         "warning: failed to open device '~a'~%" device)
+                 #f)
                 (else
                  (apply throw args))))))))
 
