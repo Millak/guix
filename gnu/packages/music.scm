@@ -504,8 +504,7 @@ playing your music.")
                    (find-files "3rdparty"
                                (lambda (file stat)
                                  (string-match "^3rdparty/[^/]*$" file))
-                               #:directories? #t))
-                  #t))))
+                               #:directories? #t))))))
     (build-system cmake-build-system)
     (arguments
      `(#:test-target "run_strawberry_tests"
@@ -516,15 +515,13 @@ playing your music.")
              (let ((out             (assoc-ref outputs "out"))
                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
                (wrap-program (string-append out "/bin/strawberry")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))
-               #t)))
+                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
          (add-before 'check 'pre-check
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((xorg-server (assoc-ref inputs "xorg-server")))
                (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
                (setenv "DISPLAY" ":1")
-               (setenv "HOME" (getcwd))
-               #t))))))
+               (setenv "HOME" (getcwd))))))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("googletest" ,googletest)
