@@ -1506,7 +1506,7 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
                (invoke "dbus-launch" "ctest")))))))
     (home-page "https://apps.kde.org/korganizer/")
     (synopsis "Organizational assistant, providing calendars and other similar
-functionality to help you organize your life")
+functionality")
     (description "KOrganizer is the calendar and scheduling component of
 Kontact.  It provides management of events and tasks, alarm notification, web
 export, network transparent handling of data, group scheduling, import and

@@ -2926,7 +2926,7 @@ user interaction (e.g.  measuring distances).")
     (propagated-inputs
      (list python-click python-pycairo python-pygobject python-pyyaml))
     (home-page "https://buzz.github.io/volctl/")
-    (synopsis "Per-application volume control and on-screen display (OSD) for graphical desktops")
+    (synopsis "Per-application volume control and on-screen display for graphical desktops")
     (description "Volctl is a PulseAudio-enabled tray icon volume control and
 OSD applet for graphical desktops.  It's not meant to be an replacement for a
 full-featured mixer application.  If you're looking for that check out the

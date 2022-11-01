@@ -68211,7 +68211,7 @@ Rust.")
     (build-system cargo-build-system)
     (home-page #f)
     (synopsis
-      "High performance inflection transformation library for changing properties of words like the case")
+      "Inflection transformation library for changing properties of words")
     (description
       "High performance inflection transformation library for changing properties of words like the case.")
     (license license:expat)))
@@ -68382,7 +68382,7 @@ Rust.")
     (home-page
       "https://github.com/storyfeet/clap_conf")
     (synopsis
-      "Library to unify commandline arguments with config files and environment variables. And make it easier for users to tell your program how to behave across the three main input sources")
+      "Library to unify commandline arguments, config files and environment variables")
     (description
       "This package provides a library to unify commandline arguments with config files and environment variables.  And make it easier for users to tell your program how to behave across the three main input sources")
     (license license:expat)))

@@ -1256,7 +1256,7 @@ or Bonjour by other projects).")
     (arguments
      `(#:tests? #f))  ;; 4/17 fail
     (home-page "https://api.kde.org/frameworks/kuserfeedback/html/")
-    (synopsis "Framework for collecting feedback from application users via
+    (synopsis "Framework for collecting application feedback via
 telemetry and targeted surveys")
     (description "This framework consists of the following components:
 @itemize

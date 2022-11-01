@@ -13854,7 +13854,7 @@ for Unix time in Haskell.")
     (native-inputs (list ghc-hspec))
     (home-page "https://github.com/fpco/unliftio")
     (synopsis "Provides MonadUnliftIO typecplass for unlifting monads to
-IO (batteries included)")
+IO")
     (description "This Haskell package provides the core @code{MonadUnliftIO}
 typeclass, a number of common instances, and a collection of common functions
 working with it.")

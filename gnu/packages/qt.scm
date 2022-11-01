@@ -1680,7 +1680,7 @@ application).")
     (native-inputs '())
     (inputs
      (list mesa qtbase-5 qtdeclarative-5 qtwebsockets-5 zlib))
-    (synopsis "QPA plugin for running an application via a browser using
+    (synopsis "QPA plugin for running applications via a browser using
 streamed WebGL commands")
     (description "Qt back end that uses WebGL for rendering. It allows Qt
 applications (with some limitations) to run in a web browser that supports

@@ -267,8 +267,7 @@ many useful extensions to the Pascal programming language.")
              #t)))))
     (native-inputs
      (list perl which))
-    (synopsis "p2c converts Pascal programs to C programs--which you can then
-compile using gcc")
+    (synopsis "p2c converts Pascal programs to C programs")
     (description "This package provides @command{p2c}, a program to convert
 Pascal source code to C source code, and @command{p2cc}, a compiler for
 Pascal programs.")

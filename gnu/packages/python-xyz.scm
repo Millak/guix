@@ -19667,7 +19667,7 @@ from the header, as well as section details and data available.")
          (add-before 'build 'check
            (lambda _ (invoke "make" "check"))))))
     (home-page "https://liw.fi/ttystatus/")
-    (synopsis "Python library for showing progress reporting and
+    (synopsis "Python library for progress reporting and
      status updates on terminals")
     (description "@code{ttystatus} is a Python library for showing progress
      reporting and status updates on terminals, for command line programs.
