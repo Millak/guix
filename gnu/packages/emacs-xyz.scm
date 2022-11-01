@@ -9851,7 +9851,7 @@ replaced with the directory you choose.")
 (define-public emacs-consult-notmuch
   (package
     (name "emacs-consult-notmuch")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method git-fetch)
@@ -9860,14 +9860,14 @@ replaced with the directory you choose.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xzpkpf2sb89qkbqcrwddp4pgnzdjp40bc5da22jq9r4pf67y7qs"))))
+        (base32 "18r47cj89qli534irah3lwwzsnik5bcf61clnrkhafqv9y51m67z"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-consult emacs-notmuch))
     (home-page "https://codeberg.org/jao/consult-notmuch")
     (synopsis "Search and preview Notmuch emails using Consult")
     (description
-     "This package provides two commands using consult to query Notmuch emails
+     "This package provides two commands using Consult to query Notmuch emails
 and present results either as single emails or full trees.")
     (license license:gpl3+)))
 
