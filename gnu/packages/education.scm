@@ -582,7 +582,7 @@ a pen-tablet display and a beamer.")
 (define-public fet
   (package
     (name "fet")
-    (version "6.6.2")
+    (version "6.7.0")
     (source
      (origin
        (method url-fetch)
@@ -591,7 +591,7 @@ a pen-tablet display and a beamer.")
               (list (string-append directory base)
                     (string-append directory "old/" base))))
        (sha256
-        (base32 "0w3fp367r8gx35qmfcx9v8z2lrwfm0fjqbadyk3lhwf28gb1csxr"))))
+        (base32 "1z6zjydk3d04akv1zc8kcz8kgg5fdy8drcwwv30rj9ldh59kqi37"))))
     (build-system gnu-build-system)
     (arguments
      (list
