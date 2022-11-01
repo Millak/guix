@@ -7381,7 +7381,7 @@ variables, and so on.  The mode also allows you to execute Tup commands.")
 (define-public emacs-compat
   (package
     (name "emacs-compat")
-    (version "28.1.1.2")
+    (version "28.1.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7390,7 +7390,7 @@ variables, and so on.  The mode also allows you to execute Tup commands.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19abp29rnbkw91q0h2yqm2z7awzzjhci8h6v875g5ahvplrp6337"))))
+                "1c1pr6zzvgfbsclp1fyx911d4qvihz8hw5mp7g0l0df2rlpypdzw"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-nadvice))
     (home-page "https://git.sr.ht/~pkal/compat")
