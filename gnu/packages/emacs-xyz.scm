@@ -33499,7 +33499,7 @@ can bind a popon to a specific buffer to only show on that buffer.")
 (define-public emacs-consult-lsp
   (package
     (name "emacs-consult-lsp")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -33508,11 +33508,11 @@ can bind a popon to a specific buffer to only show on that buffer.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14dyclspkf1a34nvjj800ckz1phsizq07ps8k4x0ah6ik0hfhy1w"))))
+        (base32 "0bnq8jahcyjsai1y4ngdq08y77m1hn78h3p48czr7sg907nr42yh"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-consult emacs-lsp-mode emacs-f))
     (home-page "https://github.com/gagbo/consult-lsp/")
-    (synopsis "LSP-mode and consult helping each other")
+    (synopsis "LSP mode and Consult helping each other")
     (description
 "@code{emacs-consult-lsp} provides helpers for interactively selecting LSP
 workspace diagnostics, symbols, and file symbols from @{emacs-lsp-mode}
