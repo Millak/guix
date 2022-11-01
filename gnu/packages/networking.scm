@@ -54,6 +54,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4488,3 +4489,37 @@ Transfer Protocol} and older @acronym{SCP, Secure Copy Protocol}
 implementations.")
     (home-page "https://www.chiark.greenend.org.uk/~sgtatham/putty/")
     (license license:expat)))
+
+(define-public vnstat
+  (package
+   (name "vnstat")
+   (version "2.9")
+   (source
+    (origin
+      (method url-fetch)
+      (uri (string-append "https://humdi.net/vnstat/vnstat-"
+                          version ".tar.gz"))
+      (sha256
+       (base32
+        "1iwxmnpabfljvyng7c8k3z83yw1687i66z5s1980c5x9vrsi98hi"))))
+   (build-system gnu-build-system)
+   (inputs (list sqlite))
+   (native-inputs (list pkg-config check))
+   (arguments
+    `(#:phases
+      (modify-phases %standard-phases
+        (add-before 'check 'disable-id-tests
+          (lambda _
+            (substitute*
+                '("Makefile" "tests/vnstat_tests.c")
+              (("tests/id_tests.c \\$") "\\")
+              (("tests/id_tests.h h") "h")
+              (("^.*id_tests.*$") "")))))))
+   (home-page "https://humdi.net/vnstat/")
+   (synopsis "Network traffic monitoring tool")
+   (description "vnStat is a console-based network traffic monitor that keeps
+a log of network traffic for the selected interface(s).  It uses the network
+interface statistics provided by the kernel as information source.  This means
+that vnStat won't actually be sniffing any traffic and also ensures light use
+of system resources regardless of network traffic rate.")
+   (license license:gpl2+)))
