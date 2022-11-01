@@ -4760,7 +4760,7 @@ Stack Overflow, Super User, and other StackExchange sites.")
 (define-public emacs-skempo
   (package
     (name "emacs-skempo")
-    (version "0.1.0")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -4770,7 +4770,7 @@ Stack Overflow, Super User, and other StackExchange sites.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0na465f27p6n64sf0pj0aqdi384m1wy3hxcc2d6a67hs39rkyvi9"))))
+         "0xsr6819qaad0y8rhfrf555c9w7cmgbgkf1a2svgbp7rhhnywl0a"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-parent-mode))
